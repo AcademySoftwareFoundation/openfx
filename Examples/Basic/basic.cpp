@@ -190,7 +190,7 @@ createInstance( OfxImageEffectHandle effect)
 
   // is this instance a general effect ?
   gPropHost->propGetString(effectProps, kOfxImageEffectPropContext, 0,  &context);
-  myData->isGeneralEffect = context && strcmp(context, kOfxImageEffectContextGeneral);
+  myData->isGeneralEffect = context && (strcmp(context, kOfxImageEffectContextGeneral) == 0);
 
   // cache away out param handles
   gParamHost->paramGetHandle(paramSet, "scaleComponents", &myData->perComponentScaleParam, 0);
