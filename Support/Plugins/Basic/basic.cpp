@@ -76,26 +76,37 @@ Clamp(T v, int min, int max)
 }
 
 // Base class for the RGBA and the Alpha processor
-class ImageScaler : public OFX::ImageProcessor {
+class ImageScalerBase : public OFX::ImageProcessor {
 protected :
     OFX::Image *_srcImg;
+    OFX::Image *_maskImg;
     double _rScale, _gScale, _bScale, _aScale;
+    bool   _doMasking;
 
 public :
     /** @brief no arg ctor */
-    ImageScaler(OFX::ImageEffect &instance)
+    ImageScalerBase(OFX::ImageEffect &instance)
       : OFX::ImageProcessor(instance)
       , _srcImg(0)
+      , _maskImg(0)
       , _rScale(1)
       , _gScale(1)
       , _bScale(1)
       , _aScale(1)
+      , _doMasking(false)
     {        
     }
 
     /** @brief set the src image */
     void srcImg(OFX::Image *v) {_srcImg = v;}
 
+    /** @brief set the optional mask image */
+    void maskImg(OFX::Image *v) {_maskImg = v;}
+
+    // Are we masking. We can't derive this from the mask image being set as NULL is a valid value for an input image
+    void doMasking(bool v) {_doMasking = v;}
+    
+    
     /** @brief set the scale */
     void scales(float r, float g, float b, float a)
     {
@@ -108,64 +119,25 @@ public :
 };
 
 // template to do the RGBA processing
-template <class PIX, int max, int isFloat>
-class RGBAImageScaler : public ImageScaler {
+template <class PIX, int nComponents, int max>
+class ImageScaler : public ImageScalerBase {
 public :
     // ctor
-    RGBAImageScaler(OFX::ImageEffect &instance) 
-      : ImageScaler(instance)
+    ImageScaler(OFX::ImageEffect &instance) 
+      : ImageScalerBase(instance)
     {}
 
     // and do some processing
     void multiThreadProcessImages(OfxRectI procWindow)
     {
-        for(int y = procWindow.y1; y < procWindow.y2; y++) {
-            if(_effect.abort()) break;
+        float scales[4];
+        scales[0] = nComponents == 1 ? _aScale : _rScale;
+        scales[1] = _gScale;
+        scales[2] = _bScale;
+        scales[3] = _aScale;
 
-            PIX *dstPix = (PIX *) _dstImg->pixelAddress(procWindow.x1, y);
+        float maskScale = 1.0f;
 
-            for(int x = procWindow.x1; x < procWindow.x2; x++) {
-        
-                PIX *srcPix = (PIX *)  (_srcImg ? _srcImg->pixelAddress(x, y) : 0);
-        
-                if(srcPix) {
-                    // switch will be compiled out
-                    if(isFloat) {
-                        dstPix->r = srcPix->r * _rScale;
-                        dstPix->g = srcPix->g * _gScale;
-                        dstPix->b = srcPix->b * _bScale;
-                        dstPix->a = srcPix->a * _aScale;
-                    }
-                    else {
-                        dstPix->r = Clamp(int(srcPix->r * _rScale), 0, max);
-                        dstPix->g = Clamp(int(srcPix->g * _gScale), 0, max);
-                        dstPix->b = Clamp(int(srcPix->b * _bScale), 0, max);
-                        dstPix->a = Clamp(int(srcPix->a * _aScale), 0, max);
-                    }
-                    srcPix++;
-                }
-                else {
-                    dstPix->r = dstPix->g = dstPix->b = dstPix->a= 0;
-                }
-                dstPix++;
-            }
-        }
-    }
-    
-};
-
-// template to do the Alpha processing
-template <class PIX, int max, int isFloat>
-class AlphaImageScaler : public ImageScaler {
-public :
-    // ctor
-    AlphaImageScaler(OFX::ImageEffect &instance) 
-      : ImageScaler(instance)
-    {}
-
-    // and do some processing
-    void multiThreadProcessImages(OfxRectI procWindow)
-    {
         for(int y = procWindow.y1; y < procWindow.y2; y++) {
             if(_effect.abort()) break;
 
@@ -175,20 +147,41 @@ public :
         
                 PIX *srcPix = (PIX *)  (_srcImg ? _srcImg->pixelAddress(x, y) : 0);
 
+                // are we doing masking
+                if(_doMasking) {
+                    // we do, get the pixel from the mask
+                    PIX *maskPix = (PIX *)  (_maskImg ? _maskImg->pixelAddress(x, y) : 0);
+
+                    // figure the scale factor from that pixel
+                    maskScale = maskPix != 0 ? float(*maskPix)/float(max) : 0.0f;
+                }
+
+                // do we have a source image to scale up
                 if(srcPix) {
-                    // switch will be compiled out
-                    if(isFloat) {
-                        *dstPix = *srcPix * _aScale;
+                    for(int c = 0; c < nComponents; c++) {
+                        float v;
+
+                        // scale the component up by the scale factor, modulated by the maskScale
+                        if(maskScale != 1.0f) 
+                            v = srcPix[c] * 1.0 + (scales[c] - 1.0) * maskScale;
+                        else
+                            v = srcPix[c] * scales[c];
+
+                        if(max == 1)  // implies floating point and so no clamping
+                            dstPix[c] = PIX(v);
+                        else  // integer based and we need to clamp
+                            dstPix[c] = PIX(Clamp(v, 0, max));
                     }
-                    else {
-                        *dstPix = Clamp(int(*srcPix * _aScale), 0, max);
-                    }
-                    srcPix++;
                 }
                 else {
-                    *dstPix = 0;
+                    // no src pixel here, be black and transparent
+                    for(int c = 0; c < nComponents; c++) {
+                        dstPix[c] = 0;
+                    }
                 }
-                dstPix++;
+
+                // increment the dst pixel
+                dstPix += nComponents;
             }
         }
     }
@@ -202,6 +195,7 @@ protected :
     // do not need to delete these, the ImageEffect is managing them for us
     OFX::Clip *dstClip_;
     OFX::Clip *srcClip_;
+    OFX::Clip *maskClip_;
 
     OFX::DoubleParam  *scale_;
     OFX::DoubleParam  *rScale_;
@@ -225,6 +219,8 @@ public :
     {
         dstClip_ = fetchClip("Output");
         srcClip_ = fetchClip("Source");
+        // name of mask clip depends on the context
+        maskClip_ = fetchClip(context() == OFX::eContextPaint ? "Brush" : "Mask");
         scale_   = fetchDoubleParam("scale");
         rScale_  = fetchDoubleParam("scaleR");
         gScale_  = fetchDoubleParam("scaleG");
@@ -254,10 +250,9 @@ public :
     /* override for the interact creation */
     virtual OFX::OverlayInteract *createOverlayInteract(OfxInteractHandle handle);
 
-
     /* set up and run a processor */
     void
-    setupAndProcess(ImageScaler &, const OFX::RenderArguments &args);
+    setupAndProcess(ImageScalerBase &, const OFX::RenderArguments &args);
 };
 
 
@@ -270,7 +265,7 @@ public :
 
 /* set up and run a processor */
 void
-BasicPlugin::setupAndProcess(ImageScaler &processor, const OFX::RenderArguments &args)
+BasicPlugin::setupAndProcess(ImageScalerBase &processor, const OFX::RenderArguments &args)
 {
     // get a dst image
     std::auto_ptr<OFX::Image> dst(dstClip_->fetchImage(args.time));
@@ -290,6 +285,21 @@ BasicPlugin::setupAndProcess(ImageScaler &processor, const OFX::RenderArguments 
             throw int(1); // HACK!! need to throw an sensible exception here!
     }
 
+    // auto ptr for the mask 
+    std::auto_ptr<OFX::Image> mask;
+
+    // do we do masking
+    if(context() != OFX::eContextFilter) {
+        // say we are masking
+        processor.doMasking(true);
+
+        // Set the mask autoptr
+        mask.reset(maskClip_->fetchImage(args.time));
+
+        // Set it in the processor 
+        processor.maskImg(mask.get());
+    }
+
     // get the scale parameter values...
     double r, g, b, a = aScale_->getValueAtTime(args.time);
     r = g = b = scale_->getValueAtTime(args.time);
@@ -304,6 +314,7 @@ BasicPlugin::setupAndProcess(ImageScaler &processor, const OFX::RenderArguments 
     // set the images
     processor.dstImg(dst.get());
     processor.srcImg(src.get());
+
 
     // set the render window
     processor.renderWindow(args.renderWindow);
@@ -327,45 +338,45 @@ BasicPlugin::render(const OFX::RenderArguments &args)
     if(dstComponents == OFX::ePixelComponentRGBA) {
         switch(dstBitDepth) {
         case OFX::eBitDepthUByte : {      
-            RGBAImageScaler<OfxRGBAColourB, 255, 0> fred(*this);
+            ImageScaler<unsigned char, 4, 255> fred(*this);
             setupAndProcess(fred, args);
         }
-            break;
+        break;
 
         case OFX::eBitDepthUShort : {
-            RGBAImageScaler<OfxRGBAColourS, 65535, 0> fred(*this);
+            ImageScaler<unsigned short, 4, 65535> fred(*this);
             setupAndProcess(fred, args);
         }                          
-            break;
+        break;
 
         case OFX::eBitDepthFloat : {
-            RGBAImageScaler<OfxRGBAColourF, 1, 1> fred(*this);
+            ImageScaler<float, 4, 1> fred(*this);
             setupAndProcess(fred, args);
         }
-            break;
+        break;
         }
     }
     else {
         switch(dstBitDepth) {
         case OFX::eBitDepthUByte : {
-            AlphaImageScaler<unsigned char, 255, 0> fred(*this);
+            ImageScaler<unsigned char, 1, 255> fred(*this);
             setupAndProcess(fred, args);
         }
-            break;
+        break;
 
         case OFX::eBitDepthUShort : {
-            AlphaImageScaler<unsigned short, 65535, 0> fred(*this);
+            ImageScaler<unsigned short, 1, 65536> fred(*this);
             setupAndProcess(fred, args);
         }                          
-            break;
+        break;
 
         case OFX::eBitDepthFloat : {
-            AlphaImageScaler<float, 1, 1> fred(*this);
+            ImageScaler<float, 1, 1> fred(*this);
             setupAndProcess(fred, args);
         }                          
-            break;
+        break;
         }
-    } // switch
+    } 
 }
 
 // overridden is identity
@@ -436,10 +447,11 @@ BasicPlugin::createOverlayInteract(OfxInteractHandle handle)
 bool
 BasicInteract::draw(const OFX::DrawArgs &args)
 {
+    OfxRGBColourF col;
     switch(_state) {
-    case eInActive : glColor3f(0.0f, 0.0f, 0.0f); break;
-    case ePoised   : glColor3f(0.5f, 0.5f, 0.5f); break;
-    case ePicked   : glColor3f(1.0f, 1.0f, 1.0f); break;
+    case eInActive : col.r = col.g = col.b = 0.0f; break;
+    case ePoised   : col.r = col.g = col.b = 0.5f; break;
+    case ePicked   : col.r = col.g = col.b = 1.0f; break;
     }
 
     // make the box a constant size on screen by scaling by the pixel scale
@@ -449,8 +461,21 @@ BasicInteract::draw(const OFX::DrawArgs &args)
     // Draw a cross hair, the current coordinate system aligns with the image plane.
     glPushMatrix();
   
+    // draw the bo
+    glColor3f(col.r, col.g, col.b);
     glTranslated(_position.x, _position.y, 0);
     glBegin(GL_POLYGON);
+    glVertex2f(-dx, -dy);
+    glVertex2f(-dx,  dy);
+    glVertex2f( dx,  dy);
+    glVertex2f( dx, -dy);
+    glEnd();
+    glPopMatrix();
+
+    // draw a complementary outline
+    glColor3f(1.0f - col.r, 1.0f - col.g, 1.0f - col.b);
+    glTranslated(_position.x, _position.y, 0);
+    glBegin(GL_LINE_LOOP);
     glVertex2f(-dx, -dy);
     glVertex2f(-dx,  dy);
     glVertex2f( dx,  dy);
@@ -587,11 +612,13 @@ namespace OFX {
         void describe(OFX::ImageEffectDescriptor &desc) 
         {
             // basic labels
-            desc.setLabels("Basic Plugin", "Basic Plugin", "Basic Plugin");
+            desc.setLabels("Gain", "Gain", "Gain");
             desc.setPluginGrouping("OFX");
 
             // add the supported contexts, only filter at the moment
             desc.addSupportedContext(eContextFilter);
+            desc.addSupportedContext(eContextGeneral);
+            desc.addSupportedContext(eContextPaint);
 
             // add supported pixel depths
             desc.addSupportedBitDepth(eBitDepthUByte);
@@ -639,6 +666,17 @@ namespace OFX {
             srcClip->setOptional(false);
             srcClip->setSupportsTiles(true);
             srcClip->setIsMask(false);
+
+            // if general or paint context, define the mask clip
+            if(context == eContextGeneral || context == eContextPaint) {                
+                // if paint context, it is a mandated input called 'brush'
+                ClipDescriptor *maskClip = context == eContextGeneral ? desc.defineClip("Mask") : desc.defineClip("Brush");
+                maskClip->addSupportedComponent(ePixelComponentAlpha);
+                maskClip->setTemporalClipAccess(false);
+                maskClip->setOptional(context != eContextPaint); // only optional in the general context, not the paint context
+                maskClip->setSupportsTiles(true); 
+                maskClip->setIsMask(true); // we are a mask input
+            }
 
             // create the mandated output clip
             ClipDescriptor *dstClip = desc.defineClip("Output");
