@@ -1,4 +1,4 @@
-.#ifndef _ofxsMultiThread_H_
+#ifndef _ofxsMultiThread_H_
 #define _ofxsMultiThread_H_
 /*
   OFX Support Library, a library that skins the OFX plug-in API with C++ classes.

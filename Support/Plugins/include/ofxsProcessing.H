@@ -63,7 +63,7 @@ namespace OFX {
             unsigned int y1 = _renderWindow.y1 + threadId * dy/nThreads;
 
             int step = (threadId + 1) * dy/nThreads;
-            unsigned int y2 = _renderWindow.y1 + (step < dy ? :dy);
+            unsigned int y2 = _renderWindow.y1 + (step < dy ? step : dy);
 
             OfxRectI win = _renderWindow;
             win.y1 = y1; win.y2 = y2;
