@@ -27,6 +27,7 @@ This file contains headers for classes that are used to validate property sets a
 /** @brief Null pointer definition */
 #define NULLPTR ((void *)(0))
 
+#define  kOfxsDisableValidation
 // disable validation if not a debug build
 #ifndef DEBUG
 #define  kOfxsDisableValidation

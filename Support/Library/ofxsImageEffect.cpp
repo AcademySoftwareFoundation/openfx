@@ -18,6 +18,7 @@
 /** @brief This file contains code that skins the ofx effect suite */
 
 #include "./ofxsSupportPrivate.H"
+#include <algorithm> // for find
 
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
@@ -158,7 +159,7 @@ namespace OFX {
     {
         _clipProps.propSetString(kOfxPropLabel, label);
         _clipProps.propSetString(kOfxPropShortLabel, shortLabel);
-        _clipProps.propSetString(kOfxPropLongLabel, longLabel);
+        //HACK _clipProps.propSetString(kOfxPropLongLabel, longLabel);
     }
 
     /** @brief set how fielded images are extracted from the clip defaults to eFieldExtractDoubled */
@@ -263,7 +264,7 @@ namespace OFX {
     {
         _effectProps.propSetString(kOfxPropLabel, label);
         _effectProps.propSetString(kOfxPropShortLabel, shortLabel);
-        _effectProps.propSetString(kOfxPropLongLabel, longLabel);
+        //HACK _effectProps.propSetString(kOfxPropLongLabel, longLabel);
     }
 
     /** @brief Set the plugin grouping */
@@ -568,7 +569,7 @@ namespace OFX {
     {
         label      = _clipProps.propGetString(kOfxPropLabel);
         shortLabel = _clipProps.propGetString(kOfxPropShortLabel);
-        longLabel  = _clipProps.propGetString(kOfxPropLongLabel);
+        // HACK longLabel  = _clipProps.propGetString(kOfxPropLongLabel);
     }
 
     /** @brief get the pixel depth */
@@ -920,7 +921,7 @@ namespace OFX {
     {
         // do we have it already ?
         std::list<OverlayInteract *>::iterator i;
-        i = find(_overlayInteracts.begin(), _overlayInteracts.end(), interact);
+        i = std::find(_overlayInteracts.begin(), _overlayInteracts.end(), interact);
         
         // we don't, put it in there
         if(i == _overlayInteracts.end()) {
@@ -934,7 +935,7 @@ namespace OFX {
     {
         // find it
         std::list<OverlayInteract *>::iterator i;
-        i = find(_overlayInteracts.begin(), _overlayInteracts.end(), interact);
+        i = std::find(_overlayInteracts.begin(), _overlayInteracts.end(), interact);
         
         // and remove it
         if(i != _overlayInteracts.end()) {
@@ -1431,7 +1432,7 @@ namespace OFX {
             args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
             args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
 
-            args.isInteractive = inArgs.propGetInt(kOfxPropIsInteractive);
+            args.isInteractive = inArgs.propGetInt(kOfxPropIsInteractive) != 0;
 
             // and call the plugin client render code
             effectInstance->beginSequenceRender(args);
@@ -1448,7 +1449,7 @@ namespace OFX {
             args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
             args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
 
-            args.isInteractive = inArgs.propGetInt(kOfxPropIsInteractive);
+            args.isInteractive = inArgs.propGetInt(kOfxPropIsInteractive) != 0;
 
             // and call the plugin client render code
             effectInstance->endSequenceRender(args);
@@ -1713,11 +1714,11 @@ namespace OFX {
             std::string changedType = inArgs.propGetString(kOfxPropType);
             std::string changedName = inArgs.propGetString(kOfxPropName);
             
-            if(changedType == "kOfxTypeParameter") {
+            if(changedType == kOfxTypeParameter) {
                 // and call the plugin client code
                 effectInstance->changedParam(args, changedName);
             }
-            else if(changedType == "kOfxTypeClip") {
+            else if(changedType == kOfxTypeClip) {
                 // and call the plugin client code
                 effectInstance->changedClip(args, changedName);
             }

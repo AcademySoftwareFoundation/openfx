@@ -1,7 +1,45 @@
 
+
+#ifdef _WINDOWS
+#include <windows.h>
+#endif
+
+#include <GL/gl.h>
+
 #include <stdio.h>
 #include "ofxsImageEffect.H"
 #include "ofxsMultiThread.H"
+
+////////////////////////////////////////////////////////////////////////////////
+// a dumb interact that just draw's a square you can drag
+static const OfxPointD kBoxSize = {20, 20};
+
+class BasicInteract : public OFX::OverlayInteract {
+protected :
+  enum StateEnum {
+    eInActive,
+    ePoised,
+    ePicked
+  };
+
+  OfxPointD _position;
+  StateEnum _state;
+  
+public :
+  BasicInteract(OfxInteractHandle handle) 
+    : OFX::OverlayInteract(handle)
+    , _state(eInActive)
+  {
+    _position.x = 0;
+    _position.y = 0;
+  }
+  
+  // overridden functions from OFX::Interact to do things
+  virtual bool draw(const OFX::DrawArgs &args);
+  virtual bool penMotion(const OFX::PenArgs &args);
+  virtual bool penDown(const OFX::PenArgs &args);
+  virtual bool penUp(const OFX::PenArgs &args);
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 /** @brief base class of the plugin */
@@ -39,10 +77,13 @@ public :
         bScale_  = fetchDoubleParam("scaleB");
         aScale_  = fetchDoubleParam("scaleA");
         componentScalesEnabled_ = fetchBooleanParam("scaleComponents");
+
+        // set the enabledness of our RGBA sliders
+        setEnabledness();
     }
 
     /* sets the enabledness of the component scale params depending on the type of input image and the state of the scaleComponents param */
-    bool setEnabledness(double time);
+    void setEnabledness(void);
 
     /* Override the render */
     virtual void render(const OFX::RenderArguments &args);
@@ -55,6 +96,9 @@ public :
 
     /* override changed clip */
     virtual void changedClip(const OFX::InstanceChangedArgs &args, const std::string &clipName);
+
+    /* override for the interact creation */
+    virtual OFX::OverlayInteract *createOverlayInteract(OfxInteractHandle handle);
 };
 
 
@@ -66,6 +110,11 @@ public :
 
 template <class T> inline T
 Minimum(T a, T b) {    return (a < b) ? a : b;}
+
+template <class T> inline T
+Absolute(T a) { return (a < 0) ? -a : a;}
+
+
 
 template <class T> inline T 
 Clamp(T v, int min, int max)
@@ -92,9 +141,9 @@ class Processor : public OFX::MultiThread::Processor {
 protected :
     OFX::ImageEffect *  instance;
     float         rScale, gScale, bScale, aScale;
-    void *srcV, *dstV, *maskV; 
-    OfxRectI srcRect, dstRect, maskRect;
-    int srcBytesPerLine, dstBytesPerLine, maskBytesPerLine;
+    void *srcV, *dstV; 
+    OfxRectI srcRect, dstRect;
+    int srcBytesPerLine, dstBytesPerLine;
     OfxRectI  window;
 
 public :
@@ -102,7 +151,6 @@ public :
               float rScal, float gScal, float bScal, float aScal,
               void *src, OfxRectI sRect, int sBytesPerLine,
               void *dst, OfxRectI dRect, int dBytesPerLine,
-              void *mask, OfxRectI mRect, int mBytesPerLine,
               OfxRectI  win)
       : instance(inst)
       , rScale(rScal)
@@ -111,13 +159,10 @@ public :
       , aScale(aScal)
       , srcV(src)
       , dstV(dst)
-      , maskV(mask)
       , srcRect(sRect)
       , dstRect(dRect)
-      , maskRect(mRect)
       , srcBytesPerLine(sBytesPerLine)
       , dstBytesPerLine(dBytesPerLine)
-      , maskBytesPerLine(mBytesPerLine)
       , window(win)
     {}  
 
@@ -147,20 +192,18 @@ Processor::multiThreadFunction(unsigned int threadId, unsigned int nThreads)
 }
 
 // template to do the RGBA processing
-template <class PIX, class MASK, int max, int isFloat>
+template <class PIX, int max, int isFloat>
 class ProcessRGBA : public Processor {
 public :
     ProcessRGBA(OFX::ImageEffect *  instance,
                 float rScale, float gScale, float bScale, float aScale,
                 void *srcV, OfxRectI srcRect, int srcBytesPerLine,
                 void *dstV, OfxRectI dstRect, int dstBytesPerLine,
-                void *maskV, OfxRectI maskRect, int maskBytesPerLine,
                 OfxRectI  window)
       : Processor(instance,
                   rScale, gScale, bScale, aScale,
                   srcV,  srcRect,  srcBytesPerLine,
                   dstV,  dstRect,  dstBytesPerLine,
-                  maskV,  maskRect, maskBytesPerLine,
                   window)
     {
     }
@@ -169,7 +212,6 @@ public :
     {
         PIX *src = (PIX *) srcV;
         PIX *dst = (PIX *) dstV;
-        MASK *mask = (MASK *) maskV;
 
         for(int y = procWindow.y1; y < procWindow.y2; y++) {
             if(instance->abort()) break;
@@ -180,22 +222,11 @@ public :
         
                 PIX *srcPix = pixelAddress(src, srcRect, x, y, srcBytesPerLine);
         
-        
-                // do any pixel masking?
-                float maskV = 1.0f;
-                if(mask) {
-                    MASK *maskPix = pixelAddress(mask, maskRect, x, y, maskBytesPerLine);
-                    if(maskPix) {
-                        maskV = float(*maskPix)/float(max);
-                    }
-                    maskPix++;
-                }
-
                 // figure the scale values per component
-                float sR = 1.0 + (rScale - 1.0) * maskV;
-                float sG = 1.0 + (gScale - 1.0) * maskV;
-                float sB = 1.0 + (bScale - 1.0) * maskV;
-                float sA = 1.0 + (aScale - 1.0) * maskV;
+                float sR = 1.0 + (rScale - 1.0);
+                float sG = 1.0 + (gScale - 1.0);
+                float sB = 1.0 + (bScale - 1.0);
+                float sA = 1.0 + (aScale - 1.0);
 
                 if(srcPix) {
                     // switch will be compiled out
@@ -223,20 +254,18 @@ public :
 };
 
 // template to do the Alpha processing
-template <class PIX, class MASK, int max, int isFloat>
+template <class PIX, int max, int isFloat>
 class ProcessAlpha : public Processor {
 public :
     ProcessAlpha( OFX::ImageEffect *instance,
                   float scale,
                   void *srcV, OfxRectI srcRect, int srcBytesPerLine,
                   void *dstV, OfxRectI dstRect, int dstBytesPerLine,
-                  void *maskV, OfxRectI maskRect, int maskBytesPerLine,
                   OfxRectI  window)
       : Processor(instance,
                   scale, scale, scale, scale,
                   srcV,  srcRect,  srcBytesPerLine,
                   dstV,  dstRect,  dstBytesPerLine,
-                  maskV,  maskRect, maskBytesPerLine,
                   window)
     {
     }
@@ -245,7 +274,6 @@ public :
     {
         PIX *src = (PIX *) srcV;
         PIX *dst = (PIX *) dstV;
-        MASK *mask = (MASK *) maskV;
 
         for(int y = procWindow.y1; y < procWindow.y2; y++) {
             if(instance->abort()) break;
@@ -256,17 +284,8 @@ public :
         
                 PIX *srcPix = pixelAddress(src, srcRect, x, y, srcBytesPerLine);
 
-                // do any pixel masking?
-                float maskV = 1.0f;
-                if(mask) {
-                    MASK *maskPix = pixelAddress(mask, maskRect, x, y, maskBytesPerLine);
-                    if(maskPix) {
-                        maskV = float(*maskPix)/float(max);
-                    }
-                }
-
                 // figure the scale values per component
-                float theScale = 1.0 + (rScale - 1.0) * maskV;
+                float theScale = 1.0 + (rScale - 1.0);
 
                 if(srcPix) {
                     // switch will be compiled out
@@ -298,7 +317,7 @@ BasicPlugin::render(const OFX::RenderArguments &args)
         // get a dst image
         dst = dstClip_->fetchImage(args.time);
         int dstRowBytes  =  dst->rowBytes();
-        int dstBitDepth  =  dst->pixelDepth();
+        OFX::BitDepthEnum dstBitDepth  =  dst->pixelDepth();
         bool dstIsAlpha  =  dst->pixelComponents() == OFX::ePixelComponentAlpha;
         OfxRectI dstRect =  dst->bounds();
         void *dstData    =  dst->pixelData();
@@ -306,18 +325,11 @@ BasicPlugin::render(const OFX::RenderArguments &args)
         // fetch main input guff
         src = srcClip_->fetchImage(args.time);
         int srcRowBytes  =  src->rowBytes();
-        int srcBitDepth  =  src->pixelDepth();
+        OFX::BitDepthEnum srcBitDepth  =  src->pixelDepth();
         bool srcIsAlpha  =  src->pixelComponents() ==  OFX::ePixelComponentAlpha;
         OfxRectI srcRect =  src->bounds();
         void *srcData    =  src->pixelData();
         
-        // optional mask in the general context
-        void     *maskData = 0;
-        OfxRectI  maskRect;
-        int       maskRowBytes;
-        int       maskBitDepth = 8;
-        bool      maskIsAlpha;
-
         // see if they have the same depths and bytes and all
         if(srcBitDepth != dstBitDepth || srcIsAlpha != dstIsAlpha)
             throw int(1); // HACK!! need to throw an error here!
@@ -336,31 +348,28 @@ BasicPlugin::render(const OFX::RenderArguments &args)
         // do the rendering
         if(!dstIsAlpha) {
             switch(dstBitDepth) {
-            case 8 : {      
-                ProcessRGBA<OfxRGBAColourB, unsigned char, 255, 0> fred(this, rScale, gScale, bScale, aScale,
+            case OFX::eBitDepthUByte : {      
+                ProcessRGBA<OfxRGBAColourB, 255, 0> fred(this, rScale, gScale, bScale, aScale,
                                                                         srcData, srcRect, srcRowBytes,
                                                                         dstData, dstRect, dstRowBytes,
-                                                                        maskData, maskRect, maskRowBytes,
                                                                         args.renderWindow);
                 fred.multiThread();                                          
             }
                 break;
 
-            case 16 : {
-                ProcessRGBA<OfxRGBAColourS, unsigned short, 65535, 0> fred(this, rScale, gScale, bScale, aScale,
+            case OFX::eBitDepthUShort : {
+                ProcessRGBA<OfxRGBAColourS, 65535, 0> fred(this, rScale, gScale, bScale, aScale,
                                                                            srcData, srcRect, srcRowBytes,
                                                                            dstData, dstRect, dstRowBytes,
-                                                                           maskData, maskRect, maskRowBytes,
                                                                            args.renderWindow);
                 fred.multiThread();           
             }                          
                 break;
 
-            case 32 : {
-                ProcessRGBA<OfxRGBAColourF, float, 1, 1> fred(this, rScale, gScale, bScale, aScale,
+            case OFX::eBitDepthFloat : {
+                ProcessRGBA<OfxRGBAColourF, 1, 1> fred(this, rScale, gScale, bScale, aScale,
                                                               srcData, srcRect, srcRowBytes,
                                                               dstData, dstRect, dstRowBytes,
-                                                              maskData, maskRect, maskRowBytes,
                                                               args.renderWindow);
                 fred.multiThread();                                          
                 break;
@@ -369,31 +378,28 @@ BasicPlugin::render(const OFX::RenderArguments &args)
         }
         else {
             switch(dstBitDepth) {
-            case 8 : {
-                ProcessAlpha<unsigned char, unsigned char, 255, 0> fred(this, scale, 
+            case OFX::eBitDepthUByte : {
+                ProcessAlpha<unsigned char, 255, 0> fred(this, scale, 
                                                                         srcData, srcRect, srcRowBytes,
                                                                         dstData, dstRect, dstRowBytes,
-                                                                        maskData, maskRect, maskRowBytes,
                                                                         args.renderWindow);
                 fred.multiThread();                                                                                  
             }
                 break;
 
-            case 16 : {
-                ProcessAlpha<unsigned short, unsigned short, 65535, 0> fred(this, scale, 
+            case OFX::eBitDepthUShort : {
+                ProcessAlpha<unsigned short, 65535, 0> fred(this, scale, 
                                                                             srcData, srcRect, srcRowBytes,
                                                                             dstData, dstRect, dstRowBytes,
-                                                                            maskData, maskRect, maskRowBytes,
                                                                             args.renderWindow);
                 fred.multiThread();           
             }                          
                 break;
 
-            case 32 : {
-                ProcessAlpha<float, float, 1, 1> fred(this, scale, 
+            case OFX::eBitDepthFloat : {
+                ProcessAlpha<float, 1, 1> fred(this, scale, 
                                                       srcData, srcRect, srcRowBytes,
                                                       dstData, dstRect, dstRowBytes,
-                                                      maskData, maskRect, maskRowBytes,
                                                       args.renderWindow);
                 fred.multiThread();           
             }                          
@@ -441,11 +447,11 @@ BasicPlugin:: isIdentity(const OFX::RenderArguments &args, OFX::Clip * &identity
 }
 
 // set the enabledness of the individual component scales
-bool
-BasicPlugin::setEnabledness(double time)
+void
+BasicPlugin::setEnabledness(void)
 {
     // the componet enabledness depends on the clip being RGBA and the param being true
-    bool v = componentScalesEnabled_->getValueAtTime(time) && srcClip_->pixelComponents() == OFX::ePixelComponentRGBA;
+    bool v = componentScalesEnabled_->getValue() && srcClip_->pixelComponents() == OFX::ePixelComponentRGBA;
 
     // enable them
     rScale_->setEnabled(v);
@@ -458,14 +464,147 @@ BasicPlugin::setEnabledness(double time)
 void
 BasicPlugin::changedParam(const OFX::InstanceChangedArgs &args, const std::string &paramName)
 {
-    if(paramName == "scaleComponents")  setEnabledness(args.time); 
+    if(paramName == "scaleComponents")  setEnabledness(); 
 }
 
 // we have changed a param
 void
 BasicPlugin::changedClip(const OFX::InstanceChangedArgs &args, const std::string &clipName)
 {
-    if(clipName == "Source")  setEnabledness(args.time);
+    if(clipName == "Source")  setEnabledness();
+}
+
+/* override for the interact creation */
+OFX::OverlayInteract *
+BasicPlugin::createOverlayInteract(OfxInteractHandle handle)
+{
+  return new BasicInteract(handle);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// stuff for the interact 
+
+// draw the interact
+bool
+BasicInteract::draw(const OFX::DrawArgs &args)
+{
+  switch(_state) {
+  case eInActive : glColor3f(0.0f, 0.0f, 0.0f); break;
+  case ePoised   : glColor3f(0.5f, 0.5f, 0.5f); break;
+  case ePicked   : glColor3f(1.0f, 1.0f, 1.0f); break;
+  }
+
+  // make the box a constant size on screen by scaling by the pixel scale
+  float dx = kBoxSize.x * args.pixelScale.x;
+  float dy = kBoxSize.y * args.pixelScale.y;
+
+  // Draw a cross hair, the current coordinate system aligns with the image plane.
+  glPushMatrix();
+  
+  glTranslated(_position.x, _position.y, 0);
+  glBegin(GL_POLYGON);
+  glVertex2f(-dx, -dy);
+  glVertex2f(-dx,  dy);
+  glVertex2f( dx,  dy);
+  glVertex2f( dx, -dy);
+  glEnd();
+  glPopMatrix();
+
+  return true;
+}
+  
+// overridden functions from OFX::Interact to do things
+bool 
+BasicInteract::penMotion(const OFX::PenArgs &args)
+{
+  // figure the size of the box in cannonical coords
+  float dx = kBoxSize.x * args.pixelScale.x;
+  float dy = kBoxSize.y * args.pixelScale.y;
+
+  // pen position is in cannonical coords
+  OfxPointD penPos = args.penPosition;
+  
+  switch(_state) {
+  case eInActive : 
+  case ePoised   : 
+  {
+    // are we in the box, become 'poised'
+    StateEnum newState;
+    penPos.x -= _position.x;
+    penPos.y -= _position.y;
+    if(Absolute(penPos.x) < dx &&
+       Absolute(penPos.y) < dy) {
+      newState = ePoised;
+    }
+    else {
+      newState = eInActive;
+    }
+    
+    if(_state != newState) {
+      // we have a new state
+      _state = newState;
+
+      // and force an overlay redraw
+      _effect->redrawOverlays();
+    }
+  }
+  break;
+
+  case ePicked   : 
+  {
+    // move our position
+    _position = penPos;
+
+    // and force an overlay redraw
+    _effect->redrawOverlays();
+  }
+  break;
+  }
+
+  // we have trapped it only if the mouse ain't over it or we are actively dragging
+  return _state != eInActive;
+}
+
+bool 
+BasicInteract::penDown(const OFX::PenArgs &args)
+{
+  // this will refigure the state
+  penMotion(args);
+
+  // if poised means we were over it when the pen went down, so pick it
+  if(_state == ePoised) {
+    // we are now picked
+    _state = ePicked;
+
+    // move our position
+    _position = args.penPosition;
+
+    // and request a redraw just incase
+    _effect->redrawOverlays();
+  }
+
+  return _state == ePicked;
+}
+
+bool 
+BasicInteract::penUp(const OFX::PenArgs &args)
+{
+  if(_state == ePicked) {
+    // reset to poised for a moment
+    _state = ePoised;
+    
+    // this will refigure the state
+    penMotion(args);
+
+    // and redraw for good measure
+    _effect->redrawOverlays();
+
+    // we did trap it
+    return true;
+  }
+
+  // we didn't trap it
+  return false;
 }
 
 
@@ -532,6 +671,7 @@ namespace OFX {
             param->setHint(hint);
             param->setDefault(1);
             param->setRange(0, 10);
+            param->setIncrement(0.1);
             param->setDislayRange(0, 10);
             param->setDoubleType(eDoubleTypeScale);
             if(parent) param->setParent(*parent);
@@ -554,9 +694,7 @@ namespace OFX {
             // create the mandated output clip
             ClipDescriptor *dstClip = desc.defineClip("Output");
             dstClip->addSupportedComponent(ePixelComponentRGBA);
-            dstClip->setTemporalClipAccess(false);
             dstClip->setSupportsTiles(true);
-            dstClip->setIsMask(false);
 
             // make some pages and to things in 
             PageParamDescriptor *page = desc.definePageParam("Controls");

@@ -19,6 +19,7 @@
 
 
 #include "ofxsSupportPrivate.H"
+#include <algorithm> // for find
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries.
  */
@@ -107,7 +108,7 @@ namespace OFX {
         
     /** @brief Returns the size of a real screen pixel under the interact's cannonical projection */
     OfxPointD 
-    Interact::Interact::pixelScale(void) const
+    Interact::pixelScale(void) const
     {
         OfxPointD v;
         v.x = _interactProperties.propGetDouble(kOfxInteractPropPixelScale, 0);
@@ -117,7 +118,7 @@ namespace OFX {
 
     /** @brief Request a redraw */
     void 
-    Interact::Interact::requestRedraw(void) const
+    Interact::requestRedraw(void) const
     {
         OfxStatus stat = OFX::Private::gInteractSuite->interactRedraw(_interactHandle);
         throwSuiteStatusException(stat);
@@ -125,7 +126,7 @@ namespace OFX {
 
     /** @brief Swap a buffer in the case of a double bufferred interact, this is possibly a silly one */
     void 
-    Interact::Interact::swapBuffers(void) const
+    Interact::swapBuffers(void) const
     {
         OfxStatus stat = OFX::Private::gInteractSuite->interactSwapBuffers(_interactHandle);
         throwSuiteStatusException(stat);
@@ -137,7 +138,7 @@ namespace OFX {
     {
         // do we have it already ?
         std::list<Param *>::iterator i;
-        i = find(_slaveParams.begin(), _slaveParams.end(), p);
+        i = std::find(_slaveParams.begin(), _slaveParams.end(), p);
         if(i == _slaveParams.end()) {
             // we have a new one to add in here
             _slaveParams.push_back(p);
@@ -155,7 +156,7 @@ namespace OFX {
     {
         // do we have it already ?
         std::list<Param *>::iterator i;
-        i = find(_slaveParams.begin(), _slaveParams.end(), p);
+        i = std::find(_slaveParams.begin(), _slaveParams.end(), p);
         if(i != _slaveParams.end()) {
             // clobber it from the list
             _slaveParams.erase(i);
@@ -450,7 +451,10 @@ namespace OFX {
                 std::string action(actionRaw);
 
                 // figure the actions
-                if (action == kOfxActionCreateInstance) {
+                if (action == kOfxActionDescribe) {
+                  stat = kOfxStatOK;
+                }
+                else if (action == kOfxActionCreateInstance) {
                     // fetch the image effect we are being made for out of the interact's property handle
                     ImageEffect *effect = retrieveEffectFromInteractHandle(handle);
 

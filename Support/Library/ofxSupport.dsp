@@ -93,7 +93,15 @@ SOURCE=.\ofxsImageEffect.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ofxsInteract.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ofxsLog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ofxsMultiThread.cpp
 # End Source File
 # Begin Source File
 

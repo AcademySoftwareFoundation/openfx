@@ -62,7 +62,7 @@ struct OfxRGBColourS {
 
 Should migrate this to the ofxCore.h in a v1.1
 */
-typedef struct OfxRGBColourF {
+struct OfxRGBColourF {
     float r, g, b;
 };
 
