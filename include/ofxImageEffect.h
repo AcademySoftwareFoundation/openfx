@@ -2542,12 +2542,9 @@ An image effect Image has the following read only properties...
 - ::kOfxImagePropField *
 - ::kOfxImagePropUniqueIdentifier*
 
-@section ImageEffectsPropertiesInArgs Properties Used By the 'inArgs' Parameter 
-- UNFINISHED
-- ::kOfxPropTime
+@section ImageEffectsPropertiesActionArgs Properties Used By the 'inArgs' and 'outArgs' property sets.
 
-@section ImageEffectsPropertiesOutArgs Properties Used By the 'outArgs' Parameter 
-- UNFINISHED
+Are documented in each action.
 
 \b Note:
 - the properties marked * can only be accessed outside the effect's describe action on instances or objects fetched from instances, they have undefined values in the describe actions.
@@ -2586,16 +2583,16 @@ The support of image effect \ref ImageEffectOverlays is optional. A host flags i
 
 @section ImageEffectsOptionalBeetsParameterPixelPushing Image Effect Plugin Options
 
-Plugins flag their support of tiled rendering via the ::kOfxImageEffectPropSupportsTiles plugin property.
+Plugins can flag support for certain optional features via a set of properties on the plugin handle passed to the describe action. These properties are...
+-::kOfxImageEffectPropSupportsTiles - indicates if the plugin supports tiled rendering. This may not be because a plugin has not been perfectly written, but because the algorithms used need full frame images (eg: motion estimation),
+- ::kOfxImageEffectPropSupportsMultiResolution indicates if a plugin supports image of multi-resolutions,
+- ::kOfxImageEffectPluginPropHostFrameThreading flags whether a plugin wants the host to perform per frame SMP threading,
+- ::kOfxImageEffectPluginPropSingleInstance flags whether only one instance of the plugin can exist at any one time,
+- ::kOfxImageEffectPropSupportsMultipleClipDepths indicates whether a plugin is willing to take clips of differing pixel depth on input and/or output,
+- ::kOfxImageEffectPropSupportsMultipleClipPARs indicates whether a plugin is willing to take clips of differing pixel aspect ratios on input and/or output,
+- ::kOfxImageEffectPropSupportedContexts, indicates which contexts the plugin can work in, at least one must be set,
+- ::kOfxImageEffectPropSupportedPixelDepths, indicates which pixel depths the plugin can work in, at least one must be set,
 
-Plugins flag their support of multi-resolution rendering via the ::kOfxImageEffectPropSupportsMultiResolution plugin property.
-
-Plugins flag whether they will let hosts perform per frame SMP threading via the ::kOfxImageEffectPluginPropHostFrameThreading plugin property.
-
-Plugins flag whether only one instance of the plugin can exist at any one time via the ::kOfxImageEffectPluginPropSingleInstance plugin property.
-
-
-\em UNFINISHED
  */
 
 /** @page ImageEffectsExtendingBeetsPage OFX : Extending The API
@@ -2613,13 +2610,16 @@ eg:  "uk.co.thefoundry:TestHost:paramPropertyLayoutPosition"
 
 Yes this is verbose, but it is unambiguous, so other host systems can identify and ignore any optional properties. 
 
-@section ImageEffectsPageExtendingBeetsUI Host Specific Interface Tweaks
+@section ImageEffectsPageExtendingBeetsHostProps Host Specific Property Tweaks
 
-Firstly, hosts can freely extended the set of properties on OFX objects that relate to interface layout and behaviour. For example, a host system may add a property that indicates the position a parameter should appear in on a paged layout. 
+Hosts can freely extended the set of properties on OFX objects that relate to interface layout and behaviour. For example, a host system may add a property that indicates the position a parameter should appear in on a paged layout. 
 
-However if the plugin does not set a host specific property, the host \em must still load and run the plugin as best it can.
+However if the plugin does not set a host specific property, the host \em should still load and run the plugin as best it can. This may lead to particularly ugly layouts. One way to help this is via \ref ExternalResourcesPage.
 
-\em UNFINISHED
+Hosts can also freely extend properties on any handle, with the proviso, that if they do so, a plugin that does not set such properties should still work. For example a host may extend the number of pixel formats to support high dynamic range 16 bit images (eg: signed 16 bit pixels, with a white point set well below 32767) by defining a new bit depth constant "com.somecompany:myhost:HDRBitDepth).
+
+Hosts can also define extra suites, for example to give greater control over interface elements, or to perform hardware level acceleration and so on. Again, such suites should be labelled with the reverse domainname:host:suitename format.
+
  */
 
 /** @page ImageEffectsKnownProblems OFX : Known Problems
@@ -2628,14 +2628,16 @@ However if the plugin does not set a host specific property, the host \em must s
 
 This section covers known problems and ambiguities that currently exist in OFX.
 
-
 @section ImageEffectsKnownProblemsRegionsOfInterestInTemporalAccessEffects Random Temporal Access and Regions of Interest
 
 Effects that perform random temporal access on input clips have no way of indicating the regions of interest to the host outside the render action. 
 
 Currently the regions of interest action assumes that an effect only wants input frames at a single time, that being the output time.
 
-\em UNFINISHED
+@section ImageEffectsKnownProblemsOptionClipSupport Detecting Optional Clip Support
+
+Currently it is assumed that a host supports optional clips in all contexts, this is of course wrong, some hosts are simply not built that way. The only context that it is safe to assume arbitrary number of optional input clips is the general context. A mechanism to detect this is needed (more host properties, yay!), so a plugin can modify its behaviour to deal with this.
+
  */
 
 

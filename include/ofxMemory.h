@@ -37,16 +37,6 @@ extern "C" {
 
 #define kOfxMemorySuite "OfxMemorySuite"
 
-/** @file ofxMemory.h
-    This file contains the API for general purpose memory allocation from a host.
-*/
-
-/** @page MemoryPage OFX : Memory Host API
-
-    see ofxMemory.h
-
-    \em UNFINISHED
- */
 /** @brief This struct contains the function pointers for implementing general purpose memory management.
 
 Use this suite for ordinary memory management functions, where you would normally use malloc/free or new/delete on ordinary objects.
@@ -66,7 +56,8 @@ typedef struct OfxMemorySuiteV1 {
   and returns that to the plugin.
 
   @returns
-  - ::kOfxStatus
+  - ::kOfxStatOK the memory was sucessfully allocated
+  - ::kOfxStatErrMemory the request could not be met and no memory was allocated
 
   */   
   OfxStatus (*memoryAlloc)(void *handle, 
@@ -79,9 +70,36 @@ typedef struct OfxMemorySuiteV1 {
 
   This function frees any memory that was previously allocated via OfxMemorySuiteV1::memoryAlloc.
 
+  @returns
+  - ::kOfxStatOK the memory was sucessfully freed
+  - ::kOfxStatErrBadHandle @arg allocated data was not a valid pointer returned by OfxMemorySuiteV1::memoryAlloc
+
   */   
   OfxStatus (*memoryFree)(void *allocatedData);
  } OfxMemorySuiteV1;
+
+
+/** @file ofxMemory.h
+    This file contains the API for general purpose memory allocation from a host.
+*/
+
+/** @page MemoryPage OFX : Memory Host API
+
+@section MemorySuite Overview
+
+The ::OfxMemorySuiteV1 defined in ofxMemory.h is a simple memory allocator, similar to the standard C
+library 'malloc' and 'free' functions. The memory suite should be used for general purpose memory
+allocation.
+
+Special purpose image memory allocation in an image effect should be handled via the image memory 
+allocation functions in the ::OfxImageEffectSuiteV1.
+
+Where ever possible thus suite should be used in preference to malloc/free or new/delete.
+
+Plugins written in C++ will need to override the new/delete operators to use this suite.
+
+
+ */
 
 
 #ifdef __cplusplus

@@ -1354,8 +1354,9 @@ The bit depth will be double buffered 24 bit RGB.
 
 A parameter's interact draw function will have full responsibility for drawing the interact, including clearing the background and swapping buffers.
 
-@subsection ParametersXMLHEll XML Hell
- \em UNFINISHED
+@subsection ParametersXML XML Resource Specification for Parameters
+
+Parameters can have various properties overriden via a seperate XML based resource file. For more information see \ref ExternalResourcesPage.
 
 <HR>
 @section ParametersPersistance Parameter Persistance 

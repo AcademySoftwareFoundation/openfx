@@ -86,7 +86,7 @@ typedef struct OfxMessageSuiteV1 {
 
       \arg \e handle     - effect handle (descriptor or instance) the message should be associated with, may be null
       \arg \e messageType - string describing the kind of message to post, one of the kOfxMessageType* constants
-      \arg \e messageId - plugin specified id to associate with this message. If overriding the message in XML resource, the message is identified with this,
+      \arg \e messageId - plugin specified id to associate with this message. If overriding the message in XML resource, the message is identified with this, this may be NULL, or "", in which case no override will occur,
       \arg \e format    - printf style format string
       \arg \e ...       - printf style varargs list to print
 
@@ -111,9 +111,19 @@ typedef struct OfxMessageSuiteV1 {
 
 /** @page MessagePage OFX : Message Host API
     
-    see ofxMessage.h
+@section MessagePageOverview Overview
 
-    \em UNFINISHED
+The ::OfxMessageSuiteV1 int ofxMessage.h is used to post messages to the end user via whatever mechanism the host chooses to implement. The OfxMessageSuiteV1::message function is similar to a standard C printf statement, with several extra arguments.
+
+Messages are typed with the following constants...
+- ::kOfxMessageFatal
+- ::kOfxMessageError
+- ::kOfxMessageMessage
+- ::kOfxMessageLog
+- ::kOfxMessageQuestion
+
+Messages also have an ID, assigned by the plugin. If the plugin has an external resource file (see \ref ExternalResourcesPage), the \em format parameter passed to OfxMessageSuiteV1::message may be overridden if the corresponding ID is found in the resource file. This is generally for internationalisation purposes.
+
  */
 
 #ifdef __cplusplus

@@ -42,13 +42,6 @@ extern "C" {
     This file contains the Host Suite for threading 
 */
 
-/** @page MultiThreadPage OFX : Multithreading Suite
-    
-    see ofxMultiThread.h
-
-    \em UNFINISHED
- */
-
 #define kOfxMultiThreadSuite "OfxMultiThreadSuite"
 
 /** @brief Mutex blind data handle
@@ -77,7 +70,7 @@ typedef struct OfxMultiThreadSuiteV1 {
   \arg \e customArg The paramter to pass to customArg of func in each thread.
 
   This function will spawn nThreads separate threads of computation (typically one per CPU) 
-  to allow something to perform symetric multi processing. Each thread will call 'func' passing
+  to allow something to perform symmetric multi processing. Each thread will call 'func' passing
   in the index of the thread and the number of threads actually launched.
 
   multiThread will not return until all the spawned threads have returned. It is up to the host
@@ -91,6 +84,7 @@ typedef struct OfxMultiThreadSuiteV1 {
   \returns
   - ::kOfxStatOK, the function func has executed and returned sucessfully
   - ::kOfxStatFailed, the threading function failed to launch
+  - ::kOfxStatErrExists, failed in an attempt to call multiThread recursively,
 
   */
   OfxStatus (*multiThread)(OfxThreadFunctionV1 func,
@@ -155,7 +149,9 @@ typedef struct OfxMultiThreadSuiteV1 {
 
   /** @brief Blocking lock on the mutex
 
-  This trys to lock a mutex and blocks the thread it is in until the lock suceeds.
+  This trys to lock a mutex and blocks the thread it is in until the lock suceeds. 
+
+  A sucessful lock causes the mutex's lock count to be increased by one and to block any other calls to lock the mutex until it is unlocked.
   
   \returns
   - kOfxStatOK - if it got the lock
@@ -165,7 +161,7 @@ typedef struct OfxMultiThreadSuiteV1 {
 
   /** @brief Unlock the mutex
 
-  This  unlocks a mutex.
+  This  unlocks a mutex. Unlocking a mutex decreases its lock count by one.
   
   \returns
   - kOfxStatOK if it released the lock
@@ -176,6 +172,8 @@ typedef struct OfxMultiThreadSuiteV1 {
   /** @brief Non blocking attempt to lock the mutex
 
   This attempts to lock a mutex, if it cannot, it returns and says so, rather than blocking.
+
+  A sucessful lock causes the mutex's lock count to be increased by one, if the lock did not suceed, the call returns immediately and the lock count remains unchanged.
 
   \returns
   - kOfxStatOK - if it got the lock
@@ -189,5 +187,46 @@ typedef struct OfxMultiThreadSuiteV1 {
 #ifdef __cplusplus
 }
 #endif
+
+/** @page MultiThreadPage OFX : Multithreading Suite
+    
+@section MultiThreadIntro Introduction
+
+The ::OfxMultiThreadSuiteV1 in \ref ofxMultiThread.h gives plug-ins the ability to perform symmetric multi processing and create mutual exclusion objects.
+
+@section MultiThreadSMP Symmetric Multi Processing
+
+::OfxMultiThreadSuiteV1 gives a set of simple SMP threading controls. Several threads of execution can be spawned via OfxMultiThreadSuiteV1::multiThread. Each thread of execution starts in a function of type ::OfxThreadFunctionV1, which is passed to the thread spawing function, along with a generic void * pointer to hang any required data from.
+
+Note that you cannot call OfxMultiThreadSuiteV1::multiThread recursively.
+
+The maximum number of threads you can spawn is returned by OfxMultiThreadSuiteV1::multiThreadNumCPUs, which is typically one per CPU installed on the computer. It may be less than this figure, as the host may be reserving more CPUs for itself.
+
+Each thread has a distinct number between 0 and nThreads-1. This number can be found out from, 
+- \em threadIndex value passed to an ::OfxThreadFunctionV1, 
+- the OfxMultiThreadSuiteV1::multiThreadIndex, which returns the same index for the given thread.
+
+If OfxMultiThreadSuiteV1::multiThread has not been called, OfxMultiThreadSuiteV1::multiThreadIndex will return 0 and \em not fail.
+
+The OfxMultiThreadSuiteV1::multiThreadIsSpawnedThread allows a thread to inquire if it was been spawn by a call to OfxMultiThreadSuiteV1::multiThread.
+
+@section MultiThreadMutex Mutexs
+
+Mutexs are used to guarantee single threaded access to certain sections of a program. They have an internal count of locks, while this count is at or below zero, any attempt to lock the mutex will succeed. If a mutex's internal lock is greater than zero, any attempt to gain a lock on the mutex will fail.
+
+OFX mutexes are created by the OfxMultiThreadSuiteV1::mutexCreate, which returns a handle to the mutex. Mutexes are created with an initial lock count set to any value.
+
+They are destroyed with OfxMultiThreadSuiteV1::mutexDestroy.
+
+The call OfxMultiThreadSuiteV1::mutexLock will block execution of the calling thread until the mutex has a lock count of zero, it will then increment the lock count and resume execution of the calling thread. Blocked threads should be queued in order.
+
+The call OfxMultiThreadSuiteV1::mutexTryLock will look at the mutex and attempt to lock the mutex, its behaviour depends on the lock count,
+ - lock count > 0, the function will return ::kOfxStatFailed immediately and not block, the mutex will not be incremented,
+ - lock count <= 0, the function will increment the lock count and return ::kOfxStatFailed immediately.
+This call never blocks.
+
+To unlock a mutex, call OfxMultiThreadSuiteV1::mutexUnLock. This will decrement the lock count by one. If the lock count reached zero, the first thread in the blocked queue of threads is unblocked and the mutex incremented by one.
+
+ */
 
 #endif
