@@ -1467,6 +1467,20 @@ namespace OFX {
         throwSuiteStatusException(stat);
     }
 
+    /** @brief get the value at a time */
+    void DoubleParam::differentiate(double t, double &v)
+    {
+        OfxStatus stat = OFX::Private::gParamSuite->paramGetDerivative(_paramHandle, t, &v);
+        throwSuiteStatusException(stat);
+    }
+
+    /** @brief get the value at a time */
+    void DoubleParam::integrate(double t1, double t2, double &v)
+    {
+        OfxStatus stat = OFX::Private::gParamSuite->paramGetIntegral(_paramHandle, t1, t2, &v);
+        throwSuiteStatusException(stat);
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // 2D Double params
 

@@ -1069,6 +1069,18 @@ namespace OFX {
 
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, double v);
+
+        /** @brief differentiate the param */
+        void differentiate(double t, double &v);
+
+        /** @brief differentiate the param  */
+        double differentiate(double t) {double v; differentiate(t, v); return v;}
+
+        /** @brief integrate the param */
+        void integrate(double t1, double t2, double &v);
+
+        /** @brief integrate the param */
+        double integrate(double t1, double t2) {double v; integrate(t1, t2, v); return v;}
     };  
 
     ////////////////////////////////////////////////////////////////////////////////

@@ -16,9 +16,10 @@ Copyright and License
 
 ********************************************************************************
 Structure
-        - include - contains the headers for any client code
-        - Library - contains the code that implements the support library
-        - PropTester - contains code for a plugin that performs extensive property testing
+        - include    - contains the headers for any client code.
+        - Library    - contains the code that implements the support library.
+        - PropTester - contains code for a plugin that performs extensive property testing.
+	- Plugins    - contains a set of example plugins using the support library.
     
 ********************************************************************************
 Building
