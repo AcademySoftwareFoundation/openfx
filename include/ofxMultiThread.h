@@ -53,8 +53,7 @@ extern "C" {
 
 /** @brief Mutex blind data handle
  */
-typedef struct OfxMutex OfxMutex;
-
+typedef struct OfxMutex *OfxMutexHandle;
 
 /** @brief The function type to passed to the multi threading routines 
 
@@ -142,7 +141,7 @@ typedef struct OfxMultiThreadSuiteV1 {
   \returns
   - kOfxStatOK - mutex is now valid and ready to go
   */
-  OfxStatus (*mutexCreate)(const OfxMutex **mutex, int lockCount);
+  OfxStatus (*mutexCreate)(const OfxMutexHandle *mutex, int lockCount);
 
   /** @brief Destroy a mutex
       
@@ -152,7 +151,7 @@ typedef struct OfxMultiThreadSuiteV1 {
   - kOfxStatOK - if it destroyed the mutex
   - kOfxStatErrBadHandle - if the handle was bad
   */
-  OfxStatus (*mutexDestroy)(const OfxMutex *mutex);
+  OfxStatus (*mutexDestroy)(const OfxMutexHandle mutex);
 
   /** @brief Blocking lock on the mutex
 
@@ -162,7 +161,7 @@ typedef struct OfxMultiThreadSuiteV1 {
   - kOfxStatOK - if it got the lock
   - kOfxStatErrBadHandle - if the handle was bad
   */
-  OfxStatus (*mutexLock)(const OfxMutex *mutex);
+  OfxStatus (*mutexLock)(const OfxMutexHandle mutex);
 
   /** @brief Unlock the mutex
 
@@ -172,7 +171,7 @@ typedef struct OfxMultiThreadSuiteV1 {
   - kOfxStatOK if it released the lock
   - kOfxStatErrBadHandle if the handle was bad
   */
-  OfxStatus (*mutexUnLock)(const OfxMutex *mutex);
+  OfxStatus (*mutexUnLock)(const OfxMutexHandle mutex);
 
   /** @brief Non blocking attempt to lock the mutex
 
@@ -183,7 +182,7 @@ typedef struct OfxMultiThreadSuiteV1 {
   - kOfxStatFailed - if it did not get the lock
   - kOfxStatErrBadHandle - if the handle was bad
   */
-  OfxStatus (*mutexTryLock)(const OfxMutex *mutex);
+  OfxStatus (*mutexTryLock)(const OfxMutexHandle mutex);
 
  } OfxMultiThreadSuiteV1;
 
