@@ -361,16 +361,27 @@ typedef struct OfxPointD {
   double x, y;
 } OfxPointD;
 
+/** @brief Used to flag infinite rects. Set minimums to this to indicate infinite
+
+This is effectively INT_MAX. 
+ */
+#define kOfxFlagInfiniteMax (1 << (sizeof(int) - 1) - 1)
+
+/** @brief Used to flag infinite rects. Set minimums to this to indicate infinite.
+
+This is effectively INT_MIN
+ */
+#define kOfxFlagInfiniteMin (-kOfxFlagInfiniteMax - 1)
 
 /** @brief Defines two dimensional integer region
 
 Regions are x1 <= x < x2
 
 Infinite regions are flagged by setting
-- x1 = INT_MIN;
-- y1 = INT_MIN;
-- x2 = INT_MAX;
-- y2 = INT_MAX;
+- x1 = kOfxFlagInfiniteMin
+- y1 = kOfxFlagInfiniteMin
+- x2 = kOfxFlagInfiniteMax
+- y2 = kOfxFlagInfiniteMax
 
  */
 typedef struct OfxRectI {
@@ -382,12 +393,11 @@ typedef struct OfxRectI {
 Regions are x1 <= x < x2
 
 Infinite regions are flagged by setting
-- x1 = INT_MIN;
-- y1 = INT_MIN;
-- x2 = INT_MAX;
-- y2 = INT_MAX;
+- x1 = kOfxFlagInfiniteMin
+- y1 = kOfxFlagInfiniteMin
+- x2 = kOfxFlagInfiniteMax
+- y2 = kOfxFlagInfiniteMax
 
-Yes it is INT not FLT to remain consistant with OfxRectI
  */
 typedef struct OfxRectD {
   double x1, y1, x2, y2;

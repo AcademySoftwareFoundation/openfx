@@ -2252,7 +2252,7 @@ Infinite RoDs are valid, eg: a no-input noise generator could generate random co
 
 An effect's RoD is constant for a given set of inputs and plugin parameters.
 
-An infinite RoD is flagged by setting the minimums to be INT_MIN and the maxmimums to be INT_MAX, for both double and integer rects.
+An infinite RoD is flagged by setting the minimums to be ::kOfxFlagInfiniteMin and the maxmimums to be ::kOfxFlagInfiniteMax, for both double and integer rects.
 
 @subsection ImageEffectsRoI Regions Of Interest and Rendering
 
@@ -2302,15 +2302,13 @@ The image plane is always in a coordinate system of square unscaled pixels. For 
 'Real' images, where we have to deal with addressable pixels in memory, are in a coordinate system of non-square proxy scaled integer values. So a PAL D1 image, being renderred as a half resolution proxy would be (0,0) <-> (360, 288), which takes into account both the pixel aspect ratio of 1.067 and a scale factor of 0.5f. We call this the <B> Pixel Coordinate System</B>.
 
 @section InfiniteRegions Infinite Regions
-Sometimes a plug-in needs to specify an infinite region (eg: a noise generator flagging the fact that it has an infinite RoD). Such infinite regions, in pixel or cannonical coordinates are flagged by setting the minimums to be INT_MIN and the maxmimums to be INT_MAX, for both double and integer rects. Eg...
+Sometimes a plug-in needs to specify an infinite region (eg: a noise generator flagging the fact that it has an infinite RoD). Such infinite regions, in pixel or cannonical coordinates are flagged by setting the minimums to be ::kOfxFlagInfiniteMin and the maxmimums to be ::kOfxFlagInfiniteMax, for both double and integer rects. Eg...
 
 \verbatim
-
-     outputRoD.x1 = INT_MIN;
-     outputRoD.y1 = INT_MIN;
-     outputRoD.x2 = INT_MAX;
-     outputRoD.y2 = INT_MAX;
-
+     outputRoD.x1 = kOfxFlagInfiniteMin;
+     outputRoD.y1 = kOfxFlagInfiniteMin;
+     outputRoD.x2 = kOfxFlagInfiniteMax;
+     outputRoD.y2 = kOfxFlagInfiniteMax;
 \endverbatim
 
 
