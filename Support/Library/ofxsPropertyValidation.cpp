@@ -316,7 +316,7 @@ namespace OFX {
       PropertyDescription(kOfxImageEffectPropSupportsMultipleClipPARs,     OFX::eInt, 1, eDescDefault, 0, eDescFinished),
 
       // Pointer props with defaults that can be checked against
-      PropertyDescription(kOfxImageEffectPluginPropOverlayInteractV1,      OFX::ePointer, eDescDefault, (void *)(0), eDescFinished),
+      PropertyDescription(kOfxImageEffectPluginPropOverlayInteractV1,      OFX::ePointer, 1, eDescDefault, (void *)(0), eDescFinished),
 
       // string props that have variable dimension, and can't be checked against for defaults
       PropertyDescription(kOfxImageEffectPropSupportedContexts,  OFX::eString, -1, eDescFinished),
@@ -950,35 +950,36 @@ namespace OFX {
     
     /** @brief Validates the effect descriptor properties */
     void
-    validatePluginDescriptorProperties(OfxPropertySetHandle handle)
+    validatePluginDescriptorProperties(PropertySet props)
     {
-      PropertySet props(handle);
       gPluginDescriptorPropSet.validate(props);
+    }
+
+    /** @brief Validates the effect instance properties */
+    void
+    validatePluginInstanceProperties(PropertySet props)
+    {
+      gPluginInstancePropSet.validate(props);
     }
 
     /** @brief validates a clip descriptor */
     void
-    validateClipDescriptorProperties(OfxPropertySetHandle handle)
+    validateClipDescriptorProperties(PropertySet props)
     {
-      PropertySet props(handle);
       gClipDescriptorPropSet.validate(props);
     }
 
     /** @brief validates a clip descriptor */
     void
-    validateImageProperties(OfxPropertySetHandle handle)
+    validateImageProperties(PropertySet props)
     {
-      PropertySet props(handle);
       gImageInstancePropSet.validate(props);
     }
 
     /** @brief Validates action in/out arguments */
     void
-    validateActionArgumentsProperties(const std::string &action, OfxPropertySetHandle inArgsRaw, OfxPropertySetHandle outArgsRaw)
+    validateActionArgumentsProperties(const std::string &action, PropertySet inArgs, PropertySet outArgs)
     {
-      PropertySet inArgs(inArgsRaw);
-      PropertySet outArgs(outArgsRaw);
-      
       if(action == kOfxActionInstanceChanged) {
         gInstanceChangedInArgPropSet.validate(inArgs);
       }

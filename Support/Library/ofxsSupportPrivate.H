@@ -47,16 +47,16 @@ namespace OFX {
     void unloadAction(void);
     
     /** @brief The plugin function that gets passed the host structure. 
-     */
+    */
     void setHost(OfxHost *host);
 
     /** @brief The main entry point for the plugin
-     */
+    */
     OfxStatus
     mainEntry(const char		*actionRaw,
-	      const void		*handleRaw,
-	      OfxPropertySetHandle	 inArgsRaw,
-	      OfxPropertySetHandle	 outArgsRaw);
+              const void		*handleRaw,
+              OfxPropertySetHandle	 inArgsRaw,
+              OfxPropertySetHandle	 outArgsRaw);
   
     /** @brief fetch the prop set from the effect handle */
     OFX::PropertySet
@@ -166,20 +166,24 @@ namespace OFX {
     void validateHostProperties(OfxHost *host);
   
     /** @brief This validates the properties passed into an action's in/out args handles */
-    void validateActionArgumentsProperties(const std::string &action, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs);
+    void validateActionArgumentsProperties(const std::string &action, PropertySet inArgs, PropertySet outArgs);
 
     /** @brief Validates parameter properties */
     void validateParameterProperties(ParamTypeEnum type, 
-				     OFX::PropertySet paramProps,
-				     bool checkDefaults);
+                                     OFX::PropertySet paramProps,
+                                     bool checkDefaults);
 
     /** @brief Validates an image's properties */
-    void validateImageProperties(OfxPropertySetHandle handle);
+    void validateImageProperties(PropertySet props);
 
     /** @brief Validates an image's properties */
-    void validateClipDescriptorProperties(OfxPropertySetHandle handle);
+    void validateClipDescriptorProperties(PropertySet props);
 
-    void validatePluginDescriptorProperties(OfxPropertySetHandle handle);
+    /** @brief Validates the effect descriptor properties */
+    void validatePluginDescriptorProperties(PropertySet props);
+
+    /** @brief Validates the effect instance properties */
+    void validatePluginInstanceProperties(PropertySet props);
 
     /** @brief initialises the validation code, call this in on load */
     void initialise(void);

@@ -96,7 +96,7 @@ namespace OFX {
     fetchHostDescription(OfxHost *host)
     {
       OFX::Log::error(OFX::gHostDescription != 0, "Tried to create host description when we already have one.");
-      if(OFX::gHostDescription != 0) {
+      if(OFX::gHostDescription == 0) {
 	
         // make one
         gHostDescription = new ImageEffectHostDescription;
@@ -125,6 +125,17 @@ namespace OFX {
         gHostDescription->pageRowCount               = hostProps.propGetInt(kOfxParamHostPropPageRowColumnCount, 0);
         gHostDescription->pageColumnCount            = hostProps.propGetInt(kOfxParamHostPropPageRowColumnCount, 1);
       }
+    }
+
+    /** @brief fetch the effect property set from the ImageEffectHandle */
+    OFX::PropertySet
+    fetchEffectProps(OfxImageEffectHandle handle)
+    {
+      // get the property handle
+      OfxPropertySetHandle propHandle;
+      OfxStatus stat = OFX::Private::gEffectSuite->getPropertySet(handle, &propHandle);
+      throwSuiteStatusException(stat);
+      return OFX::PropertySet(propHandle);
     }
 
     /** @brief Fetch's a suite from the host and logs errors */
@@ -157,7 +168,7 @@ namespace OFX {
         OFX::Log::error(gHost == 0, "Host pointer has not been set;");
         if(!gHost) throw OFX::Exception::Suite(kOfxStatErrBadHandle);
     
-        if(gLoadCount == 0) {
+        if(gLoadCount == 1) {
           gEffectSuite    = (OfxImageEffectSuiteV1 *) fetchSuite(kOfxImageEffectSuite, 1);
           gPropSuite      = (OfxPropertySuiteV1 *)    fetchSuite(kOfxPropertySuite, 1);
           gParamSuite     = (OfxParameterSuiteV1 *)   fetchSuite(kOfxParameterSuite, 1);
@@ -266,16 +277,6 @@ namespace OFX {
       effectInstance->render(renderArgs);
     }
 
-    /** @brief fetch the effect property set from the ImageEffectHandle */
-    OFX::PropertySet
-    fetchEffectProps(OfxImageEffectHandle handle)
-    {
-      // get the property handle
-      OfxPropertySetHandle propHandle;
-      OfxStatus stat = OFX::Private::gEffectSuite->getPropertySet(handle, &propHandle);
-      throwSuiteStatusException(stat);
-      return OFX::PropertySet(propHandle);
-    }
 
     /** @brief Checks the handles passed into the plugin's main entry point */
     void
@@ -355,6 +356,9 @@ namespace OFX {
           // make the plugin descriptor
           ImageEffectDescriptor desc(handle);
 
+          // validate the host
+          OFX::Validation::validatePluginDescriptorProperties(fetchEffectProps(handle));
+
           //  and pass it to the plugin to do something with it
           OFX::Plugin::describe(desc);
         }
@@ -369,6 +373,9 @@ namespace OFX {
           std::string contextStr = inArgs.propGetString(kOfxImageEffectPropContext);
           ContextEnum context = mapToContextEnum(contextStr);
 
+          // validate the host
+          OFX::Validation::validatePluginDescriptorProperties(fetchEffectProps(handle));
+
           // call plugin descibe in context
           OFX::Plugin::describeInContext(desc, context);
         }
@@ -381,6 +388,9 @@ namespace OFX {
           // get the context and turn it into an enum
           std::string str = effectProps.propGetString(kOfxImageEffectPropContext);
           ContextEnum context = mapToContextEnum(str);
+
+          // validate the plugin handle's properties
+          OFX::Validation::validatePluginInstanceProperties(fetchEffectProps(handle));
 
           // make the image effect instance for this context
           ImageEffect *instance = OFX::Plugin::createInstance(handle, context);
