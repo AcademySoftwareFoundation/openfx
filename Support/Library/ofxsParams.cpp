@@ -23,10 +23,10 @@
 namespace OFX {  
 
     /** @brief dummy page positioning parameter to be passed to @ref OFX::PageParamDescriptor::addChild */
-    DummyParamDescriptor gSkipRow(kOfxParamPageSkipRow);
+    DummyParamDescriptor PageParamDescriptor::gSkipRow(kOfxParamPageSkipRow);
 
     /** @brief dummy page positioning parameter to be passed to @ref OFX::PageParamDescriptor::addChild */
-    DummyParamDescriptor gSkipColumn(kOfxParamPageSkipColumn);
+    DummyParamDescriptor PageParamDescriptor::gSkipColumn(kOfxParamPageSkipColumn);
 
     /** @brief turns a ParamTypeEnum into the char * that raw OFX uses */
     const char *

@@ -124,7 +124,7 @@ namespace OFX {
         }
         
         /** @brief describe a string param with the given name and type */
-        void describeStringParam(OFX::ImageEffectDescriptor &desc, const std::string &name, StringTypeEnum strType)
+        void describeStringParam(OFX::ImageEffectDescriptor &desc, const std::string &name, StringTypeEnum strType, PageParamDescriptor *page)
         {
             StringParamDescriptor *param = desc.defineStringParam(name);
             param->setDefault(name);
@@ -132,11 +132,12 @@ namespace OFX {
             param->setHint("A string parameter");
             param->setLabels(name, name, name);
             param->setStringType(strType);
+            page->addChild(*param);
         }
 
         /** @brief describe a double param */
         void describeDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &name, DoubleTypeEnum doubleType,
-                                 double min, double max)
+                                 double min, double max, PageParamDescriptor *page)
         {
             DoubleParamDescriptor *param = desc.defineDoubleParam(name);
             param->setLabels(name, name, name);
@@ -146,11 +147,12 @@ namespace OFX {
             param->setRange(min, max);
             param->setDislayRange(min, max);
             param->setDoubleType(doubleType);
+            page->addChild(*param);
         }
 
         /** @brief describe a double param */
         void describe2DDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &name, DoubleTypeEnum doubleType,
-                                   double min, double max)
+                                   double min, double max, PageParamDescriptor *page)
         {
             Double2DParamDescriptor *param = desc.defineDouble2DParam(name);
             param->setLabels(name, name, name);
@@ -160,11 +162,12 @@ namespace OFX {
             param->setRange(min, min, max, max);
             param->setDislayRange(min, min, max, max);
             param->setDoubleType(doubleType);
+            page->addChild(*param);
         }
 
         /** @brief describe a double param */
         void describe3DDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &name, DoubleTypeEnum doubleType,
-                                   double min, double max)
+                                   double min, double max, PageParamDescriptor *page)
         {
             Double3DParamDescriptor *param = desc.defineDouble3DParam(name);
             param->setLabels(name, name, name);
@@ -174,6 +177,7 @@ namespace OFX {
             param->setRange(min, min, min, max, max, max);
             param->setDislayRange(min, min, min, max, max, max);
             param->setDoubleType(doubleType);
+            page->addChild(*param);
         }
 
         /** @brief The describe in context function, passed a plugin descriptor and a context */
@@ -213,6 +217,8 @@ namespace OFX {
             iParam->setRange(-100, 100);
             iParam->setDislayRange(-100, 100);
 
+            page1->addChild(*iParam);
+
             // make a 2D int param
             Int2DParamDescriptor *i2DParam = desc.defineInt2DParam("Int2D");
             i2DParam->setLabels("Int2D", "Int2D", "Int2D");
@@ -221,6 +227,8 @@ namespace OFX {
             i2DParam->setDefault(0, 0);
             i2DParam->setRange(-100, -100, 100, 100);
             i2DParam->setDislayRange(-100, -100, 100, 100);
+
+            page1->addChild(*i2DParam);
 
             // make a 3D int param
             Int3DParamDescriptor *i3DParam = desc.defineInt3DParam("Int3D");
@@ -231,50 +239,16 @@ namespace OFX {
             i3DParam->setRange(-100, -100, -100, 100, 100, 100);
             i3DParam->setDislayRange(-100, -100, -100, 100, 100, 100);
 
-            // make a 1D double parameter of each type
-            describeDoubleParam(desc, "double", eDoubleTypePlain, -100, 100);
-            describeDoubleParam(desc, "angle", eDoubleTypeAngle, -100, 100);
-            describeDoubleParam(desc, "scale", eDoubleTypeScale, -1, 1);
-            describeDoubleParam(desc, "time", eDoubleTypeTime, -100, 100);
-            describeDoubleParam(desc, "absoluteTime", eDoubleTypeAbsoluteTime, 0, 1000);
-            describeDoubleParam(desc, "X_Value", eDoubleTypeNormalisedX, -1, 1);
-            describeDoubleParam(desc, "Y_Value", eDoubleTypeNormalisedY, -1, 1);
-            describeDoubleParam(desc, "X_Position", eDoubleTypeNormalisedXAbsolute, -1, 1);
-            describeDoubleParam(desc, "Y_Position", eDoubleTypeNormalisedYAbsolute, -1, 1);
+            page1->addChild(*i3DParam);
 
-            // make a 2D double parameter of each type
-            describe2DDoubleParam(desc, "double2D", eDoubleTypePlain, -100, 100);
-            describe2DDoubleParam(desc, "angle2D", eDoubleTypeAngle, -100, 100);
-            describe2DDoubleParam(desc, "scale2D", eDoubleTypeScale, -1, 1);
-            describe2DDoubleParam(desc, "XY_Value", eDoubleTypeNormalisedXY, -1, 1);
-            describe2DDoubleParam(desc, "XY_Position", eDoubleTypeNormalisedXYAbsolute, -1, 1);
-
-            // make a 3D double parameter of each type
-            describe3DDoubleParam(desc, "double3D", eDoubleTypePlain, -100, 100);
-            describe3DDoubleParam(desc, "angle3D", eDoubleTypeAngle, -100, 100);
-            describe3DDoubleParam(desc, "scale3D", eDoubleTypeScale, -1, 1);
-
-            // make a string param param of each type
-            describeStringParam(desc, "singleLine", eStringTypeSingleLine);
-            describeStringParam(desc, "multiLine", eStringTypeMultiLine);
-            describeStringParam(desc, "filePath", eStringTypeFilePath);
-            describeStringParam(desc, "dirPath", eStringTypeDirectoryPath);
-            describeStringParam(desc, "label", eStringTypeLabel);
-
-            // rgba colours
-            RGBAParamDescriptor *rgba = desc.defineRGBAParam("rgba");
-            rgba->setLabels("rgba", "rgba", "rgba");
-            rgba->setDefault(0, 0, 0, 1);
-            
-            // rgb colour
-            RGBParamDescriptor *rgb = desc.defineRGBParam("rgb");
-            rgb->setLabels("rgb", "rgb", "rgb");
-            rgb->setDefault(0, 0, 0);
+            page1->addChild(PageParamDescriptor::gSkipColumn);
 
             // boolean
             BooleanParamDescriptor *boolean = desc.defineBooleanParam("bool");
             boolean->setLabels("bool", "bool", "bool");
             boolean->setDefault(false);
+
+            page1->addChild(*boolean);
 
             // choice 
             ChoiceParamDescriptor *choice = desc.defineChoiceParam("choice");
@@ -287,15 +261,69 @@ namespace OFX {
             choice->appendOption("Tom");
             choice->appendOption("Dick");
             choice->appendOption("Harry");
+
+            page1->addChild(*choice);
             
+            page1->addChild(PageParamDescriptor::gSkipColumn);
+
             // push button
             PushButtonParamDescriptor *push = desc.definePushButtonParam("push");
             push->setLabels("push me", "push me", "push me Big Nose");
+            page1->addChild(*push);
 
             // make a custom param
             CustomParamDescriptor *custom = desc.defineCustomParam("custom");
             custom->setLabels("custom", "custom", "custom");
             custom->setDefault("wibble");
+
+            // rgba colours
+            RGBAParamDescriptor *rgba = desc.defineRGBAParam("rgba");
+            rgba->setLabels("rgba", "rgba", "rgba");
+            rgba->setDefault(0, 0, 0, 1);
+            
+            page1->addChild(*rgba);
+
+            page1->addChild(PageParamDescriptor::gSkipRow);
+
+            // rgb colour
+            RGBParamDescriptor *rgb = desc.defineRGBParam("rgb");
+            rgb->setLabels("rgb", "rgb", "rgb");
+            rgb->setDefault(0, 0, 0);
+            page1->addChild(*rgb);
+
+            // make a 1D double parameter of each type
+            describeDoubleParam(desc, "double", eDoubleTypePlain, -100, 100, page2);
+            describeDoubleParam(desc, "angle", eDoubleTypeAngle, -100, 100, page2);
+            describeDoubleParam(desc, "scale", eDoubleTypeScale, -1, 1, page2);
+            describeDoubleParam(desc, "time", eDoubleTypeTime, -100, 100, page2);
+            describeDoubleParam(desc, "absoluteTime", eDoubleTypeAbsoluteTime, 0, 1000, page2);
+            describeDoubleParam(desc, "X_Value", eDoubleTypeNormalisedX, -1, 1, page2);
+            describeDoubleParam(desc, "Y_Value", eDoubleTypeNormalisedY, -1, 1, page2);
+            describeDoubleParam(desc, "X_Position", eDoubleTypeNormalisedXAbsolute, -1, 1, page2);
+            describeDoubleParam(desc, "Y_Position", eDoubleTypeNormalisedYAbsolute, -1, 1, page2);
+
+            page2->addChild(PageParamDescriptor::gSkipColumn);
+
+            // make a 2D double parameter of each type
+            describe2DDoubleParam(desc, "double2D", eDoubleTypePlain, -100, 100, page2);
+            describe2DDoubleParam(desc, "angle2D", eDoubleTypeAngle, -100, 100, page2);
+            describe2DDoubleParam(desc, "scale2D", eDoubleTypeScale, -1, 1, page2);
+            describe2DDoubleParam(desc, "XY_Value", eDoubleTypeNormalisedXY, -1, 1, page2);
+            describe2DDoubleParam(desc, "XY_Position", eDoubleTypeNormalisedXYAbsolute, -1, 1, page2);
+
+            page2->addChild(PageParamDescriptor::gSkipColumn);
+
+            // make a 3D double parameter of each type
+            describe3DDoubleParam(desc, "double3D", eDoubleTypePlain, -100, 100, page2);
+            describe3DDoubleParam(desc, "angle3D", eDoubleTypeAngle, -100, 100, page2);
+            describe3DDoubleParam(desc, "scale3D", eDoubleTypeScale, -1, 1, page2);
+
+            // make a string param param of each type
+            describeStringParam(desc, "singleLine", eStringTypeSingleLine, page3);
+            describeStringParam(desc, "multiLine", eStringTypeMultiLine, page3);
+            describeStringParam(desc, "filePath", eStringTypeFilePath, page3);
+            describeStringParam(desc, "dirPath", eStringTypeDirectoryPath, page3);
+            describeStringParam(desc, "label", eStringTypeLabel, page3);
 
         }
 

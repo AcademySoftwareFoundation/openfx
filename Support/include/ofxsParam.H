@@ -556,6 +556,12 @@ namespace OFX {
 
         /** @brief adds a child parameter. Note the two existing pseudo params, gColumnSkip  and gRowSkip */
         void addChild(const ParamDescriptor &p);
+
+        /** @brief dummy page positioning parameter to be passed to @ref OFX::PageParamDescriptor::addChild */
+        static DummyParamDescriptor gSkipRow;
+
+        /** @brief dummy page positioning parameter to be passed to @ref OFX::PageParamDescriptor::addChild */
+        static DummyParamDescriptor gSkipColumn;
     };
 
     ////////////////////////////////////////////////////////////////////////////////
