@@ -15,7 +15,47 @@
   England
 */
 
-#include "ofxSupport.H"
+#include "ofxsImageEffect.H"
+
+/** @brief simple plugin that doesn't do much */
+class MyPlugin : public OFX::ImageEffect {
+ protected :
+  // do not need to delete these, the ImageEffect is managing them for us
+  OFX::Clip *srcClip_;
+  OFX::Clip *dstClip_;
+
+ public :
+
+  /** @brief ctor */
+  MyPlugin(OfxImageEffectHandle handle)
+    : ImageEffect(handle)
+    , srcClip_(0)
+    , dstClip_(0)
+  {
+    srcClip_ = fetchClip("Source");
+    dstClip_ = fetchClip("Output");
+  }
+
+  /** @brief client render function, this is one of the few that must be set */
+  virtual void render(const OFX::RenderArguments &args);
+};
+
+// do nothing at the moment
+void
+MyPlugin::render(const OFX::RenderArguments &args)
+{
+  // get a src image
+  OFX::Image *src = srcClip_->fetchImage(args.time);
+
+  // get a dst image
+  OFX::Image *dst = dstClip_->fetchImage(args.time);
+
+  // do something, but not yet!
+
+  // delete them
+  delete src;
+  delete dst;
+}
 
 /** @brief OFX namespace */
 namespace OFX {
@@ -32,17 +72,17 @@ namespace OFX {
     }
 
     /** @brief empty load function */
-    void loadAction(void)  throw (OFX::Exception)
+    void loadAction(void)
     {
     }
 
     /** brief empty unload function */
-    void unloadAction(void)  throw (OFX::Exception)
+    void unloadAction(void)
     {
     }
 
     /** @brief The basic describe function, passed a plugin descriptor */
-    void describe(OFX::ImageEffectDescriptor &desc) throw(OFX::Exception)
+    void describe(OFX::ImageEffectDescriptor &desc) 
     {
       // basic labels
       desc.setLabels("Prop Tester", "Prop Tester", "Property Tester");
@@ -52,42 +92,42 @@ namespace OFX {
       desc.addSupportedContext(eContextFilter);
 
       // add supported pixel depths
-      desc.addSupportedPixelDepth(ePixelDepthUByte);
-      desc.addSupportedPixelDepth(ePixelDepthUShort);
-      desc.addSupportedPixelDepth(ePixelDepthFloat);
+      desc.addSupportedBitDepth(eBitDepthUByte);
+      desc.addSupportedBitDepth(eBitDepthUShort);
+      desc.addSupportedBitDepth(eBitDepthFloat);
 
       // set a few flags
       desc.setSingleInstance(false);
       desc.setHostFrameThreading(false);
       desc.setSupportsMultiResolution(true);
-      desc.setSupportsTiling(true);
+      desc.setSupportsTiles(true);
       desc.setTemporalClipAccess(false);
       desc.setRenderTwiceAlways(false);
       desc.setSupportsMultipleClipPARs(false);
     }
 
     /** @brief The describe in context function, passed a plugin descriptor and a context */
-    void describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context) throw(OFX::Exception)
+    void describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context) 
     {
       // only a filter context
       if(context == eContextFilter) {
 	// create the mandated source clip
-	ClipDescriptor *srcClip = desc.createClip("Source");
+	ClipDescriptor *srcClip = desc.defineClip("Source");
 	srcClip->addSupportedComponent(ePixelComponentRGBA);
 	srcClip->setTemporalClipAccess(false);
 	srcClip->setOptional(false);
-	srcClip->setSupportsTiling(true);
+	srcClip->setSupportsTiles(true);
 	srcClip->setIsMask(false);
 
 	// create the mandated output clip
-	ClipDescriptor *dstClip = desc.createClip("Output");
+	ClipDescriptor *dstClip = desc.defineClip("Output");
 	dstClip->addSupportedComponent(ePixelComponentRGBA);
 	dstClip->setTemporalClipAccess(false);
 	dstClip->setOptional(false);
-	dstClip->setSupportsTiling(true);
+	dstClip->setSupportsTiles(true);
 	dstClip->setIsMask(false);
 
-	IntParamDescriptor *iParam = desc.createIntParam("IntParam");
+	IntParamDescriptor *iParam = desc.defineIntParam("IntParam");
 	iParam->setLabels("Int Param", "Int Param", "Integer Param");
 	iParam->setScriptName("intParam");
 	iParam->setHint("An integer parameter");
@@ -97,5 +137,10 @@ namespace OFX {
       }
     }
 
+    /** @brief The create instance function, the plugin must return an object derived from the \ref OFX::ImageEffect class */
+    ImageEffect *createInstance(OfxImageEffectHandle handle)
+    {
+      return new MyPlugin(handle);
+    }
   };
 };
