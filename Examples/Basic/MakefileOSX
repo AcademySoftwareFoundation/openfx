@@ -1,0 +1,5 @@
+CXXFLAGS = -I../../include
+OPTIMIZER = -O3
+
+basic.bundle : basic.o
+	$(CXX) -bundle basic.o -o basic.bundle

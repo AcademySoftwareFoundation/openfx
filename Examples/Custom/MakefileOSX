@@ -1,0 +1,6 @@
+CXXFLAGS = -I../../include 
+OPTIMIZER = -O3
+
+custom.bundle : custom.o
+	$(CXX) -bundle custom.o -o custom.bundle -framework opengl
+

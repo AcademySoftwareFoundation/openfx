@@ -1,0 +1,109 @@
+<!DOCTYPE OFXRESOURCE [
+
+ <!ELEMENT OfxPlugin (OfxResourceSet+)>
+ <!ATTLIST OfxPlugin name CDATA "">
+
+ <!ELEMENT OfxResourceSet (OfxImageEffectContext+, OfxPropLabel?, OfxPropShortLabel?, OfxPropLongLabel?, OfxImageEffectPluginPropGrouping?) >
+ 
+ <!ATTLIST OfxResourceSet ofxHost CDATA "default">
+ <!ATTLIST OfxResourceSet ofxLocale CDATA "default">
+
+ <!ELEMENT OfxImageEffectContext (OfxImageClip*, OfxParamPageSet?, OfxParamHierarchy?, OfxParamTypeInteger*, OfxParamTypeDouble*, OfxParamTypeBoolean*, OfxParamTypeChoice*, OfxParamTypeRGBA*, OfxParamTypeRGB*, OfxParamTypeDouble2D*, OfxParamTypeDouble3D*, OfxParamTypeInteger2D*, OfxParamTypeInteger3D*, OfxParamTypeString*, OfxParamTypeCustom*, OfxParamTypePushButton*) >
+
+ <!ATTLIST OfxImageEffectContext name CDATA "default">
+
+ <!ELEMENT OfxParamHierarchy (OfxParam*, OfxParamGroup*)>
+
+ <!ELEMENT OfxParam ( CDATA )>
+ <!ELEMENT OfxParamGroup (OfxPropLabel, OfxPropShortLabel?, OfxPropLongLabel?, OfxParamPropHint?, OfxParamPropEnabled?, OfxParam*, OfxParamGroup*)>
+
+ <!ELEMENT OfxImageClip ((OfxPropLabel, OfxPropShortLabel?, OfxPropLongLabel?, OfxParamPropHint?)>
+ <!ATTLIST OfxImageClip name CDATA "">
+
+ <!ELEMENT OfxParamPageSet (OfxParamPage+)>
+ <!ELEMENT OfxParamPage (OfxPropLabel, OfxPropShortLabel?, OfxPropLongLabel?, OfxParamPropHint?, OfxParam+)>
+
+ <!ELEMENT OfxParamTypeInteger (OfxPropLabel?, OfxPropShortLabel?, OfxPropLongLabel?, OfxParamPropInteractSizeAspect?, OfxParamPropInteractMinimumSize?, OfxParamPropInteractPreferedSize?, OfxParamPropAnimates?, OfxParamPropEvaluateOnChange?, OfxParamPropPersistant?, OfxParamPropSecret?, OfxParamPropScriptName?, OfxParamPropHint?, OfxParamPropEnabled?, OfxParamPropMin?,  OfxParamPropMax?, OfxParamPropDisplayMin?, OfxParamPropDisplayMax?, OfxParamPropDefault?)>
+ <!ATTLIST  OfxParamTypeInteger name CDATA "">
+
+ <!ELEMENT OfxParamTypeInteger2D (OfxPropLabel?, OfxPropShortLabel?, OfxPropLongLabel?, OfxParamPropInteractSizeAspect?, OfxParamPropInteractMinimumSize?, OfxParamPropInteractPreferedSize?, OfxParamPropAnimates?, OfxParamPropEvaluateOnChange?, OfxParamPropPersistant?, OfxParamPropSecret?, OfxParamPropScriptName?, OfxParamPropHint?, OfxParamPropEnabled?, OfxParamPropMin?,  OfxParamPropMax?, OfxParamPropDisplayMin?, OfxParamPropDisplayMax?, OfxParamPropDefault?, OfxParamPropDimensionLabel?)>
+ <!ATTLIST  OfxParamTypeInteger2D name CDATA "">
+
+ <!ELEMENT OfxParamTypeInteger3D (OfxPropLabel?, OfxPropShortLabel?, OfxPropLongLabel?, OfxParamPropInteractSizeAspect?, OfxParamPropInteractMinimumSize?, OfxParamPropInteractPreferedSize?, OfxParamPropAnimates?, OfxParamPropEvaluateOnChange?, OfxParamPropPersistant?, OfxParamPropSecret?, OfxParamPropScriptName?, OfxParamPropHint?, OfxParamPropEnabled?, OfxParamPropMin?,  OfxParamPropMax?, OfxParamPropDisplayMin?, OfxParamPropDisplayMax?, OfxParamPropDefault?, OfxParamPropDimensionLabel?)>
+ <!ATTLIST  OfxParamTypeInteger3D name CDATA "">
+
+ <!ELEMENT OfxParamTypeDouble (OfxPropLabel?, OfxPropShortLabel?, OfxPropLongLabel?, OfxParamPropInteractSizeAspect?, OfxParamPropInteractMinimumSize?, OfxParamPropInteractPreferedSize?, OfxParamPropAnimates?, OfxParamPropEvaluateOnChange?, OfxParamPropPersistant?, OfxParamPropSecret?, OfxParamPropScriptName?, OfxParamPropHint?, OfxParamPropEnabled?, OfxParamPropMin?,  OfxParamPropMax?, OfxParamPropDisplayMin?, OfxParamPropDisplayMax?, OfxParamPropDefault?, kOfxParamPropDoubleType?, OfxParamPropDigits?, OfxParamPropShowTimeMarker?)>
+ <!ATTLIST  OfxParamTypeDouble name CDATA "">
+
+ <!ELEMENT OfxParamTypeDouble2D (OfxPropLabel?, OfxPropShortLabel?, OfxPropLongLabel?, OfxParamPropInteractSizeAspect?, OfxParamPropInteractMinimumSize?, OfxParamPropInteractPreferedSize?, OfxParamPropAnimates?, OfxParamPropEvaluateOnChange?, OfxParamPropPersistant?, OfxParamPropSecret?, OfxParamPropScriptName?, OfxParamPropHint?, OfxParamPropEnabled?, OfxParamPropMin?,  OfxParamPropMax?, OfxParamPropDisplayMin?, OfxParamPropDisplayMax?, OfxParamPropDefault?, kOfxParamPropDoubleType?, OfxParamPropDigits?, OfxParamPropShowTimeMarker?, OfxParamPropDimensionLabel?)>
+ <!ATTLIST  OfxParamTypeDouble2D name CDATA "">
+
+ <!ELEMENT OfxParamTypeDouble3D (OfxPropLabel?, OfxPropShortLabel?, OfxPropLongLabel?, OfxParamPropInteractSizeAspect?, OfxParamPropInteractMinimumSize?, OfxParamPropInteractPreferedSize?, OfxParamPropAnimates?, OfxParamPropEvaluateOnChange?, OfxParamPropPersistant?, OfxParamPropSecret?, OfxParamPropScriptName?, OfxParamPropHint?, OfxParamPropEnabled?, OfxParamPropMin?,  OfxParamPropMax?, OfxParamPropDisplayMin?, OfxParamPropDisplayMax?, OfxParamPropDefault?, kOfxParamPropDoubleType?, OfxParamPropDigits?, OfxParamPropShowTimeMarker?, OfxParamPropDimensionLabel?)>
+ <!ATTLIST  OfxParamTypeDouble3D name CDATA "">
+
+ <!ELEMENT OfxParamTypeBoolean (OfxPropLabel?, OfxPropShortLabel?, OfxPropLongLabel?, OfxParamPropInteractSizeAspect?, OfxParamPropInteractMinimumSize?, OfxParamPropInteractPreferedSize?, OfxParamPropAnimates?, OfxParamPropEvaluateOnChange?, OfxParamPropPersistant?, OfxParamPropSecret?, OfxParamPropScriptName?, OfxParamPropHint?, OfxParamPropEnabled?, OfxParamPropDefault?)>
+ <!ATTLIST  OfxParamTypeBoolean name CDATA "">
+
+ <!ELEMENT OfxParamTypeChoice (OfxPropLabel?, OfxPropShortLabel?, OfxPropLongLabel?, OfxParamPropInteractSizeAspect?, OfxParamPropInteractMinimumSize?, OfxParamPropInteractPreferedSize?, OfxParamPropAnimates?, OfxParamPropEvaluateOnChange?, OfxParamPropPersistant?, OfxParamPropSecret?, OfxParamPropScriptName?, OfxParamPropHint?, OfxParamPropEnabled?, OfxParamPropDefault?, OfxParamPropChoiceOption?)>
+ <!ATTLIST  OfxParamTypeChoice name CDATA "">
+
+ <!ELEMENT OfxParamTypeRGB (OfxPropLabel?, OfxPropShortLabel?, OfxPropLongLabel?, OfxParamPropInteractSizeAspect?, OfxParamPropInteractMinimumSize?, OfxParamPropInteractPreferedSize?, OfxParamPropAnimates?, OfxParamPropEvaluateOnChange?, OfxParamPropPersistant?, OfxParamPropSecret?, OfxParamPropScriptName?, OfxParamPropHint?, OfxParamPropEnabled?, OfxParamPropMin?,  OfxParamPropMax?, OfxParamPropDisplayMin?, OfxParamPropDisplayMax?, OfxParamPropDefault?)>
+ <!ATTLIST  OfxParamTypeRGB name CDATA "">
+
+ <!ELEMENT OfxParamTypeRGBA (OfxPropLabel?, OfxPropShortLabel?, OfxPropLongLabel?, OfxParamPropInteractSizeAspect?, OfxParamPropInteractMinimumSize?, OfxParamPropInteractPreferedSize?, OfxParamPropAnimates?, OfxParamPropEvaluateOnChange?, OfxParamPropPersistant?, OfxParamPropSecret?, OfxParamPropScriptName?, OfxParamPropHint?, OfxParamPropEnabled?, OfxParamPropMin?,  OfxParamPropMax?, OfxParamPropDisplayMin?, OfxParamPropDisplayMax?, OfxParamPropDefault?)>
+ <!ATTLIST  OfxParamTypeRGBA name CDATA "">
+
+ <!ELEMENT OfxParamTypeString (OfxPropLabel?, OfxPropShortLabel?, OfxPropLongLabel?, OfxParamPropInteractSizeAspect?, OfxParamPropInteractMinimumSize?, OfxParamPropInteractPreferedSize?, OfxParamPropAnimates?, OfxParamPropEvaluateOnChange?, OfxParamPropPersistant?, OfxParamPropSecret?, OfxParamPropScriptName?, OfxParamPropHint?, OfxParamPropEnabled?, OfxParamPropDefault?)>
+ <!ATTLIST  OfxParamTypeString name CDATA "">
+
+ <!ELEMENT OfxParamTypeCustom (OfxPropLabel?, OfxPropShortLabel?, OfxPropLongLabel?, OfxParamPropInteractSizeAspect?, OfxParamPropInteractMinimumSize?, OfxParamPropInteractPreferedSize?, OfxParamPropAnimates?, OfxParamPropEvaluateOnChange?, OfxParamPropPersistant?, OfxParamPropSecret?, OfxParamPropScriptName?, OfxParamPropHint?, OfxParamPropEnabled?, OfxParamPropDefault?)>
+ <!ATTLIST  OfxParamTypeCustom name CDATA "">
+
+ <!ELEMENT OfxParamTypePushButton (OfxPropLabel?, OfxPropShortLabel?, OfxPropLongLabel?, OfxParamPropInteractSizeAspect?, OfxParamPropInteractMinimumSize?, OfxParamPropInteractPreferedSize?,  OfxParamPropSecret?, OfxParamPropHint?, OfxParamPropEnabled?)>
+ <!ATTLIST  OfxParamTypePushButton name CDATA "">
+
+ <!ELEMENT OfxPropLabel (CDATA)>
+ <!ELEMENT OfxPropShortLabel (CDATA)>
+ <!ELEMENT OfxPropLongLabel (CDATA)>
+
+ <!ELEMENT OfxImageEffectPluginPropGrouping (CDATA)>
+
+ <!ELEMENT OfxParamPropInteractSizeAspect (double)>
+ <!ELEMENT OfxParamPropInteractMinimumSize (int2)>
+ <!ELEMENT OfxParamPropInteractPreferedSize (int2)>
+ <!ELEMENT OfxParamPropAnimates (bool)>
+ <!ELEMENT OfxParamPropEvaluateOnChange (bool)>
+ <!ELEMENT OfxParamPropPersistant (bool)>
+ <!ELEMENT OfxParamPropSecret (bool)>
+ <!ELEMENT OfxParamPropScriptName (string)>
+ <!ELEMENT OfxParamPropHint (string)>
+ <!ELEMENT OfxParamPropDoubleType (string)>
+ 
+ <!ELEMENT OfxParamPropEnabled (bool)>
+ <!ELEMENT OfxParamPropChoiceOption (string*)>
+ <!ELEMENT OfxParamPropShowTimeMarker (bool)>
+ <!ELEMENT OfxParamPropIncrement (double)>
+ <!ELEMENT OfxParamPropDigits (int)>
+ <!ELEMENT OfxParamPropDimensionLabel (string2?, string3?)>
+ <!ELEMENT OfxParamPropStringMode (string)>
+
+ <!ELEMENT OfxParamPropMin (int?, int2?, int3?, double?, double2?, double3?, double4?)>
+ <!ELEMENT OfxParamPropMax (int?, int2?, int3?, double?, double2?, double3?, double4?)>
+ <!ELEMENT OfxParamPropDisplayMin (int?, int2?, int3?, double?, double2?, double3?, double4?)>
+ <!ELEMENT OfxParamPropDisplayMax (int?, int2?, int3?, double?, double2?, double3?, double4?)>
+ <!ELEMENT OfxParamPropDefault (int?, int2?, int3?, double?, double2?, double3?, double4?, bool?, string?)>
+
+ <!ELEMENT bool (CDATA)>
+ <!ELEMENT int (CDATA)>
+ <!ELEMENT int2 (CDATA)>
+ <!ELEMENT int3 (CDATA)>
+ <!ELEMENT double (CDATA)>
+ <!ELEMENT double2 (CDATA)>
+ <!ELEMENT double3 (CDATA)>
+ <!ELEMENT double4 (CDATA)>
+ <!ELEMENT string (CDATA)>
+ <!ELEMENT string2 (CDATA)>
+ <!ELEMENT string3 (CDATA)>
+
+]
+>
