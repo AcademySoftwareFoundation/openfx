@@ -250,6 +250,12 @@ public :
     /* override for the interact creation */
     virtual OFX::OverlayInteract *createOverlayInteract(OfxInteractHandle handle);
 
+    // override the rod call
+    virtual bool getRegionOfDefinition(const OFX::RegionOfDefinitionArguments &args, OfxRectD &rod);
+
+    // override the roi call
+    virtual void getRegionsOfInterest(const OFX::RegionsOfInterestArguments &args, OFX::RegionOfInterestSetter &rois);
+    
     /* set up and run a processor */
     void
     setupAndProcess(ImageScalerBase &, const OFX::RenderArguments &args);
@@ -324,6 +330,29 @@ BasicPlugin::setupAndProcess(ImageScalerBase &processor, const OFX::RenderArgume
 
     // Call the base class process member, this will call the derived templated process code
     processor.process();
+}
+
+// override the rod call
+bool
+BasicPlugin::getRegionOfDefinition(const OFX::RegionOfDefinitionArguments &args, OfxRectD &rod)
+{
+    // our RoD is the same as the 'Source' clip's, we are not interested in the mask
+    rod = srcClip_->regionOfDefinition(args.time);
+
+    // say we set it
+    return true;
+}
+
+// override the roi call
+void 
+BasicPlugin::getRegionsOfInterest(const OFX::RegionsOfInterestArguments &args, OFX::RegionOfInterestSetter &rois)
+{
+    // we don't actually need to do this as this is the default, but do it for examples sake
+    rois.setRegionOfInterest(*srcClip_, args.regionOfInterest);
+
+    // set it on the mask only if we are in an interesting context
+    if(context() != OFX::eContextFilter)
+        rois.setRegionOfInterest(*maskClip_, args.regionOfInterest);
 }
 
 // the overridden render function
