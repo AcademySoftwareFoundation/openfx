@@ -42,6 +42,39 @@ of the direct OFX objects and any library side only functions.
 #include <exception>
 #include <stdexcept>
 
+/** @brief Defines an 8 bit per component RGB pixel 
+
+Should migrate this to the ofxCore.h in a v1.1
+*/
+struct OfxRGBColourB {
+    unsigned char r, g, b;
+};
+
+/** @brief Defines a 16 bit per component RGB pixel
+
+Should migrate this to the ofxCore.h in a v1.1
+*/
+struct OfxRGBColourS {
+    unsigned short r, g, b;
+};
+
+/** @brief Defines a floating point component RGB pixel
+
+Should migrate this to the ofxCore.h in a v1.1
+*/
+typedef struct OfxRGBColourF {
+    float r, g, b;
+};
+
+/** @brief Defines a double precision floating point component RGB pixel
+
+Should migrate this to the ofxCore.h in a v1.1
+*/
+struct OfxRGBColourD {
+    double r, g, b;
+};
+
+
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
   CLASS &operator=(const CLASS &v1) {assert(false); return *this;}	\

@@ -1,8 +1,10 @@
 #ifndef _ofxsSupportPrivate_H_
 #define _ofxsSupportPrivate_H_
 
+#include "ofxsInteract.H"
 #include "ofxsImageEffect.H"
 #include "ofxsLog.H"
+#include "ofxsMultiThread.H"
 
 /** @brief Namespace private to the ofx support library.
  */
@@ -50,6 +52,9 @@ namespace OFX {
         */
         void setHost(OfxHost *host);
 
+        /** @brief fetches our pointer out of the props on the handle */
+        ImageEffect *retrieveImageEffectPointer(OfxImageEffectHandle handle);
+
         /** @brief The main entry point for the plugin
         */
         OfxStatus
@@ -57,10 +62,20 @@ namespace OFX {
                   const void		*handleRaw,
                   OfxPropertySetHandle	 inArgsRaw,
                   OfxPropertySetHandle	 outArgsRaw);
-  
+
+        /** @brief The main entry point for overlays */
+        OfxStatus
+        overlayInteractMainEntry(const char		*actionRaw,
+                                 const void		*handleRaw,
+                                 OfxPropertySetHandle	 inArgsRaw,
+                                 OfxPropertySetHandle	 outArgsRaw);
+
         /** @brief fetch the prop set from the effect handle */
         OFX::PropertySet
         fetchEffectProps(OfxImageEffectHandle handle);
+
+        /** @brief the set of descriptors, one per context used by kOfxActionDescribeInContext,  'eContextNone' is the one used by the kOfxActionDescribe */
+        extern std::map<ContextEnum, ImageEffectDescriptor *> gEffectDescriptors;
     };
 
     /** @brief The validation code has its own namespace */

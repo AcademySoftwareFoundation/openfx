@@ -844,6 +844,9 @@ namespace OFX {
         /** @brief het the default value */
         void getDefault(int &v);
 
+        /** @brief het the default value */
+        int getDefault(void) {int v; getDefault(v); return v;}
+
         /** @brief set the hard min/max range, default is INT_MIN, INT_MAX */
         void getRange(int &min, int &max);
 
@@ -851,10 +854,16 @@ namespace OFX {
         void getDislayRange(int &min, int &max);
 
         /** @brief get value */
-        void getValue(int &v);
+        void  getValue(int &v);
+
+        /** @brief and a nicer one */
+        int getValue(void) {int v; getValue(v); return v;}
 
         /** @brief get the value at a time */
         void getValueAtTime(double t, int &v);
+
+        /** @brief and a nicer one */
+        int getValueAtTime(double t) {int v; getValueAtTime(t, v); return v;}
 
         /** @brief set value */
         void setValue(int v);
@@ -879,6 +888,9 @@ namespace OFX {
         /** @brief set the default value, default is 0 */
         void setDefault(int x, int y);
 
+        /** @brief set the default value, default is 0 */
+        void setDefault(const OfxPointI &v) {setDefault(v.x, v.y);}
+
         /** @brief set the hard min/max range, default is INT_MIN, INT_MAX */
         void setRange(int minX, int minY,
                       int maxX, int maxY);
@@ -889,6 +901,9 @@ namespace OFX {
 
         /** @brief het the default value */
         void getDefault(int &x, int &y);
+
+        /** @brief get the default value */
+        OfxPointI getDefault(void) {OfxPointI v; getDefault(v.x, v.y); return v;}
 
         /** @brief set the hard min/max range, default is INT_MIN, INT_MAX */
         void getRange(int &minX, int &minY,
@@ -901,14 +916,26 @@ namespace OFX {
         /** @brief get value */
         void getValue(int &x, int &y);
 
+        /** @brief get the  value */
+        OfxPointI getValue(void) {OfxPointI v; getValue(v.x, v.y); return v;}
+
         /** @brief get the value at a time */
         void getValueAtTime(double t, int &x, int &y);
+
+        /** @brief get the  value */
+        OfxPointI getValueAtTime(double t) {OfxPointI v; getValueAtTime(t, v.x, v.y); return v;}
 
         /** @brief set value */
         void setValue(int x, int y);
 
+        /** @brief set the current value */
+        void setValue(const OfxPointI &v) {setValue(v.x, v.y);}
+
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, int x, int y);
+
+        /** @brief set the current value */
+        void setValueAtTime(double t, const OfxPointI &v) {setValueAtTime(t, v.x, v.y);}
     };  
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -1016,6 +1043,9 @@ namespace OFX {
         /** @brief het the default value */
         void getDefault(double &v);
 
+        /** @brief het the default value */
+        double getDefault(void) {double v; getDefault(v); return v;}
+
         /** @brief set the hard min/max range, default is DOUBLE_MIN, DOUBLE_MAX */
         void getRange(double &min, double &max);
 
@@ -1025,8 +1055,14 @@ namespace OFX {
         /** @brief get value */
         void getValue(double &v);
 
+        /** @brief get value */
+        double getValue(void) {double v; getValue(v); return v;}
+
         /** @brief get the value at a time */
         void getValueAtTime(double t, double &v);
+
+        /** @brief get value */
+        double getValueAtTime(double t) {double v; getValueAtTime(t, v); return v;}
 
         /** @brief set value */
         void setValue(double v);
@@ -1291,11 +1327,20 @@ namespace OFX {
         /** @brief get the default value */
         void getDefault(bool &v);
 
+        /** @brief get the default value */
+        bool getDefault(void) {bool v; getDefault(v); return v;}
+
         /** @brief get value */
         void getValue(bool &v);
 
+        /** @brief get value */
+        bool getValue(void) {bool v; getValue(v); return v;}
+
         /** @brief get the value at a time */
         void getValueAtTime(double t, bool &v);
+
+        /** @brief get value */
+        bool getValueAtTime(double t) {bool v; getValueAtTime(t, v); return v;}
 
         /** @brief set value */
         void setValue(bool v);

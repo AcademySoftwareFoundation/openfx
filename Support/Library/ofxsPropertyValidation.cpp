@@ -27,6 +27,10 @@ This file contains headers for classes that are used to validate property sets a
 /** @brief Null pointer definition */
 #define NULLPTR ((void *)(0))
 
+// disable validation if not a debug build
+#ifndef DEBUG
+#define  kOfxsDisableValidation
+#endif
 
 /** @brief OFX namespace
  */
@@ -35,6 +39,7 @@ namespace OFX {
     /** @brief The validation code has its own namespace */
     namespace Validation {
 
+#ifndef kOfxsDisableValidation
         /** @brief Set the vector by getting dimension things specified by ilk from the argp list, used by PropertyDescription ctor */
         static void
         setVectorFromVarArgs(OFX::PropertyTypeEnum ilk,
@@ -951,54 +956,68 @@ namespace OFX {
                                                         mPropDescriptionArg(gPageParamProps),
                                                         NULLPTR);
 
+#endif
         /** @brief Validates the host structure and property handle */
         void
         validateHostProperties(OfxHost *host)
         {
+#ifndef kOfxsDisableValidation
             // make a description set
             PropertySet props(host->host);
             gHostPropSet.validate(props);
+#endif
         }
     
         /** @brief Validates the effect descriptor properties */
         void
         validatePluginDescriptorProperties(PropertySet props)
         {
+#ifndef kOfxsDisableValidation
             gPluginDescriptorPropSet.validate(props);
+#endif
         }
 
         /** @brief Validates the effect instance properties */
         void
         validatePluginInstanceProperties(PropertySet props)
         {
+#ifndef kOfxsDisableValidation
             gPluginInstancePropSet.validate(props);
+#endif
         }
 
         /** @brief validates a clip descriptor */
         void
         validateClipDescriptorProperties(PropertySet props)
         {
+#ifndef kOfxsDisableValidation
             gClipDescriptorPropSet.validate(props);
+#endif
         }
 
         /** @brief validates a clip instance */
         void
         validateClipInstanceProperties(PropertySet props)
         {
+#ifndef kOfxsDisableValidation
             gClipInstancePropSet.validate(props);
+#endif
         }
 
         /** @brief validates a clip descriptor */
         void
         validateImageProperties(PropertySet props)
         {
+#ifndef kOfxsDisableValidation
             gImageInstancePropSet.validate(props);
+#endif
         }
 
         /** @brief Validates action in/out arguments */
         void
         validateActionArgumentsProperties(const std::string &action, PropertySet inArgs, PropertySet outArgs)
         {
+#ifndef kOfxsDisableValidation
             if(action == kOfxActionInstanceChanged) {
                 gInstanceChangedInArgPropSet.validate(inArgs);
             }
@@ -1039,7 +1058,8 @@ namespace OFX {
             }
             else if(action == kOfxImageEffectActionDescribeInContext) {
                 gDescribeInContextActionInArgPropSet.validate(inArgs);
-            }      
+            }     
+#endif 
         }
       
         /** @brief Validates parameter properties */
@@ -1048,6 +1068,7 @@ namespace OFX {
                                     OFX::PropertySet paramProps,
                                     bool checkDefaults)
         {
+#ifndef kOfxsDisableValidation
             // should use a map here
             switch(paramType) {
             case eStringParam :
@@ -1096,6 +1117,7 @@ namespace OFX {
                 gPushButtonParamPropSet.validate(paramProps, checkDefaults);
                 break;
             }
+#endif
         }
 
         ////////////////////////////////////////////////////////////////////////////////
@@ -1105,6 +1127,7 @@ namespace OFX {
         void
         initialise(void)
         {
+#ifndef kOfxsDisableValidation
             static bool beenInitialised = false;
             if(!beenInitialised && gHostDescription) {
                 beenInitialised = true;
@@ -1136,6 +1159,7 @@ namespace OFX {
                                                eDescFinished);
                 gBooleanParamPropSet.addProperty(desc, true);
             }
+#endif
         }
     };
 };

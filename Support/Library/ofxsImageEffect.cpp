@@ -23,6 +23,22 @@
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {
     
+    namespace Private {        
+        // Suite and host pointers
+        OfxHost               *gHost = 0;
+        OfxImageEffectSuiteV1 *gEffectSuite = 0;
+        OfxPropertySuiteV1    *gPropSuite = 0;
+        OfxInteractSuiteV1    *gInteractSuite = 0;
+        OfxParameterSuiteV1   *gParamSuite = 0;
+        OfxMemorySuiteV1      *gMemorySuite = 0;
+        OfxMultiThreadSuiteV1 *gThreadSuite = 0;
+        OfxMessageSuiteV1     *gMessageSuite = 0;
+  
+
+        /** @brief the set of descriptors, one per context used by kOfxActionDescribeInContext,  'eContextNone' is the one used by the kOfxActionDescribe */
+        std::map<ContextEnum, ImageEffectDescriptor *> gEffectDescriptors;
+    };
+
     /** @brief map a std::string to a context */
     ContextEnum 
     mapToContextEnum(const std::string &s) throw(std::invalid_argument)
@@ -222,8 +238,13 @@ namespace OFX {
         stat = OFX::Private::gEffectSuite->getParamSet(handle, &paramSetHandle);
         throwSuiteStatusException(stat);
         setParamSetHandle(paramSetHandle);
+
+        // set the overlay interact function only if it supports interacts
+        if(OFX::gHostDescription->supportsOverlays)
+            _effectProps.propSetPointer(kOfxImageEffectPluginPropOverlayInteractV1, (void *) OFX::Private::overlayInteractMainEntry);
     }
   
+
     /** @brief dtor */
     ImageEffectDescriptor::~ImageEffectDescriptor()
     {
@@ -481,6 +502,17 @@ namespace OFX {
         rod.x2 = _imageProps.propGetInt(kOfxImagePropRegionOfDefinition, 2);
         rod.y2 = _imageProps.propGetInt(kOfxImagePropRegionOfDefinition, 3);
         return rod;
+    }
+
+    /** @brief get the bounds on the image data (in pixel coordinates) of this image */
+    OfxRectI Image::bounds(void) const
+    {
+        OfxRectI v;
+        v.x1 = _imageProps.propGetInt(kOfxImagePropBounds, 0);
+        v.y1 = _imageProps.propGetInt(kOfxImagePropBounds, 1);
+        v.x2 = _imageProps.propGetInt(kOfxImagePropBounds, 2);
+        v.y2 = _imageProps.propGetInt(kOfxImagePropBounds, 3);
+        return v;
     }
 
     /** @brief get the row bytes, may be negative */
@@ -883,6 +915,43 @@ namespace OFX {
         return OFX::Private::gEffectSuite->abort(_effectHandle) != 0;
     }
   
+    /** @brief adds a new interact to the set of interacts open on this effect */
+    void ImageEffect::addOverlayInteract(OverlayInteract *interact)
+    {
+        // do we have it already ?
+        std::list<OverlayInteract *>::iterator i;
+        i = find(_overlayInteracts.begin(), _overlayInteracts.end(), interact);
+        
+        // we don't, put it in there
+        if(i == _overlayInteracts.end()) {
+            // we have a new one to add in here
+            _overlayInteracts.push_back(interact);
+        }
+    }
+
+    /** @brief removes an interact to the set of interacts open on this effect */
+    void ImageEffect::removeOverlayInteract(OverlayInteract *interact)
+    {
+        // find it
+        std::list<OverlayInteract *>::iterator i;
+        i = find(_overlayInteracts.begin(), _overlayInteracts.end(), interact);
+        
+        // and remove it
+        if(i != _overlayInteracts.end()) {
+            _overlayInteracts.erase(i);
+        }
+    }
+    
+    /** @brief force all overlays on this interact to be redrawn */
+    void ImageEffect::redrawOverlays(void)
+    {
+        // find it
+        std::list<OverlayInteract *>::iterator i;
+        for(i = _overlayInteracts.begin(); i != _overlayInteracts.end(); ++i) {
+            (*i)->requestRedraw();
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // below are the default members for the base image effect
 
@@ -974,9 +1043,18 @@ namespace OFX {
     {
     }
 
+    /** @brief get the time domain */
     bool ImageEffect::getTimeDomain(OfxRangeD &range)
     {
+        // by default, do the default
         return false;
+    }
+
+    /** @brief create the interact */
+    OverlayInteract *ImageEffect::createOverlayInteract(OfxInteractHandle handle)
+    {
+        // by default don't make one
+        return NULL;
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -1113,16 +1191,6 @@ namespace OFX {
     /** @brief OFX::Private namespace, for things private to the support library code here generally calls image effect class members */
     namespace Private {
 
-        // Suite and host pointers
-        OfxHost               *gHost = 0;
-        OfxImageEffectSuiteV1 *gEffectSuite = 0;
-        OfxPropertySuiteV1    *gPropSuite = 0;
-        OfxInteractSuiteV1    *gInteractSuite = 0;
-        OfxParameterSuiteV1   *gParamSuite = 0;
-        OfxMemorySuiteV1      *gMemorySuite = 0;
-        OfxMultiThreadSuiteV1 *gThreadSuite = 0;
-        OfxMessageSuiteV1     *gMessageSuite = 0;
-  
         /** @brief Creates the global host description and sets its properties */
         void
         fetchHostDescription(OfxHost *host)
@@ -1237,6 +1305,18 @@ namespace OFX {
             gThreadSuite = 0;
             gMessageSuite = 0;
             gInteractSuite = 0;
+
+            // delete the effect descriptors
+            std::map<ContextEnum, ImageEffectDescriptor *>::iterator iter;
+            for(iter = gEffectDescriptors.begin(); iter != gEffectDescriptors.end(); ++iter) {
+                if(iter->second) {
+                    delete iter->second;
+                    iter->second = NULL;
+                }
+            }
+
+            // and clobber the map
+            gEffectDescriptors.clear();
         }
 
 
@@ -1486,7 +1566,6 @@ namespace OFX {
                 return true;
             return false;
         }
-
         
         /** @brief Library side frames needed action */
         bool
@@ -1700,7 +1779,7 @@ namespace OFX {
                 else if (action == kOfxActionUnload) {
                     checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, true, true, true);
 
-                    // call the support load function, param-less
+                    // call the support unload function, param-less
                     OFX::Private::unloadAction(); 
       
                     // call the plugin side unload action, param-less, should be called, eve if the stat above failed!
@@ -1714,13 +1793,16 @@ namespace OFX {
                     checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
 
                     // make the plugin descriptor
-                    ImageEffectDescriptor desc(handle);
+                    ImageEffectDescriptor *desc = new ImageEffectDescriptor(handle);
 
                     // validate the host
                     OFX::Validation::validatePluginDescriptorProperties(fetchEffectProps(handle));
 
                     //  and pass it to the plugin to do something with it
-                    OFX::Plugin::describe(desc);
+                    OFX::Plugin::describe(*desc);
+
+                    // add it to our map
+                    gEffectDescriptors[eContextNone] = desc;
 
                     // got here, must be good
                     stat = kOfxStatOK;
@@ -1729,8 +1811,7 @@ namespace OFX {
                     checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
 
                     // make the plugin descriptor and pass it to the plugin to do something with it
-                    ImageEffectDescriptor desc(handle);
-                    OFX::Plugin::describe(desc);
+                    ImageEffectDescriptor *desc = new ImageEffectDescriptor(handle);
 
                     // figure the context and map it to an enum
                     std::string contextStr = inArgs.propGetString(kOfxImageEffectPropContext);
@@ -1740,7 +1821,10 @@ namespace OFX {
                     OFX::Validation::validatePluginDescriptorProperties(fetchEffectProps(handle));
 
                     // call plugin descibe in context
-                    OFX::Plugin::describeInContext(desc, context);
+                    OFX::Plugin::describeInContext(*desc, context);
+
+                    // add it to our map
+                    gEffectDescriptors[context] = desc;
 
                     // got here, must be good
                     stat = kOfxStatOK;

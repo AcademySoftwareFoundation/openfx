@@ -23,10 +23,7 @@ This file only holds code that is visible to a plugin implementation, and so hid
 of the direct OFX objects and any library side only functions.
  */
 #include "ofxsParam.H"
-
-#include <vector>
-#include <string>
-#include <map>
+#include "ofxsInteract.H"
 
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
@@ -271,6 +268,9 @@ namespace OFX {
 
         /** @brief get the region of definition (in pixel coordinates) of this image */
         OfxRectI regionOfDefinition(void) const;
+
+        /** @brief get the bounds on the image data (in pixel coordinates) of this image */
+        OfxRectI bounds(void) const;
 
         /** @brief get the row bytes, may be negative */
         int rowBytes(void) const;
@@ -534,6 +534,9 @@ namespace OFX {
         mDeclareProtectedAssignAndCC(ImageEffect);
 
     private :
+        /** @brief to get access to the effect handle without exposing it generally via a function */
+        friend class ImageMemory;
+
         /** @brief The effect handle */
         OfxImageEffectHandle _effectHandle;
 
@@ -546,9 +549,9 @@ namespace OFX {
         /** @brief Set of all previously defined parameters, defined on demand */
         std::map<std::string, Clip *> _fetchedClips;
 
-        /** @brief to get access to the effect handle without exposing it generally via a function */
-        friend class ImageMemory;
-
+        /** @brief the overlay interacts that are open on this image effect */
+        std::list<OverlayInteract *> _overlayInteracts;
+        
     public :
         /** @brief ctor */
         ImageEffect(OfxImageEffectHandle handle);
@@ -594,6 +597,15 @@ namespace OFX {
 
         /** @brief does the host want us to abort rendering? */
         bool abort(void) const;
+
+        /** @brief adds a new interact to the set of interacts open on this effect */
+        void addOverlayInteract(OverlayInteract *interact);
+
+        /** @brief removes an interact to the set of interacts open on this effect */
+        void removeOverlayInteract(OverlayInteract *interact);
+
+        /** @brief force all overlays on this interact to be redrawn */
+        void redrawOverlays(void);
 
         ////////////////////////////////////////////////////////////////////////////////
         // these are actions that need to be overridden by a plugin that implements an effect host
@@ -672,13 +684,15 @@ namespace OFX {
         return true is range was set, otherwise the default (the union of the time domain of all input clips) is used
         */
         virtual bool getTimeDomain(OfxRangeD &range);
+
+        /** @brief override this to create an interact for the effect */
+        virtual OverlayInteract *createOverlayInteract(OfxInteractHandle handle);
     };  
 
  
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief The OFX::Plugin namespace. All the functions in here needs to be defined by each plugin that uses the support libs.
-    */
-  
+    */  
     namespace Plugin {
         /** @brief Plugin side function used to identify the plugin to the support library */
         void getPluginID(OFX::PluginID &id);
