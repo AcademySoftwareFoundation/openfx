@@ -185,7 +185,6 @@ These are the list of properties used by the Image Effects API.
 */
 #define kOfxImageEffectHostPropIsBackground "OfxImageEffectHostPropIsBackground"
 
-
 /** @brief Plugin property, says whether more than one instance of a plugin can exist at the same time
 - int X 1
 - default 0
@@ -296,10 +295,11 @@ See \ref ImageEffectClipPreferences.
 */
 #define kOfxImageEffectPropSetableFielding "OfxImageEffectPropSetableFielding"
 
-/** @brief Plugin property, says whether an effect needs to be renderred sequentially or not
+/** @brief Instance property, says whether an effect needs to be renderred sequentially or not
 
     - int X 1
     - default 0
+
     This must be either
      - 0 - which means the host can render arbitrary frames of an instance over any number of CPUs and computers
      - 1 - which means the host must render all frames of an instance sequentially on the same computer
@@ -307,7 +307,7 @@ See \ref ImageEffectClipPreferences.
     If a host caches output, any frame renderred out of sequence in such an effect must be considerred invalid and cause a re-render
     of the sequence to correct that frame. This has implications for interactive sessions.
 */
-#define kOfxImageEffectPluginPropSequentialRender "OfxImageEffectPluginPropSequentialRender"
+#define kOfxImageEffectInstancePropSequentialRender "OfxImageEffectInstancePropSequentialRender"
 
 /** @brief Plugin property, gets/sets the effect group for this plugin, this is purely a user interface issue for the host and might be ignored
 
@@ -1621,6 +1621,7 @@ The \e inArgs parameter contains the following read only properties...
 - ::kOfxImageEffectPropFrameRange - the range of frames (inclusive) that will be renderred,
 - ::kOfxImageEffectPropFrameStep  - what is the step between frames, generally set to 1 (for full frame renders) or 0.5 (for fielded renders),
 - ::kOfxPropIsInteractive  - is this a single frame render due to user interaction in a GUI, or a proper full sequence render.
+- ::kOfxImageEffectPropRenderScale   - the scale factor to apply to images for this call
 
 The \e outArgs parameter is redundant and is NULL.
 
@@ -1650,6 +1651,7 @@ The \e handle parameter is the instance of the image effect that has just been r
 
 The \e inArgs parameter contains the following read only properties...
 - ::kOfxPropIsInteractive  - is this a single frame render due to user interaction in a GUI, or a proper full sequence render.
+- ::kOfxImageEffectPropRenderScale   - the scale factor to apply to images for this call
 
 The \e outArgs parameter is redundant and is NULL.
 
@@ -1717,6 +1719,7 @@ The \e handle parameter is an instance of the image effect,
 
 The \e inArgs parameter contains the following read only properties...
 - ::kOfxPropTime - the time to ask for a RoD
+- ::kOfxImageEffectPropRenderScale   - the scale factor to apply to images for this call
 
 The \e outArgs handle has the following properties that can be set...
 - ::kOfxImageEffectPropRegionOfDefinition, the region of definition of the plugin, this is initially set by the host to the default RoD, explained below
@@ -1763,6 +1766,7 @@ The \e handle parameter is an instance of the image effect,
 
 The \e inArgs parameter contains the following read only properties...
 - ::kOfxPropTime - the time to ask for a RoI
+- ::kOfxImageEffectPropRenderScale   - the scale factor to apply to images for this call
 - ::kOfxImageEffectPropRegionOfInterest - the window (in Cannonical Coordinates) to get the RoI for each input
 
 The \e outArgs handle has the following properties that are to be set...
@@ -1956,7 +1960,7 @@ A host may have a render farm of computers. Depending exactly how the host works
 
 @subsection ImageEffectsSequentialRendering Rendering Sequential Effects
 
-Some plugin's need to cache interframe behaviour to work correctly. Eg: a particle system, an image stabilisation system. In such cases a plugin instance will need to be rendered sequentially from frame 0 on a single computer (though it might be able to SMP a single frame over several CPUs). Such plugins should set the ::kOfxImageEffectPluginPropSequentialRender (int X 1, 0 or 1). This property can be set to...
+Some plugin's need to cache interframe behaviour to work correctly. Eg: a particle system, an image stabilisation system. In such cases a plugin instance will need to be rendered sequentially from frame 0 on a single computer (though it might be able to SMP a single frame over several CPUs). Such plugins should set the ::kOfxImageEffectInstancePropSequentialRender (int X 1, 0 or 1). This property can be set to...
      - 0, in which case the host can render an instance over arbitrary frame ranges on an arbitrary number of computers without any problem (default),
      - 1, in which case the host must render an instance on a single computer over it's entire frame range, from first to last.
 
@@ -2468,7 +2472,6 @@ An image effect plugin (ie: that thing passed to the initial 'describe' action) 
 - ::kOfxImageEffectPluginPropSingleInstance
 - ::kOfxImageEffectPluginRenderThreadSafety
 - ::kOfxImageEffectPluginPropHostFrameThreading
-- ::kOfxImageEffectPluginPropSequentialRender
 - ::kOfxImageEffectPluginPropOverlayInteractV1
 - ::kOfxImageEffectPropSupportsMultiResolution
 - ::kOfxImageEffectPropSupportsTiles
@@ -2490,6 +2493,7 @@ An image effect instance has the following properties, all but kOfxPropInstanceD
 - ::kOfxImageEffectPropProjectExtent *
 - ::kOfxImageEffectPropProjectPixelAspectRatio *
 - ::kOfxImageEffectInstancePropEffectDuration *
+- ::kOfxImageEffectInstancePropSequentialRender *
 - ::kOfxImageEffectPropFrameRate *
 - ::kOfxPropIsInteractive *
 - ::kOfxImageEffectFrameVarying * 
@@ -2587,8 +2591,6 @@ Plugins flag their support of tiled rendering via the ::kOfxImageEffectPropSuppo
 Plugins flag their support of multi-resolution rendering via the ::kOfxImageEffectPropSupportsMultiResolution plugin property.
 
 Plugins flag whether they will let hosts perform per frame SMP threading via the ::kOfxImageEffectPluginPropHostFrameThreading plugin property.
-
-Plugins flag whether they need to be sequentially renderred via the ::kOfxImageEffectPluginPropSequentialRender plugin property.
 
 Plugins flag whether only one instance of the plugin can exist at any one time via the ::kOfxImageEffectPluginPropSingleInstance plugin property.
 
