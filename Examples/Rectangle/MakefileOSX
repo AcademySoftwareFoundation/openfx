@@ -1,6 +1,0 @@
-CXXFLAGS = -I../../include 
-OPTIMIZER = -O3
-
-rectangle.bundle : rectangle.o
-	$(CXX) -bundle rectangle.o -o rectangle.bundle 
-
