@@ -262,43 +262,43 @@ namespace OFX {
         virtual ~Image();
 
         /** @brief get the pixel depth */
-        BitDepthEnum pixelDepth(void) const {return _pixelDepth;}
+        BitDepthEnum getPixelDepth(void) const {return _pixelDepth;}
 
         /** @brief get the components in the image */
-        PixelComponentEnum pixelComponents(void) const { return _pixelComponents;}
+        PixelComponentEnum getPixelComponents(void) const { return _pixelComponents;}
 
         /** @brief premultiplication on the image */
-        PreMultiplicationEnum preMultiplication(void) const { return _preMultiplication;}
+        PreMultiplicationEnum getPreMultiplication(void) const { return _preMultiplication;}
     
         /** @brief get the scale factor that has been applied to this image */
-        OfxPointD renderScale(void) const { return _renderScale;}
+        OfxPointD getRenderScale(void) const { return _renderScale;}
 
         /** @brief get the scale factor that has been applied to this image */
-        double pixelAspectRatio(void) const { return _pixelAspectRatio;}
+        double getPixelAspectRatio(void) const { return _pixelAspectRatio;}
 
         /** @brief get the pixel data for this image */
-        void *pixelData(void) const { return _pixelData;}
+        void *getPixelData(void) const { return _pixelData;}
 
         /** @brief get the region of definition (in pixel coordinates) of this image */
-        OfxRectI regionOfDefinition(void) const { return _regionOfDefinition;}
+        OfxRectI getRegionOfDefinition(void) const { return _regionOfDefinition;}
 
         /** @brief get the bounds on the image data (in pixel coordinates) of this image */
-        OfxRectI bounds(void) const { return _bounds;}
+        OfxRectI getBounds(void) const { return _bounds;}
 
         /** @brief get the row bytes, may be negative */
-        int rowBytes(void) const { return _rowBytes;}
+        int getRowBytes(void) const { return _rowBytes;}
 
         /** @brief get the fielding of this image */
-        FieldEnum field(void) const { return _field;}
+        FieldEnum getField(void) const { return _field;}
 
         /** @brief the unique ID of this image */
-        std::string uniqueIdentifier(void) const { return _uniqueID;}
+        std::string getUniqueIdentifier(void) const { return _uniqueID;}
 
         /** @brief return a pixel pointer, returns NULL if (x,y) is outside the image bounds
         
         x and y are in pixel coordinates
         */
-        void *pixelAddress(int x, int y);
+        void *getPixelAddress(int x, int y);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -333,22 +333,22 @@ namespace OFX {
         void getLabels(std::string &label, std::string &shortLabel, std::string &longLabel) const;
 
         /** @brief what is the pixel depth images will be given to us as */
-        BitDepthEnum pixelDepth(void) const;
+        BitDepthEnum getPixelDepth(void) const;
 
         /** @brief what is the components images will be given to us as */
-        PixelComponentEnum pixelComponents(void) const;
+        PixelComponentEnum getPixelComponents(void) const;
     
         /** @brief what is the actual pixel depth of the clip */
-        BitDepthEnum unmappedPixelDepth(void) const;
+        BitDepthEnum getUnmappedPixelDepth(void) const;
 
         /** @brief what is the component type of the clip */
-        PixelComponentEnum unmappedPixelComponents(void) const;
+        PixelComponentEnum getUnmappedPixelComponents(void) const;
     
         /** @brief get the components in the image */
-        PreMultiplicationEnum preMultiplication(void) const;
+        PreMultiplicationEnum getPreMultiplication(void) const;
 
         /** @brief which spatial field comes first temporally */
-        FieldEnum fieldOrder(void) const;
+        FieldEnum getFieldOrder(void) const;
 
         /** @brief is the clip connected */
         bool isConnected(void) const;
@@ -357,22 +357,22 @@ namespace OFX {
         bool hasContinuousSamples(void) const;
 
         /** @brief get the scale factor that has been applied to this clip */
-        double pixelAspectRatio(void) const;
+        double getPixelAspectRatio(void) const;
       
         /** @brief get the frame rate, in frames per second on this clip, after any clip preferences have been applied */
-        double frameRate(void) const;
+        double getFrameRate(void) const;
       
         /** @brief return the range of frames over which this clip has images, after any clip preferences have been applied */
-        OfxRangeD frameRange(void) const;
+        OfxRangeD getFrameRange(void) const;
 
         /** @brief get the frame rate, in frames per second on this clip, before any clip preferences have been applied */
-        double unmappedFrameRate(void) const;
+        double getUnmappedFrameRate(void) const;
       
         /** @brief return the range of frames over which this clip has images, before any clip preferences have been applied */
-        OfxRangeD unmappedFrameRange(void) const;
+        OfxRangeD getUnmappedFrameRange(void) const;
 
         /** @brief get the RoD for this clip in the cannonical coordinate system */
-        OfxRectD regionOfDefinition(double t);
+        OfxRectD getRegionOfDefinition(double t);
 
         /** @brief fetch an image
         
@@ -578,35 +578,37 @@ namespace OFX {
         /** @brief dtor */
         virtual ~ImageEffect();
 
+        OfxImageEffectHandle getHandle(void) const {return _effectHandle;}
+
         /** @brief the context this effect was instantiate in */
-        ContextEnum context(void) const;
+        ContextEnum getContext(void) const;
 
         /** @brief size of the project */
-        OfxPointD projectSize(void) const;
+        OfxPointD getProjectSize(void) const;
     
         /** @brief origin of the project */
-        OfxPointD projectOffset(void) const;
+        OfxPointD getProjectOffset(void) const;
 
         /** @brief extent of the project */
-        OfxPointD projectExtent(void) const;
+        OfxPointD getProjectExtent(void) const;
 
         /** @brief pixel aspect ratio of the project */
-        double projectPixelAspectRatio(void) const;
+        double getProjectPixelAspectRatio(void) const;
 
         /** @brief how long does the effect last */
-        double effectDuration(void) const;
+        double getEffectDuration(void) const;
 
         /** @brief the frame rate of the project */
-        double frameRate(void) const;
+        double getFrameRate(void) const;
 
         /** @brief is the instance currently being interacted with */
         bool isInteractive(void) const;
 
         /** @brief set the instance to be sequentially renderred, this should have been part of clip preferences! */
-        void sequentialRender(bool v);
+        void setSequentialRender(bool v);
 
         /** @brief Have we informed the host we want to be seqentially renderred ? */
-        bool sequentialRender(void) const;
+        bool getSequentialRender(void) const;
     
         /** @brief Fetch the named clip from this instance
 

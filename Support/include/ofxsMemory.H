@@ -1,6 +1,5 @@
-.
-#ifndef _ofxsImageEffect_H_
-#define _ofxsImageEffect_H_
+#ifndef _ofxsMemory_H_
+#define _ofxsMemory_H_
 /*
   OFX Support Library, a library that skins the OFX plug-in API with C++ classes.
   Copyright (C) 2004-2005 The Foundry Visionmongers Ltd
@@ -28,38 +27,31 @@ of the direct OFX objects and any library side only functions.
  */
 namespace OFX {
 
+    // forward declaration of class
+    class ImageEffect;
+
+    /** @brief Namespace for general purpose memory allocation */
+    namespace Memory {
+        /** @brief Allocate memory.
+      
+        \arg \e nBytes        - the number of bytes to allocate
+        \arg \e handle	      - effect instance to assosciate with this memory allocation, or NULL
+
+        This function has the host allocate memory using it's own memory resources
+        and returns that to the plugin. This memory is distinct to any image memory allocation.
+
+        Suceeds or throws std::bad_alloc
+        */   
+        void *allocate(size_t nBytes,
+                       ImageEffect *handle = 0);
+
+        /** @brief release memory
+
+        \arg \e ptr	      - pointer previously returned by OFX::Memory::allocate
+        */
+        void free(void *ptr);
+    };
     
 };
-typedef struct OfxMemorySuiteV1 {
-  /** @brief Allocate memory.
-      
-  \arg \e handle	- effect instance to assosciate with this memory allocation, or NULL.
-  \arg \e nBytes        - the number of bytes to allocate
-  \arg \e allocatedData - a pointer to the return value. Allocated memory will be alligned for any use.
 
-  This function has the host allocate memory using it's own memory resources
-  and returns that to the plugin.
-
-  @returns
-  - ::kOfxStatOK the memory was sucessfully allocated
-  - ::kOfxStatErrMemory the request could not be met and no memory was allocated
-
-  */   
-  OfxStatus (*memoryAlloc)(void *handle, 
-			   size_t nBytes,
-			   void **allocatedData);
-	
-  /** @brief Frees memory.
-      
-  \arg \e allocatedData - pointer to memory previously returned by OfxMemorySuiteV1::memoryAlloc
-
-  This function frees any memory that was previously allocated via OfxMemorySuiteV1::memoryAlloc.
-
-  @returns
-  - ::kOfxStatOK the memory was sucessfully freed
-  - ::kOfxStatErrBadHandle @arg allocated data was not a valid pointer returned by OfxMemorySuiteV1::memoryAlloc
-
-  */   
-  OfxStatus (*memoryFree)(void *allocatedData);
- } OfxMemorySuiteV1;
-
+#endif

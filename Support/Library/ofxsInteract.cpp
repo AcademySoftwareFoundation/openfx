@@ -94,7 +94,7 @@ namespace OFX {
 
     /** @brief The bitdepth of each component in the openGL frame buffer */
     int 
-    Interact::bitDepth(void) const
+    Interact::getBitDepth(void) const
     {
         return _interactProperties.propGetInt(kOfxInteractPropBitDepth);
     }
@@ -108,7 +108,7 @@ namespace OFX {
         
     /** @brief Returns the size of a real screen pixel under the interact's cannonical projection */
     OfxPointD 
-    Interact::pixelScale(void) const
+    Interact::getPixelScale(void) const
     {
         OfxPointD v;
         v.x = _interactProperties.propGetDouble(kOfxInteractPropPixelScale, 0);
@@ -145,7 +145,7 @@ namespace OFX {
             
             // and set the property
             int n = _interactProperties.propGetDimension(kOfxInteractPropSlaveToParam);
-            _interactProperties.propSetString(kOfxInteractPropSlaveToParam, p->name(), n);
+            _interactProperties.propSetString(kOfxInteractPropSlaveToParam, p->getName(), n);
         }
         
     }
@@ -167,15 +167,15 @@ namespace OFX {
             // and add them all in again
             int n = 0;
             for(i = _slaveParams.begin(); i != _slaveParams.end(); ++i, ++n) {
-                _interactProperties.propSetString(kOfxInteractPropSlaveToParam, (*i)->name(), n);
+                _interactProperties.propSetString(kOfxInteractPropSlaveToParam, (*i)->getName(), n);
             }
         }
     }
 
     /** @brief the background colour */
-    OfxRGBColourD Interact::backgroundColour(void) const
+    OfxRGBColourD Interact::getBackgroundColour(void) const
     {
-        return getBackgroundColour(_interactProperties);
+        return OFX::getBackgroundColour(_interactProperties);
     }
 
     /** @brief the function called to draw in the interact */

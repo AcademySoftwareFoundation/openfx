@@ -112,6 +112,21 @@ struct OfxRGBColourD {
     double r, g, b;
 };
 
+/** @brief Defines an integer 3D point
+
+Should migrate this to the ofxCore.h in a v1.1
+*/
+struct Ofx3DPointI {
+    int x, y, z;
+};
+
+/** @brief Defines a double precision 3D point
+
+Should migrate this to the ofxCore.h in a v1.1
+*/
+struct Ofx3DPointD {
+    double x, y, z;
+};
 
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
@@ -248,12 +263,21 @@ namespace OFX {
         /** @brief Class static, whether we are logging each property action */
         static int _gPropLogging;
 
+        /** @brief Do not throw an exception if a host returns 'unsupported' when setting a property */
+        static bool _gThrowOnUnsupported;
+
     public :
         /** @brief turns on logging of property access functions */
         static void propEnableLogging(void)  {++_gPropLogging;}
     
         /** @brief turns off logging of property access functions */
         static void propDisableLogging(void) {--_gPropLogging;}
+
+        /** @brief Do we throw an exception if a host returns 'unsupported' when setting a property. Default is true */
+        static void setThrowOnUnsupportedProperties(bool v) {_gThrowOnUnsupported = v;}
+
+        /** @brief Do we throw an exception if a host returns 'unsupported' when setting a property. Default is true */
+        static bool getThrowOnUnsupportedProperties(void) {return _gThrowOnUnsupported;}
 
         /** @brief construct a property set */
         PropertySet(OfxPropertySetHandle h = 0) : _propHandle(h) {}
@@ -303,10 +327,14 @@ namespace OFX {
 
     ////////////////////////////////////////////////////////////////////////////////
 
+    // forward decl of the image effect
+    class ImageEffect;
+
     /** @brief namespace for memory allocation that is done via wrapping the ofx memory suite */
     namespace Memory {
         /** @brief allocate n bytes, returns a pointer to it */
-        void *alloc(size_t nBytes, void *handleToAssociateWithTheAllocation = 0) throw(std::bad_alloc);
+        void *alloc(size_t nBytes,
+                    ImageEffect *handle = 0) throw(std::bad_alloc);
 
         /** @brief free n previously allocated memory */
         void free(void *ptr) throw();

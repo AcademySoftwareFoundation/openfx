@@ -49,7 +49,7 @@ namespace OFX {
         {
             // if 0, use all the CPUs we can
             if(nCPUs == 0)
-                nCPUs = OFX::MultiThread::numCPUs();
+                nCPUs = OFX::MultiThread::getNumCPUs();
 
             // if 1 cpu, don't bother with the threading
             if(nCPUs == 1) {
@@ -75,7 +75,7 @@ namespace OFX {
         }
 
         /** @brief The number of CPUs that can be used for MP-ing */
-        unsigned  int numCPUs(void)
+        unsigned  int getNumCPUs(void)
         {
             unsigned int n = 1;
             OfxStatus stat = OFX::Private::gThreadSuite->multiThreadNumCPUs(&n);
@@ -84,7 +84,7 @@ namespace OFX {
         }
 
         /** @brief The index of the current thread. From 0 to numCPUs() - 1 */
-        unsigned int threadIndex(void)
+        unsigned int getThreadIndex(void)
         {
             unsigned int n = 0;
             OfxStatus stat = OFX::Private::gThreadSuite->multiThreadIndex(&n);

@@ -36,7 +36,8 @@ namespace OFX {
 
         case kOfxStatErrUnknown :
         case kOfxStatErrUnsupported : // unsupported implies unknow here
-            throw OFX::Exception::PropertyUnknownToHost(propName.c_str());
+            if(OFX::PropertySet::getThrowOnUnsupportedProperties()) // are we suppressing this?
+                throw OFX::Exception::PropertyUnknownToHost(propName.c_str());
             break;
           
         case kOfxStatErrMemory :
@@ -58,6 +59,9 @@ namespace OFX {
 
     /** @brief are we logging property get/set */
     int PropertySet::_gPropLogging = 0;
+
+    /** @brief Do we throw an exception if a host returns 'unsupported' when setting a property */
+    bool PropertySet::_gThrowOnUnsupported = true;
 
     /** @brief Virtual destructor */
     PropertySet::~PropertySet() {}

@@ -158,10 +158,10 @@ namespace OFX {
         /** @brief dtor */
         virtual ~ParamDescriptor();
 
-        ParamTypeEnum type(void) const {return _paramType;}
+        ParamTypeEnum getType(void) const {return _paramType;}
 
         /** @brief name */
-        const std::string &name(void) const {return _paramName;}
+        const std::string &getName(void) const {return _paramName;}
 
         /** @brief set the label properties in a plugin */
         void setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel);
@@ -517,7 +517,7 @@ namespace OFX {
         void appendOption(const std::string &v);
     
         /** @brief how many options do we have */
-        int nOptions(void);
+        int getNOptions(void);
     
         /** @brief clear all the options so as to add some new ones in */
         void resetOptions(void);
@@ -615,7 +615,7 @@ namespace OFX {
 
             // have we made it already in this param set and is it of the correct type
             if(ParamDescriptor *param  = findPreviouslyDefinedParam(name)) {
-                if(param->type() == paramType) {
+                if(param->getType() == paramType) {
                     paramPtr = (T *) param; // could be a dynamic cast here
                     return true;
                 }
@@ -732,13 +732,13 @@ namespace OFX {
         virtual ~Param();
 
         /** @brief get name */
-        const std::string &name(void) const;
+        const std::string &getName(void) const;
     
         /** @brief, set the label properties in a plugin */
         void setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel);
 
         /** @brief return the derived type of this parameter */
-        ParamTypeEnum type(void) const {return _paramType;}
+        ParamTypeEnum getType(void) const {return _paramType;}
 
         /** @brief set the secretness of the param, defaults to false */
         void setIsSecret(bool v);
@@ -816,7 +816,7 @@ namespace OFX {
         void deleteKeyAtTime(double time);
 
         /** @brief delete all the keys */
-        void paramDeleteAllKeys(void);
+        void deleteAllKeys(void);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -1129,6 +1129,18 @@ namespace OFX {
 
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, double x, double y);
+
+        /** @brief differentiate the param */
+        void differentiate(double t, double &x, double &y);
+
+        /** @brief differentiate the param  */
+        OfxPointD differentiate(double t) {OfxPointD v; differentiate(t, v.x, v.y); return v;}
+
+        /** @brief integrate the param */
+        void integrate(double t1, double t2, double &x, double &y);
+
+        /** @brief integrate the param */
+        OfxPointD integrate(double t1, double t2) {OfxPointD v; integrate(t1, t2, v.x, v.y); return v;}
     };  
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -1177,6 +1189,18 @@ namespace OFX {
 
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, double x, double y, double z);
+
+        /** @brief differentiate the param */
+        void differentiate(double t, double &x, double &y, double &z);
+
+        /** @brief differentiate the param  */
+        Ofx3DPointD differentiate(double t) {Ofx3DPointD v; differentiate(t, v.x, v.y, v.z); return v;}
+
+        /** @brief integrate the param */
+        void integrate(double t1, double t2, double &x, double &y, double &z);
+
+        /** @brief integrate the param */
+        Ofx3DPointD integrate(double t1, double t2) {Ofx3DPointD v; integrate(t1, t2, v.x, v.y, v.z); return v;}
     };  
   
     ////////////////////////////////////////////////////////////////////////////////
@@ -1298,7 +1322,7 @@ namespace OFX {
         void getDefault(int &v);
 
         /** @brief how many options do we have */
-        int nOptions(void);
+        int getNOptions(void);
 
         /** @brief append an option, default is to have not there */
         void appendOption(const std::string &v);
@@ -1472,12 +1496,12 @@ namespace OFX {
 
             // have we made it already in this param set and is it an int?
             if(Param *param  = findPreviouslyFetchedParam(name)) {
-                if(param->type() == paramType) {
+                if(param->getType() == paramType) {
                     paramPtr = (T *) param; // could be a dynamic cast here
                     return true;
                 }
                 else
-                    return false; // SHOULD THROW SOMETHING HERE!!!!!!!
+                    return false; // HACK SHOULD THROW SOMETHING HERE!!!!!!!
             }
             else {
                 // ok define one and add it in

@@ -35,6 +35,15 @@ Problems And Debugging
 ********************************************************************************
 Release Notes
 
+
+31-1-2005
+	All accessor functions have had 'get' prepended to their name.
+	Added integrate and differentiate functions to 2D and 3D double parameters.
+	The generic memory allocator takes an option ImageEffect pointer, not a void * handle.	
+	Refactored plugins to use new member names.
+	Added a root makefile to the plugins directory.
+	Added a 'clean' target to the plugin makefiles.
+
 13-01-2005 Version 0.2
 	   
 	   Skinned everything except message suite and parameter interacts custom GUIS,

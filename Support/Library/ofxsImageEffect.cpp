@@ -384,7 +384,7 @@ namespace OFX {
     void ImageEffectDescriptor::addClipPreferencesSlaveParam(ParamDescriptor &p)
     {
         int n = _effectProps.propGetDimension(kOfxImageEffectPropClipPreferencesSlaveParam);
-        _effectProps.propSetString(kOfxImageEffectPropClipPreferencesSlaveParam, p.name(), n);
+        _effectProps.propSetString(kOfxImageEffectPropClipPreferencesSlaveParam, p.getName(), n);
     }
 
     /** @brief Create a clip, only callable from describe in context */
@@ -466,6 +466,7 @@ namespace OFX {
         }
         else {
             OFX::Log::error(true, "Unknown field state '%s' reported on an image", str.c_str());
+            _field = eFieldNone;
         }
 
         _uniqueID = _imageProps.propGetString(kOfxImagePropUniqueIdentifier);
@@ -483,7 +484,7 @@ namespace OFX {
 
     No attempt made to be uber efficient here.
     */
-    void *Image::pixelAddress(int x, int y)
+    void *Image::getPixelAddress(int x, int y)
     {
         // are we in the image bounds
         if(x < _bounds.x1 || x >= _bounds.x2 || y < _bounds.y1 || y > _bounds.y2)
@@ -493,140 +494,6 @@ namespace OFX {
         pix += (x - _bounds.x1) * _pixelBytes;
         return (void *) pix;   
     }
-
-#if 0
-    /** @brief get the pixel depth */
-    BitDepthEnum Image::pixelDepth(void) const
-    {
-        std::string str = _imageProps.propGetString(kOfxImageEffectPropPixelDepth);
-        BitDepthEnum e;
-        try {
-            e = mapStrToBitDepthEnum(str);
-            if(e == eBitDepthNone) {
-                OFX::Log::error(true, "Image with no pixel depth.");
-            }
-        }
-        // gone wrong ?
-        catch(std::invalid_argument &ex) {
-            OFX::Log::error(true, "Unknown pixel depth property '%s' reported on an image!", str.c_str());
-            e = eBitDepthNone;
-        }
-        return e;
-    }
-  
-    /** @brief get the components in the image */
-    PixelComponentEnum Image::pixelComponents(void) const
-    {
-        std::string str = _imageProps.propGetString(kOfxImageEffectPropComponents);
-        PixelComponentEnum e;
-        try {
-            e = mapStrToPixelComponentEnum(str);
-            if(e == ePixelComponentNone) {
-                OFX::Log::error(true, "Image with no pixel component type.");
-            }
-        }
-        // gone wrong ?
-        catch(std::invalid_argument &ex) {
-            OFX::Log::error(true, "Unknown  pixel component type '%s' reported on an image!", str.c_str());
-            e = ePixelComponentNone;
-        }
-        return e;
-    }
-
-    /** @brief get the components in the image */
-    PreMultiplicationEnum Image::preMultiplication(void) const
-    {
-        std::string str = _imageProps.propGetString(kOfxImageEffectPropPreMultiplication);
-        PreMultiplicationEnum e;
-        try {
-            e = mapStrToPreMultiplicationEnum(str);
-        }
-        // gone wrong ?
-        catch(std::invalid_argument &ex) {
-            OFX::Log::error(true, "Unknown premultiplication type '%s' reported on an image!", str.c_str());
-            e = eImageOpaque;
-        }
-        return e;
-    }
-    
-    /** @brief get the scale factor that has been applied to this image */
-    OfxPointD Image::renderScale(void) const
-    {
-        OfxPointD scale;
-        scale.x = _imageProps.propGetDouble(kOfxImageEffectPropRenderScale, 0);
-        scale.y = _imageProps.propGetDouble(kOfxImageEffectPropRenderScale, 1);
-        return scale;
-    }
-
-    /** @brief get the scale factor that has been applied to this image */
-    double Image::pixelAspectRatio(void) const
-    {
-        return _imageProps.propGetDouble(kOfxImagePropPixelAspectRatio);
-    }
-
-    /** @brief get the pixel data for this image */
-    void *Image::pixelData(void) const
-    {
-        return _imageProps.propGetPointer(kOfxImagePropData);
-    }
-
-    /** @brief get the region of definition (in pixel coordinates) of this image */
-    OfxRectI Image::regionOfDefinition(void) const
-    {
-        OfxRectI rod;
-        rod.x1 = _imageProps.propGetInt(kOfxImagePropRegionOfDefinition, 0);
-        rod.y1 = _imageProps.propGetInt(kOfxImagePropRegionOfDefinition, 1);
-        rod.x2 = _imageProps.propGetInt(kOfxImagePropRegionOfDefinition, 2);
-        rod.y2 = _imageProps.propGetInt(kOfxImagePropRegionOfDefinition, 3);
-        return rod;
-    }
-
-    /** @brief get the bounds on the image data (in pixel coordinates) of this image */
-    OfxRectI Image::bounds(void) const
-    {
-        OfxRectI v;
-        v.x1 = _imageProps.propGetInt(kOfxImagePropBounds, 0);
-        v.y1 = _imageProps.propGetInt(kOfxImagePropBounds, 1);
-        v.x2 = _imageProps.propGetInt(kOfxImagePropBounds, 2);
-        v.y2 = _imageProps.propGetInt(kOfxImagePropBounds, 3);
-        return v;
-    }
-
-    /** @brief get the row bytes, may be negative */
-    int Image::rowBytes(void) const
-    {
-        return _imageProps.propGetInt(kOfxImagePropRowBytes);
-    }
-
-    /** @brief get the fielding of this image */
-    FieldEnum Image::field(void) const
-    {
-        std::string str = _imageProps.propGetString(kOfxImagePropField);
-        if(str == kOfxImageFieldNone) {
-            return eFieldNone;
-        }
-        else if(str == kOfxImageFieldBoth) {
-            return eFieldBoth;
-        }
-        else if(str == kOfxImageFieldLower) {
-            return eFieldLower;
-        }
-        else if(str == kOfxImageFieldUpper) {
-            return eFieldLower;
-        }
-        else {
-            OFX::Log::error(true, "Unknown field state '%s' reported on an image", str.c_str());
-            return eFieldNone;
-        }
-    }
-
-    /** @brief the unique ID of this image */
-    std::string Image::UniqueIdentifier(void) const
-    {
-        return _imageProps.propGetString(kOfxImagePropUniqueIdentifier);
-    }
-
-#endif
 
     ////////////////////////////////////////////////////////////////////////////////
     // clip instance
@@ -650,7 +517,7 @@ namespace OFX {
     }
 
     /** @brief get the pixel depth */
-    BitDepthEnum Clip::pixelDepth(void) const
+    BitDepthEnum Clip::getPixelDepth(void) const
     {
         std::string str = _clipProps.propGetString(kOfxImageEffectPropPixelDepth);
         BitDepthEnum e;
@@ -669,7 +536,7 @@ namespace OFX {
     }
 
     /** @brief get the components in the image */
-    PixelComponentEnum Clip::pixelComponents(void) const
+    PixelComponentEnum Clip::getPixelComponents(void) const
     {
         std::string str = _clipProps.propGetString(kOfxImageEffectPropComponents);
         PixelComponentEnum e;
@@ -688,7 +555,7 @@ namespace OFX {
     }
 
     /** @brief what is the actual pixel depth of the clip */
-    BitDepthEnum Clip::unmappedPixelDepth(void) const
+    BitDepthEnum Clip::getUnmappedPixelDepth(void) const
     {
         std::string str = _clipProps.propGetString(kOfxImageClipPropUnmappedPixelDepth);
         BitDepthEnum e;
@@ -707,7 +574,7 @@ namespace OFX {
     }
 
     /** @brief what is the component type of the clip */
-    PixelComponentEnum Clip::unmappedPixelComponents(void) const
+    PixelComponentEnum Clip::getUnmappedPixelComponents(void) const
     {
         std::string str = _clipProps.propGetString(kOfxImageClipPropUnmappedComponents);
         PixelComponentEnum e;
@@ -726,7 +593,7 @@ namespace OFX {
     }
 
     /** @brief get the components in the image */
-    PreMultiplicationEnum Clip::preMultiplication(void) const
+    PreMultiplicationEnum Clip::getPreMultiplication(void) const
     {
         std::string str = _clipProps.propGetString(kOfxImageEffectPropPreMultiplication);
         PreMultiplicationEnum e;
@@ -742,7 +609,7 @@ namespace OFX {
     }
     
     /** @brief which spatial field comes first temporally */
-    FieldEnum Clip::fieldOrder(void) const
+    FieldEnum Clip::getFieldOrder(void) const
     {
         std::string str = _clipProps.propGetString(kOfxImageClipPropFieldOrder);
         FieldEnum e;
@@ -772,19 +639,19 @@ namespace OFX {
     }
 
     /** @brief get the scale factor that has been applied to this clip */
-    double Clip::pixelAspectRatio(void) const
+    double Clip::getPixelAspectRatio(void) const
     {
         return _clipProps.propGetDouble(kOfxImagePropPixelAspectRatio);
     }
       
     /** @brief get the frame rate, in frames per second on this clip, after any clip preferences have been applied */
-    double Clip::frameRate(void) const
+    double Clip::getFrameRate(void) const
     {
         return _clipProps.propGetDouble(kOfxImageEffectPropFrameRate);
     }
       
     /** @brief return the range of frames over which this clip has images, after any clip preferences have been applied */
-    OfxRangeD Clip::frameRange(void) const
+    OfxRangeD Clip::getFrameRange(void) const
     {
         OfxRangeD v;
         v.min = _clipProps.propGetDouble(kOfxImageEffectPropFrameRange, 0);
@@ -793,13 +660,13 @@ namespace OFX {
     }
 
     /** @brief get the frame rate, in frames per second on this clip, before any clip preferences have been applied */
-    double Clip::unmappedFrameRate(void) const
+    double Clip::getUnmappedFrameRate(void) const
     {
         return _clipProps.propGetDouble(kOfxImageEffectPropUnmappedFrameRate);
     }
       
     /** @brief return the range of frames over which this clip has images, before any clip preferences have been applied */
-    OfxRangeD Clip::unmappedFrameRange(void) const
+    OfxRangeD Clip::getUnmappedFrameRange(void) const
     {
         OfxRangeD v;
         v.min = _clipProps.propGetDouble(kOfxImageEffectPropUnmappedFrameRange, 0);
@@ -808,7 +675,7 @@ namespace OFX {
     }
 
     /** @brief get the RoD for this clip in the cannonical coordinate system */
-    OfxRectD Clip::regionOfDefinition(double t)
+    OfxRectD Clip::getRegionOfDefinition(double t)
     {
         OfxRectD bounds;
         OfxStatus stat = OFX::Private::gEffectSuite->clipGetRegionOfDefinition(_clipHandle, t, &bounds);
@@ -893,13 +760,13 @@ namespace OFX {
     }
 
     /** @brief the context this effect was instantiate in */
-    ContextEnum ImageEffect::context(void) const
+    ContextEnum ImageEffect::getContext(void) const
     {
         return _context;
     }
 
     /** @brief size of the project */
-    OfxPointD ImageEffect::projectSize(void) const
+    OfxPointD ImageEffect::getProjectSize(void) const
     {
         OfxPointD v;    
         v.x = _effectProps.propGetDouble(kOfxImageEffectPropProjectSize, 0);
@@ -908,7 +775,7 @@ namespace OFX {
     }
     
     /** @brief origin of the project */
-    OfxPointD ImageEffect::projectOffset(void) const
+    OfxPointD ImageEffect::getProjectOffset(void) const
     {
         OfxPointD v;    
         v.x = _effectProps.propGetDouble(kOfxImageEffectPropProjectOffset, 0);
@@ -917,7 +784,7 @@ namespace OFX {
     }
 
     /** @brief extent of the project */
-    OfxPointD ImageEffect::projectExtent(void) const
+    OfxPointD ImageEffect::getProjectExtent(void) const
     {
         OfxPointD v;    
         v.x = _effectProps.propGetDouble(kOfxImageEffectPropProjectExtent, 0);
@@ -926,19 +793,19 @@ namespace OFX {
     }
 
     /** @brief pixel aspect ratio of the project */
-    double ImageEffect::projectPixelAspectRatio(void) const
+    double ImageEffect::getProjectPixelAspectRatio(void) const
     {
         return _effectProps.propGetDouble(kOfxImageEffectPropProjectPixelAspectRatio, 0);
     }
 
     /** @brief how long does the effect last */
-    double ImageEffect::effectDuration(void) const
+    double ImageEffect::getEffectDuration(void) const
     {
         return _effectProps.propGetDouble(kOfxImageEffectInstancePropEffectDuration, 0);
     }
 
     /** @brief the frame rate of the project */
-    double ImageEffect::frameRate(void) const
+    double ImageEffect::getFrameRate(void) const
     {
         return _effectProps.propGetDouble(kOfxImageEffectPropFrameRate, 0);
     }
@@ -950,13 +817,13 @@ namespace OFX {
     }
 
     /** @brief set the instance to be sequentially renderred, this should have been part of clip preferences! */
-    void ImageEffect::sequentialRender(bool v)
+    void ImageEffect::setSequentialRender(bool v)
     {
         _effectProps.propSetInt(kOfxImageEffectInstancePropSequentialRender, int(v));
     }
 
     /** @brief Have we informed the host we want to be seqentially renderred ? */
-    bool ImageEffect::sequentialRender(void) const
+    bool ImageEffect::getSequentialRender(void) const
     {
         return _effectProps.propGetInt(kOfxImageEffectInstancePropSequentialRender) != 0;
     }
@@ -1725,7 +1592,7 @@ namespace OFX {
             ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
 
             // we can only be a general context effect, so check that this is true
-            OFX::Log::error(effectInstance->context() != eContextGeneral, "Calling kOfxImageEffectActionGetTimeDomain on an effect that is not a general context effect.");
+            OFX::Log::error(effectInstance->getContext() != eContextGeneral, "Calling kOfxImageEffectActionGetTimeDomain on an effect that is not a general context effect.");
 
             OfxRangeD timeDomain;
 

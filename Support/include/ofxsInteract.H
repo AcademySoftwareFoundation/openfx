@@ -104,16 +104,16 @@ namespace OFX {
         virtual ~Interact(); 
 
         /** @brief The bitdepth of each component in the openGL frame buffer */
-        int bitDepth(void) const;
+        int getBitDepth(void) const;
 
         /** @brief Does the openGL frame buffer have an alpha */
         bool hasAlpha(void) const;
         
         /** @brief Returns the size of a real screen pixel under the interact's cannonical projection */
-        OfxPointD pixelScale(void) const;
+        OfxPointD getPixelScale(void) const;
 
         /** @brief the background colour */
-        OfxRGBColourD backgroundColour(void) const;
+        OfxRGBColourD getBackgroundColour(void) const;
 
         /** @brief Set a param that the interact should be redrawn on if its value changes */
         void addParamToSlaveTo(Param *p);

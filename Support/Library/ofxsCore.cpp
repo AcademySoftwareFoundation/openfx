@@ -70,10 +70,11 @@ namespace OFX {
     /** @brief namespace for memory allocation that is done via wrapping the ofx memory suite */
     namespace Memory {
         /** @brief allocate n bytes, returns a pointer to it */
-        void *alloc(size_t nBytes, void *handleToAssociateWithTheAllocation) throw(std::bad_alloc)
+        void *allocate(size_t nBytes,
+                       ImageEffect *effect = 0) throw(std::bad_alloc)
         {
             void *data = 0;
-            OfxStatus stat = OFX::Private::gMemorySuite->memoryAlloc(handleToAssociateWithTheAllocation, nBytes, &data);
+            OfxStatus stat = OFX::Private::gMemorySuite->memoryAlloc((void *)(effect ? effect->getHandle() : 0), nBytes, &data);
             if(stat != kOfxStatOK)
                 throw std::bad_alloc();
             return data;
@@ -82,8 +83,9 @@ namespace OFX {
         /** @brief free n previously allocated memory */
         void free(void *ptr) throw()
         {
-            // note we are ignore errors, this could be bad, but we don't throw on a destruction
-            OFX::Private::gMemorySuite->memoryFree(ptr);            
+            if(ptr)
+                // note we are ignore errors, this could be bad, but we don't throw on a destruction
+                OFX::Private::gMemorySuite->memoryFree(ptr);            
         }
 
     };

@@ -57,10 +57,10 @@ namespace OFX {
         bool isSpawnedThread(void);
 
         /** @brief The number of CPUs that can be used for MP-ing */
-        unsigned int numCPUs(void);
+        unsigned int getNumCPUs(void);
 
         /** @brief The index of the current thread. From 0 to numCPUs() - 1 */
-        unsigned int threadIndex(void);
+        unsigned int getThreadIndex(void);
     
         /** @brief An OFX mutex */
         class Mutex {

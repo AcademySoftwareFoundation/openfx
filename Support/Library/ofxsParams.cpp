@@ -110,7 +110,7 @@ namespace OFX {
     void 
     ParamDescriptor::setParent(const GroupParamDescriptor &v)
     {
-        _paramProps.propSetString(kOfxParamPropParent, v.name());
+        _paramProps.propSetString(kOfxParamPropParent, v.getName());
     }
     
 
@@ -522,7 +522,7 @@ namespace OFX {
     }
 
     /** @brief how many options do we have */
-    int ChoiceParamDescriptor::nOptions(void)
+    int ChoiceParamDescriptor::getNOptions(void)
     {
         int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
         return nCurrentValues;
@@ -621,7 +621,7 @@ namespace OFX {
     void PageParamDescriptor::addChild(const ParamDescriptor &p)
     {
         int nKids = _paramProps.propGetDimension(kOfxParamPropPageChild);
-        _paramProps.propSetString(kOfxParamPropPageChild, p.name(), nKids);
+        _paramProps.propSetString(kOfxParamPropPageChild, p.getName(), nKids);
     }
   
     ////////////////////////////////////////////////////////////////////////////////
@@ -679,7 +679,7 @@ namespace OFX {
     ParamSetDescriptor::setPageParamOrder(PageParamDescriptor &p)
     {
         int nPages = _paramSetProps.propGetDimension(kOfxPluginPropParamPageOrder);
-        _paramSetProps.propSetString(kOfxPluginPropParamPageOrder, p.name().c_str(), nPages);
+        _paramSetProps.propSetString(kOfxPluginPropParamPageOrder, p.getName().c_str(), nPages);
     }
 
 
@@ -849,7 +849,7 @@ namespace OFX {
     }
 
     /** @brief get name */
-    const std::string &Param::name(void) const
+    const std::string &Param::getName(void) const
     {
         return _paramName;
     }
@@ -1039,7 +1039,7 @@ namespace OFX {
 
     /** @brief delete all the keys */
     void 
-    ValueParam::paramDeleteAllKeys(void)
+    ValueParam::deleteAllKeys(void)
     {
         OfxStatus stat = OFX::Private::gParamSuite->paramDeleteAllKeys(_paramHandle);
         throwSuiteStatusException(stat); 
@@ -1577,6 +1577,20 @@ namespace OFX {
         throwSuiteStatusException(stat);
     }
 
+    /** @brief get the value at a time */
+    void Double2DParam::differentiate(double t, double &x, double &y)
+    {
+        OfxStatus stat = OFX::Private::gParamSuite->paramGetDerivative(_paramHandle, t, &x, &y);
+        throwSuiteStatusException(stat);
+    }
+
+    /** @brief get the value at a time */
+    void Double2DParam::integrate(double t1, double t2, double &x, double &y)
+    {
+        OfxStatus stat = OFX::Private::gParamSuite->paramGetIntegral(_paramHandle, t1, t2, &x, &y);
+        throwSuiteStatusException(stat);
+    }
+
 
     ////////////////////////////////////////////////////////////////////////////////
     // 3D Double params
@@ -1684,6 +1698,19 @@ namespace OFX {
         throwSuiteStatusException(stat);
     }
 
+    /** @brief get the value at a time */
+    void Double3DParam::differentiate(double t, double &x, double &y, double &z)
+    {
+        OfxStatus stat = OFX::Private::gParamSuite->paramGetDerivative(_paramHandle, t, &x, &y, &z);
+        throwSuiteStatusException(stat);
+    }
+
+    /** @brief get the value at a time */
+    void Double3DParam::integrate(double t1, double t2, double &x, double &y, double &z)
+    {
+        OfxStatus stat = OFX::Private::gParamSuite->paramGetIntegral(_paramHandle, t1, t2, &x, &y, &z);
+        throwSuiteStatusException(stat);
+    }
     ////////////////////////////////////////////////////////////////////////////////
     // RGB colour param
     /** @brief hidden constructor */
@@ -1951,7 +1978,7 @@ namespace OFX {
     }
 
     /** @brief how many options do we have */
-    int ChoiceParam::nOptions(void)
+    int ChoiceParam::getNOptions(void)
     {
         int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
         return nCurrentValues;
