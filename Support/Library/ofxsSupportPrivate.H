@@ -11,6 +11,10 @@ namespace OFX {
   /** @brief turns a field string into and enum */
   FieldEnum mapStrToFieldEnum(const std::string &str)  throw(std::invalid_argument);
 
+  ////////////////////////////////////////////////////////////////////////////////
+  /** @brief map a std::string to a context enum */
+  ContextEnum mapToContextEnum(const std::string &s) throw(std::invalid_argument);
+
   namespace Private {
     /** @brief Pointer to the host */
     extern OfxHost *gHost;
@@ -49,12 +53,14 @@ namespace OFX {
     /** @brief The main entry point for the plugin
      */
     OfxStatus
-      mainEntry(const char		*actionRaw,
-		const void		*handleRaw,
-		OfxPropertySetHandle	 inArgsRaw,
-		OfxPropertySetHandle	 outArgsRaw);
+    mainEntry(const char		*actionRaw,
+	      const void		*handleRaw,
+	      OfxPropertySetHandle	 inArgsRaw,
+	      OfxPropertySetHandle	 outArgsRaw);
   
-
+    /** @brief fetch the prop set from the effect handle */
+    OFX::PropertySet
+    fetchEffectProps(OfxImageEffectHandle handle);
   };
 
   /** @brief The validation code has its own namespace */

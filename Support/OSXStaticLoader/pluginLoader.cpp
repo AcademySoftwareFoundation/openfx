@@ -48,6 +48,9 @@ main(int argc, char *argv[])
 	  printf("\tFound plugin...\n\t\tAPI = %s (%d)\n\t\tid = %s (%d.%d)\n",
 		 plugin->pluginApi, plugin->apiVersion,
 		 plugin->pluginIdentifier, plugin->pluginVersionMajor, plugin->pluginVersionMinor);
+
+	  plugin->mainEntry(kOfxActionLoad, NULL, NULL, NULL);
+	  plugin->mainEntry(kOfxActionUnload, NULL, NULL, NULL);
 	}
 	else
 	  fprintf(stderr, "fetching %dth plugin returned NULL\n", i);

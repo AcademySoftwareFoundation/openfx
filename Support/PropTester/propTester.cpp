@@ -15,47 +15,60 @@
   England
 */
 
+#include <stdio.h>
 #include "ofxsImageEffect.H"
 
-/** @brief simple plugin that doesn't do much */
-class MyPlugin : public OFX::ImageEffect {
+////////////////////////////////////////////////////////////////////////////////
+/** @brief base class of the plugin */
+class BasePlugin : public OFX::ImageEffect {
  protected :
-  // do not need to delete these, the ImageEffect is managing them for us
-  OFX::Clip *srcClip_;
+  // do not need to delete this, the ImageEffect is managing them for us
   OFX::Clip *dstClip_;
 
  public :
-
   /** @brief ctor */
-  MyPlugin(OfxImageEffectHandle handle)
+  BasePlugin(OfxImageEffectHandle handle)
     : ImageEffect(handle)
-    , srcClip_(0)
     , dstClip_(0)
   {
-    srcClip_ = fetchClip("Source");
     dstClip_ = fetchClip("Output");
+  }
+
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/** @brief generator effect version of the plugin */
+class GeneratorPlugin : public BasePlugin {
+ public :
+  /** @brief ctor */
+  GeneratorPlugin(OfxImageEffectHandle handle)
+    : BasePlugin(handle)
+  {}
+
+  /** @brief client render function, this is one of the few that must be set */
+  virtual void render(const OFX::RenderArguments &args);
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/** @brief filter version of the plugin */
+class FilterPlugin : public BasePlugin {
+ protected :
+  // do not need to delete this, the ImageEffect is managing them for us
+  OFX::Clip *srcClip_;
+
+ public :
+  /** @brief ctor */
+  FilterPlugin(OfxImageEffectHandle handle)
+    : BasePlugin(handle)
+    , srcClip_(0)
+  {
+    srcClip_ = fetchClip("Source");
   }
 
   /** @brief client render function, this is one of the few that must be set */
   virtual void render(const OFX::RenderArguments &args);
 };
 
-// do nothing at the moment
-void
-MyPlugin::render(const OFX::RenderArguments &args)
-{
-  // get a src image
-  OFX::Image *src = srcClip_->fetchImage(args.time);
-
-  // get a dst image
-  OFX::Image *dst = dstClip_->fetchImage(args.time);
-
-  // do something, but not yet!
-
-  // delete them
-  delete src;
-  delete dst;
-}
 
 /** @brief OFX namespace */
 namespace OFX {
@@ -74,11 +87,14 @@ namespace OFX {
     /** @brief empty load function */
     void loadAction(void)
     {
+      // do anything here that you need to do globally
+      fprintf(stderr, "load called!\n");
     }
 
     /** brief empty unload function */
-    void unloadAction(void)
-    {
+    void unloadAction(void)    {
+      // do anything here that you need to undo globally
+      fprintf(stderr, "unload called!\n");
     }
 
     /** @brief The basic describe function, passed a plugin descriptor */
@@ -89,6 +105,7 @@ namespace OFX {
       desc.setPluginGrouping("OFX Test");
 
       // add the supported contexts, only filter at the moment
+      desc.addSupportedContext(eContextGenerator);
       desc.addSupportedContext(eContextFilter);
 
       // add supported pixel depths
@@ -109,7 +126,7 @@ namespace OFX {
     /** @brief The describe in context function, passed a plugin descriptor and a context */
     void describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context) 
     {
-      // only a filter context
+      // Source clip only in the filter context
       if(context == eContextFilter) {
 	// create the mandated source clip
 	ClipDescriptor *srcClip = desc.defineClip("Source");
@@ -118,29 +135,91 @@ namespace OFX {
 	srcClip->setOptional(false);
 	srcClip->setSupportsTiles(true);
 	srcClip->setIsMask(false);
-
-	// create the mandated output clip
-	ClipDescriptor *dstClip = desc.defineClip("Output");
-	dstClip->addSupportedComponent(ePixelComponentRGBA);
-	dstClip->setTemporalClipAccess(false);
-	dstClip->setOptional(false);
-	dstClip->setSupportsTiles(true);
-	dstClip->setIsMask(false);
-
-	IntParamDescriptor *iParam = desc.defineIntParam("IntParam");
-	iParam->setLabels("Int Param", "Int Param", "Integer Param");
-	iParam->setScriptName("intParam");
-	iParam->setHint("An integer parameter");
-	iParam->setDefault(0);
-	iParam->setRange(-100, 100);
-	iParam->setDislayRange(-100, 100);
       }
+
+      // create the mandated output clip
+      ClipDescriptor *dstClip = desc.defineClip("Output");
+      dstClip->addSupportedComponent(ePixelComponentRGBA);
+      dstClip->setTemporalClipAccess(false);
+      dstClip->setOptional(false);
+      dstClip->setSupportsTiles(true);
+      dstClip->setIsMask(false);
+
+      // make an int param
+      IntParamDescriptor *iParam = desc.defineIntParam("IntParam");
+      iParam->setLabels("Int Param", "Int Param", "Integer Param");
+      iParam->setScriptName("intParam");
+      iParam->setHint("An integer parameter");
+      iParam->setDefault(0);
+      iParam->setRange(-100, 100);
+      iParam->setDislayRange(-100, 100);
     }
 
     /** @brief The create instance function, the plugin must return an object derived from the \ref OFX::ImageEffect class */
-    ImageEffect *createInstance(OfxImageEffectHandle handle)
+    ImageEffect *createInstance(OfxImageEffectHandle handle, ContextEnum context)
     {
-      return new MyPlugin(handle);
+      if(context == eContextFilter) 
+	return new FilterPlugin(handle);
+      else if(context == eContextGenerator) 
+	return new GeneratorPlugin(handle);
     }
   };
 };
+
+
+////////////////////////////////////////////////////////////////////////////////
+/** @brief render for the generator */
+void
+GeneratorPlugin::render(const OFX::RenderArguments &args)
+{
+  OFX::Image *dst = 0;
+
+  try {
+    // get a dst image
+    dst = dstClip_->fetchImage(args.time);
+
+    // push some pixels
+    // blah;
+    // blah;
+    // blah;
+  }
+  
+  catch(...) {
+    delete dst;
+    throw;
+  }
+
+  // delete them
+  delete dst;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/** @brief render for the filter */
+void
+FilterPlugin::render(const OFX::RenderArguments &args)
+{
+  OFX::Image *src = 0, *dst = 0;
+
+  try {
+    // get a src image
+    src = srcClip_->fetchImage(args.time);
+
+    // get a dst image
+    dst = dstClip_->fetchImage(args.time);
+
+    // push some pixels
+    // blah;
+    // blah;
+    // blah;
+  }
+  
+  catch(...) {
+    delete src;
+    delete dst;
+    throw;
+  }
+
+  // delete them
+  delete src;
+  delete dst;
+}

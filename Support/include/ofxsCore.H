@@ -141,6 +141,8 @@ namespace OFX {
     /** @brief construct a property set */
     PropertySet(OfxPropertySetHandle h = 0) : _propHandle(h) {}
     virtual ~PropertySet();
+
+    /** @brief set the handle to use for this set */
     void propSetHandle(OfxPropertySetHandle h) { _propHandle = h;}
 
     /** @brief return the handle for this property set */

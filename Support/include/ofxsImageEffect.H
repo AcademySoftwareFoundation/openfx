@@ -118,10 +118,6 @@ namespace OFX {
   extern ImageEffectHostDescription *gHostDescription;
 
   ////////////////////////////////////////////////////////////////////////////////
-  /** @brief map a std::string to a context enum */
-  ContextEnum mapToContextEnum(const std::string &s);
-
-  ////////////////////////////////////////////////////////////////////////////////
   /** @brief Wraps up a clip */
   class ClipDescriptor {
   protected :
@@ -534,7 +530,7 @@ namespace OFX {
     void describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context);
 
     /** @brief The create instance function, the plugin must return an object derived from the \ref OFX::ImageEffect class */
-    ImageEffect *createInstance(OfxImageEffectHandle handle);
+    ImageEffect *createInstance(OfxImageEffectHandle handle, ContextEnum context);
   };
 
 };

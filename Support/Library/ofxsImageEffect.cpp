@@ -721,10 +721,7 @@ namespace OFX {
     , _context(eContextNone)
   {
     // get the property handle
-    OfxPropertySetHandle props;
-    OfxStatus stat = OFX::Private::gEffectSuite->getPropertySet(handle, &props);
-    throwSuiteStatusException(stat);
-    _effectProps.propSetHandle(props);
+    _effectProps = OFX::Private::fetchEffectProps(handle);
 
     // fetch the context
     std::string ctxt = _effectProps.propGetString(kOfxImageEffectPropContext);
@@ -732,7 +729,7 @@ namespace OFX {
 
     // the param set daddy-oh
     OfxParamSetHandle paramSet;
-    stat = OFX::Private::gEffectSuite->getParamSet(handle, &paramSet);
+    OfxStatus stat = OFX::Private::gEffectSuite->getParamSet(handle, &paramSet);
     throwSuiteStatusException(stat);
     setParamSetHandle(paramSet);      
 

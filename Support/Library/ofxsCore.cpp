@@ -65,7 +65,7 @@ namespace OFX {
   
   /** @brief map a std::string to a context */
   ContextEnum 
-  mapToContextEnum(const std::string &s)
+  mapToContextEnum(const std::string &s) throw(std::invalid_argument)
   {
     if(s == kOfxImageEffectContextGenerator) return eContextGenerator;
     if(s == kOfxImageEffectContextFilter) return eContextFilter;
@@ -73,7 +73,8 @@ namespace OFX {
     if(s == kOfxImageEffectContextPaint) return eContextPaint;
     if(s == kOfxImageEffectContextGeneral) return eContextGeneral;
     if(s == kOfxImageEffectContextRetimer) return eContextRetimer;
-    return eContextNone;
+    OFX::Log::error(true, "Unknown image effect context '%s'", s.c_str());
+    throw std::invalid_argument(s);
   }
   
 
@@ -145,7 +146,7 @@ namespace OFX {
     /** @brief Library side load action, this fetches all the suite pointers */
     void loadAction(void)
     {
-      OFX::Log::print("loadAction - start();\n{");
+      OFX::Log::print("loadAction start();\n{");
       OFX::Log::error(gLoadCount != 0, "Load action called more than once without unload being called;");
       gLoadCount++;  
   
@@ -154,7 +155,7 @@ namespace OFX {
       try {
 	// fetch the suites
 	OFX::Log::error(gHost == 0, "Host pointer has not been set;");
-	if(!gHost) OFX::Exception::Suite(kOfxStatErrBadHandle);
+	if(!gHost) throw OFX::Exception::Suite(kOfxStatErrBadHandle);
     
 	if(gLoadCount == 0) {
 	  gEffectSuite    = (OfxImageEffectSuiteV1 *) fetchSuite(kOfxImageEffectSuite, 1);
@@ -179,19 +180,19 @@ namespace OFX {
 	OFX::Validation::validateHostProperties(gHost);
       }
   
-      catch(OFX::Exception::HostInadequate ex) {
-	OFX::Log::print("}loadAction - stop;");
-	throw(ex);
+      catch(...) {
+	OFX::Log::print("}loadAction stop;");
+	throw;
       }
   
-      OFX::Log::print("}loadAction - stop;");
+      OFX::Log::print("}loadAction stop;");
     }
 
     /** @brief Library side unload action, this fetches all the suite pointers */
     void
     unloadAction(void)
     {
-      OFX::Log::print("unloadAction - start();\n{");
+      OFX::Log::print("unloadAction start();\n{");
       gLoadCount--;
       OFX::Log::error(gLoadCount != 0, "UnLoad action called without a corresponding load action having been called;");
   
@@ -203,7 +204,7 @@ namespace OFX {
       gThreadSuite = 0;
       gMessageSuite = 0;
       gInteractSuite = 0;
-      OFX::Log::print("}unloadAction - stop;");
+      OFX::Log::print("}unloadAction stop;");
     }
 
 
@@ -265,6 +266,17 @@ namespace OFX {
       effectInstance->render(renderArgs);
     }
 
+    /** @brief fetch the effect property set from the ImageEffectHandle */
+    OFX::PropertySet
+    fetchEffectProps(OfxImageEffectHandle handle)
+    {
+      // get the property handle
+      OfxPropertySetHandle propHandle;
+      OfxStatus stat = OFX::Private::gEffectSuite->getPropertySet(handle, &propHandle);
+      throwSuiteStatusException(stat);
+      return OFX::PropertySet(propHandle);
+    }
+
     /** @brief Checks the handles passed into the plugin's main entry point */
     void
     checkMainHandles(const std::string &action,  const void *handle, 
@@ -303,6 +315,8 @@ namespace OFX {
 	      OfxPropertySetHandle	 inArgsRaw,
 	      OfxPropertySetHandle	 outArgsRaw)
     {
+      
+      OFX::Log::print("pluginMain  start()\n{");
       OfxStatus stat = kOfxStatReplyDefault;
       try {
 	// Cast the raw handle to be an image effect handle, because that is what it is
@@ -360,9 +374,16 @@ namespace OFX {
 	}
 	else if(action == kOfxActionCreateInstance) {
 	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
+	  
+	  // fetch the effect props to figure the context
+	  PropertySet effectProps = fetchEffectProps(handle);
 
-	  // make the image effect instance
-	  ImageEffect *instance = OFX::Plugin::createInstance(handle);
+	  // get the context and turn it into an enum
+	  std::string str = effectProps.propGetString(kOfxImageEffectPropContext);
+	  ContextEnum context = mapToContextEnum(str);
+
+	  // make the image effect instance for this context
+	  ImageEffect *instance = OFX::Plugin::createInstance(handle, context);
 	}
 	else if(action == kOfxActionDestroyInstance) {
 	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
