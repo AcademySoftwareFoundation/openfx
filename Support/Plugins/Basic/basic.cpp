@@ -634,6 +634,7 @@ namespace OFX {
             // create the mandated source clip
             ClipDescriptor *srcClip = desc.defineClip("Source");
             srcClip->addSupportedComponent(ePixelComponentRGBA);
+            srcClip->addSupportedComponent(ePixelComponentAlpha);
             srcClip->setTemporalClipAccess(false);
             srcClip->setOptional(false);
             srcClip->setSupportsTiles(true);
@@ -642,6 +643,7 @@ namespace OFX {
             // create the mandated output clip
             ClipDescriptor *dstClip = desc.defineClip("Output");
             dstClip->addSupportedComponent(ePixelComponentRGBA);
+            dstClip->addSupportedComponent(ePixelComponentAlpha);
             dstClip->setSupportsTiles(true);
 
             // make some pages and to things in 
