@@ -336,8 +336,9 @@ interactPenMotion(OfxImageEffectHandle pluginInstance,
 
     // set the value of the 'point' param
     setCustomParam(pluginInstance, penPos.x, penPos.y);
+    return kOfxStatOK;
   }
-  return kOfxStatOK;
+  return kOfxStatReplyDefault;
 }
 
 static OfxStatus
@@ -367,9 +368,11 @@ interactPenDown(OfxImageEffectHandle pluginInstance,
   // see if the pen is within 5 screen pixels of the point, in which case, select it
   double penPos[2];
   gPropHost->propGetDoubleN(inArgs, kOfxInteractPropPenPosition, 2, penPos);
-  if(fabs(x - penPos[0]) < 5 * pixelScale[0] && fabs(y - penPos[1]) < 5 * pixelScale[1])
+  if(fabs(x - penPos[0]) < 5 * pixelScale[0] && fabs(y - penPos[1]) < 5 * pixelScale[1]) {
     data->selected = true;   
-  return kOfxStatOK;
+    return kOfxStatOK;
+  }
+  return kOfxStatReplyDefault;
 }
 
 static OfxStatus
@@ -380,10 +383,12 @@ interactPenUp(OfxImageEffectHandle pluginInstance,
   // get my data handle
   MyInteractData *data = getInteractData(interactInstance);
   
-  // pen's gone up, deselect
-  data->selected = false;
-
-  return kOfxStatOK;
+  if(data->selected) {
+    // pen's gone up, deselect
+    data->selected = false;
+    return kOfxStatOK;
+  }
+  return kOfxStatReplyDefault;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
