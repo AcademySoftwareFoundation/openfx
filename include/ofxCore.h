@@ -42,7 +42,7 @@ Contains the core OFX architectural struct and function definitions. For more de
 */
 
 
-/** @brief Platform independant export macro.
+/** @brief Platform independent export macro.
  *
  * This macro is to be used before any symbol that is to be
  * exported from a plug-in. This is OS/compiler dependant.
@@ -59,26 +59,26 @@ typedef struct OfxPropertySetStruct *OfxPropertySetHandle;
 /** @brief OFX status return type */
 typedef int OfxStatus;
 
-/** @brief Genric host structure passed to OfxPlugin::setHost function
+/** @brief Generic host structure passed to OfxPlugin::setHost function
 
-    This structure contains what is needed by a plugin to bootstrap it's connection
+    This structure contains what is needed by a plug-in to bootstrap it's connection
     to the host.
 */
 typedef struct OfxHost {
   /** @brief Global handle to the host. Extract relevant host properties from this.
-      This pointer will be valid while the binary containing the plugin is loaded.
+      This pointer will be valid while the binary containing the plug-in is loaded.
    */
   OfxPropertySetHandle host;
 
-  /** @brief The function which the plugin uses to fetch suites from the host.
+  /** @brief The function which the plug-in uses to fetch suites from the host.
 
       \arg \e host          - the host the suite is being fetched from this \em must be the \e host member of the OfxHost struct containing fetchSuite.
       \arg \e suiteName     - ASCII string labelling the host supplied API
       \arg \e suiteVersion  - version of that suite to fetch
 
-      Any API fetched will be valid while the binary containing the plugin is loaded.
+      Any API fetched will be valid while the binary containing the plug-in is loaded.
 
-      Repeated calls to fetchSuite with the same parameteres will return the same pointer.
+      Repeated calls to fetchSuite with the same parameters will return the same pointer.
 
       returns
          - NULL if the API is unknown (either the api or the version requested),
@@ -93,20 +93,20 @@ typedef struct OfxHost {
   \arg \e action   - ASCII c string indicating which action to take 
   \arg \e instance - object to which action should be applied, this will need to be cast to the appropriate blind data type depending on the \e action
   \arg \e inData   - handle that contains action specific properties
-  \arg \e outData  - handle where the plugin should set various action specific properties
+  \arg \e outData  - handle where the plug-in should set various action specific properties
 
-  This is how the host generally communicates with a plugin. Entry points are used to pass messages
+  This is how the host generally communicates with a plug-in. Entry points are used to pass messages
   to various objects used within OFX. The main use is within the OfxPlugin struct.
 
-  The exact set of actions is determined by the plugin API that is being implemented, however all plug-ins
-  can perfrom several actions. For the list of actions consult \ref ActionsAll.
+  The exact set of actions is determined by the plug-in API that is being implemented, however all plug-ins
+  can perform several actions. For the list of actions consult \ref ActionsAll.
  */
 typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs);
 
 /** @brief The structure that defines a plug-in to a host.
  *
- * This structure is the first element in any plugin structure
- * using the OFX plugin archecture. By examining it's members
+ * This structure is the first element in any plug-in structure
+ * using the OFX plug-in architecture. By examining it's members
  * a host can determine the API that the plug-in implements,
  * the version of that API, it's name and version.
  *
@@ -114,43 +114,43 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
  *
  */
 typedef struct OfxPlugin {
-  /** Defines the type of the plugin, this will tell the host what the plugin does. eg: an image 
-      effects plugin would be a "OfxImageEffectPlugin"
+  /** Defines the type of the plug-in, this will tell the host what the plug-in does. e.g.: an image 
+      effects plug-in would be a "OfxImageEffectPlugin"
    */
   char		*pluginApi;
 
-  /** Defines the version of the pluginApi that this plugin implements */
+  /** Defines the version of the pluginApi that this plug-in implements */
   int            apiVersion;
 
-  /** String that uniquely labels the plugin amoung all plugins that implement an API.
-      It need not necassarily be human sensible, however the prefererence is to use reverse
+  /** String that uniquely labels the plug-in among all plug-ins that implement an API.
+      It need not necessarily be human sensible, however the preference is to use reverse
       internet domain name of the developer, followed by a '.' then by a name that represents
-      the plugin.. It must be a legal ASCII string and have no whitespace in the
+      the plug-in.. It must be a legal ASCII string and have no whitespace in the
       name and no non printing chars.
       For example "uk.co.somesoftwarehouse.myPlugin"
   */
   char 		*pluginIdentifier; 
   
-  /** Major version of this plugin, this gets incremented when backwards compatibility is broken. */
+  /** Major version of this plug-in, this gets incremented when backwards compatibility is broken. */
   unsigned int 	 pluginVersionMajor;
   
-  /**  Major version of this plugin, this gets incremented when sofware is changed,
+  /**  Major version of this plug-in, this gets incremented when software is changed,
        but does not break backwards compatibility. */
   unsigned int   pluginVersionMinor;
 
-  /** @brief Function the host uses to conect the plugin to the host's api fetcher
+  /** @brief Function the host uses to connect the plug-in to the host's api fetcher
       
       \arg \e fetchApi - pointer to host's API fetcher
 
       Mandatory function. 
 
-      The very first function called in a plug-in. The plugin \em must \em not call any OFX functions within this, it must only set it's local copy of the host pointer.
+      The very first function called in a plug-in. The plug-in \em must \em not call any OFX functions within this, it must only set it's local copy of the host pointer.
 
       \pre
         - nothing else has been called
 
       \post
-        - the pointer suite is valid until the plugin is unloaded
+        - the pointer suite is valid until the plug-in is unloaded
   */
   void     (*setHost)(OfxHost *host);
  
@@ -158,8 +158,8 @@ typedef struct OfxPlugin {
 
   Mandatory function.
 
-  The exact set of actions is determined by the plugin API that is being implemented, however all plug-ins
-  can perfrom several actions. For the list of actions consult \ref ActionsAll.
+  The exact set of actions is determined by the plug-in API that is being implemented, however all plug-ins
+  can perform several actions. For the list of actions consult \ref ActionsAll.
 
    Preconditions
       - setHost has been called
@@ -170,7 +170,7 @@ typedef struct OfxPlugin {
 /**
    \defgroup ActionsAll OFX Actions
 
-These are the actions passed to a plugin's 'main' function
+These are the actions passed to a plug-in's 'main' function
 */
 /*@{*/
 
@@ -212,18 +212,18 @@ These are the actions passed to a plugin's 'main' function
 
 /*@}*/
 
-/** @brief Returns the 'nth' plugin implemented inside a binary
+/** @brief Returns the 'nth' plug-in implemented inside a binary
  *
- * Returns a pointer to the 'nth' plugin implemented in the binary. A function of this type
- * must be implemented in and exported from each plugin binary.
+ * Returns a pointer to the 'nth' plug-in implemented in the binary. A function of this type
+ * must be implemented in and exported from each plug-in binary.
  */
 OfxExport OfxPlugin *OfxGetPlugin(int nth);
 
-/** @brief Defines the number of plugins implemented inside a binary
+/** @brief Defines the number of plug-ins implemented inside a binary
  *
  * A host calls this to determine how many plug-ins there are inside
  * a binary it has loaded. A function of this type
- * must be implemented in and exported from each plugin binary.
+ * must be implemented in and exported from each plug-in binary.
  */
 OfxExport int OfxGetNumberOfPlugins(void);
 
@@ -256,7 +256,7 @@ These properties are general properties and  apply to may objects across OFX
 */
 #define kOfxPropIsInteractive "OfxPropIsInteractive"
 
-/** @brief General instance property, used to get and set the 'instance data', which a plugin can use to stash
+/** @brief General instance property, used to get and set the 'instance data', which a plug-in can use to stash
 any private instance data it may want/need on a specific instance
 
     - void * X 1
@@ -315,7 +315,7 @@ any private instance data it may want/need on a specific instance
     - ASCII string X 1
     - currently this can be...
        - ::kOfxChangeUserEdited - the user direclty edited the instance somehow and caused a change to something, this includes undo/redos and resets
-       - ::kOfxChangePluginEdited - the plugin itself has changed the value of the object in some action
+       - ::kOfxChangePluginEdited - the plug-in itself has changed the value of the object in some action
        - ::kOfxChangeTime - the time has changed and this has affected the value of the object because it varies over time
 */
 #define kOfxPropChangeReason "OfxPropChangeReason"
@@ -332,7 +332,7 @@ any private instance data it may want/need on a specific instance
 /** @brief String used as a value to ::kOfxPropChangeReason to indicate a user has changed something */
 #define kOfxChangeUserEdited "OfxChangeUserEdited"
 
-/** @brief String used as a value to ::kOfxPropChangeReason to indicate the plugin itself has changed something */
+/** @brief String used as a value to ::kOfxPropChangeReason to indicate the plug-in itself has changed something */
 #define kOfxChangePluginEdited "OfxChangePluginEdited"
 
 /** @brief String used as a value to ::kOfxPropChangeReason to a time varying object has changed due to a time change */
@@ -426,7 +426,7 @@ typedef struct OfxYUVAColourF {
    \defgroup StatusCodes Status Codes 
 
 These strings are used to identify error states within ofx, they are returned
-by various host suite functions, as well as plugin functions. The valid return codes 
+by various host suite functions, as well as plug-in functions. The valid return codes 
 for each function are documented with that function.
 */
 /*@{*/
@@ -447,16 +447,16 @@ General status codes start at 1 and continue until 999
 
 /** @brief Status error code for a fatal error
 
-  Only returned in the case where the plugin or host cannot continue to function and needs to be restarted. 
+  Only returned in the case where the plug-in or host cannot continue to function and needs to be restarted. 
  */
 #define kOfxStatErrFatal ((int)2)
 
 /** @brief Status error code for an operation on or request for an unknown object */
 #define kOfxStatErrUnknown ((int)3)
 
-/** @brief Status error code returned by plugins when they are missing host functionality, either an API or some optional functionality (eg: custom params).
+/** @brief Status error code returned by plug-ins when they are missing host functionality, either an API or some optional functionality (eg: custom params).
 
-    Plugins returning this should post an appropriate error message stating what they are missing.
+    Plug-Ins returning this should post an appropriate error message stating what they are missing.
  */
 #define kOfxStatErrMissingHostFeature ((int) 4)
 
@@ -502,13 +502,13 @@ General status codes start at 1 and continue until 999
           No source code is below, it is purely Doxygen documentation
   ------------------------------------------------------------------------------*/
 
-/** @mainpage OFX : Open Plugins For Special Effects
+/** @mainpage OFX : Open Plug-Ins For Special Effects
  
 @section mainpageIntro Introduction
 
-OFX consists of several parts built around a core generic plugin architecture which can host more than just visual effects plugins. However, the first plugins to be hosted under OFX are image effect plugins.
+OFX consists of several parts built around a core generic plug-in architecture which can host more than just visual effects plug-ins. However, the first plug-ins to be hosted under OFX are image effect plug-ins.
 
-OFX is fragmented into smaller 'Suites' (see \ref ArchitecturePluginAPIs), which a host system provides to perform specific tasks. These suites are documented separately. The higher level OFX Image Effect Plugin API consists of a set of suites and a set of functions the plugin needs to provide.
+OFX is fragmented into smaller 'Suites' (see \ref ArchitecturePluginAPIs), which a host system provides to perform specific tasks. These suites are documented separately. The higher level OFX Image Effect Plug-In API consists of a set of suites and a set of functions the plug-in needs to provide.
 
 <HR>
 
@@ -551,11 +551,11 @@ The API has settled down and is going through the last stages of being shaken ou
 
 What still needs to be done, but with somewhat less urgency...
   - Documentation, loads more needed, but especially
-    - document the status codes returned by all host functions and plugin actions,
+    - document the status codes returned by all host functions and plug-in actions,
   - XML DTD/Schema/whatsit  
   - More Examples 
      - Parameter (not overlay) interact,
-     - a plugin that plays with FPS and fielding on the output clip,
+     - a plug-in that plays with FPS and fielding on the output clip,
      - XML 
   - Clean up documentation and make sure it is consistant (so may revisions, so little time)
   - We need to define linking behaviour on each host OS
@@ -565,13 +565,13 @@ What still needs to be done, but with somewhat less urgency...
  
 <HR>
 @section ArchitectureIntro Architecture
-The basic OFX architecture is actually designed to support a range of plugin types, not just image processing for visual effects. The basic architecture is expandable, versioned and encapsulated, all by forcing plugins and host to be implemented almost solely via function pointers, often encapsulated in structs (for example see the OfxImageEffectSuiteV1 struct).
+The basic OFX architecture is actually designed to support a range of plug-in types, not just image processing for visual effects. The basic architecture is expandable, versioned and encapsulated, all by forcing plug-ins and host to be implemented almost solely via function pointers, often encapsulated in structs (for example see the OfxImageEffectSuiteV1 struct).
 
 OFX is aimed to be unambiguous and complete, efficiency is deliberately a \em secondary consideration. Thus the use of strings over enumerated types. As the OFX API's will be exercised relatively lightly and infrequently (compared with the cost of processing of images), this should have practically no impact on the overall performance of plug-ins and hosts using the API.
 
 <HR>
 @section ArchitectureLanguage Language
-The OFX plugin Architecture is implemented via prototyped 'C'.
+The OFX plug-in Architecture is implemented via prototyped 'C'.
 
 <HR>
 @section ArchitectureDefinition Definition and Implementation
@@ -593,8 +593,8 @@ Within OFX a <B>Suite</B> specifically refers to set of function pointers inside
 Suites are implemented in the host are are retrieved by a plug-in using the OfxHost::fetchSuite function, which is a function pointer within the OfxHost struct.
 
 <HR>
-@section ArchitecturePluginIdenification Identifiying A Plugin
-The OfxGetPlugin call in the plugin's binary returns a pointer that, in all cases, points to memory that starts with the OfxPlugin C struct.
+@section ArchitecturePluginIdenification Identifiying A Plug-In
+The OfxGetPlugin call in the plug-in's binary returns a pointer that, in all cases, points to memory that starts with the OfxPlugin C struct.
 
 When a host gets a pointer back from OfxGetPlugin, it examines the string OfxPlugin::pluginApi. This identifies what kind of plugin it is. For the case of image processing effects, this is "OfxImageEffectPlugin", for sound processing plugins, this will most likely be "OfxSoundEffectPlugin" and so on. 
 
@@ -734,12 +734,12 @@ The directory hierarchy is as follows.....
 	        - ...
 	        - PLUGIN_N.png
 	    - ARCHITECTURE_A
-	        - NAME.osx
+	        - NAME.ofx
 	    - ARCHITECTURE_B
-	        - NAME.osx
+	        - NAME.ofx
 	    ....
 	    - ARCHITECTURE_N
-	        - NAME.osx
+	        - NAME.ofx
  
 Where...
   - Info.plist is relevant for OSX only and needs to be filled in appropriately,
@@ -1155,21 +1155,11 @@ The \e outArgs handle is redundant and is null.
 
 /** @page ExternalResourcesPage OFX : Externally Specified Resources.
 
-UNFINISHED 
-
 @section ExternalResourcesIntro Introduction
 
-Plugins will need to modify their behaviour on a host by host basis, mainly to tune their parameter
-layout so they can fit in neatly with the host.
+Plug-ins need to be internationalised, or they may need to have their interface tweaked slightly to appear cleanly on specific hosts. Rather than have huge if/elseif/elseif statements inside a binary to switch on host and locale, OFX allows you to supply values for certain properties in a separate resource file.
 
-Also, to provide internationalisation, plug-ins must be able to respecify various labels in the relevant 
-language.
-
-To do this, OFX allows for the external specification of certain properties \e which \e override \e any \e values 
-\e set \e in \e the \e binary.
-
-These properties are specified in a separate XML file. This XML file has a DTD? Schema? (which one) that specifies its
-layout.
+Each ofx binary may have a single xml file associated with it that is contains resource overrides for various properties of the plugin. Typically, the properties being changed are to do with user interface labels and layouts, as well as a few other things such as default values for parameters and so on. The DTD for the XML is found in <b> ofx.dtd </b> in the openfx include directory.
 
 The XML file contains one of more sets of property respecifications, these are broken down into individual sets via
 a host/locale paring. For example you can re-specify for host the "com.acme::compositor" in the locale "Japan". 
@@ -1179,13 +1169,6 @@ host or local does.
 
 If you are simply using your resource file for internationalisation, you can specify a property set for all hosts by
 setting the host to "default" and the locale to your needed local.
-
-The value of a property is set by one of the following, in order of precedence,
-  -# extact match of host and locale
-  -# default host and exact locale
-  -# exact match of host and default locale
-  -# default host and default locale
-  -# value set by the plug-in in the binary
 
 In this way a plugin can respecify the labels for all hosts in the "Japan" local and but still be able to layout (but not necassarilly relabel) params on a per host basis separately.
 
@@ -1220,8 +1203,6 @@ The following parameter properties can be overridden,
 - ::kOfxParamPropHint 
 - ::kOfxParamPropDefault 
 - ::kOfxParamPropDoubleType
-- ::kOfxParamPropPageChild 
-- ::kOfxParamPropParent 
 - ::kOfxParamPropEnabled 
 - ::kOfxParamPropChoiceOption 
 - ::kOfxParamPropShowTimeMarker 
@@ -1237,8 +1218,7 @@ The following parameter properties can be overridden,
 <HR>
 @section ExternalResourcesLayout Layout
 
-You cannot define new parameters or delete them, with the exception of page and group parameters. Page and grouping params can be completely
-redefine in a resource file, adding new ones, reorderring them and so on. You can then freely add parameters to the group and page parameters.
+You can redefine the hierarchical grouping and the page layout of parameters in the resource file. However, this cannot be done in the default context, it can only be done in actual context definitions (see the examples and the DTD for clarification).
 
 Note that some hosts may allow the same parameter to appear on multiple pages, but in no case can a parameter appear in more than one hierarchical group.
 
@@ -1274,8 +1254,20 @@ Also note that the formatting of the positional argument does not change.
 A host can define it's own GUI related properties which a plugin can use, either in an XML file or in the binary. For example a host that allows 
 free form layout of params in pages could define a property that specifies the location and size of the parameter's gui element in pixels.
 
+<HR>
+@section ExternalResourcesMatchingProperties Property Matching Rules
+
+Because of the ability to 'default' hosts, locales and contexts, there is potentially ambiguity as to what property applies in which case, as the same property may be set in more that one valid location. In order of precedence, a property has its value set from the resource file if a match is found according to...
+   - exact locale,   exact host,   exact context
+   - exact locale,   exact host,   default context
+   - exact locale,   default host, exact context
+   - exact locale,   default host, default context
+   - default locale, exact host,   exact context
+   - default locale, exact host,   default context
+   - default locale, default host, exact context
+   - default locale, default host, default context
+
 @section ExternalResourcesQuestions Questions
-- we need a DTD or scheme or whatever it is to specify all this nonsense
 - we need a list of locales
 
 
