@@ -2079,8 +2079,6 @@ A host may need to abort a backgrounded render, typically in response to a user 
 
     How an image effect is intended to be used by an end user affects how it should interact with a host application. For example an effect that is to be used as a transition between two clips works differently to an effect that is a simple filter. One must have two inputs and know how much to mix between the two input clips, the other has fewer constraints on it. Within OFX we have standardised several different uses and have called them \b contexts. 
 
-    An immage effect plugins can also be used in several different contexts, for example, this allows the same plugin to be used as a no input image generator, a single input 'filter' effect and a multiple input tree effect. 
-
     More specifically, a context mandates certain behaviours from an effect when it is described or instantiated in that context. The major issue is the number of input clips it takes, and how it can interact with those input clips.
 
 The current contexts supported are,

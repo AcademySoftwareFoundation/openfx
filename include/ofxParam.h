@@ -506,6 +506,9 @@ An disabled parameter will only be disabled in a user interace, the plugin can s
 
     - double X 1
     - defaults to 1
+
+This value is always in cannonical coordinates, even for double parameters that are normalised.
+
 */
 #define kOfxParamPropIncrement "OfxParamPropIncrement"
 
@@ -529,7 +532,7 @@ Use this to override the default labels on the individual dimensions of a multi 
 
     - int X 1
     - 0 or 1
-    read only
+    - read only
 */
 #define kOfxParamPropIsAutoKeying "OfxParamPropIsAutoKeying"
 
@@ -1427,7 +1430,7 @@ For example a plugin that rotates an image in 3D would declare a 3D double param
 
 Double parameters with their ::kOfxParamPropDoubleType property set to ::kOfxParamDoubleTypeScale are interpretted as scale factors. The host can represent these as 1..100 percentages, 0..1 scale factors, fractions or whatever is appropriate for its interface. However, the plugin sees these as a straight scale factor, in the 0..1 range. Applicable to 1, 2 and 3D parameters.
 
-For example a plugin that scales the size of an image would declare a 'image scale' parameter and flag the raw value of that to scale the image.
+For example a plugin that scales the size of an image would declare a 'image scale' parameter and use the raw value of that to scale the image.
 
 @subsection ParameterPropertiesDoubleTypesTime Time Double Parameters 
 
@@ -1461,6 +1464,14 @@ Parameters can choose to be normalised in several ways...
       - ::kOfxParamDoubleTypeNormalisedXYAbsolute - normalised to the projects X and Y size, and is an absolute position on the image plane.
 
 See \ref ImageEffectsCoordinates from more on coordinate systems and how to scale parameters.
+
+
+@subsection ParameterPropertiesDoubleTypesDefaultsAndAll Double Parameters Defaults, Increments, Mins and Maxs
+
+In all cases double parameters' defaults, minimums and maximums are specified in the same space as the parameter, as is the increment in all cases but normalised parameters.
+
+Normalised parameters specify thier increments in cannonical coordinates, rather than in normalised coordinates. So an increment of '1' means 1 pixel, not '1 project width', otherwise sliders would be a bit wild.
+
 */
 
 
