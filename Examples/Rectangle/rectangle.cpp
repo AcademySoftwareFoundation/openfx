@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   Ofx Example plugin that show a plugin that can work as a generator, filter and 
   generic plugin. 
 
-  It draws a rectangle over a background (or not if a generator).
+  It draws a rectangle over a background (or just a rectangle if a generator).
 
   It is meant to illustrate certain features of the API, as opposed to being a perfectly
   crafted piece of image processing software.
@@ -203,12 +203,28 @@ getSpatialRoD(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs, OfxPrope
     // or this with the input RoD
     OfxRectD sourceRoD;
     gEffectHost->clipGetRegionOfDefinition(myData->sourceClip, time, &sourceRoD);
+    
+    // check to see if the source RoD is infinite in X
+    if(ofxuInfiniteRectInX(sourceRoD)) {
+      rod.x1 = kOfxFlagInfiniteMin;
+      rod.x2 = kOfxFlagInfiniteMax;
+    }
+    else {
+      // find the union of the clip rod and our geometry
+      rod.x1 = Minimum(rod.x1, sourceRoD.x1);
+      rod.x2 = Maximum(rod.x2, sourceRoD.x2);
+    }
 
-    // find the union of the clip rod and our geometry
-    rod.x1 = Minimum(rod.x1, sourceRoD.x1);
-    rod.y1 = Minimum(rod.y1, sourceRoD.y1);
-    rod.x2 = Maximum(rod.x2, sourceRoD.x2);
-    rod.y2 = Maximum(rod.y2, sourceRoD.y2);
+    // check to see if the source RoD is infinite in Y
+    if(ofxuInfiniteRectInY(sourceRoD)) {
+      rod.y1 = kOfxFlagInfiniteMin;
+      rod.y2 = kOfxFlagInfiniteMax;
+    } 
+    else {
+      // find the union of the clip rod and our geometry
+      rod.y1 = Minimum(rod.y1, sourceRoD.y1);
+      rod.y2 = Maximum(rod.y2, sourceRoD.y2);
+    }
   }
 
   // and set the rod in the out args
