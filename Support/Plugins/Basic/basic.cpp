@@ -1,7 +1,7 @@
 /*
   OFX Basic Example plugin, a plugin that illustrates the use of the OFX Support library.
 
-  Copyright (C) 2004 The Foundry Visionmongers Ltd
+  Copyright (C) 2004-2005 The Foundry Visionmongers Ltd
   Author Bruno Nicoletti bruno@thefoundry.co.uk
 
   This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
@@ -25,6 +25,8 @@
 #include <stdio.h>
 #include "ofxsImageEffect.H"
 #include "ofxsMultiThread.H"
+
+#include "../include/ofxsProcessing.H"
 
 ////////////////////////////////////////////////////////////////////////////////
 // a dumb interact that just draw's a square you can drag
@@ -58,7 +60,143 @@ public :
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/** @brief base class of the plugin */
+// rendering routines
+template <class T> inline T
+Minimum(T a, T b) {    return (a < b) ? a : b;}
+
+template <class T> inline T
+Absolute(T a) { return (a < 0) ? -a : a;}
+
+template <class T> inline T 
+Clamp(T v, int min, int max)
+{
+    if(v < T(min)) return T(min);
+    if(v > T(max)) return T(max);
+    return v;
+}
+
+// Base class for the RGBA and the Alpha processor
+class ImageScaler : public OFX::ImageProcessor {
+protected :
+    OFX::Image *_srcImg;
+    double _rScale, _gScale, _bScale, _aScale;
+
+public :
+    /** @brief no arg ctor */
+    ImageScaler(OFX::ImageEffect &instance)
+      : OFX::ImageProcessor(instance)
+      , _srcImg(0)
+      , _rScale(1)
+      , _gScale(1)
+      , _bScale(1)
+      , _aScale(1)
+    {        
+    }
+
+    /** @brief set the src image */
+    void srcImg(OFX::Image *v) {_srcImg = v;}
+
+    /** @brief set the scale */
+    void scales(float r, float g, float b, float a)
+    {
+        _rScale = r;
+        _gScale = g;
+        _bScale = b;
+        _aScale = a;
+    }
+    
+};
+
+// template to do the RGBA processing
+template <class PIX, int max, int isFloat>
+class RGBAImageScaler : public ImageScaler {
+public :
+    // ctor
+    RGBAImageScaler(OFX::ImageEffect &instance) 
+      : ImageScaler(instance)
+    {}
+
+    // and do some processing
+    void multiThreadProcessImages(OfxRectI procWindow)
+    {
+        for(int y = procWindow.y1; y < procWindow.y2; y++) {
+            if(_effect.abort()) break;
+
+            PIX *dstPix = (PIX *) _dstImg->pixelAddress(procWindow.x1, y);
+
+            for(int x = procWindow.x1; x < procWindow.x2; x++) {
+        
+                PIX *srcPix = (PIX *)  (_srcImg ? _srcImg->pixelAddress(x, y) : 0);
+        
+                if(srcPix) {
+                    // switch will be compiled out
+                    if(isFloat) {
+                        dstPix->r = srcPix->r * _rScale;
+                        dstPix->g = srcPix->g * _gScale;
+                        dstPix->b = srcPix->b * _bScale;
+                        dstPix->a = srcPix->a * _aScale;
+                    }
+                    else {
+                        dstPix->r = Clamp(int(srcPix->r * _rScale), 0, max);
+                        dstPix->g = Clamp(int(srcPix->g * _gScale), 0, max);
+                        dstPix->b = Clamp(int(srcPix->b * _bScale), 0, max);
+                        dstPix->a = Clamp(int(srcPix->a * _aScale), 0, max);
+                    }
+                    srcPix++;
+                }
+                else {
+                    dstPix->r = dstPix->g = dstPix->b = dstPix->a= 0;
+                }
+                dstPix++;
+            }
+        }
+    }
+    
+};
+
+// template to do the Alpha processing
+template <class PIX, int max, int isFloat>
+class AlphaImageScaler : public ImageScaler {
+public :
+    // ctor
+    AlphaImageScaler(OFX::ImageEffect &instance) 
+      : ImageScaler(instance)
+    {}
+
+    // and do some processing
+    void multiThreadProcessImages(OfxRectI procWindow)
+    {
+        for(int y = procWindow.y1; y < procWindow.y2; y++) {
+            if(_effect.abort()) break;
+
+            PIX *dstPix = (PIX *) _dstImg->pixelAddress(procWindow.x1, y);
+
+            for(int x = procWindow.x1; x < procWindow.x2; x++) {
+        
+                PIX *srcPix = (PIX *)  (_srcImg ? _srcImg->pixelAddress(x, y) : 0);
+
+                if(srcPix) {
+                    // switch will be compiled out
+                    if(isFloat) {
+                        *dstPix = *srcPix * _aScale;
+                    }
+                    else {
+                        *dstPix = Clamp(int(*srcPix * _aScale), 0, max);
+                    }
+                    srcPix++;
+                }
+                else {
+                    *dstPix = 0;
+                }
+                dstPix++;
+            }
+        }
+    }
+    
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/** @brief The plugin that does our work */
 class BasicPlugin : public OFX::ImageEffect {
 protected :
     // do not need to delete these, the ImageEffect is managing them for us
@@ -115,6 +253,11 @@ public :
 
     /* override for the interact creation */
     virtual OFX::OverlayInteract *createOverlayInteract(OfxInteractHandle handle);
+
+
+    /* set up and run a processor */
+    void
+    setupAndProcess(ImageScaler &, const OFX::RenderArguments &args);
 };
 
 
@@ -122,318 +265,107 @@ public :
 /** @brief render for the filter */
 
 ////////////////////////////////////////////////////////////////////////////////
-// rendering routines
-
-template <class T> inline T
-Minimum(T a, T b) {    return (a < b) ? a : b;}
-
-template <class T> inline T
-Absolute(T a) { return (a < 0) ? -a : a;}
+// basic plugin render function, just a skelington to instantiate templates from
 
 
-
-template <class T> inline T 
-Clamp(T v, int min, int max)
-{
-    if(v < T(min)) return T(min);
-    if(v > T(max)) return T(max);
-    return v;
-}
-
-// look up a pixel in the image, does bounds checking to see if it is in the image rectangle
-template <class PIX> inline PIX *
-pixelAddress(PIX *img, OfxRectI rect, int x, int y, int bytesPerLine)
-{  
-    if(x < rect.x1 || x >= rect.x2 || y < rect.y1 || y > rect.y2)
-        return 0;
-    PIX *pix = (PIX *) (((char *) img) + (y - rect.y1) * bytesPerLine);
-    pix += x - rect.x1;  
-    return pix;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// base class to process images with
-class Processor : public OFX::MultiThread::Processor {
-protected :
-    OFX::ImageEffect *  instance;
-    float         rScale, gScale, bScale, aScale;
-    void *srcV, *dstV; 
-    OfxRectI srcRect, dstRect;
-    int srcBytesPerLine, dstBytesPerLine;
-    OfxRectI  window;
-
-public :
-    Processor(OFX::ImageEffect *  inst,
-              float rScal, float gScal, float bScal, float aScal,
-              void *src, OfxRectI sRect, int sBytesPerLine,
-              void *dst, OfxRectI dRect, int dBytesPerLine,
-              OfxRectI  win)
-      : instance(inst)
-      , rScale(rScal)
-      , gScale(gScal)
-      , bScale(bScal)
-      , aScale(aScal)
-      , srcV(src)
-      , dstV(dst)
-      , srcRect(sRect)
-      , dstRect(dRect)
-      , srcBytesPerLine(sBytesPerLine)
-      , dstBytesPerLine(dBytesPerLine)
-      , window(win)
-    {}  
-
-    // @brief this function is called once per thread by the base calls
-    void multiThreadFunction(unsigned int threadId, unsigned int nThreads);
-
-    // this is called by  multiThreadFunction to actually process images
-    virtual void processImages(OfxRectI window) = 0;
-};
-
-
-// function call once for each thread by the host
+/* set up and run a processor */
 void
-Processor::multiThreadFunction(unsigned int threadId, unsigned int nThreads)
+BasicPlugin::setupAndProcess(ImageScaler &processor, const OFX::RenderArguments &args)
 {
-    // slice the y range into the number of threads it has
-    unsigned int dy = window.y2 - window.y1;
+    // get a dst image
+    std::auto_ptr<OFX::Image> dst(dstClip_->fetchImage(args.time));
+    OFX::BitDepthEnum dstBitDepth       = dst->pixelDepth();
+    OFX::PixelComponentEnum dstComponents  = dst->pixelComponents();
   
-    unsigned int y1 = window.y1 + threadId * dy/nThreads;
-    unsigned int y2 = window.y1 + Minimum((threadId + 1) * dy/nThreads, dy);
+    // fetch main input image
+    std::auto_ptr<OFX::Image> src(srcClip_->fetchImage(args.time));
 
-    OfxRectI win = window;
-    win.y1 = y1; win.y2 = y2;
+    // make sure bit depths are sane
+    if(src.get()) {
+        OFX::BitDepthEnum    srcBitDepth  = src->pixelDepth();
+        OFX::PixelComponentEnum srcComponents              = src->pixelComponents();
+        
+        // see if they have the same depths and bytes and all
+        if(srcBitDepth != dstBitDepth || srcComponents != dstComponents)
+            throw int(1); // HACK!! need to throw an sensible exception here!
+    }
 
-    // and render that thread on each
-    processImages(win);  
+    // get the scale parameter values...
+    double r, g, b, a = aScale_->getValueAtTime(args.time);
+    r = g = b = scale_->getValueAtTime(args.time);
+
+    // see if the individual component scales are enabled
+    if(componentScalesEnabled_->getValueAtTime(args.time)) {
+        r *= rScale_->getValueAtTime(args.time);
+        g *= gScale_->getValueAtTime(args.time);
+        b *= bScale_->getValueAtTime(args.time);
+    }
+
+    // set the images
+    processor.dstImg(dst.get());
+    processor.srcImg(src.get());
+
+    // set the render window
+    processor.renderWindow(args.renderWindow);
+
+    // set the scales
+    processor.scales(r, g, b, a);
+
+    // Call the base class process member, this will call the derived templated process code
+    processor.process();
 }
 
-// template to do the RGBA processing
-template <class PIX, int max, int isFloat>
-class ProcessRGBA : public Processor {
-public :
-    ProcessRGBA(OFX::ImageEffect *  instance,
-                float rScale, float gScale, float bScale, float aScale,
-                void *srcV, OfxRectI srcRect, int srcBytesPerLine,
-                void *dstV, OfxRectI dstRect, int dstBytesPerLine,
-                OfxRectI  window)
-      : Processor(instance,
-                  rScale, gScale, bScale, aScale,
-                  srcV,  srcRect,  srcBytesPerLine,
-                  dstV,  dstRect,  dstBytesPerLine,
-                  window)
-    {
-    }
-
-    void processImages(OfxRectI procWindow)
-    {
-        PIX *src = (PIX *) srcV;
-        PIX *dst = (PIX *) dstV;
-
-        for(int y = procWindow.y1; y < procWindow.y2; y++) {
-            if(instance->abort()) break;
-
-            PIX *dstPix = pixelAddress(dst, dstRect, procWindow.x1, y, dstBytesPerLine);
-
-            for(int x = procWindow.x1; x < procWindow.x2; x++) {
-        
-                PIX *srcPix = pixelAddress(src, srcRect, x, y, srcBytesPerLine);
-        
-                // figure the scale values per component
-                float sR = 1.0 + (rScale - 1.0);
-                float sG = 1.0 + (gScale - 1.0);
-                float sB = 1.0 + (bScale - 1.0);
-                float sA = 1.0 + (aScale - 1.0);
-
-                if(srcPix) {
-                    // switch will be compiled out
-                    if(isFloat) {
-                        dstPix->r = srcPix->r * sR;
-                        dstPix->g = srcPix->g * sG;
-                        dstPix->b = srcPix->b * sB;
-                        dstPix->a = srcPix->a * sA;
-                    }
-                    else {
-                        dstPix->r = Clamp(int(srcPix->r * sR), 0, max);
-                        dstPix->g = Clamp(int(srcPix->g * sG), 0, max);
-                        dstPix->b = Clamp(int(srcPix->b * sB), 0, max);
-                        dstPix->a = Clamp(int(srcPix->a * sA), 0, max);
-                    }
-                    srcPix++;
-                }
-                else {
-                    dstPix->r = dstPix->g = dstPix->b = dstPix->a= 0;
-                }
-                dstPix++;
-            }
-        }
-    }
-};
-
-// template to do the Alpha processing
-template <class PIX, int max, int isFloat>
-class ProcessAlpha : public Processor {
-public :
-    ProcessAlpha( OFX::ImageEffect *instance,
-                  float scale,
-                  void *srcV, OfxRectI srcRect, int srcBytesPerLine,
-                  void *dstV, OfxRectI dstRect, int dstBytesPerLine,
-                  OfxRectI  window)
-      : Processor(instance,
-                  scale, scale, scale, scale,
-                  srcV,  srcRect,  srcBytesPerLine,
-                  dstV,  dstRect,  dstBytesPerLine,
-                  window)
-    {
-    }
-
-    void processImages(OfxRectI procWindow)
-    {
-        PIX *src = (PIX *) srcV;
-        PIX *dst = (PIX *) dstV;
-
-        for(int y = procWindow.y1; y < procWindow.y2; y++) {
-            if(instance->abort()) break;
-
-            PIX *dstPix = pixelAddress(dst, dstRect, procWindow.x1, y, dstBytesPerLine);
-
-            for(int x = procWindow.x1; x < procWindow.x2; x++) {
-        
-                PIX *srcPix = pixelAddress(src, srcRect, x, y, srcBytesPerLine);
-
-                // figure the scale values per component
-                float theScale = 1.0 + (rScale - 1.0);
-
-                if(srcPix) {
-                    // switch will be compiled out
-                    if(isFloat) {
-                        *dstPix = *srcPix * theScale;
-                    }
-                    else {
-                        *dstPix = Clamp(int(*srcPix * theScale), 0, max);
-                    }
-                    srcPix++;
-                }
-                else {
-                    *dstPix = 0;
-                }
-                dstPix++;
-            }
-        }
-    }
-};
-
-////////////////////////////////////////////////////////////////////////////////
-// basic plugin render function
+// the overridden render function
 void
 BasicPlugin::render(const OFX::RenderArguments &args)
 {
-    OFX::Image *src = 0, *dst = 0;
+    // instantiate the render code based on the pixel depth of the dst clip
+    OFX::BitDepthEnum       dstBitDepth    = dstClip_->pixelDepth();
+    OFX::PixelComponentEnum dstComponents  = dstClip_->pixelComponents();
 
-    try {
-        // get a dst image
-        dst = dstClip_->fetchImage(args.time);
-        int dstRowBytes  =  dst->rowBytes();
-        OFX::BitDepthEnum dstBitDepth  =  dst->pixelDepth();
-        bool dstIsAlpha  =  dst->pixelComponents() == OFX::ePixelComponentAlpha;
-        OfxRectI dstRect =  dst->bounds();
-        void *dstData    =  dst->pixelData();
-  
-        // fetch main input guff
-        src = srcClip_->fetchImage(args.time);
-        int srcRowBytes  =  src->rowBytes();
-        OFX::BitDepthEnum srcBitDepth  =  src->pixelDepth();
-        bool srcIsAlpha  =  src->pixelComponents() ==  OFX::ePixelComponentAlpha;
-        OfxRectI srcRect =  src->bounds();
-        void *srcData    =  src->pixelData();
-        
-        // see if they have the same depths and bytes and all
-        if(srcBitDepth != dstBitDepth || srcIsAlpha != dstIsAlpha)
-            throw int(1); // HACK!! need to throw an error here!
-
-        // get the scale parameters
-        double scale = scale_->getValueAtTime(args.time);
-        double rScale = 1, gScale = 1, bScale = 1, aScale = 1;
-        if(componentScalesEnabled_->getValueAtTime(args.time)) {
-            rScale = rScale_->getValueAtTime(args.time);
-            gScale = gScale_->getValueAtTime(args.time);
-            bScale = bScale_->getValueAtTime(args.time);
-            aScale = aScale_->getValueAtTime(args.time);
+    // do the rendering
+    if(dstComponents == OFX::ePixelComponentRGBA) {
+        switch(dstBitDepth) {
+        case OFX::eBitDepthUByte : {      
+            RGBAImageScaler<OfxRGBAColourB, 255, 0> fred(*this);
+            setupAndProcess(fred, args);
         }
-        rScale *= scale; gScale *= scale; bScale *= scale;
+            break;
 
-        // do the rendering
-        if(!dstIsAlpha) {
-            switch(dstBitDepth) {
-            case OFX::eBitDepthUByte : {      
-                ProcessRGBA<OfxRGBAColourB, 255, 0> fred(this, rScale, gScale, bScale, aScale,
-                                                         srcData, srcRect, srcRowBytes,
-                                                         dstData, dstRect, dstRowBytes,
-                                                         args.renderWindow);
-                fred.multiThread();                                          
-            }
-                break;
+        case OFX::eBitDepthUShort : {
+            RGBAImageScaler<OfxRGBAColourS, 65535, 0> fred(*this);
+            setupAndProcess(fred, args);
+        }                          
+            break;
 
-            case OFX::eBitDepthUShort : {
-                ProcessRGBA<OfxRGBAColourS, 65535, 0> fred(this, rScale, gScale, bScale, aScale,
-                                                           srcData, srcRect, srcRowBytes,
-                                                           dstData, dstRect, dstRowBytes,
-                                                           args.renderWindow);
-                fred.multiThread();           
-            }                          
-                break;
-
-            case OFX::eBitDepthFloat : {
-                ProcessRGBA<OfxRGBAColourF, 1, 1> fred(this, rScale, gScale, bScale, aScale,
-                                                       srcData, srcRect, srcRowBytes,
-                                                       dstData, dstRect, dstRowBytes,
-                                                       args.renderWindow);
-                fred.multiThread();                                          
-                break;
-            }
-            }
+        case OFX::eBitDepthFloat : {
+            RGBAImageScaler<OfxRGBAColourF, 1, 1> fred(*this);
+            setupAndProcess(fred, args);
         }
-        else {
-            switch(dstBitDepth) {
-            case OFX::eBitDepthUByte : {
-                ProcessAlpha<unsigned char, 255, 0> fred(this, scale, 
-                                                         srcData, srcRect, srcRowBytes,
-                                                         dstData, dstRect, dstRowBytes,
-                                                         args.renderWindow);
-                fred.multiThread();                                                                                  
-            }
-                break;
-
-            case OFX::eBitDepthUShort : {
-                ProcessAlpha<unsigned short, 65535, 0> fred(this, scale, 
-                                                            srcData, srcRect, srcRowBytes,
-                                                            dstData, dstRect, dstRowBytes,
-                                                            args.renderWindow);
-                fred.multiThread();           
-            }                          
-                break;
-
-            case OFX::eBitDepthFloat : {
-                ProcessAlpha<float, 1, 1> fred(this, scale, 
-                                               srcData, srcRect, srcRowBytes,
-                                               dstData, dstRect, dstRowBytes,
-                                               args.renderWindow);
-                fred.multiThread();           
-            }                          
-                break;
-            }
-        } // switch
-
-    } // try
-  
-    catch(...) {
-        delete src;
-        delete dst;
-        throw;
+            break;
+        }
     }
+    else {
+        switch(dstBitDepth) {
+        case OFX::eBitDepthUByte : {
+            AlphaImageScaler<unsigned char, 255, 0> fred(*this);
+            setupAndProcess(fred, args);
+        }
+            break;
 
-    // delete them
-    delete src;
-    delete dst;
+        case OFX::eBitDepthUShort : {
+            AlphaImageScaler<unsigned short, 65535, 0> fred(*this);
+            setupAndProcess(fred, args);
+        }                          
+            break;
+
+        case OFX::eBitDepthFloat : {
+            AlphaImageScaler<float, 1, 1> fred(*this);
+            setupAndProcess(fred, args);
+        }                          
+            break;
+        }
+    } // switch
 }
 
 // overridden is identity
