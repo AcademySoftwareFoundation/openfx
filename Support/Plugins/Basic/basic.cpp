@@ -220,8 +220,7 @@ public :
         dstClip_ = fetchClip("Output");
         srcClip_ = fetchClip("Source");
         // name of mask clip depends on the context
-        if(context() != OFX::eContextFilter)
-          maskClip_ = fetchClip(context() == OFX::eContextPaint ? "Brush" : "Mask");
+        maskClip_ = fetchClip(context() == OFX::eContextPaint ? "Brush" : "Mask");
         scale_   = fetchDoubleParam("scale");
         rScale_  = fetchDoubleParam("scaleR");
         gScale_  = fetchDoubleParam("scaleG");
@@ -292,15 +291,16 @@ BasicPlugin::setupAndProcess(ImageScalerBase &processor, const OFX::RenderArgume
             throw int(1); // HACK!! need to throw an sensible exception here!
     }
 
-    // auto ptr for the mask.
-    // Should do this inside the if statement below but the MS compiler I have doesn't have
-    // a 'reset' function on the auto_ptr class
-    std::auto_ptr<OFX::Image> mask(context() != OFX::eContextFilter ? maskClip_->fetchImage(args.time) : 0);
+    // auto ptr for the mask 
+    std::auto_ptr<OFX::Image> mask;
 
     // do we do masking
     if(context() != OFX::eContextFilter) {
         // say we are masking
         processor.doMasking(true);
+
+        // Set the mask autoptr
+        mask.reset(maskClip_->fetchImage(args.time));
 
         // Set it in the processor 
         processor.maskImg(mask.get());
@@ -692,6 +692,7 @@ namespace OFX {
             srcClip->addSupportedComponent(ePixelComponentRGBA);
             srcClip->addSupportedComponent(ePixelComponentAlpha);
             srcClip->setTemporalClipAccess(false);
+            srcClip->setOptional(false);
             srcClip->setSupportsTiles(true);
             srcClip->setIsMask(false);
 
@@ -701,8 +702,7 @@ namespace OFX {
                 ClipDescriptor *maskClip = context == eContextGeneral ? desc.defineClip("Mask") : desc.defineClip("Brush");
                 maskClip->addSupportedComponent(ePixelComponentAlpha);
                 maskClip->setTemporalClipAccess(false);
-                if(context == eContextGeneral)
-                  maskClip->setOptional(true);
+                maskClip->setOptional(context != eContextPaint); // only optional in the general context, not the paint context
                 maskClip->setSupportsTiles(true); 
                 maskClip->setIsMask(true); // we are a mask input
             }
