@@ -1090,7 +1090,10 @@ The \e inArgs parameter contains the following read only properties...
    - ::kOfxChangeUserEdited    - the user direclty edited the instance somehow and caused a change to something, this includes undo/redos and resets
    - ::kOfxChangePluginEdited  - the plugin itself has changed the value of the object in some action
    - ::kOfxChangeTime          - the time has changed and this has affected the value of the object because it varies over time
-- ::kOfxPropTime         - the effect time at which changed occured
+
+If the plugin is an image effect, the inArgs also has the following properties
+   - ::kOfxPropTime         - the effect time at which changed occured
+   - ::kOfxImageEffectPropRenderScale     - the render scale applied to any image fetched
 
 The \e outArgs handle is redundant and set to null.
 

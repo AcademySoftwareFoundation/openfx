@@ -328,7 +328,10 @@ The \e inArgs parameter has the following properties,
 - ::kOfxInteractPropViewportSize - the openGL viewport size for the instance
 - ::kOfxInteractPropPixelScale - the scale factor to convert cannonical pixels to screen pixels
 - ::kOfxInteractPropBackgroundColour - the background colour of the application behind the current view
-- ::kOfxPropTime - the time to draw the interact at
+
+If the plugin is an image effect, the inArgs also has the following properties
+   - ::kOfxPropTime         - the effect time at which changed occured
+   - ::kOfxImageEffectPropRenderScale     - the render scale applied to any image fetched
 
 The \e outArgs parameter is redundant for interacts and set to NULL.
 
@@ -359,7 +362,10 @@ The \e inArgs parameter has the following properties,
 - ::kOfxInteractPropBackgroundColour - the background colour of the application behind the current view
 - ::kOfxInteractPropPenPosition - postion of the pen in,
 - ::kOfxInteractPropPenPressure - the pressure of the pen,
-- ::kOfxPropTime - the time of the action.
+
+If the plugin is an image effect, the inArgs also has the following properties
+   - ::kOfxPropTime         - the effect time at which changed occured
+   - ::kOfxImageEffectPropRenderScale     - the render scale applied to any image fetched
 
 The \e outArgs parameter is redundant for interacts and set to NULL.
 
@@ -377,7 +383,10 @@ Three actions are issued by a host in response to use of a keyboard device by th
   - ::kOfxInteractActionKeyDown - issued whenever a key is depressed, 
   - ::kOfxInteractActionKeyUp - issued whenever a key is released,
   - ::kOfxInteractActionKeyRepeat - issued whenever a continually depressed key issues an auto repeat,
-  - ::kOfxPropTime - the time of the action.
+
+If the plugin is an image effect, the inArgs also has the following properties
+   - ::kOfxPropTime         - the effect time at which changed occured
+   - ::kOfxImageEffectPropRenderScale     - the render scale applied to any image fetched
 
 The \e handle parameter is the \em interact's instance handle (not the effect's). Do not use any openGL calls inside any of these actions.
 
@@ -409,6 +418,10 @@ The \e inArgs parameter has the following properties,
 - ::kOfxInteractPropViewportSize - the openGL viewport size for the instance,
 - ::kOfxInteractPropPixelScale - the scale factor to convert cannonical pixels to screen pixels,
 - ::kOfxInteractPropBackgroundColour - the background colour of the application behind the current view
+
+If the plugin is an image effect, the inArgs also has the following properties
+   - ::kOfxPropTime         - the effect time at which changed occured
+   - ::kOfxImageEffectPropRenderScale     - the render scale applied to any image fetched
 
 The \e outArgs parameter is redundant for interacts and set to NULL.
 
