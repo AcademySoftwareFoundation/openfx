@@ -1,4 +1,19 @@
+/*
+  OFX Support Library, a library that skins the OFX plug-in API with C++ classes.
+  Copyright (C) 2004 The Foundry Visionmongers Ltd
+  Author Bruno Nicoletti bruno@thefoundry.co.uk
 
+  This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+  The Foundry Visionmongers Ltd
+  35-36 Gt Marlborough St 
+  London W1V 7FN
+  England
+*/
 
 #ifdef _WINDOWS
 #include <windows.h>
@@ -16,29 +31,29 @@ static const OfxPointD kBoxSize = {20, 20};
 
 class BasicInteract : public OFX::OverlayInteract {
 protected :
-  enum StateEnum {
-    eInActive,
-    ePoised,
-    ePicked
-  };
+    enum StateEnum {
+        eInActive,
+        ePoised,
+        ePicked
+    };
 
-  OfxPointD _position;
-  StateEnum _state;
+    OfxPointD _position;
+    StateEnum _state;
   
 public :
-  BasicInteract(OfxInteractHandle handle) 
-    : OFX::OverlayInteract(handle)
-    , _state(eInActive)
-  {
-    _position.x = 0;
-    _position.y = 0;
-  }
+    BasicInteract(OfxInteractHandle handle) 
+      : OFX::OverlayInteract(handle)
+      , _state(eInActive)
+    {
+        _position.x = 0;
+        _position.y = 0;
+    }
   
-  // overridden functions from OFX::Interact to do things
-  virtual bool draw(const OFX::DrawArgs &args);
-  virtual bool penMotion(const OFX::PenArgs &args);
-  virtual bool penDown(const OFX::PenArgs &args);
-  virtual bool penUp(const OFX::PenArgs &args);
+    // overridden functions from OFX::Interact to do things
+    virtual bool draw(const OFX::DrawArgs &args);
+    virtual bool penMotion(const OFX::PenArgs &args);
+    virtual bool penDown(const OFX::PenArgs &args);
+    virtual bool penUp(const OFX::PenArgs &args);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -350,27 +365,27 @@ BasicPlugin::render(const OFX::RenderArguments &args)
             switch(dstBitDepth) {
             case OFX::eBitDepthUByte : {      
                 ProcessRGBA<OfxRGBAColourB, 255, 0> fred(this, rScale, gScale, bScale, aScale,
-                                                                        srcData, srcRect, srcRowBytes,
-                                                                        dstData, dstRect, dstRowBytes,
-                                                                        args.renderWindow);
+                                                         srcData, srcRect, srcRowBytes,
+                                                         dstData, dstRect, dstRowBytes,
+                                                         args.renderWindow);
                 fred.multiThread();                                          
             }
                 break;
 
             case OFX::eBitDepthUShort : {
                 ProcessRGBA<OfxRGBAColourS, 65535, 0> fred(this, rScale, gScale, bScale, aScale,
-                                                                           srcData, srcRect, srcRowBytes,
-                                                                           dstData, dstRect, dstRowBytes,
-                                                                           args.renderWindow);
+                                                           srcData, srcRect, srcRowBytes,
+                                                           dstData, dstRect, dstRowBytes,
+                                                           args.renderWindow);
                 fred.multiThread();           
             }                          
                 break;
 
             case OFX::eBitDepthFloat : {
                 ProcessRGBA<OfxRGBAColourF, 1, 1> fred(this, rScale, gScale, bScale, aScale,
-                                                              srcData, srcRect, srcRowBytes,
-                                                              dstData, dstRect, dstRowBytes,
-                                                              args.renderWindow);
+                                                       srcData, srcRect, srcRowBytes,
+                                                       dstData, dstRect, dstRowBytes,
+                                                       args.renderWindow);
                 fred.multiThread();                                          
                 break;
             }
@@ -380,27 +395,27 @@ BasicPlugin::render(const OFX::RenderArguments &args)
             switch(dstBitDepth) {
             case OFX::eBitDepthUByte : {
                 ProcessAlpha<unsigned char, 255, 0> fred(this, scale, 
-                                                                        srcData, srcRect, srcRowBytes,
-                                                                        dstData, dstRect, dstRowBytes,
-                                                                        args.renderWindow);
+                                                         srcData, srcRect, srcRowBytes,
+                                                         dstData, dstRect, dstRowBytes,
+                                                         args.renderWindow);
                 fred.multiThread();                                                                                  
             }
                 break;
 
             case OFX::eBitDepthUShort : {
                 ProcessAlpha<unsigned short, 65535, 0> fred(this, scale, 
-                                                                            srcData, srcRect, srcRowBytes,
-                                                                            dstData, dstRect, dstRowBytes,
-                                                                            args.renderWindow);
+                                                            srcData, srcRect, srcRowBytes,
+                                                            dstData, dstRect, dstRowBytes,
+                                                            args.renderWindow);
                 fred.multiThread();           
             }                          
                 break;
 
             case OFX::eBitDepthFloat : {
                 ProcessAlpha<float, 1, 1> fred(this, scale, 
-                                                      srcData, srcRect, srcRowBytes,
-                                                      dstData, dstRect, dstRowBytes,
-                                                      args.renderWindow);
+                                               srcData, srcRect, srcRowBytes,
+                                               dstData, dstRect, dstRowBytes,
+                                               args.renderWindow);
                 fred.multiThread();           
             }                          
                 break;
@@ -488,123 +503,123 @@ BasicPlugin::createOverlayInteract(OfxInteractHandle handle)
 bool
 BasicInteract::draw(const OFX::DrawArgs &args)
 {
-  switch(_state) {
-  case eInActive : glColor3f(0.0f, 0.0f, 0.0f); break;
-  case ePoised   : glColor3f(0.5f, 0.5f, 0.5f); break;
-  case ePicked   : glColor3f(1.0f, 1.0f, 1.0f); break;
-  }
+    switch(_state) {
+    case eInActive : glColor3f(0.0f, 0.0f, 0.0f); break;
+    case ePoised   : glColor3f(0.5f, 0.5f, 0.5f); break;
+    case ePicked   : glColor3f(1.0f, 1.0f, 1.0f); break;
+    }
 
-  // make the box a constant size on screen by scaling by the pixel scale
-  float dx = kBoxSize.x * args.pixelScale.x;
-  float dy = kBoxSize.y * args.pixelScale.y;
+    // make the box a constant size on screen by scaling by the pixel scale
+    float dx = kBoxSize.x * args.pixelScale.x;
+    float dy = kBoxSize.y * args.pixelScale.y;
 
-  // Draw a cross hair, the current coordinate system aligns with the image plane.
-  glPushMatrix();
+    // Draw a cross hair, the current coordinate system aligns with the image plane.
+    glPushMatrix();
   
-  glTranslated(_position.x, _position.y, 0);
-  glBegin(GL_POLYGON);
-  glVertex2f(-dx, -dy);
-  glVertex2f(-dx,  dy);
-  glVertex2f( dx,  dy);
-  glVertex2f( dx, -dy);
-  glEnd();
-  glPopMatrix();
+    glTranslated(_position.x, _position.y, 0);
+    glBegin(GL_POLYGON);
+    glVertex2f(-dx, -dy);
+    glVertex2f(-dx,  dy);
+    glVertex2f( dx,  dy);
+    glVertex2f( dx, -dy);
+    glEnd();
+    glPopMatrix();
 
-  return true;
+    return true;
 }
   
 // overridden functions from OFX::Interact to do things
 bool 
 BasicInteract::penMotion(const OFX::PenArgs &args)
 {
-  // figure the size of the box in cannonical coords
-  float dx = kBoxSize.x * args.pixelScale.x;
-  float dy = kBoxSize.y * args.pixelScale.y;
+    // figure the size of the box in cannonical coords
+    float dx = kBoxSize.x * args.pixelScale.x;
+    float dy = kBoxSize.y * args.pixelScale.y;
 
-  // pen position is in cannonical coords
-  OfxPointD penPos = args.penPosition;
+    // pen position is in cannonical coords
+    OfxPointD penPos = args.penPosition;
   
-  switch(_state) {
-  case eInActive : 
-  case ePoised   : 
-  {
-    // are we in the box, become 'poised'
-    StateEnum newState;
-    penPos.x -= _position.x;
-    penPos.y -= _position.y;
-    if(Absolute(penPos.x) < dx &&
-       Absolute(penPos.y) < dy) {
-      newState = ePoised;
-    }
-    else {
-      newState = eInActive;
-    }
+    switch(_state) {
+    case eInActive : 
+    case ePoised   : 
+    {
+        // are we in the box, become 'poised'
+        StateEnum newState;
+        penPos.x -= _position.x;
+        penPos.y -= _position.y;
+        if(Absolute(penPos.x) < dx &&
+           Absolute(penPos.y) < dy) {
+            newState = ePoised;
+        }
+        else {
+            newState = eInActive;
+        }
     
-    if(_state != newState) {
-      // we have a new state
-      _state = newState;
+        if(_state != newState) {
+            // we have a new state
+            _state = newState;
 
-      // and force an overlay redraw
-      _effect->redrawOverlays();
+            // and force an overlay redraw
+            _effect->redrawOverlays();
+        }
     }
-  }
-  break;
+    break;
 
-  case ePicked   : 
-  {
-    // move our position
-    _position = penPos;
+    case ePicked   : 
+    {
+        // move our position
+        _position = penPos;
 
-    // and force an overlay redraw
-    _effect->redrawOverlays();
-  }
-  break;
-  }
+        // and force an overlay redraw
+        _effect->redrawOverlays();
+    }
+    break;
+    }
 
-  // we have trapped it only if the mouse ain't over it or we are actively dragging
-  return _state != eInActive;
+    // we have trapped it only if the mouse ain't over it or we are actively dragging
+    return _state != eInActive;
 }
 
 bool 
 BasicInteract::penDown(const OFX::PenArgs &args)
 {
-  // this will refigure the state
-  penMotion(args);
+    // this will refigure the state
+    penMotion(args);
 
-  // if poised means we were over it when the pen went down, so pick it
-  if(_state == ePoised) {
-    // we are now picked
-    _state = ePicked;
+    // if poised means we were over it when the pen went down, so pick it
+    if(_state == ePoised) {
+        // we are now picked
+        _state = ePicked;
 
-    // move our position
-    _position = args.penPosition;
+        // move our position
+        _position = args.penPosition;
 
-    // and request a redraw just incase
-    _effect->redrawOverlays();
-  }
+        // and request a redraw just incase
+        _effect->redrawOverlays();
+    }
 
-  return _state == ePicked;
+    return _state == ePicked;
 }
 
 bool 
 BasicInteract::penUp(const OFX::PenArgs &args)
 {
-  if(_state == ePicked) {
-    // reset to poised for a moment
-    _state = ePoised;
+    if(_state == ePicked) {
+        // reset to poised for a moment
+        _state = ePoised;
     
-    // this will refigure the state
-    penMotion(args);
+        // this will refigure the state
+        penMotion(args);
 
-    // and redraw for good measure
-    _effect->redrawOverlays();
+        // and redraw for good measure
+        _effect->redrawOverlays();
 
-    // we did trap it
-    return true;
-  }
+        // we did trap it
+        return true;
+    }
 
-  // we didn't trap it
-  return false;
+    // we didn't trap it
+    return false;
 }
 
 
