@@ -362,12 +362,33 @@ typedef struct OfxPointD {
 } OfxPointD;
 
 
-/** @brief Defines two dimensional integer region */
+/** @brief Defines two dimensional integer region
+
+Regions are x1 <= x < x2
+
+Infinite regions are flagged by setting
+- x1 = INT_MIN;
+- y1 = INT_MIN;
+- x2 = INT_MAX;
+- y2 = INT_MAX;
+
+ */
 typedef struct OfxRectI {
   int x1, y1, x2, y2;
 } OfxRectI;
 
-/** @brief Defines two dimensional double region */
+/** @brief Defines two dimensional double region
+
+Regions are x1 <= x < x2
+
+Infinite regions are flagged by setting
+- x1 = INT_MIN;
+- y1 = INT_MIN;
+- x2 = INT_MAX;
+- y2 = INT_MAX;
+
+Yes it is INT not FLT to remain consistant with OfxRectI
+ */
 typedef struct OfxRectD {
   double x1, y1, x2, y2;
 } OfxRectD;

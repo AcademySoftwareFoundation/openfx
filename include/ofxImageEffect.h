@@ -2252,6 +2252,8 @@ Infinite RoDs are valid, eg: a no-input noise generator could generate random co
 
 An effect's RoD is constant for a given set of inputs and plugin parameters.
 
+An infinite RoD is flagged by setting the minimums to be INT_MIN and the maxmimums to be INT_MAX, for both double and integer rects.
+
 @subsection ImageEffectsRoI Regions Of Interest and Rendering
 
 An effect will be asked to fill in some region of this infinite plane. The section it is being asked to fill in is called the "Region of Interest" (RoI). 
@@ -2298,6 +2300,19 @@ The image plane is always in a coordinate system of square unscaled pixels. For 
 
 @section PixelCoordinates Pixel Coordinates
 'Real' images, where we have to deal with addressable pixels in memory, are in a coordinate system of non-square proxy scaled integer values. So a PAL D1 image, being renderred as a half resolution proxy would be (0,0) <-> (360, 288), which takes into account both the pixel aspect ratio of 1.067 and a scale factor of 0.5f. We call this the <B> Pixel Coordinate System</B>.
+
+@section InfiniteRegions Infinite Regions
+Sometimes a plug-in needs to specify an infinite region (eg: a noise generator flagging the fact that it has an infinite RoD). Such infinite regions, in pixel or cannonical coordinates are flagged by setting the minimums to be INT_MIN and the maxmimums to be INT_MAX, for both double and integer rects. Eg...
+
+\verbatim
+
+     outputRoD.x1 = INT_MIN;
+     outputRoD.y1 = INT_MIN;
+     outputRoD.x2 = INT_MAX;
+     outputRoD.y2 = INT_MAX;
+
+\endverbatim
+
 
 @section MappingCoordinates Mapping Between Coordinate Systems
 To map between the two the pixel aspect ratio and the render scale need to be known, and it is a simple case of multiplication and rounding. More specifically,  given...
