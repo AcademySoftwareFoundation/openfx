@@ -850,7 +850,7 @@ namespace OFX {
   /** @brief does the host want us to abort rendering? */
   bool ImageEffect::abort(void) const
   {
-    return OFX::Private::gEffectSuite->abort(_effectHandle);
+    return OFX::Private::gEffectSuite->abort(_effectHandle) != 0;
   }
   
   /** @brief default sync the private data function, does nothing */

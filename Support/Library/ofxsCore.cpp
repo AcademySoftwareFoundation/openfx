@@ -98,32 +98,32 @@ namespace OFX {
       OFX::Log::error(OFX::gHostDescription != 0, "Tried to create host description when we already have one.");
       if(OFX::gHostDescription != 0) {
 	
-	// make one
-	gHostDescription = new ImageEffectHostDescription;
+        // make one
+        gHostDescription = new ImageEffectHostDescription;
 
-	// wrap the property handle up with a property set
-	PropertySet hostProps(host->host);
+        // wrap the property handle up with a property set
+        PropertySet hostProps(host->host);
 
-	// and get some properties
-	gHostDescription->hostName                   = hostProps.propGetString(kOfxPropName);
-	gHostDescription->hostIsBackground           = hostProps.propGetInt(kOfxImageEffectHostPropIsBackground);
-	gHostDescription->supportsOverlays           = hostProps.propGetInt(kOfxImageEffectPropSupportsOverlays);
-	gHostDescription->supportsMultiResolution    = hostProps.propGetInt(kOfxImageEffectPropSupportsMultiResolution);
-	gHostDescription->supportsTiles              = hostProps.propGetInt(kOfxImageEffectPropSupportsTiles);
-	gHostDescription->temporalClipAccess         = hostProps.propGetInt(kOfxImageEffectPropTemporalClipAccess);
-	gHostDescription->supportsMultipleClipDepths = hostProps.propGetInt(kOfxImageEffectPropSupportsMultipleClipDepths);
-	gHostDescription->supportsMultipleClipPARs   = hostProps.propGetInt(kOfxImageEffectPropSupportsMultipleClipPARs);
-	gHostDescription->supportsSetableFrameRate   = hostProps.propGetInt(kOfxImageEffectPropSetableFrameRate);
-	gHostDescription->supportsSetableFielding    = hostProps.propGetInt(kOfxImageEffectPropSetableFielding);
-	gHostDescription->supportsStringAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsStringAnimation);
-	gHostDescription->supportsCustomInteract     = hostProps.propGetInt(kOfxParamHostPropSupportsCustomInteract);
-	gHostDescription->supportsChoiceAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsChoiceAnimation);
-	gHostDescription->supportsBooleanAnimation   = hostProps.propGetInt(kOfxParamHostPropSupportsBooleanAnimation);
-	gHostDescription->supportsCustomAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsCustomAnimation);
-	gHostDescription->maxParameters              = hostProps.propGetInt(kOfxParamHostPropMaxParameters);
-	gHostDescription->maxPages                   = hostProps.propGetInt(kOfxParamHostPropMaxPages);
-	gHostDescription->pageRowCount               = hostProps.propGetInt(kOfxParamHostPropPageRowColumnCount, 0);
-	gHostDescription->pageColumnCount            = hostProps.propGetInt(kOfxParamHostPropPageRowColumnCount, 1);
+        // and get some properties
+        gHostDescription->hostName                   = hostProps.propGetString(kOfxPropName);
+        gHostDescription->hostIsBackground           = hostProps.propGetInt(kOfxImageEffectHostPropIsBackground) != 0;
+        gHostDescription->supportsOverlays           = hostProps.propGetInt(kOfxImageEffectPropSupportsOverlays) != 0;
+        gHostDescription->supportsMultiResolution    = hostProps.propGetInt(kOfxImageEffectPropSupportsMultiResolution) != 0;
+        gHostDescription->supportsTiles              = hostProps.propGetInt(kOfxImageEffectPropSupportsTiles) != 0;
+        gHostDescription->temporalClipAccess         = hostProps.propGetInt(kOfxImageEffectPropTemporalClipAccess) != 0;
+        gHostDescription->supportsMultipleClipDepths = hostProps.propGetInt(kOfxImageEffectPropSupportsMultipleClipDepths) != 0;
+        gHostDescription->supportsMultipleClipPARs   = hostProps.propGetInt(kOfxImageEffectPropSupportsMultipleClipPARs) != 0;
+        gHostDescription->supportsSetableFrameRate   = hostProps.propGetInt(kOfxImageEffectPropSetableFrameRate) != 0;
+        gHostDescription->supportsSetableFielding    = hostProps.propGetInt(kOfxImageEffectPropSetableFielding) != 0;
+        gHostDescription->supportsStringAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsStringAnimation) != 0;
+        gHostDescription->supportsCustomInteract     = hostProps.propGetInt(kOfxParamHostPropSupportsCustomInteract) != 0;
+        gHostDescription->supportsChoiceAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsChoiceAnimation) != 0;
+        gHostDescription->supportsBooleanAnimation   = hostProps.propGetInt(kOfxParamHostPropSupportsBooleanAnimation) != 0;
+        gHostDescription->supportsCustomAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsCustomAnimation) != 0;
+        gHostDescription->maxParameters              = hostProps.propGetInt(kOfxParamHostPropMaxParameters);
+        gHostDescription->maxPages                   = hostProps.propGetInt(kOfxParamHostPropMaxPages);
+        gHostDescription->pageRowCount               = hostProps.propGetInt(kOfxParamHostPropPageRowColumnCount, 0);
+        gHostDescription->pageColumnCount            = hostProps.propGetInt(kOfxParamHostPropPageRowColumnCount, 1);
       }
     }
 
@@ -133,9 +133,9 @@ namespace OFX {
     {
       void *suite = gHost->fetchSuite(gHost->host, suiteName, suiteVersion);
       if(optional)
-	OFX::Log::warning(suite == 0, "Could not fetch the optional suite '%s' version %d;", suiteName, suiteVersion);
+        OFX::Log::warning(suite == 0, "Could not fetch the optional suite '%s' version %d;", suiteName, suiteVersion);
       else
-	OFX::Log::error(suite == 0, "Could not fetch the mandatory suite '%s' version %d;", suiteName, suiteVersion);
+        OFX::Log::error(suite == 0, "Could not fetch the mandatory suite '%s' version %d;", suiteName, suiteVersion);
       if(!optional && suite == 0) throw OFX::Exception::HostInadequate(suiteName);
       return suite;
     }
@@ -153,36 +153,36 @@ namespace OFX {
       OfxStatus status = kOfxStatOK;
   
       try {
-	// fetch the suites
-	OFX::Log::error(gHost == 0, "Host pointer has not been set;");
-	if(!gHost) throw OFX::Exception::Suite(kOfxStatErrBadHandle);
+        // fetch the suites
+        OFX::Log::error(gHost == 0, "Host pointer has not been set;");
+        if(!gHost) throw OFX::Exception::Suite(kOfxStatErrBadHandle);
     
-	if(gLoadCount == 0) {
-	  gEffectSuite    = (OfxImageEffectSuiteV1 *) fetchSuite(kOfxImageEffectSuite, 1);
-	  gPropSuite      = (OfxPropertySuiteV1 *)    fetchSuite(kOfxPropertySuite, 1);
-	  gParamSuite     = (OfxParameterSuiteV1 *)   fetchSuite(kOfxParameterSuite, 1);
-	  gMemorySuite    = (OfxMemorySuiteV1 *)      fetchSuite(kOfxMemorySuite, 1);
-	  gThreadSuite    = (OfxMultiThreadSuiteV1 *) fetchSuite(kOfxMultiThreadSuite, 1);
-	  gMessageSuite   = (OfxMessageSuiteV1 *)     fetchSuite(kOfxMessageSuite, 1);
+        if(gLoadCount == 0) {
+          gEffectSuite    = (OfxImageEffectSuiteV1 *) fetchSuite(kOfxImageEffectSuite, 1);
+          gPropSuite      = (OfxPropertySuiteV1 *)    fetchSuite(kOfxPropertySuite, 1);
+          gParamSuite     = (OfxParameterSuiteV1 *)   fetchSuite(kOfxParameterSuite, 1);
+          gMemorySuite    = (OfxMemorySuiteV1 *)      fetchSuite(kOfxMemorySuite, 1);
+          gThreadSuite    = (OfxMultiThreadSuiteV1 *) fetchSuite(kOfxMultiThreadSuite, 1);
+          gMessageSuite   = (OfxMessageSuiteV1 *)     fetchSuite(kOfxMessageSuite, 1);
       
-	  // OK check and fetch host information
-	  fetchHostDescription(gHost);
+          // OK check and fetch host information
+          fetchHostDescription(gHost);
       
-	  // fetch the interact suite if the host supports interaction
-	  if(OFX::gHostDescription->supportsOverlays || OFX::gHostDescription->supportsCustomInteract)
-	    gInteractSuite  = (OfxInteractSuiteV1 *)    fetchSuite(kOfxInteractSuite, 1);
-	}
+          // fetch the interact suite if the host supports interaction
+          if(OFX::gHostDescription->supportsOverlays || OFX::gHostDescription->supportsCustomInteract)
+            gInteractSuite  = (OfxInteractSuiteV1 *)    fetchSuite(kOfxInteractSuite, 1);
+        }
 
-	// initialise the validation code
-	OFX::Validation::initialise();
+        // initialise the validation code
+        OFX::Validation::initialise();
 
-	// validate the host
-	OFX::Validation::validateHostProperties(gHost);
+        // validate the host
+        OFX::Validation::validateHostProperties(gHost);
       }
   
       catch(...) {
-	OFX::Log::print("}loadAction stop;");
-	throw;
+        OFX::Log::print("}loadAction stop;");
+        throw;
       }
   
       OFX::Log::print("}loadAction stop;");
@@ -253,13 +253,13 @@ namespace OFX {
 
       std::string str = inArgs.propGetString(kOfxImageEffectPropFieldToRender);
       try {
-	renderArgs.fieldToRender = mapStrToFieldEnum(str);
+        renderArgs.fieldToRender = mapStrToFieldEnum(str);
       }
       catch (std::invalid_argument &ex) {
-	// dud field?
-	OFX::Log::error(true, "Unknown field to render '%s'", str.c_str());
+        // dud field?
+        OFX::Log::error(true, "Unknown field to render '%s'", str.c_str());
 	
-	// HACK need to throw something to cause a failure
+        // HACK need to throw something to cause a failure
       }
 
       // and call the plugin client render code
@@ -280,23 +280,23 @@ namespace OFX {
     /** @brief Checks the handles passed into the plugin's main entry point */
     void
     checkMainHandles(const std::string &action,  const void *handle, 
-		     OfxPropertySetHandle inArgsHandle,  OfxPropertySetHandle outArgsHandle,
-		     bool handleCanBeNull, bool inArgsCanBeNull, bool outArgsCanBeNull)
+                     OfxPropertySetHandle inArgsHandle,  OfxPropertySetHandle outArgsHandle,
+                     bool handleCanBeNull, bool inArgsCanBeNull, bool outArgsCanBeNull)
     {
       if(handleCanBeNull)
-	OFX::Log::warning(handle != 0, "Handle passed to '%s' is not null;", action.c_str());
+        OFX::Log::warning(handle != 0, "Handle passed to '%s' is not null;", action.c_str());
       else
-	OFX::Log::error(handle == 0, "'Handle passed to '%s' is null;", action.c_str());
+        OFX::Log::error(handle == 0, "'Handle passed to '%s' is null;", action.c_str());
   
       if(inArgsCanBeNull)
-	OFX::Log::warning(inArgsHandle != 0, "'inArgs' Handle passed to '%s' is not null;", action.c_str());
+        OFX::Log::warning(inArgsHandle != 0, "'inArgs' Handle passed to '%s' is not null;", action.c_str());
       else
-	OFX::Log::error(inArgsHandle == 0, "'inArgs' handle passed to '%s' is null;", action.c_str());
+        OFX::Log::error(inArgsHandle == 0, "'inArgs' handle passed to '%s' is null;", action.c_str());
   
       if(outArgsCanBeNull)
-	OFX::Log::warning(outArgsHandle != 0, "'outArgs' Handle passed to '%s' is not null;", action.c_str());
+        OFX::Log::warning(outArgsHandle != 0, "'outArgs' Handle passed to '%s' is not null;", action.c_str());
       else
-	OFX::Log::error(outArgsHandle == 0, "'outArgs' handle passed to '%s' is null;", action.c_str());
+        OFX::Log::error(outArgsHandle == 0, "'outArgs' handle passed to '%s' is null;", action.c_str());
   
       // validate the property sets on the arguments
       OFX::Validation::validateActionArgumentsProperties(action, inArgsHandle, outArgsHandle);
@@ -308,224 +308,224 @@ namespace OFX {
     }
 
     /** @brief The main entry point for the plugin
-     */
+    */
     OfxStatus
     mainEntry(const char		*actionRaw,
-	      const void		*handleRaw,
-	      OfxPropertySetHandle	 inArgsRaw,
-	      OfxPropertySetHandle	 outArgsRaw)
+              const void		*handleRaw,
+              OfxPropertySetHandle	 inArgsRaw,
+              OfxPropertySetHandle	 outArgsRaw)
     {
       
       OFX::Log::print("pluginMain  start()\n{");
       OfxStatus stat = kOfxStatReplyDefault;
       try {
-	// Cast the raw handle to be an image effect handle, because that is what it is
-	OfxImageEffectHandle handle = (OfxImageEffectHandle) handleRaw;
+        // Cast the raw handle to be an image effect handle, because that is what it is
+        OfxImageEffectHandle handle = (OfxImageEffectHandle) handleRaw;
 
-	// Turn the arguments into wrapper objects to make our lives easier
-	OFX::PropertySet inArgs(inArgsRaw);
-	OFX::PropertySet outArgs(outArgsRaw);
+        // Turn the arguments into wrapper objects to make our lives easier
+        OFX::PropertySet inArgs(inArgsRaw);
+        OFX::PropertySet outArgs(outArgsRaw);
     
-	// turn the action into a std::string
-	std::string action(actionRaw);
+        // turn the action into a std::string
+        std::string action(actionRaw);
 
-	// figure the actions
-	if (action == kOfxActionLoad) {
-	  // call the support load function, param-less
-	  OFX::Private::loadAction(); 
+        // figure the actions
+        if (action == kOfxActionLoad) {
+          // call the support load function, param-less
+          OFX::Private::loadAction(); 
       
-	  // call the plugin side load action, param-less
-	  OFX::Plugin::loadAction();
-	}
+          // call the plugin side load action, param-less
+          OFX::Plugin::loadAction();
+        }
 
-	// figure the actions
-	else if (action == kOfxActionUnload) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, true, true, true);
+        // figure the actions
+        else if (action == kOfxActionUnload) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, true, true, true);
 
-	  // call the support load function, param-less
-	  OFX::Private::unloadAction(); 
+          // call the support load function, param-less
+          OFX::Private::unloadAction(); 
       
-	  // call the plugin side unload action, param-less, should be called, eve if the stat above failed!
-	  OFX::Plugin::unloadAction();
-	}
+          // call the plugin side unload action, param-less, should be called, eve if the stat above failed!
+          OFX::Plugin::unloadAction();
+        }
 
-	else if(action == kOfxActionDescribe) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
+        else if(action == kOfxActionDescribe) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
 
-	  // make the plugin descriptor
-	  ImageEffectDescriptor desc(handle);
+          // make the plugin descriptor
+          ImageEffectDescriptor desc(handle);
 
-	  //  and pass it to the plugin to do something with it
-	  OFX::Plugin::describe(desc);
-	}
-	else if(action == kOfxImageEffectActionDescribeInContext) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
+          //  and pass it to the plugin to do something with it
+          OFX::Plugin::describe(desc);
+        }
+        else if(action == kOfxImageEffectActionDescribeInContext) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
 
-	  // make the plugin descriptor and pass it to the plugin to do something with it
-	  ImageEffectDescriptor desc(handle);
-	  OFX::Plugin::describe(desc);
+          // make the plugin descriptor and pass it to the plugin to do something with it
+          ImageEffectDescriptor desc(handle);
+          OFX::Plugin::describe(desc);
 
-	  // figure the context and map it to an enum
-	  std::string contextStr = inArgs.propGetString(kOfxImageEffectPropContext);
-	  ContextEnum context = mapToContextEnum(contextStr);
+          // figure the context and map it to an enum
+          std::string contextStr = inArgs.propGetString(kOfxImageEffectPropContext);
+          ContextEnum context = mapToContextEnum(contextStr);
 
-	  // call plugin descibe in context
-	  OFX::Plugin::describeInContext(desc, context);
-	}
-	else if(action == kOfxActionCreateInstance) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
+          // call plugin descibe in context
+          OFX::Plugin::describeInContext(desc, context);
+        }
+        else if(action == kOfxActionCreateInstance) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
 	  
-	  // fetch the effect props to figure the context
-	  PropertySet effectProps = fetchEffectProps(handle);
+          // fetch the effect props to figure the context
+          PropertySet effectProps = fetchEffectProps(handle);
 
-	  // get the context and turn it into an enum
-	  std::string str = effectProps.propGetString(kOfxImageEffectPropContext);
-	  ContextEnum context = mapToContextEnum(str);
+          // get the context and turn it into an enum
+          std::string str = effectProps.propGetString(kOfxImageEffectPropContext);
+          ContextEnum context = mapToContextEnum(str);
 
-	  // make the image effect instance for this context
-	  ImageEffect *instance = OFX::Plugin::createInstance(handle, context);
-	}
-	else if(action == kOfxActionDestroyInstance) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
+          // make the image effect instance for this context
+          ImageEffect *instance = OFX::Plugin::createInstance(handle, context);
+        }
+        else if(action == kOfxActionDestroyInstance) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
 
-	  // kill it
-	  delete instance;
-	}
-	else if(action == kOfxImageEffectActionRender) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
+          // kill it
+          delete instance;
+        }
+        else if(action == kOfxImageEffectActionRender) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
 	  
-	  // call the render action skin
-	  renderAction(handle, inArgs);
+          // call the render action skin
+          renderAction(handle, inArgs);
 
-	  stat = kOfxStatOK;
-	}
-	else if(action == kOfxImageEffectActionBeginSequenceRender) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
+          stat = kOfxStatOK;
+        }
+        else if(action == kOfxImageEffectActionBeginSequenceRender) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
-	}
-	else if(action == kOfxImageEffectActionEndSequenceRender) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+        }
+        else if(action == kOfxImageEffectActionEndSequenceRender) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
-	}
-	else if(action == kOfxImageEffectActionGetRegionOfDefinition) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+        }
+        else if(action == kOfxImageEffectActionGetRegionOfDefinition) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
-	}
-	else if(action == kOfxImageEffectActionGetRegionsOfInterest) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+        }
+        else if(action == kOfxImageEffectActionGetRegionsOfInterest) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
-	}
-	else if(action == kOfxImageEffectActionGetTimeDomain) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, false);
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+        }
+        else if(action == kOfxImageEffectActionGetTimeDomain) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, false);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
-	}
-	else if(action == kOfxImageEffectActionGetFramesNeeded) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+        }
+        else if(action == kOfxImageEffectActionGetFramesNeeded) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
-	}
-	else if(action == kOfxImageEffectActionGetClipPreferences) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+        }
+        else if(action == kOfxImageEffectActionGetClipPreferences) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
-	}
-	else if(action == kOfxImageEffectActionIsIdentity) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+        }
+        else if(action == kOfxImageEffectActionIsIdentity) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
-	}
-	else if(action == kOfxActionPurgeCaches) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+        }
+        else if(action == kOfxActionPurgeCaches) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
-	}
-	else if(action == kOfxActionSyncPrivateData) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+        }
+        else if(action == kOfxActionSyncPrivateData) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
 
-	  // and sync it
-	  instance->syncPrivateData();
-	}
-	else if(action == kOfxActionInstanceChanged) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
+          // and sync it
+          instance->syncPrivateData();
+        }
+        else if(action == kOfxActionInstanceChanged) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
-	}
-	else if(action == kOfxActionBeginInstanceChanged) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+        }
+        else if(action == kOfxActionBeginInstanceChanged) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
-	}
-	else if(action == kOfxActionEndInstanceChanged) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+        }
+        else if(action == kOfxActionEndInstanceChanged) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
-	}
-	else if(action == kOfxActionBeginInstanceEdit) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+        }
+        else if(action == kOfxActionBeginInstanceEdit) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
-	}
-	else if(action == kOfxActionEndInstanceEdit) {
-	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+        }
+        else if(action == kOfxActionEndInstanceEdit) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
-	}
-	else if(actionRaw) {
-	  OFX::Log::error(true, "Unknown action '%s';", actionRaw);
-	}
-	else {
-	  OFX::Log::error(true, "Requested action was a null pointer!");
-	}
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+        }
+        else if(actionRaw) {
+          OFX::Log::error(true, "Unknown action '%s';", actionRaw);
+        }
+        else {
+          OFX::Log::error(true, "Requested action was a null pointer!");
+        }
       }
 
       // catch suite exceptions
       catch (OFX::Exception::Suite &ex)
-	{
-	  stat = ex.status();
-	}
+      {
+        stat = ex.status();
+      }
 
       // catch host inadequate exceptions
       catch (OFX::Exception::HostInadequate &ex)
-	{
-	  stat = kOfxStatErrMissingHostFeature;
-	}
+      {
+        stat = kOfxStatErrMissingHostFeature;
+      }
 
       // catch memory
       catch (std::bad_alloc)
-	{
-	  stat = kOfxStatErrMemory;
-	}
+      {
+        stat = kOfxStatErrMemory;
+      }
 
       // Catch anything else, unknown
       catch (...)
-	{
-	  stat = kOfxStatErrUnknown;
-	}
+      {
+        stat = kOfxStatErrUnknown;
+      }
       
       OFX::Log::print("}pluginMain - stop;");
       return stat;

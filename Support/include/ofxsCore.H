@@ -35,6 +35,7 @@ of the direct OFX objects and any library side only functions.
 #include <ofxParam.h>
 #include <ofxProperty.h>
 
+#include <assert.h>
 #include <vector>
 #include <string>
 #include <map>
@@ -55,9 +56,9 @@ namespace OFX {
 
   /** @brief Enumerates the different types a property can be */
   enum PropertyTypeEnum {ePointer,
-			 eInt,
-			 eString,
-			 eDouble};
+                         eInt,
+                         eString,
+                         eDouble};
 
   /** @brief maps a status to a string for debugging purposes, note a c-str for printf */
   char * mapStatusToString(OfxStatus stat);
@@ -66,7 +67,7 @@ namespace OFX {
   namespace Exception {
 
     /** @brief thrown when a suite returns a dud status code 
-     */
+    */
     class Suite : public std::exception {
     protected :
       OfxStatus _status;
@@ -89,7 +90,7 @@ namespace OFX {
       /** @brief reimplemented from std::exception */
       virtual const char * what () const throw ()
       {
-	return _what;
+        return _what;
       }
     };
 
@@ -103,7 +104,7 @@ namespace OFX {
       /** @brief reimplemented from std::exception */
       virtual const char * what () const throw ()
       {
-	return _what;
+        return _what;
       }
     };
 
@@ -114,7 +115,7 @@ namespace OFX {
     throw(OFX::Exception::Suite);
 
   /** @brief This struct is used to return an identifier for the plugin by the function @ref OFX:Plugin::getPlugin. 
-      The members correspond to those in the OfxPlugin struct defined in ofxCore.h.
+  The members correspond to those in the OfxPlugin struct defined in ofxCore.h.
   */
   struct PluginID {
     std::string  pluginIdentifier;
