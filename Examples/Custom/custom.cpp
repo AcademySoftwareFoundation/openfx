@@ -454,9 +454,9 @@ describe(OfxImageEffectHandle effect)
   gEffectHost->getPropertySet(effect, &effectProps);
 
   // set the bit depths the plugin can handle
-  gPropHost->propSetString(effectProps, kOfxImageEffectPropPixelDepth, 0, kOfxBitDepthByte);
-  gPropHost->propSetString(effectProps, kOfxImageEffectPropPixelDepth, 1, kOfxBitDepthShort);
-  gPropHost->propSetString(effectProps, kOfxImageEffectPropPixelDepth, 2, kOfxBitDepthFloat);
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 0, kOfxBitDepthByte);
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 1, kOfxBitDepthShort);
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 2, kOfxBitDepthFloat);
 
   // define the plugin to the host
   gPropHost->propSetString(effectProps, kOfxPropLabel, 0, "OFX Custom Param Example");
