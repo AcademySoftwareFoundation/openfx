@@ -159,7 +159,7 @@ namespace OFX {
     {
         _clipProps.propSetString(kOfxPropLabel, label);
         _clipProps.propSetString(kOfxPropShortLabel, shortLabel);
-        //HACK _clipProps.propSetString(kOfxPropLongLabel, longLabel);
+        _clipProps.propSetString(kOfxPropLongLabel, longLabel);
     }
 
     /** @brief set how fielded images are extracted from the clip defaults to eFieldExtractDoubled */
@@ -264,7 +264,7 @@ namespace OFX {
     {
         _effectProps.propSetString(kOfxPropLabel, label);
         _effectProps.propSetString(kOfxPropShortLabel, shortLabel);
-        //HACK _effectProps.propSetString(kOfxPropLongLabel, longLabel);
+        _effectProps.propSetString(kOfxPropLongLabel, longLabel);
     }
 
     /** @brief Set the plugin grouping */
@@ -569,7 +569,7 @@ namespace OFX {
     {
         label      = _clipProps.propGetString(kOfxPropLabel);
         shortLabel = _clipProps.propGetString(kOfxPropShortLabel);
-        // HACK longLabel  = _clipProps.propGetString(kOfxPropLongLabel);
+        longLabel  = _clipProps.propGetString(kOfxPropLongLabel);
     }
 
     /** @brief get the pixel depth */
