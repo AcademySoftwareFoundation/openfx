@@ -461,7 +461,7 @@ class Processor {
     , window(win)
   {}  
 
-  static void multiThreadProcessing(int threadId, unsigned int nThreads, void *arg);
+  static void multiThreadProcessing(unsigned int threadId, unsigned int nThreads, void *arg);
   virtual void doProcessing(OfxRectI window) = 0;
   void process(void);
 };
@@ -469,7 +469,7 @@ class Processor {
 
 // function call once for each thread by the host
 void
-Processor::multiThreadProcessing(int threadId, unsigned int nThreads, void *arg)
+Processor::multiThreadProcessing(unsigned int threadId, unsigned int nThreads, void *arg)
 {
   Processor *proc = (Processor *) arg;
 
