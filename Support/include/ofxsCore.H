@@ -18,6 +18,44 @@
 */
 
 
+/** @mainpage OFX Support Library
+ 
+@section mainpageIntro Introduction
+
+This support library skins the raw OFX C API with a set of C++ classes and functions that makes it easier to understand and write plug-ins to the API. Look at the examples to see how it is done.
+
+<HR>
+
+@section fifteenLineGuide Fifteen Line Plugin Writing Guide
+
+- work from the examples
+- you need to write the following functions....
+  - void OFX::Plugin::getPluginID(OFX::PluginID &id)
+    - gives the unique name and version numbers of the plug-in
+  - void OFX::Plugin::loadAction(void)
+    - called after the plug-in is first loaded, and before any instance has been made,
+  - void OFX::Plugin::unloadAction(void)
+    - called before the plug-in is unloaded, and all instances have been destroyed,
+  - void OFX::Plugin::describe(OFX::ImageEffectDescriptor &desc) 
+    - called to describe the plugin to the host
+  - void OFX::Plugin::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context) 
+    - called to describe the plugin to the host for a context reported in OFX::Plugin::describe
+  -  OFX::ImageEffect * OFX::Plugin::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context)
+    - called when a new instance of a plug-in needs to be created. You need to derive a class from ImageEffect, new it and return it.
+
+The OFX::ImageEffect class has a set of members you can override to do various things, like rendering an effect. Again, look at the examples.
+
+<HR>
+
+@section license Copyright and License
+
+     The library is copyright 2004-2005, The Foundry Visionmongers Ltd, and was
+     written by Bruno Nicoletti (bruno@thefoundry.co.uk).
+
+     It has been released under the GNU Lesser General Public License, see the 
+     top of any source file for details.
+
+*/
 
 /** @file This file contains core code that wraps OFX 'objects' with C++ classes.
 

@@ -23,10 +23,33 @@ Structure
     
 ********************************************************************************
 Building
-      Not quite ready to do it all yet, the library does get built though if you type make.
+      Plug-ins and library have OSX makefiles and windows MSDEV project files. They build and link and load happily on compliant hosts.
+
+********************************************************************************
+Problems And Debugging
+
+	- unsupported properties on a host. If a hosts returns kOfxStatErrUnsupported when the plugin sets a property that is not absolutely essential (eg the hint property on a parameter), an exception is thrown at line 39 of Library/ofxsProperty.cpp. This in turn will cause the plug-in to return kOfxStatFailed. Comment out this line out if you encounter failure on a host and it may run.
+
+	- if compiled in debug, the plugin writes a log file out, call "ofxTestLog.txt" in the current directory. This log will contain a variety of error messages. The most important of which concern property validation. The file Library/ofxsPropertyValidation.cpp contains code to validate each possible type of property handle used by OFX, making sure the host has the correct properties on each. If it finds a property not to exist, or to have the wrong default, it will print messages to the log file.
 
 ********************************************************************************
 Release Notes
+
+13-01-2005 Version 0.2
+	   
+	   Skinned everything except message suite and parameter interacts custom GUIS,
+	   Skinned overlays,
+	   Build enviromnments for OSX and MSDEV,
+	   Example plug-ins written for each context,
+	   Doxygen documentation (especially proud of my 15 line plugin writing guide),
+	   Still to be done,
+	   	 decent set of exceptions and exception specifiers on each function,
+		 skin the parameter custom interact,
+		 parameter integration and differentiation functions needed on 2D and 3D doubles and the colour classses,
+		 parameters should return their values in a struct, as well as by a reference arg (some do already),
+		 write examples showing custom param and param animation,
+		 write an example showing use of external resource files,
+		 more testing.
 
 15-12-2004 Version 0.1
 	   
