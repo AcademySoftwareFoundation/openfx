@@ -54,10 +54,12 @@ namespace OFX {
         bool
         open(void)
         {
+#ifdef DEBUG
             if(!gLogFP) {
                 gLogFP = fopen(gLogFileName.c_str(), "w");
                 assert(gLogFP != 0);
             }
+#endif
             return gLogFP != 0;
         }
 
@@ -86,8 +88,10 @@ namespace OFX {
         /** @brief do the indenting */
         static void doIndent(void)
         {
-            for(int i = 0; i < gIndent; i++) {
-                fputs("    ", gLogFP);
+            if(open()) {
+                for(int i = 0; i < gIndent; i++) {
+                    fputs("    ", gLogFP);
+                }
             }
         }
 
