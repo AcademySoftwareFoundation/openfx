@@ -947,7 +947,7 @@ typedef struct OfxParameterSuiteV1 {
 
   If a plugin calls paramSetValue/paramSetValueAtTime on one or more parameters, either from custom GUI interaction
   or some analysis of imagery etc.. this is used to indicate the start of a set of a parameter
-  changes that should be considerred part of a single undo/redo block.
+  changes that should be considered part of a single undo/redo block.
 
   See also OfxParameterSuiteV1::paramEditEnd
 

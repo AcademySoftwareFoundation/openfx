@@ -362,6 +362,8 @@ The \e inArgs parameter has the following properties,
 The \e outArgs parameter is redundant for interacts and set to NULL.
 
 \return
+- ::kOfxStatOK, the action was trapped and all was well
+- ::kOfxStatReplyDefault, the action was not trapped and the host can deal with it if it wants
 
 \par Default		
 - If not trapped, the default action is for the host to carry on as normal
@@ -384,6 +386,8 @@ The \e inArgs parameter has the following properties,
 The \e outArgs parameter is redundant for interacts and set to NULL.
 
 \return
+- ::kOfxStatOK, the action was trapped and all was well
+- ::kOfxStatReplyDefault, the action was not trapped and the host can deal with it if it wants
 
 \par Default		
 - If not trapped, the default action is for the host to carry on as normal
