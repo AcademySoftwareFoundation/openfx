@@ -55,10 +55,18 @@ namespace OFX {
 
 
     /** @brief Enumerates the different types a property can be */
-    enum PropertyTypeEnum {ePointer,
-                           eInt,
-                           eString,
-                           eDouble};
+    enum PropertyTypeEnum {
+        ePointer,
+        eInt,
+        eString,
+        eDouble};
+
+    /** @brief Enumerates the reasons a plug-in instance may have had one of its values changed */
+    enum InstanceChangeReason {
+        eChangeUserEdit,    /**< @brief A user actively editted something in the plugin, eg: changed the value of an integer param on an interface */
+        eChangePluginEdit,  /**< @brief The plugin's own code changed something in the instance, eg: a callback on on param settting the value of another */
+        eChangeTime         /**< @brief The current value of a parameter has changed because the param animates and the current time has changed */
+    };
 
     /** @brief maps a status to a string for debugging purposes, note a c-str for printf */
     char * mapStatusToString(OfxStatus stat);
@@ -81,7 +89,7 @@ namespace OFX {
 
         };
 
-        /** @brief exception indicating that doesn't know about a property that is should do */
+        /** @brief Exception indicating that a host doesn't know about a property that is should do */
         class PropertyUnknownToHost : public std::exception {
         protected :
             const char *_what;
@@ -124,7 +132,6 @@ namespace OFX {
                 return _what;
             }
         };
-
 
         ////////////////////////////////////////////////////////////////////////////////
         // These execeptions are to be thrown by the plugin if it hits a problem, the

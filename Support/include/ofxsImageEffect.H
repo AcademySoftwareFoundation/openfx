@@ -519,6 +519,13 @@ namespace OFX {
         void setOutputFrameVarying(bool v);
     };
 
+    /** @brief POD data structure passing in the instance changed args */
+    struct InstanceChangedArgs {
+        InstanceChangeReason reason;      /**< @brief why did it change */
+        double               time;        /**< time of the change */
+        OfxPointD            renderScale; /**< the renderscale on the instance */
+    };
+
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up an effect instance, plugin implementations need to inherit from this */
     class ImageEffect : public ParamSet
@@ -628,7 +635,7 @@ namespace OFX {
         If the effect wants change its region of interest on any input clip from the default values (which is the same as the RoI in the arguments)
         it should do so by calling the OFX::RegionOfInterestSetter::setRegionOfInterest function on the \em rois argument.
 
-        Not, everything is in cannonical coordinates.
+        Note, everything is in \em cannonical \em coordinates.
         */
         virtual void getRegionsOfInterest(const RegionsOfInterestArguments &args, RegionOfInterestSetter &rois);
 
@@ -642,29 +649,29 @@ namespace OFX {
         /** @brief get the clip preferences */
         virtual void getClipPreferences(ClipPreferencesSetter &clipPreferences);
 
-#if 0 
-        /** @brief what is the time domain of this effect, valid only in the general context */
-        virtual OfxRangeD getTimeDomain(void);
-
-        /** @brief what frames are needed from the input */
-        virtual void getFramesNeeded(void);
-
-        /** @brief the effect is about to have some values changed */
-        virtual void beginChanged(void);
-
-        /** @brief the effect is having a value changed, param or clip */
-        virtual void changed(void);
-
-        /** @brief the effect has just had some values changed */
-        virtual void endChanged(void);
-    
-        /** @brief the effect is about to be actively edited by a user */
+        /** @brief the effect is about to be actively edited by a user, called when the first user interface is opened on an instance */
         virtual void beginEdit(void);
 
-        /** @brief the effect is no longer being edited by a user */
+        /** @brief the effect is no longer being edited by a user, called when the last user interface is closed on an instance */
         virtual void endEdit(void);
-#endif 
+        
+        /** @brief the effect is about to have some values changed */
+        virtual void beginChanged(InstanceChangeReason reason);
 
+        /** @brief called when a param has just had its value changed */
+        virtual void changedParam(const InstanceChangedArgs &args, const std::string &paramName);
+
+        /** @brief called when a clip has just been changed in some way (a rewire maybe) */
+        virtual void changedClip(const InstanceChangedArgs &args, const std::string &clipName);
+
+        /** @brief the effect has just had some values changed */
+        virtual void endChanged(InstanceChangeReason reason);
+
+        /** @brief what is the time domain of this effect, valid only in the general context
+
+        return true is range was set, otherwise the default (the union of the time domain of all input clips) is used
+        */
+        virtual bool getTimeDomain(OfxRangeD &range);
     };  
 
  
