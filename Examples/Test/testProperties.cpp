@@ -29,6 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /** @file testProperties.cpp Ofx host testing plug-in which logs all the needed properties
+
+the log file is being written with ';' ending lines and execution blocks surrounded by { } pairs, so if you
+run it through a c beautifier or emacs auto formating, automagic indenting will occur.
  */
 #include <string> // stl strings
 #include "ofxImageEffect.h"
@@ -45,7 +48,7 @@ static OfxInteractSuiteV1    *gInteractSuite;
 static OfxParameterSuiteV1   *gParamSuite;
 static OfxMemorySuiteV1      *gMemorySuite;
 static OfxMultiThreadSuiteV1 *gThreadSuite;
-static OfxMessageSuiteV1 *gMessageSuite;
+static OfxMessageSuiteV1     *gMessageSuite;
 
 /** @brief wraps up a set of properties
  */
@@ -221,9 +224,9 @@ OfxStatus
 PropertySet::propGetPointer(const char *property, void * &value, int idx) const
 {
   OfxStatus stat = gPropSuite->propGetPointer(_propHandle, property, idx, &value);
-  OFX::logError(stat != kOfxStatOK, "Failed on fetching pointer property %s[%d], host returned status %s", property, idx, mapStatus(stat));
+  OFX::logError(stat != kOfxStatOK, "Failed on fetching pointer property %s[%d], host returned status %s;", property, idx, mapStatus(stat));
   if(stat == kOfxStatOK && _propLogMessages) 
-    OFX::logPrint("Fetched pointer property %s[%d] = %p", property, idx, value);
+    OFX::logPrint("Fetched pointer property %s[%d] = %p;", property, idx, value);
   return stat;
 }
 
@@ -231,9 +234,9 @@ OfxStatus
 PropertySet::propGetDouble(const char *property, double &value, int idx) const
 {
   OfxStatus stat = gPropSuite->propGetDouble(_propHandle, property, idx, &value);
-  OFX::logError(stat != kOfxStatOK, "Failed on fetching double property %s[%d], host returned status %s", property, idx, mapStatus(stat));
+  OFX::logError(stat != kOfxStatOK, "Failed on fetching double property %s[%d], host returned status %s;", property, idx, mapStatus(stat));
   if(stat == kOfxStatOK && _propLogMessages) 
-    OFX::logPrint("Fetched double property %s[%d] = %g", property, idx, value);
+    OFX::logPrint("Fetched double property %s[%d] = %g;", property, idx, value);
   return stat;
 }
 
@@ -241,11 +244,11 @@ OfxStatus
 PropertySet::propGetDoubleN(const char *property, double *values, int N) const
 {
   OfxStatus stat = gPropSuite->propGetDoubleN(_propHandle, property, N, values);
-  OFX::logError(stat != kOfxStatOK, "Failed on fetching multiple double property %s X %d, host returned status %s", property, N, mapStatus(stat));
+  OFX::logError(stat != kOfxStatOK, "Failed on fetching multiple double property %s X %d, host returned status %s;", property, N, mapStatus(stat));
   if(stat == kOfxStatOK && _propLogMessages) {
-    OFX::logPrint("Fetched multiple double property %s X %d", property, N);
+    OFX::logPrint("Fetched multiple double property %s X %d;", property, N);
     for(int i = 0; i < N; i++) {      
-      OFX::logPrint("  %s[%d] = %g", property, i, values[i]);
+      OFX::logPrint("  %s[%d] = %g;", property, i, values[i]);
     }
   }
   return stat;
@@ -255,11 +258,11 @@ OfxStatus
 PropertySet::propGetIntN(const char *property, int *values, int N) const
 {
   OfxStatus stat = gPropSuite->propGetIntN(_propHandle, property, N, values);
-  OFX::logError(stat != kOfxStatOK, "Failed on fetching multiple int property %s X %d, host returned status %s", property, N, mapStatus(stat));
+  OFX::logError(stat != kOfxStatOK, "Failed on fetching multiple int property %s X %d, host returned status %s;", property, N, mapStatus(stat));
   if(stat == kOfxStatOK && _propLogMessages) {
-    OFX::logPrint("Fetched multiple int property %s X %d", property, N);
+    OFX::logPrint("Fetched multiple int property %s X %d;", property, N);
     for(int i = 0; i < N; i++) {      
-      OFX::logPrint("  %s[%d] = %f", property, i, values[i]);
+      OFX::logPrint("  %s[%d] = %d;", property, i, values[i]);
     }
   }
   return stat;
@@ -270,9 +273,9 @@ OfxStatus
 PropertySet::propGetInt(const char *property, int &value, int idx) const
 {
   OfxStatus stat = gPropSuite->propGetInt(_propHandle, property, idx, &value);
-  OFX::logError(stat != kOfxStatOK, "Failed on fetching int property %s[%d], host returned status %s", property, idx, mapStatus(stat));
+  OFX::logError(stat != kOfxStatOK, "Failed on fetching int property %s[%d], host returned status %s;", property, idx, mapStatus(stat));
   if(stat == kOfxStatOK && _propLogMessages) 
-    OFX::logPrint("Fetched int property %s[%d] = %d", property, idx, value);
+    OFX::logPrint("Fetched int property %s[%d] = %d;", property, idx, value);
   return stat;
 }
 
@@ -281,10 +284,10 @@ PropertySet::propGetString(const char *property, std::string  &value, int idx) c
 {
   char *str;
   OfxStatus stat = gPropSuite->propGetString(_propHandle, property, idx, &str);
-  OFX::logError(stat != kOfxStatOK, "Failed on fetching string property %s[%d], host returned status %s", property, idx, mapStatus(stat));
+  OFX::logError(stat != kOfxStatOK, "Failed on fetching string property %s[%d], host returned status %s;", property, idx, mapStatus(stat));
   if(kOfxStatOK == stat && _propLogMessages) {
     value = str;
-    OFX::logPrint("Fetched string property %s[%d] = %s", property, idx, value.c_str());
+    OFX::logPrint("Fetched string property %s[%d] = %s;", property, idx, value.c_str());
   }
   else {
     value = "";
@@ -296,7 +299,8 @@ OfxStatus
 PropertySet::propGetDimension(const char *property, int &size)
 {
   OfxStatus stat = gPropSuite->propGetDimension(_propHandle, property, &size);
-  OFX::logError(stat != kOfxStatOK, "Failed on fetching dimension for property %s, host returned status %s", property, mapStatus(stat));
+  OFX::logError(stat != kOfxStatOK, "Failed on fetching dimension for property %s, host returned status %s;", property, mapStatus(stat));
+  return stat;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -305,7 +309,7 @@ PropertySet::propGetDimension(const char *property, int &size)
 void
 PropertySetDescription::checkProperties(void)
 {
-  OFX::logPrint("PropertySetDescription::checkProperties - start, checking properties of %s", _setName);
+  OFX::logPrint("PropertySetDescription::checkProperties - start(checking properties of %s);\n{", _setName);
 
   // don't print ordinary messages whilst we are checking them
   propLogMessages(false);
@@ -319,7 +323,7 @@ PropertySetDescription::checkProperties(void)
 
     if(stat == kOfxStatOK) {
       if(_descriptions[i].dimension != -1) // implies variable dimension
-	OFX::logError(dimension != _descriptions[i].dimension, "Host reports property '%s' with dimension %d, should be %d", _descriptions[i].name, dimension, _descriptions[i].dimension);
+	OFX::logError(dimension != _descriptions[i].dimension, "Host reports property '%s' with dimension %d, should be %d;", _descriptions[i].name, dimension, _descriptions[i].dimension);
 
       // check type by getting the first element, the property getting will print failure messages to the log
       if(dimension > 0) {
@@ -339,7 +343,7 @@ PropertySetDescription::checkProperties(void)
   }
   propLogMessages(true);
 
-  OFX::logPrint("PropertySetDescription::checkProperties - stop");
+  OFX::logPrint("}PropertySetDescription::checkProperties - stop;");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -395,17 +399,17 @@ HostDescription::HostDescription(OfxPropertySetHandle handle) :
   pageRowCount(-1),
   pageColumnCount(-1)
 {
-  OFX::logPrint("HostDescription::HostDescription - start, fetching host description");
+  OFX::logPrint("HostDescription::HostDescription - start ( fetching host description);\n{");
 
   // do basic existance checking with a PropertySetDescription
-  PropertySetDescription hostPropSet("Host Properties", handle, gHostPropDescription, sizeof(gHostPropDescription)/sizeof(PropertyDescription));
+  PropertySetDescription hostPropSet("Host", handle, gHostPropDescription, sizeof(gHostPropDescription)/sizeof(PropertyDescription));
   hostPropSet.checkProperties();
 
   // now go through and fill in the host description
   OfxStatus status;
 
   status = propGetString(kOfxPropType, type);
-  OFX::logError(type != kOfxTypeImageEffectHost, "kOfxPropType should have value '%s' not '%s'", kOfxTypeImageEffectHost, type.c_str());
+  OFX::logError(type != kOfxTypeImageEffectHost, "kOfxPropType should have value '%s' not '%s';", kOfxTypeImageEffectHost, type.c_str());
 
   propGetString(kOfxPropName, hostName);
   propGetString(kOfxPropLabel, hostLabel);
@@ -432,7 +436,7 @@ HostDescription::HostDescription(OfxPropertySetHandle handle) :
   pageRowCount = rcCount[0];
   pageColumnCount = rcCount[1];
   
-  OFX::logPrint("HostDescription::HostDescription - stop");
+  OFX::logPrint("}HostDescription::HostDescription - stop;");
 }
 
 
@@ -443,9 +447,9 @@ fetchSuite(char *suiteName, int suiteVersion, bool optional = false)
 {
   void *suite = gHost->fetchSuite(gHost->host, suiteName, suiteVersion);
   if(optional)
-    OFX::logWarning(suite == 0, "Could not fetch the optional suite '%s' version %d.", suiteName, suiteVersion);
+    OFX::logWarning(suite == 0, "Could not fetch the optional suite '%s' version %d;", suiteName, suiteVersion);
   else
-    OFX::logError(suite == 0, "Could not fetch the mandatory suite '%s' version %d.", suiteName, suiteVersion);
+    OFX::logError(suite == 0, "Could not fetch the mandatory suite '%s' version %d;", suiteName, suiteVersion);
   if(!optional && suite == 0) throw kOfxStatErrMissingHostFeature;
   return suite;
 }
@@ -458,8 +462,8 @@ static int gLoadCount = 0;
 static OfxStatus
 actionLoad(void)
 {
-  OFX::logPrint("loadAction - start");
-  OFX::logError(gLoadCount != 0, "Load action called more than once without unload being called.");
+  OFX::logPrint("loadAction - start();\n{");
+  OFX::logError(gLoadCount != 0, "Load action called more than once without unload being called;");
   gLoadCount++;
 
 
@@ -467,7 +471,7 @@ actionLoad(void)
   
   try {
     // fetch the hosts
-    OFX::logError(gHost == 0, "Host pointer has not been set.");
+    OFX::logError(gHost == 0, "Host pointer has not been set;");
     if(!gHost) throw kOfxStatErrBadHandle;
     
     if(gLoadCount == 1) {
@@ -491,7 +495,7 @@ actionLoad(void)
     status = err;
   }
 
-  OFX::logPrint("loadAction - stop");
+  OFX::logPrint("}loadAction - stop;");
   return status;
 }
 
@@ -499,7 +503,7 @@ actionLoad(void)
 static OfxStatus
 unLoadAction(void)
 {
-  OFX::logError(gLoadCount != 0, "UnLoad action called without a corresponding load action having been called.");
+  OFX::logError(gLoadCount != 0, "UnLoad action called without a corresponding load action having been called;");
   gLoadCount--;
   
   // force these to null
@@ -597,7 +601,7 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
 ////////////////////////////////////////////////////////////////////////////////
 // the plugin's description routine
 static OfxStatus
-describe(OfxImageEffectHandle  effect)
+actionDescribe(OfxImageEffectHandle effect)
 {  
   return kOfxStatOK;
 }
@@ -609,19 +613,19 @@ checkMainHandles(const char *action,  const void *handle, OfxPropertySetHandle i
 		 bool handleCanBeNull, bool inArgsCanBeNull, bool outArgsCanBeNull)
 {
   if(handleCanBeNull)
-      OFX::logWarning(handle != 0, "Handle passed to '%s' is not null.", action);
+    OFX::logWarning(handle != 0, "Handle passed to '%s' is not null;", action);
   else
-      OFX::logError(handle != 0, "'Handle passed to '%s' is null.", action);
+    OFX::logError(handle == 0, "'Handle passed to '%s' is null;", action);
 
   if(inArgsCanBeNull)
-      OFX::logWarning(inArgsHandle != 0, "'inArgs' Handle passed to '%s' is not null.", action);
+    OFX::logWarning(inArgsHandle != 0, "'inArgs' Handle passed to '%s' is not null;", action);
   else
-      OFX::logError(inArgsHandle != 0, "'inArgs' handle passed to '%s' is null.", action);
+    OFX::logError(inArgsHandle == 0, "'inArgs' handle passed to '%s' is null;", action);
 
   if(outArgsCanBeNull)
-      OFX::logWarning(outArgsHandle != 0, "'outArgs' Handle passed to '%s' is not null.", action);
+    OFX::logWarning(outArgsHandle != 0, "'outArgs' Handle passed to '%s' is not null;", action);
   else
-      OFX::logError(outArgsHandle != 0, "'outArgs' handle passed to '%s' is null.", action);
+    OFX::logError(outArgsHandle == 0, "'outArgs' handle passed to '%s' is null;", action);
 
   if(!handleCanBeNull && !handle) throw kOfxStatErrBadHandle;
   if(!inArgsCanBeNull && !inArgsHandle) throw kOfxStatErrBadHandle;
@@ -633,8 +637,8 @@ checkMainHandles(const char *action,  const void *handle, OfxPropertySetHandle i
 static OfxStatus
 pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgsHandle,  OfxPropertySetHandle outArgsHandle)
 {
-  OFX::logPrint("pluginMain - start");
-  OFX::logPrint("  action is '%s'", action);
+  OFX::logPrint("pluginMain - start();\n{");
+  OFX::logPrint("  action is '%s';", action);
   OfxStatus stat = kOfxStatReplyDefault;
 
   try {
@@ -654,6 +658,7 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgsH
     }
     else if(OFX::strEquals(action, kOfxActionDescribe)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, true, true);
+      actionDescribe(handle);
     }
     else if(OFX::strEquals(action, kOfxActionPurgeCaches)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, true, true);
@@ -713,7 +718,7 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgsH
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, false, true);
     }
     else {
-      OFX::logError("Unknown action '%s'", action);
+      OFX::logError("Unknown action '%s';", action);
     }
   }
 
@@ -723,7 +728,7 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgsH
     stat = err;
   }
 
-  OFX::logPrint("pluginMain - stop");
+  OFX::logPrint("}pluginMain - stop;");
 	  
   // other actions to take the default value
   return stat;
@@ -733,10 +738,10 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgsH
 static void
 setHostFunc(OfxHost *hostStruct)
 {
-  OFX::logPrint("setHostFunc - start");
-  OFX::logError(hostStruct == 0, "host is a null pointer");
+  OFX::logPrint("setHostFunc - start();\n{");
+  OFX::logError(hostStruct == 0, "host is a null pointer;");
   gHost = hostStruct;
-  OFX::logPrint("setHostFunc - stop");
+  OFX::logPrint("}setHostFunc - stop;");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -756,10 +761,10 @@ static OfxPlugin basicPlugin =
 OfxPlugin *
 OfxGetPlugin(int nth)
 {
-  OFX::logPrint("OfxGetPlugin - start");
-  OFX::logPrint("  asking for %dth plugin", nth);
-  OFX::logError(nth != 0, "requested plugin %d is more than the number of plugins in the file", nth);
-  OFX::logPrint("OfxGetPlugin - stop");
+  OFX::logPrint("OfxGetPlugin - start();\n{");
+  OFX::logPrint("  asking for %dth plugin;", nth);
+  OFX::logError(nth != 0, "requested plugin %d is more than the number of plugins in the file;", nth);
+  OFX::logPrint("}OfxGetPlugin - stop;");
   
   if(nth == 0) return &basicPlugin;
   return 0;
@@ -768,8 +773,8 @@ OfxGetPlugin(int nth)
 int
 OfxGetNumberOfPlugins(void)
 {       
-  OFX::logPrint("OfxGetNumberOfPlugins - start");
-  OFX::logPrint("OfxGetNumberOfPlugins - stop");
+  OFX::logPrint("OfxGetNumberOfPlugins - start();\n{");
+  OFX::logPrint("}OfxGetNumberOfPlugins - stop;");
   return 1;
 }
 

@@ -1,5 +1,7 @@
 #include <string>
-#include "stdio.h"
+#include <assert.h>
+#include <stdio.h>
+#include <stdarg.h>
 
 namespace OFX {
 
