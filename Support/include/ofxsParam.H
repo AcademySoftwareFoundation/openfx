@@ -112,11 +112,11 @@ namespace OFX {
 
   /** @brief Enumerates the differing types of string params */
   enum StringTypeEnum {
-    eStringSingleLine,
-    eStringMultiLine,
-    eStringIsFilePath,
-    eStringIsDirectoryPath,
-    eStringIsLabel
+    eStringTypeSingleLine,
+    eStringTypeMultiLine,
+    eStringTypeFilePath,
+    eStringTypeDirectoryPath,
+    eStringTypeLabel
   };
 
   /** @brief Enumerates the differing types of double params */
@@ -240,7 +240,7 @@ namespace OFX {
     void setDefault(const std::string &v);
 
     /** @brief sets the kind of the string param, defaults to eStringSingleLine */
-    void setStringMode(StringTypeEnum v);
+    void setStringType(StringTypeEnum v);
 
     /** @brief if the string param is a file path, say that we are picking an existing file, rather than posibly specifying a new one, defaults to true */
     void setFilePathExists(bool v);    
@@ -605,29 +605,29 @@ namespace OFX {
     template <class T> bool
     defineParamDescriptor(const std::string &name, ParamTypeEnum paramType, T * &paramPtr)
     {
-      paramPtr = NULL;
+        paramPtr = NULL;
 
-      // have we made it already in this param set and is it an int?
-      if(ParamDescriptor *param  = findPreviouslyDefinedParam(name)) {
-	if(param->type() == paramType) {
-	  paramPtr = (T *) param; // could be a dynamic cast here
-	  return true;
-	}
-	else
-	  return false; // SHOULD THROW SOMETHING HERE!!!!!!!
-      }
-      else {
-	// ok define one and add it in
-	OfxPropertySetHandle props;
-	defineRawParam(name, paramType, props);
+        // have we made it already in this param set and is it of the correct type
+        if(ParamDescriptor *param  = findPreviouslyDefinedParam(name)) {
+            if(param->type() == paramType) {
+                paramPtr = (T *) param; // could be a dynamic cast here
+                return true;
+            }
+            else
+                return false; // SHOULD THROW SOMETHING HERE!!!!!!!
+        }
+        else {
+            // ok define one and add it in
+            OfxPropertySetHandle props;
+            defineRawParam(name, paramType, props);
     
-	// make out support descriptor class
-	paramPtr = new T(name, props);
+            // make out support descriptor class
+            paramPtr = new T(name, props);
 
-	// add it to our map of described ones
-	_definedParams[name] = paramPtr;
-      }
-      return true;
+            // add it to our map of described ones
+            _definedParams[name] = paramPtr;
+        }
+        return true;
     }
 
   protected :

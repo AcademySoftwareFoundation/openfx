@@ -557,22 +557,22 @@ namespace OFX {
   }
 
   /** @brief sets the kind of the string param, defaults to eStringSingleLine */
-  void StringParamDescriptor::setStringMode(StringTypeEnum v)
+  void StringParamDescriptor::setStringType(StringTypeEnum v)
   {
     switch (v) {
-    case eStringSingleLine :
+    case eStringTypeSingleLine :
     _paramProps.propSetString(kOfxParamPropStringMode,  kOfxParamStringIsSingleLine);
       break;
-    case eStringMultiLine :
+    case eStringTypeMultiLine :
     _paramProps.propSetString(kOfxParamPropStringMode,  kOfxParamStringIsMultiLine);
       break;
-    case eStringIsFilePath :
+    case eStringTypeFilePath :
     _paramProps.propSetString(kOfxParamPropStringMode,  kOfxParamStringIsFilePath);
       break;
-    case eStringIsDirectoryPath :
+    case eStringTypeDirectoryPath :
     _paramProps.propSetString(kOfxParamPropStringMode,  kOfxParamStringIsDirectoryPath);
       break;
-    case eStringIsLabel :
+    case eStringTypeLabel :
     _paramProps.propSetString(kOfxParamPropStringMode,  kOfxParamStringIsLabel);
       break;
     }
