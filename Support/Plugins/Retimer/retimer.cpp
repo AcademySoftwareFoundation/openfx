@@ -18,12 +18,8 @@
   England
 */
 
-#ifdef _WINDOWS
-#include <windows.h>
-#endif
-
-#include <GL/gl.h>
 #include <math.h> // for floor
+#include <float.h> // for FLT_MAX
 
 #include <stdio.h>
 #include "ofxsImageEffect.H"
@@ -283,7 +279,7 @@ namespace OFX {
         void describe(OFX::ImageEffectDescriptor &desc) 
         {
             // basic labels
-            desc.setLabels("Cross Fade", "Cross Fade", "Cross Fade");
+            desc.setLabels("Retimer", "Retimer", "Retimer");
             desc.setPluginGrouping("OFX");
 
             // Say we are a transition context
@@ -338,9 +334,9 @@ namespace OFX {
                 param->setScriptName("speed");
                 param->setHint("How much to changed the speed of the input clip");
                 param->setDefault(1);
-                param->setRange(0, 10);
-                param->setIncrement(0.1);
-                param->setDislayRange(0, 10);
+                param->setRange(-FLT_MAX, FLT_MAX);
+                param->setIncrement(0.05);
+                param->setDislayRange(0, 1);
                 param->setAnimates(true); // can animate
                 param->setDoubleType(eDoubleTypeScale);
 

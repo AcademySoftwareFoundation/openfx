@@ -33,7 +33,13 @@
 
 /* 2005, re-editted by B. Nicoletti to be C++ and to carry the seed with it */
 
+
+#ifdef _WINDOWS
+#define uint32_t unsigned int
+#else
 #include <stdint.h> // for uint32_t
+#endif
+
 
 //  Mersenne Twister random number generator
 class RandomGenerator {

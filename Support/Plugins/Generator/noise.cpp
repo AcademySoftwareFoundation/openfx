@@ -16,11 +16,6 @@
   England
 */
 
-#ifdef _WINDOWS
-#include <windows.h>
-#endif
-
-#include <GL/gl.h>
 
 #include <stdio.h>
 #include "ofxsImageEffect.H"
@@ -301,7 +296,7 @@ namespace OFX {
             dstClip->setFieldExtraction(eFieldExtractSingle);
             
             // We are a general or filter context, define a speed param and a page of controls to put that in
-            DoubleParamDescriptor *param = desc.defineDoubleParam("Speed");
+            DoubleParamDescriptor *param = desc.defineDoubleParam("Noise");
             param->setLabels("noise", "noise", "noise");
             param->setScriptName("noise");
             param->setHint("How much noise to make.");
@@ -311,6 +306,13 @@ namespace OFX {
             param->setDislayRange(0, 1);
             param->setAnimates(true); // can animate
             param->setDoubleType(eDoubleTypeScale);
+
+            
+            // make a page to put it in
+            PageParamDescriptor *page = desc.definePageParam("Controls");
+
+            // add our speed param into it
+            page->addChild(*param);
         }
 
         /** @brief The create instance function, the plugin must return an object derived from the \ref OFX::ImageEffect class */
