@@ -23,6 +23,11 @@ Bruno Nicoletti
      <!-- Set the user visible label on the plug-in -->
      <OfxPropLabel>SomePlugin</OfxPropLabel>
 
+
+     <!-- redefine a message 
+      -->
+     <OfxMessage name="MyErrorMessage">Fool! I ain't getting in no plane.</OfxMessage>
+      
      <!--
          Define default overrides that apply in all contexts (unless specified in a specific context)
       -->
