@@ -170,6 +170,16 @@ namespace OFX {
                 // just catch it, the error will be reported
                 _exists = false;
             }
+            catch (OFX::Exception::PropertyUnknownToHost &e)
+            {
+                // just catch it, the error will be reported
+                _exists = false;
+            }
+            catch (OFX::Exception::PropertyValueIllegalToHost &e)
+            {
+                // just catch it, the error will be reported
+                _exists = false;
+            }
         }
   
 
@@ -249,7 +259,7 @@ namespace OFX {
             if(!logOrdinaryMessages) PropertySet::propEnableLogging();
   
             OFX::Log::outdent();
-            OFX::Log::print("STOP property validation of %s.");
+            OFX::Log::print("STOP property validation of %s.", _setName.c_str());
         }
 
 
