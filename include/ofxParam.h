@@ -192,7 +192,7 @@ See \ref ParametersInterfacesPagedLayouts for more details.
 
 /** @brief Param interact property, the size of a custom interact in screen pixels
   
-    - double x 1
+    - double x 2
 
   Plugin read only, set by host. If no custom interact is attached, then this is 0,0
 */
@@ -201,7 +201,7 @@ See \ref ParametersInterfacesPagedLayouts for more details.
 /** @brief Param interact property, sets the aspect (x size/y size) of the custom interact
 
     - double x 1
-    - defaults to 0.0
+    - defaults to 1.0
 
   Plugin set.
 
@@ -312,7 +312,7 @@ may be purely for GUI purposes, and so changing it's value should not trigger a 
        - ::kOfxParamInvalidateValueChange
        - ::kOfxParamInvalidateValueChangeToEnd
        - ::kOfxParamInvalidateAll
-    - defaults to ::OfxParamInvalidateValueChange
+    - defaults to ::kOfxParamInvalidateValueChange
 
 Imagine an effect with an animating parameter in a host that caches
 renderred output. Think of the effect of adding a new key frame.
@@ -338,7 +338,6 @@ be invalidated (though I can't think of one off the top of my head)
 
  /** @brief Used as a value for the ::kOfxParamPropCacheInvalidation property */
 #define kOfxParamInvalidateAll "OfxParamInvalidateAll"
-
 
 /** @brief Parameter property, a hint to the user as to how the parameter is to be used
 
@@ -646,10 +645,10 @@ typedef struct OfxParameterSuiteV1 {
 
   This function defines a parameter in a parameter set and returns a property set which is used to describe that parameter.
 
-  This function does not actually create a parameter, it only defines says that one should exist in any subsequent instances. To fetch an
+  This function does not actually create a parameter, it only says that one should exist in any subsequent instances. To fetch an
   parameter instance paramGetHandle must be called on an instance.
 
-  This function can always be called in one of a plug-ins 'describe' functions which defines the parameter sets common to all instances of a plugin.
+  This function can always be called in one of a plug-in's 'describe' functions which defines the parameter sets common to all instances of a plugin.
 
   returns
   - ::kOfxStatOK       - the parameter was created correctly
@@ -1095,7 +1094,7 @@ A parameter set has the following properties...
    - ::kOfxParamPropDigits *
 
  1D double parameter types have...
-   - ::kOfxParamPropShowTimeMarker
+   - ::kOfxParamPropShowTimeMarker *
    - ::kOfxParamPropDoubleType
 
  2D and 3D double parameter types have...
@@ -1180,8 +1179,6 @@ A parameter set has the following properties...
 
  It is an error to have gaps in the choices after the define call has returned.
 
- Choice options cannot be redefined after the define call they are declared in.
-
  @subsection ParametersString String Parameters
 
  This is typed by ::kOfxParamTypeString.
@@ -1249,6 +1246,7 @@ A parameter set has the following properties...
 
  The following types cannot animate...
    - ::kOfxParamTypeGroup
+   - ::kOfxParamTypePage
    - ::kOfxParamTypePushButton
 
  The following may animate, depending on the host. Properties exist on the host to check this. If the host does support animation on them, then they do _not_ animate by default. They are...

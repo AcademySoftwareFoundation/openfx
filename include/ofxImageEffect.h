@@ -428,7 +428,7 @@ detect this via an identifier change and re-evaluate the cached information.
 
 This is host set and will be one of...
      - 0 if the images can only be sampled at discreet times (eg: the clip is a sequence of frames),
-     - 1 if the images can only be sampled continuously (eg: the clip is infact a roto spline).
+     - 1 if the images can only be sampled continuously (eg: the clip is infact an animating roto spline and can be renderred anywhen).
 
 If this is set to true, then the frame rate of the clip is effectively infinite, so to stop arithmetic
 errors, it will be set to 0.
@@ -2171,7 +2171,7 @@ In this context, a plugin has the following mandated objects...
      - an input clip names 'SourceFrom' 
      - an input clip names 'SourceTo' 
      - an output clip named 'Output'
-     - a single double parameter called 'Transition'
+     - a single double parameter called 'Transition'  (see \ref ImageEffectContextMandatedParameters)
 
 Any other input clips that are specified must be optional.
 
@@ -2213,7 +2213,7 @@ The retimer context is for effects that change the length of a clip by interpola
 This context has the following mandated objects... 
      - an input clip names 'Source' 
      - an output clip named 'Output'
-     - a 1D double parameter named 'SourceTime"
+     - a 1D double parameter named 'SourceTime" (see \ref ImageEffectContextMandatedParameters)
 
 Any other input clips that are specified must be optional.
 
@@ -2233,6 +2233,23 @@ The general context is to some extent a catch all context, but is generally how 
 In this context, has the following mandated objects...
      - an output clip named "Output"
 
+<HR>
+
+@section ImageEffectContextMandatedParameters Mandated Parameters
+
+The retimer and transition context both mandate a parameter be declared, the double params 'SourceTime' and 'Transition'. The purpose of these parameters is for the host to communicate with the plug-in, they are \em not meant to be treated as normal parameters, exposed on the user plug-in's user interface.
+
+For example, the purpose of a transition effect is to dissolve in some interesting way between two separate clips, under control of the host application. Typically this is done on systems that can edit, rather than pure compositors.
+
+The mandated 'Transition' double param is not a normal param exposed on the plug-in UI, rather it is the way the host indicates how far through the transition the effect is. For example, think about two clips on a time line based editor with a transition between them, the host would set the value value of the 'Transition' parameter implicitly by how far the frame being rendered is from the start of the transition, something along the lines of...
+
+@verbatim
+   Transition = (currrentFrame - startOfTransition)/lengthOfTransition;
+@endverbatim
+
+This means that the host is completely responsible for any user interface for that parameter, either implicit (as in the above editting example) or explicit (with a curve). If your host application does no editing, it is suggested it does not host transition effects.
+
+Similarly with the 'SourceTime' double parameter in the retimer context. It is up to the host to provide a UI for this, either implicitly (eg: via stretching a clip's length on the time line) or via an explicit curve. Note that the host is not limitted to using a UI that exposes the 'SourceTime' as a curve, alternately it could present a 'speed' parameter, and integrate that to derive a value for 'SourceTime'.
 
 */
 
@@ -2491,11 +2508,13 @@ An image effect plugin (ie: that thing passed to the initial 'describe' action) 
 - ::kOfxImageEffectPluginPropFieldRenderTwiceAlways
 - ::kOfxImageEffectPropSupportsMultipleClipDepths
 - ::kOfxImageEffectPropSupportsMultipleClipPARs
+- ::kOfxImageEffectPluginRenderThreadSafety
+- ::kOfxImageEffectPropClipPreferencesSlaveParam
 - ::kOfxPluginPropFilePath (read only)
 
 @section ImageEffectsPropertiesInstance Instance Properties
 
-An image effect instance has the following properties, all but kOfxPropInstanceData are read only...
+An image effect instance has the following properties, all but kOfxPropInstanceData and kOfxImageEffectInstancePropSequentialRender are read only...
 - ::kOfxPropType 
 - ::kOfxImageEffectPropContext *
 - ::kOfxPropInstanceData *
@@ -2507,7 +2526,6 @@ An image effect instance has the following properties, all but kOfxPropInstanceD
 - ::kOfxImageEffectInstancePropSequentialRender *
 - ::kOfxImageEffectPropFrameRate *
 - ::kOfxPropIsInteractive *
-- ::kOfxImageEffectFrameVarying * 
 
 @section ImageEffectsPropertiesClip Clip Properties
 
