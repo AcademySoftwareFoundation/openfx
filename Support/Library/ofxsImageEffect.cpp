@@ -1601,7 +1601,7 @@ namespace OFX {
                 bool didSomething(void) const {return doneSomething_;}
                 
                 /** @brief set the RoI of the clip */
-                virtual void setRegionOfInterest(const Clip &clip, OfxRectD &roi)
+                virtual void setRegionOfInterest(const Clip &clip, const OfxRectD &roi)
                 {
                     // construct the name of the property
                     std::string propName = "OfxImageClipPropRoI_";

@@ -454,7 +454,7 @@ namespace OFX {
     class RegionOfInterestSetter {
     public :
         /** @brief function to set the RoI of a clip, pass in the clip to set the RoI of, and the RoI itself */
-        virtual void setRegionOfInterest(const Clip &clip, OfxRectD &RoI) = 0;
+        virtual void setRegionOfInterest(const Clip &clip, const OfxRectD &RoI) = 0;
     };
 
     /** @brief POD struct to pass arguments into @ref OFX::ImageEffect::getFramesNeeded */
