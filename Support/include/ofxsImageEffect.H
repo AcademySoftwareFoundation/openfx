@@ -2,7 +2,7 @@
 #define _ofxsImageEffect_H_
 /*
   OFX Support Library, a library that skins the OFX plug-in API with C++ classes.
-  Copyright (C) 2004 The Foundry Visionmongers Ltd
+  Copyright (C) 2004-2005 The Foundry Visionmongers Ltd
   Author Bruno Nicoletti bruno@thefoundry.co.uk
 
   This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
@@ -244,42 +244,61 @@ namespace OFX {
         /** @brief friend so we get access to ctor */
         friend class Clip;
 
+        void     *_pixelData;                    /**< @brief the base address of the image */
+        PixelComponentEnum _pixelComponents;     /**< @brief get the components in the image */
+        int       _rowBytes;                     /**< @brief the number of bytes per scanline */
+        int       _pixelBytes;                   /**< @brief the number of bytes per pixel */
+        BitDepthEnum _pixelDepth;                 /**< @brief get the pixel depth */
+        PreMultiplicationEnum _preMultiplication; /**< @brief premultiplication on the image */
+        OfxRectI  _regionOfDefinition;           /**< @brief the RoD in pixel coordinates, this may be more or less than the bounds! */
+        OfxRectI  _bounds;                       /**< @brief the bounds on the pixel data */
+        double    _pixelAspectRatio;             /**< @brief the pixel aspect ratio */
+        FieldEnum _field;                        /**< @brief which field this represents */
+        std::string _uniqueID;                   /**< @brief the unique ID of this image */
+        OfxPointD _renderScale;                  /**< @brief any scaling factor applied to the image */
+
     public :
         /** @brief dtor */
         virtual ~Image();
 
         /** @brief get the pixel depth */
-        BitDepthEnum pixelDepth(void) const;
+        BitDepthEnum pixelDepth(void) const {return _pixelDepth;}
 
         /** @brief get the components in the image */
-        PixelComponentEnum pixelComponents(void) const;
+        PixelComponentEnum pixelComponents(void) const { return _pixelComponents;}
 
-        /** @brief get the components in the image */
-        PreMultiplicationEnum preMultiplication(void) const;
+        /** @brief premultiplication on the image */
+        PreMultiplicationEnum preMultiplication(void) const { return _preMultiplication;}
     
         /** @brief get the scale factor that has been applied to this image */
-        OfxPointD renderScale(void) const;
+        OfxPointD renderScale(void) const { return _renderScale;}
 
         /** @brief get the scale factor that has been applied to this image */
-        double pixelAspectRatio(void) const;
+        double pixelAspectRatio(void) const { return _pixelAspectRatio;}
 
         /** @brief get the pixel data for this image */
-        void *pixelData(void) const;
+        void *pixelData(void) const { return _pixelData;}
 
         /** @brief get the region of definition (in pixel coordinates) of this image */
-        OfxRectI regionOfDefinition(void) const;
+        OfxRectI regionOfDefinition(void) const { return _regionOfDefinition;}
 
         /** @brief get the bounds on the image data (in pixel coordinates) of this image */
-        OfxRectI bounds(void) const;
+        OfxRectI bounds(void) const { return _bounds;}
 
         /** @brief get the row bytes, may be negative */
-        int rowBytes(void) const;
+        int rowBytes(void) const { return _rowBytes;}
 
         /** @brief get the fielding of this image */
-        FieldEnum field(void) const;
+        FieldEnum field(void) const { return _field;}
 
         /** @brief the unique ID of this image */
-        std::string UniqueIdentifier(void) const;
+        std::string uniqueIdentifier(void) const { return _uniqueID;}
+
+        /** @brief return a pixel pointer, returns NULL if (x,y) is outside the image bounds
+        
+        x and y are in pixel coordinates
+        */
+        void *pixelAddress(int x, int y);
     };
 
     ////////////////////////////////////////////////////////////////////////////////

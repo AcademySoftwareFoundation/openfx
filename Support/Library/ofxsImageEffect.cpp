@@ -1,6 +1,6 @@
 /*
   OFX Support Library, a library that skins the OFX plug-in API with C++ classes.
-  Copyright (C) 2004 The Foundry Visionmongers Ltd
+  Copyright (C) 2004-2005 The Foundry Visionmongers Ltd
   Author Bruno Nicoletti bruno@thefoundry.co.uk
 
   This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
@@ -412,6 +412,66 @@ namespace OFX {
       : _imageProps(props)
     {
         OFX::Validation::validateImageProperties(props);
+
+        // and fetch all the properties
+        _pixelData = _imageProps.propGetPointer(kOfxImagePropData);
+        
+        _rowBytes         = _imageProps.propGetInt(kOfxImagePropRowBytes);
+        _pixelAspectRatio = _imageProps.propGetDouble(kOfxImagePropPixelAspectRatio);;
+
+        std::string str  = _imageProps.propGetString(kOfxImageEffectPropComponents);
+        _pixelComponents = mapStrToPixelComponentEnum(str);
+
+        str = _imageProps.propGetString(kOfxImageEffectPropPixelDepth);
+        _pixelDepth = mapStrToBitDepthEnum(str);
+        
+        // compute bytes per pixel
+        _pixelBytes = 0;
+        switch(_pixelComponents) {
+        case ePixelComponentRGBA  : _pixelBytes = 4; break;
+        case ePixelComponentAlpha : _pixelBytes = 1; break;
+        }
+
+        switch(_pixelDepth) {
+        case eBitDepthUByte  : _pixelBytes *= 1; break;
+        case eBitDepthUShort : _pixelBytes *= 2; break;
+        case eBitDepthFloat  : _pixelBytes *= 4; break;
+        }
+
+        str = _imageProps.propGetString(kOfxImageEffectPropPreMultiplication);
+        _preMultiplication =  mapStrToPreMultiplicationEnum(str);
+
+        _regionOfDefinition.x1 = _imageProps.propGetInt(kOfxImagePropRegionOfDefinition, 0);
+        _regionOfDefinition.y1 = _imageProps.propGetInt(kOfxImagePropRegionOfDefinition, 1);
+        _regionOfDefinition.x2 = _imageProps.propGetInt(kOfxImagePropRegionOfDefinition, 2);
+        _regionOfDefinition.y2 = _imageProps.propGetInt(kOfxImagePropRegionOfDefinition, 3);
+
+        _bounds.x1 = _imageProps.propGetInt(kOfxImagePropBounds, 0);
+        _bounds.y1 = _imageProps.propGetInt(kOfxImagePropBounds, 1);
+        _bounds.x2 = _imageProps.propGetInt(kOfxImagePropBounds, 2);
+        _bounds.y2 = _imageProps.propGetInt(kOfxImagePropBounds, 3);
+
+        str = _imageProps.propGetString(kOfxImagePropField);
+        if(str == kOfxImageFieldNone) {
+            _field = eFieldNone;
+        }
+        else if(str == kOfxImageFieldBoth) {
+             _field = eFieldBoth;
+        }
+        else if(str == kOfxImageFieldLower) {
+             _field = eFieldLower;
+        }
+        else if(str == kOfxImageFieldUpper) {
+             _field = eFieldLower;
+        }
+        else {
+            OFX::Log::error(true, "Unknown field state '%s' reported on an image", str.c_str());
+        }
+
+        _uniqueID = _imageProps.propGetString(kOfxImagePropUniqueIdentifier);
+
+        _renderScale.x = _imageProps.propGetDouble(kOfxImageEffectPropRenderScale, 0);
+        _renderScale.y = _imageProps.propGetDouble(kOfxImageEffectPropRenderScale, 1);
     }
 
     Image::~Image()
@@ -419,6 +479,22 @@ namespace OFX {
         OFX::Private::gEffectSuite->clipReleaseImage(_imageProps.propSetHandle());
     }
 
+    /** @brief return a pixel pointer
+
+    No attempt made to be uber efficient here.
+    */
+    void *Image::pixelAddress(int x, int y)
+    {
+        // are we in the image bounds
+        if(x < _bounds.x1 || x >= _bounds.x2 || y < _bounds.y1 || y > _bounds.y2)
+            return 0;
+     
+        char *pix = (char *) (((char *) _pixelData) + (y - _bounds.y1) * _rowBytes);
+        pix += (x - _bounds.x1) * _pixelBytes;
+        return (void *) pix;   
+    }
+
+#if 0
     /** @brief get the pixel depth */
     BitDepthEnum Image::pixelDepth(void) const
     {
@@ -550,7 +626,8 @@ namespace OFX {
         return _imageProps.propGetString(kOfxImagePropUniqueIdentifier);
     }
 
-  
+#endif
+
     ////////////////////////////////////////////////////////////////////////////////
     // clip instance
 
