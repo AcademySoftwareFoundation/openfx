@@ -23,7 +23,7 @@ namespace OFX {
   
     /** @brief Throws an @ref OFX::Exception depending on the status flag passed in */
     void
-    throwSuiteStatusException(OfxStatus stat) throw(OFX::Exception::Suite)
+    throwSuiteStatusException(OfxStatus stat) throw(OFX::Exception::Suite, std::bad_alloc)
     {
         switch (stat) {
         case kOfxStatOK :
@@ -31,11 +31,15 @@ namespace OFX {
         case kOfxStatReplyNo :
         case kOfxStatReplyDefault :
             break;
-     
+    
+        case kOfxStatErrMemory :
+            throw std::bad_alloc();
+
         default :
             throw OFX::Exception::Suite(stat);
         }
     }
+
 
     /** @brief maps status to a string */
     char *
@@ -514,6 +518,12 @@ namespace OFX {
                 stat = kOfxStatErrMissingHostFeature;
             }
 
+            // catch exception due to a property being unknown to the host, implies something wrong with host if not caught further down
+            catch (OFX::Exception::PropertyUnknownToHost &ex)
+            {
+                stat = kOfxStatErrMissingHostFeature;
+            }
+
             // catch memory
             catch (std::bad_alloc)
             {
@@ -523,7 +533,7 @@ namespace OFX {
             // Catch anything else, unknown
             catch (...)
             {
-                stat = kOfxStatErrUnknown;
+                stat = kOfxStatFailed;
             }
       
             OFX::Log::outdent();

@@ -677,8 +677,8 @@ namespace OFX {
             PropertyDescription(kOfxParamPropInteractV1,           OFX::ePointer,1, eDescDefault, (void *)(0), eDescFinished),
             PropertyDescription(kOfxParamPropInteractSize,         OFX::eDouble, 2, eDescFinished),
             PropertyDescription(kOfxParamPropInteractSizeAspect,   OFX::eDouble, 1, eDescDefault, 1.0, eDescFinished),
-            PropertyDescription(kOfxParamPropInteractMinimumSize,  OFX::eDouble, 2, eDescDefault, 10.0, 10.0, eDescFinished),
-            PropertyDescription(kOfxParamPropInteractPreferedSize, OFX::eDouble, 2, eDescDefault, 10.0, 10.0, eDescFinished),
+            PropertyDescription(kOfxParamPropInteractMinimumSize,  OFX::eInt,    2, eDescDefault, 10.0, 10.0, eDescFinished),
+            PropertyDescription(kOfxParamPropInteractPreferedSize, OFX::eInt,    2, eDescDefault, 10.0, 10.0, eDescFinished),
         };
 
         /** @brief Props for params that can hold values. */
@@ -778,7 +778,7 @@ namespace OFX {
         {
             PropertyDescription(kOfxParamPropAnimates,             OFX::eInt,    1, eDescDefault, 1, eDescFinished),
             PropertyDescription(kOfxParamPropIncrement,            OFX::eDouble, 1, eDescFinished),
-            PropertyDescription(kOfxParamPropDigits,               OFX::eDouble, 1, eDescFinished),
+            PropertyDescription(kOfxParamPropDigits,               OFX::eInt,    1, eDescFinished),
             PropertyDescription(kOfxParamPropDoubleType,           OFX::eString, 1, eDescDefault, kOfxParamDoubleTypePlain, eDescFinished),
         };
     
@@ -969,6 +969,13 @@ namespace OFX {
         validateClipDescriptorProperties(PropertySet props)
         {
             gClipDescriptorPropSet.validate(props);
+        }
+
+        /** @brief validates a clip instance */
+        void
+        validateClipInstanceProperties(PropertySet props)
+        {
+            gClipInstancePropSet.validate(props);
         }
 
         /** @brief validates a clip descriptor */
