@@ -253,6 +253,8 @@ These properties are general properties and  apply to may objects across OFX
 - int X 1
 - 0 if the effect currently has no interface, this may be because the effect is loaded in a background render host, or it may be loaded on an interactive host that has not yet opened an editor for the effect,
 - 1 if the effect has an interface and has an editor somewhere.
+
+Note, the output of an effect should only ever depend on the state of it's parameters, not on the interactive flag. The interactive flag is more a courtesy flag to let a plugin know that it has an interace. If a plugin want's to have its behaviour dependant on the interactive flag, it can always make a secret parameter which shadows the state if the flag.
 */
 #define kOfxPropIsInteractive "OfxPropIsInteractive"
 
@@ -377,13 +379,13 @@ typedef struct OfxPointD {
 
 This is effectively INT_MAX. 
  */
-#define kOfxFlagInfiniteMax (1 << ((sizeof(int) * 8) - 1) - 1)
+#define kOfxFlagInfiniteMax ((int)((1 << (sizeof(int)*8 - 1)) - 1))
 
 /** @brief Used to flag infinite rects. Set minimums to this to indicate infinite.
 
 This is effectively INT_MIN
  */
-#define kOfxFlagInfiniteMin (-kOfxFlagInfiniteMax - 1)
+#define kOfxFlagInfiniteMin ((int)(-kOfxFlagInfiniteMax - 1))
 
 /** @brief Defines two dimensional integer region
 
