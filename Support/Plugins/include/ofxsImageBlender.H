@@ -23,11 +23,11 @@ namespace OFX {
         }
 
         /** @brief set the src image */
-        void fromImg(OFX::Image *v) {_fromImg = v;}
-        void toImg(OFX::Image *v)   {_toImg = v;}
+        void setFromImg(OFX::Image *v) {_fromImg = v;}
+        void setToImg(OFX::Image *v)   {_toImg = v;}
 
         /** @brief set the scale */
-        void blend(float v) {_blend = v;}    
+        void setBlend(float v) {_blend = v;}    
     };
 
     /** @brief templated class to blend between two images */
@@ -55,12 +55,12 @@ namespace OFX {
             for(int y = procWindow.y1; y < procWindow.y2; y++) {
                 if(_effect.abort()) break;
 
-                PIX *dstPix = (PIX *) _dstImg->pixelAddress(procWindow.x1, y);
+                PIX *dstPix = (PIX *) _dstImg->getPixelAddress(procWindow.x1, y);
 
                 for(int x = procWindow.x1; x < procWindow.x2; x++) {
         
-                    PIX *fromPix = (PIX *)  (_fromImg ? _fromImg->pixelAddress(x, y) : 0);
-                    PIX *toPix   = (PIX *)  (_toImg   ? _toImg->pixelAddress(x, y)   : 0);
+                    PIX *fromPix = (PIX *)  (_fromImg ? _fromImg->getPixelAddress(x, y) : 0);
+                    PIX *toPix   = (PIX *)  (_toImg   ? _toImg->getPixelAddress(x, y)   : 0);
         
                     if(fromPix && toPix) {
                         for(int c = 0; c < nComponents; c++) 

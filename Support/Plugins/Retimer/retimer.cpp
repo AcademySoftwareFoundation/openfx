@@ -54,7 +54,7 @@ public :
         srcClip_ = fetchClip("Source");
 
         // What parameters we instantiate depend on the context
-        if(context() == OFX::eContextRetimer)
+        if(getContext() == OFX::eContextRetimer)
             // fetch the mandated parameter which the host uses to pass us the frame to retime to
             sourceTime_   = fetchDoubleParam("SourceTime");
         else // context == OFX::eContextFilter || context == OFX::eContextGeneral
@@ -62,7 +62,7 @@ public :
             speed_   = fetchDoubleParam("Speed");
 
         // fetch duration param for general context
-        if(context() == OFX::eContextGeneral)
+        if(getContext() == OFX::eContextGeneral)
             duration_ = fetchDoubleParam("Duration");
     }
 
@@ -90,8 +90,8 @@ checkComponents(const OFX::Image &src,
                 OFX::BitDepthEnum dstBitDepth,
                 OFX::PixelComponentEnum dstComponents)
 {
-    OFX::BitDepthEnum      srcBitDepth     = src.pixelDepth();
-    OFX::PixelComponentEnum srcComponents  = src.pixelComponents();
+    OFX::BitDepthEnum      srcBitDepth     = src.getPixelDepth();
+    OFX::PixelComponentEnum srcComponents  = src.getPixelComponents();
         
     // see if they have the same depths and bytes and all
     if(srcBitDepth != dstBitDepth || srcComponents != dstComponents)
@@ -104,13 +104,13 @@ RetimerPlugin::setupAndProcess(OFX::ImageBlenderBase &processor, const OFX::Rend
 {
     // get a dst image
     std::auto_ptr<OFX::Image>  dst(dstClip_->fetchImage(args.time));
-    OFX::BitDepthEnum          dstBitDepth    = dst->pixelDepth();
-    OFX::PixelComponentEnum    dstComponents  = dst->pixelComponents();
+    OFX::BitDepthEnum          dstBitDepth    = dst->getPixelDepth();
+    OFX::PixelComponentEnum    dstComponents  = dst->getPixelComponents();
   
     // figure the frame we should be retiming from
     double sourceTime;
     
-    if(context() == OFX::eContextRetimer) {
+    if(getContext() == OFX::eContextRetimer) {
         // the host is specifying it, so fetch it from the "sourceTime" pseudo-param
         sourceTime = sourceTime_->getValueAtTime(args.time);
     }
@@ -155,15 +155,15 @@ RetimerPlugin::setupAndProcess(OFX::ImageBlenderBase &processor, const OFX::Rend
     if(toImg.get()) checkComponents(*toImg, dstBitDepth, dstComponents);
 
     // set the images
-    processor.dstImg(dst.get());
-    processor.fromImg(fromImg.get());
-    processor.toImg(toImg.get());
+    processor.setDstImg(dst.get());
+    processor.setFromImg(fromImg.get());
+    processor.setToImg(toImg.get());
 
     // set the render window
-    processor.renderWindow(args.renderWindow);
+    processor.setRenderWindow(args.renderWindow);
 
     // set the blend between
-    processor.blend(blend);
+    processor.setBlend(blend);
 
     // Call the base class process member, this will call the derived templated process code
     processor.process();
@@ -174,14 +174,14 @@ bool
 RetimerPlugin::getTimeDomain(OfxRangeD &range)
 {
     // this should only be called in the general context, ever!
-    if(context() == OFX::eContextGeneral) {
+    if(getContext() == OFX::eContextGeneral) {
         // If we are a general context, we can changed the duration of the effect, so have a param to do that
         // We need a separate param as it is impossible to derive this from a speed param and the input clip
         // duration (the speed may be animating or wired to an expression).
         double duration = duration_->getValue(); //don't animate
         
         // how many frames on the input clip
-        OfxRangeD srcRange = srcClip_->frameRange();
+        OfxRangeD srcRange = srcClip_->getFrameRange();
         
         range.min = 0;
         range.max = srcRange.max * duration;
@@ -196,8 +196,8 @@ void
 RetimerPlugin::render(const OFX::RenderArguments &args)
 {
     // instantiate the render code based on the pixel depth of the dst clip
-    OFX::BitDepthEnum       dstBitDepth    = dstClip_->pixelDepth();
-    OFX::PixelComponentEnum dstComponents  = dstClip_->pixelComponents();
+    OFX::BitDepthEnum       dstBitDepth    = dstClip_->getPixelDepth();
+    OFX::PixelComponentEnum dstComponents  = dstClip_->getPixelComponents();
 
     // do the rendering
     if(dstComponents == OFX::ePixelComponentRGBA) {
@@ -324,7 +324,7 @@ namespace OFX {
             if(context == OFX::eContextRetimer) {
                 // Define the mandated "SourceTime" param, note that we don't do anything with this other than.
                 // describe it. It is not a true param but how the host indicates to the plug-in which frame
-                // it wants you to retime to. It appears on no plug-in side UI, it is purely the hosts to manage.
+                // it wants you to retime to. It appears on no plug-in side UI, it is purely the host's to manage.
                 DoubleParamDescriptor *param = desc.defineDoubleParam("SourceTime");
             }
             else {
@@ -353,7 +353,7 @@ namespace OFX {
                     // We are a general or filter context, define a speed param and a page of controls to put that in
                     DoubleParamDescriptor *param = desc.defineDoubleParam("Duraction");
                     param->setLabels("duration", "duraction", "duration");
-                    param->setScriptName("duraction");
+                    param->setScriptName("duration");
                     param->setHint("How long the output clip should be, as a proportion of the input clip's length.");
                     param->setDefault(1);
                     param->setRange(0, 10);

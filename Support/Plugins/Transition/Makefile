@@ -6,5 +6,7 @@ crossFade.ofx : crossFade.o ../../Library/libOfxSupport.a
 	cp  crossFade.ofx  crossFade.ofx.bundle/Contents/MacOS
 	cp  Info.plist  crossFade.ofx.bundle/Contents/
 
+clean :
+	rm -rf crossFade.ofx crossFade.ofx.bundle crossFade.o
 
 

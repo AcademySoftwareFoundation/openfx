@@ -6,5 +6,7 @@ retimer.ofx : retimer.o ../../Library/libOfxSupport.a
 	cp  retimer.ofx  retimer.ofx.bundle/Contents/MacOS
 	cp  Info.plist  retimer.ofx.bundle/Contents/
 
+clean :
+	rm -rf retimer.ofx retimer.ofx.bundle retimer.o
 
 

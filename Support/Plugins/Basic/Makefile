@@ -6,4 +6,6 @@ basic.ofx : basic.o ../../Library/libOfxSupport.a
 	cp  basic.ofx  basic.ofx.bundle/Contents/MacOS
 	cp  Info.plist  basic.ofx.bundle/Contents/
 
+clean :
+	rm -rf basic.ofx basic.ofx.bundle basic.o
 

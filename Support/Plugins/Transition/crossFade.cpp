@@ -73,8 +73,8 @@ checkComponents(const OFX::Image &src,
                 OFX::BitDepthEnum dstBitDepth,
                 OFX::PixelComponentEnum dstComponents)
 {
-    OFX::BitDepthEnum      srcBitDepth     = src.pixelDepth();
-    OFX::PixelComponentEnum srcComponents  = src.pixelComponents();
+    OFX::BitDepthEnum      srcBitDepth     = src.getPixelDepth();
+    OFX::PixelComponentEnum srcComponents  = src.getPixelComponents();
         
     // see if they have the same depths and bytes and all
     if(srcBitDepth != dstBitDepth || srcComponents != dstComponents)
@@ -87,8 +87,8 @@ CrossFadePlugin::setupAndProcess(OFX::ImageBlenderBase &processor, const OFX::Re
 {
     // get a dst image
     std::auto_ptr<OFX::Image>  dst(dstClip_->fetchImage(args.time));
-    OFX::BitDepthEnum          dstBitDepth    = dst->pixelDepth();
-    OFX::PixelComponentEnum    dstComponents  = dst->pixelComponents();
+    OFX::BitDepthEnum          dstBitDepth    = dst->getPixelDepth();
+    OFX::PixelComponentEnum    dstComponents  = dst->getPixelComponents();
   
     // fetch the two source images
     std::auto_ptr<OFX::Image> fromImg(fromClip_->fetchImage(args.time));
@@ -102,15 +102,15 @@ CrossFadePlugin::setupAndProcess(OFX::ImageBlenderBase &processor, const OFX::Re
     float blend = transition_->getValueAtTime(args.time);
 
     // set the images
-    processor.dstImg(dst.get());
-    processor.fromImg(fromImg.get());
-    processor.toImg(toImg.get());
+    processor.setDstImg(dst.get());
+    processor.setFromImg(fromImg.get());
+    processor.setToImg(toImg.get());
 
     // set the render window
-    processor.renderWindow(args.renderWindow);
+    processor.setRenderWindow(args.renderWindow);
 
     // set the scales
-    processor.blend(blend);
+    processor.setBlend(blend);
 
     // Call the base class process member, this will call the derived templated process code
     processor.process();
@@ -121,8 +121,8 @@ void
 CrossFadePlugin::render(const OFX::RenderArguments &args)
 {
     // instantiate the render code based on the pixel depth of the dst clip
-    OFX::BitDepthEnum       dstBitDepth    = dstClip_->pixelDepth();
-    OFX::PixelComponentEnum dstComponents  = dstClip_->pixelComponents();
+    OFX::BitDepthEnum       dstBitDepth    = dstClip_->getPixelDepth();
+    OFX::PixelComponentEnum dstComponents  = dstClip_->getPixelComponents();
 
     // do the rendering
     if(dstComponents == OFX::ePixelComponentRGBA) {

@@ -6,4 +6,6 @@ noise.ofx : noise.o randomGenerator.o ../../Library/libOfxSupport.a
 	cp  noise.ofx  noise.ofx.bundle/Contents/MacOS
 	cp  Info.plist  noise.ofx.bundle/Contents/
 
+clean :
+	rm -rf noise.ofx noise.ofx.bundle noise.o
 

@@ -49,10 +49,10 @@ namespace OFX {
         }  
         
         /** @brief set the destination image */
-        void dstImg(OFX::Image *v) {_dstImg = v; }
+        void setDstImg(OFX::Image *v) {_dstImg = v; }
 
         /** @brief reset the render window */
-        void renderWindow(OfxRectI rect) {_renderWindow = rect;}
+        void setRenderWindow(OfxRectI rect) {_renderWindow = rect;}
 
         /** @brief overridden from OFX::MultiThread::Processor. This function is called once on each SMP thread by the base class */
         void multiThreadFunction(unsigned int threadId, unsigned int nThreads)

@@ -44,10 +44,10 @@ public :
     }
 
     /** @brief set the scale */
-    void noiseLevel(float v) {_noiseLevel = v;}    
+    void setNoiseLevel(float v) {_noiseLevel = v;}    
 
     /** @brief the seed to use */
-    void seed(uint32_t v) {_seed = v;}
+    void setSeed(uint32_t v) {_seed = v;}
 };
 
 /** @brief templated class to blend between two images */
@@ -71,7 +71,7 @@ public :
         for(int y = procWindow.y1; y < procWindow.y2; y++) {
             if(_effect.abort()) break;
 
-            PIX *dstPix = (PIX *) _dstImg->pixelAddress(procWindow.x1, y);
+            PIX *dstPix = (PIX *) _dstImg->getPixelAddress(procWindow.x1, y);
 
             for(int x = procWindow.x1; x < procWindow.x2; x++) {
                 for(int c = 0; c < nComponents; c++) {
@@ -138,20 +138,20 @@ NoisePlugin::setupAndProcess(NoiseGeneratorBase &processor, const OFX::RenderArg
 {
     // get a dst image
     std::auto_ptr<OFX::Image>  dst(dstClip_->fetchImage(args.time));
-    OFX::BitDepthEnum         dstBitDepth    = dst->pixelDepth();
-    OFX::PixelComponentEnum   dstComponents  = dst->pixelComponents();
+    OFX::BitDepthEnum         dstBitDepth    = dst->getPixelDepth();
+    OFX::PixelComponentEnum   dstComponents  = dst->getPixelComponents();
   
     // set the images
-    processor.dstImg(dst.get());
+    processor.setDstImg(dst.get());
 
     // set the render window
-    processor.renderWindow(args.renderWindow);
+    processor.setRenderWindow(args.renderWindow);
 
     // set the scales
-    processor.noiseLevel(noise_->getValueAtTime(args.time));
+    processor.setNoiseLevel(noise_->getValueAtTime(args.time));
 
     // set the seed based on the current time, and double it we get difference seeds on different fields
-    processor.seed(uint32_t(args.time * 2.0f));
+    processor.setSeed(uint32_t(args.time * 2.0f));
 
     // Call the base class process member, this will call the derived templated process code
     processor.process();
@@ -179,8 +179,8 @@ void
 NoisePlugin::render(const OFX::RenderArguments &args)
 {
     // instantiate the render code based on the pixel depth of the dst clip
-    OFX::BitDepthEnum       dstBitDepth    = dstClip_->pixelDepth();
-    OFX::PixelComponentEnum dstComponents  = dstClip_->pixelComponents();
+    OFX::BitDepthEnum       dstBitDepth    = dstClip_->getPixelDepth();
+    OFX::PixelComponentEnum dstComponents  = dstClip_->getPixelComponents();
 
     // do the rendering
     if(dstComponents == OFX::ePixelComponentRGBA) {

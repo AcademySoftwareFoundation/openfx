@@ -98,17 +98,17 @@ public :
     }
 
     /** @brief set the src image */
-    void srcImg(OFX::Image *v) {_srcImg = v;}
+    void setSrcImg(OFX::Image *v) {_srcImg = v;}
 
     /** @brief set the optional mask image */
-    void maskImg(OFX::Image *v) {_maskImg = v;}
+    void setMaskImg(OFX::Image *v) {_maskImg = v;}
 
     // Are we masking. We can't derive this from the mask image being set as NULL is a valid value for an input image
     void doMasking(bool v) {_doMasking = v;}
     
     
     /** @brief set the scale */
-    void scales(float r, float g, float b, float a)
+    void setScales(float r, float g, float b, float a)
     {
         _rScale = r;
         _gScale = g;
@@ -141,16 +141,16 @@ public :
         for(int y = procWindow.y1; y < procWindow.y2; y++) {
             if(_effect.abort()) break;
 
-            PIX *dstPix = (PIX *) _dstImg->pixelAddress(procWindow.x1, y);
+            PIX *dstPix = (PIX *) _dstImg->getPixelAddress(procWindow.x1, y);
 
             for(int x = procWindow.x1; x < procWindow.x2; x++) {
         
-                PIX *srcPix = (PIX *)  (_srcImg ? _srcImg->pixelAddress(x, y) : 0);
+                PIX *srcPix = (PIX *)  (_srcImg ? _srcImg->getPixelAddress(x, y) : 0);
 
                 // are we doing masking
                 if(_doMasking) {
                     // we do, get the pixel from the mask
-                    PIX *maskPix = (PIX *)  (_maskImg ? _maskImg->pixelAddress(x, y) : 0);
+                    PIX *maskPix = (PIX *)  (_maskImg ? _maskImg->getPixelAddress(x, y) : 0);
 
                     // figure the scale factor from that pixel
                     maskScale = maskPix != 0 ? float(*maskPix)/float(max) : 0.0f;
@@ -220,8 +220,7 @@ public :
         dstClip_ = fetchClip("Output");
         srcClip_ = fetchClip("Source");
         // name of mask clip depends on the context
-        if(context() != OFX::eContextFilter)
-          maskClip_ = fetchClip(context() == OFX::eContextPaint ? "Brush" : "Mask");
+        maskClip_ = fetchClip(getContext() == OFX::eContextPaint ? "Brush" : "Mask");
         scale_   = fetchDoubleParam("scale");
         rScale_  = fetchDoubleParam("scaleR");
         gScale_  = fetchDoubleParam("scaleG");
@@ -276,16 +275,16 @@ BasicPlugin::setupAndProcess(ImageScalerBase &processor, const OFX::RenderArgume
 {
     // get a dst image
     std::auto_ptr<OFX::Image> dst(dstClip_->fetchImage(args.time));
-    OFX::BitDepthEnum dstBitDepth       = dst->pixelDepth();
-    OFX::PixelComponentEnum dstComponents  = dst->pixelComponents();
+    OFX::BitDepthEnum dstBitDepth       = dst->getPixelDepth();
+    OFX::PixelComponentEnum dstComponents  = dst->getPixelComponents();
   
     // fetch main input image
     std::auto_ptr<OFX::Image> src(srcClip_->fetchImage(args.time));
 
     // make sure bit depths are sane
     if(src.get()) {
-        OFX::BitDepthEnum    srcBitDepth  = src->pixelDepth();
-        OFX::PixelComponentEnum srcComponents              = src->pixelComponents();
+        OFX::BitDepthEnum    srcBitDepth      = src->getPixelDepth();
+        OFX::PixelComponentEnum srcComponents = src->getPixelComponents();
         
         // see if they have the same depths and bytes and all
         if(srcBitDepth != dstBitDepth || srcComponents != dstComponents)
@@ -295,15 +294,15 @@ BasicPlugin::setupAndProcess(ImageScalerBase &processor, const OFX::RenderArgume
     // auto ptr for the mask.
     // Should do this inside the if statement below but the MS compiler I have doesn't have
     // a 'reset' function on the auto_ptr class
-    std::auto_ptr<OFX::Image> mask(context() != OFX::eContextFilter ? maskClip_->fetchImage(args.time) : 0);
+    std::auto_ptr<OFX::Image> mask(getContext() != OFX::eContextFilter ? maskClip_->fetchImage(args.time) : 0);
 
     // do we do masking
-    if(context() != OFX::eContextFilter) {
+    if(getContext() != OFX::eContextFilter) {
         // say we are masking
         processor.doMasking(true);
 
         // Set it in the processor 
-        processor.maskImg(mask.get());
+        processor.setMaskImg(mask.get());
     }
 
     // get the scale parameter values...
@@ -318,15 +317,15 @@ BasicPlugin::setupAndProcess(ImageScalerBase &processor, const OFX::RenderArgume
     }
 
     // set the images
-    processor.dstImg(dst.get());
-    processor.srcImg(src.get());
+    processor.setDstImg(dst.get());
+    processor.setSrcImg(src.get());
 
 
     // set the render window
-    processor.renderWindow(args.renderWindow);
+    processor.setRenderWindow(args.renderWindow);
 
     // set the scales
-    processor.scales(r, g, b, a);
+    processor.setScales(r, g, b, a);
 
     // Call the base class process member, this will call the derived templated process code
     processor.process();
@@ -337,7 +336,7 @@ bool
 BasicPlugin::getRegionOfDefinition(const OFX::RegionOfDefinitionArguments &args, OfxRectD &rod)
 {
     // our RoD is the same as the 'Source' clip's, we are not interested in the mask
-    rod = srcClip_->regionOfDefinition(args.time);
+    rod = srcClip_->getRegionOfDefinition(args.time);
 
     // say we set it
     return true;
@@ -351,7 +350,7 @@ BasicPlugin::getRegionsOfInterest(const OFX::RegionsOfInterestArguments &args, O
     rois.setRegionOfInterest(*srcClip_, args.regionOfInterest);
 
     // set it on the mask only if we are in an interesting context
-    if(context() != OFX::eContextFilter)
+    if(getContext() != OFX::eContextFilter)
         rois.setRegionOfInterest(*maskClip_, args.regionOfInterest);
 }
 
@@ -360,8 +359,8 @@ void
 BasicPlugin::render(const OFX::RenderArguments &args)
 {
     // instantiate the render code based on the pixel depth of the dst clip
-    OFX::BitDepthEnum       dstBitDepth    = dstClip_->pixelDepth();
-    OFX::PixelComponentEnum dstComponents  = dstClip_->pixelComponents();
+    OFX::BitDepthEnum       dstBitDepth    = dstClip_->getPixelDepth();
+    OFX::PixelComponentEnum dstComponents  = dstClip_->getPixelComponents();
 
     // do the rendering
     if(dstComponents == OFX::ePixelComponentRGBA) {
@@ -439,7 +438,7 @@ void
 BasicPlugin::setEnabledness(void)
 {
     // the componet enabledness depends on the clip being RGBA and the param being true
-    bool v = componentScalesEnabled_->getValue() && srcClip_->pixelComponents() == OFX::ePixelComponentRGBA;
+    bool v = componentScalesEnabled_->getValue() && srcClip_->getPixelComponents() == OFX::ePixelComponentRGBA;
 
     // enable them
     rScale_->setEnabled(v);
