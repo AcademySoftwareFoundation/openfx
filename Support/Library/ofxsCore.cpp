@@ -18,9 +18,65 @@
 #include "./ofxsSupportPrivate.H"
 
 namespace OFX {
+
   /** @brief the global host description */
   ImageEffectHostDescription *gHostDescription;
   
+  /** @brief Throws an @ref OFX::Exception depending on the status flag passed in */
+  void
+  throwSuiteStatusException(OfxStatus stat) throw(OFX::Exception::Suite)
+  {
+    switch (stat) {
+    case kOfxStatOK :
+    case kOfxStatReplyYes :
+    case kOfxStatReplyNo :
+    case kOfxStatReplyDefault :
+      break;
+     
+    default :
+      throw OFX::Exception::Suite(stat);
+    }
+  }
+
+  /** @brief maps status to a string */
+  char *
+  mapStatusToString(OfxStatus stat)
+  {
+    switch(stat) {    
+    case kOfxStatOK             : return "kOfxStatOK";
+    case kOfxStatFailed         : return "kOfxStatFailed";
+    case kOfxStatErrFatal       : return "kOfxStatErrFatal";
+    case kOfxStatErrUnknown     : return "kOfxStatErrUnknown";
+    case kOfxStatErrMissingHostFeature : return "kOfxStatErrMissingHostFeature";
+    case kOfxStatErrUnsupported : return "kOfxStatErrUnsupported";
+    case kOfxStatErrExists      : return "kOfxStatErrExists";
+    case kOfxStatErrFormat      : return "kOfxStatErrFormat";
+    case kOfxStatErrMemory      : return "kOfxStatErrMemory";
+    case kOfxStatErrBadHandle   : return "kOfxStatErrBadHandle";
+    case kOfxStatErrBadIndex    : return "kOfxStatErrBadIndex";
+    case kOfxStatErrValue       : return "kOfxStatErrValue";
+    case kOfxStatReplyYes       : return "kOfxStatReplyYes";
+    case kOfxStatReplyNo        : return "kOfxStatReplyNo";
+    case kOfxStatReplyDefault   : return "kOfxStatReplyDefault";
+    case kOfxStatErrImageFormat : return "kOfxStatErrImageFormat";
+    }
+    return "UNKNOWN STATUS CODE";
+  }
+  
+  /** @brief map a std::string to a context */
+  ContextEnum 
+  mapToContextEnum(const std::string &s)
+  {
+    if(s == kOfxImageEffectContextGenerator) return eContextGenerator;
+    if(s == kOfxImageEffectContextFilter) return eContextFilter;
+    if(s == kOfxImageEffectContextTransition) return eContextTransition;
+    if(s == kOfxImageEffectContextPaint) return eContextPaint;
+    if(s == kOfxImageEffectContextGeneral) return eContextGeneral;
+    if(s == kOfxImageEffectContextRetimer) return eContextRetimer;
+    return eContextNone;
+  }
+  
+
   /** @brief OFX::Private namespace, for things private to the support library */
   namespace Private {
 
@@ -33,13 +89,7 @@ namespace OFX {
     OfxMemorySuiteV1      *gMemorySuite = 0;
     OfxMultiThreadSuiteV1 *gThreadSuite = 0;
     OfxMessageSuiteV1     *gMessageSuite = 0;
-
-    /** @brief The plugin function that gets passed the host structure. */
-    void setHost(OfxHost *host)
-    {
-      gHost = host;
-    }
-
+  
     /** @brief Creates the global host description and sets its properties */
     void
     fetchHostDescription(OfxHost *host)
@@ -85,7 +135,7 @@ namespace OFX {
 	OFX::Log::warning(suite == 0, "Could not fetch the optional suite '%s' version %d;", suiteName, suiteVersion);
       else
 	OFX::Log::error(suite == 0, "Could not fetch the mandatory suite '%s' version %d;", suiteName, suiteVersion);
-      if(!optional && suite == 0) throwStatusException(kOfxStatErrMissingHostFeature);
+      if(!optional && suite == 0) throw OFX::Exception::HostInadequate(suiteName);
       return suite;
     }
 
@@ -104,7 +154,7 @@ namespace OFX {
       try {
 	// fetch the suites
 	OFX::Log::error(gHost == 0, "Host pointer has not been set;");
-	if(!gHost) OFX::Exception(kOfxStatErrBadHandle);
+	if(!gHost) OFX::Exception::Suite(kOfxStatErrBadHandle);
     
 	if(gLoadCount == 0) {
 	  gEffectSuite    = (OfxImageEffectSuiteV1 *) fetchSuite(kOfxImageEffectSuite, 1);
@@ -129,7 +179,7 @@ namespace OFX {
 	OFX::Validation::validateHostProperties(gHost);
       }
   
-      catch(OFX::Exception ex) {
+      catch(OFX::Exception::HostInadequate ex) {
 	OFX::Log::print("}loadAction - stop;");
 	throw(ex);
       }
@@ -156,6 +206,7 @@ namespace OFX {
       OFX::Log::print("}unloadAction - stop;");
     }
 
+
     /** @brief fetches our pointer out of the props on the handle */
     ImageEffect *retrieveImageEffectPointer(OfxImageEffectHandle handle) 
     {
@@ -164,16 +215,54 @@ namespace OFX {
       // get the prop set on the handle
       OfxPropertySetHandle propHandle;
       OfxStatus stat = OFX::Private::gEffectSuite->getPropertySet(handle, &propHandle);
-      throwStatusException(stat);
+      throwSuiteStatusException(stat);
 
       // make our wrapper object
       PropertySet props(propHandle);
 
       // fetch the instance data out of the properties
       instance = (ImageEffect *) props.propGetPointer(kOfxPropInstanceData);
+
+      OFX::Log::error(instance == 0, "Instance data handle is NULL!");
+
+      // need to throw something here
       
       // and dance to the music
       return instance;
+    }
+
+    /** @brief Library side render action, fetches relevant properties and calls the client code */
+    void
+    renderAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
+    {
+      ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
+      
+
+      RenderArguments renderArgs;
+
+      renderArgs.time = inArgs.propGetDouble(kOfxPropTime);
+
+      renderArgs.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
+      renderArgs.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+
+      renderArgs.renderWindow.x1 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 0);
+      renderArgs.renderWindow.y1 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 1);
+      renderArgs.renderWindow.x2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 2);
+      renderArgs.renderWindow.y2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 3);
+
+      std::string str = inArgs.propGetString(kOfxImageEffectPropFieldToRender);
+      try {
+	renderArgs.fieldToRender = mapStrToFieldEnum(str);
+      }
+      catch (std::invalid_argument &ex) {
+	// dud field?
+	OFX::Log::error(true, "Unknown field to render '%s'", str.c_str());
+	
+	// HACK need to throw something to cause a failure
+      }
+
+      // and call the plugin client render code
+      effectInstance->render(renderArgs);
     }
 
     /** @brief Checks the handles passed into the plugin's main entry point */
@@ -201,9 +290,9 @@ namespace OFX {
       OFX::Validation::validateActionArgumentsProperties(action, inArgsHandle, outArgsHandle);
 
       // throw exceptions if null when not meant to be null
-      if(!handleCanBeNull && !handle)         throwStatusException(kOfxStatErrBadHandle);
-      if(!inArgsCanBeNull && !inArgsHandle)   throwStatusException(kOfxStatErrBadHandle);
-      if(!outArgsCanBeNull && !outArgsHandle) throwStatusException(kOfxStatErrBadHandle);
+      if(!handleCanBeNull && !handle)         throwSuiteStatusException(kOfxStatErrBadHandle);
+      if(!inArgsCanBeNull && !inArgsHandle)   throwSuiteStatusException(kOfxStatErrBadHandle);
+      if(!outArgsCanBeNull && !outArgsHandle) throwSuiteStatusException(kOfxStatErrBadHandle);
     }
 
     /** @brief The main entry point for the plugin
@@ -249,8 +338,10 @@ namespace OFX {
 	else if(action == kOfxActionDescribe) {
 	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
 
-	  // make the plugin descriptor and pass it to the plugin to do something with it
+	  // make the plugin descriptor
 	  ImageEffectDescriptor desc(handle);
+
+	  //  and pass it to the plugin to do something with it
 	  OFX::Plugin::describe(desc);
 	}
 	else if(action == kOfxImageEffectActionDescribeInContext) {
@@ -270,11 +361,8 @@ namespace OFX {
 	else if(action == kOfxActionCreateInstance) {
 	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
 
-	  // make an image effect instance
-	  ImageEffect *instance = new ImageEffect(handle);
-	  
-	  // call plugin descibe in context
-	  OFX::Plugin::createInstance(*instance);
+	  // make the image effect instance
+	  ImageEffect *instance = OFX::Plugin::createInstance(handle);
 	}
 	else if(action == kOfxActionDestroyInstance) {
 	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
@@ -282,17 +370,16 @@ namespace OFX {
 	  // fetch our pointer out of the props on the handle
 	  ImageEffect *instance = retrieveImageEffectPointer(handle);
 
-	  // call the client destroy
-	  OFX::Plugin::destroyInstance(*instance);
-
 	  // kill it
 	  delete instance;
 	}
 	else if(action == kOfxImageEffectActionRender) {
 	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
+	  
+	  // call the render action skin
+	  renderAction(handle, inArgs);
 
-	  // fetch our pointer out of the props on the handle
-	  ImageEffect *instance = retrieveImageEffectPointer(handle);
+	  stat = kOfxStatOK;
 	}
 	else if(action == kOfxImageEffectActionBeginSequenceRender) {
 	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
@@ -353,6 +440,9 @@ namespace OFX {
 
 	  // fetch our pointer out of the props on the handle
 	  ImageEffect *instance = retrieveImageEffectPointer(handle);
+
+	  // and sync it
+	  instance->syncPrivateData();
 	}
 	else if(action == kOfxActionInstanceChanged) {
 	  checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
@@ -391,14 +481,28 @@ namespace OFX {
 	  OFX::Log::error(true, "Requested action was a null pointer!");
 	}
       }
-      catch (OFX::Exception ex)
+
+      // catch suite exceptions
+      catch (OFX::Exception::Suite &ex)
 	{
-	  // ho hum, gone wrong somehow
 	  stat = ex.status();
 	}
+
+      // catch host inadequate exceptions
+      catch (OFX::Exception::HostInadequate &ex)
+	{
+	  stat = kOfxStatErrMissingHostFeature;
+	}
+
+      // catch memory
+      catch (std::bad_alloc)
+	{
+	  stat = kOfxStatErrMemory;
+	}
+
+      // Catch anything else, unknown
       catch (...)
 	{
-	  // Catch anything else, need to be a bit nicer really and at least catch various std c++ exceptions
 	  stat = kOfxStatErrUnknown;
 	}
       
@@ -406,63 +510,15 @@ namespace OFX {
       return stat;
     }      
 
+
+    /** @brief The plugin function that gets passed the host structure. */
+    void setHost(OfxHost *host)
+    {
+      gHost = host;
+    }
+    
   }; // namespace Private
 
-  
-  /** @brief Throws an @ref OFX::Exception depending on the status flag passed in */
-  void
-  throwStatusException(OfxStatus stat) throw(OFX::Exception)
-  {
-    switch (stat) {
-    case kOfxStatOK :
-    case kOfxStatReplyYes :
-    case kOfxStatReplyNo :
-    case kOfxStatReplyDefault :
-      break;
-      
-    default :
-      throw OFX::Exception(stat);
-    }
-  }
-
-  /** @brief maps status to a string */
-  char *
-  mapStatusToString(OfxStatus stat)
-  {
-    switch(stat) {    
-    case kOfxStatOK             : return "kOfxStatOK";
-    case kOfxStatFailed         : return "kOfxStatFailed";
-    case kOfxStatErrFatal       : return "kOfxStatErrFatal";
-    case kOfxStatErrUnknown     : return "kOfxStatErrUnknown";
-    case kOfxStatErrMissingHostFeature : return "kOfxStatErrMissingHostFeature";
-    case kOfxStatErrUnsupported : return "kOfxStatErrUnsupported";
-    case kOfxStatErrExists      : return "kOfxStatErrExists";
-    case kOfxStatErrFormat      : return "kOfxStatErrFormat";
-    case kOfxStatErrMemory      : return "kOfxStatErrMemory";
-    case kOfxStatErrBadHandle   : return "kOfxStatErrBadHandle";
-    case kOfxStatErrBadIndex    : return "kOfxStatErrBadIndex";
-    case kOfxStatErrValue       : return "kOfxStatErrValue";
-    case kOfxStatReplyYes       : return "kOfxStatReplyYes";
-    case kOfxStatReplyNo        : return "kOfxStatReplyNo";
-    case kOfxStatReplyDefault   : return "kOfxStatReplyDefault";
-    case kOfxStatErrImageFormat : return "kOfxStatErrImageFormat";
-    }
-    return "UNKNOWN STATUS CODE";
-  }
-  
-  /** @brief map a std::string to a context */
-  ContextEnum 
-  mapToContextEnum(const std::string &s)
-  {
-    if(s == kOfxImageEffectContextGenerator) return eContextGenerator;
-    if(s == kOfxImageEffectContextFilter) return eContextFilter;
-    if(s == kOfxImageEffectContextTransition) return eContextTransition;
-    if(s == kOfxImageEffectContextPaint) return eContextPaint;
-    if(s == kOfxImageEffectContextGeneral) return eContextGeneral;
-    if(s == kOfxImageEffectContextRetimer) return eContextRetimer;
-    return eContextNone;
-  }
-  
 }; // namespace OFX
 
 

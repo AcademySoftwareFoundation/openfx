@@ -19,10 +19,88 @@
 
 #include "./ofxsSupportPrivate.H"
 
- 
+
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {
-  
+    
+  /** @brief turns a bit depth string into and enum */
+  static BitDepthEnum
+  mapStrToBitDepthEnum(const std::string &str) throw(std::invalid_argument)
+  {
+    if(str == kOfxBitDepthByte) {
+      return eBitDepthUByte;
+    }
+    else if(str == kOfxBitDepthShort) {
+      return eBitDepthUShort;
+    }
+    else if(str == kOfxBitDepthFloat) {
+      return eBitDepthFloat;
+    }
+    else if(str == kOfxBitDepthNone) {
+      return eBitDepthNone;
+    }
+    else {
+      throw std::invalid_argument("");
+    }
+  }
+
+  /** @brief turns a pixel component string into and enum */
+  static PixelComponentEnum
+  mapStrToPixelComponentEnum(const std::string &str) throw(std::invalid_argument)
+  {
+    if(str == kOfxImageComponentRGBA) {
+      return ePixelComponentRGBA;
+    }
+    else if(str == kOfxImageComponentAlpha) {
+      return ePixelComponentAlpha;
+    }
+    else if(str == kOfxImageComponentNone) {
+      return ePixelComponentNone;
+    }
+    else {
+      throw std::invalid_argument("");
+    }
+  }
+
+  /** @brief turns a premultiplication string into and enum */
+  static PreMultiplicationEnum
+  mapStrToPreMultiplicationEnum(const std::string &str) throw(std::invalid_argument)
+  {
+    if(str == kOfxImageOpaque) {
+      return eImageOpaque;
+    }
+    else if(str == kOfxImagePreMultiplied) {
+      return eImagePreMultiplied;
+    }
+    else if(str == kOfxImageUnPreMultiplied) {
+      return eImageUnPreMultiplied;
+    }
+    else {
+      throw std::invalid_argument("");
+    }
+  }
+
+  /** @brief turns a field string into and enum */
+  FieldEnum mapStrToFieldEnum(const std::string &str)  throw(std::invalid_argument)
+  {
+    if(str == kOfxImageFieldNone) {
+      return eFieldNone;
+    }
+    else if(str == kOfxImageFieldBoth) {
+      return eFieldBoth;
+    }
+    else if(str == kOfxImageFieldLower) {
+      return eFieldLower;
+    }
+    else if(str == kOfxImageFieldUpper) {
+      return eFieldUpper;
+    }
+    else {
+      throw std::invalid_argument("");
+    }
+  }
+
+
   ////////////////////////////////////////////////////////////////////////////////
   // clip descriptor
 
@@ -109,7 +187,7 @@ namespace OFX {
     // fetch the property set handle of the effect
     OfxPropertySetHandle props;
     OfxStatus stat = OFX::Private::gEffectSuite->getPropertySet(handle, &props);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
     _effectProps.propSetHandle(props);
 
     OFX::Validation::validatePluginDescriptorProperties(props);
@@ -117,14 +195,14 @@ namespace OFX {
     // fetch the param set handle and set it in our ParamSetDescriptor base
     OfxParamSetHandle paramSetHandle;
     stat = OFX::Private::gEffectSuite->getParamSet(handle, &paramSetHandle);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
     setParamSetHandle(paramSetHandle);
   }
   
   /** @brief dtor */
   ImageEffectDescriptor::~ImageEffectDescriptor()
   {
-    // delete any descriptor we may have constructed
+    // delete any clip descriptors we may have constructed
     std::map<std::string, ClipDescriptor *>::iterator iter;
     for(iter = _definedClips.begin(); iter != _definedClips.end(); ++iter) {
       if(iter->second) {
@@ -298,54 +376,54 @@ namespace OFX {
   BitDepthEnum Image::pixelDepth(void) const
   {
     std::string str = _imageProps.propGetString(kOfxImageEffectPropPixelDepth);
-    if(str == kOfxBitDepthByte) {
-      return eBitDepthUByte;
+    BitDepthEnum e;
+    try {
+      e = mapStrToBitDepthEnum(str);
+      if(e == eBitDepthNone) {
+	OFX::Log::error(true, "Image with no pixel depth.");
+      }
     }
-    else if(str == kOfxBitDepthShort) {
-      return eBitDepthUShort;
+    // gone wrong ?
+    catch(std::invalid_argument &ex) {
+      OFX::Log::error(true, "Unknown pixel depth property '%s' reported on an image!", str.c_str());
+      e = eBitDepthNone;
     }
-    else if(str == kOfxBitDepthFloat) {
-      return eBitDepthFloat;
-    }
-    else {
-      OFX::Log::error(true, "Unknown pixel depth '%s' reported on an image!", str.c_str());
-      return eBitDepthNone;
-    }
+    return e;
   }
-
+  
   /** @brief get the components in the image */
   PixelComponentEnum Image::pixelComponents(void) const
   {
     std::string str = _imageProps.propGetString(kOfxImageEffectPropComponents);
-    if(str == kOfxImageComponentRGBA) {
-      return ePixelComponentRGBA;
+    PixelComponentEnum e;
+    try {
+      e = mapStrToPixelComponentEnum(str);
+      if(e == ePixelComponentNone) {
+	OFX::Log::error(true, "Image with no pixel component type.");
+      }
     }
-    else if(str == kOfxImageComponentAlpha) {
-      return ePixelComponentAlpha;
+    // gone wrong ?
+    catch(std::invalid_argument &ex) {
+      OFX::Log::error(true, "Unknown  pixel component type '%s' reported on an image!", str.c_str());
+      e = ePixelComponentNone;
     }
-    else {
-      OFX::Log::error(true, "Unknown pixel component type '%s' reported on an image!", str.c_str());
-      return ePixelComponentNone;
-    }
+    return e;
   }
 
   /** @brief get the components in the image */
   PreMultiplicationEnum Image::preMultiplication(void) const
   {
     std::string str = _imageProps.propGetString(kOfxImageEffectPropPreMultiplication);
-    if(str == kOfxImageOpaque) {
-      return eImageOpaque;
+    PreMultiplicationEnum e;
+    try {
+      e = mapStrToPreMultiplicationEnum(str);
     }
-    else if(str == kOfxImagePreMultiplied) {
-      return eImagePreMultiplied;
+    // gone wrong ?
+    catch(std::invalid_argument &ex) {
+      OFX::Log::error(true, "Unknown premultiplication type '%s' reported on an image!", str.c_str());
+      e = eImageOpaque;
     }
-    else if(str == kOfxImageUnPreMultiplied) {
-      return eImageUnPreMultiplied;
-    }
-    else {
-      OFX::Log::error(true, "Unknown premultiplication state '%s' reported on an image", str.c_str());
-      return eImageOpaque;
-    }
+    return e;
   }
     
   /** @brief get the scale factor that has been applied to this image */
@@ -414,4 +492,414 @@ namespace OFX {
     return _imageProps.propGetString(kOfxImagePropUniqueIdentifier);
   }
 
+  
+  ////////////////////////////////////////////////////////////////////////////////
+  // clip instance
+
+  /** @brief hidden constructor */
+  Clip::Clip(ImageEffect *effect, const std::string &name, OfxImageClipHandle handle, OfxPropertySetHandle props)
+    : _clipName(name)
+    , _clipProps(props)
+    , _clipHandle(handle)
+    , _effect(effect)
+  {
+  }
+
+  /** @brief fetch the labels */
+  void Clip::getLabels(std::string &label, std::string &shortLabel, std::string &longLabel) const
+  {
+    label      = _clipProps.propGetString(kOfxPropLabel);
+    shortLabel = _clipProps.propGetString(kOfxPropShortLabel);
+    longLabel  = _clipProps.propGetString(kOfxPropLongLabel);
+  }
+
+  /** @brief get the pixel depth */
+  BitDepthEnum Clip::pixelDepth(void) const
+  {
+    std::string str = _clipProps.propGetString(kOfxImageEffectPropPixelDepth);
+    BitDepthEnum e;
+    try {
+      e = mapStrToBitDepthEnum(str);
+      if(e == eBitDepthNone && !isConnected()) {
+	OFX::Log::error(true, "Clip %s is connected and has no pixel depth.", _clipName.c_str());
+      }
+    }
+    // gone wrong ?
+    catch(std::invalid_argument &ex) {
+      OFX::Log::error(true, "Unknown pixel depth property '%s' reported on clip '%s'", str.c_str(), _clipName.c_str());
+      e = eBitDepthNone;
+    }
+    return e;
+  }
+
+  /** @brief get the components in the image */
+  PixelComponentEnum Clip::pixelComponents(void) const
+  {
+    std::string str = _clipProps.propGetString(kOfxImageEffectPropComponents);
+    PixelComponentEnum e;
+    try {
+      e = mapStrToPixelComponentEnum(str);
+      if(e == ePixelComponentNone && !isConnected()) {
+	OFX::Log::error(true, "Clip %s is connected and has no pixel component type!", _clipName.c_str());
+      }
+    }
+    // gone wrong ?
+    catch(std::invalid_argument &ex) {
+      OFX::Log::error(true, "Unknown  pixel component type '%s' reported on clip '%s'", str.c_str(), _clipName.c_str());
+      e = ePixelComponentNone;
+    }
+    return e;
+  }
+
+  /** @brief what is the actual pixel depth of the clip */
+  BitDepthEnum Clip::unmappedPixelDepth(void) const
+  {
+    std::string str = _clipProps.propGetString(kOfxImageClipPropUnmappedPixelDepth);
+    BitDepthEnum e;
+    try {
+      e = mapStrToBitDepthEnum(str);
+      if(e == eBitDepthNone && !isConnected()) {
+	OFX::Log::error(true, "Clip %s is connected and has no unmapped pixel depth.", _clipName.c_str());
+      }
+    }
+    // gone wrong ?
+    catch(std::invalid_argument &ex) {
+      OFX::Log::error(true, "Unknown unmapped pixel depth property '%s' reported on clip '%s'", str.c_str(), _clipName.c_str());
+      e = eBitDepthNone;
+    }
+    return e;
+  }
+
+  /** @brief what is the component type of the clip */
+  PixelComponentEnum Clip::unmappedPixelComponents(void) const
+  {
+    std::string str = _clipProps.propGetString(kOfxImageClipPropUnmappedComponents);
+    PixelComponentEnum e;
+    try {
+      e = mapStrToPixelComponentEnum(str);
+      if(e == ePixelComponentNone && !isConnected()) {
+	OFX::Log::error(true, "Clip %s is connected and has no unmapped pixel component type!", _clipName.c_str());
+      }
+    }
+    // gone wrong ?
+    catch(std::invalid_argument &ex) {
+      OFX::Log::error(true, "Unknown unmapped pixel component type '%s' reported on clip '%s'", str.c_str(), _clipName.c_str());
+      e = ePixelComponentNone;
+    }
+    return e;
+  }
+
+  /** @brief get the components in the image */
+  PreMultiplicationEnum Clip::preMultiplication(void) const
+  {
+    std::string str = _clipProps.propGetString(kOfxImageEffectPropPreMultiplication);
+    PreMultiplicationEnum e;
+    try {
+      e = mapStrToPreMultiplicationEnum(str);
+    }
+    // gone wrong ?
+    catch(std::invalid_argument &ex) {
+      OFX::Log::error(true, "Unknown premultiplication type '%s' reported on clip %s!", str.c_str(), _clipName.c_str());
+      e = eImageOpaque;
+    }
+    return e;
+  }
+    
+  /** @brief which spatial field comes first temporally */
+  FieldEnum Clip::fieldOrder(void) const
+  {
+    std::string str = _clipProps.propGetString(kOfxImageClipPropFieldOrder);
+    FieldEnum e;
+    try {
+      e = mapStrToFieldEnum(str);
+      OFX::Log::error(e != eFieldNone && e != eFieldLower && e != eFieldUpper, 
+		      "Field order '%s' reported on a clip %s is invalid, it must be none, lower or upper.", str.c_str(), _clipName.c_str());
+    }
+    // gone wrong ?
+    catch(std::invalid_argument &ex) {
+      OFX::Log::error(true, "Unknown field order '%s' reported on a clip %s.", str.c_str(), _clipName.c_str());
+      e = eFieldNone;
+    }
+    return e;
+  }
+
+  /** @brief is the clip connected */
+  bool Clip::isConnected(void) const
+  {
+    return _clipProps.propGetInt(kOfxImageClipPropConnected) != 0;
+  }
+
+  /** @brief can the clip be continuously sampled */
+  bool Clip::hasContinuousSamples(void) const
+  {
+    return _clipProps.propGetInt(kOfxImageClipPropContinuousSamples) != 0;
+  }
+
+  /** @brief get the scale factor that has been applied to this clip */
+  double Clip::pixelAspectRatio(void) const
+  {
+    return _clipProps.propGetDouble(kOfxImagePropPixelAspectRatio);
+  }
+      
+  /** @brief get the frame rate, in frames per second on this clip, after any clip preferences have been applied */
+  double Clip::frameRate(void) const
+  {
+    return _clipProps.propGetDouble(kOfxImageEffectPropFrameRate);
+  }
+      
+  /** @brief return the range of frames over which this clip has images, after any clip preferences have been applied */
+  OfxRangeD Clip::frameRange(void) const
+  {
+    OfxRangeD v;
+    v.min = _clipProps.propGetDouble(kOfxImageEffectPropFrameRange, 0);
+    v.max = _clipProps.propGetDouble(kOfxImageEffectPropFrameRange, 1);
+    return v;
+  }
+
+  /** @brief get the frame rate, in frames per second on this clip, before any clip preferences have been applied */
+  double Clip::unmappedFrameRate(void) const
+  {
+    return _clipProps.propGetDouble(kOfxImageEffectPropUnmappedFrameRate);
+  }
+      
+  /** @brief return the range of frames over which this clip has images, before any clip preferences have been applied */
+  OfxRangeD Clip::unmappedFrameRange(void) const
+  {
+    OfxRangeD v;
+    v.min = _clipProps.propGetDouble(kOfxImageEffectPropUnmappedFrameRange, 0);
+    v.max = _clipProps.propGetDouble(kOfxImageEffectPropUnmappedFrameRange, 1);
+    return v;
+  }
+
+  /** @brief get the RoD for this clip in the cannonical coordinate system */
+  OfxRectD Clip::regionOfDefinition(double t)
+  {
+    OfxRectD bounds;
+    OfxStatus stat = OFX::Private::gEffectSuite->clipGetRegionOfDefinition(_clipHandle, t, &bounds);
+    if(stat == kOfxStatFailed) {
+      bounds.x1 = bounds.x2 = bounds.y1 = bounds.y2 = 0;
+    }
+    throwSuiteStatusException(stat);
+    return bounds;
+  }
+
+  /** @brief fetch an image */
+  Image *Clip::fetchImage(double t)
+  {
+    OfxPropertySetHandle imageHandle;
+    OfxStatus stat = OFX::Private::gEffectSuite->clipGetImage(_clipHandle, t, NULL, &imageHandle);
+    if(stat == kOfxStatFailed) {
+      return NULL; // not an error, fetched images out of range/region, assume black and transparent
+    }
+    else
+      throwSuiteStatusException(stat);
+
+    return new Image(imageHandle);
+  }
+
+  /** @brief fetch an image, with a specific region in cannonical coordinates */
+  Image *Clip::fetchImage(double t, OfxRectD bounds)
+  {
+    OfxPropertySetHandle imageHandle;
+    OfxStatus stat = OFX::Private::gEffectSuite->clipGetImage(_clipHandle, t, &bounds, &imageHandle);
+    if(stat == kOfxStatFailed) {
+      return NULL; // not an error, fetched images out of range/region, assume black and transparent
+    }
+    else
+      throwSuiteStatusException(stat);
+
+    return new Image(imageHandle);
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  /// image effect 
+
+  /** @brief ctor */
+  ImageEffect::ImageEffect(OfxImageEffectHandle handle)
+    : _effectHandle(handle)
+    , _effectProps(0)
+    , _context(eContextNone)
+  {
+    // get the property handle
+    OfxPropertySetHandle props;
+    OfxStatus stat = OFX::Private::gEffectSuite->getPropertySet(handle, &props);
+    throwSuiteStatusException(stat);
+    _effectProps.propSetHandle(props);
+
+    // fetch the context
+    std::string ctxt = _effectProps.propGetString(kOfxImageEffectPropContext);
+    _context = mapToContextEnum(ctxt);
+
+    // the param set daddy-oh
+    OfxParamSetHandle paramSet;
+    stat = OFX::Private::gEffectSuite->getParamSet(handle, &paramSet);
+    throwSuiteStatusException(stat);
+    setParamSetHandle(paramSet);      
+
+    // Set this as the instance data pointer on the effect handle
+    _effectProps.propSetPointer(kOfxPropInstanceData, this);
+  }
+
+  /** @brief dtor */
+  ImageEffect::~ImageEffect()
+  {
+    // clobber the instance data property on the effect handle
+    _effectProps.propSetPointer(kOfxPropInstanceData, 0);
+
+    // delete any clip instances we may have constructed
+    std::map<std::string, Clip *>::iterator iter;
+    for(iter = _fetchedClips.begin(); iter != _fetchedClips.end(); ++iter) {
+      if(iter->second) {
+	delete iter->second;
+	iter->second = NULL;
+      }
+    }
+  }
+
+  /** @brief the context this effect was instantiate in */
+  ContextEnum ImageEffect::context(void) const
+  {
+    return _context;
+  }
+
+  /** @brief size of the project */
+  OfxPointD ImageEffect::projectSize(void) const
+  {
+    OfxPointD v;    
+    v.x = _effectProps.propGetDouble(kOfxImageEffectPropProjectSize, 0);
+    v.y = _effectProps.propGetDouble(kOfxImageEffectPropProjectSize, 1);
+    return v;
+  }
+    
+  /** @brief origin of the project */
+  OfxPointD ImageEffect::projectOffset(void) const
+  {
+    OfxPointD v;    
+    v.x = _effectProps.propGetDouble(kOfxImageEffectPropProjectOffset, 0);
+    v.y = _effectProps.propGetDouble(kOfxImageEffectPropProjectOffset, 1);
+    return v;
+  }
+
+  /** @brief extent of the project */
+  OfxPointD ImageEffect::projectExtent(void) const
+  {
+    OfxPointD v;    
+    v.x = _effectProps.propGetDouble(kOfxImageEffectPropProjectExtent, 0);
+    v.y = _effectProps.propGetDouble(kOfxImageEffectPropProjectExtent, 1);
+    return v;
+  }
+
+  /** @brief pixel aspect ratio of the project */
+  double ImageEffect::projectPixelAspectRatio(void) const
+  {
+    return _effectProps.propGetDouble(kOfxImageEffectPropProjectPixelAspectRatio, 0);
+  }
+
+  /** @brief how long does the effect last */
+  double ImageEffect::effectDuration(void) const
+  {
+    return _effectProps.propGetDouble(kOfxImageEffectInstancePropEffectDuration, 0);
+  }
+
+  /** @brief the frame rate of the project */
+  double ImageEffect::frameRate(void) const
+  {
+    return _effectProps.propGetDouble(kOfxImageEffectPropFrameRate, 0);
+  }
+
+  /** @brief is the instance currently being interacted with */
+  bool ImageEffect::isInteractive(void) const
+  {
+    return _effectProps.propGetInt(kOfxPropIsInteractive) != 0;
+  }
+
+  /** @brief set the instance to be sequentially renderred, this should have been part of clip preferences! */
+  void ImageEffect::sequentialRender(bool v)
+  {
+    _effectProps.propSetInt(kOfxImageEffectInstancePropSequentialRender, int(v));
+  }
+
+  /** @brief Have we informed the host we want to be seqentially renderred ? */
+  bool ImageEffect::sequentialRender(void) const
+  {
+    return _effectProps.propGetInt(kOfxImageEffectInstancePropSequentialRender) != 0;
+  }
+    
+  /** @brief Fetch the named clip from this instance */
+  Clip *ImageEffect::fetchClip(const std::string &name)
+  {
+    // do we have the clip already
+    std::map<std::string, Clip *>::const_iterator search;
+    search = _fetchedClips.find(name);
+    if(search != _fetchedClips.end())
+      return search->second;
+
+    // fetch the property set handle of the effect
+    OfxImageClipHandle clipHandle;
+    OfxPropertySetHandle propHandle;
+    OfxStatus stat = OFX::Private::gEffectSuite->clipGetHandle(_effectHandle, name.c_str(), &clipHandle, &propHandle);
+    throwSuiteStatusException(stat);
+
+    // and make one
+    Clip *newClip = new Clip(this, name, clipHandle, propHandle);
+
+    // add it in
+    _fetchedClips[name] = newClip;
+
+    // return it
+    return newClip;
+  }
+
+  /** @brief does the host want us to abort rendering? */
+  bool ImageEffect::abort(void) const
+  {
+    return OFX::Private::gEffectSuite->abort(_effectHandle);
+  }
+  
+  /** @brief default sync the private data function, does nothing */
+  void ImageEffect::syncPrivateData(void)
+  {
+  }
+  
+  ////////////////////////////////////////////////////////////////////////////////
+  /** @brief Class that skins image memory allocation */
+ 
+  /** @brief ctor */
+  ImageMemory::ImageMemory(size_t nBytes, ImageEffect *associatedEffect)
+    : _handle(0)
+  {
+    OfxImageEffectHandle effectHandle = 0;
+    if(associatedEffect != 0) {
+      effectHandle = associatedEffect->_effectHandle;
+    }
+      
+    OfxStatus stat = OFX::Private::gEffectSuite->imageMemoryAlloc(effectHandle, nBytes, &_handle);
+    if(stat == kOfxStatErrMemory)
+      throw std::bad_alloc();
+    throwSuiteStatusException(stat);
+  }
+
+  /** @brief dtor */
+  ImageMemory::~ImageMemory()
+  {
+    OfxStatus stat = OFX::Private::gEffectSuite->imageMemoryFree(_handle);
+    // ignore status code for exception purposes
+  }
+
+  /** @brief lock the memory and return a pointer to it */
+  void *ImageMemory::lock(void)
+  {
+    void *ptr;
+    OfxStatus stat = OFX::Private::gEffectSuite->imageMemoryLock(_handle, &ptr);
+    if(stat == kOfxStatErrMemory)
+      throw std::bad_alloc();
+    throwSuiteStatusException(stat);
+    return ptr;
+  }
+
+  /** @brief unlock the memory */
+  void ImageMemory::unlock(void)
+  {
+    OfxStatus stat = OFX::Private::gEffectSuite->imageMemoryUnlock(_handle);
+  }
 };

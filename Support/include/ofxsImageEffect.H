@@ -43,6 +43,7 @@ namespace OFX {
   class Image;
   class Clip;
   class ImageEffect;
+  class ImageMemory;
 
   /** @brief Enumerates the contexts a plugin can be used in */
   enum ContextEnum {eContextNone,
@@ -112,6 +113,13 @@ namespace OFX {
     int pageRowCount;
     int pageColumnCount;
   };
+
+  /** @brief Global description of the host */
+  extern ImageEffectHostDescription *gHostDescription;
+
+  ////////////////////////////////////////////////////////////////////////////////
+  /** @brief map a std::string to a context enum */
+  ContextEnum mapToContextEnum(const std::string &s);
 
   ////////////////////////////////////////////////////////////////////////////////
   /** @brief Wraps up a clip */
@@ -356,13 +364,42 @@ namespace OFX {
   };
 
   ////////////////////////////////////////////////////////////////////////////////
-  /** @brief Wraps up an effect descriptor, used in the describe actions */
+  /** @brief Class that skins image memory allocation */
+  class ImageMemory {
+  protected :
+    OfxImageMemoryHandle _handle;
+
+  public :
+    /** @brief ctor */
+    ImageMemory(size_t nBytes, ImageEffect *associatedEffect = 0);
+
+    /** @brief dtor */
+    ~ImageMemory();
+
+    /** @brief lock the memory and return a pointer to it */
+    void *lock(void);
+
+    /** @brief unlock the memory */
+    void unlock(void);
+  };
+
+  ////////////////////////////////////////////////////////////////////////////////
+  /** @brief POD struct to pass rendering arguments into the client code */
+  struct RenderArguments {
+    double    time;
+    OfxPointD renderScale;
+    OfxRectI  renderWindow;
+    FieldEnum fieldToRender;
+  };
+
+  ////////////////////////////////////////////////////////////////////////////////
+  /** @brief Wraps up an effect instance, plugin implementations need to inherit from this */
   class ImageEffect : public ParamSet
   {
   protected :
     mDeclareProtectedAssignAndCC(ImageEffect);
 
-  protected :
+  private :
     /** @brief The effect handle */
     OfxImageEffectHandle _effectHandle;
 
@@ -375,12 +412,15 @@ namespace OFX {
     /** @brief Set of all previously defined parameters, defined on demand */
     std::map<std::string, Clip *> _fetchedClips;
 
-    /** @brief client instance data */
-    void *_instanceData;
+    /** @brief to get access to the effect handle without exposing it generally via a function */
+    friend class ImageMemory;
 
   public :
     /** @brief ctor */
     ImageEffect(OfxImageEffectHandle handle);
+
+    /** @brief dtor */
+    virtual ~ImageEffect();
 
     /** @brief the context this effect was instantiate in */
     ContextEnum context(void) const;
@@ -418,38 +458,65 @@ namespace OFX {
     /** @brief does the host want us to abort rendering? */
     bool abort(void) const;
 
-    /** @brief get some image memory */
-    OfxImageMemoryHandle allocImageMemory(size_t nBytes);
+    ////////////////////////////////////////////////////////////////////////////////
+    // these are actions that need to be overridden by a plugin that implements an effect host
 
-    /** @brief free image */
-    void freeImageMemory(OfxImageMemoryHandle handle);
+    /** @brief client render function, this is one of the few that must be set */
+    virtual void render(const RenderArguments &args) = 0;
 
-    /** @brief lock the image memory */
-    void *lockImageMemory(OfxImageMemoryHandle handle);
+#if 0 
+    /** @brief client begin sequence render function, this is one of the few that must be set */
+    virtual void beginRenderSequence(void); 
 
-    /** @brief unlock the image memory */
-    void unlockImageMemory(OfxImageMemoryHandle handle);
+    /** @brief client end sequence render function, this is one of the few that must be set */
+    virtual void endRenderSequence(void); 
+
+    /** @brief client is identity function, returns the clip and time for the identity function */
+    virtual void isIdentity(void);
+
+    /** @brief the get RoD action */
+    virtual void getRegionOfDefinition(void);
+
+    /** @brief the get RoI action */
+    virtual void getRegionsOfInterest(void);
+
+    /** @brief what is the time domain of this effect, valid only in the general context */
+    virtual OfxRangeD getTimeDomain(void);
+
+    /** @brief what frames are needed from the input */
+    virtual void getFramesNeeded(void);
+
+    /** @brief get the clip preferences */
+    virtual void getClipPreferences(void);
+
+    /** @brief the purge caches action */
+    virtual void purgeCaches(void);
+
+    /** @brief the effect is about to have some values changed */
+    virtual void beginChanged(void);
+
+    /** @brief the effect is having a value changed, param or clip */
+    virtual void changed(void);
+
+    /** @brief the effect has just had some values changed */
+    virtual void endChanged(void);
+    
+    /** @brief the effect is about to be actively edited by a user */
+    virtual void beginEdit(void);
+
+    /** @brief the effect is no longer being edited by a user */
+    virtual void endEdit(void);
+#endif 
+
+    /** @brief the effect needs to sync any private data to persistant parameters */
+    virtual void syncPrivateData(void);
   };  
 
-  ////////////////////////////////////////////////////////////////////////////////
-  /** @brief map a std::string to a context enum */
-  ContextEnum mapToContextEnum(const std::string &s);
-
-  /** @brief Global description of the host */
-  extern ImageEffectHostDescription *gHostDescription;
-
-  ////////////////////////////////////////////////////////////////////////////////
-  /** @brief POD struct to pass rendering arguments into the client code */
-  struct RenderArguments {
-    double    time;
-    OfxPointD renderScale;
-    OfxRectI  renderWindow;
-    FieldEnum fieldToRender;
-  };
-  
+ 
   ////////////////////////////////////////////////////////////////////////////////
   /** @brief The OFX::Plugin namespace. All the functions in here needs to be defined by each plugin that uses the support libs.
    */
+  
   namespace Plugin {
     /** @brief Plugin side function used to identify the plugin to the support library */
     void getPluginID(OFX::PluginID &id);
@@ -460,20 +527,14 @@ namespace OFX {
     /** @brief Plugin side function called during the unload action */
     void unloadAction(void);
 
-    /** @brief The basic describe function, passed a plugin descriptor */
+    /** @brief The describe function, passed a plugin descriptor */
     void describe(OFX::ImageEffectDescriptor &desc);
 
     /** @brief The describe in context function, passed a plugin descriptor and a context */
     void describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context);
 
-    /** @brief The create instance function */
-    void createInstance(OFX::ImageEffect &effect);
-
-    /** @brief The destroy instance function */
-    void destroyInstance(OFX::ImageEffect &effect);
-
-    /** @brief The render function */
-    void render(OFX::ImageEffect &effect, const RenderArguments &args);
+    /** @brief The create instance function, the plugin must return an object derived from the \ref OFX::ImageEffect class */
+    ImageEffect *createInstance(OfxImageEffectHandle handle);
   };
 
 };

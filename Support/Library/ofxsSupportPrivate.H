@@ -8,6 +8,9 @@
  */
 namespace OFX {
 
+  /** @brief turns a field string into and enum */
+  FieldEnum mapStrToFieldEnum(const std::string &str)  throw(std::invalid_argument);
+
   namespace Private {
     /** @brief Pointer to the host */
     extern OfxHost *gHost;

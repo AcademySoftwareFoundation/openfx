@@ -169,7 +169,7 @@ namespace OFX {
 	  }
 	}
       }
-      catch (OFX::Exception e)
+      catch (OFX::Exception::Suite &e)
 	{
 	  // just catch it, the error will be reported
 	  _exists = false;

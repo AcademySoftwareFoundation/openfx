@@ -65,6 +65,10 @@ namespace OFX {
       OFX::Validation::validateParameterProperties(type, props, true); 
   }
 
+  ParamDescriptor::~ParamDescriptor()
+  {
+  }
+
   /** @brief set the label properties */
   void 
   ParamDescriptor::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
@@ -650,7 +654,7 @@ namespace OFX {
       OfxPropertySetHandle props;
       OfxStatus stat = OFX::Private::gParamSuite->paramSetGetPropertySet(h, &props);
       _paramSetProps.propSetHandle(props);
-      throwStatusException(stat);
+      throwSuiteStatusException(stat);
     }
     else {
       _paramSetProps.propSetHandle(0);
@@ -683,7 +687,7 @@ namespace OFX {
   void ParamSetDescriptor::defineRawParam(const std::string &name, ParamTypeEnum paramType, OfxPropertySetHandle &props)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramDefine(_paramSetHandle, mapParamTypeEnumToString(paramType), name.c_str(), &props);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief if a param has been defined in this set, go find it */
@@ -832,7 +836,7 @@ namespace OFX {
     // fetch our property handle
     OfxPropertySetHandle propHandle;
     OfxStatus stat = OFX::Private::gParamSuite->paramGetPropertySet(handle, &propHandle);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
     _paramProps.propSetHandle(propHandle);
 
     // and validate the properties
@@ -988,17 +992,20 @@ namespace OFX {
   {
     unsigned int v = 0;
     OfxStatus stat = OFX::Private::gParamSuite->paramGetNumKeys(_paramHandle, &v);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
     return v;
   }
 
-  /** @brief get the time of the nth key */
+  /** @brief get the time of the nth key, nth must be between 0 and getNumKeys-1 */
   double 
-  ValueParam::getKeyTime(int nthKey)
+  ValueParam::getKeyTime(int nthKey) throw(OFX::Exception::Suite, std::out_of_range)
   {
     double v = 0;
     OfxStatus stat = OFX::Private::gParamSuite->paramGetKeyTime(_paramHandle, nthKey, &v);
-    throwStatusException(stat); // HACK need to check for kOfxStatFailed and throw something a bit nicer
+
+    // oops?
+    if(stat == kOfxStatFailed) throw std::out_of_range("ValueParam::getKeyTime key index out of range");
+    throwSuiteStatusException(stat); 
     return v;
   }
 
@@ -1017,7 +1024,7 @@ namespace OFX {
 
     // oops?
     if(stat == kOfxStatFailed) return -1; // if search failed, return -1
-    throwStatusException(stat); // HACK need to check for kOfxStatFailed, which indicate no key found
+    throwSuiteStatusException(stat); 
     return v;
   }
     
@@ -1027,7 +1034,7 @@ namespace OFX {
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramDeleteKey(_paramHandle, time);
     if(stat == kOfxStatFailed) return; // if no key at time, fail quietly
-    throwStatusException(stat); 
+    throwSuiteStatusException(stat); 
   }
 
   /** @brief delete all the keys */
@@ -1035,7 +1042,7 @@ namespace OFX {
   ValueParam::paramDeleteAllKeys(void)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramDeleteAllKeys(_paramHandle);
-    throwStatusException(stat); 
+    throwSuiteStatusException(stat); 
   }
 
   
@@ -1092,28 +1099,28 @@ namespace OFX {
   void IntParam::getValue(int &v)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &v);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
   void IntParam::getValueAtTime(double t, int &v)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValueAtTime(_paramHandle, t, &v);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set value */
   void IntParam::setValue(int v)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValue(_paramHandle, v);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set the value at a time, implicitly adds a keyframe */
   void IntParam::setValueAtTime(double t, int v)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, v);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -1188,28 +1195,28 @@ namespace OFX {
   void Int2DParam::getValue(int &x, int &y)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &x, &y);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
   void Int2DParam::getValueAtTime(double t, int &x, int &y)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValueAtTime(_paramHandle, t, &x, &y);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set value */
   void Int2DParam::setValue(int x, int y)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValue(_paramHandle, x, y);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set the value at a time, implicitly adds a keyframe */
   void Int2DParam::setValueAtTime(double t, int x, int y)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, x, y);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
 
@@ -1295,28 +1302,28 @@ namespace OFX {
   void Int3DParam::getValue(int &x, int &y, int &z)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &x, &y, &z);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
   void Int3DParam::getValueAtTime(double t, int &x, int &y, int &z)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValueAtTime(_paramHandle, t, &x, &y, &z);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set value */
   void Int3DParam::setValue(int x, int y, int z)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValue(_paramHandle, x, y, z);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set the value at a time, implicitly adds a keyframe */
   void Int3DParam::setValueAtTime(double t, int x, int y, int z)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, x, y, z);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -1436,28 +1443,28 @@ namespace OFX {
   void DoubleParam::getValue(double &v)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &v);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
   void DoubleParam::getValueAtTime(double t, double &v)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValueAtTime(_paramHandle, t, &v);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set value */
   void DoubleParam::setValue(double v)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValue(_paramHandle, v);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set the value at a time, implicitly adds a keyframe */
   void DoubleParam::setValueAtTime(double t, double v)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, v);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -1532,28 +1539,28 @@ namespace OFX {
   void Double2DParam::getValue(double &x, double &y)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &x, &y);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
   void Double2DParam::getValueAtTime(double t, double &x, double &y)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValueAtTime(_paramHandle, t, &x, &y);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set value */
   void Double2DParam::setValue(double x, double y)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValue(_paramHandle, x, y);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set the value at a time, implicitly adds a keyframe */
   void Double2DParam::setValueAtTime(double t, double x, double y)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, x, y);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
 
@@ -1639,28 +1646,28 @@ namespace OFX {
   void Double3DParam::getValue(double &x, double &y, double &z)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &x, &y, &z);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
   void Double3DParam::getValueAtTime(double t, double &x, double &y, double &z)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValueAtTime(_paramHandle, t, &x, &y, &z);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set value */
   void Double3DParam::setValue(double x, double y, double z)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValue(_paramHandle, x, y, z);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set the value at a time, implicitly adds a keyframe */
   void Double3DParam::setValueAtTime(double t, double x, double y, double z)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, x, y, z);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -1692,28 +1699,28 @@ namespace OFX {
   void RGBParam::getValue(double &r, double &g, double &b)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &r, &g, &b);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
   void RGBParam::getValueAtTime(double t, double &r, double &g, double &b)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValueAtTime(_paramHandle, t, &r, &g, &b);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set value */
   void RGBParam::setValue(double r, double g, double b)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValue(_paramHandle, r, g, b);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set the value at a time, implicitly adds a keyframe */
   void RGBParam::setValueAtTime(double t, double r, double g, double b)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, r, g, b);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -1747,28 +1754,28 @@ namespace OFX {
   void RGBAParam::getValue(double &r, double &g, double &b, double &a)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &r, &g, &b);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
   void RGBAParam::getValueAtTime(double t, double &r, double &g, double &b, double &a)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValueAtTime(_paramHandle, t, &r, &g, &b, &a);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set value */
   void RGBAParam::setValue(double r, double g, double b, double a)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValue(_paramHandle, r, g, b, a);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set the value at a time, implicitly adds a keyframe */
   void RGBAParam::setValueAtTime(double t, double r, double g, double b, double a)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, r, g, b, a);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -1797,7 +1804,7 @@ namespace OFX {
   {
     char *cStr;
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &cStr);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
     v = cStr;
   }
 
@@ -1806,7 +1813,7 @@ namespace OFX {
   {
     char *cStr;
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValueAtTime(_paramHandle, t, &cStr);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
     v = cStr;
   }
 
@@ -1814,14 +1821,14 @@ namespace OFX {
   void StringParam::setValue(const std::string &v)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValue(_paramHandle, v.c_str());
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set the value at a time, implicitly adds a keyframe */
   void StringParam::setValueAtTime(double t, const std::string &v)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, v.c_str());
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
   
   ////////////////////////////////////////////////////////////////////////////////
@@ -1850,7 +1857,7 @@ namespace OFX {
   {
     int iVal;
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &iVal);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
     v = iVal != 0;
   }
 
@@ -1859,7 +1866,7 @@ namespace OFX {
   {
     int iVal;
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValueAtTime(_paramHandle, t, &iVal);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
     v = iVal != 0;
   }
 
@@ -1868,7 +1875,7 @@ namespace OFX {
   {
     int iVal = v;
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValue(_paramHandle, iVal);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set the value at a time, implicitly adds a keyframe */
@@ -1876,7 +1883,7 @@ namespace OFX {
   {
     int iVal = v;
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, iVal);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   
@@ -1905,28 +1912,28 @@ namespace OFX {
   void ChoiceParam::getValue(int &v)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &v);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
   void ChoiceParam::getValueAtTime(double t, int &v)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValueAtTime(_paramHandle, t, &v);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set value */
   void ChoiceParam::setValue(int v)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValue(_paramHandle, v);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set the value at a time, implicitly adds a keyframe */
   void ChoiceParam::setValueAtTime(double t, int v)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, v);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief how many options do we have */
@@ -1975,7 +1982,7 @@ namespace OFX {
   {
     char *cStr;
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &cStr);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
     v = cStr;
   }
 
@@ -1984,7 +1991,7 @@ namespace OFX {
   {
     char *cStr;
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValueAtTime(_paramHandle, t, &cStr);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
     v = cStr;
   }
 
@@ -1992,14 +1999,14 @@ namespace OFX {
   void CustomParam::setValue(const std::string &v)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValue(_paramHandle, v.c_str());
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
 
   /** @brief set the value at a time, implicitly adds a keyframe */
   void CustomParam::setValueAtTime(double t, const std::string &v)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, v.c_str());
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
   }
   
   ////////////////////////////////////////////////////////////////////////////////
@@ -2048,7 +2055,7 @@ namespace OFX {
       OfxPropertySetHandle props;
       OfxStatus stat = OFX::Private::gParamSuite->paramSetGetPropertySet(h, &props);
       _paramSetProps.propSetHandle(props);
-      throwStatusException(stat);
+      throwSuiteStatusException(stat);
     }
     else {
       _paramSetProps.propSetHandle(0);
@@ -2074,14 +2081,15 @@ namespace OFX {
     OfxPropertySetHandle propHandle;
 
     OfxStatus stat = OFX::Private::gParamSuite->paramGetHandle(_paramSetHandle, name.c_str(), &handle, &propHandle);
-    throwStatusException(stat);
+    throwSuiteStatusException(stat);
 
     PropertySet props(propHandle);
 
     // make sure it is of our type
     std::string paramTypeStr = props.propGetString(kOfxParamPropType);
-    if(paramTypeStr != mapParamTypeEnumToString(paramType))
-      handle = 0; // HACK! NEED TO THROW SOMETHING
+    if(paramTypeStr != mapParamTypeEnumToString(paramType)) {
+      throw OFX::Exception::TypeRequest("Parameter exists but is of the wrong type");
+    }
   }
 
   /** @brief if a param has been fetched in this set, go find it */

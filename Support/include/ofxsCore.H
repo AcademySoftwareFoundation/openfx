@@ -38,6 +38,8 @@ of the direct OFX objects and any library side only functions.
 #include <vector>
 #include <string>
 #include <map>
+#include <exception>
+#include <stdexcept>
 
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
@@ -48,7 +50,6 @@ of the direct OFX objects and any library side only functions.
  */
 namespace OFX {
   /** forward class declarations */
-  class Exception;
   class PropertySet;
 
 
@@ -57,20 +58,60 @@ namespace OFX {
 			 eInt,
 			 eString,
 			 eDouble};
-  /** @brief OFX base exception thrown by any function wrapping a base level ofx suite call that could return an error code;
-   */
-  class Exception {
-  protected :
-    OfxStatus _status;
 
-  public :
-    Exception(OfxStatus s) : _status(s) {}
-    OfxStatus status(void) {return _status;}
-    operator OfxStatus() {return _status;}
-  };
+  /** @brief maps a status to a string for debugging purposes, note a c-str for printf */
+  char * mapStatusToString(OfxStatus stat);
 
-  /** @brief Throws an @ref OFX::Exception depending on the status flag passed in */
-  void throwStatusException(OfxStatus stat) throw(OFX::Exception);
+  /** @brief namespace for OFX support lib exceptions, all derive from std::exception, calling it */
+  namespace Exception {
+
+    /** @brief thrown when a suite returns a dud status code 
+     */
+    class Suite : public std::exception {
+    protected :
+      OfxStatus _status;
+    public :
+      Suite(OfxStatus s) : _status(s) {}
+      OfxStatus status(void) {return _status;}
+      operator OfxStatus() {return _status;}
+
+      /** @brief reimplemented from std::exception */
+      virtual const char * what () const throw () {return mapStatusToString(_status);}
+    };
+
+    /** @brief exception indicating a request for a named thing exists (eg: a param), but is of the wrong type, should never make it back to the main entry */
+    class TypeRequest : public std::exception {
+    protected :
+      char *_what;
+    public :
+      TypeRequest(char *what) : _what(what) {}
+
+      /** @brief reimplemented from std::exception */
+      virtual const char * what () const throw ()
+      {
+	return _what;
+      }
+    };
+
+    /** @brief exception indicating a required host feature is missing */
+    class HostInadequate : public std::exception {
+    protected :
+      char *_what;
+    public :
+      HostInadequate(char *what) : _what(what) {}
+
+      /** @brief reimplemented from std::exception */
+      virtual const char * what () const throw ()
+      {
+	return _what;
+      }
+    };
+
+  }; // end of Exception namespace
+
+  /** @brief Throws an @ref OFX::Exception::Suite depending on the status flag passed in */
+  void throwSuiteStatusException(OfxStatus stat) 
+    throw(OFX::Exception::Suite);
 
   /** @brief This struct is used to return an identifier for the plugin by the function @ref OFX:Plugin::getPlugin. 
       The members correspond to those in the OfxPlugin struct defined in ofxCore.h.
@@ -105,30 +146,28 @@ namespace OFX {
     /** @brief return the handle for this property set */
     OfxPropertySetHandle propSetHandle(void) {return _propHandle;}
 
-    int  propGetDimension(const std::string &property) const throw(OFX::Exception);
-    void propReset(const std::string &property) throw(OFX::Exception);
+    int  propGetDimension(const std::string &property) const throw(OFX::Exception::Suite);
+    void propReset(const std::string &property) throw(OFX::Exception::Suite);
 
     // set single values
-    void propSetPointer(const std::string &property, void *value, int idx = 0) throw(OFX::Exception);
-    void propSetString(const std::string &property, const std::string &value, int idx = 0) throw(OFX::Exception);
-    void propSetDouble(const std::string &property, double value, int idx = 0) throw(OFX::Exception);
-    void propSetInt(const std::string &property, int value, int idx = 0) throw(OFX::Exception);
+    void propSetPointer(const std::string &property, void *value, int idx = 0) throw(OFX::Exception::Suite);
+    void propSetString(const std::string &property, const std::string &value, int idx = 0) throw(OFX::Exception::Suite);
+    void propSetDouble(const std::string &property, double value, int idx = 0) throw(OFX::Exception::Suite);
+    void propSetInt(const std::string &property, int value, int idx = 0) throw(OFX::Exception::Suite);
 
     // set multiple values
-    void propSetPointerN(const std::string &property, const std::vector<void *> &values) throw(OFX::Exception);
-    void propSetStringN(const std::string &property,  const std::vector<std::string> &values) throw(OFX::Exception);
-    void propSetDoubleN(const std::string &property,  const std::vector<double> &values) throw(OFX::Exception);
-    void propSetIntN(const std::string &property,  const std::vector<int> &values) throw(OFX::Exception);
+    void propSetPointerN(const std::string &property, const std::vector<void *> &values) throw(OFX::Exception::Suite);
+    void propSetStringN(const std::string &property,  const std::vector<std::string> &values) throw(OFX::Exception::Suite);
+    void propSetDoubleN(const std::string &property,  const std::vector<double> &values) throw(OFX::Exception::Suite);
+    void propSetIntN(const std::string &property,  const std::vector<int> &values) throw(OFX::Exception::Suite);
   
     // get single values
-    void       *propGetPointer(const std::string &property, int idx = 0) const throw(OFX::Exception);
-    std::string propGetString(const std::string &property, int idx = 0) const throw(OFX::Exception);
-    double      propGetDouble(const std::string &property, int idx = 0) const throw(OFX::Exception);
-    int         propGetInt(const std::string &property, int idx = 0) const throw(OFX::Exception);
+    void       *propGetPointer(const std::string &property, int idx = 0) const throw(OFX::Exception::Suite);
+    std::string propGetString(const std::string &property, int idx = 0) const throw(OFX::Exception::Suite &, std::bad_alloc);
+    double      propGetDouble(const std::string &property, int idx = 0) const throw(OFX::Exception::Suite);
+    int         propGetInt(const std::string &property, int idx = 0) const throw(OFX::Exception::Suite);
   };
 
-  /** @brief maps a status to a string for debugging purposes, note a c-str for printf */
-  char * mapStatusToString(OfxStatus stat);
 };
 
 // undeclare the protected assign and CC macro

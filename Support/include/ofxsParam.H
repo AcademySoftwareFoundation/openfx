@@ -161,7 +161,7 @@ namespace OFX {
     ParamTypeEnum type(void) const {return _paramType;}
 
     /** @brief name */
-    const std::string &name(void) const;
+    const std::string &name(void) const {return _paramName;}
 
     /** @brief set the label properties in a plugin */
     void setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel);
@@ -799,8 +799,8 @@ namespace OFX {
     /** @brief if the param is animating, the number of keys in it, otherwise 0 */
     unsigned int getNumKeys(void);
 
-    /** @brief get the time of the nth key */
-    double getKeyTime(int nthKey);
+    /** @brief get the time of the nth key, nth must be between 0 and getNumKeys-1 */
+    double ValueParam::getKeyTime(int nthKey) throw(OFX::Exception::Suite, std::out_of_range);
 
     /** @brief find the index of a key by a time */
     int getKeyIndex(double time, 
@@ -1385,7 +1385,7 @@ namespace OFX {
   protected :
     mDeclareProtectedAssignAndCC(ParamSet);
 
-  protected :
+  private :
     /** @brief Properties that belong to this param set */
     PropertySet _paramSetProps;
 
@@ -1394,12 +1394,6 @@ namespace OFX {
 
     /** @brief Set of all previously fetched parameters, created on demand */
     std::map<std::string, Param *> _fetchedParams;
-
-    /** @brief Hidden ctor */
-    ParamSet(void);
-
-    /** @brief set the param set handle */
-    void setParamSetHandle(OfxParamSetHandle h);
 
     /** @brief see if we have a param of the given name in out map */
     Param *findPreviouslyFetchedParam(const std::string &name);
@@ -1435,6 +1429,13 @@ namespace OFX {
       }
       return true;
     }
+
+  protected :
+    /** @brief Hidden ctor */
+    ParamSet(void);
+
+    /** @brief set the param set handle */
+    void setParamSetHandle(OfxParamSetHandle h);
 
   public :
     virtual ~ParamSet();
