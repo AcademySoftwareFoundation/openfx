@@ -7,8 +7,9 @@ Bruno Nicoletti
 
  -->
 
-<!DOCTYPE OFXRESOURCE SYSTEM "ofx.dtd">
+<!DOCTYPE OfxImageEffectResource SYSTEM "ofx.dtd">
 
+<OfxImageEffectResource>
 <!--
   Define the resource overrides for the plugin with the identifier 'someplugin'
 -->
@@ -116,3 +117,4 @@ Bruno Nicoletti
 
   </OfxResourceSet>
 </OfxPlugin>
+</OfxImageEffectResource>
