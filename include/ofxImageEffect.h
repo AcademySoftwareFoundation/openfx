@@ -1827,15 +1827,28 @@ For example a temporal based degrainer may need several frames around the frame 
 
 This action need only ever be called if the plugin sets the ::kOfxImageEffectPropTemporalClipAccess property on the plugin handle to be true. Otherwise it is assumed that the only frame needed from the inputs is the current one.
 
-The \e outArgs param has a set of properties, one for each input clip, named "OfxImageClipPropFrameRange_" with the name of the clip post-pended. For example "OfxImageClipPropFrameRange_Source". All these properties are 2 dimensional doubles. For example...
+The \e outArgs param has a set of properties, one for each input clip, named "OfxImageClipPropFrameRange_" with the name of the clip post-pended. For example "OfxImageClipPropFrameRange_Source". All these properties are multi-dimensional doubles, the dimension is a multiple of two. Each pair of values indicates a continuous range of frames that is needed on the given input.
+
+For example...
 
 \verbatim
-  double rangeSource[2], rangeMask[2];
-  ...
-  gPropHost->propSetDoubleN(outArgs, "OfxImageClipPropFrameRange_Source", 2, rangeSource);
+  double rangeSource[4], rangeMask[2];
+  
+  // required ranges on the source
+  rangeSource[0] = 0; // we always need frame 0 of the source
+  rangeSource[1] = 0;
+  rangeSource[2] = currentFrame - 1; // we also need the previous and current frame on the source
+  rangeSource[3] = currentFrame;
+
+  // require range on the maske
+  rangeMask[0] = currentFrame - 1; // we need current and previous only on the mask
+  rangeMask[1] = currentFrame;
+
+  gPropHost->propSetDoubleN(outArgs, "OfxImageClipPropFrameRange_Source", 4, rangeSource);
   gPropHost->propSetDoubleN(outArgs, "OfxImageClipPropFrameRange_Mask", 2, rangeMask);
 
 \endverbatim
+
 
 The \e handle parameter is an instance of the image effect,
 
@@ -1843,7 +1856,7 @@ The \e inArgs parameter contains the following read only properties...
 - ::kOfxPropTime - the time at which a frame will be needed to be renderred
 
 The \e outArgs handle has the following properties that are to be set...
-- one double X 2 property for each input clip currently attached, labelled with "OfxImageClipPropFrameRange_" post pended with the clip's name. The firsy dimension is the first frame needed, the second dimension is the last frame needed.  These will all be set by the host to have the default frame range.
+- one multi-dimensional double property for each input clip currently attached, labelled with "OfxImageClipPropFrameRange_" post pended with the clip's name. Each pair of values indicates a continuous range of frames needed, the first in the pair being the first frame needed, the second in the pair is the last frame needed. The dimension set by the plugin must be a multiple of two. The host initially sets this to be 2 values being the current frame value.
 
 \pre
 - ::kOfxActionCreateInstance has been called on the instance,
