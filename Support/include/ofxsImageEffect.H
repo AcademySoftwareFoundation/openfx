@@ -227,7 +227,10 @@ namespace OFX {
         /** @brief If the slave  param changes the clip preferences need to be re-evaluated */
         void addClipPreferencesSlaveParam(ParamDescriptor &p);
 
-        /** @brief Create a clip, only callable from describe in context */
+        /** @brief Create a clip, only callable from describe in context 
+        
+        The returned clip \em must not be deleted by the client code. This is all managed by the ImageEffectDescriptor itself.
+        */
         ClipDescriptor *defineClip(const std::string &name);
     };  
 
@@ -352,10 +355,20 @@ namespace OFX {
         /** @brief get the RoD for this clip in the cannonical coordinate system */
         OfxRectD regionOfDefinition(double t);
 
-        /** @brief fetch an image */
+        /** @brief fetch an image
+        
+        When finished with, the client code must delete the image.
+
+        If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
+        */
         Image *fetchImage(double t);
 
-        /** @brief fetch an image, with a specific region in cannonical coordinates */
+        /** @brief fetch an image, with a specific region in cannonical coordinates
+        
+        When finished with, the client code must delete the image.
+
+        If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
+        */
         Image *fetchImage(double t, OfxRectD bounds);
     };
 
@@ -380,12 +393,130 @@ namespace OFX {
     };
 
     ////////////////////////////////////////////////////////////////////////////////
-    /** @brief POD struct to pass rendering arguments into the client code */
+    /** @brief POD struct to pass rendering arguments into @ref ImageEffect::render and @ref OFX::ImageEffect::isIdentity */
     struct RenderArguments {
         double    time;
         OfxPointD renderScale;
         OfxRectI  renderWindow;
         FieldEnum fieldToRender;
+    };
+
+    /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::render */
+    struct BeginSequenceRenderArguments {
+        OfxRangeD frameRange;
+        double    frameStep;
+        bool      isInteractive;
+        OfxPointD renderScale;
+    };
+
+    /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::beginSequenceRender */
+    struct EndSequenceRenderArguments {
+        bool      isInteractive;
+        OfxPointD renderScale;
+    };
+
+    /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::getRegionOfDefinition */
+    struct RegionOfDefinitionArguments {
+        double    time;
+        OfxPointD renderScale;
+    };
+
+    /** @brief POD struct to pass arguments into @ref OFX::ImageEffect::getRegionsOfInterest */
+    struct RegionsOfInterestArguments {
+        double    time;
+        OfxPointD renderScale;
+        OfxRectD  regionOfInterest;
+    };
+
+    /** @brief Class used to set regions of interest on a clip in @ref OFX::ImageEffect::getRegionsOfInterest
+
+    This is a base class, the actual class is private and you don't need to see the glue involved.
+    */ 
+    class RegionOfInterestSetter {
+    public :
+        /** @brief function to set the RoI of a clip, pass in the clip to set the RoI of, and the RoI itself */
+        virtual void setRegionOfInterest(const Clip &clip, OfxRectD &RoI) = 0;
+    };
+
+    /** @brief POD struct to pass arguments into @ref OFX::ImageEffect::getFramesNeeded */
+    struct FramesNeededArguments {
+        double    time;
+    };
+
+    /** @brief Class used to set the frames needed to render a single frame of a clip in @ref OFX::ImageEffect::getFramesNeeded
+
+    This is a base class, the actual class is private and you don't need to see the glue involved.
+    */ 
+    class FramesNeededSetter {
+    public :
+        /** @brief function to set the frames needed on a clip, the range is min <= time <= max */
+        virtual void setFramesNeeded(const Clip &clip, const OfxRangeD &range) = 0;
+    };
+
+    /** @brief Class used to set the clip preferences of the effect.
+    */ 
+    class ClipPreferencesSetter {
+        OFX::PropertySet outArgs_;
+        bool doneSomething_;
+    public :
+        ClipPreferencesSetter( OFX::PropertySet props) 
+          : outArgs_(props)
+          , doneSomething_(false)
+        {}
+
+        bool didSomething(void) const {return doneSomething_;}
+
+        /** @brief, force the host to set a clip's mapped component type to be \em comps. 
+
+        Only callable on non optional clips in all contexts. Must set comps to be one of the types the effect says it supports on the given clip.
+
+        See the OFX API documentation for the default values of this.
+        */
+        void setClipComponents(Clip &clip, PixelComponentEnum comps);
+
+        /** @brief, force the host to set a clip's mapped bit depth be \em bitDepth
+
+        Only callable if the OFX::ImageEffectHostDescription::supportsMultipleClipDepths is true.
+
+        See the OFX API documentation for the default values of this.
+        */
+        void setClipBitDepth(Clip &clip, BitDepthEnum bitDepth);
+
+        /** @brief, force the host to set a clip's mapped Pixel Aspect Ratio to be \em PAR
+
+        Only callable if the OFX::ImageEffectHostDescription::supportsMultipleClipPARs is true.
+
+        Default is up to the host, generally based on the input clips. 
+
+        Not supported by most host applications.
+        */
+        void setPixelAspectRatio(Clip &clip, double PAR);
+
+        /** @brief Allows an effect to change the output frame rate 
+
+        Only callable if OFX::ImageEffectHostDescription::supportsSetableFrameRate is true.
+
+        Default is controlled by the host, typically the framerate of the input clips.
+        */
+        void setOutputFrameRate(double v);
+
+        /** @brief Set the premultiplication state of the output clip.
+        
+        Defaults to the premultiplication state of ???
+        */
+        void setOutputPremultiplication(PreMultiplicationEnum v);
+        
+        /** @brief Set whether the effect can be continously sampled.
+        
+        Defaults to false. 
+        */
+        void setOutputHasContinousSamples(bool v);
+
+        /** @brief Sets whether the effect will produce different images in all frames, even if the no params or input images are varying (eg: a noise generator).
+
+        Defaults to false.
+        */
+        void setOutputFrameVarying(bool v);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -448,7 +579,10 @@ namespace OFX {
         /** @brief Have we informed the host we want to be seqentially renderred ? */
         bool sequentialRender(void) const;
     
-        /** @brief Fetch the named clip from this instance */
+        /** @brief Fetch the named clip from this instance
+
+        The returned clip \em must not be deleted by the client code. This is all managed by the ImageEffect itself.
+        */
         Clip *fetchClip(const std::string &name);
 
         /** @brief does the host want us to abort rendering? */
@@ -457,36 +591,63 @@ namespace OFX {
         ////////////////////////////////////////////////////////////////////////////////
         // these are actions that need to be overridden by a plugin that implements an effect host
 
-        /** @brief client render function, this is one of the few that must be set */
+        /** @brief The purge caches action, a request for an instance to free up as much memory as possible in low memory situations */
+        virtual void purgeCaches(void);
+
+        /** @brief The sync private data action, called when the effect needs to sync any private data to persistant parameters */
+        virtual void syncPrivateData(void);
+
+        /** @brief client render function, this is one of the few that must be overridden */
         virtual void render(const RenderArguments &args) = 0;
 
+        /** @brief client begin sequence render function */
+        virtual void beginSequenceRender(const BeginSequenceRenderArguments &args); 
+
+        /** @brief client end sequence render function */
+        virtual void endSequenceRender(const EndSequenceRenderArguments &args); 
+
+        /** @brief client is identity function, returns the clip and time for the identity function 
+
+        If the effect would do no processing for the given param set and render arguments, then this
+        function should return true and set the \em identityClip pointer to point to the clip that is the identity
+        and \em identityTime to be the time at which to access the clip for the identity operation.
+        */
+        virtual bool isIdentity(const RenderArguments &args, Clip * &identityClip, double &identityTime);
+
+        /** @brief The get RoD action. 
+
+        If the effect wants change the rod from the default value (which is the union of RoD's of all input clips)
+        it should set the \em rod argument and return true.
+
+        This is all in cannonical coordinates.
+        */
+        virtual bool getRegionOfDefinition(const RegionOfDefinitionArguments &args, OfxRectD &rod);
+
+        /** @brief the get region of interest action
+
+        If the effect wants change its region of interest on any input clip from the default values (which is the same as the RoI in the arguments)
+        it should do so by calling the OFX::RegionOfInterestSetter::setRegionOfInterest function on the \em rois argument.
+
+        Not, everything is in cannonical coordinates.
+        */
+        virtual void getRegionsOfInterest(const RegionsOfInterestArguments &args, RegionOfInterestSetter &rois);
+
+        /** @brief the get frames needed action
+
+        If the effect wants change the frames needed on an input clip from the default values (which is the same as the frame to be renderred)
+        it should do so by calling the OFX::FramesNeededSetter::setFramesNeeded function on the \em frames argument.
+        */
+        virtual void getFramesNeeded(const FramesNeededArguments &args, FramesNeededSetter &frames);
+
+        /** @brief get the clip preferences */
+        virtual void getClipPreferences(ClipPreferencesSetter &clipPreferences);
+
 #if 0 
-        /** @brief client begin sequence render function, this is one of the few that must be set */
-        virtual void beginRenderSequence(void); 
-
-        /** @brief client end sequence render function, this is one of the few that must be set */
-        virtual void endRenderSequence(void); 
-
-        /** @brief client is identity function, returns the clip and time for the identity function */
-        virtual void isIdentity(void);
-
-        /** @brief the get RoD action */
-        virtual void getRegionOfDefinition(void);
-
-        /** @brief the get RoI action */
-        virtual void getRegionsOfInterest(void);
-
         /** @brief what is the time domain of this effect, valid only in the general context */
         virtual OfxRangeD getTimeDomain(void);
 
         /** @brief what frames are needed from the input */
         virtual void getFramesNeeded(void);
-
-        /** @brief get the clip preferences */
-        virtual void getClipPreferences(void);
-
-        /** @brief the purge caches action */
-        virtual void purgeCaches(void);
 
         /** @brief the effect is about to have some values changed */
         virtual void beginChanged(void);
@@ -504,8 +665,6 @@ namespace OFX {
         virtual void endEdit(void);
 #endif 
 
-        /** @brief the effect needs to sync any private data to persistant parameters */
-        virtual void syncPrivateData(void);
     };  
 
  

@@ -235,41 +235,6 @@ namespace OFX {
             return instance;
         }
 
-        /** @brief Library side render action, fetches relevant properties and calls the client code */
-        void
-        renderAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
-        {
-            ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
-      
-
-            RenderArguments renderArgs;
-
-            renderArgs.time = inArgs.propGetDouble(kOfxPropTime);
-
-            renderArgs.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
-            renderArgs.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
-
-            renderArgs.renderWindow.x1 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 0);
-            renderArgs.renderWindow.y1 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 1);
-            renderArgs.renderWindow.x2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 2);
-            renderArgs.renderWindow.y2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 3);
-
-            std::string str = inArgs.propGetString(kOfxImageEffectPropFieldToRender);
-            try {
-                renderArgs.fieldToRender = mapStrToFieldEnum(str);
-            }
-            catch (std::invalid_argument &ex) {
-                // dud field?
-                OFX::Log::error(true, "Unknown field to render '%s'", str.c_str());
-	
-                // HACK need to throw something to cause a failure
-            }
-
-            // and call the plugin client render code
-            effectInstance->render(renderArgs);
-        }
-
-
         /** @brief Checks the handles passed into the plugin's main entry point */
         void
         checkMainHandles(const std::string &action,  const void *handle, 
@@ -298,6 +263,292 @@ namespace OFX {
             if(!handleCanBeNull && !handle)         throwSuiteStatusException(kOfxStatErrBadHandle);
             if(!inArgsCanBeNull && !inArgsHandle)   throwSuiteStatusException(kOfxStatErrBadHandle);
             if(!outArgsCanBeNull && !outArgsHandle) throwSuiteStatusException(kOfxStatErrBadHandle);
+        }
+
+
+        /** @brief Fetches the arguments used in a render action 'inargs' property set into a POD struct */
+        static void
+        getRenderActionArguments(RenderArguments &args,  OFX::PropertySet inArgs)
+        {
+            args.time = inArgs.propGetDouble(kOfxPropTime);
+
+            args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
+            args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+
+            args.renderWindow.x1 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 0);
+            args.renderWindow.y1 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 1);
+            args.renderWindow.x2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 2);
+            args.renderWindow.y2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 3);
+
+            std::string str = inArgs.propGetString(kOfxImageEffectPropFieldToRender);
+            try {
+                args.fieldToRender = mapStrToFieldEnum(str);
+            }
+            catch (std::invalid_argument &ex) {
+                // dud field?
+                OFX::Log::error(true, "Unknown field to render '%s'", str.c_str());
+	
+                // HACK need to throw something to cause a failure
+            }
+        }
+
+        /** @brief Library side render action, fetches relevant properties and calls the client code */
+        void
+        renderAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
+        {
+            ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
+            RenderArguments args;
+            
+            // get the arguments 
+            getRenderActionArguments(args, inArgs);
+
+            // and call the plugin client render code
+            effectInstance->render(args);
+        }
+
+        /** @brief Library side render begin sequence render action, fetches relevant properties and calls the client code */
+        void
+        beginSequenceRenderAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
+        {
+            ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
+      
+            BeginSequenceRenderArguments args;
+
+            args.frameRange.min = inArgs.propGetDouble(kOfxImageEffectPropFrameRange, 0);
+            args.frameRange.max = inArgs.propGetDouble(kOfxImageEffectPropFrameRange, 1);
+
+            args.frameStep      = inArgs.propGetDouble(kOfxImageEffectPropFrameStep, 0);
+
+            args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
+            args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+
+            args.isInteractive = inArgs.propGetInt(kOfxPropIsInteractive);
+
+            // and call the plugin client render code
+            effectInstance->beginSequenceRender(args);
+        }
+        
+        /** @brief Library side render begin sequence render action, fetches relevant properties and calls the client code */
+        void
+        endSequenceRenderAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
+        {
+            ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
+      
+            EndSequenceRenderArguments args;
+
+            args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
+            args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+
+            args.isInteractive = inArgs.propGetInt(kOfxPropIsInteractive);
+
+            // and call the plugin client render code
+            effectInstance->endSequenceRender(args);
+        }
+
+        /** @brief Library side render begin sequence render action, fetches relevant properties and calls the client code */
+        bool
+        isIdentityAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs)
+        {
+            ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
+            RenderArguments args;
+            
+            // get the arguments 
+            getRenderActionArguments(args, inArgs);
+
+            // and call the plugin client isIdentity code
+            Clip *identityClip = 0;
+            double identityTime = args.time;
+            bool v = effectInstance->isIdentity(args, identityClip, identityTime);
+
+            if(v && identityClip) {
+                outArgs.propSetString(kOfxPropName, identityClip->name());
+                outArgs.propSetDouble(kOfxPropTime, identityTime);                
+                return true;
+            }
+            return false;
+        }
+
+        /** @brief Library side get region of definition function */
+        bool
+        regionOfDefinitionAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs)
+        {
+            ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
+            RegionOfDefinitionArguments args;
+
+            args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
+            args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+
+            args.time = inArgs.propGetDouble(kOfxPropTime);
+
+            // and call the plugin client code
+            OfxRectD rod;
+            bool v = effectInstance->getRegionOfDefinition(args, rod);
+
+            if(v) {
+                outArgs.propSetDouble(kOfxImageEffectPropRegionOfDefinition, rod.x1, 0);
+                outArgs.propSetDouble(kOfxImageEffectPropRegionOfDefinition, rod.y1, 1);
+                outArgs.propSetDouble(kOfxImageEffectPropRegionOfDefinition, rod.x2, 2);
+                outArgs.propSetDouble(kOfxImageEffectPropRegionOfDefinition, rod.y2, 3);
+                return true;
+            }
+            return false;
+        }
+
+        /** @brief Library side get regions of interest function */
+        bool
+        regionsOfInterestAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs)
+        {
+            /** @brief local class to set the roi of a clip */
+            class ActualROISetter : public OFX::RegionOfInterestSetter {
+                bool doneSomething_;
+                OFX::PropertySet &outArgs_;
+
+            public :
+                /** @brief ctor */
+                ActualROISetter(OFX::PropertySet &args) 
+                  : outArgs_(args)
+                  , doneSomething_(false) 
+                { }
+                
+                /** @brief did we set something ? */
+                bool didSomething(void) const {return doneSomething_;}
+                
+                /** @brief set the RoI of the clip */
+                virtual void setRegionOfInterest(const Clip &clip, OfxRectD &roi)
+                {
+                    // construct the name of the property
+                    std::string propName = "OfxImageClipPropRoI_";
+                    propName = propName + clip.name();
+
+                    // and set it
+                    outArgs_.propSetDouble(propName, roi.x1, 0);
+                    outArgs_.propSetDouble(propName, roi.y1, 1);
+                    outArgs_.propSetDouble(propName, roi.x2, 2);
+                    outArgs_.propSetDouble(propName, roi.y2, 3);      
+
+                    // and record the face we have done something
+                    doneSomething_ = true;
+                }
+            }; // end of local class
+            
+            // fetch our effect pointer 
+            ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
+            RegionsOfInterestArguments args;
+
+            // fetch in arguments from the prop handle
+            args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
+            args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+
+            args.regionOfInterest.x1 = inArgs.propGetDouble(kOfxImageEffectPropRegionOfInterest, 0);
+            args.regionOfInterest.y1 = inArgs.propGetDouble(kOfxImageEffectPropRegionOfInterest, 1);
+            args.regionOfInterest.x2 = inArgs.propGetDouble(kOfxImageEffectPropRegionOfInterest, 2);
+            args.regionOfInterest.y2 = inArgs.propGetDouble(kOfxImageEffectPropRegionOfInterest, 3);
+
+            args.time = inArgs.propGetDouble(kOfxPropTime);
+            
+            // make a roi setter object
+            ActualROISetter setRoIs(outArgs);
+
+            // and call the plugin client code
+            effectInstance->getRegionsOfInterest(args, setRoIs);
+
+            // did we do anything ?
+            if(setRoIs.didSomething()) 
+                return true;
+            return false;
+        }
+
+        
+        /** @brief Library side frames needed action */
+        bool
+        framesNeededAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs)
+        {
+            /** @brief local class to set the frames needed from a clip */
+            class ActualSetter : public OFX::FramesNeededSetter {
+                OFX::PropertySet &outArgs_;                                  /**< @brief property set to set values in */
+                std::map<std::string, std::vector<OfxRangeD> > frameRanges_;  /**< @brief map holding a bunch of frame ranges, one for each clip */
+
+            public :
+                /** @brief ctor */
+                ActualSetter(OFX::PropertySet &args) 
+                  : outArgs_(args)
+                { }
+                
+                /** @brief set the RoI of the clip */
+                virtual void setFramesNeeded(const Clip &clip, const OfxRangeD &range) 
+                {
+                    // insert this into the vector which is in the map
+                    frameRanges_[clip.name()].push_back(range);
+                }
+                
+                /** @brief write frameRanges_ back to the property set */
+                bool setOutProperties(void) 
+                {
+                    bool didSomething = false;
+
+                    std::map<std::string, std::vector<OfxRangeD> >::iterator i;
+
+                    for(i = frameRanges_.begin(); i != frameRanges_.end(); ++i) {
+                        didSomething = true;
+
+                        // Make the property name we are setting
+                        std::string propName = "OfxImageClipPropFrameRange_";
+                        propName = propName + i->first;
+
+                        // fetch the list of frame ranges
+                        std::vector<OfxRangeD> &clipRange = i->second;
+                        std::vector<OfxRangeD>::iterator j;
+                        int n = 0;
+
+                        // and set 'em
+                        for(j = clipRange.begin(); j < clipRange.end(); ++j) {
+                            outArgs_.propSetDouble(propName, j->min, n++);
+                            outArgs_.propSetDouble(propName, j->max, n++);
+                        }
+                    }
+
+                    return didSomething;
+                }
+
+            }; // end of local class
+            
+            // fetch our effect pointer 
+            ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
+            FramesNeededArguments args;
+
+            // fetch in arguments from the prop handle
+            args.time = inArgs.propGetDouble(kOfxPropTime);
+            
+            // make a roi setter object
+            ActualSetter setFrames(outArgs);
+
+            // and call the plugin client code
+            effectInstance->getFramesNeeded(args, setFrames);
+
+            // Write it back to the properties and see if we set anything
+            if(setFrames.setOutProperties()) 
+                return true;
+            return false;
+        }
+
+
+        /** @brief Library side get regions of interest function */
+        bool
+        clipPreferencesAction(OfxImageEffectHandle handle, OFX::PropertySet &outArgs)
+        {
+            // fetch our effect pointer 
+            ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
+
+            // set up our clip preferences setter
+            ClipPreferencesSetter prefs(outArgs);
+            
+            // and call the plugin client code
+            effectInstance->getClipPreferences(prefs);
+
+            // did we do anything ?
+            if(prefs.didSomething()) 
+                return true;
+            return false;
         }
 
         /** @brief The main entry point for the plugin
@@ -427,56 +678,58 @@ namespace OFX {
                 else if(action == kOfxImageEffectActionBeginSequenceRender) {
                     checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
 
-                    // fetch our pointer out of the props on the handle
-                    ImageEffect *instance = retrieveImageEffectPointer(handle);
+                    // call the begin render action skin
+                    beginSequenceRenderAction(handle, inArgs);
                 }
                 else if(action == kOfxImageEffectActionEndSequenceRender) {
                     checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
 
-                    // fetch our pointer out of the props on the handle
-                    ImageEffect *instance = retrieveImageEffectPointer(handle);
-                }
-                else if(action == kOfxImageEffectActionGetRegionOfDefinition) {
-                    checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
-
-                    // fetch our pointer out of the props on the handle
-                    ImageEffect *instance = retrieveImageEffectPointer(handle);
-                }
-                else if(action == kOfxImageEffectActionGetRegionsOfInterest) {
-                    checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
-
-                    // fetch our pointer out of the props on the handle
-                    ImageEffect *instance = retrieveImageEffectPointer(handle);
-                }
-                else if(action == kOfxImageEffectActionGetTimeDomain) {
-                    checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, false);
-
-                    // fetch our pointer out of the props on the handle
-                    ImageEffect *instance = retrieveImageEffectPointer(handle);
-                }
-                else if(action == kOfxImageEffectActionGetFramesNeeded) {
-                    checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
-
-                    // fetch our pointer out of the props on the handle
-                    ImageEffect *instance = retrieveImageEffectPointer(handle);
-                }
-                else if(action == kOfxImageEffectActionGetClipPreferences) {
-                    checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
-
-                    // fetch our pointer out of the props on the handle
-                    ImageEffect *instance = retrieveImageEffectPointer(handle);
+                    // call the begin render action skin
+                    endSequenceRenderAction(handle, inArgs);
                 }
                 else if(action == kOfxImageEffectActionIsIdentity) {
                     checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
-                    // fetch our pointer out of the props on the handle
-                    ImageEffect *instance = retrieveImageEffectPointer(handle);
+                    // call the identity action, if it is, return OK
+                    if(isIdentityAction(handle, inArgs, outArgs))
+                        stat = kOfxStatOK;
+                }
+                else if(action == kOfxImageEffectActionGetRegionOfDefinition) {
+                    checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
+
+                    // call the rod action, return OK if it does something
+                    if(regionOfDefinitionAction(handle, inArgs, outArgs))
+                        stat = kOfxStatOK;
+                }
+                else if(action == kOfxImageEffectActionGetRegionsOfInterest) {
+                    checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
+
+                    // call the RoI action, return OK if it does something
+                    if(regionsOfInterestAction(handle, inArgs, outArgs))
+                        stat = kOfxStatOK;
+                }
+                else if(action == kOfxImageEffectActionGetFramesNeeded) {
+                    checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
+
+                    // call the frames needed action, return OK if it does something
+                    if(framesNeededAction(handle, inArgs, outArgs))
+                        stat = kOfxStatOK;
+                }
+                else if(action == kOfxImageEffectActionGetClipPreferences) {
+                    checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, false);
+
+                    // call the frames needed action, return OK if it does something
+                    if(clipPreferencesAction(handle, outArgs))
+                        stat = kOfxStatOK;
                 }
                 else if(action == kOfxActionPurgeCaches) {
                     checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
 
                     // fetch our pointer out of the props on the handle
                     ImageEffect *instance = retrieveImageEffectPointer(handle);
+
+                    // purge 'em
+                    instance->purgeCaches();
                 }
                 else if(action == kOfxActionSyncPrivateData) {
                     checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
@@ -486,6 +739,15 @@ namespace OFX {
 
                     // and sync it
                     instance->syncPrivateData();
+                }
+                else if(action == kOfxImageEffectActionGetTimeDomain) {
+                    checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, false);
+
+                    // fetch our pointer out of the props on the handle
+                    ImageEffect *instance = retrieveImageEffectPointer(handle);
+
+                    // we can only be a general context effect, so check that this is true
+                    OFX::Log::error(instance->context() != eContextGeneral, "Calling kOfxImageEffectActionGetTimeDomain on an effect that is not a general context effect.");
                 }
                 else if(action == kOfxActionInstanceChanged) {
                     checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);

@@ -851,16 +851,158 @@ namespace OFX {
         return newClip;
     }
 
+
     /** @brief does the host want us to abort rendering? */
     bool ImageEffect::abort(void) const
     {
         return OFX::Private::gEffectSuite->abort(_effectHandle) != 0;
     }
   
-    /** @brief default sync the private data function, does nothing */
+    ////////////////////////////////////////////////////////////////////////////////
+    // below are the default members for the base image effect
+
+
+    /** @brief client is identity function, returns the clip and time for the identity function 
+    */
+    bool ImageEffect::isIdentity(const RenderArguments &args, Clip * &identityClip, double &identityTime)
+    {
+        return false; // by default, we are not an identity operation
+    }
+
+    /** @brief The get RoD action */
+    bool ImageEffect::getRegionOfDefinition(const RegionOfDefinitionArguments &args, OfxRectD &rod)
+    {
+        return false; // by default, we are not setting the RoD
+    }
+
+    /** @brief the get RoI action */
+    void ImageEffect::getRegionsOfInterest(const RegionsOfInterestArguments &args, RegionOfInterestSetter &rois)
+    {
+        // fa niente
+    }
+
+    /** @brief the get frames needed action */
+    void ImageEffect::getFramesNeeded(const FramesNeededArguments &args, FramesNeededSetter &frames)
+    {
+        // fa niente
+    }
+
+    /** @brief client begin sequence render function */
+    void ImageEffect::beginSequenceRender(const BeginSequenceRenderArguments &args)
+    {
+        // fa niente
+    }
+
+    /** @brief client end sequence render function, this is one of the few that must be set */
+    void ImageEffect::endSequenceRender(const EndSequenceRenderArguments &args)
+    {
+        // fa niente
+    }
+
+    /** @brief The purge caches action, a request for an instance to free up as much memory as possible in low memory situations */
+    void ImageEffect::purgeCaches(void)
+    {
+        // fa niente
+    }
+
+    /** @brief The sync private data action, called when the effect needs to sync any private data to persistant parameters */
     void ImageEffect::syncPrivateData(void)
     {
+        // fa niente
     }
+
+    /** @brief get the clip preferences */
+    void ImageEffect::getClipPreferences(ClipPreferencesSetter &clipPreferences)
+    {
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // Class used to set the clip preferences of the effect. */ 
+    
+    /** @brief, force the host to set a clip's mapped component type to be \em comps.  */
+    void ClipPreferencesSetter::setClipComponents(Clip &clip, PixelComponentEnum comps)
+    {
+        doneSomething_ = true;
+        std::string propName = "OfxImageClipPropComponents_";
+        propName += clip.name();
+
+        switch(comps) {
+        case ePixelComponentRGBA : 
+            outArgs_.propSetString(propName, kOfxImageComponentRGBA); 
+            break;
+        case ePixelComponentAlpha : 
+            outArgs_.propSetString(propName, kOfxImageComponentAlpha); 
+            break;
+        }
+    }
+
+    /** @brief, force the host to set a clip's mapped bit depth be \em bitDepth */
+    void ClipPreferencesSetter::setClipBitDepth(Clip &clip, BitDepthEnum bitDepth)
+    {
+        doneSomething_ = true;
+        std::string propName = "OfxImageClipPropDepth_";
+        propName += clip.name();
+
+        switch(bitDepth) {
+        case eBitDepthUByte : 
+            outArgs_.propSetString(propName, kOfxBitDepthByte); 
+            break;
+        case eBitDepthUShort : 
+            outArgs_.propSetString(propName, kOfxBitDepthShort); 
+            break;
+        case eBitDepthFloat : 
+            outArgs_.propSetString(propName, kOfxBitDepthFloat); 
+            break;
+        }
+    }
+
+    /** @brief, force the host to set a clip's mapped Pixel Aspect Ratio to be \em PAR */
+    void ClipPreferencesSetter::setPixelAspectRatio(Clip &clip, double PAR)
+    {
+        doneSomething_ = true;
+        std::string propName = "OfxImageClipPropPAR_";
+        propName += clip.name();
+        outArgs_.propSetDouble(propName, PAR);
+    }
+
+    /** @brief Allows an effect to change the output frame rate */
+    void ClipPreferencesSetter::setOutputFrameRate(double v)
+    {
+        doneSomething_ = true;
+        outArgs_.propSetDouble(kOfxImageEffectPropFrameRate, v);
+    }
+
+    /** @brief Set the premultiplication state of the output clip. */
+    void ClipPreferencesSetter::setOutputPremultiplication(PreMultiplicationEnum v)
+    {
+        doneSomething_ = true;
+        switch(v) {
+        case eImageOpaque : 
+            outArgs_.propSetString(kOfxImageEffectPropPreMultiplication, kOfxImageOpaque); 
+            break;
+        case eImagePreMultiplied: 
+            outArgs_.propSetString(kOfxImageEffectPropPreMultiplication, kOfxImagePreMultiplied); 
+            break;
+        case eImageUnPreMultiplied:  
+            outArgs_.propSetString(kOfxImageEffectPropPreMultiplication, kOfxImageUnPreMultiplied); 
+            break;
+        }
+    }
+        
+    /** @brief Set whether the effect can be continously sampled. */
+    void ClipPreferencesSetter::setOutputHasContinousSamples(bool v)
+    {
+        doneSomething_ = true;
+        outArgs_.propSetInt(kOfxImageClipPropContinuousSamples, int(v));
+    }
+
+    /** @brief Sets whether the effect will produce different images in all frames, even if the no params or input images are varying (eg: a noise generator). */
+    void ClipPreferencesSetter::setOutputFrameVarying(bool v)
+    {
+        doneSomething_ = true;
+        outArgs_.propSetInt(kOfxImageEffectFrameVarying, int(v));
+    }
+
   
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Class that skins image memory allocation */
