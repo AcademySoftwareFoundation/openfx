@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+
+<!--
+This XML file is an example for a hypothetical OFX plugin 'someplugin'. It is there to illustrate the basics. 
+
+More needs to be done and proper plug-in examples created.
+
+Bruno Nicoletti
+
+ -->
+
+<!DOCTYPE OFXRESOURCE SYSTEM "ofx.dtd">
+
+<OfxPlugin name="someplugin">
+  <OfxResourceSet ofxHost="someHost" ofxLocale="someLocale">
+     <OfxPropLabel>SomePlugin</OfxPropLabel>
+
+     <OfxImageEffectContext name="default">
+
+        <OfxImageClip name = "Source">
+	  <OfxPropLabel>Funky Source Clip</OfxPropLabel>
+	</OfxImageClip>
+
+	<OfxParamTypeInteger name="someInt">
+	  <OfxParamPropDefault><int>10</int></OfxParamPropDefault>
+	  <OfxParamPropHint>This is a very nice integer.</OfxParamPropHint>
+	</OfxParamTypeInteger>
+
+	<OfxParamTypeInteger2D name="some2DInt">
+	  <OfxParamPropDefault><int2>10 20</int2></OfxParamPropDefault>
+	  <OfxParamPropHint>This is an even nicer integer.</OfxParamPropHint>
+	</OfxParamTypeInteger2D>
+
+     </OfxImageEffectContext>
+     
+     <OfxImageEffectContext name="OfxImageEffectContextGenerator">
+     
+	<OfxParamHierarchy>
+	   <OfxParam>intParam</OfxParam>
+	   <OfxParamGroup>
+		<OfxPropLabel>My Nice Group</OfxPropLabel>
+		<OfxParam>some2DInt</OfxParam>
+	   </OfxParamGroup>
+	</OfxParamHierarchy>
+
+	<OfxParamPageSet>
+	   <OfxParamPage>
+	      <OfxPropLabel>Main</OfxPropLabel>
+	      <OfxParam>intParam</OfxParam>
+	      <OfxParam>OfxParamPageSkipColumn</OfxParam>
+	      <OfxParam>int2DParam</OfxParam>
+	   </OfxParamPage>
+	</OfxParamPageSet>
+
+     </OfxImageEffectContext>
+
+     <OfxImageEffectContext name="OfxImageEffectContextFilter">
+     
+	<OfxParamTypeDouble name="doubleParam">
+	  <OfxParamPropHint>A double param that is only in the filter context.</OfxParamPropHint>
+	</OfxParamTypeDouble>
+
+	<OfxParamHierarchy>
+	   <OfxParam>intParam</OfxParam>
+	   <OfxParam>doubleParam</OfxParam>
+	   <OfxParamGroup>
+		<OfxPropLabel>My Nice Group</OfxPropLabel>
+		<OfxParam>some2DInt</OfxParam>
+	   </OfxParamGroup>
+	</OfxParamHierarchy>
+
+	<OfxParamPageSet>
+	   <OfxParamPage>
+	      <OfxPropLabel>Main</OfxPropLabel>
+	      <OfxParam>intParam</OfxParam>
+	      <OfxParam>doubleParam</OfxParam>
+	      <OfxParam>OfxParamPageSkipColumn</OfxParam>
+	      <OfxParam>int2DParam</OfxParam>
+	   </OfxParamPage>
+	</OfxParamPageSet>
+
+     </OfxImageEffectContext>
+
+  </OfxResourceSet>
+</OfxPlugin>
