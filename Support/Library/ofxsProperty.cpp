@@ -148,8 +148,8 @@ namespace OFX {
     {
         assert(_propHandle != 0);
         OfxStatus stat = gPropSuite->propSetInt(_propHandle, property.c_str(), idx, value);
-        OFX::Log::error(stat != kOfxStatOK, "Failed on setting int property %s[%d] to %lf, host returned status %s;", 
-                        property.c_str(), idx, value, mapStatusToString(stat));
+        OFX::Log::error(stat != kOfxStatOK, "Failed on setting int property %s[%d] to %d, host returned status %s (%d);", 
+                        property.c_str(), idx, value, mapStatusToString(stat), stat);
         throwPropertyException(stat, property); 
 
         if(_gPropLogging > 0) Log::print("Set int property %s[%d] to be %d.",  property.c_str(), idx, value);
@@ -162,7 +162,7 @@ namespace OFX {
                                                                                   OFX::Exception::PropertyValueIllegalToHost)
     {
         assert(_propHandle != 0);
-        void *value;
+        void *value = 0;
         OfxStatus stat = gPropSuite->propGetPointer(_propHandle, property.c_str(), idx, &value);
         OFX::Log::error(stat != kOfxStatOK, "Failed on getting pointer property %s[%d], host returned status %s;", 
                         property.c_str(), idx, mapStatusToString(stat));
@@ -180,7 +180,7 @@ namespace OFX {
                                                                                  OFX::Exception::PropertyValueIllegalToHost)
     {
         assert(_propHandle != 0);
-        char *value;
+        char *value = "";
         OfxStatus stat = gPropSuite->propGetString(_propHandle, property.c_str(), idx, &value);
         OFX::Log::error(stat != kOfxStatOK, "Failed on getting string property %s[%d], host returned status %s;", 
                         property.c_str(), idx, mapStatusToString(stat));

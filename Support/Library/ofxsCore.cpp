@@ -330,6 +330,9 @@ namespace OFX {
       
                     // call the plugin side load action, param-less
                     OFX::Plugin::loadAction();
+
+                    // got here, must be good
+                    stat = kOfxStatOK;
                 }
 
                 // figure the actions
@@ -341,6 +344,9 @@ namespace OFX {
       
                     // call the plugin side unload action, param-less, should be called, eve if the stat above failed!
                     OFX::Plugin::unloadAction();
+
+                    // got here, must be good
+                    stat = kOfxStatOK;
                 }
 
                 else if(action == kOfxActionDescribe) {
@@ -354,6 +360,9 @@ namespace OFX {
 
                     //  and pass it to the plugin to do something with it
                     OFX::Plugin::describe(desc);
+
+                    // got here, must be good
+                    stat = kOfxStatOK;
                 }
                 else if(action == kOfxImageEffectActionDescribeInContext) {
                     checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
@@ -371,6 +380,9 @@ namespace OFX {
 
                     // call plugin descibe in context
                     OFX::Plugin::describeInContext(desc, context);
+
+                    // got here, must be good
+                    stat = kOfxStatOK;
                 }
                 else if(action == kOfxActionCreateInstance) {
                     checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
@@ -387,6 +399,9 @@ namespace OFX {
 
                     // make the image effect instance for this context
                     ImageEffect *instance = OFX::Plugin::createInstance(handle, context);
+
+                    // got here, must be good
+                    stat = kOfxStatOK;
                 }
                 else if(action == kOfxActionDestroyInstance) {
                     checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
@@ -396,6 +411,9 @@ namespace OFX {
 
                     // kill it
                     delete instance;
+
+                    // got here, must be good
+                    stat = kOfxStatOK;
                 }
                 else if(action == kOfxImageEffectActionRender) {
                     checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
@@ -403,6 +421,7 @@ namespace OFX {
                     // call the render action skin
                     renderAction(handle, inArgs);
 
+                    // got here, must be good
                     stat = kOfxStatOK;
                 }
                 else if(action == kOfxImageEffectActionBeginSequenceRender) {

@@ -189,7 +189,7 @@ namespace OFX {
                 ClipDescriptor *srcClip = desc.defineClip("Source");
                 srcClip->addSupportedComponent(ePixelComponentRGBA);
                 srcClip->setTemporalClipAccess(false);
-                srcClip->setOptional(false);
+                //srcClip->setOptional(false);
                 srcClip->setSupportsTiles(true);
                 srcClip->setIsMask(false);
             }
@@ -198,7 +198,7 @@ namespace OFX {
             ClipDescriptor *dstClip = desc.defineClip("Output");
             dstClip->addSupportedComponent(ePixelComponentRGBA);
             dstClip->setTemporalClipAccess(false);
-            dstClip->setOptional(false);
+            //dstClip->setOptional(false);
             dstClip->setSupportsTiles(true);
             dstClip->setIsMask(false);
 
@@ -253,7 +253,6 @@ namespace OFX {
             // choice 
             ChoiceParamDescriptor *choice = desc.defineChoiceParam("choice");
             choice->setLabels("choice", "choice", "choice");
-            choice->setDefault(0);
             choice->appendOption("This");
             choice->appendOption("That");
             choice->appendOption("The Other");
@@ -261,6 +260,7 @@ namespace OFX {
             choice->appendOption("Tom");
             choice->appendOption("Dick");
             choice->appendOption("Harry");
+            choice->setDefault(0);
 
             page1->addChild(*choice);
             
