@@ -231,4 +231,27 @@ ofxuGetEffectInstanceData(OfxImageEffectHandle effect)
   return data;
 }
 
+// is a rect infinite in X
+template <class RECT> bool
+ofxuInfiniteRectInX(const RECT &rect)
+{
+  return rect.x1 == kOfxFlagInfiniteMin && rect.x2 == kOfxFlagInfiniteMax;
+}
+
+// is a rect infinite in Y
+template <class RECT> bool
+ofxuInfiniteRectInY(const RECT &rect)
+{
+  return rect.y1 == kOfxFlagInfiniteMin && rect.y2 == kOfxFlagInfiniteMax;
+}
+
+// is a rect infinite in both dimensions
+template <class RECT> bool
+ofxuInfiniteRect(const RECT &rect)
+{
+  return ofxuInfiniteRectInX(rect) && ofxuInfiniteRectInY(rect);
+}
+
+
+
 #endif
