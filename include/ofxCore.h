@@ -583,6 +583,7 @@ OFX is fragmented into smaller 'Suites' (see \ref ArchitecturePluginAPIs), which
   - \ref ImageEffectsOptionalBeetsPage 
   - \ref ImageEffectsExtendingBeetsPage 
   - \ref ExternalResourcesPage
+  - \ref LinkingPage
   - \ref ImageEffectsKnownProblems
 
 <HR>
@@ -599,8 +600,6 @@ What still needs to be done, but with somewhat less urgency...
      - Parameter (not overlay) interact,
      - a plug-in that plays with FPS and fielding on the output clip,
      - XML 
-
-  - We need to define linking behaviour on each host OS
 */
 
 /** @page Architecture OFX : Basic Architecture
@@ -1315,6 +1314,51 @@ Because of the ability to 'default' hosts, locales and contexts, there is potent
 @section ExternalResourcesQuestions Questions
 - we need a list of locales
 
+*/
+
+/** @page LinkingPage OFX : Building and Linking Plugins
+
+@section LinkingIntroduction Introduction
+
+Linking object files to create a plugin is fairly straight forward, and is greatly simplified by the almost absolute lack of symbolic dependancies between a plugin and a host. The only caveats here are finding openGL symbols for plugins that do overlays.
+
+The discussion below is for 32 bit plugins.
+
+@section LinkingWindows Linking On Microsoft Windows (c)
+
+Plugins source should all be compiled as a multithreaded DLL.
+
+Plugins should be linked as a DLL, and if you are using openGL calls in your plugin, you should link to Opengl32.lib.
+
+@section LinkingLinux Linking On Linux
+
+There are no special compiler flags required for linux.
+
+To link with gcc/g++ you should use the options 
+ - \b -fPIC to create position independant code,
+ - \b -Xlinker \b -Bsymbolic to force the plugin to look for symbols inside itself first, rather than on the host.
+ 
+You should \em not link explicitly to an openGL library. This will force the plugin to look for any openGL symbols through the host, rather than in an explicit one. If the plugin and host don't share the same openGL library, chaos will reign and program execution will all most certainly end abruptly.
+
+You can limit the number of symbols exported from the plugin on linux with \b -Xlinker \b --version-script=FILENAME. This can reduce file size quite significantly. See the gnu manual on \b ld for details, but a typical version script file for OFX would look something like.
+
+@verbatim
+OFX_1.0 {
+         global:
+		OfxGetNumberOfPlugins;
+		OfxGetPlugin;
+         local:
+                *;
+};
+@endverbatim
+
+@section LinkingOSX Linking On Apple OSX (c)
+
+There are no special compiler flags required for OSX.
+
+To link with gcc/g++ you should use the options..
+ - \b -bundle to create a binary OSX bundle,
+ - \b -framework \b opengl if using any openGL symbols in the plugin.
 
 */
 
