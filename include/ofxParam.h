@@ -1294,7 +1294,7 @@ Several host properties are associated with paged layouts, these are...
     propHost->propSetString(page, kOfxParamPropPageChild, 1, kOfxParamPageSkipRow); // skip a row
     propHost->propSetString(page, kOfxParamPropPageChild, 2, "centre");    // add the centre parameter
     propHost->propSetString(page, kOfxParamPropPageChild, 3, kOfxParamPageSkipColumn); // skip a column, we are now at the top of the next column
-    propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the colour paramter
+    propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the colour parameter
 @endverbatim
 
  The host then places the parameters on that page in the order they were added, starting at the top left and going down columns, then across rows as they fill.

@@ -252,9 +252,21 @@ These properties are general properties and  apply to may objects across OFX
 
 - int X 1
 - 0 if the effect currently has no interface, this may be because the effect is loaded in a background render host, or it may be loaded on an interactive host that has not yet opened an editor for the effect,
-- 1 if the effect has an interface and has an edittor somewhere.
+- 1 if the effect has an interface and has an editor somewhere.
 */
 #define kOfxPropIsInteractive "OfxPropIsInteractive"
+
+/** @brief General plugin property, indicates the file path to the plugin
+
+    - string * X 1
+
+This is a string that indicates the file path where the plug-in was found by the host. The path is in the native
+path format for the host OS (eg: *NIX directory separators are '/', Windows ones are '`\').
+
+The path is to the bundle location, see \ref ArchitectureInstallingLocation. eg...
+   '/usr/OFX/Plugins/AcmePlugins/AcmeFantasticPlugin.ofx.bundle'
+*/
+#define kOfxPluginPropFilePath "OfxPluginPropFilePath"
 
 /** @brief General instance property, used to get and set the 'instance data', which a plug-in can use to stash
 any private instance data it may want/need on a specific instance

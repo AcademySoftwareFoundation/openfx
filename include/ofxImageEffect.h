@@ -177,6 +177,14 @@ These are the list of properties used by the Image Effects API.
 */
 #define kOfxImageEffectPropPluginHandle "OfxImageEffectPropPluginHandle"
 
+/** @brief Host property, indicates if a host is a background render host
+
+- int X 1
+- 0 if the host is a foreground host, it may open the effect in an interactive session (or not)
+- 1 if the host is a background 'processing only' host, and the effect will never be openned in an interactive session.
+*/
+#define kOfxImageEffectHostPropIsBackground "OfxImageEffectHostPropIsBackground"
+
 
 /** @brief Plugin property, says whether more than one instance of a plugin can exist at the same time
 - int X 1
@@ -649,11 +657,20 @@ The offset is in \ref CannonicalCoordinates.
 #define kOfxImagePropData "OfxImagePropData"
 
 /** Image property, fetches the bounds of the image, in the Pixel Coordinate System
+
     - int X 4
     - order is x1, y1, x2, y2
    This is host set.
  */
 #define kOfxImagePropBounds "OfxImagePropBounds"
+
+/** Image property, the image region of definition of the image, in the Pixel Coordinate System
+
+    - int X 4
+    - order is x1, y1, x2, y2
+   This is host set.
+ */
+#define kOfxImagePropRegionOfDefinition "OfxImagePropRegionOfDefinition"
 
 /** Image property, fetches the number of bytes in a row of the image, note that this can be negative
      - int X 1
@@ -755,7 +772,7 @@ typedef struct OfxImageEffectSuiteV1 {
   \arg \e imageEffect   image effect to get the property set for
   \arg \e propHandle    pointer to a the property set pointer, value is returned here
 
-  The property handle is valid for the lifetime of the clip, which is generally the lifetime of the instance.
+  The property handle is for the duration of the image effect handle.
 
   returns
   - ::kOfxStatOK       - the property set was found and returned
@@ -770,7 +787,7 @@ typedef struct OfxImageEffectSuiteV1 {
   \arg \e imageEffect   image effect to get the property set for
   \arg \e paramSet     pointer to a the parameter set, value is returned here
 
-  The property handle is valid for the lifetime of the clip, which is generally the lifetime of the instance.
+  The param set handle is valid for the lifetime of the image effect handle.
 
   returns
   - ::kOfxStatOK       - the property set was found and returned
@@ -1210,7 +1227,7 @@ Scanlines need \em not be contiguously packed. The number of \em bytes between b
 
 Clips and images also have a <B>pixel aspect ratio</B>, this is how much an actual addressable pixel must be stretched by in X to be square. For example PAL D1 images have a pixel aspect ratio of 1.06666. 
 
-Images are rectangular, whose integral bounds are in \ref PixelCoordinates, with the image being X1 <= X < X2 and Y1 <= Y < Y2, ie: exclusive on the top and right. The bounds represent the amount of data present in the image, which may be larger, smaller or equal to the Region of Definition of the clip, depending on the architecture supported by the plugin.
+Images are rectangular, whose integral bounds are in \ref PixelCoordinates, with the image being X1 <= X < X2 and Y1 <= Y < Y2, ie: exclusive on the top and right. The bounds represent the amount of data present in the image, which may be larger, smaller or equal to the Region of Definition of the clip, depending on the architecture supported by the plugin. The ::kOfxImagePropBounds property on an image holds this information. An image also contains it's RoD in image coordinates, in the ::kOfxImagePropRegionOfDefinition property. The RoD is the maximum area that an image may have pixels in, the bounds are the actual addressable pixels present in an image. This allows for tiling etc...
 
 Clips have a frame rate, which is the number of frames per second they are to be displayed out, see \ref ImageEffectsImagesAndTime for more details on how time and frame rates work in OFX. Some clips may be continously samplable (for example, if they are connected to animating geometry that can be renderred at arbitrary times), if this is so, the frame rate for these clips is set to 0.
 
@@ -2427,6 +2444,7 @@ An image effect host has the following read only properties...
 - ::kOfxPropType 
 - ::kOfxPropName
 - ::kOfxPropLabel
+- ::kOfxImageEffectHostPropIsBackground
 - ::kOfxImageEffectPropSupportsOverlays
 - ::kOfxImageEffectPropSupportsMultiResolution
 - ::kOfxImageEffectPropSupportsTiles
@@ -2440,7 +2458,7 @@ An image effect host has the following read only properties...
 
 @section ImageEffectsPropertiesPlugin Plugin Properties
 
-An image effect plugin has the following properties, these can only be set inside the 'describe' actions ...
+An image effect plugin (ie: that thing passed to the initial 'describe' action) has the following properties, these can only be set inside the 'describe' actions ...
 - ::kOfxPropType 
 - ::kOfxPropLabel
 - ::kOfxPropShortLabel 
@@ -2459,6 +2477,7 @@ An image effect plugin has the following properties, these can only be set insid
 - ::kOfxImageEffectPluginPropFieldRenderTwiceAlways
 - ::kOfxImageEffectPropSupportsMultipleClipDepths
 - ::kOfxImageEffectPropSupportsMultipleClipPARs
+- ::kOfxPluginPropFilePath (read only)
 
 @section ImageEffectsPropertiesInstance Instance Properties
 
@@ -2514,6 +2533,7 @@ An image effect Image has the following read only properties...
 - ::kOfxImagePropPixelAspectRatio *
 - ::kOfxImagePropData *
 - ::kOfxImagePropBounds *
+- ::kOfxImagePropRegionOfDefinition *
 - ::kOfxImagePropRowBytes *
 - ::kOfxImagePropField *
 - ::kOfxImagePropUniqueIdentifier*

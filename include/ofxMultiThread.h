@@ -64,7 +64,7 @@ typedef struct OfxMutex OfxMutex;
 
 A function of this type is passed to OfxMultiThreadSuiteV1::multiThread to be launched in multiple threads.
  */
-typedef void (OfxThreadFunctionV1)(int threadIndex,
+typedef void (OfxThreadFunctionV1)(unsigned int threadIndex,
 				   unsigned int threadMax,
 				   void *customArg);
 
