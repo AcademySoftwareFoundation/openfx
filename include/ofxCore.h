@@ -117,7 +117,7 @@ typedef struct OfxPlugin {
   /** Defines the type of the plug-in, this will tell the host what the plug-in does. e.g.: an image 
       effects plug-in would be a "OfxImageEffectPlugin"
    */
-  char		*pluginApi;
+  const char		*pluginApi;
 
   /** Defines the version of the pluginApi that this plug-in implements */
   int            apiVersion;
@@ -129,7 +129,7 @@ typedef struct OfxPlugin {
       name and no non printing chars.
       For example "uk.co.somesoftwarehouse.myPlugin"
   */
-  char 		*pluginIdentifier; 
+  const char 		*pluginIdentifier; 
   
   /** Major version of this plug-in, this gets incremented when backwards compatibility is broken. */
   unsigned int 	 pluginVersionMajor;
