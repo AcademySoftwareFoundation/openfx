@@ -65,6 +65,9 @@ typedef struct OfxMemorySuiteV1 {
   This function has the host allocate memory using it's own memory resources
   and returns that to the plugin.
 
+  @returns
+  - ::kOfxStatus
+
   */   
   OfxStatus (*memoryAlloc)(void *handle, 
 			   size_t nBytes,

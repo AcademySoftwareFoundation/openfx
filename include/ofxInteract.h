@@ -328,6 +328,7 @@ The \e inArgs parameter has the following properties,
 - ::kOfxInteractPropViewportSize - the openGL viewport size for the instance
 - ::kOfxInteractPropPixelScale - the scale factor to convert cannonical pixels to screen pixels
 - ::kOfxInteractPropBackgroundColour - the background colour of the application behind the current view
+- ::kOfxPropTime - the time to draw the interact at
 
 The \e outArgs parameter is redundant for interacts and set to NULL.
 
@@ -357,7 +358,8 @@ The \e inArgs parameter has the following properties,
 - ::kOfxInteractPropPixelScale - the scale factor to convert cannonical pixels to screen pixels
 - ::kOfxInteractPropBackgroundColour - the background colour of the application behind the current view
 - ::kOfxInteractPropPenPosition - postion of the pen in,
-- ::kOfxInteractPropPenPressure - the pressure of the pen.
+- ::kOfxInteractPropPenPressure - the pressure of the pen,
+- ::kOfxPropTime - the time of the action.
 
 The \e outArgs parameter is redundant for interacts and set to NULL.
 
@@ -374,14 +376,15 @@ The \e outArgs parameter is redundant for interacts and set to NULL.
 Three actions are issued by a host in response to use of a keyboard device by the user, these are
   - ::kOfxInteractActionKeyDown - issued whenever a key is depressed, 
   - ::kOfxInteractActionKeyUp - issued whenever a key is released,
-  - ::kOfxInteractActionKeyRepeat - issued whenever a continually depressed key issues an auto repeat.
+  - ::kOfxInteractActionKeyRepeat - issued whenever a continually depressed key issues an auto repeat,
+  - ::kOfxPropTime - the time of the action.
 
 The \e handle parameter is the \em interact's instance handle (not the effect's). Do not use any openGL calls inside any of these actions.
 
 The \e inArgs parameter has the following properties,
 - ::kOfxPropEffectInstance - a handle to the effect for which the interact has been,
-- ::kOfxKeyPropSym    - single integer value representing the key that was manipulated, this may not have a UTF8 representation (eg: a return key)
-- ::kOfxKeyPropKeyString - UTF8 string representing a character key that was pressed, some keys have no UTF8 encoding, in which case this is ""
+- ::kOfxPropKeySym    - single integer value representing the key that was manipulated, this may not have a UTF8 representation (eg: a return key)
+- ::kOfxPropKeyString - UTF8 string representing a character key that was pressed, some keys have no UTF8 encoding, in which case this is ""
 
 The \e outArgs parameter is redundant for interacts and set to NULL.
 
@@ -402,7 +405,7 @@ An interact is notified when it gains or loses input focus by the following two 
 The \e handle parameter is the \em interact's instance handle (not the effect's). Do not use any openGL calls inside any of these actions.
 
 The \e inArgs parameter has the following properties,
-- ::kOfxPropEffectInstance - a handle to the effect for which the interact has been,
+- ::kOfxPropEffectInstance - a handle to the effect for which the interact is being used on,
 - ::kOfxInteractPropViewportSize - the openGL viewport size for the instance,
 - ::kOfxInteractPropPixelScale - the scale factor to convert cannonical pixels to screen pixels,
 - ::kOfxInteractPropBackgroundColour - the background colour of the application behind the current view

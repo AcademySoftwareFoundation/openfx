@@ -1091,7 +1091,7 @@ The plug-in will have the following actions passed to it's entry point...
 - ::kOfxImageEffectActionDescribeInContext
 - ::kOfxActionCreateInstance
 - ::kOfxActionDestroyInstance
-- ::kOfxActionFlatten
+- ::kOfxActionSyncPrivateData
 - ::kOfxActionPurgeCaches
 - ::kOfxActionBeginInstanceEdit
 - ::kOfxActionEndInstanceEdit
