@@ -1,5 +1,6 @@
 /*
-  OFX Support Library, a library that skins the OFX plug-in API with C++ classes.
+  OFX Basic Example plugin, a plugin that illustrates the use of the OFX Support library.
+
   Copyright (C) 2004 The Foundry Visionmongers Ltd
   Author Bruno Nicoletti bruno@thefoundry.co.uk
 
