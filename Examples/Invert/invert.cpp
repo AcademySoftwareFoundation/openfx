@@ -50,12 +50,12 @@ OfxImageEffectSuiteV1 *gEffectHost = 0;
 OfxPropertySuiteV1    *gPropHost = 0;
 
 // look up a pixel in the image, does bounds checking to see if it is in the image rectangle
-template <class PIX> inline PIX *
-pixelAddress(PIX *img, OfxRectI rect, int x, int y, int bytesPerLine)
+inline OfxRGBAColourB *
+pixelAddress(OfxRGBAColourB *img, OfxRectI rect, int x, int y, int bytesPerLine)
 {  
   if(x < rect.x1 || x >= rect.x2 || y < rect.y1 || y > rect.y2)
     return 0;
-  PIX *pix = (PIX *) (((char *) img) + (y - rect.y1) * bytesPerLine);
+  OfxRGBAColourB *pix = (OfxRGBAColourB *) (((char *) img) + (y - rect.y1) * bytesPerLine);
   pix += x - rect.x1;  
   return pix;
 }
@@ -189,7 +189,8 @@ describe(OfxImageEffectHandle effect)
   return kOfxStatOK;
 }
 
-/** @brief Called at load */
+////////////////////////////////////////////////////////////////////////////////
+// Called at load
 static OfxStatus
 onLoad(void)
 {
