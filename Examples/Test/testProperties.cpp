@@ -856,6 +856,32 @@ HostDescription::HostDescription(OfxPropertySetHandle handle) :
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+//test the memory suite
+static void
+testMemorySuite(void)
+{
+  OFX::logPrint("testMemorySuite - start();\n{");
+  void *oneMeg;
+  
+  OfxStatus stat = gMemorySuite->memoryAlloc(NULL, 1024 * 1024, &oneMeg);
+  OFX::logError(stat != kOfxStatOK, "OfxMemorySuiteV1::memoryAlloc failed to alloc 1MB, returned %s", mapStatus(stat));
+  
+  if(stat == kOfxStatOK) {
+    // touch 'em all to see if it crashes
+    char *lotsOfChars = (char *) oneMeg;
+    for(int i = 0; i < 1024 * 1024; i++) {
+      *lotsOfChars++ = 0;
+    }
+
+    stat = gMemorySuite->memoryFree(oneMeg);
+    OFX::logError(stat != kOfxStatOK, "OfxMemorySuiteV1::memoryFree failed to free 1MB, returned %s", mapStatus(stat));
+  }
+  
+  OFX::logPrint("}HostDescription::HostDescription - stop;");
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // how many times has actionLoad been called
 static int gLoadCount = 0;
 
@@ -871,7 +897,7 @@ actionLoad(void)
   OfxStatus status = kOfxStatOK;
   
   try {
-    // fetch the hosts
+    // fetch the suites
     OFX::logError(gHost == 0, "Host pointer has not been set;");
     if(!gHost) throw kOfxStatErrBadHandle;
     
@@ -889,6 +915,9 @@ actionLoad(void)
       // fetch the interact suite if the host supports interaction
       if(gHostDescription->supportsOverlays || gHostDescription->supportsCustomInteract)
         gInteractSuite  = (OfxInteractSuiteV1 *)    fetchSuite(kOfxInteractSuite, 1);
+      
+      // test the memory suite
+      testMemorySuite();
     }
   }
   
@@ -1021,7 +1050,7 @@ static char *gSupportedPixelDepths[] =
     kOfxBitDepthFloat
   };
 
-// the values to set and the defaults on the various properties
+// the values to set and the defaults to check on the various properties
 static PropertyDescription gPluginPropertyDescriptions[] =
   {
     PropertyDescription(kOfxPropType,                                    1, "",                             false, kOfxTypeImageEffect,            true),
