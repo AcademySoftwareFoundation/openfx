@@ -15,10 +15,17 @@
 
 OFX is an open API for writing visual effects plug-ins for a wide variety of applications such as editing systems and compositing systems. It seems to have two interchangable names, "OpenFX" and "OFX". I prefer OFX for some reason. This book is actually very broad in scope, as it has to not only define an API, it will need to go into some depth describing concepts behing imaging applications.
 
+<para>
+UNFINISHED
+</para>
+
 <section><title>Intended Audience</title>
 
 <para>
-Do you write visual effects or image processing software? Do you have an application that hosts plug-ins or would like to host plug-in? Then OFX is 
+Do you write visual effects or image processing software? Do you have an application that hosts plug-ins or would like to host plug-in? Then OFX is for you.
+</para>
+<para>
+UNFINISHED
 </para>
 
 </section>
@@ -29,7 +36,7 @@ OFX is actually several things. At the lowest level OFX is a generic 'C' based p
 </para>
 
 <para>
-This book describes the basic OFX plug-in architecture and the visual effects plug-in API built on top of it. The visual effects API is very broad an intended to allow visual effects plugins to work on a range of potential host applications, including compositors hosts, rotoscopers, encoding applications, colour grading hosts, editing hosts and more I haven't thought of yet. While all these type of applications process images, they often have very different work flows and present effects to a user in incompatible ways. OFX is an attempt to deal with all of these in a clear and consitent manner.
+This book describes the basic OFX plug-in architecture and the visual effects plug-in API built on top of it. The visual effects API is very broad and intended to allow visual effects plugins to work on a wide range of host applications, including compositors hosts, rotoscopers, encoding applications, colour grading hosts, editing hosts and more I haven't thought of yet. While all these type of applications process images, they often have very different work flows and present effects to a user in incompatible ways. OFX is an attempt to deal with all of these in a clear and consitent manner.
 </para>
 
 </section>
@@ -37,32 +44,35 @@ This book describes the basic OFX plug-in architecture and the visual effects pl
 </preface>
 
 <chapter><title>Introduction To OFX, A Simple Example</title>
+<section>
 <para>
-This chapter will describe in detail a fully functioning, but simple OFX image effect plugin that inverts 8 bit RGBA images. It gives a flavour for how the API operates and some of the components in it. The source will be broken down into sections and each one explained as we go along. The code is actually C++, but it uses the raw OFX API.
+This chapter will describe in detail a fully functioning, but simple OFX image effect plugin that inverts 8 bit RGBA images. It gives a flavour for how the API operates and some of the components in it. The source will be broken down into sections and each one explained as we go along. The code is actually C++, but it uses the raw OFX API. The code is not meant to be perfectly optimised example of how to write an image processing effect, but rather as an illustrative example of the API.
 </para>
+</section>
 
 <section><title>Headers</title>
-
+<informalexample>
 <programlisting>
 #include &lt;string.h>
 #include "ofxCore.h"
 #include "ofxProperty.h"
 #include "ofxImageEffect.h"
 </programlisting>
-
+</informalexample>
 <para>
-This section of code shows the headers used by the invert plug-in. It includes three OFX header files (you can tell because they start with "ofx") these are
+This section of code shows the headers used by the invert plug-in. It includes three OFX header files (you can tell because they start with "ofx") which are...
 <itemizedlist>
 <listitem><filename>ofxCore.h</filename> which provides definitions for the underlying plug-in loading mechanisms</listitem>
 <listitem><filename>ofxProperty.h</filename> which defines the property getting/setting suite</listitem>
 <listitem><filename>ofxImageEffect.h</filename> which provides access to the image effect suite</listitem>
 </itemizedlist>
-The system <filename>string.h</filename> for use of strcmp as the API passes strings about rather than integers or enums to specify actions and properties.
+The system include file <filename>string.h</filename> is for use of strcmp as the API passes strings about rather than integers or enums to specify actions and properties.
 </para>
 
 </section>
 
-<section><title>The Plugin Struct and Two Required Functions</title>
+<section><title>The Plugin Struct and The Two Exported Functions</title>
+<informalexample>
 <programlisting>
 // forward declaration of two functions needed by the plug-in struct
 static OfxStatus pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs);
@@ -74,15 +84,15 @@ static OfxPlugin pluginStruct =
 {       
   kOfxImageEffectPluginApi,
   1,
-  "uk.co.thefoundry:OfxInvertExample",
+  "net.sf.openfx.OfxInvertExample",
   1,
   0,
   setHostFunc,
   pluginMain
 };
    
-// the two mandated functions
-OfxPlugin *
+// the mandated function to return the nth plug-in
+OfxExport OfxPlugin *
 OfxGetPlugin(int nth)
 {
   if(nth == 0)
@@ -90,28 +100,29 @@ OfxGetPlugin(int nth)
   return 0;
 }
  
-int
+// the mandated function to return the number of plug-ins in this binary
+OfxExport int
 OfxGetNumberOfPlugins(void)
 {       
   return 1;
 }
 </programlisting>
+</informalexample>
 
 <para>
-This section is where a host identifies how many plugins are in a binary, the type and name of those plug-ins and the functions it must use to communicate with the plug-in.
-The first thing to note are the two functions <function>OfxGetPlugin</function> and <function>OfxGetNumberOfPlugins</function>. These two functions are the only symbols that a plug-in must export and are there to boot strap the whole plug-in identification and definition process.
+The first thing to note in this section are the two functions <function>OfxGetPlugin</function> and <function>OfxGetNumberOfPlugins</function>. These two functions are the only symbols that a plug-in must export and are there to boot strap the whole plug-in identification and definition process. Note the macro <structname>OfxExport</structname>, which should be inserted before any symbol that needs to be exported from the plug-in.
 </para>
 
 <para>
-<function>OfxGetNumberOfPlugins</function> is called first by the host to find out how many plug-ins are inside the binary. In this case we have only one.
+<function>OfxGetNumberOfPlugins</function> is the first function by a host after a binary is loaded. It returns the number of separate plug-ins contained inside the binary. In this case we have only one plug-in.
 </para>
 
 <para>
-<function>OfxGetPlugin</function> is called once for each plug-in said to be inside the binary, and returns an <classname>OfxPlugin</classname> struct. This struct is used to tell the host what kind of plug-in it is, it's name, versioning info and to give the host two functions to use for communications. Our function returns a pointer to the static <varname>pluginStruct</varname>.
+<function>OfxGetPlugin</function> is called once for each plug-in inside the binary, and returns an <structname>OfxPlugin</structname> struct. This struct is used to tell the host what kind of plug-in it is, it's name, versioning info and to give the host two functions to use for communications. Our function returns a pointer to the static <varname>pluginStruct</varname> as the host has now clean way of deleting it once done. All such structs should be static.
 </para>
 
 <para>
-In order the members of <varname>pluginStruct</varname> tell the host
+In order the members of <varname>pluginStruct</varname> tell the host...
 <orderedlist>
 <listitem>the kind of plugin it is, in this case a <literal>kOfxImageEffectPluginApi</literal>. Which happens to be an image effect plug-in,</listitem>
 <listitem>the version of the API the plug-in was written to. In this case version <literal>1</literal>,</listitem>
@@ -124,23 +135,25 @@ In order the members of <varname>pluginStruct</varname> tell the host
 </section>
 
 <section><title>The Host Struct</title>
+<informalexample>
 <programlisting>
-// pointers to various bits of the host
-OfxHost               *gHost;
+// pointer to the host structure passed to us by the host application
+OfxHost   *gHost;
 
-// function to set the host structure
+// function called by the host appliaction to set the host structure
 static void
 setHostFunc(OfxHost *hostStruct)
 {
   gHost = hostStruct;
 }
-
 </programlisting>
+</informalexample>
 <para>
-This section contains the host stucture that holds information about the host application and allows us to fetch <classname>suites</classname> from the host. The <function>setHostFunc</function> is called by the host application to set this pointer and is passed to the host inside the <classname>OfxPlugin</classname> struct.
+This section contains the host stucture that holds information about the host application and allows us to fetch <structname>suites</structname> from the host. The <function>setHostFunc</function> is called by the host application to set this pointer and is passed to the host inside the <structname>OfxPlugin</structname> struct.
 </para>
 </section>
 <section><title>The Main Entry Function</title>
+<informalexample>
 <programlisting>
 // forward declarations
 static OfxStatus render(OfxImageEffectHandle  instance, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs);
@@ -155,28 +168,33 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,
   // cast to appropriate type
   OfxImageEffectHandle effect = (OfxImageEffectHandle) handle;
 
+  // called as the very first action before any other
   if(strcmp(action, kOfxActionLoad) == 0) {
     return onLoad();
   }
+  // called to describe the plug-in
   else if(strcmp(action, kOfxActionDescribe) == 0) {
     return describe(effect);
   }
+  // called to describe the plug-in in a given context
   else if(strcmp(action, kOfxImageEffectActionDescribeInContext) == 0) {
     return describeInContext(effect, inArgs);
   }
+  // called to render a frame
   else if(strcmp(action, kOfxImageEffectActionRender) == 0) {
     return render(effect, inArgs, outArgs);
   }    
     
-  // other actions to take the default value
+  // all other actions return the default value
   return kOfxStatReplyDefault;
 }
 </programlisting>
+</informalexample>
 <para>
-The <function>pluginMain</function> was passed to the host int the <classname>OfxPlugin</classname> struct returned by <function>OfxGetPlugin</function>. This function is where the host tells the plug-in what it needs to do. You will note that the <emphasis>actions</emphasis> passed to the plug-in are encoded as strings. This makes actions easily extensible whilst minimising the chances of name clashing.
+The <function>pluginMain</function> was passed to the host int the <structname>OfxPlugin</structname> struct returned by <function>OfxGetPlugin</function>. This function is where the host tells the plug-in what it needs to do. You will note that the <emphasis>actions</emphasis> passed to the plug-in are encoded as strings. This makes actions easily extensible whilst minimising the chances of name clashing.
 </para>
 <para>
-The function also takes a "handle" argument. This handle is the thing the action must be performed on. In this case, as we are an image effect, the handle must be cast to an <classname>OfxImageEffectHandle</classname>, which is simply a blind pointer to some host data representing an image effect.
+The function also takes a "handle" argument. This handle is the thing the action must be performed on. In this case, as we are an image effect, the handle must be cast to an <structname>OfxImageEffectHandle</structname>, which is simply a blind pointer to some host data representing an image effect.
 </para>
 <para>
 The last two parameters <varname>inArgs</varname> and <varname>outArgs</varname> are used to pass in arguments for the specific action. These are encapsulated via blind property sets. The <varname>inArgs</varname> are extra arguments the action will need to do its job, whilst <varname>outArgs</varname> are for things the plug-in will need to set to do its action.
@@ -186,6 +204,7 @@ Our main entry only traps four of the many possible actions. The actual actions 
 </para>
 </section>
 <section><title>The Load Action</title>
+<informalexample>
 <programlisting>
 OfxImageEffectSuiteV1 *gEffectSuite = 0;
 OfxPropertySuiteV1    *gPropertySuite = 0;
@@ -205,15 +224,17 @@ onLoad(void)
     return kOfxStatOK;
 }
 </programlisting>
+</informalexample>
 <para>
 The load action is always the first action called after the initial boot-strap phase has happened. By this time the plugin's <function>setHost</function> function will have been called, so we have access to the host pointer and so the ability to fetch suites.
 </para>
 <para>
-What this action does is first to check that the host application has infact set the <varname>gHost</varname> pointer, it then goes ahead and fetches two <classname>suites</classname> from the host. These suites are simply structs full of function pointers from the host which the plug-in uses to communicate with the host. We are only fetching two suites from the host, the <classname>OfxImageEffectSuiteV1</classname> to give us access to images and more, and the <classname>OfxPropertySuiteV1</classname> which allows us to access values in property sets.
+What this action does is first to check that the host application has infact set the <varname>gHost</varname> pointer, it then goes ahead and fetches two <structname>suites</structname> from the host. These suites are simply structs full of function pointers from the host which the plug-in uses to communicate with the host. We are only fetching two suites from the host, the <structname>OfxImageEffectSuiteV1</structname> to give us access to images and more, and the <structname>OfxPropertySuiteV1</structname> which allows us to access values in property sets.
 </para>
 </section>
 
 <section><title>The Describe Action</title>
+<informalexample>
 <programlisting>
 // the plugin's description routine
 static OfxStatus
@@ -238,12 +259,12 @@ describe(OfxImageEffectHandle effect)
   
   return kOfxStatOK;
 }
-</programlisting>
+</programlisting></informalexample>
 <para>
-The purpose of the describe action is to tell the host the overall behaviour of the plug-in. The <classname>OfxImageEffectHandle</classname> passed to the describe action is a <emphasis>descriptor</emphasis> as opposed to an <emphasis>instance</emphasis>. A descriptor is a handle that is used to tell the host how a plug-in should look, whilst an instance is an actual running copy of a plug-in. Descriptors are passed to only two actions, the describe action, and the describe in context action. Most other actions that are passed a handle are passed an instance handle.
+The purpose of the describe action is to tell the host the overall behaviour of the plug-in. The <structname>OfxImageEffectHandle</structname> passed to the describe action is a <emphasis>descriptor</emphasis> as opposed to an <emphasis>instance</emphasis>. A descriptor is a handle that is used to tell the host how a plug-in should look, whilst an instance is an actual running copy of a plug-in. Descriptors are passed to only two actions, the describe action, and the describe in context action. Most other actions that are passed an instance handle.
 </para>
 <para>
-The first thing this function does is to fetch the handle holding the properties that describe the plug-in. Note how it uses the <varname>gEffectSuite</varname> pointer to do this. 
+The first thing this function does is to fetch the handle holding the properties used to describe the plug-in. Note how it uses the <varname>gEffectSuite</varname> pointer to do this. 
 </para>
 <para>
 The next thing the plug-in does is set the integer property <literal>kOfxImageEffectPropSupportsMultipleClipDepths</literal> to be false using the property suite. This tells the host application that the plug-in can only support a single pixel depth at a time, otherwise the host might attempt to have an 8 bit input and a 16 bit output.
@@ -261,6 +282,7 @@ An image effect context describes the semantics of how a plug-in should be used.
 </section>
 
 <section><title>The Describe In Context Action</title>
+<informalexample>
 <programlisting>
 //  describe the plugin in context
 static OfxStatus
@@ -281,7 +303,7 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
 
   return kOfxStatOK;
 }
-</programlisting>
+</programlisting></informalexample>
 <para>
 The describe in context action is called once for each context that a plug-in says it can work in. Here the plug-in must define the clips it will use and any parameters it may need for that context. The set of clips and params need not be the same for each context, though typically a core of parameters and some clips will be the same. Note that, as with the describe action, the describe in context action is passed a descriptor rather than an instance.
 </para>
@@ -291,6 +313,7 @@ The first thing our function does is to define the clip called "Output" which is
 </section>
 
 <section><title>The Render Action</title>
+<informalexample>
 <programlisting>
 // look up a pixel in the image, does bounds checking to see if it is in the image rectangle
 inline OfxRGBAColourB *
@@ -384,7 +407,7 @@ static OfxStatus render(OfxImageEffectHandle  instance,
     // all was well
     return kOfxStatOK;
 }
-</programlisting>
+</programlisting></informalexample>
 <para>
 The render action is where a plug-in turns its input images into output images. The first thing to note is that the effect is no longer an instance, but a descriptor. For our 
 simple example, this makes not much difference, however if the plug-in is maintaining private data, it is very important. 
@@ -397,7 +420,7 @@ Next the function fetchs the output clip. A clip is a handle that is accessible 
 <para>Images are encapsulated as a property set, and so the ordinary property mechanism is used to fetch out information from the image. In this case three properties are needed, the <varname>rowBytes</varname>, or the number of bytes in a scan line (as there may be padding at the end), the image bounds, being the region where there is image data and a pointer to the image data. The source image is fecthed in a similar way as the destination image.
 </para>
 <para>
-Next the <classname>void *</classname>> data pointers are cast to <classname>OfxRGBAColourB</classname> pointers, and we start iterating over the render window filling in output pixels. The render window must always be equal to or less than the bounds on the destintation image. The inline function <function>pixelAddress</function> shows how pixel arithmetic is performed. Note the <function>abort</function> function from the image effect suite being called at every scan line to see if the rendering should be halted.
+Next the <structname>void *</structname> data pointers are cast to <structname>OfxRGBAColourB</structname> pointers, and we start iterating over the render window filling in output pixels. The render window must always be equal to or less than the bounds on the destintation image. The inline function <function>pixelAddress</function> shows how pixel arithmetic is performed. Note the <function>abort</function> function from the image effect suite being called at every scan line to see if the rendering should be halted.
 </para>
 <para>
 Finally, once we are done, the images are released and we return.</para>
@@ -408,12 +431,12 @@ Finally, once we are done, the images are released and we return.</para>
 Our small working example shows the core mechanisms behind the OFX Image Effect API, but leaves out much of the messy detail. The important things to note are the use of suites to call functions on the host, the use of properties to get and set values in objects and the use of actions to call things on the plugin.
 </para>
 <para>
-There are many more suites which have not been used, as well as actions that have not been trapped, as well as gory bits to do with pixel aspect ratios, interlacing and more. These extra suites and actions and a rich functionality to OFX that give it a great flexibility as well as dealing with the evil little details of video standard.
+There are many more suites which have not been used, as well as actions that have not been trapped, as well as gory bits to do with pixel aspect ratios, interlacing and more. These extra suites and actions add a rich functionality to OFX that give it a great flexibility as well as dealing with the evil little details of video standard.
 </para>
 </section>
 </chapter>
 
-<chapter><title>The OFX Plug-in Architecture</title>
+<chapter><title>The Generic OFX Plug-in Architecture</title>
 
 <section><title>Overview</title>
 
@@ -421,7 +444,7 @@ There are many more suites which have not been used, as well as actions that hav
 As explained in the introduction, OFX is actually several things, 
 <itemizedlist>
 <listitem>an underlying generic plug-in architecture,</listitem>
-<listitem>specific plug-in Application Programming Interfaces defined using that generic architecture</listitem>
+<listitem>specific plug-in Application Programming Interfaces defined using that generic architecture.</listitem>
 </itemizedlist>
 This chaper concentrates on defining the underlying architecture, including how plug-ins should be identified, defined, versioned, installed and the initial bootstrapping of comminication occurs.
 </para>
@@ -488,16 +511,15 @@ This function returns the number of plug-ins inside the given binary. This will 
 
 <section><title>OfxGetPlugin</title>
 <programlisting>OfxPlugin * OfxGetPlugin(int nth)</programlisting>
-This function returns an <classname>OfxPlugin</classname> struct which defines the <varname>nth</varname> plug-in to the host. The data structure returned should point to a static chunk of memory in the plug-in, as the host will make no attempt to free the returned data structure when the plug-in is unloaded. Typically this will be the called multiple times by the host, once for each plug-in that the plug-in says it contains.
+This function returns an <structname>OfxPlugin</structname> struct which defines the <varname>nth</varname> plug-in to the host. The data structure returned should point to a static chunk of memory in the plug-in, as the host will make no attempt to free the returned data structure when the plug-in is unloaded. Typically this will be the called multiple times by the host, once for each plug-in that the plug-in says it contains.
 </section>
 
 </section>
 
 <section><title>Identifying, Versioning and Defining an OFX Plug-in</title>
 <para>
-A plug-in's description is bootstrapped by using the required <function>OfxGetPlugin</function> function. This function returns an <classname>OfxPlugin</classname> data structure which gives a basic description of the plugin.
+A plug-in's description is bootstrapped by using the required <function>OfxGetPlugin</function> function. This function returns an <structname>OfxPlugin</structname> data structure which gives a basic description of the plugin.
 </para>
-
 <section><title>The OfxPlugin Struct</title>
 <programlisting>
 typedef struct OfxPlugin {
@@ -512,43 +534,43 @@ typedef struct OfxPlugin {
 </programlisting>
 
 <variablelist>
-<varlistentry><term><varname>pluginApi</varname></term>
+<varlistentry><term><structfield>pluginApi</structfield></term>
 <listitem>
 <para>
 This cstring tells the host what API the plug-in implements. 
 </para> </listitem> </varlistentry>
 
-<varlistentry><term><varname>apiVersion</varname></term>
+<varlistentry><term><structfield>apiVersion</structfield></term>
 <listitem>
 <para>
 This integer tells the host which version of its API the plug-in implements.
 </para> </listitem> </varlistentry>
 
-<varlistentry><term><varname>pluginIdentifier</varname></term>
+<varlistentry><term><structfield>pluginIdentifier</structfield></term>
 <listitem>
 <para>
 This is the globally unique name for the plug-in.
 </para> </listitem> </varlistentry>
 
-<varlistentry><term><varname>pluginVersionMajor</varname></term>
+<varlistentry><term><structfield>pluginVersionMajor</structfield></term>
 <listitem>
 <para>
  Major version of this plug-in, this gets incremented whenever software is changed and  breaks backwards compatibility.
 </para> </listitem> </varlistentry>
 
-<varlistentry><term><varname>pluginVersionMinor</varname></term>
+<varlistentry><term><structfield>pluginVersionMinor</structfield></term>
 <listitem>
 <para>
 Minor version of this plug-in, this gets incremented when software is changed, but does not break backwards compatibility.
 </para> </listitem> </varlistentry>
 
-<varlistentry><term><varname>setHost</varname></term>
+<varlistentry><term><structfield>setHost</structfield></term>
 <listitem>
 <para>
 Function used to set the host pointer (see below) which allows the plug-in to fetch suites associated with the API it implements.
 </para> </listitem> </varlistentry>
 
-<varlistentry><term><varname>mainEntry</varname></term>
+<varlistentry><term><structfield>mainEntry</structfield></term>
 <listitem>
 <para>
 The plug-in function that takes messages from the host telling it to do things.
@@ -560,12 +582,12 @@ The plug-in function that takes messages from the host telling it to do things.
 <section><title>Interpretting the OfxPlugin Struct </title>
 
 <para>
-When a host gets a pointer back from OfxGetPlugin, it examines the string <varname>pluginApi</varname>. This identifies what kind of plugin it is. Currently there is only one publicly specified API that uses the OFX mechanism, this is <varname>"OfxImageEffectPluginAPI"</varname>, which is the image effect API being discussed by this book. More APIs may be created at a future date, for example "OfxImageImportPlugin".
-Knowing the type of plug-in, the host then knows what suites and host handles are required for that plugin and what functions the plugin itself will have. The host passes a <varname>OfxHost</varname> structure appropriate to that plugin via it's <function>setHost</function> function. This allows for the same basic architecture to support different plugin types trivially. 
+When a host gets a pointer back from OfxGetPlugin, it examines the string <structfield>pluginApi</structfield>. This identifies what kind of plugin it is. Currently there is only one publicly specified API that uses the OFX mechanism, this is <literal>"OfxImageEffectPluginAPI"</literal>, which is the image effect API being discussed by this book. More APIs may be created at a future date, for example "OfxImageImportPlugin".
+Knowing the type of plug-in, the host then knows what suites and host handles are required for that plugin and what functions the plugin itself will have. The host passes a <structname>OfxHost</structname> structure appropriate to that plugin via it's <function>setHost</function> function. This allows for the same basic architecture to support different plugin types trivially. 
 </para>
 
 <para>
-OFX explicitly versions plugin APIs. By examining the <varname>apiVersion</varname>, the host knows exactly what set of functions the plugin is going to supply and what version of what suites it will need to provide.
+OFX explicitly versions plugin APIs. By examining the <structfield>apiVersion</structfield>, the host knows exactly what set of functions the plugin is going to supply and what version of what suites it will need to provide.
 This also allows plugins to implement several versions of themselves in the same binary, so it can take advantages of new features in a V2 API, but present a V1 plugin to older hosts that only support V1.
 </para>
 
@@ -574,14 +596,14 @@ If a host does not support the given plugin type, or it does not support the giv
 </para>
 
 <para>
-A plug-in needs to uniquely identify itself to a host. This is the job of <varname>pluginIdentifier</varname>. This null terminated ASCII C string should be unique amoung all plug-ins, it is not necassarily meant to convey a sensible name to an end user. The recommended format is the reverse domain name format of the developer, for example "uk.co.thefoundry", followed by the developer's unique name for the plugin. eg "uk.co.thefoundry.F_Kronos".
+A plug-in needs to uniquely identify itself to a host. This is the job of <structfield>pluginIdentifier</structfield>. This null terminated ASCII C string should be unique amoung all plug-ins, it is not necassarily meant to convey a sensible name to an end user. The recommended format is the reverse domain name format of the developer, for example "uk.co.thefoundry", followed by the developer's unique name for the plugin. eg "uk.co.thefoundry.F_Kronos".
 </para>
 
 <para>
-A plugin (as opposed to the API it impliments) is versioned with two separate integers in the <classname>OfxPlugin</classname> struct. They serve two separate functions and are,
+A plugin (as opposed to the API it impliments) is versioned with two separate integers in the <structname>OfxPlugin</structname> struct. They serve two separate functions and are,
 <itemizedlist>
- <listitem><varname>pluginVersionMajor</varname> flags the functionality contained within a plugin, incrementing this number means that you have broken backwards compatibility of the plugin. More specifically, this means a setup from an earlier version, when loaded into this version, will not yield the same result.</listitem>
- <listitem><varname>pluginVersionMinor</varname>flags the release of a plugin that does not break backwards compatibility, but otherwise enhances that plugin. For example, increment this when you have fixed a bug or made it faster.</listitem>
+ <listitem><structfield>pluginVersionMajor</structfield> flags the functionality contained within a plugin, incrementing this number means that you have broken backwards compatibility of the plugin. More specifically, this means a setup from an earlier version, when loaded into this version, will not yield the same result.</listitem>
+ <listitem><structfield>pluginVersionMinor</structfield>flags the release of a plugin that does not break backwards compatibility, but otherwise enhances that plugin. For example, increment this when you have fixed a bug or made it faster.</listitem>
 </itemizedlist>
 </para>
 
@@ -595,7 +617,7 @@ If a host encounters multiple versions of the same plugin it should,
 </para>
 
 <para>
-A more concrete example of versioning, the plugin identified by "org.wibble:Fred" is initially released as 1.0, however a few months later, wibble.org figured out how to make it faster and release it as 1.1. A year later, Fred can now do automatically what a user once needed to set five parameters up to do, thus making it much simpler to use. However this breaks backwards compability as these five parameters have been deleted, wibble.org then release this as v2.0.
+A more concrete example of versioning, the plugin identified by "org.wibble:Fred" is initially released as 1.0, however a few months later, wibble.org figured out how to make it faster and release it as 1.1. A year later, Fred can now do automatically what a user once needed to set five parameters up to do, thus making it much simpler to use. However this breaks backwards compatibility as the effect can no longer produce the same output as before, so wibble.org then release this as v2.0.
 </para>
 <para>
 A user's host might now have three versions of the Fred plugin on it, v1.0, v1.1 and v2.0. When creating a new instance of the plugin, the host should always use v2.0. When loading an old project which has a setup from a v1.x plugin, it should always use the latest, in this case being v1.1
@@ -631,7 +653,7 @@ The use is fairly obvious, you call functions through the pointers in the struct
 <listitem>the suite has a cstring name associated with it, </listitem>
 <listitem>the suite is versioned, via the "V1" sufffix appended to the struct tag and typedef.</listitem>
 </itemizedlist>
-The explicit naming and versioning of suites is how a plug-in asks fetches one, by calling the <function>fetchSuite</function> function in the <classname>OfxHost</classname> struct which is passed to it during the boot strapping stage.
+The explicit naming and versioning of suites is how a plug-in fetches one, by calling the <function>fetchSuite</function> function in the <structname>OfxHost</structname> struct which is passed to it during the boot strapping stage.
 </para>
 
 </section>
@@ -639,8 +661,8 @@ The explicit naming and versioning of suites is how a plug-in asks fetches one, 
 <section><title>Getting Access to The Host</title>
 
 <para>
-The <classname>OfxHost</classname> struct is how a host provides plug-ins with access to the various suites that make up the API, as well as a host property set handle which a plugin can ask questions of.
-The <function>setHost</function> function in the <classname>OfxPlugin</classname> struct is passed a pointer to an <classname>OfxHost</classname> 
+The <structname>OfxHost</structname> struct is how a host provides plug-ins with access to the various suites that make up the API, as well as a host property set handle which a plugin can ask questions of.
+The <function>setHost</function> function in the <structname>OfxPlugin</structname> struct is passed a pointer to an <structname>OfxHost</structname> 
 as the first thing to boot-strapping plug-in/host communication. The struct looks like...
 </para>
 
@@ -652,20 +674,20 @@ typedef struct OfxHost {
 </programlisting>
 
 <para>
-The <classname>OfxHost</classname> contains two elements,
+The <structname>OfxHost</structname> contains two elements,
 <itemizedlist>
-<listitem><varname>host</varname> - a property set handle that holds a set of properties which describe the host for the plug-in's API</listitem>
-<listitem><varname>fetchSuite</varname> - a function handle used to fetch function suites from the host that implement the plug-in's API</listitem>
+<listitem><structfield>host</structfield> - a property set handle that holds a set of properties which describe the host for the plug-in's API</listitem>
+<listitem><structfield>fetchSuite</structfield> - a function handle used to fetch function suites from the host that implement the plug-in's API</listitem>
 </itemizedlist>
 </para>
 
 <para> 
-The <varname>host</varname> property set handle in the <classname>OfxHost</classname> is not global across all plug-in defined in the binary.
+The <structfield>host</structfield> property set handle in the <structname>OfxHost</structname> is not global across all plug-in defined in the binary.
 It is only applicable for the plug-in whose 'setHost' function was called. Use this handle to fetch things like hostnames, host capabilities and so on from.
 </para>
 
 <para>
-The <function>fetchSuite</function> function is how a plug-in gets a suite from the host. It asks for a suite by giving the cstring corresponding to that suite and the version of that suite. The host will return a pointer to that suite, or NULL if it does not support it.
+The <function>fetchSuite</function> function is how a plug-in gets a suite from the host. It asks for a suite by giving the cstring corresponding to that suite and the version of that suite. The host will return a pointer to that suite, or NULL if it does not support it. Please note that suite cannot be fetched until the very first action is called on the plug-in. Which is the load action.
 </para>
 
 </section>
@@ -682,10 +704,10 @@ The following sequences of operations needs to be peformed by a host before it c
 <listitem>for each plugin defined in the binary
   <orderedlist>
     <listitem><function>OfxGetPlugin</function> is called,</listitem>
-    <listitem>the <varname>pluginApi</varname> and <varname>apiVersion</varname> of the returned <classname>OfxPlugin</classname> struct are examined,</listitem>
+    <listitem>the <structfield>pluginApi</structfield> and <structfield>apiVersion</structfield> of the returned <structname>OfxPlugin</structname> struct are examined,</listitem>
     <listitem>if the plug-in's API or it's version are not supported, the plug-in is ignored and we skip to the next one,</listitem>
     <listitem>the plug-in's pointer is recorded in a plug-in cache</listitem>
-    <listitem>an appropriate <classname>OfxHost</classname> struct is passed to the plugin via <function>setHost</function> in the returned <classname>OfxPlugin</classname> struct.</listitem>
+    <listitem>an appropriate <structname>OfxHost</structname> struct is passed to the plugin via <function>setHost</function> in the returned <structname>OfxPlugin</structname> struct.</listitem>
   </orderedlist>
 </listitem>
 </orderedlist>
@@ -765,7 +787,7 @@ Where...
 <itemizedlist>
   <listitem>Info.plist is relevant for OSX only and needs to be filled in appropriately,</listitem>
   <listitem>NAME is the file name you want the installed plugin to be identified by,</listitem>
-  <listitem>PLUGIN.png - is the image to use as an icon for the plug-in in the binary which has a matching <varname>pluginIdentifier</varname> field in the <classname>OfxPlugin</classname> struct,</listitem>
+  <listitem>PLUGIN.png - is the image to use as an icon for the plug-in in the binary which has a matching <structfield>pluginIdentifier</structfield> field in the <structname>OfxPlugin</structname> struct,</listitem>
   <listitem>ARCHITECTURE is the specific operating system architecture the plugin was built for, these are currently...
     <itemizedlist>
       <listitem>MacOS     - for Apple Macintosh OS X (compiled 32 bit)</listitem>
@@ -786,7 +808,7 @@ This structure is necessary on OS X, but it also gives a nice skeleton to hang a
 </para>
 
 <para>
-The Info.plist is specific to Apple and you should consult the Apple developer's website for more details. It should contain the following keys...
+The <filename>Info.plist</filename> is specific to Apple and you should consult the Apple developer's website for more details. It should contain the following keys...
 <itemizedlist>
      <listitem>CFBundleExecutable - the name of the binary bundle in the MacOS directory</listitem>
      <listitem>CFBundlePackageType - to be 'BNDL'</listitem>
@@ -838,7 +860,7 @@ If two copies of a plugin with the same major and minor version are encountered,
 </para>
 </section>
 
-<section><title>Installing Plugin Icons</title>
+<section><title>Plugin Icons</title>
 <para>
 Some hosts may wish to display an icon associated with a plug-in on their interfaces. Any such icon must be in the Portable Network Graphics format (see http://www.libpng.org/) and must contain 32 bits of colour, including an alpha channel. Ideally it should be at least 128x128 pixels. 
 </para>
@@ -849,7 +871,16 @@ Host applications should dynamically resize the icon to fit their prefered icon 
 Ideally plug-in developers should not render the plug-in's name into the icon, as this may be changed by the resource file, especially for internationalisation purposes. Hosts should thus present the plug-in's name next to the icon in some way. 
 </para>
 <para>
-The icon file must be named as the corresponding <varname>pluginIdentifier</varname> field from the <classname>OfxPlugin</classname>, post pended with '.png' and be placed in the resources sub-directory.
+The icon file must be named as the corresponding <structfield>pluginIdentifier</structfield> field from the <structname>OfxPlugin</structname>, post pended with '.png' and be placed in the resources sub-directory.
+</para>
+</section>
+
+<section><title>Externally Specified Resources</title>
+<para>
+Some plug-ins may supply an externally specified resource file. Typically this is for tasks such as internationalising interfaces, tweaking user interfaces for specific hosts and so on. These are XML files and have DTD associated with the specific API, for example OFX Image Effect DTD is found in <filename>ofx.dtd</filename>.
+</para>
+<para>
+The xml resource file is installed in the <filename>Resources</filename> sub directory of the bundle hierarchy. It's name will be <filename>NAME.xml</filename>, where name is the base name of the bundle folder and the effect binaries.
 </para>
 </section>
 
@@ -857,34 +888,77 @@ The icon file must be named as the corresponding <varname>pluginIdentifier</varn
 
 </chapter>
 
-<chapter><title>Visual Effects Applications and Architectures</title>
+<chapter><title>Visual Effects Architectures</title>
+<para>
+All applications that perform visual effects have certain basic similarities, unfortunately they also have many differences, and OFX needs to cope with them all. 
+This chapter gives an overview of architectures and the concepts behind them. Feel free to skip it if you have experience of programming for a range of visual effects applications. The concepts are expressed in OFX terminology and may be somewhat different to how other systems express them
+</para>
+
+<section><title>Clips</title>
+<para>A <emphasis>clip</emphasis> simply a sequences of still images, played back at some <emphasis>frame rate</emphasis> to give the illusion of motion. Thank you Lumiere brothers. All applications that process moving images use clips in one form or another. A clip is typically a single set of images that are logically associated, for example they consist of a single shot from a motion picture.
+</para>
+bit depth
+components
+PAR
+</section>
+
+<section><title>Images</title>
+<para>An <emphasis>image</emphasis> is a 2D array of <emphasis>pixels</emphasis>. A set of input images are processed by an effect to produce an output image.
+bit depth
+components
+pixel aspect ratio
+bounds 
+data
+</para>
+</section>
+
+<section><title>Parameters</title>
+</section>
+
+<section><title>Time</title>
+</section>
+
+<section><title>Effects</title>
+</section>
+
+<section><title>Contexts</title>
+</section>
+
+<section><title>Co-ordinate Systems</title>
+</section>
+
+<section><title>Regions of Definition and Regions of Interest</title>
+</section>
 
 </chapter>
 
+<chapter><title>OFX Image Effect Plug-ins</title>
 <para>
-The status codes are...
-<itemizedlist>
-<listitem><varname>kOfxStatOK</varname> (0)  Status code indicating all was fine </listitem>
-<listitem><varname>kOfxStatFailed</varname>  (1)  Status error code for a failed operation </listitem>
-<listitem><varname>kOfxStatErrFatal</varname> (2) Status error code for a fatal error, only returned in the case where the plug-in or host cannot continue to function and needs to be restarted. </listitem>
-<listitem><varname>kOfxStatErrUnknown</varname> (3) Status error code for an operation on or request for an unknown object </listitem>
-<listitem><varname>kOfxStatErrMissingHostFeature</varname> (4) Status error code returned by plug-ins when they are missing host functionality, either a suite or some optional functionality (eg: custom params).</listitem>
-<listitem><varname>kOfxStatErrUnsupported</varname> (5)  Status error code for an unsupported feature/operation </listitem>
-<listitem><varname>kOfxStatErrExists</varname>  (6)  Status error code for an operation attempting to create something that exists </listitem>
-<listitem><varname>kOfxStatErrFormat</varname> (7)  Status error code for an incorrect format </listitem>
-<listitem><varname>kOfxStatErrMemory</varname>  (8)  Status error code indicating that something failed due to memory shortage </listitem>
-<listitem><varname>kOfxStatErrBadHandle</varname> (9)  Status error code for an operation on a bad handle </listitem>
-<listitem><varname>kOfxStatErrBadIndex</varname> (10)  Status error code indicating that a given index was invalid or unavailable </listitem>
-<listitem><varname>kOfxStatErrValue</varname> (11)  Status error code indicating that something failed due an illegal value </listitem>
-<listitem><varname>kOfxStatReplyYes</varname> (12)  OfxStatus returned indicating a 'yes' </listitem>
-<listitem><varname>kOfxStatReplyNo</varname> (13)  OfxStatus returned indicating a 'no' </listitem>
-<listitem><varname>kOfxStatReplyDefault</varname> (14)  OfxStatus returned indicating that a default action should be performed </listitem>
-</itemizedlist>
-
+An OFX image effect plug-in is one that uses the OFX Image Effect API to implement a visual effect. To do that it needs 
 </para>
+</chapter>
 
+<chapter><title>Parameters</title>
+</chapter>
+
+<chapter><title>Parameters</title>
+</chapter>
+
+
+<chapter><title>Core API Reference</title>
+
+<refentry id="OFX include files">
+<refmeta>
+<refentrytitle>OFX include files</refentrytitle>
+</refmeta>
+
+<refnamediv>
+<refname>OFX Include Files</refname>
+<refpurpose>The standard set of include files for OFX Visual Effects plug-ins.</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
 <para>
-The current header files are...
 <itemizedlist>
 <listitem><filename>ofxCore.h</filename> - provides the core definitions of the general OFX architecture that allow the bootstrapping of specific APIs,</listitem>
 <listitem><filename>ofxProperty.h</filename> - provides genric property fetching mechanisms used to get and set values about objects in the API,</listitem>
@@ -895,8 +969,423 @@ The current header files are...
 <listitem><filename>ofxMemory.h</filename> - memory allocation scheme,</listitem>
 <listitem><filename>ofxMessage.h</filename> - a simple messaging suite to communicate with an end user,</listitem>
 <listitem><filename>ofxImageEffect.h</filename> - draws all the above together to create an visual effect plug-in.</listitem>
-<listitem></listitem>
 </itemizedlist>
 </para>
+</refsect1>
+</refentry>
+
+<refentry id="OfxGetNumberOfPlugins">
+<refmeta>
+<refentrytitle>OfxGetNumberOfPlugins</refentrytitle>
+</refmeta>
+<refnamediv>
+<refname>OfxGetNumberOfPlugins</refname>
+<refpurpose>Mandatory plug-in function that returns the number of plug-ins inside a binary.</refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include "ofxCore.h"
+</funcsynopsisinfo>
+<funcprototype>
+  <funcdef>OfxExport int <function>OfxGetNumberOfPlugins</function></funcdef>
+  <paramdef><parameter><void></void></parameter></paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+<para>
+<function>OfxGetNumberOfPlugins</function> returns the number of plugins contained in the binary. It is the very first function called by the host after the binary has been loaded.
+</para>
+<para>
+This function <emphasis>must</emphasis> be exported by the binary that contains OFX plugins. The <structname>OfxExport</structname> defined in <filename>ofxCore.h</filename> is used as an export declaration for those compilers that require it.
+</para>
+<bridgehead>Preconditions</bridgehead>
+<itemizedlist>
+<listitem>No other function is called in the plug-in before this.</listitem>
+</itemizedlist>
+</refsect1>
+</refentry>
+
+<refentry id="OfxGetPlugin">
+<refmeta>
+<refentrytitle>OfxGetPlugin</refentrytitle>
+</refmeta>
+<refnamediv>
+<refname>OfxGetPlugin</refname>
+<refpurpose>Mandatory plug-in function that return a plugin description to a host.</refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo> #include "ofxCore.h" </funcsynopsisinfo>
+<funcprototype>
+  <funcdef>OfxExport <structname>OfxPlugin</structname> *<function>OfxGetPlugin</function></funcdef>
+  <paramdef>int <parameter>nth</parameter></paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+<para>
+<function>OfxGetPlugin</function> returns the definition of the <parameter>nth</parameter> plug-in inside the binary.
+</para>
+<para>
+This function returns a pointer to the <varname>nth</varname> <structname>OfxPlugin</structname> struct in the binary. <varname>nth</varname> is between 0 and the number returned by <function>OfxGetNumberOfPlugins</function>. The returned structure defines the plugin to the host.
+</para>
+<bridgehead>Preconditions</bridgehead>
+<itemizedlist>
+<listitem><function>OfxGetNumberOfPlugins</function> has been previously called,</listitem>
+<listitem><varname>nth</varname> is between 0 and the value returned by <function>OfxGetNumberOfPlugins</function>.</listitem>
+</itemizedlist>
+<bridgehead>Preconditions</bridgehead>
+<itemizedlist>
+<listitem>The returned pointer and pointers in the struct point to valid data whilst the binary is loaded,</listitem>
+<listitem>The returned pointer and pointers in the struct do not need to be freed in any way by the host.</listitem>
+</itemizedlist>
+</refsect1>
+</refentry>
+
+
+</chapter>
+
+<chapter><title>Property Suite Reference</title>
+</chapter>
+
+<chapter><title>Properties By Object</title>
+<para> This paragraph lists all the properties on each OFX object.</para>
+</chapter>
+
+<chapter><title>Property Reference</title>
+</chapter>
+
+<chapter><title>Status Code Reference</title>
+<para>
+Status codes are returned by most functions in OFX suites and all plug-in actions to indicate the sucess or failure of the operation. All status codes are defined in <filename>ofxCore.h</filename> and <code>#defined</code> to be integers. 
+</para>
+
+<refentry id="OfxStatus">
+<refmeta>
+<refentrytitle><type>OfxStatus</type></refentrytitle>
+</refmeta>
+<refnamediv>
+<refname><type>OfxStatus</type></refname>
+<refpurpose> type returned to indicate success or failure of an operation.</refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+<programlisting>
+#include "ofxCore.h"
+typedef int OfxStatus;
+</programlisting>
+</refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>
+Most OFX functions in host suites and all actions in a plug-in return a status code, where the status codes are all 32 bit integers. This typedef is used to label that status code.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="kOfxStatOK">
+<refmeta>
+<refentrytitle><errorcode>kOfxStatOK</errorcode></refentrytitle>
+</refmeta>
+<refnamediv>
+<refname><errorcode>kOfxStatOK</errorcode></refname>
+<refpurpose>(0), indicates an operation completed sucessfully.</refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+<programlisting>
+#include "ofxCore.h"
+#define kOfxStatOK 0
+</programlisting></refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>
+This error code is returned by 
+<itemizedlist>
+<listitem>host functions to indicate success of the operation,</listitem>
+<listitem>plugin actions to indicate that the action was trapped and suceeded.</listitem>
+</itemizedlist>
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="kOfxStatFailed">
+<refmeta>
+<refentrytitle><errorcode>kOfxStatFailed</errorcode></refentrytitle>
+</refmeta>
+<refnamediv>
+<refname><errorcode>kOfxStatFailed</errorcode></refname>
+<refpurpose>(1), indicates a failed operation.</refpurpose>
+</refnamediv>
+<refsynopsisdiv><programlisting>
+#include "ofxCore.h"
+#define kOfxStatFailed  ((int)1)
+</programlisting></refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>
+This error code is returned when a function or action could not complete normally and its operation failed.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="kOfxStatErrFatal">
+<refmeta>
+<refentrytitle><errorcode>kOfxStatErrFatal</errorcode></refentrytitle>
+</refmeta>
+<refnamediv>
+<refname><errorcode>kOfxStatErrFatal</errorcode></refname>
+<refpurpose>(2), indicates a fatal operation.</refpurpose>
+</refnamediv>
+<refsynopsisdiv><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrFatal  ((int)2)
+</programlisting></refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>
+This status is only returned in the case where the plug-in or host cannot continue normal operation and needs to be restarted. 
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="kOfxStatErrUnknown">
+<refmeta>
+<refentrytitle><errorcode>kOfxStatErrUnknown</errorcode></refentrytitle>
+</refmeta>
+<refnamediv>
+<refname><errorcode>kOfxStatErrUnknown</errorcode></refname>
+<refpurpose>(3), status error code for an unknown object.</refpurpose>
+</refnamediv>
+<refsynopsisdiv><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrUnknown ((int)3)
+</programlisting></refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>
+This error is returned when an operation is attempted on an unknown object or an unknown object was requested. For example, a host may not support a property on an object because it is written to a slightly earlier version of an API, in which case it should return with <errorcode>kOfxStatErrUnknown</errorcode>.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="kOfxStatErrMissingHostFeature">
+<refmeta>
+<refentrytitle><errorcode>kOfxStatErrMissingHostFeature</errorcode></refentrytitle>
+</refmeta>
+<refnamediv>
+<refname><errorcode>kOfxStatErrMissingHostFeature</errorcode></refname>
+<refpurpose>(4) returned by a plugin if a host is inadequate.</refpurpose>
+</refnamediv>
+<refsynopsisdiv><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrMissingHostFeature ((int) 4)
+</programlisting></refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>
+This status is returned by plug-ins' <function>mainEntry</function> if the host  is missing a feature they need to operate.
+For example, a plug-in may need an overlay GUI to operate sucessfully, which is an optional feature.
+</para>
+<para>
+This should be returned from the <literal>kOfxActionLoad</literal>, <literal>kOfxActionDescribe</literal> or <literal>kOfxImageEffectActionDescribeInContext</literal> actions, so a host can unload the plugin before it attempts to create an instance of the plug-in.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="kOfxStatErrUnsupported">
+<refmeta>
+<refentrytitle><errorcode>kOfxStatErrUnsupported</errorcode></refentrytitle>
+</refmeta>
+<refnamediv>
+<refname><errorcode>kOfxStatErrUnsupported</errorcode></refname>
+<refpurpose>(5), error code for an unsupported feature/operation </refpurpose>
+</refnamediv>
+<refsynopsisdiv><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrUnsupported ((int) 5)
+</programlisting></refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>
+This is returned by suite functions to indicate an operation is unsupported. For example, a plug-in may attempt to use a custom parameter GUI on a host that does not support it, in which case the host should return <errorcode>kOfxStatErrUnsupported</errorcode> when the plug-in does so.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="kOfxStatErrExists">
+<refmeta>
+<refentrytitle><errorcode>kOfxStatErrExists</errorcode></refentrytitle>
+</refmeta>
+<refnamediv>
+<refname><errorcode>kOfxStatErrExists</errorcode></refname>
+<refpurpose>(6), something already exists.</refpurpose>
+</refnamediv>
+<refsynopsisdiv><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrExists  ((int) 6)
+</programlisting></refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>
+This error code is returned from a host function when a plug-in attempts to create an object that already exists. For example, a plug-in attempting to create two parameters with the same name, as the name of a parameter is what defines it.
+</para>
+</refsect1>
+</refentry>
+
+
+<refentry id="kOfxStatErrFormat">
+<refmeta>
+<refentrytitle><errorcode>kOfxStatErrFormat</errorcode></refentrytitle>
+</refmeta>
+<refnamediv>
+<refname><errorcode>kOfxStatErrFormat</errorcode></refname>
+<refpurpose>(7), indicates an incorrect format.</refpurpose>
+</refnamediv>
+<refsynopsisdiv><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrFormat ((int) 7)
+</programlisting></refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>
+This error code is returned when a plug-in or hosts receives something in the wrong format.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="kOfxStatErrMemory">
+<refmeta>
+<refentrytitle><errorcode>kOfxStatErrMemory</errorcode></refentrytitle>
+</refmeta>
+<refnamediv>
+<refname><errorcode>kOfxStatErrMemory</errorcode></refname>
+<refpurpose>(8), a memory shortage was encountered.</refpurpose>
+</refnamediv>
+<refsynopsisdiv><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrMemory  ((int) 8)
+</programlisting></refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>
+This is returned when a plug-in or host cannot complete its operation because of a memory shortage.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="kOfxStatErrBadHandle">
+<refmeta>
+<refentrytitle><errorcode>kOfxStatErrBadHandle</errorcode></refentrytitle>
+</refmeta>
+<refnamediv>
+<refname><errorcode>kOfxStatErrBadHandle</errorcode></refname>
+<refpurpose>(9), indicates a bad handle</refpurpose>
+</refnamediv>
+<refsynopsisdiv><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrBadHandle ((int) 9)
+</programlisting></refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>
+This status code is returned when a bad handle is passed to a host function or a plug-in action.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="kOfxStatErrBadIndex">
+<refmeta>
+<refentrytitle><errorcode>kOfxStatErrBadIndex</errorcode></refentrytitle>
+</refmeta>
+<refnamediv>
+<refname><errorcode>kOfxStatErrBadIndex</errorcode></refname>
+<refpurpose>(10), a property index was invalid.</refpurpose>
+</refnamediv>
+<refsynopsisdiv><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrBadIndex ((int)10)
+</programlisting>
+</refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>
+This is returned by host functions if an operation was requested on an invalid dimension index.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="kOfxStatErrValue">
+<refmeta>
+<refentrytitle><errorcode>kOfxStatErrValue</errorcode></refentrytitle>
+</refmeta>
+<refnamediv>
+<refname><errorcode> kOfxStatErrValue </errorcode></refname>
+<refpurpose>(11), an illegal value was passed.</refpurpose>
+</refnamediv>
+<refsynopsisdiv><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrValue ((int) 11)
+</programlisting></refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>
+This error code is returned if an attempt was made to set an illegal value on an object. For example if an image effect plug-in attempted to set a supported pixel depth of "wibble".
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="kOfxStatReplyYes">
+<refmeta>
+<refentrytitle><errorcode>kOfxStatReplyYes</errorcode></refentrytitle>
+</refmeta>
+<refnamediv>
+<refname><errorcode>kOfxStatReplyYes</errorcode></refname>
+<refpurpose>(12), returned to indicate a positive response.</refpurpose>
+</refnamediv>
+<refsynopsisdiv><programlisting>
+#include "ofxCore.h"
+#define kOfxStatReplyYes ((int) 12)
+</programlisting></refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>
+This is typically returned from a function involving user interaction and indicates they had a positive response. e.g. the messaging suite can ask the user a question to which they can reply "yes" or "no".
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="kOfxStatReplyNo">
+<refmeta>
+<refentrytitle><errorcode>kOfxStatReplyNo</errorcode></refentrytitle>
+</refmeta>
+<refnamediv>
+<refname><errorcode>kOfxStatReplyNo</errorcode></refname>
+<refpurpose>(13), returned to indicate a positive response.</refpurpose>
+</refnamediv>
+<refsynopsisdiv><programlisting>
+#include "ofxCore.h"
+#define kOfxStatReplyNo ((int) 13)
+</programlisting></refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>
+This is typically returned from a function involving user interaction and indicates they had a negative response. e.g. the messaging suite can ask the user a question to which they can reply "yes" or "no".
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="kOfxStatReplyDefault">
+<refmeta>
+<refentrytitle><errorcode>kOfxStatReplyDefault</errorcode></refentrytitle>
+</refmeta>
+<refnamediv>
+<refname><errorcode>kOfxStatReplyDefault</errorcode></refname>
+<refpurpose>(14), indicates the default should occur. </refpurpose>
+</refnamediv>
+<refsynopsisdiv><programlisting>
+#include "ofxCore.h"
+#define kOfxStatReplyDefault ((int) 14)
+</programlisting></refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>
+This is returned by plug-ins' <function>mainEntry</function> function to indicate that they did not trap the action passed and that the default operation should occur. It does not imply failure.
+</para>
+<para>
+A subtle but specific use of this is made by plug-in interacts GUIs. If they return this value from any event actions (eg: <literal>kOfxInteractActionPenDown</literal>), then the host is free to pass the event on to another GUI element in the interact window.
+</para>
+
+</refsect1>
+</refentry>
+
+
+</chapter>
 
 </book>
