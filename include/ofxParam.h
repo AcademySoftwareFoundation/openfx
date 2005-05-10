@@ -309,7 +309,7 @@ This is used to tell the host whether the value of the parameter is important an
 /** @brief Flags whether changing a parameter's value forces an evalution (ie: render),
 
     - Type - int x 1
-    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Property Set - plugin parameter descriptor (read/write) and instance (read/write only)
     - Default - 1
     - Valid Values - 0 or 1
 
@@ -320,7 +320,7 @@ This is used to indicate if the value of a parameter has any affect on an effect
 /** @brief Flags whether a parameter should be exposed to a user,
 
     - Type - int x 1
-    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
     - Default - 1
     - Valid Values - 0 or 1
 */
@@ -367,7 +367,7 @@ rendered output. Think of the what happens when you add a new key frame.
 /** @brief A hint to the user as to how the parameter is to be used.
 
    - Type - UTF8 C string X 1
-   - Property Set - plugin parameter descriptor (read/write) and instance (read only),
+   - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
    - Default - ""
 */
 #define kOfxParamPropHint "OfxParamPropHint"
@@ -375,10 +375,25 @@ rendered output. Think of the what happens when you add a new key frame.
 /** @brief The default value of a parameter.
 
    - Type - The type is dependant on the parameter type as is the dimension.
-   - Property Set - plugin parameter descriptor (read/write) and instance (read only),
+   - Property Set - plugin parameter descriptor (read/write) and instance (read/write only),
    - Default - 0 cast to the relevant type (or "" for strings and custom parameters)
 
-The exact type is dependant on the type of the parameter. 
+The exact type and dimension is dependant on the type of the parameter. These are....
+  - ::kOfxParamTypeInteger - integer property of one dimension
+  - ::kOfxParamTypeDouble - double property of one dimension
+  - ::kOfxParamTypeBoolean - integer property of one dimension
+  - ::kOfxParamTypeChoice - integer property of one dimension
+  - ::kOfxParamTypeRGBA - double property of four dimensions
+  - ::kOfxParamTypeRGB - double property of three dimensions
+  - ::kOfxParamTypeDouble2D - double property of two dimensions
+  - ::kOfxParamTypeInteger2D - integer property of two dimensions
+  - ::kOfxParamTypeDouble3D - double property of three dimensions
+  - ::kOfxParamTypeInteger3D - integer property of three dimensions
+  - ::kOfxParamTypeString - string property of one dimension
+  - ::kOfxParamTypeCustom - string property of one dimension
+  - ::kOfxParamTypeGroup - does not have this property
+  - ::kOfxParamTypePage - does not have this property
+  - ::kOfxParamTypePushButton - does not have this property
  */
 #define kOfxParamPropDefault "OfxParamPropDefault"
 
@@ -441,11 +456,12 @@ as to the interface of the parameter.
 /** @brief Enables the display of a time marker on the host's time line to indicate the value of the absolute time param.
 
     - Type - int x 1
-    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
     - Default - 0
     - Valid Values - 0 or 1
 
-If a double parameter is has ::kOfxParamPropDoubleType set to ::kOfxParamDoubleTypeAbsoluteTime, then this indicates whether any marker should be made visible on the host's time line.
+If a double parameter is has ::kOfxParamPropDoubleType set to ::kOfxParamDoubleTypeAbsoluteTime, then this indicates whether 
+any marker should be made visible on the host's time line.
 
 */
 #define kOfxParamPropShowTimeMarker "OfxParamPropShowTimeMarker"
@@ -583,7 +599,7 @@ This applies to double params of any dimension.
 /** @brief Label for individual dimensions on a multidimensional numeric parameter.
 
     - Type - UTF8 C string X 1
-    - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only),
     - Default - "x", "y" and "z"
     - Valid Values - any
 
@@ -596,6 +612,8 @@ Use this on 2D and 3D double and integer parameters to change the label on an in
     - Type - int X 1
     - Property Set - plugin parameter instance (read only),
     - Valid Values - 0 or 1
+
+This is set by the host simply to indicate the state of the property.
 */
 #define kOfxParamPropIsAutoKeying "OfxParamPropIsAutoKeying"
 
