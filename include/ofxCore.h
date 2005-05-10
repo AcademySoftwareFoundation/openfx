@@ -241,47 +241,54 @@ These properties are general properties and  apply to may objects across OFX
 */
 /*@{*/
 
-/** @brief General property, used to get/set the time of something
+/** @brief General property used to get/set the time of something.
 
-    - double X 1
-    - if being set, it defaults to 0
+    - Type - int X 1
+    - Default - 0, if a setable property
+    - Property Set - commonly used as an argument to actions, input and output.
 */
 #define kOfxPropTime "OfxPropTime"
 
-/** @brief General property, indicates if a host is actively editting the effect and has an interface up
+/** @brief Indicates if a host is actively editing the effect with some GUI.
 
-- int X 1
-- 0 if the effect currently has no interface, this may be because the effect is loaded in a background render host, or it may be loaded on an interactive host that has not yet opened an editor for the effect,
-- 1 if the effect has an interface and has an editor somewhere.
+    - Type - int X 1
+    - Property Set - effect instance (read only)
+    - Valid Values - 0 or 1
 
-Note, the output of an effect should only ever depend on the state of it's parameters, not on the interactive flag. The interactive flag is more a courtesy flag to let a plugin know that it has an interace. If a plugin want's to have its behaviour dependant on the interactive flag, it can always make a secret parameter which shadows the state if the flag.
+If false the effect currently has no interface, however this may be because the effect is loaded in a background render host, or it may be loaded on an interactive host that has not yet opened an editor for the effect.
+
+The output of an effect should only ever depend on the state of it's parameters, not on the interactive flag. The interactive flag is more a courtesy flag to let a plugin know that it has an interace. If a plugin want's to have its behaviour dependant on the interactive flag, it can always make a secret parameter which shadows the state if the flag.
 */
 #define kOfxPropIsInteractive "OfxPropIsInteractive"
 
-/** @brief General plugin property, indicates the file path to the plugin
+/** @brief The file path to the plugin.
 
-    - string * X 1
+    - Type - C string X 1
+    - Property Set - effect descriptor (read only)
 
 This is a string that indicates the file path where the plug-in was found by the host. The path is in the native
 path format for the host OS (eg: *NIX directory separators are '/', Windows ones are '`\').
 
-The path is to the bundle location, see \ref ArchitectureInstallingLocation. eg...
-   '/usr/OFX/Plugins/AcmePlugins/AcmeFantasticPlugin.ofx.bundle'
+The path is to the bundle location, see \ref InstallationLocation. 
+eg:  '/usr/OFX/Plugins/AcmePlugins/AcmeFantasticPlugin.ofx.bundle'
 */
 #define kOfxPluginPropFilePath "OfxPluginPropFilePath"
 
-/** @brief General instance property, used to get and set the 'instance data', which a plug-in can use to stash
-any private instance data it may want/need on a specific instance
+/** @brief  A private data pointer that the plug-in can store it's own data behind.
 
-    - void * X 1
-    - defaults to NULL
+    - Type - pointer X 1
+    - Property Set - plugin instance (read/write),
+    - Default - NULL
+
+This data pointer is unique to each plug-in instance, so two instances of the same plug-in do not share the same data pointer. Use it to hang any needed private data structures.
 */
 #define kOfxPropInstanceData "OfxPropInstanceData"
 
 /** @brief General property, used to identify the kind of an object behind a handle
 
-    - ASCII string X 1
-    - currently this can be...
+    - Type - ASCII C string X 1
+    - Property Set - any object handle (read only)
+    - Valid Values - currently this can be...
        - ::kOfxTypeImageEffectHost
        - ::kOfxTypeImageEffect
        - ::kOfxTypeImageEffectInstance
@@ -292,51 +299,68 @@ any private instance data it may want/need on a specific instance
 */
 #define kOfxPropType "OfxPropType"
 
-/** @brief General property, used to get/set the name of something. Names are used to label objects uniquely amoung objects of that type.
+/** @brief Unique name of an object.
 
-    - ASCII string X 1
-    - if being set, it defaults to ""
+    - Type - ASCII C string X 1
+    - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject (read only)
+
+This property is used to label objects uniquely amoung objects of that type. It is typically set when a plugin creates a new object with a function that takes a name.
 */
 #define kOfxPropName "OfxPropName"
 
-/** @brief General property, used to get/set the label of an object. The label is what a user sees on any interface in place of the object's name
+/** @brief User visible name of an object.
 
-    - UTF8 string X 1
-    - if being set, it defaults to the objects name
+    - Type - UTF8 C string X 1
+    - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject. Typically readable and writable in most cases.
+    - Default - the ::kOfxPropName the object was created with.
+
+The label is what a user sees on any interface in place of the object's name. 
+
+Note that resetting this will also reset ::kOfxPropShortLabel and ::kOfxPropLongLabel.
 */
 #define kOfxPropLabel "OfxPropLabel"
 
 
-/** Generic property, string to for any shorter GUI labels, approx 13 glyphs
+/** @brief Short user visible name of an object.
 
-    - char * X 1
-    - UTF8 string
-    - defaults to the same value as kOfxPropLabel
+    - Type - UTF8 C string X 1
+    - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject. Typically readable and writable in most cases.
+    - Default - initially ::kOfxPropName, but will be reset if ::kOfxPropLabel is changed.
+
+This is a shorter version of the label, typically 13 character glyphs or less. Hosts should use this if they have limitted display space for their object labels.
 */
 #define kOfxPropShortLabel "OfxPropShortLabel"
 
-/** Generic property, string to on any longer GUI labels, approx 32 glyphs
+/** @brief Long user visible name of an object.
 
-    - char * X 1
-    - UTF8 string
-    - defaults to the same value as kOfxPropLabel
+    - Type - UTF8 C string X 1
+    - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject. Typically readable and writable in most cases.
+    - Default - initially ::kOfxPropName, but will be reset if ::kOfxPropLabel is changed.
+
+This is a longer version of the label, typically 32 character glyphs or so. Hosts should use this if they have mucg display space for their object labels.
 */
 #define kOfxPropLongLabel "OfxPropLongLabel"
 
+/** @brief Indicates why a plug-in changed.
 
-/** @brief Property used by the inarg parameter passed to the ::kOfxActionInstanceChanged action to indicate the reason for a change
-
-    - ASCII string X 1
-    - currently this can be...
-       - ::kOfxChangeUserEdited - the user direclty edited the instance somehow and caused a change to something, this includes undo/redos and resets
+    - Type - ASCII C string X 1
+    - Property Set - the inArgs parameter on the ::kOfxActionInstanceChanged action.
+    - Valid Values - this can be...
+       - ::kOfxChangeUserEdited - the user directly edited the instance somehow and caused a change to something, this includes undo/redos and resets
        - ::kOfxChangePluginEdited - the plug-in itself has changed the value of the object in some action
        - ::kOfxChangeTime - the time has changed and this has affected the value of the object because it varies over time
+
+Argument property for the ::kOfxActionInstanceChanged action.
 */
 #define kOfxPropChangeReason "OfxPropChangeReason"
 
-/** @brief Property that contains a handle to an effect instance
+/** @brief A pointer to an effect instance.
 
-    - void * X 1 
+    - Type - pointer X 1
+    - Property Set - on an interact instance (read only)
+
+This property is used to link an object to the effect. For example if the plug-in supplies an openGL overlay for an image effect, 
+the interact instance will have one of these so that the plug-in can connect back to the effect the GUI links to.
 */
 #define kOfxPropEffectInstance "OfxPropEffectInstance"
 /*@}*/
@@ -807,7 +831,7 @@ The Info.plist should contain the following keys...
 
 For more information on the bundle keys and more, go to <a href="http://developer.apple.com/documentation/CoreFoundation/Conceptual/CFBundles/Concepts/infoplist.html#//apple_ref/doc/uid/20001121/CJBEJBHH">the apple website</a>.
 
-@subsection ArchitectureInstallingLocation Installation Location
+@subsection InstallationLocation Installation Location
 
 Plugins are searched for in a variety of locations, both default and user specified. All such directories are examined for plugin bundles and sub directories are also recursively examined. 
 
