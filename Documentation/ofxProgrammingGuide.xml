@@ -3,7 +3,8 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"  
          "file://localhost/usr/share/sgml/docbook/docbook-xml-4.3/docbookx.dtd"
 
-[<!ENTITY propertiesReference SYSTEM "ofxPropertiesReference.xml">]
+[<!ENTITY propertiesByObject SYSTEM "ofxPropertiesByObject.xml">
+<!ENTITY propertiesReference SYSTEM "ofxPropertiesReference.xml">]
 >
 
 <book>
@@ -1054,6 +1055,7 @@ This function returns a pointer to the <varname>nth</varname> <structname>OfxPlu
 
 <chapter><title>Properties By Object</title>
 <para> This paragraph lists all the properties on each OFX object.</para>
+&propertiesByObject;
 </chapter>
 
 <chapter><title>Property Reference</title>

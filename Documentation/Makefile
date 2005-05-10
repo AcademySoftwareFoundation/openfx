@@ -5,15 +5,19 @@ XSLARGS = --stringparam  funcsynopsis.style "ansi" \
 	--stringparam html.stylesheet ofxStyle.css
 
 
+SOURCES = ofxProgrammingGuide.xml \
+	ofxPropertiesReference.xml \
+	ofxPropertiesByObject.xml
+
 allInOne : ofxProgrammingGuide.html
 
 chunks : index.html
 
-ofxProgrammingGuide.html : ofxProgrammingGuide.xml ofxPropertiesReference.xml  
+ofxProgrammingGuide.html : $(SOURCES)
 	xsltproc -o ofxProgrammingGuide.html $(XSLARGS) \
 	$(STYLESHEETDIR)/xhtml/docbook.xsl  ofxProgrammingGuide.xml
 
-index.html : ofxProgrammingGuide.xml ofxPropertiesReference.xml  
+index.html : $(SOURCES)
 	xsltproc -o ofxProgrammingGuide.html $(XSLARGS)  \
 	$(STYLESHEETDIR)/xhtml/chunk.xsl  ofxProgrammingGuide.xml
 
@@ -24,4 +28,4 @@ ofxPropertiesReference.xml : extractPropertyDefinitions.perl ../include/ofxParam
 	rm -rf props
 
 clean :
-	rm -f ofxProgrammingGuide.html
+	rm -rf *.html props
