@@ -107,226 +107,251 @@ These are the list of properties used by the parameters suite.
 */
 /*@{*/
 
-/** @brief Host Property, indicates if the host supports animation of custom parameters 
+/** @brief Indicates if the host supports animation of custom parameters 
 
-    - int X 1
-    - 0 or 1
+    - Type - int X 1
+    - Property Set - host descriptor (read only)
+    - Value Values - 0 or 1
 */
 #define kOfxParamHostPropSupportsCustomAnimation "OfxParamHostPropSupportsCustomAnimation"
 
-/** @brief Host Property, indicates if the host supports animation of string params 
+/** @brief Indicates if the host supports animation of string params 
 
-    - int X 1
-    - 0 or 1
+    - Type - int X 1 
+    - Property Set - host descriptor (read only)
+    - Valid Values - 0 or 1
 */
 #define kOfxParamHostPropSupportsStringAnimation "OfxParamHostPropSupportsStringAnimation"
 
-/** @brief Host Property, indicates if the host supports animation of boolean params
+/** @brief Indicates if the host supports animation of boolean params
 
-    - int X 1
-    - 0 or 1
+    - Type - int X 1
+    - Property Set - host descriptor (read only)
+    - Valid Values - 0 or 1
 */
 #define kOfxParamHostPropSupportsBooleanAnimation "OfxParamHostPropSupportsBooleanAnimation"
 
-/** @brief Host Property, indicates if the host supports animation of choice params 
+/** @brief Indicates if the host supports animation of choice params 
 
-    - int X 1
-    - 0 or 1
+    - Type - int X 1
+    - Property Set - host descriptor (read only)
+    - Valid Values - 0 or 1
 */
 #define kOfxParamHostPropSupportsChoiceAnimation "OfxParamHostPropSupportsChoiceAnimation"
 
-/** @brief Host Property, indicates if the host supports custom interacts for parameters
+/** @brief Indicates if the host supports custom interacts for parameters
 
-    - int X 1
-    - 0 or 1
+    - Type - int X 1
+    - Property Set - host descriptor (read only)
+    - Valid Values - 0 or 1
 */
 #define kOfxParamHostPropSupportsCustomInteract "OfxParamHostPropSupportsCustomInteract"
 
-/** @brief Host Property, indicates the maximum numbers of parameters available on the host. -1 implies unlimitted
+/** @brief Indicates the maximum numbers of parameters available on the host.
 
+    - Type - int X 1
+    - Property Set - host descriptor (read only)
 
-    - int X 1
+If set to -1 it implies unlimited number of parameters.
 */
 #define kOfxParamHostPropMaxParameters "OfxParamHostPropMaxParameters"
 
-/** @brief Host Property, if the host has a paged layout, this is the maximum the number of pages on a host
+/** @brief Indicates the maximum number of parameter pages.
 
+    - Type - int X 1
+    - Property Set - host descriptor (read only)
 
-    - int X 1
-
-    If there is not limit to the number of pages on a host, set this to -1.
+    If there is no limit to the number of pages on a host, set this to -1.
     
-    Non paged hosts should set this to 0.
+Hosts that do not support paged parameter layout should set this to zero.
 */
 #define kOfxParamHostPropMaxPages "OfxParamHostPropMaxPages"
 
-/** @brief Host Property, if the host has a paged layout, the number of parameter rows and coloumns
+/** @brief This indicates the number of parameter rows and coloumns on a page.
 
-    - int X 2
-    - dimension 1 is the number of columns per page
-    - dimension 2 is the number of rows per page
+    - Type - int X 2
+    - Property Set - host descriptor (read only)
+
+If the host has supports paged parameter layout, used dimension 0 as the number of columns per page and dimension 2 as the number of rows per page.
 */
 #define kOfxParamHostPropPageRowColumnCount "OfxParamHostPropPageRowColumnCount"
 
-/** @brief Pseudo parameter name used to skip a row in a page layout when passed as a value to the \ref kOfxParamPropPageChild property
+/** @brief Pseudo parameter name used to skip a row in a page layout.
+
+Passed as a value to the \ref kOfxParamPropPageChild property.
 
 See \ref ParametersInterfacesPagedLayouts for more details.
 */
 #define kOfxParamPageSkipRow "OfxParamPageSkipRow"
 
-/** @brief Pseudo parameter name used to skip a row in a page layout when passed as a value to the \ref kOfxParamPropPageChild property
+/** @brief Pseudo parameter name used to skip a row in a page layout.
+
+Passed as a value to the \ref kOfxParamPropPageChild property.
 
 See \ref ParametersInterfacesPagedLayouts for more details.
 */
 #define kOfxParamPageSkipColumn "OfxParamPageSkipColumn"
 
-/** @brief Param property, sets the interact structure to use as a user interface for the parameter
+/** @brief Overrides the parameter's standard user interface with the given interact.
 
-    - pointer X 1
-    - must point to a OfxInteractClientApiV1
-    - defaults to NULL for a plugin
+    - Type - pointer X 1
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Default - NULL
+    - Valid Values -  must point to a OfxInteractClientApiV1
 
-  If set, the parameters normal interface is replaced completely by the interact gui.  
+If set, the parameter's normal interface is replaced completely by the interact gui.
 */
 #define kOfxParamPropInteractV1 "OfxParamPropInteractV1"
 
-/** @brief Param interact property, the size of a custom interact in screen pixels
+/** @brief The size of a parameter instance's custom interface in screen pixels.
   
-    - double x 2
+  - Type - double x 2
+  - Property Set - plugin parameter instance (read only)
 
-  Plugin read only, set by host. If no custom interact is attached, then this is 0,0
+This is set by a host to indicate the current size of a custom interface if the plug-in has one. If not this is set to (0,0).
 */
-#define kOfxParamPropInteractSize "OfxParamPropInteractSizeAspect"
+#define kOfxParamPropInteractSize "OfxParamPropInteractSize"
 
-/** @brief Param interact property, sets the aspect (x size/y size) of the custom interact
+/** @brief The prefered aspect ratio of a parameter's custom interface.
 
-    - double x 1
-    - defaults to 1.0
+    - Type - double x 1
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Default - 1.0
+    - Valid Values - greater than or equal to 0.0
 
-  Plugin set.
-
-  If set to anything other than 0.0, the interact for this parameter will be of a size that is of this aspect ratio.
+If set to anything other than 0.0, the custom interface for this parameter will be of a size with this aspect ratio (x size/y size).
 */
 #define kOfxParamPropInteractSizeAspect "OfxParamPropInteractSizeAspect"
 
-/** @brief Param interact property, sets the minimum size of the interact in screen pixels
+/** @brief The minimum size of a parameter's custom interface, in screen pixels.
 
-    - int x 2
-    - defaults to 10 10
+    - Type - int x 2
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Default - 10,10
+    - Valid Values - greater than (0, 0)
 
-  Plugin set.
-
-  Any interact on a parameter will not be less than this size.
+Any custom interface will not be less than this size.
 */
 #define kOfxParamPropInteractMinimumSize "OfxParamPropInteractMinimumSize"
 
-/** @brief Param interact property, sets the prefered size of the interact in screen pixels
+/** @brief The prefered size of a parameter's custom interface.
 
-    - int x 2
-    - defaults to 10 10
+    - Type - int x 2
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Default - 10,10
+    - Valid Values - greater than (0, 0)
 
-  Plugin set.
-
-  An interact on a parameter will be this size if possible, otherwise it will be of ::kOfxParamPropInteractSizeAspect aspect but larger than ::kOfxParamPropInteractMinimumSize.
+  A host should attempt to set a parameter's custom interface on a parameter to be this size if possible, otherwise it will be of ::kOfxParamPropInteractSizeAspect aspect but larger than ::kOfxParamPropInteractMinimumSize.
 */
 #define kOfxParamPropInteractPreferedSize "OfxParamPropInteractPreferedSize"
 
-/** @brief Parameter property, identifies the type of a parameter
+/** @brief The type of a parameter.
 
-    - char * X 1
+   - Type - C string X 1
+   - Property Set - plugin parameter descriptor (read only) and instance (read only)
+
+This string will be set to the type that the parameter was create with.
 */
 #define kOfxParamPropType "OfxParamPropType"
 
-/** @brief Parameter property, flags whether the parameter animates,
+/** @brief Flags whether a parameter can animate.
 
-    - int X 1
-    - 0 or 1
-    - defaults to true
+    - Type - int x 1
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Default - 1
+    - Valid Values - 0 or 1
+
+A plug-in uses this property to indicate if a parameter is able to animate.
 */
 #define kOfxParamPropAnimates "OfxParamPropAnimates"
 
-/** @brief Parameter property, sets whether parameter changes should be put on the undo/redo stack
+/** @brief Flags whether changes to a parameter should be put on the undo/redo stack
 
-    - int X 1
-    - 0 or 1
-    - defaults to true
-    Plugin set.
+    - Type - int x 1
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Default - 1
+    - Valid Values - 0 or 1
 */
 #define kOfxParamPropCanUndo "OfxParamPropCanUndo"
 
-/** @brief Parameter property, returns whether the parameter contains animation
+/** @brief Flags whether a parameter is currently animating.
 
-    - int X 1
-    - 0 or 1
-    Plugin read only.
+    - Type - int x 1
+    - Property Set - plugin parameter instance (read only)
+    - Valid Values - 0 or 1
+
+Set by a host on a parameter instance to indicate if the parameter is currently animating or not.
 */
 #define kOfxParamPropIsAnimating "OfxParamPropIsAnimating"
 
-/** @brief Parameter property, flags whether the plugin will attempt to set the value of a parameter in some callback or analysis pass
+/** @brief Flags whether the plugin will attempt to set the value of a parameter in some callback or analysis pass
 
-    - int X 1
-    - 0 or 1
-    - default 0
+    - Type - int x 1
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Default - 0
+    - Valid Values - 0 or 1
+
+This is used to tell the host whether the plug-in is going to attempt to set the value of the parameter.
 */
 #define kOfxParamPropPluginMayWrite "OfxParamPropPluginMayWrite"
 
-/** @brief Parameter property, flags whether the parameter persists between instances,
+/** @brief Flags whether the value of a parameter should persist.
 
-    - int X 1
-    - 0 or 1
-    - defaults to true
+    - Type - int x 1
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Default - 1
+    - Valid Values - 0 or 1
+
+This is used to tell the host whether the value of the parameter is important and should be save in any description of the plug-in.
 */
 #define kOfxParamPropPersistant "OfxParamPropPersistant"
 
-/** @brief Parameter property, flags whether changing the parameter's value forces an evalution (ie: render),
+/** @brief Flags whether changing a parameter's value forces an evalution (ie: render),
 
-    - int X 1
-    - 0 or 1
-    - defaults to true
-This is used to indicate if the value of a parameter has any affect on an effect's output, eg: the parameter
-may be purely for GUI purposes, and so changing it's value should not trigger a re-render.
+    - Type - int x 1
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Default - 1
+    - Valid Values - 0 or 1
+
+This is used to indicate if the value of a parameter has any affect on an effect's output, eg: the parameter may be purely for GUI purposes, and so changing it's value should not trigger a re-render.
 */
 #define kOfxParamPropEvaluateOnChange "OfxParamPropEvaluateOnChange"
 
-/** @brief Parameter property, flags whether the parameter is exposed to the user,
+/** @brief Flags whether a parameter should be exposed to a user,
 
-    - int X 1
-    - 0 or 1
-    - defaults to false
+    - Type - int x 1
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Default - 1
+    - Valid Values - 0 or 1
 */
 #define kOfxParamPropSecret "OfxParamPropSecret"
 
-/** @brief Parameter property, string used if the host supports scripting,
+/** @brief The value to be used as the id of the parameter in a host scripting language.
 
-    - char * X 1
-    - ASCII string
-    - defaults to the name the param was created with
+    - Type - ASCII C string X 1,
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only),
+    - Default - the unique name the parameter was created with.
+    - Valid Values - ASCII string unique to all parameters in the plug-in.
+
+Many hosts have a scripting language that they use to set values of parameters and more. If so, this is the name of a parameter in such scripts.
 */
 #define kOfxParamPropScriptName "OfxParamPropScriptName"
 
-/** @brief Parameter property, how modifying the value of a param will affect any output of an effect over time
+/** @brief Specifies how modifying the value of a param will affect any output of an effect over time.
 
-    - char * X 1
-    - ASCII
-    - must be one of
+   - Type - C string X 1
+   - Property Set - plugin parameter descriptor (read/write) and instance (read only),
+   - Default - ::kOfxParamInvalidateValueChange
+   - Valid Values - This must be one of
        - ::kOfxParamInvalidateValueChange
        - ::kOfxParamInvalidateValueChangeToEnd
        - ::kOfxParamInvalidateAll
-    - defaults to ::kOfxParamInvalidateValueChange
 
 Imagine an effect with an animating parameter in a host that caches
-renderred output. Think of the effect of adding a new key frame.
-
-If the parameter represents something like an absolute position, the cache
-will only need to be invalidated for the range of frames that keyframe
-affects.
-
-If the parameter represents something like a speed which is integrated,
-the cache will be invalidated from the keyframe until the end of the clip.
-
-There are potentially other situations where the entire cache will need to
-be invalidated (though I can't think of one off the top of my head)
-
+rendered output. Think of the what happens when you add a new key frame.
+ -If the parameter represents something like an absolute position, the cache will only need to be invalidated for the range of frames that keyframe affects.
+- If the parameter represents something like a speed which is integrated, the cache will be invalidated from the keyframe until the end of the clip.
+- There are potentially other situations where the entire cache will need to be invalidated (though I can't think of one off the top of my head).
 */
 #define kOfxParamPropCacheInvalidation "OfxParamPropCacheInvalidation"
 
@@ -339,26 +364,30 @@ be invalidated (though I can't think of one off the top of my head)
  /** @brief Used as a value for the ::kOfxParamPropCacheInvalidation property */
 #define kOfxParamInvalidateAll "OfxParamInvalidateAll"
 
-/** @brief Parameter property, a hint to the user as to how the parameter is to be used
+/** @brief A hint to the user as to how the parameter is to be used.
 
-    - char * X 1
-    - UTF8 string
-    - defaults to ""
+   - Type - UTF8 C string X 1
+   - Property Set - plugin parameter descriptor (read/write) and instance (read only),
+   - Default - ""
 */
 #define kOfxParamPropHint "OfxParamPropHint"
 
-/** @brief Parameter property, the default value of the parameter,
+/** @brief The default value of a parameter.
 
-    - type is parameter type dependant, see @ref ParameterPropertiesVariantTypes
-    - defaults to 0 cast to the relevant type (or "" for strings and custom parameters)
+   - Type - The type is dependant on the parameter type as is the dimension.
+   - Property Set - plugin parameter descriptor (read/write) and instance (read only),
+   - Default - 0 cast to the relevant type (or "" for strings and custom parameters)
+
+The exact type is dependant on the type of the parameter. 
  */
 #define kOfxParamPropDefault "OfxParamPropDefault"
 
-/** @brief Describes how the double parameter should be interpretted by a host. Applies to 1, 2 and 3 dimensional double parameters. See \ref ParameterPropertiesDoubleTypes.
+/** @brief Describes how the double parameter should be interpreted by a host. 
 
-    - string X 1
-    - defaults to ::kOfxParamDoubleTypePlain
-    - must be one of...
+   - Type - C string X 1
+   - Default - ::kOfxParamDoubleTypePlain
+   - Property Set - 1D, 2D and 3D float plugin parameter descriptor (read/write) and instance (read only),
+   - Valid Values -This must be one of
       - ::kOfxParamDoubleTypePlain - parameter has no special interpretation,
       - ::kOfxParamDoubleTypeAngle - parameter is to be interpretted as an angle,
       - ::kOfxParamDoubleTypeScale - parameter is to be interpretted as a scale factor,
@@ -370,6 +399,9 @@ be invalidated (though I can't think of one off the top of my head)
       - ::kOfxParamDoubleTypeNormalisedYAbsolute - normalised absolute position on the Y axis (1D only)
       - ::kOfxParamDoubleTypeNormalisedXY - normalised to the project's X and Y size (2D only),
       - ::kOfxParamDoubleTypeNormalisedXYAbsolute - normalised to the projects X and Y size, and is an absolute position on the image plane.
+
+Double parameters can be interpreted in several different ways, this property tells the host how to do so and thus gives hints
+as to the interface of the parameter.
 */
 #define kOfxParamPropDoubleType "OfxParamPropDoubleType"
 
@@ -406,156 +438,202 @@ be invalidated (though I can't think of one off the top of my head)
 /** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to the X and Y dimension for a 2D param that can be interpretted as an absolute spatial position. See \ref ParameterPropertiesDoubleTypes. */
 #define kOfxParamDoubleTypeNormalisedXYAbsolute  "OfxParamDoubleTypeNormalisedXYAbsolute"
 
-/** @brief Parameter property for doubles with kOfxParamPropDoubleType set to ::kOfxParamDoubleTypeAbsoluteTime. Enables the display of a time marker on the host's time line to indicate the value of the absolute time param.
+/** @brief Enables the display of a time marker on the host's time line to indicate the value of the absolute time param.
 
-    - int X 1
-    - 0 or 1
-    - defaults to false 
+    - Type - int x 1
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Default - 0
+    - Valid Values - 0 or 1
 
-This is optionally supported on hosts.
+If a double parameter is has ::kOfxParamPropDoubleType set to ::kOfxParamDoubleTypeAbsoluteTime, then this indicates whether any marker should be made visible on the host's time line.
+
 */
 #define kOfxParamPropShowTimeMarker "OfxParamPropShowTimeMarker"
 
+/** @brief Sets the parameter pages and order of pages.
 
-/** @brief Instance property, sets the pages and order of pages in this context
+    - Type - C string X N
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Default - ""
+    - Valid Values - the names of any page param in the plugin
 
-    - char * X N
-    - ASCII name of a pre-existing page parameter
-    - defaults to none
+This property sets the prefered order of parameter pages on a host. If this is never set, the prefered order is the order the parameters were declared in.
 */
 #define kOfxPluginPropParamPageOrder "OfxPluginPropParamPageOrder"
 
-/** @brief Parameter property, page params only. The names of the parameters included on this page
+/** @brief The names of the parameters included in a page parameter.
 
-    - char * X N
-    - ASCII name of a pre-existing parameter (not a group or page param)
-    - defaults to none
+    - Type - C string X N
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Default - ""
+    - Valid Values - the names of any parameter that is not a group or page, as well as ::kOfxParamPageSkipRow and ::kOfxParamPageSkipColumn
+
+This is a property on parameters of type ::kOfxParamTypePage, and tells the page what parameters it contains. The parameters are added to the page from the top left, filling in columns as we go. The two pseudo param names ::kOfxParamPageSkipRow and ::kOfxParamPageSkipColumn are used to control layout.
+
+Note parameters can appear in more than one page.
 */
 #define kOfxParamPropPageChild "OfxParamPropPageChild"
 
-/** @brief Parameter property, the name of the hierarchical group param to be considered a parent of this parameter
+/** @brief The name of a parameter's parent group.
 
-    - char * X 1
-    - ASCII name of an already defined group parameter
-    - defaults to "", which is the 'root' of the hierarchy
+    - Type - C string X 1
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only),
+    - Default - "", which implies the "root" of the hierarchy,
+    - Valid Values - the name of a parameter with type of ::kOfxParamTypeGroup
+
+Hosts that have hierarchical layouts of their params use this to recursively group parameter.
+
+By default parameters are added in order of declaration to the 'root' hierarchy. This property is used to reparent params to a predefined param of type ::kOfxParamTypeGroup.
 */
 #define kOfxParamPropParent "OfxParamPropParent"
 
-/** @brief Parameter property, flags whether the parameter should be enabled in any gui it is displayed on.
+/** @brief Used to enable a parameter in the user interface.
 
-    - int X 1
-    - 0 or 1
-    - defaults to true 
+    - Type - int X 1
+    - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
+    - Default - 1
+    - Valid Values - 0 or 1
 
-An disabled parameter will only be disabled in a user interace, the plugin can set values in it.
-
+When set to 0 a user should not be able to modify the value of the parameter. Note that the plug-in itself can still change the value of a disabled parameter.
 */
 #define kOfxParamPropEnabled "OfxParamPropEnabled"
 
-/** @brief Parameter instance property, a private data pointer that the plug-in can store away for the duration of this instance,
+/** @brief A private data pointer that the plug-in can store it's own data behind.
 
-    - void * X 1
-    - defaults to NULL
+    - Type - pointer X 1
+    - Property Set - plugin parameter instance (read/write),
+    - Default - NULL
+
+This data pointer is unique to each parameter instance, so two instances of the same parameter do not share the same data pointer. Use it to hang any needed private data structures.
  */
 #define kOfxParamPropDataPtr "OfxParamPropDataPtr"
 
-/** @brief Parameter property, sets a choice label in an option parameter
+/** @brief Set an option in a choice parameter.
 
-    - UTF8 string X N
-    - defaults to ""
-  see @ref ParametersChoice for more details
+    - Type - UTF8 C string X N
+    - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
+    - Default - the property is empty with no options set.
+
+This property contains the set of options that will be presented to a user from a choice parameter. See @ref ParametersChoice for more details. 
 */
 #define kOfxParamPropChoiceOption "OfxParamPropChoiceOption"
 
+/** @brief The minimum value for a numeric parameter.
 
-/** @brief Numeric parameter property, minimum value the parameter can have
+    - Type - int or double X N
+    - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
+    - Default - the smallest possible value corresponding to the parameter type (eg: INT_MIN for an integer, -DBL_MAX for a double parameter)
 
-    - type is parameter type dependant, see @ref ParameterPropertiesVariantTypes
-    - default to the smallest possible value
-    of that type (eg: INT_MIN for an integer, -DBL_MAX for a double parameter)
-
-    Setting this will also reset kOfxParamPropDisplayMin
+Setting this will also reset ::kOfxParamPropDisplayMin.
 */
 #define kOfxParamPropMin "OfxParamPropMin"
 
-/** @brief Numeric parameter property, minimum value the parameter can have
+/** @brief The maximum value for a numeric parameter.
 
-    - type is parameter type dependant, see @ref ParameterPropertiesVariantTypes
-    - default to the largest possible value of that type (eg: INT_MAX for an integer, DBL_MAX for a double parameter
-    Setting this will also set kOfxParamPropDisplayMax
+    - Type - int or double X N
+    - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
+    - Default - the largest possible value corresponding to the parameter type (eg: INT_MAX for an integer, DBL_MAX for a double parameter)
+
+Setting this will also reset :;kOfxParamPropDisplayMax.
 */
 #define kOfxParamPropMax "OfxParamPropMax"
 
-/** @brief Numeric parameter property, the minimum value allowable in a GUI, which can be distinct to, but greater than kOfxParamPropMin
+/** @brief The minimum value for a numeric parameter on any user interface.
 
-    - type is parameter type dependant, see @ref ParameterPropertiesVariantTypes
-    - default to the smallest possible value
-    of that type (eg: INT_MIN for an integer, -DBL_MAX for a double parameter)
+    - Type - int or double X N
+    - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
+    - Default - the smallest possible value corresponding to the parameter type (eg: INT_MIN for an integer, -DBL_MAX for a double parameter)
+
+If a user interface represents a parameter with a slider or similar, this should be the minumum bound on that slider.
 */
 #define kOfxParamPropDisplayMin "OfxParamPropDisplayMin"
 
-/** @brief Numeric parameter property, the maximum value allowable in a GUI, which can be distinct to, but greater than kOfxParamPropMin
+/** @brief The maximum value for a numeric parameter on any user interface.
 
-    - type is parameter type dependant, see @ref ParameterPropertiesVariantTypes
-    - defaults to 0 cast to the relevant type (or "" for strings and custom parameters)
+    - Type - int or double X N
+    - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
+    - Default - the largest possible value corresponding to the parameter type (eg: INT_MIN for an integer, -DBL_MAX for a double parameter)
+
+If a user interface represents a parameter with a slider or similar, this should be the maximum bound on that slider.
 */
 #define kOfxParamPropDisplayMax "OfxParamPropDisplayMax"
 
-/** @brief Numeric parameter property, the granularity of any slider used to represent this parameter
+/** @brief The granularity of a slider used to represent a numeric parameter.
 
-    - double X 1
-    - defaults to 1
+    - Type - double X 1
+    - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
+    - Default - 1
+    - Valid Values - any greater than 0.
 
-This value is always in cannonical coordinates, even for double parameters that are normalised.
-
+This value is always in cannonical coordinates for double parameters that are normalised.
 */
 #define kOfxParamPropIncrement "OfxParamPropIncrement"
 
-/** @brief Numeric parameter property, how many decimal points to display of a double parameter in a GUI
+/** @brief How many digits after a decimal point to display for a double param in a GUI.
 
-    - int X 1
-    - defaults to 2 */
+    - Type - int X 1
+    - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
+    - Default - 2
+    - Valid Values - any greater than 0.
+
+This applies to double params of any dimension.
+*/
 #define kOfxParamPropDigits "OfxParamPropDigits"
 
-/** @brief Multidimensional parameter property, which sets the label on individual dimensions 
+/** @brief Label for individual dimensions on a multidimensional numeric parameter.
 
-    - char * X 2 or 3 (depending on parameter type)
-    - UTF8
-    - defaults to 'x', 'y' and 'z'
+    - Type - UTF8 C string X 1
+    - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
+    - Default - "x", "y" and "z"
+    - Valid Values - any
 
-Use this to override the default labels on the individual dimensions of a multi dimensional parameter.
+Use this on 2D and 3D double and integer parameters to change the label on an individual dimension in any GUI for that parameter.
 */
 #define kOfxParamPropDimensionLabel "OfxParamPropDimensionLabel"
 
-/** @brief Parameter property, is the parameter automatically adding key frames or not at the moment
+/** @brief Will a value change on the parameter add automatic keyframes.
 
-    - int X 1
-    - 0 or 1
-    - read only
+    - Type - int X 1
+    - Property Set - plugin parameter instance (read only),
+    - Valid Values - 0 or 1
 */
 #define kOfxParamPropIsAutoKeying "OfxParamPropIsAutoKeying"
 
-/** @brief Custom Parameter Property, a pointer to a custom parameter's interpolation function 
+/** @brief A pointer to a custom parameter's interpolation function.
 
-    - pointer X 1
-    - must point to a OfxCustomParamInterpFuncV1
-    - defaults to NULL
-    It is an error not to set this property in a custom parameter during a plugin's define call if
-    the custom parameter declares itself to be an animating parameter
+    - Type - pointer X 1
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only),
+    - Default - NULL
+    - Valid Values - must point to a ::OfxCustomParamInterpFuncV1
+
+It is an error not to set this property in a custom parameter during a plugin's define call if the custom parameter declares itself to be an animating parameter.
  */
 #define kOfxParamPropCustomInterpCallbackV1 "OfxParamPropCustomCallbackV1"
 
-/** @brief String Parameter Property, what style of string param is it, it's value must be one of the kOfxParamStringIs* defines
+/** @brief Used to indicate the type of a string parameter.
 
-    - char * X 1
-    - defaults to kOfxParamStringIsSingleLine */
+    - Type - C string X 1
+    - Property Set - plugin string parameter descriptor (read/write) and instance (read only),
+    - Default - ::kOfxParamStringIsSingleLine
+    - Valid Values - This must be one of the following
+        - ::kOfxParamStringIsSingleLine
+        - ::kOfxParamStringIsMultiLine
+        - ::kOfxParamStringIsFilePath
+        - ::kOfxParamStringIsDirectoryPath
+        - ::kOfxParamStringIsLabel
+
+*/
 #define kOfxParamPropStringMode "OfxParamPropStringMode"
 
-/** @brief String Parameter Property, whether a string with kOfxParamPropStringMode set to kOfxParamStringFilePath/Dir, requires that the file exists,
+/** @brief Indicates string parameters of file or directory type need that file to exist already.
 
-    - int X 1
-    - 0 or 1
-    - defaults to true */
+    - Type - int X 1
+    - Property Set - plugin string parameter descriptor (read/write) and instance (read only),
+    - Default - 1
+    - Valid Values - 0 or 1
+
+If set to 0, it implies the user can specify a new file name, not just a pre-existing one.
+ */
 #define kOfxParamPropStringFilePathExists    "OfxParamPropStringFilePathExists"
 
 /** @brief Used to set a string parameter to be single line, 
@@ -579,28 +657,30 @@ Use this to override the default labels on the individual dimensions of a multi 
 #define kOfxParamStringIsLabel         "OfxParamStringIsLabel"
 
 
-/** @brief Property used by ::OfxCustomParamInterpFuncV1 to get/set values of an interpolating custom parameter
+/** @brief Used by interpolating custom parameters to get and set interpolated values.
+    - Type - C string X 1 or 2
 
- - C string
- - as an \e inArgs property it will be two 2 and contain the encoded value of the two keyframes to interpolate,
- - as an \e outArgs property, it will have a single value, which the plugin should set with the encoded interpolated value
+This property is on the \e inArgs property and \e outArgs property of a ::OfxCustomParamInterpFuncV1 and in both cases contains the encoded value of a custom parameter. As an \e inArgs property it will have two values, being the two keyframes to interpolate. As an \e outArgs property it will have a single value and the plugin should fill this with the encoded interpolated value of the parameter.
  */
 #define kOfxParamPropCustomValue "OfxParamPropCustomValue"
 
-/** @brief Property used by ::OfxCustomParamInterpFuncV1 to indicate the times two keys occur at
+/** @brief Used by interpolating custom parameters to indicate the time a key occurs at.
 
- - double X 2
- - on the \e inArgs parameter 
- - indicates the absolute times that the two keyframes occur at
+   - Type - double X 2
+   - Property Set - the inArgs parameter of a ::OfxCustomParamInterpFuncV1 (read only)
+
+The two values indicate the absolute times the surrounding keyframes occur at. The keyframes are encoded in a ::kOfxParamPropCustomValue property.
+
  */
 #define kOfxParamPropInterpolationTime "OfxParamPropInterpolationTime"
 
 /** @brief Property used by ::OfxCustomParamInterpFuncV1 to indicate the amount of interpolation to perform
 
- - on the \e inArgs parameter 
- - double X 1
- - from 0 to 1
- - this property indicates how far between the two ::kOfxParamPropCustomValue keyframes to interpolate.
+   - Type - double X 1
+   - Property Set - the inArgs parameter of a ::OfxCustomParamInterpFuncV1 (read only)
+   - Valid Values - from 0 to 1
+
+This property indicates how far between the two ::kOfxParamPropCustomValue keys to interpolate.
  */
 #define kOfxParamPropInterpolationAmount "OfxParamPropInterpolationAmount"
 
