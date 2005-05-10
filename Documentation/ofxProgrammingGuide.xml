@@ -823,7 +823,7 @@ The <filename>Info.plist</filename> is specific to Apple and you should consult 
 </para>
 </section>
 
-<section><title>Installation Location</title>
+<section id="ArchitectureInstallingLocation"><title>Installation Location</title>
 <para>
 Plugins are searched for in a variety of locations, both default and user specified. All such directories are examined for plugin bundles and sub directories are also recursively examined. 
 </para>
@@ -1053,7 +1053,7 @@ This function returns a pointer to the <varname>nth</varname> <structname>OfxPlu
 <chapter><title>Property Suite Reference</title>
 </chapter>
 
-<chapter><title>Properties By Object</title>
+<chapter id="PropertiesByObject"><title>Properties By Object</title>
 <para> This paragraph lists all the properties on each OFX object.</para>
 &propertiesByObject;
 </chapter>

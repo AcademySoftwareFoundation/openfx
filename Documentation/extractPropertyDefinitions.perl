@@ -1,5 +1,6 @@
 #! /usr/bin/perl
 
+processFile("../include/ofxCore.h");
 processFile("../include/ofxParam.h");
 exit;
 
