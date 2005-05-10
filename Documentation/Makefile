@@ -17,9 +17,9 @@ index.html : ofxProgrammingGuide.xml ofxPropertiesReference.xml
 	xsltproc -o ofxProgrammingGuide.html $(XSLARGS)  \
 	$(STYLESHEETDIR)/xhtml/chunk.xsl  ofxProgrammingGuide.xml
 
-ofxPropertiesReference.xml : extractPropertyDefs ../include/ofxParam.h
+ofxPropertiesReference.xml : extractPropertyDefinitions.perl ../include/ofxParam.h
 	mkdir -p props
-	./extractPropertyDefs
+	./extractPropertyDefinitions.perl
 	cat props/* > ofxPropertiesReference.xml
 	rm -rf props
 
