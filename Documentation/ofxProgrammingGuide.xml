@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"  
-         "file://localhost/usr/share/sgml/docbook/docbook-xml-4.3/docbookx.dtd">
+         "file://localhost/usr/share/sgml/docbook/docbook-xml-4.3/docbookx.dtd"
+
+[<!ENTITY propertiesReference SYSTEM "ofxPropertiesReference.xml">]
+>
 
 <book>
 
@@ -941,9 +944,6 @@ An OFX image effect plug-in is one that uses the OFX Image Effect API to impleme
 <chapter><title>Parameters</title>
 </chapter>
 
-<chapter><title>Parameters</title>
-</chapter>
-
 
 <chapter><title>Core API Reference</title>
 
@@ -1057,6 +1057,7 @@ This function returns a pointer to the <varname>nth</varname> <structname>OfxPlu
 </chapter>
 
 <chapter><title>Property Reference</title>
+&propertiesReference;
 </chapter>
 
 <chapter><title>Status Code Reference</title>
