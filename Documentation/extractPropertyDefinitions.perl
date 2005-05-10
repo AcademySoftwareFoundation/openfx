@@ -1,28 +1,20 @@
 #! /usr/bin/perl
 
-
 processFile("../include/ofxParam.h");
-
 exit;
 
 processFile("fred.c");
-
 exit;
 
 $filesRaw = `ls ../include/ofx*.h`;
 
-
 @files = split(/\n/,$filesRaw);
-
 
 for(@files) {
     processFile($_);
 }
 
-
 exit;
-
-
 
 # for each file
 sub processFile()
@@ -96,7 +88,6 @@ sub processFile()
     # close the source file
     close SRC;
 }
-
 
 sub writePropFile()
 {
@@ -186,7 +177,7 @@ $typeDescription
 	    $defaultDescription = formatIt($1);
 	    $defaultDescription  =
 "<refsect2><title>Default</title> <para>
-The default value is $1.
+The default value is $defaultDescription.
 </para> </refsect2>
 ";
 	}
@@ -245,15 +236,20 @@ $generalDescription
 # look for doxgen reference tags, either \ref or "::"
 sub formatIt
 {
-    local @meChars = split //, $_[0];
+    local $inString = $_[0];
+
+    #print "raw string is '$inString'\n";
+    local @meChars = split //, $inString;
 
     local $outString = "";
 
     while(@meChars) {
 	local $ch = shift(@meChars);
+	#print "ch = '$ch'\n";
 
 	if($ch eq ":") {
 	    local $ch1 = shift @meChars;
+	    #print "ch1 = '$ch1'\n";
 	    if($ch1 eq ":") {
 		#snaffle up to next white space as this will be a link id and the link text
 		local $id = "";
@@ -268,12 +264,14 @@ sub formatIt
 			$going = 0;
 		    }
 		}
+		#print "found id of '$id'\n";
 
 		$outString .= "<link linkend=\"$id\">$id</link>";
 		
 	    }
 	    else {
 		unshift @chars, $ch1;
+		$outString .= $ch;
 	    }
 	}
 	else {
