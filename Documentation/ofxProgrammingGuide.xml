@@ -122,7 +122,7 @@ The first thing to note in this section are the two functions <function>OfxGetPl
 </para>
 
 <para>
-<function>OfxGetPlugin</function> is called once for each plug-in inside the binary, and returns an <structname>OfxPlugin</structname> struct. This struct is used to tell the host what kind of plug-in it is, it's name, versioning info and to give the host two functions to use for communications. Our function returns a pointer to the static <varname>pluginStruct</varname> as the host has now clean way of deleting it once done. All such structs should be static.
+<function>OfxGetPlugin</function> is called once for each plug-in inside the binary, and returns an <structname>OfxPlugin</structname> struct. This struct is used to tell the host what kind of plug-in it is, it's name, versioning info and to give the host two functions to use for communications. Our function returns a pointer to the static <varname>pluginStruct</varname>. All such structs should be static to avoid memory allocation issues, otherwise they will not be deleted by the host.
 </para>
 
 <para>
@@ -153,7 +153,7 @@ setHostFunc(OfxHost *hostStruct)
 </programlisting>
 </informalexample>
 <para>
-This section contains the host stucture that holds information about the host application and allows us to fetch <structname>suites</structname> from the host. The <function>setHostFunc</function> is called by the host application to set this pointer and is passed to the host inside the <structname>OfxPlugin</structname> struct.
+This section has the stucture that holds information about the host application and allows us to fetch <structname>suites</structname> from the host. The <function>setHostFunc</function> is called by the host application to set this pointer and is passed to the host inside the <structname>OfxPlugin</structname> struct.
 </para>
 </section>
 <section><title>The Main Entry Function</title>
@@ -408,12 +408,15 @@ static OfxStatus render(OfxImageEffectHandle  instance,
     gEffectSuite->clipReleaseImage(sourceImg);
     gEffectSuite->clipReleaseImage(outputImg);
   
-    // all was well
+    // if we aborted, then we have failed to produce and image, so say so
+    if(gEffectSuite->abort(instance)) return kOfxStatFailed;
+
+    // otherwise all was well
     return kOfxStatOK;
 }
 </programlisting></informalexample>
 <para>
-The render action is where a plug-in turns its input images into output images. The first thing to note is that the effect is no longer an instance, but a descriptor. For our 
+The render action is where a plug-in turns its input images into output images. The first thing to note is that the effect is no longer a descriptor by an. For our 
 simple example, this makes not much difference, however if the plug-in is maintaining private data, it is very important. 
 </para>
 <para>
@@ -421,7 +424,7 @@ The first thing the render function does is to extract two properties from the <
 <para>
 Next the function fetchs the output clip. A clip is a handle that is accessible by name and represents a sequences of images. The returned handle is valid for the lifetime of the instance, and so does not need releasing or deleting. Next an image is extracted from the clip. An image, unlike a clip, does need to be released when the plug-in is done with it. </para>
 
-<para>Images are encapsulated as a property set, and so the ordinary property mechanism is used to fetch out information from the image. In this case three properties are needed, the <varname>rowBytes</varname>, or the number of bytes in a scan line (as there may be padding at the end), the image bounds, being the region where there is image data and a pointer to the image data. The source image is fecthed in a similar way as the destination image.
+<para>Images are encapsulated as a property set, and so the ordinary property mechanism is used to fetch out information from the image. In this case three properties are needed, the <varname>rowBytes</varname>, or the number of bytes in a scan line (as there may be padding at the end), the image bounds, being the region where there is image data and a pointer to the image data. The source image is fetched in a similar way as the destination image.
 </para>
 <para>
 Next the <structname>void *</structname> data pointers are cast to <structname>OfxRGBAColourB</structname> pointers, and we start iterating over the render window filling in output pixels. The render window must always be equal to or less than the bounds on the destintation image. The inline function <function>pixelAddress</function> shows how pixel arithmetic is performed. Note the <function>abort</function> function from the image effect suite being called at every scan line to see if the rendering should be halted.
@@ -435,7 +438,7 @@ Finally, once we are done, the images are released and we return.</para>
 Our small working example shows the core mechanisms behind the OFX Image Effect API, but leaves out much of the messy detail. The important things to note are the use of suites to call functions on the host, the use of properties to get and set values in objects and the use of actions to call things on the plugin.
 </para>
 <para>
-There are many more suites which have not been used, as well as actions that have not been trapped, as well as gory bits to do with pixel aspect ratios, interlacing and more. These extra suites and actions add a rich functionality to OFX that give it a great flexibility as well as dealing with the evil little details of video standard.
+There are many more suites which have not been used, as well as actions that have not been trapped, as well as gory bits to do with pixel aspect ratios, interlacing and more. These extra suites and actions add a rich functionality to OFX that give it a great flexibility as well as dealing with the evil little details such as video standards.
 </para>
 </section>
 </chapter>
@@ -448,7 +451,7 @@ There are many more suites which have not been used, as well as actions that hav
 As explained in the introduction, OFX is actually several things, 
 <itemizedlist>
 <listitem>an underlying generic plug-in architecture,</listitem>
-<listitem>specific plug-in Application Programming Interfaces defined using that generic architecture.</listitem>
+<listitem>specific plug-in APIs defined using that architecture.</listitem>
 </itemizedlist>
 This chaper concentrates on defining the underlying architecture, including how plug-ins should be identified, defined, versioned, installed and the initial bootstrapping of comminication occurs.
 </para>
@@ -473,7 +476,7 @@ Certain concepts are at the core of the OFX plug-in architecture, these are <emp
 <varlistentry><term>Actions</term>
 <listitem>
 <para>
-An action is how a host communicates with a plug-in, eg: "render frame 10". Actions are labelled by strings are passed to a plug-in's 'mainEntry' function.
+An action is how a host communicates with a plug-in, eg: "render frame 10". Actions are labelled by strings passed to a plug-in's 'mainEntry' function.
 </para> </listitem> </varlistentry>
 
 <varlistentry><term>Suites</term>
@@ -586,7 +589,7 @@ The plug-in function that takes messages from the host telling it to do things.
 <section><title>Interpretting the OfxPlugin Struct </title>
 
 <para>
-When a host gets a pointer back from OfxGetPlugin, it examines the string <structfield>pluginApi</structfield>. This identifies what kind of plugin it is. Currently there is only one publicly specified API that uses the OFX mechanism, this is <literal>"OfxImageEffectPluginAPI"</literal>, which is the image effect API being discussed by this book. More APIs may be created at a future date, for example "OfxImageImportPlugin".
+When a host gets a pointer back from OfxGetPlugin, it examines the string <structfield>pluginApi</structfield>. This identifies what kind of plugin it is. Currently there is only one publicly specified API that uses the OFX mechanism, this is <literal>"OfxImageEffectPluginAPI"</literal>, which is the image effect API being discussed by this book. More APIs may be created at a future date, for example "OfxImageImportPluginAPI".
 Knowing the type of plug-in, the host then knows what suites and host handles are required for that plugin and what functions the plugin itself will have. The host passes a <structname>OfxHost</structname> structure appropriate to that plugin via it's <function>setHost</function> function. This allows for the same basic architecture to support different plugin types trivially. 
 </para>
 
@@ -596,7 +599,7 @@ This also allows plugins to implement several versions of themselves in the same
 </para>
 
 <para>
-If a host does not support the given plugin type, or it does not support the given it should simply ignore that plugin.
+If a host does not support the given plugin type, or it does not support the given version it should simply ignore that plugin.
 </para>
 
 <para>
@@ -607,7 +610,7 @@ A plug-in needs to uniquely identify itself to a host. This is the job of <struc
 A plugin (as opposed to the API it impliments) is versioned with two separate integers in the <structname>OfxPlugin</structname> struct. They serve two separate functions and are,
 <itemizedlist>
  <listitem><structfield>pluginVersionMajor</structfield> flags the functionality contained within a plugin, incrementing this number means that you have broken backwards compatibility of the plugin. More specifically, this means a setup from an earlier version, when loaded into this version, will not yield the same result.</listitem>
- <listitem><structfield>pluginVersionMinor</structfield>flags the release of a plugin that does not break backwards compatibility, but otherwise enhances that plugin. For example, increment this when you have fixed a bug or made it faster.</listitem>
+ <listitem><structfield>pluginVersionMinor</structfield> flags the release of a plugin that does not break backwards compatibility, but otherwise enhances that plugin. For example, increment this when you have fixed a bug or made it faster.</listitem>
 </itemizedlist>
 </para>
 

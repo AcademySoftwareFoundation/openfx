@@ -2,10 +2,12 @@
 
 processFile("../include/ofxCore.h");
 processFile("../include/ofxParam.h");
+processFile("../include/ofxImageEffect.h");
 exit;
 
 processFile("fred.c");
 exit;
+
 
 $filesRaw = `ls ../include/ofx*.h`;
 
@@ -69,7 +71,7 @@ sub processFile()
 	    if(!$inComment) {
 		#at end of line
 		if($ch eq "\n") {
-		    # look for our definitions
+		    # look for our property definitions
 		    if($outLine ne "kOfxPropertySuite" and $outLine =~ /^#define kOfx[\w_]*Prop/) {
 			#print "comment is '$lastComment'\n";
 			writePropFile($outLine, $lastComment, $sourceFile);
@@ -234,6 +236,10 @@ $generalDescription
     close PROPFILE;
 }
 
+sub fetchID
+{
+}
+
 # look for doxgen reference tags, either \ref or "::"
 sub formatIt
 {
@@ -245,8 +251,41 @@ sub formatIt
     local $outString = "";
 
     while(@meChars) {
+	local $snatched = 0; # has this character been snatched?
 	local $ch = shift(@meChars);
 	#print "ch = '$ch'\n";
+
+	# look for doxygen "\ref" so we can put a link in instead
+	if($ch eq "\\") {
+	    local $ref = join "", @meChars;
+	    if($ref =~ /ref\s*/) {
+		#remove the \ref and resplit the thing
+		$ref =~ s/ref\s*//g;
+		@meChars = split //, $ref;
+		$snatched = 1;
+
+		# put this in a sub, but how to pass a list?
+		#snaffle up to next white space as this will be a link id and the link text
+		local $id = "";
+		local $going = 1;
+		local $ch1 = 1;
+		while($going and @meChars) {
+		    $ch1 = shift @meChars;
+		    if($ch1 =~ /\w/) {
+			$id .= $ch1;
+		    }
+		    else {
+			unshift @meChars, $ch1;
+			$going = 0;
+		    }
+		}
+
+		local $niceID = $id;
+		$niceID =~ s/([A-Z])/ $1/g;
+
+		$outString .= "<link linkend=\"$id\">$niceID</link>";		
+	    }
+	}
 
 	if($ch eq ":") {
 	    local $ch1 = shift @meChars;
@@ -272,12 +311,10 @@ sub formatIt
 	    }
 	    else {
 		unshift @chars, $ch1;
-		$outString .= $ch;
+		$snatched = 1;
 	    }
 	}
-	else {
-	    $outString .= $ch;
-	}
+	$outString .= $ch unless $snatched;
     }
 
     return $outString;
