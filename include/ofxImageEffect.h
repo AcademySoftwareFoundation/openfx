@@ -603,7 +603,7 @@ For an output clip, the frame rate mapped via pixel preferences.
 
 For an instance, this is the frame rate of the project the effect is in.
 
-For the \e outargs property in \ref ImageEffectsActionGetClipPreferences, it is used to change the frame rate of the ouput clip.
+For the outargs property in \ref ImageEffectsActionGetClipPreferences, it is used to change the frame rate of the ouput clip.
 */
 #define kOfxImageEffectPropFrameRate "OfxImageEffectPropFrameRate"
 

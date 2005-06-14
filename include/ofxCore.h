@@ -267,7 +267,7 @@ The output of an effect should only ever depend on the state of it's parameters,
     - Property Set - effect descriptor (read only)
 
 This is a string that indicates the file path where the plug-in was found by the host. The path is in the native
-path format for the host OS (eg: *NIX directory separators are '/', Windows ones are '`\').
+path format for the host OS (eg:  UNIX directory separators are forward slashes, Windows ones are backslashes).
 
 The path is to the bundle location, see \ref InstallationLocation. 
 eg:  '/usr/OFX/Plugins/AcmePlugins/AcmeFantasticPlugin.ofx.bundle'

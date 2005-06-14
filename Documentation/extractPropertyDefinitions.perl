@@ -3,6 +3,7 @@
 processFile("../include/ofxCore.h");
 processFile("../include/ofxParam.h");
 processFile("../include/ofxImageEffect.h");
+processFile("../include/ofxInteract.h");
 exit;
 
 processFile("fred.c");
@@ -308,10 +309,11 @@ sub formatIt
 
 		$outString .= "<link linkend=\"$id\">$id</link>";
 		
+		$snatched = 1;
 	    }
 	    else {
 		unshift @chars, $ch1;
-		$snatched = 1;
+		$snatched = 0;
 	    }
 	}
 	$outString .= $ch unless $snatched;

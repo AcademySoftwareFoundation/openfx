@@ -58,65 +58,83 @@ typedef struct OfxInteract *OfxInteractHandle;
 These are the list of properties used by the Interact API documented in \ref CustomInteractionPage.
 */
 /*@{*/
-/** @brief Interact instance property, the set of parameters on which a value change will trigger a redraw for the interact
+/** @brief The set of parameters on which a value change will trigger a redraw for an interact.
 
-    - string X N
+   - Type - string X N
+   - Property Set - interact instance property (read/write)
+   - Default - no values set
+   - Valid Values - the name of any parameter associated with this interact.
 
-    If the interact is representing the state of some OFX parameter, then is will
-    need to be redrawn if that parameter's value changes. This multi-dimensional property
-    links such parameters to the interact.
+If the interact is representing the state of some set of OFX parameters, then is will
+need to be redrawn if any of those parameters' values change. This multi-dimensional property
+links such parameters to the interact.
 
-    The interact can be slaved to multiple parameters (setting index 0, then index 1 etc...)
+The interact can be slaved to multiple parameters (setting index 0, then index 1 etc...)
  */
 #define kOfxInteractPropSlaveToParam "OfxInteractPropSlaveToParam"
 
-/** @brief Interact argument property, size of a real screen pixel under the interact's cannonical projection.
+/** @brief The size of a real screen pixel under the interact's cannonical projection.
 
-    - double X 2
-    Read only property of an interact instance
+   - Type - double X 2
+   - Property Set - interact instance and actions (read only)
+
  */
 #define kOfxInteractPropPixelScale "OfxInteractPropPixelScale"
 
-/** @brief Interact argument property, size of the instance's openGL viewport
+/** @brief The size of an interact's openGL viewport
 
-    - int X 2 (x, y)
-    - Read only property on the inArgs handle passed to an interacts main function
-    - Read only property of an interact instance handle
+    - Type - int X 2 
+    - Property Set - read only property on the interact instance and in argument to all the interact actions.
+
+This property is the redundant and its use will be deprecated in future releases.
  */
 #define kOfxInteractPropViewportSize "OfxInteractPropViewport"
 
-/** @brief Interact argument property, the background colour of the application behind an interact instance
-    - double X 3
-    Read only property of an interact instance
+/** @brief The background colour of the application behind an interact instance
+
+    - Type - double X 3
+    - Property Set - read only on the interact instance and in argument to the ::kOfxInteractActionDraw action
+    - Valid Values - from 0 to 1
+
+The components are in the order red, green then blue.
+
  */
 #define kOfxInteractPropBackgroundColour "OfxInteractPropBackgroundColour"
 
-/** @brief Interact property, pen position in cannonical coordinates
+/** @brief The position of the pen in an interact.
 
-    - double X 2 (x, y)
-    - Read only property on the inArgs handle passed to an interacts main function
+   - Type - double X 2
+   - Property Set - read only in argument to the ::kOfxInteractActionPenMotion, ::kOfxInteractActionPenDown and ::kOfxInteractActionPenUp actions
+
+This value passes the postion of the pen into an interact. This is in the interact's canonical coordinates.
  */
 #define kOfxInteractPropPenPosition "OfxInteractPropPenPosition"
 
-/** @brief Interact property, pressure of the pen, from 0.0 to 1.0f
+/** @brief The pressure of the pen in an interact.
 
-    - double X 1, from 0 to 1
-    - Read only property on the inArgs handle passed to an interacts main function
+   - Type - double X 1
+   - Property Set - read only in argument to the ::kOfxInteractActionPenMotion, ::kOfxInteractActionPenDown and ::kOfxInteractActionPenUp actions
+   - Valid Values - from 0 (no pressure) to 1 (maximum pressure)
+
+This is used to indicate the status of the 'pen' in an interact. If a pen has only two states (eg: a mouse button), these should map to 0.0 and 1.0.
  */
 #define kOfxInteractPropPenPressure "OfxInteractPropPenPressure"
 
-/** @brief Interact instance and descriptor property, bit depth of the interact's openGL frame buffer
+/** @brief Indicates whether the dits per component in the interact's openGL frame buffer
 
-    - int X 1
-    - number of bits per component in the openGL frame buffer
+   - Type - int X 1
+   - Property Set - interact instance and descriptor (read only)
+
  */
 #define kOfxInteractPropBitDepth "OfxInteractPropBitDepth"
 
-/** @brief Interact instance and descriptor property, whether the frame buffer includes and alpha component or not
+/** @brief Indicates whether the interact's frame buffer has an alpha component or not
 
-    - int X 1, 0 or 1
-    - 0 indicates no alpha component
-    - 1 indicates an alpha component
+   - Type - int X 1
+   - Property Set - interact instance and descriptor (read only)
+   - Valid Values - This must be one of
+       - 0 indicates no alpha component
+       - 1 indicates an alpha component
  */
 #define kOfxInteractPropHasAlpha "OfxInteractPropHasAlpha"
 
