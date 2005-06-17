@@ -698,7 +698,7 @@ This should be applied to any spatial parameters to position them correctly. Not
     - Type - double X 2
     - Property Set - a plugin  instance (read only)
 
-The extent is the size of the 'output' for the current project. See \ref CoordinateSystemsProjects for more infomation on the project extent.
+The extent is the size of the 'output' for the current project. See \ref ProjectCoordinateSystems for more infomation on the project extent.
 
 The extent is in cannonical coordinates and only returns the top right position, as the extent is always rooted at 0,0.
 
@@ -711,11 +711,11 @@ For example a PAL SD project would have an extent of 768, 576.
     - Type - double X 2
     - Property Set - a plugin  instance (read only)
 
-The size of a project is a sub set of the \ref kOfxImageEffectPropProjectExtent. For example a project may be a PAL SD project, but only be a letter-box within that. The project size is the size of this sub window.
+The size of a project is a sub set of the ::kOfxImageEffectPropProjectExtent. For example a project may be a PAL SD project, but only be a letter-box within that. The project size is the size of this sub window.
 
 The project size is in cannonical coordinates.
 
-See \ref CoordinateSystemsProjects for more infomation on the project extent.
+See \ref ProjectCoordinateSystems for more infomation on the project extent.
  */
 #define kOfxImageEffectPropProjectSize "OfxImageEffectPropProjectSize"
 
@@ -730,8 +730,8 @@ For example for a PAL SD project that is in letterbox form, the project offset i
  
 The project offset is in cannonical coordinates.
 
-See \ref CoordinateSystemsProjects for more infomation on the project extent.
- */
+See \ref ProjectCoordinateSystems for more infomation on the project extent.
+*/
 #define kOfxImageEffectPropProjectOffset "OfxImageEffectPropProjectOffset"
 
 /** @brief The pixel aspect ratio of the current project
@@ -2451,7 +2451,7 @@ At it's most generalised, OFX allows for a complex imaging architecture based ar
 
 Firstly, there is some subsection of this infinite plane that the user wants to be the end result of their work, call this the project extent. The project extent is always rooted, on its bottom left, at the origin of the image plane. The project extent defines the upper right hand corner of the project window. For example a PAL sized project spans (0, 0) to (768, 576) on the image plane. 
 
-The project extent is retrieved via an image effect's instance's ::kOfxImageEffectPropProjectExtent property. For more on project sizes see \ref CoordinateSystemsProjects.
+The project extent is retrieved via an image effect's instance's ::kOfxImageEffectPropProjectExtent property. For more on project sizes see \ref ProjectCoordinateSystems.
 
 We define an image effect as something that can fill in a rectangle of pixels in this infinite plane.
 
@@ -2546,7 +2546,7 @@ The Cannonical coordinate system is always referenced by floating point values.
 
 The Pixel coordinate system is always referenced by integer values, generally via a OfxRectI structure. It is used when refering to operations on actual pixels, and so is what is passed to the OfxImageEffectPluginStructV1::render function, and what is returned by the OfxImageEffectSuiteV1::clipGetImage function.
 
-@section CoordinateSystemsProjects Project Extents, Sizes and Offsets
+@section ProjectCoordinateSystems Project Extents, Sizes and Offsets
 
 As described in \ref ImageEffectsImagePlane, the project extent is the section of the image plane that is coverred by an image that is the desired output of the project, so for a PAL D1 project you get an extent of 0,0 <-> 768,576. The extent is always rooted at the origin, so the effect instance property ::kOfxImageEffectPropProjectExtent, only has two doubles in it, being the upper right hand corner of the extent, in \ref CannonicalCoordinates.
 
