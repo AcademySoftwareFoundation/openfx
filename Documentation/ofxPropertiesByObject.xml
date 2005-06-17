@@ -28,7 +28,7 @@
 <section><title>Properties on an Effect Descriptor</title>
 An image effect plugin (ie: that thing passed to the initial 'describe' action) has the following properties, these can only be set inside the 'describe' actions ...
 <itemizedlist>
-<listitem><link linkend="kOfxPropType">kOfxPropType</link> - (read only) set to </listitem>
+<listitem><link linkend="kOfxPropType">kOfxPropType</link> - (read only)</listitem>
 <listitem><link linkend="kOfxPropLabel">kOfxPropLabel</link> - (read/write)</listitem>
 <listitem><link linkend="kOfxPropShortLabel">kOfxPropShortLabel</link> - (read/write) </listitem>
 <listitem><link linkend="kOfxPropLongLabel">kOfxPropLongLabel</link> - (read/write) </listitem>
@@ -132,122 +132,110 @@ An image effect instance has the following properties, all but kOfxPropInstanceD
 </itemizedlist>
 </section>
 
-<note>
-NEED TO CUT THEM INTO INSTANCES AND DESCRIPTORS TO TAKE THIS NOTE AWAY
-the properties marked * can only be accessed outside the effect's describe action on instances or objects fetched from instances, they have undefined values in the describe actions.
-</note>
 
-
-<section><title>Properties on Parameters</title>
+<section><title>Properties on Parameter Descriptors and Instances</title>
 
 <section><title>Properties Common to All Parameters</title>
 
  The following properties are common to all parameters....
 <itemizedlist>
-<listitem><link linkend="kOfxPropType">kOfxPropType</link> , which will always be <literal>kOfxTypeParameter</literal></listitem>
-<listitem><link linkend="kOfxPropName">kOfxPropName</link></listitem>
-<listitem><link linkend="kOfxPropLabel">kOfxPropLabel</link> *</listitem>
-<listitem><link linkend="kOfxPropShortLabel">kOfxPropShortLabel</link> *</listitem>
-<listitem><link linkend="kOfxPropLongLabel">kOfxPropLongLabel</link> *</listitem>
-<listitem><link linkend="kOfxParamPropType">kOfxParamPropType</link></listitem>
-<listitem><link linkend="kOfxParamPropSecret">kOfxParamPropSecret</link> *</listitem>
-<listitem><link linkend="kOfxParamPropCanUndo">kOfxParamPropCanUndo</link> </listitem>
-<listitem><link linkend="kOfxParamPropHint">kOfxParamPropHint</link> *</listitem>
-<listitem><link linkend="kOfxParamPropScriptName">kOfxParamPropScriptName</link></listitem>
-<listitem><link linkend="kOfxParamPropParent">kOfxParamPropParent</link> </listitem>
-<listitem><link linkend="kOfxParamPropEnabled">kOfxParamPropEnabled</link> *</listitem>
-<listitem><link linkend="kOfxParamPropDataPtr">kOfxParamPropDataPtr</link> *</listitem>
+<listitem><link linkend="kOfxPropType">kOfxPropType</link>, which will always be <literal>kOfxTypeParameter</literal>(read only)</listitem>
+<listitem><link linkend="kOfxPropName">kOfxPropName</link> read/write in the descriptor, read only on an instance</listitem>
+<listitem><link linkend="kOfxPropLabel">kOfxPropLabel</link> read/write in the descriptor and instance</listitem>
+<listitem><link linkend="kOfxPropShortLabel">kOfxPropShortLabel</link> read/write in the descriptor and instance</listitem>
+<listitem><link linkend="kOfxPropLongLabel">kOfxPropLongLabel</link> read/write in the descriptor and instance</listitem>
+<listitem><link linkend="kOfxParamPropType">kOfxParamPropType</link>read only in the descriptor and instance, the value is set on construction</listitem>
+<listitem><link linkend="kOfxParamPropSecret">kOfxParamPropSecret</link> read/write in the descriptor and instance</listitem>
+<listitem><link linkend="kOfxParamPropCanUndo">kOfxParamPropCanUndo</link> read/write in the descriptor, read only on an instance </listitem>
+<listitem><link linkend="kOfxParamPropHint">kOfxParamPropHint</link> read/write in the descriptor and instance</listitem>
+<listitem><link linkend="kOfxParamPropScriptName">kOfxParamPropScriptName</link> read/write in the descriptor, read only on an instance</listitem>
+<listitem><link linkend="kOfxParamPropParent">kOfxParamPropParent</link> read/write in the descriptor, read only on an instance</listitem>
+<listitem><link linkend="kOfxParamPropEnabled">kOfxParamPropEnabled</link> read/write in the descriptor and instance</listitem>
+<listitem><link linkend="kOfxParamPropDataPtr">kOfxParamPropDataPtr</link> read/write in the descriptor and instance</listitem>
 </itemizedlist>
 </section>
 
 <section><title>Properties Common to All But Group and Page Parameters</title>
 <itemizedlist>
-<listitem><link linkend="kOfxParamPropInteractV1">kOfxParamPropInteractV1</link></listitem>
-<listitem><link linkend="kOfxParamPropInteractSize">kOfxParamPropInteractSize</link></listitem>
-<listitem><link linkend="kOfxParamPropInteractSizeAspect">kOfxParamPropInteractSizeAspect</link></listitem>
-<listitem><link linkend="kOfxParamPropInteractMinimumSize">kOfxParamPropInteractMinimumSize</link></listitem>
-<listitem><link linkend="kOfxParamPropInteractPreferedSize">kOfxParamPropInteractPreferedSize</link></listitem>
+<listitem><link linkend="kOfxParamPropInteractV1">kOfxParamPropInteractV1</link> read/write in the descriptor, read only on an instance</listitem>
+<listitem><link linkend="kOfxParamPropInteractSize">kOfxParamPropInteractSize</link> read/write in the descriptor, read only on an instance</listitem>
+<listitem><link linkend="kOfxParamPropInteractSizeAspect">kOfxParamPropInteractSizeAspect</link> read/write in the descriptor, read only on an instance</listitem>
+<listitem><link linkend="kOfxParamPropInteractMinimumSize">kOfxParamPropInteractMinimumSize</link> read/write in the descriptor, read only on an instance</listitem>
+<listitem><link linkend="kOfxParamPropInteractPreferedSize">kOfxParamPropInteractPreferedSize</link> read/write in the descriptor, read only on an instance</listitem>
 </itemizedlist></section>
 
 <section><title>Properties Common to All Parameters That Hold Values</title>
 <itemizedlist>
-<listitem><link linkend="kOfxParamPropDefault">kOfxParamPropDefault</link></listitem>
-<listitem><link linkend="kOfxParamPropAnimates">kOfxParamPropAnimates</link></listitem>
-<listitem><link linkend="kOfxParamPropIsAnimating">kOfxParamPropIsAnimating</link></listitem>
-<listitem><link linkend="kOfxParamPropIsAutoKeying">kOfxParamPropIsAutoKeying</link></listitem>
-<listitem><link linkend="kOfxParamPropPersistant">kOfxParamPropPersistant</link></listitem>
-<listitem><link linkend="kOfxParamPropEvaluateOnChange">kOfxParamPropEvaluateOnChange</link> *</listitem>
-<listitem><link linkend="kOfxParamPropDefault">kOfxParamPropDefault</link> *</listitem>
-<listitem><link linkend="kOfxParamPropPluginMayWrite">kOfxParamPropPluginMayWrite</link></listitem>
-<listitem><link linkend="kOfxParamPropCacheInvalidation">kOfxParamPropCacheInvalidation</link></listitem>
+<listitem><link linkend="kOfxParamPropDefault">kOfxParamPropDefault</link> read/write in the descriptor, read only on an instance</listitem>
+<listitem><link linkend="kOfxParamPropAnimates">kOfxParamPropAnimates</link> read/write in the descriptor, read only on an instance</listitem>
+<listitem><link linkend="kOfxParamPropIsAnimating">kOfxParamPropIsAnimating</link> read/write in the descriptor, read only on an instance</listitem>
+<listitem><link linkend="kOfxParamPropIsAutoKeying">kOfxParamPropIsAutoKeying</link> read/write in the descriptor, read only on an instance</listitem>
+<listitem><link linkend="kOfxParamPropPersistant">kOfxParamPropPersistant</link> read/write in the descriptor, read only on an instance</listitem>
+<listitem><link linkend="kOfxParamPropEvaluateOnChange">kOfxParamPropEvaluateOnChange</link>  read/write in the descriptor and instance</listitem>
+<listitem><link linkend="kOfxParamPropDefault">kOfxParamPropDefault</link> read/write in the descriptor and instance</listitem>
+<listitem><link linkend="kOfxParamPropPluginMayWrite">kOfxParamPropPluginMayWrite</link> read/write in the descriptor, read only on an instance</listitem>
+<listitem><link linkend="kOfxParamPropCacheInvalidation">kOfxParamPropCacheInvalidation</link> read/write in the descriptor, read only on an instance</listitem>
 </itemizedlist>
 </section>
 
 <section><title>Properties Common to All Numeric Parameters</title>
 <itemizedlist>
-<listitem><link linkend="kOfxParamPropMin">kOfxParamPropMin</link> *</listitem>
-<listitem><link linkend="kOfxParamPropMax">kOfxParamPropMax</link> *</listitem>
-<listitem><link linkend="kOfxParamPropDisplayMin">kOfxParamPropDisplayMin</link> *</listitem>
-<listitem><link linkend="kOfxParamPropDisplayMax">kOfxParamPropDisplayMax</link> *</listitem>
+<listitem><link linkend="kOfxParamPropMin">kOfxParamPropMin</link> read/write in the descriptor and instance</listitem>
+<listitem><link linkend="kOfxParamPropMax">kOfxParamPropMax</link> read/write in the descriptor and instance</listitem>
+<listitem><link linkend="kOfxParamPropDisplayMin">kOfxParamPropDisplayMin</link> read/write in the descriptor and instance</listitem>
+<listitem><link linkend="kOfxParamPropDisplayMax">kOfxParamPropDisplayMax</link> read/write in the descriptor and instance</listitem>
 </itemizedlist>
 </section>
 
 <section><title>Properties Common to All Double Parameters</title>
 <itemizedlist>
-<listitem><link linkend="kOfxParamPropIncrement">kOfxParamPropIncrement</link> *</listitem>
-<listitem><link linkend="kOfxParamPropDigits">kOfxParamPropDigits</link> *</listitem>
+<listitem><link linkend="kOfxParamPropIncrement">kOfxParamPropIncrement</link> read/write in the descriptor and instance</listitem>
+<listitem><link linkend="kOfxParamPropDigits">kOfxParamPropDigits</link> read/write in the descriptor and instance</listitem>
 </itemizedlist>
 </section>
 
 <section><title>Properties On 1D Double Parameters</title>
 <itemizedlist>
-<listitem><link linkend="kOfxParamPropShowTimeMarker">kOfxParamPropShowTimeMarker</link> *</listitem>
-<listitem><link linkend="kOfxParamPropDoubleType">kOfxParamPropDoubleType</link></listitem>
+<listitem><link linkend="kOfxParamPropShowTimeMarker">kOfxParamPropShowTimeMarker</link> read/write in the descriptor and instance</listitem>
+<listitem><link linkend="kOfxParamPropDoubleType">kOfxParamPropDoubleType</link> read/write in the descriptor, read only on an instance</listitem>
 </itemizedlist>
 </section>
 
 <section><title>Properties On 2D and 3D Double Parameters</title>
 <itemizedlist>
-<listitem><link linkend="kOfxParamPropDoubleType">kOfxParamPropDoubleType</link></listitem>
+<listitem><link linkend="kOfxParamPropDoubleType">kOfxParamPropDoubleType</link> read/write in the descriptor, read only on an instance</listitem>
 </itemizedlist>
 </section>
 
 <section><title>Properties On 2D and 3D Integer Parameters</title>
 <itemizedlist>
-<listitem><link linkend="kOfxParamPropDimensionLabel">kOfxParamPropDimensionLabel</link></listitem>
+<listitem><link linkend="kOfxParamPropDimensionLabel">kOfxParamPropDimensionLabel</link> read/write in the descriptor, read only on an instance</listitem>
 </itemizedlist>
 </section>
 
 <section><title>Properties On String Parameters</title>
 <itemizedlist>
-<listitem><link linkend="kOfxParamPropStringMode">kOfxParamPropStringMode</link></listitem>
-<listitem><link linkend="kOfxParamPropStringFilePathExists">kOfxParamPropStringFilePathExists</link></listitem>
+<listitem><link linkend="kOfxParamPropStringMode">kOfxParamPropStringMode</link> read/write in the descriptor, read only on an instance</listitem>
+<listitem><link linkend="kOfxParamPropStringFilePathExists">kOfxParamPropStringFilePathExists</link> read/write in the descriptor, read only on an instance</listitem>
 </itemizedlist>
 </section>
 
 <section><title>Properties On Choice Parameters</title>
 <itemizedlist>
-<listitem><link linkend="kOfxParamPropChoiceOption">kOfxParamPropChoiceOption</link> *</listitem>
+<listitem><link linkend="kOfxParamPropChoiceOption">kOfxParamPropChoiceOption</link> read/write in the descriptor and instance</listitem>
 </itemizedlist>
 </section>
 
 <section><title>Properties On Custom Parameters</title>
 <itemizedlist>
-<listitem><link linkend="kOfxParamPropCustomInterpCallbackV1">kOfxParamPropCustomInterpCallbackV1</link></listitem>
+<listitem><link linkend="kOfxParamPropCustomInterpCallbackV1">kOfxParamPropCustomInterpCallbackV1</link> read/write in the descriptor, read only on an instance</listitem>
 </itemizedlist>
 </section>
 
 <section><title>Properties On Page Parameters</title>
 <itemizedlist>
-<listitem><link linkend="kOfxParamPropPageChild">kOfxParamPropPageChild</link></listitem>
+<listitem><link linkend="kOfxParamPropPageChild">kOfxParamPropPageChild</link> read/write in the descriptor, read only on an instance</listitem>
 </itemizedlist>
 </section>
 </section>
-
-
-<note><title>FIX THIS TO REMOVE NOTE *</title>
-- the properties labelled with a * may be changed by a plugin outside of the describe actions
-- the choice option property can be reset or have options added to it outside the describe actions (so to delete an option reset and add again)
-</note>
-
 

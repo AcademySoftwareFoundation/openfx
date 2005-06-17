@@ -102,11 +102,14 @@ sub writePropFile()
     local $propComment = $_[1];
     local $includeFile = $_[2];
 
+    $WIBBLE = $propName eq "kOfxImageEffectPropProjectSize";
+
     $includeFile =~ s/\.\.\/include//;
 
     # do some standard XML substitutions
     $propComment =~ s/</&lt;/g;
     $propComment =~ s/>/&gt;/g;
+
 
     @commentLines = split(/\n/, $propComment);
 
@@ -258,10 +261,12 @@ sub formatIt
 
 	# look for doxygen "\ref" so we can put a link in instead
 	if($ch eq "\\") {
+	    
 	    local $ref = join "", @meChars;
-	    if($ref =~ /ref\s*/) {
+	    #print "eek = $ref\n" if($WIBBLE);
+	    if($ref =~ /ref\s+/) {
 		#remove the \ref and resplit the thing
-		$ref =~ s/ref\s*//g;
+		$ref =~ s/ref\s+//g;
 		@meChars = split //, $ref;
 		$snatched = 1;
 
@@ -284,6 +289,7 @@ sub formatIt
 		local $niceID = $id;
 		$niceID =~ s/([A-Z])/ $1/g;
 
+		#print "id = $niceID\n" if($WIBBLE);
 		$outString .= "<link linkend=\"$id\">$niceID</link>";		
 	    }
 	}
