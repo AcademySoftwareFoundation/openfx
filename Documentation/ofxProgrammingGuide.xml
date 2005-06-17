@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"  
-         "file://localhost/usr/share/sgml/docbook/docbook-xml-4.3/docbookx.dtd"
+         "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
 
 [<!ENTITY propertiesByObject SYSTEM "ofxPropertiesByObject.xml">
 <!ENTITY propertiesReference SYSTEM "ofxPropertiesReference.xml">]
