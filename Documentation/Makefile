@@ -1,4 +1,4 @@
-STYLESHEETDIR=/usr/share/sgml/docbook/docbook-xsl-1.68.1/
+STYLESHEETDIR=http://docbook.sourceforge.net/release/xsl/1.68.1/
 
 XSLARGS = --stringparam  funcsynopsis.style "ansi" \
 	--stringparam  toc.section.depth "3" \
