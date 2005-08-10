@@ -220,7 +220,7 @@ public :
         dstClip_ = fetchClip("Output");
         srcClip_ = fetchClip("Source");
         // name of mask clip depends on the context
-        maskClip_ = fetchClip(getContext() == OFX::eContextPaint ? "Brush" : "Mask");
+        maskClip_ = getContext() == OFX::eContextFilter ? NULL : fetchClip(getContext() == OFX::eContextPaint ? "Brush" : "Mask");
         scale_   = fetchDoubleParam("scale");
         rScale_  = fetchDoubleParam("scaleR");
         gScale_  = fetchDoubleParam("scaleG");
