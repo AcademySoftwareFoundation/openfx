@@ -1,0 +1,763 @@
+<book>
+  <bookinfo>
+    <title>OpenFX Plug-in API, Programming Reference</title>
+
+    <author>
+      <firstname>Bruno</firstname>
+
+      <surname>Nicoletti</surname>
+    </author>
+
+    <copyright>
+      <year>2005</year>
+
+      <holder>Bruno Nicoletti</holder>
+    </copyright>
+
+    <releaseinfo>Document version 0.2</releaseinfo>
+  </bookinfo>
+
+  <preface>
+    <title>Foreword</title>
+    <para>UNFINISHED</para>
+  </preface>
+
+  <chapter id="OFX include files">
+    <title>OFX Include Files</title>
+    <para>
+    The 'C' include files that define the OFX API are all that are needed by a plug-in or host to implement the API. Apart from 
+    <filename class="headerfile">ofxCore.h</filename> and <filename class="headerfile">ofxKeySyms.h</filename> they define a set of independant 'suites' which are used by a plug-in
+    to communicate with a host applications.
+    </para>
+
+    <para>
+    <filename class="headerfile">ofxCore.h</filename> is used to define the basic comminication mechanisms between a host and a plug-in. This includes the way
+    in which a plug-in is defined to a host and how a plug-in and how to boostrap the two way comminications. 
+    </para>
+        <para>
+          <itemizedlist>
+            <listitem>
+              <filename class="headerfile">ofxCore.h</filename>
+               - provides the core definitions of the general OFX architecture that allow the bootstrapping of specific APIs, 
+            </listitem>
+            <listitem>
+              <filename class="headerfile">ofxProperty.h</filename>
+               - provides generic property fetching mechanisms used to get and set values about objects in the API, 
+            </listitem>
+            <listitem>
+              <filename class="headerfile">ofxParam.h</filename>
+               - provides an API for defining user visible parameters to an effect, 
+            </listitem>
+            <listitem>
+              <filename class="headerfile">ofxMultiThread.h</filename>
+               - provides basic multi-threading capabilities, 
+            </listitem>
+            <listitem>
+              <filename class="headerfile">ofxInteract.h</filename>
+               - allows a plug-in to use OpenGL to draw their own interactive GUI tools, 
+            </listitem>
+            <listitem>
+              <filename class="headerfile">ofxKeySyms.h</filename>
+               - key symbols used by 'Interacts' to represent keyboard events, 
+            </listitem>
+            <listitem>
+              <filename class="headerfile">ofxMemory.h</filename>
+               - simple memory allocation suite, 
+            </listitem>
+            <listitem>
+              <filename class="headerfile">ofxMessage.h</filename>
+               - a simple messaging suite to communicate with an end user, 
+            </listitem>
+            <listitem>
+              <filename class="headerfile">ofxImageEffect.h</filename>
+               - draws all the above together to create an visual effect plug-in. 
+            </listitem>
+         </itemizedlist>
+     </para>
+  </chapter>
+
+  <chapter>
+    <title>Core API Reference</title>
+
+    <refentry id="OfxGetNumberOfPlugins">
+      <refmeta>
+        <refentrytitle>OfxGetNumberOfPlugins</refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname>OfxGetNumberOfPlugins</refname>
+
+        <refpurpose>Mandatory plug-in function that returns the number of
+        plug-ins inside a binary.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcsynopsisinfo>
+#include "ofxCore.h"
+</funcsynopsisinfo>
+
+          <funcprototype>
+            <funcdef>OfxExport int
+            <function>OfxGetNumberOfPlugins</function></funcdef>
+
+            <paramdef><parameter><void /></parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para><function>OfxGetNumberOfPlugins</function> returns the number of
+        plugins contained in the binary. It is the very first function called
+        by the host after the binary has been loaded.</para>
+
+        <para>This function <emphasis>must</emphasis> be exported by the
+        binary that contains OFX plugins. The
+        <structname>OfxExport</structname> defined in
+        <filename class="headerfile">ofxCore.h</filename> is used as an export declaration for
+        those compilers that require it.</para>
+
+        <bridgehead>Preconditions</bridgehead>
+
+        <itemizedlist>
+          <listitem>
+             No other function is called in the plug-in before this. 
+          </listitem>
+        </itemizedlist>
+      </refsect1>
+    </refentry>
+
+    <refentry id="OfxGetPlugin">
+      <refmeta>
+        <refentrytitle>OfxGetPlugin</refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname>OfxGetPlugin</refname>
+
+        <refpurpose>Mandatory plug-in function that return a plugin
+        description to a host.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcsynopsisinfo>#include "ofxCore.h" </funcsynopsisinfo>
+
+          <funcprototype>
+            <funcdef>OfxExport <structname>OfxPlugin</structname>
+            *<function>OfxGetPlugin</function></funcdef>
+
+            <paramdef>int <parameter>nth</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para><function>OfxGetPlugin</function> returns the definition of the
+        <parameter>nth</parameter> plug-in inside the binary.</para>
+
+        <para>This function returns a pointer to the <varname>nth</varname>
+        <structname>OfxPlugin</structname> struct in the binary.
+        <varname>nth</varname> is between 0 and the number returned by
+        <function>OfxGetNumberOfPlugins</function>. The returned structure
+        defines the plugin to the host.</para>
+
+        <bridgehead>Preconditions</bridgehead>
+
+        <itemizedlist>
+          <listitem>
+             
+
+            <function>OfxGetNumberOfPlugins</function>
+
+             has been previously called, 
+          </listitem>
+
+          <listitem>
+             
+
+            <varname>nth</varname>
+
+             is between 0 and the value returned by 
+
+            <function>OfxGetNumberOfPlugins</function>
+
+             . 
+          </listitem>
+        </itemizedlist>
+
+        <bridgehead>Preconditions</bridgehead>
+
+        <itemizedlist>
+          <listitem>
+             The returned pointer and pointers in the struct point to valid data whilst the binary is loaded, 
+          </listitem>
+
+          <listitem>
+             The returned pointer and pointers in the struct do not need to be freed in any way by the host. 
+          </listitem>
+        </itemizedlist>
+      </refsect1>
+    </refentry>
+  </chapter>
+
+  <chapter>
+    <title>Image Effect Actions</title>
+  </chapter>
+
+  <chapter>
+    <title>Property Suite</title>
+    <para>The files <filename class="headerfile">ofxCore.h</filename> and <filename class="headerfile">ofxProperty.h</filename> contain the basic definitions for the property suite. </para>
+    <para>The property suite is the most basic and important suite in OFX, it is used to get and set the values of various objects defined by other suites. 
+    </para>
+    <para>A property is a named value of a specific data type, such values can be multi-dimensional, but is typically of one dimension. The name 
+    is a 'C' string literal, typically #defined in one of the various OFX header files. For example, the property labeled by the string literal <constant>"OfxPropName"</constant> is a 'C' string which holds the name of some object.
+    </para>
+    <para>Properties are not accessed in isolation, but are grouped and accessed through a property set handle. The number and types of properties on a specific property set handle are currently strictly defined by the API that the properties are being used for. There is no scope to add new properties.
+    </para>
+    <para>There is a naming convention for property labels and the macros #defined to them. The scheme is,
+      <itemizedlist>
+        <listitem>generic properties names start with <constant>"OfxProp"</constant> + name of the property, e.g. "OfxPropTime".</listitem>
+        <listitem>properties pertaining to a specific object with <constant>"Ofx"</constant> + object name + <constant>"Prop"</constant> + name of the property, e.g. "OfxParamPropAnimates".</listitem>
+        <listitem>the C preprocessor #define used to define the string literal is the same as the string literal, but with 
+          <constant>"k"</constant> prepended to the name. For example, <constant> #define kOfxPropLabel "OfxPropLabel" </constant> </listitem>
+      </itemizedlist>
+  
+    </para>
+    
+    <refentry id="OfxPropertySetHandle">
+      <refmeta>
+        <refentrytitle><type>OfxPropertySetHandle</type></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><type>OfxPropertySetHandle</type></refname>
+
+        <refpurpose>Blind data type used to hold sets of properties</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+typedef struct OfxPropertySetStruct *OfxPropertySetHandle;
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+        <para>
+        Properties are not accessed on their own, nor do they exist on their own. They are grouped and manipulated via an OfxPropertySetHandle.</para>
+        <para>Any object that has properties can be made to return it's property set handle via some call on the relevant suite. Individual properties are then manipulated with the property suite through that handle.
+        </para>
+      </refsect1>
+    </refentry>
+
+    &ofxPropertySuiteReference;
+  </chapter>
+
+  <chapter>
+    <title>Memory Suite</title>
+    &ofxMemorySuiteReference;
+  </chapter>
+
+  <chapter>
+    <title>Parameters Suite</title>
+    &ofxParametersSuiteReference;
+  </chapter>
+
+  <chapter>
+    <title>Threading Suite</title>
+  </chapter>
+
+  <chapter>
+    <title>Interact Suite</title>
+  </chapter>
+
+  <chapter>
+    <title>Image Effect Suite</title>
+  </chapter>
+
+  <chapter id="PropertiesByObject">
+      <title>Properties By Object</title>
+      <para>This chapter lists all the properties on each OFX object.</para>
+       &propertiesByObject; 
+  </chapter>
+
+  <chapter id="PropertiesByName">
+     <title>Property By Name</title>
+       &propertiesReference; 
+   </chapter>
+
+  <chapter>
+    <title>Status Codes</title>
+
+    <para>Status codes are returned by most functions in OFX suites and all
+    plug-in actions to indicate the sucess or failure of the operation. All
+    status codes are defined in <filename class="headerfile">ofxCore.h</filename> and
+    <code>#defined</code> to be integers.</para>
+
+    <refentry id="OfxStatus">
+      <refmeta>
+        <refentrytitle><type>OfxStatus</type></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><type>OfxStatus</type></refname>
+
+        <refpurpose>type returned to indicate success or failure of an
+        operation.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+typedef int OfxStatus;
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para>Most OFX functions in host suites and all actions in a plug-in
+        return a status code, where the status codes are all 32 bit integers.
+        This typedef is used to label that status code.</para>
+      </refsect1>
+    </refentry>
+
+    <refentry id="kOfxStatOK">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatOK</errorcode></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><errorcode>kOfxStatOK</errorcode></refname>
+
+        <refpurpose>(0), indicates an operation completed
+        sucessfully.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+#define kOfxStatOK 0
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para>This error code is returned by <itemizedlist>
+            <listitem>
+               host functions to indicate success of the operation, 
+            </listitem>
+
+            <listitem>
+               plugin actions to indicate that the action was trapped and suceeded. 
+            </listitem>
+          </itemizedlist></para>
+      </refsect1>
+    </refentry>
+
+    <refentry id="kOfxStatFailed">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatFailed</errorcode></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><errorcode>kOfxStatFailed</errorcode></refname>
+
+        <refpurpose>(1), indicates a failed operation.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+#define kOfxStatFailed  ((int)1)
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para>This error code is returned when a function or action could not
+        complete normally and its operation failed.</para>
+      </refsect1>
+    </refentry>
+
+    <refentry id="kOfxStatErrFatal">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrFatal</errorcode></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrFatal</errorcode></refname>
+
+        <refpurpose>(2), indicates a fatal operation.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrFatal  ((int)2)
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para>This status is only returned in the case where the plug-in or
+        host cannot continue normal operation and needs to be
+        restarted.</para>
+      </refsect1>
+    </refentry>
+
+    <refentry id="kOfxStatErrUnknown">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrUnknown</errorcode></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrUnknown</errorcode></refname>
+
+        <refpurpose>(3), status error code for an unknown object.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrUnknown ((int)3)
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para>This error is returned when an operation is attempted on an
+        unknown object or an unknown object was requested. For example, a host
+        may not support a property on an object because it is written to a
+        slightly earlier version of an API, in which case it should return
+        with <errorcode>kOfxStatErrUnknown</errorcode>.</para>
+      </refsect1>
+    </refentry>
+
+    <refentry id="kOfxStatErrMissingHostFeature">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrMissingHostFeature</errorcode></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrMissingHostFeature</errorcode></refname>
+
+        <refpurpose>(4) returned by a plugin if a host is
+        inadequate.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrMissingHostFeature ((int) 4)
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para>This status is returned by plug-ins'
+        <function>mainEntry</function> if the host is missing a feature they
+        need to operate. For example, a plug-in may need an overlay GUI to
+        operate sucessfully, which is an optional feature.</para>
+
+        <para>This should be returned from the
+        <literal>kOfxActionLoad</literal>,
+        <literal>kOfxActionDescribe</literal> or
+        <literal>kOfxImageEffectActionDescribeInContext</literal> actions, so
+        a host can unload the plugin before it attempts to create an instance
+        of the plug-in.</para>
+      </refsect1>
+    </refentry>
+
+    <refentry id="kOfxStatErrUnsupported">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrUnsupported</errorcode></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrUnsupported</errorcode></refname>
+
+        <refpurpose>(5), error code for an unsupported
+        feature/operation</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrUnsupported ((int) 5)
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para>This is returned by suite functions to indicate an operation is
+        unsupported. For example, a plug-in may attempt to use a custom
+        parameter GUI on a host that does not support it, in which case the
+        host should return <errorcode>kOfxStatErrUnsupported</errorcode> when
+        the plug-in does so.</para>
+      </refsect1>
+    </refentry>
+
+    <refentry id="kOfxStatErrExists">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrExists</errorcode></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrExists</errorcode></refname>
+
+        <refpurpose>(6), something already exists.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrExists  ((int) 6)
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para>This error code is returned from a host function when a plug-in
+        attempts to create an object that already exists. For example, a
+        plug-in attempting to create two parameters with the same name, as the
+        name of a parameter is what defines it.</para>
+      </refsect1>
+    </refentry>
+
+    <refentry id="kOfxStatErrFormat">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrFormat</errorcode></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrFormat</errorcode></refname>
+
+        <refpurpose>(7), indicates an incorrect format.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrFormat ((int) 7)
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para>This error code is returned when a plug-in or hosts receives
+        something in the wrong format.</para>
+      </refsect1>
+    </refentry>
+
+    <refentry id="kOfxStatErrMemory">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrMemory</errorcode></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrMemory</errorcode></refname>
+
+        <refpurpose>(8), a memory shortage was encountered.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrMemory  ((int) 8)
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para>This is returned when a plug-in or host cannot complete its
+        operation because of a memory shortage.</para>
+      </refsect1>
+    </refentry>
+
+    <refentry id="kOfxStatErrBadHandle">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrBadHandle</errorcode></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrBadHandle</errorcode></refname>
+
+        <refpurpose>(9), indicates a bad handle</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrBadHandle ((int) 9)
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para>This status code is returned when a bad handle is passed to a
+        host function or a plug-in action.</para>
+      </refsect1>
+    </refentry>
+
+    <refentry id="kOfxStatErrBadIndex">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrBadIndex</errorcode></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrBadIndex</errorcode></refname>
+
+        <refpurpose>(10), a property index was invalid.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrBadIndex ((int)10)
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para>This is returned by host functions if an operation was requested
+        on an invalid dimension index.</para>
+      </refsect1>
+    </refentry>
+
+    <refentry id="kOfxStatErrValue">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrValue</errorcode></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><errorcode> kOfxStatErrValue </errorcode></refname>
+
+        <refpurpose>(11), an illegal value was passed.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrValue ((int) 11)
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para>This error code is returned if an attempt was made to set an
+        illegal value on an object. For example if an image effect plug-in
+        attempted to set a supported pixel depth of "wibble".</para>
+      </refsect1>
+    </refentry>
+
+    <refentry id="kOfxStatReplyYes">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatReplyYes</errorcode></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><errorcode>kOfxStatReplyYes</errorcode></refname>
+
+        <refpurpose>(12), returned to indicate a positive
+        response.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+#define kOfxStatReplyYes ((int) 12)
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para>This is typically returned from a function involving user
+        interaction and indicates they had a positive response. e.g. the
+        messaging suite can ask the user a question to which they can reply
+        "yes" or "no".</para>
+      </refsect1>
+    </refentry>
+
+    <refentry id="kOfxStatReplyNo">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatReplyNo</errorcode></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><errorcode>kOfxStatReplyNo</errorcode></refname>
+
+        <refpurpose>(13), returned to indicate a positive
+        response.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+#define kOfxStatReplyNo ((int) 13)
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para>This is typically returned from a function involving user
+        interaction and indicates they had a negative response. e.g. the
+        messaging suite can ask the user a question to which they can reply
+        "yes" or "no".</para>
+      </refsect1>
+    </refentry>
+
+    <refentry id="kOfxStatReplyDefault">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatReplyDefault</errorcode></refentrytitle>
+      </refmeta>
+
+      <refnamediv>
+        <refname><errorcode>kOfxStatReplyDefault</errorcode></refname>
+
+        <refpurpose>(14), indicates the default should occur.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <programlisting>
+#include "ofxCore.h"
+#define kOfxStatReplyDefault ((int) 14)
+</programlisting>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+        <para>This is returned by plug-ins' <function>mainEntry</function>
+        function to indicate that they did not trap the action passed and that
+        the default operation should occur. It does not imply failure.</para>
+
+        <para>A subtle but specific use of this is made by plug-in interacts
+        GUIs. If they return this value from any event actions (eg:
+        <literal>kOfxInteractActionPenDown</literal>), then the host is free
+        to pass the event on to another GUI element in the interact
+        window.</para>
+      </refsect1>
+    </refentry>
+  </chapter>
+</book>
