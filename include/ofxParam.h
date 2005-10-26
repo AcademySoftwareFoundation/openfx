@@ -707,15 +707,15 @@ This property indicates how far between the two ::kOfxParamPropCustomValue keys 
 
 /** @brief Function prototype for custom parameter interpolation callback functions
 
-  \arg \e instance   the plugin instance that this parameter occurs in
-  \arg \e inArgs     handle holding the following properties...
+  \arg instance   the plugin instance that this parameter occurs in
+  \arg inArgs     handle holding the following properties...
     - kOfxPropName - the name of the custom parameter to interpolate
     - kOfxPropTime - absolute time the interpolation is ocurring at
     - kOfxParamPropCustomValue - string property that gives the value of the two keyframes to interpolate, in this case 2D
     - kOfxParamPropInterpolationTime - 2D double property that gives the time of the two keyframes we are interpolating
     - kOfxParamPropInterpolationAmount - 1D double property indicating how much to interpolate between the two keyframes
 
-  \arg \e outArgs handle holding the following properties to be set
+  \arg outArgs handle holding the following properties to be set
     - kOfxParamPropCustomValue - the value of the interpolated custom parameter, in this case 1D
 
 This function allows custom parameters to animate by performing interpolation between keys.
@@ -736,10 +736,10 @@ typedef OfxStatus (OfxCustomParamInterpFuncV1)(OfxParamSetHandle instance,
 typedef struct OfxParameterSuiteV1 {
   /** @brief Defines a new parameter of the given type in a describe action
 
-  \arg \e paramSet   handle to the parameter set descriptor that will hold this parameter
-  \arg \e paramType   type of the parameter to create, one of the kOfxParamType* #defines
-  \arg \e name        unique name of the parameter
-  \arg \e propertySet  if not null, a pointer to the parameter descriptor's property set will be placed here.
+  \arg paramSet   handle to the parameter set descriptor that will hold this parameter
+  \arg paramType   type of the parameter to create, one of the kOfxParamType* #defines
+  \arg name        unique name of the parameter
+  \arg propertySet  if not null, a pointer to the parameter descriptor's property set will be placed here.
 
   This function defines a parameter in a parameter set and returns a property set which is used to describe that parameter.
 
@@ -748,7 +748,7 @@ typedef struct OfxParameterSuiteV1 {
 
   This function can always be called in one of a plug-in's 'describe' functions which defines the parameter sets common to all instances of a plugin.
 
-  returns
+@returns
   - ::kOfxStatOK       - the parameter was created correctly
   - ::kOfxStatErrBadHandle  - if the plugin handle was invalid
   - ::kOfxStatErrExists     - if a parameter of that name exists already in this plugin
@@ -762,14 +762,14 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Retrieves the handle for a parameter in a given parameter set
 
-  \arg \e paramSet    instance of the plug-in to fetch the property handle from
-  \arg \e name        parameter to ask about
-  \arg \e param       pointer to a param handle, the value is returned here
-  \arg \e propertySet  if not null, a pointer to the parameter's property set will be placed here.
+  \arg paramSet    instance of the plug-in to fetch the property handle from
+  \arg name        parameter to ask about
+  \arg param       pointer to a param handle, the value is returned here
+  \arg propertySet  if not null, a pointer to the parameter's property set will be placed here.
 
   Parameter handles retrieved from an instance are always distinct in each instance. The paramter handle is valid for the life-time of the instance. Parameter handles in instances are distinct from paramter handles in plugins. You cannot call this in a plugin's describe function, as it needs an instance to work on.
 
-  returns
+@returns
   - ::kOfxStatOK       - the parameter was found and returned
   - ::kOfxStatErrBadHandle  - if the plugin handle was invalid
   - ::kOfxStatErrUnknown    - if the type is unknown
@@ -781,12 +781,12 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Retrieves the property set handle for the given parameter set
 
-  \arg \e paramSet      parameter set to get the property set for
-  \arg \e propHandle    pointer to a the property set handle, value is returedn her
+  \arg paramSet      parameter set to get the property set for
+  \arg propHandle    pointer to a the property set handle, value is returedn her
 
   \note The property handle belonging to a parameter set is the same as the property handle belonging to the plugin instance.
 
-  returns
+@returns
   - ::kOfxStatOK       - the property set was found and returned
   - ::kOfxStatErrBadHandle  - if the paramter handle was invalid
   - ::kOfxStatErrUnknown    - if the type is unknown
@@ -796,12 +796,12 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Retrieves the property set handle for the given parameter
 
-  \arg \e param         parameter to get the property set for
-  \arg \e propHandle    pointer to a the property set handle, value is returedn her
+  \arg param         parameter to get the property set for
+  \arg propHandle    pointer to a the property set handle, value is returedn her
 
   The property handle is valid for the lifetime of the parameter, which is the lifetime of the instance that owns the parameter
 
-  returns
+@returns
   - ::kOfxStatOK       - the property set was found and returned
   - ::kOfxStatErrBadHandle  - if the paramter handle was invalid
   - ::kOfxStatErrUnknown    - if the type is unknown
@@ -811,8 +811,8 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Gets the current value of a parameter,
 
-  \arg \e paramHandle parameter handle to fetch value from
-  \arg \e ...         one or more pointers to variables of the relevant type to hold the parameter's value
+  \arg paramHandle parameter handle to fetch value from
+  \arg ...         one or more pointers to variables of the relevant type to hold the parameter's value
 
   This gets the current value of a parameter. The varargs ... argument needs to be pointer to C variables
   of the relevant type for this parameter. Note that params with multiple values (eg Colour) take
@@ -828,7 +828,7 @@ typedef struct OfxParameterSuiteV1 {
   ofxHost->paramGetValue(myColourParam, &myR, &myG, &myB);
   @endverbatim
 
-  returns
+@returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
   */
@@ -838,15 +838,15 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Gets the value of a parameter at a specific time.
 
-  \arg \e paramHandle parameter handle to fetch value from
-  \arg \e time       at what point in time to look up the parameter
-  \arg \e ...        one or more pointers to variables of the relevant type to hold the parameter's value
+  \arg paramHandle parameter handle to fetch value from
+  \arg time       at what point in time to look up the parameter
+  \arg ...        one or more pointers to variables of the relevant type to hold the parameter's value
 
   This gets the current value of a parameter. The varargs needs to be pointer to C variables
   of the relevant type for this parameter. See OfxParameterSuiteV1::paramGetValue for notes on
   the varags list
 
-  returns
+@returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
   */
@@ -856,9 +856,9 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Gets the derivative of a parameter at a specific time.
 
-  \arg \e paramHandle parameter handle to fetch value from
-  \arg \e time       at what point in time to look up the parameter
-  \arg \e ...        one or more pointers to variables of the relevant type to hold the parameter's derivative
+  \arg paramHandle parameter handle to fetch value from
+  \arg time       at what point in time to look up the parameter
+  \arg ...        one or more pointers to variables of the relevant type to hold the parameter's derivative
 
   This gets the derivative of the parameter at the indicated time. 
 
@@ -868,7 +868,7 @@ typedef struct OfxParameterSuiteV1 {
 
   Only double and colour params can have their derivatives found.
 
-  returns
+@returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
   */
@@ -878,10 +878,10 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Gets the integral of a parameter over a specific time range,
 
-  \arg \e paramHandle parameter handle to fetch integral from
-  \arg \e time1      where to start evaluating the integral
-  \arg \e time2      where to stop evaluating the integral
-  \arg \e ...        one or more pointers to variables of the relevant type to hold the parameter's integral
+  \arg paramHandle parameter handle to fetch integral from
+  \arg time1      where to start evaluating the integral
+  \arg time2      where to stop evaluating the integral
+  \arg ...        one or more pointers to variables of the relevant type to hold the parameter's integral
 
   This gets the integral of the parameter over the specified time range.
 
@@ -891,7 +891,7 @@ typedef struct OfxParameterSuiteV1 {
 
   Only double and colour params can be integrated.
 
-  returns
+@returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
   */
@@ -901,8 +901,8 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Sets the current value of a parameter
 
-  \arg \e paramHandle parameter handle to set value in
-  \arg \e ...        one or more variables of the relevant type to hold the parameter's value
+  \arg paramHandle parameter handle to set value in
+  \arg ...        one or more variables of the relevant type to hold the parameter's value
 
   This sets the current value of a parameter. The varargs ... argument needs to be values
   of the relevant type for this parameter. Note that params with multiple values (eg Colour) take
@@ -912,7 +912,7 @@ typedef struct OfxParameterSuiteV1 {
   ofxHost->paramSetValue(instance, "myColourParam", double(pix.r), double(pix.g), double(pix.b));
   @endverbatim
 
-  returns
+@returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
   */
@@ -921,9 +921,9 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Keyframes the value of a parameter at a specific time.
 
-  \arg \e paramHandle parameter handle to set value in
-  \arg \e time       at what point in time to set the keyframe
-  \arg \e ...        one or more variables of the relevant type to hold the parameter's value
+  \arg paramHandle parameter handle to set value in
+  \arg time       at what point in time to set the keyframe
+  \arg ...        one or more variables of the relevant type to hold the parameter's value
 
   This sets a keyframe in the parameter at the indicated time to have the indicated value.
   The varargs ... argument needs to be values of the relevant type for this parameter. See the note on 
@@ -931,7 +931,7 @@ typedef struct OfxParameterSuiteV1 {
 
   This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
 
-  returns
+@returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
   */
@@ -942,14 +942,14 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Returns the number of keyframes in the parameter
 
-  \arg \e paramHandle parameter handle to interogate
-  \arg \e numberOfKeys  pointer to integer where the return value is placed
+  \arg paramHandle parameter handle to interogate
+  \arg numberOfKeys  pointer to integer where the return value is placed
 
   This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
 
   Returns the number of keyframes in the parameter.
 
-  returns
+@returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
   */
@@ -958,11 +958,11 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Returns the time of the nth key
 
-  \arg \e paramHandle parameter handle to interogate
-  \arg \e nthKey      which key to ask about (0 to paramGetNumKeys -1), ordered by time
-  \arg \e time	  pointer to OfxTime where the return value is placed
+  \arg paramHandle parameter handle to interogate
+  \arg nthKey      which key to ask about (0 to paramGetNumKeys -1), ordered by time
+  \arg time	  pointer to OfxTime where the return value is placed
 
-  returns
+@returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
   - ::kOfxStatErrBadIndex   - the nthKey does not exist
@@ -974,14 +974,15 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Finds the index of a keyframe at/before/after a specified time.
 
-  \arg \e paramHandle parameter handle to search
-  \arg \e time          what time to search from
-  \arg \e direction     == 0 indicates search for a key at the indicated time (some small delta)
-  - > 0 indicates search for the next key after the indicated time
-  - < 0 indicates search for the previous key before the indicated time
-  \arg \e index	   pointer to an integer which in which the index is returned set to -1 if no key was found
+  \arg paramHandle parameter handle to search
+  \arg time          what time to search from
+  \arg direction
+    - == 0 indicates search for a key at the indicated time (some small delta)
+    - > 0 indicates search for the next key after the indicated time
+    - < 0 indicates search for the previous key before the indicated time
+  \arg index	   pointer to an integer which in which the index is returned set to -1 if no key was found
 
-  returns
+@returns
   - ::kOfxStatOK            - all was OK
   - ::kOfxStatFailed        - if the search failed to find a key
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
@@ -993,10 +994,10 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Deletes a keyframe if one exists at the given time.
 
-  \arg \e paramHandle parameter handle to delete the key from
-  \arg \e time      time at which a keyframe is
+  \arg paramHandle parameter handle to delete the key from
+  \arg time      time at which a keyframe is
 
-  returns
+@returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
   - ::kOfxStatErrBadIndex   - no key at the given time
@@ -1006,12 +1007,12 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Deletes all keyframes from a parameter.
 
-  \arg \e paramHandle parameter handle to delete the keys from
-  \arg \e name      parameter to delete the keyframes frome is
+  \arg paramHandle parameter handle to delete the keys from
+  \arg name      parameter to delete the keyframes frome is
 
   This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
 
-  returns
+@returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
   */
@@ -1019,10 +1020,10 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Copies one parameter to another, including any animation etc...
 
-  \arg \e paramTo  parameter to set
-  \arg \e paramFrom parameter to copy from
-  \arg \e dstOffset temporal offset to apply to keys when writing to the paramTo
-  \arg \e frameRange if paramFrom has animation, and frameRange is not null, only this range of keys will be copied
+  \arg paramTo  parameter to set
+  \arg paramFrom parameter to copy from
+  \arg dstOffset temporal offset to apply to keys when writing to the paramTo
+  \arg frameRange if paramFrom has animation, and frameRange is not null, only this range of keys will be copied
 
   This copies the value of \e paramFrom to \e paramTo, including any animation it may have. All the previous values in \e paramTo will be lost.
 
@@ -1042,8 +1043,8 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Used to group any parameter changes for undo/redo purposes
 
-  \arg \e paramSet   the parameter set in which this is happening
-  \arg \e name       label to attach to any undo/redo string UTF8
+  \arg paramSet   the parameter set in which this is happening
+  \arg name       label to attach to any undo/redo string UTF8
 
   If a plugin calls paramSetValue/paramSetValueAtTime on one or more parameters, either from custom GUI interaction
   or some analysis of imagery etc.. this is used to indicate the start of a set of a parameter
@@ -1060,7 +1061,7 @@ typedef struct OfxParameterSuiteV1 {
 
   /** @brief Used to group any parameter changes for undo/redo purposes
 
-  \arg \e paramSet   the parameter set in which this is happening
+  \arg paramSet   the parameter set in which this is happening
 
   If a plugin calls paramSetValue/paramSetValueAtTime on one or more parameters, either from custom GUI interaction
   or some analysis of imagery etc.. this is used to indicate the end of a set of parameter
@@ -1068,7 +1069,7 @@ typedef struct OfxParameterSuiteV1 {
 
   See also OfxParameterSuiteV1::paramEditBegin
 
-  returns
+@returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the instance handle was invalid
 

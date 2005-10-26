@@ -84,11 +84,11 @@ typedef struct OfxMessageSuiteV1 {
 
   /** @brief Post a message on the host, using printf style varargs
 
-      \arg \e handle     - effect handle (descriptor or instance) the message should be associated with, may be null
-      \arg \e messageType - string describing the kind of message to post, one of the kOfxMessageType* constants
-      \arg \e messageId - plugin specified id to associate with this message. If overriding the message in XML resource, the message is identified with this, this may be NULL, or "", in which case no override will occur,
-      \arg \e format    - printf style format string
-      \arg \e ...       - printf style varargs list to print
+      \arg handle     - effect handle (descriptor or instance) the message should be associated with, may be null
+      \arg messageType - string describing the kind of message to post, one of the kOfxMessageType* constants
+      \arg messageId - plugin specified id to associate with this message. If overriding the message in XML resource, the message is identified with this, this may be NULL, or "", in which case no override will occur,
+      \arg format    - printf style format string
+      \arg ...       - printf style varargs list to print
 
 \returns 
   - ::kOfxStatOK - if the message was sucessfully posted 

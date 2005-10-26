@@ -48,9 +48,9 @@ For images, you should use the memory allocation functions in the image effect s
 typedef struct OfxMemorySuiteV1 {
   /** @brief Allocate memory.
       
-  \arg \e handle	- effect instance to assosciate with this memory allocation, or NULL.
-  \arg \e nBytes        - the number of bytes to allocate
-  \arg \e allocatedData - a pointer to the return value. Allocated memory will be alligned for any use.
+  \arg handle	- effect instance to assosciate with this memory allocation, or NULL.
+  \arg nBytes        - the number of bytes to allocate
+  \arg allocatedData - a pointer to the return value. Allocated memory will be alligned for any use.
 
   This function has the host allocate memory using it's own memory resources
   and returns that to the plugin.
@@ -66,7 +66,7 @@ typedef struct OfxMemorySuiteV1 {
 	
   /** @brief Frees memory.
       
-  \arg \e allocatedData - pointer to memory previously returned by OfxMemorySuiteV1::memoryAlloc
+  \arg allocatedData - pointer to memory previously returned by OfxMemorySuiteV1::memoryAlloc
 
   This function frees any memory that was previously allocated via OfxMemorySuiteV1::memoryAlloc.
 

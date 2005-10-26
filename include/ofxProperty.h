@@ -43,49 +43,53 @@ Contains the API for manipulating generic properties. For more details see \ref 
 
 #define kOfxPropertySuite "OfxPropertySuite"
 
+/** @brief The suite used to access properties on an object.
+
+A property suite is fetched from a host with the kOfxPropertySuite string literal to name it. The suite returned contains all the functions to get and set properties on a property set handle.
+*/
 typedef struct OfxPropertySuiteV1 {
   /** @brief Set a single value in a pointer property 
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property
-      \arg \e index is for multidimenstional properties and is dimension of the one we are setting
-      \arg \e value is the value of the property we are setting
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property
+      \arg index is for multidimenstional properties and is dimension of the one we are setting
+      \arg value is the value of the property we are setting
 
-      returns
+      @returns
         - ::kOfxStatOK
-	- ::kOfxStatErrBadHandle
+        - ::kOfxStatErrBadHandle
         - ::kOfxStatErrUnknown
         - ::kOfxStatErrBadIndex
         - ::kOfxStatErrValue
   */
   OfxStatus (*propSetPointer)(OfxPropertySetHandle properties, const char *property, int index, void *value);
 
-  /** @brief Set a single value in  a string property
+  /** @brief Set a single value in a string property
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property
-      \arg \e index is for multidimenstional properties and is dimension of the one we are setting
-      \arg \e value is the value of the property we are setting
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property
+      \arg index is for multidimenstional properties and is dimension of the one we are setting
+      \arg value is the value of the property we are setting
 
-      returns
+      @returns
         - ::kOfxStatOK
-	- ::kOfxStatErrBadHandle
+        - ::kOfxStatErrBadHandle
         - ::kOfxStatErrUnknown
         - ::kOfxStatErrBadIndex
         - ::kOfxStatErrValue
  */
   OfxStatus (*propSetString) (OfxPropertySetHandle properties, const char *property, int index, const char *value);
 
-  /** @brief Set a single value in  a double property
+  /** @brief Set a single value in a double property
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property
-      \arg \e index is for multidimenstional properties and is dimension of the one we are setting
-      \arg \e value is the value of the property we are setting
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property
+      \arg index is for multidimenstional properties and is dimension of the one we are setting
+      \arg value is the value of the property we are setting
 
-      returns
+      @returns
         - ::kOfxStatOK
-	- ::kOfxStatErrBadHandle
+        - ::kOfxStatErrBadHandle
         - ::kOfxStatErrUnknown
         - ::kOfxStatErrBadIndex
         - ::kOfxStatErrValue
@@ -94,14 +98,14 @@ typedef struct OfxPropertySuiteV1 {
 
   /** @brief Set a single value in  an int property 
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property
-      \arg \e index is for multidimenstional properties and is dimension of the one we are setting
-      \arg \e value is the value of the property we are setting
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property
+      \arg index is for multidimenstional properties and is dimension of the one we are setting
+      \arg value is the value of the property we are setting
 
-      returns
+      @returns
         - ::kOfxStatOK
-	- ::kOfxStatErrBadHandle
+        - ::kOfxStatErrBadHandle
         - ::kOfxStatErrUnknown
         - ::kOfxStatErrBadIndex
         - ::kOfxStatErrValue
@@ -110,40 +114,46 @@ typedef struct OfxPropertySuiteV1 {
 
   /** @brief Set multiple values of the pointer property
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property
-      \arg \e count is the number of values we are setting in that property (ie: indicies 0..count-1)
-      \arg \e value is a pointer to an array of property values
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property
+      \arg count is the number of values we are setting in that property (ie: indicies 0..count-1)
+      \arg value is a pointer to an array of property values
+
+      @returns
+        - ::kOfxStatOK
+        - ::kOfxStatErrBadHandle
+        - ::kOfxStatErrUnknown
+        - ::kOfxStatErrBadIndex
+        - ::kOfxStatErrValue
  */
   OfxStatus (*propSetPointerN)(OfxPropertySetHandle properties, const char *property, int count, void **value);
 
   /** @brief Set multiple values of a string property
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property
-      \arg \e count is the number of values we are setting in that property (ie: indicies 0..count-1)
-      \arg \e value is a pointer to an array of property values
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property
+      \arg count is the number of values we are setting in that property (ie: indicies 0..count-1)
+      \arg value is a pointer to an array of property values
 
-      returns
+      @returns
         - ::kOfxStatOK
-	- ::kOfxStatErrBadHandle
+        - ::kOfxStatErrBadHandle
         - ::kOfxStatErrUnknown
         - ::kOfxStatErrBadIndex
         - ::kOfxStatErrValue
-
   */
   OfxStatus (*propSetStringN) (OfxPropertySetHandle properties, const char *property, int count, const char **value);
 
   /** @brief Set multiple values of  a double property
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property
-      \arg \e count is the number of values we are setting in that property (ie: indicies 0..count-1)
-      \arg \e value is a pointer to an array of property values
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property
+      \arg count is the number of values we are setting in that property (ie: indicies 0..count-1)
+      \arg value is a pointer to an array of property values
 
-      returns
+      @returns
         - ::kOfxStatOK
-	- ::kOfxStatErrBadHandle
+        - ::kOfxStatErrBadHandle
         - ::kOfxStatErrUnknown
         - ::kOfxStatErrBadIndex
         - ::kOfxStatErrValue
@@ -153,14 +163,14 @@ typedef struct OfxPropertySuiteV1 {
 
   /** @brief Set multiple values of an int property 
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property
-      \arg \e count is the number of values we are setting in that property (ie: indicies 0..count-1)
-      \arg \e value is a pointer to an array of property values
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property
+      \arg count is the number of values we are setting in that property (ie: indicies 0..count-1)
+      \arg value is a pointer to an array of property values
 
-      returns
+      @returns
         - ::kOfxStatOK
-	- ::kOfxStatErrBadHandle
+        - ::kOfxStatErrBadHandle
         - ::kOfxStatErrUnknown
         - ::kOfxStatErrBadIndex
         - ::kOfxStatErrValue
@@ -170,14 +180,14 @@ typedef struct OfxPropertySuiteV1 {
   
   /** @brief Get a single value from a pointer property
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property
-      \arg \e index refers to the index of a multi-dimensional property
-      \arg \e value is a pointer the return location
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property
+      \arg index refers to the index of a multi-dimensional property
+      \arg value is a pointer the return location
 
-      returns
+      @returns
         - ::kOfxStatOK
-	- ::kOfxStatErrBadHandle
+        - ::kOfxStatErrBadHandle
         - ::kOfxStatErrUnknown
         - ::kOfxStatErrBadIndex
  */
@@ -185,14 +195,14 @@ typedef struct OfxPropertySuiteV1 {
 
   /** @brief Get a single value of a string property
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property
-      \arg \e index refers to the index of a multi-dimensional property
-      \arg \e value is a pointer the return location
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property
+      \arg index refers to the index of a multi-dimensional property
+      \arg value is a pointer the return location
 
-      returns
+      @returns
         - ::kOfxStatOK
-	- ::kOfxStatErrBadHandle
+        - ::kOfxStatErrBadHandle
         - ::kOfxStatErrUnknown
         - ::kOfxStatErrBadIndex
  */
@@ -200,16 +210,16 @@ typedef struct OfxPropertySuiteV1 {
 
   /** @brief Get a single value of a double property
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property
-      \arg \e index refers to the index of a multi-dimensional property
-      \arg \e value is a pointer the return location
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property
+      \arg index refers to the index of a multi-dimensional property
+      \arg value is a pointer the return location
 
       See the note \ref ArchitectureStrings for how to deal with strings.
 
-      returns
+      @returns
         - ::kOfxStatOK
-	- ::kOfxStatErrBadHandle
+        - ::kOfxStatErrBadHandle
         - ::kOfxStatErrUnknown
         - ::kOfxStatErrBadIndex
  */
@@ -217,14 +227,14 @@ typedef struct OfxPropertySuiteV1 {
 
   /** @brief Get a single value of an int property
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property
-      \arg \e index refers to the index of a multi-dimensional property
-      \arg \e value is a pointer the return location
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property
+      \arg index refers to the index of a multi-dimensional property
+      \arg value is a pointer the return location
 
-      returns
+      @returns
         - ::kOfxStatOK
-	- ::kOfxStatErrBadHandle
+        - ::kOfxStatErrBadHandle
         - ::kOfxStatErrUnknown
         - ::kOfxStatErrBadIndex
  */
@@ -232,14 +242,14 @@ typedef struct OfxPropertySuiteV1 {
 
   /** @brief Get multiple values of a pointer property 
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property
-      \arg \e count is the number of values we are getting of that property (ie: indicies 0..count-1)
-      \arg \e value is a pointer to an array of where we will return the property values
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property
+      \arg count is the number of values we are getting of that property (ie: indicies 0..count-1)
+      \arg value is a pointer to an array of where we will return the property values
 
-      returns
+      @returns
         - ::kOfxStatOK
-	- ::kOfxStatErrBadHandle
+        - ::kOfxStatErrBadHandle
         - ::kOfxStatErrUnknown
         - ::kOfxStatErrBadIndex
   */
@@ -247,16 +257,16 @@ typedef struct OfxPropertySuiteV1 {
 
   /** @brief Get multiple values of a string property
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property
-      \arg \e count is the number of values we are getting of that property (ie: indicies 0..count-1)
-      \arg \e value is a pointer to an array of where we will return the property values
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property
+      \arg count is the number of values we are getting of that property (ie: indicies 0..count-1)
+      \arg value is a pointer to an array of where we will return the property values
 
       See the note \ref ArchitectureStrings for how to deal with strings.
 
-      returns
+      @returns
         - ::kOfxStatOK
-	- ::kOfxStatErrBadHandle
+        - ::kOfxStatErrBadHandle
         - ::kOfxStatErrUnknown
         - ::kOfxStatErrBadIndex
   */
@@ -264,14 +274,14 @@ typedef struct OfxPropertySuiteV1 {
 
   /** @brief Get multiple values of a double property
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property
-      \arg \e count is the number of values we are getting of that property (ie: indicies 0..count-1)
-      \arg \e value is a pointer to an array of where we will return the property values
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property
+      \arg count is the number of values we are getting of that property (ie: indicies 0..count-1)
+      \arg value is a pointer to an array of where we will return the property values
 
-      returns
+      @returns
         - ::kOfxStatOK
-	- ::kOfxStatErrBadHandle
+        - ::kOfxStatErrBadHandle
         - ::kOfxStatErrUnknown
         - ::kOfxStatErrBadIndex
   */
@@ -279,14 +289,14 @@ typedef struct OfxPropertySuiteV1 {
 
   /** @brief Get multiple values of an int property
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property
-      \arg \e count is the number of values we are getting of that property (ie: indicies 0..count-1)
-      \arg \e value is a pointer to an array of where we will return the property values
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property
+      \arg count is the number of values we are getting of that property (ie: indicies 0..count-1)
+      \arg value is a pointer to an array of where we will return the property values
 
-      returns
+      @returns
         - ::kOfxStatOK
-	- ::kOfxStatErrBadHandle
+        - ::kOfxStatErrBadHandle
         - ::kOfxStatErrUnknown
         - ::kOfxStatErrBadIndex
   */
@@ -294,23 +304,23 @@ typedef struct OfxPropertySuiteV1 {
 
   /** @brief Resets all dimensions of a property to it's default value
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property we are resetting
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property we are resetting
 
-      returns
+      @returns
         - ::kOfxStatOK
-	- ::kOfxStatErrBadHandle
+        - ::kOfxStatErrBadHandle
         - ::kOfxStatErrUnknown
    */
   OfxStatus (*propReset)    (OfxPropertySetHandle properties, const char *property);
 
   /** @brief Gets the dimension of the property
 
-      \arg \e properties is the handle of the thing holding the property
-      \arg \e property is the string labelling the property we are resetting
-      \arg \e count is a pointer to an integer where the value is returned
+      \arg properties is the handle of the thing holding the property
+      \arg property is the string labelling the property we are resetting
+      \arg count is a pointer to an integer where the value is returned
 
-    returns
+    @returns
       - ::kOfxStatOK
       - ::kOfxStatErrBadHandle
       - ::kOfxStatErrUnknown
