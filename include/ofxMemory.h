@@ -72,7 +72,7 @@ typedef struct OfxMemorySuiteV1 {
 
   @returns
   - ::kOfxStatOK the memory was sucessfully freed
-  - ::kOfxStatErrBadHandle @arg allocated data was not a valid pointer returned by OfxMemorySuiteV1::memoryAlloc
+  - ::kOfxStatErrBadHandle \e allocatedData was not a valid pointer returned by OfxMemorySuiteV1::memoryAlloc
 
   */   
   OfxStatus (*memoryFree)(void *allocatedData);

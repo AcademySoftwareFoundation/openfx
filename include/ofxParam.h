@@ -749,11 +749,11 @@ typedef struct OfxParameterSuiteV1 {
   This function can always be called in one of a plug-in's 'describe' functions which defines the parameter sets common to all instances of a plugin.
 
 @returns
-  - ::kOfxStatOK       - the parameter was created correctly
-  - ::kOfxStatErrBadHandle  - if the plugin handle was invalid
-  - ::kOfxStatErrExists     - if a parameter of that name exists already in this plugin
-  - ::kOfxStatErrUnknown    - if the type is unknown
-  - ::kOfxStatErrUnsuported - if the type is known but unsupported
+  - ::kOfxStatOK             - the parameter was created correctly
+  - ::kOfxStatErrBadHandle   - if the plugin handle was invalid
+  - ::kOfxStatErrExists      - if a parameter of that name exists already in this plugin
+  - ::kOfxStatErrUnknown     - if the type is unknown
+  - ::kOfxStatErrUnsupported - if the type is known but unsupported
   */
   OfxStatus (*paramDefine)(OfxParamSetHandle paramSet,
 			   const char *paramType,

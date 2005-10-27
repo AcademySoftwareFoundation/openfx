@@ -60,7 +60,7 @@ typedef void (OfxThreadFunctionV1)(unsigned int threadIndex,
 				   unsigned int threadMax,
 				   void *customArg);
 
-/** @brief Host API to carry out SMP multi threaded rendering
+/** @brief Suite for performing simple SMP threading.
  */
 typedef struct OfxMultiThreadSuiteV1 {
   /**@brief Function to spawn SMP threads
@@ -81,7 +81,7 @@ typedef struct OfxMultiThreadSuiteV1 {
 
   This function cannot be called recursively.
 
-  \returns
+  @returns
   - ::kOfxStatOK, the function func has executed and returned sucessfully
   - ::kOfxStatFailed, the threading function failed to launch
   - ::kOfxStatErrExists, failed in an attempt to call multiThread recursively,
@@ -97,7 +97,7 @@ typedef struct OfxMultiThreadSuiteV1 {
      
   This value may be less than the actual number of CPUs on a machine, as the host may reserve other CPUs for itself.
 
-  \returns
+  @returns
   - ::kOfxStatOK, all was OK and the maximum number of threads is in nThreads.
   - ::kOfxStatFailed, the function failed to get the number of CPUs 
   */
@@ -111,7 +111,7 @@ typedef struct OfxMultiThreadSuiteV1 {
 
   If there are no threads currently spawned, then this function will set threadIndex to 0
 
-  \returns
+  @returns
   - ::kOfxStatOK, all was OK and the maximum number of threads is in nThreads.
   - ::kOfxStatFailed, the function failed to return an index
   */
@@ -119,7 +119,7 @@ typedef struct OfxMultiThreadSuiteV1 {
 
   /**@brief Function to enquire if the calling thread was spawned by multiThread
 
-  \returns
+  @returns
   - 0 if the thread is not one spawned by multiThread
   - 1 if the thread was spawned by multiThread
   */
@@ -132,7 +132,7 @@ typedef struct OfxMultiThreadSuiteV1 {
 
   Creates a new mutex with lockCount locks on the mutex intially set.    
 
-  \returns
+  @returns
   - kOfxStatOK - mutex is now valid and ready to go
   */
   OfxStatus (*mutexCreate)(const OfxMutexHandle *mutex, int lockCount);
@@ -141,7 +141,7 @@ typedef struct OfxMultiThreadSuiteV1 {
       
   Destroys a mutex intially created by mutexCreate.
   
-  \returns
+  @returns
   - kOfxStatOK - if it destroyed the mutex
   - kOfxStatErrBadHandle - if the handle was bad
   */
@@ -153,7 +153,7 @@ typedef struct OfxMultiThreadSuiteV1 {
 
   A sucessful lock causes the mutex's lock count to be increased by one and to block any other calls to lock the mutex until it is unlocked.
   
-  \returns
+  @returns
   - kOfxStatOK - if it got the lock
   - kOfxStatErrBadHandle - if the handle was bad
   */
@@ -163,7 +163,7 @@ typedef struct OfxMultiThreadSuiteV1 {
 
   This  unlocks a mutex. Unlocking a mutex decreases its lock count by one.
   
-  \returns
+  @returns
   - kOfxStatOK if it released the lock
   - kOfxStatErrBadHandle if the handle was bad
   */
@@ -175,7 +175,7 @@ typedef struct OfxMultiThreadSuiteV1 {
 
   A sucessful lock causes the mutex's lock count to be increased by one, if the lock did not suceed, the call returns immediately and the lock count remains unchanged.
 
-  \returns
+  @returns
   - kOfxStatOK - if it got the lock
   - kOfxStatFailed - if it did not get the lock
   - kOfxStatErrBadHandle - if the handle was bad

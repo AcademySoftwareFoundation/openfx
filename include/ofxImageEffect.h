@@ -933,12 +933,12 @@ This will be in \ref PixelCoordinates
 typedef struct OfxImageEffectSuiteV1 {  
   /** @brief Retrieves the property set for the given image effect
 
-  \arg \e imageEffect   image effect to get the property set for
-  \arg \e propHandle    pointer to a the property set pointer, value is returned here
+  \arg imageEffect   image effect to get the property set for
+  \arg propHandle    pointer to a the property set pointer, value is returned here
 
   The property handle is for the duration of the image effect handle.
 
-  returns
+  @returns
   - ::kOfxStatOK       - the property set was found and returned
   - ::kOfxStatErrBadHandle  - if the paramter handle was invalid
   - ::kOfxStatErrUnknown    - if the type is unknown
@@ -948,12 +948,12 @@ typedef struct OfxImageEffectSuiteV1 {
 
   /** @brief Retrieves the parameter set for the given image effect
 
-  \arg \e imageEffect   image effect to get the property set for
-  \arg \e paramSet     pointer to a the parameter set, value is returned here
+  \arg imageEffect   image effect to get the property set for
+  \arg paramSet     pointer to a the parameter set, value is returned here
 
   The param set handle is valid for the lifetime of the image effect handle.
 
-  returns
+  @returns
   - ::kOfxStatOK       - the property set was found and returned
   - ::kOfxStatErrBadHandle  - if the paramter handle was invalid
   - ::kOfxStatErrUnknown    - if the type is unknown
@@ -964,9 +964,9 @@ typedef struct OfxImageEffectSuiteV1 {
 
   /** @brief Define a clip to the effect. 
       
-   \arg \e pluginHandle - the handle passed into 'describeInContext' action
-   \arg \e name - unique name of the clip to define
-   \arg \e propertySet - a property handle for the clip descriptor will be returned here
+   \arg pluginHandle - the handle passed into 'describeInContext' action
+   \arg name - unique name of the clip to define
+   \arg propertySet - a property handle for the clip descriptor will be returned here
 
    This function defines a clip to a host, the returned property set is used to describe
    various aspects of the clip to the host. Note that this does not create a clip instance.
@@ -974,7 +974,7 @@ typedef struct OfxImageEffectSuiteV1 {
 \pre
  - we are inside the describe in context action.
 
-\return
+  @returns
   */
   OfxStatus (*clipDefine)(OfxImageEffectHandle imageEffect,
 			  const char *name,	 
@@ -982,10 +982,10 @@ typedef struct OfxImageEffectSuiteV1 {
 
   /** @brief Get the propery handle of the named input clip in the given instance 
    
-   \arg \e imageEffect - an instance handle to the plugin
-   \arg \e name        - name of the clip, previously used in a clip define call
-   \arg \e clip        - where to return the clip
-  \arg \e propertySet  if not null, the descriptor handle for a parameter's property set will be placed here.
+   \arg imageEffect - an instance handle to the plugin
+   \arg name        - name of the clip, previously used in a clip define call
+   \arg clip        - where to return the clip
+  \arg propertySet  if not null, the descriptor handle for a parameter's property set will be placed here.
 
   The propertySet will have the same value as would be returned by OfxImageEffectSuiteV1::clipGetPropertySet
 
@@ -1011,12 +1011,12 @@ typedef struct OfxImageEffectSuiteV1 {
 
   /** @brief Retrieves the property set for a given clip
 
-  \arg \e clip          clip effect to get the property set for
-  \arg \e propHandle    pointer to a the property set handle, value is returedn her
+  \arg clip          clip effect to get the property set for
+  \arg propHandle    pointer to a the property set handle, value is returedn her
 
   The property handle is valid for the lifetime of the clip, which is generally the lifetime of the instance.
 
-  returns
+  @returns
   - ::kOfxStatOK       - the property set was found and returned
   - ::kOfxStatErrBadHandle  - if the paramter handle was invalid
   - ::kOfxStatErrUnknown    - if the type is unknown
@@ -1026,11 +1026,11 @@ typedef struct OfxImageEffectSuiteV1 {
 
   /** @brief Get a handle for an image in a clip at the indicated time and indicated region
 
-      \arg \e clip  - the clip to extract the image from
-      \arg \e time        - time to fetch the image at
-      \arg \e region      - region to fetch the image from (optional, set to NULL to get a 'default' region)
+      \arg clip  - the clip to extract the image from
+      \arg time        - time to fetch the image at
+      \arg region      - region to fetch the image from (optional, set to NULL to get a 'default' region)
                             this is in the \ref CannonicalCoordinates. 
-      \arg \e imageHandle - property set containing the image's data
+      \arg imageHandle - property set containing the image's data
 
   An image is fetched from a clip at the indicated time for the given region and returned in the imageHandle.
 
@@ -1045,7 +1045,7 @@ If clipGetImage is called twice with the same parameters, then two separate imag
  - image handle is only valid for the duration of the action clipGetImage is called in
  - image handle to be disposed of by clipReleaseImage before the action returns
 
-\return
+@returns
 - ::kOfxStatOK - the image was successfully fetched and returned in the handle,
 - ::kOfxStatFailed - the image could not be fetched because it does not exist in the clip at the indicated time and/or region, the plugin
                      should continue operation, but assume the image was black and transparent.
@@ -1067,7 +1067,7 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 \post
  - all operations on imageHandle will be invalid
 
-\return
+@returns
 - ::kOfxStatOK - the image was successfully fetched and returned in the handle,
 - ::kOfxStatErrBadHandle - the image handle was invalid,
  */
@@ -1076,11 +1076,11 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 
   /** @brief Returns the spatial region of definition of the clip at the given time
 
-      \arg \e clipHandle  - the clip to extract the image from
-      \arg \e time        - time to fetch the image at
-      \arg \e region      - region to fetch the image from (optional, set to NULL to get a 'default' region)
+      \arg clipHandle  - the clip to extract the image from
+      \arg time        - time to fetch the image at
+      \arg region      - region to fetch the image from (optional, set to NULL to get a 'default' region)
                             this is in the \ref CannonicalCoordinates. 
-      \arg \e imageHandle - handle where the image is returned
+      \arg imageHandle - handle where the image is returned
 
   An image is fetched from a clip at the indicated time for the given region and returned in the imageHandle.
 
@@ -1092,7 +1092,7 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 \post
  - bounds will be filled the RoD of the clip at the indicated time
 
-\return
+@returns
 - ::kOfxStatOK - the image was successfully fetched and returned in the handle,
 - ::kOfxStatFailed - the image could not be fetched because it does not exist in the clip at the indicated time, the plugin
                      should continue operation, but assume the image was black and transparent.
@@ -1107,14 +1107,14 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 
   /** @brief Returns whether to abort processing or not.
 
-      \arg \e imageEffect  - instance of the image effect
+      \arg imageEffect  - instance of the image effect
 
   A host may want to signal to a plugin that it should stop whatever rendering it is doing and start again. 
   Generally this is done in interactive threads in response to users tweaking some parameter.
 
   This function indicates whether a plugin should stop whatever processing it is doing.
   
-  \return
+  @returns
      - 0 if the effect should continue whatever processing it is doing
      - 1 if the effect should abort whatever processing it is doing  
  */
@@ -1122,16 +1122,16 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 
   /** @brief Allocate memory from the host's image memory pool
       
-  \arg \e instanceHandle  - effect instance to associate with this memory allocation, may be NULL.
-  \arg \e nBytes          - the number of bytes to allocate
-  \arg \e memoryHandle    - pointer to the memory handle where a return value is placed
+  \arg instanceHandle  - effect instance to associate with this memory allocation, may be NULL.
+  \arg nBytes          - the number of bytes to allocate
+  \arg memoryHandle    - pointer to the memory handle where a return value is placed
 
   Memory handles allocated by this should be freed by OfxImageEffectSuiteV1::imageMemoryFree. 
   To access the memory behind the handle you need to call  OfxImageEffectSuiteV1::imageMemoryLock.
 
   See \ref ImageEffectsMemoryAllocation.
 
-  \returns 
+  @returns 
   - kOfxStatOK if all went well, a valid memory handle is placed in \e memoryHandle
   - kOfxStatErrBadHandle if instanceHandle is not valid, memoryHandle is set to NULL
   - kOfxStatErrMemory if there was not enough memory to satisfy the call, memoryHandle is set to NULL
@@ -1142,7 +1142,7 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 	
   /** @brief Frees a memory handle and associated memory.
       
-  \arg \e memoryHandle - memory handle returned by imageMemoryAlloc
+  \arg memoryHandle - memory handle returned by imageMemoryAlloc
 
   This function frees a memory handle and associated memory that was previously allocated via OfxImageEffectSuiteV1::imageMemoryAlloc
 
@@ -1150,7 +1150,7 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 
   See \ref ImageEffectsMemoryAllocation.
 
-  \returns
+  @returns
   - kOfxStatOK if the memory was cleanly deleted
   - kOfxStatErrBadHandle if the value of \e memoryHandle was not a valid pointer returned by OfxImageEffectSuiteV1::imageMemoryAlloc
   */   
@@ -1158,8 +1158,8 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 
   /** @brief Lock the memory associated with a memory handle and make it available for use.
 
-  \arg \e memoryHandle - memory handle returned by imageMemoryAlloc
-  \arg \e returnedPtr - where to the pointer to the locked memory
+  \arg memoryHandle - memory handle returned by imageMemoryAlloc
+  \arg returnedPtr - where to the pointer to the locked memory
 
   This function locks them memory associated with a memory handle and returns a pointer to it. The memory will be 16 byte aligned, to allow use of vector operations.
   
@@ -1171,7 +1171,7 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 
   See also OfxImageEffectSuiteV1::imageMemoryUnlock and \ref ImageEffectsMemoryAllocation.
     
-  \returns
+  @returns
   - kOfxStatOK if the memory was locked, a pointer is placed in \e returnedPtr
   - kOfxStatErrBadHandle if the value of \e memoryHandle was not a valid pointer returned by OfxImageEffectSuiteV1::imageMemoryAlloc, null is placed in \e *returnedPtr
   - kOfxStatErrMemory if there was not enough memory to satisfy the call, \e *returnedPtr is set to NULL
@@ -1181,7 +1181,7 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 
   /** @brief Unlock allocated image data
 
-  \arg \e allocatedData - pointer to memory previously returned by OfxImageEffectSuiteV1::imageAlloc
+  \arg allocatedData - pointer to memory previously returned by OfxImageEffectSuiteV1::imageAlloc
 
   This function unlocks a previously locked memory handle. Once completely unlocked, memory associated with a memoryHandle is no longer available for use. Attempting to use it results in undefined behaviour.
 
@@ -1193,7 +1193,7 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 
   See also OfxImageEffectSuiteV1::imageMemoryLock and \ref ImageEffectsMemoryAllocation.
   
-  \returns
+  @returns
   - kOfxStatOK if the memory was unlocked cleanly,
   - kOfxStatErrBadHandle if the value of \e memoryHandle was not a valid pointer returned by OfxImageEffectSuiteV1::imageMemoryAlloc, null is placed in \e *returnedPtr
   */
@@ -1730,7 +1730,7 @@ The \e outArgs handle is redundant and is set to null.
 \pre
 - ::kOfxActionDescribe has been called on the instance
 
-\return
+@returns
 - ::kOfxStatReplyDefault, the default action should be taken
 - ::kOfxStatOK, the action was trapped and appropriate action taken
 - ::kOfxStatErrMissingHostFeature, in which the plugin will be unloaded and ignored, plugin may post message
@@ -1764,7 +1764,7 @@ The \e outArgs parameter is redundant and is NULL.
 \post
 - the ::kOfxImageEffectActionEndSequenceRender action will be called on the instance
 
-\return
+@returns
 - ::kOfxStatOK, the action was trapped and all was well
 - ::kOfxStatFailed, the render action failed for some reason not documentable, the plugin should post a message
 - ::kOfxStatErrFatal, in which case we the program will be forced to quit
@@ -1795,7 +1795,7 @@ The \e outArgs parameter is redundant and is NULL.
 \post
 - the ::kOfxImageEffectActionEndSequenceRender action will be called on the instance
 
-\return
+@returns
 - ::kOfxStatReplyDefault, do the default,
 - ::kOfxStatOK, the action was trapped and all was well,
 - ::kOfxStatFailed, the render action failed for some reason not documentable, the plugin should post a message,
@@ -1825,7 +1825,7 @@ The \e outArgs parameter is redundant and is NULL.
 \post
 - the ::kOfxImageEffectActionBeginSequenceRender action will be called on the instance
 
-\return
+@returns
 - ::kOfxStatReplyDefault, do the default,
 - ::kOfxStatOK, the action was trapped and all was well,
 - ::kOfxStatFailed, the render action failed for some reason not documentable, the plugin should post a message,
@@ -1862,7 +1862,7 @@ The \e outArgs handle has the following properties that can be set...
 \pre
 - ::kOfxActionCreateInstance has been called on the instance
 
-\return
+@returns
 - ::kOfxStatReplyDefault, the default action should be taken
 - ::kOfxStatOK, the action was trapped and the outArgs contains the relevant values
 - ::kOfxStatFailed, the is identity action failed for some reason not documentable, the plugin should post a message
@@ -1891,7 +1891,7 @@ The \e outArgs handle has the following properties that can be set...
 \pre
 - ::kOfxActionCreateInstance has been called on the instance
 
-\return
+@returns
 - ::kOfxStatReplyDefault,  the default action should be taken
 - ::kOfxStatOK, the action was trapped and the RoD was set
 - ::kOfxStatFailed, the  action failed for some reason not documentable, the plugin should post a message
@@ -1940,7 +1940,7 @@ The \e outArgs handle has the following properties that are to be set...
 \pre
 - ::kOfxActionCreateInstance has been called on the instance
 
-\return
+@returns
 - ::kOfxStatReplyDefault, the default action should be taken
 - ::kOfxStatOK, the action was trapped and the RoI were set
 - ::kOfxStatFailed, the  action failed for some reason not documentable, the plugin should post a message
@@ -1969,7 +1969,7 @@ The \e outArgs handle has the following properties that can be set...
 - ::kOfxActionCreateInstance has been called on the instance
 - the effect has been created in the general effect context
 
-\return
+@returns
 - ::kOfxStatReplyDefault,  the default action should be taken
 - ::kOfxStatOK, the action was trapped and the RoD was set
 - ::kOfxStatFailed, the  action failed for some reason not documentable, the plugin should post a message
@@ -2026,7 +2026,7 @@ The \e outArgs handle has the following properties that are to be set...
 - ::kOfxActionCreateInstance has been called on the instance,
 - ::kOfxImageEffectPropTemporalClipAccess has been set on the plugin's handle.
 
-\return
+@returns
 - ::kOfxStatReplyDefault, the default action should be taken
 - ::kOfxStatOK, the action was trapped and the RoI were set
 - ::kOfxStatFailed, the  action failed for some reason not documentable, the plugin should post a message
@@ -2064,7 +2064,7 @@ All the properties on outargs are set to their default values when the action is
 \pre
 - ::kOfxActionCreateInstance has been called on the instance
 
-\return
+@returns
 - ::kOfxStatReplyDefault, the default action should be taken
 - ::kOfxStatOK, the action was trapped and the pixel preferences were set
 - ::kOfxStatFailed, the  action failed for some reason not documentable, the plugin should post a message
