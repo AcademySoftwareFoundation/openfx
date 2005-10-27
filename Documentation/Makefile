@@ -16,6 +16,15 @@ PROPERTY_HEADER_FILES = ../include/ofxParam.h \
 	../include/ofxInteract.h \
 	../include/ofxCore.h
 
+# files generate from the C comments in the actual headers and used as reference
+PROPERY_SUITE_REFERENCE_FILES = \
+	ofxPropertySuiteReference.xml \
+	ofxMemorySuiteReference.xml \
+	ofxParametersSuiteReference.xml \
+	ofxThreadingSuiteReference.xml \
+	ofxImageEffectSuiteReference.xml \
+	ofxInteractSuiteReference.xml 
+
 banana : ofxProgrammingReference.html
 
 all : ofxProgrammingGuide.html ofxProgrammingReference.html
@@ -29,17 +38,10 @@ ofxProgrammingGuide.html : $(GUIDE_SRCS)
 
 # programming reference, all in one
 REF_SRCS = header.xml ofxProgrammingReference.xml
-ofxProgrammingReference.html : $(REF_SRCS)
-	cat $^ > tmp.xml
+ofxProgrammingReference.html : $(REF_SRCS) $(PROPERY_SUITE_REFERENCE_FILES) ofxPropertiesReference.xml ofxPropertiesByObject.xml 
+	cat  $(REF_SRCS) > tmp.xml
 	xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)docbook.xsl tmp.xml
 	rm -f tmp.xml
-
-# the ref depends on these other two xml files
-ofxProgrammingReference.xml  : ofxPropertiesReference.xml \
-	ofxPropertiesByObject.xml \
-	ofxPropertySuiteReference.xml \
-	ofxMemorySuiteReference.xml \
-	ofxParametersSuiteReference.xml
 
 # generate property definitions from the property headers
 ofxPropertiesReference.xml : extractPropertyDefinitions.perl $(PROPERTY_HEADER_FILES)
@@ -48,17 +50,29 @@ ofxPropertiesReference.xml : extractPropertyDefinitions.perl $(PROPERTY_HEADER_F
 	cat props/* > ofxPropertiesReference.xml
 	rm -rf props
 
-clean :
-	rm -rf *.html props
-
 # Extract references on the property suite from the .h file
 ofxPropertySuiteReference.xml : ../include/ofxProperty.h
-	./getSuiteReference.perl OfxPropertySuite $^ > $@
+	./getSuiteReference.perl OfxPropertySuiteV1 $^ > $@
 
 # Extract references on the memory suite from the .h file
 ofxMemorySuiteReference.xml : ../include/ofxMemory.h
-	./getSuiteReference.perl OfxMemorySuite $^ > $@
+	./getSuiteReference.perl OfxMemorySuiteV1 $^ > $@
 
 # Extract references on the parameters suite from the .h file
 ofxParametersSuiteReference.xml : ../include/ofxParam.h
-	./getSuiteReference.perl OfxParameterSuite $^ > $@
+	./getSuiteReference.perl OfxParameterSuiteV1 $^ > $@
+
+# Extract references on the parameters suite from the .h file
+ofxThreadingSuiteReference.xml : ../include/ofxMultiThread.h
+	./getSuiteReference.perl OfxMultiThreadSuiteV1 $^ > $@
+
+# Extract references on the parameters suite from the .h file
+ofxInteractSuiteReference.xml : ../include/ofxInteract.h
+	./getSuiteReference.perl OfxInteractSuiteV1 $^ > $@
+
+# Extract references on the parameters suite from the .h file
+ofxImageEffectSuiteReference.xml : ../include/ofxImageEffect.h
+	./getSuiteReference.perl OfxImageEffectSuiteV1 $^ > $@
+
+clean :
+	rm -rf *.html props $(PROPERY_SUITE_REFERENCE_FILES)

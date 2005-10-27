@@ -203,10 +203,11 @@ The default value is $defaultDescription.
     }
 
     # clobber whitespace on the general description
-    #$generalDescription = formatParagraph($briefDescription . $generalDescription, 1);
+    $generalDescription = $briefDescription . $generalDescription;
+    $generalDescription = formatParagraph($generalDescription, 1);
     # do we have a valid value string?
     if(length($validString) > 0) {
-	#$validString = formatParagraph($validString, 1);
+	$validString = formatParagraph($validString, 1);
 	$validString = 
 "<refsect2><title>Valid Values</title>
 $validString

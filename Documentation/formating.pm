@@ -11,101 +11,42 @@ sub stripSurroundingWhite
 sub formatIt
 {
     local $inString = $_[0];
-
-    #print "raw string is '$inString'\n";
-    local @meChars = split //, $inString;
-
     local $outString = "";
+    
+    # swap some no-no xml chars about
+    $inString =~ s/\&/\&amp;/g;
+    $inString =~ s/</\&lt;/g;
+    $inString =~ s/>/\&gt;/g;
 
-    while(@meChars) {
-	local $snatched = 0; # has this character been snatched?
-	local $ch = shift(@meChars);
-	#print "ch = '$ch'\n";
+    while($inString =~ /::/) {
+	$inString =~ /(\w*)::(\w*)/;
+	my $obj = $1;
+	my $member = $2;
 
-	if($ch eq "&") {
-	    $snatched = 1;
-	    $outString .= "&amp;";
+	my $referredToObject = $member;
+	my $referredToName = $member;
+	if($obj ne "") {
+	    $referredToObject = $obj . "_" . $referredToObject;
+	    $referredToName = $obj . "XXXXXX" . $member;
 	}
 
-	elsif($ch eq "<") {
-	    $snatched = 1;
-	    $outString .= "&lt;";
-	}
-
-	elsif($ch eq ">") {
-	    $snatched = 1;
-	    $outString .= "&gt;";
-	}
-
-	# look for doxygen "\ref" so we can put a link in instead
-	elsif($ch eq "\\") {
-	    
-	    local $ref = join "", @meChars;
-	    #print "eek = $ref\n" if($WIBBLE);
-	    if($ref =~ /ref\s+/) {
-		#remove the \ref and resplit the thing
-		$ref =~ s/ref\s+//g;
-		@meChars = split //, $ref;
-		$snatched = 1;
-
-		# put this in a sub, but how to pass a list?
-		#snaffle up to next white space as this will be a link id and the link text
-		local $id = "";
-		local $going = 1;
-		local $ch1 = 1;
-		while($going and @meChars) {
-		    $ch1 = shift @meChars;
-		    if($ch1 =~ /\w/) {
-			$id .= $ch1;
-		    }
-		    else {
-			unshift @meChars, $ch1;
-			$going = 0;
-		    }
-		}
-
-		local $niceID = $id;
-		$niceID =~ s/([A-Z])/ $1/g;
-
-		#print "id = $niceID\n" if($WIBBLE);
-		$outString .= "<link linkend=\"$id\">$niceID</link>";		
-	    }
-	}
-
-	elsif($ch eq ":") {
-	    local $ch1 = shift @meChars;
-	    #print "ch1 = '$ch1'\n";
-	    if($ch1 eq ":") {
-		#snaffle up to next white space as this will be a link id and the link text
-		local $id = "";
-		local $going = 1;
-		while($going and @meChars) {
-		    $ch1 = shift @meChars;
-		    if($ch1 =~ /\w/) {
-			$id .= $ch1;
-		    }
-		    else {
-			unshift @meChars, $ch1;
-			$going = 0;
-		    }
-		}
-		#print "found id of '$id'\n";
-
-		$outString .= "<link linkend=\"$id\">$id</link>";
-		
-		$snatched = 1;
-	    }
-	    else {
-		unshift @chars, $ch1;
-		$snatched = 0;
-	    }
-	}
-	$outString .= $ch unless $snatched;
+	$inString =~ s/(\w*)::(\w*)/<link linkend=\"$referredToObject\">$referredToName<\/link>/;
     }
 
-    return $outString;
-}
+    while($inString =~ /\\ref/) {
+	$inString =~ /\\ref\s*(\w*)/;
+	my $obj = $1;
 
+	$inString =~ s/\\ref\s*(\w*)/<link linkend=\"$1\">$1<\/link>/;
+    }
+
+    while($inString =~ /\\e\s*\w*/) {
+	$inString =~  s/\\e\s*(\w*)/<emphasis> $1<\/emphasis>/;
+    }
+
+    $inString =~ s/XXXXXX/::/g;
+    return $inString;
+}
 
 # do some doxygen-a-like paragraph formatting
 sub formatParagraph

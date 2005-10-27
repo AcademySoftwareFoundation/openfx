@@ -95,8 +95,7 @@
         <funcsynopsis>
           <funcsynopsisinfo>
 #include "ofxCore.h"
-</funcsynopsisinfo>
-
+          </funcsynopsisinfo>
           <funcprototype>
             <funcdef>OfxExport int
             <function>OfxGetNumberOfPlugins</function></funcdef>
@@ -270,15 +269,18 @@ typedef struct OfxPropertySetStruct *OfxPropertySetHandle;
   </chapter>
 
   <chapter>
-    <title>Threading Suite</title>
+    <title>Multi Threading Suite</title>
+    &ofxThreadingSuiteReference;
   </chapter>
 
   <chapter>
     <title>Interact Suite</title>
+    &ofxInteractSuiteReference;
   </chapter>
 
   <chapter>
     <title>Image Effect Suite</title>
+    &ofxImageEffectSuiteReference;
   </chapter>
 
   <chapter id="PropertiesByObject">

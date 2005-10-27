@@ -209,7 +209,11 @@ sub WriteSuiteFunctionRef
     while(@params) {
 	my $p = stripSurroundingWhite(shift @params);
 	$arg = {};
-	if($p =~ /\*/) {
+	if($p =~ /\.\.\./) {
+	    $args->{$2}->{type} = "";
+	    push @argNames, "...";
+	}
+	elsif($p =~ /\*/) {
 	    $p =~ /(.*\*)(.*)/;
 	    $args->{$2}->{type} = $1;
 	    push @argNames, $2;
@@ -239,10 +243,18 @@ sub WriteSuiteFunctionRef
 	if($line =~ /\s*\\arg/) {
 	    $line =~ s/\\arg//;
 	    $line = stripSurroundingWhite($line);
-	    $line =~ /^(\w*)(.*)/;
-	    my $argName = $1;
-
-	    my $desc = stripSurroundingWhite($2);
+	    my $argName;
+	    my $desc;
+	    if($line =~ /^\.\.\./) {
+		$line =~ /^\.\.\.(.*)/;
+		$argName = "...";
+		$desc = stripSurroundingWhite($1);
+	    }
+	    else {
+		$line =~ /^(\w*)(.*)/;
+		$argName = $1;
+		$desc = stripSurroundingWhite($2);
+	    }
 	    # remove any leading dashes..
 	    $desc =~ s/^-//;
 
@@ -297,7 +309,7 @@ sub WriteSuiteFunctionRef
 "        </funcprototype>
     </funcsynopsis>
   </refsynopsisdiv>
-  <refsect1>
+  <refsect2>
    <title>Arguments</title>
    <itemizedlist>
 ";
@@ -309,24 +321,24 @@ sub WriteSuiteFunctionRef
     }
 $value .= "
     </itemizedlist>
-  </refsect1>";
+  </refsect2>";
 
     if($description ne "") {
 	$value .= "
-  <refsect1>
+  <refsect2>
     <title>Description</title>
       $description
-  </refsect1>
+  </refsect2>
 ";
     }
 
     if($returnValues ne "") {
 	$returnValues = formatParagraph($returnValues, 1);
 	$value .= "
-  <refsect1>
+  <refsect2>
     <title>Returns</title>
       $returnValues
-  </refsect1>";
+  </refsect2>";
     }
 $value .= "
 </refentry>

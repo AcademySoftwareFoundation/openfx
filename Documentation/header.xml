@@ -3,12 +3,15 @@
 "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"
 
 [
-<!ENTITY ofxProgrammingGuide SYSTEM "ofxProgrammingGuide.xml">
-<!ENTITY ofxProgrammingReference SYSTEM "ofxProgrammingReference.xml">
-<!ENTITY propertiesByObject SYSTEM "ofxPropertiesByObject.xml">
-<!ENTITY propertiesReference SYSTEM "ofxPropertiesReference.xml">
-<!ENTITY ofxPropertySuiteReference SYSTEM "ofxPropertySuiteReference.xml">
-<!ENTITY ofxMemorySuiteReference SYSTEM "ofxMemorySuiteReference.xml">
-<!ENTITY ofxParametersSuiteReference SYSTEM "ofxParametersSuiteReference.xml">
+<!ENTITY ofxProgrammingGuide          SYSTEM "ofxProgrammingGuide.xml">
+<!ENTITY ofxProgrammingReference      SYSTEM "ofxProgrammingReference.xml">
+<!ENTITY propertiesByObject           SYSTEM "ofxPropertiesByObject.xml">
+<!ENTITY propertiesReference          SYSTEM "ofxPropertiesReference.xml">
+<!ENTITY ofxPropertySuiteReference    SYSTEM "ofxPropertySuiteReference.xml">
+<!ENTITY ofxMemorySuiteReference      SYSTEM "ofxMemorySuiteReference.xml">
+<!ENTITY ofxParametersSuiteReference  SYSTEM "ofxParametersSuiteReference.xml">
+<!ENTITY ofxThreadingSuiteReference   SYSTEM "ofxThreadingSuiteReference.xml">
+<!ENTITY ofxImageEffectSuiteReference SYSTEM "ofxImageEffectSuiteReference.xml">
+<!ENTITY ofxInteractSuiteReference    SYSTEM "ofxInteractSuiteReference.xml">
 ]
 >
