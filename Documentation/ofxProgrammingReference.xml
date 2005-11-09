@@ -1,6 +1,6 @@
 <book>
   <bookinfo>
-    <title>OpenFX Plug-in API, Programming Reference</title>
+    <title>OpenFX Image Effect Plug-in API, v1.0, Programming Reference</title>
 
     <author>
       <firstname>Bruno</firstname>
@@ -31,7 +31,7 @@
     </para>
 
     <para>
-    <filename class="headerfile">ofxCore.h</filename> is used to define the basic comminication mechanisms between a host and a plug-in. This includes the way
+    <filename class="headerfile">ofxCore.h</filename> is used to define the basic communication mechanisms between a host and a plug-in. This includes the way
     in which a plug-in is defined to a host and how a plug-in and how to boostrap the two way comminications. 
     </para>
         <para>
@@ -78,86 +78,40 @@
 
   <chapter>
     <title>Core API Reference</title>
+    <section>
+    This chapter describes how plugins are distributed and the core API for loading and identifying image effect plugins, and the methods of communications between plug-and host.
+    </section>
 
-    <refentry id="OfxGetNumberOfPlugins">
-      <refmeta>
-        <refentrytitle>OfxGetNumberOfPlugins</refentrytitle>
-      </refmeta>
+    &ofxPackaging;
+    <section><title>Identifying and Loading Plug-ins</title>
+    <para>Plugins must implement two exported functions for a host to identify the plug-ins and to initiate the who boot strapping of communication between the two. These functions are...
+    <itemizedlist>
+     <listitem><code>int OfxGetNumberOfPlugins(void)</code> - identifies how many plug-ins are implemented in the file,</listitem>
+     <listitem><code>OfxPlugin *OfxGetPlugin(int N)</code> - returns a structure identifying the Nth plugin in the file.</listitem>
+   </itemizedlist>
+   </para>
 
-      <refnamediv>
-        <refname>OfxGetNumberOfPlugins</refname>
-
-        <refpurpose>Mandatory plug-in function that returns the number of
-        plug-ins inside a binary.</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcsynopsisinfo>
+    <section id="OfxGetNumberOfPlugins"><title>OfxGetNumberOfPlugins</title>
+<programlisting>
 #include "ofxCore.h"
-          </funcsynopsisinfo>
-          <funcprototype>
-            <funcdef>OfxExport int
-            <function>OfxGetNumberOfPlugins</function></funcdef>
-
-            <paramdef><parameter><void /></parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsect1>
-        <title>Description</title>
-
-        <para><function>OfxGetNumberOfPlugins</function> returns the number of
+OfxExport int OfxGetNumberOfPlugins(void);
+</programlisting>
+      <para>This function returns the number of
         plugins contained in the binary. It is the very first function called
         by the host after the binary has been loaded.</para>
 
-        <para>This function <emphasis>must</emphasis> be exported by the
+       <para>This function <emphasis>must</emphasis> be exported by the
         binary that contains OFX plugins. The
         <structname>OfxExport</structname> defined in
         <filename class="headerfile">ofxCore.h</filename> is used as an export declaration for
         those compilers that require it.</para>
+    </section>
 
-        <bridgehead>Preconditions</bridgehead>
-
-        <itemizedlist>
-          <listitem>
-             No other function is called in the plug-in before this. 
-          </listitem>
-        </itemizedlist>
-      </refsect1>
-    </refentry>
-
-    <refentry id="OfxGetPlugin">
-      <refmeta>
-        <refentrytitle>OfxGetPlugin</refentrytitle>
-      </refmeta>
-
-      <refnamediv>
-        <refname>OfxGetPlugin</refname>
-
-        <refpurpose>Mandatory plug-in function that return a plugin
-        description to a host.</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcsynopsisinfo>#include "ofxCore.h" </funcsynopsisinfo>
-
-          <funcprototype>
-            <funcdef>OfxExport <structname>OfxPlugin</structname>
-            *<function>OfxGetPlugin</function></funcdef>
-
-            <paramdef>int <parameter>nth</parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsect1>
-        <title>Description</title>
-
-        <para><function>OfxGetPlugin</function> returns the definition of the
-        <parameter>nth</parameter> plug-in inside the binary.</para>
+    <section id="OfxGetPlugin"><title>OfxGetPlugin</title>
+<programlisting>
+#include "ofxCore.h"
+OfxExport OfxPlugin *OfxGetPlugin(int nth);
+</programlisting>
 
         <para>This function returns a pointer to the <varname>nth</varname>
         <structname>OfxPlugin</structname> struct in the binary.
@@ -165,47 +119,137 @@
         <function>OfxGetNumberOfPlugins</function>. The returned structure
         defines the plugin to the host.</para>
 
-        <bridgehead>Preconditions</bridgehead>
+        <section><title>Preconditions</title>
+          <itemizedlist>
+            <listitem> <function>OfxGetNumberOfPlugins</function> has been previously called, </listitem>
+            <listitem> <varname>nth</varname> is between 0 and the value returned by <function>OfxGetNumberOfPlugins</function>.
+            </listitem>
+          </itemizedlist>
+        </section>
 
-        <itemizedlist>
-          <listitem>
-             
+        <section> <title>Postconditions</title>
+          <itemizedlist>
+            <listitem> The returned pointer and pointers in the struct point to valid data whilst the binary is loaded, </listitem>
+            <listitem> The returned pointer and pointers in the struct do not need to be freed in any way by the host. </listitem>
+          </itemizedlist>
+        </section>
+    </section>
+  &ofxPluginStruct;
+  </section>
 
-            <function>OfxGetNumberOfPlugins</function>
 
-             has been previously called, 
-          </listitem>
+  &ofxHostStruct;
+  
+  <section><title>The Plug-in Main Entry Point And Actions</title>
+  <para>Actions are how a host communicates with a plug-in. They are in effect generic function calls. Actions are issued via a plugin's <function>mainEntry</function> function pointer found in its OfxPlugin struct. The function signature for the main entry point is...  </para>
+<programlisting>
+#include "ofxCore.h"
+typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs);
+</programlisting>
+  <para> Where,
+  <itemizedlist>
+   <listitem><code>action</code> is a C string indicating the action to be taken,</listitem>
+   <listitem><code>handle</code> is a handle to an object appropriate to that action, cast to <code>void *</code>,</listitem>
+   <listitem><code>inArgs</code> are a set of properties used as arguments to that action,</listitem>
+   <listitem><code>outArgs</code> are a set of properties the plug-in should modify during the action.</listitem>
+  </itemizedlist>
+  </para>
+  <para>
+  The <code>OfxStatus</code> value returned is dependant upon the action being called, however the value <code>kOfxStatReplyDefault</code> is returned if the plug-in does not trap the action.
+  </para>
 
-          <listitem>
-             
+  </section>
 
-            <varname>nth</varname>
+  <section><title>Suites</title>
+  <para>Suites are how a plug-in communicates back to the host. A suite is simply a set of function pointers in a C struct. The set of suites a host needs to implement is defined by the API being implemented. A suite is fetched from a host via the <code>OfxHost::fetchSuite</code> function. This returns a pointer (cast to <code>void *</code>) to the named and versioned set of functions. By using this suite fetching mechanism, there is no symbolic dependancy from the plug-in to the host, and APIs can be easily expandable without causing backwards compatability issues.
+  </para>
+  <para>If the host does not implement a requested suite, or the requested version of that suite, then it should return NULL.
+  </para>
+  </section>
 
-             is between 0 and the value returned by 
+  &ofxLoadingSequence;
 
-            <function>OfxGetNumberOfPlugins</function>
-
-             . 
-          </listitem>
-        </itemizedlist>
-
-        <bridgehead>Preconditions</bridgehead>
-
-        <itemizedlist>
-          <listitem>
-             The returned pointer and pointers in the struct point to valid data whilst the binary is loaded, 
-          </listitem>
-
-          <listitem>
-             The returned pointer and pointers in the struct do not need to be freed in any way by the host. 
-          </listitem>
-        </itemizedlist>
-      </refsect1>
-    </refentry>
   </chapter>
 
-  <chapter>
+  <chapter id="ImageEffectActions">
     <title>Image Effect Actions</title>
+    <section><title>The Set of Image Effect Actions</title>
+    <para>The OFX Image Effect API has the following actions...
+    <itemizedlist>
+      <listitem>Generic OFX Actions, these can be issued by APIs other than the Image Effect API,
+        <itemizedlist>
+         <listitem><link linkend="kOfxActionLoad">kOfxActionLoad</link></listitem>
+         <listitem><link linkend="kOfxActionDescribe">kOfxActionDescribe</link></listitem>∑
+         <listitem><link linkend="kOfxActionUnload">kOfxActionUnload</link></listitem>
+         <listitem><link linkend="kOfxActionPurgeCaches">kOfxActionPurgeCaches</link>      </listitem>
+         <listitem><link linkend="kOfxActionSyncPrivateData">kOfxActionSyncPrivateData</link>      </listitem>
+         <listitem><link linkend="kOfxActionCreateInstance">kOfxActionCreateInstance</link>       </listitem>ｷ
+         <listitem><link linkend="kOfxActionDestroyInstance">kOfxActionDestroyInstance</link>      </listitem>
+         <listitem><link linkend="kOfxActionInstanceChanged">kOfxActionInstanceChanged</link></listitem>
+         <listitem><link linkend="kOfxActionBeginInstanceChanged">kOfxActionBeginInstanceChanged</link></listitem>
+         <listitem><link linkend="kOfxActionEndInstanceChanged">kOfxActionEndInstanceChanged</link></listitem>
+         <listitem><link linkend="kOfxActionBeginInstanceEdit">kOfxActionBeginInstanceEdit</link></listitem>
+         <listitem><link linkend="kOfxActionEndInstanceEdit">kOfxActionEndInstanceEdit</link></listitem>
+        </itemizedlist>
+      </listitem>
+      <listitem>Image Effect Actions, which are particular to the image effect API,
+        <itemizedlist>
+         <listitem><link linkend="kOfxImageEffectActionDescribeInContext">kOfxImageEffectActionDescribeInContext</link>    </listitem>
+         <listitem><link linkend="kOfxImageEffectActionGetRegionOfDefinition">kOfxImageEffectActionGetRegionOfDefinition</link>       </listitem>
+         <listitem><link linkend="kOfxImageEffectActionGetRegionsOfInterest">kOfxImageEffectActionGetRegionsOfInterest</link>        </listitem>
+         <listitem><link linkend="kOfxImageEffectActionGetTimeDomain">kOfxImageEffectActionGetTimeDomain</link>               </listitem>
+         <listitem><link linkend="kOfxImageEffectActionGetFramesNeeded">kOfxImageEffectActionGetFramesNeeded</link>             </listitem>
+         <listitem><link linkend="kOfxImageEffectActionGetClipPreferences">kOfxImageEffectActionGetClipPreferences</link>      </listitem>
+         <listitem><link linkend="kOfxImageEffectActionIsIdentity">kOfxImageEffectActionIsIdentity</link>           </listitem>
+         <listitem><link linkend="kOfxImageEffectActionRender">kOfxImageEffectActionRender</link>               </listitem>
+         <listitem><link linkend="kOfxImageEffectActionBeginSequenceRender">kOfxImageEffectActionBeginSequenceRender</link>  </listitem>
+         <listitem><link linkend="kOfxImageEffectActionEndSequenceRender">kOfxImageEffectActionEndSequenceRender</link>     </listitem>
+        </itemizedlist>
+      </listitem>
+      <listitem>Interact Actions, actions passed to any separate <code>OfxPluginEntryPoint</code> functions used for user interface 'interacts',
+        <itemizedlist>
+         <listitem> <link linkend="kOfxInteractActionDraw">kOfxInteractActionDraw</link></listitem>
+         <listitem> <link linkend="kOfxInteractActionPenMotion">kOfxInteractActionPenMotion</link></listitem>
+         <listitem> <link linkend="kOfxInteractActionPenDown">kOfxInteractActionPenDown</link>  </listitem>
+         <listitem> <link linkend="kOfxInteractActionPenUp">kOfxInteractActionPenUp</link>    </listitem>
+         <listitem> <link linkend="kOfxInteractActionKeyDown">kOfxInteractActionKeyDown</link>  </listitem>
+         <listitem> <link linkend="kOfxInteractActionKeyUp">kOfxInteractActionKeyUp</link>    </listitem>
+         <listitem> <link linkend="kOfxInteractActionKeyRepeat">kOfxInteractActionKeyRepeat</link>    </listitem>
+         <listitem> <link linkend="kOfxInteractActionGainFocus">kOfxInteractActionGainFocus</link></listitem>
+         <listitem> <link linkend="kOfxInteractActionLoseFocus">kOfxInteractActionLoseFocus</link></listitem>
+        </itemizedlist>
+      </listitem>
+    </itemizedlist>
+  </para>
+    </section>
+
+    <section><title>Sequences Of Actions</title>
+     
+      <section><title>Loading, Unloading and Creating instances</title>
+        <itemizedlist>
+         <listitem><link linkend="kOfxActionLoad">kOfxActionLoad</link></listitem>
+         <listitem><link linkend="kOfxActionDescribe">kOfxActionDescribe</link></listitem>
+         <listitem><link linkend="kOfxImageEffectActionDescribeInContext">kOfxImageEffectActionDescribeInContext</link></listitem>
+         <listitem><link linkend="kOfxActionCreateInstance">kOfxActionCreateInstance</link></listitem>
+         <listitem>...</listitem>
+         <listitem><link linkend="kOfxActionDestroyInstance">kOfxActionDestroyInstance</link></listitem>
+         <listitem><link linkend="kOfxActionUnload">kOfxActionUnload</link></listitem>
+        </itemizedlist>
+    </section>
+
+      <section><title>Rendering</title>
+        <itemizedlist>
+         <listitem><link linkend="kOfxImageEffectActionBeginSequenceRender">kOfxImageEffectActionBeginSequenceRender</link></listitem>
+         <listitem><link linkend="kOfxImageEffectActionIsIdentity">kOfxImageEffectActionIsIdentity</link></listitem>
+         <listitem><link linkend="kOfxImageEffectActionGetFramesNeeded">kOfxImageEffectActionGetFramesNeeded</link>             </listitem>
+         <listitem><link linkend="kOfxImageEffectActionGetRegionOfDefinition">kOfxImageEffectActionGetRegionOfDefinition</link>       </listitem>
+         <listitem><link linkend="kOfxImageEffectActionGetRegionsOfInterest">kOfxImageEffectActionGetRegionsOfInterest</link>        </listitem>
+         <listitem><link linkend="kOfxImageEffectActionRender">kOfxImageEffectActionRender</link>               </listitem>
+         <listitem><link linkend="kOfxImageEffectActionEndSequenceRender">kOfxImageEffectActionEndSequenceRender</link>     </listitem>
+        </itemizedlist>
+    </section>
+
+  </section>
   </chapter>
 
   <chapter>

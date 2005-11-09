@@ -25,22 +25,20 @@ PROPERY_SUITE_REFERENCE_FILES = \
 	ofxImageEffectSuiteReference.xml \
 	ofxInteractSuiteReference.xml 
 
-banana : ofxProgrammingReference.html
-
 all : ofxProgrammingGuide.html ofxProgrammingReference.html
 
 # programming guide, all in one
 GUIDE_SRCS = header.xml ofxProgrammingGuide.xml
 ofxProgrammingGuide.html : $(GUIDE_SRCS)
 	cat $^ > tmp.xml
-	xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)docbook.xsl tmp.xml
+	xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)$(STYLESHEET) tmp.xml
 	rm -f tmp.xml
 
 # programming reference, all in one
 REF_SRCS = header.xml ofxProgrammingReference.xml
 ofxProgrammingReference.html : $(REF_SRCS) $(PROPERY_SUITE_REFERENCE_FILES) ofxPropertiesReference.xml ofxPropertiesByObject.xml 
 	cat  $(REF_SRCS) > tmp.xml
-	xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)docbook.xsl tmp.xml
+	xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)$(STYLESHEET) tmp.xml
 	rm -f tmp.xml
 
 # generate property definitions from the property headers

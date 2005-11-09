@@ -1,0 +1,46 @@
+
+    <section>
+      <title>Sequences of Operations Required to Load a Plug-in</title>
+
+      <para>The following sequences of operations needs to be performed by a
+      host before it can start telling a plug-in what to do via its
+      <function>mainEntry</function> function.</para>
+
+      <orderedlist>
+        <listitem>
+           the binary containing the plug-in is loaded, 
+        </listitem>
+
+        <listitem>
+           the number of plug-ins is determined via the 
+
+          <function>OfxGetNumberOfPlugins</function>
+
+           function, 
+        </listitem>
+
+        <listitem>
+           for each plug-in defined in the binary 
+
+          <orderedlist>
+            <listitem><function>OfxGetPlugin</function> is called,</listitem>
+
+            <listitem>the <structfield>pluginApi</structfield> and
+            <structfield>apiVersion</structfield> of the returned
+            <structname>OfxPlugin</structname> struct are examined,</listitem>
+
+            <listitem>if the plug-in's API or it's version are not supported,
+            the plug-in is ignored and we skip to the next one,</listitem>
+
+            <listitem>the plug-in's pointer is recorded in a plug-in
+            cache</listitem>
+
+            <listitem>an appropriate <structname>OfxHost</structname> struct
+            is passed to the plug-in via <function>setHost</function> in the
+            returned <structname>OfxPlugin</structname> struct.</listitem>
+          </orderedlist>
+
+           
+        </listitem>
+      </orderedlist>
+    </section>

@@ -12,7 +12,8 @@ $lastComment = "";
 $lastCode = "";
 $inSuite = 0;
 $suiteDefinition = "";
-
+$sourceFile =~ /.*\/(.*\.h)/;
+$sourceFileBaseName = $1;
 
 while ($line = <SRC>) {
     @chars = split //, $line;
@@ -172,7 +173,7 @@ sub WriteSuiteDefinition
   </refnamediv>
   <refsynopsisdiv>
      <programlisting>
-#include \"$sourceFile\"
+#include \"$sourceFileBaseName\"
 $code
 </programlisting>
      </refsynopsisdiv>
@@ -296,7 +297,7 @@ sub WriteSuiteFunctionRef
   </refnamediv>
   <refsynopsisdiv>
     <funcsynopsis>
-      <funcsynopsisinfo>#include \"$sourceFile\" </funcsynopsisinfo>
+      <funcsynopsisinfo>#include \"$sourceFileBaseName\" </funcsynopsisinfo>
       <funcprototype>
         <funcdef><typename>$retType</typename><function>(*$funcName)</function></funcdef>
 ";

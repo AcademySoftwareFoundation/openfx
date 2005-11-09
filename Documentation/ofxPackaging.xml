@@ -1,0 +1,239 @@
+<section>
+      <title>Packaging OFX Plug-ins</title>
+
+      <para>Where a host application chooses to search for OFX plug ins, what
+      binary format they are in and any directory hierarchy is entirely up to
+      it. However, it is strongly recommended that the following scheme be
+      followed.</para>
+
+      <section>
+        <title>Binary Types</title>
+
+        <para>Plug-ins should be distributed in the following formats,
+        depending on the host operating system.... <itemizedlist>
+            <listitem>
+               Microsoft Windows, as ".dll" dynamically linked libraries, 
+            </listitem>
+
+            <listitem>
+               Apple OSX, as Mach-O binary bundles, 
+            </listitem>
+
+            <listitem>
+               IRIX and LINUX, as ELF dynamic shared objects. 
+            </listitem>
+          </itemizedlist></para>
+      </section>
+
+      <section>
+        <title>Installation Directory Hierarchy</title>
+
+        <para>Each plug-in binary is distributed as a Mac OS X package style
+        directory hierarchy. Note that the there are two distinct meanings of
+        'bundle', one referring to a binary file format, the other to a
+        directory hierarchy used to distribute software. We are distributing
+        binaries in a bundle package, and in the case of OSX, the binary is a
+        binary bundle. All the binaries must end with
+        <literal>".ofx"</literal>, regardless of the host operating
+        system.</para>
+
+        <para>The directory hierarchy is as follows..... 
+          <itemizedlist>
+            <listitem>NAME.ofx.bundle
+              <itemizedlist>
+                <listitem>Contents
+                  <itemizedlist>
+                    <listitem>Info.plist</listitem>
+                    <listitem>Resources
+                    <itemizedlist>
+                        <listitem>NAME.xml</listitem>
+                        <listitem>PLUGIN_A.png</listitem>
+                        <listitem>PLUGIN_B.png</listitem>
+                        <listitem>...</listitem>
+                    </itemizedlist>
+                    </listitem>
+                    
+                    <listitem>ARCHITECTURE_A <itemizedlist>
+                         <listitem>NAME.ofx</listitem>
+                    </itemizedlist></listitem>
+
+                    <listitem>ARCHITECTURE_B <itemizedlist>
+                         <listitem>NAME.ofx</listitem>
+                    </itemizedlist></listitem>
+
+                    <listitem>...</listitem>
+
+                    <listitem>ARCHITECTURE_N <itemizedlist>
+                         <listitem>NAME.ofx</listitem>
+                    </itemizedlist></listitem>
+
+                  </itemizedlist>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+          </itemizedlist>
+
+
+            Where... <itemizedlist>
+            <listitem>
+               Info.plist is relevant for OSX only and needs to be filled in appropriately, 
+            </listitem>
+
+            <listitem>
+               NAME is the file name you want the installed plug-in to be identified by, 
+            </listitem>
+
+            <listitem>
+               PLUGIN.png - is the image to use as an icon for the plug-in in the binary which has a matching 
+
+              <structfield>pluginIdentifier</structfield>
+
+               field in the 
+
+              <structname>OfxPlugin</structname>
+
+               struct, 
+            </listitem>
+
+            <listitem>
+               ARCHITECTURE is the specific operating system architecture the plug-in was built for, these are currently... 
+
+              <itemizedlist>
+                <listitem>MacOS - for Apple Macintosh OS X (compiled 32
+                bit)</listitem>
+
+                <listitem>Win32 - for Microsoft Windows (compiled 32
+                bit)</listitem>
+
+                <listitem>IRIX - for SGI IRIX plug-ins (compiled 32
+                bit)</listitem>
+
+                <listitem>IRIX64 - for SGI IRIX plug-ins (compiled 64
+                bit)</listitem>
+
+                <listitem>Linux-x86 - for Linux on intel x86 CPUs (compiled 32
+                bit)</listitem>
+
+                <listitem>Linux-x86-64 - for Linux on intel x86 CPUs running
+                AMD's 64 bit extensions</listitem>
+              </itemizedlist>
+
+               
+            </listitem>
+          </itemizedlist> Note that not all the above architectures need be
+        supported, at least one.</para>
+
+        <para>This structure is necessary on OS X, but it also gives a nice
+        skeleton to hang all other operating systems from in a single install,
+        as well as a clean place to put resources.</para>
+
+        <para>The <filename>Info.plist</filename> is specific to Apple and you
+        should consult the Apple developer's website for more details. It
+        should contain the following keys... <itemizedlist>
+            <listitem>
+               CFBundleExecutable - the name of the binary bundle in the MacOS directory 
+            </listitem>
+
+            <listitem>
+               CFBundlePackageType - to be 'BNDL' 
+            </listitem>
+
+            <listitem>
+               CFBundleInfoDictionaryVersion 
+            </listitem>
+
+            <listitem>
+               CFBundleVersion 
+            </listitem>
+
+            <listitem>
+               CFBundleDevelopmentRegion 
+            </listitem>
+          </itemizedlist></para>
+      </section>
+
+      <section id="ArchitectureInstallingLocation">
+        <title>Installation Location</title>
+
+        <para>Plug ins are searched for in a variety of locations, both
+        default and user specified. All such directories are examined for
+        plug-in bundles and sub directories are also recursively
+        examined.</para>
+
+        <para>A list of directories is supplied in the "OFX_PLUGIN_PATH"
+        environment variable, these are examined, first to last, for plug ins,
+        then the default location is examined.</para>
+
+        <para>On Microsoft Windows machines, the plug ins are searched for in,
+        <orderedlist>
+            <listitem>
+               the ';' separated directory list specified by the environment variable "OFX_PLUGIN_PATH" 
+            </listitem>
+
+            <listitem>
+               the directory "C:\Program Files\Common Files\OFX\Plugins" 
+            </listitem>
+          </orderedlist> On Apple OSX machines, the plug ins are searched for
+        in, <orderedlist>
+            <listitem>
+               the ';' separated directory list specified by the environment variable "OFX_PLUGIN_PATH" 
+            </listitem>
+
+            <listitem>
+               the directory "/Library/OFX/Plugins" 
+            </listitem>
+          </orderedlist> On UNIX, Linux and other UNIX like operating systems,
+        <orderedlist>
+            <listitem>
+               the ':' separated directory specified by the environment variable "OFX_PLUGIN_PATH" 
+            </listitem>
+
+            <listitem>
+               the directory "/usr/OFX/Plugins" 
+            </listitem>
+          </orderedlist></para>
+
+        <para>Any bundle or sub-directory name starting with the character '@'
+        is to be ignored. Such directories or bundles must be skipped.</para>
+      </section>
+
+      <section>
+        <title>Plug-in Icons</title>
+
+        <para>Some hosts may wish to display an icon associated with a plug-in
+        on their interfaces. Any such icon must be in the Portable Network
+        Graphics format (see http://www.libpng.org/) and must contain 32 bits
+        of colour, including an alpha channel. Ideally it should be at least
+        128x128 pixels.</para>
+
+        <para>Host applications should dynamically resize the icon to fit
+        their preferred icon size. The icon should not have it's aspect
+        changed, rather the host should fill with some appropriate colour any
+        blank areas due to aspect mis matches.</para>
+
+        <para>Ideally plug-in developers should not render the plug-in's name
+        into the icon, as this may be changed by the resource file, especially
+        for internationalisation purposes. Hosts should thus present the
+        plug-in's name next to the icon in some way.</para>
+
+        <para>The icon file must be named as the corresponding
+        <structfield>pluginIdentifier</structfield> field from the
+        <structname>OfxPlugin</structname>, post pended with '.png' and be
+        placed in the resources sub-directory.</para>
+      </section>
+
+      <section>
+        <title>Externally Specified Resources</title>
+
+        <para>Some plug-ins may supply an externally specified resource file.
+        Typically this is for tasks such as internationalising interfaces,
+        tweaking user interfaces for specific hosts and so on. These are XML
+        files and have DTD associated with the specific API, for example OFX
+        Image Effect DTD is found in <filename>ofx.dtd</filename>.</para>
+
+        <para>The xml resource file is installed in the
+        <filename>Resources</filename> sub directory of the bundle hierarchy.
+        It's name will be <filename>NAME.xml</filename>, where name is the
+        base name of the bundle folder and the effect binaries.</para>
+      </section>
+ </section>
