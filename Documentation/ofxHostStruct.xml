@@ -1,34 +1,36 @@
 <section><title>The OfxHost Struct</title>
-        <para>The <structname>OfxHost</structname> struct is how a host
-        provides plug-ins with access to the various suites that make up the
-        API they implement, as well as a host property set handle which a plug-in can ask
-        questions of. The <function>setHost</function> function in the
-        <structname>OfxPlugin</structname> struct is passed a pointer to an
-        <structname>OfxHost</structname> as the first thing to boot-strapping
-        plug-in/host communication. The struct looks like...</para>
-<programlisting>
+  <para>The <structname>OfxHost</structname> struct is how a host
+    provides plug-ins with access to the various suites that make up the
+    API they implement, as well as a host property set handle which a plug-in can ask
+    questions of. The <function>setHost</function> function in the
+    <structname>OfxPlugin</structname> struct is passed a pointer to an
+    <structname>OfxHost</structname> as the first thing to boot-strapping
+    plug-in/host communication. The struct looks like...</para>
+  <programlisting>
 typedef struct OfxHost {
   OfxPropertySetHandle host;
   void *(*fetchSuite)(OfxPropertySetHandle host, const char *suiteName, int suiteVersion);
 } OfxHost;
-</programlisting>
+  </programlisting>
 
-        <para>The <structname>OfxHost</structname> contains two elements,
-        <itemizedlist>
-            <listitem> <structfield>host</structfield> - a property set handle that holds a set of properties which describe the host for the plug-in's API </listitem> <listitem> <structfield>fetchSuite</structfield> - a function handle used to fetch function suites from the host that implement the plug-in's API </listitem>
-          </itemizedlist>
-         </para>
-
-        <para>The <structfield>host</structfield> property set handle in the
-        <structname>OfxHost</structname> is not global across all plug-ins
-        defined in the binary. It is only applicable for the plug-in whose
-        'setHost' function was called. Use this handle to fetch things like
-        host application names, host capabilities and so on from.</para>
-
-        <para>The <function>fetchSuite</function> function is how a plug-in
-        gets a suite from the host. It asks for a suite by giving the cstring
-        corresponding to that suite and the version of that suite. The host
-        will return a pointer to that suite, or NULL if it does not support
-        it. Please note that suite cannot be fetched until the very first
-        action is called on the plug-in. Which is the load action.</para>
+  <para>The <structname>OfxHost</structname> contains two elements,
+    <itemizedlist>
+      <listitem> <structfield>host</structfield> - a property set handle that holds a set of properties which describe the host for the plug-in's API </listitem> <listitem> <structfield>fetchSuite</structfield> - a function handle used to fetch function suites from the host that implement the plug-in's API </listitem>
+    </itemizedlist>
+  </para>
+  
+  <para>The <structfield>host</structfield> property set handle in the
+    <structname>OfxHost</structname> is not global across all plug-ins
+    defined in the binary. It is only applicable for the plug-in whose
+    'setHost' function was called. Use this handle to fetch things like
+    host application names, host capabilities and so on from. The set of
+    properties on an OFX Image Effect host is found in the section <link linkend="ImageEffectHostProperties">Properties on the Image Effect Host</link>
+  </para>
+  
+  <para>The <function>fetchSuite</function> function is how a plug-in
+    gets a suite from the host. It asks for a suite by giving the cstring
+    corresponding to that suite and the version of that suite. The host
+    will return a pointer to that suite, or NULL if it does not support
+    it. Please note that suite cannot be fetched until the very first
+    action is called on the plug-in. Which is the load action.</para>
  </section>

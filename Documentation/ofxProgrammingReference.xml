@@ -1,10 +1,10 @@
 <book>
   <bookinfo>
-    <title>OpenFX Image Effect Plug-in API, v1.0, Programming Reference</title>
+    <title>Programming Reference For The OFX Image Effect Plug-in API, 1.0, </title>
 
     <author>
       <firstname>Bruno</firstname>
-
+      
       <surname>Nicoletti</surname>
     </author>
 
@@ -21,244 +21,1300 @@
     <title>Foreword</title>
     <para>UNFINISHED</para>
   </preface>
+  
+  <chapter><title>Structure of The API</title>
+    <para>
+      UNFINISHED
+    </para>
+    <para>
+      Images in OFX are arbitrary contiguous rectangular regions on an infinite 2D plane which either the host or the plug-in can fill with pixel data.
+    </para>
+    <para>
+      A clip is a sequences of images which has a start and end time.
+    </para>
+    <para>
+      An image effect is something that takes a set of source clips provided by a host and fills in pixel data in an output clip.
+    </para>
+    <section><title>Image Coordinate Systems</title>
+      <para>
+	There are two separate coordinate systems used by OFX, the <emphasis>cannonical</emphasis> coordinate system and the <emphasis>pixel</emphasis> coordinate system. The pixel coordinate system is 
+      </para>
+    </section>
+  </chapter>
 
   <chapter id="OFX include files">
     <title>OFX Include Files</title>
     <para>
-    The 'C' include files that define the OFX API are all that are needed by a plug-in or host to implement the API. Apart from 
-    <filename class="headerfile">ofxCore.h</filename> and <filename class="headerfile">ofxKeySyms.h</filename> they define a set of independant 'suites' which are used by a plug-in
-    to communicate with a host applications.
+      The 'C' include files that define the OFX API are all that are needed by a plug-in or host to implement the API. Apart from 
+      <filename class="headerfile">ofxCore.h</filename> and <filename class="headerfile">ofxKeySyms.h</filename> they define a set of independant 'suites' which are used by a plug-in
+      to communicate with a host applications.
     </para>
-
+    
     <para>
-    <filename class="headerfile">ofxCore.h</filename> is used to define the basic communication mechanisms between a host and a plug-in. This includes the way
-    in which a plug-in is defined to a host and how a plug-in and how to boostrap the two way comminications. 
+      <filename class="headerfile">ofxCore.h</filename> is used to define the basic communication mechanisms between a host and a plug-in. This includes the way
+      in which a plug-in is defined to a host and how a plug-in and how to boostrap the two way comminications. 
     </para>
-        <para>
-          <itemizedlist>
-            <listitem>
-              <filename class="headerfile">ofxCore.h</filename>
-               - provides the core definitions of the general OFX architecture that allow the bootstrapping of specific APIs, 
-            </listitem>
-            <listitem>
-              <filename class="headerfile">ofxProperty.h</filename>
-               - provides generic property fetching mechanisms used to get and set values about objects in the API, 
-            </listitem>
-            <listitem>
-              <filename class="headerfile">ofxParam.h</filename>
-               - provides an API for defining user visible parameters to an effect, 
-            </listitem>
-            <listitem>
-              <filename class="headerfile">ofxMultiThread.h</filename>
-               - provides basic multi-threading capabilities, 
-            </listitem>
-            <listitem>
-              <filename class="headerfile">ofxInteract.h</filename>
-               - allows a plug-in to use OpenGL to draw their own interactive GUI tools, 
-            </listitem>
-            <listitem>
-              <filename class="headerfile">ofxKeySyms.h</filename>
-               - key symbols used by 'Interacts' to represent keyboard events, 
-            </listitem>
-            <listitem>
-              <filename class="headerfile">ofxMemory.h</filename>
-               - simple memory allocation suite, 
-            </listitem>
-            <listitem>
-              <filename class="headerfile">ofxMessage.h</filename>
-               - a simple messaging suite to communicate with an end user, 
-            </listitem>
-            <listitem>
-              <filename class="headerfile">ofxImageEffect.h</filename>
-               - draws all the above together to create an visual effect plug-in. 
-            </listitem>
-         </itemizedlist>
-     </para>
+    <para>
+      <itemizedlist>
+	<listitem>
+	  <filename class="headerfile">ofxCore.h</filename>
+	  - provides the core definitions of the general OFX architecture that allow the bootstrapping of specific APIs, 
+	</listitem>
+	<listitem>
+	  <filename class="headerfile">ofxProperty.h</filename>
+	  - provides generic property fetching mechanisms used to get and set values about objects in the API, 
+	</listitem>
+	<listitem>
+	  <filename class="headerfile">ofxParam.h</filename>
+	  - provides an API for defining user visible parameters to an effect, 
+	</listitem>
+	<listitem>
+	  <filename class="headerfile">ofxMultiThread.h</filename>
+	  - provides basic multi-threading capabilities, 
+	</listitem>
+	<listitem>
+	  <filename class="headerfile">ofxInteract.h</filename>
+	  - allows a plug-in to use OpenGL to draw their own interactive GUI tools, 
+	</listitem>
+	<listitem>
+	  <filename class="headerfile">ofxKeySyms.h</filename>
+	  - key symbols used by 'Interacts' to represent keyboard events, 
+	</listitem>
+	<listitem>
+	  <filename class="headerfile">ofxMemory.h</filename>
+	  - simple memory allocation suite, 
+	</listitem>
+	<listitem>
+	  <filename class="headerfile">ofxMessage.h</filename>
+	  - a simple messaging suite to communicate with an end user, 
+	</listitem>
+	<listitem>
+	  <filename class="headerfile">ofxImageEffect.h</filename>
+	  - draws all the above together to create an visual effect plug-in. 
+	</listitem>
+      </itemizedlist>
+    </para>
   </chapter>
-
+  
   <chapter>
-    <title>Core API Reference</title>
+    <title>The Generic Core API</title>
     <section>
-    This chapter describes how plugins are distributed and the core API for loading and identifying image effect plugins, and the methods of communications between plug-and host.
+      This chapter describes how plugins are distributed and the core API for loading and identifying image effect plugins, and the methods of communications between plug-and host.
     </section>
-
+    
     &ofxPackaging;
     <section><title>Identifying and Loading Plug-ins</title>
-    <para>Plugins must implement two exported functions for a host to identify the plug-ins and to initiate the who boot strapping of communication between the two. These functions are...
-    <itemizedlist>
-     <listitem><code>int OfxGetNumberOfPlugins(void)</code> - identifies how many plug-ins are implemented in the file,</listitem>
-     <listitem><code>OfxPlugin *OfxGetPlugin(int N)</code> - returns a structure identifying the Nth plugin in the file.</listitem>
-   </itemizedlist>
-   </para>
-
-    <section id="OfxGetNumberOfPlugins"><title>OfxGetNumberOfPlugins</title>
-<programlisting>
+      <para>Plugins must implement two exported functions for a host to identify the plug-ins and to initiate the who boot strapping of communication between the two. These functions are...
+	<itemizedlist>
+	  <listitem><code>int OfxGetNumberOfPlugins(void)</code> - identifies how many plug-ins are implemented in the file,</listitem>
+	  <listitem><code>OfxPlugin *OfxGetPlugin(int N)</code> - returns a structure identifying the Nth plugin in the file.</listitem>
+	</itemizedlist>
+      </para>
+      
+      <section id="OfxGetNumberOfPlugins"><title>OfxGetNumberOfPlugins</title>
+	<programlisting>
 #include "ofxCore.h"
-OfxExport int OfxGetNumberOfPlugins(void);
-</programlisting>
-      <para>This function returns the number of
-        plugins contained in the binary. It is the very first function called
-        by the host after the binary has been loaded.</para>
-
-       <para>This function <emphasis>must</emphasis> be exported by the
-        binary that contains OFX plugins. The
-        <structname>OfxExport</structname> defined in
-        <filename class="headerfile">ofxCore.h</filename> is used as an export declaration for
-        those compilers that require it.</para>
-    </section>
-
-    <section id="OfxGetPlugin"><title>OfxGetPlugin</title>
-<programlisting>
+OfxExport int OfxGetNumberOfPlugins(void); </programlisting>
+	<para>This function returns the number of
+	  plugins contained in the binary. It is the very first function called
+	  by the host after the binary has been loaded.</para>
+	
+	<para>This function <emphasis>must</emphasis> be exported by the
+	  binary that contains OFX plugins. The
+	  <structname>OfxExport</structname> defined in
+	  <filename class="headerfile">ofxCore.h</filename> is used as an export declaration for
+	  those compilers that require it.</para>
+      </section>
+      
+      <section id="OfxGetPlugin"><title>OfxGetPlugin</title>
+	<programlisting>
 #include "ofxCore.h"
-OfxExport OfxPlugin *OfxGetPlugin(int nth);
-</programlisting>
-
+OfxExport OfxPlugin *OfxGetPlugin(int nth); </programlisting>
+	
         <para>This function returns a pointer to the <varname>nth</varname>
-        <structname>OfxPlugin</structname> struct in the binary.
-        <varname>nth</varname> is between 0 and the number returned by
-        <function>OfxGetNumberOfPlugins</function>. The returned structure
-        defines the plugin to the host.</para>
-
-        <section><title>Preconditions</title>
+	  <structname>OfxPlugin</structname> struct in the binary.
+	  <varname>nth</varname> is between 0 and the number returned by
+	  <function>OfxGetNumberOfPlugins</function>. The returned structure
+	  defines the plugin to the host.</para>
+	
+        &preconditions;
+        <para>
           <itemizedlist>
             <listitem> <function>OfxGetNumberOfPlugins</function> has been previously called, </listitem>
             <listitem> <varname>nth</varname> is between 0 and the value returned by <function>OfxGetNumberOfPlugins</function>.
             </listitem>
           </itemizedlist>
-        </section>
-
-        <section> <title>Postconditions</title>
+        </para>
+	
+        &postconditions;
+        <para>
           <itemizedlist>
             <listitem> The returned pointer and pointers in the struct point to valid data whilst the binary is loaded, </listitem>
             <listitem> The returned pointer and pointers in the struct do not need to be freed in any way by the host. </listitem>
           </itemizedlist>
-        </section>
+        </para>
+      </section>
+      &ofxPluginStruct;
     </section>
-  &ofxPluginStruct;
-  </section>
-
-
-  &ofxHostStruct;
-  
-  <section><title>The Plug-in Main Entry Point And Actions</title>
-  <para>Actions are how a host communicates with a plug-in. They are in effect generic function calls. Actions are issued via a plugin's <function>mainEntry</function> function pointer found in its OfxPlugin struct. The function signature for the main entry point is...  </para>
-<programlisting>
+    
+    
+    &ofxHostStruct;
+    
+    <section><title>The Plug-in Main Entry Point And Actions</title>
+      <para>Actions are how a host communicates with a plug-in. They are in effect generic function calls. Actions are issued via a plugin's <function>mainEntry</function> function pointer found in its OfxPlugin struct. The function signature for the main entry point is...  </para>
+      <programlisting>
 #include "ofxCore.h"
-typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs);
-</programlisting>
-  <para> Where,
-  <itemizedlist>
-   <listitem><code>action</code> is a C string indicating the action to be taken,</listitem>
-   <listitem><code>handle</code> is a handle to an object appropriate to that action, cast to <code>void *</code>,</listitem>
-   <listitem><code>inArgs</code> are a set of properties used as arguments to that action,</listitem>
-   <listitem><code>outArgs</code> are a set of properties the plug-in should modify during the action.</listitem>
-  </itemizedlist>
-  </para>
-  <para>
-  The <code>OfxStatus</code> value returned is dependant upon the action being called, however the value <code>kOfxStatReplyDefault</code> is returned if the plug-in does not trap the action.
-  </para>
-
-  </section>
-
-  <section><title>Suites</title>
-  <para>Suites are how a plug-in communicates back to the host. A suite is simply a set of function pointers in a C struct. The set of suites a host needs to implement is defined by the API being implemented. A suite is fetched from a host via the <code>OfxHost::fetchSuite</code> function. This returns a pointer (cast to <code>void *</code>) to the named and versioned set of functions. By using this suite fetching mechanism, there is no symbolic dependancy from the plug-in to the host, and APIs can be easily expandable without causing backwards compatability issues.
-  </para>
-  <para>If the host does not implement a requested suite, or the requested version of that suite, then it should return NULL.
-  </para>
-  </section>
-
-  &ofxLoadingSequence;
-
+typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs); </programlisting>
+      <para> Where,
+	<itemizedlist>
+	  <listitem><code>action</code> is a C string indicating the action to be taken,</listitem>
+	  <listitem><code>handle</code> is a handle to an object appropriate to that action, cast to <code>void *</code>,</listitem>
+	  <listitem><code>inArgs</code> are a set of properties used as arguments to that action,</listitem>
+	  <listitem><code>outArgs</code> are a set of properties the plug-in should modify during the action.</listitem>
+	</itemizedlist>
+      </para>
+      <para>
+	The <code>OfxStatus</code> value returned is dependant upon the action being called, however the value <code>kOfxStatReplyDefault</code> is returned if the plug-in does not trap the action.
+      </para>
+      <para>The exact set of actions passed to a plug-in's entry point are dependent upon the API the plug-in implements. However, there exists a core set of generic actions that most APIs would use.</para>
+    </section>
+    
+    <section><title>Suites</title>
+      <para>Suites are how a plug-in communicates back to the host. A suite is simply a set of function pointers in a C struct. The set of suites a host needs to implement is defined by the API being implemented. A suite is fetched from a host via the <code>OfxHost::fetchSuite</code> function. This returns a pointer (cast to <code>void *</code>) to the named and versioned set of functions. By using this suite fetching mechanism, there is no symbolic dependancy from the plug-in to the host, and APIs can be easily expandable without causing backwards compatability issues.
+      </para>
+      <para>If the host does not implement a requested suite, or the requested version of that suite, then it should return NULL.
+      </para>
+    </section>
+    
+    &ofxLoadingSequence;
+    
   </chapter>
-
+  
   <chapter id="ImageEffectActions">
     <title>Image Effect Actions</title>
-    <section><title>The Set of Image Effect Actions</title>
-    <para>The OFX Image Effect API has the following actions...
+    <para>
+      Actions issued to OFX Image Effect plug-ins can be broken into three classes, 
+    </para>
     <itemizedlist>
-      <listitem>Generic OFX Actions, these can be issued by APIs other than the Image Effect API,
-        <itemizedlist>
-         <listitem><link linkend="kOfxActionLoad">kOfxActionLoad</link></listitem>
-         <listitem><link linkend="kOfxActionDescribe">kOfxActionDescribe</link></listitem>∑
-         <listitem><link linkend="kOfxActionUnload">kOfxActionUnload</link></listitem>
-         <listitem><link linkend="kOfxActionPurgeCaches">kOfxActionPurgeCaches</link>      </listitem>
-         <listitem><link linkend="kOfxActionSyncPrivateData">kOfxActionSyncPrivateData</link>      </listitem>
-         <listitem><link linkend="kOfxActionCreateInstance">kOfxActionCreateInstance</link>       </listitem>ｷ
-         <listitem><link linkend="kOfxActionDestroyInstance">kOfxActionDestroyInstance</link>      </listitem>
-         <listitem><link linkend="kOfxActionInstanceChanged">kOfxActionInstanceChanged</link></listitem>
-         <listitem><link linkend="kOfxActionBeginInstanceChanged">kOfxActionBeginInstanceChanged</link></listitem>
-         <listitem><link linkend="kOfxActionEndInstanceChanged">kOfxActionEndInstanceChanged</link></listitem>
-         <listitem><link linkend="kOfxActionBeginInstanceEdit">kOfxActionBeginInstanceEdit</link></listitem>
-         <listitem><link linkend="kOfxActionEndInstanceEdit">kOfxActionEndInstanceEdit</link></listitem>
-        </itemizedlist>
-      </listitem>
-      <listitem>Image Effect Actions, which are particular to the image effect API,
-        <itemizedlist>
-         <listitem><link linkend="kOfxImageEffectActionDescribeInContext">kOfxImageEffectActionDescribeInContext</link>    </listitem>
-         <listitem><link linkend="kOfxImageEffectActionGetRegionOfDefinition">kOfxImageEffectActionGetRegionOfDefinition</link>       </listitem>
-         <listitem><link linkend="kOfxImageEffectActionGetRegionsOfInterest">kOfxImageEffectActionGetRegionsOfInterest</link>        </listitem>
-         <listitem><link linkend="kOfxImageEffectActionGetTimeDomain">kOfxImageEffectActionGetTimeDomain</link>               </listitem>
-         <listitem><link linkend="kOfxImageEffectActionGetFramesNeeded">kOfxImageEffectActionGetFramesNeeded</link>             </listitem>
-         <listitem><link linkend="kOfxImageEffectActionGetClipPreferences">kOfxImageEffectActionGetClipPreferences</link>      </listitem>
-         <listitem><link linkend="kOfxImageEffectActionIsIdentity">kOfxImageEffectActionIsIdentity</link>           </listitem>
-         <listitem><link linkend="kOfxImageEffectActionRender">kOfxImageEffectActionRender</link>               </listitem>
-         <listitem><link linkend="kOfxImageEffectActionBeginSequenceRender">kOfxImageEffectActionBeginSequenceRender</link>  </listitem>
-         <listitem><link linkend="kOfxImageEffectActionEndSequenceRender">kOfxImageEffectActionEndSequenceRender</link>     </listitem>
-        </itemizedlist>
-      </listitem>
-      <listitem>Interact Actions, actions passed to any separate <code>OfxPluginEntryPoint</code> functions used for user interface 'interacts',
-        <itemizedlist>
-         <listitem> <link linkend="kOfxInteractActionDraw">kOfxInteractActionDraw</link></listitem>
-         <listitem> <link linkend="kOfxInteractActionPenMotion">kOfxInteractActionPenMotion</link></listitem>
-         <listitem> <link linkend="kOfxInteractActionPenDown">kOfxInteractActionPenDown</link>  </listitem>
-         <listitem> <link linkend="kOfxInteractActionPenUp">kOfxInteractActionPenUp</link>    </listitem>
-         <listitem> <link linkend="kOfxInteractActionKeyDown">kOfxInteractActionKeyDown</link>  </listitem>
-         <listitem> <link linkend="kOfxInteractActionKeyUp">kOfxInteractActionKeyUp</link>    </listitem>
-         <listitem> <link linkend="kOfxInteractActionKeyRepeat">kOfxInteractActionKeyRepeat</link>    </listitem>
-         <listitem> <link linkend="kOfxInteractActionGainFocus">kOfxInteractActionGainFocus</link></listitem>
-         <listitem> <link linkend="kOfxInteractActionLoseFocus">kOfxInteractActionLoseFocus</link></listitem>
-        </itemizedlist>
-      </listitem>
+      <listitem>actions that could potentially be issued to any kind of plug in, not just image effects, known as generic actions, found in <filename>ofxCore.h</filename></listitem>
+      <listitem>actions that are issued to custom user interface elements, known as 'interact' actions, found in <filename>ofxInteract.h</filename></listitem>
+      <listitem>actions that are only applicable purely to image effects, found in <filename>ofxImageEffect.h</filename></listitem>
     </itemizedlist>
-  </para>
+    <para>
+      Interact actions are also generic in character, they could be issued to other plug-in types rather than just Image Effects, however they are not issued directly to an effect's main entry point, they are rather issued to separate entry points which exist on specific 'interact' objects that a plugin may create. 
+    </para>
+    <para>
+      For generic actions, the <code>handle</code> passed to to main entry point will depend on the API being impemented, for most generic actions passed to an OFX Image Effect plug-in, it will nearly alway be an <code>OfxImageEffectHandle</code>.
+    </para>
+    <para>
+      Because interacts are a special case, they are dealt with in a separate chapter, this chapter will deal with actions issued to an image effect plug-ins main entry point.
+    </para>
+    
+    <section id="kOfxActionLoad"><title>The Generic Load Action</title>
+      <programlisting>
+#include "ofxCore.h"
+#define  kOfxActionLoad "OfxActionLoad" </programlisting>
+      &arguments;
+      <para>
+	The <code>handle</code>, <code>inArgs</code> and <code>outArgs</code> arguments to the main entry are redundant and should be set to NULL.
+      </para>
+
+      &description;
+      <para><code>kOfxActionLoad</code> is the first action passed to a plug-in after the binary containing the plug-in has been loaded. It is there to allow a plug-in to create any global data structures it may need and is also when the plug-in should fetch suites from the host.</para>
+      
+      &preconditions;
+      <para>
+	The plugin's OfxPlugin::setHost function has been called
+      </para>
+      
+      &postconditions;
+      <para>
+	This action will not be called again while the binary containing the plug-in remains loaded.
+      </para>
+      
+      &returnValues;
+      <itemizedlist>
+	<listitem>kOfxStatOK, the action was trapped and all was well,</listitem>
+	<listitem>kOfxStatReplyDefault, the action was ignored,</listitem>
+	<listitem>kOfxStatFailed, the load action failed, no further actions will be passed to the plug-in,</listitem>
+	<listitem>kOfxStatErrFatal, fatal error in the plug-in.</listitem>
+      </itemizedlist>
+    </section>
+    
+    <section id="kOfxActionUnload"><title >The Generic Unload Action</title>
+      <programlisting>
+#include "ofxCore.h"
+#define kOfxActionUnload "OfxActionUnload" </programlisting>
+
+      &description;
+      <para>kOfxActionUnload is the last action passed to the plug-in before the binary containing the plug-in is unloaded. It is there to allow a plug-in to destroy any global data structures it may have created.</para>
+      
+      &arguments;
+      <para>
+	The <code>handle</code>, <code>inArgs</code> and <code>outArgs</code> arguments to the main entry are redundant and should be set to NULL.</para>
+      
+      &preconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>the kOfxActionLoad action has been called</listitem>
+	  <listitem>all instances of a plugin have been destroyed</listitem>
+	</itemizedlist>
+      </para>
+      
+      &postconditions;
+      <para>
+	No other actions will be called.
+      </para>
+      
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped all was well</listitem>
+	  <listitem>kOfxStatReplyDefault, the action was ignored</listitem>
+	  <listitem>kOfxStatErrFatal, in which case we the program will be forced to quit</listitem>
+	</itemizedlist>
+      </para>
+      
+    </section>
+    
+    <section id="kOfxActionDescribe"><title >The Generic Describe Action</title>
+      <programlisting>
+#include "ofxCore.h"
+#define kOfxActionDescribe "OfxActionDescribe" </programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the plug-in descriptor, cast to an <code>OfxImageEffectHandle</code></listitem>
+	  <listitem><code>inArgs</code> is redundant and is set to NULL,</listitem>
+	  <listitem><code>outArgs</code> is redundant and is set to NULL.</listitem>
+	</itemizedlist>
+      </para>      
+      &description;
+      <para>
+	The kOfxActionDescribe is the second action passed to a plug-in. It is where a plugin defines how it behaves and the resources it needs to function.
+      </para>
+      
+      <para>
+	Note that the handle passed in acts as a descriptor for, rather than an instance of the plugin. The handle is global and unique. The plug-in is at liberty to cache the handle away for future reference until the plug-in is unloaded.
+      </para>
+      
+      <para>
+	For more details on on how to describe an OFX Image Effect, see the chapter <link linkend="describingImageEffects">Describing Image Effects</link>. Most importantly, the effect must set what image effect contexts it is capable of working in.
+      </para>
+      
+      <para>
+	This action <emphasis>must</emphasis> be trapped, it is not optional.
+      </para>
+            
+      &preconditions;
+      <para>
+	kOfxActionLoad has been called
+      </para>
+      
+      &postconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxActionDescribe will not be called again, unless it fails and returns one of the error codes where the host is allowed to attempt the action again</listitem>
+	  <listitem>the handle argument, being the global plug-in description handle, is a valid handle from the end of a sucessful describe action until the end of the kOfxActionUnload action (ie: the plug-in can cache it away without worrying about it changing between actions).</listitem>
+	  <listitem><link linkend="kOfxImageEffectActionDescribeInContext"><code>kOfxImageEffectActionDescribeInContext</code></link> will be called once for each context that the host and plug-in mutually support.</listitem>
+	</itemizedlist>
+      </para>
+      
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped and all was well</listitem>
+	  <listitem>kOfxStatErrMissingHostFeature, in which the plugin will be unloaded and ignored, plugin may post message</listitem>
+	  <listitem>kOfxStatErrMemory, in which case describe may be called again after a memory purge</listitem>
+	  <listitem>kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message</listitem>
+	  <listitem>kOfxStatErrFatal</listitem>
+	</itemizedlist>
+      </para>
+      
+    </section>
+    
+    <section id="kOfxActionCreateInstance"><title >The Generic Create Instance Action</title>
+      <programlisting>
+#include "ofxCore.h"
+#define kOfxActionCreateInstance        "OfxActionCreateInstance" </programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the plug-in instance, cast to an <code>OfxImageEffectHandle</code> </listitem>
+	  <listitem><code>inArgs</code> is redundant and is set to NULL,</listitem>
+	  <listitem><code>outArgs</code> is redundant and is set to NULL.</listitem>
+	</itemizedlist>
+      </para>
+      
+      &description;
+      <para>
+	The kOfxActionCreateInstance is the first action passed to a plug-in's instance after its creation. It is there to allow a plugin to create
+	any per-instance data structures it may need.
+      </para>
+
+      &preconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxActionDescribe has been called</listitem>
+	  <listitem>the instance is fully constructed, with all objects requested in the describe actions (eg, parameters and clips) have been constructed and have had their initial values set. This means that if the values are being loaded from an old setup, that load should have taken place before the create instance action is called.</listitem>
+	</itemizedlist>
+      </para>
+
+      &postconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>the instance pointer will be valid until the <link linkend="kOfxActionDestroyInstance"><code>kOfxActionDestroyInstance</code></link> action is passed to the plug-in with the same instance handle</listitem>
+	</itemizedlist>
+      </para>
+
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped and all was well</listitem>
+	  <listitem>kOfxStatReplyDefault, the action was ignored, but all was well anyway</listitem>
+	  <listitem>kOfxStatErrFatal</listitem>
+	  <listitem>kOfxStatErrMemory, in which case this may be called again after a memory purge</listitem>
+	  <listitem>kOfxStatFailed, something went wrong, but no error code appropriate, the plugin should to post a message if possible and the host should destroy the instanace handle and not attempt to proceed further</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+    
+    <section id="kOfxActionDestroyInstance"><title >The Generic Destroy Instance Action</title>
+      <programlisting>
+#include "ofxCore.h"
+#define kOfxActionDestroyInstance       "OfxActionDestroyInstance" </programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the plug-in instance, cast to an <code>OfxImageEffectHandle</code> </listitem>
+	  <listitem><code>inArgs</code> is redundant and is set to NULL,</listitem>
+	  <listitem><code>outArgs</code> is redundant and is set to NULL.</listitem>
+	</itemizedlist>
+      </para>
+
+      &description;
+      <para>
+      This action is the last passed to a plug-in's instance before its destruction. It is there to allow a plugin to destroy
+      any per-instance data structures it may have created.
+      </para>
+      
+      &preconditions;
+      <para>
+	<itemizedlist>
+	  <listitem><code>kOfxActionCreateInstance</code> has been called on the handle,</listitem>
+	  <listitem>the instance has not had any of its members destroyed yet, </listitem>
+	</itemizedlist>
+      </para>
+      
+      &postconditions;
+      <para>
+	<itemizedlist>	
+	<listitem>the instance pointer is no longer valid and any operation on it will be undefined</listitem>
+	</itemizedlist>
+      </para>
+	
+      &returnValues;
+      <para>
+	To some extent, what is returned is moot, a bit like throwing an exception in a C++ destructor, so the host should continue destruction of the
+	instance regardless. However...
+	<itemizedlist>	
+	  <listitem>kOfxStatOK, the action was trapped and all was well,</listitem>
+	  <listitem>OfxStatReplyDefault, the action was ignored as the effect had nothing to do, </listitem>
+	  <listitem>kOfxStatErrFatal,</listitem>
+	  <listitem>kOfxStatFailed, something went wrong, but no error code appropriate, the plugin should to post a message.</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+    
+    <section id="kOfxActionBeginInstanceChanged"><title >The Generic Begin/End Instance Changed Actions</title>
+      <programlisting>
+#include "ofxCore.h"
+#define kOfxActionBeginInstanceChanged "OfxActionBeginInstanceChanged" 
+#define kOfxActionEndInstanceChanged "OfxActionEndInstanceChanged" </programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the plug-in instance, cast to an <code>OfxImageEffectHandle</code> </listitem>
+	  <listitem><code>inArgs</code> has the following properties...
+	    <itemizedlist>
+	      <listitem><link linkend="kOfxPropChangeReason">kOfxPropChangeReason</link> - what triggered the change, which will be one of...
+		<itemizedlist>
+		  <listitem>kOfxChangeUserEdited - the user or host changed the instance somehow and caused a change to something, this includes undo/redos, resets and loading values from files or presets,</listitem>
+		  <listitem>kOfxChangePluginEdited - the plugin itself has changed the value of the instance in some action</listitem>
+		  <listitem>kOfxChangeTime         - the time has changed and this has affected the value of the object because it varies over time</listitem>
+		</itemizedlist>
+	      </listitem>
+	    </itemizedlist>
+	  </listitem>
+	  <listitem><code>outArgs</code> is redundant and is set to NULL.</listitem>
+	</itemizedlist>
+      </para>
+
+      &description;
+      <para>
+<code>kOfxActionBeginInstanceChanged</code> and <code>kOfxActionEndInstanceChanged</code> are used to bracket all <code>kOfxActionInstanceChanged</code> actions, whether a single change or multiple changes.
+Some changes to a plugin instance can be grouped logically (eg: a 'reset all' button resetting all the instance's parameters), the begin/end instance changed actions allow a plugin to respond appropriately to a large set of changes.
+For example, a plugin that maintains a complex internal state can delay any changes to that state until all parameter changes have completed.
+      </para>
+
+      &preconditions;
+      <para>
+	For kOfxActionBeginInstanceChanged,
+	<itemizedlist>
+	  <listitem>kOfxActionCreateInstance has been called on the instance handle.</listitem>
+	</itemizedlist>
+	For kOfxActionEndInstanceChanged,
+	<itemizedlist>
+	  <listitem>kOfxActionBeginInstanceChanged has been called on the instance handle.</listitem>
+	  <listitem>kOfxActionCreateInstance has been called on the instance handle.</listitem>
+	</itemizedlist>
+      </para>
+
+      &postconditions;
+      <para>
+	For kOfxActionBeginInstanceChanged,
+	<itemizedlist>
+	  <listitem>kOfxActionInstanceChanged will be called at least once on the instance handle.</listitem>
+	  <listitem>kOfxActionEndInstanceChanged will be called on the instance handle.</listitem>
+	</itemizedlist>
+      </para>
+      
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped and all was well</listitem>
+	  <listitem>kOfxStatReplyDefault, the action was ignored</listitem>
+	  <listitem>kOfxStatErrFatal, </listitem>
+	  <listitem>kOfxStatFailed, something went wrong, but no error code appropriate, the plugin should to post a message</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+    
+    <section id="kOfxActionInstanceChanged"><title >The Generic Instance Changed Action</title>
+      <programlisting>
+#include "ofxCore.h"
+#define kOfxActionInstanceChanged "OfxActionInstanceChanged" </programlisting>
+      
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the plug-in instance, cast to an <code>OfxImageEffectHandle</code> </listitem>
+	  <listitem><code>inArgs</code> has the following properties...
+	    <itemizedlist>
+	      <listitem><link linkend="kOfxPropType">kOfxPropType</link> - the type of the thing that changed which will be one of..
+		<itemizedlist>
+		  <listitem>kOfxTypeParameter - indicating a parameter's value has changed in some way</listitem>
+		  <listitem>kOfxTypeClip      - a clip to an image effect has changed in some way (for Image Effect Plugins only)</listitem>
+		</itemizedlist>
+	      </listitem>
+	      <listitem><link linkend="kOfxPropName">kOfxPropName</link> - the name of the thing that was changed in the instance</listitem>
+	      <listitem><link linkend="kOfxPropChangeReason">kOfxPropChangeReason</link> - what triggered the change, which will be one of...
+		<itemizedlist>
+		  <listitem>kOfxChangeUserEdited - the user or host changed the instance somehow and caused a change to something, this includes undo/redos, resets and loading values from files or presets,</listitem>
+		  <listitem>kOfxChangePluginEdited - the plugin itself has changed the value of the instance in some action</listitem>
+		  <listitem>kOfxChangeTime         - the time has changed and this has affected the value of the object because it varies over time</listitem>
+		</itemizedlist>
+	      </listitem>
+	      <listitem><link linkend="kOfxPropTime">kOfxPropTime</link> - the effect time at which the chang occured (for Image Effect Plugins only)</listitem>
+	      <listitem><link linkend="kOfxImageEffectPropRenderScale">kOfxImageEffectPropRenderScale</link> - the render scale currently being applied to any image fetched from a clip (for Image Effect Plugins only)</listitem>
+	    </itemizedlist>
+	  </listitem>
+	  <listitem><code>outArgs</code> is redundant and is set to NULL.</listitem>
+	</itemizedlist>
+      </para>
+
+      &description;
+      <para>
+This action signals that something has changed in a plugin's instance, either by user action, the host or the plugin itself. All change actions are bracketed by a pair of kOfxActionBeginInstanceChanged and kOfxActionEndInstanceChanged actions. The <code>inArgs</code> property set is used to determine what was the thing inside the instance that was changed.
+      </para>
+      
+      &preconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxActionCreateInstance has been called on the instance handle,</listitem>
+	  <listitem>kOfxActionBeginInstanceChanged has been called on the instance handle.</listitem>
+	</itemizedlist>
+      </para>
+
+      &postconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxActionEndInstanceChanged will be called on the instance handle.</listitem>
+	</itemizedlist>
+      </para>
+      
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped and all was well</listitem>
+	  <listitem>kOfxStatReplyDefault, the action was ignored</listitem>
+	  <listitem>kOfxStatErrFatal, </listitem>
+	  <listitem>kOfxStatFailed, something went wrong, but no error code appropriate, the plugin should to post a message</listitem>
+	</itemizedlist>
+      </para>
     </section>
 
-    <section><title>Sequences Of Actions</title>
+    <section id="kOfxActionPurgeCaches"><title >The Generic Purge Caches Action></title>
+      <programlisting>
+#include "ofxCore.h"
+#define kOfxActionPurgeCaches                 "OfxActionPurgeCaches"</programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the plug-in instance, cast to an <code>OfxImageEffectHandle</code> </listitem>
+	  <listitem><code>inArgs</code> is redundant and is set to NULL,</listitem>
+	  <listitem><code>outArgs</code> is redundant and is set to NULL.</listitem>
+	</itemizedlist>
+      </para>
+
+      &description;
+      <para>
+	The kOfxActionPurgeCaches is an action that may be passed to a plug-in instance from time to
+	time in low memory situations. Instances recieving this action should destroy any data structures they may have and release the associated memory, they can later reconstruct this from the effect's parameter set and associated information.
+      </para>
+      <para>
+	For Image Effects, it is generally a bad idea to call this after each render, but rather it should be called after <link linkend="kOfxImageEffectActionEndSequenceRender"><code>kOfxImageEffectActionEndSequenceRender</code></link>. Some effects, typically those flagged with the <link linkend="kOfxImageEffectInstancePropSequentialRender">kOfxImageEffectInstancePropSequentialRender</link> property, may need to cache information from previously rendered frames to function correctly, or have data structures that are expensive to reconstruct at each frame (eg: a particle system). Ideally, such effect should free such structures during the <code>kOfxImageEffectActionEndSequenceRender</code> action.
+      </para>
+
+      &preconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxActionCreateInstance has been called on the instance handle,</listitem>
+	</itemizedlist>
+      </para>
+
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped and all was well</listitem>
+	  <listitem>kOfxStatReplyDefault, the action was ignored</listitem>
+	  <listitem>kOfxStatErrFatal, </listitem>
+	  <listitem>kOfxStatFailed, something went wrong, but no error code appropriate, the plugin should to post a message</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+    
+    <section id="kOfxActionSyncPrivateData"><title >The Sync Private Data Action</title>
+      <programlisting>
+#include "ofxCore.h"
+#define kOfxActionSyncPrivateData                 "OfxActionSyncPrivateData"</programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the plug-in instance, cast to an <code>OfxImageEffectHandle</code> </listitem>
+	  <listitem><code>inArgs</code> is redundant and is set to NULL,</listitem>
+	  <listitem><code>outArgs</code> is redundant and is set to NULL.</listitem>
+	</itemizedlist>
+      </para>
+
+      &description;
+      <para>
+	This action is called when a plugin should synchronise any private data structures to its parameter set. This
+	generally occurs when an effect is about to be saved or copied, but it could occur in other situations as well.
+      </para>
+
+
+      &preconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxActionCreateInstance has been called on the instance handle,</listitem>
+	</itemizedlist>
+      </para>
+
+      &postconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>any private state data can be reconstructed from the parameter set,</listitem>
+	</itemizedlist>
+      </para>
+
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped and all was well</listitem>
+	  <listitem>kOfxStatReplyDefault, the action was ignored</listitem>
+	  <listitem>kOfxStatErrFatal, </listitem>
+	  <listitem>kOfxStatFailed, something went wrong, but no error code appropriate, the plugin should to post a message</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+    
+    <section id="kOfxActionBeginInstanceEdit"><title >The Generic Begin Instance Edit Action</title>
+      <programlisting>
+#include "ofxCore.h"
+#define kOfxActionBeginInstanceEdit "OfxActionBeginInstanceEdit"</programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the plug-in instance, cast to an <code>OfxImageEffectHandle</code> </listitem>
+	  <listitem><code>inArgs</code> is redundant and is set to NULL,</listitem>
+	  <listitem><code>outArgs</code> is redundant and is set to NULL.</listitem>
+	</itemizedlist>
+      </para>
+      &description;
+      <para>
+	This is called when an instance is <emphasis>first</emphasis> actively edited by a user, ie: and interface is open and parameter values and input clips can be modified. It is there so that effects can create private user interface structures when necassary. Note that some hosts can have multiple editors open on the same effect instance simulateously.
+      </para>	
+
+      &preconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxActionCreateInstance has been called on the instance handle,</listitem>
+	</itemizedlist>
+      </para>
+
+      &postconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxActionEndInstanceEdit will be called when the last editor is closed on the instance</listitem>
+	</itemizedlist>
+      </para>
+
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped and all was well</listitem>
+	  <listitem>kOfxStatReplyDefault, the action was ignored</listitem>
+	  <listitem>kOfxStatErrFatal, </listitem>
+	  <listitem>kOfxStatFailed, something went wrong, but no error code appropriate, the plugin should to post a message</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+    
+    <section id="kOfxActionEndInstanceEdit"><title >The Generic End Instance Edit Action</title>
+      <programlisting>
+#include "ofxCore.h"
+#define kOfxActionEndInstanceEdit "OfxActionEndInstanceEdit"</programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the plug-in instance, cast to an <code>OfxImageEffectHandle</code> </listitem>
+	  <listitem><code>inArgs</code> is redundant and is set to NULL,</listitem>
+	  <listitem><code>outArgs</code> is redundant and is set to NULL.</listitem>
+	</itemizedlist>
+      </para>
+      &description;
+      <para>
+	This is called when the <emphasis>last</emphasis> user interface on an instance closed. It is there so that effects can destroy private user interface structures when necassary. Note that some hosts can have multiple editors open on the same effect instance simulateously, this will only be called when the last of those editors are closed.
+      </para>	
+
+      &preconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxActionBeginInstanceEdit has been called on the instance handle,</listitem>
+	</itemizedlist>
+      </para>
+
+      &postconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>no user interface is open on the instance</listitem>
+	</itemizedlist>
+      </para>
+
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped and all was well</listitem>
+	  <listitem>kOfxStatReplyDefault, the action was ignored</listitem>
+	  <listitem>kOfxStatErrFatal, </listitem>
+	  <listitem>kOfxStatFailed, something went wrong, but no error code appropriate, the plugin should to post a message</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+    
+    <section id="kOfxImageEffectActionDescribeInContext"><title >The Describe In Context Action</title>
+      <programlisting>
+#include "ofxImageEffect.h"
+#define kOfxImageEffectActionDescribeInContext  "OfxImageEffectActionDescribeInContext"</programlisting>
+      
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the context descriptor, cast to an <code>OfxImageEffectHandle</code>, this may
+	  or may not be the same as passed to <link linkend="kOfxActionDescribe"><code>kOfxActionDescribe</code></link>.</listitem>
+	  <listitem><code>inArgs</code> has the following property...
+	    <itemizedlist>
+	      <listitem><link linkend="kOfxImageEffectPropContext"><code>kOfxImageEffectPropContext</code></link> the context being described.</listitem>
+	    </itemizedlist>
+	  </listitem>
+	  <listitem><code>outArgs</code> is redundant and is set to NULL.</listitem>
+	</itemizedlist>
+      </para>
+
+      &description;
+      <para>
+	This action is unique to OFX Image Effect plug-ins. Because a plugin is able to exhibit different behaviour depending on the context of use, each separate context will need to be described individually. It is within this action that image effects describe which parameters and input clips it requires.
+      </para>
+      <para>
+	This action will be called multiple times, one for each of the contexts the plugin says it is capable of implementing. If a host does not support a certain context, then it need not call <code>kOfxImageEffectActionDescribeInContext</code> for that context.
+      </para>
+      
+      <para>
+	For more details on on how to describe an OFX Image Effect, see the chapter <link linkend="describingImageEffects">Describing Image Effects</link>.
+      </para>
+      
+      <para>
+	This action <emphasis>must</emphasis> be trapped, it is not optional.
+      </para>
+            
+      &preconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxActionDescribe has been called on the descriptor handle,</listitem>
+	  <listitem>kOfxActionCreateInstance has <emphasis>not</emphasis> been called,</listitem>
+	</itemizedlist>
+      </para>
+
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped and all was well</listitem>
+	  <listitem>kOfxStatErrMissingHostFeature, in which the context will be ignored by the host, the plugin may post a message</listitem>
+	  <listitem>kOfxStatErrMemory, in which case the action may be called again after a memory purge</listitem>
+	  <listitem>kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message</listitem>
+	  <listitem>kOfxStatErrFatal</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+    
+    <section id="kOfxImageEffectActionGetRegionOfDefinition"><title >The Get Region of Definition Action</title> 
+      <programlisting>
+#include "ofxImageEffect.h"
+#define kOfxImageEffectActionGetRegionOfDefinition        "OfxImageEffectActionGetRegionOfDefinition"</programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the instance, cast to an <code>OfxImageEffectHandle</code>,</listitem>
+	  <listitem><code>inArgs</code> has the following properties...
+	    <itemizedlist>
+	      <listitem><link linkend="kOfxPropTime"><code>kOfxPropTime</code></link> the effect time for which a region of definition is being requested,</listitem>
+	      <listitem><link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link> the render scale that should be used in any calculations in this action,</listitem>
+	    </itemizedlist>
+	  </listitem>
+	  <listitem><code>outArgs</code>  has the following property which the plug-in may set...
+	    <itemizedlist>
+	      <listitem><link linkend="kOfxImageEffectPropRegionOfDefinition"><code>kOfxImageEffectPropRegionOfDefinitiong</code></link>, the calculated region of definition, initially set by the host to the default RoD (see below), in Cannonical Coordinates.</listitem>
+	    </itemizedlist>
+	  </listitem>
+	</itemizedlist>
+      </para>
      
+      &description;
+      <para>
+	The region of definition for an image effect is the rectangular section of the 2D image plane that it is capable of filling, given the state of its input clips and parameters. This action is used to calculate the RoD for a plugin instance at a given frame. For more details on regions of definition see <link linkend="ImageEffectArchitectures">Image Effect Architectures</link>.
+      </para>
+      <para>
+	Note that hosts that have constant sized imagery need not call this action, only hosts that allow image sizes to vary need call this.
+      </para>
+      
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, , the action was trapped and the RoD was set in the <code>outArgs</code> property set</listitem>
+	  <listitem>kOfxStatReplyDefault, the action was not trapped and the host should use the default values</listitem>
+	  <listitem>kOfxStatErrMemory, in which case the action may be called again after a memory purge</listitem>
+	  <listitem>kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message</listitem>
+	  <listitem>kOfxStatErrFatal</listitem>
+	</itemizedlist>
+      </para>
+
+      &defaultAction;
+      <para>
+	If the effect did not trap this, it means the host should use the default RoD instead, which depends on the context. This is...
+	<itemizedlist>
+	  <listitem>generator context  - defaults to the project window,</listitem>
+	  <listitem>filter and paint contexts   - defaults to the RoD of the 'Source' input clip at the given time,</listitem>
+	  <listitem>transition context - defaults to the union of the RoDs of the 'SourceFrom' and 'SourceTo' input clips at the given time,</listitem>
+	  <listitem>general context    - defaults to the union of the RoDs of all the effect non optional input clips 
+	    at the given time, if none exist, then it is the project window</listitem>
+	  <listitem>retimer context    - defaults to the union of the RoD of the 'Source' input clip at the frame directly preceding the
+	    value of the 'SourceTime' double parameter and the frame directly after it</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+    
+    <section id="kOfxImageEffectActionGetRegionsOfInterest"><title >The Get Regions Of Interest Action</title>
+      <programlisting>
+#include "ofxImageEffect.h"
+#define kOfxImageEffectActionGetRegionsOfInterest         "OfxImageEffectActionGetRegionsOfInterest"</programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the instance, cast to an <code>OfxImageEffectHandle</code>,</listitem>
+	  <listitem><code>inArgs</code> has the following properties...
+	    <itemizedlist>
+	      <listitem><link linkend="kOfxPropTime"><code>kOfxPropTime</code></link> the effect time for which a region of definition is being requested,</listitem>
+	      
+	      <listitem><link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link> the render scale that should be used in any calculations in this action,</listitem>
+	      <listitem><link linkend="kOfxImageEffectPropRegionOfInterest"><code>kOfxImageEffectPropRegionOfInterest</code></link> the region to be rendered in the output image, in Cannonical Coordinates.</listitem>
+	    </itemizedlist>
+	  </listitem>
+	<listitem><code>outArgs</code> has a set of 4 dimensional double properties, one for each of the input clips to the effect. The properties are each named "OfxImageClipPropRoI_" with the clip name post pended, for example "OfxImageClipPropRoI_Source". These are initialised to the default RoI. </listitem>
+	</itemizedlist>
+      </para>
+
+      &description;
+      <para>
+	This action allows a host to ask an effect, given a region I want to render, what region do you need from each of your input clips. In that way, depending on the host architecture, a host can fetch the minimal amount of the image needed as input. Note that there is a region of interest to be set in <code>outArgs</code> for each input clip that exists on the effect. Form more details see <link linkend="ImageEffectArchitectures">Image Effect Architectures</link>.
+      </para>
+
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped and at least one RoI was set in the <code>outArgs</code> property set</listitem>
+	  <listitem>kOfxStatReplyDefault, the action was not trapped and the host should use the default values</listitem>
+	  <listitem>kOfxStatErrMemory, in which case the action may be called again after a memory purge</listitem>
+	  <listitem>kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message</listitem>
+	  <listitem>kOfxStatErrFatal</listitem>
+	</itemizedlist>
+      </para>
+
+      &defaultAction;
+      <para>
+	The default RoI is simply the value passed in on the <link linkend="kOfxImageEffectPropRegionOfInterest"><code>kOfxImageEffectPropRegionOfInterest</code></link> <code>inArgs</code> property set. All the RoIs in the <code>outArgs</code> property set must initialised to this value before the action is called.
+      </para>
+    </section>
+    
+    <section id="kOfxImageEffectActionGetFramesNeeded"><title >The Get Frames Needed Action</title>
+      <programlisting>
+#include "ofxImageEffect.h"
+#define kOfxImageEffectActionGetFramesNeeded              "OfxImageEffectActionGetFramesNeeded"</programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the instance, cast to an <code>OfxImageEffectHandle</code>,</listitem>
+	  <listitem><code>inArgs</code> has the following property...
+	    <itemizedlist>
+	      <listitem><link linkend="kOfxPropTime"><code>kOfxPropTime</code></link> the effect time for which we need to calculate the frames needed on input</listitem>
+	    </itemizedlist>
+	  </listitem>
+	  <listitem><code>outArgs</code>  has a set of properties, one for each input clip, named "OfxImageClipPropFrameRange_" with the name of the clip post-pended. For example "OfxImageClipPropFrameRange_Source". All these properties are multi-dimensional doubles, with the dimension is a multiple of two. Each pair of values indicates a continuous range of frames that is needed on the given input. They are all initalised to the default value.
+	  </listitem>
+	</itemizedlist>
+      </para>
+
+      &description;
+      <para>
+	This action lets the host ask the effect what frames are needed from each input clip to process a given frame. For example a temporal based degrainer may need several frames around the frame to render to do its work.
+      </para>
+      <para>
+	This action need only ever be called if the plugin has set the <link linkend="kOfxImageEffectPropTemporalClipAccess"><code>kOfxImageEffectPropTemporalClipAccessg</code></link> property on the plugin descriptor to be true. Otherwise the host assumes that the only frame needed from the inputs is the current one and this acion is not called.
+      </para>
+      <para>
+	Note that each clip can have it's required frame range specified, and that you can specify discontinuous sets of ranges for each clip, for example...
+      <programlisting>
+  // The effect always needs the initial frame of the source as well as the previous and current frame
+  double rangeSource[4];
+  
+  // required ranges on the source
+  rangeSource[0] = 0; // we always need frame 0 of the source
+  rangeSource[1] = 0;
+  rangeSource[2] = currentFrame - 1; // we also need the previous and current frame on the source
+  rangeSource[3] = currentFrame;
+
+  gPropHost->propSetDoubleN(outArgs, "OfxImageClipPropFrameRange_Source", 4, rangeSource); </programlisting>
+	
+	Which sets two discontinuous range of frames from the 'Source' clip required as input.
+      </para>
+
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped and at least one frame range in the <code>outArgs</code> property set</listitem>
+	  <listitem>kOfxStatReplyDefault, the action was not trapped and the host should use the default values</listitem>
+	  <listitem>kOfxStatErrMemory, in which case the action may be called again after a memory purge</listitem>
+	  <listitem>kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message</listitem>
+	  <listitem>kOfxStatErrFatal</listitem>
+	</itemizedlist>
+      </para>
+
+      &defaultAction;
+      <para>
+	The default frame range is simply the single frame, kOfxPropTime..kOfxPropTime, found on the <code>inArgs</code> property set. All the frame ranges in the <code>outArgs</code> property set must initialised to this value before the action is called.
+      </para>
+
+    </section>
+    
+    <section id="kOfxImageEffectActionIsIdentity"><title >The Is Identity Action</title>
+      <programlisting>
+#include "ofxImageEffect.h"
+#define kOfxImageEffectActionIsIdentity            "OfxImageEffectActionIsIdentity"</programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the instance, cast to an <code>OfxImageEffectHandle</code>,</listitem>
+	  <listitem><code>inArgs</code> has the following properties...
+	    <itemizedlist>	      
+	      <listitem><link linkend="kOfxPropTime"><code>kOfxPropTime</code></link> - the time at which to test for identity</listitem>
+	      <listitem><link linkend="kOfxImageEffectPropFieldToRender"><code>kOfxImageEffectPropFieldToRender</code></link> - the field to test for identity</listitem>
+	      <listitem><link linkend="kOfxImageEffectPropRenderWindow"><code>kOfxImageEffectPropRenderWindow</code></link> - the window (in \ref PixelCoordinates) to test for identity under</listitem>
+	      <listitem><link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link> - the scale factor being applied to the images being renderred</listitem>
+	    </itemizedlist>
+	  </listitem>
+	  
+	  <listitem><code>outArgs</code> has the following properties which the plugin can set...
+	    <itemizedlist>	      
+	      <listitem><link linkend="kOfxPropName"><code>kOfxPropName</code></link> this to the name of the clip that should be used if the effect is an identity transform, defaults to the empty string</listitem>
+	      <listitem><link linkend="kOfxPropTime"><code>kOfxPropTime</code></link> the time to use from the indicated source clip as an identity image (allowing time slips to happen), defaults to the value in <code>kOfxPropTime</code> in inArgs</listitem>
+	    </itemizedlist>
+	  </listitem>
+	</itemizedlist>
+      </para>
+
+      &description;
+      <para>
+	Sometimes an effect can pass through an input uprocessed, for example a blur effect with a blur size of 0. This action can be called by a host before it attempts to render an effect to determine if it can simply copy input directly to output without having to call the render action on the effect.
+      </para>
+
+      <para>
+	If the effect does not need to process any pixels, it should set the value of the <code>kOfxPropName</code> to the clip that the host should us as the output instead, and the <code>kOfxPropTime</code> property on <code>outArgs</code> to be the time at which the frame should be fetched from a clip.
+      </para>
+
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped and the effect should not have its render action called, the values in <code>outArgs</code> indicate what frame from which clip to use instead</listitem>
+	  <listitem>kOfxStatReplyDefault, the action was not trapped and the host should call the render action</listitem>
+	  <listitem>kOfxStatErrMemory, in which case the action may be called again after a memory purge</listitem>
+	  <listitem>kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message</listitem>
+	  <listitem>kOfxStatErrFatal</listitem>
+	</itemizedlist>
+      </para>
+
+      &defaultAction;
+      <para>
+	The default action is to call the render action on the effect.
+      </para>
+    </section>
+    
+    <section id="kOfxImageEffectActionRender"><title >The Render Action</title>
+      <programlisting>
+#include "ofxImageEffect.h"
+#define kOfxImageEffectActionRender                "OfxImageEffectActionRender"</programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the instance, cast to an <code>OfxImageEffectHandle</code>,</listitem>
+	  <listitem><code>inArgs</code> has the following properties...
+	    <itemizedlist>	      
+	      <listitem><link linkend="kOfxPropTime"><code>kOfxPropTime</code></link> - the time at which to test for identity</listitem>
+	      <listitem><link linkend="kOfxImageEffectPropFieldToRender"><code>kOfxImageEffectPropFieldToRender</code></link> - the field to test for identity</listitem>
+	      <listitem><link linkend="kOfxImageEffectPropRenderWindow"><code>kOfxImageEffectPropRenderWindow</code></link> - the window (in \ref PixelCoordinates) to test for identity under</listitem>
+	      <listitem><link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link> - the scale factor being applied to the images being renderred</listitem>
+	    </itemizedlist>
+	  </listitem>
+	  <listitem><code>outArgs</code> is redundant and should be set to NULL.</listitem>
+	</itemizedlist>
+      </para>
+
+      &description;
+      <para>
+	This action is where an effect gets to push pixels and turn its input clips and parameter set into an output image. This is possibly quite complicated and covered in the <link linkend="RenderingEffects">Rendering Image Effects</link> chapter.
+      </para>
+
+
+      &preconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxActionCreateInstance has been called on the instance</listitem>
+	  <listitem>kOfxImageEffectActionBeginSequenceRender has been called on the instance</listitem>
+	</itemizedlist>
+      </para>
+
+      
+      &postconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxImageEffectActionEndSequenceRender action will be called on the instance</listitem>
+	</itemizedlist>
+      </para>
+
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the effect rendered happily</listitem>
+	  <listitem>kOfxStatErrMemory, in which case the action may be called again after a memory purge</listitem>
+	  <listitem>kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message</listitem>
+	  <listitem>kOfxStatErrFatal</listitem>
+	</itemizedlist>
+      </para>
+
+      &defaultAction;
+      <para>
+	The render action <emphasis>must</emphasis> be trapped by the plug-in, it cannot return kOfxStatReplyDefault. The pixels needs be pushed I'm afraid.
+      </para>
+
+    </section>
+    
+    <section id="kOfxImageEffectActionBeginSequenceRender"><title >The Begin Sequence Render Action</title>
+      <programlisting>
+#include "ofxImageEffect.h"
+#define kOfxImageEffectActionBeginSequenceRender   "OfxImageEffectActionBeginSequenceRender"</programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the instance, cast to an <code>OfxImageEffectHandle</code>,</listitem>
+	  <listitem><code>inArgs</code> has the following properties...
+	    <itemizedlist>
+	      <listitem><link linkend="kOfxImageEffectPropFrameRange"><code>kOfxImageEffectPropFrameRange</code></link> - the range of frames (inclusive) that will be renderred,</listitem>
+	      <listitem><link linkend="kOfxImageEffectPropFrameStep"><code>kOfxImageEffectPropFrameStep</code></link>  - what is the step between frames, generally set to 1 (for full frame renders) or 0.5 (for fielded renders),</listitem>
+	      <listitem><link linkend="kOfxPropIsInteractive"><code>kOfxPropIsInteractive</code></link>  - is this a single frame render due to user interaction in a GUI, or a proper full sequence render.</listitem>
+	      <listitem><link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link>   - the scale factor to apply to images for this call</listitem>
+	    </itemizedlist>
+	  </listitem>
+	  <listitem><code>outArgs</code> is redundant and is set to NULL.</listitem>
+	</itemizedlist>
+      </para>
+
+      &description;
+      <para>
+	This action is passed to an image effect before it renders a range of frames. It is there to allow an effect to set things up for a long sequence of frames. Note that this is still called, even if only a single frame is being rendered in an interactive environment.
+      </para>
+
+      &preconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxActionCreateInstance has been called on the instance</listitem>
+	</itemizedlist>
+      </para>
+
+      &postconditions;
+      <para>
+	<itemizedlist>	  
+	  <listitem>kOfxImageEffectActionRender action will be called at least once on the instance</listitem>
+	  <listitem>kOfxImageEffectActionEndSequenceRender action will be called on the instance</listitem>
+	</itemizedlist>
+      </para>
+
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped and handled cleanly by the effect, </listitem>
+	  <listitem>kOfxStatReplyDefault, the action was not trapped, but all is well anyway,</listitem>
+	  <listitem>kOfxStatErrMemory, in which case the action may be called again after a memory purge,</listitem>
+	  <listitem>kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message,</listitem>
+	  <listitem>kOfxStatErrFatal</listitem>
+	</itemizedlist>
+      </para>
+      
+
+    </section>
+    
+    <section id="kOfxImageEffectActionEndSequenceRender"><title >The End Sequence Render Action</title>
+      <programlisting>
+#include "ofxImageEffect.h"
+#define kOfxImageEffectActionEndSequenceRender      "OfxImageEffectActionEndSequenceRender"</programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the instance, cast to an <code>OfxImageEffectHandle</code>,</listitem>
+	  <listitem><code>inArgs</code> has the following properties...
+	    <itemizedlist>
+	      <listitem><link linkend="kOfxImageEffectPropFrameRange"><code>kOfxImageEffectPropFrameRange</code></link> - the range of frames (inclusive) that will be renderred,</listitem>
+	      <listitem><link linkend="kOfxImageEffectPropFrameStep"><code>kOfxImageEffectPropFrameStep</code></link>  - what is the step between frames, generally set to 1 (for full frame renders) or 0.5 (for fielded renders),</listitem>
+	      <listitem><link linkend="kOfxPropIsInteractive"><code>kOfxPropIsInteractive</code></link>  - is this a single frame render due to user interaction in a GUI, or a proper full sequence render.</listitem>
+	      <listitem><link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link>   - the scale factor to apply to images for this call</listitem>
+	    </itemizedlist>
+	  </listitem>
+	  <listitem><code>outArgs</code> is redundant and is set to NULL.</listitem>
+	</itemizedlist>
+      </para>
+
+      &description;
+      <para>
+	This action is passed to an image effect after is has rendered a range of frames. It is there to allow an effect to free resources after a long sequence of frame renders. Note that this is still called, even if only a single frame is being rendered in an interactive environment.
+      </para>
+
+      
+      &preconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxActionCreateInstance has been called on the instance</listitem>
+	  <listitem>kOfxImageEffectActionEndSequenceRender action was called on the instance</listitem>
+	  <listitem>kOfxImageEffectActionRender action was called at least once on the instance</listitem>
+	</itemizedlist>
+      </para>
+
+      &postconditions;
+      <para>
+	<itemizedlist>	  
+	</itemizedlist>
+      </para>
+
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped and handled cleanly by the effect, </listitem>
+	  <listitem>kOfxStatReplyDefault, the action was not trapped, but all is well anyway,</listitem>
+	  <listitem>kOfxStatErrMemory, in which case the action may be called again after a memory purge,</listitem>
+	  <listitem>kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message,</listitem>
+	  <listitem>kOfxStatErrFatal</listitem>
+	</itemizedlist>
+      </para>
+      
+    </section>
+
+    <section id="kOfxImageEffectActionGetClipPreferences"><title>The Get Clip Preferences Action</title>
+      <programlisting>
+#include "ofxImageEffect.h"
+#define kOfxImageEffectActionGetClipPreferences       "OfxImageEffectActionGetClipPreferences"</programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the instance, cast to an <code>OfxImageEffectHandle</code>,</listitem>
+	  <listitem><code>inArgs</code> is redundant and is set to NULL.</listitem>
+	  <listitem><code>outArgs</code> has the following properties which the plugin can set...
+	    <itemizedlist>
+	      <listitem>a set of char * X 1 properties, one for each of the input clips currently attached and the output clip, labelled with "OfxImageClipPropComponents_" post pended with the clip's name. This must be set to one of the component types which the host supports and the effect stated it can accept on that input,</listitem>
+	      <listitem>a set of char * X 1 properties, one for each of the input clips currently attached and the output clip, labelled with "OfxImageClipPropDepth_" post pended with the clip's name. This must be set to one of the pixel depths both the host and plugin supports,</listitem>
+	      <listitem>a set of double X 1 properties, one for each of the input clips currently attached and the output clip, labelled with "OfxImageClipPropPAR_" post pended with the clip's name. This is the pixel aspect ratio of the input and output clips. This must be set to a positive non zero double value,</listitem>
+	      
+	      <listitem><link linkend="kOfxImageEffectPropFrameRate"><code>kOfxImageEffectPropFrameRate</code></link> , the frame rate of the output clip, this must be set to a positive non zero double value,</listitem>
+	      <listitem><link linkend="kOfxImagePropPixelAspectRatio"><code>kOfxImagePropPixelAspectRatio</code></link> , the fielding of the output clip,</listitem>
+	      <listitem><link linkend="kOfxImageEffectPropPreMultiplication"><code>kOfxImageEffectPropPreMultiplication</code></link> , the premultiplication of the output clip,</listitem>
+	      <listitem><link linkend="kOfxImageClipPropContinuousSamples"><code>kOfxImageClipPropContinuousSamples</code></link>, whether the output clip can produce different images at non-frame intervals, defaults to false,</listitem>
+	      <listitem><link linkend="kOfxImageEffectFrameVarying"><code>kOfxImageEffectFrameVarying</code></link>, whether the output clip can produces different images at different times, even if all parameters and inputs are constant, defaults to false.</listitem>
+	    </itemizedlist>
+	  </listitem>
+	</itemizedlist>
+      </para>
+      
+      &description;
+      <para>
+This action allows a plugin to dynamically specify its preferences for input and output clips. Please see <link linkend="ImageEffectsActionGetClipPreferences">Image Effect Clip Preferences</link> for more details on the behaviour. Clip preferences  are constant for the duration of an effect, so this action need only be called once per clip, not once per frame. 
+      </para>
+      <para>This should be called once after creation of an instance, each time an input clip is changed, and whenever a parameter named in the <link linkend="kOfxImageEffectPropClipPreferencesSlaveParam"><code>kOfxImageEffectPropClipPreferencesSlaveParam</code></link> has its value changed.
+      </para>
+
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped and at least one of the properties in the <code>outArgs</code> was changed from its default value</listitem>
+	  <listitem>kOfxStatReplyDefault, the action was not trapped and the host should use the default values</listitem>
+	  <listitem>kOfxStatErrMemory, in which case the action may be called again after a memory purge</listitem>
+	  <listitem>kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message</listitem>
+	  <listitem>kOfxStatErrFatal</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+    
+    <section id="kOfxImageEffectActionGetTimeDomain"><title>kOfxImageEffectActionGetTimeDomain</title>
+      <programlisting>
+#include "ofxImageEffect.h"
+#define kOfxImageEffectActionGetTimeDomain                "OfxImageEffectActionGetTimeDomain"</programlisting>
+      &arguments;
+      <para>
+	<itemizedlist>
+	  <listitem><code>handle</code> handle to the instance, cast to an <code>OfxImageEffectHandle</code>,</listitem>
+	  <listitem><code>inArgs</code> is redundant and is null</listitem>
+	  <listitem><code>outArgs</code> has the following property
+	    <itemizedlist>
+	      <listitem><link linkend="kOfxImageEffectPropFrameRange"><code>kOfxImageEffectPropFrameRange</code></link> - the frame range an effect can produce images for</listitem>
+	    </itemizedlist>
+	  </listitem>
+	</itemizedlist>
+      </para>
+
+      &description;
+      <para>
+	This action allows a host to ask an effect what range of frames it can produce images over. Only effects instantiated in the <link linkend="GeneralContext">General Context</link>can have this called on them. In all other the host is in strict control over the temporal duration of the effect.
+      </para>
+
+      &preconditions;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxActionCreateInstance has been called on the instance</listitem>
+	  <listitem>the effect instance has been created in the general effect context</listitem>
+	</itemizedlist>
+      </para>
+
+      &returnValues;
+      <para>
+	<itemizedlist>
+	  <listitem>kOfxStatOK, the action was trapped and the kOfxImageEffectPropFrameRange was set in the <code>outArgs</code> property set</listitem>
+	  <listitem>kOfxStatReplyDefault, the action was not trapped and the host should use the default value</listitem>
+	  <listitem>kOfxStatErrMemory, in which case the action may be called again after a memory purge</listitem>
+	  <listitem>kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message</listitem>
+	  <listitem>kOfxStatErrFatal</listitem>
+	</itemizedlist>
+      </para>
+      
+      &defaultAction;
+      <para> The default is,
+	<itemizedlist>
+	  <listitem>the union of all the frame ranges of the non optional input clips,</listitem>
+	  <listitem>infinite if there are no non optional input clips.</listitem>
+	</itemizedlist>
+      </para>
+
+    </section>
+        
+    <section id="kOfxInteractActionDraw"> <title >kOfxInteractActionDraw</title>
+    </section>
+    
+    <section id="kOfxInteractActionPenMotion"> <title >kOfxInteractActionPenMotion</title>
+    </section>
+    
+    <section id="kOfxInteractActionPenDown"> <title >kOfxInteractActionPenDown</title>
+    </section>
+    
+    <section id="kOfxInteractActionPenUp"> <title >kOfxInteractActionPenUp</title>
+    </section>
+    
+    <section id="kOfxInteractActionKeyDown"> <title >kOfxInteractActionKeyDown</title>
+    </section>
+    
+    <section id="kOfxInteractActionKeyUp"> <title >kOfxInteractActionKeyUp</title>
+    </section>
+    
+    <section id="kOfxInteractActionKeyRepeat"> <title >kOfxInteractActionKeyRepeat</title>
+    </section>
+    
+    <section id="kOfxInteractActionGainFocus"> <title >kOfxInteractActionGainFocus</title>
+    </section>
+    
+    <section id="kOfxInteractActionLoseFocus"> <title >kOfxInteractActionLoseFocus</title>
+    </section>
+    
+    <section><title>Sequences Of Actions</title>
+      
       <section><title>Loading, Unloading and Creating instances</title>
+	<para>UNFINISHED</para>
         <itemizedlist>
-         <listitem><link linkend="kOfxActionLoad">kOfxActionLoad</link></listitem>
-         <listitem><link linkend="kOfxActionDescribe">kOfxActionDescribe</link></listitem>
-         <listitem><link linkend="kOfxImageEffectActionDescribeInContext">kOfxImageEffectActionDescribeInContext</link></listitem>
-         <listitem><link linkend="kOfxActionCreateInstance">kOfxActionCreateInstance</link></listitem>
-         <listitem>...</listitem>
-         <listitem><link linkend="kOfxActionDestroyInstance">kOfxActionDestroyInstance</link></listitem>
-         <listitem><link linkend="kOfxActionUnload">kOfxActionUnload</link></listitem>
+	  <listitem><link linkend="kOfxActionLoad">kOfxActionLoad</link></listitem>
+	  <listitem><link linkend="kOfxActionDescribe">kOfxActionDescribe</link></listitem>
+	  <listitem><link linkend="kOfxImageEffectActionDescribeInContext">kOfxImageEffectActionDescribeInContext</link></listitem>
+	  <listitem><link linkend="kOfxActionCreateInstance">kOfxActionCreateInstance</link></listitem>
+	  <listitem>...</listitem>
+	  <listitem><link linkend="kOfxActionDestroyInstance">kOfxActionDestroyInstance</link></listitem>
+	  <listitem><link linkend="kOfxActionUnload">kOfxActionUnload</link></listitem>
         </itemizedlist>
-    </section>
-
+      </section>
+      
       <section><title>Rendering</title>
+	<para>UNFINISHED</para>
         <itemizedlist>
-         <listitem><link linkend="kOfxImageEffectActionBeginSequenceRender">kOfxImageEffectActionBeginSequenceRender</link></listitem>
-         <listitem><link linkend="kOfxImageEffectActionIsIdentity">kOfxImageEffectActionIsIdentity</link></listitem>
-         <listitem><link linkend="kOfxImageEffectActionGetFramesNeeded">kOfxImageEffectActionGetFramesNeeded</link>             </listitem>
-         <listitem><link linkend="kOfxImageEffectActionGetRegionOfDefinition">kOfxImageEffectActionGetRegionOfDefinition</link>       </listitem>
-         <listitem><link linkend="kOfxImageEffectActionGetRegionsOfInterest">kOfxImageEffectActionGetRegionsOfInterest</link>        </listitem>
-         <listitem><link linkend="kOfxImageEffectActionRender">kOfxImageEffectActionRender</link>               </listitem>
-         <listitem><link linkend="kOfxImageEffectActionEndSequenceRender">kOfxImageEffectActionEndSequenceRender</link>     </listitem>
+	  <listitem><link linkend="kOfxImageEffectActionBeginSequenceRender">kOfxImageEffectActionBeginSequenceRender</link></listitem>
+	  <listitem><link linkend="kOfxImageEffectActionIsIdentity">kOfxImageEffectActionIsIdentity</link></listitem>
+	  <listitem><link linkend="kOfxImageEffectActionGetFramesNeeded">kOfxImageEffectActionGetFramesNeeded</link>             </listitem>
+	  <listitem><link linkend="kOfxImageEffectActionGetRegionOfDefinition">kOfxImageEffectActionGetRegionOfDefinition</link>       </listitem>
+	  <listitem><link linkend="kOfxImageEffectActionGetRegionsOfInterest">kOfxImageEffectActionGetRegionsOfInterest</link>        </listitem>
+	  <listitem><link linkend="kOfxImageEffectActionRender">kOfxImageEffectActionRender</link>               </listitem>
+	  <listitem><link linkend="kOfxImageEffectActionEndSequenceRender">kOfxImageEffectActionEndSequenceRender</link>     </listitem>
         </itemizedlist>
+      </section>
+      
     </section>
-
-  </section>
   </chapter>
-
+  
   <chapter>
     <title>Property Suite</title>
     <para>The files <filename class="headerfile">ofxCore.h</filename> and <filename class="headerfile">ofxProperty.h</filename> contain the basic definitions for the property suite. </para>
     <para>The property suite is the most basic and important suite in OFX, it is used to get and set the values of various objects defined by other suites. 
     </para>
     <para>A property is a named value of a specific data type, such values can be multi-dimensional, but is typically of one dimension. The name 
-    is a 'C' string literal, typically #defined in one of the various OFX header files. For example, the property labeled by the string literal <constant>"OfxPropName"</constant> is a 'C' string which holds the name of some object.
+      is a 'C' string literal, typically #defined in one of the various OFX header files. For example, the property labeled by the string literal <constant>"OfxPropName"</constant> is a 'C' string which holds the name of some object.
     </para>
     <para>Properties are not accessed in isolation, but are grouped and accessed through a property set handle. The number and types of properties on a specific property set handle are currently strictly defined by the API that the properties are being used for. There is no scope to add new properties.
     </para>
@@ -269,540 +1325,722 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
         <listitem>the C preprocessor #define used to define the string literal is the same as the string literal, but with 
           <constant>"k"</constant> prepended to the name. For example, <constant> #define kOfxPropLabel "OfxPropLabel" </constant> </listitem>
       </itemizedlist>
-  
+      
     </para>
     
     <refentry id="OfxPropertySetHandle">
       <refmeta>
         <refentrytitle><type>OfxPropertySetHandle</type></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><type>OfxPropertySetHandle</type></refname>
-
+	
         <refpurpose>Blind data type used to hold sets of properties</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-typedef struct OfxPropertySetStruct *OfxPropertySetHandle;
-</programlisting>
+typedef struct OfxPropertySetStruct *OfxPropertySetHandle; </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
         <para>
-        Properties are not accessed on their own, nor do they exist on their own. They are grouped and manipulated via an OfxPropertySetHandle.</para>
+	  Properties are not accessed on their own, nor do they exist on their own. They are grouped and manipulated via an OfxPropertySetHandle.</para>
         <para>Any object that has properties can be made to return it's property set handle via some call on the relevant suite. Individual properties are then manipulated with the property suite through that handle.
         </para>
       </refsect1>
     </refentry>
-
+    
     &ofxPropertySuiteReference;
   </chapter>
-
+  
   <chapter>
     <title>Memory Suite</title>
     &ofxMemorySuiteReference;
   </chapter>
-
+  
   <chapter>
     <title>Parameters Suite</title>
     &ofxParametersSuiteReference;
   </chapter>
-
+  
   <chapter>
     <title>Multi Threading Suite</title>
     &ofxThreadingSuiteReference;
   </chapter>
-
+  
   <chapter>
     <title>Interact Suite</title>
     &ofxInteractSuiteReference;
   </chapter>
-
+  
   <chapter>
     <title>Image Effect Suite</title>
     &ofxImageEffectSuiteReference;
   </chapter>
-
-  <chapter id="PropertiesByObject">
-      <title>Properties By Object</title>
-      <para>This chapter lists all the properties on each OFX object.</para>
-       &propertiesByObject; 
+  
+  <chapter id="describingImageEffects"><title>Describing Image Effects</title>
   </chapter>
 
-  <chapter id="PropertiesByName">
-     <title>Property By Name</title>
-       &propertiesReference; 
-   </chapter>
+  <chapter id="ImageEffectsActionGetClipPreferences"><title>Image Effect Clip Preferences</title>
+    <para>
+      The <link linkend="kOfxImageEffectActionGetClipPreferences"><code>kOfxImageEffectActionGetClipPreferences</code></link> 
+      action is passed to an effect to allow a plugin to specify how it wishes to deal with it's input clips and to set
+      properties in it's output clip. This is especially important when there are multiple inputs of which my have differing properties, eg; pixel depth.
+    </para>
+    <para>
+      More specifically, there are six properties that can be set during the clip preferences action, some on the input clip, some on the output clip, some on both. These are...
+      <itemizedlist>
+	<listitem>the depth of a clip's pixels, input or output clip,</listitem>
+	<listitem>the components of a clip's pixels, input or output clip,</listitem>
+	<listitem>the pixel aspect ratio of a clip, input or output clip,</listitem>
+	<listitem>the frame rate of the output clip, </listitem>
+	<listitem>the fielding of the output clip,</listitem>
+	<listitem>the premultiplication state of the output clip,</listitem>
+	<listitem>whether the output clip varys from frame to frame, even if no paramerters or input images change over time,</listitem>
+	<listitem>whether the output clip can be sampled at sub-frame times and produce different images.</listitem>
+      </itemizedlist>
+    </para>
+    <para>
+      The behaviour specified by OFX means that a host may need to cast images from their native data format into one suitable for the plugin. It is better that the host do any of this pixel shuffling because,
+      <itemizedlist>
+	<listitem>the behaviour is orthogonal for all plugins on that host,</listitem>
+	<listitem>the code is not replicated in all plugins,</listitem>
+	<listitem>the host can optimise the pixel shuffling in one pass with any other data grooming it may need to do.</listitem>
+      </itemizedlist>
+    </para>
 
+    <para>
+A plugin gets to assert its clip preferences in several situations. Firstly whenever a clip is attached to a plugin, secondly whenever one of the parameters in the plugin property <link linkend="kOfxImageEffectPropClipPreferencesSlaveParam"><code>kOfxImageEffectPropClipPreferencesSlaveParam</code></link> has its value changed. The clip preferences action is never called until all non optional clips have been attached to the plugin.
+    </para>
+
+    &note;
+    <para>
+      <itemizedlist>
+	<listitem>these properties \em cannot animate over the duration of an effect,</listitem>
+	<listitem>that the ability to set input and output clip preferences is restricted by the context of an effect,</listitem>
+	<listitem>optional input clips do not have any context specific restrictions on plugin set preferences.</listitem>
+      </itemizedlist>
+    </para>
+
+    <section id="ImageEffectClipPreferencesFrameVarying"><title>Frame Varying Effects</title>
+      <para>
+	Some plugins can generate differing output frames at different times, even if no parameters animate or no input images change. The <link linkend="kOfxImageEffectFrameVarying"><code>kOfxImageEffectFrameVarying</code></link> property set in the clip preferences action is used to flag this.
+      </para>
+
+      <para>
+	A counter example is a solid colour generator. If it has no animating parameters, the image generated at frame 0 will be the same as the image generated at any other frame. Intellegent hosts can render a single frame and cache that for use at all other times. 
+      </para>
+      <para>
+On the other hand, a plugin that generates random noise at each frame, and seeds its random number generator with the render time, will create different images at different times. The host cannot render a single frame and cache that for use at subsequent times.
+      </para>
+      <para>
+To differentiate between these two cases the <link linkend="kOfxImageEffectFrameVarying"><code>kOfxImageEffectFrameVarying</code></link> is used. If set to 1, it indicates that the effect will need to be rendered at each frame, even if no input images or parameters are varying. If set to 0, then a single frame can be rendered and used for all times if no input images or parameters vary. The default value is 0.
+      </para>
+    </section>
+
+    <section><title>Continuously Sampled Effects</title>
+      <para>
+Some effects can generate images at non frame boundaries, even if the inputs to the effect are frame based and there is no animation.
+      </para>
+      <para>
+For example a fractal cloud generator whose pattern evolves with a speed parameter can be rendered at arbitrary times, not just on frame boundaries. Hosts that are interested in sub frame rendering can determine this by behaviour by examining the <link linkend="kOfxImageClipPropContinuousSamples"><code>kOfxImageClipPropContinuousSamples</code></link> property set in the clip preferences action. By default this is false.
+      </para>
+      &note;
+      <para>
+	Implicitly, all retimers effects can be continuously sampled.
+      </para>
+    </section>
+
+    <section><title>Specifying Pixel Depths</title>
+      <para>
+Hosts and plugins flag whether whether they can deal with input/output clips of differing pixel depths via the <link linkend="kOfxImageEffectPropSupportsMultipleClipDepths"><code>kOfxImageEffectPropSupportsMultipleClipDepths</code></link> property.
+      </para>
+      <para>
+If the host sets this to 0, then all effect's input and output clips will always have the same component depth, and the plugin may not remap them.
+      </para>
+If the plugin sets this to 0, then the host will transparently map all of an effect's input and output clips to a single depth, even if the actual clips are of differing depths.
+      <para>
+In the above two cases, the common component depth chosen will be the deepest depth of any input clip mapped to a depth the plugin supports that loses the least precision. eg: if a plugin supported 8 bit and float images, but the deepest clip attached to it was 16 bit, the host would transparently map all clips to float. 
+      </para>
+      <para>
+If both the plugin and host set this to 1, then the plugin can, during the <link linkend="kOfxImageEffectActionGetClipPreferences"><code>kOfxImageEffectActionGetClipPreferences</code></link>, specify how the host is to map each clip, including the output clip. Note that this is the only case where a plugin may set the output depth.
+      </para>
+    </section>
+
+    <section><title>Specifying Pixel Components</title>
+      <para>
+A plugin specifies what components it is willing to accept on a clip via the <link linkend="kOfxImageEffectPropSupportedComponents"><code>kOfxImageEffectPropSupportedComponents</code></link> on the clip's descriptor during the <link linkend="kOfxImageEffectActionDescribeInContext"><code>kOfxImageEffectActionDescribeInContext</code></link>. This is one or more of RGBA, YUVA and A.
+      </para>
+      <para>
+If an effect has multiple inputs, and each can be a range of component types, the effect may end up with component types that are incompatible for its purposes. In this case the effect will want to have the host remap the components of the inputs and to specify the components in the output.
+      </para>
+      <para>
+For example, a general effect that blends two images will have have two inputs, each of which may be RGBA or A. In operation, if presented with RGBA on one and A on the other, it will most likely request that the A clip be mapped to RGBA by the host and the output be RGBA as well.
+      </para>
+      <para>
+In all contexts, except for the general context, mandated input clips cannot have their component types remapped, nor can the output. Optional input clips can always have their component types remapped.
+      </para>
+      <para>
+In the general context, all input clips may be remapped, as can the output clip. The output clip has it's default components set to be,
+  - RGBA if any of the inputs is RGBA,
+  - otherwise YUVA if any of the inputs is YUVA,
+  - otherwise A if the effect has any inputs,
+  - otherwise RGBA if there are no inputs.
+      </para>
+      &note;
+      <para>
+It a host implementation detail as to how a host actually attaches real clips to a plugin. For instance, a host may allow a YUVA clip to be wired to an input that asks for RGBA only. However it must map the clip to RGBA in a manner that is transparent to the plugin. Similarly for any other component types that the plugin does not support on an input.
+      </para>
+    </section>
+    
+    <section><title>Specifying Pixel Aspect Ratios</title>
+      <para>
+Hosts and plugins flag whether whether they can deal with input/output clips of differing pixel aspect ratios via the <link linkend="kOfxImageEffectPropSupportsMultipleClipPARs"><code>kOfxImageEffectPropSupportsMultipleClipPARs</code></link> property.
+      </para>
+      <para>
+If the host sets this to 0, then all effect's input and output clips will always have the same pixel aspect ratio, and the plugin may not remap them.
+      </para>
+      <para>
+If the plugin sets this to 0, then the host will transparently map all of an effect's input and output clips to a single pixel aspect ratio, even if the actual clips are of differring PARs.
+      </para>
+      <para>
+In the above two cases, the common pixel aspect ratio chosen will be the smallest on all the inputs, as this preserves image data.
+      </para>
+      <para>
+If \em both the plugin and host set this to 1, then the plugin can, during <link linkend="kOfxImageEffectActionGetClipPreferences"><code>kOfxImageEffectActionGetClipPreferences</code></link>, specify how the host is to map each clip, including the output clip. 
+	</para>
+    </section>
+    <section><title>Specifying Fielding</title>
+      <para>
+The <link linkend="kOfxImageEffectPropSetableFielding"><code>kOfxImageEffectPropSetableFielding</code></link> host property indicates if a plugin is able to change the fielding of the output clip from the default.
+      </para>
+      <para>
+The default value of the output clip's fielding is host dependant, but in general,
+	<itemizedlist>
+	  <listitem>if any of the input clips are fielded, so will the output clip</listitem>
+	  <listitem>the output clip may be fielded irregardless of the input clips (for example, in a fielded project).</listitem>
+	</itemizedlist>
+      </para>
+      <para>
+If the host allows a plugin to specify the fielding of the output clip, then a plugin may do so during the <link linkend="kOfxImageEffectActionGetClipPreferences"><code>kOfxImageEffectActionGetClipPreferences</code></link>. For example a defielding plugin will want to indicate that the output is frame based rather than fielded.
+      </para>
+    </section>
+
+
+    <section><title>Specifying Frame Rates</title>
+      <para>
+	The <link linkend="kOfxImageEffectPropSetableFrameRate"><code>kOfxImageEffectPropSetableFrameRate</code></link> host property indicates if a plugin is able to change the frame rate of the output clip from the default.
+      </para>
+
+      <para>
+The default value of the output clip's frame rate is host dependant, but in general, it will be based on the input clips frame rates.
+      </para>
+      <para>
+If the host allows a plugin to specify the frame rate of the output clip, then a plugin may do so during the <link linkend="kOfxImageEffectActionGetClipPreferences"><code>kOfxImageEffectActionGetClipPreferences</code></link>. For example a deinterlace plugin that separates both fields from fielded footage will want to do double the frame rate of the output clip.
+      </para>
+      <para>
+If a plugin changes the frame rate, it is effectively changing the number of frames in the output clip. If our hypothetical deinterlace plugin doubles the frame rate of the output clip, it will be doubling the number of frames in that clip. The timing diagram below should help, showing how our fielded input has been turned into twice the number of frames on output.
+      </para>
+      <programlisting>
+   FIELDED SOURCE      0.0 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 ....
+   DEINTELACED OUTPUT  0   1   2   3   4   5   6   7   8   9 </programlisting>
+
+      <para>
+	The maping of the number of output frames is...
+      </para>
+      <programlisting>
+	nFrames' = nFrames * FPS' / FPS </programlisting>
+      <para>
+	<itemizedlist>
+	  <listitem>nFrames is the default number of frames,</listitem>
+	  <listitem>nFrames' is the new number of output frames,</listitem>
+	  <listitem>FPS is the default frame rate,</listitem>
+	  <listitem>FPS' is the new frame rate specified by a plugin.</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+    
+    <section><title>Specifying Premultiplication</title>
+      <para>
+	All clips have a premultiplication state (see http://www.teamten.com/lawrence/graphics/premultiplication/ for a nice explanation). An effect cannot map the premultiplication state of the input clips, but it can specify the premultiplication state of the output clip.
+      </para>
+      <para>
+	The output's default premultiplication state is...
+	<itemizedlist>
+	  <listitem>premultiplied if any of the inputs are premultiplied,</listitem>
+	  <listitem>otherwise unpremultiplied if any of the inputs are unpremultiplied,</listitem>
+	  <listitem>otherwise opaque.</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+
+  </chapter>
+
+  <chapter id="PropertiesByObject">
+    <title>Properties By Object</title>
+    <para>This chapter lists all the properties on each OFX object.</para>
+    &propertiesByObject; 
+  </chapter>
+  
+  <chapter id="PropertiesByName">
+    <title>Property By Name</title>
+    &propertiesReference; 
+  </chapter>
+  
   <chapter>
     <title>Status Codes</title>
-
+    
     <para>Status codes are returned by most functions in OFX suites and all
-    plug-in actions to indicate the sucess or failure of the operation. All
-    status codes are defined in <filename class="headerfile">ofxCore.h</filename> and
-    <code>#defined</code> to be integers.</para>
-
+      plug-in actions to indicate the sucess or failure of the operation. All
+      status codes are defined in <filename class="headerfile">ofxCore.h</filename> and
+      <code>#defined</code> to be integers.</para>
+    
     <refentry id="OfxStatus">
       <refmeta>
         <refentrytitle><type>OfxStatus</type></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><type>OfxStatus</type></refname>
-
+	
         <refpurpose>type returned to indicate success or failure of an
-        operation.</refpurpose>
+	  operation.</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-typedef int OfxStatus;
-</programlisting>
+typedef int OfxStatus; </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
-
+	
         <para>Most OFX functions in host suites and all actions in a plug-in
-        return a status code, where the status codes are all 32 bit integers.
-        This typedef is used to label that status code.</para>
+	  return a status code, where the status codes are all 32 bit integers.
+	  This typedef is used to label that status code.</para>
       </refsect1>
     </refentry>
-
+    
     <refentry id="kOfxStatOK">
       <refmeta>
         <refentrytitle><errorcode>kOfxStatOK</errorcode></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><errorcode>kOfxStatOK</errorcode></refname>
-
+	
         <refpurpose>(0), indicates an operation completed
-        sucessfully.</refpurpose>
+	  sucessfully.</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-#define kOfxStatOK 0
-</programlisting>
+#define kOfxStatOK 0 </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
-
+	
         <para>This error code is returned by <itemizedlist>
             <listitem>
-               host functions to indicate success of the operation, 
+	      host functions to indicate success of the operation, 
             </listitem>
-
+	    
             <listitem>
-               plugin actions to indicate that the action was trapped and suceeded. 
+	      plugin actions to indicate that the action was trapped and suceeded. 
             </listitem>
           </itemizedlist></para>
       </refsect1>
     </refentry>
-
+    
     <refentry id="kOfxStatFailed">
       <refmeta>
         <refentrytitle><errorcode>kOfxStatFailed</errorcode></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><errorcode>kOfxStatFailed</errorcode></refname>
-
+	
         <refpurpose>(1), indicates a failed operation.</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-#define kOfxStatFailed  ((int)1)
-</programlisting>
+#define kOfxStatFailed  ((int)1) </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
-
+	
         <para>This error code is returned when a function or action could not
-        complete normally and its operation failed.</para>
+	  complete normally and its operation failed.</para>
       </refsect1>
     </refentry>
-
+    
     <refentry id="kOfxStatErrFatal">
       <refmeta>
         <refentrytitle><errorcode>kOfxStatErrFatal</errorcode></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><errorcode>kOfxStatErrFatal</errorcode></refname>
-
+	
         <refpurpose>(2), indicates a fatal operation.</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrFatal  ((int)2)
-</programlisting>
+#define kOfxStatErrFatal  ((int)2) </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
-
+	
         <para>This status is only returned in the case where the plug-in or
-        host cannot continue normal operation and needs to be
-        restarted.</para>
+	  host has encountered an error that is likely to be fatal to continued programme execution.
+        </para>
+        <para>If a plug-in returns this, a host may attempt to continue.</para>
       </refsect1>
     </refentry>
-
+    
     <refentry id="kOfxStatErrUnknown">
       <refmeta>
         <refentrytitle><errorcode>kOfxStatErrUnknown</errorcode></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><errorcode>kOfxStatErrUnknown</errorcode></refname>
-
+	
         <refpurpose>(3), status error code for an unknown object.</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrUnknown ((int)3)
-</programlisting>
+#define kOfxStatErrUnknown ((int)3) </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
-
+	
         <para>This error is returned when an operation is attempted on an
-        unknown object or an unknown object was requested. For example, a host
-        may not support a property on an object because it is written to a
-        slightly earlier version of an API, in which case it should return
-        with <errorcode>kOfxStatErrUnknown</errorcode>.</para>
+	  unknown object or an unknown object was requested. For example, a host
+	  may not support a property on an object because it is written to a
+	  slightly earlier version of an API, in which case it should return
+	  with <errorcode>kOfxStatErrUnknown</errorcode>.</para>
       </refsect1>
     </refentry>
-
+    
     <refentry id="kOfxStatErrMissingHostFeature">
       <refmeta>
         <refentrytitle><errorcode>kOfxStatErrMissingHostFeature</errorcode></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><errorcode>kOfxStatErrMissingHostFeature</errorcode></refname>
-
+	
         <refpurpose>(4) returned by a plugin if a host is
-        inadequate.</refpurpose>
+	  inadequate.</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrMissingHostFeature ((int) 4)
-</programlisting>
+#define kOfxStatErrMissingHostFeature ((int) 4) </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
-
+	
         <para>This status is returned by plug-ins'
-        <function>mainEntry</function> if the host is missing a feature they
-        need to operate. For example, a plug-in may need an overlay GUI to
-        operate sucessfully, which is an optional feature.</para>
-
+	  <function>mainEntry</function> if the host is missing a feature they
+	  need to operate. For example, a plug-in may need an overlay GUI to
+	  operate sucessfully, which is an optional feature.</para>
+	
         <para>This should be returned from the
-        <literal>kOfxActionLoad</literal>,
-        <literal>kOfxActionDescribe</literal> or
-        <literal>kOfxImageEffectActionDescribeInContext</literal> actions, so
-        a host can unload the plugin before it attempts to create an instance
-        of the plug-in.</para>
+	  <literal>kOfxActionLoad</literal>,
+	  <literal>kOfxActionDescribe</literal> or
+	  <literal>kOfxImageEffectActionDescribeInContext</literal> actions, so
+	  a host can unload the plugin before it attempts to create an instance
+	  of the plug-in.</para>
       </refsect1>
     </refentry>
-
+    
     <refentry id="kOfxStatErrUnsupported">
       <refmeta>
         <refentrytitle><errorcode>kOfxStatErrUnsupported</errorcode></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><errorcode>kOfxStatErrUnsupported</errorcode></refname>
-
+	
         <refpurpose>(5), error code for an unsupported
-        feature/operation</refpurpose>
+	  feature/operation</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrUnsupported ((int) 5)
-</programlisting>
+#define kOfxStatErrUnsupported ((int) 5) </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
-
+	
         <para>This is returned by suite functions to indicate an operation is
-        unsupported. For example, a plug-in may attempt to use a custom
-        parameter GUI on a host that does not support it, in which case the
-        host should return <errorcode>kOfxStatErrUnsupported</errorcode> when
-        the plug-in does so.</para>
+	  unsupported. For example, a plug-in may attempt to use a custom
+	  parameter GUI on a host that does not support it, in which case the
+	  host should return <errorcode>kOfxStatErrUnsupported</errorcode> when
+	  the plug-in does so.</para>
       </refsect1>
     </refentry>
-
+    
     <refentry id="kOfxStatErrExists">
       <refmeta>
         <refentrytitle><errorcode>kOfxStatErrExists</errorcode></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><errorcode>kOfxStatErrExists</errorcode></refname>
-
+	
         <refpurpose>(6), something already exists.</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrExists  ((int) 6)
-</programlisting>
+#define kOfxStatErrExists  ((int) 6) </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
-
+	
         <para>This error code is returned from a host function when a plug-in
-        attempts to create an object that already exists. For example, a
-        plug-in attempting to create two parameters with the same name, as the
-        name of a parameter is what defines it.</para>
+	  attempts to create an object that already exists. For example, a
+	  plug-in attempting to create two parameters with the same name, as the
+	  name of a parameter is what defines it.</para>
       </refsect1>
     </refentry>
-
+    
     <refentry id="kOfxStatErrFormat">
       <refmeta>
         <refentrytitle><errorcode>kOfxStatErrFormat</errorcode></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><errorcode>kOfxStatErrFormat</errorcode></refname>
-
+	
         <refpurpose>(7), indicates an incorrect format.</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrFormat ((int) 7)
-</programlisting>
+#define kOfxStatErrFormat ((int) 7) </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
-
+	
         <para>This error code is returned when a plug-in or hosts receives
-        something in the wrong format.</para>
+	  something in the wrong format.</para>
       </refsect1>
     </refentry>
-
+    
     <refentry id="kOfxStatErrMemory">
       <refmeta>
         <refentrytitle><errorcode>kOfxStatErrMemory</errorcode></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><errorcode>kOfxStatErrMemory</errorcode></refname>
-
+	
         <refpurpose>(8), a memory shortage was encountered.</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrMemory  ((int) 8)
-</programlisting>
+#define kOfxStatErrMemory  ((int) 8) </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
-
+	
         <para>This is returned when a plug-in or host cannot complete its
-        operation because of a memory shortage.</para>
+	  operation because of a memory shortage.</para>
       </refsect1>
     </refentry>
-
+    
     <refentry id="kOfxStatErrBadHandle">
       <refmeta>
         <refentrytitle><errorcode>kOfxStatErrBadHandle</errorcode></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><errorcode>kOfxStatErrBadHandle</errorcode></refname>
-
+	
         <refpurpose>(9), indicates a bad handle</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrBadHandle ((int) 9)
-</programlisting>
+#define kOfxStatErrBadHandle ((int) 9) </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
-
+	
         <para>This status code is returned when a bad handle is passed to a
-        host function or a plug-in action.</para>
+	  host function or a plug-in action.</para>
       </refsect1>
     </refentry>
-
+    
     <refentry id="kOfxStatErrBadIndex">
       <refmeta>
         <refentrytitle><errorcode>kOfxStatErrBadIndex</errorcode></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><errorcode>kOfxStatErrBadIndex</errorcode></refname>
-
+	
         <refpurpose>(10), a property index was invalid.</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrBadIndex ((int)10)
-</programlisting>
+#define kOfxStatErrBadIndex ((int)10) </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
-
+	
         <para>This is returned by host functions if an operation was requested
-        on an invalid dimension index.</para>
+	  on an invalid dimension index.</para>
       </refsect1>
     </refentry>
-
+    
     <refentry id="kOfxStatErrValue">
       <refmeta>
         <refentrytitle><errorcode>kOfxStatErrValue</errorcode></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><errorcode> kOfxStatErrValue </errorcode></refname>
-
+	
         <refpurpose>(11), an illegal value was passed.</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrValue ((int) 11)
-</programlisting>
+#define kOfxStatErrValue ((int) 11) </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
-
+	
         <para>This error code is returned if an attempt was made to set an
-        illegal value on an object. For example if an image effect plug-in
-        attempted to set a supported pixel depth of "wibble".</para>
+	  illegal value on an object. For example if an image effect plug-in
+	  attempted to set a supported pixel depth of "wibble".</para>
       </refsect1>
     </refentry>
-
+    
     <refentry id="kOfxStatReplyYes">
       <refmeta>
         <refentrytitle><errorcode>kOfxStatReplyYes</errorcode></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><errorcode>kOfxStatReplyYes</errorcode></refname>
-
+	
         <refpurpose>(12), returned to indicate a positive
-        response.</refpurpose>
+	  response.</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-#define kOfxStatReplyYes ((int) 12)
-</programlisting>
+#define kOfxStatReplyYes ((int) 12) </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
-
+	
         <para>This is typically returned from a function involving user
-        interaction and indicates they had a positive response. e.g. the
-        messaging suite can ask the user a question to which they can reply
-        "yes" or "no".</para>
+	  interaction and indicates they had a positive response. e.g. the
+	  messaging suite can ask the user a question to which they can reply
+	  "yes" or "no".</para>
       </refsect1>
     </refentry>
-
+    
     <refentry id="kOfxStatReplyNo">
       <refmeta>
         <refentrytitle><errorcode>kOfxStatReplyNo</errorcode></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><errorcode>kOfxStatReplyNo</errorcode></refname>
-
+	
         <refpurpose>(13), returned to indicate a positive
-        response.</refpurpose>
+	  response.</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-#define kOfxStatReplyNo ((int) 13)
-</programlisting>
+#define kOfxStatReplyNo ((int) 13) </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
-
+	
         <para>This is typically returned from a function involving user
-        interaction and indicates they had a negative response. e.g. the
-        messaging suite can ask the user a question to which they can reply
-        "yes" or "no".</para>
+	  interaction and indicates they had a negative response. e.g. the
+	  messaging suite can ask the user a question to which they can reply
+	  "yes" or "no".</para>
       </refsect1>
     </refentry>
-
+    
     <refentry id="kOfxStatReplyDefault">
       <refmeta>
         <refentrytitle><errorcode>kOfxStatReplyDefault</errorcode></refentrytitle>
       </refmeta>
-
+      
       <refnamediv>
         <refname><errorcode>kOfxStatReplyDefault</errorcode></refname>
-
+	
         <refpurpose>(14), indicates the default should occur.</refpurpose>
       </refnamediv>
-
+      
       <refsynopsisdiv>
         <programlisting>
 #include "ofxCore.h"
-#define kOfxStatReplyDefault ((int) 14)
-</programlisting>
+#define kOfxStatReplyDefault ((int) 14) </programlisting>
       </refsynopsisdiv>
-
+      
       <refsect1>
         <title>Description</title>
-
+	
         <para>This is returned by plug-ins' <function>mainEntry</function>
-        function to indicate that they did not trap the action passed and that
-        the default operation should occur. It does not imply failure.</para>
-
+	  function to indicate that they did not trap the action passed and that
+	  the default operation should occur. It does not imply failure.</para>
+	
         <para>A subtle but specific use of this is made by plug-in interacts
-        GUIs. If they return this value from any event actions (eg:
-        <literal>kOfxInteractActionPenDown</literal>), then the host is free
-        to pass the event on to another GUI element in the interact
-        window.</para>
+	  GUIs. If they return this value from any event actions (eg:
+	  <literal>kOfxInteractActionPenDown</literal>), then the host is free
+	  to pass the event on to another GUI element in the interact
+	  window.</para>
       </refsect1>
     </refentry>
   </chapter>

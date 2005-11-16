@@ -2,6 +2,11 @@
 
 use formating;
 
+@badlyNamedProperties = 
+    ("kOfxImageEffectFrameVarying",
+     "kOfxImageEffectPluginRenderThreadSafety",
+    );
+
 processFile("../include/ofxCore.h");
 processFile("../include/ofxParam.h");
 processFile("../include/ofxImageEffect.h");
@@ -79,6 +84,14 @@ sub processFile()
 			#print "comment is '$lastComment'\n";
 			writePropFile($outLine, $lastComment, $sourceFile);
 
+		    }
+		    else {
+			# look for badly named properties too
+			foreach $bad (@badlyNamedProperties) {
+			    if($outLine =~ /^#define $bad/) {
+				writePropFile($outLine, $lastComment, $sourceFile);
+			    }
+			}
 		    }
 		    $outLine = "";
 		}

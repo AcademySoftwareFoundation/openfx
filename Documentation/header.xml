@@ -17,5 +17,13 @@
 <!ENTITY ofxPluginStruct    SYSTEM "ofxPluginStruct.xml">
 <!ENTITY ofxLoadingSequence    SYSTEM "ofxLoadingSequence.xml">
 <!ENTITY ofxPackaging    SYSTEM "ofxPackaging.xml">
+<!ENTITY definition      "<bridgehead renderas=&#34;sect4&#34;>Definition</bridgehead>">
+<!ENTITY description      "<bridgehead renderas=&#34;sect4&#34;>Description</bridgehead>">
+<!ENTITY preconditions   "<bridgehead renderas=&#34;sect4&#34;>Preconditions</bridgehead>">
+<!ENTITY postconditions  "<bridgehead renderas=&#34;sect4&#34;>Postconditions</bridgehead>">
+<!ENTITY returnValues    "<bridgehead renderas=&#34;sect4&#34;>Return Values</bridgehead>">
+<!ENTITY arguments       "<bridgehead renderas=&#34;sect4&#34;>Arguments</bridgehead>">
+<!ENTITY defaultAction   "<bridgehead renderas=&#34;sect4&#34;>Default Action</bridgehead>">
+<!ENTITY note   "<bridgehead renderas=&#34;sect4&#34;>Note</bridgehead>">
 ]
 >

@@ -3,9 +3,10 @@ STYLESHEETDIR = http://docbook.sourceforge.net/release/xsl/1.69.1/xhtml/
 
 STYLESHEET = docbook.xsl 
 
-#  args for our style sheet 
+#  args for xsltproc
 XSLARGS = --stringparam  funcsynopsis.style "ansi" \
 	--stringparam  toc.section.depth "3" \
+        --stringparam generate.toc "book toc,title,figure,table,example,equation" \
 	--stringparam html.stylesheet ofxStyle.css
 
 # .h files we are scanning for specially formated property definitions
@@ -73,4 +74,4 @@ ofxImageEffectSuiteReference.xml : ../include/ofxImageEffect.h
 	./getSuiteReference.perl OfxImageEffectSuiteV1 $^ > $@
 
 clean :
-	rm -rf *.html props $(PROPERY_SUITE_REFERENCE_FILES)
+	rm -rf *.html props $(PROPERY_SUITE_REFERENCE_FILES) ofxPropertiesReference.xml
