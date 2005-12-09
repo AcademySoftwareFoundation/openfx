@@ -731,7 +731,7 @@ typedef OfxStatus (OfxCustomParamInterpFuncV1)(OfxParamSetHandle instance,
 					       OfxPropertySetHandle outArgs);
 
 
-/** @brief The suite used to define and use parameters 
+/** @brief The OFX suite used to define and manipulate user visible parameters 
  */
 typedef struct OfxParameterSuiteV1 {
   /** @brief Defines a new parameter of the given type in a describe action

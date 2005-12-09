@@ -192,7 +192,9 @@ These are the list of actions passed to an interacts' entry point function. For 
 /*@}*/
 /*@}*/
 
-/** @brief API for an interact host */
+/** @brief OFX suite that allows an effect to interact with an openGL window so as to provide custom interfaces.
+
+*/
 typedef struct OfxInteractSuiteV1 {	
   /** @brief Requests an openGL buffer swap on the interact instance */
   OfxStatus (*interactSwapBuffers)(OfxInteractHandle interactInstance);

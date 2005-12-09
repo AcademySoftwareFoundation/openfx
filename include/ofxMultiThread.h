@@ -60,7 +60,7 @@ typedef void (OfxThreadFunctionV1)(unsigned int threadIndex,
 				   unsigned int threadMax,
 				   void *customArg);
 
-/** @brief Suite for performing simple SMP threading.
+/** @brief OFX suite that provides simple SMP style multi-processing
  */
 typedef struct OfxMultiThreadSuiteV1 {
   /**@brief Function to spawn SMP threads

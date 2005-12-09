@@ -78,7 +78,7 @@ the user responds. When asking a question, the OfxStatus code returned by the me
  */
 #define kOfxMessageQuestion "OfxMessageQuestion"
 
-/** @brief This struct contains the function pointer for implementing sending simple messages to end users
+/** @brief The OFX suite that allows a plug-in to pass messages back to a user.
  */
 typedef struct OfxMessageSuiteV1 {
 

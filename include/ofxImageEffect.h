@@ -316,12 +316,14 @@ See \ref ImageEffectClipPreferences.
    - Property Set - plugin descriptor (read/write) or plugin instance (read/write)
    - Default - 0
    - Valid Values - This must be one of
-     - 0 - which means the host can render arbitrary frames of an instance over any number of CPUs and computers
-     - 1 - which means the host should render all frames of an instance sequentially on the same computer
+     - 0 - which means the host can render arbitrary frames of an instance in any order with any number of cloned instances
+     - 1 - which means the host should render all frames in an output clip on a single instance from first to last
 
-The host may attempt to render a frame out of sequence (for example when the user changes the current time), and the effect needs to deal with such a situation as best it can to provide feedback to the user.
+Some effects have temporal dependancies, some information from from the rendering of frame N-1 is needed to render frame N correctly. This property is set by an effect to indicate such a situation.
 
-However if a host caches output, any frame rendered out of sequence must be re-rendered when the entire effect is finally rendered.
+During an interactive session a host may attempt to render a frame out of sequence (for example when the user scrubs the current time), and the effect needs to deal with such a situation as best it can to provide feedback to the user.
+
+However if a host caches output, any frame frame generated in random temporal order needs to be considered invalid and needs to be re-rendered when the host finally performs a first to last render of the output sequence.
 */
 #define kOfxImageEffectInstancePropSequentialRender "OfxImageEffectInstancePropSequentialRender"
 
@@ -929,7 +931,10 @@ This will be in \ref PixelCoordinates
 /** @brief the string that names image effect suites, passed to OfxHost::fetchSuite */
 #define kOfxImageEffectSuite "OfxImageEffectSuite"
 
-/** @brief The OFX Image Effects suite, version 1 */
+/** @brief The OFX suite for image effects
+
+This suite provides the functions needed by a plugin to defined and use an image effect plugin.
+ */
 typedef struct OfxImageEffectSuiteV1 {  
   /** @brief Retrieves the property set for the given image effect
 
@@ -2070,9 +2075,6 @@ All the properties on outargs are set to their default values when the action is
 - ::kOfxStatFailed, the  action failed for some reason not documentable, the plugin should post a message
 - ::kOfxStatErrFatal, in which case we the program will be forced to quit
 - ::kOfxStatErrMemory, the action ran out of memory, in which case the host may call the render action again after a memory purge
-
-\par Default
-- The default action is the same as if ::kOfxImageEffectPropClipMapping was set to ::kOfxImageClipMappingDefault.
 
  */
 

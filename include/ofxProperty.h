@@ -43,9 +43,8 @@ Contains the API for manipulating generic properties. For more details see \ref 
 
 #define kOfxPropertySuite "OfxPropertySuite"
 
-/** @brief The suite used to access properties on an object.
+/** @brief The OFX suite used to access properties on OFX objects.
 
-A property suite is fetched from a host with the kOfxPropertySuite string literal to name it. The suite returned contains all the functions to get and set properties on a property set handle.
 */
 typedef struct OfxPropertySuiteV1 {
   /** @brief Set a single value in a pointer property 

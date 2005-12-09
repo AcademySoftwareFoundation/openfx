@@ -37,7 +37,7 @@ extern "C" {
 
 #define kOfxMemorySuite "OfxMemorySuite"
 
-/** @brief This struct contains the function pointers for implementing general purpose memory management.
+/** @brief The OFX suite that implements general purpose memory management.
 
 Use this suite for ordinary memory management functions, where you would normally use malloc/free or new/delete on ordinary objects.
 
