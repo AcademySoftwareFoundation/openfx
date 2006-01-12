@@ -835,7 +835,7 @@ Note that row bytes can be negative, which allows hosts with a native top down r
 
 /** @brief Controls how a plugin renders fielded footage.
 
-    - Type - string X 1
+    - Type - integer X 1
     - Property Set - a plugin descriptor (read/write)
     - Default - 1
     - Valid Values - This must be one of
@@ -874,7 +874,7 @@ Note that if it fetches kOfxImageFieldSingle and the host stores images natively
 
 /** @brief Used to indicate the region of definition of a plug-in
 
-    - Type - double X 4
+    - Type - integer X 4
     - Property Set - a read/write out argument property to the ::kOfxImageEffectActionGetRegionOfDefinition action
     - Default - see ::kOfxImageEffectActionGetRegionOfDefinition
 
