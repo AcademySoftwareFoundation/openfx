@@ -874,7 +874,7 @@ Note that if it fetches kOfxImageFieldSingle and the host stores images natively
 
 /** @brief Used to indicate the region of definition of a plug-in
 
-    - Type - integer X 4
+    - Type - double X 4
     - Property Set - a read/write out argument property to the ::kOfxImageEffectActionGetRegionOfDefinition action
     - Default - see ::kOfxImageEffectActionGetRegionOfDefinition
 
@@ -899,7 +899,7 @@ This will be in \ref CannonicalCoordinates.
 
 /**  @brief The region to be rendered.
 
-    - Type - double X 4
+    - Type - integer X 4
     - Property Set - a read only in argument property to the ::kOfxImageEffectActionRender and ::kOfxImageEffectActionIsIdentity actions
 
 The order of the values is x1, y1, x2, y2.
