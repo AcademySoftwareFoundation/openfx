@@ -1,0 +1,22 @@
+<chapter id="ImageEffectsAPI"><title>The OFX Image Effect Plug-in API</title>
+  <para>
+    The OFX Image Effect Plug-in API is built on top of the core OFX plug-in API. It consists of a set of actions, suites, object handles and properties that allow a host and a plug-in to communicate so that images can be processed.
+  </para>
+  
+  <section id="ImageEffectsAPISuites"><title>Suites Used by The Image Effects API</title>
+    <para>
+      The following suites are used by the Image Effects API...
+      <itemizedlist>
+	<listitem><link linkend="PropertySuite">the property suite</link> for basic property operations,</listitem>
+	<listitem><link linkend="ImageEffectSuite">the image effect Suite</link> for image effect specific functions,</listitem>
+	<listitem><link linkend="MemorySuite">the memory suite</link> for memory allocation,</listitem>
+	<listitem><link linkend="Parameter Suite">the parameter suite</link> for creating and manipulating user visible parameters,</listitem>
+	<listitem><link linkend="MultiThreadingSuite">the multithreading suite</link> for simple SMP processing,</listitem>
+	<listitem><link linkend="InteractSuite">the interact suite</link> to allow a plugin to draw custom widgets and controls,</listitem>
+	<listitem><link linkend="MessageSuite">the message suite</link> to allow a plugin to send messages to a user.</listitem>
+	<listitem></listitem>
+      </itemizedlist>
+    </para>
+  </section>
+
+</chapter>

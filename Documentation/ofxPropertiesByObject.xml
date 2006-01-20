@@ -51,7 +51,7 @@
   </itemizedlist>
 </section>
 
-<section><title>Properties on an Effect Instance</title>
+<section id="EffectInstanceProperties"><title>Properties on an Effect Instance</title>
   An image effect instance has the following properties, all but kOfxPropInstanceData and kOfxImageEffectInstancePropSequentialRender are read only...
   <itemizedlist>
     <listitem><link linkend="kOfxPropType">kOfxPropType</link> - (read only) </listitem>
@@ -68,7 +68,7 @@
   </itemizedlist>
 </section>
 
-<section><title>Properties on a Clip Descriptor</title>
+<section id="ClipDescriptorProperties"><title>Properties on a Clip Descriptor</title>
   <para>All OfxImageClipHandle accessed inside the <literal>kOfxActionDescribe</literal> or <literal>kOfxActionDescribeInContext</literal> are clip descriptors, used to describe the behaviour of clips in a specific context.</para>
   <itemizedlist>
     <listitem><link linkend="kOfxPropType">kOfxPropType</link> - (read only) set to   </listitem>
@@ -85,7 +85,7 @@
   </itemizedlist>
 </section>
 
-<section><title>Properties on a Clip Instance</title>
+<section id="ClipInstanceProperties"> <title>Properties on a Clip Instance</title>
   <itemizedlist>
     <listitem><link linkend="kOfxPropType">kOfxPropType</link> - (read only) </listitem>
     <listitem><link linkend="kOfxPropName">kOfxPropName</link> - (read only)</listitem>
@@ -114,7 +114,7 @@
   </itemizedlist>
 </section>
 
-<section><title>Properties on an Image</title>
+<section id="ImageProperties"><title>Properties on an Image</title>
   <para>All images are instances, there is no such thing as an image descriptor.</para>
   <itemizedlist>
     <listitem><link linkend="kOfxPropType">kOfxPropType</link> - (read only)</listitem>
@@ -133,7 +133,7 @@
 </section>
 
 
-<section><title>Properties on Parameter Descriptors and Instances</title>
+<section id="ParameterProperties"><title>Properties on Parameter Descriptors and Instances</title>
   
   <section><title>Properties Common to All Parameters</title>
     
@@ -237,4 +237,24 @@
       <listitem><link linkend="kOfxParamPropPageChild">kOfxParamPropPageChild</link> read/write in the descriptor, read only on an instance</listitem>
     </itemizedlist>
   </section>
+</section>
+
+<section id="InteractDescriptorProperties"><title>Properties on Interact Descriptors</title> 
+  <itemizedlist>
+    <listitem><link linkend="kOfxInteractPropHasAlpha">kOfxInteractPropHasAlpha</link> read only</listitem>
+    <listitem><link linkend="kOfxInteractPropBitDepth">kOfxInteractPropBitDepth</link> read only</listitem>
+  </itemizedlist>
+</section>
+
+<section id="InteractInstanceProperties"><title>Properties on Interact Instances</title> 
+  <itemizedlist>
+    <listitem><link linkend="kOfxPropEffectInstance">kOfxPropEffectInstance</link> read only</listitem>
+    <listitem><link linkend="kOfxPropInstanceData">kOfxPropInstanceData</link> read/write only</listitem>
+    <listitem><link linkend="kOfxInteractPropPixelScale">kOfxInteractPropPixelScale</link> read only</listitem>
+    <listitem><link linkend="kOfxInteractPropBackgroundColour">kOfxInteractPropBackgroundColour</link> read only</listitem>
+    <listitem><link linkend="kOfxInteractPropViewportSize">kOfxInteractPropViewportSize</link> read only</listitem>
+    <listitem><link linkend="kOfxInteractPropHasAlpha">kOfxInteractPropHasAlpha</link> read only</listitem>
+    <listitem><link linkend="kOfxInteractPropBitDepth">kOfxInteractPropBitDepth</link> read only</listitem>
+    <listitem><link linkend="kOfxInteractPropSlaveToParam">kOfxInteractPropSlaveToParam</link> read/write</listitem>
+  </itemizedlist>
 </section>

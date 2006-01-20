@@ -24,21 +24,32 @@ PROPERY_SUITE_REFERENCE_FILES = \
 	ofxParametersSuiteReference.xml \
 	ofxThreadingSuiteReference.xml \
 	ofxImageEffectSuiteReference.xml \
-	ofxInteractSuiteReference.xml 
+	ofxInteractSuiteReference.xml  
 
 all : ofxProgrammingGuide.html ofxProgrammingReference.html
+
+# Common srcs
+COMMON_SRCS = header.xml \
+	ofxPackaging.xml
 
 # programming guide, all in one
 GUIDE_SRCS = header.xml ofxProgrammingGuide.xml
 ofxProgrammingGuide.html : $(GUIDE_SRCS)
-	cat $^ > tmp.xml
+	cat  header.xml ofxProgrammingGuide.xml > tmp.xml
 	xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)$(STYLESHEET) tmp.xml
 	rm -f tmp.xml
 
-# programming reference, all in one
-REF_SRCS = header.xml ofxProgrammingReference.xml
-ofxProgrammingReference.html : $(REF_SRCS) $(PROPERY_SUITE_REFERENCE_FILES) ofxPropertiesReference.xml ofxPropertiesByObject.xml 
-	cat  $(REF_SRCS) > tmp.xml
+# programming reference, all in one 
+REF_SRCS = ofxProgrammingReference.xml \
+	$(COMMON_SRCS) \
+	ofxPropertiesReference.xml \
+	ofxPropertiesByObject.xml \
+	$(PROPERY_SUITE_REFERENCE_FILES) \
+	imageEffectActionsChapter.xml \
+	clipPreferencesChapter.xml
+
+ofxProgrammingReference.html : $(REF_SRCS) 
+	cat  header.xml $(<:.html=.xml) > tmp.xml
 	xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)$(STYLESHEET) tmp.xml
 	rm -f tmp.xml
 

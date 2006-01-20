@@ -1,4 +1,4 @@
-<section><title>The OfxHost Struct</title>
+<section id="OfxHostStruct"><title>The OfxHost Struct</title>
   <para>The <structname>OfxHost</structname> struct is how a host
     provides plug-ins with access to the various suites that make up the
     API they implement, as well as a host property set handle which a plug-in can ask
