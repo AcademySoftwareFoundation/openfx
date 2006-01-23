@@ -861,11 +861,25 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	Hosts are not obliged to render all an effects RoD, as it may have fixed frame sizes, or any number of other issues.
       </para>
 
-      <para>
-	Infinite RoDs are valid, eg: a no-input noise generator could generate random colours anywhere it was asked to.
-	An infinite RoD is flagged by setting the minimums to be ::kOfxFlagInfiniteMin and the maxmimums to be ::kOfxFlagInfiniteMax,
-	for both double and integer rects.
-      </para>
+      <section><title>Infinite RoDs</title>
+	<para>
+	  Infinite RoDs are used to indicate an effect can fill pixels in anywhere on the image plane it is asked to. For example
+	  a no-input noise generator that generates random colours on a per pixel basis.
+	  An infinite RoD is flagged by setting the minimums to be <link linkend="kOfxFlagInfiniteMin"><code>kOfxFlagInfiniteMin</code></link> 
+	  and the maxmimums to be <link linkend="kOfxFlagInfiniteMax"><code>kOfxFlagInfiniteMax</code></link>,
+	  for both double and integer rects.
+	  Hosts and plug-ins need to be infinite RoD aware. Hosts need to clip such RoDs to an appropriate rectangle, typically the
+	  project extent. Plug-ins need to check for infinite RoDs when asking input clips for them and to pass them through unless
+	  they explictly clamp them. To indicate an infinite RoD set it as indicated in the following code snippet.
+	</para>
+	
+	<programlisting>
+	  outputRoD.x1 = kOfxFlagInfiniteMin;
+	  outputRoD.y1 = kOfxFlagInfiniteMin;
+	  outputRoD.x2 = kOfxFlagInfiniteMax;
+	  outputRoD.y2 = kOfxFlagInfiniteMax;
+	</programlisting>
+      </section>
 
       <para>
 	PICTURES
@@ -895,6 +909,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	PICTURES
       </para>
     </section>
+
 
     <section><title>Tiled Rendering</title>
       <para>
@@ -1358,6 +1373,355 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
       </para>
     </section>
   </chapter>
+
+  <chapter><title>Thread and Recursion Safety</title>
+    <para>
+      Hosts are generally multi-threaded, those with a GUI will most likely have an interactive 
+      thread and a rendering thread, while any host running on a multi-CPU machine may have a render 
+      thread per CPU. Host may batch effects off to a render farm, where the same effect has separate
+      frames rendered on completely different machines. OFX needs to address all these situations.
+    </para>
+
+    <para>
+      Threads in the host application can be broken into two categories...
+      <itemizedlist>
+	<listitem><emphasis>main theaads</emphasis>, where any action may be called</listitem>
+	<listitem><emphasis>render threads</emphasis> where only a subset of actions may be called.</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      For a given effect instance, there can be only one main thread and zero or more render threads. 
+      An instance must be able to handle simultaneous actions called on the main and render threads. 
+      A plugin can control the number of simultaneous render threads via the 
+      <link linkend="kOfxImageEffectPluginRenderThreadSafety"><code>kOfxImageEffectPluginRenderThreadSafety</code></link> 
+      effect descriptor property.
+    </para>
+
+    <para>
+      The only actions that can be called on a render thread are...
+      <itemizedlist>
+	<listitem><link linkend="kOfxImageEffectActionBeginSequenceRender"><code>kOfxImageEffectActionBeginSequenceRender</code></link></listitem>
+	<listitem><link linkend="kOfxImageEffectActionRender"><code>kOfxImageEffectActionRender</code></link></listitem>
+	<listitem><link linkend="kOfxImageEffectActionEndSequenceRender"><code>kOfxImageEffectActionEndSequenceRender</code></link></listitem>
+	<listitem><link linkend="kOfxImageEffectActionIsIdentity"><code>kOfxImageEffectActionIsIdentity</code></link></listitem>
+	<listitem><link linkend="kOfxImageEffectActionGetFramesNeeded"><code>kOfxImageEffectActionGetFramesNeeded</code></link></listitem>
+	<listitem><link linkend="kOfxImageEffectActionGetRegionOfDefinition"><code>kOfxImageEffectActionGetRegionOfDefinition</code></link></listitem>
+	<listitem><link linkend="kOfxImageEffectActionGetRegionsOfInterest"><code>kOfxImageEffectActionGetRegionsOfInterest</code></link></listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      If a plugin cannot support this multi-threading behaviour, it will need to perform explicit locking itself,
+      using the locking mechanisms in the suites defined in ofxMultiThread.h
+    </para>
+
+    <para>
+      This will also mean that the host may need to perform locking on the various function calls over the API.
+      For example, a main and render thread may both simultaneously attempt to access a parameter from a single effect
+      instance. The locking should...
+      <itemizedlist>
+	<listitem>block write/read access</listitem>
+	<listitem>not block on read/read access</listitem>
+	<listitem>be fine grained at the level of individual function calls,</listitem>
+	<listitem>be transparent to the plugin, so it will block until the call succeeds.</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      For example, a render thread will only cause a parameter to lock out writes only for the duration of 
+      the call that reads the parameter, not for the duration of the whole render action. This will allow a
+      main thread to continue writing to the parameter during a render. This is especially important if you
+      have a custom interactive GUI that you want to keep working during a render call.
+    </para>
+
+    <para>
+      Note that a main thread should generally issue an abort to any linked render thread when a
+      parameter or other value affecting the effect (eg: time) has been changed by the user. A re-render
+      should then be issued so that a correct frame is created.
+    </para>
+
+    <para>
+      How an effect handles simulanteous calls to render is dealt with in \ref ImageEffectsMultiThreadingRendering.
+    </para>
+    
+    <para>
+      Many hosts get around the problem of sharing a single instance in a UI thread and a render thread by
+      having two instances, one for the user to interact with and a render only one that shadows the
+      UI instance. 
+    </para>
+      
+    <section><title>Recursive Actions</title>
+
+      <para>
+	When running on a main thread, some actions may end up being called recursively. A plug-in 
+	must be able to deal with this.
+	For example consider the following sequence of events in a plugin...
+	<orderedlist>
+	  <listitem>user sets parameter A in a GUI</listitem>
+	  <listitem>host issues <link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link> action</listitem>
+	  <listitem>
+	    plugin traps that and sets parameter B
+	    <orderedlist>
+	      <listitem>host issues a new <link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link> 
+		action for parameter B</listitem>
+	      <listitem>
+		plugin traps that and changes some internal private state and requests the overlay redraw itself
+		<orderedlist>
+		  <listitem><link linkend="kOfxInteractActionDraw"><code>kOfxInteractActionDraw</code></link> issued to the effect's overlay</listitem>
+		  <listitem>plugin draws overlay</listitem>
+		  <listitem><link linkend="kOfxInteractActionDraw"><code>kOfxInteractActionDraw</code></link> returns</listitem>
+		</orderedlist>
+	      </listitem>
+	      <listitem><link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link> action for parameter B returns</listitem>
+	  </orderedlist>
+	  </listitem>
+	  <listitem><link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link> action returns</listitem>
+	</orderedlist>
+      </para>
+
+      <para>
+	The image effect actions which may trigger a recursive action call on a single instance are...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxActionBeginInstanceChanged"><code>kOfxActionBeginInstanceChanged</code></link></listitem>
+	  <listitem><link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link></listitem>
+	  <listitem><link linkend="kOfxActionEndInstanceChanged"><code>kOfxActionEndInstanceChanged</code></link></listitem>
+	</itemizedlist>
+      </para>
+      
+      <para>
+	The interact actions which may trigger a recursive action to be called on the associated plugin instance are...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxInteractActionGainFocus"><code>kOfxInteractActionGainFocus</code></link></listitem>
+	  <listitem><link linkend="kOfxInteractActionKeyDown"><code>kOfxInteractActionKeyDown</code></link></listitem>
+	  <listitem><link linkend="kOfxInteractActionKeyRepeat"><code>kOfxInteractActionKeyRepeat</code></link></listitem>
+	  <listitem><link linkend="kOfxInteractActionKeyUp"><code>kOfxInteractActionKeyUp</code></link></listitem>
+	  <listitem><link linkend="kOfxInteractActionLoseFocus"><code>kOfxInteractActionLoseFocus</code></link></listitem>
+	  <listitem><link linkend="kOfxInteractActionPenDown"><code>kOfxInteractActionPenDown</code></link></listitem>
+	  <listitem><link linkend="kOfxInteractActionPenMotion"><code>kOfxInteractActionPenMotion</code></link></listitem>
+	  <listitem><link linkend="kOfxInteractActionPenUp"><code>kOfxInteractActionPenUp</code></link></listitem>
+	</itemizedlist>
+      </para>
+      
+      <para>
+	The image effect actions which may be called recursively are...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxActionBeginInstanceChanged"><code>kOfxActionBeginInstanceChanged</code></link></listitem>
+	  <listitem><link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link></listitem>
+	  <listitem><link linkend="kOfxActionEndInstanceChanged"><code>kOfxActionEndInstanceChanged</code></link></listitem>
+	  <listitem><link linkend="kOfxImageEffectActionGetClipPreferences"><code>kOfxImageEffectActionGetClipPreferences</code></link></listitem>
+	</itemizedlist>
+      </para>
+	
+      <para>
+	The interact actions which may be called recursively are...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxInteractActionDraw"><code>kOfxInteractActionDraw</code></link></listitem>
+	</itemizedlist>
+      </para>
+    </section>
+
+  </chapter>
+
+  <chapter id="CoordinateSystems"><title>Coordinate Systems</title>
+    <section><title>Spatial Coordinates</title>
+      <para>
+	All OFX spatial coordinate systems have the positive Y axis pointing up, and the positive X axis pointing right.
+      </para>
+      
+      <para>
+	As stated above, images are simply some rectangle in a potentially infinite plane of pixels.
+	However, this is an idealisation of what really goes on, as images composed of real pixels have to 
+	take into account pixel aspect ratios and proxy render scales, 
+	as such they will <emphasis>not</emphasis> be in the same space as the image plane. To deal with
+	this, OFX has three spatial coordinate systems
+	<itemizedlist>
+	  <listitem><emphasis>The Canonical Coordinate System</emphasis> which describes the idealised image plane</listitem>
+	  <listitem><emphasis>The Pixel Coordinate System</emphasis> which describes coordinates in addressable pixels</listitem>
+	  <listitem><emphasis>The Normalised Canonical Coordinate System</emphasis> which allows for resolution independant description of parameters</listitem>
+	</itemizedlist>
+      </para>
+
+      <section id="CanonicalCoordinates"><title>Canonical Coordinates</title>
+	<para>
+	  The idealised image plane is always in a coordinate system of square unscaled pixels.
+	  For example a PAL D1 frame occupies (0,0) to (768,576). We call this the <emphasis>Canonical Coordinate System</emphasis>.
+	</para>
+
+	<para>
+	  Many operations take place in canonical coordinates, parameter values are expressed in them while the and RoD and RoI actions
+	  report their values back in them.
+	</para>
+
+	<para>
+	  The Canonical coordinate system is always referenced by double floating point values, generally via a <code>OfxRectD</code> structure.
+	</para>
+      </section>
+
+      <section id="PixelCoordinate"><title>Pixel Coordinates</title>
+	<para>
+	  'Real' images, where we have to deal with addressable pixels in memory, 
+	  are in a coordinate system of non-square proxy scaled integer values. 
+	  So a PAL D1 image, being renderred as a half resolution proxy would be (0,0) to (360, 288), 
+	  which takes into account both the pixel aspect ratio of 1.067 and a scale factor of 0.5f. 
+	  We call this the <emphasis>Pixel Coordinate System</emphasis>.
+	</para>
+	<para>
+	  The Pixel coordinate system is always referenced by integer values, generally via a OfxRectI structure.
+	  It is used when refering to operations on actual pixels, and so is how the bounds of images are described
+	  and the render window passed to the render action.
+	</para>
+      </section>
+
+      <section id="MappingCoordinates"><title>Mapping Between The Spatial Coordinate Systems</title>
+	<para>
+	  To map between the two the pixel aspect ratio and the render scale need to be known, and it is a simple case of multiplication and rounding. More specifically,  given...
+	  <itemizedlist>
+	    <listitem>pixel aspect ratio, <emphasis>PAR</emphasis>, found on the image property <link linkend="kOfxImagePropPixelAspectRatio"><code>kOfxImagePropPixelAspectRatio</code></link></listitem>
+	    <listitem>render scale in X <emphasis>SX</emphasis>, found on the first dimension of the effect property <link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link></listitem>
+	    <listitem>render scale in Y <emphasis>SY</emphasis>, found on the second dimension of the effect property <link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link></listitem>
+	    <listitem>field scale in Y <emphasis>FS</emphasis>, this is 
+	      <itemizedlist>
+		<listitem>0.5 if the image property <link linkend="kOfxImagePropField"><code>kOfxImagePropField</code></link> is <link linkend="kOfxImageFieldLower"><code>kOfxImageFieldLower</code></link> or <link linkend="kOfxImageFieldUpper"><code>kOfxImageFieldUpper</code></link></listitem>
+		<listitem>1.0 otherwise.</listitem>
+	      </itemizedlist>
+	    </listitem>
+	  </itemizedlist>
+	</para>
+
+	<para>
+	To map an X and Y coordinates from Pixel coordinates to Canonical coordinates, we perform the following multiplications...
+	</para>
+	<programlisting>
+  X' = (X * PAR)/SX
+  Y' = Y/(SY * FS)
+	</programlisting>
+
+	<para>
+	To map an X and Y coordinates from Canonical coordinates to Pixel coordinates, we perform the following multiplications...
+	</para>
+	<programlisting>
+	  X' = (X * SX)/PAR
+	  Y' = Y * SY * FS
+	</programlisting>
+      </section>
+
+      <section><title>The Normalized Coordinate System</title>
+	<para>
+	  On most editting an compositing systems projects can be moved on a system between resolutions, for example a
+	  project may be set up at high definition then have several versions rendered out at different sizes, say a
+	  PAL SD version, an NTSC SD version and an HD 720p version.
+	</para>
+
+	<para>
+	  This causes problems with parameters that describe spatial coordinates. If they are expressed as absolute 
+	  canonical coordinates, the values will be incorrect as the project is moved from resolution to resolution.
+	  For example, a circle drawn at (384,288) in PAL SD canonical coordinates will be in the centre of the 
+	  output. Re-render that at 2K film, it will be in  the bottom left hand corner, which is probably not the correct
+	  spot.
+	</para>
+	
+	<para>
+	  To get around this, OFX allows parameters to be flagged as <emphasis>normalised</emphasis>, which is a resolution
+	  independant method of representing spatial coordinates. In this coordinate system, a point expressed as (0.5, 0.5)
+	  will appear in the centre of the screen, always.
+	</para>
+      
+	<para>
+	  To transform between normalised and canonical coordinates a simple linear equation is required. What that is
+	  requires a certain degree of explanation. It involves three two dimensional values...
+	  <itemizedlist>
+	    <listitem><emphasis>the project extent</emphasis> the resolution of the project, eg: PAL SD</listitem>
+	    <listitem><emphasis>the project size</emphasis> how much of that is used by imagery, eg: the letter box area in a 16:9 PAL SD project</listitem>
+	    <listitem><emphasis>the project offset</emphasis> the bottom left corner of the extent being used, eg: the BL corner of a 16:9 PAL SD project</listitem>
+	  </itemizedlist>
+	</para>
+
+	<para>
+	  As described above, the project extent is the section of the image plane that is coverred
+	  by an image that is the desired output of the project, so for a PAL SD project you get an extent of 0,0 to 768,576. 
+	  As the project is always rooted at the origin, so the extent is actually a size.
+	</para>
+	
+	<para>
+	  Project sizes and offsets are a bit less obvious. Consider a project that is going to be output as PAL D1 imagery,
+	  the extent will be 0,0 to 768,576. However our example is a letter box 16:9 project, which leaves a strip of black at
+	  bottom and top. The size of the letter box is 768 by 432, while the bottom left of the letter box is offset from the
+	  origin by 0,77. The ASCII art below shows the details.....
+	</para>
+	<programlisting>
+                                                (768,576) 
+             ---------------------------------------
+             |                                     |
+             |                BLACK                |
+             |.....................................| (768, 504)
+             |                                     |
+             |                                     |
+             |        LETTER BOXED IMAGERY         |
+             |                                     |
+             |                                     |
+      (0,72) |.....................................|
+             |                                     |
+             |                BLACK                |
+             |                                     |
+             ---------------------------------------
+	   (0,0)
+	</programlisting>
+        
+	<para>
+	  So in this example...
+	  <itemizedlist>
+	    <listitem>the <emphasis>extent</emphasis> of the project is the full size of the output image, which is 768x576,</listitem>
+	    <listitem>the <emphasis>size</emphasis> of the project is the size of the letter box section, which is 768x432,</listitem>
+	    <listitem>the <emphasis>offset</emphasis> of the project is the bottom left corner of the project window, which is 0,72.</listitem>
+	  </itemizedlist>
+	</para>
+	
+	<para>
+	  The properties on an effect instance handle allow you to fetch these values...
+	  <itemizedlist>
+	    <listitem><link linkend="kOfxImageEffectPropProjectExtent"><code>kOfxImageEffectPropProjectExtent</code></link> for the extent of the current project,</listitem>
+	    <listitem><link linkend="kOfxImageEffectPropProjectSize"><code>kOfxImageEffectPropProjectSize</code></link> for the size of the current project,</listitem>
+	    <listitem><link linkend="kOfxImageEffectPropProjectOffset"><code>kOfxImageEffectPropProjectOffset</code></link> for the offset of the current project.</listitem>
+	  </itemizedlist>
+	</para>
+
+	<para>
+	  So to map from normalised coordinates to canonical coordinates, you use the project size and offset...
+	  <itemizedlist>
+	    <listitem>for values that represent a size simply multiply the normalised coordinate by the project size</listitem>
+	    <listitem>for values that represent an absolute position, multiply the normalised coordinate by the project size then add the project origin</listitem>
+	  </itemizedlist>
+	</para>
+
+	<para>
+	  To flag to the host that a parameter as normalised, we use the
+	  <link linkend="kOfxParamPropDoubleType"><code>kOfxParamPropDoubleType</code></link> property. Parameters
+	  that are so flagged have values set and retrieved by an effect in normalized coordinates. However a host
+	  can choose to represent them to the user in whatever space it chooses. The values that this property can
+	  take are...
+	  <itemizedlist>
+	    <listitem><link linkend="kOfxParamDoubleTypeNormalisedX"><code>kOfxParamDoubleTypeNormalisedX</code></link> - normalised size wrt to the project's X dimension (1D only),</listitem>
+	    <listitem><link linkend="kOfxParamDoubleTypeNormalisedXAbsolute"><code>kOfxParamDoubleTypeNormalisedXAbsolute</code></link> - normalised absolute position on the X axis (1D only)</listitem>
+	    <listitem><link linkend="kOfxParamDoubleTypeNormalisedY"><code>kOfxParamDoubleTypeNormalisedY</code></link> - normalised size wrt to the project's Y dimension(1D only),</listitem>
+	    <listitem><link linkend="kOfxParamDoubleTypeNormalisedYAbsolute"><code>kOfxParamDoubleTypeNormalisedYAbsolute</code></link> - normalised absolute position on the Y axis (1D only)</listitem>
+	    <listitem><link linkend="kOfxParamDoubleTypeNormalisedXY"><code>kOfxParamDoubleTypeNormalisedXY</code></link> - normalised to the project's X and Y size (2D only),</listitem>
+	    <listitem><link linkend="kOfxParamDoubleTypeNormalisedXYAbsolute"><code>kOfxParamDoubleTypeNormalisedXYAbsolute</code></link> - normalised to the projects X and Y size, and is an absolute position on the image plane.</listitem>
+	  </itemizedlist>
+	</para>
+
+	<para> 
+	  For example, we have an effect that draws a circle. It has two parameters a 1D double radius parametere and a 2D double position parameter. 
+	  It would flag the radius to be <link linkend="kOfxParamDoubleTypeNormalisedX"><code>kOfxParamDoubleTypeNormalisedX</code></link>, fetch the value and scale that by the project size before we render the circle. The host should present such normalised parameters to the user in a 'sensible' range. So for a PAL project, it would be from 0..768, where the plug-in sees 0..1. 
+	</para>
+	<para>
+	  The position can be handled by the <link linkend="kOfxParamDoubleTypeNormalisedXYAbsolute"><code>kOfxParamDoubleTypeNormalisedXYAbsolute</code></link> case. In which case the plugin must scale the parameter's value by the project size and add in the project offset. This will allow the positional parameter to be moved between projects transparently.  
+	</para>
+      </section>
+    </section>
+  </chapter>
+  
+
 
   &clipPreferencesChapter;
 
