@@ -695,33 +695,33 @@ This should be applied to any spatial parameters to position them correctly. Not
 */
 #define kOfxImageEffectPropRenderScale "OfxImageEffectPropRenderScale"
 
-/** @brief The extent of the current project in cannonical coordinates.
+/** @brief The extent of the current project in canonical coordinates.
 
     - Type - double X 2
     - Property Set - a plugin  instance (read only)
 
 The extent is the size of the 'output' for the current project. See \ref ProjectCoordinateSystems for more infomation on the project extent.
 
-The extent is in cannonical coordinates and only returns the top right position, as the extent is always rooted at 0,0.
+The extent is in canonical coordinates and only returns the top right position, as the extent is always rooted at 0,0.
 
 For example a PAL SD project would have an extent of 768, 576.
  */
 #define kOfxImageEffectPropProjectExtent "OfxImageEffectPropProjectExtent"
 
-/** @brief The size of the current project in cannonical coordinates.
+/** @brief The size of the current project in canonical coordinates.
 
     - Type - double X 2
     - Property Set - a plugin  instance (read only)
 
 The size of a project is a sub set of the ::kOfxImageEffectPropProjectExtent. For example a project may be a PAL SD project, but only be a letter-box within that. The project size is the size of this sub window.
 
-The project size is in cannonical coordinates.
+The project size is in canonical coordinates.
 
 See \ref ProjectCoordinateSystems for more infomation on the project extent.
  */
 #define kOfxImageEffectPropProjectSize "OfxImageEffectPropProjectSize"
 
-/** @brief The offset of the current project in cannonical coordinates.
+/** @brief The offset of the current project in canonical coordinates.
 
     - Type - double X 2
     - Property Set - a plugin  instance (read only)
@@ -730,7 +730,7 @@ The offset is related to the ::kOfxImageEffectPropProjectSize and is the offset 
 
 For example for a PAL SD project that is in letterbox form, the project offset is the offset to the bottom left hand corner of the letter box.
  
-The project offset is in cannonical coordinates.
+The project offset is in canonical coordinates.
 
 See \ref ProjectCoordinateSystems for more infomation on the project extent.
 */
@@ -880,7 +880,7 @@ Note that if it fetches kOfxImageFieldSingle and the host stores images natively
 
 The order of the values is x1, y1, x2, y2.
 
-This will be in \ref CannonicalCoordinates
+This will be in \ref CanonicalCoordinates
  */
 #define kOfxImageEffectPropRegionOfDefinition "OfxImageEffectPropRegionOfDefinition"
 
@@ -893,7 +893,7 @@ A host passes this value into the region of interest action to specify the regio
 
 The order of the values is x1, y1, x2, y2.
 
-This will be in \ref CannonicalCoordinates.
+This will be in \ref CanonicalCoordinates.
  */
 #define kOfxImageEffectPropRegionOfInterest "OfxImageEffectPropRegionOfInterest"
 
@@ -1034,7 +1034,7 @@ typedef struct OfxImageEffectSuiteV1 {
       \arg clip  - the clip to extract the image from
       \arg time        - time to fetch the image at
       \arg region      - region to fetch the image from (optional, set to NULL to get a 'default' region)
-                            this is in the \ref CannonicalCoordinates. 
+                            this is in the \ref CanonicalCoordinates. 
       \arg imageHandle - property set containing the image's data
 
   An image is fetched from a clip at the indicated time for the given region and returned in the imageHandle.
@@ -1084,7 +1084,7 @@ If clipGetImage is called twice with the same parameters, then two separate imag
       \arg clipHandle  - the clip to extract the image from
       \arg time        - time to fetch the image at
       \arg region      - region to fetch the image from (optional, set to NULL to get a 'default' region)
-                            this is in the \ref CannonicalCoordinates. 
+                            this is in the \ref CanonicalCoordinates. 
       \arg imageHandle - handle where the image is returned
 
   An image is fetched from a clip at the indicated time for the given region and returned in the imageHandle.
@@ -1881,7 +1881,7 @@ The \e outArgs handle has the following properties that can be set...
 
 @section ImageEffectsActionGetRegionOfDefinition The Get Region Of Definition Action
 
-The ::kOfxImageEffectActionGetRegionOfDefinition action asks the effect to set its Region of Definition, in the Cannonical Coordinate system. The Region Of
+The ::kOfxImageEffectActionGetRegionOfDefinition action asks the effect to set its Region of Definition, in the Canonical Coordinate system. The Region Of
 Definition is the maximum region of the image plane that the effect can fill.
 
 The \e handle parameter is an instance of the image effect,
@@ -1936,7 +1936,7 @@ The \e handle parameter is an instance of the image effect,
 The \e inArgs parameter contains the following read only properties...
 - ::kOfxPropTime - the time to ask for a RoI
 - ::kOfxImageEffectPropRenderScale   - the scale factor to apply to images for this call
-- ::kOfxImageEffectPropRegionOfInterest - the window (in Cannonical Coordinates) to get the RoI for each input
+- ::kOfxImageEffectPropRegionOfInterest - the window (in Canonical Coordinates) to get the RoI for each input
 
 The \e outArgs handle has the following properties that are to be set...
 - one double X 4 property for each input clip currently attached, labelled with "OfxImageClipPropRoI_" post pended with the clip's name.
@@ -2116,7 +2116,7 @@ If an effect is asked to render outside of its region of definition, it should f
 
 Depending on the host, an effect may be passed input images that are different to the regions of interest is specified, effects should be prepared for this. Any pixels outside of an input's region of definition will be set to be black and transparent.
 
-Note thate OfxImageEffectSuiteV1::clipGetImage function takes an optional \e region parameter. This is a region, in \ref CannonicalCoordinates that the effect would like on that input clip. If not used in a render action, then the image returned will be based on the previous get region of interest action. If used, then the image returned will be based on this (usually be clipped to the input's region of definition). Generally a plugin should not use the \e region parameter in the render action, but should leave it to the 'default' region.
+Note thate OfxImageEffectSuiteV1::clipGetImage function takes an optional \e region parameter. This is a region, in \ref CanonicalCoordinates that the effect would like on that input clip. If not used in a render action, then the image returned will be based on the previous get region of interest action. If used, then the image returned will be based on this (usually be clipped to the input's region of definition). Generally a plugin should not use the \e region parameter in the render action, but should leave it to the 'default' region.
 
 <HR>
 
@@ -2510,14 +2510,14 @@ The ::kOfxImageEffectActionGetRegionsOfInterest is redundant for plugins that do
 
 As stated in \ref ImageEffectsImagePlane, images are simply some rectangle in a potentially infinite plane of pixels. However real pixels have to take into account pixel aspect ratios and proxy render scales, and will \em not be in the same space as the image plane.
 
-@section CannonicalCoordinates Cannonical Coordinates
-The image plane is always in a coordinate system of square unscaled pixels. For example a PAL D1 frame occupies (0,0) <-> (768,576). We call this the <B>Cannonical Coordinate System</B>.
+@section CanonicalCoordinates Canonical Coordinates
+The image plane is always in a coordinate system of square unscaled pixels. For example a PAL D1 frame occupies (0,0) <-> (768,576). We call this the <B>Canonical Coordinate System</B>.
 
 @section PixelCoordinates Pixel Coordinates
 'Real' images, where we have to deal with addressable pixels in memory, are in a coordinate system of non-square proxy scaled integer values. So a PAL D1 image, being renderred as a half resolution proxy would be (0,0) <-> (360, 288), which takes into account both the pixel aspect ratio of 1.067 and a scale factor of 0.5f. We call this the <B> Pixel Coordinate System</B>.
 
 @section InfiniteRegions Infinite Regions
-Sometimes a plug-in needs to specify an infinite region (eg: a noise generator flagging the fact that it has an infinite RoD). Such infinite regions, in pixel or cannonical coordinates are flagged by setting the minimums to be ::kOfxFlagInfiniteMin and the maxmimums to be ::kOfxFlagInfiniteMax, for both double and integer rects. Eg...
+Sometimes a plug-in needs to specify an infinite region (eg: a noise generator flagging the fact that it has an infinite RoD). Such infinite regions, in pixel or canonical coordinates are flagged by setting the minimums to be ::kOfxFlagInfiniteMin and the maxmimums to be ::kOfxFlagInfiniteMax, for both double and integer rects. Eg...
 
 \verbatim
      outputRoD.x1 = kOfxFlagInfiniteMin;
@@ -2536,21 +2536,21 @@ To map between the two the pixel aspect ratio and the render scale need to be kn
     - 0.5 if the image property ::kOfxImagePropField is ::kOfxImageFieldLower or ::kOfxImageFieldUpper
     - 1.0 otherwise.
 
-To map an X coordinate from Pixel coordinates to Cannonical coordinates, we perform the following multiplication
+To map an X coordinate from Pixel coordinates to Canonical coordinates, we perform the following multiplication
   - X' = (X * PAR)/SX
 
-To map a Y coordinate from Pixel coordinates to Cannonical coordinates, we perform the following multiplication
+To map a Y coordinate from Pixel coordinates to Canonical coordinates, we perform the following multiplication
   - Y' = Y/(SY * FS)
 
-To map from Cannonical to Pixel Coordinates you invert the operations above and truncate any fractional parts.
+To map from Canonical to Pixel Coordinates you invert the operations above and truncate any fractional parts.
 
-The Cannonical coordinate system is always referenced by floating point values.
+The Canonical coordinate system is always referenced by floating point values.
 
 The Pixel coordinate system is always referenced by integer values, generally via a OfxRectI structure. It is used when refering to operations on actual pixels, and so is what is passed to the OfxImageEffectPluginStructV1::render function, and what is returned by the OfxImageEffectSuiteV1::clipGetImage function.
 
 @section ProjectCoordinateSystems Project Extents, Sizes and Offsets
 
-As described in \ref ImageEffectsImagePlane, the project extent is the section of the image plane that is coverred by an image that is the desired output of the project, so for a PAL D1 project you get an extent of 0,0 <-> 768,576. The extent is always rooted at the origin, so the effect instance property ::kOfxImageEffectPropProjectExtent, only has two doubles in it, being the upper right hand corner of the extent, in \ref CannonicalCoordinates.
+As described in \ref ImageEffectsImagePlane, the project extent is the section of the image plane that is coverred by an image that is the desired output of the project, so for a PAL D1 project you get an extent of 0,0 <-> 768,576. The extent is always rooted at the origin, so the effect instance property ::kOfxImageEffectPropProjectExtent, only has two doubles in it, being the upper right hand corner of the extent, in \ref CanonicalCoordinates.
 
 Project sizes and project offsets need a bit of ASCII art to explain (must make some TIFFs eventually). 
 
