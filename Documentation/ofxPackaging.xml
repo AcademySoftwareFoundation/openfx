@@ -1,5 +1,5 @@
 <section>
-  <title>Packaging OFX Plug-ins</title>
+  <title id="InstallationLocation">Packaging OFX Plug-ins</title>
   
   <para>Where a host application chooses to search for OFX plug ins, what
     binary format they are in and any directory hierarchy is entirely up to

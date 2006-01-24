@@ -20,9 +20,9 @@
     </para>
     
     <section id="kOfxActionLoad"><title>The Generic Load Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxCore.h"
-#define  kOfxActionLoad "OfxActionLoad" </programlisting>
+#define  kOfxActionLoad "OfxActionLoad" </programlisting></blockquote>
       &arguments;
       <para>
 	The <code>handle</code>, <code>inArgs</code> and <code>outArgs</code> arguments to the main entry are redundant and should be set to NULL.
@@ -51,9 +51,9 @@
     </section>
     
     <section id="kOfxActionUnload"><title >The Generic Unload Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxActionUnload "OfxActionUnload" </programlisting>
+#define kOfxActionUnload "OfxActionUnload" </programlisting></blockquote>
 
       &description;
       <para>kOfxActionUnload is the last action passed to the plug-in before the binary containing the plug-in is unloaded. It is there to allow a plug-in to destroy any global data structures it may have created.</para>
@@ -87,9 +87,9 @@
     </section>
     
     <section id="kOfxActionDescribe"><title >The Generic Describe Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxActionDescribe "OfxActionDescribe" </programlisting>
+#define kOfxActionDescribe "OfxActionDescribe" </programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -143,9 +143,9 @@
     </section>
     
     <section id="kOfxActionCreateInstance"><title >The Generic Create Instance Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxActionCreateInstance        "OfxActionCreateInstance" </programlisting>
+#define kOfxActionCreateInstance        "OfxActionCreateInstance" </programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -189,9 +189,9 @@
     </section>
     
     <section id="kOfxActionDestroyInstance"><title >The Generic Destroy Instance Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxActionDestroyInstance       "OfxActionDestroyInstance" </programlisting>
+#define kOfxActionDestroyInstance       "OfxActionDestroyInstance" </programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -236,10 +236,10 @@
     </section>
     
     <section id="kOfxActionBeginInstanceChanged"><title >The Generic Begin/End Instance Changed Actions</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxCore.h"
 #define kOfxActionBeginInstanceChanged "OfxActionBeginInstanceChanged" 
-#define kOfxActionEndInstanceChanged "OfxActionEndInstanceChanged" </programlisting>
+#define kOfxActionEndInstanceChanged "OfxActionEndInstanceChanged" </programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -300,9 +300,9 @@ For example, a plugin that maintains a complex internal state can delay any chan
     </section>
     
     <section id="kOfxActionInstanceChanged"><title >The Generic Instance Changed Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxActionInstanceChanged "OfxActionInstanceChanged" </programlisting>
+#define kOfxActionInstanceChanged "OfxActionInstanceChanged" </programlisting></blockquote>
       
       &arguments;
       <para>
@@ -364,9 +364,9 @@ This action signals that something has changed in a plugin's instance, either by
     </section>
 
     <section id="kOfxActionPurgeCaches"><title >The Generic Purge Caches Action></title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxActionPurgeCaches                 "OfxActionPurgeCaches"</programlisting>
+#define kOfxActionPurgeCaches                 "OfxActionPurgeCaches"</programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -404,9 +404,9 @@ This action signals that something has changed in a plugin's instance, either by
     </section>
     
     <section id="kOfxActionSyncPrivateData"><title >The Sync Private Data Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxActionSyncPrivateData                 "OfxActionSyncPrivateData"</programlisting>
+#define kOfxActionSyncPrivateData                 "OfxActionSyncPrivateData"</programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -449,9 +449,9 @@ This action signals that something has changed in a plugin's instance, either by
     </section>
     
     <section id="kOfxActionBeginInstanceEdit"><title >The Generic Begin Instance Edit Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxActionBeginInstanceEdit "OfxActionBeginInstanceEdit"</programlisting>
+#define kOfxActionBeginInstanceEdit "OfxActionBeginInstanceEdit"</programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -491,9 +491,9 @@ This action signals that something has changed in a plugin's instance, either by
     </section>
     
     <section id="kOfxActionEndInstanceEdit"><title >The Generic End Instance Edit Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxActionEndInstanceEdit "OfxActionEndInstanceEdit"</programlisting>
+#define kOfxActionEndInstanceEdit "OfxActionEndInstanceEdit"</programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -533,9 +533,9 @@ This action signals that something has changed in a plugin's instance, either by
     </section>
     
     <section id="kOfxImageEffectActionDescribeInContext"><title >The Describe In Context Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxImageEffect.h"
-#define kOfxImageEffectActionDescribeInContext  "OfxImageEffectActionDescribeInContext"</programlisting>
+#define kOfxImageEffectActionDescribeInContext  "OfxImageEffectActionDescribeInContext"</programlisting></blockquote>
       
       &arguments;
       <para>
@@ -588,9 +588,9 @@ This action signals that something has changed in a plugin's instance, either by
     </section>
     
     <section id="kOfxImageEffectActionGetRegionOfDefinition"><title >The Get Region of Definition Action</title> 
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxImageEffect.h"
-#define kOfxImageEffectActionGetRegionOfDefinition        "OfxImageEffectActionGetRegionOfDefinition"</programlisting>
+#define kOfxImageEffectActionGetRegionOfDefinition        "OfxImageEffectActionGetRegionOfDefinition"</programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -603,7 +603,7 @@ This action signals that something has changed in a plugin's instance, either by
 	  </listitem>
 	  <listitem><code>outArgs</code>  has the following property which the plug-in may set...
 	    <itemizedlist>
-	      <listitem><link linkend="kOfxImageEffectPropRegionOfDefinition"><code>kOfxImageEffectPropRegionOfDefinitiong</code></link>, the calculated region of definition, initially set by the host to the default RoD (see below), in Cannonical Coordinates.</listitem>
+	      <listitem><link linkend="kOfxImageEffectPropRegionOfDefinition"><code>kOfxImageEffectPropRegionOfDefinitiong</code></link>, the calculated region of definition, initially set by the host to the default RoD (see below), in Canonical Coordinates.</listitem>
 	    </itemizedlist>
 	  </listitem>
 	</itemizedlist>
@@ -644,9 +644,9 @@ This action signals that something has changed in a plugin's instance, either by
     </section>
     
     <section id="kOfxImageEffectActionGetRegionsOfInterest"><title >The Get Regions Of Interest Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxImageEffect.h"
-#define kOfxImageEffectActionGetRegionsOfInterest         "OfxImageEffectActionGetRegionsOfInterest"</programlisting>
+#define kOfxImageEffectActionGetRegionsOfInterest         "OfxImageEffectActionGetRegionsOfInterest"</programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -656,7 +656,7 @@ This action signals that something has changed in a plugin's instance, either by
 	      <listitem><link linkend="kOfxPropTime"><code>kOfxPropTime</code></link> the effect time for which a region of definition is being requested,</listitem>
 	      
 	      <listitem><link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link> the render scale that should be used in any calculations in this action,</listitem>
-	      <listitem><link linkend="kOfxImageEffectPropRegionOfInterest"><code>kOfxImageEffectPropRegionOfInterest</code></link> the region to be rendered in the output image, in Cannonical Coordinates.</listitem>
+	      <listitem><link linkend="kOfxImageEffectPropRegionOfInterest"><code>kOfxImageEffectPropRegionOfInterest</code></link> the region to be rendered in the output image, in Canonical Coordinates.</listitem>
 	    </itemizedlist>
 	  </listitem>
 	<listitem><code>outArgs</code> has a set of 4 dimensional double properties, one for each of the input clips to the effect. The properties are each named "OfxImageClipPropRoI_" with the clip name post pended, for example "OfxImageClipPropRoI_Source". These are initialised to the default RoI. </listitem>
@@ -686,9 +686,9 @@ This action signals that something has changed in a plugin's instance, either by
     </section>
     
     <section id="kOfxImageEffectActionGetFramesNeeded"><title >The Get Frames Needed Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxImageEffect.h"
-#define kOfxImageEffectActionGetFramesNeeded              "OfxImageEffectActionGetFramesNeeded"</programlisting>
+#define kOfxImageEffectActionGetFramesNeeded              "OfxImageEffectActionGetFramesNeeded"</programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -712,7 +712,7 @@ This action signals that something has changed in a plugin's instance, either by
       </para>
       <para>
 	Note that each clip can have it's required frame range specified, and that you can specify discontinuous sets of ranges for each clip, for example...
-      <programlisting>
+      <blockquote><programlisting>
   // The effect always needs the initial frame of the source as well as the previous and current frame
   double rangeSource[4];
   
@@ -722,7 +722,7 @@ This action signals that something has changed in a plugin's instance, either by
   rangeSource[2] = currentFrame - 1; // we also need the previous and current frame on the source
   rangeSource[3] = currentFrame;
 
-  gPropHost->propSetDoubleN(outArgs, "OfxImageClipPropFrameRange_Source", 4, rangeSource); </programlisting>
+  gPropHost->propSetDoubleN(outArgs, "OfxImageClipPropFrameRange_Source", 4, rangeSource); </programlisting></blockquote>
 	
 	Which sets two discontinuous range of frames from the 'Source' clip required as input.
       </para>
@@ -746,9 +746,9 @@ This action signals that something has changed in a plugin's instance, either by
     </section>
     
     <section id="kOfxImageEffectActionIsIdentity"><title >The Is Identity Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxImageEffect.h"
-#define kOfxImageEffectActionIsIdentity            "OfxImageEffectActionIsIdentity"</programlisting>
+#define kOfxImageEffectActionIsIdentity            "OfxImageEffectActionIsIdentity"</programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -798,9 +798,9 @@ This action signals that something has changed in a plugin's instance, either by
     </section>
     
     <section id="kOfxImageEffectActionRender"><title >The Render Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxImageEffect.h"
-#define kOfxImageEffectActionRender                "OfxImageEffectActionRender"</programlisting>
+#define kOfxImageEffectActionRender                "OfxImageEffectActionRender"</programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -857,9 +857,9 @@ This action signals that something has changed in a plugin's instance, either by
     </section>
     
     <section id="kOfxImageEffectActionBeginSequenceRender"><title >The Begin Sequence Render Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxImageEffect.h"
-#define kOfxImageEffectActionBeginSequenceRender   "OfxImageEffectActionBeginSequenceRender"</programlisting>
+#define kOfxImageEffectActionBeginSequenceRender   "OfxImageEffectActionBeginSequenceRender"</programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -911,9 +911,9 @@ This action signals that something has changed in a plugin's instance, either by
     </section>
     
     <section id="kOfxImageEffectActionEndSequenceRender"><title >The End Sequence Render Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxImageEffect.h"
-#define kOfxImageEffectActionEndSequenceRender      "OfxImageEffectActionEndSequenceRender"</programlisting>
+#define kOfxImageEffectActionEndSequenceRender      "OfxImageEffectActionEndSequenceRender"</programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -965,9 +965,9 @@ This action signals that something has changed in a plugin's instance, either by
     </section>
 
     <section id="kOfxImageEffectActionGetClipPreferences"><title>The Get Clip Preferences Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxImageEffect.h"
-#define kOfxImageEffectActionGetClipPreferences       "OfxImageEffectActionGetClipPreferences"</programlisting>
+#define kOfxImageEffectActionGetClipPreferences       "OfxImageEffectActionGetClipPreferences"</programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -1009,9 +1009,9 @@ This action allows a plugin to dynamically specify its preferences for input and
     </section>
     
     <section id="kOfxImageEffectActionGetTimeDomain"><title>The Get Time Domain Action</title>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxImageEffect.h"
-#define kOfxImageEffectActionGetTimeDomain                "OfxImageEffectActionGetTimeDomain"</programlisting>
+#define kOfxImageEffectActionGetTimeDomain                "OfxImageEffectActionGetTimeDomain"</programlisting></blockquote>
       &arguments;
       <para>
 	<itemizedlist>
@@ -1086,34 +1086,5 @@ This action allows a plugin to dynamically specify its preferences for input and
     <section id="kOfxInteractActionLoseFocus"> <title >kOfxInteractActionLoseFocus</title>
     </section>
     
-    <section><title>Sequences Of Actions</title>
-      
-      <section><title>Loading, Unloading and Creating instances</title>
-	<para>UNFINISHED</para>
-        <itemizedlist>
-	  <listitem><link linkend="kOfxActionLoad">kOfxActionLoad</link></listitem>
-	  <listitem><link linkend="kOfxActionDescribe">kOfxActionDescribe</link></listitem>
-	  <listitem><link linkend="kOfxImageEffectActionDescribeInContext">kOfxImageEffectActionDescribeInContext</link></listitem>
-	  <listitem><link linkend="kOfxActionCreateInstance">kOfxActionCreateInstance</link></listitem>
-	  <listitem>...</listitem>
-	  <listitem><link linkend="kOfxActionDestroyInstance">kOfxActionDestroyInstance</link></listitem>
-	  <listitem><link linkend="kOfxActionUnload">kOfxActionUnload</link></listitem>
-        </itemizedlist>
-      </section>
-      
-      <section><title>Rendering</title>
-	<para>UNFINISHED</para>
-        <itemizedlist>
-	  <listitem><link linkend="kOfxImageEffectActionBeginSequenceRender">kOfxImageEffectActionBeginSequenceRender</link></listitem>
-	  <listitem><link linkend="kOfxImageEffectActionIsIdentity">kOfxImageEffectActionIsIdentity</link></listitem>
-	  <listitem><link linkend="kOfxImageEffectActionGetFramesNeeded">kOfxImageEffectActionGetFramesNeeded</link>             </listitem>
-	  <listitem><link linkend="kOfxImageEffectActionGetRegionOfDefinition">kOfxImageEffectActionGetRegionOfDefinition</link>       </listitem>
-	  <listitem><link linkend="kOfxImageEffectActionGetRegionsOfInterest">kOfxImageEffectActionGetRegionsOfInterest</link>        </listitem>
-	  <listitem><link linkend="kOfxImageEffectActionRender">kOfxImageEffectActionRender</link>               </listitem>
-	  <listitem><link linkend="kOfxImageEffectActionEndSequenceRender">kOfxImageEffectActionEndSequenceRender</link>     </listitem>
-        </itemizedlist>
-      </section>
-      
-    </section>
   </chapter>
   

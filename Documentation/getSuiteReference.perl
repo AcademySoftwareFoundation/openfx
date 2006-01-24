@@ -172,10 +172,10 @@ sub WriteSuiteDefinition
     <refpurpose>$briefDescription</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-     <programlisting>
+     <blockquote><programlisting>
 #include \"$sourceFileBaseName\"
 $code
-</programlisting>
+</programlisting></blockquote>
      </refsynopsisdiv>
     <refsect1>
       <title>Description</title>" .

@@ -239,10 +239,10 @@ print PROPFILE "
 <refname><literal>$propName</literal></refname>
 <refpurpose>$briefDescription</refpurpose>
 </refnamediv>
-<refsynopsisdiv><programlisting>
+<refsynopsisdiv><blockquote><programlisting>
 #include \"$includeFile\"
 $define
-</programlisting></refsynopsisdiv>
+</programlisting></blockquote></refsynopsisdiv>
 $typeDescription
 $propSetDescription
 $defaultDescription

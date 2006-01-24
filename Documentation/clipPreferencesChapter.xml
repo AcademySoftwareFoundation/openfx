@@ -1,5 +1,4 @@
-
-  <chapter id="ImageEffectsActionGetClipPreferences"><title>Image Effect Clip Preferences</title>
+  <chapter id="ImageEffectClipPreferences"><title>Image Effect Clip Preferences</title>
     <para>
       The <link linkend="kOfxImageEffectActionGetClipPreferences"><code>kOfxImageEffectActionGetClipPreferences</code></link> 
       action is passed to an effect to allow a plugin to specify how it wishes to deal with it's input clips and to set

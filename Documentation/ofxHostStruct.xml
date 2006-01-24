@@ -6,12 +6,12 @@
     <structname>OfxPlugin</structname> struct is passed a pointer to an
     <structname>OfxHost</structname> as the first thing to boot-strapping
     plug-in/host communication. The struct looks like...</para>
-  <programlisting>
+  <blockquote><programlisting>
 typedef struct OfxHost {
   OfxPropertySetHandle host;
   void *(*fetchSuite)(OfxPropertySetHandle host, const char *suiteName, int suiteVersion);
 } OfxHost;
-  </programlisting>
+  </programlisting></blockquote>
 
   <para>The <structname>OfxHost</structname> contains two elements,
     <itemizedlist>

@@ -17,6 +17,18 @@
     <releaseinfo>Document version 0.3</releaseinfo>
   </bookinfo>
 
+  <chapter><title>Things to do on  this book yet</title>
+    <itemizedlist>
+      <listitem>copy all documentation across from the .h files and docbookify it</listitem>
+      <listitem>edit the thing into a somewhat cleaner form
+	<itemizedlist>
+	  <listitem>a section devoted to clipGetImage and what has to happen</listitem>
+	  <listitem>a section on caveats for hosts and effects</listitem>
+	</itemizedlist>
+      </listitem>
+    </itemizedlist>
+  </chapter>
+
   <preface>
     <title>Foreword</title>
     <para>UNFINISHED</para>
@@ -163,9 +175,9 @@
       </para>
       
       <section id="OfxGetNumberOfPlugins"><title>OfxGetNumberOfPlugins</title>
-	<programlisting>
+	<blockquote><programlisting>
 #include "ofxCore.h"
-OfxExport int OfxGetNumberOfPlugins(void); </programlisting>
+OfxExport int OfxGetNumberOfPlugins(void); </programlisting></blockquote>
 	<para>This function returns the number of
 	  plug-ins contained in the binary. It is the very first function called
 	  by the host after the binary has been loaded.</para>
@@ -178,9 +190,9 @@ OfxExport int OfxGetNumberOfPlugins(void); </programlisting>
       </section>
       
       <section id="OfxGetPlugin"><title>OfxGetPlugin</title>
-	<programlisting>
+	<blockquote><programlisting>
 #include "ofxCore.h"
-OfxExport OfxPlugin *OfxGetPlugin(int nth); </programlisting>
+OfxExport OfxPlugin *OfxGetPlugin(int nth); </programlisting></blockquote>
 	
         <para>This function returns a pointer to the <varname>nth</varname>
 	  <structname>OfxPlugin</structname> struct in the binary.
@@ -212,9 +224,9 @@ OfxExport OfxPlugin *OfxGetPlugin(int nth); </programlisting>
     
     <section id="mainEntryPoint"><title>The Plug-in Main Entry Point And Actions</title>
       <para>Actions are how a host communicates with a plug-in. They are in effect generic function calls. Actions are issued via a plug-in's <function>mainEntry</function> function pointer found in its <code>OfxPlugin</code> struct. The function signature for the main entry point is...  </para>
-      <programlisting>
+      <blockquote><programlisting>
 #include "ofxCore.h"
-typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs); </programlisting>
+typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs); </programlisting></blockquote>
       <para> Where,
 	<itemizedlist>
 	  <listitem><code>action</code> is a C string indicating the action to be taken,</listitem>
@@ -253,7 +265,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	functions that access the object.
       </para>
 
-      <section><title>Strings</title>
+      <section id="ArchitectureStrings"><title>Strings</title>
 	<para>
 	  A special case is made for strings. Strings are considered to be of two types, <emphasis>value</emphasis> strings and 
 	  <emphasis>label</emphasis> strings. 
@@ -289,7 +301,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	  is until the next OFX API function is called. For example, within a plugin
 	</para>
 
-	<programlisting>
+	<blockquote><programlisting>
    // pointer to store the returned value of the host name
    char *returnedHostName;
 
@@ -300,7 +312,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
    char *hostName = strdup(returnedHostName);
 
    paramSuite->getParamValue(instance, "myParam", &amp;value);
-	</programlisting>
+	</programlisting></blockquote>
       </section>
     </section>
   </chapter>
@@ -812,7 +824,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
   </chapter>
 
 
-  <chapter><title>Image Processing Architectures</title>
+  <chapter id="ImageEffectArchitectures"><title>Image Processing Architectures</title>
     <para>
       OFX supports a range of image processing architectures. The simpler ones being special cases of
       the most complex one. Levels of support, in both plug-in and host, are signalled by setting appropriate
@@ -873,12 +885,12 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	  they explictly clamp them. To indicate an infinite RoD set it as indicated in the following code snippet.
 	</para>
 	
-	<programlisting>
+	<blockquote><programlisting>
 	  outputRoD.x1 = kOfxFlagInfiniteMin;
 	  outputRoD.y1 = kOfxFlagInfiniteMin;
 	  outputRoD.x2 = kOfxFlagInfiniteMax;
 	  outputRoD.y2 = kOfxFlagInfiniteMax;
-	</programlisting>
+	</programlisting></blockquote>
       </section>
 
       <para>
@@ -1325,7 +1337,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
     </section>
 
     
-    <section><title>The General Context</title>
+    <section id="GeneralContext"><title>The General Context</title>
       <para>
 	The general context is to some extent a catch all context, but is generally how a 'tree' 
 	effect should be instantiated. It has no constraints on its input clips, nor on the pixel preferences actions.
@@ -1339,7 +1351,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
       </para>
     </section>
 
-    <section><title>Parameters Mandated In A Context</title>
+    <section id="ImageEffectContextMandatedParameters"><title>Parameters Mandated In A Context</title>
       <para>
 	The retimer and transition context both mandate a parameter be declared, the double params 'SourceTime' and 'Transition'. 
 	The purpose of these parameters is for the host to communicate with the plug-in, they are <emphasis>not</emphasis> meant
@@ -1355,9 +1367,8 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	the start of the transition, something along the lines of...
       </para>
       
-      <programlisting>
-	Transition = (currrentFrame - startOfTransition)/lengthOfTransition;
-      </programlisting>
+      <blockquote><programlisting>
+	Transition = (currrentFrame - startOfTransition)/lengthOfTransition;</programlisting></blockquote>
       
       
       <para>
@@ -1558,7 +1569,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	</para>
       </section>
 
-      <section id="PixelCoordinate"><title>Pixel Coordinates</title>
+      <section id="PixelCoordinates"><title>Pixel Coordinates</title>
 	<para>
 	  'Real' images, where we have to deal with addressable pixels in memory, 
 	  are in a coordinate system of non-square proxy scaled integer values. 
@@ -1592,30 +1603,30 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	<para>
 	To map an X and Y coordinates from Pixel coordinates to Canonical coordinates, we perform the following multiplications...
 	</para>
-	<programlisting>
+	<blockquote><programlisting>
   X' = (X * PAR)/SX
   Y' = Y/(SY * FS)
-	</programlisting>
+	</programlisting></blockquote>
 
 	<para>
 	To map an X and Y coordinates from Canonical coordinates to Pixel coordinates, we perform the following multiplications...
 	</para>
-	<programlisting>
+	<blockquote><programlisting>
 	  X' = (X * SX)/PAR
 	  Y' = Y * SY * FS
-	</programlisting>
+	</programlisting></blockquote>
       </section>
 
       <section><title>The Normalized Coordinate System</title>
 	<para>
-	  On most editting an compositing systems projects can be moved on a system between resolutions, for example a
+	  On most editing an compositing systems projects can be moved on resolutions, for example a
 	  project may be set up at high definition then have several versions rendered out at different sizes, say a
 	  PAL SD version, an NTSC SD version and an HD 720p version.
 	</para>
 
 	<para>
 	  This causes problems with parameters that describe spatial coordinates. If they are expressed as absolute 
-	  canonical coordinates, the values will be incorrect as the project is moved from resolution to resolution.
+	  positions, the values will be incorrect as the project is moved from resolution to resolution.
 	  For example, a circle drawn at (384,288) in PAL SD canonical coordinates will be in the centre of the 
 	  output. Re-render that at 2K film, it will be in  the bottom left hand corner, which is probably not the correct
 	  spot.
@@ -1649,7 +1660,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	  bottom and top. The size of the letter box is 768 by 432, while the bottom left of the letter box is offset from the
 	  origin by 0,77. The ASCII art below shows the details.....
 	</para>
-	<programlisting>
+	<blockquote><programlisting>
                                                 (768,576) 
              ---------------------------------------
              |                                     |
@@ -1666,7 +1677,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
              |                                     |
              ---------------------------------------
 	   (0,0)
-	</programlisting>
+	</programlisting></blockquote>
         
 	<para>
 	  So in this example...
@@ -1719,9 +1730,346 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	</para>
       </section>
     </section>
+
+    
+    <section><title>Temporal Coordinates</title>
+      <para>
+	Within OFX Image Effects, there is only one temporal coordinate system, this is in output frames 
+	referenced to the start of the effect (so the first affected frame = 0). All times within the API are in that coordinate system.
+      </para>
+
+      <para>
+	All clip instances have a property that indicates the frames for which they can generate image data. 
+	This is <link linkend="kOfxImageClipPropFrameRange"><code>kOfxImageClipPropFrameRange</code></link>, a 2D 
+	double property, with the first dimension being the first, and 
+	the second being last the time at which the clip will generate data.
+      </para>
+
+      <para>
+	Consider the example below, it is showing an effect of 10 frames duration applied to a clip lasting 20 frames.
+	The first frame of the effect is infact the 5th frame of the clip. Both the input and output have the same frame rate.
+      </para>
+
+      <blockquote><programlisting>
+Effect               0  1  2  3  4  5  6  7  8  9
+Source   0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19
+      </programlisting></blockquote>
+
+      <para>
+	In this example, if the effect asks for the source image at time '4', the host will actually return the 9th image of that clip. 
+	When queried the output and source clip instances would report the following...
+      </para>
+      <blockquote><programlisting>
+           range[0]     range[1]    FPS
+Output     0            9           25
+Source    -4            15          25
+      </programlisting></blockquote>
+
+      <para>
+	Consider the slightly more complex example below, where the output has a frame rate twice the input's
+      </para>
+      <blockquote><programlisting>
+Effect         0  1  2  3  4  5  6  7  8  9
+Source   0     1     2     3     4     5     6     7
+      </programlisting></blockquote>
+
+      <para>
+	When  queried the output and source clips would report the following.
+      </para>
+      <blockquote><programlisting>
+           range[0]     range[1]    FPS
+Output     0            9           50
+Source    -2            12          25
+      </programlisting></blockquote>
+
+      <para>
+	Using simple arithmetic, any effect that needs to access a specific frame of an input, can do so with the formula...
+      </para>
+
+      <blockquote><programlisting>
+	f' = (f - range[0]) * srcFPS/outFPS
+      </programlisting></blockquote>
+    </section>
   </chapter>
   
 
+
+  <chapter id="RenderingEffects"><title>Rendering</title>
+    <para>
+      The <link linkend="kOfxImageEffectActionRender"><code>kOfxImageEffectActionRender</code></link> action is 
+      passed to plugins, when the host requires them to render an output frame.
+    </para>
+    <para>
+      All calls to the <link linkend="kOfxImageEffectActionRender"><code>kOfxImageEffectActionRender</code></link> 
+      are bracketed by a pair of 
+      <link linkend="kOfxImageEffectActionBeginSequenceRender"><code>kOfxImageEffectActionBeginSequenceRender</code></link> 
+      and <link linkend="kOfxImageEffectActionEndSequenceRender"><code>kOfxImageEffectActionEndSequenceRender</code></link> 
+      actions. This is to allow plugins to prepare themselves for rendering long sequences by setting up any tables etc.. it may need.
+    </para>
+    <para>
+      The <link linkend="kOfxImageEffectActionBeginSequenceRender"><code>kOfxImageEffectActionBeginSequenceRender</code></link> will
+      indicate the frame range that is to be renderred, and whether this is purely a single frame render due to interactive feedback
+      from a user in a GUI.
+    </para>
+
+    <para>
+      The render action is used in conjunction with the optional 
+    </para>
+
+    <section><title>Identity Effects</title>
+      <para>
+	If an effect does nothing to its input clips (for example a blur with blur size set to '0') it can indicate 
+	that it is an identity function via the <link linkend="kOfxImageEffectActionIsIdentity"><code>kOfxImageEffectActionIsIdentity</code></link>
+	action. The plugin indicates which input the host should use for the region in question. This allows a host to short circuit 
+	the processing of an effect.
+      </para>
+    </section>
+
+
+    <section><title>Rendering and The Get Region Actions</title>
+
+      <para>
+	Many hosts attempt to minimise the areas that they render by using regions of interest and regions of 
+	definition, while some of the simpler hosts do not attempt to do so. In general the order of actions,
+	per frame rendered, is something along the lines of....
+      </para>
+
+      <itemizedlist>
+	<listitem>ask the effect for it's region of definition,</listitem>
+	<listitem>clip the render window against that</listitem>
+	<listitem>ask the effect for the regions of interest of each of it's inputs against the clipped render window,</listitem>
+	<listitem>clip those regions of interest against the region of definition of each of those inputs,</listitem>
+	<listitem>render and cache each of those inputs,</listitem>
+	<listitem>render the effect against it's clipped render window.</listitem>
+      </itemizedlist>
+
+      <para>
+	A host can ask an effect to render an arbitrary window of pixels, generally these should be clipped 
+	to an effect's region of definition, however, depending on the host, they may not be. The actual region 
+	to render is indicated by the <link linkend="kOfxImageEffectPropRenderWindow"><code>kOfxImageEffectPropRenderWindow</code></link>
+	render action argument. If an effect is asked to render outside of its region of definition, it should fill those pixels
+	in with black transparent pixels.
+      </para>
+
+      <para>
+	Note thate <link linkend="OfxImageEffectSuiteV1_clipGetImage"><code>OfxImageEffectSuiteV1::clipGetImage</code></link> function 
+	takes an optional <emphasis>region</emphasis> parameter. This is a region, in Canonical coordinates, that the effect would like on 
+	that input clip.
+	If not used in a render action, then the image returned should be based on the previous get region of interest action. If used,
+	then the image returned will be based on this (usually be clipped to the input's region of definition). Generally a plugin should
+	not use the <emphasis>region</emphasis> parameter in the render action, but should leave it to the 'default' region.
+      </para>
+    </section>
+
+    <section id="ImageEffectsMultiThreadingRendering"><title>Multi-threaded Rendering</title>
+      <para>
+	Multiple render actions may be passed to an effect at the same time. A plug-in states it's level of render thread
+	safety by setting the <link linkend="kOfxImageEffectPluginRenderThreadSafety"><code>kOfxImageEffectPluginRenderThreadSafety</code></link>
+	string property. This can be set to one of three states....
+	<itemizedlist>
+	  <listitem><link linkend="kOfxImageEffectRenderUnsafe"><code>kOfxImageEffectRenderUnsafe</code></link>       - indicating that only a single 'render' action can be made at any time amoung all instances,</listitem>
+	  <listitem><link linkend="kOfxImageEffectRenderInstanceSafe"><code>kOfxImageEffectRenderInstanceSafe</code></link> - indicating that any instance can have a single 'render' action at any one time,</listitem>
+	  <listitem><link linkend="kOfxImageEffectRenderFullySafe"><code>kOfxImageEffectRenderFullySafe</code></link>    - indicating that any instance of a plugin can have multiple renders running simultaneously</listitem>
+	</itemizedlist>
+      </para>
+
+      <section id="ImageEffectsSMPRendering"><title>Rendering in a Symetric Multi Processing Enviroment</title>
+	<para>
+	  When rendering on computers that have more that once CPU (or this new-fangled hyperthreading), hosts and
+	  effects will want to take advantage of all that extra CPU goodness to speed up rendering. This means 
+	  multi-threading of the render function in some way. 
+	</para>
+	
+	<para>
+	  If the plugin has set <link linkend="kOfxImageEffectPluginRenderThreadSafety"><code>kOfxImageEffectPluginRenderThreadSafety</code></link>
+	  to <link linkend="kOfxImageEffectRenderFullySafe"><code>kOfxImageEffectRenderFullySafe</code></link>, the host may choose to render a
+	  single frame across multiple CPUs by having each CPU render a different window. However, the plugin may wish to remain in charge of 
+	  multithreading a single frame. The plugin set property 
+	  <link linkend="kOfxImageEffectPluginPropHostFrameThreading"><code>kOfxImageEffectPluginPropHostFrameThreading</code></link> 
+	  informs the host as to whether the host should perform SMP on the effect. It can be set to either...
+	  <itemizedlist>
+	    <listitem>1, in which case the host will attempt to multithread an effect instance by calling it's render function called simultaneously, each call will be with a different renderWindow, but be at the same frame</listitem>
+	    <listitem>0, in which case the host only ever calls the render function once per frame. If the effect wants to multithread it must use the OfxMultiThreadSuite API.</listitem>
+	  </itemizedlist>
+	</para>
+
+	<para>
+	  A host may have a render farm of computers. Depending exactly how the host works with it's render farm, it may have multiple 
+	  copies on an instance spread over the farm rendering separate frame ranges, 1-100 on station A, 101 to 200 on station B and so on...
+	</para>
+      </section>
+      
+      <section id="ImageEffectsSequentialRendering"><title>Rendering Sequential Effects</title>
+	<para>
+	  Some plugin's need to cache interframe behaviour to work correctly, for example: a particle system, an image stabilisation system. 
+	  In such cases a plugin instance will need to be rendered sequentially from frame 0 on single instance in a single computer.
+	  Such plugins should set the 
+	  <link linkend="kOfxImageEffectInstancePropSequentialRender"><code>kOfxImageEffectInstancePropSequentialRender</code></link>
+	  instance property.
+	  This property can be set to...
+	  <itemizedlist>
+	    <listitem>0, in which case the host can render an instance over arbitrary frame ranges on an arbitrary number of computers without any problem (default),</listitem>
+	    <listitem>1, in which case the host must render an instance on a single computer over it's entire frame range, from first to last.</listitem>
+	  </itemizedlist>
+	</para>
+	
+	<para>
+	  Hosts may still render sequential effects with random frame access in interactive sessions, for example when the user 
+	  scrubs the current frame on the timeline and the host asks an effect to render a preview frame. In such cases, 
+	  the plugin can detect that the instance is being interactively manipulated and hack an approximation together for UI purposes.
+	  When eventually rendering the sequence, the host <emphasis>must</emphasis> ignore all frames rendered out of order and not cache them 
+	  for use in the final result.
+	</para>
+      </section>
+    </section>
+
+    <section id="ImageEffectsFieldRendering"><title>OFX : Fields and Field Rendering</title>
+
+      <para>
+	Fields are evil, but until the world decides to adopt sensible video standard and casts the current ones into the same
+	pit as 2 inch video tape, we are stuck with them.
+      </para>
+
+      <para>
+	Before we start, some nomenclature. The Y-Axis is considerred to be up, so in a fielded image,
+	<itemizedlist>
+	  <listitem>even scan lines 0,2,4,6,... are collectively referred to as the lower field,</listitem>
+	  <listitem>odd scan lines 1,3,5,7... are collective referred to as the upper field.</listitem>
+	</itemizedlist>
+      </para>
+      
+      <para>
+	We don't call them odd and even, so as to avoid confusion with video standard, which have scanline 0 at the top, 
+	and so have the opposite sense of our 'odd' and 'even'.
+      </para>
+
+      <para>
+	Clips and images from those clips are flagged as to whether they are fielded or not, and if so what is the
+	spatial/temporal ordering of the fields in that image. The
+	<link linkend="kOfxImageClipPropFieldOrder"><code>kOfxImageClipPropFieldOrder</code></link> clip and image instance property can be...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxImageFieldNone"><code>kOfxImageFieldNone</code></link>  - the material is unfielded</listitem>
+	  <listitem><link linkend="kOfxImageFieldLower"><code>kOfxImageFieldLower</code></link> - the material is fielded, with scan line 0,2,4.... occuring first in a frame</listitem>
+	  <listitem><link linkend="kOfxImageFieldUpper"><code>kOfxImageFieldUpper</code></link> - the material is fielded, with scan line 1,3,5.... occuring first in a frame</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	Images extracted from a clip flag what their fieldedness is with the property 
+	<link linkend="kOfxImagePropField"><code>kOfxImagePropField</code></link>, this can be....
+	<itemizedlist>
+	  <listitem><link linkend="kOfxImageFieldNone"><code>kOfxImageFieldNone</code></link>  - the image is an unfielded frame</listitem>
+	  <listitem><link linkend="kOfxImageFieldBoth"><code>kOfxImageFieldBoth</code></link>  - the image is fielded and contains both interlaced fields </listitem>
+	  <listitem><link linkend="kOfxImageFieldLower"><code>kOfxImageFieldLower</code></link> - the image is fielded and contains a single field, being the lower field (lines 0,2,4...)</listitem>
+	  <listitem><link linkend="kOfxImageFieldUpper"><code>kOfxImageFieldUpper</code></link> - the image is fielded and contains a single field, being the upper field (lines 1,3,5...)</listitem>
+	</itemizedlist>
+      </para>
+
+
+      <para>
+	The plugin specifies how it deals with fielded imagery by setting the 
+	<link linkend="kOfxImageEffectPluginPropFieldRenderTwiceAlways"><code>kOfxImageEffectPluginPropFieldRenderTwiceAlways</code></link> 
+	property. This can be,
+	<itemizedlist>
+	  <listitem>0 - the plugin is to have it's render function called twice only if there is animation in any of it's parameters</listitem>
+	  <listitem>1 - the plugin is to have it's render function called twice always (default) </listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	The reason for this is an optimisation. Imagine a text generator with no animation being asked to render into a 
+	fielded output clip, it can treat an interlaced fielded image as an unfielded frame. So the host can get the 
+	effect to render both fields in one hit and save on the overhead required to do the rendering in two passes.
+      </para>
+
+      <para>
+	If called twice per frame, the time passed to the render action will be frame and frame+0.5. So 0.0 0.5 1.0 1.5 etc...
+      </para>
+      
+      <para>
+	When rendering unfielded footage, the host will only ever call the effect's render action once per frame,
+	with the time being at the integers, 0.0, 1.0, 2.0 and so on.
+      </para>
+
+      <para>
+	The render action's argument property
+	<link linkend="kOfxImageEffectInstancePropFieldToRender"><code>kOfxImageEffectInstancePropFieldToRender</code></link>
+	tells the effect which field it should render, this can be one of...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxImageFieldNone"><code>kOfxImageFieldNone</code></link>  - there are no fields to deal with, the image is full frame</listitem>
+	  <listitem><link linkend="kOfxImageFieldBoth"><code>kOfxImageFieldBoth</code></link>  - the imagery is fielded and both scan lines should be renderred</listitem>
+	  <listitem><link linkend="kOfxImageFieldLower"><code>kOfxImageFieldLower</code></link> - the lower field is being rendered (lines 0,2,4...)</listitem>
+	  <listitem><link linkend="kOfxImageFieldUpper"><code>kOfxImageFieldUpper</code></link> - the upper field is being rendered (lines 1,3,5...)</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>&note;
+	<link linkend="kOfxImageEffectInstancePropFieldToRender"><code>kOfxImageEffectInstancePropFieldToRender</code></link> will be set
+	to <link linkend="kOfxImageFieldBoth"><code>kOfxImageFieldBoth</code></link> if
+	<link linkend="kOfxImageEffectPluginPropFieldRenderTwiceAlways"><code>kOfxImageEffectPluginPropFieldRenderTwiceAlways</code></link> 
+	is set to 0 on the plugin,
+      </para>
+
+      <para>
+	A plugin can specify how it wishes fielded footage to be fetched from a clip via the clip descriptor property
+	<link linkend="kOfxImageClipPropFieldExtraction"><code>kOfxImageClipPropFieldExtraction</code></link>. This can be one of...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxImageFieldBoth"><code>kOfxImageFieldBoth</code></link> fetch a full frame interlaced image</listitem>
+	  <listitem><link linkend="kOfxImageFieldSingle"><code>kOfxImageFieldSingle</code></link> fetch a single field, making a half height image</listitem>
+	  <listitem><link linkend="kOfxImageFieldDoubled"><code>kOfxImageFieldDoubled</code></link> fetch a single field, but doubling each line and so making a full height image (default)</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	If fetching a single field, the actual field fetched from the source frame is...
+	<itemizedlist>
+	  <listitem>the first temporal field if the time passed to clipGetImage has a fractional part of 0.0 &lt;= f &lt; 0.5</listitem>
+	  <listitem>the second temporal field otherwise,</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	To illustrate this last behaviour, the two examples below show an output with twice the frame rate of 
+	the input and how clipGetImage maps to the input. The .0 and .5 mean first and second temporal fields.
+      </para>
+      <blockquote>
+	<programlisting>Behaviour with unfielded footage
+
+output 0       1       2       3
+source 0       0       1       1
+	</programlisting>
+
+
+	<programlisting>Behaviour with fielded footage
+
+output 0.0 0.5 1.0 1.5 2.0 2.5 3.0 3.5            
+source 0.0 0.0 0.5 0.5 1.0 1.0 1.5 1.5
+	</programlisting>
+      </blockquote>
+      <para> &note;
+	<itemizedlist>
+	  <listitem>while some rarely used video standards can have odd number of scan-lines, under OFX, both fields <emphasis>always</emphasis> consist of the same number of lines. Pad with black where needed.</listitem>
+	  <listitem>host developers, for single field extracted images, you don't need to do any buffer copies, you just need to set the row bytes property of the returned image to twice the normal value, and maybe tweak the start address by a scanline.</listitem>
+	</itemizedlist>
+      </para>
+      
+    </section>
+
+    <section id="ImageEffectsRenderingAndGUIS"><title>Rendering In An Interactive Environment</title>
+      <para>
+	Any host with an interface will most likely have an interactive thread and a rendering thread. This allows
+	an effect to be manipulated while having renders batched off to a background thread. This will mean that some 
+	degree of locking will go on to prevent simultaneous read/writes occuring, see \ref ImageEffectsThreadSafety
+	for more on thread safety.
+      </para>
+
+      <para>
+	A host may need to abort a backgrounded render, typically in response to a user changing a parameter value.
+	An effect should occasionally poll the <link linkend="OfxImageEffectSuiteV1_abort"><code>OfxImageEffectSuiteV1::abort</code></link>
+	function to see if it should give up on rendering.
+      </para>
+    </section>
+  </chapter>
 
   &clipPreferencesChapter;
 
@@ -1759,9 +2107,9 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-typedef struct OfxPropertySetStruct *OfxPropertySetHandle; </programlisting>
+typedef struct OfxPropertySetStruct *OfxPropertySetHandle; </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
@@ -1836,9 +2184,9 @@ typedef struct OfxPropertySetStruct *OfxPropertySetHandle; </programlisting>
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-typedef int OfxStatus; </programlisting>
+typedef int OfxStatus; </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
@@ -1863,9 +2211,9 @@ typedef int OfxStatus; </programlisting>
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxStatOK 0 </programlisting>
+#define kOfxStatOK 0 </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
@@ -1895,9 +2243,9 @@ typedef int OfxStatus; </programlisting>
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxStatFailed  ((int)1) </programlisting>
+#define kOfxStatFailed  ((int)1) </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
@@ -1920,9 +2268,9 @@ typedef int OfxStatus; </programlisting>
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrFatal  ((int)2) </programlisting>
+#define kOfxStatErrFatal  ((int)2) </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
@@ -1947,9 +2295,9 @@ typedef int OfxStatus; </programlisting>
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrUnknown ((int)3) </programlisting>
+#define kOfxStatErrUnknown ((int)3) </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
@@ -1976,9 +2324,9 @@ typedef int OfxStatus; </programlisting>
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrMissingHostFeature ((int) 4) </programlisting>
+#define kOfxStatErrMissingHostFeature ((int) 4) </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
@@ -2011,9 +2359,9 @@ typedef int OfxStatus; </programlisting>
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrUnsupported ((int) 5) </programlisting>
+#define kOfxStatErrUnsupported ((int) 5) </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
@@ -2039,9 +2387,9 @@ typedef int OfxStatus; </programlisting>
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrExists  ((int) 6) </programlisting>
+#define kOfxStatErrExists  ((int) 6) </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
@@ -2066,9 +2414,9 @@ typedef int OfxStatus; </programlisting>
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrFormat ((int) 7) </programlisting>
+#define kOfxStatErrFormat ((int) 7) </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
@@ -2091,9 +2439,9 @@ typedef int OfxStatus; </programlisting>
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrMemory  ((int) 8) </programlisting>
+#define kOfxStatErrMemory  ((int) 8) </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
@@ -2116,9 +2464,9 @@ typedef int OfxStatus; </programlisting>
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrBadHandle ((int) 9) </programlisting>
+#define kOfxStatErrBadHandle ((int) 9) </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
@@ -2141,9 +2489,9 @@ typedef int OfxStatus; </programlisting>
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrBadIndex ((int)10) </programlisting>
+#define kOfxStatErrBadIndex ((int)10) </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
@@ -2166,9 +2514,9 @@ typedef int OfxStatus; </programlisting>
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxStatErrValue ((int) 11) </programlisting>
+#define kOfxStatErrValue ((int) 11) </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
@@ -2193,9 +2541,9 @@ typedef int OfxStatus; </programlisting>
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxStatReplyYes ((int) 12) </programlisting>
+#define kOfxStatReplyYes ((int) 12) </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
@@ -2221,9 +2569,9 @@ typedef int OfxStatus; </programlisting>
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxStatReplyNo ((int) 13) </programlisting>
+#define kOfxStatReplyNo ((int) 13) </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
@@ -2248,9 +2596,9 @@ typedef int OfxStatus; </programlisting>
       </refnamediv>
       
       <refsynopsisdiv>
-        <programlisting>
+        <blockquote><programlisting>
 #include "ofxCore.h"
-#define kOfxStatReplyDefault ((int) 14) </programlisting>
+#define kOfxStatReplyDefault ((int) 14) </programlisting></blockquote>
       </refsynopsisdiv>
       
       <refsect1>
