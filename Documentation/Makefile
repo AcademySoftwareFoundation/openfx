@@ -46,6 +46,7 @@ REF_SRCS = ofxProgrammingReference.xml \
 	ofxPropertiesByObject.xml \
 	$(PROPERY_SUITE_REFERENCE_FILES) \
 	imageEffectActionsChapter.xml \
+	interactActionsChapter.xml \
 	clipPreferencesChapter.xml
 
 ofxProgrammingReference.html : $(REF_SRCS) 

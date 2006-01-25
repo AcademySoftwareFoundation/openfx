@@ -19,6 +19,7 @@
 <!ENTITY ofxPackaging    SYSTEM "ofxPackaging.xml">
 <!ENTITY clipPreferencesChapter    SYSTEM "clipPreferencesChapter.xml">
 <!ENTITY imageEffectActionsChapter    SYSTEM "imageEffectActionsChapter.xml">
+<!ENTITY interactActionsChapter    SYSTEM "interactActionsChapter.xml">
 <!ENTITY definition      "<bridgehead renderas=&#34;sect4&#34;>Definition</bridgehead>">
 <!ENTITY description      "<bridgehead renderas=&#34;sect4&#34;>Description</bridgehead>">
 <!ENTITY preconditions   "<bridgehead renderas=&#34;sect4&#34;>Preconditions</bridgehead>">

@@ -9,7 +9,7 @@
     </author>
 
     <copyright>
-      <year>2005</year>
+      <year>2006</year>
 
       <holder>Bruno Nicoletti</holder>
     </copyright>
@@ -17,20 +17,20 @@
     <releaseinfo>Document version 0.3</releaseinfo>
   </bookinfo>
 
-  <chapter><title>Things to do on  this book yet</title>
-    <itemizedlist>
-      <listitem>copy all documentation across from the .h files and docbookify it</listitem>
-      <listitem>edit the thing into a somewhat cleaner form
-	<itemizedlist>
-	  <listitem>a section devoted to clipGetImage and what has to happen</listitem>
-	  <listitem>a section on caveats for hosts and effects</listitem>
-	</itemizedlist>
-      </listitem>
-    </itemizedlist>
-  </chapter>
-
   <preface>
     <title>Foreword</title>
+    <para>
+      THINGS TO DO BIGNOSE!
+      <itemizedlist>
+	<listitem>copy all documentation across from the .h files and docbookify it</listitem>
+	<listitem>edit the thing into a somewhat cleaner form
+	  <itemizedlist>
+	    <listitem>a section devoted to clipGetImage and what has to happen</listitem>
+	    <listitem>a section on caveats for hosts and effects</listitem>
+	  </itemizedlist>
+	</listitem>
+      </itemizedlist>
+    </para>
     <para>UNFINISHED</para>
   </preface>
   
@@ -479,31 +479,31 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	    <link linkend="kOfxActionDestroyInstanceInteract">The Generic Destroy Instance Action</link> called just before of the <emphasis>interact</emphasis> is destroyed,
 	    </listitem>
 	  <listitem>
-	    <link id="kOfxInteractActionDraw">The Draw Action</link> called to have the interact draw itself,
+	    <link linkend="kOfxInteractActionDraw">The Draw Action</link> called to have the interact draw itself,
 	  </listitem>
 	  <listitem>
-	    <link id="kOfxInteractActionPenMotion">kOfxInteractActionPenMotion</link> called whenever the interact has the input focus and the pen has moved,
+	    <link linkend="kOfxInteractActionPenMotion">kOfxInteractActionPenMotion</link> called whenever the interact has the input focus and the pen has moved,
 	  </listitem>
 	  <listitem>
-	    <link id="kOfxInteractActionPenDown">kOfxInteractActionPenDown</link> called whenever the interact has the input focus and the pen has changed state to 'down',
+	    <link linkend="kOfxInteractActionPenDown">kOfxInteractActionPenDown</link> called whenever the interact has the input focus and the pen has changed state to 'down',
 	  </listitem>
 	  <listitem>
-	    <link id="kOfxInteractActionPenUp"> kOfxInteractActionPenUp</link> called whenever the interact has the input focus and the pen has changed state to 'up,
+	    <link linkend="kOfxInteractActionPenUp"> kOfxInteractActionPenUp</link> called whenever the interact has the input focus and the pen has changed state to 'up,
 	  </listitem>
 	  <listitem>
-	    <link id="kOfxInteractActionKeyDown"> kOfxInteractActionKeyDown</link> called whenever the interact has the input focus and a key has gone down,
+	    <link linkend="kOfxInteractActionKeyDown"> kOfxInteractActionKeyDown</link> called whenever the interact has the input focus and a key has gone down,
 	  </listitem>
 	  <listitem>
-	    <link id="kOfxInteractActionKeyUp"> kOfxInteractActionKeyUp</link> called whenever the interact has the input focus and a key has gone up,
+	    <link linkend="kOfxInteractActionKeyUp"> kOfxInteractActionKeyUp</link> called whenever the interact has the input focus and a key has gone up,
 	  </listitem>
 	  <listitem>
-	    <link id="kOfxInteractActionKeyRepeat"> kOfxInteractActionKeyRepeat</link> called whenever the interact has the input focus and a key has gone down and a repeat key sequence has been sent,
+	    <link linkend="kOfxInteractActionKeyRepeat"> kOfxInteractActionKeyRepeat</link> called whenever the interact has the input focus and a key has gone down and a repeat key sequence has been sent,
 	  </listitem>
 	  <listitem>
-	    <link id="kOfxInteractActionGainFocus"> kOfxInteractActionGainFocus</link> called whenever the interact gains input focus,
+	    <link linkend="kOfxInteractActionGainFocus"> kOfxInteractActionGainFocus</link> called whenever the interact gains input focus,
 	  </listitem>
 	  <listitem>
-	    <link id="kOfxInteractActionLoseFocus"> kOfxInteractActionLoseFocus</link> called whenever the interact loses input focus,
+	    <link linkend="kOfxInteractActionLoseFocus"> kOfxInteractActionLoseFocus</link> called whenever the interact loses input focus,
 	  </listitem>
 	</itemizedlist>
 	    
@@ -1731,7 +1731,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
       </section>
     </section>
 
-    
+        
     <section><title>Temporal Coordinates</title>
       <para>
 	Within OFX Image Effects, there is only one temporal coordinate system, this is in output frames 
@@ -1792,7 +1792,314 @@ Source    -2            12          25
     </section>
   </chapter>
   
+  <chapter><title>Images and Clips</title>
 
+    <section id="ImageEffectsImagesAndClipsIntro"><title>What Is An Image?</title>
+      <para>
+	Image Effects process images (funny that), this chapeter describes images and clips of images, 
+	how they behave and how to deal with them. 
+      </para>
+
+      <para>
+	Firstly some definitions...
+	<itemizedlist>
+	  <listitem>an <emphasis>image</emphasis> is a rectangular array of addressable pixels,</listitem>
+	  <listitem>a <emphasis>clip</emphasis> is a contiguous sequence of images that vary over time.</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	Images and clips contain pixels, these pixels can currently be of the following types...
+	<itemizedlist>
+	  <listitem>a colour pixel with red, green, blue, alpha components</listitem>
+	  <listitem>a colour pixel with YUV and alpha components</listitem>
+	  <listitem>single component 'alpha' images</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	The components of the pixels can be of the following types...
+	<itemizedlist>
+	  <listitem>8 bit unsigned byte, with the nominal black and white points at 0 and 255 respectively,</listitem>
+	  <listitem>16 bit unsigned short, with the nominal black and white points at 0 and 65535 respectively,</listitem>
+	  <listitem>32 bit float, with the nominal black and white points at 0.0f and 1.0f respectively, component values are 
+	    <emphasis>not</emphasis> clipped to 0.0f and 1.0f.</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	Components are packed per pixel in the following manner...
+	<itemizedlist>
+	  <listitem>RGBA pixels as R, G, B, A</listitem>
+	  <listitem>YUVA pixels as Y, U, V, A.</listitem>
+	  </itemizedlist>
+      </para>
+
+      <para>
+	There are several structs for pixel types in ofxCore.h that can be used for raw pixels in OFX.
+      </para>
+
+      <para>
+	Images are always left to right, bottom to top, with the pixel data pointer being at the bottom left of the image.
+	The pixels in a scan line are contiguously packed.
+      </para>
+
+      <para>
+	Scanlines need <emphasis>not</emphasis> be contiguously packed. The number of <emphasis>bytes</emphasis> between between a pixel in 
+	the same column, but separated by a scan line is known as the \b rowbytes of an image. Rowbytes can be negative, 
+	allowing for compositing systems with a native top to bottom scanline order to trivially support bottom to top images.
+      </para>
+
+      <para>
+	Clips and images also have a <emphasis>pixel aspect ratio</emphasis>, this is how much an actual addressable pixel
+	must be stretched by in X to be square. For example PAL SD images have a pixel aspect ratio of 1.06666. 
+      </para>
+
+      <para>
+	Images are rectangular, whose integral bounds are in Pixel coordinates, with the image being X1 &lt;= X &lt; X2 and Y1 &lt;= Y &lt; Y2,
+	ie: exclusive on the top and right. The bounds represent the amount of data present in the image, which may be larger, 
+	smaller or equal to the Region of Definition of the image, depending on the architecture supported by the plugin.
+	The <link linkend="kOfxImagePropBounds"><code>kOfxImagePropBounds</code></link> property on an image holds this information. 
+      </para>
+      
+      <para>
+	An image also contains it's RoD in image coordinates, 
+	in the <link linkend="kOfxImagePropRegionOfDefinition"><code>kOfxImagePropRegionOfDefinition</code></link> property. The RoD is the maximum area that an image may have pixels in, t
+	he bounds are the actual addressable pixels present in an image. This allows for tiled rendering an so on.
+      </para>
+	
+      <para>
+	Clips have a frame rate, which is the number of frames per second they are to be displayed at.
+	Some clips may be continously samplable (for example, if they are connected to animating geometry 
+	that can be rendered at arbitrary times), if this is so, the frame rate for these clips is set to 0.
+      </para>
+
+      <para>
+	Images may be composed of full frames, two fields or a single field, depending on its source and how the effect
+	requests the image be processed. Clips are either full frame sequences or fielded sequences.
+      </para>
+
+      <para>
+	Images and clips also have a premultiplication state, this represents how the alpha component and the
+	RGB/YUV components may have interacted.
+      </para>
+
+    </section>
+
+    <section id="ImageEffectsImagesAndClipsDefiningClips"><title>Defining Clips</title>
+      <para>
+	During an the effect's describe in context action an effect <emphasis>must</emphasis> define the clips mandated for
+	that context, it can also define extra  clips that it may need for that context. It does this using the 
+	<link linkend="OfxImageEffectSuiteV1_clipDefine"><code>OfxImageEffectSuiteV1::clipDefine</code></link> function, the property handle returned by this function is purely for definition 
+	purposes only. It has not persistance outside the describe in context action and is distinct to the clip property handles
+	used by instances. The <emphasis>name</emphasis> parameter is how you can later access that clip in a plugin instance via the 
+	<link linkend="OfxImageEffectSuiteV1_clipGetHandle"><code>OfxImageEffectSuiteV1::clipGetHandle</code></link> function. 
+      </para>
+
+      <para>
+	During the describe in context action, the plugin sets properties on a clip to control its use.
+	The properties that can be set during a describe in context call are...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxPropLabel"><code>kOfxPropLabel</code></link> to give a user readable name to the clip (the host need not use this, for example in a transition it is redundant),</listitem>
+	  <listitem><link linkend="kOfxImageEffectPropSupportedComponents"><code>kOfxImageEffectPropSupportedComponents</code></link> to specify which components it is willing to accept on that clip,</listitem>
+	  <listitem><link linkend="kOfxImageClipPropOptional"><code>kOfxImageClipPropOptional</code></link> to specify if the clip is optional,</listitem>
+	  <listitem><link linkend="kOfxImageClipPropFieldExtraction"><code>kOfxImageClipPropFieldExtraction</code></link> specifies how to extract fielded images from a clip, see \ref ImageEffectsFieldRendering for more details on field and field rendering,</listitem>
+	  <listitem><link linkend="kOfxImageEffectPropTemporalClipAccess"><code>kOfxImageEffectPropTemporalClipAccess</code></link> whether the effect wants to access images from the clip at times other that the frame being renderred.</listitem>
+	</itemizedlist>
+      </para>
+      
+      <para>
+	Plugins <emphasis>must</emphasis> indicate which pixel depths they can process by setting the 
+	<link linkend="kOfxImageEffectPropSupportedPixelDepths"><code>kOfxImageEffectPropSupportedPixelDepths</code></link> on the plugin handle during the describe action.
+      </para>
+
+      <para>
+	Pixel Aspect Ratios, frame rates, fielding, components and pixel depths are constant for the duration of a clip,
+	they cannot changed from frame to frame.
+      </para>
+
+      &note;
+      <itemizedlist>
+	<listitem> Note:</listitem>
+	<listitem>it is an error not to set the <link linkend="kOfxImageEffectPropSupportedPixelDepths"><code>kOfxImageEffectPropSupportedPixelDepths</code></link> plugin property during its describe action</listitem>
+	<listitem>it is an error not to define a mandated input clip during the describe in context action</listitem>
+	<listitem>it is an error not to set the <link linkend="kOfxImageEffectPropSupportedComponents"><code>kOfxImageEffectPropSupportedComponents</code></link> on an input clip during describe in context</listitem>
+      </itemizedlist>
+    </section>
+
+    <section id="ImageEffectsImagesAndClipsUsingClips"><title>Getting Images From Clips</title>
+
+      <para>
+	Clips in instances are retrieved via the <link linkend="OfxImageEffectSuiteV1clipGetHandle"><code>OfxImageEffectSuiteV1::clipGetHandle</code></link> function. 
+	This returns a property handle for the clip in a specific instance. This handle is valid 
+	for the duration of the instance.
+      </para>
+
+      <para>
+	Images are fetched from a clip via the <link linkend="OfxImageEffectSuiteV1_clipGetImage"><code>OfxImageEffectSuiteV1::clipGetImage</code></link> function. This 
+	takes a time and an optional region to extract an image at from a given clip. This returns, 
+	in a property handle, an image fetched from the clip at a specfic time. The handle contains 
+	all the information relevant to dealing with that image.
+      </para>
+
+      <para>
+	Once fetched, an image must be released via the <link linkend="OfxImageEffectSuiteV1_clipReleaseImage"><code>OfxImageEffectSuiteV1::clipReleaseImage</code></link> 
+	function. All images must be released within the action they were fetched in. You cannot retain an 
+	image after an action has returned.
+      </para>
+
+      <para>
+	Images may be fetched from an attached clip in the following situations...
+	<itemizedlist>
+	  <listitem>in the <link linkend="kOfxImageEffectActionRender"><code>kOfxImageEffectActionRender</code></link> action</listitem>
+	  <listitem>in the <link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link> and <link linkend="kOfxActionEndInstanceChanged"><code>kOfxActionEndInstanceChanged</code></link> actions with a <link linkend="kOfxPropChangeReason"><code>kOfxPropChangeReason</code></link> of <link linkend="kOfxChangeUserEdited"><code>kOfxChangeUserEdited</code></link></listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	A host may not be able to support random temporal access, it flags its ability to do so via the 
+	<link linkend="kOfxImageEffectPropTemporalClipAccess"><code>kOfxImageEffectPropTemporalClipAccess</code></link> property. A plugin that wishes to perform random temporal 
+	access must set a property of that name on the plugin handle and the clip it wishes to perform random access from.
+      </para>	
+
+      &note;
+      <itemizedlist>
+	<listitem>it is an error for a plugin to attempt random temporal image access if the host does not support it</listitem>
+	<listitem>it is an error for a plugin to attempt random temporal image access if it has not flagged that it wishes to do so and the clip it wishes to do so from.</listitem>
+      </itemizedlist>
+    </section>
+
+    <section id="ImageEffectsPremultiplication"><title>Premultiplication And Alpha</title>
+      <para>
+	All images and clips have a premultiplication state. This is used to indicate how the image should interpret RGB (or YUV) pixels, with respect to alpha. The premultiplication state can be...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxImageOpaque"><code>kOfxImageOpaque</code></link>          - the image is opaque and so has no premultiplication state, but the alpha component in all pixels is set to the white point,</listitem>
+	  <listitem><link linkend="kOfxImagePreMultiplied"><code>kOfxImagePreMultiplied</code></link>   - the image is premultiplied by it's alpha,</listitem>
+	  <listitem><link linkend="kOfxImageUnPreMultiplied"><code>kOfxImageUnPreMultiplied</code></link> - the image is unpremultiplied.</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	This document won't go into the details of premultiplication, but will simply state that OFX takes notice
+	of it and flags images and clips accordingly.
+      </para>
+
+      <para>
+	The premultiplication state of a clip is constant over the entire duration of that clip.
+      </para>
+    </section>
+    
+    <section id="ImageEffectsPixelAspectRatios"><title>Clips and Pixel Aspect Ratios</title>
+
+      <para>
+	All clips and images have a pixel aspect ratio, this is how much a 'real' pixel must be stretched by 
+	in X to be square. For example PAL D1 images have a pixel aspect ratio of 1.06666. 
+      </para>
+
+      <para>
+	The property <link linkend="kOfxImageEffectPropSupportsMultiPixelAspectRatios"><code>kOfxImageEffectPropSupportsMultiPixelAspectRatios</code></link> is used to control how a plugin deals with 
+	pixel aspect ratios. This is both a host and plugin property. For a host it can be set to...
+	<itemizedlist>
+	  <listitem>0 - the host only supports a single pixel aspect ratio for all clips, input or output, to an effect,</listitem>
+	  <listitem>1 - the host can support differing pixel aspect ratios for inputs and outputs</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	For a plugin it can be set to...
+	<itemizedlist>
+	  <listitem>0 - the plugin expects all pixel aspect ratios to be the same on all clips, input or output</listitem>
+	  <listitem>1 - the plugin will accept clips of differing pixel aspect ratio.</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	If a plugin does not accept clips of differing PARs, then the host must resample all images fed to that
+	effect to agree with the output's PAR.
+      </para>
+
+      <para>
+	If a plugin does accept clips of differing PARs, it will need to specify the output clip's PAR in the
+	<link linkend="kOfxImageEffectActionGetClipPreferences"><code>kOfxImageEffectActionGetClipPreferences</code></link> action.
+      </para>
+
+    </section>
+
+    <section id="ImageEffectsMemoryAllocation"><title>Allocating Your Own Images</title>
+      <para>
+	Under OFX, the  images you fetch from the host have already had their memory allocated. 
+	If a plug-in needs to define its owns temporary images buffers during processing, or to cache 
+	images between actions, then the plug-in should use the image memory allocation routines
+	declared in OfxImageEffectSuiteV1. The reason for this is that many host have special 
+	purpose memory pools they manage to optimise memory usage as images can chew up memory 
+	very rapidly (eg: a 2K RGBA floating point film plate is 48 MBytes).
+      </para>
+      
+      <para>
+	For general purpose (as in less than a megabyte) memory allocation, you should use the memory suite in ofxMemory.h
+      </para>	
+
+      <para>
+	OFX provides four functions to deal with image memory. These are,
+	<itemizedlist>
+	  <listitem><link linkend="OfxImageEffectSuiteV1_imageMemoryAlloc"><code>OfxImageEffectSuiteV1::imageMemoryAlloc</code></link></listitem>
+	  <listitem><link linkend="OfxImageEffectSuiteV1_imageMemoryFree"><code>OfxImageEffectSuiteV1::imageMemoryFree</code></link></listitem>
+	  <listitem><link linkend="OfxImageEffectSuiteV1_imageMemoryLock"><code>OfxImageEffectSuiteV1::imageMemoryLock</code></link></listitem>
+	  <listitem><link linkend="OfxImageEffectSuiteV1_imageMemoryUnlock"><code>OfxImageEffectSuiteV1::imageMemoryUnlock</code></link></listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	A host needs to be able defragment its image memory pool, potentially moving the contents
+	of the memory you have allocated to another address, even saving it to disk under its own
+	virtual memory caching scheme. Because of this when you request a block of memory, you are 
+	actually returned a handle to the memory, not the memory itself. To use the memory you must
+	first lock the memory via the imageMemoryLock call, which will then return a pointer to the 
+	locked block of memory.
+      </para>
+
+      <para>
+	During an single action, there is generally no need to lock/unlock any temporary buffers you 
+	may have allocated via this mechanism. However image memory that is cached between actions 
+	should always be unlocked while it is not actually being used. This allows a host to do what 
+	it needs to do to optimise memory usage.
+      </para>
+
+      <para>
+	Note that locks and unlocks nest. This implies that there is a lock count kept on 
+	the memory handle, also not that this lock count cannot be negative. So unlocking a completely unlocked handle has no effect.
+      </para>
+
+      <para>
+      An example is below....
+      </para>
+      <blockquote><programlisting>
+  // get a memory handle
+  OfxImageMemoryHandle memHandle;
+  gEffectSuite->imageMemoryAlloc(0, imageSize, &amp;memHandle);
+
+  // lock the handle and get a pointer
+  void *memPtr;
+  gEffectSuite->imageMemoryLock(memHandle, &amp;memPtr);
+  
+  ... // do stuff with our pointer
+
+  // now unlock it
+  gEffectSuite->imageMemoryUnlock(memHandle);
+
+  
+  // lock it again, note that this may give a completely different address to the last lock
+  gEffectSuite->imageMemoryLock(memHandle, &amp;memPtr);
+  
+  ... // do more stuff
+
+  // unlock it again
+  gEffectSuite->imageMemoryUnlock(memHandle);
+
+  // delete it all
+  gEffectSuite->imageMemoryFree(memHandle);</programlisting></blockquote>
+    </section>
+  </chapter>
 
   <chapter id="RenderingEffects"><title>Rendering</title>
     <para>
@@ -2075,6 +2382,8 @@ source 0.0 0.0 0.5 0.5 1.0 1.0 1.5 1.5
 
   &imageEffectActionsChapter;
 
+  &interactActionsChapter;
+
   <chapter id="PropertySuiteReference">
     <title>Property Suite</title>
     <para>The files <filename class="headerfile">ofxCore.h</filename> and <filename class="headerfile">ofxProperty.h</filename> contain the basic definitions for the property suite. </para>
@@ -2149,9 +2458,6 @@ typedef struct OfxPropertySetStruct *OfxPropertySetHandle; </programlisting></bl
     &ofxInteractSuiteReference;
   </chapter>
   
-  <chapter id="describingImageEffects"><title>Describing Image Effects</title>
-  </chapter>
-
   <chapter id="PropertiesByObject">
     <title>Properties By Object</title>
     <para>This chapter lists all the properties on each OFX object.</para>
