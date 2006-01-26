@@ -355,8 +355,6 @@ This is purely a user interface hint for the host so it can group related effect
    - Valid Values - must point to an ::OfxPluginEntryPoint
 
 The entry point pointed to must be one that handles custom interaction actions.
-
-See see \ref CustomInteractionPage and \ref ImageEffectOverlays.
 */
 #define kOfxImageEffectPluginPropOverlayInteractV1 "OfxImageEffectPluginPropOverlayInteractV1"
 
@@ -471,16 +469,14 @@ then the plugin can detect this via an identifier change and re-evaluate the cac
 /** @brief Clip and action argument property which indicates that the clip can be sampled continously
 
    - Type - int X 1
-   - Property Set -  clip instance (read only), as an out argument to ImageEffectsActionGetClipPreferences (read/write)
-   - Default - 0 as an out argument to ImageEffectsActionGetClipPreferences
+   - Property Set -  clip instance (read only), as an out argument to ::kOfxImageEffectActionGetClipPreferences action (read/write)
+   - Default - 0 as an out argument to the ::kOfxImageEffectActionGetClipPreferences action
    - Valid Values - This must be one of...
      - 0 if the images can only be sampled at discreet times (eg: the clip is a sequence of frames),
      - 1 if the images can only be sampled continuously (eg: the clip is infact an animating roto spline and can be rendered anywhen).
 
 If this is set to true, then the frame rate of a clip is effectively infinite, so to stop arithmetic
 errors the frame rate should then be set to 0.
-
-see \ref ImageEffectsActionGetClipPreferences
 */
 #define kOfxImageClipPropContinuousSamples "OfxImageClipPropContinuousSamples"
 
@@ -512,13 +508,13 @@ This is the actual value of the component depth, before any mapping by clip pref
 /** @brief Indicates the premultiplication state of a clip or image
 
    - Type - string X 1
-   - Property Set - clip instance (read only), image instance (read only), out args property in ImageEffectsActionGetClipPreferences (read/write)
+   - Property Set - clip instance (read only), image instance (read only), out args property in the ::kOfxImageEffectActionGetClipPreferences action (read/write)
    - Valid Values - This must be one of
       - kOfxImageOpaque          - the image is opaque and so has no premultiplication state
       - kOfxImagePreMultiplied   - the image is premultiplied by it's alpha
       - kOfxImageUnPreMultiplied - the image is unpremultiplied
 
-See the documentation on clip preferences for more details on how this is used with the ImageEffectsActionGetClipPreferences action.
+See the documentation on clip preferences for more details on how this is used with the ::kOfxImageEffectActionGetClipPreferences action.
 */
 #define kOfxImageEffectPropPreMultiplication "OfxImageEffectPropPreMultiplication"
 
@@ -589,7 +585,7 @@ This property acts as a hint to hosts indicating that they could feed the effect
 /** @brief The pixel aspect ratio of a clip or image.
 
    - Type - double X 1
-   - Property Set - clip instance (read only), image instance (read only) and ImageEffectsActionGetClipPreferences out args property (read/write)
+   - Property Set - clip instance (read only), image instance (read only) and ::kOfxImageEffectActionGetClipPreferences action out args property (read/write)
 
 */
 #define kOfxImagePropPixelAspectRatio "OfxImagePropPixelAspectRatio"
@@ -597,7 +593,7 @@ This property acts as a hint to hosts indicating that they could feed the effect
 /** @brief The frame rate of a clip or instance's project.
 
    - Type - double X 1
-   - Property Set - clip instance (read only), effect instance (read only) and ImageEffectsActionGetClipPreferences out args property (read/write)
+   - Property Set - clip instance (read only), effect instance (read only) and  ::kOfxImageEffectActionGetClipPreferences action out args property (read/write)
 
 For an input clip this is the frame rate of the clip.
 
@@ -605,7 +601,7 @@ For an output clip, the frame rate mapped via pixel preferences.
 
 For an instance, this is the frame rate of the project the effect is in.
 
-For the outargs property in \ref ImageEffectsActionGetClipPreferences, it is used to change the frame rate of the ouput clip.
+For the outargs property in the ::kOfxImageEffectActionGetClipPreferences action, it is used to change the frame rate of the ouput clip.
 */
 #define kOfxImageEffectPropFrameRate "OfxImageEffectPropFrameRate"
 
@@ -621,7 +617,7 @@ If a plugin changes the output frame rate in the pixel preferences action, this 
 /** @brief The frame step used for a sequence of renders
 
    - Type - double X 1
-   - Property Set - an in argument for the ImageEffectsActionBeginSequenceRender action (read only)
+   - Property Set - an in argument for the ::kOfxImageEffectActionBeginSequenceRender action (read only)
    - Valid Values - can be any positive value, but typically
       - 1 for frame based material
       - 0.5 for field based material
@@ -669,14 +665,12 @@ Any clip that is not optional will \em always be connected during a render actio
 /** @brief Indicates whether an effect will generate different images from frame to frame.
 
    - Type - int X 1
-   - Property Set - out argument to kOfxImageEffectActionGetClipPreferences action (read/write).
+   - Property Set - out argument to ::kOfxImageEffectActionGetClipPreferences action (read/write).
    - Default - 0
    - Valid Values - This must be one of 0 or 1
 
 This property indicates whether a plugin will generate a different image from frame to frame, even if no parameters
 or input image changes. For example a generater that creates random noise pixel at each frame.
-
-See \ref ImageEffectsActionGetClipPreferences and \ref ImageEffectClipPreferencesFrameVarying.
  */
 #define kOfxImageEffectFrameVarying "OfxImageEffectFrameVarying"
 
