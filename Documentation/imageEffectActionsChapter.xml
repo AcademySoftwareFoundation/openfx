@@ -985,7 +985,7 @@
     
     &description;
     <para>
-      This action allows a plugin to dynamically specify its preferences for input and output clips. Please see <link linkend="ImageEffectsActionGetClipPreferences">Image Effect Clip Preferences</link> for more details on the behaviour. Clip preferences  are constant for the duration of an effect, so this action need only be called once per clip, not once per frame. 
+      This action allows a plugin to dynamically specify its preferences for input and output clips. Please see <link linkend="ImageEffectClipPreferences">Image Effect Clip Preferences</link> for more details on the behaviour. Clip preferences are constant for the duration of an effect, so this action need only be called once per clip, not once per frame. 
     </para>
     <para>This should be called once after creation of an instance, each time an input clip is changed, and whenever a parameter named in the <link linkend="kOfxImageEffectPropClipPreferencesSlaveParam"><code>kOfxImageEffectPropClipPreferencesSlaveParam</code></link> has its value changed.
     </para>

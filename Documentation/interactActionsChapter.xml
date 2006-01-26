@@ -1,5 +1,5 @@
 <chapter id="InteractActions">
-  <title>Interact Actions</title>
+  <title>Actions Passed to an Interact</title>
   <para>
     This chapter describes the actions that can be issued to an interact's main entry point. 
     Interact actions are also generic in character, they could be issued to other plug-in types rather than just Image Effects,

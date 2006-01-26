@@ -466,48 +466,6 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	</itemizedlist>
       </para>
 
-      <para>	
-	The following actions are passed to any interact entry point in an image effect plug-in.
-	<itemizedlist>
-      	  <listitem>
-	    <link linkend="kOfxActionDescribeInteract">The Generic Describe Action</link> called to describe the specific <emphasis>interact</emphasis>,
-	  </listitem>
-	  <listitem>
-	    <link linkend="kOfxActionCreateInstanceInteract">The Create Instance Action</link> called just after an instance of the <emphasis>interact</emphasis> is created,
-	  </listitem>
-	  <listitem>
-	    <link linkend="kOfxActionDestroyInstanceInteract">The Generic Destroy Instance Action</link> called just before of the <emphasis>interact</emphasis> is destroyed,
-	    </listitem>
-	  <listitem>
-	    <link linkend="kOfxInteractActionDraw">The Draw Action</link> called to have the interact draw itself,
-	  </listitem>
-	  <listitem>
-	    <link linkend="kOfxInteractActionPenMotion">kOfxInteractActionPenMotion</link> called whenever the interact has the input focus and the pen has moved,
-	  </listitem>
-	  <listitem>
-	    <link linkend="kOfxInteractActionPenDown">kOfxInteractActionPenDown</link> called whenever the interact has the input focus and the pen has changed state to 'down',
-	  </listitem>
-	  <listitem>
-	    <link linkend="kOfxInteractActionPenUp"> kOfxInteractActionPenUp</link> called whenever the interact has the input focus and the pen has changed state to 'up,
-	  </listitem>
-	  <listitem>
-	    <link linkend="kOfxInteractActionKeyDown"> kOfxInteractActionKeyDown</link> called whenever the interact has the input focus and a key has gone down,
-	  </listitem>
-	  <listitem>
-	    <link linkend="kOfxInteractActionKeyUp"> kOfxInteractActionKeyUp</link> called whenever the interact has the input focus and a key has gone up,
-	  </listitem>
-	  <listitem>
-	    <link linkend="kOfxInteractActionKeyRepeat"> kOfxInteractActionKeyRepeat</link> called whenever the interact has the input focus and a key has gone down and a repeat key sequence has been sent,
-	  </listitem>
-	  <listitem>
-	    <link linkend="kOfxInteractActionGainFocus"> kOfxInteractActionGainFocus</link> called whenever the interact gains input focus,
-	  </listitem>
-	  <listitem>
-	    <link linkend="kOfxInteractActionLoseFocus"> kOfxInteractActionLoseFocus</link> called whenever the interact loses input focus,
-	  </listitem>
-	</itemizedlist>
-	    
-      </para>
     </section>
 
     <section><title>Main Objects Used by the API</title>
@@ -1617,7 +1575,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	</programlisting></blockquote>
       </section>
 
-      <section><title>The Normalized Coordinate System</title>
+      <section id="ProjectCoordinateSystems"><title>The Normalized Coordinate System</title>
 	<para>
 	  On most editing an compositing systems projects can be moved on resolutions, for example a
 	  project may be set up at high definition then have several versions rendered out at different sizes, say a
@@ -1930,7 +1888,7 @@ Source    -2            12          25
     <section id="ImageEffectsImagesAndClipsUsingClips"><title>Getting Images From Clips</title>
 
       <para>
-	Clips in instances are retrieved via the <link linkend="OfxImageEffectSuiteV1clipGetHandle"><code>OfxImageEffectSuiteV1::clipGetHandle</code></link> function. 
+	Clips in instances are retrieved via the <link linkend="OfxImageEffectSuiteV1_clipGetHandle"><code>OfxImageEffectSuiteV1::clipGetHandle</code></link> function. 
 	This returns a property handle for the clip in a specific instance. This handle is valid 
 	for the duration of the instance.
       </para>
@@ -1997,7 +1955,7 @@ Source    -2            12          25
       </para>
 
       <para>
-	The property <link linkend="kOfxImageEffectPropSupportsMultiPixelAspectRatios"><code>kOfxImageEffectPropSupportsMultiPixelAspectRatios</code></link> is used to control how a plugin deals with 
+	The property <link linkend="kOfxImageEffectPropSupportsMultipleClipPARs"><code>kOfxImageEffectPropSupportsMultipleClipPARs</code></link> is used to control how a plugin deals with 
 	pixel aspect ratios. This is both a host and plugin property. For a host it can be set to...
 	<itemizedlist>
 	  <listitem>0 - the host only supports a single pixel aspect ratio for all clips, input or output, to an effect,</listitem>
@@ -2374,6 +2332,201 @@ source 0.0 0.0 0.5 0.5 1.0 1.0 1.5 1.5
 	A host may need to abort a backgrounded render, typically in response to a user changing a parameter value.
 	An effect should occasionally poll the <link linkend="OfxImageEffectSuiteV1_abort"><code>OfxImageEffectSuiteV1::abort</code></link>
 	function to see if it should give up on rendering.
+      </para>
+    </section>
+  </chapter>
+
+  <chapter id="CustomInteracts"><title>Interacts</title>
+    <para>
+      When a host presents a graphical user interface to an image effect, it may optionally
+      give it the chance to draw its own custom GUI tools and to be able to interact with pen and 
+      keyboard input. In OFX this is done via the OfxInteract suite, which is found in the file
+      <filename class="headerfile">ofxInteract.h</filename>.
+    </para>
+
+    <para>
+      OFX interacts rely on openGL to perform all drawing in interacts, due to its portabilty, robustness
+      and wide implementation.
+    </para>
+
+    <para>
+      Each object that can have their own interact a pointer property in it which should point to a separate
+      <link linkend="mainEntryPoint">main entry point</link>. This entry point is <emphasis>not</emphasis> the 
+      same as the one in the OfxPlugin struct, 
+      as it needs to respond to a different set of actions to the effect.
+    </para>
+
+    <para>
+      There are two things in an image effect can have their own interact, these are...
+      <itemizedlist>
+	<listitem>as on overlay on the image being currently viewed in any image viewer, set via the effect descriptor's <link linkend="kOfxImageEffectPluginPropOverlayInteractV1"><code>kOfxImageEffectPluginPropOverlayInteractV1</code></link> property</listitem>
+	<listitem>as a replacement for any parameter's standard GUI object, set this via the parameter descriptor's <link linkend="kOfxParamPropInteractV1"><code>kOfxParamPropInteractV1</code></link> property</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      Hosts might not be able to support interacts, to indicate this, two properties exist on the host descriptor which 
+      an effect should examine at description time so as to determine its own behaviour. These are...
+      <itemizedlist>
+	<listitem><link linkend="kOfxImageEffectPropSupportsOverlays"><code>kOfxImageEffectPropSupportsOverlays</code></link></listitem>
+	<listitem><link linkend="kOfxParamHostPropSupportsCustomInteract"><code>kOfxParamHostPropSupportsCustomInteract</code></link></listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      Interacts are separate objects to the effect they are associated with,
+      they have their own descriptor and instance handles
+      passed into their separate <link linkend="mainEntryPoint"><code>main entry point</code></link>.
+    </para>
+
+    <para>
+      An interact instance cannot exist without a plugin instance, an interact's instance, once created, is bound to a single instance of a plugin until the interact instance is destroyed.
+    </para>
+      
+    <para>
+      All interacts of the same type share openGL display lists, even if they are in different openGL contexts.
+    </para>
+
+    <para>
+      All interacts of the same type will have the same pixel types (this is a side effect of the last point), this will 
+      always be double buffered with at least RGB components. Alpha and the exact bit depth is left to the implementation.
+    </para>
+
+    <para>
+      So for example, all image effect overlays share the same display lists and have the same pixel depth, 
+      and all custom parameter GUIs share the same display list and have the same pixel depth, but overlays 
+      and custom parameter GUIs do not necassarily share the same display list/pixel depths.
+    </para>
+
+    <para>
+      An interact instance may be used in more than one view. Consider an image effect overlay interact in a
+      host that supports multiple viewers to an effect instance. The same interact instance will be used in all 
+      views, the relevant properties controlling the view being changed before any action is passed to the interact.
+      In this example, the draw action would be called once for each view open on the instance, with the projection, 
+      viewport and pixel scale being set appropriately for the view before each action.  
+    </para>
+
+    <section id="ImageEffectOverlays"><title>Overlay Interacts</title>
+      <para>
+	Hosts will generally display images (both input and output) in user their interfaces.
+	A plugin can put an interact in this display by setting the effect descriptor <link linkend="kOfxImageEffectPluginPropOverlayInteractV1"><code>kOfxImageEffectPluginPropOverlayInteractV1</code></link> 
+	property to point to a main entry.
+      </para>
+
+      <para>
+	The viewport for such interacts will depend completely on the host.
+      </para>
+ 
+      <para>
+	The GL_PROJECTION matrix will be set up so that it maps openGL coordinates to canonical image coordinates.
+      </para>
+
+      <para>
+	The GL_MODELVIEW matrix will be the identity matrix.
+      </para>
+      <para>
+	An overlay's interact draw action should assume that it is sharing the openGL context and viewport
+	with other objects that belong to the host. It should not blank the background and it
+	should never swap buffers, that is for the host to do.
+      </para>
+    </section>
+
+    <section id="ParametersInteracts"><title>Parameter Interacts</title>
+      <para>
+	All parameters, except for custom parameters, have some default interface that the host creates for them. 
+	Be it a numeric slider, colour swatch etc... Effects can override the default interface 
+	(or set an interface for a custom parameter) by setting the <link linkend="kOfxParamPropInteractV1"><code>kOfxParamPropInteractV1</code></link>.
+	This will completely replace the parameters default user interface in the 'paged' and 'hierarchical'
+	interfaces, but it will not replace the parameter's interface in any animation sheet.
+      </para>
+
+      <para>
+	Properties affecting custom interacts for parameters are...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxParamPropInteractSizeAspect"><code>kOfxParamPropInteractSizeAspect</code></link></listitem>
+	  <listitem><link linkend="kOfxParamPropInteractMinimumSize"><code>kOfxParamPropInteractMinimumSize</code></link></listitem>
+	  <listitem><link linkend="kOfxParamPropInteractPreferedSize"><code>kOfxParamPropInteractPreferedSize</code></link></listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	The viewport for such interacts will be dependant upon the various properties above, and possibly a per
+	host override in any XML resource file.
+      </para>
+ 
+      <para>
+	The GL_PROJECTION matrix will be an orthographic 2D view with -0.5,-0.5 at the bottom left and viewport width-0.5,
+	viewport height-0.5 at the top right. 
+      </para>
+
+      <para>
+	The GL_MODELVIEW matrix will be the identity matrix.
+      </para>
+
+      <para>
+	The bit depth will be double buffered 24 bit RGB.
+      </para>
+      
+      <para>
+	A parameter's interact draw function will have full responsibility for drawing the interact, including 
+	clearing the background and swapping buffers.
+      </para>
+    </section>
+
+    <section><title>Interact Actions</title>
+      <para>	
+	The following actions are passed to any interact entry point in an image effect plug-in.
+	<itemizedlist>
+      	  <listitem>
+	    <link linkend="kOfxActionDescribeInteract">The Generic Describe Action</link> called to describe the specific <emphasis>interact</emphasis>,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxActionCreateInstanceInteract">The Create Instance Action</link> called just after an instance of the <emphasis>interact</emphasis> is created,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxActionDestroyInstanceInteract">The Generic Destroy Instance Action</link> called just before of the <emphasis>interact</emphasis> is destroyed,
+	    </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionDraw">The Draw Action</link> called to have the interact draw itself,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionPenMotion">kOfxInteractActionPenMotion</link> called whenever the interact has the input focus and the pen has moved, regardless of whether the pen is up or down,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionPenDown">kOfxInteractActionPenDown</link> called whenever the interact has the input focus and the pen has changed state to 'down',
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionPenUp"> kOfxInteractActionPenUp</link> called whenever the interact has the input focus and the pen has changed state to 'up,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionKeyDown"> kOfxInteractActionKeyDown</link> called whenever the interact has the input focus and a key has gone down,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionKeyUp"> kOfxInteractActionKeyUp</link> called whenever the interact has the input focus and a key has gone up,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionKeyRepeat"> kOfxInteractActionKeyRepeat</link> called whenever the interact has the input focus and a key has gone down and a repeat key sequence has been sent,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionGainFocus"> kOfxInteractActionGainFocus</link> called whenever the interact gains input focus,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionLoseFocus"> kOfxInteractActionLoseFocus</link> called whenever the interact loses input focus,
+	  </listitem>
+	</itemizedlist>
+      </para>
+
+      <para> 
+	An interact cannot be described until an effect has been described.
+      </para>
+
+      <para>
+	An interact instance must always be associated with an effect instance. So it gets created after an effect and destroyed before one.
+      </para>
+
+      <para>
+	An interact instance should be issued a gain focus action before any key or pen actions are issued, and a lose focus action when
+	it goes.
       </para>
     </section>
   </chapter>
