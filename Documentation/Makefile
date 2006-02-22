@@ -47,7 +47,8 @@ REF_SRCS = ofxProgrammingReference.xml \
 	$(PROPERY_SUITE_REFERENCE_FILES) \
 	imageEffectActionsChapter.xml \
 	interactActionsChapter.xml \
-	clipPreferencesChapter.xml
+	clipPreferencesChapter.xml \
+	ofxParameterChapter.xml 
 
 ofxProgrammingReference.html : $(REF_SRCS) 
 	cat  header.xml $(<:.html=.xml) > tmp.xml

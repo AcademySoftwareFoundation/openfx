@@ -20,7 +20,7 @@
   <preface>
     <title>Foreword</title>
     <para>
-      THINGS TO DO BIGNOSE!
+      <emphasis>THINGS TO DO BIGNOSE!</emphasis>
       <itemizedlist>
 	<listitem>copy all documentation across from the .h files and docbookify it</listitem>
 	<listitem>edit the thing into a somewhat cleaner form
@@ -2058,6 +2058,8 @@ Source    -2            12          25
   gEffectSuite->imageMemoryFree(memHandle);</programlisting></blockquote>
     </section>
   </chapter>
+
+  &parametersChapter;
 
   <chapter id="RenderingEffects"><title>Rendering</title>
     <para>
