@@ -243,7 +243,7 @@ These properties are general properties and  apply to may objects across OFX
 
 /** @brief General property used to get/set the time of something.
 
-    - Type - int X 1
+    - Type - double X 1
     - Default - 0, if a setable property
     - Property Set - commonly used as an argument to actions, input and output.
 */
