@@ -65,9 +65,9 @@ typedef void (OfxThreadFunctionV1)(unsigned int threadIndex,
 typedef struct OfxMultiThreadSuiteV1 {
   /**@brief Function to spawn SMP threads
 
-  \arg \e func The function to call in each thread.
-  \arg \e nThreads The number of threads to launch
-  \arg \e customArg The paramter to pass to customArg of func in each thread.
+  \arg func The function to call in each thread.
+  \arg nThreads The number of threads to launch
+  \arg customArg The paramter to pass to customArg of func in each thread.
 
   This function will spawn nThreads separate threads of computation (typically one per CPU) 
   to allow something to perform symmetric multi processing. Each thread will call 'func' passing
@@ -93,7 +93,7 @@ typedef struct OfxMultiThreadSuiteV1 {
 			  
   /**@brief Function which indicates the number of CPUs available for SMP processing
 
-  \arg \e nCPUs pointer to an integer where the result is returned
+  \arg nCPUs pointer to an integer where the result is returned
      
   This value may be less than the actual number of CPUs on a machine, as the host may reserve other CPUs for itself.
 
@@ -105,7 +105,7 @@ typedef struct OfxMultiThreadSuiteV1 {
 
   /**@brief Function which indicates the index of the current thread
 
-  \arg \e threadIndex  pointer to an integer where the result is returned
+  \arg threadIndex  pointer to an integer where the result is returned
 
   This function returns the thread index, which is the same as the \e threadIndex argument passed to the ::OfxThreadFunctionV1.
 
@@ -127,8 +127,8 @@ typedef struct OfxMultiThreadSuiteV1 {
 
   /** @brief Create a mutex
 
-  \arg \e mutex - where the new handle is returned
-  \arg \e count - initial lock count on the mutex. This can be negative.
+  \arg mutex - where the new handle is returned
+  \arg count - initial lock count on the mutex. This can be negative.
 
   Creates a new mutex with lockCount locks on the mutex intially set.    
 
