@@ -683,7 +683,7 @@ namespace OFX {
             PropertyDescription(kOfxParamPropHint,              OFX::eString, 1, eDescFinished),
             PropertyDescription(kOfxParamPropScriptName,        OFX::eString, 1, eDescFinished),
             PropertyDescription(kOfxParamPropParent,            OFX::eString, 1, eDescFinished),
-            PropertyDescription(kOfxParamPropEnabled,           OFX::eInt,    1, eDescDefault, 0, eDescFinished),
+            PropertyDescription(kOfxParamPropEnabled,           OFX::eInt,    1, eDescDefault, 1, eDescFinished),
             PropertyDescription(kOfxParamPropDataPtr,           OFX::ePointer,1, eDescDefault, (void *)(0), eDescFinished),
         };
     
