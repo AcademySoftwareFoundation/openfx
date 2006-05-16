@@ -336,50 +336,6 @@ typedef struct OfxPropertySuiteV1 {
 /*@}*/
 
 
-/** @page PropertiesPage OFX : Properties Suite
-
-The objects within OFX have variant properties. These are named values of a defined type which can take different values. For example, the name of the host application being a UTF8 string, the minimum and maximum value of a parameter, whether the host supports animation and so on. The properties API is defined in the ofxProperty.h header.
-
-Properties are manipulated via property handles and the OfxPropertySuiteV1 API. Any thing that holds properties has an associated OfxPropertySet pointer. This property pointer is passed into the various calls in the property host to get and set properties. For example the 'paramDefine' function in the OfxParameterSuiteV1 returns a parameter pointer, from which you can get the property pointer by calling OfxParameterSuiteV1::paramGetPropertySet.
-
-Properties are tagged by C strings, which are #defined in various OFX files. For example, in ofxParam.h
-@verbatim
-   #define kOfxParamPropAnimates "OfxParamPropAnimates"
-@endverbatim
-is the tag for the property which controls whether a parameter animates.
-
-Properties can only be one of four types, double precision floating point numbers, integers, null terminated C strings or a void * pointer. There is a function to get and set the property for each of these types.
-
-Properties can also be multi-dimensional, for example the kOfxImageEffectPropProjectSize property is a 2D double precision floating point number. You can either get/set an indvidual dimension within a multi-dimensional property, or set them all, depending on the function used.
-
-Example,
-
-@verbatim
-    OfxParamHandle param;
-    OfxPropertySetHandle propSet;
-
-    paramHost->paramDefine(pluginDescriptor, kOfxParamTypeRGB, "myColour", &param);
-    paramHosy->paramGetPropertySet(param, &propSet);
-
-    // set the default colour to be mid red, set dimensions one at a time
-    propHost->propSetDouble(propSet, kOfxParamPropDefault, 0, 0.5);
-    propHost->propSetDouble(propSet, kOfxParamPropDefault, 1, 0);
-    propHost->propSetDouble(propSet, kOfxParamPropDefault, 2, 0);
-
-    // or, set all dimensions at the same time
-    double value[3]; value[0] = 0.5; value[1] = 0.0; value[2] = 0.0;
-    propHost->propSetDoubleN(propSet, kOfxParamPropDefault, 3, value);
-
-    // and turn off animation
-    propHost->propSetInt(propSet, kOfxParamPropAnimates, 0, 0);
-
-@endverbatim
-
-Strings were chosen to label properties as it is simpler to make them unique and sensible to programmers. If integer constants were used it would be harder to ensure that properties were labelled uniquely without glompfing them in a single huge enum.
-
-The dimension of a property can be accesed with the propGetDimension call.
-*/
-
 
 #ifdef __cplusplus
 }

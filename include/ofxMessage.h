@@ -109,23 +109,6 @@ typedef struct OfxMessageSuiteV1 {
     This file contains the Host API for end user message communication.
 */
 
-/** @page MessagePage OFX : Message Host API
-    
-@section MessagePageOverview Overview
-
-The ::OfxMessageSuiteV1 int ofxMessage.h is used to post messages to the end user via whatever mechanism the host chooses to implement. The OfxMessageSuiteV1::message function is similar to a standard C printf statement, with several extra arguments.
-
-Messages are typed with the following constants...
-- ::kOfxMessageFatal
-- ::kOfxMessageError
-- ::kOfxMessageMessage
-- ::kOfxMessageLog
-- ::kOfxMessageQuestion
-
-Messages also have an ID, assigned by the plugin. If the plugin has an external resource file (see \ref ExternalResourcesPage), the \em format parameter passed to OfxMessageSuiteV1::message may be overridden if the corresponding ID is found in the resource file. This is generally for internationalisation purposes.
-
- */
-
 #ifdef __cplusplus
 }
 #endif

@@ -36,15 +36,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /** @brief Property used to indicate which a key on the keyboard or a button on a button device has been pressed
 
-  - int X 1
+  - Type - int X 1
+  - Property Set - an read only in argument for the actions ::kOfxInteractActionKeyDown, ::kOfxInteractActionKeyUp and ::kOfxInteractActionKeyRepeat.
+  - Valid Values - one of any specified by #defines in the file ofxKeySyms.h.
 
-This property represents the raw key press, it does not represent the 'character value' of the key.
+This property represents a raw key press, it does not represent the 'character value' of the key. 
 
 This property is associated with a ::kOfxPropKeyString property, which encodes the UTF8
 value for the keypress/button press. Some keys (for example arrow keys) have no UTF8 equivalant.
 
 Some keys, especially on non-english language systems, may have a UTF8 value, but \em not a keysym values, in these
-cases, the keysym will have a value of ::kOfxKey_Unknown, but the ::kOfxPropKeyString property will still be set with
+cases, the keysym will have a value of kOfxKey_Unknown, but the ::kOfxPropKeyString property will still be set with
 the UTF8 value.
 
  */
@@ -52,10 +54,18 @@ the UTF8 value.
 
 /** @brief This property encodes a single keypresses that generates a unicode code point. The value is stored as a UTF8 string. 
 
-  - string X 1 UTF8
+  - Type - C string X 1, UTF8
+  - Property Set - an read only in argument for the actions ::kOfxInteractActionKeyDown, ::kOfxInteractActionKeyUp and ::kOfxInteractActionKeyRepeat.
+  - Valid Values - a UTF8 string representing a single character, or the empty string.
 
-This property is associated with a ::kOfxPropKeySym property, which encodes the raw keypresses from the keyboard. Not all key presses
-encode to Unicode (for example an arrow key), in which case this property would be set to the empty string "".
+This property represents the UTF8 encode value of a single key press by a user in an OFX interact.
+
+This property is associated with a ::kOfxPropKeySym which represents an integer value for the key press. Some keys (for example arrow keys) have no UTF8 equivalant, 
+in which case this is set to the empty string "", and the associate ::kOfxPropKeySym is set to the equivilant raw key press.
+
+Some keys, especially on non-english language systems, may have a UTF8 value, but \em not a keysym values, in these
+cases, the keysym will have a value of kOfxKey_Unknown, but the ::kOfxPropKeyString property will still be set with
+the UTF8 value.
 */
 #define kOfxPropKeyString "kOfxPropKeyString"
 

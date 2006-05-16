@@ -83,23 +83,6 @@ typedef struct OfxMemorySuiteV1 {
     This file contains the API for general purpose memory allocation from a host.
 */
 
-/** @page MemoryPage OFX : Memory Host API
-
-@section MemorySuite Overview
-
-The ::OfxMemorySuiteV1 defined in ofxMemory.h is a simple memory allocator, similar to the standard C
-library 'malloc' and 'free' functions. The memory suite should be used for general purpose memory
-allocation.
-
-Special purpose image memory allocation in an image effect should be handled via the image memory 
-allocation functions in the ::OfxImageEffectSuiteV1.
-
-Where ever possible thus suite should be used in preference to malloc/free or new/delete.
-
-Plugins written in C++ will need to override the new/delete operators to use this suite.
-
-
- */
 
 
 #ifdef __cplusplus
