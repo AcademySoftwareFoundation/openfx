@@ -726,6 +726,9 @@ namespace OFX {
         // get the property handle
         _effectProps = OFX::Private::fetchEffectProps(handle);
 
+        // Set this as the instance data pointer on the effect handle
+        _effectProps.propSetPointer(kOfxPropInstanceData, this);
+
         // validate the plugin instance
         OFX::Validation::validatePluginInstanceProperties(_effectProps);
 
@@ -739,8 +742,6 @@ namespace OFX {
         throwSuiteStatusException(stat);
         setParamSetHandle(paramSet);      
 
-        // Set this as the instance data pointer on the effect handle
-        _effectProps.propSetPointer(kOfxPropInstanceData, this);
     }
 
     /** @brief dtor */
@@ -1784,11 +1785,11 @@ namespace OFX {
                     std::string str = effectProps.propGetString(kOfxImageEffectPropContext);
                     ContextEnum context = mapToContextEnum(str);
 
-                    // validate the plugin handle's properties
-                    OFX::Validation::validatePluginInstanceProperties(fetchEffectProps(handle));
-
                     // make the image effect instance for this context
                     ImageEffect *instance = OFX::Plugin::createInstance(handle, context);
+
+                    // validate the plugin handle's properties
+                    OFX::Validation::validatePluginInstanceProperties(fetchEffectProps(handle));
 
                     // got here, must be good
                     stat = kOfxStatOK;
