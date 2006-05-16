@@ -24,7 +24,8 @@ namespace OFX {
     void throwPropertyException(OfxStatus stat,
                                 const std::string &propName) throw(std::bad_alloc,
                                                                    OFX::Exception::PropertyUnknownToHost,
-                                                                   OFX::Exception::PropertyValueIllegalToHost)
+                                                                   OFX::Exception::PropertyValueIllegalToHost,
+                                                                   OFX::Exception::Suite)
     {
         switch (stat) {
         case kOfxStatOK :
@@ -51,8 +52,7 @@ namespace OFX {
         case kOfxStatErrBadHandle :
         case kOfxStatErrBadIndex :
         default :
-            assert(0); // die here, as this is an error in the support code            
-            throw OFX::Exception::Suite(stat);
+          throwSuiteStatusException(stat);
             break;
         }
     }
@@ -70,7 +70,8 @@ namespace OFX {
     int 
     PropertySet::propGetDimension(const std::string &property) const throw(std::bad_alloc, 
                                                                            OFX::Exception::PropertyUnknownToHost, 
-                                                                           OFX::Exception::PropertyValueIllegalToHost)
+                                                                           OFX::Exception::PropertyValueIllegalToHost,
+                                                                           OFX::Exception::Suite)
     {
         assert(_propHandle != 0);
         int dimension;
@@ -89,7 +90,8 @@ namespace OFX {
     void
     PropertySet::propReset(const std::string &property) throw(std::bad_alloc, 
                                                               OFX::Exception::PropertyUnknownToHost,
-                                                              OFX::Exception::PropertyValueIllegalToHost)
+                                                              OFX::Exception::PropertyValueIllegalToHost,
+                                                              OFX::Exception::Suite)
     {
         assert(_propHandle != 0);
         OfxStatus stat = gPropSuite->propReset(_propHandle, property.c_str());
@@ -103,7 +105,8 @@ namespace OFX {
     void 
     PropertySet::propSetPointer(const std::string &property, void *value, int idx) throw(std::bad_alloc, 
                                                                                          OFX::Exception::PropertyUnknownToHost, 
-                                                                                         OFX::Exception::PropertyValueIllegalToHost)
+                                                                                         OFX::Exception::PropertyValueIllegalToHost,
+                                                                                         OFX::Exception::Suite)
     {
         assert(_propHandle != 0);
         OfxStatus stat = gPropSuite->propSetPointer(_propHandle, property.c_str(), idx, value);
@@ -118,7 +121,8 @@ namespace OFX {
     void 
     PropertySet::propSetString(const std::string &property, const std::string &value, int idx) throw(std::bad_alloc, 
                                                                                                      OFX::Exception::PropertyUnknownToHost, 
-                                                                                                     OFX::Exception::PropertyValueIllegalToHost)
+                                                                                                     OFX::Exception::PropertyValueIllegalToHost,
+                                                                                                     OFX::Exception::Suite)
     {
         assert(_propHandle != 0);
         OfxStatus stat = gPropSuite->propSetString(_propHandle, property.c_str(), idx, value.c_str());
@@ -133,7 +137,8 @@ namespace OFX {
     void 
     PropertySet::propSetDouble(const std::string &property, double value, int idx) throw(std::bad_alloc, 
                                                                                          OFX::Exception::PropertyUnknownToHost, 
-                                                                                         OFX::Exception::PropertyValueIllegalToHost)
+                                                                                         OFX::Exception::PropertyValueIllegalToHost,
+                                                                                         OFX::Exception::Suite)
     {
         assert(_propHandle != 0);
         OfxStatus stat = gPropSuite->propSetDouble(_propHandle, property.c_str(), idx, value);
@@ -148,7 +153,8 @@ namespace OFX {
     void 
     PropertySet::propSetInt(const std::string &property, int value, int idx) throw(std::bad_alloc, 
                                                                                    OFX::Exception::PropertyUnknownToHost, 
-                                                                                   OFX::Exception::PropertyValueIllegalToHost)
+                                                                                   OFX::Exception::PropertyValueIllegalToHost,
+                                                                                   OFX::Exception::Suite)
     {
         assert(_propHandle != 0);
         OfxStatus stat = gPropSuite->propSetInt(_propHandle, property.c_str(), idx, value);
@@ -163,7 +169,8 @@ namespace OFX {
     void  *
     PropertySet::propGetPointer(const std::string &property, int idx) const throw(std::bad_alloc, 
                                                                                   OFX::Exception::PropertyUnknownToHost, 
-                                                                                  OFX::Exception::PropertyValueIllegalToHost)
+                                                                                  OFX::Exception::PropertyValueIllegalToHost,
+                                                                                  OFX::Exception::Suite)
     {
         assert(_propHandle != 0);
         void *value = 0;
@@ -181,7 +188,8 @@ namespace OFX {
     std::string 
     PropertySet::propGetString(const std::string &property, int idx) const throw(std::bad_alloc, 
                                                                                  OFX::Exception::PropertyUnknownToHost, 
-                                                                                 OFX::Exception::PropertyValueIllegalToHost)
+                                                                                 OFX::Exception::PropertyValueIllegalToHost,
+                                                                                 OFX::Exception::Suite)
     {
         assert(_propHandle != 0);
         char *value = "";
@@ -199,7 +207,8 @@ namespace OFX {
     double      
     PropertySet::propGetDouble(const std::string &property, int idx) const throw(std::bad_alloc, 
                                                                                  OFX::Exception::PropertyUnknownToHost, 
-                                                                                 OFX::Exception::PropertyValueIllegalToHost)
+                                                                                 OFX::Exception::PropertyValueIllegalToHost,
+                                                                                 OFX::Exception::Suite)
     {
         assert(_propHandle != 0);
         double value;
@@ -216,7 +225,8 @@ namespace OFX {
     int         
     PropertySet::propGetInt(const std::string &property, int idx) const throw(std::bad_alloc, 
                                                                               OFX::Exception::PropertyUnknownToHost, 
-                                                                              OFX::Exception::PropertyValueIllegalToHost)
+                                                                              OFX::Exception::PropertyValueIllegalToHost,
+                                                                              OFX::Exception::Suite)
     {
         assert(_propHandle != 0);
         int value;

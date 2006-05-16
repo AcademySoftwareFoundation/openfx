@@ -136,210 +136,220 @@ struct Ofx3DPointD {
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries.
  */
 namespace OFX {
-    /** forward class declarations */
-    class PropertySet;
+  /** forward class declarations */
+  class PropertySet;
 
 
-    /** @brief Enumerates the different types a property can be */
-    enum PropertyTypeEnum {
-        ePointer,
-        eInt,
-        eString,
-        eDouble};
+  /** @brief Enumerates the different types a property can be */
+  enum PropertyTypeEnum {
+    ePointer,
+    eInt,
+    eString,
+    eDouble};
 
-    /** @brief Enumerates the reasons a plug-in instance may have had one of its values changed */
-    enum InstanceChangeReason {
-        eChangeUserEdit,    /**< @brief A user actively editted something in the plugin, eg: changed the value of an integer param on an interface */
-        eChangePluginEdit,  /**< @brief The plugin's own code changed something in the instance, eg: a callback on on param settting the value of another */
-        eChangeTime         /**< @brief The current value of a parameter has changed because the param animates and the current time has changed */
-    };
+  /** @brief Enumerates the reasons a plug-in instance may have had one of its values changed */
+  enum InstanceChangeReason {
+    eChangeUserEdit,    /**< @brief A user actively editted something in the plugin, eg: changed the value of an integer param on an interface */
+    eChangePluginEdit,  /**< @brief The plugin's own code changed something in the instance, eg: a callback on on param settting the value of another */
+    eChangeTime         /**< @brief The current value of a parameter has changed because the param animates and the current time has changed */
+  };
 
-    /** @brief maps a status to a string for debugging purposes, note a c-str for printf */
-    char * mapStatusToString(OfxStatus stat);
+  /** @brief maps a status to a string for debugging purposes, note a c-str for printf */
+  char * mapStatusToString(OfxStatus stat);
 
-    /** @brief namespace for OFX support lib exceptions, all derive from std::exception, calling it */
-    namespace Exception {
+  /** @brief namespace for OFX support lib exceptions, all derive from std::exception, calling it */
+  namespace Exception {
 
-        /** @brief thrown when a suite returns a dud status code 
-        */
-        class Suite : public std::exception {
-        protected :
-            OfxStatus _status;
-        public :
-            Suite(OfxStatus s) : _status(s) {}
-            OfxStatus status(void) {return _status;}
-            operator OfxStatus() {return _status;}
-
-            /** @brief reimplemented from std::exception */
-            virtual const char * what () const throw () {return mapStatusToString(_status);}
-
-        };
-
-        /** @brief Exception indicating that a host doesn't know about a property that is should do */
-        class PropertyUnknownToHost : public std::exception {
-        protected :
-            const char *_what;
-        public :
-            PropertyUnknownToHost(const char *what) : _what(what) {}
-
-            /** @brief reimplemented from std::exception */
-            virtual const char * what () const throw ()
-            {
-                return _what;
-            }
-        };
-
-        /** @brief exception indicating that the host thinks a property has an illegal value */
-        class PropertyValueIllegalToHost : public std::exception {
-        protected :
-            const char *_what;
-        public :
-            PropertyValueIllegalToHost(const char *what) : _what(what) {}
-
-            /** @brief reimplemented from std::exception */
-            virtual const char * what () const throw ()
-            {
-                return _what;
-            }
-        };
-
-        /** @brief exception indicating a request for a named thing exists (eg: a param), but is of the wrong type, should never make it back to the main entry
-        indicates a logical error in the code. Asserts are raised in debug code in these situations.
-        */
-        class TypeRequest : public std::exception {
-        protected :
-            const char *_what;
-        public :
-            TypeRequest(const char *what) : _what(what) {}
-
-            /** @brief reimplemented from std::exception */
-            virtual const char * what () const throw ()
-            {
-                return _what;
-            }
-        };
-
-        ////////////////////////////////////////////////////////////////////////////////
-        // These execeptions are to be thrown by the plugin if it hits a problem, the
-        // code managing the main entry will trap the exception and return a suitable 
-        // status code to the host.
-
-        /** @brief exception indicating a required host feature is missing */
-        class HostInadequate : public std::exception {
-        protected :
-            char *_what;
-        public :
-            HostInadequate(char *what) : _what(what) {}
-
-            /** @brief reimplemented from std::exception */
-            virtual const char * what () const throw ()
-            {
-                return _what;
-            }
-        };
-
-    }; // end of Exception namespace
-
-    /** @brief Throws an @ref OFX::Exception::Suite depending on the status flag passed in */
-    void 
-    throwSuiteStatusException(OfxStatus stat) 
-        throw(OFX::Exception::Suite, std::bad_alloc);
-
-    /** @brief This struct is used to return an identifier for the plugin by the function @ref OFX:Plugin::getPlugin. 
-    The members correspond to those in the OfxPlugin struct defined in ofxCore.h.
-    */
-    struct PluginID {
-        std::string  pluginIdentifier;
-        unsigned int pluginVersionMajor;
-        unsigned int pluginVersionMinor;
-    };
-
-    /** @brief This class wraps up an OFX property set */
-    class PropertySet {
+    /** @brief thrown when a suite returns a dud status code 
+     */
+    class Suite : public std::exception {
     protected :
-        /** @brief The raw property handle */
-        OfxPropertySetHandle _propHandle;
-
-        /** @brief Class static, whether we are logging each property action */
-        static int _gPropLogging;
-
-        /** @brief Do not throw an exception if a host returns 'unsupported' when setting a property */
-        static bool _gThrowOnUnsupported;
-
+      OfxStatus _status;
     public :
-        /** @brief turns on logging of property access functions */
-        static void propEnableLogging(void)  {++_gPropLogging;}
-    
-        /** @brief turns off logging of property access functions */
-        static void propDisableLogging(void) {--_gPropLogging;}
+      Suite(OfxStatus s) : _status(s) {}
+      OfxStatus status(void) {return _status;}
+      operator OfxStatus() {return _status;}
 
-        /** @brief Do we throw an exception if a host returns 'unsupported' when setting a property. Default is true */
-        static void setThrowOnUnsupportedProperties(bool v) {_gThrowOnUnsupported = v;}
+      /** @brief reimplemented from std::exception */
+      virtual const char * what () const throw () {return mapStatusToString(_status);}
 
-        /** @brief Do we throw an exception if a host returns 'unsupported' when setting a property. Default is true */
-        static bool getThrowOnUnsupportedProperties(void) {return _gThrowOnUnsupported;}
+    };
 
-        /** @brief construct a property set */
-        PropertySet(OfxPropertySetHandle h = 0) : _propHandle(h) {}
-        virtual ~PropertySet();
+    /** @brief Exception indicating that a host doesn't know about a property that is should do */
+    class PropertyUnknownToHost : public std::exception {
+    protected :
+      const char *_what;
+    public :
+      PropertyUnknownToHost(const char *what) : _what(what) {}
 
-        /** @brief set the handle to use for this set */
-        void propSetHandle(OfxPropertySetHandle h) { _propHandle = h;}
+      /** @brief reimplemented from std::exception */
+      virtual const char * what () const throw ()
+      {
+        return _what;
+      }
+    };
 
-        /** @brief return the handle for this property set */
-        OfxPropertySetHandle propSetHandle(void) {return _propHandle;}
+    /** @brief exception indicating that the host thinks a property has an illegal value */
+    class PropertyValueIllegalToHost : public std::exception {
+    protected :
+      const char *_what;
+    public :
+      PropertyValueIllegalToHost(const char *what) : _what(what) {}
 
-        int  propGetDimension(const std::string &property) const throw(std::bad_alloc, 
-                                                                       OFX::Exception::PropertyUnknownToHost, 
-                                                                       OFX::Exception::PropertyValueIllegalToHost);
-        void propReset(const std::string &property) throw(std::bad_alloc, 
-                                                          OFX::Exception::PropertyUnknownToHost, 
-                                                          OFX::Exception::PropertyValueIllegalToHost);
+      /** @brief reimplemented from std::exception */
+      virtual const char * what () const throw ()
+      {
+        return _what;
+      }
+    };
 
-        // set single values
-        void propSetPointer(const std::string &property, void *value, int idx = 0) throw(std::bad_alloc, 
-                                                                                         OFX::Exception::PropertyUnknownToHost, 
-                                                                                         OFX::Exception::PropertyValueIllegalToHost);
-        void propSetString(const std::string &property, const std::string &value, int idx = 0) throw(std::bad_alloc, 
-                                                                                                     OFX::Exception::PropertyUnknownToHost, 
-                                                                                                     OFX::Exception::PropertyValueIllegalToHost);
-        void propSetDouble(const std::string &property, double value, int idx = 0) throw(std::bad_alloc, 
-                                                                                         OFX::Exception::PropertyUnknownToHost, 
-                                                                                         OFX::Exception::PropertyValueIllegalToHost);
-        void propSetInt(const std::string &property, int value, int idx = 0) throw(std::bad_alloc, 
-                                                                                   OFX::Exception::PropertyUnknownToHost, 
-                                                                                   OFX::Exception::PropertyValueIllegalToHost);
-  
-        // get single values
-        void       *propGetPointer(const std::string &property, int idx = 0) const throw(std::bad_alloc, 
-                                                                                         OFX::Exception::PropertyUnknownToHost, 
-                                                                                         OFX::Exception::PropertyValueIllegalToHost);
-        std::string propGetString(const std::string &property, int idx = 0) const throw(std::bad_alloc, 
-                                                                                        OFX::Exception::PropertyUnknownToHost, 
-                                                                                        OFX::Exception::PropertyValueIllegalToHost);
-        double      propGetDouble(const std::string &property, int idx = 0) const throw(std::bad_alloc, 
-                                                                                        OFX::Exception::PropertyUnknownToHost, 
-                                                                                        OFX::Exception::PropertyValueIllegalToHost);
-        int         propGetInt(const std::string &property, int idx = 0) const throw(std::bad_alloc, 
-                                                                                     OFX::Exception::PropertyUnknownToHost, 
-                                                                                     OFX::Exception::PropertyValueIllegalToHost);
+    /** @brief exception indicating a request for a named thing exists (eg: a param), but is of the wrong type, should never make it back to the main entry
+        indicates a logical error in the code. Asserts are raised in debug code in these situations.
+    */
+    class TypeRequest : public std::exception {
+    protected :
+      const char *_what;
+    public :
+      TypeRequest(const char *what) : _what(what) {}
+
+      /** @brief reimplemented from std::exception */
+      virtual const char * what () const throw ()
+      {
+        return _what;
+      }
     };
 
     ////////////////////////////////////////////////////////////////////////////////
+    // These execeptions are to be thrown by the plugin if it hits a problem, the
+    // code managing the main entry will trap the exception and return a suitable 
+    // status code to the host.
 
-    // forward decl of the image effect
-    class ImageEffect;
+    /** @brief exception indicating a required host feature is missing */
+    class HostInadequate : public std::exception {
+    protected :
+      char *_what;
+    public :
+      HostInadequate(char *what) : _what(what) {}
 
-    /** @brief namespace for memory allocation that is done via wrapping the ofx memory suite */
-    namespace Memory {
-        /** @brief allocate n bytes, returns a pointer to it */
-        void *alloc(size_t nBytes,
-                    ImageEffect *handle = 0) throw(std::bad_alloc);
-
-        /** @brief free n previously allocated memory */
-        void free(void *ptr) throw();
-
+      /** @brief reimplemented from std::exception */
+      virtual const char * what () const throw ()
+      {
+        return _what;
+      }
     };
+
+  }; // end of Exception namespace
+
+  /** @brief Throws an @ref OFX::Exception::Suite depending on the status flag passed in */
+  void 
+  throwSuiteStatusException(OfxStatus stat) 
+    throw(OFX::Exception::Suite, std::bad_alloc);
+
+  /** @brief This struct is used to return an identifier for the plugin by the function @ref OFX:Plugin::getPlugin. 
+      The members correspond to those in the OfxPlugin struct defined in ofxCore.h.
+  */
+  struct PluginID {
+    std::string  pluginIdentifier;
+    unsigned int pluginVersionMajor;
+    unsigned int pluginVersionMinor;
+  };
+
+  /** @brief This class wraps up an OFX property set */
+  class PropertySet {
+  protected :
+    /** @brief The raw property handle */
+    OfxPropertySetHandle _propHandle;
+
+    /** @brief Class static, whether we are logging each property action */
+    static int _gPropLogging;
+
+    /** @brief Do not throw an exception if a host returns 'unsupported' when setting a property */
+    static bool _gThrowOnUnsupported;
+
+  public :
+    /** @brief turns on logging of property access functions */
+    static void propEnableLogging(void)  {++_gPropLogging;}
+    
+    /** @brief turns off logging of property access functions */
+    static void propDisableLogging(void) {--_gPropLogging;}
+
+    /** @brief Do we throw an exception if a host returns 'unsupported' when setting a property. Default is true */
+    static void setThrowOnUnsupportedProperties(bool v) {_gThrowOnUnsupported = v;}
+
+    /** @brief Do we throw an exception if a host returns 'unsupported' when setting a property. Default is true */
+    static bool getThrowOnUnsupportedProperties(void) {return _gThrowOnUnsupported;}
+
+    /** @brief construct a property set */
+    PropertySet(OfxPropertySetHandle h = 0) : _propHandle(h) {}
+    virtual ~PropertySet();
+
+    /** @brief set the handle to use for this set */
+    void propSetHandle(OfxPropertySetHandle h) { _propHandle = h;}
+
+    /** @brief return the handle for this property set */
+    OfxPropertySetHandle propSetHandle(void) {return _propHandle;}
+
+    int  propGetDimension(const std::string &property) const throw(std::bad_alloc, 
+                                                                   OFX::Exception::PropertyUnknownToHost, 
+                                                                   OFX::Exception::PropertyValueIllegalToHost, 
+                                                                   OFX::Exception::Suite);
+    void propReset(const std::string &property) throw(std::bad_alloc, 
+                                                      OFX::Exception::PropertyUnknownToHost, 
+                                                      OFX::Exception::PropertyValueIllegalToHost,
+                                                      OFX::Exception::Suite);
+
+    // set single values
+    void propSetPointer(const std::string &property, void *value, int idx = 0) throw(std::bad_alloc, 
+                                                                                     OFX::Exception::PropertyUnknownToHost, 
+                                                                                     OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                     OFX::Exception::Suite);
+    void propSetString(const std::string &property, const std::string &value, int idx = 0) throw(std::bad_alloc, 
+                                                                                                 OFX::Exception::PropertyUnknownToHost, 
+                                                                                                 OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                                 OFX::Exception::Suite);
+    void propSetDouble(const std::string &property, double value, int idx = 0) throw(std::bad_alloc, 
+                                                                                     OFX::Exception::PropertyUnknownToHost, 
+                                                                                     OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                     OFX::Exception::Suite);
+    void propSetInt(const std::string &property, int value, int idx = 0) throw(std::bad_alloc, 
+                                                                               OFX::Exception::PropertyUnknownToHost, 
+                                                                               OFX::Exception::PropertyValueIllegalToHost, 
+                                                                               OFX::Exception::Suite);
+  
+    // get single values
+    void       *propGetPointer(const std::string &property, int idx = 0) const throw(std::bad_alloc, 
+                                                                                     OFX::Exception::PropertyUnknownToHost, 
+                                                                                     OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                     OFX::Exception::Suite);
+    std::string propGetString(const std::string &property, int idx = 0) const throw(std::bad_alloc, 
+                                                                                    OFX::Exception::PropertyUnknownToHost, 
+                                                                                    OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                    OFX::Exception::Suite);
+    double      propGetDouble(const std::string &property, int idx = 0) const throw(std::bad_alloc, 
+                                                                                    OFX::Exception::PropertyUnknownToHost, 
+                                                                                    OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                    OFX::Exception::Suite);
+    int         propGetInt(const std::string &property, int idx = 0) const throw(std::bad_alloc, 
+                                                                                 OFX::Exception::PropertyUnknownToHost, 
+                                                                                 OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                 OFX::Exception::Suite);
+  };
+
+  ////////////////////////////////////////////////////////////////////////////////
+
+  // forward decl of the image effect
+  class ImageEffect;
+
+  /** @brief namespace for memory allocation that is done via wrapping the ofx memory suite */
+  namespace Memory {
+    /** @brief allocate n bytes, returns a pointer to it */
+    void *alloc(size_t nBytes,
+                ImageEffect *handle = 0) throw(std::bad_alloc);
+
+    /** @brief free n previously allocated memory */
+    void free(void *ptr) throw();
+
+  };
 
 };
 
