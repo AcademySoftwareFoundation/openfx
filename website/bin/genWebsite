@@ -1,0 +1,53 @@
+#! /bin/tcsh -v
+
+set CVSTAG = HEAD
+if ($#argv >  0) then
+  set CVSTAG = $1
+endif
+
+set CHECKOUTPATH = ./OFXWEBSITE
+
+echo Checking out to $CHECKOUTPATH, cvs tag is $CVSTAG.
+
+if (-d $CHECKOUTPATH) then
+    rm -rf $CHECKOUTPATH
+endif
+
+mkdir $CHECKOUTPATH
+
+pushd  $CHECKOUTPATH
+
+
+cvs -z3 -d:pserver:anonymous@openfx.cvs.sourceforge.net:/cvsroot/openfx checkout -r $CVSTAG include  Documentation Support website
+
+find . -name CVS -depth -exec rm -f {} \;
+
+mv website/htdocs ..
+
+cd include
+doxygen ofx.doxy
+mv doc/html ../htdocs/Documentation/Doxygen
+
+cd ..
+tar cvzf htdocs/Documentation/include.tgz include
+
+cd Documentation
+make 
+tar cvzf ../htdocs/Documentation/programmingReference.tgz Reference
+tar cvzf ../htdocs/Documentation/programmingGuide.tgz Guide
+mv ofxProgrammingReference.html ofxProgrammingGuide.html *.tgz Guide Reference ../htdocs/Documentation
+
+cd ../Support
+doxygen support.doxy
+mv doc/html ../htdocs/Documentation/SupportDoxygen
+
+cd ../htdocs/Documentation
+tar cvzf doxygenDocs.tgz Doxygen
+tar cvzf supportDoxygenDocs.tgz SupportDoxygen
+
+popd
+
+#rm -rf $CHECKOUTPATH
+
+echo YOU NOW NEED TO ADD THE RELEASE VIA THE SF WEB INTERFACE
+
