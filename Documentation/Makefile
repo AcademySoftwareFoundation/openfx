@@ -15,7 +15,8 @@ XSLARGS = --stringparam  funcsynopsis.style "ansi" \
 PROPERTY_HEADER_FILES = ../include/ofxParam.h \
 	../include/ofxImageEffect.h \
 	../include/ofxInteract.h \
-	../include/ofxCore.h
+	../include/ofxCore.h \
+	../include/ofxKeySyms.h
 
 # files generate from the C comments in the actual headers and used as reference
 PROPERY_SUITE_REFERENCE_FILES = \
@@ -26,7 +27,24 @@ PROPERY_SUITE_REFERENCE_FILES = \
 	ofxImageEffectSuiteReference.xml \
 	ofxInteractSuiteReference.xml  
 
-all : ofxProgrammingGuide.html ofxProgrammingReference.html
+all : chunks ofxProgrammingGuide.html ofxProgrammingReference.html 
+
+nochunks : ofxProgrammingGuide.html ofxProgrammingReference.html 
+
+chunks :
+	rm -f *.html
+	make STYLESHEET=chunk.xsl chunkreference chunkguide
+
+chunkguide : ofxProgrammingGuide.html
+	rm -rf Guide
+	mkdir -p Guide
+	mv *.html Guide
+
+chunkreference : ofxProgrammingReference.html
+	rm -rf Reference
+	mkdir -p Reference
+	mv *.html Reference
+
 
 # Common srcs
 COMMON_SRCS = header.xml \
@@ -87,4 +105,4 @@ ofxImageEffectSuiteReference.xml : ../include/ofxImageEffect.h
 	./getSuiteReference.perl OfxImageEffectSuiteV1 $^ > $@
 
 clean :
-	rm -rf *.html props $(PROPERY_SUITE_REFERENCE_FILES) ofxPropertiesReference.xml
+	rm -rf *.html props $(PROPERY_SUITE_REFERENCE_FILES) ofxPropertiesReference.xml Reference Guide

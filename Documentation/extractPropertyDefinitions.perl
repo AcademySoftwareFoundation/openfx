@@ -11,6 +11,7 @@ processFile("../include/ofxCore.h");
 processFile("../include/ofxParam.h");
 processFile("../include/ofxImageEffect.h");
 processFile("../include/ofxInteract.h");
+processFile("../include/ofxKeySyms.h");
 exit;
 
 processFile("fred.c");

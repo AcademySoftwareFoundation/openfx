@@ -229,7 +229,7 @@
     </para>
   </section>
   
-  <section id="kOfxActionBeginInstanceChanged"><title >The Generic Begin/End Instance Changed Actions</title>
+  <section id="kOfxActionBeginInstanceChanged"><title id="kOfxActionEndInstanceChanged">The Generic Begin/End Instance Changed Actions</title>
     <blockquote><programlisting>
 	#include "ofxCore.h"
 	#define kOfxActionBeginInstanceChanged "OfxActionBeginInstanceChanged" 

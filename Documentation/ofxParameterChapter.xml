@@ -57,12 +57,12 @@
       <para>
 	Some parameter types are multi dimensional, these are...
 	<itemizedlist>
-	  <listitem><link linkend='kOfxParamTypeDouble2D'><code>kOfxParamTypeDouble2D</code></link>    - 2 doubles</listitem>
-	  <listitem><link linkend='kOfxParamTypeInteger2D'><code>kOfxParamTypeInteger2D</code></link>   - int X 2</listitem>
-	  <listitem><link linkend='kOfxParamTypeDouble3D'><code>kOfxParamTypeDouble3D</code></link>    - double X 3</listitem>
-	  <listitem><link linkend='kOfxParamTypeInteger3D'><code>kOfxParamTypeInteger3D</code></link>   - int X 3</listitem>
-	  <listitem><link linkend='kOfxParamTypeRGB'><code>kOfxParamTypeRGB</code></link>         - double X 3</listitem>
-	  <listitem><link linkend='kOfxParamTypeRGBA'><code>kOfxParamTypeRGBA</code></link>        - double X 4</listitem>
+	  <listitem><code>kOfxParamTypeDouble2D</code>    - 2 doubles</listitem>
+	  <listitem><code>kOfxParamTypeInteger2D</code>   - int X 2</listitem>
+	  <listitem><code>kOfxParamTypeDouble3D</code>    - double X 3</listitem>
+	  <listitem><code>kOfxParamTypeInteger3D</code>   - int X 3</listitem>
+	  <listitem><code>kOfxParamTypeRGB</code>         - double X 3</listitem>
+	  <listitem><code>kOfxParamTypeRGBA</code>        - double X 4</listitem>
 	</itemizedlist>
       </para>
       <para>
@@ -75,7 +75,7 @@
     
     <section id='ParametersInteger'><title>Integer Parameters</title>
       <para>
-	These are typed by <link linkend='kOfxParamTypeInteger'><code>kOfxParamTypeInteger</code></link>, <link linkend='kOfxParamTypeInteger2D'><code>kOfxParamTypeInteger2D</code></link> and <link linkend='kOfxParamTypeInteger3D'><code>kOfxParamTypeInteger3D</code></link>.
+	These are typed by <code>kOfxParamTypeInteger</code>, <code>kOfxParamTypeInteger2D</code> and <code>kOfxParamTypeInteger3D</code>.
       </para>
       <para>
 	Integer parameters are of 1, 2 and 3D varieties and contain integer values, between INT_MIN and INT_MAX. 
@@ -85,7 +85,7 @@
     <section id='ParametersDouble'><title>Double Parameters</title>
       
       <para>
-	These are typed by <link linkend='kOfxParamTypeDouble'><code>kOfxParamTypeDouble</code></link>, <link linkend='kOfxParamTypeDouble2D'><code>kOfxParamTypeDouble2D</code></link> and <link linkend='kOfxParamTypeDouble3D'><code>kOfxParamTypeDouble3D</code></link>.
+	These are typed by <code>kOfxParamTypeDouble</code>, <code>kOfxParamTypeDouble2D</code> and <code>kOfxParamTypeDouble3D</code>.
       </para>
       <para>
 	Double parameters are of 1, 2 and 3D varieties and contain double precision floating point values. 
@@ -93,27 +93,27 @@
     </section>
     <section id='ParametersColour'><title>Colour Parameters</title>
       <para>
-	These are typed by <link linkend='kOfxParamTypeRGB'><code>kOfxParamTypeRGB</code></link> and <link linkend='kOfxParamTypeRGBA'><code>kOfxParamTypeRGBA</code></link>.
+	These are typed by <code>kOfxParamTypeRGB</code> and <code>kOfxParamTypeRGBA</code>.
       </para>
       <para>
 	Colour parameters are 3 or 4 dimensional double precision floating point parameters. They are displayed using the host's appropriate interface for a colour. Values are always normalised in the range [0 .. 1], with 0 being the nominal black point and 1 being the white point.
       </para>
     </section>
     
-    <section id='ParametersBoolean'><title>Boolean Parameters</title>
+    <section id='kOfxParamTypeBoolean'><title>Boolean Parameters</title>
       
       <para>
-	This is typed by <link linkend='kOfxParamTypeBoolean'><code>kOfxParamTypeBoolean</code></link>.
+	This is typed by <code>kOfxParamTypeBoolean</code>.
       </para>
       <para>
 	Boolean parameters are integer values that can have only one of two values, 0 or 1. 
       </para>
     </section>
     
-    <section id='ParametersChoice'><title>Choice Parameters</title>
+    <section id='kOfxParamTypeChoice'><title>Choice Parameters</title>
       
       <para>
-	This is typed by <link linkend='kOfxParamTypeChoice'><code>kOfxParamTypeChoice</code></link>.
+	This is typed by <code>kOfxParamTypeChoice</code>.
       </para>
       <para>
 	Choice parameters are integer values from 0 to N-1, which correspond to N labeled options. 
@@ -132,9 +132,9 @@ gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, n, "nth Choic
       </para>
     </section>
     
-    <section id='ParametersString'><title>String Parameters</title>
+    <section id='kOfxParamTypeString'><title>String Parameters</title>
       <para>
-	This is typed by <link linkend='kOfxParamTypeString'><code>kOfxParamTypeString</code></link>.
+	This is typed by <code>kOfxParamTypeString</code>.
       </para>
       <para>
 	String parameters contain null terminated <code>char *</code> UTF8 C strings. They can be of several different variants, which is controlled by the <link linkend='kOfxParamPropStringMode'><code>kOfxParamPropStringMode</code></link> property, these are 
@@ -142,18 +142,18 @@ gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, n, "nth Choic
       
       <para>
 	<itemizedlist>
-	  <listitem><link linkend='kOfxParamStringIsSingleLine'><code>kOfxParamStringIsSingleLine</code></link> - single line string</listitem>
-	  <listitem><link linkend='kOfxParamStringIsMultiLine'><code>kOfxParamStringIsMultiLine</code></link>  - multi line string</listitem>
-	  <listitem><link linkend='kOfxParamStringIsFilePath'><code>kOfxParamStringIsFilePath</code></link>   - single line string interpretted as a file path on the computer
+	  <listitem><code>kOfxParamStringIsSingleLine</code> - single line string</listitem>
+	  <listitem><code>kOfxParamStringIsMultiLine</code>  - multi line string</listitem>
+	  <listitem><code>kOfxParamStringIsFilePath</code>   - single line string interpretted as a file path on the computer
 	  this should have appropriate file browser UIs available</listitem>
-	  <listitem><link linkend='kOfxParamStringIsDirectoryPath'><code>kOfxParamStringIsDirectoryPath</code></link> - similar to the above, but refers to a directory rather than a file</listitem>
-	  <listitem><link linkend='kOfxParamStringIsLabel'><code>kOfxParamStringIsLabel</code></link>      - string behaves as a pseudo parameter and acts as a label on the interface in this case the string is not editable by the user</listitem>
+	  <listitem><code>kOfxParamStringIsDirectoryPath</code> - similar to the above, but refers to a directory rather than a file</listitem>
+	  <listitem><code>kOfxParamStringIsLabel</code>      - string behaves as a pseudo parameter and acts as a label on the interface in this case the string is not editable by the user</listitem>
 	</itemizedlist>
       </para>
     </section>
-    <section id='ParametersGroup'><title>Group Parameters</title>
+    <section id='kOfxParamTypeGroup'><title>Group Parameters</title>
       <para>
-	This is typed by <link linkend='kOfxParamTypeGroup'><code>kOfxParamTypeGroup</code></link>.
+	This is typed by <code>kOfxParamTypeGroup</code>.
       </para>
       <para>
 	Group parameters allow all parameters to be arranged in a tree hierarchy. They have no value, they are purely a grouping element.
@@ -172,10 +172,10 @@ gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, n, "nth Choic
       </para>
     </section>
     
-    <section id='ParametersPageParam'><title>Page Parameters</title>
+    <section id='kOfxParamTypePage'><title>Page Parameters</title>
       
       <para>
-	This is typed by <link linkend='kOfxParamTypePage'><code>kOfxParamTypePage</code></link>.
+	This is typed by <code>kOfxParamTypePage</code>.
       </para>
       
       <para>
@@ -183,10 +183,10 @@ gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, n, "nth Choic
       </para>
     </section>
     
-    <section id='ParametersCustom'><title>Custom Parameters</title>
+    <section id='kOfxParamTypeCustom'><title>Custom Parameters</title>
       
       <para>
-	This is typed by <link linkend='kOfxParamTypeCustom'><code>kOfxParamTypeCustom</code></link>.
+	This is typed by <code>kOfxParamTypeCustom</code>.
       </para>
       
       <para>
@@ -210,13 +210,13 @@ gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, n, "nth Choic
       </para>
     </section>
     
-    <section id='ParametersPushButton'><title>Push Button Parameters</title>
+    <section id='kOfxParamTypePushButton'><title>Push Button Parameters</title>
       
       <para>
-	This is typed by <link linkend='kOfxParamTypePushButton'><code>kOfxParamTypePushButton</code></link>.
+	This is typed by <code>kOfxParamTypePushButton</code>.
       </para>
       <para>
-	Push button parameters have no value, they are there so a plugin can detect if they have been pressed and perform some action. If pressed, a <link linkend='kOfxActionInstanceChanged'><code>kOfxActionInstanceChanged</code></link> action will be issued on the parameter with a <link linkend='kOfxPropChangeReason'><code>kOfxPropChangeReason</code></link> of <link linkend='kOfxChangeUserEdited'><code>kOfxChangeUserEdited</code></link>.
+	Push button parameters have no value, they are there so a plugin can detect if they have been pressed and perform some action. If pressed, a <link linkend='kOfxActionInstanceChanged'><code>kOfxActionInstanceChanged</code></link> action will be issued on the parameter with a <link linkend='kOfxPropChangeReason'><code>kOfxPropChangeReason</code></link> of <code>kOfxChangeUserEdited</code>.
       </para>
     </section>
   </section>
@@ -225,32 +225,32 @@ gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, n, "nth Choic
     <para>
       By default the following parameter types animate...
       <itemizedlist>
-	<listitem><link linkend='kOfxParamTypeInteger'><code>kOfxParamTypeInteger</code></link></listitem>
-	<listitem><link linkend='kOfxParamTypeInteger2D'><code>kOfxParamTypeInteger2D</code></link></listitem>
-	<listitem><link linkend='kOfxParamTypeInteger3D'><code>kOfxParamTypeInteger3D</code></link></listitem>
-	<listitem><link linkend='kOfxParamTypeDouble'><code>kOfxParamTypeDouble</code></link></listitem>
-	<listitem><link linkend='kOfxParamTypeDouble2D'><code>kOfxParamTypeDouble2D</code></link></listitem>
-	<listitem><link linkend='kOfxParamTypeDouble3D'><code>kOfxParamTypeDouble3D</code></link></listitem>
-	<listitem><link linkend='kOfxParamTypeRGBA'><code>kOfxParamTypeRGBA</code></link></listitem>
-	<listitem><link linkend='kOfxParamTypeRGB'><code>kOfxParamTypeRGB</code></link></listitem>
+	<listitem><code>kOfxParamTypeInteger</code></listitem>
+	<listitem><code>kOfxParamTypeInteger2D</code></listitem>
+	<listitem><code>kOfxParamTypeInteger3D</code></listitem>
+	<listitem><code>kOfxParamTypeDouble</code></listitem>
+	<listitem><code>kOfxParamTypeDouble2D</code></listitem>
+	<listitem><code>kOfxParamTypeDouble3D</code></listitem>
+	<listitem><code>kOfxParamTypeRGBA</code></listitem>
+	<listitem><code>kOfxParamTypeRGB</code></listitem>
       </itemizedlist>
     </para>
     <para>
       The following types cannot animate...
       <itemizedlist>
-	<listitem><link linkend='kOfxParamTypeGroup'><code>kOfxParamTypeGroup</code></link></listitem>
-	<listitem><link linkend='kOfxParamTypePage'><code>kOfxParamTypePage</code></link></listitem>
-	<listitem><link linkend='kOfxParamTypePushButton'><code>kOfxParamTypePushButton</code></link></listitem>
+	<listitem><code>kOfxParamTypeGroup</code></listitem>
+	<listitem><code>kOfxParamTypePage</code></listitem>
+	<listitem><code>kOfxParamTypePushButton</code></listitem>
       </itemizedlist>
     </para>
     
     <para>
       The following may animate, depending on the host. Properties exist on the host to check this. If the host does support animation on them, then they do _not_ animate by default. They are...
       <itemizedlist>
-	<listitem><link linkend='kOfxParamTypeCustom'><code>kOfxParamTypeCustom</code></link></listitem>
-	<listitem><link linkend='kOfxParamTypeString'><code>kOfxParamTypeString</code></link></listitem>
-	<listitem><link linkend='kOfxParamTypeBoolean'><code>kOfxParamTypeBoolean</code></link></listitem>
-	<listitem><link linkend='kOfxParamTypeChoice'><code>kOfxParamTypeChoice</code></link></listitem>
+	<listitem><code>kOfxParamTypeCustom</code></listitem>
+	<listitem><code>kOfxParamTypeString</code></listitem>
+	<listitem><code>kOfxParamTypeBoolean</code></listitem>
+	<listitem><code>kOfxParamTypeChoice</code></listitem>
       </itemizedlist>
     </para>
     <para>
@@ -289,7 +289,7 @@ gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, n, "nth Choic
     <section id='ParametersInterfacesPagedLayouts'><title>Paged Parameter Editors</title>
       
       <para>
-	A paged layout of controls is difficult to standardise, as the size of the page and controls, how the controls are positioned on the page, how many controls appear on a page etc... depend very much upon the host implementation. A paged layout is ideally best described in the .XML resource supplied by the plugin, however a fallback page layout can be specified in OFX via the <link linkend='kOfxParamTypePage'><code>kOfxParamTypePage</code></link> parameter type.
+	A paged layout of controls is difficult to standardise, as the size of the page and controls, how the controls are positioned on the page, how many controls appear on a page etc... depend very much upon the host implementation. A paged layout is ideally best described in the .XML resource supplied by the plugin, however a fallback page layout can be specified in OFX via the <code>kOfxParamTypePage</code> parameter type.
       </para>
       <para>
 	Several host properties are associated with paged layouts, these are...
@@ -315,7 +315,7 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
 	The host then places the parameters on that page in the order they were added, starting at the top left and going down columns, then across rows as they fill.
       </para>
       <para>
-	Note that there are two pseudo parameters names used to help control layout, the <link linkend='kOfxParamPageSkipRow'><code>kOfxParamPageSkipRow</code></link> and <link linkend='kOfxParamPageSkipColumn'><code>kOfxParamPageSkipColumn</code></link>. These will help control how parameters are added to a page, allowing vertical or horizontal slots to be skipped.
+	Note that there are two pseudo parameters names used to help control layout, the <code>kOfxParamPageSkipRow</code> and <code>kOfxParamPageSkipColumn</code>. These will help control how parameters are added to a page, allowing vertical or horizontal slots to be skipped.
       </para>
       <para>
 	A host sets the order of pages by using the instance's <link linkend='kOfxPluginPropParamPageOrder'><code>kOfxPluginPropParamPageOrder</code></link> property. Note that this property can vary from context to context, so you can exclude pages in contexts they are not useful in. For example...
@@ -356,11 +356,11 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
       </para>
       
       <para>
-	An example would be a 'preset' choice parameter in a sky simulation whose job is to set other parameters to values that achieve certain looks, eg "Dusk", "Midday", "Stormy", "Night" etc... This parameter has a value change callback which looks for  <link linkend='kOfxParamEventUserEdited'><code>kOfxParamEventUserEdited</code></link> then sets other parameters, sky colour, cloud density, sun position etc.... It also resets itself to the first choice, which says "Example Skys...". 
+	An example would be a 'preset' choice parameter in a sky simulation whose job is to set other parameters to values that achieve certain looks, eg "Dusk", "Midday", "Stormy", "Night" etc... This parameter has a value change callback which looks for  <code>kOfxParamEventUserEdited</code> then sets other parameters, sky colour, cloud density, sun position etc.... It also resets itself to the first choice, which says "Example Skys...". 
       </para>
       
       <para>
-	Rather than have many undo events appear on the undo stack for each individual parameter change, the effect groups them via the paramEditBegin/paramEditEnd and gets a single undo event. The 'preset' parameter would also not want to be undoable as it such an event is redunant. Note that as the 'preset' has been changed it will be sent another instance changed action, however it will have a reason of <link linkend='kOfxChangePluginEdited'><code>kOfxChangePluginEdited</code></link>, which it ignores and so stops an infinite loop occuring.
+	Rather than have many undo events appear on the undo stack for each individual parameter change, the effect groups them via the paramEditBegin/paramEditEnd and gets a single undo event. The 'preset' parameter would also not want to be undoable as it such an event is redunant. Note that as the 'preset' has been changed it will be sent another instance changed action, however it will have a reason of <code>kOfxChangePluginEdited</code>, which it ignores and so stops an infinite loop occuring.
       </para>
     </section>
   </section>
@@ -393,24 +393,24 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
   
   <section id="ParameterPropertiesVariantTypes"><title>Parameter Properties Whose Type Vary</title>
     <para>
-      Some properties type depends on the kind of the parameter, eg: <link linkend='kOfxParamPropDefault'><code>kOfxParamPropDefault</code></link> is an int for a integer parameter but a double X 2 for a <link linkend='kOfxParamTypeDouble2D'><code>kOfxParamTypeDouble2D</code></link> parameter.
+      Some properties type depends on the kind of the parameter, eg: <link linkend='kOfxParamPropDefault'><code>kOfxParamPropDefault</code></link> is an int for a integer parameter but a double X 2 for a <code>kOfxParamTypeDouble2D</code> parameter.
     </para>
     <para>
       The variant property types are as follows....
       <itemizedlist>
-	<listitem><link linkend='kOfxParamTypeInteger'><code>kOfxParamTypeInteger</code></link>    - int X 1</listitem>
-	<listitem><link linkend='kOfxParamTypeDouble'><code>kOfxParamTypeDouble</code></link>     - double X 1</listitem>
-	<listitem><link linkend='kOfxParamTypeBoolean'><code>kOfxParamTypeBoolean</code></link>    - int X 1</listitem>
-	<listitem><link linkend='kOfxParamTypeChoice'><code>kOfxParamTypeChoice</code></link>     - int X 1</listitem>
-	<listitem><link linkend='kOfxParamTypeRGBA'><code>kOfxParamTypeRGBA</code></link>       - double X 4 (normalised to 0..1 range)</listitem>
-	<listitem><link linkend='kOfxParamTypeRGB'><code>kOfxParamTypeRGB</code></link>        - double X 3 (normalised to 0..1 range)</listitem>
-	<listitem><link linkend='kOfxParamTypeDouble2D'><code>kOfxParamTypeDouble2D</code></link>   - double X 2</listitem>
-	<listitem><link linkend='kOfxParamTypeInteger2D'><code>kOfxParamTypeInteger2D</code></link>  - int X 2</listitem>
-	<listitem><link linkend='kOfxParamTypeDouble3D'><code>kOfxParamTypeDouble3D</code></link>   - double X 3</listitem>
-	<listitem><link linkend='kOfxParamTypeInteger3D'><code>kOfxParamTypeInteger3D</code></link>  - int X 3</listitem>
-	<listitem><link linkend='kOfxParamTypeString'><code>kOfxParamTypeString</code></link>     - char * X 1</listitem>
-	<listitem><link linkend='kOfxParamTypeCustom'><code>kOfxParamTypeCustom</code></link>     - char * X 1</listitem>
-	<listitem><link linkend='kOfxParamTypePushButton'><code>kOfxParamTypePushButton</code></link> - none</listitem>
+	<listitem><code>kOfxParamTypeInteger</code>    - int X 1</listitem>
+	<listitem><code>kOfxParamTypeDouble</code>     - double X 1</listitem>
+	<listitem><code>kOfxParamTypeBoolean</code>    - int X 1</listitem>
+	<listitem><code>kOfxParamTypeChoice</code>     - int X 1</listitem>
+	<listitem><code>kOfxParamTypeRGBA</code>       - double X 4 (normalised to 0..1 range)</listitem>
+	<listitem><code>kOfxParamTypeRGB</code>        - double X 3 (normalised to 0..1 range)</listitem>
+	<listitem><code>kOfxParamTypeDouble2D</code>   - double X 2</listitem>
+	<listitem><code>kOfxParamTypeInteger2D</code>  - int X 2</listitem>
+	<listitem><code>kOfxParamTypeDouble3D</code>   - double X 3</listitem>
+	<listitem><code>kOfxParamTypeInteger3D</code>  - int X 3</listitem>
+	<listitem><code>kOfxParamTypeString</code>     - char * X 1</listitem>
+	<listitem><code>kOfxParamTypeCustom</code>     - char * X 1</listitem>
+	<listitem><code>kOfxParamTypePushButton</code> - none</listitem>
       </itemizedlist>
     </para>
   </section>
@@ -420,35 +420,35 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
     <para>
       Double parameters can be used to represent a variety of data, by flagging what a double parameter is representing, a plug-in allows a host to represent to the user a more appropriate interface than a raw numerical value. Double parameters have the <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> property, which gives some meaning to the value. This can be one of...
       <itemizedlist>
-	<listitem><link linkend='kOfxParamDoubleTypePlain'><code>kOfxParamDoubleTypePlain</code></link> - parameter has no special interpretation,</listitem>
-	<listitem><link linkend='kOfxParamDoubleTypeAngle'><code>kOfxParamDoubleTypeAngle</code></link> - parameter is to be interpretted as an angle,</listitem>
-	<listitem><link linkend='kOfxParamDoubleTypeScale'><code>kOfxParamDoubleTypeScale</code></link> - parameter is to be interpretted as a scale factor,</listitem>
-	<listitem><link linkend='kOfxParamDoubleTypeTime'><code>kOfxParamDoubleTypeTime</code></link>  - parameter represents a time value (1D only),</listitem>
-	<listitem><link linkend='kOfxParamDoubleTypeAbsoluteTime'><code>kOfxParamDoubleTypeAbsoluteTime</code></link>  - parameter represents an absolute time value (1D only),</listitem>
-	<listitem><link linkend='kOfxParamDoubleTypeNormalisedX'><code>kOfxParamDoubleTypeNormalisedX</code></link> - normalised size wrt to the project's X dimension (1D only),</listitem>
-	<listitem><link linkend='kOfxParamDoubleTypeNormalisedXAbsolute'><code>kOfxParamDoubleTypeNormalisedXAbsolute</code></link> - normalised absolute position on the X axis (1D only)</listitem>
-	<listitem><link linkend='kOfxParamDoubleTypeNormalisedY'><code>kOfxParamDoubleTypeNormalisedY</code></link> - normalised size wrt to the project's Y dimension(1D only),</listitem>
-	<listitem><link linkend='kOfxParamDoubleTypeNormalisedYAbsolute'><code>kOfxParamDoubleTypeNormalisedYAbsolute</code></link> - normalised absolute position on the Y axis (1D only)</listitem>
-	<listitem><link linkend='kOfxParamDoubleTypeNormalisedXY'><code>kOfxParamDoubleTypeNormalisedXY</code></link> - normalised to the project's X and Y size (2D only),</listitem>
-	<listitem><link linkend='kOfxParamDoubleTypeNormalisedXYAbsolute'><code>kOfxParamDoubleTypeNormalisedXYAbsolute</code></link> - normalised to the projects X and Y size, and is an absolute position on the image plane.</listitem>
+	<listitem><code>kOfxParamDoubleTypePlain</code> - parameter has no special interpretation,</listitem>
+	<listitem><code>kOfxParamDoubleTypeAngle</code> - parameter is to be interpretted as an angle,</listitem>
+	<listitem><code>kOfxParamDoubleTypeScale</code> - parameter is to be interpretted as a scale factor,</listitem>
+	<listitem><code>kOfxParamDoubleTypeTime</code>  - parameter represents a time value (1D only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeAbsoluteTime</code>  - parameter represents an absolute time value (1D only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeNormalisedX</code> - normalised size with respect to the project's X dimension (1D only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeNormalisedXAbsolute</code> - normalised absolute position on the X axis (1D only)</listitem>
+	<listitem><code>kOfxParamDoubleTypeNormalisedY</code> - normalised size wrt to the project's Y dimension(1D only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeNormalisedYAbsolute</code> - normalised absolute position on the Y axis (1D only)</listitem>
+	<listitem><code>kOfxParamDoubleTypeNormalisedXY</code> - normalised to the project's X and Y size (2D only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeNormalisedXYAbsolute</code> - normalised to the projects X and Y size, and is an absolute position on the image plane.</listitem>
       </itemizedlist>
     </para>
   </section>
   
-  <section id='ParameterPropertiesDoubleTypesPlain'><title>Plain Double Parameters </title>
+  <section id='kOfxParamDoubleTypePlain'><title>Plain Double Parameters </title>
     
     <para>
-      Double parameters with their <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> property set to <link linkend='kOfxParamDoubleTypePlain'><code>kOfxParamDoubleTypePlain</code></link> are uninterpretted. The values represented to the user are what is reported back to the effect when values are retrieved. 1, 2 and 3D parameters can be flagged as <link linkend='kOfxParamDoubleTypePlain'><code>kOfxParamDoubleTypePlain</code></link>, which is the default.
+      Double parameters with their <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> property set to <code>kOfxParamDoubleTypePlain</code> are uninterpretted. The values represented to the user are what is reported back to the effect when values are retrieved. 1, 2 and 3D parameters can be flagged as <code>kOfxParamDoubleTypePlain</code>, which is the default.
     </para>
     
     <para>
       For example a physical simulation plugin might have a 'mass' double parameter, which is in kilograms, which should be displayed and used as a raw value.
     </para>
   </section>
-  <section id='ParameterPropertiesDoubleTypesAngle'><title>Angle Double Parameters </title>
+  <section id='kOfxParamDoubleTypeAngle'><title>Angle Double Parameters </title>
     
     <para>
-      Double parameters with their <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> property set to <link linkend='kOfxParamDoubleTypeAngle'><code>kOfxParamDoubleTypeAngle</code></link> are interpretted as angles. The host could use some fancy angle widget in it's interface, representing degrees, angles mils whatever. However, the values returned to a plugin are always in degrees. Applicable to 1, 2 and 3D parameters.
+      Double parameters with their <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> property set to <code>kOfxParamDoubleTypeAngle</code> are interpretted as angles. The host could use some fancy angle widget in it's interface, representing degrees, angles mils whatever. However, the values returned to a plugin are always in degrees. Applicable to 1, 2 and 3D parameters.
     </para>
     
     <para>
@@ -456,27 +456,27 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
     </para>
     
   </section>
-  <section id='ParameterPropertiesDoubleTypesScale'><title>Scale Double Parameters </title>
+  <section id='kOfxParamDoubleTypeScale'><title>Scale Double Parameters </title>
     
     <para>
-      Double parameters with their <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> property set to <link linkend='kOfxParamDoubleTypeScale'><code>kOfxParamDoubleTypeScale</code></link> are interpretted as scale factors. The host can represent these as 1..100 percentages, 0..1 scale factors, fractions or whatever is appropriate for its interface. However, the plugin sees these as a straight scale factor, in the 0..1 range. Applicable to 1, 2 and 3D parameters.
+      Double parameters with their <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> property set to <code>kOfxParamDoubleTypeScale</code> are interpretted as scale factors. The host can represent these as 1..100 percentages, 0..1 scale factors, fractions or whatever is appropriate for its interface. However, the plugin sees these as a straight scale factor, in the 0..1 range. Applicable to 1, 2 and 3D parameters.
     </para>
     <para>
       For example a plugin that scales the size of an image would declare a 'image scale' parameter and use the raw value of that to scale the image.
     </para>
   </section>
-  <section id='ParameterPropertiesDoubleTypesTime'><title>Time Double Parameters </title>
+  <section id='kOfxParamDoubleTypeTime'><title>Time Double Parameters </title>
     
     <para>
-      Double parameters with their <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> property set to <link linkend='kOfxParamDoubleTypeTime'><code>kOfxParamDoubleTypeTime</code></link> are interpretted as a time. The host can represent these as frames, seconds, milliseconds, millenia or whatever it feels is appropriate. However, a visual effect plugin sees such values in 'frames'. Applicable only to 1D double parameters. It is an error to set this on any other type of double parameter.
+      Double parameters with their <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> property set to <code>kOfxParamDoubleTypeTime</code> are interpretted as a time. The host can represent these as frames, seconds, milliseconds, millenia or whatever it feels is appropriate. However, a visual effect plugin sees such values in 'frames'. Applicable only to 1D double parameters. It is an error to set this on any other type of double parameter.
     </para>
     <para>
       For example a plugin that does motion blur would have a 'shutter time' parameter and flags that as a time parameter. The value returned would be used as the length of the shutter, in frames.</para>
   </section>
-  <section id='ParameterPropertiesDoubleTypesAbsoluteTime'><title>Absolute Time Double Parameters </title>
+  <section id='kOfxParamDoubleTypeAbsoluteTime'><title>Absolute Time Double Parameters </title>
     
     <para>
-      Double parameters with their <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> property set to <link linkend='kOfxParamDoubleTypeAbsoluteTime'><code>kOfxParamDoubleTypeAbsoluteTime</code></link> are interpretted as an absolute time from the begining of the effect. The host can represent these as frames, seconds, milliseconds, millenia or whatever it feels is appropriate. However, a plugin sees such values in 'frames' from the beginning of a clip. Applicable only to 1D double parameters. It is an error to set this on any other type of double parameter.
+      Double parameters with their <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> property set to <code>kOfxParamDoubleTypeAbsoluteTime</code> are interpretted as an absolute time from the begining of the effect. The host can represent these as frames, seconds, milliseconds, millenia or whatever it feels is appropriate. However, a plugin sees such values in 'frames' from the beginning of a clip. Applicable only to 1D double parameters. It is an error to set this on any other type of double parameter.
     </para>
     
     <para>
@@ -501,12 +501,12 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
     <para>
       Parameters can choose to be normalised in several ways...
       <itemizedlist>
-	<listitem><link linkend='kOfxParamDoubleTypeNormalisedX'><code>kOfxParamDoubleTypeNormalisedX</code></link> - normalised size wrt to the project's X dimension (1D only),</listitem>
-	<listitem><link linkend='kOfxParamDoubleTypeNormalisedXAbsolute'><code>kOfxParamDoubleTypeNormalisedXAbsolute</code></link> - normalised absolute position on the X axis (1D only)</listitem>
-	<listitem><link linkend='kOfxParamDoubleTypeNormalisedY'><code>kOfxParamDoubleTypeNormalisedY</code></link> - normalised size wrt to the project's Y dimension(1D only),</listitem>
-	<listitem><link linkend='kOfxParamDoubleTypeNormalisedYAbsolute'><code>kOfxParamDoubleTypeNormalisedYAbsolute</code></link> - normalised absolute position on the Y axis (1D only)</listitem>
-	<listitem><link linkend='kOfxParamDoubleTypeNormalisedXY'><code>kOfxParamDoubleTypeNormalisedXY</code></link> - normalised to the project's X and Y size (2D only),</listitem>
-	<listitem><link linkend='kOfxParamDoubleTypeNormalisedXYAbsolute'><code>kOfxParamDoubleTypeNormalisedXYAbsolute</code></link> - normalised to the projects X and Y size, and is an absolute position on the image plane.</listitem>
+	<listitem><code>kOfxParamDoubleTypeNormalisedX</code> - normalised size wrt to the project's X dimension (1D only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeNormalisedXAbsolute</code> - normalised absolute position on the X axis (1D only)</listitem>
+	<listitem><code>kOfxParamDoubleTypeNormalisedY</code> - normalised size wrt to the project's Y dimension(1D only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeNormalisedYAbsolute</code> - normalised absolute position on the Y axis (1D only)</listitem>
+	<listitem><code>kOfxParamDoubleTypeNormalisedXY</code> - normalised to the project's X and Y size (2D only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeNormalisedXYAbsolute</code> - normalised to the projects X and Y size, and is an absolute position on the image plane.</listitem>
       </itemizedlist>
     </para>
     <para>

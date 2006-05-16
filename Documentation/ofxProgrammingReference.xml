@@ -1,6 +1,6 @@
 <book>
   <bookinfo>
-    <title>Programming Reference For The OFX Image Effect Plug-in API, 1.0</title>
+    <title>The OFX Image Effect Plug-in API, 1.0, Programming Reference</title>
 
     <author>
       <firstname>Bruno</firstname>
@@ -14,15 +14,17 @@
       <holder>Bruno Nicoletti</holder>
     </copyright>
 
-    <releaseinfo>Document version 0.4</releaseinfo>
+    <releaseinfo>Document version 0.5</releaseinfo>
   </bookinfo>
 
   <preface>
     <title>Foreword</title>
+    <para>This is a mostly complete reference guide to the OFX image effect plugin architecture.
+    </para>
     <para>
-      <emphasis>THINGS TO DO BIGNOSE!</emphasis>
+      <emphasis>THINGS TO DO!</emphasis>
       <itemizedlist>
-	<listitem>copy all documentation across from the .h files and docbookify it</listitem>
+       <listitem>pictures</listitem>
 	<listitem>edit the thing into a somewhat cleaner form
 	  <itemizedlist>
 	    <listitem>a section devoted to clipGetImage and what has to happen</listitem>
@@ -31,7 +33,6 @@
 	</listitem>
       </itemizedlist>
     </para>
-    <para>UNFINISHED</para>
   </preface>
   
   <chapter><title>Structure of The OFX and the Image Effect API</title>
@@ -222,7 +223,7 @@ OfxExport OfxPlugin *OfxGetPlugin(int nth); </programlisting></blockquote>
         
     &ofxHostStruct;
     
-    <section id="mainEntryPoint"><title>The Plug-in Main Entry Point And Actions</title>
+    <section id="mainEntryPoint"><title id="OfxPluginEntryPoint">The Plug-in Main Entry Point And Actions</title>
       <para>Actions are how a host communicates with a plug-in. They are in effect generic function calls. Actions are issued via a plug-in's <function>mainEntry</function> function pointer found in its <code>OfxPlugin</code> struct. The function signature for the main entry point is...  </para>
       <blockquote><programlisting>
 #include "ofxCore.h"
@@ -835,8 +836,8 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	<para>
 	  Infinite RoDs are used to indicate an effect can fill pixels in anywhere on the image plane it is asked to. For example
 	  a no-input noise generator that generates random colours on a per pixel basis.
-	  An infinite RoD is flagged by setting the minimums to be <link linkend="kOfxFlagInfiniteMin"><code>kOfxFlagInfiniteMin</code></link> 
-	  and the maxmimums to be <link linkend="kOfxFlagInfiniteMax"><code>kOfxFlagInfiniteMax</code></link>,
+	  An infinite RoD is flagged by setting the minimums to be <code>kOfxFlagInfiniteMin</code>
+	  and the maxmimums to be <code>kOfxFlagInfiniteMax</code>,
 	  for both double and integer rects.
 	  Hosts and plug-ins need to be infinite RoD aware. Hosts need to clip such RoDs to an appropriate rectangle, typically the
 	  project extent. Plug-ins need to check for infinite RoDs when asking input clips for them and to pass them through unless
@@ -870,7 +871,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
       </para>
 
       <para>
-	The purpose of the <link linkend="kOfxImageEffectActionGetRegionOfInterest"><code>kOfxImageEffectActionGetRegionOfInterest</code></link>
+	The purpose of the <link linkend="kOfxImageEffectActionGetRegionsOfInterest"><code>kOfxImageEffectActionGetRegionsOfInterest</code></link>
 	action is for the host to ask an effect what areas it needs from each input clip, to render a specific output region. An effect needs
 	to examine its set of parameters and the region it has been asked to render to determine how much of <emphasis>each</emphasis> input
 	clip it needs.
@@ -1089,7 +1090,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
     <para>
       A host indicates which contexts it supports by setting the <code>kOfxImageEffectPropSupportedContexts</code> property in
       the global host descriptor. A plugin indicates which contexts it supports by setting this on the effect descriptor passed to
-      the <link linkend="kOfxImageEffectActionDescribe"><code>kOfxImageEffectActionDescribe</code></link> action.
+      the <link linkend="kOfxActionDescribe"><code>kOfxActionDescribe</code></link> action.
     </para>
     
     <para>
@@ -1112,7 +1113,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
       property on the instance handle.
     </para>
 
-    <section><title>The Generator Context</title>
+    <section id="kOfxImageEffectContextGenerator"><title>The Generator Context</title>
       <para>
 	A generator context is for cases where a plugin can create images without any input clips, eg: a colour bar generator.
       </para>
@@ -1152,7 +1153,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
       </para>
     </section>
 
-    <section><title>The Filter Context</title>
+    <section id="kOfxImageEffectContextFilter"><title>The Filter Context</title>
       <para>
 	A filter effect is the ordinary way most effects are used with a single input. They allow track or layer based
 	hosts that cannot present extra input to use an effect.
@@ -1182,7 +1183,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
     </section>
 
 
-    <section><title>The Transition Context</title>
+    <section id="kOfxImageEffectContextTransition"><title>The Transition Context</title>
       <para>
 	Transitions are effects that blend from one clip to another over time, eg: a wipe or a cross dissolve.
       </para>
@@ -1218,7 +1219,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
       </para>
     </section>
 
-    <section><title>The Paint Context</title>
+    <section id="kOfxImageEffectContextPaint"><title>The Paint Context</title>
       <para>
 	Paint effects are effects used inside digital painting system, where the effect is limited to a small
 	area of the source image via  a masking image. Perhaps 'brush' would have been a better choice for
@@ -1258,7 +1259,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
       </para>
     </section>
 
-    <section><title>The Retimer Context</title>
+    <section id="kOfxImageEffectContextRetimer"><title>The Retimer Context</title>
       <para>
 	The retimer context is for effects that change the length of a clip by interpolating frames 
 	from the source clip to create an inbetween output frame.
@@ -1551,7 +1552,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	    <listitem>render scale in Y <emphasis>SY</emphasis>, found on the second dimension of the effect property <link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link></listitem>
 	    <listitem>field scale in Y <emphasis>FS</emphasis>, this is 
 	      <itemizedlist>
-		<listitem>0.5 if the image property <link linkend="kOfxImagePropField"><code>kOfxImagePropField</code></link> is <link linkend="kOfxImageFieldLower"><code>kOfxImageFieldLower</code></link> or <link linkend="kOfxImageFieldUpper"><code>kOfxImageFieldUpper</code></link></listitem>
+		<listitem>0.5 if the image property <link linkend="kOfxImagePropField"><code>kOfxImagePropField</code></link> is <code>kOfxImageFieldLower</code> or <code>kOfxImageFieldUpper</code></listitem>
 		<listitem>1.0 otherwise.</listitem>
 	      </itemizedlist>
 	    </listitem>
@@ -1670,21 +1671,21 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	  can choose to represent them to the user in whatever space it chooses. The values that this property can
 	  take are...
 	  <itemizedlist>
-	    <listitem><link linkend="kOfxParamDoubleTypeNormalisedX"><code>kOfxParamDoubleTypeNormalisedX</code></link> - normalised size wrt to the project's X dimension (1D only),</listitem>
-	    <listitem><link linkend="kOfxParamDoubleTypeNormalisedXAbsolute"><code>kOfxParamDoubleTypeNormalisedXAbsolute</code></link> - normalised absolute position on the X axis (1D only)</listitem>
-	    <listitem><link linkend="kOfxParamDoubleTypeNormalisedY"><code>kOfxParamDoubleTypeNormalisedY</code></link> - normalised size wrt to the project's Y dimension(1D only),</listitem>
-	    <listitem><link linkend="kOfxParamDoubleTypeNormalisedYAbsolute"><code>kOfxParamDoubleTypeNormalisedYAbsolute</code></link> - normalised absolute position on the Y axis (1D only)</listitem>
-	    <listitem><link linkend="kOfxParamDoubleTypeNormalisedXY"><code>kOfxParamDoubleTypeNormalisedXY</code></link> - normalised to the project's X and Y size (2D only),</listitem>
-	    <listitem><link linkend="kOfxParamDoubleTypeNormalisedXYAbsolute"><code>kOfxParamDoubleTypeNormalisedXYAbsolute</code></link> - normalised to the projects X and Y size, and is an absolute position on the image plane.</listitem>
+	    <listitem><code>kOfxParamDoubleTypeNormalisedX</code> - normalised size with respect to the project's X dimension (1D only),</listitem>
+	    <listitem><code>kOfxParamDoubleTypeNormalisedXAbsolute</code> - normalised absolute position on the X axis (1D only)</listitem>
+	    <listitem><code>kOfxParamDoubleTypeNormalisedY</code> - normalised size wrt to the project's Y dimension(1D only),</listitem>
+	    <listitem><code>kOfxParamDoubleTypeNormalisedYAbsolute</code> - normalised absolute position on the Y axis (1D only)</listitem>
+	    <listitem><code>kOfxParamDoubleTypeNormalisedXY</code> - normalised to the project's X and Y size (2D only),</listitem>
+	    <listitem><code>kOfxParamDoubleTypeNormalisedXYAbsolute</code> - normalised to the projects X and Y size, and is an absolute position on the image plane.</listitem>
 	  </itemizedlist>
 	</para>
 
 	<para> 
 	  For example, we have an effect that draws a circle. It has two parameters a 1D double radius parametere and a 2D double position parameter. 
-	  It would flag the radius to be <link linkend="kOfxParamDoubleTypeNormalisedX"><code>kOfxParamDoubleTypeNormalisedX</code></link>, fetch the value and scale that by the project size before we render the circle. The host should present such normalised parameters to the user in a 'sensible' range. So for a PAL project, it would be from 0..768, where the plug-in sees 0..1. 
+	  It would flag the radius to be <code>kOfxParamDoubleTypeNormalisedX</code>, fetch the value and scale that by the project size before we render the circle. The host should present such normalised parameters to the user in a 'sensible' range. So for a PAL project, it would be from 0..768, where the plug-in sees 0..1. 
 	</para>
 	<para>
-	  The position can be handled by the <link linkend="kOfxParamDoubleTypeNormalisedXYAbsolute"><code>kOfxParamDoubleTypeNormalisedXYAbsolute</code></link> case. In which case the plugin must scale the parameter's value by the project size and add in the project offset. This will allow the positional parameter to be moved between projects transparently.  
+	  The position can be handled by the <code>kOfxParamDoubleTypeNormalisedXYAbsolute</code> case. In which case the plugin must scale the parameter's value by the project size and add in the project offset. This will allow the positional parameter to be moved between projects transparently.  
 	</para>
       </section>
     </section>
@@ -1698,7 +1699,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 
       <para>
 	All clip instances have a property that indicates the frames for which they can generate image data. 
-	This is <link linkend="kOfxImageClipPropFrameRange"><code>kOfxImageClipPropFrameRange</code></link>, a 2D 
+	This is <link linkend="kOfxImageEffectPropFrameRange"><code>kOfxImageEffectPropFrameRange</code></link>, a 2D 
 	double property, with the first dimension being the first, and 
 	the second being last the time at which the clip will generate data.
       </para>
@@ -1910,7 +1911,7 @@ Source    -2            12          25
 	Images may be fetched from an attached clip in the following situations...
 	<itemizedlist>
 	  <listitem>in the <link linkend="kOfxImageEffectActionRender"><code>kOfxImageEffectActionRender</code></link> action</listitem>
-	  <listitem>in the <link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link> and <link linkend="kOfxActionEndInstanceChanged"><code>kOfxActionEndInstanceChanged</code></link> actions with a <link linkend="kOfxPropChangeReason"><code>kOfxPropChangeReason</code></link> of <link linkend="kOfxChangeUserEdited"><code>kOfxChangeUserEdited</code></link></listitem>
+	  <listitem>in the <link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link> and <link linkend="kOfxActionEndInstanceChanged"><code>kOfxActionEndInstanceChanged</code></link> actions with a <link linkend="kOfxPropChangeReason"><code>kOfxPropChangeReason</code></link> of <code>kOfxChangeUserEdited</code></listitem>
 	</itemizedlist>
       </para>
 
@@ -1931,9 +1932,9 @@ Source    -2            12          25
       <para>
 	All images and clips have a premultiplication state. This is used to indicate how the image should interpret RGB (or YUV) pixels, with respect to alpha. The premultiplication state can be...
 	<itemizedlist>
-	  <listitem><link linkend="kOfxImageOpaque"><code>kOfxImageOpaque</code></link>          - the image is opaque and so has no premultiplication state, but the alpha component in all pixels is set to the white point,</listitem>
-	  <listitem><link linkend="kOfxImagePreMultiplied"><code>kOfxImagePreMultiplied</code></link>   - the image is premultiplied by it's alpha,</listitem>
-	  <listitem><link linkend="kOfxImageUnPreMultiplied"><code>kOfxImageUnPreMultiplied</code></link> - the image is unpremultiplied.</listitem>
+	  <listitem><code>kOfxImageOpaque</code>          - the image is opaque and so has no premultiplication state, but the alpha component in all pixels is set to the white point,</listitem>
+	  <listitem><code>kOfxImagePreMultiplied</code>   - the image is premultiplied by it's alpha,</listitem>
+	  <listitem><code>kOfxImageUnPreMultiplied</code> - the image is unpremultiplied.</listitem>
 	</itemizedlist>
       </para>
 
@@ -2134,9 +2135,9 @@ Source    -2            12          25
 	safety by setting the <link linkend="kOfxImageEffectPluginRenderThreadSafety"><code>kOfxImageEffectPluginRenderThreadSafety</code></link>
 	string property. This can be set to one of three states....
 	<itemizedlist>
-	  <listitem><link linkend="kOfxImageEffectRenderUnsafe"><code>kOfxImageEffectRenderUnsafe</code></link>       - indicating that only a single 'render' action can be made at any time amoung all instances,</listitem>
-	  <listitem><link linkend="kOfxImageEffectRenderInstanceSafe"><code>kOfxImageEffectRenderInstanceSafe</code></link> - indicating that any instance can have a single 'render' action at any one time,</listitem>
-	  <listitem><link linkend="kOfxImageEffectRenderFullySafe"><code>kOfxImageEffectRenderFullySafe</code></link>    - indicating that any instance of a plugin can have multiple renders running simultaneously</listitem>
+	  <listitem><code>kOfxImageEffectRenderUnsafe</code>       - indicating that only a single 'render' action can be made at any time amoung all instances,</listitem>
+	  <listitem><code>kOfxImageEffectRenderInstanceSafe</code> - indicating that any instance can have a single 'render' action at any one time,</listitem>
+	  <listitem><code>kOfxImageEffectRenderFullySafe</code>    - indicating that any instance of a plugin can have multiple renders running simultaneously</listitem>
 	</itemizedlist>
       </para>
 
@@ -2149,7 +2150,7 @@ Source    -2            12          25
 	
 	<para>
 	  If the plugin has set <link linkend="kOfxImageEffectPluginRenderThreadSafety"><code>kOfxImageEffectPluginRenderThreadSafety</code></link>
-	  to <link linkend="kOfxImageEffectRenderFullySafe"><code>kOfxImageEffectRenderFullySafe</code></link>, the host may choose to render a
+	  to <code>kOfxImageEffectRenderFullySafe</code>, the host may choose to render a
 	  single frame across multiple CPUs by having each CPU render a different window. However, the plugin may wish to remain in charge of 
 	  multithreading a single frame. The plugin set property 
 	  <link linkend="kOfxImageEffectPluginPropHostFrameThreading"><code>kOfxImageEffectPluginPropHostFrameThreading</code></link> 
@@ -2215,9 +2216,9 @@ Source    -2            12          25
 	spatial/temporal ordering of the fields in that image. The
 	<link linkend="kOfxImageClipPropFieldOrder"><code>kOfxImageClipPropFieldOrder</code></link> clip and image instance property can be...
 	<itemizedlist>
-	  <listitem><link linkend="kOfxImageFieldNone"><code>kOfxImageFieldNone</code></link>  - the material is unfielded</listitem>
-	  <listitem><link linkend="kOfxImageFieldLower"><code>kOfxImageFieldLower</code></link> - the material is fielded, with scan line 0,2,4.... occuring first in a frame</listitem>
-	  <listitem><link linkend="kOfxImageFieldUpper"><code>kOfxImageFieldUpper</code></link> - the material is fielded, with scan line 1,3,5.... occuring first in a frame</listitem>
+	  <listitem><code>kOfxImageFieldNone</code>  - the material is unfielded</listitem>
+	  <listitem><code>kOfxImageFieldLower</code> - the material is fielded, with scan line 0,2,4.... occuring first in a frame</listitem>
+	  <listitem><code>kOfxImageFieldUpper</code> - the material is fielded, with scan line 1,3,5.... occuring first in a frame</listitem>
 	</itemizedlist>
       </para>
 
@@ -2225,10 +2226,10 @@ Source    -2            12          25
 	Images extracted from a clip flag what their fieldedness is with the property 
 	<link linkend="kOfxImagePropField"><code>kOfxImagePropField</code></link>, this can be....
 	<itemizedlist>
-	  <listitem><link linkend="kOfxImageFieldNone"><code>kOfxImageFieldNone</code></link>  - the image is an unfielded frame</listitem>
-	  <listitem><link linkend="kOfxImageFieldBoth"><code>kOfxImageFieldBoth</code></link>  - the image is fielded and contains both interlaced fields </listitem>
-	  <listitem><link linkend="kOfxImageFieldLower"><code>kOfxImageFieldLower</code></link> - the image is fielded and contains a single field, being the lower field (lines 0,2,4...)</listitem>
-	  <listitem><link linkend="kOfxImageFieldUpper"><code>kOfxImageFieldUpper</code></link> - the image is fielded and contains a single field, being the upper field (lines 1,3,5...)</listitem>
+	  <listitem><code>kOfxImageFieldNone</code>  - the image is an unfielded frame</listitem>
+	  <listitem><code>kOfxImageFieldBoth</code>  - the image is fielded and contains both interlaced fields </listitem>
+	  <listitem><code>kOfxImageFieldLower</code> - the image is fielded and contains a single field, being the lower field (lines 0,2,4...)</listitem>
+	  <listitem><code>kOfxImageFieldUpper</code> - the image is fielded and contains a single field, being the upper field (lines 1,3,5...)</listitem>
 	</itemizedlist>
       </para>
 
@@ -2260,19 +2261,19 @@ Source    -2            12          25
 
       <para>
 	The render action's argument property
-	<link linkend="kOfxImageEffectInstancePropFieldToRender"><code>kOfxImageEffectInstancePropFieldToRender</code></link>
+	<link linkend="kOfxImageEffectPropFieldToRender"><code>kOfxImageEffectPropFieldToRender</code></link>
 	tells the effect which field it should render, this can be one of...
 	<itemizedlist>
-	  <listitem><link linkend="kOfxImageFieldNone"><code>kOfxImageFieldNone</code></link>  - there are no fields to deal with, the image is full frame</listitem>
-	  <listitem><link linkend="kOfxImageFieldBoth"><code>kOfxImageFieldBoth</code></link>  - the imagery is fielded and both scan lines should be renderred</listitem>
-	  <listitem><link linkend="kOfxImageFieldLower"><code>kOfxImageFieldLower</code></link> - the lower field is being rendered (lines 0,2,4...)</listitem>
-	  <listitem><link linkend="kOfxImageFieldUpper"><code>kOfxImageFieldUpper</code></link> - the upper field is being rendered (lines 1,3,5...)</listitem>
+	  <listitem><code>kOfxImageFieldNone</code>  - there are no fields to deal with, the image is full frame</listitem>
+	  <listitem><code>kOfxImageFieldBoth</code>  - the imagery is fielded and both scan lines should be renderred</listitem>
+	  <listitem><code>kOfxImageFieldLower</code> - the lower field is being rendered (lines 0,2,4...)</listitem>
+	  <listitem><code>kOfxImageFieldUpper</code> - the upper field is being rendered (lines 1,3,5...)</listitem>
 	</itemizedlist>
       </para>
 
       <para>&note;
-	<link linkend="kOfxImageEffectInstancePropFieldToRender"><code>kOfxImageEffectInstancePropFieldToRender</code></link> will be set
-	to <link linkend="kOfxImageFieldBoth"><code>kOfxImageFieldBoth</code></link> if
+	<link linkend="kOfxImageEffectPropFieldToRender"><code>kOfxImageEffectPropFieldToRender</code></link> will be set
+	to <code>kOfxImageFieldBoth</code> if
 	<link linkend="kOfxImageEffectPluginPropFieldRenderTwiceAlways"><code>kOfxImageEffectPluginPropFieldRenderTwiceAlways</code></link> 
 	is set to 0 on the plugin,
       </para>
@@ -2281,9 +2282,9 @@ Source    -2            12          25
 	A plugin can specify how it wishes fielded footage to be fetched from a clip via the clip descriptor property
 	<link linkend="kOfxImageClipPropFieldExtraction"><code>kOfxImageClipPropFieldExtraction</code></link>. This can be one of...
 	<itemizedlist>
-	  <listitem><link linkend="kOfxImageFieldBoth"><code>kOfxImageFieldBoth</code></link> fetch a full frame interlaced image</listitem>
-	  <listitem><link linkend="kOfxImageFieldSingle"><code>kOfxImageFieldSingle</code></link> fetch a single field, making a half height image</listitem>
-	  <listitem><link linkend="kOfxImageFieldDoubled"><code>kOfxImageFieldDoubled</code></link> fetch a single field, but doubling each line and so making a full height image (default)</listitem>
+	  <listitem><code>kOfxImageFieldBoth</code> fetch a full frame interlaced image</listitem>
+	  <listitem><code>kOfxImageFieldSingle</code> fetch a single field, making a half height image</listitem>
+	  <listitem><code>kOfxImageFieldDoubled</code> fetch a single field, but doubling each line and so making a full height image (default)</listitem>
 	</itemizedlist>
       </para>
 
@@ -2596,6 +2597,66 @@ typedef struct OfxPropertySetStruct *OfxPropertySetHandle; </programlisting></bl
   <chapter id="ParametersSuite">
     <title>Parameters Suite</title>
     &ofxParametersSuiteReference;
+
+
+    <refentry id="OfxCustomParamInterpFuncV1">
+      <refmeta>
+        <refentrytitle><type>OfxCustomParamInterpFuncV1</type></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><type>OfxCustomParamInterpFuncV1</type></refname>
+	
+        <refpurpose>Typedef for functions set as the ::kOfxParamPropCustomInterpCallbackV1 on custom params.</refpurpose>
+      </refnamediv>
+      
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxParam.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef>typedef <typename>OfxStatus</typename><function>(OfxCustomParamInterpFuncV1)</function></funcdef>
+              <paramdef>OfxParamSetHandle <parameter>instance</parameter></paramdef>
+              <paramdef>OfxPropertySetHandle <parameter>inArgs</parameter></paramdef>
+              <paramdef>OfxPropertySetHandle <parameter>outArgs</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+      
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+<listitem>instance -  the plugin instance that the custom parameter being interpolated occurs in
+</listitem>
+<listitem>inArgs - property handle holding the following properties...
+   <itemizedlist>
+    <listitem>kOfxPropName - the name of the custom parameter to interpolate</listitem>
+    <listitem>kOfxPropTime - absolute time the interpolation is ocurring at</listitem>
+    <listitem>kOfxParamPropCustomValue - string property that gives the value of the two keyframes to interpolate, in this case 2D</listitem>
+    <listitem>kOfxParamPropInterpolationTime - 2D double property that gives the time of the two keyframes we are interpolating</listitem>
+    <listitem>kOfxParamPropInterpolationAmount - 1D double property indicating how much to interpolate between the two keyframes</listitem>
+</itemizedlist>
+</listitem>
+<listitem>outargs - property handle holding the following properties...
+   <itemizedlist>
+    <listitem>kOfxParamPropCustomValue - the value of the interpolated custom parameter, in this case 1D</listitem>
+   </itemizedlist>
+</listitem>
+    </itemizedlist>
+  </refsect2>
+
+      <refsect2>
+        <title>Description</title>
+        <para>
+This function allows custom parameters to animate by performing interpolation between keys.</para>
+<para>
+The plugin needs to parse the two strings encoding keyframes on either side of the time 
+we need a value for. It should then interpolate a new value for it, encode it into a string and set
+the <link linkend="kOfxParamPropCustomValue"><code>kOfxParamPropCustomValue</code></link> property with this on the outArgs handle.
+</para>
+<para> The interp value is a linear interpolation amount, however his may be derived from a cubic (or other) curve.</para>
+      </refsect2>
+    </refentry>
+
   </chapter>
   
   <chapter id="MemorySuite">
@@ -2605,6 +2666,55 @@ typedef struct OfxPropertySetStruct *OfxPropertySetHandle; </programlisting></bl
   
   <chapter id="MultiThreadingSuite">
     <title>Multi Threading Suite</title>
+    <para>
+    This chapter describes the multithreading suite designed for simple SMP multi-processing.
+    </para>
+
+    <refentry id="OfxThreadFunctionV1">
+      <refmeta>
+        <refentrytitle><type>OfxThreadFunctionV1</type></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><type>OfxThreadFunctionV1</type></refname>
+	
+        <refpurpose>Typedef for functions passed to the multithreading suite</refpurpose>
+      </refnamediv>
+      
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxMultiThread.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef>typedef <typename>OfxStatus</typename><function>(OfxThreadFunctionV1)</function></funcdef>
+              <paramdef>unsigned int<parameter>threadIndex</parameter></paramdef>
+              <paramdef>unsigned int<parameter>threadMax</parameter></paramdef>
+              <paramdef>void *<parameter>customArg</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+      
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>threadIndex -  unique index of this thread, will be between 0 and threadMax
+</listitem>
+<listitem>threadMax - to total number of threads executing this function
+</listitem>
+<listitem>customArg - the argument passed into <link linkend="OfxMultiThreadSuiteV1_multiThread"><code>OfxMultiThreadSuiteV1::multiThread</code></link>
+</listitem>
+    </itemizedlist>
+  </refsect2>
+
+      <refsect2>
+        <title>Description</title>
+        <para>
+	      Typedef for functions that are used to spawn SMP threads must have this function signature. Such functions are passed to
+<link linkend="OfxMultiThreadSuiteV1_multiThread"><code>OfxMultiThreadSuiteV1::multiThread</code></link>.
+        </para>
+      </refsect2>
+    </refentry>
+    
     &ofxThreadingSuiteReference;
   </chapter>
   
@@ -2620,7 +2730,10 @@ typedef struct OfxPropertySetStruct *OfxPropertySetHandle; </programlisting></bl
   </chapter>
   
   <chapter id="PropertiesByName">
-    <title>Property By Name</title>
+    <title>Properties By Name</title>
+    <para>
+       This chapter lists each property in the OFX Image Effect API by name.
+    </para>
     &propertiesReference; 
   </chapter>
   
