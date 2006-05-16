@@ -70,6 +70,23 @@ public :
 };
 
 
+////////////////////////////////////////////////////////////////////////////////
+/** @brief filter version of the plugin */
+class GeneralPlugin : public FilterPlugin {
+protected :
+    // do not need to delete this, the ImageEffect is managing them for us
+    OFX::Clip *extraClip_;
+
+public :
+    /** @brief ctor */
+    GeneralPlugin(OfxImageEffectHandle handle)
+      : FilterPlugin(handle)
+      , extraClip_(0)
+    {
+        extraClip_ = fetchClip("Extra");
+    }
+};
+
 /** @brief OFX namespace */
 namespace OFX {
 
@@ -107,6 +124,8 @@ namespace OFX {
             // add the supported contexts, only filter at the moment
             desc.addSupportedContext(eContextGenerator);
             desc.addSupportedContext(eContextFilter);
+            desc.addSupportedContext(eContextGeneral);
+
 
             // add supported pixel depths
             desc.addSupportedBitDepth(eBitDepthUByte);
@@ -182,9 +201,20 @@ namespace OFX {
 
         /** @brief The describe in context function, passed a plugin descriptor and a context */
         void describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context) 
-        {
+    {
             // Source clip only in the filter context
-            if(context == eContextFilter) {
+            if(context == eContextGeneral) {
+                // create the mandated source clip
+                ClipDescriptor *srcClip = desc.defineClip("Extra");
+                srcClip->addSupportedComponent(ePixelComponentRGBA);
+                srcClip->setTemporalClipAccess(false);
+                srcClip->setOptional(false);
+                srcClip->setSupportsTiles(true);
+                srcClip->setIsMask(false);
+            }
+	    
+            // Source clip only in the filter context
+            if(context == eContextFilter || context == eContextGeneral) {
                 // create the mandated source clip
                 ClipDescriptor *srcClip = desc.defineClip("Source");
                 srcClip->addSupportedComponent(ePixelComponentRGBA);
@@ -334,6 +364,9 @@ namespace OFX {
                 return new FilterPlugin(handle);
             else if(context == eContextGenerator) 
                 return new GeneratorPlugin(handle);
+            else if(context == eContextGeneral) 
+                return new GeneralPlugin(handle);
+	    
 
             // HACK!!! Throw something here!
             return NULL; // to shut the warning up
