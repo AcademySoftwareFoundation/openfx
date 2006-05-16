@@ -1,4 +1,4 @@
-#! /bin/tcsh -v
+#! /bin/tcsh -ve
 
 set CVSTAG = HEAD
 if ($#argv >  0) then
@@ -20,9 +20,9 @@ pushd  $CHECKOUTPATH
 
 cvs -z3 -d:pserver:anonymous@openfx.cvs.sourceforge.net:/cvsroot/openfx checkout -r $CVSTAG include  Documentation Support website
 
-find . -name CVS -depth -exec rm -f {} \;
+find . -name CVS -depth -exec rm -rf {} \;
 
-mv website/htdocs ..
+mv website/htdocs .
 
 cd include
 doxygen ofx.doxy
@@ -35,7 +35,7 @@ cd Documentation
 make 
 tar cvzf ../htdocs/Documentation/programmingReference.tgz Reference
 tar cvzf ../htdocs/Documentation/programmingGuide.tgz Guide
-mv ofxProgrammingReference.html ofxProgrammingGuide.html *.tgz Guide Reference ../htdocs/Documentation
+mv ofxProgrammingReference.html ofxProgrammingGuide.html Guide Reference ../htdocs/Documentation
 
 cd ../Support
 doxygen support.doxy
@@ -46,8 +46,9 @@ tar cvzf doxygenDocs.tgz Doxygen
 tar cvzf supportDoxygenDocs.tgz SupportDoxygen
 
 popd
+tar cvzf $CHECKOUTPATH/htdocs.tgz htdocs
 
-#rm -rf $CHECKOUTPATH
+rm -rf $CHECKOUTPATH
 
-echo YOU NOW NEED TO ADD THE RELEASE VIA THE SF WEB INTERFACE
+echo YOU NOW NEED TO COPY THE WEBSITE TO SF.NET
 
