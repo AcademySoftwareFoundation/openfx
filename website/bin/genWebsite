@@ -17,7 +17,6 @@ mkdir $CHECKOUTPATH
 
 pushd  $CHECKOUTPATH
 
-
 cvs -z3 -d:pserver:anonymous@openfx.cvs.sourceforge.net:/cvsroot/openfx checkout -r $CVSTAG include  Documentation Support website
 
 find . -name CVS -depth -exec rm -rf {} \;
@@ -46,7 +45,7 @@ tar cvzf doxygenDocs.tgz Doxygen
 tar cvzf supportDoxygenDocs.tgz SupportDoxygen
 
 popd
-tar cvzf $CHECKOUTPATH/htdocs.tgz htdocs
+tar cvzf htdocs.tgz $CHECKOUTPATH/htdocs
 
 rm -rf $CHECKOUTPATH
 

@@ -1,7 +1,7 @@
 #! /bin/tcsh -v
 
 if ($#argv < 1) then
-  echo 'USAGE : genRelease LABEL [CVSTAG]'
+  echo 'USAGE : genSupportRelease LABEL [CVSTAG]'
   echo where 
   echo '   LABEL is the label for the release'
   echo '   CVSTAG is an optional CVS tag to checkout, the default is the head'
@@ -25,35 +25,26 @@ mkdir $CHECKOUTPATH
 
 pushd  $CHECKOUTPATH
 
+cvs  -z3 -d:pserver:anonymous@openfx.cvs.sourceforge.net:/cvsroot/openfx checkout -r $CVSTAG Support
 
-mkdir Docs
+cd Support
 
-cvs -z3 -d:pserver:anonymous@openfx.cvs.sourceforge.net:/cvsroot/openfx checkout -r $CVSTAG include Examples Documentation
+doxygen support.doxy
 
-find . -name CVS -depth -exec rm -rf {} \;
-
-cd include
-doxygen ofx.doxy
-mv doc/html ../Docs/DoxygenDocumentation
-cd ../Documentation
-make nochunks
-
-mv *.html ../Docs
+mv doc/html ../doc
 
 cd ..
 
-tar cvf - Docs | gzip > openfx-doc-$LABEL.tar.gz 
-tar cvf - Examples | gzip > openfx-examples-$LABEL.tar.gz 
-tar cvf - include | gzip > openfx-include-$LABEL.tar.gz 
+tar cvf - doc | gzip > openfxSupport-doc-$LABEL.tar.gz 
+tar cvf - Support | gzip > openfxSupport-src-$LABEL.tar.gz 
 
 ftp upload.sourceforge.net << wibble
 anonymous
 brunonicoletti@users.sourceforge.net
 bin
 cd /incoming
-put openfx-doc-$LABEL.tar.gz
-put openfx-examples-$LABEL.tar.gz
-put openfx-include-$LABEL.tar.gz
+put openfxSupport-doc-$LABEL.tar.gz 
+put openfxSupport-src-$LABEL.tar.gz 
 exit
 wibble
 
@@ -62,4 +53,3 @@ popd
 rm -rf $CHECKOUTPATH
 
 echo YOU NOW NEED TO ADD THE RELEASE VIA THE SF WEB INTERFACE
-
