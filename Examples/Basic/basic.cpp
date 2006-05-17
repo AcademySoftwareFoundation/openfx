@@ -419,7 +419,7 @@ Clamp(T v, int min, int max)
 template <class PIX> inline PIX *
 pixelAddress(PIX *img, OfxRectI rect, int x, int y, int bytesPerLine)
 {  
-  if(x < rect.x1 || x >= rect.x2 || y < rect.y1 || y > rect.y2)
+  if(x < rect.x1 || x >= rect.x2 || y < rect.y1 || y >= rect.y2)
     return 0;
   PIX *pix = (PIX *) (((char *) img) + (y - rect.y1) * bytesPerLine);
   pix += x - rect.x1;  
@@ -537,7 +537,9 @@ public :
           if(maskPix) {
             maskV = float(*maskPix)/float(max);
           }
-	  maskPix++;
+          else
+            maskV = 0.0f;
+          maskPix++;
         }
 
         // figure the scale values per component
