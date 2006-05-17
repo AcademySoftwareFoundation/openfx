@@ -27,6 +27,8 @@ pushd  $CHECKOUTPATH
 
 cvs  -z3 -d:pserver:anonymous@openfx.cvs.sourceforge.net:/cvsroot/openfx checkout -r $CVSTAG Support
 
+find . -name CVS -depth -exec rm -rf {} \;
+
 cd Support
 
 doxygen support.doxy
