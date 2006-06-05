@@ -419,7 +419,7 @@ Clamp(T v, int min, int max)
 template <class PIX> inline PIX *
 pixelAddress(PIX *img, OfxRectI rect, int x, int y, int bytesPerLine)
 {  
-  if(x < rect.x1 || x >= rect.x2 || y < rect.y1 || y >= rect.y2)
+  if(x < rect.x1 || x >= rect.x2 || y < rect.y1 || y >= rect.y2 || !img)
     return 0;
   PIX *pix = (PIX *) (((char *) img) + (y - rect.y1) * bytesPerLine);
   pix += x - rect.x1;  
@@ -679,31 +679,45 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   int       maskRowBytes;
   int       maskBitDepth = 8;
   bool      maskIsAlpha;
+  bool      hasMask = false;
   if(myData->isGeneralEffect) {
     // is the mask connected?
     if(ofxuIsClipConnected(instance, "Mask")) {
-      
       // get its data
-      gEffectHost->clipGetImage(myData->maskClip, time, NULL, &maskImg);
-      maskRowBytes  =  ofxuGetImageRowBytes(maskImg);
-      maskBitDepth  =  ofxuGetImagePixelDepth(maskImg);
-      maskIsAlpha   = !ofxuGetImagePixelsAreRGBA(maskImg);
-      maskRect      =  ofxuGetImageBounds(maskImg);
-      mask          =  ofxuGetImageData(maskImg);
-
-      // and see that it is a single component
-      if(!maskIsAlpha || maskBitDepth != srcBitDepth) {
-        gEffectHost->clipReleaseImage(maskImg);
-        gEffectHost->clipReleaseImage(sourceImg);
-        gEffectHost->clipReleaseImage(outputImg);
-        return kOfxStatErrImageFormat;
+      OfxStatus stat = gEffectHost->clipGetImage(myData->maskClip, time, NULL, &maskImg);
+      if(stat == kOfxStatOK) {
+            
+        maskRowBytes  =  ofxuGetImageRowBytes(maskImg);
+        maskBitDepth  =  ofxuGetImagePixelDepth(maskImg);
+        maskIsAlpha   = !ofxuGetImagePixelsAreRGBA(maskImg);
+        maskRect      =  ofxuGetImageBounds(maskImg);
+        mask          =  ofxuGetImageData(maskImg);
+            
+        // and see that it is a single component
+        if(!maskIsAlpha || maskBitDepth != srcBitDepth) {
+          gEffectHost->clipReleaseImage(maskImg);
+          gEffectHost->clipReleaseImage(sourceImg);
+          gEffectHost->clipReleaseImage(outputImg);
+          return kOfxStatErrImageFormat;
+        }  
+      }
+      else {
+        // we have a mask consisting of all zeros, but no data pointer for it
+        // fake a data pointer
+        maskRowBytes  =  0;
+        maskBitDepth  =  srcBitDepth;
+        maskIsAlpha   = true;
+        maskRect.x1 = maskRect.y1 = 0;
+        maskRect.x2 = maskRect.y2 = 0; // empty rect
+        static float blackMask = 0; // all zeros of 8, 16 and float case, nicely aligned
+        mask        =  (void *) &blackMask;        
       }
     }
   }
 
   // see if they have the same depths and bytes and all
   if(srcBitDepth != dstBitDepth || srcIsAlpha != dstIsAlpha) {
-    if(mask)
+    if(maskImg)
       gEffectHost->clipReleaseImage(maskImg);
     gEffectHost->clipReleaseImage(sourceImg);
     gEffectHost->clipReleaseImage(outputImg);

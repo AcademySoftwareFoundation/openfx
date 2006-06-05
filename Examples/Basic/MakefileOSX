@@ -1,5 +1,6 @@
-CXXFLAGS = -I../../include
+CXXFLAGS = -I../../include -g
 OPTIMIZER = -O3
 
-basic.bundle : basic.o
-	$(CXX) -bundle basic.o -o basic.bundle
+basic.ofx : basic.o
+	$(CXX) -bundle basic.o -o basic.ofx
+	cp basic.ofx basic.ofx.bundle/Contents/MacOS/
