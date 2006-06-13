@@ -694,8 +694,8 @@ namespace OFX {
             PropertyDescription(kOfxParamPropInteractV1,           OFX::ePointer,1, eDescDefault, (void *)(0), eDescFinished),
             PropertyDescription(kOfxParamPropInteractSize,         OFX::eDouble, 2, eDescFinished),
             PropertyDescription(kOfxParamPropInteractSizeAspect,   OFX::eDouble, 1, eDescDefault, 1.0, eDescFinished),
-            PropertyDescription(kOfxParamPropInteractMinimumSize,  OFX::eInt,    2, eDescDefault, 10.0, 10.0, eDescFinished),
-            PropertyDescription(kOfxParamPropInteractPreferedSize, OFX::eInt,    2, eDescDefault, 10.0, 10.0, eDescFinished),
+            PropertyDescription(kOfxParamPropInteractMinimumSize,  OFX::eInt,    2, eDescDefault, 10, 10, eDescFinished),
+            PropertyDescription(kOfxParamPropInteractPreferedSize, OFX::eInt,    2, eDescDefault, 10, 10, eDescFinished),
         };
 
         /** @brief Props for params that can hold values. */
@@ -713,7 +713,7 @@ namespace OFX {
         static PropertyDescription gStringParamProps[ ] =
         {
             PropertyDescription(kOfxParamPropDefault,              OFX::eString, 1, eDescFinished),
-            PropertyDescription(kOfxParamPropAnimates,             OFX::eInt,    0, eDescDefault, 0, eDescFinished),
+            PropertyDescription(kOfxParamPropAnimates,             OFX::eInt,    1, eDescDefault, 0, eDescFinished),
             PropertyDescription(kOfxParamPropStringMode,           OFX::eString, 1, eDescDefault, kOfxParamStringIsSingleLine, eDescFinished),
             PropertyDescription(kOfxParamPropStringFilePathExists, OFX::eInt,    1, eDescDefault, 1, eDescFinished),
         };
@@ -729,14 +729,14 @@ namespace OFX {
         static PropertyDescription gRGBColourParamProps[ ] =
         {
             PropertyDescription(kOfxParamPropDefault,              OFX::eDouble, 3, eDescFinished),
-            PropertyDescription(kOfxParamPropAnimates,             OFX::eInt,    1, eDescDefault, 0, eDescFinished),
+            PropertyDescription(kOfxParamPropAnimates,             OFX::eInt,    1, eDescDefault, 1, eDescFinished),
         };
 
         /** @brief properties for an RGBA colour param */
         static PropertyDescription gRGBAColourParamProps[ ] =
         {
             PropertyDescription(kOfxParamPropDefault,              OFX::eDouble, 4, eDescFinished),
-            PropertyDescription(kOfxParamPropAnimates,             OFX::eInt,    1, eDescDefault, 0, eDescFinished),
+            PropertyDescription(kOfxParamPropAnimates,             OFX::eInt,    1, eDescDefault, 1, eDescFinished),
         };
 
         /** @brief properties for a boolean param */
@@ -1138,25 +1138,25 @@ namespace OFX {
                 PropertyDescription *desc;
       
                 // do custom params animate ?
-                desc = new PropertyDescription(kOfxParamPropAnimates, OFX::eInt,
+                desc = new PropertyDescription(kOfxParamPropAnimates, OFX::eInt, 1,
                                                eDescDefault, int(gHostDescription->supportsCustomAnimation),
                                                eDescFinished);
                 gCustomParamPropSet.addProperty(desc, true);
 
                 // do strings animate ?
-                desc = new PropertyDescription(kOfxParamPropAnimates, OFX::eInt,
+                desc = new PropertyDescription(kOfxParamPropAnimates, OFX::eInt, 1,
                                                eDescDefault, int(gHostDescription->supportsStringAnimation),
                                                eDescFinished);
                 gStringParamPropSet.addProperty(desc, true);
 
                 // do choice params animate      
-                desc = new PropertyDescription(kOfxParamPropAnimates, OFX::eInt,
+                desc = new PropertyDescription(kOfxParamPropAnimates, OFX::eInt, 1,
                                                eDescDefault, int(gHostDescription->supportsChoiceAnimation),
                                                eDescFinished);
                 gChoiceParamPropSet.addProperty(desc, true);
 
                 // do choice params animate      
-                desc = new PropertyDescription(kOfxParamPropAnimates, OFX::eInt,
+                desc = new PropertyDescription(kOfxParamPropAnimates, OFX::eInt, 1,
                                                eDescDefault, int(gHostDescription->supportsBooleanAnimation),
                                                eDescFinished);
                 gBooleanParamPropSet.addProperty(desc, true);

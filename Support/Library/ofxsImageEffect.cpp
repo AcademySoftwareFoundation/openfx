@@ -1741,9 +1741,6 @@ namespace OFX {
                     // make the plugin descriptor
                     ImageEffectDescriptor *desc = new ImageEffectDescriptor(handle);
 
-                    // validate the host
-                    OFX::Validation::validatePluginDescriptorProperties(fetchEffectProps(handle));
-
                     //  and pass it to the plugin to do something with it
                     OFX::Plugin::describe(*desc);
 
