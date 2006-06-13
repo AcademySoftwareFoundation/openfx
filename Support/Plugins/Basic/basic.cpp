@@ -20,7 +20,11 @@
 #include <windows.h>
 #endif
 
-#include <GL/gl.h>
+#ifdef __APPLE__
+#include <AGL/gl.h>
+#else
+#include <gl.h>
+#endif
 
 #include <stdio.h>
 #include "ofxsImageEffect.H"
