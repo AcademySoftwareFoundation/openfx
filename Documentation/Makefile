@@ -1,5 +1,5 @@
 # local stylesheet dir as it takes ages over a network connection
-STYLESHEETDIR = http://docbook.sourceforge.net/release/xsl/1.69.1/xhtml/
+STYLESHEETDIR = http://docbook.sourceforge.net/release/xsl/snapshot/xhtml/
 
 STYLESHEET = docbook.xsl 
 
