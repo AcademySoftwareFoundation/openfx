@@ -43,7 +43,9 @@ This file only holds code that is visible to a plugin implementation, and so hid
 of the direct OFX objects and any library side only functions.
 */
 
-#include "ofxsCore.H"
+#include "ofxsCore.h"
+
+typedef struct OfxMutex* OfxMutexHandle;
 
 namespace OFX {
 

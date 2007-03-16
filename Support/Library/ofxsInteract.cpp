@@ -38,6 +38,7 @@ England
 
 
 #include "ofxsSupportPrivate.H"
+
 #include <algorithm> // for find
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries.

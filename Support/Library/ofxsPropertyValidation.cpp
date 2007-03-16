@@ -1150,7 +1150,7 @@ namespace OFX {
         {
 #ifndef kOfxsDisableValidation
             static bool beenInitialised = false;
-            if(!beenInitialised && gHostDescription) {
+            if(!beenInitialised && getImageEffectHostDescription()) {
                 beenInitialised = true;
 
                 // create new property descriptions depending on certain host states
@@ -1158,25 +1158,25 @@ namespace OFX {
       
                 // do custom params animate ?
                 desc = new PropertyDescription(kOfxParamPropAnimates, OFX::eInt, 1,
-                                               eDescDefault, int(gHostDescription->supportsCustomAnimation),
+                                               eDescDefault, int(getImageEffectHostDescription()->supportsCustomAnimation),
                                                eDescFinished);
                 gCustomParamPropSet.addProperty(desc, true);
 
                 // do strings animate ?
                 desc = new PropertyDescription(kOfxParamPropAnimates, OFX::eInt, 1,
-                                               eDescDefault, int(gHostDescription->supportsStringAnimation),
+                                               eDescDefault, int(getImageEffectHostDescription()->supportsStringAnimation),
                                                eDescFinished);
                 gStringParamPropSet.addProperty(desc, true);
 
                 // do choice params animate      
                 desc = new PropertyDescription(kOfxParamPropAnimates, OFX::eInt, 1,
-                                               eDescDefault, int(gHostDescription->supportsChoiceAnimation),
+                                               eDescDefault, int(getImageEffectHostDescription()->supportsChoiceAnimation),
                                                eDescFinished);
                 gChoiceParamPropSet.addProperty(desc, true);
 
                 // do choice params animate      
                 desc = new PropertyDescription(kOfxParamPropAnimates, OFX::eInt, 1,
-                                               eDescDefault, int(gHostDescription->supportsBooleanAnimation),
+                                               eDescDefault, int(getImageEffectHostDescription()->supportsBooleanAnimation),
                                                eDescFinished);
                 gBooleanParamPropSet.addProperty(desc, true);
             }

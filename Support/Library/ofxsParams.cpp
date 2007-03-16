@@ -48,8 +48,7 @@ namespace OFX {
     DummyParamDescriptor PageParamDescriptor::gSkipColumn(kOfxParamPageSkipColumn);
 
     /** @brief turns a ParamTypeEnum into the char * that raw OFX uses */
-    const char *
-    mapParamTypeEnumToString(ParamTypeEnum v)
+    const char * mapParamTypeEnumToString(ParamTypeEnum v)
     {
         switch(v) {
         case eStringParam : return kOfxParamTypeString ;
@@ -67,7 +66,51 @@ namespace OFX {
         case eGroupParam : return kOfxParamTypeGroup ;
         case ePageParam : return kOfxParamTypePage ;
         case ePushButtonParam : return kOfxParamTypePushButton ;
+		default: assert(false);
         }
+		return kOfxParamTypeInteger;
+    }
+
+    bool isEqual(const char* t1, const char* t2)
+    {
+      return strcmp(t1, t2)==0;
+    }
+
+    ParamTypeEnum mapParamTypeStringToEnum(const char * v)
+    {
+      if(isEqual(kOfxParamTypeString,v)) 
+        return eStringParam ;
+      else if(isEqual(kOfxParamTypeInteger,v)) 
+        return eIntParam ;
+      else if(isEqual(kOfxParamTypeInteger2D,v)) 
+        return eInt2DParam ;
+      else if(isEqual(kOfxParamTypeInteger3D,v)) 
+        return eInt3DParam ;
+      else if(isEqual(kOfxParamTypeDouble,v)) 
+        return eDoubleParam ;
+      else if(isEqual(kOfxParamTypeDouble2D,v))
+        return eDouble2DParam ;
+      else if(isEqual(kOfxParamTypeDouble3D,v)) 
+        return eDouble3DParam ;
+      else if(isEqual(kOfxParamTypeRGB,v))
+        return eRGBParam ;
+      else if(isEqual(kOfxParamTypeRGBA,v))
+        return eRGBAParam ;
+      else if(isEqual(kOfxParamTypeBoolean,v))
+        return eBooleanParam ;
+      else if(isEqual(kOfxParamTypeChoice,v))
+        return eChoiceParam ;
+      else if(isEqual(kOfxParamTypeCustom ,v))
+        return eCustomParam ;
+      else if(isEqual(kOfxParamTypeGroup,v))
+        return eGroupParam ;
+      else if(isEqual(kOfxParamTypePage,v)) 
+        return ePageParam ;
+      else if(isEqual(kOfxParamTypePushButton,v))
+        return ePushButtonParam ;
+      else
+        assert(false);
+      return ePushButtonParam ;
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -93,22 +136,22 @@ namespace OFX {
     ParamDescriptor::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
     {
         _paramProps.propSetString(kOfxPropLabel, label);
-        _paramProps.propSetString(kOfxPropShortLabel, shortLabel);
-        _paramProps.propSetString(kOfxPropLongLabel, longLabel);
+        _paramProps.propSetString(kOfxPropShortLabel, shortLabel, false);
+        _paramProps.propSetString(kOfxPropLongLabel, longLabel, false);
     }
 
     /** @brief set the param hint */
     void 
     ParamDescriptor::setHint(const std::string &v)
     {
-        _paramProps.propSetString(kOfxParamPropHint, v);
+        _paramProps.propSetString(kOfxParamPropHint, v, false);
     }
 
     /** @brief set the script name, default is the name it was defined with */
     void
     ParamDescriptor::setScriptName(const std::string &v)
     {
-        _paramProps.propSetString(kOfxParamPropScriptName, v);
+        _paramProps.propSetString(kOfxParamPropScriptName, v, false);
     }
 
     /** @brief set the secretness of the param, defaults to false */
@@ -661,6 +704,14 @@ namespace OFX {
     {
     }
   
+    ParamDescriptor* ParamSetDescriptor::getParamDescriptor(const std::string& name) const
+    {
+      std::map<std::string, ParamDescriptor*>::const_iterator it = _definedParams.find(name);
+      if(it!=_definedParams.end())
+        return it->second;
+      return 0;
+    }
+
     /** @brief set the param set handle */
     void
     ParamSetDescriptor::setParamSetHandle(OfxParamSetHandle h)
@@ -846,7 +897,7 @@ namespace OFX {
   
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Base class for all param instances */
-    Param::Param(ParamSet *paramSet, const std::string &name, ParamTypeEnum type, OfxParamHandle handle)
+    Param::Param(const ParamSet *paramSet, const std::string &name, ParamTypeEnum type, OfxParamHandle handle)
       : _paramSet(paramSet)
       , _paramName(name)
       , _paramType(type)
@@ -877,8 +928,8 @@ namespace OFX {
     void Param::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
     {
         _paramProps.propSetString(kOfxPropLabel, label);
-        _paramProps.propSetString(kOfxPropShortLabel, shortLabel);
-        _paramProps.propSetString(kOfxPropLongLabel, longLabel);
+        _paramProps.propSetString(kOfxPropShortLabel, shortLabel, false);
+        _paramProps.propSetString(kOfxPropLongLabel, longLabel, false);
     }
 
     /** @brief set the secretness of the param, defaults to false */
@@ -890,7 +941,7 @@ namespace OFX {
     /** @brief set the param hint */
     void Param::setHint(const std::string &v)
     {
-        _paramProps.propSetString(kOfxParamPropHint, v);
+        _paramProps.propSetString(kOfxParamPropHint, v, false);
     }
 
     /** @brief whether the param is enabled */
@@ -903,8 +954,8 @@ namespace OFX {
     void Param::getLabels(std::string &label, std::string &shortLabel, std::string &longLabel) const
     {
         label      = _paramProps.propGetString(kOfxPropLabel);
-        shortLabel = _paramProps.propGetString(kOfxPropShortLabel);
-        longLabel  = _paramProps.propGetString(kOfxPropLongLabel);
+        shortLabel = _paramProps.propGetString(kOfxPropShortLabel, false);
+        longLabel  = _paramProps.propGetString(kOfxPropLongLabel, false);
     }
     
     /** @brief get whether the param is secret */
@@ -924,14 +975,14 @@ namespace OFX {
     /** @brief get the param hint */
     std::string Param::getHint(void) const
     {
-        std::string v  = _paramProps.propGetString(kOfxParamPropHint);
+        std::string v  = _paramProps.propGetString(kOfxParamPropHint, false);
         return v;
     }
 
     /** @brief get the script name */
     std::string Param::getScriptName(void) const
     {
-        std::string v  = _paramProps.propGetString(kOfxParamPropScriptName);
+        std::string v  = _paramProps.propGetString(kOfxParamPropScriptName, false);
         return v;
     }
   
@@ -947,7 +998,7 @@ namespace OFX {
     /** @brief Wraps up a value holding param */
   
     /** @brief hidden constructor */
-    ValueParam::ValueParam(ParamSet *paramSet, const std::string &name, ParamTypeEnum type, OfxParamHandle handle)
+    ValueParam::ValueParam(const ParamSet *paramSet, const std::string &name, ParamTypeEnum type, OfxParamHandle handle)
       : Param(paramSet, name, type, handle)
     {
     }
@@ -1069,7 +1120,7 @@ namespace OFX {
     // Wraps up an integer param */
 
     /** @brief hidden constructor */
-    IntParam::IntParam(ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
+    IntParam::IntParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
       : ValueParam(paramSet, name, eIntParam, handle)
     {
     }
@@ -1146,7 +1197,7 @@ namespace OFX {
     // 2D Int params
 
     /** @brief hidden constructor */
-    Int2DParam::Int2DParam(ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
+    Int2DParam::Int2DParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
       : ValueParam(paramSet, name, eInt2DParam, handle)
     {
     }
@@ -1243,7 +1294,7 @@ namespace OFX {
     // 3D Int params
 
     /** @brief hidden constructor */
-    Int3DParam::Int3DParam(ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
+    Int3DParam::Int3DParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
       : ValueParam(paramSet, name, eInt3DParam, handle)
     {
     }
@@ -1349,7 +1400,7 @@ namespace OFX {
     // common base to all double params
   
     /** @brief hidden constructor */
-    BaseDoubleParam::BaseDoubleParam(ParamSet *paramSet, const std::string &name, ParamTypeEnum type, OfxParamHandle handle)
+    BaseDoubleParam::BaseDoubleParam(const ParamSet *paramSet, const std::string &name, ParamTypeEnum type, OfxParamHandle handle)
       : ValueParam(paramSet, name, type, handle)
     {
     }
@@ -1413,7 +1464,7 @@ namespace OFX {
     // Wraps up an double param */
 
     /** @brief hidden constructor */
-    DoubleParam::DoubleParam(ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
+    DoubleParam::DoubleParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
       : BaseDoubleParam(paramSet, name, eDoubleParam, handle)
     {
     }
@@ -1504,7 +1555,7 @@ namespace OFX {
     // 2D Double params
 
     /** @brief hidden constructor */
-    Double2DParam::Double2DParam(ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
+    Double2DParam::Double2DParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
       : BaseDoubleParam(paramSet, name, eDouble2DParam, handle)
     {
     }
@@ -1615,7 +1666,7 @@ namespace OFX {
     // 3D Double params
 
     /** @brief hidden constructor */
-    Double3DParam::Double3DParam(ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
+    Double3DParam::Double3DParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
       : BaseDoubleParam(paramSet, name, eDouble3DParam, handle)
     {
     }
@@ -1733,7 +1784,7 @@ namespace OFX {
     ////////////////////////////////////////////////////////////////////////////////
     // RGB colour param
     /** @brief hidden constructor */
-    RGBParam::RGBParam(ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
+    RGBParam::RGBParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
       : ValueParam(paramSet, name, eRGBParam, handle)
     {
     }
@@ -1786,7 +1837,7 @@ namespace OFX {
     ////////////////////////////////////////////////////////////////////////////////
     // RGBA colour param
     /** @brief hidden constructor */
-    RGBAParam::RGBAParam(ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
+    RGBAParam::RGBAParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
       : ValueParam(paramSet, name, eRGBAParam, handle)
     {
     }
@@ -1814,7 +1865,7 @@ namespace OFX {
     void RGBAParam::getValue(double &r, double &g, double &b, double &a)
     {
       OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &r, &g, &b, &a);
-      throwSuiteStatusException(stat);
+        throwSuiteStatusException(stat);
     }
 
     /** @brief get the value at a time */
@@ -1842,7 +1893,7 @@ namespace OFX {
     // Wraps up a string param */
 
     /** @brief hidden constructor */
-    StringParam::StringParam(ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
+    StringParam::StringParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
       : ValueParam(paramSet, name, eStringParam, handle)
     {
     }
@@ -1895,7 +1946,7 @@ namespace OFX {
     // Wraps up a Boolean integer param */
 
     /** @brief hidden constructor */
-    BooleanParam::BooleanParam(ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
+    BooleanParam::BooleanParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
       : ValueParam(paramSet, name, eBooleanParam, handle)
     {
     }
@@ -1951,7 +2002,7 @@ namespace OFX {
     // Wraps up a choice integer param */
 
     /** @brief hidden constructor */
-    ChoiceParam::ChoiceParam(ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
+    ChoiceParam::ChoiceParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
       : ValueParam(paramSet, name, eChoiceParam, handle)
     {
     }
@@ -2020,7 +2071,7 @@ namespace OFX {
     // Wraps up a custom param */
 
     /** @brief hidden constructor */
-    CustomParam::CustomParam(ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
+    CustomParam::CustomParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
       : ValueParam(paramSet, name, eCustomParam, handle)
     {
     }
@@ -2072,7 +2123,7 @@ namespace OFX {
     ////////////////////////////////////////////////////////////////////////////////
     // Wraps up a group param
     /** @brief hidden constructor */
-    GroupParam::GroupParam(ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
+    GroupParam::GroupParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
       : Param(paramSet, name, eGroupParam, handle)
     {
     }
@@ -2081,7 +2132,7 @@ namespace OFX {
     // Wraps up a page param
 
     /** @brief hidden constructor */
-    PageParam::PageParam(ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
+    PageParam::PageParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
       : Param(paramSet, name, ePageParam, handle)
     {
     }
@@ -2090,7 +2141,7 @@ namespace OFX {
     // Wraps up a PushButton param
 
     /** @brief hidden constructor */
-    PushButtonParam::PushButtonParam(ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
+    PushButtonParam::PushButtonParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
       : Param(paramSet, name, ePushButtonParam, handle)
     {
     }
@@ -2136,7 +2187,7 @@ namespace OFX {
     }
   
     /** @brief calls the raw OFX routine to fetch a param */
-    void ParamSet::fetchRawParam(const std::string &name, ParamTypeEnum paramType, OfxParamHandle &handle)
+    void ParamSet::fetchRawParam(const std::string &name, ParamTypeEnum paramType, OfxParamHandle &handle) const
     {
         OfxPropertySetHandle propHandle;
 
@@ -2152,9 +2203,140 @@ namespace OFX {
         }
     }
 
+    ParamTypeEnum ParamSet::getParamType(const std::string& name) const
+    {
+      OfxPropertySetHandle propHandle;
+      OfxParamHandle handle;
+      OfxStatus stat = OFX::Private::gParamSuite->paramGetHandle(_paramSetHandle, name.c_str(), &handle, &propHandle);
+      throwSuiteStatusException(stat);
+      PropertySet props(propHandle);
+      // make sure it is of our type
+      std::string paramTypeStr = props.propGetString(kOfxParamPropType);
+      return mapParamTypeStringToEnum(paramTypeStr.c_str());
+    }
+
+    bool ParamSet::paramExists(const std::string& name) const
+    {
+      OfxParamHandle handle;
+      OfxPropertySetHandle propHandle;
+      OfxStatus stat = OFX::Private::gParamSuite->paramGetHandle(_paramSetHandle, name.c_str(), &handle, &propHandle);
+      if(stat!=kOfxStatOK)
+        return false;
+      return true;
+    }
+
+    Param* ParamSet::getParam(const std::string& name) const
+    {
+      OfxParamHandle handle;
+      OfxPropertySetHandle propHandle;
+      OfxStatus stat = OFX::Private::gParamSuite->paramGetHandle(_paramSetHandle, name.c_str(), &handle, &propHandle);
+      throwSuiteStatusException(stat);
+
+      PropertySet props(propHandle);
+
+      // make sure it is of our type
+      std::string paramTypeStr = props.propGetString(kOfxParamPropType);
+      ParamTypeEnum t = mapParamTypeStringToEnum(paramTypeStr.c_str());
+      switch(t) {
+        case eStringParam :
+          {
+            StringParam* ptr = 0;
+            fetchParam(name, t, ptr);
+            return ptr;
+          }
+        case eIntParam :           
+          {
+            IntParam* ptr = 0;
+            fetchParam(name, t, ptr);
+            return ptr;
+          }
+        case eInt2DParam : 
+          {
+            Int2DParam* ptr = 0;
+            fetchParam(name, t, ptr);
+            return ptr;
+          }
+        case eInt3DParam :
+          {
+            Int3DParam* ptr = 0;
+            fetchParam(name, t, ptr);
+            return ptr;
+          }
+        case eDoubleParam : 
+          {
+            DoubleParam* ptr = 0;
+            fetchParam(name, t, ptr);
+            return ptr;
+          }
+        case eDouble2DParam : 
+          {
+            Double2DParam* ptr = 0;
+            fetchParam(name, t, ptr);
+            return ptr;
+          }
+        case eDouble3DParam : 
+          {
+            Double3DParam* ptr = 0;
+            fetchParam(name, t, ptr);
+            return ptr;
+          }
+        case eRGBParam : 
+          {
+            RGBParam* ptr = 0;
+            fetchParam(name, t, ptr);
+            return ptr;
+          }
+        case eRGBAParam : 
+          {
+            RGBAParam* ptr = 0;
+            fetchParam(name, t, ptr);
+            return ptr;
+          }
+        case eBooleanParam : 
+          {
+            BooleanParam* ptr = 0;
+            fetchParam(name, t, ptr);
+            return ptr;
+          }
+        case eChoiceParam :           
+          {
+            ChoiceParam* ptr = 0;
+            fetchParam(name, t, ptr);
+            return ptr;
+          }
+        case eCustomParam : 
+          {
+            CustomParam* ptr = 0;
+            fetchParam(name, t, ptr);
+            return ptr;
+          }
+        case eGroupParam :
+          {
+            GroupParam* ptr = 0;
+            fetchParam(name, t, ptr);
+            return ptr;
+          }
+        case ePageParam : 
+          {
+            PageParam* ptr = 0;
+            fetchParam(name, t, ptr);
+            return ptr;
+          }
+        case ePushButtonParam : 
+          {
+            PushButtonParam* ptr = 0;
+            fetchParam(name, t, ptr);
+            return ptr;
+          }
+        default:
+          assert(false);
+      }
+      return 0;
+    }
+
     /** @brief if a param has been fetched in this set, go find it */
     Param *
-    ParamSet::findPreviouslyFetchedParam(const std::string &name)
+    ParamSet::findPreviouslyFetchedParam(const std::string &name) const
     {
         // search
         std::map<std::string, Param *>::const_iterator search;
@@ -2166,7 +2348,7 @@ namespace OFX {
     
     /** @brief Fetch an integer param, only callable from describe in context */
     IntParam * 
-    ParamSet::fetchIntParam(const std::string &name)
+    ParamSet::fetchIntParam(const std::string &name) const
     { 
         IntParam *param = NULL;
         fetchParam(name, eIntParam, param);
@@ -2174,7 +2356,7 @@ namespace OFX {
     }
   
     /** @brief Fetch a 2D integer param */
-    Int2DParam *ParamSet::fetchInt2DParam(const std::string &name)
+    Int2DParam *ParamSet::fetchInt2DParam(const std::string &name) const
     {
         Int2DParam *param = NULL;
         fetchParam(name, eInt2DParam, param);
@@ -2182,7 +2364,7 @@ namespace OFX {
     }
 
     /** @brief Fetch a 3D integer param */
-    Int3DParam *ParamSet::fetchInt3DParam(const std::string &name)
+    Int3DParam *ParamSet::fetchInt3DParam(const std::string &name) const
     {
         Int3DParam *param = NULL;
         fetchParam(name, eInt3DParam, param);
@@ -2191,7 +2373,7 @@ namespace OFX {
   
     /** @brief Fetch an double param, only callable from describe in context */
     DoubleParam * 
-    ParamSet::fetchDoubleParam(const std::string &name)
+    ParamSet::fetchDoubleParam(const std::string &name) const
     { 
         DoubleParam *param = NULL;
         fetchParam(name, eDoubleParam, param);
@@ -2199,7 +2381,7 @@ namespace OFX {
     }
   
     /** @brief Fetch a 2D double param */
-    Double2DParam *ParamSet::fetchDouble2DParam(const std::string &name)
+    Double2DParam *ParamSet::fetchDouble2DParam(const std::string &name) const
     {
         Double2DParam *param = NULL;
         fetchParam(name, eDouble2DParam, param);
@@ -2207,7 +2389,7 @@ namespace OFX {
     }
 
     /** @brief Fetch a 3D double param */
-    Double3DParam *ParamSet::fetchDouble3DParam(const std::string &name)
+    Double3DParam *ParamSet::fetchDouble3DParam(const std::string &name) const
     {
         Double3DParam *param = NULL;
         fetchParam(name, eDouble3DParam, param);
@@ -2215,7 +2397,7 @@ namespace OFX {
     }
     
     /** @brief Fetch a string param */
-    StringParam *ParamSet::fetchStringParam(const std::string &name)
+    StringParam *ParamSet::fetchStringParam(const std::string &name) const
     {
         StringParam *param = NULL;
         fetchParam(name, eStringParam, param);
@@ -2223,7 +2405,7 @@ namespace OFX {
     }
 
     /** @brief Fetch a RGBA param */
-    RGBAParam *ParamSet::fetchRGBAParam(const std::string &name)
+    RGBAParam *ParamSet::fetchRGBAParam(const std::string &name) const
     {
         RGBAParam *param = NULL;
         fetchParam(name, eRGBAParam, param);
@@ -2231,7 +2413,7 @@ namespace OFX {
     }
 
     /** @brief Fetch an RGB  param */
-    RGBParam *ParamSet::fetchRGBParam(const std::string &name)
+    RGBParam *ParamSet::fetchRGBParam(const std::string &name) const
     {
         RGBParam *param = NULL;
         fetchParam(name, eRGBParam, param);
@@ -2239,7 +2421,7 @@ namespace OFX {
     }
 
     /** @brief Fetch a Boolean  param */
-    BooleanParam *ParamSet::fetchBooleanParam(const std::string &name)
+    BooleanParam *ParamSet::fetchBooleanParam(const std::string &name) const
     {
         BooleanParam *param = NULL;
         fetchParam(name, eBooleanParam, param);
@@ -2247,7 +2429,7 @@ namespace OFX {
     }
 
     /** @brief Fetch a Choice param */
-    ChoiceParam *ParamSet::fetchChoiceParam(const std::string &name)
+    ChoiceParam *ParamSet::fetchChoiceParam(const std::string &name) const
     {
         ChoiceParam *param = NULL;
         fetchParam(name, eChoiceParam, param);
@@ -2255,7 +2437,7 @@ namespace OFX {
     }
 
     /** @brief Fetch a group param */
-    GroupParam *ParamSet::fetchGroupParam(const std::string &name)
+    GroupParam *ParamSet::fetchGroupParam(const std::string &name) const
     {
         GroupParam *param = NULL;
         fetchParam(name, eGroupParam, param);
@@ -2263,7 +2445,7 @@ namespace OFX {
     }
 
     /** @brief Fetch a Page param */
-    PageParam *ParamSet::fetchPageParam(const std::string &name)
+    PageParam *ParamSet::fetchPageParam(const std::string &name) const
     {
         PageParam *param = NULL;
         fetchParam(name, ePageParam, param);
@@ -2271,7 +2453,7 @@ namespace OFX {
     }
 
     /** @brief Fetch a push button  param */
-    PushButtonParam *ParamSet::fetchPushButtonParam(const std::string &name)
+    PushButtonParam *ParamSet::fetchPushButtonParam(const std::string &name) const
     {
         PushButtonParam *param = NULL;
         fetchParam(name, ePushButtonParam, param);
@@ -2279,7 +2461,7 @@ namespace OFX {
     }
 
     /** @brief Fetch a custom param */
-    CustomParam *ParamSet::fetchCustomParam(const std::string &name)
+    CustomParam *ParamSet::fetchCustomParam(const std::string &name) const
     {
         CustomParam *param = NULL;
         fetchParam(name, eCustomParam, param);

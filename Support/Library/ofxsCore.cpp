@@ -37,9 +37,6 @@ England
 #include "./ofxsSupportPrivate.H"
 
 namespace OFX {
-    /** @brief the global host description */
-    ImageEffectHostDescription *gHostDescription;
-  
     /** @brief Throws an @ref OFX::Exception depending on the status flag passed in */
     void
     throwSuiteStatusException(OfxStatus stat) throw(OFX::Exception::Suite, std::bad_alloc)

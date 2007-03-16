@@ -44,6 +44,7 @@ of the direct OFX objects and any library side only functions.
  */
 #include "ofxsParam.H"
 #include "ofxsInteract.H"
+#include "ofxsMessage.H"
 
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
@@ -129,10 +130,15 @@ namespace OFX {
         int maxPages;
         int pageRowCount;
         int pageColumnCount;
+        typedef std::vector<PixelComponentEnum> PixelComponentArray;
+        PixelComponentArray _supportedComponents;
+        typedef std::vector<ContextEnum> ContextArray;
+        ContextArray _supportedContexts;
     };
 
-    /** @brief Global description of the host */
-    extern ImageEffectHostDescription *gHostDescription;
+
+  /// retrieve the host description
+  ImageEffectHostDescription* getImageEffectHostDescription();
 
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up a clip */
@@ -629,6 +635,8 @@ namespace OFX {
 
         /** @brief Have we informed the host we want to be seqentially renderred ? */
         bool getSequentialRender(void) const;
+
+        OFX::Message::MessageReplyEnum sendMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg);
     
         /** @brief Fetch the named clip from this instance
 
@@ -752,6 +760,11 @@ namespace OFX {
 
         /** @brief The create instance function, the plugin must return an object derived from the \ref OFX::ImageEffect class */
         ImageEffect *createInstance(OfxImageEffectHandle handle, ContextEnum context);
+
+      /// If the client has defined its own exception type, allow it to catch it in the main function
+#ifdef OFX_CLIENT_EXCEPTION_TYPE
+      OfxStatus catchException(OFX_CLIENT_EXCEPTION_TYPE &ex);
+#endif
     };
 
 };

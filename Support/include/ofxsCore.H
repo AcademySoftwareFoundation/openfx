@@ -83,15 +83,19 @@ This file only holds code that is visible to a plugin implementation, and so hid
 of the direct OFX objects and any library side only functions.
  */
 
-#include <ofxCore.h>
-#include <ofxImageEffect.h>
-#include <ofxInteract.h>
-#include <ofxKeySyms.h>
-#include <ofxMemory.h>
-#include <ofxMessage.h>
-#include <ofxMultiThread.h>
-#include <ofxParam.h>
-#include <ofxProperty.h>
+#ifdef _MSC_VER
+#pragma warning( disable : 4290 )
+#endif
+
+#include "ofxCore.h"
+#include "ofxImageEffect.h"
+#include "ofxInteract.h"
+#include "ofxKeySyms.h"
+#include "ofxMemory.h"
+#include "ofxMessage.h"
+#include "ofxMultiThread.h"
+#include "ofxParam.h"
+#include "ofxProperty.h"
 
 #include <assert.h>
 #include <vector>
@@ -99,6 +103,10 @@ of the direct OFX objects and any library side only functions.
 #include <map>
 #include <exception>
 #include <stdexcept>
+
+#ifdef OFX_CLIENT_EXCEPTION_HEADER
+#include OFX_CLIENT_EXCEPTION_HEADER
+#endif
 
 /** @brief Defines an 8 bit per component RGB pixel 
 
@@ -158,7 +166,6 @@ struct Ofx3DPointD {
 namespace OFX {
   /** forward class declarations */
   class PropertySet;
-
 
   /** @brief Enumerates the different types a property can be */
   enum PropertyTypeEnum {
@@ -309,50 +316,110 @@ namespace OFX {
     /** @brief return the handle for this property set */
     OfxPropertySetHandle propSetHandle(void) {return _propHandle;}
 
-    int  propGetDimension(const std::string &property) const throw(std::bad_alloc, 
-                                                                   OFX::Exception::PropertyUnknownToHost, 
-                                                                   OFX::Exception::PropertyValueIllegalToHost, 
-                                                                   OFX::Exception::Suite);
+    int  propGetDimension(const std::string &property, bool throwOnFailure = true) const throw(std::bad_alloc, 
+                                                                                               OFX::Exception::PropertyUnknownToHost, 
+                                                                                               OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                               OFX::Exception::Suite);
     void propReset(const std::string &property) throw(std::bad_alloc, 
                                                       OFX::Exception::PropertyUnknownToHost, 
                                                       OFX::Exception::PropertyValueIllegalToHost,
                                                       OFX::Exception::Suite);
 
     // set single values
-    void propSetPointer(const std::string &property, void *value, int idx = 0) throw(std::bad_alloc, 
-                                                                                     OFX::Exception::PropertyUnknownToHost, 
-                                                                                     OFX::Exception::PropertyValueIllegalToHost, 
-                                                                                     OFX::Exception::Suite);
-    void propSetString(const std::string &property, const std::string &value, int idx = 0) throw(std::bad_alloc, 
-                                                                                                 OFX::Exception::PropertyUnknownToHost, 
-                                                                                                 OFX::Exception::PropertyValueIllegalToHost, 
-                                                                                                 OFX::Exception::Suite);
-    void propSetDouble(const std::string &property, double value, int idx = 0) throw(std::bad_alloc, 
-                                                                                     OFX::Exception::PropertyUnknownToHost, 
-                                                                                     OFX::Exception::PropertyValueIllegalToHost, 
-                                                                                     OFX::Exception::Suite);
-    void propSetInt(const std::string &property, int value, int idx = 0) throw(std::bad_alloc, 
-                                                                               OFX::Exception::PropertyUnknownToHost, 
-                                                                               OFX::Exception::PropertyValueIllegalToHost, 
-                                                                               OFX::Exception::Suite);
-  
-    // get single values
-    void       *propGetPointer(const std::string &property, int idx = 0) const throw(std::bad_alloc, 
-                                                                                     OFX::Exception::PropertyUnknownToHost, 
-                                                                                     OFX::Exception::PropertyValueIllegalToHost, 
-                                                                                     OFX::Exception::Suite);
-    std::string propGetString(const std::string &property, int idx = 0) const throw(std::bad_alloc, 
-                                                                                    OFX::Exception::PropertyUnknownToHost, 
-                                                                                    OFX::Exception::PropertyValueIllegalToHost, 
-                                                                                    OFX::Exception::Suite);
-    double      propGetDouble(const std::string &property, int idx = 0) const throw(std::bad_alloc, 
-                                                                                    OFX::Exception::PropertyUnknownToHost, 
-                                                                                    OFX::Exception::PropertyValueIllegalToHost, 
-                                                                                    OFX::Exception::Suite);
-    int         propGetInt(const std::string &property, int idx = 0) const throw(std::bad_alloc, 
-                                                                                 OFX::Exception::PropertyUnknownToHost, 
-                                                                                 OFX::Exception::PropertyValueIllegalToHost, 
-                                                                                 OFX::Exception::Suite);
+    void propSetPointer(const std::string &property, void *value, int idx, bool throwOnFailure = true) throw(std::bad_alloc, 
+                                                                                                             OFX::Exception::PropertyUnknownToHost, 
+                                                                                                             OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                                             OFX::Exception::Suite);
+    void propSetString(const std::string &property, const std::string &value, int idx, bool throwOnFailure = true) throw(std::bad_alloc, 
+                                                                                                                         OFX::Exception::PropertyUnknownToHost, 
+                                                                                                                         OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                                                         OFX::Exception::Suite);
+    void propSetDouble(const std::string &property, double value, int idx, bool throwOnFailure = true) throw(std::bad_alloc, 
+                                                                                                             OFX::Exception::PropertyUnknownToHost, 
+                                                                                                             OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                                             OFX::Exception::Suite);
+    void propSetInt(const std::string &property, int value, int idx, bool throwOnFailure = true) throw(std::bad_alloc, 
+                                                                                                       OFX::Exception::PropertyUnknownToHost, 
+                                                                                                       OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                                       OFX::Exception::Suite);
+
+    void propSetPointer(const std::string &property, void *value, bool throwOnFailure = true) throw(std::bad_alloc, 
+                                                                                                    OFX::Exception::PropertyUnknownToHost, 
+                                                                                                    OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                                    OFX::Exception::Suite)
+    {propSetPointer(property, value, 0, throwOnFailure);}
+
+    void propSetString(const std::string &property, const std::string &value, bool throwOnFailure = true) throw(std::bad_alloc, 
+                                                                                                                OFX::Exception::PropertyUnknownToHost, 
+                                                                                                                OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                                                OFX::Exception::Suite)
+    {propSetString(property, value, 0, throwOnFailure);}
+
+    void propSetDouble(const std::string &property, double value, bool throwOnFailure = true) throw(std::bad_alloc, 
+                                                                                                    OFX::Exception::PropertyUnknownToHost, 
+                                                                                                    OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                                    OFX::Exception::Suite)
+    {propSetDouble(property, value, 0, throwOnFailure);}
+    
+    void propSetInt(const std::string &property, int value, bool throwOnFailure = true) throw(std::bad_alloc, 
+                                                                                              OFX::Exception::PropertyUnknownToHost, 
+                                                                                              OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                              OFX::Exception::Suite)
+    {propSetInt(property, value, 0, throwOnFailure);}
+    
+    
+    /// get a pointer property
+    void       *propGetPointer(const std::string &property, int idx, bool throwOnFailure = true) const throw(std::bad_alloc, 
+                                                                                                             OFX::Exception::PropertyUnknownToHost, 
+                                                                                                             OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                                             OFX::Exception::Suite);
+
+    /// get a string property
+    std::string propGetString(const std::string &property, int idx, bool throwOnFailure = true) const throw(std::bad_alloc, 
+                                                                                                            OFX::Exception::PropertyUnknownToHost, 
+                                                                                                            OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                                            OFX::Exception::Suite);
+    /// get a double property
+    double      propGetDouble(const std::string &property, int idx, bool throwOnFailure = true) const throw(std::bad_alloc, 
+                                                                                                            OFX::Exception::PropertyUnknownToHost, 
+                                                                                                            OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                                            OFX::Exception::Suite);
+
+    /// get an int property
+    int         propGetInt(const std::string &property, int idx, bool throwOnFailure = true) const throw(std::bad_alloc, 
+                                                                                                         OFX::Exception::PropertyUnknownToHost, 
+                                                                                                         OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                                         OFX::Exception::Suite);
+    
+    /// get a string property with index 0
+    void       *propGetPointer(const std::string &property, bool throwOnFailure = true) const throw(std::bad_alloc, 
+                                                                                                    OFX::Exception::PropertyUnknownToHost, 
+                                                                                                    OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                                    OFX::Exception::Suite)
+    {return propGetPointer(property, 0, throwOnFailure); }
+    
+    /// get a string property with index 0
+    std::string propGetString(const std::string &property, bool throwOnFailure = true) const throw(std::bad_alloc, 
+                                                                                                   OFX::Exception::PropertyUnknownToHost, 
+                                                                                                   OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                                   OFX::Exception::Suite)
+    {return propGetString(property, 0, throwOnFailure); }
+    
+    /// get a double property with index 0
+    double      propGetDouble(const std::string &property, bool throwOnFailure = true) const throw(std::bad_alloc, 
+                                                                                                   OFX::Exception::PropertyUnknownToHost, 
+                                                                                                   OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                                   OFX::Exception::Suite)
+    {return propGetDouble(property, 0, throwOnFailure); }
+    
+    /// get an int property with index 0
+    int         propGetInt(const std::string &property, bool throwOnFailure = true) const throw(std::bad_alloc, 
+                                                                                                OFX::Exception::PropertyUnknownToHost, 
+                                                                                                OFX::Exception::PropertyValueIllegalToHost, 
+                                                                                                OFX::Exception::Suite)
+    {return propGetInt(property, 0, throwOnFailure); }
+    
+
   };
 
   ////////////////////////////////////////////////////////////////////////////////

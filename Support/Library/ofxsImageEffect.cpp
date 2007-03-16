@@ -42,7 +42,18 @@ England
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {
-    
+  
+  /** @brief the global host description */
+  ImageEffectHostDescription gHostDescription;
+  bool gHostDescriptionHasInit = false;
+
+  ImageEffectHostDescription* getImageEffectHostDescription()
+  {
+    if(gHostDescriptionHasInit)
+      return &gHostDescription;
+    return NULL;
+  }
+
     namespace Private {        
         // Suite and host pointers
         OfxHost               *gHost = 0;
@@ -71,6 +82,36 @@ namespace OFX {
         if(s == kOfxImageEffectContextRetimer) return eContextRetimer;
         OFX::Log::error(true, "Unknown image effect context '%s'", s.c_str());
         throw std::invalid_argument(s);
+    }
+
+    const char* mapToMessageTypeEnum(OFX::Message::MessageTypeEnum type)
+    {
+      if(type == OFX::Message::eMessageFatal)
+        return kOfxMessageFatal;
+      else if(type == OFX::Message::eMessageError)
+        return kOfxMessageError;
+      else if(type == OFX::Message::eMessageMessage)
+        return kOfxMessageMessage;
+      else if(type == OFX::Message::eMessageLog)
+        return kOfxMessageLog;
+      else if(type == OFX::Message::eMessageQuestion)
+        return kOfxMessageQuestion;
+      OFX::Log::error(true, "Unknown message type enum '%d'", type);
+      return 0;
+    }
+
+    OFX::Message::MessageReplyEnum mapToMessageReplyEnum(OfxStatus stat)
+    {
+      if(stat == kOfxStatOK)
+        return OFX::Message::eMessageReplyOK;
+      else if(stat == kOfxStatReplyYes)
+        return OFX::Message::eMessageReplyYes;
+      else if(stat == kOfxStatReplyNo)
+        return OFX::Message::eMessageReplyNo;
+      else if(stat == kOfxStatFailed)
+        return OFX::Message::eMessageReplyFailed;
+      OFX::Log::error(true, "Unknown message reply status enum '%d'", stat);
+      return OFX::Message::eMessageReplyFailed;
     }
     
     /** @brief map a std::string to a context */
@@ -176,9 +217,9 @@ namespace OFX {
     /** @brief set the label properties */
     void ClipDescriptor::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
     {
-        _clipProps.propSetString(kOfxPropLabel, label);
-        _clipProps.propSetString(kOfxPropShortLabel, shortLabel);
-        _clipProps.propSetString(kOfxPropLongLabel, longLabel);
+      _clipProps.propSetString(kOfxPropLabel, label);
+      _clipProps.propSetString(kOfxPropShortLabel, shortLabel, false);
+      _clipProps.propSetString(kOfxPropLongLabel, longLabel, false);
     }
 
     /** @brief set how fielded images are extracted from the clip defaults to eFieldExtractDoubled */
@@ -260,7 +301,7 @@ namespace OFX {
         setParamSetHandle(paramSetHandle);
 
         // set the overlay interact function only if it supports interacts
-        if(OFX::gHostDescription->supportsOverlays)
+        if(OFX::gHostDescription.supportsOverlays)
             _effectProps.propSetPointer(kOfxImageEffectPluginPropOverlayInteractV1, (void *) OFX::Private::overlayInteractMainEntry);
     }
   
@@ -282,8 +323,8 @@ namespace OFX {
     void ImageEffectDescriptor::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
     {
         _effectProps.propSetString(kOfxPropLabel, label);
-        _effectProps.propSetString(kOfxPropShortLabel, shortLabel);
-        _effectProps.propSetString(kOfxPropLongLabel, longLabel);
+        _effectProps.propSetString(kOfxPropShortLabel, shortLabel, false);
+        _effectProps.propSetString(kOfxPropLongLabel, longLabel, false);
     }
 
     /** @brief Set the plugin grouping */
@@ -531,8 +572,8 @@ namespace OFX {
     void Clip::getLabels(std::string &label, std::string &shortLabel, std::string &longLabel) const
     {
         label      = _clipProps.propGetString(kOfxPropLabel);
-        shortLabel = _clipProps.propGetString(kOfxPropShortLabel);
-        longLabel  = _clipProps.propGetString(kOfxPropLongLabel);
+        shortLabel = _clipProps.propGetString(kOfxPropShortLabel, false);
+        longLabel  = _clipProps.propGetString(kOfxPropLongLabel, false);
     }
 
     /** @brief get the pixel depth */
@@ -547,7 +588,7 @@ namespace OFX {
             }
         }
         // gone wrong ?
-        catch(std::invalid_argument &ex) {
+        catch(std::invalid_argument) {
             OFX::Log::error(true, "Unknown pixel depth property '%s' reported on clip '%s'", str.c_str(), _clipName.c_str());
             e = eBitDepthNone;
         }
@@ -566,7 +607,7 @@ namespace OFX {
             }
         }
         // gone wrong ?
-        catch(std::invalid_argument &ex) {
+        catch(std::invalid_argument) {
             OFX::Log::error(true, "Unknown  pixel component type '%s' reported on clip '%s'", str.c_str(), _clipName.c_str());
             e = ePixelComponentNone;
         }
@@ -585,7 +626,7 @@ namespace OFX {
             }
         }
         // gone wrong ?
-        catch(std::invalid_argument &ex) {
+        catch(std::invalid_argument) {
             OFX::Log::error(true, "Unknown unmapped pixel depth property '%s' reported on clip '%s'", str.c_str(), _clipName.c_str());
             e = eBitDepthNone;
         }
@@ -604,7 +645,7 @@ namespace OFX {
             }
         }
         // gone wrong ?
-        catch(std::invalid_argument &ex) {
+        catch(std::invalid_argument) {
             OFX::Log::error(true, "Unknown unmapped pixel component type '%s' reported on clip '%s'", str.c_str(), _clipName.c_str());
             e = ePixelComponentNone;
         }
@@ -620,7 +661,7 @@ namespace OFX {
             e = mapStrToPreMultiplicationEnum(str);
         }
         // gone wrong ?
-        catch(std::invalid_argument &ex) {
+        catch(std::invalid_argument) {
             OFX::Log::error(true, "Unknown premultiplication type '%s' reported on clip %s!", str.c_str(), _clipName.c_str());
             e = eImageOpaque;
         }
@@ -638,7 +679,7 @@ namespace OFX {
                             "Field order '%s' reported on a clip %s is invalid, it must be none, lower or upper.", str.c_str(), _clipName.c_str());
         }
         // gone wrong ?
-        catch(std::invalid_argument &ex) {
+        catch(std::invalid_argument) {
             OFX::Log::error(true, "Unknown field order '%s' reported on a clip %s.", str.c_str(), _clipName.c_str());
             e = eFieldNone;
         }
@@ -848,6 +889,12 @@ namespace OFX {
         return _effectProps.propGetInt(kOfxImageEffectInstancePropSequentialRender) != 0;
     }
     
+    OFX::Message::MessageReplyEnum ImageEffect::sendMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg)
+    {   
+      OfxStatus stat = OFX::Private::gMessageSuite->message(_effectHandle, mapToMessageTypeEnum(type), id.c_str(), msg.c_str());
+      return mapToMessageReplyEnum(stat);
+    }
+
     /** @brief Fetch the named clip from this instance */
     Clip *ImageEffect::fetchClip(const std::string &name)
     {
@@ -1160,35 +1207,38 @@ namespace OFX {
         void
         fetchHostDescription(OfxHost *host)
         {
-            OFX::Log::error(OFX::gHostDescription != 0, "Tried to create host description when we already have one.");
-            if(OFX::gHostDescription == 0) {
-	
-                // make one
-                gHostDescription = new ImageEffectHostDescription;
-
+            OFX::Log::error(OFX::gHostDescriptionHasInit, "Tried to create host description when we already have one.");
+            if(!OFX::gHostDescriptionHasInit) {
                 // wrap the property handle up with a property set
                 PropertySet hostProps(host->host);
 
                 // and get some properties
-                gHostDescription->hostName                   = hostProps.propGetString(kOfxPropName);
-                gHostDescription->hostIsBackground           = hostProps.propGetInt(kOfxImageEffectHostPropIsBackground) != 0;
-                gHostDescription->supportsOverlays           = hostProps.propGetInt(kOfxImageEffectPropSupportsOverlays) != 0;
-                gHostDescription->supportsMultiResolution    = hostProps.propGetInt(kOfxImageEffectPropSupportsMultiResolution) != 0;
-                gHostDescription->supportsTiles              = hostProps.propGetInt(kOfxImageEffectPropSupportsTiles) != 0;
-                gHostDescription->temporalClipAccess         = hostProps.propGetInt(kOfxImageEffectPropTemporalClipAccess) != 0;
-                gHostDescription->supportsMultipleClipDepths = hostProps.propGetInt(kOfxImageEffectPropSupportsMultipleClipDepths) != 0;
-                gHostDescription->supportsMultipleClipPARs   = hostProps.propGetInt(kOfxImageEffectPropSupportsMultipleClipPARs) != 0;
-                gHostDescription->supportsSetableFrameRate   = hostProps.propGetInt(kOfxImageEffectPropSetableFrameRate) != 0;
-                gHostDescription->supportsSetableFielding    = hostProps.propGetInt(kOfxImageEffectPropSetableFielding) != 0;
-                gHostDescription->supportsStringAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsStringAnimation) != 0;
-                gHostDescription->supportsCustomInteract     = hostProps.propGetInt(kOfxParamHostPropSupportsCustomInteract) != 0;
-                gHostDescription->supportsChoiceAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsChoiceAnimation) != 0;
-                gHostDescription->supportsBooleanAnimation   = hostProps.propGetInt(kOfxParamHostPropSupportsBooleanAnimation) != 0;
-                gHostDescription->supportsCustomAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsCustomAnimation) != 0;
-                gHostDescription->maxParameters              = hostProps.propGetInt(kOfxParamHostPropMaxParameters);
-                gHostDescription->maxPages                   = hostProps.propGetInt(kOfxParamHostPropMaxPages);
-                gHostDescription->pageRowCount               = hostProps.propGetInt(kOfxParamHostPropPageRowColumnCount, 0);
-                gHostDescription->pageColumnCount            = hostProps.propGetInt(kOfxParamHostPropPageRowColumnCount, 1);
+                gHostDescription.hostName                   = hostProps.propGetString(kOfxPropName);
+                gHostDescription.hostIsBackground           = hostProps.propGetInt(kOfxImageEffectHostPropIsBackground) != 0;
+                gHostDescription.supportsOverlays           = hostProps.propGetInt(kOfxImageEffectPropSupportsOverlays) != 0;
+                gHostDescription.supportsMultiResolution    = hostProps.propGetInt(kOfxImageEffectPropSupportsMultiResolution) != 0;
+                gHostDescription.supportsTiles              = hostProps.propGetInt(kOfxImageEffectPropSupportsTiles) != 0;
+                gHostDescription.temporalClipAccess         = hostProps.propGetInt(kOfxImageEffectPropTemporalClipAccess) != 0;
+                gHostDescription.supportsMultipleClipDepths = hostProps.propGetInt(kOfxImageEffectPropSupportsMultipleClipDepths) != 0;
+                gHostDescription.supportsMultipleClipPARs   = hostProps.propGetInt(kOfxImageEffectPropSupportsMultipleClipPARs) != 0;
+                gHostDescription.supportsSetableFrameRate   = hostProps.propGetInt(kOfxImageEffectPropSetableFrameRate) != 0;
+                gHostDescription.supportsSetableFielding    = hostProps.propGetInt(kOfxImageEffectPropSetableFielding) != 0;
+                gHostDescription.supportsStringAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsStringAnimation) != 0;
+                gHostDescription.supportsCustomInteract     = hostProps.propGetInt(kOfxParamHostPropSupportsCustomInteract) != 0;
+                gHostDescription.supportsChoiceAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsChoiceAnimation) != 0;
+                gHostDescription.supportsBooleanAnimation   = hostProps.propGetInt(kOfxParamHostPropSupportsBooleanAnimation) != 0;
+                gHostDescription.supportsCustomAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsCustomAnimation) != 0;
+                gHostDescription.maxParameters              = hostProps.propGetInt(kOfxParamHostPropMaxParameters);
+                gHostDescription.maxPages                   = hostProps.propGetInt(kOfxParamHostPropMaxPages);
+                gHostDescription.pageRowCount               = hostProps.propGetInt(kOfxParamHostPropPageRowColumnCount, 0);
+                gHostDescription.pageColumnCount            = hostProps.propGetInt(kOfxParamHostPropPageRowColumnCount, 1);
+                int numComponents = hostProps.propGetDimension(kOfxImageEffectPropSupportedComponents);
+                for(int i=0; i<numComponents; ++i)
+                  gHostDescription._supportedComponents.push_back(mapStrToPixelComponentEnum(hostProps.propGetString(kOfxImageEffectPropSupportedComponents, i)));
+
+                int numContexts = hostProps.propGetDimension(kOfxImageEffectPropSupportedContexts);
+                for(int i=0; i<numContexts; ++i)
+                  gHostDescription._supportedContexts.push_back(mapToContextEnum(hostProps.propGetString(kOfxImageEffectPropSupportedContexts, i)));
             }
         }
 
@@ -1243,7 +1293,7 @@ namespace OFX {
                 fetchHostDescription(gHost);
       
                 // fetch the interact suite if the host supports interaction
-                if(OFX::gHostDescription->supportsOverlays || OFX::gHostDescription->supportsCustomInteract)
+                if(OFX::gHostDescription.supportsOverlays || OFX::gHostDescription.supportsCustomInteract)
                     gInteractSuite  = (OfxInteractSuiteV1 *)    fetchSuite(kOfxInteractSuite, 1);
             }
 
@@ -1358,7 +1408,7 @@ namespace OFX {
             try {
                 args.fieldToRender = mapStrToFieldEnum(str);
             }
-            catch (std::invalid_argument &ex) {
+            catch (std::invalid_argument) {
                 // dud field?
                 OFX::Log::error(true, "Unknown field to render '%s'", str.c_str());
 	
@@ -1760,6 +1810,9 @@ namespace OFX {
                     // make the plugin descriptor
                     ImageEffectDescriptor *desc = new ImageEffectDescriptor(handle);
 
+                    // validate the host
+                    OFX::Validation::validatePluginDescriptorProperties(fetchEffectProps(handle));
+
                     //  and pass it to the plugin to do something with it
                     OFX::Plugin::describe(*desc);
 
@@ -1958,13 +2011,13 @@ namespace OFX {
             }
 
             // catch host inadequate exceptions
-            catch (OFX::Exception::HostInadequate &ex)
+            catch (OFX::Exception::HostInadequate)
             {
                 stat = kOfxStatErrMissingHostFeature;
             }
 
             // catch exception due to a property being unknown to the host, implies something wrong with host if not caught further down
-            catch (OFX::Exception::PropertyUnknownToHost &ex)
+            catch (OFX::Exception::PropertyUnknownToHost)
             {
                 stat = kOfxStatErrMissingHostFeature;
             }
@@ -1975,6 +2028,13 @@ namespace OFX {
                 stat = kOfxStatErrMemory;
             }
 
+            // catch a custom client exception, if defined
+#ifdef OFX_CLIENT_EXCEPTION_TYPE
+            catch (OFX_CLIENT_EXCEPTION_TYPE &ex)
+            {
+              stat = OFX_CLIENT_EXCEPTION_HANDLER(ex);
+            }
+#endif
             // Catch anything else, unknown
             catch (...)
             {
