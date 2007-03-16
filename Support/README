@@ -11,8 +11,10 @@ Copyright and License
      The library is copyright 2004 The Foundry Visionmongers Ltd, and was
      written by Bruno Nicoletti (bruno@thefoundry.co.uk).
 
-     It has been released under the GNU Lesser General Public License, see the 
-     top of any source file for details.
+     It was originally released under the GNU Lesser General Public License.
+
+     It has subsequently been released under a 'BSD' style license. See the
+     file 'LICENSE' for details.
 
 ********************************************************************************
 Structure
