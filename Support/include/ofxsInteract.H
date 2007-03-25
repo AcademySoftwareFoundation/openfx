@@ -42,7 +42,7 @@ England
 This file only holds code that is visible to a plugin implementation, and so hides much
 of the direct OFX objects and any library side only functions.
  */
-#include "ofxsParam.h"
+#include "ofxsParam.H"
 
 #include <list>
 
