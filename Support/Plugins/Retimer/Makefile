@@ -1,12 +1,6 @@
-CXXFLAGS = -g -I../../../include -I../../include 
+PLUGINOBJECTS = retimer.o
+PLUGINNAME = retimer
+PATHTOROOT = ../../
 
-retimer.ofx : retimer.o ../../Library/libOfxSupport.a
-	g++ -bundle -all_load -exported_symbols_list ../../include/osxSymbols -o retimer.ofx retimer.o  ../../Library/libOfxSupport.a  -framework opengl
-	mkdir -p  retimer.ofx.bundle/Contents/MacOS
-	cp  retimer.ofx  retimer.ofx.bundle/Contents/MacOS
-	cp  Info.plist  retimer.ofx.bundle/Contents/
-
-clean :
-	rm -rf retimer.ofx retimer.ofx.bundle retimer.o
-
+include ../Makefile.master
 
