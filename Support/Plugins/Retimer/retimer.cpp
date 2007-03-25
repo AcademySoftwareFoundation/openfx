@@ -47,6 +47,9 @@ England
 #include "../include/ofxsProcessing.H"
 #include "../include/ofxsImageBlender.H"
 
+  namespace OFX {
+  extern ImageEffectHostDescription gHostDescription;
+  }
 ////////////////////////////////////////////////////////////////////////////////
 /** @brief The plugin that does our work */
 class RetimerPlugin : public OFX::ImageEffect {
@@ -284,7 +287,7 @@ namespace OFX {
         void loadAction(void)
         {
             // we can't be used on hosts that don't perfrom temporal clip access
-            if(!gHostDescription->temporalClipAccess) {
+            if(!gHostDescription.temporalClipAccess) {
                 throw OFX::Exception::HostInadequate("Need random temporal image access to work");
             }
         }
