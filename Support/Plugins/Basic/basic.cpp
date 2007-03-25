@@ -42,7 +42,7 @@ England
 #ifdef __APPLE__
 #include <AGL/gl.h>
 #else
-#include <gl.h>
+#include <GL/gl.h>
 #endif
 
 #include <stdio.h>
