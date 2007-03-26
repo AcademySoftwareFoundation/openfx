@@ -1,0 +1,14 @@
+Dependencies
+------------
+
+Dependent upon the following
+
+*the expat library (expat.h) - to parse XML
+*ofx header files
+
+How to build
+------------
+
+Builds only on unix at present.  Use the makefiles.
+
+To be ported to Windows (VC8).
