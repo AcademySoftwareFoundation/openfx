@@ -37,6 +37,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   this plugin does absolutely no image processing, it assumes the isIdentity action will be called before a render
   and so do nothing.
  */
+
+#ifdef WIN32
+#include <windows.h>
+#endif
+ 
 #include <string.h>
 #ifdef __APPLE__
 #include <OpenGL/gl.h>

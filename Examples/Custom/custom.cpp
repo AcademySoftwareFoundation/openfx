@@ -33,6 +33,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   It is meant to illustrate certain features of the API, as opposed to being a perfectly
   crafted piece of image processing software.
  */
+
+#ifdef WIN32
+#include <windows.h>
+#endif 
+
 #include <string.h>
 #include <stdio.h>
 #ifdef __APPLE__
@@ -77,7 +82,11 @@ parseCustomParam(char *str, double &x, double &y)
 void
 writeCustomParam(char *str, int strlen, double x, double y)
 {
+#ifdef WIN32
+  _snprintf(str, strlen, "%lg %lg", x, y);
+#else
   snprintf(str, strlen, "%lg %lg", x, y);
+#endif
 }
 
 // set the current value of my custom parameter
