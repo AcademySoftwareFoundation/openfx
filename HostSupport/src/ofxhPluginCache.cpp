@@ -1,30 +1,30 @@
 /*
-Software License :
+  Software License :
 
-Copyright (c) 2007, The Foundry Visionmongers Ltd. All rights reserved.
+  Copyright (c) 2007, The Foundry Visionmongers Ltd. All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
-      this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-      and/or other materials provided with the distribution.
-    * Neither the name The Foundry Visionmongers Ltd, nor the names of its 
-      contributors may be used to endorse or promote products derived from this
-      software without specific prior written permission.
+  * Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+  * Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+  * Neither the name The Foundry Visionmongers Ltd, nor the names of its 
+  contributors may be used to endorse or promote products derived from this
+  software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include <map>
@@ -45,19 +45,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "expat.h"
 #include "ofxImageEffect.h"
 
-#if defined (WINDOWS)
-#include "shlobj.h"
-#include "tchar.h"
-#endif
-
 #if defined (UNIX)
 #define DIRLIST_SEP_CHAR ":"
 #define ARCHSTR "Linux-x86"
 #define DIRSEP "/"
+
+#include <dirent.h>
+
 #elif defined (WINDOWS)
 #define DIRLIST_SEP_CHAR ";"
 #define ARCHSTR "win32"
 #define DIRSEP "\\"
+
+#include "shlobj.h"
+#include "tchar.h"
 #endif
 
 namespace OFX {
@@ -115,20 +116,20 @@ namespace OFX {
     PluginCache gPluginCache;
 
 #if defined (WINDOWS)
-const TCHAR *getStdOFXPluginPath(void)
-{
-  static TCHAR buffer[MAX_PATH];
-  static int gotIt = 0;
-  if(!gotIt) {
-    gotIt = 1;	   
-    SHGetFolderPath(NULL, CSIDL_PROGRAM_FILES_COMMON, NULL, SHGFP_TYPE_CURRENT, buffer);
-    _tcscat(buffer, __T("\\OFX\\Plugins"));
-  }
-  return buffer;	   
-}
+    const TCHAR *getStdOFXPluginPath(void)
+    {
+      static TCHAR buffer[MAX_PATH];
+      static int gotIt = 0;
+      if(!gotIt) {
+        gotIt = 1;	   
+        SHGetFolderPath(NULL, CSIDL_PROGRAM_FILES_COMMON, NULL, SHGFP_TYPE_CURRENT, buffer);
+        _tcscat(buffer, __T("\\OFX\\Plugins"));
+      }
+      return buffer;	   
+    }
 #endif
 
-	PluginCache::PluginCache() : _xmlCurrentBinary(0), _xmlCurrentPlugin(0) {
+    PluginCache::PluginCache() : _xmlCurrentBinary(0), _xmlCurrentPlugin(0) {
       
       const char *envpath = getenv("OFX_PLUGIN_PATH");
 
@@ -155,51 +156,51 @@ const TCHAR *getStdOFXPluginPath(void)
     
 #if defined(WINDOWS)
       _pluginPath.push_back(getStdOFXPluginPath());
-	  _pluginPath.push_back("C:\\Program Files\\Common Files\\OFX\\Plugins");
+      _pluginPath.push_back("C:\\Program Files\\Common Files\\OFX\\Plugins");
 #elif defined(UNIX)
-	  _pluginPath.push_back("/usr/OFX/Plugins");
+      _pluginPath.push_back("/usr/OFX/Plugins");
 #endif
     }
 
     void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std::string &dir)
     {
 #if defined (WINDOWS)
-		WIN32_FIND_DATA findData;
-		HANDLE findHandle;
+      WIN32_FIND_DATA findData;
+      HANDLE findHandle;
 #else
-        DIR *d = opendir(dir.c_str());
-        if (!d) {
-          return;
-        }
+      DIR *d = opendir(dir.c_str());
+      if (!d) {
+        return;
+      }
 #endif
     
 #if defined (UNIX)
-		while (dirent *de = readdir(d))
+      while (dirent *de = readdir(d))
 #elif defined (WINDOWS)
-		findHandle = FindFirstFile((dir + "\\*").c_str(), &findData);
+        findHandle = FindFirstFile((dir + "\\*").c_str(), &findData);
 
 	    if (findHandle == INVALID_HANDLE_VALUE) 
-		{
-				return;
-		}
+        {
+          return;
+        }
 
-		while (1)
+      while (1)
 #endif
-		{
+        {
 #if defined (UNIX)
           std::string name = de->d_name;
 #else
-   		  std::string name = findData.cFileName;
+          std::string name = findData.cFileName;
 #endif
 #if defined (UNIX)
 #elif defined (WINDOWS)
 #endif
 
-		  if (name[0] != '@' && name != "." && name != "..") {
-			  scanDirectory(foundBinFiles, dir + DIRSEP + name);
+          if (name[0] != '@' && name != "." && name != "..") {
+            scanDirectory(foundBinFiles, dir + DIRSEP + name);
           }
 
-          if (name.find(".ofx.bundle") != -1) {
+          if (name.find(".ofx.bundle") != std::string::npos) {
             std::string barename = name.substr(0, name.length() - strlen(".bundle"));
             std::string bundlename = dir + DIRSEP + name;
             std::string binpath = dir + DIRSEP + name + DIRSEP "Contents" DIRSEP ARCHSTR DIRSEP + barename;
@@ -222,20 +223,20 @@ const TCHAR *getStdOFXPluginPath(void)
                 }
               }
             }
-		  }
+          }
 #if defined(WINDOWS)
-		  int rval = FindNextFile(findHandle, &findData);
+          int rval = FindNextFile(findHandle, &findData);
 
-		  if (rval == 0) {
-		      break;
-		  }
+          if (rval == 0) {
+            break;
+          }
 #endif
         }
 
 #if defined(UNIX)
-        closedir(d);
+      closedir(d);
 #else
-		FindClose(findHandle);
+      FindClose(findHandle);
 #endif
     }
     
@@ -303,7 +304,7 @@ const TCHAR *getStdOFXPluginPath(void)
       while (*atts) {
         if (attmap.find(*atts) == attmap.end()) {
           return false;
-          }
+        }
         atts++;
       }
       return true;
@@ -438,7 +439,7 @@ const TCHAR *getStdOFXPluginPath(void)
       }
 
       XML_ParserFree(xP);
-	}
+    }
 
     void PluginCache::writePluginCache(std::ostream &os) {
       os << "<cache>\n";
@@ -478,16 +479,16 @@ const TCHAR *getStdOFXPluginPath(void)
     }
 
     APICache::PluginAPICacheI *PluginCache::findApiHandler(Plugin *plug) {
-        std::string api = plug->getPluginApi();
-        int version = plug->getApiVersion();
-        std::list<PluginCacheSupportedApi>::iterator i = _apiHandlers.begin();
-        while (i != _apiHandlers.end()) {
-          if (i->matches(api, version)) {
-            return i->handler;
-          }
-          i++;
+      std::string api = plug->getPluginApi();
+      int version = plug->getApiVersion();
+      std::list<PluginCacheSupportedApi>::iterator i = _apiHandlers.begin();
+      while (i != _apiHandlers.end()) {
+        if (i->matches(api, version)) {
+          return i->handler;
         }
-        return 0;
+        i++;
+      }
+      return 0;
     }
   }
 }
