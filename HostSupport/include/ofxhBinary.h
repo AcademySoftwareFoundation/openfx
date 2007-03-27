@@ -29,16 +29,23 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
-
 #include <string>
 #include <iostream>
 
 // XXX: make the bodies be in a .cpp file
 
+#ifdef WIN32
+#define WINDOWS
+#else
 #define UNIX
+#endif
 
+#if defined(UNIX)
 #include <dlfcn.h>
+#elif defined (WIN32)
+#include "windows.h"
+#endif
+
 #include <sys/stat.h>
 
 namespace OFX {
@@ -53,8 +60,8 @@ namespace OFX {
     bool _invalid;
 #if defined(UNIX)
     void *_dlHandle;
-#elif defined (WINDOWS)
-    HINSTANCE lpLibFileName
+#elif defined (WIN32)
+    HINSTANCE _dlHandle;
 #endif
 
     bool _exists;

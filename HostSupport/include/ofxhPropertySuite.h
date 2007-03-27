@@ -327,7 +327,7 @@ namespace OFX {
       protected :
         bool _sloppy;
 
-        std::map<const std::string, Property *> _props;
+        std::map<std::string, Property *> _props;
 
         /// hide copy cons
         Set(const Set &);
@@ -395,7 +395,7 @@ namespace OFX {
         }
 
         /// grab the internal properties map
-        const std::map<const std::string, Property *> &getProperties()
+        const std::map<std::string, Property *> &getProperties()
         {
           return _props;
         }

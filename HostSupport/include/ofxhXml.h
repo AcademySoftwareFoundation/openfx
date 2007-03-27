@@ -52,7 +52,7 @@ namespace OFX {
 
     inline std::string attribute(const std::string &st, int val)
     {
-      ostringstream o;
+      std::ostringstream o;
       o << val;
       return attribute(st, o.str());
     }

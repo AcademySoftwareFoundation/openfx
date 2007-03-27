@@ -92,7 +92,7 @@ namespace OFX
       }
       
       void propertySetXMLWrite(std::ostream &o, Property::Set &set) {
-        for (std::map<const std::string, Property::Property*>::const_iterator i = set.getProperties().begin();
+        for (std::map<std::string, Property::Property*>::const_iterator i = set.getProperties().begin();
              i != set.getProperties().end();
              i++)
           {

@@ -81,8 +81,8 @@ namespace OFX {
         if (_getHook) {
           _getHook->getPropertyN(_name, value, count);
         } else {
-
-          for (size_t i=0;i<std::min((size_t)count, _value.size());i++) {
+		  int size = count > _value.size() ? _value.size() : count;	
+		  for (size_t i=0;i<size;i++) {
             value[i] = castToHook(_value[i]);
           }
 

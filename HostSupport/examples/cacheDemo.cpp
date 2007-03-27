@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <fstream>
 
 #include "ofxhPluginCache.h"
-#include "ofxhProperty.h"
+#include "ofxhPropertySuite.h"
 
 int main(int argc, char **argv) {
 

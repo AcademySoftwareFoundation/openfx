@@ -239,15 +239,17 @@ namespace OFX {
           { kOfxParamPropCacheInvalidation,    Property::eString,    1,    false,    kOfxParamInvalidateValueChange },
           { 0 }
         };
+		
+		std::ostringstream dbl_min, dbl_max, int_min, int_max;
 
-        char dbl_min[100]; sprintf(dbl_min, "%f", -DBL_MAX);
-        char dbl_max[100]; sprintf(dbl_max, "%f", DBL_MAX);
-        char int_min[100]; sprintf(int_min, "%i", INT_MIN);
-        char int_max[100]; sprintf(int_max, "%i", INT_MAX);
+        dbl_min << -DBL_MAX;
+        dbl_max << DBL_MAX;
+        int_min << INT_MIN;
+        int_max << INT_MAX;
 
         Property::PropSpec allNumeric[] = {
-          { kOfxParamPropDisplayMin, propType, propDim, false, propType == Property::eDouble ? dbl_min : int_min },
-          { kOfxParamPropDisplayMax, propType, propDim, false, propType == Property::eDouble ? dbl_max : int_max },
+          { kOfxParamPropDisplayMin, propType, propDim, false, (propType == Property::eDouble ? dbl_min : int_min).str().c_str() },
+          { kOfxParamPropDisplayMax, propType, propDim, false, (propType == Property::eDouble ? dbl_max : int_max).str().c_str() },
           { 0 }
         };
 

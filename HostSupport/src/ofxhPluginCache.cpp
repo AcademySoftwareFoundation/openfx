@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdlib.h>
 
+#include "ofxhBinary.h"
 #include "ofxhPluginCache.h"
 #include "ofxhPluginAPICache.h"
 #include "ofxhPropertySuite.h"
@@ -43,6 +44,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "expat.h"
 #include "ofxImageEffect.h"
+
+#if defined (WINDOWS)
+#include "shlobj.h"
+#include "tchar.h"
+#endif
+
+#if defined (UNIX)
+#define DIRLIST_SEP_CHAR ":"
+#define ARCHSTR "Linux-x86"
+#define DIRSEP "/"
+#elif defined (WINDOWS)
+#define DIRLIST_SEP_CHAR ";"
+#define ARCHSTR "win32"
+#define DIRSEP "\\"
+#endif
 
 namespace OFX {
 
@@ -97,8 +113,22 @@ namespace OFX {
     }
     
     PluginCache gPluginCache;
-    
-    PluginCache::PluginCache() : _xmlCurrentBinary(0), _xmlCurrentPlugin(0) {
+
+#if defined (WINDOWS)
+const TCHAR *getStdOFXPluginPath(void)
+{
+  static TCHAR buffer[MAX_PATH];
+  static int gotIt = 0;
+  if(!gotIt) {
+    gotIt = 1;	   
+    SHGetFolderPath(NULL, CSIDL_PROGRAM_FILES_COMMON, NULL, SHGFP_TYPE_CURRENT, buffer);
+    _tcscat(buffer, __T("\\OFX\\Plugins"));
+  }
+  return buffer;	   
+}
+#endif
+
+	PluginCache::PluginCache() : _xmlCurrentBinary(0), _xmlCurrentPlugin(0) {
       
       const char *envpath = getenv("OFX_PLUGIN_PATH");
 
@@ -106,7 +136,8 @@ namespace OFX {
         std::string s = envpath;
   
         while (s.length()) {
-          int spos = s.find(":");
+
+          int spos = s.find(DIRLIST_SEP_CHAR);
       
           std::string path;
       
@@ -122,27 +153,56 @@ namespace OFX {
         }
       }
     
-      _pluginPath.push_back("/usr/OFX/Plugins");
+#if defined(WINDOWS)
+      _pluginPath.push_back(getStdOFXPluginPath());
+	  _pluginPath.push_back("C:\\Program Files\\Common Files\\OFX\\Plugins");
+#elif defined(UNIX)
+	  _pluginPath.push_back("/usr/OFX/Plugins");
+#endif
     }
 
     void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std::string &dir)
     {
+#if defined (WINDOWS)
+		WIN32_FIND_DATA findData;
+		HANDLE findHandle;
+#else
         DIR *d = opendir(dir.c_str());
         if (!d) {
           return;
         }
+#endif
     
-        while (dirent *de = readdir(d)) {
+#if defined (UNIX)
+		while (dirent *de = readdir(d))
+#elif defined (WINDOWS)
+		findHandle = FindFirstFile((dir + "\\*").c_str(), &findData);
+
+	    if (findHandle == INVALID_HANDLE_VALUE) 
+		{
+				return;
+		}
+
+		while (1)
+#endif
+		{
+#if defined (UNIX)
           std::string name = de->d_name;
-      
-          if (name[0] != '@' && name != "." && name != "..") {
-            scanDirectory(foundBinFiles, dir + "/" + name);
+#else
+   		  std::string name = findData.cFileName;
+#endif
+#if defined (UNIX)
+#elif defined (WINDOWS)
+#endif
+
+		  if (name[0] != '@' && name != "." && name != "..") {
+			  scanDirectory(foundBinFiles, dir + DIRSEP + name);
           }
 
           if (name.find(".ofx.bundle") != -1) {
             std::string barename = name.substr(0, name.length() - strlen(".bundle"));
-            std::string bundlename = dir + "/" + name;
-            std::string binpath = dir + "/" + name + "/Contents/Linux-x86/" + barename;
+            std::string bundlename = dir + DIRSEP + name;
+            std::string binpath = dir + DIRSEP + name + DIRSEP "Contents" DIRSEP ARCHSTR DIRSEP + barename;
             
             foundBinFiles.insert(binpath);
             
@@ -162,14 +222,25 @@ namespace OFX {
                 }
               }
             }
-          }
+		  }
+#if defined(WINDOWS)
+		  int rval = FindNextFile(findHandle, &findData);
+
+		  if (rval == 0) {
+		      break;
+		  }
+#endif
         }
+
+#if defined(UNIX)
         closedir(d);
+#else
+		FindClose(findHandle);
+#endif
     }
     
     void PluginCache::scanPluginFiles()
     {
-  
       std::set<std::string> foundBinFiles;
 
       for (std::list<std::string>::iterator paths= _pluginPath.begin();
@@ -344,7 +415,6 @@ namespace OFX {
     }
 
     void PluginCache::readCache(std::istream &ifs) {
-  
       XML_Parser xP = XML_ParserCreate(NULL);
       XML_SetElementHandler(xP, elementBeginHandler, elementEndHandler);
       XML_SetCharacterDataHandler(xP, elementCharHandler);
@@ -368,7 +438,7 @@ namespace OFX {
       }
 
       XML_ParserFree(xP);
-    }
+	}
 
     void PluginCache::writePluginCache(std::ostream &os) {
       os << "<cache>\n";
