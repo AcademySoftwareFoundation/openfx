@@ -1,4 +1,5 @@
-CXXFLAGS=-I../include -I../../include
+CXXFLAGS=-I../include -I../../include -I$(HOME)/include
 
 cacheDemo:cacheDemo.cpp
-	$(CXX) $(CXXFLAGS) -L../lib -lofxHost cacheDemo.cpp -o cacheDemo
+	$(CXX) $(CXXFLAGS) cacheDemo.cpp -o cacheDemo -L../lib -lofxHost -lexpat -ldl
+
