@@ -323,6 +323,11 @@ namespace OFX {
 
       /// find the API cache handler for the appropriate plugin
       APICache::PluginAPICacheI* findApiHandler(Plugin *plug);
+
+      /// obtain a list of plugins to walk through
+      const std::list<Plugin *> &getPlugins() {
+        return _plugins;
+      }
     };
 
     /// the global plugin cache
