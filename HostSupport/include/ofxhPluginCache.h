@@ -160,6 +160,8 @@ namespace OFX {
       virtual ~Plugin() {
       }
 
+      virtual APICache::PluginAPICacheI &getApiHandler() = 0;
+
       bool trumps(Plugin *other) {
         int myMajor = getVersionMajor();
         int theirMajor = other->getVersionMajor();
@@ -342,10 +344,8 @@ namespace OFX {
         _apiHandlers.push_back(PluginCacheSupportedApi(api, min, max, apiCache));
       }
       
-      APICache::PluginAPICacheI* findApiHandler(const std::string &, int);
-
-      /// find the API cache handler for the appropriate plugin
-      APICache::PluginAPICacheI* findApiHandler(Plugin *plug);
+      /// find the API cache handler for the given api/apiverson
+      APICache::PluginAPICacheI* findApiHandler(const std::string &api, int apiver);
 
       /// obtain a list of plugins to walk through
       const std::list<Plugin *> &getPlugins() {

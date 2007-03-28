@@ -221,10 +221,8 @@ namespace OFX {
               
               for (int j=0;j<pb->getNPlugins();j++) {
                 Plugin *plug = &pb->getPlugin(j);
-                APICache::PluginAPICacheI *api = findApiHandler(plug);
-                if (api) {
-                  api->loadFromPlugin(plug);
-                }
+                APICache::PluginAPICacheI &api = plug->getApiHandler();
+                api.loadFromPlugin(plug);
               }
             }
           }
@@ -277,11 +275,11 @@ namespace OFX {
           for (int j=0;j<pb->getNPlugins();j++) {
             Plugin *plug = &pb->getPlugin(j);
             _plugins.push_back(plug);
-            APICache::PluginAPICacheI *api = findApiHandler(plug);
-            if (binChanged && api) {
-              api->loadFromPlugin(plug);
+            APICache::PluginAPICacheI &api = plug->getApiHandler();
+            if (binChanged) {
+              api.loadFromPlugin(plug);
             }
-            api->confirmPlugin(plug);
+            api.confirmPlugin(plug);
           }
 
           i++;
@@ -371,10 +369,8 @@ namespace OFX {
       }
 
       if (_xmlCurrentPlugin) {
-        APICache::PluginAPICacheI *api = findApiHandler(_xmlCurrentPlugin);
-        if (api) {
-          api->xmlElementBegin(name, attmap);
-        }
+        APICache::PluginAPICacheI &api = _xmlCurrentPlugin->getApiHandler();
+        api.xmlElementBegin(name, attmap);
       }
 
     }
@@ -383,10 +379,8 @@ namespace OFX {
     {
       std::string s(data, size);
       if (_xmlCurrentPlugin) {
-        APICache::PluginAPICacheI *api = findApiHandler(_xmlCurrentPlugin);
-        if (api) {
-          api->xmlCharacterHandler(s);
-        }
+        APICache::PluginAPICacheI &api = _xmlCurrentPlugin->getApiHandler();
+        api.xmlCharacterHandler(s);
       } else {
         /// XXX: we only want whitespace
       }
@@ -399,10 +393,8 @@ namespace OFX {
 
       if (ename == "plugin") {
         if (_xmlCurrentPlugin) {
-          APICache::PluginAPICacheI *api = findApiHandler(_xmlCurrentPlugin);
-          if (api) {
-            api->endXmlParsing();
-          }
+          APICache::PluginAPICacheI &api = _xmlCurrentPlugin->getApiHandler();
+          api.endXmlParsing();
         }
         _xmlCurrentPlugin = 0;
         return;
@@ -414,10 +406,8 @@ namespace OFX {
       }
 
       if (_xmlCurrentPlugin) {
-        APICache::PluginAPICacheI *api = findApiHandler(_xmlCurrentPlugin);
-        if (api) {
-          api->xmlElementEnd(name);
-        }
+        APICache::PluginAPICacheI &api = _xmlCurrentPlugin->getApiHandler();
+        api.xmlElementEnd(name);
       }
     }
 
@@ -470,12 +460,10 @@ namespace OFX {
              << XML::attribute("minor_version", p->getVersionMinor())
              << ">\n";
 
-          APICache::PluginAPICacheI *api = findApiHandler(p);
-          if (api) {
-            os << "    <apiproperties>\n";
-            api->saveXML(p, os);
-            os << "    </apiproperties>\n";
-          }
+          APICache::PluginAPICacheI &api = p->getApiHandler();
+          os << "    <apiproperties>\n";
+          api.saveXML(p, os);
+          os << "    </apiproperties>\n";
 
           os << "  </plugin>\n";
         }
@@ -484,18 +472,6 @@ namespace OFX {
       os << "</cache>\n";
     }
 
-    APICache::PluginAPICacheI *PluginCache::findApiHandler(Plugin *plug) {
-      std::string api = plug->getPluginApi();
-      int version = plug->getApiVersion();
-      std::list<PluginCacheSupportedApi>::iterator i = _apiHandlers.begin();
-      while (i != _apiHandlers.end()) {
-        if (i->matches(api, version)) {
-          return i->handler;
-        }
-        i++;
-      }
-      return 0;
-    }
 
     APICache::PluginAPICacheI *PluginCache::findApiHandler(const std::string &api, int version) {
       std::list<PluginCacheSupportedApi>::iterator i = _apiHandlers.begin();

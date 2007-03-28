@@ -121,6 +121,11 @@ namespace OFX
 
     namespace ImageEffect {
 
+      APICache::PluginAPICacheI &ImageEffectPlugin::getApiHandler()
+      {
+        return _pc;
+      }
+
       PluginCache::~PluginCache() {
       }
 
@@ -194,7 +199,7 @@ namespace OFX
           _pluginsByID[plugin->getIdentifier()] = plugin;
         }
       }
-        
+
 
       void PluginCache::loadFromPlugin(Plugin *op) {
         

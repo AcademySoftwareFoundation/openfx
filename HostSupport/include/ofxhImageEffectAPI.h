@@ -13,22 +13,40 @@ namespace OFX {
   namespace Host {
     namespace ImageEffect {
 
+      class PluginCache;
+
       /// subclass of Plugin representing an ImageEffect plugin.  used to store API-specific
       /// data
       class ImageEffectPlugin : public Plugin {
+
+        PluginCache &_pc;
 
         // this comes off ImageEffectDescriptor's property set after a describe
         ImageEffectDescriptor _ie;
         
         std::map<std::string, ImageEffectDescriptor *> _contexts;
       public:
-			  ImageEffectPlugin(PluginBinary *pb, int pi, OfxPlugin *pl) : Plugin(pb, pi, pl), _ie(this) {
+			  ImageEffectPlugin(PluginCache &pc, PluginBinary *pb, int pi, OfxPlugin *pl)
+          : Plugin(pb, pi, pl)
+          , _pc(pc)
+          , _ie(this) {
         }
 
-        ImageEffectPlugin(PluginBinary *pb, int pi, const std::string &api, int apiVersion, const std::string &pluginId,
-                          int pluginMajorVersion, int pluginMinorVersion) : Plugin(pb, pi, api, apiVersion, pluginId,
-                                                                                   pluginMajorVersion, pluginMinorVersion), _ie(this) {
+        ImageEffectPlugin(PluginCache &pc,
+                          PluginBinary *pb,
+                          int pi,
+                          const std::string &api,
+                          int apiVersion,
+                          const std::string &pluginId,
+                          int pluginMajorVersion,
+                          int pluginMinorVersion)
+          : Plugin(pb, pi, api, apiVersion, pluginId, pluginMajorVersion, pluginMinorVersion)
+          , _pc(pc)
+          , _ie(this) {
         }
+
+        /// return the API handler this plugin was constructed by
+        APICache::PluginAPICacheI &getApiHandler();
 
         /// get the properties
         Property::Set &getProps() {
@@ -57,7 +75,12 @@ namespace OFX {
         Property::Property *_currentProp;
         
       public:      
-        PluginCache() : PluginAPICacheI("OfxImageEffectPluginAPI", 1, 1), _currentPlugin(0), _currentProp(0) { }
+        PluginCache() 
+          : PluginAPICacheI("OfxImageEffectPluginAPI", 1, 1)
+          , _currentPlugin(0)
+          , _currentProp(0)
+        {
+        }
         
         virtual ~PluginCache();
         
@@ -108,15 +131,22 @@ namespace OFX {
 
         void confirmPlugin(Plugin *p);
 
-        Plugin *newPlugin(PluginBinary *pb, int pi, OfxPlugin *pl) {
-          ImageEffectPlugin *plugin = new ImageEffectPlugin(pb, pi, pl);
+        Plugin *newPlugin(PluginBinary *pb,
+                          int pi,
+                          OfxPlugin *pl) {
+          ImageEffectPlugin *plugin = new ImageEffectPlugin(*this, pb, pi, pl);
           return plugin;
         }
 
-        Plugin *newPlugin(PluginBinary *pb, int pi, const std::string &api, int apiVersion, const std::string &pluginId,
-                                  int pluginMajorVersion, int pluginMinorVersion) 
+        Plugin *newPlugin(PluginBinary *pb,
+                          int pi,
+                          const std::string &api,
+                          int apiVersion,
+                          const std::string &pluginId,
+                          int pluginMajorVersion,
+                          int pluginMinorVersion) 
         {
-          ImageEffectPlugin *plugin = new ImageEffectPlugin(pb, pi, api, apiVersion, pluginId, pluginMajorVersion, pluginMinorVersion);
+          ImageEffectPlugin *plugin = new ImageEffectPlugin(*this, pb, pi, api, apiVersion, pluginId, pluginMajorVersion, pluginMinorVersion);
           return plugin;
         }
       };
