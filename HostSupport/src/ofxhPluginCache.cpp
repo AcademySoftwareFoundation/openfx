@@ -66,7 +66,7 @@ namespace OFX {
   namespace Host {
 
     /// try to open the plugin bundle object and query it for plugins
-    void PluginBinary::loadPluginInfo() {      
+    void PluginBinary::loadPluginInfo(PluginCache *cache) {      
       _fileModificationTime = _binary.getTime();
       _fileSize = _binary.getSize();
       _binaryChanged = false;
@@ -86,8 +86,12 @@ namespace OFX {
         _plugins.reserve(pluginCount);
         
         for (int i=0;i<pluginCount;i++) {
-          OfxPlugin *plug = (*getPlug)(i);	    
-          _plugins.push_back(new Plugin(this, i, plug));
+          OfxPlugin *plug = (*getPlug)(i);
+
+          APICache::PluginAPICacheI *api = cache->findApiHandler(plug->pluginApi, plug->apiVersion);
+          assert(api);
+
+          _plugins.push_back(api->newPlugin(this, i, plug));
         }
       }
       
@@ -211,7 +215,7 @@ namespace OFX {
               
               // the binary was not in the cache
               
-              PluginBinary *pb = new PluginBinary(binpath, bundlename);
+              PluginBinary *pb = new PluginBinary(binpath, bundlename, this);
               _binaries.push_back(pb);
               _knownBinFiles.insert(binpath);
               
@@ -267,7 +271,7 @@ namespace OFX {
 
           // the binary was in the cache, but the binary has changed and thus we need to reload
           if (binChanged) {
-            pb->loadPluginInfo();
+            pb->loadPluginInfo(this);
           }
 
           for (int j=0;j<pb->getNPlugins();j++) {
@@ -277,6 +281,7 @@ namespace OFX {
             if (binChanged && api) {
               api->loadFromPlugin(plug);
             }
+            api->confirmPlugin(plug);
           }
 
           i++;
@@ -353,14 +358,15 @@ namespace OFX {
         int major_version = OFX::Host::Property::stringToInt(attmap["major_version"]);
         int minor_version = OFX::Host::Property::stringToInt(attmap["minor_version"]);
 
-        Plugin *pe = new Plugin(_xmlCurrentBinary, idx, api, api_version, identifier, major_version, minor_version); 
-        _xmlCurrentBinary->addPlugin(pe);
-        _xmlCurrentPlugin = pe;
-        
-        APICache::PluginAPICacheI *apiCache = findApiHandler(pe);
+        APICache::PluginAPICacheI *apiCache = findApiHandler(api, api_version);
         if (apiCache) {
+          
+          Plugin *pe = apiCache->newPlugin(_xmlCurrentBinary, idx, api, api_version, identifier, major_version, minor_version);
+          _xmlCurrentBinary->addPlugin(pe);
+          _xmlCurrentPlugin = pe;
           apiCache->beginXmlParsing(pe);
         }
+
         return;
       }
 
@@ -481,6 +487,17 @@ namespace OFX {
     APICache::PluginAPICacheI *PluginCache::findApiHandler(Plugin *plug) {
       std::string api = plug->getPluginApi();
       int version = plug->getApiVersion();
+      std::list<PluginCacheSupportedApi>::iterator i = _apiHandlers.begin();
+      while (i != _apiHandlers.end()) {
+        if (i->matches(api, version)) {
+          return i->handler;
+        }
+        i++;
+      }
+      return 0;
+    }
+
+    APICache::PluginAPICacheI *PluginCache::findApiHandler(const std::string &api, int version) {
       std::list<PluginCacheSupportedApi>::iterator i = _apiHandlers.begin();
       while (i != _apiHandlers.end()) {
         if (i->matches(api, version)) {

@@ -42,6 +42,7 @@ namespace OFX
 {
   namespace Host {
     class Plugin;
+    class PluginBinary;
     class PluginCache;
 
     namespace ImageEffect {
@@ -74,6 +75,10 @@ namespace OFX
         }
         
         virtual void loadFromPlugin(Plugin *) = 0;
+
+        virtual Plugin *newPlugin(PluginBinary *, int pi, OfxPlugin *plug) = 0;
+        virtual Plugin *newPlugin(PluginBinary *pb, int pi, const std::string &api, int apiVersion, const std::string &pluginId,
+                                  int pluginMajorVersion, int pluginMinorVersion) = 0;
         
         virtual void beginXmlParsing(Plugin *) = 0;
         virtual void xmlElementBegin(const std::string &, std::map<std::string, std::string>) = 0;
@@ -82,6 +87,8 @@ namespace OFX
         virtual void endXmlParsing() = 0;
         
         virtual void saveXML(Plugin *, std::ostream &) = 0;
+
+        virtual void confirmPlugin(Plugin *) = 0;
 
         void registerInCache(OFX::Host::PluginCache &pluginCache);
       };
@@ -92,52 +99,7 @@ namespace OFX
       /// helper function to write a property set to XML
       void propertySetXMLWrite(std::ostream &o, Property::Set &set);
 
-      /// implementation of the specific Image Effect handler API cache.
-      class ImageAPIHelper : public PluginAPICacheI {
-        
-      private:
-        std::map<Plugin *, ImageEffect::ImageEffectDescriptor*> _effectDescriptors;
-        
-        Plugin *_currentPlugin;
-        Property::Property *_currentProp;
-        ImageEffect::ImageEffectDescriptor *_currentEffect;
-        
-      public:      
-        ImageAPIHelper() : PluginAPICacheI("OfxImageEffectPluginAPI", 1, 1), _currentPlugin(0), _currentProp(0) { }
-        
-        virtual ~ImageAPIHelper();
-        
-        /// handle the case where the info needs filling in from the file.  runs the "describe" action on the plugin.
-        void loadFromPlugin(Plugin *p);
-        
-        /// handler for preparing to read in a chunk of XML from the cache, set up context to do this
-        void beginXmlParsing(Plugin *p) {
-          _currentPlugin = p;
-          _currentEffect = new ImageEffect::ImageEffectDescriptor(p);
-          _effectDescriptors[_currentPlugin] = _currentEffect;
-        }
-        
-        /// XML handler : element begins (everything is stored in elements and attributes)
-        virtual void xmlElementBegin(const std::string &el, std::map<std::string, std::string> map) {
-          propertySetXMLRead(el, map, _currentEffect->getProps(), _currentProp);
-        }
-        
-        virtual void xmlCharacterHandler(const std::string &) {
-        }
-        
-        virtual void xmlElementEnd(const std::string &) {
-        }
-        
-        virtual void endXmlParsing() {
-          _currentPlugin = 0;
-        }
-        
-        virtual void saveXML(Plugin *p, std::ostream &os) {
-          propertySetXMLWrite(os, _effectDescriptors[p]->getProps());
-        }
-      };
     }
   }
 }
-
 #endif

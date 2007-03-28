@@ -32,10 +32,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ofxhPluginCache.h"
 #include "ofxhPropertySuite.h"
+#include "ofxhImageEffectAPI.h"
 
 int main(int argc, char **argv) {
 
-  OFX::Host::APICache::ImageAPIHelper ia;
+  OFX::Host::ImageEffect::PluginCache ia;
   ia.registerInCache(OFX::Host::gPluginCache);
 
   std::ifstream ifs("cache");
@@ -46,4 +47,9 @@ int main(int argc, char **argv) {
   std::ofstream of("cache2");
   OFX::Host::gPluginCache.writePluginCache(of);
   of.close();
+
+  std::cout << ia.getPluginById("uk.co.thefoundry.furnace.f_blocktexture", 2) << std::endl;
+  std::cout << ia.getPluginByLabel("F_BlockTexture", 2) << std::endl;
+  std::cout << ia.getPluginByLabel("F_BlockTexture", 3) << std::endl;
+  std::cout << ia.getPluginByLabel("F_FishTexture", 2) << std::endl;
 }

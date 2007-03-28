@@ -34,6 +34,7 @@
 #include "ofxhPluginAPICache.h"
 #include "ofxhHost.h"
 #include "ofxhXml.h"
+#include "ofxhImageEffectAPI.h"
 
 namespace OFX
 {
@@ -116,21 +117,99 @@ namespace OFX
             o << "</property>\n";
           }
       }
+    }
 
-      ImageAPIHelper::~ImageAPIHelper() {
+    namespace ImageEffect {
+
+      PluginCache::~PluginCache() {
       }
 
-      void ImageAPIHelper::loadFromPlugin(Plugin *p) {
+      ImageEffectPlugin *PluginCache::getPluginById(const std::string &id, int vermaj, int vermin)
+      {
+        // return the highest version one, which fits the pattern provided
+        ImageEffectPlugin *sofar = 0;
+
+        for (std::vector<ImageEffectPlugin *>::iterator i=_plugins.begin();i!=_plugins.end();i++) {
+          ImageEffectPlugin *p = *i;
+
+          if (p->getIdentifier() != id) {
+            continue;
+          }
+
+          if (vermaj != -1 && p->getVersionMajor() != vermaj) {
+            continue;
+          }
+
+          if (vermin != -1 && p->getVersionMinor() != vermin) {
+            continue;
+          }
+
+          if (!sofar || p->trumps(sofar)) {
+            sofar = p;
+          }
+        }
+
+        return sofar;
+      }
+      
+
+      ImageEffectPlugin *PluginCache::getPluginByLabel(const std::string &label, int vermaj, int vermin)
+      {
+        // return the highest version one, which fits the pattern provided
+        ImageEffectPlugin *sofar = 0;
+
+        for (std::vector<ImageEffectPlugin *>::iterator i=_plugins.begin();i!=_plugins.end();i++) {
+          ImageEffectPlugin *p = *i;
+
+          if (p->getProps().getProperty<Property::StringValue>(kOfxPropLabel, 0) != label) {
+            continue;
+          }
+
+          if (vermaj != -1 && p->getVersionMajor() != vermaj) {
+            continue;
+          }
+
+          if (vermin != -1 && p->getVersionMinor() != vermin) {
+            continue;
+          }
+
+          if (!sofar || p->trumps(sofar)) {
+            sofar = p;
+          }
+        }
+
+        return sofar;
+      }
+
+      void PluginCache::confirmPlugin(Plugin *p) {
+        ImageEffectPlugin *plugin = dynamic_cast<ImageEffectPlugin*>(p);
+        _plugins.push_back(plugin);
+
+        if (_pluginsByID.find(plugin->getIdentifier()) != _pluginsByID.end()) {
+          ImageEffectPlugin *otherPlugin = _pluginsByID[plugin->getIdentifier()];
+          if (plugin->trumps(otherPlugin)) {
+            _pluginsByID[plugin->getIdentifier()] = plugin;
+          }
+        } else {
+          _pluginsByID[plugin->getIdentifier()] = plugin;
+        }
+      }
         
+
+      void PluginCache::loadFromPlugin(Plugin *op) {
+        
+        ImageEffectPlugin *p = dynamic_cast<ImageEffectPlugin*>(op);
+        assert(p);
+
         PluginHandle plug(p);
         
         OFX::Host::HostDescriptor host;
         plug->setHost(host.getHandle());
         int rval = plug->mainEntry(kOfxActionLoad, 0, 0, 0);
 
-        ImageEffect::ImageEffectDescriptor *e = new ImageEffect::ImageEffectDescriptor(p);
+        //        ImageEffect::ImageEffectDescriptor *e = new ImageEffect::ImageEffectDescriptor(p);
         if (rval == 0 || rval == 14) {
-          rval = plug->mainEntry(kOfxActionDescribe, e->getHandle(), 0, 0);
+          rval = plug->mainEntry(kOfxActionDescribe, p->getImageEffect().getHandle(), 0, 0);
         }
         
         /*  int size = e->_properties.getDimension(kOfxImageEffectPropSupportedContexts);
@@ -168,7 +247,7 @@ namespace OFX
           rval = plug->mainEntry(kOfxActionUnload, 0, 0, 0);
         }
         
-        _effectDescriptors[p] = e;
+        //        _effectDescriptors[p] = e;
       }      
     }
   }

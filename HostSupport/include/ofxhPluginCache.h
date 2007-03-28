@@ -156,6 +156,27 @@ namespace OFX {
         , _index(idx) 
       {
       }
+
+      virtual ~Plugin() {
+      }
+
+      bool trumps(Plugin *other) {
+        int myMajor = getVersionMajor();
+        int theirMajor = other->getVersionMajor();
+
+        int myMinor = getVersionMinor();
+        int theirMinor = other->getVersionMinor();
+
+        if (myMajor > theirMajor) {
+          return true;
+        }
+        
+        if (myMajor == theirMajor && myMinor > theirMinor) {
+          return true;
+        }
+
+        return false;
+      }
     };
 
     class PluginHandle;
@@ -195,13 +216,13 @@ namespace OFX {
 
       /// constructor which will open a library file, call things inside it, and then 
       /// create Plugin objects as appropriate for the plugins exported therefrom
-      explicit PluginBinary(const std::string &file, const std::string &bundlePath)
+      explicit PluginBinary(const std::string &file, const std::string &bundlePath, PluginCache *cache)
         : _binary(file)
         , _filePath(file)
         , _bundlePath(bundlePath)
         , _binaryChanged(false)
       {
-        loadPluginInfo();
+        loadPluginInfo(cache);
       }
     
       /// dtor
@@ -232,7 +253,7 @@ namespace OFX {
         _plugins.push_back(pe);
       }
 
-      void loadPluginInfo();
+      void loadPluginInfo(PluginCache *);
 
       /// how many plugins?
       int getNPlugins() {return _plugins.size(); }
@@ -320,6 +341,8 @@ namespace OFX {
       void registerAPICache(const std::string &api, int min, int max, APICache::PluginAPICacheI *apiCache) {
         _apiHandlers.push_back(PluginCacheSupportedApi(api, min, max, apiCache));
       }
+      
+      APICache::PluginAPICacheI* findApiHandler(const std::string &, int);
 
       /// find the API cache handler for the appropriate plugin
       APICache::PluginAPICacheI* findApiHandler(Plugin *plug);

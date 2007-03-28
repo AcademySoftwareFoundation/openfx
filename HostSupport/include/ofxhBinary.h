@@ -36,8 +36,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef WIN32
 #define WINDOWS
-#else
+#define I386
+#elif defined(__linux__)
 #define UNIX
+#ifdef __i386__
+#define I386
+#elif defined(__amd64__)
+#define AMD64
+#else
+#error can't detect architecture
+#endif
+#else
+#error can't detect architecture
 #endif
 
 #if defined(UNIX)
@@ -60,7 +70,7 @@ namespace OFX {
     bool _invalid;
 #if defined(UNIX)
     void *_dlHandle;
-#elif defined (WIN32)
+#elif defined (WINDOWS)
     HINSTANCE _dlHandle;
 #endif
 
