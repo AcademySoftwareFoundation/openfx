@@ -14,3 +14,7 @@ Release Notes
 Minimum implementation, which allows plugin descriptions to be cached.  Includes property sets and
 property suite and implementation of plugin description.  Support for describing in context and
 parameters not fully enabled.
+
+29/03/2007
+
+Support for describing in contexts and parameters.  These are cached as well.
