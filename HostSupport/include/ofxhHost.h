@@ -115,6 +115,10 @@ namespace OFX {
         OfxPropertySetHandle getPropHandle() {
           return _properties.getHandle();
         }
+
+        Property::Set &getProps() {
+          return _properties;
+        }
       };
 
     }
@@ -134,7 +138,7 @@ namespace OFX {
           , _params(other._params)
           , _properties(other._properties)
         {
-        };
+        }
 
         /// constructor
         ImageEffectDescriptor(Plugin *plug);
@@ -158,9 +162,18 @@ namespace OFX {
           return _properties;
         }
 
+        /// get the clips
+        std::map<std::string, Clip::ClipDescriptor*> &getClips() {
+          return _clips;
+        }
+
         /// get the parameters set
         Param::ParamSet &getParams() {
           return _params;
+        }
+
+        void addClip(const std::string &name, Clip::ClipDescriptor *clip) {
+          _clips[name] = clip;
         }
       };
     }

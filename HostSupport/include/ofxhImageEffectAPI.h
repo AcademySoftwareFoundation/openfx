@@ -86,6 +86,7 @@ namespace OFX {
         
         ImageEffectDescriptor *_currentContext;
         Param::Param *_currentParam;
+        Clip::ClipDescriptor *_currentClip;
 
       public:      
         PluginCache() 
@@ -94,6 +95,7 @@ namespace OFX {
           , _currentProp(0)
           , _currentContext(0)
           , _currentParam(0)
+          , _currentClip(0)
         {
         }
         

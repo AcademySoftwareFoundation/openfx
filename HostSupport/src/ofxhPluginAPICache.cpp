@@ -231,6 +231,16 @@ namespace OFX
             os << "        </param>\n";
           }
 
+          for (std::map<std::string, OFX::Host::Clip::ClipDescriptor*>::iterator i=ed->getClips().begin();
+               i != ed->getClips().end();
+               i++) {
+            os << "        <clip " 
+               << XML::attribute("name", i->first) 
+               << ">\n";
+            APICache::propertySetXMLWrite(os, i->second->getProps(), 10);
+            os << "        </clip>\n";
+          }
+
           os << "      </context>\n";
         }
       }
@@ -256,8 +266,21 @@ namespace OFX
           return;
         }
 
+        if (el == "clip" && _currentContext) {
+          std::string cname = map["name"];
+
+          _currentClip = new Clip::ClipDescriptor();
+          _currentContext->addClip(cname, _currentClip);
+          return;
+        }
+
         if (_currentContext && _currentParam) {
           APICache::propertySetXMLRead(el, map, _currentParam->getProperties(), _currentProp);
+          return;
+        }
+
+        if (_currentContext && _currentClip) {
+          APICache::propertySetXMLRead(el, map, _currentClip->getProps(), _currentProp);
           return;
         }
 
@@ -265,7 +288,8 @@ namespace OFX
           APICache::propertySetXMLRead(el, map, _currentPlugin->getProps(), _currentProp);
           return;
         }
-
+        
+        std::cout << "element " << el << "\n";
         assert(false);
       }
 

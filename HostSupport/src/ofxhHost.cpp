@@ -585,6 +585,8 @@ namespace OFX {
   }
 }
 
+#undef UNIMPLEMENTED_BODY
+
 namespace OFX {
   namespace Host {
 
