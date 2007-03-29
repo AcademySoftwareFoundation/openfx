@@ -8,6 +8,7 @@
 #include "ofxhPropertySuite.h"
 #include "ofxhHost.h"
 #include "ofxhPluginAPICache.h"
+#include "ofxhXml.h"
 
 namespace OFX {
   namespace Host {
@@ -24,6 +25,7 @@ namespace OFX {
         // this comes off ImageEffectDescriptor's property set after a describe
         ImageEffectDescriptor _ie;
         
+        /// map to store contexts in
         std::map<std::string, ImageEffectDescriptor *> _contexts;
       public:
 			  ImageEffectPlugin(PluginCache &pc, PluginBinary *pb, int pi, OfxPlugin *pl)
@@ -57,6 +59,14 @@ namespace OFX {
         ImageEffectDescriptor &getImageEffect() {
           return _ie;
         }
+
+        void addContext(const std::string &context, ImageEffectDescriptor *ied)
+        {
+          _contexts[context] = ied;
+        }
+
+        virtual void saveXML(std::ostream &os);
+
       };
 
       /// implementation of the specific Image Effect handler API cache.
@@ -74,11 +84,16 @@ namespace OFX {
         /// xml parsing state
         Property::Property *_currentProp;
         
+        ImageEffectDescriptor *_currentContext;
+        Param::Param *_currentParam;
+
       public:      
         PluginCache() 
           : PluginAPICacheI("OfxImageEffectPluginAPI", 1, 1)
           , _currentPlugin(0)
           , _currentProp(0)
+          , _currentContext(0)
+          , _currentParam(0)
         {
         }
         
@@ -110,23 +125,29 @@ namespace OFX {
           _currentPlugin = dynamic_cast<ImageEffectPlugin*>(p);
         }
         
-        /// XML handler : element begins (everything is stored in elements and attributes)
-        virtual void xmlElementBegin(const std::string &el, std::map<std::string, std::string> map) {
-          APICache::propertySetXMLRead(el, map, _currentPlugin->getProps(), _currentProp);
-        }
-        
+        /// XML handler : element begins (everything is stored in elements and attributes)       
+        virtual void xmlElementBegin(const std::string &el, std::map<std::string, std::string> map);
+
         virtual void xmlCharacterHandler(const std::string &) {
         }
         
-        virtual void xmlElementEnd(const std::string &) {
+        virtual void xmlElementEnd(const std::string &el) {
+          if (el == "param") {
+            _currentParam = 0;
+          }
+
+          if (el == "context") {
+            _currentContext = 0;
+          }
         }
         
         virtual void endXmlParsing() {
           _currentPlugin = 0;
         }
         
-        virtual void saveXML(Plugin *p, std::ostream &os) {
-          APICache::propertySetXMLWrite(os, (dynamic_cast<ImageEffectPlugin*>(p))->getProps());
+        virtual void saveXML(Plugin *ip, std::ostream &os) {
+          ImageEffectPlugin *p = dynamic_cast<ImageEffectPlugin*>(ip);
+          p->saveXML(os);
         }
 
         void confirmPlugin(Plugin *p);

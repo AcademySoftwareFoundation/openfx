@@ -67,6 +67,7 @@ namespace OFX
           }
 
           set.addProperty(_currentProp);
+          return;
         }
         
         if (el == "value" && _currentProp) {
@@ -88,10 +89,18 @@ namespace OFX
           default:
             break;
           }
+
+          return;
         }
+
+        std::cout << "got unrecognised key " << el << "\n";
+
+        assert(false);
       }
       
-      void propertySetXMLWrite(std::ostream &o, Property::Set &set) {
+      void propertySetXMLWrite(std::ostream &o, Property::Set &set, int indent) {
+        std::string indent_prefix(indent, ' ');
+
         for (std::map<std::string, Property::Property*>::const_iterator i = set.getProperties().begin();
              i != set.getProperties().end();
              i++)
@@ -101,20 +110,20 @@ namespace OFX
             if (prop->getType() == Property::ePointer) 
               continue;
             
-            o << "<property "
+            o << indent_prefix << "<property "
               << XML::attribute("name", prop->getName())
               << XML::attribute("type", Property::typeNames[prop->getType()])
               << XML::attribute("dimension", prop->getDimension()) 
               << ">\n";
               							                                                     
             for (int i=0;i<prop->getDimension();i++) {
-              o << "<value " 
+              o << indent_prefix << "  <value " 
                 << XML::attribute("index", i)
                 << XML::attribute("value", prop->getStringValue(i)) 
                 << "/>\n";
             }
             
-            o << "</property>\n";
+            o << indent_prefix << "</property>\n";
           }
       }
     }
@@ -200,9 +209,69 @@ namespace OFX
         }
       }
 
+      void ImageEffectPlugin::saveXML(std::ostream &os) {
+        APICache::propertySetXMLWrite(os, getProps(), 6);
+
+        for (std::map<std::string, ImageEffect::ImageEffectDescriptor*>::iterator j=_contexts.begin();
+             j != _contexts.end();
+             j++) {
+
+          os << "      <context " << XML::attribute("name", j->first) << ">\n";
+
+          ImageEffectDescriptor *ed = j->second;
+
+          for (std::map<std::string, OFX::Host::Param::Param*>::iterator i=ed->getParams().getParams().begin();
+               i != ed->getParams().getParams().end();
+               i++) {
+            os << "        <param " 
+               << XML::attribute("name", i->first) 
+               << XML::attribute("type", i->second->getType()) 
+               << ">\n";
+            APICache::propertySetXMLWrite(os, i->second->getProperties(), 10);
+            os << "        </param>\n";
+          }
+
+          os << "      </context>\n";
+        }
+      }
+
+      void PluginCache::xmlElementBegin(const std::string &el, std::map<std::string, std::string> map) 
+      {
+        if (el == "apiproperties") {
+          return;
+        }
+
+        if (el == "context") {
+          _currentContext = new ImageEffect::ImageEffectDescriptor(_currentPlugin->getBinary()->getBundlePath());
+          _currentPlugin->addContext(map["name"], _currentContext);
+          return;
+        }
+
+        if (el == "param" && _currentContext) {
+          std::string pname = map["name"];
+          std::string ptype = map["type"];
+
+          _currentParam = new Param::Param(ptype, pname);
+          _currentContext->getParams().addParam(pname, _currentParam);
+          return;
+        }
+
+        if (_currentContext && _currentParam) {
+          APICache::propertySetXMLRead(el, map, _currentParam->getProperties(), _currentProp);
+          return;
+        }
+
+        if (!_currentContext && !_currentParam) {
+          APICache::propertySetXMLRead(el, map, _currentPlugin->getProps(), _currentProp);
+          return;
+        }
+
+        assert(false);
+      }
+
 
       void PluginCache::loadFromPlugin(Plugin *op) {
-        
+
         ImageEffectPlugin *p = dynamic_cast<ImageEffectPlugin*>(op);
         assert(p);
 
@@ -212,47 +281,39 @@ namespace OFX
         plug->setHost(host.getHandle());
         int rval = plug->mainEntry(kOfxActionLoad, 0, 0, 0);
 
-        //        ImageEffect::ImageEffectDescriptor *e = new ImageEffect::ImageEffectDescriptor(p);
         if (rval == 0 || rval == 14) {
           rval = plug->mainEntry(kOfxActionDescribe, p->getImageEffect().getHandle(), 0, 0);
         }
         
-        /*  int size = e->_properties.getDimension(kOfxImageEffectPropSupportedContexts);
-            std::vector<std::string> contexts;
-            
-            for (int j=0;j<size;j++) {
-            std::string context = e->_properties.getProperty<OFX::Host::Property::StringValue>("OfxImageEffectPropSupportedContexts", j);
-            contexts.push_back(context);
-        */
-        /*
+        ImageEffect::ImageEffectDescriptor &e = p->getImageEffect();
+        Property::Set &eProps = e.getProps();
+
+        int size = eProps.getDimension(kOfxImageEffectPropSupportedContexts);
+        std::vector<std::string> contexts;
+        
+        for (int j=0;j<size;j++) {
+          std::string context = eProps.getProperty<OFX::Host::Property::StringValue>("OfxImageEffectPropSupportedContexts", j);
+          contexts.push_back(context);
+
           OFX::Host::Property::PropSpec inargspec[] = {
-          { kOfxImageEffectPropContext, OFX::Host::Property::eString, 1, true, context },
-          { 0 }
+            { kOfxImageEffectPropContext, OFX::Host::Property::eString, 1, true, context.c_str() },
+            { 0 }
           };
           
           OFX::Host::Property::Set inarg(inargspec);
-          
+
           if (rval == 0 || rval == 14) {
-          rval = plug->mainEntry(kOfxImageEffectActionDescribeInContext, e->getHandle(), inarg.getHandle(), 0);
-          printf("describe in context: %i \n", rval);
+            ImageEffect::ImageEffectDescriptor *newContext = new ImageEffect::ImageEffectDescriptor(e);
+            rval = plug->mainEntry(kOfxImageEffectActionDescribeInContext, newContext->getHandle(), inarg.getHandle(), 0);
+            if (rval == 0 || rval == 14) {
+              p->addContext(context, newContext);
+            }
           }
-          
-          for (std::map<std::string, OFX::Host::Param*>::iterator i=e->_params._params.begin();
-          i != e->_params._params.end();
-          i++) {
-          std::cout << "<param name=\"" << i->first << "\">\n";
-          i->second->_properties.dump(std::cout);
-          std::cout << "</param>\n";
-          }
-        */
-        /*  }
-         */
+        }
         
         if (rval == 0) {
           rval = plug->mainEntry(kOfxActionUnload, 0, 0, 0);
         }
-        
-        //        _effectDescriptors[p] = e;
       }      
     }
   }

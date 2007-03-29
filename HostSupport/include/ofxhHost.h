@@ -64,6 +64,14 @@ namespace OFX {
         OfxPropertySetHandle getPropHandle() {
           return _properties.getHandle();
         }
+
+        Property::Set &getProperties() {
+          return _properties;
+        }
+
+        const std::string &getType() {
+          return _paramType;
+        }
       };
       
       /// a set of parameters
@@ -79,6 +87,10 @@ namespace OFX {
         /// obtain a handle on this set for passing to the C api
         OfxParamSetHandle getHandle() {
           return (OfxParamSetHandle)this;
+        }
+
+        void addParam(const std::string &name, Param *p) {
+          _params[name] = p;
         }
       };
     }
@@ -117,9 +129,18 @@ namespace OFX {
         
       public:
 
+        ImageEffectDescriptor(const ImageEffectDescriptor &other)
+          : _clips(other._clips)
+          , _params(other._params)
+          , _properties(other._properties)
+        {
+        };
+
         /// constructor
         ImageEffectDescriptor(Plugin *plug);
         
+        ImageEffectDescriptor(const std::string &bundlePath);
+
         /// obtain a handle on this for passing to the C api
         OfxImageEffectHandle getHandle() {
           return (OfxImageEffectHandle)this;

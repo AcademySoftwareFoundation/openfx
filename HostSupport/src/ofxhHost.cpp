@@ -152,6 +152,16 @@ namespace OFX {
 
         _properties.addProperties(filePath);
       }
+
+      ImageEffectDescriptor::ImageEffectDescriptor(const std::string &bundlePath) : _properties(imageEffectDescriptorStuff) {
+
+        Property::PropSpec filePath[] = {
+          { kOfxPluginPropFilePath, Property::eString, 1, true, bundlePath.c_str() },
+          { 0 }
+        };
+
+        _properties.addProperties(filePath);
+      }
     }
     
     namespace Param {
@@ -162,7 +172,7 @@ namespace OFX {
         int propDimension;
       };
 
-      bool getType(const std::string paramType, Property::TypeEnum &propType, int &propDim) {
+      bool findType(const std::string paramType, Property::TypeEnum &propType, int &propDim) {
         static TypeMap typeMap[] = {
           { kOfxParamTypeInteger,   Property::eInt,    1 },
           { kOfxParamTypeDouble,    Property::eDouble, 1 },
@@ -194,13 +204,13 @@ namespace OFX {
         return false;
       }
 
-      Param::Param(const std::string &type, const std::string &name) : _properties(false) {
+      Param::Param(const std::string &type, const std::string &name) : _paramType(type), _properties(false) {
         const char *ctype = type.c_str();
         const char *cname = name.c_str();
 
         Property::TypeEnum propType = Property::eString;
         int propDim = 1;
-        getType(type, propType, propDim);
+        findType(type, propType, propDim);
 
         Property::PropSpec universalProps[] = {
           { kOfxPropType,    Property::eString,    1,    true,    kOfxTypeParameter },

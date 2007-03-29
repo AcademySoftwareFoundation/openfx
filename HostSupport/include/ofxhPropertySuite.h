@@ -205,6 +205,8 @@ namespace OFX {
           , _pluginReadOnly(pluginReadOnly) {
         }
 
+        virtual Property *deepCopy() = 0;
+        
         /// dtor
         virtual ~Property()
         {
@@ -266,6 +268,17 @@ namespace OFX {
                          int dimension,
                          bool pluginReadOnly,
                          OuterType defaultValue);
+
+        PropertyTemplate(const PropertyTemplate<T> &pt)
+          : Property(pt._name, pt._type, pt._dimension, pt._pluginReadOnly)
+          , _value(pt._value)
+          , _defaultValue(pt._defaultValue)
+        {
+        }
+          
+        PropertyTemplate<T> *deepCopy() {
+          return new PropertyTemplate(*this);
+        }
 
         ~PropertyTemplate()
         {
@@ -329,9 +342,6 @@ namespace OFX {
 
         std::map<std::string, Property *> _props;
 
-        /// hide copy cons
-        Set(const Set &);
-
         /// hide assignment
         void operator=(const Set &);
 
@@ -382,6 +392,9 @@ namespace OFX {
         /// create a sloppy property set (new properties can be added just by adding thing)
         Set(bool sloppy) : _sloppy(sloppy) {
         }
+        
+        /// deep copies the property set
+        Set(const Set &);
 
         /// destructor
         ~Set();

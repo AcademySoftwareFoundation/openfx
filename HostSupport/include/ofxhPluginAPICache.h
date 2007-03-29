@@ -76,7 +76,10 @@ namespace OFX
         
         virtual void loadFromPlugin(Plugin *) = 0;
 
+        /// factory method, to create a new plugin (from binary)
         virtual Plugin *newPlugin(PluginBinary *, int pi, OfxPlugin *plug) = 0;
+
+        /// factory method, to create a new plugin (from the 
         virtual Plugin *newPlugin(PluginBinary *pb, int pi, const std::string &api, int apiVersion, const std::string &pluginId,
                                   int pluginMajorVersion, int pluginMinorVersion) = 0;
         
@@ -97,7 +100,7 @@ namespace OFX
       void propertySetXMLRead(const std::string &el, std::map<std::string, std::string> map, Property::Set &set, Property::Property*&);
 
       /// helper function to write a property set to XML
-      void propertySetXMLWrite(std::ostream &o, Property::Set &set);
+      void propertySetXMLWrite(std::ostream &o, Property::Set &set, int indent=0);
 
     }
   }

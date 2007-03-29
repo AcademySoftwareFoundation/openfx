@@ -201,10 +201,6 @@ namespace OFX {
         return underlyingGetProperty(name, prop);
       }
 
-      Set::Set(const PropSpec spec[]) {
-        addProperties(spec);
-      }
-
       void Set::addProperties(const PropSpec spec[]) {
         while (spec->name) {
 
@@ -235,6 +231,34 @@ namespace OFX {
         }
       }
 
+      Set::Set(const PropSpec spec[]) {
+        addProperties(spec);
+      }
+
+      Set::Set(const Set &other) : _sloppy(other._sloppy) {
+        bool failed = false;
+
+        for (std::map<std::string, Property *>::const_iterator i = other._props.begin();
+             i != other._props.end();
+             i++) 
+          {
+            Property *copyProp = i->second->deepCopy();
+            if (!copyProp) {
+              failed = true;
+              break;
+            }
+            _props[i->first] = copyProp;
+          }
+        
+        if (failed)
+          
+          for (std::map<std::string, Property *>::iterator j = _props.begin();
+               j != _props.end();
+               j++) {
+            delete j->second;
+          }
+        
+      }
 
       Set::~Set()
       {
