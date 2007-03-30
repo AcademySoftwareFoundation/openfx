@@ -454,6 +454,7 @@ namespace OFX {
 
           os << "  <plugin " 
              << XML::attribute("name", p->getIdentifier()) 
+             << XML::attribute("index", p->getIndex()) 
              << XML::attribute("api", p->getPluginApi())
              << XML::attribute("api_version", p->getApiVersion())
              << XML::attribute("major_version", p->getVersionMajor())

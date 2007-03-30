@@ -277,6 +277,10 @@ namespace OFX {
       PluginHandle(Plugin *p);
       ~PluginHandle();
 
+      OfxPlugin *getOfxPlugin() {
+        return _op;
+      }
+
       OfxPlugin *operator->() {
         return _op;
       }
