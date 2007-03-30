@@ -1,7 +1,0 @@
-CXXFLAGS = -I../../include -g
-OPTIMIZER = -O3
-
-basic.ofx : basic.o
-	$(CXX) -bundle basic.o -o basic.ofx
-	mkdir -p basic.ofx.bundle/Contents/MacOS/
-	cp basic.ofx basic.ofx.bundle/Contents/MacOS/
