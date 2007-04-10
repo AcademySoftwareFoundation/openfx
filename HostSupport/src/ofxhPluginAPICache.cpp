@@ -207,6 +207,17 @@ namespace OFX
         } else {
           _pluginsByID[plugin->getIdentifier()] = plugin;
         }
+
+        MajorPlugin maj(plugin);
+
+        if (_pluginsByIDMajor.find(maj) != _pluginsByIDMajor.end()) {
+          ImageEffectPlugin *otherPlugin = _pluginsByIDMajor[maj];
+          if (plugin->trumps(otherPlugin)) {
+            _pluginsByIDMajor[maj] = plugin;
+          }
+        } else {
+          _pluginsByIDMajor[maj] = plugin;
+        }
       }
 
       void ImageEffectPlugin::saveXML(std::ostream &os) {

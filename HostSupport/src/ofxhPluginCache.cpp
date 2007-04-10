@@ -61,6 +61,8 @@
 #include "tchar.h"
 #endif
 
+#define CACHE_VERSION 1
+
 namespace OFX {
 
   namespace Host {
@@ -133,7 +135,7 @@ namespace OFX {
     }
 #endif
 
-    PluginCache::PluginCache() : _xmlCurrentBinary(0), _xmlCurrentPlugin(0) {
+    PluginCache::PluginCache() : _xmlCurrentBinary(0), _xmlCurrentPlugin(0), _abortXml(false), _dirty(false) {
       
       const char *envpath = getenv("OFX_PLUGIN_PATH");
 
@@ -218,6 +220,7 @@ namespace OFX {
               PluginBinary *pb = new PluginBinary(binpath, bundlename, this);
               _binaries.push_back(pb);
               _knownBinFiles.insert(binpath);
+              _dirty = true;
               
               for (int j=0;j<pb->getNPlugins();j++) {
                 Plugin *plug = &pb->getPlugin(j);
@@ -241,35 +244,43 @@ namespace OFX {
       FindClose(findHandle);
 #endif
     }
+
+    //#define NO_RESCAN
     
     void PluginCache::scanPluginFiles()
     {
       std::set<std::string> foundBinFiles;
 
+#ifndef NO_RESCAN
       for (std::list<std::string>::iterator paths= _pluginPath.begin();
            paths != _pluginPath.end();
            paths++) {
         scanDirectory(foundBinFiles, *paths);
       }
+#endif
 
       std::list<PluginBinary *>::iterator i=_binaries.begin();
       while (i!=_binaries.end()) {
         PluginBinary *pb = *i;
 
+#ifndef NO_RESCAN
         if (foundBinFiles.find(pb->getFilePath()) == foundBinFiles.end()) {
 
           // the binary was in the cache, but was not on the path
 
+          _dirty = true;
           i = _binaries.erase(i);
           delete pb;
 
         } else {
+#endif
 
           bool binChanged = pb->hasBinaryChanged();
 
           // the binary was in the cache, but the binary has changed and thus we need to reload
           if (binChanged) {
             pb->loadPluginInfo(this);
+            _dirty = true;
           }
 
           for (int j=0;j<pb->getNPlugins();j++) {
@@ -284,7 +295,9 @@ namespace OFX {
 
           i++;
         }
+#ifndef NO_RESCAN
       }
+#endif
     }
 
 
@@ -320,6 +333,14 @@ namespace OFX {
       while (*atts) {
         attmap[atts[0]] = atts[1];
         atts += 2;
+      }
+
+      if (ename == "cache") {
+        int version = attmap.find("version") == attmap.end() ? 1 : OFX::Host::Property::stringToInt(attmap["version"]);
+        if (version != CACHE_VERSION) {
+          _abortXml = true;
+          return;
+        }
       }
 
       /// XXX: validate in general
@@ -428,9 +449,16 @@ namespace OFX {
         int p = XML_Parse(xP, buf, strlen(buf), XML_FALSE);
 
         if (p == XML_STATUS_ERROR) {
-          std::cout << "xml error : " << XML_GetErrorCode(xP) << std::endl;
-          /// XXX: do something here
+          std::cerr << "xml error : " << XML_GetErrorCode(xP) << std::endl;
+          // XXX: do something here
           break;
+        }
+
+        if (_abortXml) {
+          // XXX: do something here
+          // these two blocks should probably both wipe the slate clean on this object, deleting
+          // any part-plugins loaded from the cache etc
+          //          break;
         }
       }
 
@@ -438,7 +466,7 @@ namespace OFX {
     }
 
     void PluginCache::writePluginCache(std::ostream &os) {
-      os << "<cache>\n";
+      os << "<cache version=\"" << CACHE_VERSION << "\">\n";
       for (std::list<PluginBinary *>::iterator i=_binaries.begin();i!=_binaries.end();i++) {
         PluginBinary *b = *i;
         os << "<bundle>\n";

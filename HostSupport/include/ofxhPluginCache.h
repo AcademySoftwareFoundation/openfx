@@ -318,7 +318,11 @@ namespace OFX {
       PluginBinary *_xmlCurrentBinary;
       Plugin *_xmlCurrentPlugin;
 
+      bool _abortXml;
+
       std::list<PluginCacheSupportedApi> _apiHandlers;
+
+      bool _dirty;
 
       void scanDirectory(std::set<std::string> &foundBinFiles, const std::string &dir);
   
@@ -334,6 +338,11 @@ namespace OFX {
 
       /// scan for plugins
       void scanPluginFiles();
+
+      /// did this alter from the last readCache()?
+      bool isDirty() {
+        return _dirty;
+      }
 
       // write the plugin cache output file to the given stream
       void writePluginCache(std::ostream &os);
