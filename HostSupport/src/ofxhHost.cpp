@@ -367,15 +367,48 @@ namespace OFX {
                                const char *name,
                                OfxParamHandle *param,
                                OfxPropertySetHandle *propertySet)
-        UNIMPLEMENTED_BODY
+      {
+        ParamSet *pset = reinterpret_cast<ParamSet*>(paramSet);
+        if (!pset) {
+          return kOfxStatErrBadHandle;
+        } else if (pset->getParams().find(name) == pset->getParams().end()) {
+          return kOfxStatErrUnknown;
+        }
+        
+        if (param) {
+          *param = pset->getParams()[name]->getHandle();
+        }
+
+        if (propertySet) {
+          *propertySet = pset->getParams()[name]->getPropHandle();
+        }
+
+        return kOfxStatOK;
+      }
       
       OfxStatus paramSetGetPropertySet(OfxParamSetHandle paramSet,
                                        OfxPropertySetHandle *propHandle) 
-        UNIMPLEMENTED_BODY
+      {
+        ParamSet *pset = reinterpret_cast<ParamSet*>(paramSet);
+        if (pset) {
+          *propHandle = pset->getProps().getHandle();
+          return kOfxStatOK;
+        } else {
+          return kOfxStatErrBadHandle;
+        }
+      }
       
       OfxStatus paramGetPropertySet(OfxParamHandle param,
                                     OfxPropertySetHandle *propHandle) 
-        UNIMPLEMENTED_BODY
+      {
+        Param *parm = reinterpret_cast<Param*>(param);
+        if (!parm) {
+          return kOfxStatErrBadHandle;
+        }
+
+        *propHandle = parm->getPropHandle();
+        return kOfxStatOK;
+      }
       
       OfxStatus paramGetValue(OfxParamHandle  paramHandle,
                               ...) 

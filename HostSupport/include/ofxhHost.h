@@ -77,11 +77,20 @@ namespace OFX {
       /// a set of parameters
       class ParamSet {
         std::map<std::string, Param*> _params;
+
+        Property::Set _props;
         
       public:
+        ParamSet() : _props(true) { }
+
         std::map<std::string, Param*> &getParams()
         {
           return _params;
+        }
+
+        Property::Set &getProps()
+        {
+          return _props;
         }
 
         /// obtain a handle on this set for passing to the C api
