@@ -20,7 +20,7 @@ namespace OFX {
         virtual void unlock();
 
       protected:
-        void*   _ptr;
+        char*   _ptr;
         bool    _locked;
       };
 

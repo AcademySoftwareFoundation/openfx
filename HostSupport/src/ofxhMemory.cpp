@@ -24,7 +24,7 @@ namespace OFX {
         if(!_locked){
           if(_ptr)
             free();
-          _ptr = (void*) new char[nBytes];
+          _ptr = new char[nBytes];
           return true;
         }
         else
@@ -36,7 +36,7 @@ namespace OFX {
       }
 
       void Instance::free(){
-        delete [] _ptr;      
+        delete [] _ptr;
       }
 
       void* Instance::getPtr() {
