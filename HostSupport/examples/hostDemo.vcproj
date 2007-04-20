@@ -347,6 +347,14 @@
 				RelativePath=".\hostDemoHostDescriptor.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\hostDemoParamInstance.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\hostDemoParamSetInstance.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -363,6 +371,10 @@
 			</File>
 			<File
 				RelativePath=".\hostDemoHostDescriptor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\hostDemoParamInstance.h"
 				>
 			</File>
 			<File
