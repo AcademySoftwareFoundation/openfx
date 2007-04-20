@@ -79,6 +79,9 @@ namespace OFX {
         virtual OfxStatus getKeyIndex(OfxTime time, int direction, int & index) ;
         virtual OfxStatus deleteKey(OfxTime time) ;
         virtual OfxStatus deleteAllKeys() ;
+
+        virtual ~KeyframeParam() {
+        }
       };
 
       class IntegerInstance : public Instance, public KeyframeParam {

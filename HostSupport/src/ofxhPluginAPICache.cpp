@@ -45,7 +45,7 @@
 #include "ofxhPluginCache.h"
 #include "ofxhHost.h"
 #include "ofxhImageEffectAPI.h"
-#include "ofxhXML.h"
+#include "ofxhXml.h"
 
 namespace OFX
 {

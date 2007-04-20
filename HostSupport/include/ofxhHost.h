@@ -52,6 +52,7 @@ namespace OFX {
     public:
       
       Descriptor();
+      virtual ~Descriptor();
 
       OfxHost *getHandle();
 

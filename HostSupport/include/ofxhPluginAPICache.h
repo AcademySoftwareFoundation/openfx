@@ -35,6 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ostream>
 #include <map>
 
+#include "ofxhPropertySuite.h"
+
 namespace OFX
 {
   namespace Host {

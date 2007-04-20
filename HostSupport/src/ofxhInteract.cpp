@@ -62,17 +62,18 @@ namespace OFX {
           _effect.overlayEntry(kOfxActionDestroyInstance,this->getHandle(),0,0);
         }
 
-        void Instance::getProperty(const std::string &name, double &ret, int index)
+        void Instance::getProperty(const std::string &name, double &ret, int index) OFX_EXCEPTION_SPEC
         {   
           int max = getDimension(name);        
           if(index>=max) throw Property::Exception(kOfxStatErrValue);
 
-          std::auto_ptr<double> values = new double[max];
-          getPropertyN(name,values.get(),max);
-          ret = values.get()[index];
+          std::vector<double> values;
+          values.resize(max);
+          getPropertyN(name, &values[0] ,max);
+          ret = values[index];
         }
 
-        void Instance::getPropertyN(const std::string &name, double *first, int n)
+        void Instance::getPropertyN(const std::string &name, double *first, int n) OFX_EXCEPTION_SPEC
         {
           int max = getDimension(name);        
           if(n>max) throw Property::Exception(kOfxStatErrValue);

@@ -91,49 +91,63 @@ namespace OFX {
         // Descriptor
         _properties.addProperties(clipInstanceStuffs);
         int i = 0;
-        while(clipInstanceStuffs[i].name){
+        while(clipInstanceStuffs[i].name) {
           Property::PropSpec& spec = clipInstanceStuffs[i];
-          _properties.setGetHook(spec.name,this,this);
+
+          switch (spec.type) {
+          case Property::eDouble:
+            _properties.setGetHook<Property::DoubleValue>(spec.name, this, this);
+            break;
+          case Property::eString:
+            _properties.setGetHook<Property::StringValue>(spec.name, this, this);
+            break;
+          case Property::eInt:
+            _properties.setGetHook<Property::IntValue>(spec.name, this, this);
+            break;
+          default:
+            break;
+          }
+
           i++;
         }
       }
 
       // do nothing
-      int Instance::getDimension(const std::string &name) {
+      int Instance::getDimension(const std::string &name) OFX_EXCEPTION_SPEC {
         throw Property::Exception(kOfxStatErrMissingHostFeature);
       }
 
-      void Instance::setProperty(const std::string &name, double value, int index) { 
+      void Instance::setProperty(const std::string &name, double value, int index) OFX_EXCEPTION_SPEC { 
         throw Property::Exception(kOfxStatErrMissingHostFeature); 
       }
 
-      void Instance::setPropertyN(const std::string &name, double *first, int n) { 
+      void Instance::setPropertyN(const std::string &name, double *first, int n) OFX_EXCEPTION_SPEC { 
         throw Property::Exception(kOfxStatErrMissingHostFeature); 
       }
 
-      void Instance::setProperty(const std::string &name, int value, int index) { 
+      void Instance::setProperty(const std::string &name, int value, int index) OFX_EXCEPTION_SPEC { 
         throw Property::Exception(kOfxStatErrMissingHostFeature); 
       }
 
-      void Instance::setPropertyN(const std::string &name, int *first, int n) { 
+      void Instance::setPropertyN(const std::string &name, int *first, int n) OFX_EXCEPTION_SPEC { 
         throw Property::Exception(kOfxStatErrMissingHostFeature); 
       }
 
-      void Instance::setProperty(const std::string &name, const char* value, int index) { 
+      void Instance::setProperty(const std::string &name, const char* value, int index) OFX_EXCEPTION_SPEC { 
         throw Property::Exception(kOfxStatErrMissingHostFeature); 
       }
 
-      void Instance::setPropertyN(const std::string &name, const char** first, int n) { 
+      void Instance::setPropertyN(const std::string &name, const char** first, int n) OFX_EXCEPTION_SPEC { 
         throw Property::Exception(kOfxStatErrMissingHostFeature); 
       }
 
       // don't know what to do
-      void Instance::reset(const std::string &name) {
+      void Instance::reset(const std::string &name) OFX_EXCEPTION_SPEC {
         throw Property::Exception(kOfxStatErrMissingHostFeature);
       }
 
       // get the virutals for viewport size, pixel scale, background colour
-      void Instance::getProperty(const std::string &name, double &ret, int index)
+      void Instance::getProperty(const std::string &name, double &ret, int index) OFX_EXCEPTION_SPEC
       {
         int max = getDimension(name);        
         if(index>=max) throw Property::Exception(kOfxStatErrValue);
@@ -146,7 +160,7 @@ namespace OFX {
       }
 
       // get the virutals for viewport size, pixel scale, background colour
-      void Instance::getProperty(const std::string &name, int &ret, int index)
+      void Instance::getProperty(const std::string &name, int &ret, int index) OFX_EXCEPTION_SPEC
       {
         int max = getDimension(name);        
         if(index>=max) throw Property::Exception(kOfxStatErrValue);
@@ -159,7 +173,7 @@ namespace OFX {
       }
 
       // get the virutals for viewport size, pixel scale, background colour
-      void Instance::getProperty(const std::string &name, const char* &ret, int index)
+      void Instance::getProperty(const std::string &name, const char* &ret, int index) OFX_EXCEPTION_SPEC
       {
         int max = getDimension(name);        
         if(index>=max) throw Property::Exception(kOfxStatErrValue);
@@ -171,7 +185,7 @@ namespace OFX {
         delete [] values;
       }
 
-      void Instance::getPropertyN(const std::string &name, double* first, int n)
+      void Instance::getPropertyN(const std::string &name, double* first, int n) OFX_EXCEPTION_SPEC
       {
         int max = getDimension(name);        
         if(n>max) throw Property::Exception(kOfxStatErrValue);
@@ -204,7 +218,7 @@ namespace OFX {
         if(st!=kOfxStatOK) throw Property::Exception(st);
       }
 
-      void Instance::getPropertyN(const std::string &name, int* first, int n)
+      void Instance::getPropertyN(const std::string &name, int* first, int n) OFX_EXCEPTION_SPEC
       {
         int max = getDimension(name);        
         if(n>max) throw Property::Exception(kOfxStatErrValue);
@@ -225,7 +239,7 @@ namespace OFX {
         if(st!=kOfxStatOK) throw Property::Exception(st);
       }
 
-      void Instance::getPropertyN(const std::string &name, const char** first, int n)
+      void Instance::getPropertyN(const std::string &name, const char** first, int n) OFX_EXCEPTION_SPEC
       {
         int max = getDimension(name);        
         if(n>max) throw Property::Exception(kOfxStatErrValue);

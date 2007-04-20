@@ -58,25 +58,25 @@ namespace OFX {
         virtual OfxStatus getSlaveToParam(std::vector<std::string>& params);
 
         // do nothing
-        virtual int  getDimension(const std::string &name) {
+        virtual int  getDimension(const std::string &name) OFX_EXCEPTION_SPEC {
           throw Property::Exception(kOfxStatErrMissingHostFeature);
         }
         
-        virtual void setProperty(const std::string &name, double value, int index) {
+        virtual void setProperty(const std::string &name, double value, int index) OFX_EXCEPTION_SPEC{
           throw Property::Exception(kOfxStatErrMissingHostFeature);
         }
-        virtual void setPropertyN(const std::string &name, double *first, int n) {
+        virtual void setPropertyN(const std::string &name, double *first, int n) OFX_EXCEPTION_SPEC{
           throw Property::Exception(kOfxStatErrMissingHostFeature);
         }
         
         // don't know what to do
-        virtual void reset(const std::string &name) {
+        virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC {
           throw Property::Exception(kOfxStatErrMissingHostFeature);
         }
 
         // get the virutals for viewport size, pixel scale, background colour
-        virtual void getProperty(const std::string &name, double &ret, int index);
-        virtual void getPropertyN(const std::string &name, double *first, int n);
+        virtual void getProperty(const std::string &name, double &ret, int index) OFX_EXCEPTION_SPEC;
+        virtual void getPropertyN(const std::string &name, double *first, int n) OFX_EXCEPTION_SPEC;
 
         // interact action - kOfxInteractActionDraw 
         // 

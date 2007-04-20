@@ -1,6 +1,13 @@
 #ifndef OFX_IMAGE_EFFECT_H
 #define OFX_IMAGE_EFFECT_H
 
+#include "ofxCore.h"
+#include "ofxImageEffect.h"
+
+#include "ofxhClip.h"
+#include "ofxhParam.h"
+#include "ofxhMemory.h"
+
 namespace OFX {
 
   namespace Host {

@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 
 #ifndef WINDOWS
-#define OFX_EXCEPTION_SPEC throw (Exception)
+#define OFX_EXCEPTION_SPEC throw (OFX::Host::Property::Exception)
 #else
 #define OFX_EXCEPTION_SPEC 
 #endif

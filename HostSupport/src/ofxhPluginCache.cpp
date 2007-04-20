@@ -52,7 +52,7 @@
 #include "ofxhPluginCache.h"
 #include "ofxhHost.h"
 #include "ofxhImageEffectAPI.h"
-#include "ofxhXML.h"
+#include "ofxhXml.h"
 
 #if defined (UNIX)
 #define DIRLIST_SEP_CHAR ":"

@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <limits.h>
 #include <math.h>
 #include <float.h>
+#include <stdarg.h>
 
 // ofx
 #include "ofxCore.h"
@@ -46,7 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhPluginCache.h"
 #include "ofxhHost.h"
 #include "ofxhImageEffectAPI.h"
-#include "ofxhXML.h"
+#include "ofxhXml.h"
 #include "ofxhInteract.h"
 
 typedef OfxPlugin* (*OfxGetPluginType)(int);

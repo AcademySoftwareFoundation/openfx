@@ -50,30 +50,30 @@ namespace OFX {
         Instance(Descriptor& desc);
 
         // do nothing
-        virtual int  getDimension(const std::string &name);
+        virtual int  getDimension(const std::string &name) OFX_EXCEPTION_SPEC;
 
         // set properties
-        virtual void setProperty(const std::string &name, double value, int index);
-        virtual void setPropertyN(const std::string &name, double *first, int n);
-        virtual void setProperty(const std::string &name, int value, int index);
-        virtual void setPropertyN(const std::string &name, int *first, int n);
-        virtual void setProperty(const std::string &name, const char* value, int index);
-        virtual void setPropertyN(const std::string &name, const char** first, int n);
+        virtual void setProperty(const std::string &name, double value, int index) OFX_EXCEPTION_SPEC;
+        virtual void setPropertyN(const std::string &name, double *first, int n) OFX_EXCEPTION_SPEC;
+        virtual void setProperty(const std::string &name, int value, int index) OFX_EXCEPTION_SPEC;
+        virtual void setPropertyN(const std::string &name, int *first, int n) OFX_EXCEPTION_SPEC;
+        virtual void setProperty(const std::string &name, const char* value, int index) OFX_EXCEPTION_SPEC;
+        virtual void setPropertyN(const std::string &name, const char** first, int n) OFX_EXCEPTION_SPEC;
         
         // don't know what to do
-        virtual void reset(const std::string &name);
+        virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC;
 
         // get the virutals for viewport size, pixel scale, background colour
-        virtual void getProperty(const std::string &name, double &ret, int index);
+        virtual void getProperty(const std::string &name, double &ret, int index) OFX_EXCEPTION_SPEC;
 
         // get the virutals for viewport size, pixel scale, background colour
-        virtual void getProperty(const std::string &name, int &ret, int index);
+        virtual void getProperty(const std::string &name, int &ret, int index) OFX_EXCEPTION_SPEC;
 
         // get the virutals for viewport size, pixel scale, background colour
-        virtual void getProperty(const std::string &name, const char* &ret, int index);
-        virtual void getPropertyN(const std::string &name, double* first, int n);       
-        virtual void getPropertyN(const std::string &name, int* first, int n);
-        virtual void getPropertyN(const std::string &name, const char** first, int n);
+        virtual void getProperty(const std::string &name, const char* &ret, int index) OFX_EXCEPTION_SPEC;
+        virtual void getPropertyN(const std::string &name, double* first, int n) OFX_EXCEPTION_SPEC;       
+        virtual void getPropertyN(const std::string &name, int* first, int n) OFX_EXCEPTION_SPEC;
+        virtual void getPropertyN(const std::string &name, const char** first, int n) OFX_EXCEPTION_SPEC;
 
         // properties of an instance that are live
 

@@ -404,6 +404,8 @@ namespace OFX {
         }
         else
           return kOfxStatErrExists;
+
+        return kOfxStatOK;
       }
 
     } // Param

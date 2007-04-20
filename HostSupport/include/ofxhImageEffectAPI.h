@@ -4,6 +4,11 @@
 #include <string>
 #include <map>
 
+#include "ofxCore.h"
+#include "ofxImageEffect.h"
+#include "ofxhImageEffect.h"
+#include "ofxhHost.h"
+
 namespace OFX {
   
   namespace Host {

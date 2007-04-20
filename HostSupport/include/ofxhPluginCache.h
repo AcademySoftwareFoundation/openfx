@@ -40,6 +40,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "expat.h"
 
+#include "ofxCore.h"
+#include "ofxhPropertySuite.h"
+#include "ofxhPluginAPICache.h"
+#include "ofxhBinary.h"
+
 namespace OFX {
 
   namespace Host {
