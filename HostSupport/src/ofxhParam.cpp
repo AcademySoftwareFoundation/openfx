@@ -94,7 +94,7 @@ namespace OFX {
 
       /// make a parameter, with the given type and name
       Descriptor::Descriptor(const std::string &type, 
-                                       const std::string &name) : Base(type)
+                             const std::string &name) : Base(type)
       {
         const char *ctype = type.c_str();
         const char *cname = name.c_str();

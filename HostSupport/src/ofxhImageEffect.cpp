@@ -205,13 +205,19 @@ namespace OFX {
           Param::Descriptor* descriptor = it->second;
           if(!descriptor) return kOfxStatErrValue;
 
-          // get a param instance from a param descriptor
-          Param::Instance* instance = _params->newParam(*descriptor);
-          if(!instance) return kOfxStatFailed;
+          // TODO - this is maybe not brilliant
+          if(descriptor->getType()!=kOfxParamTypeGroup && 
+             descriptor->getType()!=kOfxParamTypePage)
+          {
+            // get a param instance from a param descriptor
+            Param::Instance* instance = _params->newParam(name,*descriptor);
+            if(!instance) return kOfxStatFailed;
 
-          // add the value into the param set instance
-          OfxStatus st = _params->addParam(name,instance);
-          if(st!=kOfxStatOK) return st;
+            // add the value into the param set instance
+            OfxStatus st = _params->addParam(name,instance);
+            if(st!=kOfxStatOK) return st;
+          }
+
         }
 
         // now tell the plug-in to create instance
