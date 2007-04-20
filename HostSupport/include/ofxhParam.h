@@ -86,6 +86,8 @@ namespace OFX {
 
       class IntegerInstance : public Instance, public KeyframeParam {
       public:
+        IntegerInstance(Descriptor& descriptor) : Instance(descriptor) {}
+
         // needed 
         virtual OfxStatus get(int&) = 0;
         virtual OfxStatus get(OfxTime time, int&) = 0;
@@ -99,6 +101,8 @@ namespace OFX {
 
       class ChoiceInstance : public Instance, public KeyframeParam {
       public:
+        ChoiceInstance(Descriptor& descriptor) : Instance(descriptor) {}
+
         // needed 
         virtual OfxStatus get(int&) = 0;
         virtual OfxStatus get(OfxTime time, int&) = 0;
@@ -108,6 +112,8 @@ namespace OFX {
 
       class DoubleInstance : public Instance, public KeyframeParam {
       public:
+        DoubleInstance(Descriptor& descriptor) : Instance(descriptor) {}
+
         // needed 
         virtual OfxStatus get(double&) = 0;
         virtual OfxStatus get(OfxTime time, double&) = 0;
@@ -119,6 +125,8 @@ namespace OFX {
 
       class BooleanInstance : public Instance, public KeyframeParam {
       public:
+        BooleanInstance(Descriptor& descriptor) : Instance(descriptor) {}
+
         // needed
         virtual OfxStatus get(bool&) = 0;
         virtual OfxStatus get(OfxTime time, bool&) = 0;
@@ -128,6 +136,8 @@ namespace OFX {
 
       class RGBAInstance : public Instance, public KeyframeParam {
       public:
+        RGBAInstance(Descriptor& descriptor) : Instance(descriptor) {}
+
         // needed
         virtual OfxStatus get(double&,double&,double&,double&) = 0;
         virtual OfxStatus get(OfxTime time, double&,double&,double&,double&) = 0;
@@ -141,6 +151,8 @@ namespace OFX {
 
       class RGBInstance : public Instance, public KeyframeParam {
       public:
+        RGBInstance(Descriptor& descriptor) : Instance(descriptor) {}
+
         // needed
         virtual OfxStatus get(double&,double&,double&) = 0;
         virtual OfxStatus get(OfxTime time, double&,double&,double&) = 0;
@@ -154,6 +166,8 @@ namespace OFX {
         
       class Double2DInstance : public Instance, public KeyframeParam {
       public:
+        Double2DInstance(Descriptor& descriptor) : Instance(descriptor) {}
+
         // needed
         virtual OfxStatus get(double&,double&) = 0;
         virtual OfxStatus get(OfxTime time, double&,double&) = 0;
@@ -167,6 +181,8 @@ namespace OFX {
 
       class Integer2DInstance : public Instance, public KeyframeParam {
       public:
+        Integer2DInstance(Descriptor& descriptor) : Instance(descriptor) {}
+
         // needed
         virtual OfxStatus get(int&,int&) = 0;
         virtual OfxStatus get(OfxTime time, int&,int&) = 0;
@@ -217,8 +233,6 @@ namespace OFX {
         std::map<std::string, Instance*> _params;
         
       public:
-        SetInstance(SetDescriptor& descriptor);
-
         // get the params
         std::map<std::string, Instance*> &getParams();
 
@@ -226,7 +240,7 @@ namespace OFX {
         virtual OfxStatus addParam(const std::string& name, Instance* instance);
 
         // make a parameter instance
-        virtual Instance* newParam(const Descriptor& Descriptor) = 0;        
+        virtual Instance* newParam(const std::string& name, Descriptor& Descriptor) = 0;        
 
         virtual OfxStatus editBegin(const std::string& name) = 0;
         virtual OfxStatus editEnd() = 0;
