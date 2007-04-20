@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 namespace OFX {
+
   namespace XML {
 
     inline std::string escape(const std::string &s) {

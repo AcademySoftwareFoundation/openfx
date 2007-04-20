@@ -4,14 +4,10 @@
 #include <string>
 #include <map>
 
-#include "ofxhPluginCache.h"
-#include "ofxhPropertySuite.h"
-#include "ofxhHost.h"
-#include "ofxhPluginAPICache.h"
-#include "ofxhXml.h"
-
 namespace OFX {
+  
   namespace Host {
+    
     namespace ImageEffect {
 
       class PluginCache;
@@ -22,17 +18,16 @@ namespace OFX {
 
         PluginCache &_pc;
 
-        // this comes off ImageEffectDescriptor's property set after a describe
-        ImageEffectDescriptor _ie;
+        // this comes off Descriptor's property set after a describe
+        Descriptor _ie;
         
         /// map to store contexts in
-        std::map<std::string, ImageEffectDescriptor *> _contexts;
+        std::map<std::string, Descriptor *> _contexts;
+
+        PluginHandle* _pluginHandle;
+
       public:
-			  ImageEffectPlugin(PluginCache &pc, PluginBinary *pb, int pi, OfxPlugin *pl)
-          : Plugin(pb, pi, pl)
-          , _pc(pc)
-          , _ie(this) {
-        }
+			  ImageEffectPlugin(PluginCache &pc, PluginBinary *pb, int pi, OfxPlugin *pl);
 
         ImageEffectPlugin(PluginCache &pc,
                           PluginBinary *pb,
@@ -41,31 +36,26 @@ namespace OFX {
                           int apiVersion,
                           const std::string &pluginId,
                           int pluginMajorVersion,
-                          int pluginMinorVersion)
-          : Plugin(pb, pi, api, apiVersion, pluginId, pluginMajorVersion, pluginMinorVersion)
-          , _pc(pc)
-          , _ie(this) {
-        }
+                          int pluginMinorVersion);
 
         /// return the API handler this plugin was constructed by
         APICache::PluginAPICacheI &getApiHandler();
 
         /// get the properties
-        Property::Set &getProps() {
-          return _ie.getProps();
-        }
+        Property::Set &getProps();
 
         /// get the image effect descriptor
-        ImageEffectDescriptor &getImageEffect() {
-          return _ie;
-        }
+        Descriptor &getDescriptor();
 
-        void addContext(const std::string &context, ImageEffectDescriptor *ied)
-        {
-          _contexts[context] = ied;
-        }
+        void addContext(const std::string &context, Descriptor *ied);
 
         virtual void saveXML(std::ostream &os);
+
+        const std::map<std::string, Descriptor *> getContexts();
+
+        PluginHandle *getPluginHandle();
+
+        ImageEffect::Instance* createInstance(const std::string &context);
 
       };
 
@@ -84,23 +74,17 @@ namespace OFX {
         /// xml parsing state
         Property::Property *_currentProp;
         
-        ImageEffectDescriptor *_currentContext;
-        Param::Param *_currentParam;
-        Clip::ClipDescriptor *_currentClip;
+        Descriptor *_currentContext;
+        Param::Descriptor *_currentParam;
+        Clip::Descriptor *_currentClip;
+
+        OFX::Host::Descriptor* _descriptor;
 
       public:      
-        PluginCache() 
-          : PluginAPICacheI("OfxImageEffectPluginAPI", 1, 1)
-          , _currentPlugin(0)
-          , _currentProp(0)
-          , _currentContext(0)
-          , _currentParam(0)
-          , _currentClip(0)
-        {
-        }
+        PluginCache(OFX::Host::Descriptor* descriptor = 0);
         
-        virtual ~PluginCache();
-        
+        virtual ~PluginCache();        
+
         /// get the plugin by id.  vermaj and vermin can be specified.  if they are not it will
         /// pick the highest found version.
         ImageEffectPlugin *getPluginById(const std::string &id, int vermaj=-1, int vermin=-1);
@@ -109,57 +93,32 @@ namespace OFX {
         /// pick the highest found version.
         ImageEffectPlugin *getPluginByLabel(const std::string &label, int vermaj=-1, int vermin=-1);
 
-        const std::vector<ImageEffectPlugin *>& getPlugins()
-        {
-          return _plugins;
-        }
+        const std::vector<ImageEffectPlugin *>& getPlugins();
 
-        const std::map<std::string, ImageEffectPlugin *>& getPluginsByID()
-        {
-          return _pluginsByID;
-        }
+        const std::map<std::string, ImageEffectPlugin *>& getPluginsByID();
 
         /// handle the case where the info needs filling in from the file.  runs the "describe" action on the plugin.
         void loadFromPlugin(Plugin *p);
         
         /// handler for preparing to read in a chunk of XML from the cache, set up context to do this
-        void beginXmlParsing(Plugin *p) {
-          _currentPlugin = dynamic_cast<ImageEffectPlugin*>(p);
-        }
-        
+        void beginXmlParsing(Plugin *p);
+
         /// XML handler : element begins (everything is stored in elements and attributes)       
         virtual void xmlElementBegin(const std::string &el, std::map<std::string, std::string> map);
 
-        virtual void xmlCharacterHandler(const std::string &) {
-        }
+        virtual void xmlCharacterHandler(const std::string &);
         
-        virtual void xmlElementEnd(const std::string &el) {
-          if (el == "param") {
-            _currentParam = 0;
-          }
-
-          if (el == "context") {
-            _currentContext = 0;
-          }
-        }
+        virtual void xmlElementEnd(const std::string &el);
         
-        virtual void endXmlParsing() {
-          _currentPlugin = 0;
-        }
+        virtual void endXmlParsing();
         
-        virtual void saveXML(Plugin *ip, std::ostream &os) {
-          ImageEffectPlugin *p = dynamic_cast<ImageEffectPlugin*>(ip);
-          p->saveXML(os);
-        }
+        virtual void saveXML(Plugin *ip, std::ostream &os);
 
         void confirmPlugin(Plugin *p);
 
         Plugin *newPlugin(PluginBinary *pb,
                           int pi,
-                          OfxPlugin *pl) {
-          ImageEffectPlugin *plugin = new ImageEffectPlugin(*this, pb, pi, pl);
-          return plugin;
-        }
+                          OfxPlugin *pl);
 
         Plugin *newPlugin(PluginBinary *pb,
                           int pi,
@@ -167,14 +126,13 @@ namespace OFX {
                           int apiVersion,
                           const std::string &pluginId,
                           int pluginMajorVersion,
-                          int pluginMinorVersion) 
-        {
-          ImageEffectPlugin *plugin = new ImageEffectPlugin(*this, pb, pi, api, apiVersion, pluginId, pluginMajorVersion, pluginMinorVersion);
-          return plugin;
-        }
+                          int pluginMinorVersion);
       };
-    }
-  }
-}
+    
+    } // ImageEffect
+
+  } // Host
+
+} // OFX
 
 #endif

@@ -40,12 +40,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "expat.h"
 
-#include "ofxCore.h"
-#include "ofxProperty.h"
-
-#include "ofxhBinary.h"
-#include "ofxhPluginAPICache.h"
-
 namespace OFX {
 
   namespace Host {
@@ -258,7 +252,7 @@ namespace OFX {
       void loadPluginInfo(PluginCache *);
 
       /// how many plugins?
-      int getNPlugins() {return _plugins.size(); }
+      int getNPlugins() {return (int)_plugins.size(); }
 
       /// get a plugin 
       Plugin &getPlugin(int idx) {return *_plugins[idx];}
@@ -307,9 +301,11 @@ namespace OFX {
       }
     };
 
-    /// Where we keep our plugins.
+    /// Where we keep our plugins.    
     class PluginCache {
     protected :
+      OFX::Host::Property::PropSpec* _hostSpec;
+
       std::list<std::string>    _pluginPath;  ///< list of directories to look in
       std::list<PluginBinary *> _binaries; ///< all the binaries we know about, we own these
       std::list<Plugin *>       _plugins;  ///< all the plugins inside the binaries, we don't own these, populated from _binaries

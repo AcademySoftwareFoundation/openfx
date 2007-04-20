@@ -31,77 +31,226 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <math.h>
 #include <float.h>
 
-#include "ofxhHost.h"
+// ofx
+#include "ofxCore.h"
+#include "ofxImageEffect.h"
+
+// ofx host
+#include "ofxhBinary.h"
+#include "ofxhPropertySuite.h"
+#include "ofxhClip.h"
+#include "ofxhParam.h"
+#include "ofxhMemory.h"
+#include "ofxhImageEffect.h"
+#include "ofxhPluginAPICache.h"
 #include "ofxhPluginCache.h"
+#include "ofxhHost.h"
+#include "ofxhImageEffectAPI.h"
+#include "ofxhXML.h"
+#include "ofxhInteract.h"
 
 typedef OfxPlugin* (*OfxGetPluginType)(int);
 
 namespace OFX {
+  
   namespace Host {
+
     namespace ImageEffect {
 
-      OfxStatus getPropertySet(OfxImageEffectHandle h1, OfxPropertySetHandle *h2)
-      {
-        ImageEffectDescriptor *effect = (ImageEffectDescriptor*)h1;
-        *h2 = effect->getProps().getHandle();
-        return kOfxStatOK;
-      }
-      
-#define UNIMPLEMENTED_BODY { std::cerr << "Unimplemented " << __FUNCTION__ << " called." << std::endl; ::abort(); return kOfxStatErrBadHandle; }
+      OfxStatus getPropertySet(OfxImageEffectHandle h1, 
+                               OfxPropertySetHandle *h2)
+      {        
+        Base *effectBase = reinterpret_cast<Base*>(h1);
+        
+        if(effectBase) 
+          *h2 = effectBase->getProps().getHandle();
+        else 
+          return kOfxStatErrBadHandle;
 
-      OfxStatus getParamSet(OfxImageEffectHandle h1, OfxParamSetHandle *h2)
+        return kOfxStatOK;
+      }
+
+      OfxStatus getParamSet(OfxImageEffectHandle h1, 
+                            OfxParamSetHandle *h2)
       {
-        ImageEffectDescriptor *effect = (ImageEffectDescriptor*)h1;
-        *h2 = effect->getParams().getHandle();
+        ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(h1);
+
+        ImageEffect::Descriptor *effectDescriptor = dynamic_cast<ImageEffect::Descriptor*>(effectBase);
+
+        if(effectDescriptor) 
+          *h2 = effectDescriptor->getParams().getHandle();
+        else{
+          ImageEffect::Instance *effectInstance = dynamic_cast<ImageEffect::Instance*>(effectBase);
+
+          if(effectInstance) 
+            *h2 = effectInstance->getParams().getHandle();
+          else
+            return kOfxStatErrBadHandle;
+        }          
+
         return kOfxStatOK;
       }
       
-      OfxStatus clipDefine(OfxImageEffectHandle h1, const char *name, OfxPropertySetHandle *h2)
+      OfxStatus clipDefine(OfxImageEffectHandle h1, 
+                           const char *name, 
+                           OfxPropertySetHandle *h2)
       {
-        ImageEffectDescriptor *effect = (ImageEffectDescriptor*)h1;
-        Clip::ClipDescriptor *clip = effect->defineClip(name);
-        *h2 = clip->getPropHandle();
-        return kOfxStatOK;
+        ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(h1);
+
+        ImageEffect::Descriptor *effectDescriptor = dynamic_cast<ImageEffect::Descriptor*>(effectBase);
+        
+        if(effectDescriptor){ 
+          Clip::Descriptor *clip = effectDescriptor->defineClip(name);
+          *h2 = clip->getPropHandle();        
+          return kOfxStatOK;
+        }
+
+        return kOfxStatErrBadHandle;
       }
       
       OfxStatus clipGetPropertySet(OfxImageClipHandle clip,
-                                   OfxPropertySetHandle *propHandle)
-        UNIMPLEMENTED_BODY
+                                   OfxPropertySetHandle *propHandle){        
+        Clip::Instance *clipInstance = reinterpret_cast<Clip::Instance*>(clip);
+
+        if(clipInstance) {
+          *propHandle = clipInstance->getPropHandle();
+          return kOfxStatOK;
+        }
+        
+        return kOfxStatErrBadHandle;
+      }
       
-      OfxStatus clipGetImage(OfxImageClipHandle h1, OfxTime time, OfxRectD *h2, OfxPropertySetHandle *h3)
-        UNIMPLEMENTED_BODY
+      OfxStatus clipGetImage(OfxImageClipHandle h1, 
+                             OfxTime time, 
+                             OfxRectD *h2, 
+                             OfxPropertySetHandle *h3){
+        Clip::Instance *clipInstance = reinterpret_cast<Clip::Instance*>(h1);
+
+        if(clipInstance){
+          Clip::Image* image;
+          
+          OfxStatus st = clipInstance->getImage(time,h2,image);
+          if(st!=kOfxStatOK) return st;
+
+          if(!image) return kOfxStatFailed;
+
+          *h3 = (OfxPropertySetHandle)image->getHandle();
+          return kOfxStatOK;
+        }
+        else 
+          return kOfxStatErrBadHandle;
+      }
       
-      OfxStatus clipReleaseImage(OfxPropertySetHandle h1)
-        UNIMPLEMENTED_BODY
+      OfxStatus clipReleaseImage(OfxPropertySetHandle h1){
+        Clip::Image *image = reinterpret_cast<Clip::Image*>(h1);
+
+        if(h1){
+          // clip::image has a virtual destructor for derived classes
+          delete image;
+          return kOfxStatOK;
+        }
+        else 
+          return kOfxStatErrBadHandle;
+      }
       
       OfxStatus clipGetHandle(OfxImageEffectHandle imageEffect,
                               const char *name,
                               OfxImageClipHandle *clip,
                               OfxPropertySetHandle *propertySet)
-        UNIMPLEMENTED_BODY
+      {
+        ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(imageEffect);
+
+        ImageEffect::Instance *effectInstance = reinterpret_cast<ImageEffect::Instance*>(effectBase);
+
+        if(effectInstance){
+          Clip::Instance* instance = effectInstance->getClip(name);
+          *clip = instance->getHandle();
+          if(propertySet)
+            *propertySet = instance->getPropHandle();
+          return kOfxStatOK;
+        }
+        else 
+          return kOfxStatErrBadHandle;
+      }
       
       OfxStatus clipGetRegionOfDefinition(OfxImageClipHandle clip,
                                           OfxTime time,
                                           OfxRectD *bounds)
-        UNIMPLEMENTED_BODY
-      
+      {
+        Clip::Instance *clipInstance = reinterpret_cast<Clip::Instance*>(clip);
+
+        if(clipInstance) {
+          return clipInstance->getRegionOfDefinition(*bounds);
+        }
+        else 
+          return kOfxStatErrBadHandle;
+      }
+
+        // should processing be aborted?
       int abort(OfxImageEffectHandle imageEffect)
-        UNIMPLEMENTED_BODY
+      {
+        ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(imageEffect);
+
+        ImageEffect::Instance *effectInstance = dynamic_cast<ImageEffect::Instance*>(effectBase);
+
+        if(effectInstance) 
+          return effectInstance->abort();
+        else 
+          return kOfxStatErrBadHandle;        
+      }
       
       OfxStatus imageMemoryAlloc(OfxImageEffectHandle instanceHandle, 
                                  size_t nBytes,
                                  OfxImageMemoryHandle *memoryHandle)
-        UNIMPLEMENTED_BODY
+      {
+        ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(instanceHandle);
+
+        ImageEffect::Instance *effectInstance = reinterpret_cast<ImageEffect::Instance*>(effectBase);
+
+        if(effectInstance){
+          Memory::Instance* memory = effectInstance->imageMemoryAlloc(nBytes);
+          *memoryHandle = memory->getHandle();
+          return kOfxStatOK;
+        }
+
+        return kOfxStatErrBadHandle; 
+      }
       
-      OfxStatus imageMemoryFree(OfxImageMemoryHandle memoryHandle)
-        UNIMPLEMENTED_BODY
+      OfxStatus imageMemoryFree(OfxImageMemoryHandle memoryHandle){
+        Memory::Instance *memoryInstance = reinterpret_cast<Memory::Instance*>(memoryHandle);
+
+        if(memoryInstance){
+          memoryInstance->free();
+          delete memoryInstance;
+          return kOfxStatOK;
+        }
+        else 
+          return kOfxStatErrBadHandle; 
+      }
       
       OfxStatus imageMemoryLock(OfxImageMemoryHandle memoryHandle,
-                                void **returnedPtr)
-        UNIMPLEMENTED_BODY
+                                void **returnedPtr){
+        Memory::Instance *memoryInstance = reinterpret_cast<Memory::Instance*>(memoryHandle);
+
+        if(memoryInstance){
+          memoryInstance->lock();          
+          *returnedPtr = memoryInstance->getPtr();
+          return kOfxStatOK;
+        }
+
+        return kOfxStatErrBadHandle; 
+      }
       
-      OfxStatus imageMemoryUnlock(OfxImageMemoryHandle memoryHandle)
-        UNIMPLEMENTED_BODY
+      OfxStatus imageMemoryUnlock(OfxImageMemoryHandle memoryHandle){
+        Memory::Instance *memoryInstance = reinterpret_cast<Memory::Instance*>(memoryHandle);
+
+        if(memoryInstance){
+          memoryInstance->unlock();          
+          return kOfxStatOK;
+        }
+
+        return kOfxStatErrBadHandle; 
+      }
 
       struct OfxImageEffectSuiteV1 suite = {
         getPropertySet,
@@ -119,325 +268,1009 @@ namespace OFX {
         imageMemoryUnlock
       };
 
-      static Property::PropSpec imageEffectDescriptorStuff[] = {
-        /* name                                 type                          dim.   r/o    default value */
-        { kOfxPropType,											    Property::eString,     1, true,  kOfxTypeImageEffect },
-        { kOfxPropLabel, 									      Property::eString,     1, false, "" },
-        { kOfxPropShortLabel,  						      Property::eString,     1, false, "" },
-        { kOfxPropLongLabel,  						      Property::eString,     1, false, "" },
-        { kOfxImageEffectPropSupportedContexts, Property::eString,     0, false, "" },
-        { kOfxImageEffectPluginPropGrouping,    Property::eString,     1, false, "" },
-        { kOfxImageEffectPluginPropSingleInstance, Property::eInt,     1, false, "0" },
-        { kOfxImageEffectPluginRenderThreadSafety, Property::eString,  1, false, kOfxImageEffectRenderInstanceSafe },
-        { kOfxImageEffectPluginPropHostFrameThreading, Property::eInt, 1, false, "1" },
-        { kOfxImageEffectPluginPropOverlayInteractV1, Property::ePointer, 1, false, 0 },
-        { kOfxImageEffectPropSupportsMultiResolution, Property::eInt,  1, false, "1" } ,
-        { kOfxImageEffectPropSupportsTiles,     Property::eInt,        1, false, "1" }, 
-        { kOfxImageEffectPropTemporalClipAccess, Property::eInt,       1, false, "0" },
-        { kOfxImageEffectPropSupportedPixelDepths, Property::eString,  0, false, "" }, 
-        { kOfxImageEffectPluginPropFieldRenderTwiceAlways, Property::eInt, 1, false, "1" } ,
-        { kOfxImageEffectPropSupportsMultipleClipDepths, Property::eInt, 1, false, "0" },
-        { kOfxImageEffectPropSupportsMultipleClipPARs,   Property::eInt, 1, false, "0" },
-        { kOfxImageEffectPropClipPreferencesSlaveParam, Property::eString, 0, false, "" },
-
-        { 0 }
-      };
-
-      ImageEffectDescriptor::ImageEffectDescriptor(Plugin *plug) : _properties(imageEffectDescriptorStuff) {
-
-        Property::PropSpec filePath[] = {
-          { kOfxPluginPropFilePath, Property::eString, 1, true, plug->getBinary()->getBundlePath().c_str() },
-          { 0 }
-        };
-
-        _properties.addProperties(filePath);
-      }
-
-      ImageEffectDescriptor::ImageEffectDescriptor(const std::string &bundlePath) : _properties(imageEffectDescriptorStuff) {
-
-        Property::PropSpec filePath[] = {
-          { kOfxPluginPropFilePath, Property::eString, 1, true, bundlePath.c_str() },
-          { 0 }
-        };
-
-        _properties.addProperties(filePath);
-      }
     }
     
     namespace Param {
 
-      struct TypeMap {
-        const char *paramType;
-        Property::TypeEnum propType;
-        int propDimension;
-      };
-
-      bool findType(const std::string paramType, Property::TypeEnum &propType, int &propDim) {
-        static TypeMap typeMap[] = {
-          { kOfxParamTypeInteger,   Property::eInt,    1 },
-          { kOfxParamTypeDouble,    Property::eDouble, 1 },
-          { kOfxParamTypeBoolean,   Property::eInt,    1 },
-          { kOfxParamTypeChoice,    Property::eInt,    1 },
-          { kOfxParamTypeRGBA,      Property::eDouble, 4 },
-          { kOfxParamTypeRGB,       Property::eDouble, 3 },
-          { kOfxParamTypeDouble2D,  Property::eDouble, 2 },
-          { kOfxParamTypeInteger2D, Property::eInt,    2 },
-          { kOfxParamTypeDouble3D,  Property::eDouble, 3 },
-          { kOfxParamTypeInteger3D, Property::eInt,    3 },
-          { kOfxParamTypeString,    Property::eString, 1 },
-          { kOfxParamTypeCustom,    Property::eString, 1 },
-          { kOfxParamTypeGroup,	    Property::eNone },
-          { kOfxParamTypePage,      Property::eNone },
-          { kOfxParamTypePushButton,Property::eNone },
-          { 0 }
-        };
-  
-        TypeMap *tm = typeMap;
-        while (tm->paramType) {
-          if (tm->paramType == paramType) {
-            propType = tm->propType;
-            propDim = tm->propDimension;
-            return true;
-          }
-          tm++;
-        }
-        return false;
-      }
-
-      Param::Param(const std::string &type, const std::string &name) : _paramType(type), _properties(false) {
-        const char *ctype = type.c_str();
-        const char *cname = name.c_str();
-
-        Property::TypeEnum propType = Property::eString;
-        int propDim = 1;
-        findType(type, propType, propDim);
-
-        Property::PropSpec universalProps[] = {
-          { kOfxPropType,    Property::eString,    1,    true,    kOfxTypeParameter },
-          { kOfxParamPropSecret,  Property::eInt,    1,    false,    "0"},
-          { kOfxParamPropCanUndo, Property::eInt,    1,    false,    "1"},
-          { kOfxParamPropHint,    Property::eString,    1,    false,    ""},
-          { kOfxParamPropScriptName, Property::eString, 1, false, cname },
-          { kOfxParamPropParent,  Property::eString,    1,    false,    "" },
-          { kOfxParamPropEnabled, Property::eInt,    1,    false,    "1" },
-          { kOfxParamPropDataPtr, Property::ePointer,    1,    false,    0 },
-          { kOfxParamPropType,  Property::eString, 1, true,  ctype },
-          { kOfxPropName,       Property::eString, 1, false, cname },
-          { kOfxPropLabel,      Property::eString, 1, false, cname },
-          { kOfxPropShortLabel, Property::eString, 1, false, cname },
-          { kOfxPropLongLabel,  Property::eString, 1, false, cname },
-          { 0 }
-        };
-
-        Property::PropSpec allButGroupPageProps[] = {
-          { kOfxParamPropInteractV1,          Property::ePointer, 1, false, 0 },
-          { kOfxParamPropInteractSize,        Property::eDouble,  2, false, "0" },
-          { kOfxParamPropInteractSizeAspect,  Property::eDouble,  1, false, "1" },
-          { kOfxParamPropInteractMinimumSize, Property::eDouble,  2, false, "10" },
-          { kOfxParamPropInteractPreferedSize,Property::eInt,     2, false, "10" },
-          { 0 }
-        };
-
-        Property::PropSpec allWithValues[] = {
-          { kOfxParamPropDefault,     propType,                propDim, false, propType == Property::eString ? "" : "0" },
-          { kOfxParamPropAnimates,    Property::eInt, 1,       false, "1" },
-          { kOfxParamPropIsAnimating, Property::eInt, 1,       false, "0" },
-          { kOfxParamPropIsAutoKeying,Property::eInt, 1,       false, "0" },
-          { kOfxParamPropPersistant,  Property::eInt, 1,       false, "1" },
-          { kOfxParamPropEvaluateOnChange, Property::eInt, 1,  false, "1" },
-          { kOfxParamPropPluginMayWrite,    Property::eInt,    1,    false,    "0" },
-          { kOfxParamPropCacheInvalidation,    Property::eString,    1,    false,    kOfxParamInvalidateValueChange },
-          { 0 }
-        };
-		
-		std::ostringstream dbl_min, dbl_max, int_min, int_max;
-
-        dbl_min << -DBL_MAX;
-        dbl_max << DBL_MAX;
-        int_min << INT_MIN;
-        int_max << INT_MAX;
-
-        Property::PropSpec allNumeric[] = {
-          { kOfxParamPropDisplayMin, propType, propDim, false, (propType == Property::eDouble ? dbl_min : int_min).str().c_str() },
-          { kOfxParamPropDisplayMax, propType, propDim, false, (propType == Property::eDouble ? dbl_max : int_max).str().c_str() },
-          { 0 }
-        };
-
-        Property::PropSpec allDouble[] = {
-          { kOfxParamPropIncrement,  Property::eDouble,    1,    false,    "1" },
-          { kOfxParamPropDigits,     Property::eInt,       1,    false,    "2" },
-          { kOfxParamPropDoubleType, Property::eString,    1,    false,    kOfxParamDoubleTypePlain },
-          { 0}
-        };
-
-        Property::PropSpec allDouble1D[] = {
-          { kOfxParamPropShowTimeMarker, Property::eInt,   1,    false,    "0" },    
-          { 0 }
-        };
-
-        Property::PropSpec allString[] = {
-          { kOfxParamPropStringMode,  Property::eString,    1,    false,    kOfxParamStringIsSingleLine },
-          { kOfxParamPropStringFilePathExists,    Property::eString,    1,    false,    "1" },
-          { 0 }
-        };
-    
-        Property::PropSpec allChoice[] = {
-          { kOfxParamPropChoiceOption,    Property::eString,    0,    false,    "" },
-          { 0 }
-        };
-
-        Property::PropSpec all2D3D[] = {
-          { kOfxParamPropDimensionLabel,  Property::eString, propDim, false, "" },
-          { 0 },
-        };  
-
-        Property::PropSpec allCustom[] = {
-          { kOfxParamPropCustomInterpCallbackV1,    Property::ePointer,    1,    false,    0 },
-          { 0 },
-        };
-
-        Property::PropSpec allPage[] = {
-          { kOfxParamPropPageChild,    Property::eString,    0,    false,    "" },
-          { 0 }
-        };
-
-        _properties.addProperties(universalProps);
-
-        if (propType != Property::eNone) {
-          _properties.addProperties(allWithValues);
-        }
-
-        if (propType == Property::eString) {
-          _properties.addProperties(allString);
-        }
-  
-        if (propType == Property::eInt || propType == Property::eDouble) {   
-          _properties.addProperties(allNumeric);
-
-          if (propDim == 2 || propDim == 3) {
-            _properties.addProperties(all2D3D);
-            _properties.setProperty<Property::StringValue>(kOfxParamPropDimensionLabel, 0, "X");
-            _properties.setProperty<Property::StringValue>(kOfxParamPropDimensionLabel, 0, "Y");
-            if (propDim == 3) {
-              _properties.setProperty<Property::StringValue>(kOfxParamPropDimensionLabel, 0, "Z");
-            }
-          }
-        }
-
-        if (propType == Property::eDouble) {
-          _properties.addProperties(allDouble);
-
-          if (propDim == 1) {
-            _properties.addProperties(allDouble1D);
-          }
-        }
-
-        if (type != kOfxParamTypeGroup && kOfxParamTypePage) {
-          _properties.addProperties(allButGroupPageProps);
-        }
-
-        if (type == kOfxParamTypeChoice) {
-          _properties.addProperties(allChoice);
-        }
-
-        if (type == kOfxParamTypeCustom) {
-          _properties.addProperties(allCustom);
-        }
-
-        if (type == kOfxParamTypePage) {
-          _properties.addProperties(allPage);
-        }
-      }
-
-
-      
       OfxStatus paramDefine(OfxParamSetHandle paramSet,
                             const char *paramType,
                             const char *name,
                             OfxPropertySetHandle *propertySet)
       {
-        ParamSet *pset = reinterpret_cast<ParamSet*>(paramSet);
-        Param *parm = new Param(paramType, name);
-        pset->getParams()[name] = parm;
-        *propertySet = parm->getPropHandle();
-        return kOfxStatOK;
+        SetDescriptor *paramSetDescriptor = reinterpret_cast<SetDescriptor*>(paramSet);
+        if(paramSetDescriptor){
+          Descriptor *param = new Descriptor(paramType, name);
+          paramSetDescriptor->addParam(name,param);
+          *propertySet = param->getPropHandle();
+          return kOfxStatOK;
+        }
+        else
+          return kOfxStatErrBadHandle;
       }
       
       OfxStatus paramGetHandle(OfxParamSetHandle paramSet,
                                const char *name,
                                OfxParamHandle *param,
                                OfxPropertySetHandle *propertySet)
-        UNIMPLEMENTED_BODY
+      {
+
+        BaseSet *baseSet = reinterpret_cast<BaseSet*>(paramSet);
+
+        SetInstance *setInstance = dynamic_cast<SetInstance*>(baseSet);
+
+        if(setInstance){          
+          std::map<std::string,Instance*>& params = setInstance->getParams();
+          std::map<std::string,Instance*>::iterator it = params.find(name);         
+
+          // if we can't find it return an error...
+          if(it==params.end()) return kOfxStatErrUnknown;
+
+          // get the param
+          *param = (it->second)->getHandle(); 
+
+          // get the param property set
+          *propertySet = (it->second)->getPropHandle();
+
+          return kOfxStatOK;
+        }
+        else{
+          SetDescriptor *setDescriptor = dynamic_cast<SetDescriptor*>(baseSet);
+          
+          if(setDescriptor){            
+            std::map<std::string,Descriptor*>& params = setDescriptor->getParams();
+            std::map<std::string,Descriptor*>::iterator it = params.find(name);         
+
+            // if we can't find it return an error...
+            if(it==params.end()) return kOfxStatErrUnknown;
+
+            // get the param
+            *param = (it->second)->getHandle();  
+
+            // get the param property set
+            *propertySet = (it->second)->getPropHandle();
+
+            return kOfxStatOK;
+          }
+          else
+            return kOfxStatErrBadHandle;        
+        }          
+      }
       
       OfxStatus paramSetGetPropertySet(OfxParamSetHandle paramSet,
-                                       OfxPropertySetHandle *propHandle) 
-        UNIMPLEMENTED_BODY
+                                       OfxPropertySetHandle *propHandle)
+      {
+       /* BaseSet *baseSet = reinterpret_cast<BaseSet*>(paramSet);
+
+        SetInstance *setInstance = dynamic_cast<SetInstance*>(baseSet);
+
+        if(setInstance){            
+          // get the param property set
+          *propHandle = setInstance->getPropHandle();
+
+          return kOfxStatOK;
+        }
+        else{
+          SetDescriptor *paramSetDescriptor = dynamic_cast<SetDescriptor*>(baseSet);
+      
+          if(paramSetDescriptor){ 
+            // get the param property set
+            *propHandle = paramSetDescriptor->getPropHandle();            
+          }
+          else
+            return kOfxStatErrBadHandle;                  
+
+          return kOfxStatOK;
+        } TODO */
+        return kOfxStatOK;
+      } 
       
       OfxStatus paramGetPropertySet(OfxParamHandle param,
-                                    OfxPropertySetHandle *propHandle) 
-        UNIMPLEMENTED_BODY
-      
+                                    OfxPropertySetHandle *propHandle)
+      {
+        Param::Instance *paramInstance = reinterpret_cast<Param::Instance*>(param);
+        
+        if(paramInstance){
+          // get the param property set
+          *propHandle = paramInstance->getPropHandle();
+
+          return kOfxStatOK;
+        }
+        else
+          return kOfxStatErrBadHandle;        
+      }
+
+#define mDeclareTypedInstance(T) \
+T* typedParamInstance = dynamic_cast<T*>(paramInstance);
+
       OfxStatus paramGetValue(OfxParamHandle  paramHandle,
-                              ...) 
-        UNIMPLEMENTED_BODY
+                              ...)
+      {
+        Instance *paramInstance = reinterpret_cast<Instance*>(paramHandle);        
+        if(!paramInstance) return kOfxStatErrBadHandle;
+
+        if(paramInstance->getType()==kOfxParamTypeInteger){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          int *value = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(IntegerInstance);
+          return typedParamInstance->get(*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          double *value = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(DoubleInstance);
+          return typedParamInstance->get(*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeBoolean){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          bool *value = va_arg(ap, bool*);
+          va_end(ap);
+
+          mDeclareTypedInstance(BooleanInstance);
+          return typedParamInstance->get(*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeChoice){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          int *value = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(ChoiceInstance);
+          return typedParamInstance->get(*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeRGBA){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          double *r = va_arg(ap, double*);
+          double *g = va_arg(ap, double*);
+          double *b = va_arg(ap, double*);
+          double *a = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(RGBAInstance);
+          return typedParamInstance->get(*r,*g,*b,*a);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeRGB){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          double *r = va_arg(ap, double*);
+          double *g = va_arg(ap, double*);
+          double *b = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(RGBInstance);
+          return typedParamInstance->get(*r,*g,*b);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble2D){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          double *x = va_arg(ap, double*);
+          double *y = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Double2DInstance);
+          return typedParamInstance->get(*x,*y);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeInteger2D){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          int *x = va_arg(ap, int*);
+          int *y = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Integer2DInstance);
+          return typedParamInstance->get(*x,*y);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble3D){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          double *x = va_arg(ap, double*);
+          double *y = va_arg(ap, double*);
+          double *z = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Double3DInstance);
+          return typedParamInstance->get(*x,*y,*z);            
+        }
+        else if(paramInstance->getType()==kOfxParamTypeInteger3D){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          int *x = va_arg(ap, int*);
+          int *y = va_arg(ap, int*);
+          int *z = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Integer3DInstance);
+          return typedParamInstance->get(*x,*y,*z);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeString){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          char *value = va_arg(ap, char*);
+          va_end(ap);
+
+          mDeclareTypedInstance(StringInstance);
+          return typedParamInstance->get(value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeCustom){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypeGroup){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypePage){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypePushButton){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else
+          return kOfxStatErrUnsupported;
+      }      
       
       OfxStatus paramGetValueAtTime(OfxParamHandle  paramHandle,
                                     OfxTime time,
                                     ...)
-        UNIMPLEMENTED_BODY
+      {
+        Instance *paramInstance = reinterpret_cast<Instance*>(paramHandle);        
+        if(!paramInstance) return kOfxStatErrBadHandle;
+
+        if(paramInstance->getType()==kOfxParamTypeInteger){
+          va_list ap;
+
+          va_start(ap,time);
+          int *value = va_arg(ap, int*);
+          va_end(ap);
+        
+          mDeclareTypedInstance(IntegerInstance);
+          return typedParamInstance->get(time,*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble){
+          va_list ap;
+
+          va_start(ap,time);
+          double *value = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(DoubleInstance);
+          return typedParamInstance->get(time,*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeBoolean){
+          va_list ap;
+
+          va_start(ap,time);
+          bool *value = va_arg(ap, bool*);
+          va_end(ap);
+
+          mDeclareTypedInstance(BooleanInstance);
+          return typedParamInstance->get(time,*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeChoice){
+          va_list ap;
+
+          va_start(ap,time);
+          int *value = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(ChoiceInstance);
+          return typedParamInstance->get(time,*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeRGBA){
+          va_list ap;
+
+          va_start(ap,time);
+          double *r = va_arg(ap, double*);
+          double *g = va_arg(ap, double*);
+          double *b = va_arg(ap, double*);
+          double *a = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(RGBAInstance);
+          return typedParamInstance->get(time,*r,*g,*b,*a);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeRGB){
+          va_list ap;
+
+          va_start(ap,time);
+          double *r = va_arg(ap, double*);
+          double *g = va_arg(ap, double*);
+          double *b = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(RGBInstance);
+          return typedParamInstance->get(time,*r,*g,*b);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble2D){
+          va_list ap;
+
+          va_start(ap,time);
+          double *x = va_arg(ap, double*);
+          double *y = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Double2DInstance);
+          return typedParamInstance->get(time,*x,*y);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeInteger2D){
+          va_list ap;
+
+          va_start(ap,time);
+          int *x = va_arg(ap, int*);
+          int *y = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Integer2DInstance);
+          return typedParamInstance->get(time,*x,*y);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble3D){
+          va_list ap;
+
+          va_start(ap,time);
+          double *x = va_arg(ap, double*);
+          double *y = va_arg(ap, double*);
+          double *z = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Double3DInstance);
+          return typedParamInstance->get(time,*x,*y,*z);            
+        }
+        else if(paramInstance->getType()==kOfxParamTypeInteger3D){
+          va_list ap;
+
+          va_start(ap,time);
+          int *x = va_arg(ap, int*);
+          int *y = va_arg(ap, int*);
+          int *z = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Integer3DInstance);
+          return typedParamInstance->get(time,*x,*y,*z);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeString){
+          va_list ap;
+
+          va_start(ap,time);
+          char *value = va_arg(ap, char*);
+          va_end(ap);
+
+          mDeclareTypedInstance(StringInstance);
+          return typedParamInstance->get(value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeCustom){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypeGroup){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypePage){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypePushButton){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else
+          return kOfxStatErrUnsupported;
+      }
       
       OfxStatus paramGetDerivative(OfxParamHandle  paramHandle,
                                    OfxTime time,
                                    ...)
-        UNIMPLEMENTED_BODY
+      {
+        Instance *paramInstance = reinterpret_cast<Instance*>(paramHandle);        
+        if(!paramInstance) return kOfxStatErrBadHandle;
+
+        if(paramInstance->getType()==kOfxParamTypeInteger){
+          va_list ap;
+
+          va_start(ap,time);
+          int *value = va_arg(ap, int*);
+          va_end(ap);
+        
+          mDeclareTypedInstance(IntegerInstance);
+          return typedParamInstance->derive(time,*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble){
+          va_list ap;
+
+          va_start(ap,time);
+          double *value = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(DoubleInstance);
+          return typedParamInstance->derive(time,*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeRGBA){
+          va_list ap;
+
+          va_start(ap,time);
+          double *r = va_arg(ap, double*);
+          double *g = va_arg(ap, double*);
+          double *b = va_arg(ap, double*);
+          double *a = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(RGBAInstance);
+          return typedParamInstance->derive(time,*r,*g,*b,*a);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeRGB){
+          va_list ap;
+
+          va_start(ap,time);
+          double *r = va_arg(ap, double*);
+          double *g = va_arg(ap, double*);
+          double *b = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(RGBInstance);
+          return typedParamInstance->derive(time,*r,*g,*b);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble2D){
+          va_list ap;
+
+          va_start(ap,time);
+          double *x = va_arg(ap, double*);
+          double *y = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Double2DInstance);
+          return typedParamInstance->derive(time,*x,*y);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeInteger2D){
+          va_list ap;
+
+          va_start(ap,time);
+          int *x = va_arg(ap, int*);
+          int *y = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Integer2DInstance);
+          return typedParamInstance->derive(time,*x,*y);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble3D){
+          va_list ap;
+
+          va_start(ap,time);
+          double *x = va_arg(ap, double*);
+          double *y = va_arg(ap, double*);
+          double *z = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Double3DInstance);
+          return typedParamInstance->derive(time,*x,*y,*z);            
+        }
+        else if(paramInstance->getType()==kOfxParamTypeInteger3D){
+          va_list ap;
+
+          va_start(ap,time);
+          int *x = va_arg(ap, int*);
+          int *y = va_arg(ap, int*);
+          int *z = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Integer3DInstance);
+          return typedParamInstance->derive(time,*x,*y,*z);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeBoolean){
+          return kOfxStatErrMissingHostFeature;        
+        }
+        else if(paramInstance->getType()==kOfxParamTypeString){
+          return kOfxStatErrMissingHostFeature;        
+        }
+        else if(paramInstance->getType()==kOfxParamTypeChoice){
+          return kOfxStatErrMissingHostFeature;        
+        }
+        else if(paramInstance->getType()==kOfxParamTypeCustom){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypeGroup){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypePage){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypePushButton){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else
+          return kOfxStatErrUnsupported;
+      }
       
       OfxStatus paramGetIntegral(OfxParamHandle  paramHandle,
                                  OfxTime time1, OfxTime time2,
                                  ...)
-        UNIMPLEMENTED_BODY
+      {
+        Instance *paramInstance = reinterpret_cast<Instance*>(paramHandle);        
+        if(!paramInstance) return kOfxStatErrBadHandle;
+
+        if(paramInstance->getType()==kOfxParamTypeInteger){
+          va_list ap;
+
+          va_start(ap,time2);
+          int *value = va_arg(ap, int*);
+          va_end(ap);
+        
+          mDeclareTypedInstance(IntegerInstance);
+          return typedParamInstance->integrate(time1,time2,*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble){
+          va_list ap;
+
+          va_start(ap,time2);
+          double *value = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(DoubleInstance);
+          return typedParamInstance->integrate(time1,time2,*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeRGBA){
+          va_list ap;
+
+          va_start(ap,time2);
+          double *r = va_arg(ap, double*);
+          double *g = va_arg(ap, double*);
+          double *b = va_arg(ap, double*);
+          double *a = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(RGBAInstance);
+          return typedParamInstance->integrate(time1,time2,*r,*g,*b,*a);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeRGB){
+          va_list ap;
+
+          va_start(ap,time2);
+          double *r = va_arg(ap, double*);
+          double *g = va_arg(ap, double*);
+          double *b = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(RGBInstance);
+          return typedParamInstance->integrate(time1,time2,*r,*g,*b);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble2D){
+          va_list ap;
+
+          va_start(ap,time2);
+          double *x = va_arg(ap, double*);
+          double *y = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Double2DInstance);
+          return typedParamInstance->integrate(time1,time2,*x,*y);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeInteger2D){
+          va_list ap;
+
+          va_start(ap,time2);
+          int *x = va_arg(ap, int*);
+          int *y = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Integer2DInstance);
+          return typedParamInstance->integrate(time1,time2,*x,*y);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble3D){
+          va_list ap;
+
+          va_start(ap,time2);
+          double *x = va_arg(ap, double*);
+          double *y = va_arg(ap, double*);
+          double *z = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Double3DInstance);
+          return typedParamInstance->integrate(time1,time2,*x,*y,*z);            
+        }
+        else if(paramInstance->getType()==kOfxParamTypeInteger3D){
+          va_list ap;
+
+          va_start(ap,time2);
+          int *x = va_arg(ap, int*);
+          int *y = va_arg(ap, int*);
+          int *z = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Integer3DInstance);
+          return typedParamInstance->integrate(time1,time2,*x,*y,*z);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeBoolean){
+          return kOfxStatErrMissingHostFeature;        
+        }
+        else if(paramInstance->getType()==kOfxParamTypeString){
+          return kOfxStatErrMissingHostFeature;        
+        }
+        else if(paramInstance->getType()==kOfxParamTypeChoice){
+          return kOfxStatErrMissingHostFeature;           
+        }
+        else if(paramInstance->getType()==kOfxParamTypeCustom){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypeGroup){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypePage){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypePushButton){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else
+          return kOfxStatErrUnsupported;
+      }
       
       OfxStatus paramSetValue(OfxParamHandle  paramHandle,
                               ...) 
-        UNIMPLEMENTED_BODY
+      {
+        Instance *paramInstance = reinterpret_cast<Instance*>(paramHandle);        
+        if(!paramInstance) return kOfxStatErrBadHandle;
+
+        if(paramInstance->getType()==kOfxParamTypeInteger){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          int *value = va_arg(ap, int*);
+          va_end(ap);
+        
+          mDeclareTypedInstance(IntegerInstance);
+          return typedParamInstance->set(*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          double *value = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(DoubleInstance);
+          return typedParamInstance->set(*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeBoolean){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          bool *value = va_arg(ap, bool*);
+          va_end(ap);
+
+          mDeclareTypedInstance(BooleanInstance);
+          return typedParamInstance->set(*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeChoice){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          int *value = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(ChoiceInstance);
+          return typedParamInstance->set(*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeRGBA){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          double *r = va_arg(ap, double*);
+          double *g = va_arg(ap, double*);
+          double *b = va_arg(ap, double*);
+          double *a = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(RGBAInstance);
+          return typedParamInstance->set(*r,*g,*b,*a);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeRGB){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          double *r = va_arg(ap, double*);
+          double *g = va_arg(ap, double*);
+          double *b = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(RGBInstance);
+          return typedParamInstance->set(*r,*g,*b);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble2D){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          double *x = va_arg(ap, double*);
+          double *y = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Double2DInstance);
+          return typedParamInstance->set(*x,*y);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeInteger2D){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          int *x = va_arg(ap, int*);
+          int *y = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Integer2DInstance);
+          return typedParamInstance->set(*x,*y);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble3D){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          double *x = va_arg(ap, double*);
+          double *y = va_arg(ap, double*);
+          double *z = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Double3DInstance);
+          return typedParamInstance->set(*x,*y,*z);            
+        }
+        else if(paramInstance->getType()==kOfxParamTypeInteger3D){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          int *x = va_arg(ap, int*);
+          int *y = va_arg(ap, int*);
+          int *z = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Integer3DInstance);
+          return typedParamInstance->set(*x,*y,*z);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeString){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          char *value = va_arg(ap, char*);
+          va_end(ap);
+
+          mDeclareTypedInstance(StringInstance);
+          return typedParamInstance->set(value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeCustom){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypeGroup){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypePage){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypePushButton){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else
+          return kOfxStatErrUnsupported;
+      }
       
       OfxStatus paramSetValueAtTime(OfxParamHandle  paramHandle,
                                     OfxTime time,  // time in frames
                                     ...)
-        UNIMPLEMENTED_BODY
+      {
+        Instance *paramInstance = reinterpret_cast<Instance*>(paramHandle);        
+        if(!paramInstance) return kOfxStatErrBadHandle;
+
+        if(paramInstance->getType()==kOfxParamTypeInteger){
+          va_list ap;
+
+          va_start(ap,time);
+          int *value = va_arg(ap, int*);
+          va_end(ap);
+        
+          mDeclareTypedInstance(IntegerInstance);
+          return typedParamInstance->set(time,*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          double *value = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(DoubleInstance);
+          return typedParamInstance->set(time,*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeBoolean){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          bool *value = va_arg(ap, bool*);
+          va_end(ap);
+
+          mDeclareTypedInstance(BooleanInstance);
+          return typedParamInstance->set(time,*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeChoice){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          int *value = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(ChoiceInstance);
+          return typedParamInstance->set(time,*value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeRGBA){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          double *r = va_arg(ap, double*);
+          double *g = va_arg(ap, double*);
+          double *b = va_arg(ap, double*);
+          double *a = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(RGBAInstance);
+          return typedParamInstance->set(time,*r,*g,*b,*a);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeRGB){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          double *r = va_arg(ap, double*);
+          double *g = va_arg(ap, double*);
+          double *b = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(RGBInstance);
+          return typedParamInstance->set(time,*r,*g,*b);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble2D){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          double *x = va_arg(ap, double*);
+          double *y = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Double2DInstance);
+          return typedParamInstance->set(time,*x,*y);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeInteger2D){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          int *x = va_arg(ap, int*);
+          int *y = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Integer2DInstance);
+          return typedParamInstance->set(time,*x,*y);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeDouble3D){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          double *x = va_arg(ap, double*);
+          double *y = va_arg(ap, double*);
+          double *z = va_arg(ap, double*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Double3DInstance);
+          return typedParamInstance->set(time,*x,*y,*z);            
+        }
+        else if(paramInstance->getType()==kOfxParamTypeInteger3D){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          int *x = va_arg(ap, int*);
+          int *y = va_arg(ap, int*);
+          int *z = va_arg(ap, int*);
+          va_end(ap);
+
+          mDeclareTypedInstance(Integer3DInstance);
+          return typedParamInstance->set(time,*x,*y,*z);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeString){
+          va_list ap;
+
+          va_start(ap,paramHandle);
+          char *value = va_arg(ap, char*);
+          va_end(ap);
+
+          mDeclareTypedInstance(StringInstance);
+          return typedParamInstance->set(value);
+        }
+        else if(paramInstance->getType()==kOfxParamTypeCustom){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypeGroup){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypePage){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else if(paramInstance->getType()==kOfxParamTypePushButton){
+          return kOfxStatErrMissingHostFeature;
+        }
+        else
+          return kOfxStatErrUnsupported;
+      }
       
       OfxStatus paramGetNumKeys(OfxParamHandle  paramHandle,
                                 unsigned int  *numberOfKeys)
-        UNIMPLEMENTED_BODY
+      {
+        KeyframeParam *paramInstance = reinterpret_cast<KeyframeParam*>(paramHandle);        
+        if(!paramInstance) return kOfxStatErrBadHandle;        
+        return paramInstance->getNumKeys(*numberOfKeys);
+      }
       
       OfxStatus paramGetKeyTime(OfxParamHandle  paramHandle,
                                 unsigned int nthKey,
                                 OfxTime *time)
-        UNIMPLEMENTED_BODY
+      {
+        KeyframeParam *paramInstance = reinterpret_cast<KeyframeParam*>(paramHandle);        
+        if(!paramInstance) return kOfxStatErrBadHandle;        
+        return paramInstance->getKeyTime(nthKey,*time);
+      }
       
       OfxStatus paramGetKeyIndex(OfxParamHandle  paramHandle,
                                  OfxTime time,
                                  int     direction,
                                  int    *index) 
-        UNIMPLEMENTED_BODY
+      {
+        KeyframeParam *paramInstance = reinterpret_cast<KeyframeParam*>(paramHandle);        
+        if(!paramInstance) return kOfxStatErrBadHandle;        
+        return paramInstance->getKeyIndex(time,direction,*index);
+      }
       
       OfxStatus paramDeleteKey(OfxParamHandle  paramHandle,
                                OfxTime time)
-        UNIMPLEMENTED_BODY
-
+      {
+        KeyframeParam *paramInstance = reinterpret_cast<KeyframeParam*>(paramHandle);        
+        if(!paramInstance) return kOfxStatErrBadHandle;        
+        return paramInstance->deleteKey(time);
+      }
       
       OfxStatus paramDeleteAllKeys(OfxParamHandle  paramHandle) 
-        UNIMPLEMENTED_BODY
+      {
+        KeyframeParam *paramInstance = reinterpret_cast<KeyframeParam*>(paramHandle);        
+        if(!paramInstance) return kOfxStatErrBadHandle;        
+        return paramInstance->deleteAllKeys();
+      }
       
       OfxStatus paramCopy(OfxParamHandle  paramTo, OfxParamHandle  paramFrom, OfxTime dstOffset, OfxRangeD *frameRange) 
-        UNIMPLEMENTED_BODY
+      {
+        Instance *paramInstanceTo = reinterpret_cast<Instance*>(paramTo);        
+        Instance *paramInstanceFrom = reinterpret_cast<Instance*>(paramFrom);        
 
+        if(!paramInstanceTo) return kOfxStatErrBadHandle;        
+        if(!paramInstanceFrom) return kOfxStatErrBadHandle;        
+
+        if(!frameRange)
+          return paramInstanceTo->copy(*paramInstanceFrom,dstOffset);
+        else
+          return paramInstanceTo->copy(*paramInstanceFrom,dstOffset,*frameRange);
+      }
       
       OfxStatus paramEditBegin(OfxParamSetHandle paramSet, const char *name)
-        UNIMPLEMENTED_BODY
+      {
+        SetInstance *setInstance = reinterpret_cast<SetInstance*>(paramSet);
+        if(!setInstance) return kOfxStatErrBadHandle;        
+        return setInstance->editBegin(std::string(name));
+      }
 
       
-      OfxStatus paramEditEnd(OfxParamSetHandle paramSet)
-        UNIMPLEMENTED_BODY
+      OfxStatus paramEditEnd(OfxParamSetHandle paramSet) {
+        SetInstance *setInstance = reinterpret_cast<SetInstance*>(paramSet);
+        if(!setInstance) return kOfxStatErrBadHandle;        
+        return setInstance->editEnd();
+      }
       
       struct OfxParameterSuiteV1 suite = {
         paramDefine,
@@ -488,6 +1321,19 @@ namespace OFX {
 
       OfxStatus message(void *handle, const char *type, const char *id, const char *format, ...)
       {
+        ImageEffect::Instance *effectInstance = reinterpret_cast<ImageEffect::Instance*>(handle);
+        if(effectInstance){
+          va_list args;
+          va_start(args,format);
+          effectInstance->vmessage(type,id,format,args);
+          va_end(args);
+        }
+        else{
+          va_list args;
+          va_start(args,format);
+          vprintf(format,args);
+          va_end(args);
+        }
         return kOfxStatOK;
       }
 
@@ -502,33 +1348,55 @@ namespace OFX {
       OfxStatus multiThread(OfxThreadFunctionV1 func,
                             unsigned int nThreads,
                             void *customArg)
-        UNIMPLEMENTED_BODY
+      {
+        func(0,1,customArg);
+        return kOfxStatOK;
+      }
 
       OfxStatus multiThreadNumCPUs(unsigned int *nCPUs)
-        UNIMPLEMENTED_BODY
+      {
+        *nCPUs = 1;
+        return kOfxStatOK;
+      }
 
-      OfxStatus multiThreadIndex(unsigned int *threadIndex)
-        UNIMPLEMENTED_BODY
+      OfxStatus multiThreadIndex(unsigned int *threadIndex){
+        threadIndex = 0;
+        return kOfxStatOK;
+      }
 
-      int multiThreadIsSpawnedThread(void)
-        UNIMPLEMENTED_BODY
+      int multiThreadIsSpawnedThread(void){
+        return false;
+      }
 
       OfxStatus mutexCreate(const OfxMutexHandle *mutex, int lockCount)
-        UNIMPLEMENTED_BODY
+      {
+        // do nothing single threaded
+        mutex = 0;
+        return kOfxStatOK;
+      }
 
       OfxStatus mutexDestroy(const OfxMutexHandle mutex)
-        UNIMPLEMENTED_BODY
+      {
+        // do nothing single threaded
+        return kOfxStatOK;
+      }
 
-      OfxStatus mutexLock(const OfxMutexHandle mutex)
-        UNIMPLEMENTED_BODY
+      OfxStatus mutexLock(const OfxMutexHandle mutex){
+        // do nothing single threaded
+        return kOfxStatOK;
+      }
+       
+      OfxStatus mutexUnLock(const OfxMutexHandle mutex){
+        // do nothing single threaded
+        return kOfxStatOK;
+      }       
 
-      OfxStatus mutexUnLock(const OfxMutexHandle mutex)
-        UNIMPLEMENTED_BODY
-
-      OfxStatus mutexTryLock(const OfxMutexHandle mutex)
-        UNIMPLEMENTED_BODY
-
-      struct OfxMultiThreadSuiteV1 suite = {
+      OfxStatus mutexTryLock(const OfxMutexHandle mutex){
+        // do nothing single threaded
+        return kOfxStatOK;
+      }
+       
+      struct OfxMultiThreadSuiteV1 singleThreadedSuite = {
         multiThread,
         multiThreadNumCPUs,
         multiThreadIndex,
@@ -543,15 +1411,33 @@ namespace OFX {
     }
 
     namespace Interact {
-      OfxStatus interactSwapBuffers(OfxInteractHandle interactInstance)
-        UNIMPLEMENTED_BODY
+      OfxStatus interactSwapBuffers(OfxInteractHandle handle)
+      {
+        Interact::Instance *interactInstance = reinterpret_cast<Interact::Instance*>(handle);
+        if(interactInstance)
+          return interactInstance->swapBuffers();
+        else
+          return kOfxStatErrBadHandle;
+      }
       
-      OfxStatus interactRedraw(OfxInteractHandle interactInstance)
-        UNIMPLEMENTED_BODY
+      OfxStatus interactRedraw(OfxInteractHandle handle)
+      {
+        Interact::Instance *interactInstance = reinterpret_cast<Interact::Instance*>(handle);
+        if(interactInstance)
+          return interactInstance->redraw();
+        else
+          return kOfxStatErrBadHandle;
+      }
       
-      OfxStatus interactGetPropertySet(OfxInteractHandle interactInstance,
-                                       OfxPropertySetHandle *property)
-        UNIMPLEMENTED_BODY
+      OfxStatus interactGetPropertySet(OfxInteractHandle handle, OfxPropertySetHandle *property)
+      {
+       /* Interact::Instance *interactInstance = reinterpret_cast<Interact::Instance*>(handle);
+        if(interactInstance)
+          *property = interactInstance->getProps().getHandle();
+        else
+          return kOfxStatErrBadHandle; TODO*/
+        return kOfxStatOK;
+      }
 
       struct OfxInteractSuiteV1 suite = {
         interactSwapBuffers,
@@ -560,32 +1446,10 @@ namespace OFX {
       };
     }
 
-    namespace Clip {
-
-      static Property::PropSpec clipStuffs[] = {
-        { kOfxPropType, Property::eString, 1, false, kOfxTypeImageEffectHost },
-        { kOfxPropName, Property::eString, 1, false, "uk.co.uk.thefoundry.PluginCache" },
-        { kOfxPropLabel, Property::eString, 1, false, "Plugin Cache" } ,
-        
-        { kOfxImageEffectPropSupportedComponents, Property::eString, 0, true, "" },
-        /// xxx ??
-        
-        { kOfxImageEffectPropTemporalClipAccess,   Property::eInt, 1, false, "0" },
-        { kOfxImageClipPropOptional, Property::eInt, 1, false, "0" },
-        { kOfxImageClipPropIsMask,   Property::eInt, 1, false, "0" },
-        { kOfxImageClipPropFieldExtraction, Property::eString, 1, false, kOfxImageFieldDoubled },
-        { kOfxImageEffectPropSupportsTiles,   Property::eInt, 1, false, "1" },  
-        { 0 },
-      };
-      
-      ClipDescriptor::ClipDescriptor() : _properties(clipStuffs) {
-      }
-      
-    }
   }
+
 }
 
-#undef UNIMPLEMENTED_BODY
 
 namespace OFX {
   namespace Host {
@@ -619,46 +1483,112 @@ namespace OFX {
       { kOfxParamHostPropMaxPages, Property::eInt, 1, true, "0" },
       { kOfxParamHostPropPageRowColumnCount, Property::eInt, 2, true, "0" },
       { 0 },
-    };
-  
-    OfxStatus getPropertySet(OfxImageEffectHandle h1, OfxPropertySetHandle *h2);
+    };    
+
+    // our own internal parameter from storing away our host descriptor
+    #define kOfxHostSupportHostDescriptor "OfxHostSupportHostDescriptor"
 
     void *fetchSuite(OfxPropertySetHandle host, const char *suiteName, int suiteVersion)
-    {
-      if (strcmp(suiteName, "OfxImageEffectSuite")==0 && suiteVersion==1) {
+    {      
+      Property::Set* properties = reinterpret_cast<Property::Set*>(host);
+      
+      Descriptor* hostDescriptor = (Descriptor*)properties->getProperty<Property::PointerValue>(kOfxHostSupportHostDescriptor,0);
+      
+      if(hostDescriptor)
+        return hostDescriptor->fetchSuite(suiteName,suiteVersion);
+      else
+        return 0;
+    }
+
+    //
+    // Host Descriptor
+    //
+
+    Descriptor::Descriptor() : _properties(hostStuffs) {
+      _host.host = _properties.getHandle();
+      _host.fetchSuite = OFX::Host::fetchSuite;
+
+      Property::PropSpec hostDescriptorSpec[] = {
+        { kOfxHostSupportHostDescriptor,    Property::ePointer,    0,    false,    "0" },
+        { 0 }
+      };
+
+      // add parameter
+      _properties.addProperties(hostDescriptorSpec);
+
+      // record the host descriptor in the propert set
+      _properties.setProperty<Property::PointerValue>(kOfxHostSupportHostDescriptor,0,this);
+    }
+
+    OfxHost *Descriptor::getHandle() {
+      return &_host;
+    }
+
+    void* Descriptor::fetchOfxImageEffectSuite(int suiteVersion){
+      if(suiteVersion==1) {
         return (void*)&ImageEffect::suite;
       }
-      if (strcmp(suiteName, "OfxPropertySuite")==0 && suiteVersion==1) {
-        return (void*)&Property::Set::suite;
-      }
-      if (strcmp(suiteName, "OfxParameterSuite")==0) {
-        return (void*)&Param::suite;
-      }
-  
-      if (strcmp(suiteName, "OfxMemorySuite")==0) {
-        return (void*)&Memory::suite;
-      }
-  
-      if (strcmp(suiteName, "OfxMultiThreadSuite")==0) {
-        return (void*)&MultiThread::suite;
-      }
-  
-      if (strcmp(suiteName, "OfxMessageSuite")==0) {
-        return (void*)&Message::suite;
-      }
-  
-      if (strcmp(suiteName, "OfxInteractSuite")==0) {
-        return (void*)&Interact::suite;
-      }
-      printf("fetchSuite failed with host = %p, name = %s, version = %i\n", host, suiteName, suiteVersion);
       return 0;
     }
 
-    HostDescriptor::HostDescriptor() : _properties(hostStuffs) {
-      _host.host = _properties.getHandle();
-      _host.fetchSuite = fetchSuite;
+    void* Descriptor::fetchOfxPropertySuite(int suiteVersion){
+      if(suiteVersion==1) {
+        return (void*)&Property::Set::suite;
+      }
+      return 0;
+    }
+ 
+    void* Descriptor::fetchOfxParameterSuite(int suiteVersion){
+      return (void*)&Param::suite;
+    }
+  
+    void* Descriptor::fetchOfxMemorySuite(int suiteVersion){
+      return (void*)&Memory::suite;
+    }
+  
+    // standard multithreading implementation - to override see above
+    void* Descriptor::fetchOfxMultiThreadSuite(int suiteVersion){
+      return (void*)&MultiThread::singleThreadedSuite;
     }
 
+    void* Descriptor::fetchOfxMessageSuite(int suiteVersion){
+      return (void*)&Message::suite;
+    }
 
-  }
-}
+    void* Descriptor::fetchOfxInteractSuite(int suiteVersion){
+      return (void*)&Interact::suite;
+    }
+
+    void *Descriptor::fetchSuite(const char *suiteName, int suiteVersion){
+      if (strcmp(suiteName, "OfxImageEffectSuite")==0 && suiteVersion==1) {
+        return fetchOfxImageEffectSuite(suiteVersion);
+      }
+      if (strcmp(suiteName, "OfxPropertySuite")==0 && suiteVersion==1) {
+        return fetchOfxPropertySuite(suiteVersion);
+      }
+      if (strcmp(suiteName, "OfxParameterSuite")==0) {
+        return fetchOfxParameterSuite(suiteVersion);
+      }
+  
+      if (strcmp(suiteName, "OfxMemorySuite")==0) {
+        return fetchOfxMemorySuite(suiteVersion);
+      }
+  
+      if (strcmp(suiteName, "OfxMultiThreadSuite")==0) {
+        return fetchOfxMultiThreadSuite(suiteVersion);
+      }
+  
+      if (strcmp(suiteName, "OfxMessageSuite")==0) {
+        return fetchOfxMessageSuite(suiteVersion);
+      }
+  
+      if (strcmp(suiteName, "OfxInteractSuite")==0) {
+        return fetchOfxInteractSuite(suiteVersion);
+      }
+      printf("fetchSuite failed with host = %p, name = %s, version = %i\n", this, suiteName, suiteVersion);
+      return 0;
+    }
+
+  } // Host
+
+} // OFX 

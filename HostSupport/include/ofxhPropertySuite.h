@@ -36,10 +36,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <algorithm>
 #include <sstream>
 
-#include "ofxCore.h"
-#include "ofxProperty.h"
-
-#include "ofxhBinary.h"
+#ifndef WINDOWS
+#define OFX_EXCEPTION_SPEC throw (Exception)
+#else
+#define OFX_EXCEPTION_SPEC 
+#endif
 
 namespace OFX {
   namespace Host {
@@ -143,17 +144,17 @@ namespace OFX {
         }
 
         /// override this to fetch a single value at the given index.
-        virtual void getProperty(const std::string &name, OuterType &ret, int index) throw(Exception) = 0;
+        virtual void getProperty(const std::string &name, OuterType &ret, int index) OFX_EXCEPTION_SPEC = 0;
 
         /// override this to get n values and put them into memory starting at first.
-        virtual void getPropertyN(const std::string &name, OuterType *first, int n) throw(Exception) = 0;
+        virtual void getPropertyN(const std::string &name, OuterType *first, int n) OFX_EXCEPTION_SPEC = 0;
 
         /// override this to fetch the dimension size.
-        virtual int getDimension(const std::string &name) throw(Exception) = 0;
+        virtual int getDimension(const std::string &name) OFX_EXCEPTION_SPEC = 0;
 
         /// override this to handle a reset().  this is on get() not set() deliberately, as the hook
         /// needs to know what the default value is in this case.
-        virtual void reset(const std::string &name) throw (Exception) = 0;
+        virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC = 0;
       };
 
       typedef GetHook<IntValue> IntGetHook;
@@ -174,10 +175,10 @@ namespace OFX {
         }
 
         /// override this to set a single value at the given index
-        virtual void setProperty(const std::string &name, OuterType value, int index) throw (Exception) = 0;
+        virtual void setProperty(const std::string &name, OuterType value, int index) OFX_EXCEPTION_SPEC = 0;
 
         /// override this to get n values and put them into memory starting at first.
-        virtual void setPropertyN(const std::string &name, OuterType *first, int n) throw (Exception) = 0;
+        virtual void setPropertyN(const std::string &name, OuterType *first, int n) OFX_EXCEPTION_SPEC = 0;
       };
 
       typedef SetHook<IntValue> IntSetHook;
@@ -273,6 +274,8 @@ namespace OFX {
           : Property(pt._name, pt._type, pt._dimension, pt._pluginReadOnly)
           , _value(pt._value)
           , _defaultValue(pt._defaultValue)
+          , _getHook(pt._getHook)
+          , _setHooks(pt._setHooks)
         {
         }
           
@@ -299,22 +302,22 @@ namespace OFX {
         }
 
         /// get one value
-        const OuterType getValue(int index=0) throw(Exception);
+        const OuterType getValue(int index=0) OFX_EXCEPTION_SPEC;
 
         // get multiple values
-        void getValueN(OuterType *value, int count) throw (Exception);
+        void getValueN(OuterType *value, int count) OFX_EXCEPTION_SPEC;
 
         /// set one value
-        void setValue(const OuterType &value, int index=0) throw (Exception);
+        void setValue(const OuterType &value, int index=0) OFX_EXCEPTION_SPEC;
 
         /// set multiple values
-        void setValueN(OuterType *value, int count) throw (Exception);
+        void setValueN(OuterType *value, int count) OFX_EXCEPTION_SPEC;
 
         /// reset 
-        void reset() throw (Exception);
+        void reset() OFX_EXCEPTION_SPEC;
         
         /// get the size of the vector
-        int getDimension() throw (Exception);
+        int getDimension() OFX_EXCEPTION_SPEC;
 
         std::string getStringValue(int idx) {
           return castToString(_value[idx]);
@@ -416,14 +419,14 @@ namespace OFX {
         /// set the get hook for a particular property.  users may need to call particular
         /// specialised versions of this.
         template<class T>
-        void setGetHook(const std::string &s, GetHook<T> *hook)
+        void setGetHook(const std::string &s, GetHook<T> *ghook, SetHook<T> *shook)
         {
           PropertyTemplate<T> *prop;
           if (getProperty(s, prop) != kOfxStatOK) {
             return;
           }
 
-          prop->setGetHook(hook);
+          prop->setGetHook(ghook,shook);
         }
 
         /// add a set hook for a particular property.  users may need to call particular

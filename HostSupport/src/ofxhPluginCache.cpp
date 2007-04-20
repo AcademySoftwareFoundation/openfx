@@ -35,15 +35,24 @@
 
 #include <stdlib.h>
 
-#include "ofxhBinary.h"
-#include "ofxhPluginCache.h"
-#include "ofxhPluginAPICache.h"
-#include "ofxhPropertySuite.h"
-#include "ofxhHost.h"
-#include "ofxhXml.h"
-
 #include "expat.h"
+
+// ofx
+#include "ofxCore.h"
 #include "ofxImageEffect.h"
+
+// ofx host
+#include "ofxhBinary.h"
+#include "ofxhPropertySuite.h"
+#include "ofxhClip.h"
+#include "ofxhParam.h"
+#include "ofxhMemory.h"
+#include "ofxhImageEffect.h"
+#include "ofxhPluginAPICache.h"
+#include "ofxhPluginCache.h"
+#include "ofxhHost.h"
+#include "ofxhImageEffectAPI.h"
+#include "ofxhXML.h"
 
 #if defined (UNIX)
 #define DIRLIST_SEP_CHAR ":"
@@ -54,7 +63,11 @@
 
 #elif defined (WINDOWS)
 #define DIRLIST_SEP_CHAR ";"
+#ifdef WIN64
+#define ARCHSTR "win64"
+#else
 #define ARCHSTR "win32"
+#endif
 #define DIRSEP "\\"
 
 #include "shlobj.h"

@@ -35,161 +35,82 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
-
 #include "ofxhPropertySuite.h"
 
 namespace OFX {
+
   namespace Host {
+
     class Plugin;
-
-    namespace Param {
-
-      /// the description of a plugin parameter
-      class Param {
-        Param();
-
-        std::string _paramType;
-        Property::Set _properties;        
-        
-      public:
-        /// make a parameter, with the given type and name
-        explicit Param(const std::string &type, const std::string &name);
-        
-        /// grab a handle on the parameter for passing to the C API
-        OfxParamHandle getHandle() {
-          return (OfxParamHandle)this;
-        }
-        
-        /// grab a handle on the properties of this parameter for the C api
-        OfxPropertySetHandle getPropHandle() {
-          return _properties.getHandle();
-        }
-
-        Property::Set &getProperties() {
-          return _properties;
-        }
-
-        const std::string &getType() {
-          return _paramType;
-        }
-      };
-      
-      /// a set of parameters
-      class ParamSet {
-        std::map<std::string, Param*> _params;
-        
-      public:
-        std::map<std::string, Param*> &getParams()
-        {
-          return _params;
-        }
-
-        /// obtain a handle on this set for passing to the C api
-        OfxParamSetHandle getHandle() {
-          return (OfxParamSetHandle)this;
-        }
-
-        void addParam(const std::string &name, Param *p) {
-          _params[name] = p;
-        }
-      };
-    }
-
-    namespace Clip {
-      
-      /// a clip descriptor
-      class ClipDescriptor {
-        Property::Set _properties;        
-
-      public:
-        
-        /// constructor
-        ClipDescriptor();
-        
-        /// get a handle on the clip descriptor for the C api
-        OfxImageClipHandle getHandle() {
-          return (OfxImageClipHandle)this;
-        }
-        
-        /// get a handle on the properties of the clip descriptor for the C api
-        OfxPropertySetHandle getPropHandle() {
-          return _properties.getHandle();
-        }
-
-        Property::Set &getProps() {
-          return _properties;
-        }
-      };
-
-    }
-
-    namespace ImageEffect {
-      
-      /// an image effect plugin descriptor
-      class ImageEffectDescriptor {
-        std::map<std::string, Clip::ClipDescriptor*> _clips;
-        Param::ParamSet _params;
-        Property::Set _properties;
-        
-      public:
-
-        ImageEffectDescriptor(const ImageEffectDescriptor &other)
-          : _clips(other._clips)
-          , _params(other._params)
-          , _properties(other._properties)
-        {
-        }
-
-        /// constructor
-        ImageEffectDescriptor(Plugin *plug);
-        
-        ImageEffectDescriptor(const std::string &bundlePath);
-
-        /// obtain a handle on this for passing to the C api
-        OfxImageEffectHandle getHandle() {
-          return (OfxImageEffectHandle)this;
-        }
-        
-        /// create a new clip and add this to the clip map
-        Clip::ClipDescriptor *defineClip(const std::string &name) {
-          Clip::ClipDescriptor *c = new Clip::ClipDescriptor();
-          _clips[name] = c;
-          return c;
-        }
-
-        /// get the properties set
-        Property::Set &getProps() {
-          return _properties;
-        }
-
-        /// get the clips
-        std::map<std::string, Clip::ClipDescriptor*> &getClips() {
-          return _clips;
-        }
-
-        /// get the parameters set
-        Param::ParamSet &getParams() {
-          return _params;
-        }
-
-        void addClip(const std::string &name, Clip::ClipDescriptor *clip) {
-          _clips[name] = clip;
-        }
-      };
-    }
-
+    
     /// a host descriptor: used to hold the OfxHost for the C api, and a property set
-    class HostDescriptor {
-      OfxHost _host;
+    class Descriptor {
+    protected:
+      OfxHost       _host;
       Property::Set _properties;
-     
+
     public:
       
-      HostDescriptor();
-      
-      OfxHost *getHandle() {
-        return &_host;
+      Descriptor();
+
+      OfxHost *getHandle();
+
+      virtual void* fetchOfxImageEffectSuite(int suiteVersion);
+      virtual void* fetchOfxPropertySuite(int suiteVersion);
+      virtual void* fetchOfxParameterSuite(int suiteVersion);
+      virtual void* fetchOfxMemorySuite(int suiteVersion);
+
+      /* Overriding Multi Threading Suite
+
+      The multithreading suite API function calls do not use handles and are just simple
+      C function calls. In an attempt to provide a basic default threading behavior for
+      the host we have supplied MultiThread::suite that implements the nine functions
+      below.
+
+      However, should you wish to write you own multithreading function you can do so by
+      implementing 9 multithreading function like those below and override the fetchOfxMultiThreading
+      function on your implementation of the host to return you own multi threading suite.
+
+      Example -
+
+      namespace MyMultiThreading {
+
+        OfxStatus multiThread(OfxThreadFunctionV1 func,unsigned int nThreads,void *customArg);
+        OfxStatus multiThreadNumCPUs(unsigned int *nCPUs);
+        OfxStatus multiThreadIndex(unsigned int *threadIndex);
+        int       multiThreadIsSpawnedThread(void);
+        OfxStatus mutexCreate(const OfxMutexHandle *mutex, int lockCount);
+        OfxStatus mutexDestroy(const OfxMutexHandle mutex);
+        OfxStatus mutexLock(const OfxMutexHandle mutex);
+        OfxStatus mutexUnLock(const OfxMutexHandle mutex);
+        OfxStatus mutexTryLock(const OfxMutexHandle mutex);
+        
+        struct OfxMultiThreadSuiteV1 myMultiThreadedSuite = {
+          multiThread,
+          multiThreadNumCPUs,
+          multiThreadIndex,
+          multiThreadIsSpawnedThread,
+          mutexCreate,
+          mutexDestroy,
+          mutexLock,
+          mutexUnLock,
+          mutexTryLock
+        };
+
       }
+
+      virtual void* fetchOfxMultiThreadSuite(int suiteVersion){
+        return (void*)&MyMultiThreading::myMultiThreadedSuite;
+      }      
+
+      */
+
+      // standard multithreading implementation - to override see above
+      virtual void* fetchOfxMultiThreadSuite(int suiteVersion);
+      virtual void* fetchOfxMessageSuite(int suiteVersion);
+      void* fetchOfxInteractSuite(int suiteVersion);
+      virtual void *fetchSuite(const char *suiteName, int suiteVersion);
+
     };
 
   }

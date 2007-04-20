@@ -29,6 +29,12 @@
 
 #include <iostream>
 
+// ofx
+#include "ofxCore.h"
+#include "ofxImageEffect.h"
+
+// ofx host
+#include "ofxhBinary.h"
 #include "ofxhPropertySuite.h"
 
 namespace OFX {
@@ -63,7 +69,7 @@ namespace OFX {
       
 
       /// get one value
-      template<class T> const typename T::OuterType PropertyTemplate<T>::getValue(int index) throw(Exception) {
+      template<class T> const typename T::OuterType PropertyTemplate<T>::getValue(int index) OFX_EXCEPTION_SPEC {
         if (_getHook) {
           OuterType t;
           _getHook->getProperty(_name, t, index);
@@ -77,7 +83,7 @@ namespace OFX {
       }
 
       // get multiple values
-      template<class T> void PropertyTemplate<T>::getValueN(typename T::OuterType *value, int count) throw (Exception) {
+      template<class T> void PropertyTemplate<T>::getValueN(typename T::OuterType *value, int count) OFX_EXCEPTION_SPEC {
         if (_getHook) {
           _getHook->getPropertyN(_name, value, count);
         } else {
@@ -96,7 +102,7 @@ namespace OFX {
       }
 
       /// set one value
-      template<class T> void PropertyTemplate<T>::setValue(const typename T::OuterType &value, int index) throw (Exception) {
+      template<class T> void PropertyTemplate<T>::setValue(const typename T::OuterType &value, int index) OFX_EXCEPTION_SPEC {
 
         if (!_getHook) {
           if (index < 0 || ((size_t)index >= _value.size() && _dimension)) {
@@ -116,7 +122,7 @@ namespace OFX {
       }
 
       /// set multiple values
-      template<class T> void PropertyTemplate<T>::setValueN(typename T::OuterType *value, int count) throw (Exception) {
+      template<class T> void PropertyTemplate<T>::setValueN(typename T::OuterType *value, int count) OFX_EXCEPTION_SPEC {
         if (!_getHook) {
           if (_dimension && ((size_t)count >= _value.size())) {
             throw Exception(kOfxStatErrBadIndex);              
@@ -137,7 +143,7 @@ namespace OFX {
       }
         
       /// get the size of the vector
-      template <class T> int PropertyTemplate<T>::getDimension() throw (Exception) {
+      template <class T> int PropertyTemplate<T>::getDimension() OFX_EXCEPTION_SPEC {
         if (_dimension != 0) {
           return _dimension;
         } else {
@@ -145,12 +151,12 @@ namespace OFX {
           if (_getHook) {
             return _getHook->getDimension(_name);
           } else {
-            return _value.size();
+            return (int)_value.size();
           }
         }
       }
 
-      template <class T> void PropertyTemplate<T>::reset() throw (Exception) {
+      template <class T> void PropertyTemplate<T>::reset() OFX_EXCEPTION_SPEC {
         if (_getHook) {
           _getHook->reset(_name);
         } else {
