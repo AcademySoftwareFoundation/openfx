@@ -19,12 +19,14 @@ namespace OFX {
 
       static Property::PropSpec clipDescriptorStuffs[] = {
         { kOfxPropType, Property::eString, 1, false, kOfxTypeImageEffectHost },
-        { kOfxPropName, Property::eString, 1, false, "uk.co.uk.thefoundry.PluginCache" },
-        { kOfxPropLabel, Property::eString, 1, false, "Plugin Cache" } ,
+        { kOfxPropName, Property::eString, 1, false, "uk.co.uk.thefoundry.Clip.Descriptor" },
+        { kOfxPropLabel, Property::eString, 1, false, "clip" } ,
+        { kOfxPropShortLabel, Property::eString, 1, false, "clip" },
+        { kOfxPropLongLabel, Property::eString, 1, false, "clip" },
         
         { kOfxImageEffectPropSupportedComponents, Property::eString, 0, true, "" },
         /// xxx ??
-        
+
         { kOfxImageEffectPropTemporalClipAccess,   Property::eInt, 1, false, "0" },
         { kOfxImageClipPropOptional, Property::eInt, 1, false, "0" },
         { kOfxImageClipPropIsMask,   Property::eInt, 1, false, "0" },
