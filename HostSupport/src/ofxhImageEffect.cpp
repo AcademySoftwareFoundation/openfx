@@ -139,16 +139,19 @@ namespace OFX {
       Instance::Instance(ImageEffectPlugin* plugin,
                          Descriptor &other, 
                          const std::string &context) 
-        : _plugin(plugin), 
+        : Base(effectInstanceStuff),
+          _plugin(plugin), 
           _context(context),
           _descriptor(&other),
-          Base(effectInstanceStuff)
+          _created(false)
       {
       }
 
       Instance::~Instance(){
-        // destroy the instance
-        mainEntry(kOfxActionDestroyInstance,this->getHandle(),0,0);
+        // destroy the instance, only if succesfully created
+        if (_created) {
+          mainEntry(kOfxActionDestroyInstance,this->getHandle(),0,0);
+        }
       }
 
       /// get the parameters set
@@ -263,13 +266,17 @@ namespace OFX {
           
           // add the value into the param set instance
           OfxStatus st = _params->addParam(name,instance);
-          if(st!=kOfxStatOK) return st;
+          if(st != kOfxStatOK) return st;
         }
 
         // now tell the plug-in to create instance
-        mainEntry(kOfxActionCreateInstance,this->getHandle(),0,0);
+        OfxStatus st = mainEntry(kOfxActionCreateInstance,this->getHandle(),0,0);
 
-        return kOfxStatOK;
+        if (st == kOfxStatOK) {
+          _created = true;
+        }
+
+        return st;
       }
 
       // begin/change/end instance changed

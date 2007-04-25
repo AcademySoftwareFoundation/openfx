@@ -84,6 +84,7 @@ namespace OFX {
         Descriptor                                   *_descriptor;
         std::map<std::string, Clip::Instance*>        _clips;
         Param::SetInstance                           *_params;
+        bool                                          _created;
       public:        
 
         // constructor based on clip descriptor
