@@ -2,6 +2,8 @@
 #define OFXH_PARAM_H
 
 #include <string>
+#include <map>
+#include <list>
 
 namespace OFX {
 
@@ -11,11 +13,12 @@ namespace OFX {
 
       class Base {
       protected:
+        std::string   _paramName;
         std::string   _paramType;
         Property::Set _properties;        
       public:
-        Base(const std::string &type);
-        Base(const std::string &type, const Property::Set &properties);
+        Base(const std::string &name, const std::string &type);
+        Base(const std::string &name, const std::string &type, const Property::Set &properties);
         ~Base();
 
         /// grab a handle on the parameter for passing to the C API
@@ -26,7 +29,9 @@ namespace OFX {
 
         Property::Set &getProperties();
 
-        std::string &getType();
+        const std::string &getType();
+
+        const std::string &getName();
       };
 
       /// the Descriptor of a plugin parameter
@@ -49,10 +54,13 @@ namespace OFX {
 
       /// a set of parameters
       class SetDescriptor : public BaseSet {
-        std::map<std::string, Descriptor*> _params;
+        std::map<std::string, Descriptor*> _paramMap;
+        std::list<Descriptor *> _paramList;
         
       public:
         std::map<std::string, Descriptor*> &getParams();
+        std::list<Descriptor *> &getParamList();
+
         void addParam(const std::string &name, Descriptor *p);
       };
 
@@ -231,10 +239,13 @@ namespace OFX {
       class SetInstance : public BaseSet {
       protected:
         std::map<std::string, Instance*> _params;
+
+        std::list<Instance *> _paramList;
         
       public:
         // get the params
         std::map<std::string, Instance*> &getParams();
+        std::list<Instance*> &getParamList();
 
         // add a param
         virtual OfxStatus addParam(const std::string& name, Instance* instance);

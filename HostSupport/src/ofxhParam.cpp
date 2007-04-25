@@ -19,12 +19,14 @@ namespace OFX {
       // Base
       //
 
-      Base::Base(const std::string& type) : 
+      Base::Base(const std::string &name, const std::string& type) : 
+        _paramName(name),
         _paramType(type), 
         _properties(false)
       {}
 
-      Base::Base(const std::string &type, const Property::Set &properties) :
+      Base::Base(const std::string &name, const std::string &type, const Property::Set &properties) :
+        _paramName(name),
         _paramType(type), 
         _properties(properties)
       {}
@@ -46,8 +48,12 @@ namespace OFX {
         return _properties;
       }
 
-      std::string &Base::getType() {
+      const std::string &Base::getType() {
         return _paramType;
+      } 
+
+      const std::string &Base::getName() {
+        return _paramName;
       } 
 
       //
@@ -94,7 +100,7 @@ namespace OFX {
 
       /// make a parameter, with the given type and name
       Descriptor::Descriptor(const std::string &type, 
-                             const std::string &name) : Base(type)
+                             const std::string &name) : Base(name, type)
       {
         const char *ctype = type.c_str();
         const char *cname = name.c_str();
@@ -151,6 +157,8 @@ namespace OFX {
         Property::PropSpec allNumeric[] = {
           { kOfxParamPropDisplayMin, propType, propDim, false, (propType == Property::eDouble ? dbl_min : int_min).str().c_str() },
           { kOfxParamPropDisplayMax, propType, propDim, false, (propType == Property::eDouble ? dbl_max : int_max).str().c_str() },
+          { kOfxParamPropMin, propType, propDim, false, (propType == Property::eDouble ? dbl_min : int_min).str().c_str() },
+          { kOfxParamPropMax, propType, propDim, false, (propType == Property::eDouble ? dbl_max : int_max).str().c_str() },
           { 0 }
         };
 
@@ -249,11 +257,17 @@ namespace OFX {
 
       std::map<std::string, Descriptor*> &SetDescriptor::getParams() 
       {
-        return _params;
+        return _paramMap;
+      }
+
+      std::list<Descriptor*> &SetDescriptor::getParamList()
+      {
+        return _paramList;
       }
 
       void SetDescriptor::addParam(const std::string &name, Descriptor *p) {
-        _params[name] = p;
+        _paramList.push_back(p);
+        _paramMap[name] = p;
       }
 
 
@@ -266,7 +280,7 @@ namespace OFX {
 
       /// make a parameter, with the given type and name
       Instance::Instance(Descriptor& descriptor) 
-        : Base(descriptor.getType(),descriptor.getProperties())
+        : Base(descriptor.getName(),descriptor.getType(),descriptor.getProperties())
       {}
 
       // copy one parameter to another
@@ -368,11 +382,11 @@ namespace OFX {
       // Double3DInstance
       //
 
-      OfxStatus derive(OfxTime time, double&,double&,double&) { 
+      OfxStatus Double3DInstance::derive(OfxTime time, double&,double&,double&) { 
         return kOfxStatErrMissingHostFeature; 
       }
 
-      OfxStatus integrate(OfxTime time1, OfxTime time2, double&,double&,double&) { 
+      OfxStatus Double3DInstance::integrate(OfxTime time1, OfxTime time2, double&,double&,double&) { 
         return kOfxStatErrMissingHostFeature; 
       }
 
@@ -397,10 +411,16 @@ namespace OFX {
         return _params;
       }
 
+      std::list<Instance*> &SetInstance::getParamList()
+      {
+        return _paramList;
+      }
+
       OfxStatus SetInstance::addParam(const std::string& name, Instance* instance)
       {
         if(_params.find(name)==_params.end()){
           _params[name] = instance;
+          _paramList.push_back(instance);
         }
         else
           return kOfxStatErrExists;

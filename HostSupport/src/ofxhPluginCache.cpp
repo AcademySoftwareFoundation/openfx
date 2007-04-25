@@ -119,11 +119,17 @@ namespace OFX {
       }
     }
 
-    PluginHandle::PluginHandle(Plugin *p) : _p(p) {
+    PluginHandle::PluginHandle(Plugin *p, OFX::Host::Descriptor *hd) : _p(p) {
       _b = p->getBinary();
       _b->_binary.ref();
       OfxPlugin* (*getPlug)(int) = (OfxPlugin*(*)(int)) _b->_binary.findSymbol("OfxGetPlugin");
-      _op = getPlug(p->getIndex());
+      if (getPlug) {
+        _op = getPlug(p->getIndex());
+        if (_op) {
+          if("setting host to %p\n", hd->getHandle());
+          _op->setHost(hd->getHandle());
+        }
+      }
     }
 
     PluginHandle::~PluginHandle() {
@@ -231,7 +237,7 @@ namespace OFX {
               PluginBinary *pb = new PluginBinary(binpath, bundlename, this);
               _binaries.push_back(pb);
               _knownBinFiles.insert(binpath);
-              
+
               for (int j=0;j<pb->getNPlugins();j++) {
                 Plugin *plug = &pb->getPlugin(j);
                 APICache::PluginAPICacheI &api = plug->getApiHandler();

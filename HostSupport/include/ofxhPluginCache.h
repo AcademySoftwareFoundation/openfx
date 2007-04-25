@@ -49,6 +49,8 @@ namespace OFX {
 
   namespace Host {
 
+    class Descriptor;
+
     // forward delcarations
     class PluginDesc;   
     class Plugin;
@@ -273,7 +275,7 @@ namespace OFX {
       OfxPlugin *_op;
 
     public:
-      PluginHandle(Plugin *p);
+      PluginHandle(Plugin *p, OFX::Host::Descriptor *_host);
       ~PluginHandle();
 
       OfxPlugin *getOfxPlugin() {

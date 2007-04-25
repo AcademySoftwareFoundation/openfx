@@ -75,14 +75,14 @@ namespace OFX {
 
             Descriptor *ed = j->second;
 
-            for (std::map<std::string, OFX::Host::Param::Descriptor*>::const_iterator i=ed->getParams().getParams().begin();
-              i != ed->getParams().getParams().end();
+            for (std::list<OFX::Host::Param::Descriptor*>::const_iterator i=ed->getParams().getParamList().begin();
+              i != ed->getParams().getParamList().end();
               i++) {
                 os << "        <param " 
-                  << XML::attribute("name", i->first) 
-                  << XML::attribute("type", i->second->getType()) 
+                  << XML::attribute("name", (*i)->getName()) 
+                  << XML::attribute("type", (*i)->getType()) 
                   << ">\n";
-                APICache::propertySetXMLWrite(os, i->second->getProperties(), 10);
+                APICache::propertySetXMLWrite(os, (*i)->getProperties(), 10);
                 os << "        </param>\n";
             }
 
@@ -102,10 +102,10 @@ namespace OFX {
 
       const std::map<std::string, Descriptor *> ImageEffectPlugin::getContexts() {
         return _contexts;
-      }        
+      }
 
       PluginHandle *ImageEffectPlugin::getPluginHandle() {
-        if(!_pluginHandle) _pluginHandle = new OFX::Host::PluginHandle(this); 
+        if(!_pluginHandle) _pluginHandle = new OFX::Host::PluginHandle(this, _pc.getHostDescriptor()); 
         return _pluginHandle;
       }
 
@@ -114,7 +114,7 @@ namespace OFX {
         /// (not because we are expecting the results to change, but because plugin
         /// might get confused otherwise), then a describe_in_context
         getPluginHandle();
-
+        
         std::map<std::string,Descriptor*>::iterator it = _contexts.find(context);
         if(it!=_contexts.end()){
           ImageEffect::Descriptor* desc = it->second;
@@ -227,15 +227,15 @@ namespace OFX {
         ImageEffectPlugin *p = dynamic_cast<ImageEffectPlugin*>(op);
         assert(p);
 
-        PluginHandle plug(p);
-
-        plug->setHost(_descriptor->getHandle());
+        PluginHandle plug(p, _descriptor);
 
         int rval = plug->mainEntry(kOfxActionLoad, 0, 0, 0);
 
-        if (rval == 0 || rval == 14) {
-          rval = plug->mainEntry(kOfxActionDescribe, p->getDescriptor().getHandle(), 0, 0);
+        if (rval != 0 && rval != 14) {
+          return;
         }
+
+        rval = plug->mainEntry(kOfxActionDescribe, p->getDescriptor().getHandle(), 0, 0);
 
         ImageEffect::Descriptor &e = p->getDescriptor();
         Property::Set &eProps = e.getProps();
@@ -244,7 +244,7 @@ namespace OFX {
         std::vector<std::string> contexts;
 
         for (int j=0;j<size;j++) {
-          std::string context = eProps.getProperty<OFX::Host::Property::StringValue>("OfxImageEffectPropSupportedContexts", j);
+          std::string context = eProps.getProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropSupportedContexts, j);
           contexts.push_back(context);
 
           OFX::Host::Property::PropSpec inargspec[] = {
@@ -254,18 +254,14 @@ namespace OFX {
 
           OFX::Host::Property::Set inarg(inargspec);
 
+          ImageEffect::Descriptor *newContext = new ImageEffect::Descriptor(e);
+          rval = plug->mainEntry(kOfxImageEffectActionDescribeInContext, newContext->getHandle(), inarg.getHandle(), 0);
           if (rval == 0 || rval == 14) {
-            ImageEffect::Descriptor *newContext = new ImageEffect::Descriptor(e);
-            rval = plug->mainEntry(kOfxImageEffectActionDescribeInContext, newContext->getHandle(), inarg.getHandle(), 0);
-            if (rval == 0 || rval == 14) {
-              p->addContext(context, newContext);
-            }
+            p->addContext(context, newContext);
           }
         }
 
-        if (rval == 0) {
-          rval = plug->mainEntry(kOfxActionUnload, 0, 0, 0);
-        }
+        rval = plug->mainEntry(kOfxActionUnload, 0, 0, 0);
       }      
 
 
@@ -356,6 +352,17 @@ namespace OFX {
           }
         } else {
           _pluginsByID[plugin->getIdentifier()] = plugin;
+        }
+
+        MajorPlugin maj(plugin);
+
+        if (_pluginsByIDMajor.find(maj) != _pluginsByIDMajor.end()) {
+          ImageEffectPlugin *otherPlugin = _pluginsByIDMajor[maj];
+          if (plugin->trumps(otherPlugin)) {
+            _pluginsByIDMajor[maj] = plugin;
+          }
+        } else {
+          _pluginsByIDMajor[maj] = plugin;
         }
       }
 

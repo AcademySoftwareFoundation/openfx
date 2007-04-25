@@ -64,6 +64,39 @@ namespace OFX {
 
       };
 
+      class MajorPlugin {
+        std::string _id;
+        int _major;
+
+      public:
+        MajorPlugin(const std::string &id, int major) : _id(id), _major(major) {
+        }
+
+        MajorPlugin(ImageEffectPlugin *iep) : _id(iep->getIdentifier()), _major(iep->getVersionMajor()) {
+        }
+
+        const std::string &getId() {
+          return _id;
+        }
+
+        int getMajor() {
+          return _major;
+        }
+
+        bool operator<(const MajorPlugin &other) const {
+          if (_id < other._id)
+            return true;
+
+          if (_id > other._id)
+            return false;
+          
+          if (_major < other._major)
+            return true;
+
+          return false;
+        }
+      };
+
       /// implementation of the specific Image Effect handler API cache.
       class PluginCache : public APICache::PluginAPICacheI {
         
@@ -73,6 +106,9 @@ namespace OFX {
 
         /// latest version of each plugin by ID
         std::map<std::string, ImageEffectPlugin *> _pluginsByID;
+
+        /// latest minor version of each plugin by (ID,major)
+        std::map<MajorPlugin, ImageEffectPlugin *> _pluginsByIDMajor;
 
         /// xml parsing state
         ImageEffectPlugin *_currentPlugin;
@@ -98,9 +134,18 @@ namespace OFX {
         /// pick the highest found version.
         ImageEffectPlugin *getPluginByLabel(const std::string &label, int vermaj=-1, int vermin=-1);
 
+        OFX::Host::Descriptor *getHostDescriptor() {
+          return _descriptor;
+        }
+
         const std::vector<ImageEffectPlugin *>& getPlugins();
 
         const std::map<std::string, ImageEffectPlugin *>& getPluginsByID();
+
+        const std::map<MajorPlugin, ImageEffectPlugin *>& getPluginsByIDMajor()
+        {
+          return _pluginsByIDMajor;
+        }
 
         /// handle the case where the info needs filling in from the file.  runs the "describe" action on the plugin.
         void loadFromPlugin(Plugin *p);
