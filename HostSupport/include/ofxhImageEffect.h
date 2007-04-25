@@ -29,9 +29,9 @@ namespace OFX {
       // implement a function OFX::Host::ImageEffect::newInstance to make new instances
       // of effects
       extern ImageEffect::Instance* newInstance(void* ptr,
-                                                ImageEffectPlugin* plugin,
-                                                Descriptor& desc,
-                                                const std::string& context);
+        ImageEffectPlugin* plugin,
+        Descriptor& desc,
+        const std::string& context);
 
 
       class Base {
@@ -45,7 +45,7 @@ namespace OFX {
 
         /// obtain a handle on this for passing to the C api
         OfxImageEffectHandle getHandle();
-        
+
         /// get the properties set
         Property::Set &getProps();
       };
@@ -88,15 +88,17 @@ namespace OFX {
 
         // constructor based on clip descriptor
         Instance(ImageEffectPlugin* plugin,
-                 Descriptor &other, 
-                 const std::string &context);
+          Descriptor &other, 
+          const std::string &context);
+
+        virtual ~Instance();
 
         /// get the parameters set
         Param::SetInstance &getParams();
 
         // pure virtuals that must  be overriden
         virtual Clip::Instance* getClip(const std::string& name);
-        
+
         // override this to make processing abort, return 1 to abort processing
         virtual int abort();
 
@@ -108,34 +110,145 @@ namespace OFX {
 
         // make a clip
         virtual Clip::Instance* newClipInstance(ImageEffect::Instance* plugin,
-                                                const std::string& name, 
-                                                Clip::Descriptor* descriptor) = 0;
+          const std::string& name, 
+          Clip::Descriptor* descriptor) = 0;
 
         // make a param set
         virtual Param::SetInstance* newParamSetInstance(ImageEffect::Instance* plugin, 
-                                                        Param::SetDescriptor& descriptor) = 0;
-        
+          Param::SetDescriptor& descriptor) = 0;
+
         // vmessage
         virtual OfxStatus vmessage(const char* type,
-                                   const char* id,
-                                   const char* format,
-                                   va_list args) = 0;
+          const char* id,
+          const char* format,
+          va_list args) = 0;       
+
+        // call the interactive entry point
+        OfxStatus overlayEntry(const char *action, 
+          const void *handle, 
+          OfxPropertySetHandle inArgs, 
+          OfxPropertySetHandle outArgs);
+
+        // call the effect entry point
+        OfxStatus mainEntry(const char *action, 
+          const void *handle, 
+          OfxPropertySetHandle inArgs,                        
+          OfxPropertySetHandle outArgs);     
+
+        //
+        // actions
+        //
 
         // create a clip instance
         virtual OfxStatus createInstanceAction();
-        
-        // call the interactive entry point
-        OfxStatus overlayEntry(const char *action, 
-                               const void *handle, 
-                               OfxPropertySetHandle inArgs, 
-                               OfxPropertySetHandle outArgs);
-        
-        // call the effect entry point
-        OfxStatus mainEntry(const char *action, 
-                            const void *handle, 
-                            OfxPropertySetHandle inArgs,                        
-                            OfxPropertySetHandle outArgs);     
 
+        // begin/change/end instance changed
+
+        //
+        // why -
+        //
+        // kOfxChangeUserEdited   - the user or host changed the instance somehow and 
+        //                          caused a change to something, this includes undo/redos, 
+        //                          resets and loading values from files or presets,
+        // kOfxChangePluginEdited - the plugin itself has changed the value of the instance 
+        //                          in some action
+        // kOfxChangeTime         - the time has changed and this has affected the value 
+        //                          of the object because it varies over time
+        //
+        virtual OfxStatus beginInstanceChangedAction(std::string why);
+
+        virtual OfxStatus paramInstanceChangedAction(std::string paramName,
+          std::string why,
+          OfxTime     time,
+          double      renderScaleX,
+          double      renderScaleY);
+
+        virtual OfxStatus clipInstanceChangedAction(std::string paramName,
+          std::string why,
+          OfxTime     time,
+          double      renderScaleX,
+          double      renderScaleY);
+
+        virtual OfxStatus endInstanceChangedAction(std::string why);
+
+        // purge your caches
+        virtual OfxStatus purgeCachesAction();
+
+        // sync your private data
+        virtual OfxStatus syncPrivateDataAction();
+
+        // begin/end edit instance
+        virtual OfxStatus beginInstanceEditAction();
+        virtual OfxStatus endInstanceEditAction();
+
+        // render action
+        virtual OfxStatus beginRenderAction(OfxTime  startName,
+                                            OfxTime  endName,
+                                            OfxTime  step,
+                                            bool     interactive,
+                                            double   renderScaleX,
+                                            double   renderScaleY);
+
+        virtual OfxStatus renderAction(OfxTime      time,
+                                       std::string  field,
+                                       double       x1,
+                                       double       y1,
+                                       double       x2,
+                                       double       y2,
+                                       double       renderScaleX,
+                                       double       renderScaleY);
+
+        virtual OfxStatus endRenderAction(OfxTime  startName,
+                                          OfxTime  endName,
+                                          OfxTime  step,
+                                          bool     interactive,
+                                          double   renderScaleX,
+                                          double   renderScaleY);
+
+        // roi/rod
+        virtual OfxStatus getRegionOfDefinitionAction(OfxTime  time,
+                                                      double   renderScaleX,
+                                                      double   renderScaleY,
+                                                      double   &x1,
+                                                      double   &y1,
+                                                      double   &x2,
+                                                      double   &y2);
+
+        virtual OfxStatus getRegionOfInterestAction(OfxTime  time,
+                                                    double   renderScaleX,
+                                                    double   renderScaleY,
+                                                    double   &x1,
+                                                    double   &y1,
+                                                    double   &x2,
+                                                    double   &y2);
+
+        // frames needed
+        virtual OfxStatus getFrameNeededAction(OfxTime time, 
+                                                std::map<std::string,std::vector<OfxRangeD> > rangeMap);
+
+        // is identity
+        virtual OfxStatus isIdentityAction(OfxTime     &time,
+                                           std::string  field,
+                                           double       x1,
+                                           double       y1,
+                                           double       x2,
+                                           double       y2,
+                                           double       renderScaleX,
+                                           double       renderScaleY,
+                                           std::string &clip);
+
+        // clip preferences
+        virtual OfxStatus getClipPreferenceAction(std::map<std::string,std::string> &clipComponents,
+                                                  std::map<std::string,std::string> &clipDepth,
+                                                  std::map<std::string,double>      &clipPARs,
+                                                  double                            &outputFrameRate,
+                                                  double                            &outputPAR,
+                                                  std::string                       &outputPremult,
+                                                  int                               &outputContinuousSamples,
+                                                  int                               &outputFrameVarying);
+
+        // time domain
+        virtual OfxStatus getTimeDomainAction(OfxRangeD& range);
 
       };
 
