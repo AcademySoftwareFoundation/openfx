@@ -69,5 +69,29 @@ int main(int argc, char **argv)
   // create an instance
   OFX::Host::ImageEffect::Instance* tileFilterInstance = plugin->createInstance(kOfxImageEffectContextFilter);
 
+  // begin instance
+  tileFilterInstance->beginInstanceChangedAction(kOfxChangeUserEdited);
+
+  // instance change
+  tileFilterInstance->paramInstanceChangedAction("softness",kOfxChangeUserEdited,0.0,1.0,1.0);
+
+  // end instance
+  tileFilterInstance->endInstanceChangedAction(kOfxChangeUserEdited);
+
+  // purge your caches
+  tileFilterInstance->purgeCachesAction();
+
+  // sync your private data
+  tileFilterInstance->syncPrivateDataAction();
+
+  // begin instance
+  tileFilterInstance->beginInstanceEditAction();
+
+  // end instance
+  tileFilterInstance->endInstanceEditAction();
+
+  // delete the instance
+  delete tileFilterInstance;
+
   return 0;
 }
