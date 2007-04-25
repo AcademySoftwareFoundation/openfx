@@ -26,7 +26,8 @@ namespace OFX {
       ImageEffectPlugin::ImageEffectPlugin(PluginCache &pc, PluginBinary *pb, int pi, OfxPlugin *pl)
         : Plugin(pb, pi, pl)
         , _pc(pc)
-        , _ie(this) 
+        , _ie(this)
+        , _pluginHandle(0)
       {}
 
       ImageEffectPlugin::ImageEffectPlugin(PluginCache &pc,
@@ -40,6 +41,7 @@ namespace OFX {
         : Plugin(pb, pi, api, apiVersion, pluginId, pluginMajorVersion, pluginMinorVersion)
         , _pc(pc)
         , _ie(this) 
+        , _pluginHandle(0)
       {}
 
       APICache::PluginAPICacheI &ImageEffectPlugin::getApiHandler()
@@ -124,7 +126,11 @@ namespace OFX {
 
           /// at this point we need the createinstance action to run.
           if(instance){
-            instance->createInstanceAction(); 
+            OfxStatus st = instance->createInstanceAction(); 
+            if(st!=kOfxStatOK) {
+              delete instance;
+              return 0;
+            }
           }
 
           return instance;

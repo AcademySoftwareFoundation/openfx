@@ -146,6 +146,11 @@ namespace OFX {
       {
       }
 
+      Instance::~Instance(){
+        // destroy the instance
+        mainEntry(kOfxActionDestroyInstance,this->getHandle(),0,0);
+      }
+
       /// get the parameters set
       Param::SetInstance &Instance::getParams() {
         return *_params;
@@ -171,6 +176,53 @@ namespace OFX {
           instance->alloc(nBytes);
           return instance;
         }
+      }
+
+      // call the interactive entry point
+      OfxStatus Instance::overlayEntry(const char *action, 
+        const void *handle, 
+        OfxPropertySetHandle inArgs, 
+        OfxPropertySetHandle outArgs)
+      {
+        OfxPluginEntryPoint *overlayInteractV1Entry = 0;
+
+        overlayInteractV1Entry = (OfxPluginEntryPoint*)_descriptor->getProps().getProperty<Property::PointerValue>(kOfxImageEffectPluginPropOverlayInteractV1,0);
+
+        if(overlayInteractV1Entry){
+          overlayInteractV1Entry(action,handle,inArgs,outArgs);
+        }
+        else
+          return kOfxStatFailed;
+        
+        return kOfxStatOK;
+      }
+
+      // call the effect entry point
+      OfxStatus Instance::mainEntry(const char *action, 
+        const void *handle, 
+        OfxPropertySetHandle inArgs,                        
+        OfxPropertySetHandle outArgs)
+      {
+        if(_plugin){
+          PluginHandle* handle = _plugin->getPluginHandle();
+          if(handle){
+            OfxPlugin* ofxPlugin = handle->getOfxPlugin();
+            if(ofxPlugin){
+              return ofxPlugin->mainEntry(action,handle,inArgs,outArgs);        
+            }
+            return kOfxStatFailed;
+          }
+          return kOfxStatFailed;
+        }
+        return kOfxStatFailed;
+      }
+
+      Clip::Instance* Instance::getClip(const std::string& name){
+        std::map<std::string,Clip::Instance*>::iterator it = _clips.find(name);
+        if(it!=_clips.end()){
+          return it->second;
+        }
+        return 0;
       }
 
       // create a clip instance
@@ -220,40 +272,518 @@ namespace OFX {
         return kOfxStatOK;
       }
 
-      // call the interactive entry point
-      OfxStatus Instance::overlayEntry(const char *action, 
-        const void *handle, 
-        OfxPropertySetHandle inArgs, 
-        OfxPropertySetHandle outArgs)
+      // begin/change/end instance changed
+      OfxStatus Instance::beginInstanceChangedAction(std::string why)
       {
-        OfxPluginEntryPoint *overlayInteractV1Entry = 0;
+        Property::PropSpec stuff[] = {
+          { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
+          { 0 }
+        };
 
-        overlayInteractV1Entry = (OfxPluginEntryPoint*)_descriptor->getProps().getProperty<Property::PointerValue>(kOfxImageEffectPluginPropOverlayInteractV1,0);
+        Property::Set inArgs(stuff);
 
-        if(overlayInteractV1Entry){
-          overlayInteractV1Entry(action,handle,inArgs,outArgs);
-        }
-        else
-          return kOfxStatFailed;
+        return mainEntry(kOfxActionBeginInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
+      }
+
+      OfxStatus Instance::paramInstanceChangedAction(std::string paramName,
+                                           std::string why,
+                                           OfxTime     time,
+                                           double      renderScaleX,
+                                           double      renderScaleY)
+      {
+        Property::PropSpec stuff[] = {
+          { kOfxPropType, Property::eString, 1, true, kOfxTypeParameter },
+          { kOfxPropName, Property::eString, 1, true, paramName.c_str() },
+          { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
+          { kOfxPropTime, Property::eDouble, 1, true, "0" },
+          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { 0 }
+        };
+
+        Property::Set inArgs(stuff);
+
+        // add the second dimension of the render scale
+        inArgs.setProperty<Property::DoubleValue>(kOfxPropTime,0,time);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
+
+        return mainEntry(kOfxActionBeginInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
+      }
+
+      OfxStatus Instance::clipInstanceChangedAction(std::string paramName,
+                                          std::string why,
+                                          OfxTime     time,
+                                          double      renderScaleX,
+                                          double      renderScaleY)
+      {
+        Property::PropSpec stuff[] = {
+          { kOfxPropType, Property::eString, 1, true, kOfxTypeClip },
+          { kOfxPropName, Property::eString, 1, true, paramName.c_str() },
+          { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
+          { kOfxPropTime, Property::eDouble, 1, true, "0" },
+          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { 0 }
+        };
+
+        Property::Set inArgs(stuff);
+
+        // add the second dimension of the render scale
+        inArgs.setProperty<Property::DoubleValue>(kOfxPropTime,0,time);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
+
+        return mainEntry(kOfxActionBeginInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
+      }
+
+      OfxStatus Instance::endInstanceChangedAction(std::string why)
+      {
+        Property::PropSpec whyStuff[] = {
+          { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
+          { 0 }
+        };
+
+        Property::Set inArgs(whyStuff);
+
+        return mainEntry(kOfxActionCreateInstance,this->getHandle(),inArgs.getHandle(),0);
+      }
+
+      // purge your caches
+      OfxStatus Instance::purgeCachesAction(){
+        return mainEntry(kOfxActionPurgeCaches ,this->getHandle(),0,0);
+      }
+
+      // sync your private data
+      OfxStatus Instance::syncPrivateDataAction(){
+        return mainEntry(kOfxActionSyncPrivateData,this->getHandle(),0,0);
+      }
+
+      // begin/end edit instance
+      OfxStatus Instance::beginInstanceEditAction(){
+        return mainEntry(kOfxActionBeginInstanceEdit,this->getHandle(),0,0);
+      }
+
+      OfxStatus Instance::endInstanceEditAction(){
+        return mainEntry(kOfxActionEndInstanceEdit,this->getHandle(),0,0);
+      }
+
+      OfxStatus Instance::beginRenderAction(OfxTime  startFrame,
+                                            OfxTime  endFrame,
+                                            OfxTime  step,
+                                            bool     interactive,
+                                            double   renderScaleX,
+                                            double   renderScaleY) {
+        Property::PropSpec stuff[] = {
+          { kOfxImageEffectPropFrameRange, Property::eDouble, 2, true, "0" },
+          { kOfxImageEffectPropFrameStep, Property::eDouble, 1, true, "0" }, 
+          { kOfxPropIsInteractive, Property::eInt, 1, true, "0" },
+          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { 0 }
+        };
+
+        Property::Set inArgs(stuff);
+
+        // set up second dimension for frame range and render scale
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropFrameRange,0,startFrame);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropFrameRange,1,endFrame);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropFrameStep,0,step);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxPropIsInteractive,0,interactive);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
+
+        return  mainEntry(kOfxImageEffectActionBeginSequenceRender,this->getHandle(),inArgs.getHandle(),0);        
+      }
+
+      OfxStatus Instance::renderAction(OfxTime      time,
+                                       std::string  field,
+                                       double       x1,
+                                       double       y1,
+                                       double       x2,
+                                       double       y2,
+                                       double       renderScaleX,
+                                       double       renderScaleY) {
+        Property::PropSpec stuff[] = {
+          { kOfxPropTime, Property::eDouble, 1, true, "0" },
+          { kOfxImageEffectPropFieldToRender, Property::eString, 1, true, field.c_str() }, 
+          { kOfxImageEffectPropRenderWindow, Property::eDouble, 4, true, "0" },
+          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { 0 }
+        };
+
+        Property::Set inArgs(stuff);
         
+        inArgs.setProperty<Property::DoubleValue>(kOfxPropTime,0,time);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderWindow,0,x1);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderWindow,1,y1);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderWindow,2,x2);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderWindow,3,y2);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
+
+        return mainEntry(kOfxImageEffectActionEndSequenceRender,this->getHandle(),inArgs.getHandle(),0);        
+      }
+
+      OfxStatus Instance::endRenderAction(OfxTime  startFrame,
+                                          OfxTime  endFrame,
+                                          OfxTime  step,
+                                          bool     interactive,
+                                          double   renderScaleX,
+                                          double   renderScaleY) {
+        Property::PropSpec stuff[] = {
+          { kOfxImageEffectPropFrameRange, Property::eDouble, 2, true, "0" },
+          { kOfxImageEffectPropFrameStep, Property::eDouble, 1, true, "0" }, 
+          { kOfxPropIsInteractive, Property::eInt, 1, true, "0" },
+          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { 0 }
+        };
+
+        Property::Set inArgs(stuff);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropFrameStep,0,step);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropFrameRange,0,startFrame);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropFrameRange,1,endFrame);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxPropIsInteractive,0,interactive);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
+
+        return mainEntry(kOfxImageEffectActionEndSequenceRender,this->getHandle(),inArgs.getHandle(),0);        
+      }
+
+      OfxStatus Instance::getRegionOfDefinitionAction(OfxTime  time,
+                                                      double   renderScaleX,
+                                                      double   renderScaleY,
+                                                      double   &x1,
+                                                      double   &y1,
+                                                      double   &x2,
+                                                      double   &y2) {
+        Property::PropSpec inStuff[] = {
+          { kOfxPropTime, Property::eDouble, 1, true, "0" },
+          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { 0 }
+        };
+
+        Property::PropSpec outStuff[] = {
+          { kOfxImageEffectPropRegionOfDefinition , Property::eDouble, 4, false, "0" },
+          { 0 }
+        };
+
+        Property::Set inArgs(inStuff);
+        Property::Set outArgs(outStuff);
+        
+        inArgs.setProperty<Property::DoubleValue>(kOfxPropTime,0,time);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
+
+        mainEntry(kOfxImageEffectActionGetRegionOfDefinition,
+                  this->getHandle(),
+                  inArgs.getHandle(),
+                  outArgs.getHandle());
+
+        x1 = outArgs.getProperty<Property::DoubleValue>(kOfxImageEffectPropRegionOfDefinition,0);
+        y1 = outArgs.getProperty<Property::DoubleValue>(kOfxImageEffectPropRegionOfDefinition,1);
+        x2 = outArgs.getProperty<Property::DoubleValue>(kOfxImageEffectPropRegionOfDefinition,2);
+        y2 = outArgs.getProperty<Property::DoubleValue>(kOfxImageEffectPropRegionOfDefinition,3);
+
         return kOfxStatOK;
       }
 
-      // call the effect entry point
-      OfxStatus Instance::mainEntry(const char *action, 
-        const void *handle, 
-        OfxPropertySetHandle inArgs,                        
-        OfxPropertySetHandle outArgs)
-      {
-        return _plugin->getPluginHandle()->getOfxPlugin()->mainEntry(action,handle,inArgs,outArgs);        
+      OfxStatus Instance::getRegionOfInterestAction(OfxTime  time,
+                                                    double   renderScaleX,
+                                                    double   renderScaleY,
+                                                    double   &x1,
+                                                    double   &y1,
+                                                    double   &x2,
+                                                    double   &y2) {
+        Property::PropSpec inStuff[] = {
+          { kOfxPropTime, Property::eDouble, 1, true, "0" },
+          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { 0 }
+        };
+
+        Property::PropSpec outStuff[] = {
+          { kOfxImageEffectPropRegionOfDefinition , Property::eDouble, 4, false, 0 },
+          { 0 }
+        };
+
+        Property::Set inArgs(inStuff);
+        Property::Set outArgs(outStuff);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxPropTime,0,time);
+
+        mainEntry(kOfxImageEffectActionGetRegionsOfInterest,
+                  this->getHandle(),
+                  inArgs.getHandle(),
+                  outArgs.getHandle());
+
+        x1 = outArgs.getProperty<Property::DoubleValue>(kOfxImageEffectPropRegionOfDefinition,0);
+        y1 = outArgs.getProperty<Property::DoubleValue>(kOfxImageEffectPropRegionOfDefinition,1);
+        x2 = outArgs.getProperty<Property::DoubleValue>(kOfxImageEffectPropRegionOfDefinition,2);
+        y2 = outArgs.getProperty<Property::DoubleValue>(kOfxImageEffectPropRegionOfDefinition,3);
+
+        return kOfxStatOK;
       }
 
-      Clip::Instance* Instance::getClip(const std::string& name){
-        std::map<std::string,Clip::Instance*>::iterator it = _clips.find(name);
-        if(it!=_clips.end()){
-          return it->second;
+      OfxStatus Instance::getFrameNeededAction(OfxTime time, 
+                                               std::map<std::string,std::vector<OfxRangeD> > rangeMap)
+      {
+        Property::PropSpec inStuff[] = {
+          { kOfxPropTime, Property::eDouble, 1, true, "0" },          
+          { 0 }
+        };
+        
+        int max = _clips.size();
+
+        Property::PropSpec* outStuff = new Property::PropSpec[max];
+
+        int i = 0;
+
+        for(std::map<std::string, Clip::Instance*>::iterator it=_clips.begin();
+            it!=_clips.end();
+            it++)
+        {
+          std::string name = "OfxImageClipPropFrameRange_"+it->first;
+
+          outStuff[i].name = name.c_str();
+          outStuff[i].type = Property::eDouble,
+          outStuff[i].dimension = 0;
+          outStuff[i].readonly = false;
+          outStuff[i].defaultValue = "";
+
+          i++;
         }
-        return 0;
+
+
+        Property::Set inArgs(inStuff);       
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxPropTime,0,time);
+
+        Property::Set outArgs(outStuff);
+
+        mainEntry(kOfxImageEffectActionGetFramesNeeded,
+                  this->getHandle(),
+                  inArgs.getHandle(),
+                  outArgs.getHandle());
+
+        for(std::map<std::string, Clip::Instance*>::iterator it=_clips.begin();
+            it!=_clips.end();
+            it++)
+        {
+          std::string name = "OfxImageClipPropFrameRange_"+it->first;
+
+          int nRanges = outArgs.getDimension(name);
+
+          std::vector<OfxRangeD> ranges;
+
+          for(int r=0;r<nRanges;){
+            double min = outArgs.getProperty<Property::DoubleValue>(name,r);
+            r++;
+            double max = outArgs.getProperty<Property::DoubleValue>(name,r);
+            r++;
+
+            OfxRangeD range;
+            range.min = min;
+            range.max = max;
+
+            ranges.push_back(range);
+          }
+
+          rangeMap[it->first] = ranges;
+        }
+
+        return kOfxStatOK;
+      }
+
+      OfxStatus Instance::isIdentityAction(OfxTime     &time,
+                                           std::string  field,
+                                           double       x1,
+                                           double       y1,
+                                           double       x2,
+                                           double       y2,
+                                           double       renderScaleX,
+                                           double       renderScaleY,
+                                           std::string &clip)
+      {
+        Property::PropSpec inStuff[] = {
+          { kOfxPropTime, Property::eDouble, 1, true, "0" },
+          { kOfxImageEffectPropFieldToRender, Property::eString, 1, true, field.c_str() }, 
+          { kOfxImageEffectPropRenderWindow, Property::eDouble, 4, true, "0" },
+          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { 0 }
+        };
+
+        Property::PropSpec outStuff[] = {
+          { kOfxPropTime, Property::eDouble, 1, false, "0.0" },
+          { kOfxPropName, Property::eString, 1, false, "" },
+          { 0 }
+        };
+
+        Property::Set inArgs(inStuff);        
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxPropTime,0,time);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderWindow,0,x1);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderWindow,1,y1);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderWindow,2,x2);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderWindow,3,y2);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
+
+        Property::Set outArgs(outStuff);
+
+        OfxStatus st = mainEntry(kOfxImageEffectActionIsIdentity,
+                                 this->getHandle(),
+                                 inArgs.getHandle(),
+                                 outArgs.getHandle());        
+
+        if(st==kOfxStatOK){
+          time = outArgs.getProperty<Property::DoubleValue>(kOfxPropTime,0);
+          clip = outArgs.getProperty<Property::StringValue>(kOfxPropName,0);        
+        }
+        
+        return st;
+      }
+
+      OfxStatus Instance::getClipPreferenceAction(std::map<std::string,std::string> &clipComponents,
+                                                  std::map<std::string,std::string> &clipDepth,
+                                                  std::map<std::string,double>      &clipPARs,
+                                                  double                            &outputFrameRate,
+                                                  double                            &outputPAR,
+                                                  std::string                       &outputPremult,
+                                                  int                               &outputContinuousSamples,
+                                                  int                               &outputFrameVarying)
+      {
+
+        int max = _clips.size();
+
+        Property::PropSpec* outStuff = new Property::PropSpec[(3*max)+5];               
+
+        int i = 0;
+
+        for(std::map<std::string, Clip::Instance*>::iterator it=_clips.begin();
+            it!=_clips.end();
+            it++)
+        {
+          std::string componentParamName = "OfxImageClipPropComponents_"+it->first;
+
+          outStuff[i].name = componentParamName.c_str();
+          outStuff[i].type = Property::eString;
+          outStuff[i].dimension = 0;
+          outStuff[i].readonly = false;
+          outStuff[i++].defaultValue = 0;
+
+          std::string depthParamName = "OfxImageClipPropDepth_"+it->first;
+
+          outStuff[i].name = depthParamName.c_str();
+          outStuff[i].type = Property::eString;
+          outStuff[i].dimension = 0;
+          outStuff[i].readonly = false;
+          outStuff[i++].defaultValue = 0;
+
+          std::string parParamName = "OfxImageClipPropPAR_"+it->first;
+
+          outStuff[i].name = parParamName.c_str();
+          outStuff[i].type = Property::eDouble;
+          outStuff[i].dimension = 0;
+          outStuff[i].readonly = false;
+          outStuff[i++].defaultValue = 0;
+        }
+        
+        outStuff[i].name = kOfxImageEffectPropFrameRate;
+        outStuff[i].type = Property::eDouble;
+        outStuff[i].dimension = 0;
+        outStuff[i].readonly = false;
+        outStuff[i++].defaultValue = 0;
+
+        outStuff[i].name = kOfxImagePropPixelAspectRatio;
+        outStuff[i].type = Property::eDouble;
+        outStuff[i].dimension = 0;
+        outStuff[i].readonly = false;
+        outStuff[i++].defaultValue = 0;
+
+        outStuff[i].name = kOfxImageEffectPropPreMultiplication;
+        outStuff[i].type = Property::eString;
+        outStuff[i].dimension = 0;
+        outStuff[i].readonly = false;
+        outStuff[i++].defaultValue = 0;
+
+        outStuff[i].name = kOfxImageClipPropContinuousSamples;
+        outStuff[i].type = Property::eInt;
+        outStuff[i].dimension = 0;
+        outStuff[i].readonly = false;
+        outStuff[i++].defaultValue = 0;
+
+        outStuff[i].name = kOfxImageEffectFrameVarying;
+        outStuff[i].type = Property::eInt;
+        outStuff[i].dimension = 0;
+        outStuff[i].readonly = false;
+        outStuff[i++].defaultValue = 0;
+
+        Property::Set outArgs(outStuff);
+
+        OfxStatus st = mainEntry(kOfxImageEffectActionGetClipPreferences,
+                                 this->getHandle(),
+                                 0,
+                                 outArgs.getHandle());
+        if(st!=kOfxStatOK) return st;
+
+        for(std::map<std::string, Clip::Instance*>::iterator it=_clips.begin();
+            it!=_clips.end();
+            it++)
+        {
+          std::string componentParamName = "OfxImageClipPropComponents_"+it->first;
+          std::string depthParamName = "OfxImageClipPropDepth_"+it->first;
+          std::string parParamName = "OfxImageClipPropPAR_"+it->first;
+
+          std::string component = outArgs.getProperty<Property::StringValue>(componentParamName,0);
+          std::string depth = outArgs.getProperty<Property::StringValue>(depthParamName,0);
+          double PAR = outArgs.getProperty<Property::DoubleValue>(parParamName,0);
+
+          clipComponents[it->first] = component;
+          clipDepth[it->first]      = depth;
+          clipPARs[it->first]       = PAR;
+        }
+
+        outputFrameRate = outArgs.getProperty<Property::DoubleValue>(kOfxImageEffectPropFrameRate,0);
+        outputPAR = outArgs.getProperty<Property::DoubleValue>(kOfxImagePropPixelAspectRatio,0);
+        outputPremult = outArgs.getProperty<Property::StringValue>(kOfxImageEffectPropPreMultiplication,0);
+        outputContinuousSamples = outArgs.getProperty<Property::IntValue>(kOfxImageClipPropContinuousSamples,0);
+        outputFrameVarying = outArgs.getProperty<Property::IntValue>(kOfxImageEffectFrameVarying,0);
+
+        return kOfxStatOK;
+      }
+
+      OfxStatus Instance::getTimeDomainAction(OfxRangeD& range)
+      {
+        Property::PropSpec outStuff[] = {
+          { kOfxImageEffectPropFrameRange , Property::eDouble, 2, false, "0.0" },
+          { 0 }
+        };
+
+        Property::Set outArgs(outStuff);  
+
+        OfxStatus st = mainEntry(kOfxImageEffectActionGetTimeDomain,
+                                 this->getHandle(),
+                                 0,
+                                 outArgs.getHandle());
+        if(st!=kOfxStatOK) return st;
+
+        range.min = outArgs.getProperty<Property::DoubleValue>(kOfxImageEffectActionGetTimeDomain,0);
+        range.max = outArgs.getProperty<Property::DoubleValue>(kOfxImageEffectActionGetTimeDomain,1);
+
+        return kOfxStatOK;
       }
 
     } // ImageEffect
