@@ -6,6 +6,7 @@
 #include "ofxhBinary.h"
 #include "ofxhPropertySuite.h"
 #include "ofxhClip.h"
+#include "ofxhImageEffect.h"
 
 namespace OFX {
 
@@ -86,8 +87,8 @@ namespace OFX {
         { 0 },
       };
 
-      Instance::Instance(Descriptor& desc) : 
-        _properties(desc.getProps()) 
+      Instance::Instance(Descriptor& desc, ImageEffect::Instance* effectInstance) : 
+        _properties(desc.getProps()), _effectInstance(effectInstance)
       {
         // this will a parameters that are needed in an instance but not a 
         // Descriptor
@@ -319,6 +320,40 @@ namespace OFX {
 
         if(st!=kOfxStatOK) throw Property::Exception(st);
       }
+
+      std::string Instance::getName()
+      {
+        return _properties.getProperty<Property::StringValue>(kOfxPropName,0);
+      }
+
+      OfxStatus Instance::instanceChangedAction(std::string why,
+                                     OfxTime     time,
+                                     double      renderScaleX,
+                                     double      renderScaleY)
+      {
+        Property::PropSpec stuff[] = {
+          { kOfxPropType, Property::eString, 1, true, kOfxTypeClip },
+          { kOfxPropName, Property::eString, 1, true, getName().c_str() },
+          { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
+          { kOfxPropTime, Property::eDouble, 1, true, "0" },
+          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { 0 }
+        };
+
+        Property::Set inArgs(stuff);
+
+        // add the second dimension of the render scale
+        inArgs.setProperty<Property::DoubleValue>(kOfxPropTime,0,time);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
+
+        if(_effectInstance){
+          return _effectInstance->mainEntry(kOfxActionBeginInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
+        }
+
+        return kOfxStatFailed;
+     }
+
 
       //
       // Image

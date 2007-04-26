@@ -3,6 +3,15 @@
 
 namespace MyHost {
 
+  class MyPushbuttonInstance : public OFX::Host::Param::PushbuttonInstance {
+  protected:
+    MyEffectInstance*   _effect;
+    MyParamSetInstance* _paramSet;
+    OFX::Host::Param::Descriptor& _descriptor;
+  public:
+    MyPushbuttonInstance(MyEffectInstance* effect, MyParamSetInstance* paramSet, const std::string& name, OFX::Host::Param::Descriptor& descriptor);
+  };
+
   class MyIntegerInstance : public OFX::Host::Param::IntegerInstance {
   protected:
     MyEffectInstance*   _effect;

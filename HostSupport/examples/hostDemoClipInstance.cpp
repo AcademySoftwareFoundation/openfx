@@ -25,7 +25,7 @@
 namespace MyHost {
 
   MyClipInstance::MyClipInstance(MyEffectInstance* effect, const std::string& name, OFX::Host::Clip::Descriptor& desc) 
-    : _effect(effect), _name(name), OFX::Host::Clip::Instance(desc)
+    : _effect(effect), _name(name), OFX::Host::Clip::Instance(desc,effect)
   {}
 
   // live properties

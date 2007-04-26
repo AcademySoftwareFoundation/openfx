@@ -202,9 +202,9 @@ namespace OFX {
 
       // call the effect entry point
       OfxStatus Instance::mainEntry(const char *action, 
-        const void *handle, 
-        OfxPropertySetHandle inArgs,                        
-        OfxPropertySetHandle outArgs)
+                                    const void *handle, 
+                                    OfxPropertySetHandle inArgs,                        
+                                    OfxPropertySetHandle outArgs)
       {
         if(_plugin){
           PluginHandle* pHandle = _plugin->getPluginHandle();
@@ -249,6 +249,9 @@ namespace OFX {
 
         std::map<std::string,Param::Descriptor*>& map = _descriptor->getParams().getParams();
 
+        std::map<std::string,std::vector<Param::Instance*> > parameters;
+        std::map<std::string, Param::Instance*> groups;
+
         for(std::map<std::string,Param::Descriptor*>::iterator it=map.begin();
             it!=map.end();
             it++)
@@ -267,6 +270,33 @@ namespace OFX {
           // add the value into the param set instance
           OfxStatus st = _params->addParam(name,instance);
           if(st != kOfxStatOK) return st;
+
+          std::string parent = instance->getParentName();
+          
+          parameters[parent].push_back(instance);
+
+          if(instance->getType()==kOfxParamTypeGroup){
+            groups[instance->getName()]=instance;
+          }
+        }
+
+        // for each group parameter made
+        for(std::map<std::string,Param::Instance*>::iterator it=groups.begin();
+            it!=groups.end();
+            it++)
+        {
+          // cast to a group instance
+          Param::GroupInstance* group = dynamic_cast<Param::GroupInstance*>(it->second);
+
+          // if cast ok
+          if(group){
+            // find the parameters whose parent was this group
+            std::map<std::string,std::vector<Param::Instance*> >::iterator it2 = parameters.find(group->getName());
+            if(it2!=parameters.end()){
+              // associate the group with its children, and the children with its parent group
+              group->setChildren(it2->second);
+            }
+          }
         }
 
         // now tell the plug-in to create instance
@@ -293,54 +323,30 @@ namespace OFX {
       }
 
       OfxStatus Instance::paramInstanceChangedAction(std::string paramName,
-                                           std::string why,
-                                           OfxTime     time,
-                                           double      renderScaleX,
-                                           double      renderScaleY)
+                                                     std::string why,
+                                                     OfxTime     time,
+                                                     double      renderScaleX,
+                                                     double      renderScaleY)
       {
-        Property::PropSpec stuff[] = {
-          { kOfxPropType, Property::eString, 1, true, kOfxTypeParameter },
-          { kOfxPropName, Property::eString, 1, true, paramName.c_str() },
-          { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
-          { kOfxPropTime, Property::eDouble, 1, true, "0" },
-          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
-          { 0 }
-        };
+        Param::Instance* param = _params->getParam(paramName);
 
-        Property::Set inArgs(stuff);
-
-        // add the second dimension of the render scale
-        inArgs.setProperty<Property::DoubleValue>(kOfxPropTime,0,time);
-
-        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
-        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
-
-        return mainEntry(kOfxActionBeginInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
+        if(param)
+          return param->instanceChangedAction(why,time,renderScaleX,renderScaleY);
+        else
+          return kOfxStatFailed;
       }
 
-      OfxStatus Instance::clipInstanceChangedAction(std::string paramName,
-                                          std::string why,
-                                          OfxTime     time,
-                                          double      renderScaleX,
-                                          double      renderScaleY)
+      OfxStatus Instance::clipInstanceChangedAction(std::string clipName,
+                                                    std::string why,
+                                                    OfxTime     time,
+                                                    double      renderScaleX,
+                                                    double      renderScaleY)
       {
-        Property::PropSpec stuff[] = {
-          { kOfxPropType, Property::eString, 1, true, kOfxTypeClip },
-          { kOfxPropName, Property::eString, 1, true, paramName.c_str() },
-          { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
-          { kOfxPropTime, Property::eDouble, 1, true, "0" },
-          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
-          { 0 }
-        };
-
-        Property::Set inArgs(stuff);
-
-        // add the second dimension of the render scale
-        inArgs.setProperty<Property::DoubleValue>(kOfxPropTime,0,time);
-        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
-        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
-
-        return mainEntry(kOfxActionBeginInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
+        std::map<std::string,Clip::Instance*>::iterator it=_clips.find(clipName);
+        if(it!=_clips.end())
+          return (it->second)->instanceChangedAction(why,time,renderScaleX,renderScaleY);
+        else
+          return kOfxStatFailed;
       }
 
       OfxStatus Instance::endInstanceChangedAction(std::string why)

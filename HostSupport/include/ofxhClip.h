@@ -5,6 +5,11 @@ namespace OFX {
 
   namespace Host {
 
+    // forward declare
+    namespace ImageEffect {
+      class Instance;
+    }
+
     namespace Clip {
       
       /// a clip descriptor
@@ -35,7 +40,8 @@ namespace OFX {
                        public Property::IntSetHook,
                        public Property::IntGetHook {
       protected:
-        Property::Set _properties;  
+        Property::Set           _properties;
+        ImageEffect::Instance*  _effectInstance;
 
       public:
         /// get a handle on the clip descriptor for the C api
@@ -47,7 +53,10 @@ namespace OFX {
         // get props
         Property::Set &getProps();
 
-        Instance(Descriptor& desc);
+        Instance(Descriptor& desc, ImageEffect::Instance* effectInstance = 0);
+
+        // get the clip name
+        std::string getName();
 
         // do nothing
         virtual int  getDimension(const std::string &name) OFX_EXCEPTION_SPEC;
@@ -74,6 +83,12 @@ namespace OFX {
         virtual void getPropertyN(const std::string &name, double* first, int n) OFX_EXCEPTION_SPEC;       
         virtual void getPropertyN(const std::string &name, int* first, int n) OFX_EXCEPTION_SPEC;
         virtual void getPropertyN(const std::string &name, const char** first, int n) OFX_EXCEPTION_SPEC;
+
+        // instance changed action
+        OfxStatus instanceChangedAction(std::string why,
+                                        OfxTime     time,
+                                        double      renderScaleX,
+                                        double      renderScaleY);
 
         // properties of an instance that are live
 

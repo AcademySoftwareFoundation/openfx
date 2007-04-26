@@ -8,6 +8,7 @@
 #include "ofxhBinary.h"
 #include "ofxhPropertySuite.h"
 #include "ofxhParam.h"
+#include "ofxhImageEffect.h"
 
 namespace OFX {
 
@@ -54,7 +55,11 @@ namespace OFX {
 
       const std::string &Base::getName() {
         return _paramName;
-      } 
+      }
+
+      std::string Base::getParentName() {
+        return _properties.getProperty<Property::StringValue>(kOfxParamPropParent,0);
+      }
 
       //
       // Descriptor
@@ -279,8 +284,8 @@ namespace OFX {
       Instance::~Instance() {}
 
       /// make a parameter, with the given type and name
-      Instance::Instance(Descriptor& descriptor) 
-        : Base(descriptor.getName(),descriptor.getType(),descriptor.getProperties())
+      Instance::Instance(Descriptor& descriptor, Param::SetInstance* paramSet) 
+        : _paramSetInstance(paramSet), _parentInstance(0), Base(descriptor.getName(),descriptor.getType(),descriptor.getProperties())
       {}
 
       // copy one parameter to another
@@ -291,6 +296,47 @@ namespace OFX {
       // copy one parameter to another, with a range
       OfxStatus Instance::copy(const Instance &instance, OfxTime offset, OfxRangeD range) { 
         return kOfxStatErrMissingHostFeature; 
+      }
+
+      OfxStatus Instance::instanceChangedAction(std::string why,
+                                                OfxTime     time,
+                                                double      renderScaleX,
+                                                double      renderScaleY)
+      {        
+
+        Property::PropSpec stuff[] = {
+          { kOfxPropType, Property::eString, 1, true, kOfxTypeParameter },
+          { kOfxPropName, Property::eString, 1, true, getName().c_str() },
+          { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
+          { kOfxPropTime, Property::eDouble, 1, true, "0" },
+          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { 0 }
+        };
+
+        Property::Set inArgs(stuff);
+
+        // add the second dimension of the render scale
+        inArgs.setProperty<Property::DoubleValue>(kOfxPropTime,0,time);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
+        
+        if(_paramSetInstance){
+          ImageEffect::Instance* instance = _paramSetInstance->getEffectInstance();
+          if(instance){
+            return instance->mainEntry(kOfxActionBeginInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
+          }
+        }
+
+        return kOfxStatFailed;
+      }
+
+      void Instance::setParentInstance(Instance* instance){
+        _parentInstance = instance;
+      }
+
+      Instance* Instance::getParentInstance(){
+        return _parentInstance;
       }
 
       //
@@ -315,6 +361,21 @@ namespace OFX {
 
       OfxStatus KeyframeParam::deleteAllKeys() { 
         return kOfxStatErrMissingHostFeature; 
+      }
+
+      void GroupInstance::setChildren(std::vector<Param::Instance*> children)
+      {
+        _children = children;
+        for(std::vector<Param::Instance*>::iterator it=children.begin();it!=children.end();it++){
+          if(*it){
+            (*it)->setParentInstance(this);
+          }
+        }
+      }
+      
+      std::vector<Param::Instance*> GroupInstance::getChildren()
+      {
+        return _children;
       }
 
       //

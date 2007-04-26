@@ -27,7 +27,7 @@
 namespace MyHost {
 
   MyParamSetInstance::MyParamSetInstance(MyEffectInstance* effect, OFX::Host::Param::SetDescriptor& descriptor) 
-    : _effect(effect), _descriptor(descriptor)
+    : _effect(effect), _descriptor(descriptor), OFX::Host::Param::SetInstance(effect)
   {
   }
 
@@ -49,6 +49,10 @@ namespace MyHost {
       return new MyDouble2DInstance(_effect,this,name,descriptor);
     else if(descriptor.getType()==kOfxParamTypeInteger2D)
       return new MyInteger2DInstance(_effect,this,name,descriptor);
+    else if(descriptor.getType()==kOfxParamTypePushButton)
+      return new MyPushbuttonInstance(_effect,this,name,descriptor);
+    else if(descriptor.getType()==kOfxParamTypeGroup)
+      return new OFX::Host::Param::GroupInstance(descriptor,this);
     else
       return 0;
   }

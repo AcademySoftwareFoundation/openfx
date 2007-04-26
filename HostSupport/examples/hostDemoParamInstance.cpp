@@ -34,7 +34,7 @@ namespace MyHost {
     MyParamSetInstance* paramSet, 
     const std::string& name, 
     OFX::Host::Param::Descriptor& descriptor)
-    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::IntegerInstance(descriptor)
+    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::IntegerInstance(descriptor,paramSet)
   {
   }
 
@@ -65,7 +65,7 @@ namespace MyHost {
     MyParamSetInstance* paramSet, 
     const std::string& name, 
     OFX::Host::Param::Descriptor& descriptor)
-    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::DoubleInstance(descriptor)
+    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::DoubleInstance(descriptor,paramSet)
   {
   }
 
@@ -107,7 +107,7 @@ namespace MyHost {
     MyParamSetInstance* paramSet, 
     const std::string& name, 
     OFX::Host::Param::Descriptor& descriptor)
-    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::BooleanInstance(descriptor)
+    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::BooleanInstance(descriptor,paramSet)
   {
   }
 
@@ -138,7 +138,7 @@ namespace MyHost {
     MyParamSetInstance* paramSet, 
     const std::string& name, 
     OFX::Host::Param::Descriptor& descriptor)
-    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::ChoiceInstance(descriptor)
+    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::ChoiceInstance(descriptor,paramSet)
   {
   }
 
@@ -170,7 +170,7 @@ namespace MyHost {
     MyParamSetInstance* paramSet, 
     const std::string& name, 
     OFX::Host::Param::Descriptor& descriptor)
-    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::RGBAInstance(descriptor)
+    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::RGBAInstance(descriptor,paramSet)
   {
   }
 
@@ -202,7 +202,7 @@ namespace MyHost {
     MyParamSetInstance* paramSet, 
     const std::string& name, 
     OFX::Host::Param::Descriptor& descriptor)
-    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::RGBInstance(descriptor)
+    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::RGBInstance(descriptor,paramSet)
   {
   }
 
@@ -234,7 +234,7 @@ namespace MyHost {
     MyParamSetInstance* paramSet, 
     const std::string& name, 
     OFX::Host::Param::Descriptor& descriptor)
-    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::Double2DInstance(descriptor)
+    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::Double2DInstance(descriptor,paramSet)
   {
   }
 
@@ -266,7 +266,7 @@ namespace MyHost {
     MyParamSetInstance* paramSet, 
     const std::string& name, 
     OFX::Host::Param::Descriptor& descriptor)
-    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::Integer2DInstance(descriptor)
+    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::Integer2DInstance(descriptor,paramSet)
   {
   }
 
@@ -288,6 +288,18 @@ namespace MyHost {
   OfxStatus MyInteger2DInstance::set(OfxTime time,int,int)
   {
     return kOfxStatErrMissingHostFeature;
+  }
+
+ //
+  // MyInteger2DInstance
+  //
+
+  MyPushbuttonInstance::MyPushbuttonInstance(MyEffectInstance* effect, 
+    MyParamSetInstance* paramSet, 
+    const std::string& name, 
+    OFX::Host::Param::Descriptor& descriptor)
+    : _effect(effect), _paramSet(paramSet), _descriptor(descriptor), OFX::Host::Param::PushbuttonInstance(descriptor,paramSet)
+  {
   }
 
 }

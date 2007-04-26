@@ -9,6 +9,11 @@ namespace OFX {
 
   namespace Host {
 
+    // forward declare
+    namespace ImageEffect {
+      class Instance;
+    }
+
     namespace Param {
 
       class Base {
@@ -32,6 +37,8 @@ namespace OFX {
         const std::string &getType();
 
         const std::string &getName();
+
+        std::string getParentName();
       };
 
       /// the Descriptor of a plugin parameter
@@ -64,15 +71,33 @@ namespace OFX {
         void addParam(const std::string &name, Descriptor *p);
       };
 
+      // forward declare
+      class SetInstance;
+
       /// the description of a plugin parameter
       class Instance : public Base {
-        Instance();                
+        Instance();  
+      protected:
+        SetInstance*  _paramSetInstance;
+        Instance*     _parentInstance;
       public:
         virtual ~Instance();
 
         /// make a parameter, with the given type and name
-        explicit Instance(Descriptor& descriptor);
-        
+        explicit Instance(Descriptor& descriptor, Param::SetInstance* instance = 0);
+
+        OfxStatus instanceChangedAction(std::string why,
+                                        OfxTime     time,
+                                        double      renderScaleX,
+                                        double      renderScaleY);
+
+        // get the param instance
+        OFX::Host::Param::SetInstance* getParamSetInstance() { return _paramSetInstance; }
+
+        // set/get parent instance
+        void setParentInstance(Instance* instance);
+        Instance* getParentInstance();
+
         // copy one parameter to another
         virtual OfxStatus copy(const Instance &instance, OfxTime offset);
 
@@ -92,9 +117,19 @@ namespace OFX {
         }
       };
 
+      class GroupInstance : public Instance {
+      protected:
+        std::vector<Param::Instance*> _children;
+      public:
+        GroupInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
+
+        void setChildren(std::vector<Param::Instance*> children);
+        std::vector<Param::Instance*> getChildren();
+      };
+
       class IntegerInstance : public Instance, public KeyframeParam {
       public:
-        IntegerInstance(Descriptor& descriptor) : Instance(descriptor) {}
+        IntegerInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
         // needed 
         virtual OfxStatus get(int&) = 0;
@@ -109,7 +144,7 @@ namespace OFX {
 
       class ChoiceInstance : public Instance, public KeyframeParam {
       public:
-        ChoiceInstance(Descriptor& descriptor) : Instance(descriptor) {}
+        ChoiceInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
         // needed 
         virtual OfxStatus get(int&) = 0;
@@ -120,7 +155,7 @@ namespace OFX {
 
       class DoubleInstance : public Instance, public KeyframeParam {
       public:
-        DoubleInstance(Descriptor& descriptor) : Instance(descriptor) {}
+        DoubleInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
         // needed 
         virtual OfxStatus get(double&) = 0;
@@ -133,7 +168,7 @@ namespace OFX {
 
       class BooleanInstance : public Instance, public KeyframeParam {
       public:
-        BooleanInstance(Descriptor& descriptor) : Instance(descriptor) {}
+        BooleanInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
         // needed
         virtual OfxStatus get(bool&) = 0;
@@ -144,7 +179,7 @@ namespace OFX {
 
       class RGBAInstance : public Instance, public KeyframeParam {
       public:
-        RGBAInstance(Descriptor& descriptor) : Instance(descriptor) {}
+        RGBAInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
         // needed
         virtual OfxStatus get(double&,double&,double&,double&) = 0;
@@ -159,7 +194,7 @@ namespace OFX {
 
       class RGBInstance : public Instance, public KeyframeParam {
       public:
-        RGBInstance(Descriptor& descriptor) : Instance(descriptor) {}
+        RGBInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
         // needed
         virtual OfxStatus get(double&,double&,double&) = 0;
@@ -174,7 +209,7 @@ namespace OFX {
         
       class Double2DInstance : public Instance, public KeyframeParam {
       public:
-        Double2DInstance(Descriptor& descriptor) : Instance(descriptor) {}
+        Double2DInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
         // needed
         virtual OfxStatus get(double&,double&) = 0;
@@ -189,7 +224,7 @@ namespace OFX {
 
       class Integer2DInstance : public Instance, public KeyframeParam {
       public:
-        Integer2DInstance(Descriptor& descriptor) : Instance(descriptor) {}
+        Integer2DInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
         // needed
         virtual OfxStatus get(int&,int&) = 0;
@@ -204,6 +239,8 @@ namespace OFX {
 
       class Double3DInstance : public Instance , public KeyframeParam{
       public:
+        Double3DInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
+
         // needed
         virtual OfxStatus get(double&,double&,double&)  = 0;
         virtual OfxStatus get(OfxTime time, double&,double&,double&)  = 0;
@@ -217,6 +254,8 @@ namespace OFX {
 
       class Integer3DInstance : public Instance, public KeyframeParam {
       public:
+        Integer3DInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
+
         virtual OfxStatus get(int&,int&,int&) = 0;
         virtual OfxStatus get(OfxTime time, int&,int&,int&) = 0;
         virtual OfxStatus set(int,int,int) = 0;
@@ -229,23 +268,44 @@ namespace OFX {
 
       class StringInstance : public Instance, public KeyframeParam {
       public:
+        StringInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
+
         virtual OfxStatus get(char*&) = 0;
         virtual OfxStatus get(OfxTime time, char&) = 0;
         virtual OfxStatus set(const char*) = 0;
         virtual OfxStatus set(OfxTime time, const char*) = 0;
       };
 
+      class PushbuttonInstance : public Instance, public KeyframeParam {
+      public:
+        PushbuttonInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
+      };
+
       /// a set of parameters
       class SetInstance : public BaseSet {
       protected:
         std::map<std::string, Instance*> _params;
-
         std::list<Instance *> _paramList;
-        
+
+        OFX::Host::ImageEffect::Instance* _instance;
       public:
+        SetInstance(OFX::Host::ImageEffect::Instance* instance = 0) : _instance(instance) {}
+
         // get the params
         std::map<std::string, Instance*> &getParams();
         std::list<Instance*> &getParamList();
+
+        // get the instance
+        OFX::Host::ImageEffect::Instance* getEffectInstance() { return _instance; }
+
+        // get the param
+        Instance* getParam(std::string name) {
+          std::map<std::string,Instance*>::iterator it = _params.find(name);
+          if(it!=_params.end())
+            return it->second;
+          else
+            return 0;
+        }
 
         // add a param
         virtual OfxStatus addParam(const std::string& name, Instance* instance);

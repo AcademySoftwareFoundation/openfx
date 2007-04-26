@@ -125,8 +125,7 @@ namespace OFX {
       OfxPlugin* (*getPlug)(int) = (OfxPlugin*(*)(int)) _b->_binary.findSymbol("OfxGetPlugin");
       if (getPlug) {
         _op = getPlug(p->getIndex());
-        if (_op) {
-          if("setting host to %p\n", hd->getHandle());
+        if (_op) {         
           _op->setHost(hd->getHandle());
         }
       }

@@ -159,16 +159,16 @@ namespace OFX {
         virtual OfxStatus beginInstanceChangedAction(std::string why);
 
         virtual OfxStatus paramInstanceChangedAction(std::string paramName,
-          std::string why,
-          OfxTime     time,
-          double      renderScaleX,
-          double      renderScaleY);
+                                                     std::string why,
+                                                     OfxTime     time,
+                                                     double      renderScaleX,
+                                                     double      renderScaleY);
 
-        virtual OfxStatus clipInstanceChangedAction(std::string paramName,
-          std::string why,
-          OfxTime     time,
-          double      renderScaleX,
-          double      renderScaleY);
+        virtual OfxStatus clipInstanceChangedAction(std::string clipName,
+                                                    std::string why,
+                                                    OfxTime     time,
+                                                    double      renderScaleX,
+                                                    double      renderScaleY);
 
         virtual OfxStatus endInstanceChangedAction(std::string why);
 
