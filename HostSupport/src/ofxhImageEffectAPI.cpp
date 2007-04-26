@@ -110,9 +110,11 @@ namespace OFX {
       }
 
       ImageEffect::Instance* ImageEffectPlugin::createInstance(const std::string &context){          
+
         /// todo - we need to make sure action:load is called, then action:describe again
         /// (not because we are expecting the results to change, but because plugin
         /// might get confused otherwise), then a describe_in_context
+
         getPluginHandle();
         
         std::map<std::string,Descriptor*>::iterator it = _contexts.find(context);
@@ -123,6 +125,10 @@ namespace OFX {
                                                         this,
                                                         *desc,
                                                         context);
+
+
+          // set the context, so that createInstance() isn't totally confused
+          instance->getProps().setProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropContext, 0, context.c_str());
 
           /// at this point we need the createinstance action to run.
           if(instance){
