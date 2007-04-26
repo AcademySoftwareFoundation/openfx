@@ -46,9 +46,9 @@ namespace OFX {
 
       // Descriptor
       Descriptor::Descriptor(const Descriptor &other)
-        : _clips(other._clips)
+        : Base(other._properties)
+        , _clips(other._clips)
         , _params(other._params)
-        , Base(other._properties)
       {
       }
 
@@ -207,9 +207,9 @@ namespace OFX {
         OfxPropertySetHandle outArgs)
       {
         if(_plugin){
-          PluginHandle* handle = _plugin->getPluginHandle();
+          PluginHandle* pHandle = _plugin->getPluginHandle();
           if(handle){
-            OfxPlugin* ofxPlugin = handle->getOfxPlugin();
+            OfxPlugin* ofxPlugin = pHandle->getOfxPlugin();
             if(ofxPlugin){
               return ofxPlugin->mainEntry(action,handle,inArgs,outArgs);        
             }
