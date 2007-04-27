@@ -438,7 +438,7 @@ namespace OFX {
         inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
         inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
 
-        return mainEntry(kOfxImageEffectActionEndSequenceRender,this->getHandle(),inArgs.getHandle(),0);        
+        return mainEntry(kOfxImageEffectActionRender,this->getHandle(),inArgs.getHandle(),0);        
       }
 
       OfxStatus Instance::endRenderAction(OfxTime  startFrame,
