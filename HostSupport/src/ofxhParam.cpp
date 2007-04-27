@@ -19,18 +19,22 @@ namespace OFX {
       //
       // Base
       //
-
       Base::Base(const std::string &name, const std::string& type) : 
         _paramName(name),
         _paramType(type), 
         _properties(false)
-      {}
+      
+      {
+        assert(_paramType.c_str());
+      }
 
       Base::Base(const std::string &name, const std::string &type, const Property::Set &properties) :
         _paramName(name),
         _paramType(type), 
         _properties(properties)
-      {}
+      {
+        assert(_paramType.c_str());
+      }
 
 
       Base::~Base() {}
@@ -50,6 +54,8 @@ namespace OFX {
       }
 
       const std::string &Base::getType() {
+        printf("%s\n", typeid(this).name());
+        printf("type = %s\n", _paramType.c_str());
         return _paramType;
       } 
 

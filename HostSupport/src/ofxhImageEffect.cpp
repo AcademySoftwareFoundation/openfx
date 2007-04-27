@@ -421,7 +421,7 @@ namespace OFX {
         Property::PropSpec stuff[] = {
           { kOfxPropTime, Property::eDouble, 1, true, "0" },
           { kOfxImageEffectPropFieldToRender, Property::eString, 1, true, field.c_str() }, 
-          { kOfxImageEffectPropRenderWindow, Property::eDouble, 4, true, "0" },
+          { kOfxImageEffectPropRenderWindow, Property::eInt, 4, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
           { 0 }
         };
@@ -430,10 +430,10 @@ namespace OFX {
         
         inArgs.setProperty<Property::DoubleValue>(kOfxPropTime,0,time);
 
-        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderWindow,0,x1);
-        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderWindow,1,y1);
-        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderWindow,2,x2);
-        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderWindow,3,y2);
+        inArgs.setProperty<Property::IntValue>(kOfxImageEffectPropRenderWindow,0,x1);
+        inArgs.setProperty<Property::IntValue>(kOfxImageEffectPropRenderWindow,1,y1);
+        inArgs.setProperty<Property::IntValue>(kOfxImageEffectPropRenderWindow,2,x2);
+        inArgs.setProperty<Property::IntValue>(kOfxImageEffectPropRenderWindow,3,y2);
 
         inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
         inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
@@ -631,7 +631,7 @@ namespace OFX {
         Property::PropSpec inStuff[] = {
           { kOfxPropTime, Property::eDouble, 1, true, "0" },
           { kOfxImageEffectPropFieldToRender, Property::eString, 1, true, field.c_str() }, 
-          { kOfxImageEffectPropRenderWindow, Property::eDouble, 4, true, "0" },
+          { kOfxImageEffectPropRenderWindow, Property::eInt, 4, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
           { 0 }
         };
@@ -646,10 +646,10 @@ namespace OFX {
 
         inArgs.setProperty<Property::DoubleValue>(kOfxPropTime,0,time);
 
-        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderWindow,0,x1);
-        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderWindow,1,y1);
-        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderWindow,2,x2);
-        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderWindow,3,y2);
+        inArgs.setProperty<Property::IntValue>(kOfxImageEffectPropRenderWindow,0,x1);
+        inArgs.setProperty<Property::IntValue>(kOfxImageEffectPropRenderWindow,1,y1);
+        inArgs.setProperty<Property::IntValue>(kOfxImageEffectPropRenderWindow,2,x2);
+        inArgs.setProperty<Property::IntValue>(kOfxImageEffectPropRenderWindow,3,y2);
 
         inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
         inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);

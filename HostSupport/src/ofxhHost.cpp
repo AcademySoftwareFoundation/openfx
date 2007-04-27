@@ -63,10 +63,15 @@ namespace OFX {
       {        
         Base *effectBase = reinterpret_cast<Base*>(h1);
         
-        if(effectBase) 
+        if(effectBase) {
           *h2 = effectBase->getProps().getHandle();
-        else 
+          printf("ImageEffect::getPropertySet returning %p\n", *h2);
+          printf("effectBase is %p, %s\n", h1, typeid(effectBase).name());
+        }
+        else {
+          printf("ImageEffect::getPropertySet failed\n", *h2);
           return kOfxStatErrBadHandle;
+        }
 
         return kOfxStatOK;
       }
@@ -533,7 +538,9 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
         Instance *paramInstance = reinterpret_cast<Instance*>(paramHandle);        
         if(!paramInstance) return kOfxStatErrBadHandle;
 
-        if(paramInstance->getType()==kOfxParamTypeInteger){
+        std::string type = paramInstance->getType();
+
+        if(type==kOfxParamTypeInteger){
           va_list ap;
 
           va_start(ap,time);
@@ -543,7 +550,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           mDeclareTypedInstance(IntegerInstance);
           return typedParamInstance->get(time,*value);
         }
-        else if(paramInstance->getType()==kOfxParamTypeDouble){
+        else if(type==kOfxParamTypeDouble){
           va_list ap;
 
           va_start(ap,time);
@@ -553,7 +560,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           mDeclareTypedInstance(DoubleInstance);
           return typedParamInstance->get(time,*value);
         }
-        else if(paramInstance->getType()==kOfxParamTypeBoolean){
+        else if(type==kOfxParamTypeBoolean){
           va_list ap;
 
           va_start(ap,time);

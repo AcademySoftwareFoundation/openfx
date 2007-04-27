@@ -17,6 +17,9 @@ namespace OFX {
     namespace Param {
 
       class Base {
+
+      private:
+        Base();
       protected:
         std::string   _paramName;
         std::string   _paramType;
@@ -24,7 +27,7 @@ namespace OFX {
       public:
         Base(const std::string &name, const std::string &type);
         Base(const std::string &name, const std::string &type, const Property::Set &properties);
-        ~Base();
+        virtual ~Base();
 
         /// grab a handle on the parameter for passing to the C API
         OfxParamHandle getHandle();

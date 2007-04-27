@@ -145,9 +145,11 @@ namespace OFX {
       /// get the size of the vector
       template <class T> int PropertyTemplate<T>::getDimension() OFX_EXCEPTION_SPEC {
         if (_dimension != 0) {
+          printf("getDimension returning constant\n");
           return _dimension;
         } else {
           /// code to get it from the hook
+          printf("getDimension hook needed\n");
           if (_getHook) {
             return _getHook->getDimension(_name);
           } else {
@@ -201,10 +203,11 @@ namespace OFX {
       }
 
       template<class T> OfxStatus Set::getProperty(const std::string&name, T *&prop) {
-        if (_props.find(name) == _props.end() && _sloppy) {
-            _props[name] = new T(name, 0, false, 0);
+        if (_sloppy && _props.find(name) == _props.end()) {
+          _props[name] = new T(name, 0, false, 0);
         }
-        return underlyingGetProperty(name, prop);
+        OfxStatus s = underlyingGetProperty(name, prop);
+        return s;
       }
 
       void Set::addProperties(const PropSpec spec[]) {

@@ -58,6 +58,8 @@ namespace OFX {
         // get the clip name
         std::string getName();
 
+        int upperGetDimension(const std::string &name);
+
         // do nothing
         virtual int  getDimension(const std::string &name) OFX_EXCEPTION_SPEC;
 
@@ -183,10 +185,10 @@ namespace OFX {
       protected:
         Property::Set _properties;
 
-      public:
-        // default constructor
         Image(); 
 
+      public:
+        // default constructor
         virtual ~Image();
 
         // Render Scale (renderScaleX,renderScaleY) -
