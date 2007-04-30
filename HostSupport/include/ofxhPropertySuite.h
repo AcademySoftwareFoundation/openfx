@@ -400,7 +400,7 @@ namespace OFX {
         Set(const Set &);
 
         /// destructor
-        ~Set();
+        virtual ~Set();
 
         /// adds a bunch of properties from PropSpec
         void addProperties(const PropSpec *);
@@ -470,7 +470,6 @@ namespace OFX {
         {
           return (OfxPropertySetHandle)this;
         }
-
       };
     }
   }

@@ -140,7 +140,7 @@ namespace OFX {
 
           if(!image) return kOfxStatFailed;
 
-          *h3 = (OfxPropertySetHandle)image->getHandle();
+          *h3 = image->getPropHandle();
           return kOfxStatOK;
         }
         else 
@@ -148,7 +148,8 @@ namespace OFX {
       }
       
       OfxStatus clipReleaseImage(OfxPropertySetHandle h1){
-        Clip::Image *image = reinterpret_cast<Clip::Image*>(h1);
+        Property::Set *pset = reinterpret_cast<Property::Set*>(h1);
+        Clip::Image *image = dynamic_cast<Clip::Image*>(pset);
 
         if(h1){
           // clip::image has a virtual destructor for derived classes

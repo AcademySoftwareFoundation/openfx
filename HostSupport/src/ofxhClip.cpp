@@ -382,12 +382,12 @@ namespace OFX {
         { kOfxImagePropBounds, Property::eInt, 4, true, "0" },
         { kOfxImagePropRegionOfDefinition, Property::eInt, 4, true, "0", },
         { kOfxImagePropRowBytes, Property::eInt, 1, true, "0", },
-        { kOfxImagePropField, Property::eInt, 1, true, "0", },
+        { kOfxImagePropField, Property::eString, 1, true, "", },
         { kOfxImagePropUniqueIdentifier, Property::eString, 1, true, "" },
         { 0 }
       };
 
-      Image::Image() : _properties(imageStuffs) {}      
+      Image::Image() : Property::Set(imageStuffs) {}      
 
       // construction based on clip instance
       Image::Image(Clip::Instance& instance,
@@ -398,49 +398,50 @@ namespace OFX {
                   int rodx1, int rody1, int rodx2, int rody2,
                   int rowBytes,
                   std::string field,
-                  std::string uniqueIdentifier) : _properties(imageStuffs)
+                  std::string uniqueIdentifier) : Property::Set(imageStuffs)
       {
         Property::Set& clipProperties = instance.getProps();
         
         // get and set the clip instance pixel depth
         std::string pixelDepth = clipProperties.getProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropPixelDepth,0);
-        _properties.setProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropPixelDepth,0,pixelDepth.c_str());
+        setProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropPixelDepth,0,pixelDepth.c_str());
         
         // get and set the clip instance components
         std::string components = clipProperties.getProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropComponents,0);
-        _properties.setProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropComponents,0,components.c_str());
+        setProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropComponents,0,components.c_str());
         
         // get and set the clip instance premultiplication
         std::string premultiplication = clipProperties.getProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropPreMultiplication,0);
-        _properties.setProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropPreMultiplication,0,premultiplication.c_str());
+        setProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropPreMultiplication,0,premultiplication.c_str());
 
         // get and set the clip instance pixel aspect ratio
         double aspectRatio = clipProperties.getProperty<OFX::Host::Property::DoubleValue>(kOfxImagePropPixelAspectRatio,0);
-        _properties.setProperty<OFX::Host::Property::DoubleValue>(kOfxImagePropPixelAspectRatio,0,aspectRatio);        
+        setProperty<OFX::Host::Property::DoubleValue>(kOfxImagePropPixelAspectRatio,0,aspectRatio);        
 
         // set other data
-        _properties.setProperty<OFX::Host::Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);        
-        _properties.setProperty<OFX::Host::Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);        
-        _properties.setProperty<OFX::Host::Property::PointerValue>(kOfxImagePropData,0,data);
-        _properties.setProperty<OFX::Host::Property::IntValue>(kOfxImagePropBounds,0,bx1);
-        _properties.setProperty<OFX::Host::Property::IntValue>(kOfxImagePropBounds,1,by1);
-        _properties.setProperty<OFX::Host::Property::IntValue>(kOfxImagePropBounds,2,bx2);
-        _properties.setProperty<OFX::Host::Property::IntValue>(kOfxImagePropBounds,3,by2);
-        _properties.setProperty<OFX::Host::Property::IntValue>(kOfxImagePropRegionOfDefinition,0,rodx1);
-        _properties.setProperty<OFX::Host::Property::IntValue>(kOfxImagePropRegionOfDefinition,1,rody1);
-        _properties.setProperty<OFX::Host::Property::IntValue>(kOfxImagePropRegionOfDefinition,2,rodx2);
-        _properties.setProperty<OFX::Host::Property::IntValue>(kOfxImagePropRegionOfDefinition,3,rody2);        
-        _properties.setProperty<OFX::Host::Property::IntValue>(kOfxImagePropRowBytes,0,rowBytes);
-        _properties.setProperty<OFX::Host::Property::StringValue>(kOfxImageClipPropFieldOrder,0,field.c_str());
-        _properties.setProperty<OFX::Host::Property::StringValue>(kOfxImagePropUniqueIdentifier,0,uniqueIdentifier.c_str());
+        setProperty<OFX::Host::Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);        
+        setProperty<OFX::Host::Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);        
+        setProperty<OFX::Host::Property::PointerValue>(kOfxImagePropData,0,data);
+        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropBounds,0,bx1);
+        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropBounds,1,by1);
+        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropBounds,2,bx2);
+        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropBounds,3,by2);
+        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropRegionOfDefinition,0,rodx1);
+        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropRegionOfDefinition,1,rody1);
+        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropRegionOfDefinition,2,rodx2);
+        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropRegionOfDefinition,3,rody2);        
+        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropRowBytes,0,rowBytes);
+        setProperty<OFX::Host::Property::StringValue>(kOfxImagePropField,0,field.c_str());
+        setProperty<OFX::Host::Property::StringValue>(kOfxImageClipPropFieldOrder,0,field.c_str());
+        setProperty<OFX::Host::Property::StringValue>(kOfxImagePropUniqueIdentifier,0,uniqueIdentifier.c_str());
       }
 
       Image::~Image() {
       }
 
-      OfxImageClipHandle Image::getHandle() {
-        return (OfxImageClipHandle)this;
-      }
+      //      OfxImageClipHandle Image::getHandle() {
+      //        return (OfxImageClipHandle)this;
+      //      }
 
     } // Clip
 

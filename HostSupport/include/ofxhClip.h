@@ -181,10 +181,8 @@ namespace OFX {
       };
 
       // instance of an image class
-      class Image {
+      class Image : public Property::Set {
       protected:
-        Property::Set _properties;
-
         Image(); 
 
       public:
@@ -247,7 +245,9 @@ namespace OFX {
               std::string field,
               std::string uniqueIdentifier);
 
-        OfxImageClipHandle getHandle();
+        //        OfxImageClipHandle getHandle();
+
+        OfxPropertySetHandle getPropHandle() { return Property::Set::getHandle(); }
       };
 
     } // Memory
