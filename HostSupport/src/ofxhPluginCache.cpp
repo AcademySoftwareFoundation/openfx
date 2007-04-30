@@ -129,6 +129,7 @@ namespace OFX {
           _op->setHost(hd->getHandle());
         }
       }
+      _op->mainEntry(kOfxActionLoad, 0, 0, 0);
     }
 
     PluginHandle::~PluginHandle() {
