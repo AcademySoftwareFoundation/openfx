@@ -46,8 +46,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #error can't detect architecture
 #endif
+#elif defined( __APPLE__)
+#define UNIX
 #else
-#error can't detect architecture
+#error can't detect operating system
 #endif
 
 #if defined(UNIX)
