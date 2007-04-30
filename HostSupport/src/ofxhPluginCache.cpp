@@ -54,11 +54,18 @@
 #include "ofxhImageEffectAPI.h"
 #include "ofxhXml.h"
 
-#if defined (UNIX)
+#if defined (__linux__)
+
 #define DIRLIST_SEP_CHAR ":"
 #define ARCHSTR "Linux-x86"
 #define DIRSEP "/"
+#include <dirent.h>
 
+#elif defined (__APPLE__)
+
+#define DIRLIST_SEP_CHAR ";"
+#define ARCHSTR "MacOS"
+#define DIRSEP "/"
 #include <dirent.h>
 
 #elif defined (WINDOWS)
