@@ -1,5 +1,4 @@
 // ofx host
-#include <malloc.h>
 
 // ofx
 #include "ofxCore.h"
@@ -17,7 +16,7 @@ namespace OFX {
       Instance::Instance() : _ptr(0), _locked(false) {}
 
       Instance::~Instance() {
-        ::free(_ptr);
+        delete [] _ptr;
       }
 
       bool Instance::alloc(size_t nBytes) {
