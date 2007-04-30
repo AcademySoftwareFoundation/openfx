@@ -105,7 +105,26 @@ namespace OFX {
       }
 
       PluginHandle *ImageEffectPlugin::getPluginHandle() {
-        if(!_pluginHandle) _pluginHandle = new OFX::Host::PluginHandle(this, _pc.getHostDescriptor()); 
+        if(!_pluginHandle) {
+          _pluginHandle = new OFX::Host::PluginHandle(this, _pc.getHostDescriptor()); 
+          
+          OfxPlugin *op = _pluginHandle->getOfxPlugin();
+          
+          int rval = op->mainEntry(kOfxActionLoad, 0, 0, 0);
+
+          if (rval != 0 && rval != 14) {
+            delete _pluginHandle;
+            return 0;
+          }
+          
+          rval = op->mainEntry(kOfxActionDescribe, getDescriptor().getHandle(), 0, 0);
+          
+          if (rval != 0 && rval != 14) {
+            delete _pluginHandle;
+            return 0;
+          }
+        }
+
         return _pluginHandle;
       }
 
