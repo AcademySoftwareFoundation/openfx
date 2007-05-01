@@ -114,6 +114,7 @@ namespace OFX {
 
           if (rval != 0 && rval != 14) {
             delete _pluginHandle;
+            _pluginHandle = 0;
             return 0;
           }
           
@@ -121,6 +122,7 @@ namespace OFX {
           
           if (rval != 0 && rval != 14) {
             delete _pluginHandle;
+            _pluginHandle = 0;
             return 0;
           }
         }
