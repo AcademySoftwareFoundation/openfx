@@ -29,7 +29,7 @@ namespace MyHost {
   MyEffectInstance::MyEffectInstance(OFX::Host::ImageEffect::ImageEffectPlugin* plugin,
                                      OFX::Host::ImageEffect::Descriptor& desc,
                                      const std::string& context) 
-                                     : OFX::Host::ImageEffect::Instance(plugin,desc,context)
+                                     : OFX::Host::ImageEffect::Instance(plugin,desc,context,false)
   {
   }
 
@@ -58,6 +58,40 @@ namespace MyHost {
   {
     printf("%s %s ",type,id);
     vprintf(format,args);
+    return kOfxStatOK;
+  }
+  
+  // live parameters
+  OfxStatus MyEffectInstance::getProjectSize(double& xSize, double& ySize) {
+    xSize = 720;
+    ySize = 576;
+    return kOfxStatOK;
+  }
+
+  OfxStatus MyEffectInstance::getProjectOffset(double& xOffset, double& yOffset){
+    xOffset = 0;
+    yOffset = 0;
+    return kOfxStatOK;
+  }
+
+  OfxStatus MyEffectInstance::getProjectExtent(double& xSize, double& ySize){
+    xSize = 720;
+    ySize = 576;
+    return kOfxStatOK;
+  }
+
+  OfxStatus MyEffectInstance::getProjectPixelAspectRatio(double& par){
+    par = 1.0;
+    return kOfxStatOK;
+  }
+
+  OfxStatus MyEffectInstance::getEffectDuration(double& duration){
+    duration  = 25.0;
+    return kOfxStatOK;
+  }
+
+  OfxStatus MyEffectInstance::getFrameRate(double& frameRate) {
+    frameRate = 25.0;
     return kOfxStatOK;
   }
 

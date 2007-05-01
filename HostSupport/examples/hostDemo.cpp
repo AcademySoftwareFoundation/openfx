@@ -91,6 +91,24 @@ int main(int argc, char **argv)
     // end instance
     tileFilterInstance->endInstanceEditAction();
 
+    double   x1 = 0;
+    double   y1 = 0;
+    double   x2 = 720;
+    double   y2 = 576;
+
+    std::map<std::string,OfxRectD> rois;
+
+    tileFilterInstance->getRegionOfInterestAction(0.0,1.0,1.0,x1,y1,x2,y2,rois);
+
+    // render
+    tileFilterInstance->beginRenderAction(0.0,1.0,1.0/25.0,true,1.0,1.0);
+
+    for(double t=0.0;t<1.0;t=t+1.0/25.0){
+      tileFilterInstance->renderAction(t,kOfxImageFieldBoth,x1,y1,x2,y2,1.0,1.0);
+    }
+
+    tileFilterInstance->endRenderAction(0.0,1.0,1.0/25.0,true,1.0,1.0);
+
     // delete the instance
     delete tileFilterInstance;
   }

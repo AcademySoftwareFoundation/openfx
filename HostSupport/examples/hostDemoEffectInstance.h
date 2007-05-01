@@ -24,6 +24,14 @@ namespace MyHost {
       const char* id,
       const char* format,
       va_list args);
+       
+    // live parameters
+    OfxStatus getProjectSize(double& xSize, double& ySize);   
+    OfxStatus getProjectOffset(double& xOffset, double& yOffset); 
+    OfxStatus getProjectExtent(double& xSize, double& ySize);
+    OfxStatus getProjectPixelAspectRatio(double& par);
+    OfxStatus getEffectDuration(double& duration);    
+    OfxStatus getFrameRate(double& frameRate);
   };
 
 }
