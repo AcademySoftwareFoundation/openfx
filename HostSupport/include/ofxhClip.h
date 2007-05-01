@@ -245,9 +245,9 @@ namespace OFX {
               std::string field,
               std::string uniqueIdentifier);
 
-        //        OfxImageClipHandle getHandle();
-
+        // OfxImageClipHandle getHandle();
         OfxPropertySetHandle getPropHandle() { return Property::Set::getHandle(); }
+
       };
 
     } // Memory
