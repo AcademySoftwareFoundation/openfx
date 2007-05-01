@@ -460,7 +460,25 @@ namespace OFX {
           propGet<T>(this->getHandle(), property.c_str(), index, &value);
           return value;
         }
-
+        
+        /// get a particular string property
+        std::string getStringProperty(const std::string &property, int index = 0) 
+        {
+          return getProperty<OFX::Host::Property::StringValue>(property, index);
+        }
+        
+        /// get a particular int property
+        int getIntProperty(const std::string &property, int index = 0) 
+        {
+          return getProperty<OFX::Host::Property::IntValue>(property, index);
+        }
+        
+        /// get a particular double property
+        double getDoubleProperty(const std::string &property, int index = 0) 
+        {
+          return getProperty<OFX::Host::Property::DoubleValue>(property, index);
+        }
+        
         /// get the dimension of a particular property
         int getDimension(const std::string &property)
         {

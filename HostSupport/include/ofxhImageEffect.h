@@ -8,7 +8,7 @@
 #include "ofxhParam.h"
 #include "ofxhMemory.h"
 
-#if !defined(__PRETTY_FUNCTION__)
+#if defined(WIN32) || defined(WIN64)
 #define __PRETTY_FUNCTION__ __FUNCSIG__
 #endif
 
@@ -147,7 +147,7 @@ namespace OFX {
 
         int upperGetDimension(const std::string &name);
         
-        int getDimension(const std::string &name);
+        int getDimension(const std::string &name)  OFX_EXCEPTION_SPEC;
 
         // set properties
         virtual void setProperty(const std::string &name, double value, int index) OFX_EXCEPTION_SPEC;
