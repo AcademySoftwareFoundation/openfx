@@ -231,6 +231,10 @@ namespace OFX {
           return _dimension;
         }
 
+        int getFixedDimension() {
+          return _dimension;
+        }
+
         // reset this property to the default
         virtual void reset() = 0;
 

@@ -124,7 +124,7 @@ namespace OFX
             o << indent_prefix << "<property "
               << XML::attribute("name", prop->getName())
               << XML::attribute("type", Property::typeNames[prop->getType()])
-              << XML::attribute("dimension", prop->getDimension()) 
+              << XML::attribute("dimension", prop->getFixedDimension()) 
               << ">\n";
               							                                                     
             for (int i=0;i<prop->getDimension();i++) {

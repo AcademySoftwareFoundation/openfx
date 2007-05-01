@@ -54,8 +54,6 @@ namespace OFX {
       }
 
       const std::string &Base::getType() {
-        printf("%s\n", typeid(this).name());
-        printf("type = %s\n", _paramType.c_str());
         return _paramType;
       } 
 

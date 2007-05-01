@@ -66,11 +66,8 @@ namespace OFX {
         
         if(effectBase) {
           *h2 = effectBase->getProps().getHandle();
-          printf("ImageEffect::getPropertySet returning %p\n", *h2);
-          printf("effectBase is %p, %s\n", h1, typeid(effectBase).name());
         }
         else {
-          printf("ImageEffect::getPropertySet failed\n", *h2);
           return kOfxStatErrBadHandle;
         }
 
