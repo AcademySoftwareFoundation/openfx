@@ -208,7 +208,7 @@ namespace OFX {
       {
         if(_plugin){
           PluginHandle* pHandle = _plugin->getPluginHandle();
-          if(handle){
+          if(pHandle){
             OfxPlugin* ofxPlugin = pHandle->getOfxPlugin();
             if(ofxPlugin){
               return ofxPlugin->mainEntry(action,handle,inArgs,outArgs);        
