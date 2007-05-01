@@ -105,7 +105,7 @@ namespace OFX {
       template<class T> void PropertyTemplate<T>::setValue(const typename T::OuterType &value, int index) OFX_EXCEPTION_SPEC {
 
         if (!_getHook) {
-          if (index < 0 || ((size_t)index >= _value.size() && _dimension)) {
+          if (index < 0 || ((size_t)index > _value.size() && _dimension)) {
             throw Exception(kOfxStatErrBadIndex);
           }
           if (_value.size() <= (size_t)index) {
