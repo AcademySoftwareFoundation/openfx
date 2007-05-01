@@ -145,11 +145,9 @@ namespace OFX {
       /// get the size of the vector
       template <class T> int PropertyTemplate<T>::getDimension() OFX_EXCEPTION_SPEC {
         if (_dimension != 0) {
-          printf("getDimension returning constant\n");
           return _dimension;
         } else {
           /// code to get it from the hook
-          printf("getDimension hook needed\n");
           if (_getHook) {
             return _getHook->getDimension(_name);
           } else {
