@@ -439,10 +439,6 @@ namespace OFX {
       Image::~Image() {
       }
 
-      //      OfxImageClipHandle Image::getHandle() {
-      //        return (OfxImageClipHandle)this;
-      //      }
-
     } // Clip
 
   } // Host

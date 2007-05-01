@@ -139,6 +139,7 @@ namespace OFX {
           if(!image) return kOfxStatFailed;
 
           *h3 = image->getPropHandle();
+
           return kOfxStatOK;
         }
         else 
@@ -314,7 +315,8 @@ namespace OFX {
           *param = (it->second)->getHandle(); 
 
           // get the param property set
-          *propertySet = (it->second)->getPropHandle();
+          if(propertySet)
+            *propertySet = (it->second)->getPropHandle();
 
           return kOfxStatOK;
         }
@@ -332,7 +334,8 @@ namespace OFX {
             *param = (it->second)->getHandle();  
 
             // get the param property set
-            *propertySet = (it->second)->getPropHandle();
+            if(propertySet)
+              *propertySet = (it->second)->getPropHandle();
 
             return kOfxStatOK;
           }
