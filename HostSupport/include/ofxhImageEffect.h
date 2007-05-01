@@ -8,6 +8,10 @@
 #include "ofxhParam.h"
 #include "ofxhMemory.h"
 
+#if !defined(__PRETTY_FUNCTION__)
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
+
 namespace OFX {
 
   namespace Host {
@@ -77,20 +81,25 @@ namespace OFX {
       };      
 
       /// an image effect plugin descriptor
-      class Instance : public Base {
+      class Instance : public Base,
+                       public Property::DoubleSetHook, 
+                       public Property::DoubleGetHook
+      {
       protected:
         OFX::Host::ImageEffect::ImageEffectPlugin    *_plugin;
         std::string                                   _context;
         Descriptor                                   *_descriptor;
         std::map<std::string, Clip::Instance*>        _clips;
         Param::SetInstance                           *_params;
+        bool                                          _interactive;
         bool                                          _created;
       public:        
 
         // constructor based on clip descriptor
         Instance(ImageEffectPlugin* plugin,
-          Descriptor &other, 
-          const std::string &context);
+                 Descriptor         &other, 
+                 const std::string  &context,
+                 bool               interactive);
 
         virtual ~Instance();
 
@@ -135,6 +144,55 @@ namespace OFX {
           const void *handle, 
           OfxPropertySetHandle inArgs,                        
           OfxPropertySetHandle outArgs);     
+
+        int upperGetDimension(const std::string &name);
+        
+        int getDimension(const std::string &name);
+
+        // set properties
+        virtual void setProperty(const std::string &name, double value, int index) OFX_EXCEPTION_SPEC;
+        virtual void setPropertyN(const std::string &name, double *first, int n) OFX_EXCEPTION_SPEC;
+        
+        // don't know what to do
+        virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC;
+
+        // get properties
+        virtual void getProperty(const std::string &name, double &ret, int index) OFX_EXCEPTION_SPEC;
+        virtual void getPropertyN(const std::string &name, double* first, int n) OFX_EXCEPTION_SPEC;       
+
+        //
+        // live parameters
+        //
+
+        // The size of the current project in canonical coordinates. 
+        // The size of a project is a sub set of the kOfxImageEffectPropProjectExtent. For example a 
+        // project may be a PAL SD project, but only be a letter-box within that. The project size is 
+        // the size of this sub window. 
+        virtual OfxStatus getProjectSize(double& xSize, double& ySize) = 0;
+
+        // The offset of the current project in canonical coordinates. 
+        // The offset is related to the kOfxImageEffectPropProjectSize and is the offset from the origin 
+        // of the project 'subwindow'. For example for a PAL SD project that is in letterbox form, the
+        // project offset is the offset to the bottom left hand corner of the letter box. The project 
+        // offset is in canonical coordinates. 
+        virtual OfxStatus getProjectOffset(double& xOffset, double& yOffset) = 0;
+
+        // The extent of the current project in canonical coordinates. 
+        // The extent is the size of the 'output' for the current project. See ProjectCoordinateSystems 
+        // for more infomation on the project extent. The extent is in canonical coordinates and only 
+        // returns the top right position, as the extent is always rooted at 0,0. For example a PAL SD 
+        // project would have an extent of 768, 576. 
+        virtual OfxStatus getProjectExtent(double& xSize, double& ySize) = 0;
+
+        // The pixel aspect ratio of the current project 
+        virtual OfxStatus getProjectPixelAspectRatio(double& par) = 0;
+
+        // The duration of the effect 
+        // This contains the duration of the plug-in effect, in frames. 
+        virtual OfxStatus getEffectDuration(double& duration) = 0;
+
+        // For an instance, this is the frame rate of the project the effect is in. 
+        virtual OfxStatus getFrameRate(double& frameRate) = 0;
 
         //
         // actions
@@ -183,8 +241,8 @@ namespace OFX {
         virtual OfxStatus endInstanceEditAction();
 
         // render action
-        virtual OfxStatus beginRenderAction(OfxTime  startName,
-                                            OfxTime  endName,
+        virtual OfxStatus beginRenderAction(OfxTime  startFrame,
+                                            OfxTime  endFrame,
                                             OfxTime  step,
                                             bool     interactive,
                                             double   renderScaleX,
@@ -199,8 +257,8 @@ namespace OFX {
                                        double       renderScaleX,
                                        double       renderScaleY);
 
-        virtual OfxStatus endRenderAction(OfxTime  startName,
-                                          OfxTime  endName,
+        virtual OfxStatus endRenderAction(OfxTime  startFrame,
+                                          OfxTime  endFrame,
                                           OfxTime  step,
                                           bool     interactive,
                                           double   renderScaleX,
@@ -218,10 +276,11 @@ namespace OFX {
         virtual OfxStatus getRegionOfInterestAction(OfxTime  time,
                                                     double   renderScaleX,
                                                     double   renderScaleY,
-                                                    double   &x1,
-                                                    double   &y1,
-                                                    double   &x2,
-                                                    double   &y2);
+                                                    double   x1,
+                                                    double   y1,
+                                                    double   x2,
+                                                    double   y2,
+                                                    std::map<std::string,OfxRectD> &rois);
 
         // frames needed
         virtual OfxStatus getFrameNeededAction(OfxTime time, 
