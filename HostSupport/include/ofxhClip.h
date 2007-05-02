@@ -19,7 +19,7 @@ namespace OFX {
       public:
         
         /// constructor
-        Descriptor();
+        Descriptor(std::string name);
         
         /// get a handle on the clip descriptor for the C api
         OfxImageClipHandle getHandle();
