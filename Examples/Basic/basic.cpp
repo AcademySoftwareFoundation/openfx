@@ -675,10 +675,10 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   // in which case we may have a mask input attached
   OfxPropertySetHandle maskImg = 0;
   void     *mask = 0;
-  OfxRectI  maskRect;
-  int       maskRowBytes;
+  OfxRectI  maskRect = {0,0,0,0};
+  int       maskRowBytes = 0;
   int       maskBitDepth = 8;
-  bool      maskIsAlpha;
+  bool      maskIsAlpha = 0;
   bool      hasMask = false;
   if(myData->isGeneralEffect) {
     // is the mask connected?
@@ -724,7 +724,7 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   }
 
   // are we compenent scaling
-  int scaleComponents;
+  bool scaleComponents;
   gParamHost->paramGetValueAtTime(myData->perComponentScaleParam, time, &scaleComponents);
 
   // get the scale parameters
