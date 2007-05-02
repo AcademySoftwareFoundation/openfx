@@ -240,7 +240,7 @@ namespace OFX {
           }
         }
 
-        if (type != kOfxParamTypeGroup && kOfxParamTypePage) {
+        if (type != kOfxParamTypeGroup && type != kOfxParamTypePage) {
           _properties.addProperties(allButGroupPageProps);
         }
 
@@ -380,6 +380,25 @@ namespace OFX {
       std::vector<Param::Instance*> GroupInstance::getChildren()
       {
         return _children;
+      }
+
+      //
+      // Page Instance
+      //
+
+      std::map<int,Param::Instance*> PageInstance::getChildren(){
+        std::map<int,Param::Instance*> children;
+
+        int nChildren = _properties.getDimension(kOfxParamPropPageChild);
+
+        for(int i=0;i<nChildren;i++){
+          std::string childName = _properties.getProperty<Property::StringValue>(kOfxParamPropPageChild,i);        
+          Param::Instance* child = _paramSetInstance->getParam(childName);
+          if(child)
+            children[i]=child;
+        }
+        
+        return children;
       }
 
       //
