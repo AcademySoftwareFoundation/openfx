@@ -5,11 +5,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hostsupport", "hostsupport.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hostDemo", "examples\hostDemo.vcproj", "{CEFBEBC4-B962-4A49-949B-30ECE5EADAC6}"
 	ProjectSection(ProjectDependencies) = postProject
+		{88405F0E-918E-4523-8627-1380BC83A605} = {88405F0E-918E-4523-8627-1380BC83A605}
 		{A7C4BC47-C2BD-402A-B830-04CC45F6AB55} = {A7C4BC47-C2BD-402A-B830-04CC45F6AB55}
 		{A3CD17F2-90D6-491C-A415-F84BCCAAF9ED} = {A3CD17F2-90D6-491C-A415-F84BCCAAF9ED}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "expat_static", "..\expat-1.95.8\lib\expat_static.vcproj", "{A3CD17F2-90D6-491C-A415-F84BCCAAF9ED}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Basic", "..\Examples\Basic\Basic_2005.vcproj", "{88405F0E-918E-4523-8627-1380BC83A605}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +46,13 @@ Global
 		{A3CD17F2-90D6-491C-A415-F84BCCAAF9ED}.Release|Win32.Build.0 = Release|Win32
 		{A3CD17F2-90D6-491C-A415-F84BCCAAF9ED}.Release|x64.ActiveCfg = Release|x64
 		{A3CD17F2-90D6-491C-A415-F84BCCAAF9ED}.Release|x64.Build.0 = Release|x64
+		{88405F0E-918E-4523-8627-1380BC83A605}.Debug|Win32.ActiveCfg = Debug|Win32
+		{88405F0E-918E-4523-8627-1380BC83A605}.Debug|Win32.Build.0 = Debug|Win32
+		{88405F0E-918E-4523-8627-1380BC83A605}.Debug|x64.ActiveCfg = Debug|x64
+		{88405F0E-918E-4523-8627-1380BC83A605}.Debug|x64.Build.0 = Debug|x64
+		{88405F0E-918E-4523-8627-1380BC83A605}.Release|Win32.ActiveCfg = Release|Win32
+		{88405F0E-918E-4523-8627-1380BC83A605}.Release|Win32.Build.0 = Release|Win32
+		{88405F0E-918E-4523-8627-1380BC83A605}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
