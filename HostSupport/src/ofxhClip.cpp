@@ -36,7 +36,10 @@ namespace OFX {
         { 0 },
       };
       
-      Descriptor::Descriptor() : _properties(clipDescriptorStuffs) {
+      Descriptor::Descriptor(std::string name) : 
+        _properties(clipDescriptorStuffs) 
+      {
+        _properties.setProperty<Property::StringValue>(kOfxPropName,0,name.c_str());
       }
 
       /// get a handle on the clip descriptor for the C api
