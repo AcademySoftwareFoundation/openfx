@@ -64,7 +64,7 @@ int main(int argc, char **argv)
   of.close();
 
   // get a plugin
-  OFX::Host::ImageEffect::ImageEffectPlugin* plugin = ia.getPluginById("uk.co.thefoundry.tinder.t_tile");
+  OFX::Host::ImageEffect::ImageEffectPlugin* plugin = ia.getPluginById("uk.co.thefoundry:BasicGainPlugin");
 
   // create an instance
   OFX::Host::ImageEffect::Instance* tileFilterInstance = plugin->createInstance(kOfxImageEffectContextFilter);
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
     tileFilterInstance->beginInstanceChangedAction(kOfxChangeUserEdited);
 
     // instance change
-    tileFilterInstance->paramInstanceChangedAction("softness",kOfxChangeUserEdited,0.0,1.0,1.0);
+    tileFilterInstance->paramInstanceChangedAction("scaleR",kOfxChangeUserEdited,0.0,1.0,1.0);
 
     // end instance
     tileFilterInstance->endInstanceChangedAction(kOfxChangeUserEdited);
@@ -105,6 +105,13 @@ int main(int argc, char **argv)
 
     for(double t=0.0;t<1.0;t=t+1.0/25.0){
       tileFilterInstance->renderAction(t,kOfxImageFieldBoth,x1,y1,x2,y2,1.0,1.0);
+      
+      MyHost::MyClipInstance* outputClip = (MyHost::MyClipInstance*)tileFilterInstance->getClip("Output");
+      
+      unsigned char* output = outputClip->getLastOutput();
+
+      // do something with the output
+      delete [] output;
     }
 
     tileFilterInstance->endRenderAction(0.0,1.0,1.0/25.0,true,1.0,1.0);

@@ -7,8 +7,11 @@ namespace MyHost {
   protected:
     MyEffectInstance* _effect;
     std::string       _name;
+    unsigned char*    _lastOutput;
   public:
     MyClipInstance(MyEffectInstance* effect, const std::string& name, OFX::Host::Clip::Descriptor& desc);
+
+    unsigned char* getLastOutput() { return _lastOutput; }
 
     // implemented abstract members of clip instance
 

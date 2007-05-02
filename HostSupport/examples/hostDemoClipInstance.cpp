@@ -113,8 +113,9 @@ namespace MyHost {
   // kOfxImagePropData
   class MyImage : public OFX::Host::Clip::Image {
     unsigned char* _data;
+    bool           _delete;
   public:
-    MyImage(OFX::Host::Clip::Instance& instance, unsigned char* data, std::string uid) : 
+    MyImage(OFX::Host::Clip::Instance& instance, unsigned char* data, std::string uid, bool del = true) : 
             OFX::Host::Clip::Image(instance,
                                    1.0,1.0,
                                    (void*)data,
@@ -123,8 +124,10 @@ namespace MyHost {
                                    4*720,
                                    kOfxImageFieldBoth,
                                    uid), 
-        _data(data) 
-    {}
+        _data(data),
+        _delete(del)
+  {
+  }
 
     void colour(){
       unsigned char* img = _data;
@@ -139,7 +142,7 @@ namespace MyHost {
     }
 
     ~MyImage() {
-      delete _data;
+      if(_delete) delete _data;
     }
   };
 
@@ -149,12 +152,15 @@ namespace MyHost {
     char uid[64];
     sprintf(uid,"%d",::time(0));
 
-    MyImage* myImage = new MyImage(*this,new unsigned char[720*576*4],uid);
+    MyImage* myImage = 0;
 
-    if(getName()=="output"){
-      printf("output");
+    if(getName()=="Output"){
+      unsigned char* data = new unsigned char[720*576*4];
+      _lastOutput = data;
+      myImage = new MyImage(*this,data,uid,false);
     }
     else{
+      myImage = new MyImage(*this,new unsigned char[720*576*4],uid);
       myImage->colour();
     }
 

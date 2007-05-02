@@ -69,14 +69,18 @@ namespace MyHost {
   {
   }
 
-  OfxStatus MyDoubleInstance::get(double&)
+  OfxStatus MyDoubleInstance::get(double& d)
   {
-    return kOfxStatErrMissingHostFeature;
+    // values for the Basic OFX plugin to work
+    d = 2.0;
+    return kOfxStatOK;
   }
 
-  OfxStatus MyDoubleInstance::get(OfxTime time, double&)
+  OfxStatus MyDoubleInstance::get(OfxTime time, double& d)
   {
-    return kOfxStatErrMissingHostFeature;
+    // values for the Basic OFX plugin to work
+    d = 2.0;
+    return kOfxStatOK;
   }
 
   OfxStatus MyDoubleInstance::set(double)
@@ -111,14 +115,16 @@ namespace MyHost {
   {
   }
 
-  OfxStatus MyBooleanInstance::get(bool&)
+  OfxStatus MyBooleanInstance::get(bool& b)
   {
-    return kOfxStatErrMissingHostFeature;
+    b = true;
+    return kOfxStatOK;
   }
 
-  OfxStatus MyBooleanInstance::get(OfxTime time, bool&)
+  OfxStatus MyBooleanInstance::get(OfxTime time, bool& b)
   {
-    return kOfxStatErrMissingHostFeature;
+    b = true;
+    return kOfxStatOK;
   }
 
   OfxStatus MyBooleanInstance::set(bool)
