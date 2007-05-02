@@ -46,7 +46,6 @@ namespace OFX {
 
 } // OFX
 
-
 int main(int argc, char **argv) 
 {
   OFX::Host::ImageEffect::gNewInstancePtr = 0;

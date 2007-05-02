@@ -27,8 +27,8 @@ namespace MyHost
   MyHostDescriptor::MyHostDescriptor()
   {
     // set host properties... TODO
-    _properties.setProperty<OFX::Host::Property::StringValue>(kOfxPropName, 0, "Avid OFX Host");
-    _properties.setProperty<OFX::Host::Property::StringValue>(kOfxPropLabel, 0, "Avid OFX Host");
+    _properties.setProperty<OFX::Host::Property::StringValue>(kOfxPropName, 0, "OFX Host");
+    _properties.setProperty<OFX::Host::Property::StringValue>(kOfxPropLabel, 0, "OFX Host");
     _properties.setProperty<OFX::Host::Property::IntValue>(kOfxImageEffectHostPropIsBackground, 0, false);
     _properties.setProperty<OFX::Host::Property::IntValue>(kOfxImageEffectPropSupportsOverlays, 0, false);
     _properties.setProperty<OFX::Host::Property::IntValue>(kOfxImageEffectPropSupportsMultiResolution, 0, true);
