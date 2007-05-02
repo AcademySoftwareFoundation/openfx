@@ -130,6 +130,12 @@ namespace OFX {
         std::vector<Param::Instance*> getChildren();
       };
 
+      class PageInstance : public Instance {
+      public:
+        PageInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
+        std::map<int,Param::Instance*> getChildren();
+      };
+
       class IntegerInstance : public Instance, public KeyframeParam {
       public:
         IntegerInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
