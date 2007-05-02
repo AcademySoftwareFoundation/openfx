@@ -322,7 +322,7 @@ namespace OFX {
         if (el == "clip" && _currentContext) {
           std::string cname = map["name"];
 
-          _currentClip = new Clip::Descriptor();
+          _currentClip = new Clip::Descriptor(cname);
           _currentContext->addClip(cname, _currentClip);
           return;
         }
