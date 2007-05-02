@@ -102,7 +102,7 @@ namespace OFX {
 
       /// create a new clip and add this to the clip map
       Clip::Descriptor *Descriptor::defineClip(const std::string &name) {
-        Clip::Descriptor *c = new Clip::Descriptor();
+        Clip::Descriptor *c = new Clip::Descriptor(name);
         _clips[name] = c;
         return c;
       }
@@ -382,7 +382,8 @@ namespace OFX {
 
           std::string parent = instance->getParentName();
           
-          parameters[parent].push_back(instance);
+          if(parent!="")
+            parameters[parent].push_back(instance);
 
           if(instance->getType()==kOfxParamTypeGroup){
             groups[instance->getName()]=instance;
