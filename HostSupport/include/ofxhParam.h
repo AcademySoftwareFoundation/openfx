@@ -67,9 +67,21 @@ namespace OFX {
         std::map<std::string, Descriptor*> _paramMap;
         std::list<Descriptor *> _paramList;
         
+        /// not allowed
+        SetDescriptor(const SetDescriptor &other);
+        
       public:
+
+        SetDescriptor() {
+        }
+
         std::map<std::string, Descriptor*> &getParams();
+
         std::list<Descriptor *> &getParamList();
+
+        const std::map<std::string, Descriptor*> &getParams() const {
+          return _paramMap;
+        }
 
         void addParam(const std::string &name, Descriptor *p);
       };

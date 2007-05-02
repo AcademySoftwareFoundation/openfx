@@ -47,9 +47,10 @@ namespace OFX {
       // Descriptor
       Descriptor::Descriptor(const Descriptor &other)
         : Base(other._properties)
-        , _clips(other._clips)
-        , _params(other._params)
       {
+        if (other._clips.size() != 0 || other._params.getParams().size() != 0) {
+          printf("tried to a copy a fleshed-out descriptor. This should never happen\n");
+        }
       }
 
       static Property::PropSpec effectDescriptorStuff[] = {

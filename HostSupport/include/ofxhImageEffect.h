@@ -61,6 +61,7 @@ namespace OFX {
         Param::SetDescriptor                      _params;
       public:
 
+        /// copy constructor.  only to be used on non-context Descriptions 
         Descriptor(const Descriptor &other);
 
         /// constructor
