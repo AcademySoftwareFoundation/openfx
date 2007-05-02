@@ -1,4 +1,7 @@
 all : lib/libofxHost.a
+clean :
+	rm -f lib/libofxHost.a
+	rm -f */*.o
 
 OS = $(shell uname)
 
