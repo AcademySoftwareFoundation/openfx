@@ -433,19 +433,48 @@ namespace OFX {
         return mainEntry(kOfxActionBeginInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
       }
 
-      OfxStatus Instance::paramInstanceChangedAction(std::string paramName,
+
+      OfxStatus Instance::paramInstanceChangedAction(std::string name,
                                                      std::string why,
                                                      OfxTime     time,
                                                      double      renderScaleX,
                                                      double      renderScaleY)
-      {
-        Param::Instance* param = _params->getParam(paramName);
+      {        
 
-        if(param)
-          return param->instanceChangedAction(why,time,renderScaleX,renderScaleY);
-        else
-          return kOfxStatFailed;
+			  Property::PropSpec stuff[] = {
+          { kOfxPropType, Property::eString, 1, true, kOfxTypeParameter },
+          { kOfxPropName, Property::eString, 1, true, name.c_str() },
+          { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
+          { kOfxPropTime, Property::eDouble, 1, true, "0" },
+          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { 0 }
+        };
+
+        Property::Set inArgs(stuff);
+
+        // add the second dimension of the render scale
+        inArgs.setProperty<Property::DoubleValue>(kOfxPropTime,0,time);
+
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
+        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
+        
+        return mainEntry(kOfxActionInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
       }
+
+
+
+      //      OfxStatus Instance::paramInstanceChangedAction(std::string paramName,
+      //                                                     std::string why,
+      //                                                     OfxTime     time,
+      //                                                     double      renderScaleX,
+      //                                                     double      renderScaleY)
+      //      {
+      //
+      //        if(param)
+      //          return param->instanceChangedAction(why,time,renderScaleX,renderScaleY);
+      //        else
+      //          return kOfxStatFailed;
+      //      }
 
       OfxStatus Instance::clipInstanceChangedAction(std::string clipName,
                                                     std::string why,

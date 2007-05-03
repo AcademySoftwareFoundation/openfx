@@ -29,6 +29,8 @@
 
 #include <iostream>
 
+#define DEBUG
+
 // ofx
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
@@ -189,6 +191,9 @@ namespace OFX {
 
       template<class T> OfxStatus Set::underlyingGetProperty(const std::string&name, T *&prop) {
         if (_props.find(name) == _props.end()) {
+          if (name == kOfxPropInstanceData) {
+            abort();
+          }
           return kOfxStatErrUnknown;
         }
         Property *myprop = _props[name];
