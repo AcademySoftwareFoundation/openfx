@@ -348,14 +348,14 @@ namespace OFX {
           it++)
         {
           // foreach clip descriptor make a clip instance
-          Clip::Instance* instance = newClipInstance(this,it->first,it->second);   
+          Clip::Instance* instance = newClipInstance(it->first,it->second);   
           if(!instance) return kOfxStatFailed;
 
           _clips[it->first] = instance;
         }        
 
         // make the param set instance from the param instances
-        _params = newParamSetInstance(this,_descriptor->getParams());
+        _params = newParamSetInstance(_descriptor->getParams());
 
         std::map<std::string,Param::Descriptor*>& map = _descriptor->getParams().getParams();
 

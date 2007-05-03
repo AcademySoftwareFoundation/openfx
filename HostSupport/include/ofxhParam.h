@@ -99,7 +99,7 @@ namespace OFX {
         virtual ~Instance();
 
         /// make a parameter, with the given type and name
-        explicit Instance(Descriptor& descriptor, Param::SetInstance* instance = 0);
+        explicit Instance(Descriptor& descriptor, Param::SetInstance* instance);
 
         OfxStatus instanceChangedAction(std::string why,
                                         OfxTime     time,
@@ -310,7 +310,7 @@ namespace OFX {
 
         OFX::Host::ImageEffect::Instance* _instance;
       public:
-        SetInstance(OFX::Host::ImageEffect::Instance* instance = 0) : _instance(instance) {}
+        SetInstance(OFX::Host::ImageEffect::Instance* instance) : _instance(instance) {}
 
         // get the params
         std::map<std::string, Instance*> &getParams();

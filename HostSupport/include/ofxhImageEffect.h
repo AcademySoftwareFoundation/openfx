@@ -120,13 +120,11 @@ namespace OFX {
         Memory::Instance* imageMemoryAlloc(size_t nBytes);
 
         // make a clip
-        virtual Clip::Instance* newClipInstance(ImageEffect::Instance* plugin,
-          const std::string& name, 
+        virtual Clip::Instance* newClipInstance(const std::string& name, 
           Clip::Descriptor* descriptor) = 0;
 
         // make a param set
-        virtual Param::SetInstance* newParamSetInstance(ImageEffect::Instance* plugin, 
-          Param::SetDescriptor& descriptor) = 0;
+        virtual Param::SetInstance* newParamSetInstance(Param::SetDescriptor& descriptor) = 0;
 
         // vmessage
         virtual OfxStatus vmessage(const char* type,

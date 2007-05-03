@@ -290,7 +290,9 @@ namespace OFX {
       /// make a parameter, with the given type and name
       Instance::Instance(Descriptor& descriptor, Param::SetInstance* paramSet) 
         : _paramSetInstance(paramSet), _parentInstance(0), Base(descriptor.getName(),descriptor.getType(),descriptor.getProperties())
-      {}
+      {
+        assert(_paramSetInstance);
+      }
 
       // copy one parameter to another
       OfxStatus Instance::copy(const Instance &instance, OfxTime offset) { 
@@ -325,10 +327,14 @@ namespace OFX {
         inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
         inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
         
+          printf("paramSetInstance = %p\n", _paramSetInstance);
+
         if(_paramSetInstance){
           ImageEffect::Instance* instance = _paramSetInstance->getEffectInstance();
           if(instance){
-            return instance->mainEntry(kOfxActionBeginInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
+				    printf("instance = %p\n", instance);
+ 
+            return instance->mainEntry(kOfxActionInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
           }
         }
 

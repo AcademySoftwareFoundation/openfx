@@ -931,6 +931,8 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
         Instance *paramInstance = reinterpret_cast<Instance*>(paramHandle);        
         if(!paramInstance) return kOfxStatErrBadHandle;
 
+        printf("paramSetValue called on %s\n", paramInstance->getName().c_str());
+
         if(paramInstance->getType()==kOfxParamTypeInteger){
           va_list ap;
 
