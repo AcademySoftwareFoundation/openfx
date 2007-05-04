@@ -304,39 +304,6 @@ namespace OFX {
         return kOfxStatErrMissingHostFeature; 
       }
 
-      OfxStatus Instance::instanceChangedAction(std::string why,
-                                                OfxTime     time,
-                                                double      renderScaleX,
-                                                double      renderScaleY)
-      {        
-
-        Property::PropSpec stuff[] = {
-          { kOfxPropType, Property::eString, 1, true, kOfxTypeParameter },
-          { kOfxPropName, Property::eString, 1, true, getName().c_str() },
-          { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
-          { kOfxPropTime, Property::eDouble, 1, true, "0" },
-          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
-          { 0 }
-        };
-
-        Property::Set inArgs(stuff);
-
-        // add the second dimension of the render scale
-        inArgs.setDoubleProperty(kOfxPropTime,time);
-
-        inArgs.setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleX, 0);
-        inArgs.setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleY, 1);
-        
-        if(_paramSetInstance){
-          ImageEffect::Instance* instance = _paramSetInstance->getEffectInstance();
-          if(instance){
-            return instance->mainEntry(kOfxActionBeginInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
-          }
-        }
-
-        return kOfxStatFailed;
-      }
-
       void Instance::setParentInstance(Instance* instance){
         _parentInstance = instance;
       }

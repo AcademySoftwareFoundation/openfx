@@ -459,14 +459,42 @@ namespace OFX {
                                                      OfxTime     time,
                                                      double      renderScaleX,
                                                      double      renderScaleY)
-      {
+      {        
         Param::Instance* param = _params->getParam(paramName);
-
-        if(param)
-          return param->instanceChangedAction(why,time,renderScaleX,renderScaleY);
-        else
+        if (!param) {
           return kOfxStatFailed;
+        }
+
+        Property::PropSpec stuff[] = {
+          { kOfxPropType, Property::eString, 1, true, kOfxTypeParameter },
+          { kOfxPropName, Property::eString, 1, true, paramName.c_str() },
+          { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
+          { kOfxPropTime, Property::eDouble, 1, true, "0" },
+          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { 0 }
+        };
+
+        Property::Set inArgs(stuff);
+
+        // add the second dimension of the render scale
+        inArgs.setDoubleProperty(kOfxPropTime,time);
+
+        inArgs.setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleX, 0);
+        inArgs.setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleY, 1);
+        
+        if (paramName == "presets") {
+          printf("presets changed.\n");
+        }
+
+        return mainEntry(kOfxActionInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
       }
+
+
+      //        if(param)
+      //          return param->instanceChangedAction(why,time,renderScaleX,renderScaleY);
+      //        else
+      //          return kOfxStatFailed;
+      //      }
 
       OfxStatus Instance::clipInstanceChangedAction(std::string clipName,
                                                     std::string why,

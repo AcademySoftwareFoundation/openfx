@@ -89,10 +89,10 @@ namespace OFX {
         /// make a parameter, with the given type and name
         explicit Instance(Descriptor& descriptor, Param::SetInstance* instance = 0);
 
-        OfxStatus instanceChangedAction(std::string why,
-                                        OfxTime     time,
-                                        double      renderScaleX,
-                                        double      renderScaleY);
+        //        OfxStatus instanceChangedAction(std::string why,
+        //                                        OfxTime     time,
+        //                                        double      renderScaleX,
+        //                                        double      renderScaleY);
 
         // get the param instance
         OFX::Host::Param::SetInstance* getParamSetInstance() { return _paramSetInstance; }
