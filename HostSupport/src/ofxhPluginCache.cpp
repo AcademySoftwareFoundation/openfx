@@ -44,14 +44,10 @@
 // ofx host
 #include "ofxhBinary.h"
 #include "ofxhPropertySuite.h"
-#include "ofxhClip.h"
-#include "ofxhParam.h"
 #include "ofxhMemory.h"
-#include "ofxhImageEffect.h"
 #include "ofxhPluginAPICache.h"
 #include "ofxhPluginCache.h"
 #include "ofxhHost.h"
-#include "ofxhImageEffectAPI.h"
 #include "ofxhXml.h"
 
 #if defined (__linux__)

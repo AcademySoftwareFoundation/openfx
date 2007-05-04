@@ -33,9 +33,9 @@ namespace OFX {
       // implement a function OFX::Host::ImageEffect::newInstance to make new instances
       // of effects
       extern ImageEffect::Instance* newInstance(void* ptr,
-        ImageEffectPlugin* plugin,
-        Descriptor& desc,
-        const std::string& context);
+                                                ImageEffectPlugin* plugin,
+                                                Descriptor& desc,
+                                                const std::string& context);
 
 
       class Base {
@@ -44,7 +44,7 @@ namespace OFX {
 
       public:
         Base(const Property::Set &set);
-        Base(const Property::PropSpec& propSpec);
+        Base(const Property::PropSpec * propSpec);
         virtual ~Base();
 
         /// obtain a handle on this for passing to the C api
@@ -57,11 +57,11 @@ namespace OFX {
       /// an image effect plugin descriptor
       class Descriptor : public Base {
       protected:
-        std::map<std::string, Clip::Descriptor*>  _clips;
+        std::map<std::string, Clip::Descriptor*>  _clips; ///< clips descriptors by name
+        std::vector<Clip::Descriptor*>            _clipsByOrder; ///< clip descriptors in order of declaration
         Param::SetDescriptor                      _params;
       public:
 
-        /// copy constructor.  only to be used on non-context Descriptions 
         Descriptor(const Descriptor &other);
 
         /// constructor
@@ -77,14 +77,20 @@ namespace OFX {
         /// get the clips
         std::map<std::string, Clip::Descriptor*> &getClips();
 
+        /// add a new clip
         void addClip(const std::string &name, Clip::Descriptor *clip);
 
+        /// get the clips in order of construction
+        const std::vector<Clip::Descriptor*> &getClipsByOrder() 
+        {
+          return _clipsByOrder;
+        }
       };      
 
       /// an image effect plugin descriptor
       class Instance : public Base,
-                       public Property::DoubleSetHook, 
-                       public Property::DoubleGetHook
+                       private Property::NotifyHook, 
+                       private Property::GetHook
       {
       protected:
         OFX::Host::ImageEffect::ImageEffectPlugin    *_plugin;
@@ -107,6 +113,15 @@ namespace OFX {
         /// get the parameters set
         Param::SetInstance &getParams();
 
+        // get the nth clip, in order of declaration
+        Clip::Instance* getNthClip(int index);
+
+        // get the nth clip, in order of declaration
+        int getNClips() const
+        {
+          return _clips.size();
+        }
+
         // pure virtuals that must  be overriden
         virtual Clip::Instance* getClip(const std::string& name);
 
@@ -120,44 +135,47 @@ namespace OFX {
         Memory::Instance* imageMemoryAlloc(size_t nBytes);
 
         // make a clip
-        virtual Clip::Instance* newClipInstance(const std::string& name, 
-          Clip::Descriptor* descriptor) = 0;
+        virtual Clip::Instance* newClipInstance(ImageEffect::Instance* plugin,
+                                                Clip::Descriptor* descriptor) = 0;
 
         // make a param set
-        virtual Param::SetInstance* newParamSetInstance(Param::SetDescriptor& descriptor) = 0;
+        virtual Param::SetInstance* newParamSetInstance(ImageEffect::Instance* plugin, 
+                                                        Param::SetDescriptor& descriptor) = 0;
 
         // vmessage
         virtual OfxStatus vmessage(const char* type,
-          const char* id,
-          const char* format,
-          va_list args) = 0;       
+                                   const char* id,
+                                   const char* format,
+                                   va_list args) = 0;       
 
         // call the interactive entry point
         OfxStatus overlayEntry(const char *action, 
-          const void *handle, 
-          OfxPropertySetHandle inArgs, 
-          OfxPropertySetHandle outArgs);
+                               const void *handle, 
+                               OfxPropertySetHandle inArgs, 
+                               OfxPropertySetHandle outArgs);
 
         // call the effect entry point
         OfxStatus mainEntry(const char *action, 
-          const void *handle, 
-          OfxPropertySetHandle inArgs,                        
-          OfxPropertySetHandle outArgs);     
+                            const void *handle, 
+                            OfxPropertySetHandle inArgs,                        
+                            OfxPropertySetHandle outArgs);     
 
         int upperGetDimension(const std::string &name);
-        
-        int getDimension(const std::string &name)  OFX_EXCEPTION_SPEC;
 
-        // set properties
-        virtual void setProperty(const std::string &name, double value, int index) OFX_EXCEPTION_SPEC;
-        virtual void setPropertyN(const std::string &name, double *first, int n) OFX_EXCEPTION_SPEC;
+        /// overridden from Property::Notify
+        virtual void notify(const std::string &name, bool singleValue, int indexOrN) OFX_EXCEPTION_SPEC;
+
+        // overridden from gethook,  get the virutals for viewport size, pixel scale, background colour
+        virtual double getDoubleProperty(const std::string &name, int index) OFX_EXCEPTION_SPEC;
+
+        // overridden from gethook,  get the virutals for viewport size, pixel scale, background colour
+        virtual void getDoublePropertyN(const std::string &name, double *values, int count) OFX_EXCEPTION_SPEC;
         
-        // don't know what to do
+        // overridden from gethook, don't know what to do
         virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC;
 
-        // get properties
-        virtual void getProperty(const std::string &name, double &ret, int index) OFX_EXCEPTION_SPEC;
-        virtual void getPropertyN(const std::string &name, double* first, int n) OFX_EXCEPTION_SPEC;       
+        /// overridden from gethook
+        virtual int getDimension(const std::string &name)  OFX_EXCEPTION_SPEC;
 
         //
         // live parameters
@@ -167,31 +185,31 @@ namespace OFX {
         // The size of a project is a sub set of the kOfxImageEffectPropProjectExtent. For example a 
         // project may be a PAL SD project, but only be a letter-box within that. The project size is 
         // the size of this sub window. 
-        virtual OfxStatus getProjectSize(double& xSize, double& ySize) = 0;
+        virtual void getProjectSize(double& xSize, double& ySize) = 0;
 
         // The offset of the current project in canonical coordinates. 
         // The offset is related to the kOfxImageEffectPropProjectSize and is the offset from the origin 
         // of the project 'subwindow'. For example for a PAL SD project that is in letterbox form, the
         // project offset is the offset to the bottom left hand corner of the letter box. The project 
         // offset is in canonical coordinates. 
-        virtual OfxStatus getProjectOffset(double& xOffset, double& yOffset) = 0;
+        virtual void getProjectOffset(double& xOffset, double& yOffset) = 0;
 
         // The extent of the current project in canonical coordinates. 
         // The extent is the size of the 'output' for the current project. See ProjectCoordinateSystems 
         // for more infomation on the project extent. The extent is in canonical coordinates and only 
         // returns the top right position, as the extent is always rooted at 0,0. For example a PAL SD 
         // project would have an extent of 768, 576. 
-        virtual OfxStatus getProjectExtent(double& xSize, double& ySize) = 0;
+        virtual void getProjectExtent(double& xSize, double& ySize) = 0;
 
         // The pixel aspect ratio of the current project 
-        virtual OfxStatus getProjectPixelAspectRatio(double& par) = 0;
+        virtual double getProjectPixelAspectRatio() = 0;
 
         // The duration of the effect 
         // This contains the duration of the plug-in effect, in frames. 
-        virtual OfxStatus getEffectDuration(double& duration) = 0;
+        virtual double getEffectDuration() = 0;
 
         // For an instance, this is the frame rate of the project the effect is in. 
-        virtual OfxStatus getFrameRate(double& frameRate) = 0;
+        virtual double getFrameRate() = 0;
 
         //
         // actions
@@ -283,7 +301,7 @@ namespace OFX {
 
         // frames needed
         virtual OfxStatus getFrameNeededAction(OfxTime time, 
-                                                std::map<std::string,std::vector<OfxRangeD> > rangeMap);
+                                               std::map<std::string,std::vector<OfxRangeD> > rangeMap);
 
         // is identity
         virtual OfxStatus isIdentityAction(OfxTime     &time,

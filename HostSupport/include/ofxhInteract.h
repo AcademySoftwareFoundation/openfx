@@ -31,52 +31,57 @@ namespace OFX {
 
       };
 
-      class Instance : public Descriptor, public Property::DoubleSetHook, public Property::DoubleGetHook {
+      class Instance : public Descriptor, 
+                       private Property::GetHook {
       protected:
         OFX::Host::ImageEffect::Instance&  _effect;
         void*                              _instanceData;
+        Property::Set                      _argProperties;
 
+        /// initialise the argument properties
+        void initArgProp(OfxTime time, 
+                         double  renderScaleX, 
+                         double  renderScaleY);
+                
+        /// set pen props in the args
+        void setPenArgProps(double  penX, 
+                            double  penY,
+                            double  pressure);
+        
+        /// set key args in the props
+        void setKeyArgProps(int     key,
+                            char*   keyString);
+        
       public:
         Instance(Descriptor& desc, ImageEffect::Instance& effect);
 
         virtual ~Instance();
 
         // hooks to kOfxInteractPropViewportSize in the property set
-        virtual OfxStatus getViewportSize(double &width, double &height) = 0;
+        virtual void getViewportSize(double &width, double &height) = 0;
 
         // hooks to live kOfxInteractPropPixelScale in the property set
-        virtual OfxStatus getPixelScale(double& xScale, double& yScale) = 0;
+        virtual void getPixelScale(double& xScale, double& yScale) = 0;
 
         // hooks to kOfxInteractPropBackgroundColour in the property set
-        virtual OfxStatus getBackgroundColour(double &r, double &g, double &b) = 0;
+        virtual void getBackgroundColour(double &r, double &g, double &b) = 0;
 
         // implement
         virtual OfxStatus swapBuffers() = 0;
         virtual OfxStatus redraw() = 0;
 
         // returns the params the interact uses
-        virtual OfxStatus getSlaveToParam(std::vector<std::string>& params);
+        virtual void getSlaveToParam(std::vector<std::string>& params);
 
         // do nothing
-        virtual int  getDimension(const std::string &name) OFX_EXCEPTION_SPEC {
-          throw Property::Exception(kOfxStatErrMissingHostFeature);
-        }
-        
-        virtual void setProperty(const std::string &name, double value, int index) OFX_EXCEPTION_SPEC{
-          throw Property::Exception(kOfxStatErrMissingHostFeature);
-        }
-        virtual void setPropertyN(const std::string &name, double *first, int n) OFX_EXCEPTION_SPEC{
-          throw Property::Exception(kOfxStatErrMissingHostFeature);
-        }
+        virtual int  getDimension(const std::string &name) OFX_EXCEPTION_SPEC;
         
         // don't know what to do
-        virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC {
-          throw Property::Exception(kOfxStatErrMissingHostFeature);
-        }
+        virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC;
 
-        // get the virutals for viewport size, pixel scale, background colour
-        virtual void getProperty(const std::string &name, double &ret, int index) OFX_EXCEPTION_SPEC;
-        virtual void getPropertyN(const std::string &name, double *first, int n) OFX_EXCEPTION_SPEC;
+        // the gethook virutals for viewport size, pixel scale, background colour
+        virtual double getDoubleProperty(const std::string &name, int index) OFX_EXCEPTION_SPEC;
+        virtual void getDoublePropertyN(const std::string &name, double *first, int n) OFX_EXCEPTION_SPEC;
 
         // interact action - kOfxInteractActionDraw 
         // 

@@ -28,17 +28,19 @@ namespace OFX {
         OfxPropertySetHandle getPropHandle();
 
         Property::Set &getProps();
+        
+        /// get the name property
+        const std::string &getName()
+        {
+          return _properties.getStringProperty(kOfxPropName);
+        }
       };
 
       // forward declare image
       class Image;
 
-      class Instance : public Property::DoubleSetHook, 
-                       public Property::DoubleGetHook,
-                       public Property::StringSetHook,
-                       public Property::StringGetHook,
-                       public Property::IntSetHook,
-                       public Property::IntGetHook {
+      class Instance : private Property::GetHook,
+                       private Property::NotifyHook {
       protected:
         Property::Set           _properties;
         ImageEffect::Instance*  _effectInstance;
@@ -56,35 +58,36 @@ namespace OFX {
         Instance(Descriptor& desc, ImageEffect::Instance* effectInstance = 0);
 
         // get the clip name
-        std::string getName();
+        const std::string &getName();
+
+        /// get the name property
+        const std::string &getLabel();
 
         int upperGetDimension(const std::string &name);
 
-        // do nothing
-        virtual int  getDimension(const std::string &name) OFX_EXCEPTION_SPEC;
-
-        // set properties
-        virtual void setProperty(const std::string &name, double value, int index) OFX_EXCEPTION_SPEC;
-        virtual void setPropertyN(const std::string &name, double *first, int n) OFX_EXCEPTION_SPEC;
-        virtual void setProperty(const std::string &name, int value, int index) OFX_EXCEPTION_SPEC;
-        virtual void setPropertyN(const std::string &name, int *first, int n) OFX_EXCEPTION_SPEC;
-        virtual void setProperty(const std::string &name, const char* value, int index) OFX_EXCEPTION_SPEC;
-        virtual void setPropertyN(const std::string &name, const char** first, int n) OFX_EXCEPTION_SPEC;
+        // notify override properties
+        virtual void notify(const std::string &name, bool isSingle, int indexOrN)  OFX_EXCEPTION_SPEC;
         
-        // don't know what to do
+        // get hook override
         virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC;
 
         // get the virutals for viewport size, pixel scale, background colour
-        virtual void getProperty(const std::string &name, double &ret, int index) OFX_EXCEPTION_SPEC;
+        virtual double getDoubleProperty(const std::string &name, int index) OFX_EXCEPTION_SPEC;
 
         // get the virutals for viewport size, pixel scale, background colour
-        virtual void getProperty(const std::string &name, int &ret, int index) OFX_EXCEPTION_SPEC;
+        virtual void getDoublePropertyN(const std::string &name, double *values, int count) OFX_EXCEPTION_SPEC;
 
         // get the virutals for viewport size, pixel scale, background colour
-        virtual void getProperty(const std::string &name, const char* &ret, int index) OFX_EXCEPTION_SPEC;
-        virtual void getPropertyN(const std::string &name, double* first, int n) OFX_EXCEPTION_SPEC;       
-        virtual void getPropertyN(const std::string &name, int* first, int n) OFX_EXCEPTION_SPEC;
-        virtual void getPropertyN(const std::string &name, const char** first, int n) OFX_EXCEPTION_SPEC;
+        virtual int getIntProperty(const std::string &name, int index) OFX_EXCEPTION_SPEC;
+
+        // get the virutals for viewport size, pixel scale, background colour
+        virtual void getIntPropertyN(const std::string &name, int *values, int count) OFX_EXCEPTION_SPEC;
+
+        // get the virutals for viewport size, pixel scale, background colour
+        virtual const std::string &getStringProperty(const std::string &name, int index) OFX_EXCEPTION_SPEC;
+
+        // do nothing
+        virtual int  getDimension(const std::string &name) OFX_EXCEPTION_SPEC;
 
         // instance changed action
         OfxStatus instanceChangedAction(std::string why,
@@ -100,14 +103,14 @@ namespace OFX {
         //  kOfxBitDepthByte
         //  kOfxBitDepthShort
         //  kOfxBitDepthFloat
-        virtual OfxStatus getPixelDepth(std::string &pixelDepth) = 0;
+        virtual const std::string &getPixelDepth() = 0;
 
         // Components -
         //
         //  kOfxImageComponentNone (implying a clip is unconnected, not valid for an image)
         //  kOfxImageComponentRGBA
         //  kOfxImageComponentAlpha
-        virtual OfxStatus getComponents(std::string &components) = 0;
+        virtual const std::string &getComponents() = 0;
 
         // Unmapped Pixel Depth -
         //
@@ -115,36 +118,36 @@ namespace OFX {
         //  kOfxBitDepthByte
         //  kOfxBitDepthShort
         //  kOfxBitDepthFloat
-        virtual OfxStatus getUnmappedBitDepth(std::string &unmappedBitDepth) = 0;
+        virtual const std::string &getUnmappedBitDepth() = 0;
 
         // Unmapped Components -
         //
         //  kOfxImageComponentNone (implying a clip is unconnected, not valid for an image)
         //  kOfxImageComponentRGBA
         //  kOfxImageComponentAlpha
-        virtual OfxStatus getUnmappedComponents(std::string &unmappedComponents) = 0;
+        virtual const std::string &getUnmappedComponents() = 0;
 
         // PreMultiplication -
         //
         //  kOfxImageOpaque - the image is opaque and so has no premultiplication state
         //  kOfxImagePreMultiplied - the image is premultiplied by it's alpha
         //  kOfxImageUnPreMultiplied - the image is unpremultiplied
-        virtual OfxStatus getPremult(std::string &premult) = 0;
+        virtual const std::string &getPremult() = 0;
 
         // Pixel Aspect Ratio -
         //
         //  The pixel aspect ratio of a clip or image.
-        virtual OfxStatus getAspectRatio(double &aspectRatio) = 0;
+        virtual double getAspectRatio() = 0;
 
         // Frame Rate -
         //
         //  The frame rate of a clip or instance's project.
-        virtual OfxStatus getFrameRate(double &frameRate) = 0;
+        virtual double getFrameRate() = 0;
 
         // Frame Range (startFrame, endFrame) -
         //
         //  The frame range over which a clip has images.
-        virtual OfxStatus getFrameRange(double &startFrame, double &endFrame) = 0;
+        virtual void getFrameRange(double &startFrame, double &endFrame) = 0;
 
         // Field -
         //
@@ -152,32 +155,32 @@ namespace OFX {
         //  kOfxImageFieldBoth - the image is fielded and contains both interlaced fields
         //  kOfxImageFieldLower - the image is fielded and contains a single field, being the lower field (rows 0,2,4...)
         //  kOfxImageFieldUpper - the image is fielded and contains a single field, being the upper field (rows 1,3,5...)        
-        virtual OfxStatus getField(std::string &field) = 0;
+        virtual const std::string &getField() = 0;
         
         // Connected -
         //
         //  Says whether the clip is actually connected at the moment.
-        virtual OfxStatus getConnected(int &connected) = 0;
+        virtual bool getConnected() = 0;
 
         // Unmapped Frame Rate -
         //
         //  The unmaped frame range over which an output clip has images.
-        virtual OfxStatus getUnmappedFrameRate(double &unmappedFrameRate) = 0;
+        virtual double getUnmappedFrameRate() = 0;
 
         // Unmapped Frame Range -
         //
         //  The unmaped frame range over which an output clip has images.
-        virtual OfxStatus getUnmappedFrameRange(double &unmappedStartFrame, double &unmappedEndFrame) = 0;
+        virtual void getUnmappedFrameRange(double &unmappedStartFrame, double &unmappedEndFrame) = 0;
 
         // Continuous Samples -
         //
         //  0 if the images can only be sampled at discreet times (eg: the clip is a sequence of frames),
         //  1 if the images can only be sampled continuously (eg: the clip is infact an animating roto spline and can be rendered anywhen). 
-        virtual OfxStatus getContinuousSamples(int &continuousSamples) = 0;
+        virtual bool getContinuousSamples() = 0;
 
         // non property data
-        virtual OfxStatus getImage(OfxTime time, OfxRectD *h2, Clip::Image*& image) = 0;
-        virtual OfxStatus getRegionOfDefinition(OfxRectD& rod) = 0;
+        virtual Clip::Image* getImage(OfxTime time, OfxRectD *h2) = 0;
+        virtual OfxRectD getRegionOfDefinition(OfxTime time) = 0;
       };
 
       // instance of an image class

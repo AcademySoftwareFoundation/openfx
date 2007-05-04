@@ -41,7 +41,7 @@ namespace OFX {
 
         const std::string &getName();
 
-        std::string getParentName();
+        const std::string &getParentName();
       };
 
       /// the Descriptor of a plugin parameter
@@ -67,21 +67,9 @@ namespace OFX {
         std::map<std::string, Descriptor*> _paramMap;
         std::list<Descriptor *> _paramList;
         
-        /// not allowed
-        SetDescriptor(const SetDescriptor &other);
-        
       public:
-
-        SetDescriptor() {
-        }
-
         std::map<std::string, Descriptor*> &getParams();
-
         std::list<Descriptor *> &getParamList();
-
-        const std::map<std::string, Descriptor*> &getParams() const {
-          return _paramMap;
-        }
 
         void addParam(const std::string &name, Descriptor *p);
       };
@@ -99,7 +87,12 @@ namespace OFX {
         virtual ~Instance();
 
         /// make a parameter, with the given type and name
-        explicit Instance(Descriptor& descriptor, Param::SetInstance* instance);
+        explicit Instance(Descriptor& descriptor, Param::SetInstance* instance = 0);
+
+        OfxStatus instanceChangedAction(std::string why,
+                                        OfxTime     time,
+                                        double      renderScaleX,
+                                        double      renderScaleY);
 
         // get the param instance
         OFX::Host::Param::SetInstance* getParamSetInstance() { return _paramSetInstance; }
@@ -305,7 +298,7 @@ namespace OFX {
 
         OFX::Host::ImageEffect::Instance* _instance;
       public:
-        SetInstance(OFX::Host::ImageEffect::Instance* instance) : _instance(instance) {}
+        SetInstance(OFX::Host::ImageEffect::Instance* instance = 0) : _instance(instance) {}
 
         // get the params
         std::map<std::string, Instance*> &getParams();

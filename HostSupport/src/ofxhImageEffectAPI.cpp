@@ -86,13 +86,14 @@ namespace OFX {
                 os << "        </param>\n";
             }
 
-            for (std::map<std::string, OFX::Host::Clip::Descriptor*>::iterator i=ed->getClips().begin();
-              i != ed->getClips().end();
+            for (std::vector<OFX::Host::Clip::Descriptor*>::const_iterator i=ed->getClipsByOrder().begin();
+              i != ed->getClipsByOrder().end();
               i++) {
-                os << "        <clip " 
-                  << XML::attribute("name", i->first) 
-                  << ">\n";
-                APICache::propertySetXMLWrite(os, i->second->getProps(), 10);
+              std::string name = (*i)->getName();
+              os << "        <clip " 
+                 << XML::attribute("name", name)
+                 << ">\n";
+              APICache::propertySetXMLWrite(os, (*i)->getProps(), 10);
                 os << "        </clip>\n";
             }
 
@@ -149,7 +150,7 @@ namespace OFX {
 
 
           // set the context, so that createInstance() isn't totally confused
-          instance->getProps().setProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropContext, 0, context.c_str());
+          instance->getProps().setStringProperty(kOfxImageEffectPropContext, context);
 
           /// at this point we need the createinstance action to run.
           if(instance){
@@ -218,7 +219,7 @@ namespace OFX {
         for (std::vector<ImageEffectPlugin *>::iterator i=_plugins.begin();i!=_plugins.end();i++) {
           ImageEffectPlugin *p = *i;
 
-          if (p->getProps().getProperty<Property::StringValue>(kOfxPropLabel, 0) != label) {
+          if (p->getProps().getStringProperty(kOfxPropLabel) != label) {
             continue;
           }
 
@@ -271,7 +272,7 @@ namespace OFX {
         std::vector<std::string> contexts;
 
         for (int j=0;j<size;j++) {
-          std::string context = eProps.getProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropSupportedContexts, j);
+          std::string context = eProps.getStringProperty(kOfxImageEffectPropSupportedContexts, j);
           contexts.push_back(context);
 
           OFX::Host::Property::PropSpec inargspec[] = {

@@ -131,11 +131,7 @@ namespace OFX {
         Clip::Instance *clipInstance = reinterpret_cast<Clip::Instance*>(h1);
 
         if(clipInstance){
-          Clip::Image* image;
-          
-          OfxStatus st = clipInstance->getImage(time,h2,image);
-          if(st!=kOfxStatOK) return st;
-
+          Clip::Image* image = clipInstance->getImage(time,h2);
           if(!image) return kOfxStatFailed;
 
           *h3 = image->getPropHandle();
@@ -186,7 +182,8 @@ namespace OFX {
         Clip::Instance *clipInstance = reinterpret_cast<Clip::Instance*>(clip);
 
         if(clipInstance) {
-          return clipInstance->getRegionOfDefinition(*bounds);
+          *bounds = clipInstance->getRegionOfDefinition(time);
+          return kOfxStatOK;
         }
         else 
           return kOfxStatErrBadHandle;
@@ -931,8 +928,6 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
         Instance *paramInstance = reinterpret_cast<Instance*>(paramHandle);        
         if(!paramInstance) return kOfxStatErrBadHandle;
 
-        printf("paramSetValue called on %s\n", paramInstance->getName().c_str());
-
         if(paramInstance->getType()==kOfxParamTypeInteger){
           va_list ap;
 
@@ -1504,7 +1499,7 @@ namespace OFX {
     {      
       Property::Set* properties = reinterpret_cast<Property::Set*>(host);
       
-      Descriptor* hostDescriptor = (Descriptor*)properties->getProperty<Property::PointerValue>(kOfxHostSupportHostDescriptor,0);
+      Descriptor* hostDescriptor = (Descriptor*)properties->getPointerProperty(kOfxHostSupportHostDescriptor);
       
       if(hostDescriptor)
         return hostDescriptor->fetchSuite(suiteName,suiteVersion);
@@ -1529,7 +1524,7 @@ namespace OFX {
       _properties.addProperties(hostDescriptorSpec);
 
       // record the host descriptor in the propert set
-      _properties.setProperty<Property::PointerValue>(kOfxHostSupportHostDescriptor,0,this);
+      _properties.setPointerProperty(kOfxHostSupportHostDescriptor,this);
     }
 
     OfxHost *Descriptor::getHandle() {

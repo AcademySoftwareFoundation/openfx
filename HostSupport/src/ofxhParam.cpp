@@ -61,8 +61,8 @@ namespace OFX {
         return _paramName;
       }
 
-      std::string Base::getParentName() {
-        return _properties.getProperty<Property::StringValue>(kOfxParamPropParent,0);
+      const std::string &Base::getParentName() {
+        return _properties.getStringProperty(kOfxParamPropParent);
       }
 
       //
@@ -89,7 +89,7 @@ namespace OFX {
           { kOfxParamTypeInteger3D, Property::eInt,    3 },
           { kOfxParamTypeString,    Property::eString, 1 },
           { kOfxParamTypeCustom,    Property::eString, 1 },
-          { kOfxParamTypeGroup,	    Property::eNone },
+          { kOfxParamTypeGroup,     Property::eNone },
           { kOfxParamTypePage,      Property::eNone },
           { kOfxParamTypePushButton,Property::eNone },
           { 0 }
@@ -155,8 +155,8 @@ namespace OFX {
           { kOfxParamPropCacheInvalidation,    Property::eString,    1,    false,    kOfxParamInvalidateValueChange },
           { 0 }
         };
-		
-		    std::ostringstream dbl_min, dbl_max, int_min, int_max;
+    
+        std::ostringstream dbl_min, dbl_max, int_min, int_max;
 
         dbl_min << -DBL_MAX;
         dbl_max << DBL_MAX;
@@ -224,10 +224,10 @@ namespace OFX {
 
           if (propDim == 2 || propDim == 3) {
             _properties.addProperties(all2D3D);
-            _properties.setProperty<Property::StringValue>(kOfxParamPropDimensionLabel, 0, "X");
-            _properties.setProperty<Property::StringValue>(kOfxParamPropDimensionLabel, 0, "Y");
+            _properties.setStringProperty(kOfxParamPropDimensionLabel, "X", 0);
+            _properties.setStringProperty(kOfxParamPropDimensionLabel, "Y", 1);
             if (propDim == 3) {
-              _properties.setProperty<Property::StringValue>(kOfxParamPropDimensionLabel, 0, "Z");
+              _properties.setStringProperty(kOfxParamPropDimensionLabel, "Z", 2);
             }
           }
         }
@@ -289,10 +289,10 @@ namespace OFX {
 
       /// make a parameter, with the given type and name
       Instance::Instance(Descriptor& descriptor, Param::SetInstance* paramSet) 
-        : _paramSetInstance(paramSet), _parentInstance(0), Base(descriptor.getName(),descriptor.getType(),descriptor.getProperties())
-      {
-        assert(_paramSetInstance);
-      }
+        : Base(descriptor.getName(), descriptor.getType(), descriptor.getProperties())
+        , _paramSetInstance(paramSet)
+        , _parentInstance(0)
+      {}
 
       // copy one parameter to another
       OfxStatus Instance::copy(const Instance &instance, OfxTime offset) { 
@@ -302,6 +302,39 @@ namespace OFX {
       // copy one parameter to another, with a range
       OfxStatus Instance::copy(const Instance &instance, OfxTime offset, OfxRangeD range) { 
         return kOfxStatErrMissingHostFeature; 
+      }
+
+      OfxStatus Instance::instanceChangedAction(std::string why,
+                                                OfxTime     time,
+                                                double      renderScaleX,
+                                                double      renderScaleY)
+      {        
+
+        Property::PropSpec stuff[] = {
+          { kOfxPropType, Property::eString, 1, true, kOfxTypeParameter },
+          { kOfxPropName, Property::eString, 1, true, getName().c_str() },
+          { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
+          { kOfxPropTime, Property::eDouble, 1, true, "0" },
+          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { 0 }
+        };
+
+        Property::Set inArgs(stuff);
+
+        // add the second dimension of the render scale
+        inArgs.setDoubleProperty(kOfxPropTime,time);
+
+        inArgs.setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleX, 0);
+        inArgs.setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleY, 1);
+        
+        if(_paramSetInstance){
+          ImageEffect::Instance* instance = _paramSetInstance->getEffectInstance();
+          if(instance){
+            return instance->mainEntry(kOfxActionBeginInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
+          }
+        }
+
+        return kOfxStatFailed;
       }
 
       void Instance::setParentInstance(Instance* instance){
@@ -361,7 +394,7 @@ namespace OFX {
         int nChildren = _properties.getDimension(kOfxParamPropPageChild);
 
         for(int i=0;i<nChildren;i++){
-          std::string childName = _properties.getProperty<Property::StringValue>(kOfxParamPropPageChild,i);        
+          std::string childName = _properties.getStringProperty(kOfxParamPropPageChild,i);        
           Param::Instance* child = _paramSetInstance->getParam(childName);
           if(child)
             children[i]=child;

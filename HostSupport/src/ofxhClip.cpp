@@ -39,7 +39,7 @@ namespace OFX {
       Descriptor::Descriptor(std::string name) : 
         _properties(clipDescriptorStuffs) 
       {
-        _properties.setProperty<Property::StringValue>(kOfxPropName,0,name.c_str());
+        _properties.setStringProperty(kOfxPropName,name);
       }
 
       /// get a handle on the clip descriptor for the C api
@@ -102,13 +102,9 @@ namespace OFX {
 
           switch (spec.type) {
           case Property::eDouble:
-            _properties.setGetHook<Property::DoubleValue>(spec.name, this, this);
-            break;
           case Property::eString:
-            _properties.setGetHook<Property::StringValue>(spec.name, this, this);
-            break;
           case Property::eInt:
-            _properties.setGetHook<Property::IntValue>(spec.name, this, this);
+            _properties.setGetHook(spec.name, this);
             break;
           default:
             break;
@@ -119,43 +115,15 @@ namespace OFX {
       }
 
       // do nothing
-      int Instance::getDimension(const std::string &name) OFX_EXCEPTION_SPEC {
-        printf("failing in %s with name=%s\n", __PRETTY_FUNCTION__, name.c_str());
-        throw Property::Exception(kOfxStatErrMissingHostFeature);
+      int Instance::getDimension(const std::string &name) OFX_EXCEPTION_SPEC 
+      {
+        if(name == kOfxImageEffectPropUnmappedFrameRange || name == kOfxImageEffectPropFrameRange)
+          return 2;
+        return 1;
       }
 
       int Instance::upperGetDimension(const std::string &name) {
         return _properties.getDimension(name);
-      }
-
-      void Instance::setProperty(const std::string &name, double value, int index) OFX_EXCEPTION_SPEC { 
-        printf("failing in %s\n", __PRETTY_FUNCTION__);
-        throw Property::Exception(kOfxStatErrMissingHostFeature); 
-      }
-
-      void Instance::setPropertyN(const std::string &name, double *first, int n) OFX_EXCEPTION_SPEC { 
-        printf("failing in %s\n", __PRETTY_FUNCTION__);
-        throw Property::Exception(kOfxStatErrMissingHostFeature); 
-      }
-
-      void Instance::setProperty(const std::string &name, int value, int index) OFX_EXCEPTION_SPEC { 
-        printf("failing in %s\n", __PRETTY_FUNCTION__);
-        throw Property::Exception(kOfxStatErrMissingHostFeature); 
-      }
-
-      void Instance::setPropertyN(const std::string &name, int *first, int n) OFX_EXCEPTION_SPEC { 
-        printf("failing in %s\n", __PRETTY_FUNCTION__);
-        throw Property::Exception(kOfxStatErrMissingHostFeature); 
-      }
-
-      void Instance::setProperty(const std::string &name, const char* value, int index) OFX_EXCEPTION_SPEC { 
-        printf("failing in %s\n", __PRETTY_FUNCTION__);
-        throw Property::Exception(kOfxStatErrMissingHostFeature); 
-      }
-
-      void Instance::setPropertyN(const std::string &name, const char** first, int n) OFX_EXCEPTION_SPEC { 
-        printf("failing in %s\n", __PRETTY_FUNCTION__);
-        throw Property::Exception(kOfxStatErrMissingHostFeature); 
       }
 
       // don't know what to do
@@ -165,186 +133,133 @@ namespace OFX {
       }
 
       // get the virutals for viewport size, pixel scale, background colour
-      void Instance::getProperty(const std::string &name, double &ret, int index) OFX_EXCEPTION_SPEC
+      void Instance::getDoublePropertyN(const std::string &name, double *values, int n) OFX_EXCEPTION_SPEC
       {
-        int max = upperGetDimension(name);        
-        if(index>=max) throw Property::Exception(kOfxStatErrValue);
-
-        double* values = new double[max];
-        getPropertyN(name,values,max);
-        ret = values[index];
-
-        delete [] values;
-      }
-
-      // get the virutals for viewport size, pixel scale, background colour
-      void Instance::getProperty(const std::string &name, int &ret, int index) OFX_EXCEPTION_SPEC
-      {
-        int max = upperGetDimension(name);        
-        if(index>=max) throw Property::Exception(kOfxStatErrValue);
-
-        int* values = new int[max];
-        getPropertyN(name,values,max);
-        ret = values[index];
-
-        delete [] values;
-      }
-
-      // get the virutals for viewport size, pixel scale, background colour
-      void Instance::getProperty(const std::string &name, const char* &ret, int index) OFX_EXCEPTION_SPEC
-      {
-        int max = upperGetDimension(name);        
-        if(index>=max) throw Property::Exception(kOfxStatErrValue);
-
-        char** values = new char*[max];
-        getPropertyN(name,(const char**)values,max);
-        ret = values[index];
-
-        delete [] values;
-      }
-
-      void Instance::getPropertyN(const std::string &name, double* first, int n) OFX_EXCEPTION_SPEC
-      {
-        int max = upperGetDimension(name);        
-        if(n>max) throw Property::Exception(kOfxStatErrValue);
-
-        OfxStatus st = kOfxStatOK;
-
         if(name==kOfxImagePropPixelAspectRatio){
           if(n>1) throw Property::Exception(kOfxStatErrValue);
-          st = getAspectRatio(first[0]);
+          *values = getAspectRatio();
         }
         else if(name==kOfxImageEffectPropFrameRate){
           if(n>1) throw Property::Exception(kOfxStatErrValue);
-          st = getFrameRate(first[0]);
+          *values = getFrameRate();
         }
         else if(name==kOfxImageEffectPropFrameRange){
           if(n>2) throw Property::Exception(kOfxStatErrValue);
-          st = getFrameRange(first[0],first[1]);
+          getFrameRange(values[0], values[1]);
         }
         else if(name==kOfxImageEffectPropUnmappedFrameRate){
           if(n>1) throw Property::Exception(kOfxStatErrValue);
-          st = getUnmappedFrameRate(first[0]);
+          *values =  getUnmappedFrameRate();
         }
         else if(name==kOfxImageEffectPropUnmappedFrameRange){
           if(n>2) throw Property::Exception(kOfxStatErrValue);
-          st = getUnmappedFrameRange(first[0],first[1]);
+          getUnmappedFrameRange(values[0], values[1]);
         }
         else
           throw Property::Exception(kOfxStatErrValue);
-
-        if(st!=kOfxStatOK) throw Property::Exception(st);
       }
 
-      void Instance::getPropertyN(const std::string &name, int* first, int n) OFX_EXCEPTION_SPEC
+      // get the virutals for viewport size, pixel scale, background colour
+      double Instance::getDoubleProperty(const std::string &name, int n) OFX_EXCEPTION_SPEC
       {
-        int max = upperGetDimension(name);        
-        if(n>max) throw Property::Exception(kOfxStatErrValue);
-
-        OfxStatus st = kOfxStatOK;
-
-        if(name==kOfxImageClipPropConnected){
+        if(name==kOfxImagePropPixelAspectRatio){
+          if(n!=0) throw Property::Exception(kOfxStatErrValue);
+          return getAspectRatio();
+        }
+        else if(name==kOfxImageEffectPropFrameRate){
+          if(n!=0) throw Property::Exception(kOfxStatErrValue);
+          return getFrameRate();
+        }
+        else if(name==kOfxImageEffectPropFrameRange){
           if(n>1) throw Property::Exception(kOfxStatErrValue);
-          st = getConnected(first[0]);
+          double range[2];
+          getFrameRange(range[0], range[1]);
+          return range[n];
+        }
+        else if(name==kOfxImageEffectPropUnmappedFrameRate){
+          if(n>0) throw Property::Exception(kOfxStatErrValue);
+          return getUnmappedFrameRate();
+        }
+        else if(name==kOfxImageEffectPropUnmappedFrameRange){
+          if(n>1) throw Property::Exception(kOfxStatErrValue);
+          double range[2];
+          getUnmappedFrameRange(range[0], range[1]);
+          return range[n];
+        }
+        else
+          throw Property::Exception(kOfxStatErrValue);
+      }
+
+      // get the virutals for viewport size, pixel scale, background colour
+      int Instance::getIntProperty(const std::string &name, int n) OFX_EXCEPTION_SPEC
+      {
+        if(n!=0) throw Property::Exception(kOfxStatErrValue);
+        if(name==kOfxImageClipPropConnected){
+          return getConnected();
         }
         else if(name==kOfxImageClipPropContinuousSamples){
-          if(n>1) throw Property::Exception(kOfxStatErrValue);
-          st = getContinuousSamples(first[0]);
+          return getContinuousSamples();
         }
         else
           throw Property::Exception(kOfxStatErrValue);
-
-        if(st!=kOfxStatOK) throw Property::Exception(st);
       }
 
-      void Instance::getPropertyN(const std::string &name, const char** first, int n) OFX_EXCEPTION_SPEC
+      // get the virutals for viewport size, pixel scale, background colour
+      void Instance::getIntPropertyN(const std::string &name, int *values, int n) OFX_EXCEPTION_SPEC
       {
-        int max = upperGetDimension(name);        
-        if(n>max) throw Property::Exception(kOfxStatErrValue);
+        if(n!=0) throw Property::Exception(kOfxStatErrValue);
+        *values = getIntProperty(name, 0);
+      }
 
-        OfxStatus st = kOfxStatOK;
-
+      // get the virutals for viewport size, pixel scale, background colour
+      const std::string &Instance::getStringProperty(const std::string &name, int n) OFX_EXCEPTION_SPEC
+      {
+        if(n!=0) throw Property::Exception(kOfxStatErrValue);
         if(name==kOfxImageEffectPropPixelDepth){
-          if(n>1) throw Property::Exception(kOfxStatErrValue);
-
-          std::string pixelDepth;
-
-          st = getPixelDepth(pixelDepth);
-          if(st!=kOfxStatOK) throw Property::Exception(st);
-
-          first[0] = new char[pixelDepth.size()+1];
-          strcpy((char*)first[0],pixelDepth.c_str());
+          return getPixelDepth();
         }
         else if(name==kOfxImageEffectPropComponents){
-          if(n>1) throw Property::Exception(kOfxStatErrValue);
-
-          std::string components;
-
-          st = getComponents(components);
-          if(st!=kOfxStatOK) throw Property::Exception(st);
-
-          first[0] = new char[components.size()+1];
-          strcpy((char*)first[0],components.c_str());
+          return getComponents();
         }
         else if(name==kOfxImageClipPropUnmappedPixelDepth){
-          if(n>1) throw Property::Exception(kOfxStatErrValue);
-
-          std::string unmappedBitDepth;
-
-          st = getUnmappedBitDepth(unmappedBitDepth);
-          if(st!=kOfxStatOK) throw Property::Exception(st);
-
-          first[0] = new char[unmappedBitDepth.size()+1];
-          strcpy((char*)first[0],unmappedBitDepth.c_str());
+          return getUnmappedBitDepth();
         }
         else if(name==kOfxImageClipPropUnmappedComponents){
-          if(n>1) throw Property::Exception(kOfxStatErrValue);
-
-          std::string unmappedComponents;
-
-          st = getUnmappedComponents(unmappedComponents);
-          if(st!=kOfxStatOK) throw Property::Exception(st);
-
-          first[0] = new char[unmappedComponents.size()+1];
-          strcpy((char*)first[0],unmappedComponents.c_str());
+          return getUnmappedComponents();
         }
         else if(name==kOfxImageEffectPropPreMultiplication){
-          if(n>1) throw Property::Exception(kOfxStatErrValue);
-
-          std::string premult;
-
-          st = getPremult(premult);
-          if(st!=kOfxStatOK) throw Property::Exception(st);
-
-          first[0] = new char[premult.size()+1];
-          strcpy((char*)first[0],premult.c_str());
+          return getPremult();
         }
         else if(name==kOfxImageClipPropFieldOrder){
-          if(n>1) throw Property::Exception(kOfxStatErrValue);
-
-          std::string field;
-
-          st = getField(field);
-          if(st!=kOfxStatOK) throw Property::Exception(st);
-
-          first[0] = new char[field.size()+1];
-          strcpy((char*)first[0],field.c_str());
+          return getField();
         }
         else
           throw Property::Exception(kOfxStatErrValue);
-
-        if(st!=kOfxStatOK) throw Property::Exception(st);
       }
 
-      std::string Instance::getName()
+      const std::string &Instance::getName()
       {
-        return _properties.getProperty<Property::StringValue>(kOfxPropName,0);
+        return _properties.getStringProperty(kOfxPropName);
+      }
+
+      const std::string &Instance::getLabel()
+      {
+        const std::string &s = _properties.getStringProperty(kOfxPropLabel);
+        if(s == "") {
+          return _properties.getStringProperty(kOfxPropName);
+        }
+        return s;
+      }
+
+      // notify override properties
+      void Instance::notify(const std::string &name, bool isSingle, int indexOrN)  OFX_EXCEPTION_SPEC
+      {
       }
 
       OfxStatus Instance::instanceChangedAction(std::string why,
-                                     OfxTime     time,
-                                     double      renderScaleX,
-                                     double      renderScaleY)
+                                                OfxTime     time,
+                                                double      renderScaleX,
+                                                double      renderScaleY)
       {
         Property::PropSpec stuff[] = {
           { kOfxPropType, Property::eString, 1, true, kOfxTypeClip },
@@ -358,16 +273,16 @@ namespace OFX {
         Property::Set inArgs(stuff);
 
         // add the second dimension of the render scale
-        inArgs.setProperty<Property::DoubleValue>(kOfxPropTime,0,time);
-        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);
-        inArgs.setProperty<Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);
+        inArgs.setDoubleProperty(kOfxPropTime,time);
+        inArgs.setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleX, 0);
+        inArgs.setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleY, 1);
 
         if(_effectInstance){
           return _effectInstance->mainEntry(kOfxActionBeginInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
         }
 
         return kOfxStatFailed;
-     }
+      }
 
 
       //
@@ -394,49 +309,46 @@ namespace OFX {
 
       // construction based on clip instance
       Image::Image(Clip::Instance& instance,
-                  double renderScaleX, 
-                  double renderScaleY,
-                  void* data,
-                  int bx1, int by1, int bx2, int by2,
-                  int rodx1, int rody1, int rodx2, int rody2,
-                  int rowBytes,
-                  std::string field,
-                  std::string uniqueIdentifier) : Property::Set(imageStuffs)
+                   double renderScaleX, 
+                   double renderScaleY,
+                   void* data,
+                   int bx1, int by1, int bx2, int by2,
+                   int rodx1, int rody1, int rodx2, int rody2,
+                   int rowBytes,
+                   std::string field,
+                   std::string uniqueIdentifier) : Property::Set(imageStuffs)
       {
         Property::Set& clipProperties = instance.getProps();
         
         // get and set the clip instance pixel depth
-        std::string pixelDepth = clipProperties.getProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropPixelDepth,0);
-        setProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropPixelDepth,0,pixelDepth.c_str());
+        setStringProperty(kOfxImageEffectPropPixelDepth, clipProperties.getStringProperty(kOfxImageEffectPropPixelDepth));
         
         // get and set the clip instance components
-        std::string components = clipProperties.getProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropComponents,0);
-        setProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropComponents,0,components.c_str());
+        setStringProperty(kOfxImageEffectPropComponents, clipProperties.getStringProperty(kOfxImageEffectPropComponents));
         
         // get and set the clip instance premultiplication
-        std::string premultiplication = clipProperties.getProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropPreMultiplication,0);
-        setProperty<OFX::Host::Property::StringValue>(kOfxImageEffectPropPreMultiplication,0,premultiplication.c_str());
+        setStringProperty(kOfxImageEffectPropPreMultiplication, clipProperties.getStringProperty(kOfxImageEffectPropPreMultiplication));
 
         // get and set the clip instance pixel aspect ratio
-        double aspectRatio = clipProperties.getProperty<OFX::Host::Property::DoubleValue>(kOfxImagePropPixelAspectRatio,0);
-        setProperty<OFX::Host::Property::DoubleValue>(kOfxImagePropPixelAspectRatio,0,aspectRatio);        
+        setDoubleProperty(kOfxImagePropPixelAspectRatio, clipProperties.getDoubleProperty(kOfxImagePropPixelAspectRatio));
 
         // set other data
-        setProperty<OFX::Host::Property::DoubleValue>(kOfxImageEffectPropRenderScale,0,renderScaleX);        
-        setProperty<OFX::Host::Property::DoubleValue>(kOfxImageEffectPropRenderScale,1,renderScaleY);        
-        setProperty<OFX::Host::Property::PointerValue>(kOfxImagePropData,0,data);
-        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropBounds,0,bx1);
-        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropBounds,1,by1);
-        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropBounds,2,bx2);
-        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropBounds,3,by2);
-        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropRegionOfDefinition,0,rodx1);
-        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropRegionOfDefinition,1,rody1);
-        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropRegionOfDefinition,2,rodx2);
-        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropRegionOfDefinition,3,rody2);        
-        setProperty<OFX::Host::Property::IntValue>(kOfxImagePropRowBytes,0,rowBytes);
-        setProperty<OFX::Host::Property::StringValue>(kOfxImagePropField,0,field.c_str());
-        setProperty<OFX::Host::Property::StringValue>(kOfxImageClipPropFieldOrder,0,field.c_str());
-        setProperty<OFX::Host::Property::StringValue>(kOfxImagePropUniqueIdentifier,0,uniqueIdentifier.c_str());
+        setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleX, 1);    
+        setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleX, 2);        
+        setPointerProperty(kOfxImagePropData,data);
+        setIntProperty(kOfxImagePropBounds,bx1, 0);
+        setIntProperty(kOfxImagePropBounds,by1, 1);
+        setIntProperty(kOfxImagePropBounds,bx2, 2);
+        setIntProperty(kOfxImagePropBounds,by2, 3);
+        setIntProperty(kOfxImagePropRegionOfDefinition,rodx1, 0);
+        setIntProperty(kOfxImagePropRegionOfDefinition,rody1, 1);
+        setIntProperty(kOfxImagePropRegionOfDefinition,rodx2, 2);
+        setIntProperty(kOfxImagePropRegionOfDefinition,rody2, 3);        
+        setIntProperty(kOfxImagePropRowBytes,rowBytes);
+        
+        setStringProperty(kOfxImagePropField,field);
+        setStringProperty(kOfxImageClipPropFieldOrder,field);
+        setStringProperty(kOfxImagePropUniqueIdentifier,uniqueIdentifier);
       }
 
       Image::~Image() {

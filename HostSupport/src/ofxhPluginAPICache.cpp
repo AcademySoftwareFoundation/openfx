@@ -87,13 +87,13 @@ namespace OFX
           
           switch (_currentProp->getType()) {
           case Property::eInt:
-            set.setProperty<Property::IntValue>(_currentProp->getName(), index, atoi(value.c_str()));
+            set.setIntProperty(_currentProp->getName(), atoi(value.c_str()), index);
             break;
           case Property::eString:
-            set.setProperty<Property::StringValue>(_currentProp->getName(), index, value.c_str());
+            set.setStringProperty(_currentProp->getName(), value, index);
             break;
           case Property::eDouble:
-            set.setProperty<Property::DoubleValue>(_currentProp->getName(), index, atof(value.c_str()));
+            set.setDoubleProperty(_currentProp->getName(), atof(value.c_str()), index);
             break;
           case Property::ePointer:
             break;
