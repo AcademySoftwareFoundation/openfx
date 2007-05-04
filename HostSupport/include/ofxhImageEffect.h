@@ -102,13 +102,19 @@ namespace OFX {
         bool                                          _created;
       public:        
 
-        // constructor based on clip descriptor
+        /// constructor based on clip descriptor
         Instance(ImageEffectPlugin* plugin,
                  Descriptor         &other, 
                  const std::string  &context,
                  bool               interactive);
 
         virtual ~Instance();
+
+        /// called after construction to populate the various members
+        /// ideally should be called in the ctor, but it relies on 
+        /// virtuals so has to be delayed until after the effect is
+        /// constructed
+        OfxStatus populate();
 
         /// get the parameters set
         Param::SetInstance &getParams();

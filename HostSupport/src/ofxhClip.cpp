@@ -19,14 +19,13 @@ namespace OFX {
       //
 
       static Property::PropSpec clipDescriptorStuffs[] = {
-        { kOfxPropType, Property::eString, 1, false, kOfxTypeImageEffectHost },
-        { kOfxPropName, Property::eString, 1, false, "uk.co.uk.thefoundry.Clip.Descriptor" },
+        { kOfxPropType, Property::eString, 1, true, kOfxTypeImageEffectHost },
+        { kOfxPropName, Property::eString, 1, true, "SETMEONCONSTRUCTION" },
         { kOfxPropLabel, Property::eString, 1, false, "clip" } ,
         { kOfxPropShortLabel, Property::eString, 1, false, "clip" },
         { kOfxPropLongLabel, Property::eString, 1, false, "clip" },
         
-        { kOfxImageEffectPropSupportedComponents, Property::eString, 0, true, "" },
-        /// xxx ??
+        { kOfxImageEffectPropSupportedComponents, Property::eString, 0, false, "" },
 
         { kOfxImageEffectPropTemporalClipAccess,   Property::eInt, 1, false, "0" },
         { kOfxImageClipPropOptional, Property::eInt, 1, false, "0" },
@@ -231,7 +230,7 @@ namespace OFX {
           return getPremult();
         }
         else if(name==kOfxImageClipPropFieldOrder){
-          return getField();
+          return getFieldOrder();
         }
         else
           throw Property::Exception(kOfxStatErrValue);

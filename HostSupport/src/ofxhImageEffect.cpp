@@ -182,6 +182,82 @@ namespace OFX {
         }
       }
 
+      /// called after construction to populate clips and params
+      OfxStatus Instance::populate() 
+      {        
+        const std::vector<Clip::Descriptor*>& clips = _descriptor->getClipsByOrder();
+
+        for(std::vector<Clip::Descriptor*>::const_iterator it=clips.begin();
+            it!=clips.end();
+            it++)
+          {
+            const std::string name =  (*it)->getName();
+            // foreach clip descriptor make a clip instance
+            Clip::Instance* instance = newClipInstance(this, *it);   
+            if(!instance) return kOfxStatFailed;
+
+            _clips[name] = instance;
+          }        
+
+        // make the param set instance from the param instances
+        _params = newParamSetInstance(this,_descriptor->getParams());
+
+        std::map<std::string,Param::Descriptor*>& map = _descriptor->getParams().getParams();
+
+        std::map<std::string,std::vector<Param::Instance*> > parameters;
+        std::map<std::string, Param::Instance*> groups;
+
+        for(std::map<std::string,Param::Descriptor*>::iterator it=map.begin();
+            it!=map.end();
+            it++)
+          {
+            // name of the parameter
+            std::string name = it->first;
+          
+            // get the param descriptor
+            Param::Descriptor* descriptor = it->second;
+            if(!descriptor) return kOfxStatErrValue;
+
+            // get a param instance from a param descriptor
+            Param::Instance* instance = _params->newParam(name,*descriptor);
+            if(!instance) return kOfxStatFailed;
+          
+            // add the value into the param set instance
+            OfxStatus st = _params->addParam(name,instance);
+            if(st != kOfxStatOK) return st;
+
+            std::string parent = instance->getParentName();
+          
+            if(parent!="")
+              parameters[parent].push_back(instance);
+
+            if(instance->getType()==kOfxParamTypeGroup){
+              groups[instance->getName()]=instance;
+            }
+          }
+
+        // for each group parameter made
+        for(std::map<std::string,Param::Instance*>::iterator it=groups.begin();
+            it!=groups.end();
+            it++)
+          {
+            // cast to a group instance
+            Param::GroupInstance* group = dynamic_cast<Param::GroupInstance*>(it->second);
+
+            // if cast ok
+            if(group){
+              // find the parameters whose parent was this group
+              std::map<std::string,std::vector<Param::Instance*> >::iterator it2 = parameters.find(group->getName());
+              if(it2!=parameters.end()){
+                // associate the group with its children, and the children with its parent group
+                group->setChildren(it2->second);
+              }
+            }
+          }
+
+        return kOfxStatOK;
+      }
+
       // do nothing
       int Instance::getDimension(const std::string &name) OFX_EXCEPTION_SPEC {
         printf("failing in %s with name=%s\n", __PRETTY_FUNCTION__, name.c_str());
@@ -361,76 +437,6 @@ namespace OFX {
       // create a clip instance
       OfxStatus Instance::createInstanceAction() 
       {
-        const std::vector<Clip::Descriptor*>& clips = _descriptor->getClipsByOrder();
-
-        for(std::vector<Clip::Descriptor*>::const_iterator it=clips.begin();
-            it!=clips.end();
-            it++)
-          {
-            const std::string name =  (*it)->getName();
-            // foreach clip descriptor make a clip instance
-            Clip::Instance* instance = newClipInstance(this, *it);   
-            if(!instance) return kOfxStatFailed;
-
-            _clips[name] = instance;
-          }        
-
-        // make the param set instance from the param instances
-        _params = newParamSetInstance(this,_descriptor->getParams());
-
-        std::map<std::string,Param::Descriptor*>& map = _descriptor->getParams().getParams();
-
-        std::map<std::string,std::vector<Param::Instance*> > parameters;
-        std::map<std::string, Param::Instance*> groups;
-
-        for(std::map<std::string,Param::Descriptor*>::iterator it=map.begin();
-            it!=map.end();
-            it++)
-          {
-            // name of the parameter
-            std::string name = it->first;
-          
-            // get the param descriptor
-            Param::Descriptor* descriptor = it->second;
-            if(!descriptor) return kOfxStatErrValue;
-
-            // get a param instance from a param descriptor
-            Param::Instance* instance = _params->newParam(name,*descriptor);
-            if(!instance) return kOfxStatFailed;
-          
-            // add the value into the param set instance
-            OfxStatus st = _params->addParam(name,instance);
-            if(st != kOfxStatOK) return st;
-
-            std::string parent = instance->getParentName();
-          
-            if(parent!="")
-              parameters[parent].push_back(instance);
-
-            if(instance->getType()==kOfxParamTypeGroup){
-              groups[instance->getName()]=instance;
-            }
-          }
-
-        // for each group parameter made
-        for(std::map<std::string,Param::Instance*>::iterator it=groups.begin();
-            it!=groups.end();
-            it++)
-          {
-            // cast to a group instance
-            Param::GroupInstance* group = dynamic_cast<Param::GroupInstance*>(it->second);
-
-            // if cast ok
-            if(group){
-              // find the parameters whose parent was this group
-              std::map<std::string,std::vector<Param::Instance*> >::iterator it2 = parameters.find(group->getName());
-              if(it2!=parameters.end()){
-                // associate the group with its children, and the children with its parent group
-                group->setChildren(it2->second);
-              }
-            }
-          }
-
         // now tell the plug-in to create instance
         OfxStatus st = mainEntry(kOfxActionCreateInstance,this->getHandle(),0,0);
 
@@ -518,7 +524,7 @@ namespace OFX {
 
         Property::Set inArgs(whyStuff);
 
-        return mainEntry(kOfxActionCreateInstance,this->getHandle(),inArgs.getHandle(),0);
+        return mainEntry(kOfxActionEndInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
       }
 
       // purge your caches

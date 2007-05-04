@@ -149,13 +149,12 @@ namespace OFX {
         //  The frame range over which a clip has images.
         virtual void getFrameRange(double &startFrame, double &endFrame) = 0;
 
-        // Field -
-        //
-        //  kOfxImageFieldNone - the image is an unfielded frame
-        //  kOfxImageFieldBoth - the image is fielded and contains both interlaced fields
-        //  kOfxImageFieldLower - the image is fielded and contains a single field, being the lower field (rows 0,2,4...)
-        //  kOfxImageFieldUpper - the image is fielded and contains a single field, being the upper field (rows 1,3,5...)        
-        virtual const std::string &getField() = 0;
+        /// Field Order - Which spatial field occurs temporally first in a frame.
+        /// \returns 
+        ///  - kOfxImageFieldNone - the clip material is unfielded
+        ///  - kOfxImageFieldLower - the clip material is fielded, with image rows 0,2,4.... occuring first in a frame
+        ///  - kOfxImageFieldUpper - the clip material is fielded, with image rows line 1,3,5.... occuring first in a frame
+        virtual const std::string &getFieldOrder() = 0;
         
         // Connected -
         //

@@ -131,7 +131,8 @@ namespace OFX {
         return _pluginHandle;
       }
 
-      ImageEffect::Instance* ImageEffectPlugin::createInstance(const std::string &context){          
+      ImageEffect::Instance* ImageEffectPlugin::createInstance(const std::string &context, void *clientData)
+      {          
 
         /// todo - we need to make sure action:load is called, then action:describe again
         /// (not because we are expecting the results to change, but because plugin
@@ -143,24 +144,11 @@ namespace OFX {
         if(it!=_contexts.end()){
           ImageEffect::Descriptor* desc = it->second;
 
-          ImageEffect::Instance *instance = newInstance(gNewInstancePtr,
+          ImageEffect::Instance *instance = newInstance(clientData,
                                                         this,
                                                         *desc,
                                                         context);
-
-
-          // set the context, so that createInstance() isn't totally confused
-          instance->getProps().setStringProperty(kOfxImageEffectPropContext, context);
-
-          /// at this point we need the createinstance action to run.
-          if(instance){
-            OfxStatus st = instance->createInstanceAction(); 
-            if(st!=kOfxStatOK) {
-              delete instance;
-              return 0;
-            }
-          }
-
+          instance->populate();
           return instance;
         }
         return 0;
