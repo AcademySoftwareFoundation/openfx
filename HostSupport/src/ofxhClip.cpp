@@ -14,19 +14,15 @@ namespace OFX {
 
     namespace Clip {
 
-      //
-      // Descriptor
-      //
-
+      /// properties common to the desciptor and instance
+      /// the desc and set them, the instance cannot
       static Property::PropSpec clipDescriptorStuffs[] = {
-        { kOfxPropType, Property::eString, 1, true, kOfxTypeImageEffectHost },
-        { kOfxPropName, Property::eString, 1, true, "SETMEONCONSTRUCTION" },
+        { kOfxPropType, Property::eString, 1, true, kOfxTypeClip },
+        { kOfxPropName, Property::eString, 1, true, "SET ME ON CONSTRUCTION" },
         { kOfxPropLabel, Property::eString, 1, false, "clip" } ,
         { kOfxPropShortLabel, Property::eString, 1, false, "clip" },
-        { kOfxPropLongLabel, Property::eString, 1, false, "clip" },
-        
+        { kOfxPropLongLabel, Property::eString, 1, false, "clip" },        
         { kOfxImageEffectPropSupportedComponents, Property::eString, 0, false, "" },
-
         { kOfxImageEffectPropTemporalClipAccess,   Property::eInt, 1, false, "0" },
         { kOfxImageClipPropOptional, Property::eInt, 1, false, "0" },
         { kOfxImageClipPropIsMask,   Property::eInt, 1, false, "0" },
@@ -35,43 +31,143 @@ namespace OFX {
         { 0 },
       };
       
-      Descriptor::Descriptor(std::string name) : 
-        _properties(clipDescriptorStuffs) 
+
+      ////////////////////////////////////////////////////////////////////////////////
+      // props to clips descriptors and instances
+      
+
+      // base ctor, for a descriptor
+      CommonProps::CommonProps()
+        : _properties(clipDescriptorStuffs) 
+      {
+      }
+
+      /// props to clips and 
+      CommonProps::CommonProps(const CommonProps &v)
+        : _properties(v._properties) 
+      {
+        /// we are an instance, we need to reset the props to read only
+        const Property::PropertyMap &map = _properties.getProperties();
+        Property::PropertyMap::const_iterator i;
+        for(i = map.begin(); i != map.end(); ++i) {
+          (*i).second->setPluginReadOnly(false);
+        } 
+      }
+
+      /// name of the clip
+      const std::string &CommonProps::getShortLabel() const
+      {
+        const std::string &s = _properties.getStringProperty(kOfxPropShortLabel);
+        if(s == "") {
+          const std::string &s2 = _properties.getStringProperty(kOfxPropLabel);
+          if(s2 == "") {
+            return _properties.getStringProperty(kOfxPropName);
+          }
+        }
+        return s;
+      }
+      
+      /// name of the clip
+      const std::string &CommonProps::getLabel() const
+      {
+        const std::string &s = _properties.getStringProperty(kOfxPropShortLabel);
+        if(s == "") {
+          return _properties.getStringProperty(kOfxPropName);
+        }
+        return s;
+      }
+      
+      /// name of the clip
+      const std::string &CommonProps::getLongLabel() const
+      {
+        const std::string &s = _properties.getStringProperty(kOfxPropLongLabel);
+        if(s == "") {
+          const std::string &s2 = _properties.getStringProperty(kOfxPropLabel);
+          if(s2 == "") {
+            return _properties.getStringProperty(kOfxPropName);
+          }
+        }
+        return s;
+      }
+      
+      /// return a std::vector of supported comp
+      void CommonProps::getSupportedComponents(std::vector<std::string> &comps) const
+      {
+        comps.clear();
+        int n = _properties.getDimension(kOfxImageEffectPropSupportedComponents);
+        for(int i = 0; i < n; ++i) {
+          comps.push_back(_properties.getStringProperty(kOfxImageEffectPropSupportedComponents, i));
+        }
+      }
+      
+      /// is the given component supported
+      bool CommonProps::isSupportedComponent(const std::string &comp) const
+      {
+        int n = _properties.getDimension(kOfxImageEffectPropSupportedComponents);
+        for(int i = 0; i < n; ++i) {
+          if(comp == _properties.getStringProperty(kOfxImageEffectPropSupportedComponents, i))
+            return true;
+        }
+        return false;
+      }
+      
+      /// does the clip do random temporal access
+      bool CommonProps::temporalAccess() const
+      {
+        return _properties.getIntProperty(kOfxImageEffectPropTemporalClipAccess);
+      }
+      
+      /// is the clip optional
+      bool CommonProps::isOptional() const
+      {
+        return _properties.getIntProperty(kOfxImageClipPropOptional);
+      }
+      
+      /// is the clip a nominal 'mask' clip
+      bool CommonProps::isMask() const
+      {
+        return _properties.getIntProperty(kOfxImageClipPropIsMask);
+      }
+      
+      /// how does this clip like fielded images to be presented to it
+      const std::string &CommonProps::getFieldExtraction()
+      {
+        return _properties.getStringProperty(kOfxImageClipPropFieldExtraction);
+      }
+      
+      /// is the clip a nominal 'mask' clip
+      bool CommonProps::supportsTiles() const
+      {
+        return _properties.getIntProperty(kOfxImageEffectPropSupportsTiles);
+      }
+
+      Property::Set& CommonProps::getProps() 
+      {
+        return _properties;
+      }
+
+      /// get a handle on the properties of the clip descriptor for the C api
+      OfxPropertySetHandle CommonProps::getPropHandle() 
+      {
+        return _properties.getHandle();
+      }
+
+      ////////////////////////////////////////////////////////////////////////////////
+      /// descriptor
+      Descriptor::Descriptor(std::string name) 
+        : CommonProps()
       {
         _properties.setStringProperty(kOfxPropName,name);
       }
 
       /// get a handle on the clip descriptor for the C api
-      OfxImageClipHandle Descriptor::getHandle() {
+      OfxImageClipHandle Descriptor::getHandle() 
+      {
         return (OfxImageClipHandle)this;
       }
-
-      /// get a handle on the properties of the clip descriptor for the C api
-      OfxPropertySetHandle Descriptor::getPropHandle() {
-        return _properties.getHandle();
-      }
-
-      Property::Set& Descriptor::getProps() {
-        return _properties;
-      }
-
-      //
-      // Instance
-      //
-
-      OfxImageClipHandle Instance::getHandle() {
-        return (OfxImageClipHandle)this;
-      }
-
-      /// get a handle on the properties of the clip descriptor for the C api
-      OfxPropertySetHandle Instance::getPropHandle() {
-        return _properties.getHandle();
-      }
-
-      Property::Set& Instance::getProps() {
-        return _properties;
-      }
-
+      
+      /// extra properties for the instance, these are fetched from the host
+      /// via a get hook and some virtuals
       static Property::PropSpec clipInstanceStuffs[] = { 
         { kOfxImageEffectPropPixelDepth, Property::eString, 1, true, kOfxBitDepthNone },
         { kOfxImageEffectPropComponents, Property::eString, 1, true, kOfxImageComponentNone },
@@ -89,8 +185,9 @@ namespace OFX {
         { 0 },
       };
 
-      Instance::Instance(Descriptor& desc, ImageEffect::Instance* effectInstance) : 
-        _properties(desc.getProps()), _effectInstance(effectInstance)
+      Instance::Instance(Descriptor& desc, ImageEffect::Instance* effectInstance) 
+        : CommonProps(desc)
+        , _effectInstance(effectInstance)
       {
         // this will a parameters that are needed in an instance but not a 
         // Descriptor
@@ -113,16 +210,18 @@ namespace OFX {
         }
       }
 
+      /// get a handle on the clip descriptor for the C api
+      OfxImageClipHandle Instance::getHandle() 
+      {
+        return (OfxImageClipHandle)this;
+      }
+      
       // do nothing
       int Instance::getDimension(const std::string &name) OFX_EXCEPTION_SPEC 
       {
         if(name == kOfxImageEffectPropUnmappedFrameRange || name == kOfxImageEffectPropFrameRange)
           return 2;
         return 1;
-      }
-
-      int Instance::upperGetDimension(const std::string &name) {
-        return _properties.getDimension(name);
       }
 
       // don't know what to do
@@ -236,20 +335,6 @@ namespace OFX {
           throw Property::Exception(kOfxStatErrValue);
       }
 
-      const std::string &Instance::getName()
-      {
-        return _properties.getStringProperty(kOfxPropName);
-      }
-
-      const std::string &Instance::getLabel()
-      {
-        const std::string &s = _properties.getStringProperty(kOfxPropLabel);
-        if(s == "") {
-          return _properties.getStringProperty(kOfxPropName);
-        }
-        return s;
-      }
-
       // notify override properties
       void Instance::notify(const std::string &name, bool isSingle, int indexOrN)  OFX_EXCEPTION_SPEC
       {
@@ -277,7 +362,7 @@ namespace OFX {
         inArgs.setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleY, 1);
 
         if(_effectInstance){
-          return _effectInstance->mainEntry(kOfxActionBeginInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
+          return _effectInstance->mainEntry(kOfxActionBeginInstanceChanged, _effectInstance->getHandle(),inArgs.getHandle(),0);
         }
 
         return kOfxStatFailed;

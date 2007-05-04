@@ -224,6 +224,12 @@ namespace OFX {
         virtual ~Property()
         {
         }
+        
+        /// is it read only?
+        bool getPluginReadOnly() const {return _pluginReadOnly; }
+
+        /// change the state of readonlyness
+        void setPluginReadOnly(bool v) {_pluginReadOnly = v;}
 
         /// override this to return a clone of the property
         virtual Property *deepCopy() = 0;
@@ -356,12 +362,14 @@ namespace OFX {
         const char *defaultValue;
       };
 
+      
+      /// a map of properties
+      typedef std::map<std::string, Property *> PropertyMap;
+
       /// represents a set of properties
       class Set {
       protected :
-        bool _sloppy;
-
-        std::map<std::string, Property *> _props;
+        PropertyMap _props; ///< what we is
 
         /// hide assignment
         void operator=(const Set &);
@@ -370,17 +378,17 @@ namespace OFX {
         /// missing or is of the wrong type, return an error status.  if this is a sloppy
         /// property set and the property is missing, a new one will be created of the right
         /// type
-        template<class T> OfxStatus fetchProperty(const std::string &name, T *&prop);
+        template<class T> OfxStatus fetchProperty(const std::string &name, T *&prop) const;
 
         /// as getProperty(), but will not create new properties even when sloppy
-        template<class T> OfxStatus fetchUnderlyingProperty(const std::string &name, T *&prop);
+        template<class T> OfxStatus fetchUnderlyingProperty(const std::string &name, T *&prop) const;
 
         /// static functions for the suite
         template<class T> static OfxStatus propSet(OfxPropertySetHandle properties,
                                                    const char *property,
                                                    int index,
                                                    typename T::APIType value);
-
+        
         /// static functions for the suite
         template<class T> static OfxStatus propSetN(OfxPropertySetHandle properties,
                                                     const char *property,
@@ -415,11 +423,21 @@ namespace OFX {
         }
 
         /// get a particular property
-        template<class T> typename T::ReturnType getProperty(const std::string &property, int index)
+        template<class T> typename T::ReturnType getProperty(const std::string &property, int index)  const
         {
           PropertyTemplate<T> *prop;
           if(fetchUnderlyingProperty(property, prop) == kOfxStatOK) {
             return prop->getValue(index);
+          }
+          return T::kEmpty;
+        }
+
+        /// get a particular property
+        template<class T> typename T::ReturnType getPropertyRaw(const std::string &property, int index)  const
+        {
+          PropertyTemplate<T> *prop;
+          if(fetchUnderlyingProperty(property, prop) == kOfxStatOK) {
+            return prop->getValueRaw(index);
           }
           return T::kEmpty;
         }
@@ -432,12 +450,11 @@ namespace OFX {
         /// ->name is null), and turn these into a Set
         explicit Set(const PropSpec *);
 
-        /// create a sloppy property set (new properties can be added just by adding thing)
-        explicit Set(bool sloppy) : _sloppy(sloppy) {
-        }
-        
         /// deep copies the property set
-        Set(const Set &);
+        explicit Set(const Set &);
+
+        /// empty ctor
+        explicit Set() {};
 
         /// destructor
         virtual ~Set();
@@ -451,38 +468,42 @@ namespace OFX {
         }
 
         /// grab the internal properties map
-        const std::map<std::string, Property *> &getProperties()
+        const PropertyMap &getProperties()
         {
           return _props;
         }
 
         /// set the get hook for a particular property.  users may need to call particular
         /// specialised versions of this.
-        void setGetHook(const std::string &s, GetHook *ghook)
-        {
-          Property *prop;
-          if (fetchUnderlyingProperty(s, prop) != kOfxStatOK) {
-            return;
-          }
-          prop->setGetHook(ghook);
-        }
+        void setGetHook(const std::string &s, GetHook *ghook) const;
 
         /// add a set hook for a particular property.  users may need to call particular
         /// specialised versions of this.
-        void addNotifyHook(const std::string &name, NotifyHook *hook);
-        
-        
+        void addNotifyHook(const std::string &name, NotifyHook *hook) const;
+                
         /// get a particular string property
-        const std::string &getStringProperty(const std::string &property, int index = 0);
+        const std::string &getStringProperty(const std::string &property, int index = 0) const;
         
         /// get a particular int property
-        int getIntProperty(const std::string &property, int index = 0);
+        int getIntProperty(const std::string &property, int index = 0) const;
         
         /// get a particular double property
-        double getDoubleProperty(const std::string &property, int index = 0);
+        double getDoubleProperty(const std::string &property, int index = 0) const;
 
         /// get a particular double property
-        void *getPointerProperty(const std::string &property, int index = 0);
+        void *getPointerProperty(const std::string &property, int index = 0) const;
+
+        /// get a particular string property
+        const std::string &getStringPropertyRaw(const std::string &property, int index = 0) const;
+        
+        /// get a particular int property
+        int getIntPropertyRaw(const std::string &property, int index = 0) const;
+        
+        /// get a particular double property
+        double getDoublePropertyRaw(const std::string &property, int index = 0) const;
+
+        /// get a particular double property
+        void *getPointerPropertyRaw(const std::string &property, int index = 0) const;
 
         /// set a particular string property
         void setStringProperty(const std::string &property, const std::string &value, int index = 0);
@@ -497,12 +518,7 @@ namespace OFX {
         void setPointerProperty(const std::string &property,  void *v, int index = 0);
         
         /// get the dimension of a particular property
-        int getDimension(const std::string &property)
-        {
-          int dim;
-          propGetDimension(this->getHandle(), property.c_str(), &dim);
-          return dim;
-        }
+        int getDimension(const std::string &property) const;
 
         /// get a handle on this object for passing to the C API
         OfxPropertySetHandle getHandle() 

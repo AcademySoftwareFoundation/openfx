@@ -375,10 +375,19 @@ namespace OFX {
       inline void **castToConst(void **v) { return v; }
 
 
+      void Set::setGetHook(const std::string &s, GetHook *ghook) const
+      {
+        Property *prop;
+        if (fetchUnderlyingProperty(s, prop) != kOfxStatOK) {
+          return;
+        }
+        prop->setGetHook(ghook);
+      }
+
 
       /// add a notify hook for a particular property.  users may need to call particular
       /// specialised versions of this.
-      void Set::addNotifyHook(const std::string &s, NotifyHook *hook)
+      void Set::addNotifyHook(const std::string &s, NotifyHook *hook) const
       {
         Property *prop;
         if (fetchUnderlyingProperty(s, prop) != kOfxStatOK) {
@@ -388,12 +397,13 @@ namespace OFX {
         prop->addNotifyHook(hook);
       }
 
-      template<class T> OfxStatus Set::fetchUnderlyingProperty(const std::string&name, T *&prop) 
+      template<class T> OfxStatus Set::fetchUnderlyingProperty(const std::string&name, T *&prop) const
       {
-        if (_props.find(name) == _props.end()) {
+        PropertyMap::const_iterator i = _props.find(name);
+        if (i == _props.end()) {
           return kOfxStatErrUnknown;
         }
-        Property *myprop = _props[name];
+        Property *myprop = (*i).second;
         T *p = dynamic_cast<T *>(myprop);
         if (p == 0) {
           return kOfxStatErrValue;
@@ -402,11 +412,8 @@ namespace OFX {
         return kOfxStatOK;
       }
 
-      template<class T> OfxStatus Set::fetchProperty(const std::string&name, T *&prop) 
+      template<class T> OfxStatus Set::fetchProperty(const std::string&name, T *&prop) const
       {
-        if (_sloppy && _props.find(name) == _props.end()) {
-          _props[name] = new T(name, 0, false, 0);
-        }
         OfxStatus s = fetchUnderlyingProperty(name, prop);
         return s;
       }
@@ -443,12 +450,11 @@ namespace OFX {
       }
 
       Set::Set(const PropSpec spec[])
-        : _sloppy(false)
       {
         addProperties(spec);
       }
 
-      Set::Set(const Set &other) : _sloppy(other._sloppy) 
+      Set::Set(const Set &other) 
       {
         bool failed = false;
 
@@ -626,25 +632,53 @@ namespace OFX {
       }    
 
       /// get a particular int property
-      int Set::getIntProperty(const std::string &property, int index) 
+      int Set::getIntPropertyRaw(const std::string &property, int index) const
+      {
+        return getPropertyRaw<OFX::Host::Property::IntValue>(property, index);
+      }
+        
+      /// get a particular double property
+      double Set::getDoublePropertyRaw(const std::string &property, int index)  const
+      {
+        return getPropertyRaw<OFX::Host::Property::DoubleValue>(property, index);
+      }
+
+      /// get a particular double property
+      void *Set::getPointerPropertyRaw(const std::string &property, int index)  const
+      {
+        return getPropertyRaw<OFX::Host::Property::PointerValue>(property, index);
+      }
+        
+      /// get a particular double property
+      const std::string &Set::getStringPropertyRaw(const std::string &property, int index)  const
+      {
+        String *prop;
+        if(fetchUnderlyingProperty(property, prop) == kOfxStatOK) {
+          return prop->getValueRaw(index);
+        }
+        return StringValue::kEmpty;
+      }
+
+      /// get a particular int property
+      int Set::getIntProperty(const std::string &property, int index)  const
       {
         return getProperty<OFX::Host::Property::IntValue>(property, index);
       }
         
       /// get a particular double property
-      double Set::getDoubleProperty(const std::string &property, int index) 
+      double Set::getDoubleProperty(const std::string &property, int index)  const
       {
         return getProperty<OFX::Host::Property::DoubleValue>(property, index);
       }
 
       /// get a particular double property
-      void *Set::getPointerProperty(const std::string &property, int index) 
+      void *Set::getPointerProperty(const std::string &property, int index)  const
       {
         return getProperty<OFX::Host::Property::PointerValue>(property, index);
       }
         
       /// get a particular double property
-      const std::string &Set::getStringProperty(const std::string &property, int index) 
+      const std::string &Set::getStringProperty(const std::string &property, int index)  const
       {
         String *prop;
         if(fetchUnderlyingProperty(property, prop) == kOfxStatOK) {
@@ -680,6 +714,16 @@ namespace OFX {
         setProperty<OFX::Host::Property::PointerValue>(property, index, v);
       }
         
+      /// get the dimension of a particular property
+      int Set::getDimension(const std::string &property) const
+      {
+        Property *prop = 0;
+        if(fetchUnderlyingProperty(property, prop) == kOfxStatOK) {
+          return  prop->getDimension();
+        }
+        return 0;
+      }
+
 
       struct OfxPropertySuiteV1 Set::suite = {
         Set::propSet<PointerValue>,

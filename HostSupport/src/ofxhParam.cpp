@@ -21,9 +21,7 @@ namespace OFX {
       //
       Base::Base(const std::string &name, const std::string& type) : 
         _paramName(name),
-        _paramType(type), 
-        _properties(false)
-      
+        _paramType(type)
       {
         assert(_paramType.c_str());
       }

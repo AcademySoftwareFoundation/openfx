@@ -5,70 +5,106 @@ namespace OFX {
 
   namespace Host {
 
-    // forward declare
+
     namespace ImageEffect {
       class Instance;
     }
 
     namespace Clip {
+      // forward declarations
+      class Image;
+
+      /// Base to both descriptor and instance it 
+      /// is used to basically fetch common properties 
+      /// by function name
+      class CommonProps {
+      protected :
+        Property::Set _properties;   
+
+      public :
+        /// base ctor, for a descriptor
+        CommonProps();
+
+        /// ctor, when copy constructing an instance from a descripto
+        explicit CommonProps(const CommonProps &other);
+
+        /// name of the clip
+        const std::string &getName() const
+        {
+          return _properties.getStringProperty(kOfxPropName);
+        }
+
+        /// name of the clip
+        const std::string &getShortLabel() const;
+        
+        /// name of the clip
+        const std::string &getLabel() const;
+        
+        /// name of the clip
+        const std::string &getLongLabel() const;
+
+        /// return a std::vector of supported comp
+        void getSupportedComponents(std::vector<std::string> &comps) const;
+        
+        /// is the given component supported
+        bool isSupportedComponent(const std::string &comp) const;
+
+        /// does the clip do random temporal access
+        bool temporalAccess() const;
+
+        /// is the clip optional
+        bool isOptional() const;
+
+        /// is the clip a nominal 'mask' clip
+        bool isMask() const;
+        
+        /// how does this clip like fielded images to be presented to it
+        const std::string &getFieldExtraction();
+
+        /// is the clip a nominal 'mask' clip
+        bool supportsTiles() const;
+
+        // get props
+        Property::Set &getProps();
+
+        /// get a handle on the properties of the clip descriptor for the C api
+        OfxPropertySetHandle getPropHandle();
+      };
       
       /// a clip descriptor
-      class Descriptor {
-        Property::Set _properties;        
-
+      class Descriptor : public CommonProps {
       public:
-        
         /// constructor
         Descriptor(std::string name);
         
         /// get a handle on the clip descriptor for the C api
         OfxImageClipHandle getHandle();
-        
-        /// get a handle on the properties of the clip descriptor for the C api
-        OfxPropertySetHandle getPropHandle();
-
-        Property::Set &getProps();
-        
+                
         /// get the name property
         const std::string &getName()
         {
           return _properties.getStringProperty(kOfxPropName);
         }
+
       };
 
-      // forward declare image
-      class Image;
-
-      class Instance : private Property::GetHook,
-                       private Property::NotifyHook {
+      /// a clip instance
+      class Instance : public CommonProps 
+                     , private Property::GetHook
+                     , private Property::NotifyHook {
       protected:
-        Property::Set           _properties;
         ImageEffect::Instance*  _effectInstance;
 
       public:
+        Instance(Descriptor& desc, ImageEffect::Instance* effectInstance = 0);
+
         /// get a handle on the clip descriptor for the C api
         OfxImageClipHandle getHandle();
         
-        /// get a handle on the properties of the clip descriptor for the C api
-        OfxPropertySetHandle getPropHandle();
-
-        // get props
-        Property::Set &getProps();
-
-        Instance(Descriptor& desc, ImageEffect::Instance* effectInstance = 0);
-
-        // get the clip name
-        const std::string &getName();
-
-        /// get the name property
-        const std::string &getLabel();
-
-        int upperGetDimension(const std::string &name);
-
-        // notify override properties
+        /// notify override properties
         virtual void notify(const std::string &name, bool isSingle, int indexOrN)  OFX_EXCEPTION_SPEC;
         
-        // get hook override
+        /// get hook override
         virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC;
 
         // get the virutals for viewport size, pixel scale, background colour
