@@ -292,7 +292,9 @@ namespace OFX {
         : Base(descriptor.getName(), descriptor.getType(), descriptor.getProperties())
         , _paramSetInstance(paramSet)
         , _parentInstance(0)
-      {}
+      {
+        _properties.addNotifyHook(kOfxParamPropEnabled, this);
+      }
 
       // copy one parameter to another
       OfxStatus Instance::copy(const Instance &instance, OfxTime offset) { 

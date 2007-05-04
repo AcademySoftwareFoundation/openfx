@@ -78,7 +78,7 @@ namespace OFX {
       class SetInstance;
 
       /// the description of a plugin parameter
-      class Instance : public Base {
+      class Instance : public Base, private Property::NotifyHook {
         Instance();  
       protected:
         SetInstance*  _paramSetInstance;
@@ -106,6 +106,15 @@ namespace OFX {
 
         // copy one parameter to another, with a range
         virtual OfxStatus copy(const Instance &instance, OfxTime offset, OfxRangeD range);
+
+        // callback which should set enabled state as appropriate
+        virtual void setEnabled() = 0;
+
+        virtual void notify(const std::string &name, bool single, int num) OFX_EXCEPTION_SPEC {
+          if (name == kOfxParamPropEnabled) {
+            setEnabled();
+          }
+        }
       };
 
       class KeyframeParam {
