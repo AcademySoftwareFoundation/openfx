@@ -44,7 +44,7 @@ namespace OFX {
         const std::string &getLongLabel() const;
 
         /// return a std::vector of supported comp
-        void getSupportedComponents(std::vector<std::string> &comps) const;
+        const std::vector<std::string> &getSupportedComponents() const;
         
         /// is the given component supported
         bool isSupportedComponent(const std::string &comp) const;

@@ -91,24 +91,17 @@ namespace OFX {
       }
       
       /// return a std::vector of supported comp
-      void CommonProps::getSupportedComponents(std::vector<std::string> &comps) const
+      const std::vector<std::string> &CommonProps::getSupportedComponents() const
       {
-        comps.clear();
-        int n = _properties.getDimension(kOfxImageEffectPropSupportedComponents);
-        for(int i = 0; i < n; ++i) {
-          comps.push_back(_properties.getStringProperty(kOfxImageEffectPropSupportedComponents, i));
-        }
+        Property::String *p;
+        assert(_properties.fetchProperty(kOfxImageEffectPropSupportedComponents, p) == kOfxStatOK);
+        return p->getValues();
       }
       
       /// is the given component supported
       bool CommonProps::isSupportedComponent(const std::string &comp) const
       {
-        int n = _properties.getDimension(kOfxImageEffectPropSupportedComponents);
-        for(int i = 0; i < n; ++i) {
-          if(comp == _properties.getStringProperty(kOfxImageEffectPropSupportedComponents, i))
-            return true;
-        }
-        return false;
+        return _properties.findStringPropValueIndex(kOfxImageEffectPropSupportedComponents, comp) != -1;
       }
       
       /// does the clip do random temporal access

@@ -210,6 +210,7 @@ namespace OFX {
         std::vector<NotifyHook *> _notifyHooks; ///< hooks to call whenever the property is set
         GetHook                  *_getHook;     ///< if we are not storing props locally, they are stored via fetching from here
 
+        friend class Set;
       public :
         /// ctor
         Property(const std::string &name,
@@ -294,7 +295,7 @@ namespace OFX {
         typedef typename T::Type Type; 
         typedef typename T::ReturnType ReturnType; 
         typedef typename T::APIType APIType;
-
+        
       protected :
         /// this is the present value of the property
         std::vector<Type> _value;
@@ -317,6 +318,12 @@ namespace OFX {
 
         ~PropertyTemplate()
         {
+        }
+
+        /// get the vector
+        const std::vector<Type> &getValues()
+        {
+          return _value;
         }
 
         /// get one value
@@ -348,12 +355,12 @@ namespace OFX {
         }
       };
 
-      typedef PropertyTemplate<IntValue> Int;
-      typedef PropertyTemplate<DoubleValue> Double;
-      typedef PropertyTemplate<StringValue> String;
+      typedef PropertyTemplate<IntValue>     Int;
+      typedef PropertyTemplate<DoubleValue>  Double;
+      typedef PropertyTemplate<StringValue>  String;
       typedef PropertyTemplate<PointerValue> Pointer;
 
-      /// used in creating initialised arrays to pass to set::buildFromPropSpec()
+      /// used in creating initialised arrays to pass to set::buildFromPropSpec() and constructors
       struct PropSpec {
         const char *name;
         TypeEnum type;
@@ -361,7 +368,6 @@ namespace OFX {
         bool readonly;
         const char *defaultValue;
       };
-
       
       /// a map of properties
       typedef std::map<std::string, Property *> PropertyMap;
@@ -371,14 +377,10 @@ namespace OFX {
       protected :
         PropertyMap _props; ///< what we is
 
+
         /// hide assignment
         void operator=(const Set &);
 
-        /// get property with the particular name and type.  if the property is 
-        /// missing or is of the wrong type, return an error status.  if this is a sloppy
-        /// property set and the property is missing, a new one will be created of the right
-        /// type
-        template<class T> OfxStatus fetchProperty(const std::string &name, T *&prop) const;
 
         /// as getProperty(), but will not create new properties even when sloppy
         template<class T> OfxStatus fetchUnderlyingProperty(const std::string &name, T *&prop) const;
@@ -459,13 +461,20 @@ namespace OFX {
         /// destructor
         virtual ~Set();
 
+        /// get property with the particular name and type.  if the property is 
+        /// missing or is of the wrong type, return an error status.  if this is a sloppy
+        /// property set and the property is missing, a new one will be created of the right
+        /// type
+        template<class T> OfxStatus fetchProperty(const std::string &name, T *&prop) const;
+
         /// adds a bunch of properties from PropSpec
         void addProperties(const PropSpec *);
         
         /// add one new property
-        void addProperty(Property *newProp) {
-          _props[newProp->getName()] = newProp;
-        }
+        void createProperty(const PropSpec &s);
+
+        /// add one new property
+        void addProperty(Property *prop);
 
         /// grab the internal properties map
         const PropertyMap &getProperties()
@@ -519,6 +528,12 @@ namespace OFX {
         
         /// get the dimension of a particular property
         int getDimension(const std::string &property) const;
+
+        /// is the given string one of the values of a multi-dimensional string prop
+        /// this returns a non negative index if it is found, otherwise, -1
+        int findStringPropValueIndex(const std::string &propName,
+                                     const std::string &propValue) const;
+
 
         /// get a handle on this object for passing to the C API
         OfxPropertySetHandle getHandle() 

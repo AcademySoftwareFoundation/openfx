@@ -418,35 +418,45 @@ namespace OFX {
         return s;
       }
 
+      /// add one new property
+      void Set::createProperty(const PropSpec &spec)
+      {
+        if (_props.find(spec.name) != _props.end()) {
+          std::cerr << "error : duplicate names" << std::endl;
+          abort();
+          /// XXX error - duplicate name
+        }
+
+        switch (spec.type) {
+        case eInt: 
+          _props[spec.name] = new Int(spec.name, spec.dimension, spec.readonly, spec.defaultValue?atoi(spec.defaultValue):0);
+          break;
+        case eDouble: 
+          _props[spec.name] = new Double(spec.name, spec.dimension, spec.readonly, spec.defaultValue?atof(spec.defaultValue):0);
+          break;
+        case eString: 
+          _props[spec.name] = new String(spec.name, spec.dimension, spec.readonly, spec.defaultValue?spec.defaultValue:"");
+          break;
+        case ePointer: 
+          _props[spec.name] = new Pointer(spec.name, spec.dimension, spec.readonly, (void*)spec.defaultValue);
+          break;
+        default: // XXX  error - unrecognised type
+          break;
+        }
+      }
+
       void Set::addProperties(const PropSpec spec[]) 
       {
         while (spec->name) {
-
-          if (_props.find(spec->name) != _props.end()) {
-            std::cerr << "error : duplicate names" << std::endl;
-            abort();
-            /// XXX error - duplicate name
-          }
-
-          switch (spec->type) {
-          case eInt: 
-            _props[spec->name] = new Int(spec->name, spec->dimension, spec->readonly, spec->defaultValue?atoi(spec->defaultValue):0);
-            break;
-          case eDouble: 
-            _props[spec->name] = new Double(spec->name, spec->dimension, spec->readonly, spec->defaultValue?atof(spec->defaultValue):0);
-            break;
-          case eString: 
-            _props[spec->name] = new String(spec->name, spec->dimension, spec->readonly, spec->defaultValue?spec->defaultValue:"");
-            break;
-          case ePointer: 
-            _props[spec->name] = new Pointer(spec->name, spec->dimension, spec->readonly, (void*)spec->defaultValue);
-            break;
-          default: // XXX  error - unrecognised type
-            break;
-          }
-          
+          createProperty(*spec);          
           spec++;
         }
+      }
+
+      /// add one new property
+      void Set::addProperty(Property *prop)
+      {
+        _props[prop->getName()] = prop;
       }
 
       Set::Set(const PropSpec spec[])
@@ -724,6 +734,22 @@ namespace OFX {
         return 0;
       }
 
+      /// is the given string one of the values of a multi-dimensional string prop
+      /// this returns a non negative index if it is found, otherwise, -1
+      int Set::findStringPropValueIndex(const std::string &propName,
+                                        const std::string &propValue) const
+      {
+        String *prop = 0;
+        
+        if(fetchUnderlyingProperty(propName, prop)) {
+          const std::vector<std::string> &values = prop->getValues();
+          std::vector<std::string>::const_iterator i = find(values.begin(), values.end(), propValue);
+          if(i != values.end()) {
+            return i - values.begin();
+          }
+        }
+        return -1;
+      }
 
       struct OfxPropertySuiteV1 Set::suite = {
         Set::propSet<PointerValue>,

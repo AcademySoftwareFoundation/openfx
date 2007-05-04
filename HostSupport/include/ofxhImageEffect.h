@@ -30,7 +30,7 @@ namespace OFX {
       // into the newInstance function that also needs to be implemented.
       extern void* gNewInstancePtr;
 
-      // implement a function OFX::Host::ImageEffect::newInstance to make new instances
+     // implement a function OFX::Host::ImageEffect::newInstance to make new instances
       // of effects
       extern ImageEffect::Instance* newInstance(void* ptr,
                                                 ImageEffectPlugin* plugin,
@@ -52,6 +52,59 @@ namespace OFX {
 
         /// get the properties set
         Property::Set &getProps();
+
+        /// name of the clip
+        const std::string &getShortLabel() const;
+        
+        /// name of the clip
+        const std::string &getLabel() const;
+        
+        /// name of the clip
+        const std::string &getLongLabel() const;
+
+        /// is the given context supported
+        bool isContextSupported(const std::string &s) const;
+
+        /// what is the name of the group the plug-in belongs to
+        const std::string &getPluginGrouping() const;
+
+        /// is the effect single instance
+        bool isSingleInstance() const;
+
+        /// what is the thread safety on this effect
+        const std::string &getRenderThreadSaftey() const;
+
+        /// should the host attempt to managed multi-threaded rendering if it can
+        /// via tiling or some such
+        bool getHostFrameThreading() const;
+
+        /// get the overlay interact main entry if it exists
+        OfxPluginEntryPoint *getOverlayInteractMainEntry() const;
+
+        /// does the effect support images of differing sizes
+        bool supportsMultiResolution() const;
+
+        /// does the effect support tiled rendering
+        bool supportsTiles() const;
+
+        /// does this effect need random temporal access
+        bool temporalAccess() const;
+
+        /// is the given RGBA/A pixel depth supported by the effect
+        bool isPixelDepthSupported(const std::string &s) const;
+
+        /// when field rendering, does the effect need to be called
+        /// twice to render a frame in all circumstances (with different fields)
+        bool fieldRenderTwiceAlways() const;
+        
+        /// does the effect support multiple clip depths
+        bool supportsMultipleClipDepths() const;
+        
+        /// does the effect support multiple clip pixel aspect ratios
+        bool supportsMultipleClipPARs() const;
+        
+        /// does changing the named param re-tigger a clip preferences action
+        bool isClipPreferencesSlaveParam(const std::string &s) const;
       };
 
       /// an image effect plugin descriptor
@@ -87,6 +140,9 @@ namespace OFX {
         }
       };      
 
+      /// a map used to specify needed frame ranges on set of clips
+      typedef std::map<Clip::Instance *, std::vector<OfxRangeD> > RangeMap;
+
       /// an image effect plugin descriptor
       class Instance : public Base,
                        private Property::NotifyHook, 
@@ -100,6 +156,8 @@ namespace OFX {
         Param::SetInstance                           *_params;
         bool                                          _interactive;
         bool                                          _created;
+        bool                                          _continuousSamples;
+        bool                                          _frameVarying;
       public:        
 
         /// constructor based on clip descriptor
@@ -119,48 +177,56 @@ namespace OFX {
         /// get the parameters set
         Param::SetInstance &getParams();
 
-        // get the nth clip, in order of declaration
+        /// get the nth clip, in order of declaration
         Clip::Instance* getNthClip(int index);
 
-        // get the nth clip, in order of declaration
+        /// get the nth clip, in order of declaration
         int getNClips() const
         {
           return _clips.size();
         }
 
-        // pure virtuals that must  be overriden
+        /// can this this instance render images at arbitrary times, not just frame boundaries
+        /// set by getClipPreferenceAction()
+        bool continuousSamples() const {return _continuousSamples;}
+
+        /// does this instance generate a different picture on a frame change, even if the
+        /// params and input images are exactly the same. eg: random noise generator
+        bool isFrameVarying() const {return _frameVarying;}
+
+        /// pure virtuals that must  be overriden
         virtual Clip::Instance* getClip(const std::string& name);
 
-        // override this to make processing abort, return 1 to abort processing
+        /// override this to make processing abort, return 1 to abort processing
         virtual int abort();
 
-        // override this to use your own memory instance - must inherrit from memory::instance
+        /// override this to use your own memory instance - must inherrit from memory::instance
         virtual Memory::Instance* newMemoryInstance(size_t nBytes);
 
         // return an memory::instance calls makeMemoryInstance that can be overriden
         Memory::Instance* imageMemoryAlloc(size_t nBytes);
 
-        // make a clip
+        /// make a clip
         virtual Clip::Instance* newClipInstance(ImageEffect::Instance* plugin,
                                                 Clip::Descriptor* descriptor) = 0;
 
-        // make a param set
+        /// make a param set
         virtual Param::SetInstance* newParamSetInstance(ImageEffect::Instance* plugin, 
                                                         Param::SetDescriptor& descriptor) = 0;
 
-        // vmessage
+        /// vmessage
         virtual OfxStatus vmessage(const char* type,
                                    const char* id,
                                    const char* format,
                                    va_list args) = 0;       
 
-        // call the interactive entry point
+        /// call the interactive entry point
         OfxStatus overlayEntry(const char *action, 
                                const void *handle, 
                                OfxPropertySetHandle inArgs, 
                                OfxPropertySetHandle outArgs);
 
-        // call the effect entry point
+        /// call the effect entry point
         OfxStatus mainEntry(const char *action, 
                             const void *handle, 
                             OfxPropertySetHandle inArgs,                        
@@ -171,16 +237,16 @@ namespace OFX {
         /// overridden from Property::Notify
         virtual void notify(const std::string &name, bool singleValue, int indexOrN) OFX_EXCEPTION_SPEC;
 
-        // overridden from gethook,  get the virutals for viewport size, pixel scale, background colour
+        /// overridden from gethook,  get the virutals for viewport size, pixel scale, background colour
         virtual double getDoubleProperty(const std::string &name, int index) OFX_EXCEPTION_SPEC;
 
-        // overridden from gethook,  get the virutals for viewport size, pixel scale, background colour
+        /// overridden from gethook,  get the virutals for viewport size, pixel scale, background colour
         virtual void getDoublePropertyN(const std::string &name, double *values, int count) OFX_EXCEPTION_SPEC;
         
-        // overridden from gethook, don't know what to do
+        /// overridden from gethook, don't know what to do
         virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC;
 
-        /// overridden from gethook
+        //// overridden from gethook
         virtual int getDimension(const std::string &name)  OFX_EXCEPTION_SPEC;
 
         //
@@ -221,7 +287,9 @@ namespace OFX {
         // actions
         //
 
-        // create a clip instance
+        /// create an instance. This needs to be called _after_ construction and
+        /// _after_ the host populates it's params and clips with the 'correct'
+        /// values (either persisted ones or the defaults)
         virtual OfxStatus createInstanceAction();
 
         // begin/change/end instance changed
@@ -305,10 +373,10 @@ namespace OFX {
                                                     double   y2,
                                                     std::map<std::string,OfxRectD> &rois);
 
-        // frames needed
+        // get frames needed to render the given frame
         virtual OfxStatus getFrameNeededAction(OfxTime time, 
-                                               std::map<std::string,std::vector<OfxRangeD> > rangeMap);
-
+                                               RangeMap &rangeMap);
+ 
         // is identity
         virtual OfxStatus isIdentityAction(OfxTime     &time,
                                            std::string  field,

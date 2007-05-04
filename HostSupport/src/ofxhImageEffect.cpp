@@ -19,6 +19,30 @@ namespace OFX {
   namespace Host {
 
     namespace ImageEffect {
+      
+      /// properties common on an effect and a descriptor
+      static Property::PropSpec effectDescriptorStuff[] = {
+        /* name                                 type                   dim. r/o default value */
+        { kOfxPropType,                         Property::eString,     1, true,  kOfxTypeImageEffect },
+        { kOfxPropLabel,                        Property::eString,     1, false, "" },
+        { kOfxPropShortLabel,                   Property::eString,     1, false, "" },
+        { kOfxPropLongLabel,                    Property::eString,     1, false, "" },
+        { kOfxImageEffectPropSupportedContexts, Property::eString,     0, false, "" },
+        { kOfxImageEffectPluginPropGrouping,    Property::eString,     1, false, "" },
+        { kOfxImageEffectPluginPropSingleInstance, Property::eInt,     1, false, "0" },
+        { kOfxImageEffectPluginRenderThreadSafety, Property::eString,  1, false, kOfxImageEffectRenderInstanceSafe },
+        { kOfxImageEffectPluginPropHostFrameThreading, Property::eInt, 1, false, "1" },
+        { kOfxImageEffectPluginPropOverlayInteractV1, Property::ePointer, 1, false, "0" },
+        { kOfxImageEffectPropSupportsMultiResolution, Property::eInt,  1, false, "1" } ,
+        { kOfxImageEffectPropSupportsTiles,     Property::eInt,        1, false, "1" }, 
+        { kOfxImageEffectPropTemporalClipAccess, Property::eInt,       1, false, "0" },
+        { kOfxImageEffectPropSupportedPixelDepths, Property::eString,  0, false, "" }, 
+        { kOfxImageEffectPluginPropFieldRenderTwiceAlways, Property::eInt, 1, false, "1" } ,
+        { kOfxImageEffectPropSupportsMultipleClipDepths, Property::eInt, 1, false, "0" },
+        { kOfxImageEffectPropSupportsMultipleClipPARs,   Property::eInt, 1, false, "0" },
+        { kOfxImageEffectPropClipPreferencesSlaveParam, Property::eString, 0, false, "" },
+        { 0 }
+      };
 
       //
       // Base
@@ -44,6 +68,134 @@ namespace OFX {
         return _properties;
       }
 
+      /// name of the clip
+      const std::string &Base::getShortLabel() const
+      {
+        const std::string &s = _properties.getStringProperty(kOfxPropShortLabel);
+        if(s == "") {
+          const std::string &s2 = _properties.getStringProperty(kOfxPropLabel);
+          if(s2 == "") {
+            return _properties.getStringProperty(kOfxPropName);
+          }
+        }
+        return s;
+      }
+        
+      /// name of the clip
+      const std::string &Base::getLabel() const
+      {
+        const std::string &s = _properties.getStringProperty(kOfxPropShortLabel);
+        if(s == "") {
+          return _properties.getStringProperty(kOfxPropName);
+        }
+        return s;
+      }
+        
+      /// name of the clip
+      const std::string &Base::getLongLabel() const
+      {
+        const std::string &s = _properties.getStringProperty(kOfxPropLongLabel);
+        if(s == "") {
+          const std::string &s2 = _properties.getStringProperty(kOfxPropLabel);
+          if(s2 == "") {
+            return _properties.getStringProperty(kOfxPropName);
+          }
+        }
+        return s;
+      }
+
+      /// is the given context supported
+      bool Base::isContextSupported(const std::string &s) const
+      {
+        return _properties.findStringPropValueIndex(kOfxImageEffectPropSupportedContexts, s) != -1;
+      }
+
+      /// what is the name of the group the plug-in belongs to
+      const std::string &Base::getPluginGrouping() const
+      {
+        return _properties.getStringProperty(kOfxImageEffectPluginPropGrouping);
+      }
+
+      /// is the effect single instance
+      bool Base::isSingleInstance() const
+      {
+        return _properties.getIntProperty(kOfxImageEffectPluginPropSingleInstance) != 0;
+      }
+
+      /// what is the thread safety on this effect
+      const std::string &Base::getRenderThreadSaftey() const
+      {
+        return _properties.getStringProperty(kOfxImageEffectPluginRenderThreadSafety);
+      }
+
+      /// should the host attempt to managed multi-threaded rendering if it can
+      /// via tiling or some such
+      bool Base::getHostFrameThreading() const
+      {
+        return _properties.getIntProperty(kOfxImageEffectPluginPropHostFrameThreading) != 0;
+      }
+
+      /// get the overlay interact main entry if it exists
+      OfxPluginEntryPoint *Base::getOverlayInteractMainEntry() const
+      {
+        return (OfxPluginEntryPoint *)(_properties.getPointerProperty(kOfxImageEffectPluginPropOverlayInteractV1));
+      }
+
+      /// does the effect support images of differing sizes
+      bool Base::supportsMultiResolution() const
+      {
+        return _properties.getIntProperty(kOfxImageEffectPropSupportsMultiResolution) != 0;
+      }
+
+      /// does the effect support tiled rendering
+      bool Base::supportsTiles() const
+      {
+        return _properties.getIntProperty(kOfxImageEffectPropSupportsTiles) != 0;
+      }
+
+      /// does this effect need random temporal access
+      bool Base::temporalAccess() const
+      {
+        return _properties.getIntProperty(kOfxImageEffectPropTemporalClipAccess) != 0;
+      }
+
+      /// is the given RGBA/A pixel depth supported by the effect
+      bool Base::isPixelDepthSupported(const std::string &s) const
+      {
+        return _properties.findStringPropValueIndex(kOfxImageEffectPropSupportedPixelDepths, s) != -1;
+      }
+
+      /// when field rendering, does the effect need to be called
+      /// twice to render a frame in all Base::circumstances (with different fields)
+      bool Base::fieldRenderTwiceAlways() const
+      {
+        return _properties.getIntProperty(kOfxImageEffectPluginPropFieldRenderTwiceAlways) != 0;
+      }
+        
+      /// does the effect support multiple clip depths
+      bool Base::supportsMultipleClipDepths() const
+      {
+        return _properties.getIntProperty(kOfxImageEffectPropSupportsMultipleClipDepths) != 0;
+      }
+        
+      /// does the effect support multiple clip pixel aspect ratios
+      bool Base::supportsMultipleClipPARs() const
+      {
+        return _properties.getIntProperty(kOfxImageEffectPropSupportsMultipleClipPARs) != 0;
+      }
+        
+      /// does changing the named param re-tigger a clip preferences action
+      bool Base::isClipPreferencesSlaveParam(const std::string &s) const
+      {
+        return _properties.findStringPropValueIndex(kOfxImageEffectPropClipPreferencesSlaveParam, s) != -1;
+      }
+
+
+
+      ////////////////////////////////////////////////////////////////////////////////
+      // descriptor
+
+
       // Descriptor
       Descriptor::Descriptor(const Descriptor &other)
         : Base(other._properties)
@@ -51,29 +203,6 @@ namespace OFX {
         , _params(other._params)
       {
       }
-
-      static Property::PropSpec effectDescriptorStuff[] = {
-        /* name                                 type                   dim. r/o default value */
-        { kOfxPropType,                         Property::eString,     1, true,  kOfxTypeImageEffect },
-        { kOfxPropLabel,                        Property::eString,     1, false, "" },
-        { kOfxPropShortLabel,                   Property::eString,     1, false, "" },
-        { kOfxPropLongLabel,                    Property::eString,     1, false, "" },
-        { kOfxImageEffectPropSupportedContexts, Property::eString,     0, false, "" },
-        { kOfxImageEffectPluginPropGrouping,    Property::eString,     1, false, "" },
-        { kOfxImageEffectPluginPropSingleInstance, Property::eInt,     1, false, "0" },
-        { kOfxImageEffectPluginRenderThreadSafety, Property::eString,  1, false, kOfxImageEffectRenderInstanceSafe },
-        { kOfxImageEffectPluginPropHostFrameThreading, Property::eInt, 1, false, "1" },
-        { kOfxImageEffectPluginPropOverlayInteractV1, Property::ePointer, 1, false, "0" },
-        { kOfxImageEffectPropSupportsMultiResolution, Property::eInt,  1, false, "1" } ,
-        { kOfxImageEffectPropSupportsTiles,     Property::eInt,        1, false, "1" }, 
-        { kOfxImageEffectPropTemporalClipAccess, Property::eInt,       1, false, "0" },
-        { kOfxImageEffectPropSupportedPixelDepths, Property::eString,  0, false, "" }, 
-        { kOfxImageEffectPluginPropFieldRenderTwiceAlways, Property::eInt, 1, false, "1" } ,
-        { kOfxImageEffectPropSupportsMultipleClipDepths, Property::eInt, 1, false, "0" },
-        { kOfxImageEffectPropSupportsMultipleClipPARs,   Property::eInt, 1, false, "0" },
-        { kOfxImageEffectPropClipPreferencesSlaveParam, Property::eString, 0, false, "" },
-        { 0 }
-      };
 
       Descriptor::Descriptor(Plugin *plug) : Base(effectDescriptorStuff) {
 
@@ -148,6 +277,8 @@ namespace OFX {
           _descriptor(&other),
           _interactive(interactive),
           _created(false)
+        , _continuousSamples(false)
+        , _frameVarying(false)
       {
         int i = 0;
 
@@ -734,73 +865,68 @@ namespace OFX {
       }
 
       OfxStatus Instance::getFrameNeededAction(OfxTime time, 
-                                               std::map<std::string,std::vector<OfxRangeD> > rangeMap)
+                                               RangeMap &rangeMap)
       {
+        if(!temporalAccess()) {
+          return kOfxStatReplyDefault;
+        }
+
         Property::PropSpec inStuff[] = {
           { kOfxPropTime, Property::eDouble, 1, true, "0" },          
           { 0 }
         };
-        
-        int max = _clips.size();
-
-        Property::PropSpec* outStuff = new Property::PropSpec[max];
-
-        int i = 0;
-
-        for(std::map<std::string, Clip::Instance*>::iterator it=_clips.begin();
-            it!=_clips.end();
-            it++)
-          {
-            std::string name = "OfxImageClipPropFrameRange_"+it->first;
-
-            outStuff[i].name = name.c_str();
-            outStuff[i].type = Property::eDouble,
-              outStuff[i].dimension = 0;
-            outStuff[i].readonly = false;
-            outStuff[i].defaultValue = "";
-
-            i++;
-          }
-
-
         Property::Set inArgs(inStuff);       
-
         inArgs.setDoubleProperty(kOfxPropTime,time);
-
-        Property::Set outArgs(outStuff);
-
-        mainEntry(kOfxImageEffectActionGetFramesNeeded,
-                  this->getHandle(),
-                  inArgs.getHandle(),
-                  outArgs.getHandle());
-
+        
+        
+        Property::Set outArgs;
         for(std::map<std::string, Clip::Instance*>::iterator it=_clips.begin();
             it!=_clips.end();
-            it++)
-          {
+            it++) { 
+          Property::PropSpec s;
+          std::string name = "OfxImageClipPropFrameRange_"+it->first;
+
+          s.name = name.c_str();
+          s.type = Property::eDouble;
+          s.dimension = 0;
+          s.readonly = false;
+          s.defaultValue = "";
+          outArgs.createProperty(s);
+        }
+
+        OfxStatus stat = mainEntry(kOfxImageEffectActionGetFramesNeeded,
+                                   this->getHandle(),
+                                   inArgs.getHandle(),
+                                   outArgs.getHandle());
+        
+        if(stat == kOfxStatOK) {
+          for(std::map<std::string, Clip::Instance*>::iterator it=_clips.begin();
+              it!=_clips.end();
+              it++) {
+            Clip::Instance *clip = it->second;
+
             std::string name = "OfxImageClipPropFrameRange_"+it->first;
 
             int nRanges = outArgs.getDimension(name);
+            if(nRanges%2 != 0)
+              return kOfxStatFailed; // bad! needs to be divisible by 2
 
             std::vector<OfxRangeD> ranges;
 
             for(int r=0;r<nRanges;){
               double min = outArgs.getDoubleProperty(name,r);
-              r++;
-              double max = outArgs.getDoubleProperty(name,r);
-              r++;
+              double max = outArgs.getDoubleProperty(name,r+1);
+              r += 2;
 
               OfxRangeD range;
               range.min = min;
               range.max = max;
-
-              ranges.push_back(range);
+              rangeMap[clip].push_back(range);
             }
-
-            rangeMap[it->first] = ranges;
           }
+        }
 
-        return kOfxStatOK;
+        return stat;
       }
 
       OfxStatus Instance::isIdentityAction(OfxTime     &time,
