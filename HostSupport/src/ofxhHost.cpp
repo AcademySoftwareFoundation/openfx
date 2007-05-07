@@ -127,7 +127,8 @@ namespace OFX {
       OfxStatus clipGetImage(OfxImageClipHandle h1, 
                              OfxTime time, 
                              OfxRectD *h2, 
-                             OfxPropertySetHandle *h3){
+                             OfxPropertySetHandle *h3)
+      {
         Clip::Instance *clipInstance = reinterpret_cast<Clip::Instance*>(h1);
 
         if(clipInstance){
@@ -146,9 +147,9 @@ namespace OFX {
         Property::Set *pset = reinterpret_cast<Property::Set*>(h1);
         Clip::Image *image = dynamic_cast<Clip::Image*>(pset);
 
-        if(h1){
+        if(image){
           // clip::image has a virtual destructor for derived classes
-          delete image;
+          image->releaseReference();
           return kOfxStatOK;
         }
         else 

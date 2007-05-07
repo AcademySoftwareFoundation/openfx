@@ -213,19 +213,35 @@ namespace OFX {
         //  1 if the images can only be sampled continuously (eg: the clip is infact an animating roto spline and can be rendered anywhen). 
         virtual bool getContinuousSamples() = 0;
 
-        // non property data
-        virtual Clip::Image* getImage(OfxTime time, OfxRectD *h2) = 0;
+        /// override this to fill in the image at the given time.
+        /// The bounds of the image on the image plane should be 
+        /// 'appropriate', typically the value returned in getRegionsOfInterest
+        /// on the effect instance. Outside a render call, the optionalBounds should
+        /// be 'appropriate' for the.
+        /// If bounds is not null, fetch the indicated section of the canonical image plane.
+        virtual Clip::Image* getImage(OfxTime time, OfxRectD *optionalBounds) = 0;
+
+        /// override this to return the rod on the clip
         virtual OfxRectD getRegionOfDefinition(OfxTime time) = 0;
       };
 
       // instance of an image class
       class Image : public Property::Set {
-      protected:
-        Image(); 
+      protected :
+        /// called during ctors to get bits from the clip props into ours
+        void getClipBits(Clip::Instance& instance);
+        int _referenceCount; ///< reference count on this image
 
       public:
         // default constructor
         virtual ~Image();
+        
+        /// basic ctor, makes empty property set but sets not value
+        Image();
+
+        /// construct from a clip instance, but leave the
+        /// filling it to the calling code via the propery set
+        explicit Image(Clip::Instance& instance); 
 
         // Render Scale (renderScaleX,renderScaleY) -
         //
@@ -263,7 +279,7 @@ namespace OFX {
         // Uniquely labels an image. This is host set and allows a plug-in to differentiate between images. This is 
         // especially useful if a plugin caches analysed information about the image (for example motion vectors). The 
         // plugin can label the cached information with this identifier. If a user connects a different clip to the 
-        // analysed input, or the image has changed in some way then the plugin can detect this via an identifier change 
+        // analysed input, or the image has changed in some way then the plugin can detect this via an identifier change
         // and re-evaluate the cached information. 
 
         // construction based on clip instance
@@ -271,14 +287,8 @@ namespace OFX {
               double renderScaleX, 
               double renderScaleY,
               void* data,
-              int bx1, 
-              int by1, 
-              int bx2, 
-              int by2,
-              int rodx1, 
-              int rody1, 
-              int rodx2, 
-              int rody2,
+              const OfxRectI &bounds,
+              const OfxRectI &rod,
               int rowBytes,
               std::string field,
               std::string uniqueIdentifier);
@@ -286,6 +296,11 @@ namespace OFX {
         // OfxImageClipHandle getHandle();
         OfxPropertySetHandle getPropHandle() { return Property::Set::getHandle(); }
 
+        /// release the reference count, which, if zero, deletes this
+        void releaseReference();
+
+        /// add a reference to this image
+        void addReference() {_referenceCount++;}
       };
 
     } // Memory

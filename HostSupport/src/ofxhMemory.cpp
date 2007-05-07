@@ -36,6 +36,7 @@ namespace OFX {
 
       void Instance::free(){
         delete [] _ptr;
+        _ptr = 0;
       }
 
       void* Instance::getPtr() {

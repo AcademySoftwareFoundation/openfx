@@ -186,6 +186,9 @@ namespace OFX {
           return _clips.size();
         }
 
+        /// are all the non optional clips connected
+        bool checkClipConnectionStatus() const;
+
         /// can this this instance render images at arbitrary times, not just frame boundaries
         /// set by getClipPreferenceAction()
         bool continuousSamples() const {return _continuousSamples;}
@@ -371,7 +374,7 @@ namespace OFX {
                                                     double   y1,
                                                     double   x2,
                                                     double   y2,
-                                                    std::map<std::string,OfxRectD> &rois);
+                                                    std::map<Clip::Instance *, OfxRectD> &rois);
 
         // get frames needed to render the given frame
         virtual OfxStatus getFrameNeededAction(OfxTime time, 

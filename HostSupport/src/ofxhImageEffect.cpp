@@ -484,6 +484,18 @@ namespace OFX {
         }
       }
 
+      /// check for connection
+      bool Instance::checkClipConnectionStatus() const
+      {
+        std::map<std::string, Clip::Instance*>::const_iterator i;      
+        for(i = _clips.begin(); i != _clips.end(); ++i) {
+          if(!i->second->isOptional() && !i->second->getConnected()) {
+            return false;
+          }
+        }
+        return true;
+      }
+
       /// get the parameters set
       Param::SetInstance &Instance::getParams() {
         return *_params;
@@ -767,6 +779,8 @@ namespace OFX {
         return mainEntry(kOfxImageEffectActionEndSequenceRender,this->getHandle(),inArgs.getHandle(),0);        
       }
 
+      ////////////////////////////////////////////////////////////////////////////////
+      // RoD call
       OfxStatus Instance::getRegionOfDefinitionAction(OfxTime  time,
                                                       double   renderScaleX,
                                                       double   renderScaleY,
@@ -793,18 +807,17 @@ namespace OFX {
         inArgs.setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleX, 0);
         inArgs.setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleY, 1);
 
-
-        mainEntry(kOfxImageEffectActionGetRegionOfDefinition,
-                  this->getHandle(),
-                  inArgs.getHandle(),
-                  outArgs.getHandle());
-
+        OfxStatus stat = mainEntry(kOfxImageEffectActionGetRegionOfDefinition,
+                                   this->getHandle(),
+                                   inArgs.getHandle(),
+                                   outArgs.getHandle());
+        
         x1 = outArgs.getDoubleProperty(kOfxImageEffectPropRegionOfDefinition,0);
         y1 = outArgs.getDoubleProperty(kOfxImageEffectPropRegionOfDefinition,1);
         x2 = outArgs.getDoubleProperty(kOfxImageEffectPropRegionOfDefinition,2);
         y2 = outArgs.getDoubleProperty(kOfxImageEffectPropRegionOfDefinition,3);
 
-        return kOfxStatOK;
+        return stat;
       }
 
       OfxStatus Instance::getRegionOfInterestAction(OfxTime  time,
@@ -814,20 +827,22 @@ namespace OFX {
                                                     double   y1,
                                                     double   x2,
                                                     double   y2,
-                                                    std::map<std::string,OfxRectD>& rois) {
-        Property::PropSpec inStuff[] = {
+                                                    std::map<Clip::Instance *, OfxRectD>& rois) 
+      {
+        // HACK BJN TODO
+        //    - need to add the 'supports tiles' logic here and handle that appropriately
+        //    - need to clip the requested RoIs against the clip's actual RoD
+
+        rois.clear();
+
+        /// set up the in args 
+        static Property::PropSpec inStuff[] = {
           { kOfxPropTime, Property::eDouble, 1, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { kOfxImageEffectPropRegionOfInterest , Property::eDouble, 4, true, 0 },
           { 0 }
         };
-
-        Property::PropSpec outStuff[] = {
-          { kOfxImageEffectPropRegionOfDefinition , Property::eDouble, 4, false, 0 },
-          { 0 }
-        };
-
         Property::Set inArgs(inStuff);
-        Property::Set outArgs(outStuff);
 
         inArgs.setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleX, 0);
         inArgs.setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleY, 1);
@@ -839,89 +854,122 @@ namespace OFX {
         inArgs.setDoubleProperty(kOfxImageEffectPropRegionOfInterest,x2, 2);
         inArgs.setDoubleProperty(kOfxImageEffectPropRegionOfInterest,y2, 3);
 
-        mainEntry(kOfxImageEffectActionGetRegionsOfInterest,
-                  this->getHandle(),
-                  inArgs.getHandle(),
-                  outArgs.getHandle());
-
-        for(std::map<std::string, Clip::Instance*>::iterator it=_clips.begin();
-            it!=_clips.end();
-            it++)
-          {
-            std::string name = "OfxImageClipPropRoI_"+it->first;
-          
-            OfxRectD roi;
-
-            roi.x1 = outArgs.getDoubleProperty(name,0);
-            roi.y1 = outArgs.getDoubleProperty(name,1);
-            roi.x2 = outArgs.getDoubleProperty(name,2);
-            roi.y2 = outArgs.getDoubleProperty(name,3);
-
-            rois[it->first] = roi;
-
-          }
-  
-        return kOfxStatOK;
-      }
-
-      OfxStatus Instance::getFrameNeededAction(OfxTime time, 
-                                               RangeMap &rangeMap)
-      {
-        if(!temporalAccess()) {
-          return kOfxStatReplyDefault;
-        }
-
-        Property::PropSpec inStuff[] = {
-          { kOfxPropTime, Property::eDouble, 1, true, "0" },          
-          { 0 }
-        };
-        Property::Set inArgs(inStuff);       
-        inArgs.setDoubleProperty(kOfxPropTime,time);
-        
-        
         Property::Set outArgs;
         for(std::map<std::string, Clip::Instance*>::iterator it=_clips.begin();
             it!=_clips.end();
             it++) { 
           Property::PropSpec s;
-          std::string name = "OfxImageClipPropFrameRange_"+it->first;
+          std::string name = "OfxImageClipPropRoI_"+it->first;
 
           s.name = name.c_str();
           s.type = Property::eDouble;
-          s.dimension = 0;
+          s.dimension = 4;
           s.readonly = false;
           s.defaultValue = "";
           outArgs.createProperty(s);
+          
+          /// initialise to the default
+          outArgs.setDoubleProperty(s.name, x1, 0);
+          outArgs.setDoubleProperty(s.name, y1, 1);
+          outArgs.setDoubleProperty(s.name, x2, 2);
+          outArgs.setDoubleProperty(s.name, y2, 3);
         }
 
-        OfxStatus stat = mainEntry(kOfxImageEffectActionGetFramesNeeded,
+
+        OfxStatus stat = mainEntry(kOfxImageEffectActionGetRegionsOfInterest,
                                    this->getHandle(),
                                    inArgs.getHandle(),
                                    outArgs.getHandle());
+
+        /// set the thing up
+        for(std::map<std::string, Clip::Instance*>::iterator it=_clips.begin();
+            it!=_clips.end();
+            it++)
+          {
+            std::string name = "OfxImageClipPropRoI_"+it->first;
+            OfxRectD roi;
+            roi.x1 = outArgs.getDoubleProperty(name,0);
+            roi.y1 = outArgs.getDoubleProperty(name,1);
+            roi.x2 = outArgs.getDoubleProperty(name,2);
+            roi.y2 = outArgs.getDoubleProperty(name,3);
+            rois[it->second] = roi;
+          }
+  
+        return stat;
+      }
+
+      ////////////////////////////////////////////////////////////////////////////////
+      /// see how many frames are needed from each clip to render the indicated frame
+      OfxStatus Instance::getFrameNeededAction(OfxTime time, 
+                                               RangeMap &rangeMap)
+      {
+        OfxStatus stat = kOfxStatReplyDefault;
+        Property::Set outArgs;
+      
+        if(!temporalAccess()) {
+          Property::PropSpec inStuff[] = {
+            { kOfxPropTime, Property::eDouble, 1, true, "0" },          
+            { 0 }
+          };
+          Property::Set inArgs(inStuff);       
+          inArgs.setDoubleProperty(kOfxPropTime,time);
         
-        if(stat == kOfxStatOK) {
+        
           for(std::map<std::string, Clip::Instance*>::iterator it=_clips.begin();
               it!=_clips.end();
-              it++) {
-            Clip::Instance *clip = it->second;
-
+              it++) { 
+            Property::PropSpec s;
             std::string name = "OfxImageClipPropFrameRange_"+it->first;
 
-            int nRanges = outArgs.getDimension(name);
-            if(nRanges%2 != 0)
-              return kOfxStatFailed; // bad! needs to be divisible by 2
+            s.name = name.c_str();
+            s.type = Property::eDouble;
+            s.dimension = 0;
+            s.readonly = false;
+            s.defaultValue = "";
+            outArgs.createProperty(s);
+          }
 
-            std::vector<OfxRangeD> ranges;
+          stat = mainEntry(kOfxImageEffectActionGetFramesNeeded,
+                           this->getHandle(),
+                           inArgs.getHandle(),
+                           outArgs.getHandle());
+        }
+        
+        OfxRangeD defaultRange;
+        defaultRange.min = 
+          defaultRange.max = time;
 
-            for(int r=0;r<nRanges;){
-              double min = outArgs.getDoubleProperty(name,r);
-              double max = outArgs.getDoubleProperty(name,r+1);
-              r += 2;
+        for(std::map<std::string, Clip::Instance*>::iterator it=_clips.begin();
+            it!=_clips.end();
+            it++) {
+          Clip::Instance *clip = it->second;
+          
+          if(clip->getName() != "Output")  {
+            if(stat != kOfxStatOK) {
+              rangeMap[clip].push_back(defaultRange);
+            }
+            else {
+              std::string name = "OfxImageClipPropFrameRange_"+it->first;
+          
+              int nRanges = outArgs.getDimension(name);
+              if(nRanges%2 != 0)
+                return kOfxStatFailed; // bad! needs to be divisible by 2
 
-              OfxRangeD range;
-              range.min = min;
-              range.max = max;
-              rangeMap[clip].push_back(range);
+              if(nRanges == 0) {
+                rangeMap[clip].push_back(defaultRange);
+              }
+              else {
+                for(int r=0;r<nRanges;){
+                  double min = outArgs.getDoubleProperty(name,r);
+                  double max = outArgs.getDoubleProperty(name,r+1);
+                  r += 2;
+                
+                  OfxRangeD range;
+                  range.min = min;
+                  range.max = max;
+                  rangeMap[clip].push_back(range);
+                }
+              }
             }
           }
         }
