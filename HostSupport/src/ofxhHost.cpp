@@ -208,16 +208,21 @@ namespace OFX {
                                  OfxImageMemoryHandle *memoryHandle)
       {
         ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(instanceHandle);
-
         ImageEffect::Instance *effectInstance = reinterpret_cast<ImageEffect::Instance*>(effectBase);
+        Memory::Instance* memory;
 
+        /// HACK BJN - no way of overrideing this if insatnceHnadle is NULL
+        /// also need to check if memeory was actually alloced
         if(effectInstance){
-          Memory::Instance* memory = effectInstance->imageMemoryAlloc(nBytes);
-          *memoryHandle = memory->getHandle();
-          return kOfxStatOK;
+          memory = effectInstance->imageMemoryAlloc(nBytes);
+        }
+        else {
+          memory = new Memory::Instance;
+          memory->alloc(nBytes);
         }
 
-        return kOfxStatErrBadHandle; 
+        *memoryHandle = memory->getHandle();
+        return kOfxStatOK;
       }
       
       OfxStatus imageMemoryFree(OfxImageMemoryHandle memoryHandle){
