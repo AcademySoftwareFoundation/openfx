@@ -333,21 +333,21 @@ namespace OFX {
         // make the param set instance from the param instances
         _params = newParamSetInstance(this,_descriptor->getParams());
 
-        std::map<std::string,Param::Descriptor*>& map = _descriptor->getParams().getParams();
+        std::list<Param::Descriptor*>& map = _descriptor->getParams().getParamList();
 
         std::map<std::string,std::vector<Param::Instance*> > parameters;
         std::map<std::string, Param::Instance*> groups;
 
-        for(std::map<std::string,Param::Descriptor*>::iterator it=map.begin();
+        for(std::list<Param::Descriptor*>::iterator it=map.begin();
             it!=map.end();
             it++)
           {
-            // name of the parameter
-            std::string name = it->first;
-          
+            Param::Descriptor* descriptor = (*it);
             // get the param descriptor
-            Param::Descriptor* descriptor = it->second;
             if(!descriptor) return kOfxStatErrValue;
+
+            // name of the parameter
+            std::string name = descriptor->getName();
 
             // get a param instance from a param descriptor
             Param::Instance* instance = _params->newParam(name,*descriptor);
@@ -368,7 +368,7 @@ namespace OFX {
           }
 
         // for each group parameter made
-        for(std::map<std::string,Param::Instance*>::iterator it=groups.begin();
+        for(std::map<std::string, Param::Instance*>::iterator it=groups.begin();
             it!=groups.end();
             it++)
           {
