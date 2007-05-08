@@ -938,112 +938,112 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_list ap;
 
           va_start(ap,paramHandle);
-          int *value = va_arg(ap, int*);
+          int value = va_arg(ap, int);
           va_end(ap);
         
           mDeclareTypedInstance(IntegerInstance);
-          return typedParamInstance->set(*value);
+          return typedParamInstance->set(value);
         }
         else if(paramInstance->getType()==kOfxParamTypeDouble){
           va_list ap;
 
           va_start(ap,paramHandle);
-          double *value = va_arg(ap, double*);
+          double value = va_arg(ap, double);
           va_end(ap);
 
           mDeclareTypedInstance(DoubleInstance);
-          return typedParamInstance->set(*value);
+          return typedParamInstance->set(value);
         }
         else if(paramInstance->getType()==kOfxParamTypeBoolean){
           va_list ap;
 
           va_start(ap,paramHandle);
-          bool *value = va_arg(ap, bool*);
+          bool value = va_arg(ap, int);
           va_end(ap);
 
           mDeclareTypedInstance(BooleanInstance);
-          return typedParamInstance->set(*value);
+          return typedParamInstance->set(value);
         }
         else if(paramInstance->getType()==kOfxParamTypeChoice){
           va_list ap;
 
           va_start(ap,paramHandle);
-          int *value = va_arg(ap, int*);
+          int value = va_arg(ap, int);
           va_end(ap);
 
           mDeclareTypedInstance(ChoiceInstance);
-          return typedParamInstance->set(*value);
+          return typedParamInstance->set(value);
         }
         else if(paramInstance->getType()==kOfxParamTypeRGBA){
           va_list ap;
 
           va_start(ap,paramHandle);
-          double *r = va_arg(ap, double*);
-          double *g = va_arg(ap, double*);
-          double *b = va_arg(ap, double*);
-          double *a = va_arg(ap, double*);
+          double r = va_arg(ap, double);
+          double g = va_arg(ap, double);
+          double b = va_arg(ap, double);
+          double a = va_arg(ap, double);
           va_end(ap);
 
           mDeclareTypedInstance(RGBAInstance);
-          return typedParamInstance->set(*r,*g,*b,*a);
+          return typedParamInstance->set(r,g,b,a);
         }
         else if(paramInstance->getType()==kOfxParamTypeRGB){
           va_list ap;
 
           va_start(ap,paramHandle);
-          double *r = va_arg(ap, double*);
-          double *g = va_arg(ap, double*);
-          double *b = va_arg(ap, double*);
+          double r = va_arg(ap, double);
+          double g = va_arg(ap, double);
+          double b = va_arg(ap, double);
           va_end(ap);
 
           mDeclareTypedInstance(RGBInstance);
-          return typedParamInstance->set(*r,*g,*b);
+          return typedParamInstance->set(r,g,b);
         }
         else if(paramInstance->getType()==kOfxParamTypeDouble2D){
           va_list ap;
 
           va_start(ap,paramHandle);
-          double *x = va_arg(ap, double*);
-          double *y = va_arg(ap, double*);
+          double x = va_arg(ap, double);
+          double y = va_arg(ap, double);
           va_end(ap);
 
           mDeclareTypedInstance(Double2DInstance);
-          return typedParamInstance->set(*x,*y);
+          return typedParamInstance->set(x,y);
         }
         else if(paramInstance->getType()==kOfxParamTypeInteger2D){
           va_list ap;
 
           va_start(ap,paramHandle);
-          int *x = va_arg(ap, int*);
-          int *y = va_arg(ap, int*);
+          int x = va_arg(ap, int);
+          int y = va_arg(ap, int);
           va_end(ap);
 
           mDeclareTypedInstance(Integer2DInstance);
-          return typedParamInstance->set(*x,*y);
+          return typedParamInstance->set(x,y);
         }
         else if(paramInstance->getType()==kOfxParamTypeDouble3D){
           va_list ap;
 
           va_start(ap,paramHandle);
-          double *x = va_arg(ap, double*);
-          double *y = va_arg(ap, double*);
-          double *z = va_arg(ap, double*);
+          double x = va_arg(ap, double);
+          double y = va_arg(ap, double);
+          double z = va_arg(ap, double);
           va_end(ap);
 
           mDeclareTypedInstance(Double3DInstance);
-          return typedParamInstance->set(*x,*y,*z);            
+          return typedParamInstance->set(x,y,z);            
         }
         else if(paramInstance->getType()==kOfxParamTypeInteger3D){
           va_list ap;
 
           va_start(ap,paramHandle);
-          int *x = va_arg(ap, int*);
-          int *y = va_arg(ap, int*);
-          int *z = va_arg(ap, int*);
+          int x = va_arg(ap, int);
+          int y = va_arg(ap, int);
+          int z = va_arg(ap, int);
           va_end(ap);
 
           mDeclareTypedInstance(Integer3DInstance);
-          return typedParamInstance->set(*x,*y,*z);
+          return typedParamInstance->set(x,y,z);
         }
         else if(paramInstance->getType()==kOfxParamTypeString){
           va_list ap;
@@ -1081,118 +1081,118 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
         if(paramInstance->getType()==kOfxParamTypeInteger){
           va_list ap;
 
-          va_start(ap,time);
-          int *value = va_arg(ap, int*);
+          va_start(ap, time);
+          int value = va_arg(ap, int);
           va_end(ap);
         
           mDeclareTypedInstance(IntegerInstance);
-          return typedParamInstance->set(time,*value);
+          return typedParamInstance->set(time, value);
         }
         else if(paramInstance->getType()==kOfxParamTypeDouble){
           va_list ap;
 
-          va_start(ap,paramHandle);
-          double *value = va_arg(ap, double*);
+          va_start(ap, time);
+          double value = va_arg(ap, double);
           va_end(ap);
 
           mDeclareTypedInstance(DoubleInstance);
-          return typedParamInstance->set(time,*value);
+          return typedParamInstance->set(time, value);
         }
         else if(paramInstance->getType()==kOfxParamTypeBoolean){
           va_list ap;
 
-          va_start(ap,paramHandle);
-          bool *value = va_arg(ap, bool*);
+          va_start(ap, time);
+          bool value = va_arg(ap, int);
           va_end(ap);
 
           mDeclareTypedInstance(BooleanInstance);
-          return typedParamInstance->set(time,*value);
+          return typedParamInstance->set(time, value);
         }
         else if(paramInstance->getType()==kOfxParamTypeChoice){
           va_list ap;
 
-          va_start(ap,paramHandle);
-          int *value = va_arg(ap, int*);
+          va_start(ap, time);
+          int value = va_arg(ap, int);
           va_end(ap);
 
           mDeclareTypedInstance(ChoiceInstance);
-          return typedParamInstance->set(time,*value);
+          return typedParamInstance->set(time, value);
         }
         else if(paramInstance->getType()==kOfxParamTypeRGBA){
           va_list ap;
 
-          va_start(ap,paramHandle);
-          double *r = va_arg(ap, double*);
-          double *g = va_arg(ap, double*);
-          double *b = va_arg(ap, double*);
-          double *a = va_arg(ap, double*);
+          va_start(ap, time);
+          double r = va_arg(ap, double);
+          double g = va_arg(ap, double);
+          double b = va_arg(ap, double);
+          double a = va_arg(ap, double);
           va_end(ap);
 
           mDeclareTypedInstance(RGBAInstance);
-          return typedParamInstance->set(time,*r,*g,*b,*a);
+          return typedParamInstance->set(time,r,g,b,a);
         }
         else if(paramInstance->getType()==kOfxParamTypeRGB){
           va_list ap;
 
-          va_start(ap,paramHandle);
-          double *r = va_arg(ap, double*);
-          double *g = va_arg(ap, double*);
-          double *b = va_arg(ap, double*);
+          va_start(ap, time);
+          double r = va_arg(ap, double);
+          double g = va_arg(ap, double);
+          double b = va_arg(ap, double);
           va_end(ap);
 
           mDeclareTypedInstance(RGBInstance);
-          return typedParamInstance->set(time,*r,*g,*b);
+          return typedParamInstance->set(time,r,g,b);
         }
         else if(paramInstance->getType()==kOfxParamTypeDouble2D){
           va_list ap;
 
-          va_start(ap,paramHandle);
-          double *x = va_arg(ap, double*);
-          double *y = va_arg(ap, double*);
+          va_start(ap, time);
+          double x = va_arg(ap, double);
+          double y = va_arg(ap, double);
           va_end(ap);
 
           mDeclareTypedInstance(Double2DInstance);
-          return typedParamInstance->set(time,*x,*y);
+          return typedParamInstance->set(time,x,y);
         }
         else if(paramInstance->getType()==kOfxParamTypeInteger2D){
           va_list ap;
 
-          va_start(ap,paramHandle);
-          int *x = va_arg(ap, int*);
-          int *y = va_arg(ap, int*);
+          va_start(ap, time);
+          int x = va_arg(ap, int);
+          int y = va_arg(ap, int);
           va_end(ap);
 
           mDeclareTypedInstance(Integer2DInstance);
-          return typedParamInstance->set(time,*x,*y);
+          return typedParamInstance->set(time,x,y);
         }
         else if(paramInstance->getType()==kOfxParamTypeDouble3D){
           va_list ap;
 
-          va_start(ap,paramHandle);
-          double *x = va_arg(ap, double*);
-          double *y = va_arg(ap, double*);
-          double *z = va_arg(ap, double*);
+          va_start(ap, time);
+          double x = va_arg(ap, double);
+          double y = va_arg(ap, double);
+          double z = va_arg(ap, double);
           va_end(ap);
 
           mDeclareTypedInstance(Double3DInstance);
-          return typedParamInstance->set(time,*x,*y,*z);            
+          return typedParamInstance->set(time,x,y,z);            
         }
         else if(paramInstance->getType()==kOfxParamTypeInteger3D){
           va_list ap;
 
-          va_start(ap,paramHandle);
-          int *x = va_arg(ap, int*);
-          int *y = va_arg(ap, int*);
-          int *z = va_arg(ap, int*);
+          va_start(ap, time);
+          int x = va_arg(ap, int);
+          int y = va_arg(ap, int);
+          int z = va_arg(ap, int);
           va_end(ap);
 
           mDeclareTypedInstance(Integer3DInstance);
-          return typedParamInstance->set(time,*x,*y,*z);
+          return typedParamInstance->set(time,x,y,z);
         }
         else if(paramInstance->getType()==kOfxParamTypeString){
           va_list ap;
 
-          va_start(ap,paramHandle);
+          va_start(ap, time);
           char *value = va_arg(ap, char*);
           va_end(ap);
 
