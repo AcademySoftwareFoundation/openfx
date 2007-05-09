@@ -372,6 +372,9 @@ namespace OFX {
 
           return kOfxStatOK;
         } TODO */
+
+        /// XXX: TODO
+
         return kOfxStatOK;
       } 
       
@@ -948,6 +951,8 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
         Instance *paramInstance = reinterpret_cast<Instance*>(paramHandle);        
         if(!paramInstance) return kOfxStatErrBadHandle;
 
+        OfxStatus rval = kOfxStatErrMissingHostFeature;
+
         if(paramInstance->getType()==kOfxParamTypeInteger){
           va_list ap;
 
@@ -956,7 +961,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
         
           mDeclareTypedInstance(IntegerInstance);
-          return typedParamInstance->set(value);
+          rval = typedParamInstance->set(value);
         }
         else if(paramInstance->getType()==kOfxParamTypeDouble){
           va_list ap;
@@ -966,7 +971,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(DoubleInstance);
-          return typedParamInstance->set(value);
+          rval = typedParamInstance->set(value);
         }
         else if(paramInstance->getType()==kOfxParamTypeBoolean){
           va_list ap;
@@ -976,7 +981,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(BooleanInstance);
-          return typedParamInstance->set(value);
+          rval = typedParamInstance->set(value);
         }
         else if(paramInstance->getType()==kOfxParamTypeChoice){
           va_list ap;
@@ -986,7 +991,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(ChoiceInstance);
-          return typedParamInstance->set(value);
+          rval = typedParamInstance->set(value);
         }
         else if(paramInstance->getType()==kOfxParamTypeRGBA){
           va_list ap;
@@ -999,7 +1004,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(RGBAInstance);
-          return typedParamInstance->set(r,g,b,a);
+          rval = typedParamInstance->set(r,g,b,a);
         }
         else if(paramInstance->getType()==kOfxParamTypeRGB){
           va_list ap;
@@ -1011,7 +1016,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(RGBInstance);
-          return typedParamInstance->set(r,g,b);
+          rval = typedParamInstance->set(r,g,b);
         }
         else if(paramInstance->getType()==kOfxParamTypeDouble2D){
           va_list ap;
@@ -1022,7 +1027,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(Double2DInstance);
-          return typedParamInstance->set(x,y);
+          rval = typedParamInstance->set(x,y);
         }
         else if(paramInstance->getType()==kOfxParamTypeInteger2D){
           va_list ap;
@@ -1033,7 +1038,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(Integer2DInstance);
-          return typedParamInstance->set(x,y);
+          rval = typedParamInstance->set(x,y);
         }
         else if(paramInstance->getType()==kOfxParamTypeDouble3D){
           va_list ap;
@@ -1045,7 +1050,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(Double3DInstance);
-          return typedParamInstance->set(x,y,z);            
+          rval = typedParamInstance->set(x,y,z);            
         }
         else if(paramInstance->getType()==kOfxParamTypeInteger3D){
           va_list ap;
@@ -1057,7 +1062,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(Integer3DInstance);
-          return typedParamInstance->set(x,y,z);
+          rval = typedParamInstance->set(x,y,z);
         }
         else if(paramInstance->getType()==kOfxParamTypeString){
           va_list ap;
@@ -1067,7 +1072,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(StringInstance);
-          return typedParamInstance->set(value);
+          rval = typedParamInstance->set(value);
         }
         else if(paramInstance->getType()==kOfxParamTypeCustom){
           return kOfxStatErrMissingHostFeature;
@@ -1083,6 +1088,15 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
         }
         else
           return kOfxStatErrUnsupported;
+
+        if (rval == kOfxStatOK) {
+          paramInstance->getParamSetInstance()->getEffectInstance()->beginInstanceChangedAction(kOfxChangePluginEdited);
+          paramInstance->getParamSetInstance()->getEffectInstance()->paramInstanceChangedAction(paramInstance->getName(), kOfxChangePluginEdited, 0, 1, 1);
+          ///XXX TODO render scale, time
+          paramInstance->getParamSetInstance()->getEffectInstance()->endInstanceChangedAction(kOfxChangePluginEdited);
+        }
+
+        return rval;
       }
       
       OfxStatus paramSetValueAtTime(OfxParamHandle  paramHandle,
@@ -1092,6 +1106,8 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
         Instance *paramInstance = reinterpret_cast<Instance*>(paramHandle);        
         if(!paramInstance) return kOfxStatErrBadHandle;
 
+        OfxStatus rval = kOfxStatErrMissingHostFeature;
+
         if(paramInstance->getType()==kOfxParamTypeInteger){
           va_list ap;
 
@@ -1100,7 +1116,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
         
           mDeclareTypedInstance(IntegerInstance);
-          return typedParamInstance->set(time, value);
+          rval = typedParamInstance->set(time, value);
         }
         else if(paramInstance->getType()==kOfxParamTypeDouble){
           va_list ap;
@@ -1110,7 +1126,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(DoubleInstance);
-          return typedParamInstance->set(time, value);
+          rval = typedParamInstance->set(time, value);
         }
         else if(paramInstance->getType()==kOfxParamTypeBoolean){
           va_list ap;
@@ -1120,7 +1136,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(BooleanInstance);
-          return typedParamInstance->set(time, value);
+          rval = typedParamInstance->set(time, value);
         }
         else if(paramInstance->getType()==kOfxParamTypeChoice){
           va_list ap;
@@ -1130,7 +1146,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(ChoiceInstance);
-          return typedParamInstance->set(time, value);
+          rval = typedParamInstance->set(time, value);
         }
         else if(paramInstance->getType()==kOfxParamTypeRGBA){
           va_list ap;
@@ -1143,7 +1159,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(RGBAInstance);
-          return typedParamInstance->set(time,r,g,b,a);
+          rval = typedParamInstance->set(time,r,g,b,a);
         }
         else if(paramInstance->getType()==kOfxParamTypeRGB){
           va_list ap;
@@ -1155,7 +1171,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(RGBInstance);
-          return typedParamInstance->set(time,r,g,b);
+          rval = typedParamInstance->set(time,r,g,b);
         }
         else if(paramInstance->getType()==kOfxParamTypeDouble2D){
           va_list ap;
@@ -1166,7 +1182,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(Double2DInstance);
-          return typedParamInstance->set(time,x,y);
+          rval = typedParamInstance->set(time,x,y);
         }
         else if(paramInstance->getType()==kOfxParamTypeInteger2D){
           va_list ap;
@@ -1177,7 +1193,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(Integer2DInstance);
-          return typedParamInstance->set(time,x,y);
+          rval = typedParamInstance->set(time,x,y);
         }
         else if(paramInstance->getType()==kOfxParamTypeDouble3D){
           va_list ap;
@@ -1189,7 +1205,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(Double3DInstance);
-          return typedParamInstance->set(time,x,y,z);            
+          rval = typedParamInstance->set(time,x,y,z);            
         }
         else if(paramInstance->getType()==kOfxParamTypeInteger3D){
           va_list ap;
@@ -1201,7 +1217,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(Integer3DInstance);
-          return typedParamInstance->set(time,x,y,z);
+          rval = typedParamInstance->set(time,x,y,z);
         }
         else if(paramInstance->getType()==kOfxParamTypeString){
           va_list ap;
@@ -1211,7 +1227,7 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_end(ap);
 
           mDeclareTypedInstance(StringInstance);
-          return typedParamInstance->set(value);
+          rval = typedParamInstance->set(value);
         }
         else if(paramInstance->getType()==kOfxParamTypeCustom){
           return kOfxStatErrMissingHostFeature;
@@ -1227,6 +1243,15 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
         }
         else
           return kOfxStatErrUnsupported;
+
+        if (rval == kOfxStatOK) {
+          paramInstance->getParamSetInstance()->getEffectInstance()->beginInstanceChangedAction(kOfxChangePluginEdited);
+          paramInstance->getParamSetInstance()->getEffectInstance()->paramInstanceChangedAction(paramInstance->getName(), kOfxChangePluginEdited, 0, 1, 1);
+          ///XXX TODO render scale, time
+          paramInstance->getParamSetInstance()->getEffectInstance()->endInstanceChangedAction(kOfxChangePluginEdited);
+        }
+
+        return rval;
       }
       
       OfxStatus paramGetNumKeys(OfxParamHandle  paramHandle,
