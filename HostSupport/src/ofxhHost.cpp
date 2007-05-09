@@ -514,11 +514,18 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_list ap;
 
           va_start(ap,paramHandle);
-          char *value = va_arg(ap, char*);
+          const char **value = va_arg(ap, const char**);
           va_end(ap);
 
+          static std::string tmp;
+
           mDeclareTypedInstance(StringInstance);
-          return typedParamInstance->get(value);
+          OfxStatus rval = typedParamInstance->get(tmp);
+
+          if (rval == kOfxStatOK) {
+            *value = tmp.c_str();
+          }
+          return rval;
         }
         else if(paramInstance->getType()==kOfxParamTypeCustom){
           return kOfxStatErrMissingHostFeature;
@@ -660,11 +667,18 @@ T* typedParamInstance = dynamic_cast<T*>(paramInstance);
           va_list ap;
 
           va_start(ap,time);
-          char *value = va_arg(ap, char*);
+          const char **value = va_arg(ap, const char**);
           va_end(ap);
 
           mDeclareTypedInstance(StringInstance);
-          return typedParamInstance->get(value);
+          static std::string tmp;
+
+          OfxStatus rval = typedParamInstance->get(time, tmp);
+
+          if (rval == kOfxStatOK) {
+            *value = tmp.c_str();
+          }
+          return rval;
         }
         else if(paramInstance->getType()==kOfxParamTypeCustom){
           return kOfxStatErrMissingHostFeature;

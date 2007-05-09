@@ -111,6 +111,7 @@ namespace OFX {
         virtual void setEnabled() = 0;
 
         virtual void notify(const std::string &name, bool single, int num) OFX_EXCEPTION_SPEC {
+          printf("notify called with %s\n", name.c_str());
           if (name == kOfxParamPropEnabled) {
             setEnabled();
           }
@@ -288,8 +289,8 @@ namespace OFX {
       public:
         StringInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
-        virtual OfxStatus get(char*&) = 0;
-        virtual OfxStatus get(OfxTime time, char&) = 0;
+        virtual OfxStatus get(std::string &) = 0;
+        virtual OfxStatus get(OfxTime time, std::string &) = 0;
         virtual OfxStatus set(const char*) = 0;
         virtual OfxStatus set(OfxTime time, const char*) = 0;
       };
