@@ -123,9 +123,15 @@ namespace OFX {
 
         OFX::Host::Descriptor* _descriptor;
 
+        bool _describeContexts;
+
       public:      
         PluginCache(OFX::Host::Descriptor* descriptor = 0);
         
+        void setDescribeContexts(bool d) {
+          _describeContexts = d;
+        }
+
         virtual ~PluginCache();        
 
         /// get the plugin by id.  vermaj and vermin can be specified.  if they are not it will

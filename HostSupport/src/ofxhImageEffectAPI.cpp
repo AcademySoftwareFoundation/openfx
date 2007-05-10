@@ -162,6 +162,7 @@ namespace OFX {
         , _currentParam(0)
         , _currentClip(0)
         , _descriptor(descriptor)
+        , _describeContexts(true)
       {
       }
 
@@ -262,7 +263,6 @@ namespace OFX {
         for (int j=0;j<size;j++) {
           std::string context = eProps.getStringProperty(kOfxImageEffectPropSupportedContexts, j);
           contexts.push_back(context);
-
           OFX::Host::Property::PropSpec inargspec[] = {
             { kOfxImageEffectPropContext, OFX::Host::Property::eString, 1, true, context.c_str() },
             { 0 }
@@ -271,7 +271,11 @@ namespace OFX {
           OFX::Host::Property::Set inarg(inargspec);
 
           ImageEffect::Descriptor *newContext = new ImageEffect::Descriptor(e);
-          rval = plug->mainEntry(kOfxImageEffectActionDescribeInContext, newContext->getHandle(), inarg.getHandle(), 0);
+
+          if (_describeContexts) {
+            rval = plug->mainEntry(kOfxImageEffectActionDescribeInContext, newContext->getHandle(), inarg.getHandle(), 0);
+          }
+
           if (rval == 0 || rval == 14) {
             p->addContext(context, newContext);
           }
