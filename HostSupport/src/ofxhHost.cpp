@@ -1508,7 +1508,7 @@ namespace OFX {
 
     static Property::PropSpec hostStuffs[] = {
       { kOfxPropType, Property::eString, 1, false, kOfxTypeImageEffectHost },
-      { kOfxPropName, Property::eString, 1, false, "uk.co.uk.thefoundry.PluginCache" },
+      { kOfxPropName, Property::eString, 1, false, "uk.co.thefoundry.PluginCache" },
       { kOfxPropLabel, Property::eString, 1, false, "Plugin Cache" } ,
       { kOfxImageEffectHostPropIsBackground, Property::eInt, 1, true, "0" },
       { kOfxImageEffectPropSupportsOverlays, Property::eInt, 1, true, "1" },
@@ -1516,7 +1516,12 @@ namespace OFX {
       { kOfxImageEffectPropSupportsTiles, Property::eInt, 1, true, "1" },
       { kOfxImageEffectPropTemporalClipAccess, Property::eInt, 1, true, "1"  },
 
+      /// xxx this needs defaulting manually
       { kOfxImageEffectPropSupportedComponents, Property::eString, 0, true, "" },
+      /// xxx this needs defaulting manually
+
+      { kOfxImageEffectPropSupportedPixelDepths, Property::eString, 0, true, "" },
+
       /// xxx this needs defaulting manually
   
       { kOfxImageEffectPropSupportedContexts, Property::eString, 0, true, "" },
@@ -1560,7 +1565,7 @@ namespace OFX {
       _host.host = _properties.getHandle();
       _host.fetchSuite = OFX::Host::fetchSuite;
 
-      Property::PropSpec hostDescriptorSpec[] = {
+      static Property::PropSpec hostDescriptorSpec[] = {
         { kOfxHostSupportHostDescriptor,    Property::ePointer,    0,    false,    "0" },
         { 0 }
       };

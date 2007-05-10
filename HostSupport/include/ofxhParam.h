@@ -110,6 +110,7 @@ namespace OFX {
         // callback which should set enabled state as appropriate
         virtual void setEnabled() = 0;
 
+        /// overridden from Property::NotifyHook
         virtual void notify(const std::string &name, bool single, int num) OFX_EXCEPTION_SPEC {
           printf("notify called with %s\n", name.c_str());
           if (name == kOfxParamPropEnabled) {

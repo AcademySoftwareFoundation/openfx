@@ -1028,6 +1028,13 @@ namespace OFX {
         return st;
       }
 
+
+      /// the idea here is the clip prefs live as active props on the effect
+      /// and are set up by clip preferences. The action manages the clip
+      /// preferences bits. We also monitor clip and param changes and
+      /// flag when clip prefs is dirty.
+      
+      /// call the clip preferences action
       OfxStatus Instance::getClipPreferenceAction(std::map<std::string,std::string> &clipComponents,
                                                   std::map<std::string,std::string> &clipDepth,
                                                   std::map<std::string,double>      &clipPARs,

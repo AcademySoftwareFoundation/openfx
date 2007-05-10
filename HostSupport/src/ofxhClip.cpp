@@ -31,10 +31,8 @@ namespace OFX {
         { 0 },
       };
       
-
       ////////////////////////////////////////////////////////////////////////////////
       // props to clips descriptors and instances
-      
 
       // base ctor, for a descriptor
       CommonProps::CommonProps()
