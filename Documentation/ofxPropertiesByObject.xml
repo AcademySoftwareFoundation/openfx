@@ -175,6 +175,7 @@
       <listitem><link linkend="kOfxParamPropDefault">kOfxParamPropDefault</link> read/write in the descriptor and instance</listitem>
       <listitem><link linkend="kOfxParamPropPluginMayWrite">kOfxParamPropPluginMayWrite</link> read/write in the descriptor, read only on an instance</listitem>
       <listitem><link linkend="kOfxParamPropCacheInvalidation">kOfxParamPropCacheInvalidation</link> read/write in the descriptor, read only on an instance</listitem>
+      <listitem><link linkend="kOfxParamPropCanUndo">kOfxParamPropCanUndo</link> read/write in the descriptor, read only on an instance</listitem>
     </itemizedlist>
   </section>
   

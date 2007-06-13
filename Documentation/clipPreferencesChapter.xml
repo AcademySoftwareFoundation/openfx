@@ -139,7 +139,7 @@ The default value of the output clip's fielding is host dependant, but in genera
 	</itemizedlist>
       </para>
       <para>
-If the host allows a plugin to specify the fielding of the output clip, then a plugin may do so during the <link linkend="kOfxImageEffectActionGetClipPreferences"><code>kOfxImageEffectActionGetClipPreferences</code></link>. For example a defielding plugin will want to indicate that the output is frame based rather than fielded.
+If the host allows a plugin to specify the fielding of the output clip, then a plugin may do so during the <link linkend="kOfxImageEffectActionGetClipPreferences"><code>kOfxImageEffectActionGetClipPreferences</code></link> by setting the property <link linkend="kOfxImageClipPropFieldOrder"><code>kOfxImageClipPropFieldOrder</code></link> in the out args argumment of the action. For example a defielding plugin will want to indicate that the output is frame based rather than fielded.
       </para>
     </section>
 
