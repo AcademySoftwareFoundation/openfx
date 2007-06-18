@@ -25,7 +25,8 @@ PROPERY_SUITE_REFERENCE_FILES = \
 	ofxParametersSuiteReference.xml \
 	ofxThreadingSuiteReference.xml \
 	ofxImageEffectSuiteReference.xml \
-	ofxInteractSuiteReference.xml  
+	ofxProgressSuiteReference.xml \
+	ofxTimeLineSuiteReference.xml 
 
 all : chunks ofxProgrammingGuide.html ofxProgrammingReference.html 
 
@@ -103,6 +104,14 @@ ofxInteractSuiteReference.xml : ../include/ofxInteract.h
 # Extract references on the parameters suite from the .h file
 ofxImageEffectSuiteReference.xml : ../include/ofxImageEffect.h
 	./getSuiteReference.perl OfxImageEffectSuiteV1 $^ > $@
+
+# Extract references on the progress suite
+ofxProgressSuiteReference.xml : ../include/ofxProgress.h
+	./getSuiteReference.perl OfxProgressSuiteV1 $^ > $@
+
+# Extract references on the progress suite
+ofxTimeLineSuiteReference.xml : ../include/ofxTimeLine.h
+	./getSuiteReference.perl OfxTimeLineSuiteV1 $^ > $@
 
 clean :
 	rm -rf *.html props $(PROPERY_SUITE_REFERENCE_FILES) ofxPropertiesReference.xml Reference Guide

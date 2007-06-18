@@ -14,7 +14,7 @@
       <holder>Bruno Nicoletti</holder>
     </copyright>
 
-    <releaseinfo>Document version 0.5</releaseinfo>
+    <releaseinfo>Document version 0.6</releaseinfo>
   </bookinfo>
 
   <preface>
@@ -2594,6 +2594,16 @@ typedef struct OfxPropertySetStruct *OfxPropertySetHandle; </programlisting></bl
     &ofxImageEffectSuiteReference;
   </chapter>
   
+  <chapter id="ProgressSuite">
+    <title>Progress Suite</title>
+    &ofxProgressSuiteReference;
+  </chapter>
+
+  <chapter id="TimeLineSuite">
+    <title>Timeline Suite</title>
+    &ofxTimeLineSuiteReference;
+  </chapter>
+
   <chapter id="ParametersSuite">
     <title>Parameters Suite</title>
     &ofxParametersSuiteReference;
