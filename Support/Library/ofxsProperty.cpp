@@ -34,7 +34,7 @@ England
 
 */
 
-#include "./ofxsSupportPrivate.H"
+#include "./ofxsSupportPrivate.h"
 
 using namespace OFX::Private;
 
@@ -77,7 +77,7 @@ namespace OFX {
     }
 
     /** @brief are we logging property get/set */
-    int PropertySet::_gPropLogging = 0;
+    int PropertySet::_gPropLogging = 1;
 
     /** @brief Do we throw an exception if a host returns 'unsupported' when setting a property */
     bool PropertySet::_gThrowOnUnsupported = true;

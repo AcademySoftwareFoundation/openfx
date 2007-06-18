@@ -36,8 +36,8 @@ England
 */
 
 #include <stdio.h>
-#include "ofxsImageEffect.H"
-#include "ofxsMultiThread.H"
+#include "ofxsImageEffect.h"
+#include "ofxsMultiThread.h"
 
 #include "../include/ofxsProcessing.H"
 #include "../include/ofxsImageBlender.H"

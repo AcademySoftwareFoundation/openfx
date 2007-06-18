@@ -41,8 +41,8 @@ England
 #include <float.h> // for FLT_MAX
 
 #include <stdio.h>
-#include "ofxsImageEffect.H"
-#include "ofxsMultiThread.H"
+#include "ofxsImageEffect.h"
+#include "ofxsMultiThread.h"
 
 #include "../include/ofxsProcessing.H"
 #include "../include/ofxsImageBlender.H"
@@ -373,7 +373,7 @@ namespace OFX {
                 // duration (the speed may be animating or wired to an expression).
                 if(context == OFX::eContextGeneral) {
                     // We are a general or filter context, define a speed param and a page of controls to put that in
-                    DoubleParamDescriptor *param = desc.defineDoubleParam("Duraction");
+                    DoubleParamDescriptor *param = desc.defineDoubleParam("Duration");
                     param->setLabels("duration", "duraction", "duration");
                     param->setScriptName("duration");
                     param->setHint("How long the output clip should be, as a proportion of the input clip's length.");

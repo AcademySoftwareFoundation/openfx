@@ -40,7 +40,7 @@ This file contains headers for classes that are used to validate property sets a
 
 */
 
-#include "ofxsSupportPrivate.H"
+#include "ofxsSupportPrivate.h"
 #include <stdarg.h>
 
 /** @brief Null pointer definition */
@@ -53,6 +53,7 @@ This file contains headers for classes that are used to validate property sets a
 #define  kOfxsDisableValidation
 #endif
 
+#define kOfxsDisableValidation
 /** @brief OFX namespace
  */
 namespace OFX {

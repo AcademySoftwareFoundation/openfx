@@ -37,8 +37,7 @@ England
 /** @brief This file contains code that skins the ofx interact suite (for image effects) */
 
 
-#include "ofxsSupportPrivate.H"
-
+#include "ofxsSupportPrivate.h"
 #include <algorithm> // for find
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries.
@@ -304,23 +303,26 @@ namespace OFX {
     }
 
     ////////////////////////////////////////////////////////////////////////////////
-
+    /** @brief ctor */
+    InteractArgs::InteractArgs(const PropertySet &props)
+    {
+        time          = props.propGetDouble(kOfxPropTime);
+        renderScale   = getRenderScale(props);
+    }
 
     /** @brief ctor */
     DrawArgs::DrawArgs(const PropertySet &props)
+      : InteractArgs(props)
     {
-        pixelScale       = getPixelScale(props);
         backGroundColour = getBackgroundColour(props);
-        time             = props.propGetDouble(kOfxPropTime);
-        renderScale      = getRenderScale(props);
+        pixelScale       = getPixelScale(props);
     }
 
     /** @brief ctor */
     PenArgs::PenArgs(const PropertySet &props)
+      : InteractArgs(props)
     {
         pixelScale    = getPixelScale(props);
-        time          = props.propGetDouble(kOfxPropTime);
-        renderScale   = getRenderScale(props);
         penPosition.x = props.propGetDouble(kOfxInteractPropPenPosition, 0);
         penPosition.y = props.propGetDouble(kOfxInteractPropPenPosition, 1);
         penPressure   = props.propGetDouble(kOfxInteractPropPenPressure);        
@@ -328,20 +330,19 @@ namespace OFX {
 
     /** @brief ctor */
     KeyArgs::KeyArgs(const PropertySet &props)
+      : InteractArgs(props)
     {
         time          = props.propGetDouble(kOfxPropTime);
         renderScale   = getRenderScale(props);
-        keySymbol     = props.propGetInt(kOfxPropKeySym);
         keyString     = props.propGetString(kOfxPropKeyString);
     }
 
     /** @brief ctor */
     FocusArgs::FocusArgs(const PropertySet &props)
+      : InteractArgs(props)
     {
         pixelScale       = getPixelScale(props);
         backGroundColour = getBackgroundColour(props);
-        time             = props.propGetDouble(kOfxPropTime);
-        renderScale      = getRenderScale(props);
     }
 
     namespace Private {
@@ -373,8 +374,8 @@ namespace OFX {
         OfxStatus
         interactMainEntry(const std::string     &action,
                           OfxInteractHandle      handle,
-                          PropertySet	           inArgs,
-                          PropertySet	           outArgs)
+                          PropertySet              inArgs,
+                          PropertySet              outArgs)
         {
             OfxStatus stat = kOfxStatReplyDefault;
 
@@ -389,55 +390,55 @@ namespace OFX {
                 delete interact;
                 stat = kOfxStatOK;
             }
-            else if(action ==	kOfxInteractActionDraw) {
+            else if(action ==   kOfxInteractActionDraw) {
                 // make the draw args
                 DrawArgs drawArgs(inArgs);
                 if(interact->draw(drawArgs))
                     stat = kOfxStatOK;
             }
-            else if(action ==	kOfxInteractActionPenMotion) {
+            else if(action ==   kOfxInteractActionPenMotion) {
 
                 // make the draw args
                 PenArgs args(inArgs);
                 if(interact->penMotion(args))
                     stat = kOfxStatOK;
             }
-            else if(action ==	kOfxInteractActionPenDown) {
+            else if(action ==   kOfxInteractActionPenDown) {
                 // make the draw args
                 PenArgs args(inArgs);
                 if(interact->penDown(args))
                     stat = kOfxStatOK;
             }
-            else if(action ==	kOfxInteractActionPenUp) {
+            else if(action ==   kOfxInteractActionPenUp) {
                 // make the draw args
                 PenArgs args(inArgs);
                 if(interact->penUp(args))
                     stat = kOfxStatOK;
             }
-            else if(action ==	kOfxInteractActionKeyDown) {
+            else if(action ==   kOfxInteractActionKeyDown) {
                 // make the draw args
                 KeyArgs args(inArgs);
                 if(interact->keyDown(args))
                     stat = kOfxStatOK;
             }
-            else if(action ==	kOfxInteractActionKeyUp) {
+            else if(action ==   kOfxInteractActionKeyUp) {
                 // make the draw args
                 KeyArgs args(inArgs);
                 if(interact->keyUp(args))
                     stat = kOfxStatOK;
             }
-            else if(action ==	kOfxInteractActionKeyRepeat) {
+            else if(action ==   kOfxInteractActionKeyRepeat) {
                 // make the draw args
                 KeyArgs args(inArgs);
                 if(interact->keyRepeat(args))
                     stat = kOfxStatOK;
             }
-            else if(action ==	kOfxInteractActionGainFocus) {
+            else if(action ==   kOfxInteractActionGainFocus) {
                 // make the draw args
                 FocusArgs args(inArgs);
                 interact->gainFocus(args);
             }
-            else if(action ==	kOfxInteractActionGainFocus) {
+            else if(action ==   kOfxInteractActionGainFocus) {
                 // make the draw args
                 FocusArgs args(inArgs);
                 interact->loseFocus(args);
@@ -449,10 +450,10 @@ namespace OFX {
 
         /** @brief The main entry for image effect overlays */
         OfxStatus
-        overlayInteractMainEntry(const char		*actionRaw,
-                                 const void		*handleRaw,
-                                 OfxPropertySetHandle	 inArgsRaw,
-                                 OfxPropertySetHandle	 outArgsRaw)
+        overlayInteractMainEntry(const char             *actionRaw,
+                                 const void             *handleRaw,
+                                 OfxPropertySetHandle    inArgsRaw,
+                                 OfxPropertySetHandle    outArgsRaw)
         {
             OFX::Log::print("********************************************************************************");
             OFX::Log::print("START overlayInteractMainEntry (%s)", actionRaw);

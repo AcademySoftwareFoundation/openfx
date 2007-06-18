@@ -33,8 +33,7 @@ England
 
 
 */
-
-#include "./ofxsSupportPrivate.H"
+#include "./ofxsSupportPrivate.h"
 
 namespace OFX {
     /** @brief Throws an @ref OFX::Exception depending on the status flag passed in */
@@ -52,8 +51,16 @@ namespace OFX {
             throw std::bad_alloc();
 
         default :
+          std::cout << "Threw suite exception!" << std::endl;
             throw OFX::Exception::Suite(stat);
         }
+    }
+
+    void 
+    throwHostMissingSuiteException(std::string name) throw(OFX::Exception::Suite)
+    {
+      std::cout << "Threw suite exception! Host missing '" << name << "' suite." << std::endl;
+      throw OFX::Exception::Suite(kOfxStatErrUnsupported);
     }
 
 
