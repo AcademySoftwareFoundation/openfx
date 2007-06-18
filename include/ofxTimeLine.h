@@ -8,8 +8,8 @@
 typedef struct OfxTimeLineSuiteV1 {
   /** @brief Get the time value of the timeline that is controlling to the indicated effect.
       
-      \arg instance is the instance of the effect changing the timeline, cast to a void *
-      \arg time a pointer through which the timeline value should be returned
+      \arg instance - is the instance of the effect changing the timeline, cast to a void *
+      \arg time - a pointer through which the timeline value should be returned
        
       This function moves the timeline to the indicated frame and returns. Any side effects of the timeline
       change are also triggered and completed before this returns (for example instance changed actions and renders
@@ -24,8 +24,8 @@ typedef struct OfxTimeLineSuiteV1 {
 
   /** @brief Move the timeline control to the indicated time.
       
-      \arg instance is the instance of the effect changing the timeline, cast to a void *
-      \arg time is the time to change the timeline to. This is in the temporal coordinate system of the effect.
+      \arg instance - is the instance of the effect changing the timeline, cast to a void *
+      \arg time - is the time to change the timeline to. This is in the temporal coordinate system of the effect.
        
       This function moves the timeline to the indicated frame and returns. Any side effects of the timeline
       change are also triggered and completed before this returns (for example instance changed actions and renders
@@ -41,9 +41,9 @@ typedef struct OfxTimeLineSuiteV1 {
 
   /** @brief Get the current bounds on a timeline
       
-      \arg instance is the instance of the effect changing the timeline, cast to a void *
-      \arg firstTime is the first time on the timeline. This is in the temporal coordinate system of the effect.
-      \arg lastTime is last time on the timeline. This is in the temporal coordinate system of the effect.
+      \arg instance - is the instance of the effect changing the timeline, cast to a void *
+      \arg firstTime - is the first time on the timeline. This is in the temporal coordinate system of the effect.
+      \arg lastTime - is last time on the timeline. This is in the temporal coordinate system of the effect.
        
       This function
 

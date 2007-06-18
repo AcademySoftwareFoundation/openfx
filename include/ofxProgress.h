@@ -1,7 +1,7 @@
 #ifndef _ofxProgressSuite_h_
 #define _ofxProgressSuite_h_
 
-
+/** @brief suite for displaying a progress bar */
 #define kOfxProgressSuite "OfxProgressSuite"
 
 /** @brief A suite that provides progress feedback from a plugin to an application */
