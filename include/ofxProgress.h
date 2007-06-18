@@ -33,7 +33,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** @brief suite for displaying a progress bar */
 #define kOfxProgressSuite "OfxProgressSuite"
 
-/** @brief A suite that provides progress feedback from a plugin to an application */
+/** @brief A suite that provides progress feedback from a plugin to an application 
+
+    A plugin instance can initiate, update and close a progress indicator with
+    this suite.
+
+    This is an optional suite in the Image Effect API.
+*/
 typedef struct OfxProgressSuiteV1 {  
 
   /** @brief Initiate a progress bar display.

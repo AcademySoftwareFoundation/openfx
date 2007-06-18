@@ -33,7 +33,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** @brief Name of the time line suite */
 #define kOfxTimeLineSuite "OfxTimeLineSuite"
 
-/** @brief Suite to control timelines */
+/** @brief Suite to control timelines 
+
+    This suite is used to enquire and control a timeline associated with a plug-in
+    instance.
+
+    This is an optional suite in the Image Effect API.
+*/
 typedef struct OfxTimeLineSuiteV1 {
   /** @brief Get the time value of the timeline that is controlling to the indicated effect.
       
