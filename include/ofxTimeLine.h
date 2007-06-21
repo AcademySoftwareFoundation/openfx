@@ -46,9 +46,7 @@ typedef struct OfxTimeLineSuiteV1 {
       \arg instance - is the instance of the effect changing the timeline, cast to a void *
       \arg time - a pointer through which the timeline value should be returned
        
-      This function moves the timeline to the indicated frame and returns. Any side effects of the timeline
-      change are also triggered and completed before this returns (for example instance changed actions and renders
-      if the output of the effect is being viewed).
+      This function returns the current time value of the timeline associated with the effect instance.
 
       @returns
       - ::kOfxStatOK - the time enquiry was sucessful
