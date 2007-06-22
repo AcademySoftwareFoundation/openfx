@@ -1,4 +1,4 @@
-SUBDIRS = Basic Generator Retimer Transition
+SUBDIRS = Basic Generator Retimer Transition Invert
 
 default : 
 	@ echo making sub projects... $(SUBDIRS)
