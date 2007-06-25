@@ -1,6 +1,6 @@
 <book>
   <bookinfo>
-    <title>The OFX Image Effect Plug-in API, 1.0, Programming Reference</title>
+    <title>The OFX Image Effect Plug-in API, 1.0, Programming Reference. Including extension.</title>
 
     <author>
       <firstname>Bruno</firstname>
@@ -9,7 +9,7 @@
     </author>
 
     <copyright>
-      <year>2006</year>
+      <year>2007</year>
 
       <holder>Bruno Nicoletti</holder>
     </copyright>

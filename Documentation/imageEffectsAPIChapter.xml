@@ -13,7 +13,9 @@
 	<listitem><link linkend="Parameter Suite">the parameter suite</link> for creating and manipulating user visible parameters,</listitem>
 	<listitem><link linkend="MultiThreadingSuite">the multithreading suite</link> for simple SMP processing,</listitem>
 	<listitem><link linkend="InteractSuite">the interact suite</link> to allow a plugin to draw custom widgets and controls,</listitem>
-	<listitem><link linkend="MessageSuite">the message suite</link> to allow a plugin to send messages to a user.</listitem>
+	<listitem><link linkend="MessageSuite">the message suite</link> to allow a plugin to send messages to a user,</listitem>
+	<listitem><link linkend="TimeLineSuiteV1">the time line suite</link> that allows a plugin to manipulate an effects timeline,</listitem>
+	<listitem><link linkend="ProgressSuiteV1">the progress suite</link> to allow a plugin to provide feeback for the progress of a slow effect.</listitem>
 	<listitem></listitem>
       </itemizedlist>
     </para>
