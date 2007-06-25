@@ -921,6 +921,23 @@ This will be in \ref PixelCoordinates
 /*@}*/
 /*@}*/
 
+/** @brief String that is the name of the standard OFX output clip */
+#define kOfxImageEffectOutputClipName "Output"
+
+/** @brief String that is the name of the standard OFX single source input clip */
+#define kOfxImageEffectSimpleSourceClipName "Source"
+
+/** @brief String that is the name of the 'from' clip in the OFX transition context */
+#define kOfxImageEffectTransitionSourceFromClipName "SourceFrom"
+
+/** @brief String that is the name of the 'from' clip in the OFX transition context */
+#define kOfxImageEffectTransitionSourceToClipName "SourceTo"
+
+/** @brief the name of the mandated 'SourceTime' param for the retime context */
+#define kOfxImageEffectRetimerParamName "SourceTime"
+
+
+
 
 /** @brief the string that names image effect suites, passed to OfxHost::fetchSuite */
 #define kOfxImageEffectSuite "OfxImageEffectSuite"
@@ -1220,6 +1237,7 @@ They range from 1000 until 1999
 
 /*@}*/
 /*@}*/
+
 #ifdef __cplusplus
 }
 #endif
