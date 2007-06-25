@@ -315,7 +315,6 @@ static OfxStatus render(OfxImageEffectHandle effect,
   OfxTime time;
   OfxRectI renderWindow;
   
-  gPropHost->propGetDouble(inArgs, kOfxPropTime, 0, &time);
   gPropHost->propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &renderWindow.x1);
 
   // retrieve any instance data associated with this effect
