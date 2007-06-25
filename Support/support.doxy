@@ -23,7 +23,7 @@ PROJECT_NAME           = "OFX Support"
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = "0.3"
+PROJECT_NUMBER         = "1.1"
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
@@ -366,7 +366,7 @@ INPUT                  = ./include ./Library
 # *.c *.cc *.cxx *.cpp *.c++ *.java *.ii *.ixx *.ipp *.i++ *.inl *.h *.hh *.hxx *.hpp 
 # *.h++ *.idl *.odl *.cs
 
-FILE_PATTERNS          = *.cpp *.H
+FILE_PATTERNS          = *.cpp *.h *.H
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories 
 # should be searched for input files as well. Possible values are YES and NO. 
