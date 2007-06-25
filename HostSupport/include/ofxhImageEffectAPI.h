@@ -1,17 +1,49 @@
+
+/*
+Software License :
+
+Copyright (c) 2007, The Foundry Visionmongers Ltd. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+    * Neither the name The Foundry Visionmongers Ltd, nor the names of its 
+      contributors may be used to endorse or promote products derived from this
+      software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
 #ifndef OFXH_IMAGE_EFFECT_API_H
 #define OFXH_IMAGE_EFFECT_API_H
 
 #include <string>
 #include <map>
+#include <set>
 
-#include "ofxhPluginCache.h"
-#include "ofxhPropertySuite.h"
+#include "ofxCore.h"
+#include "ofxImageEffect.h"
+#include "ofxhImageEffect.h"
 #include "ofxhHost.h"
-#include "ofxhPluginAPICache.h"
-#include "ofxhXml.h"
 
 namespace OFX {
+  
   namespace Host {
+    
     namespace ImageEffect {
 
       class PluginCache;
@@ -22,17 +54,21 @@ namespace OFX {
 
         PluginCache &_pc;
 
-        // this comes off ImageEffectDescriptor's property set after a describe
-        ImageEffectDescriptor _ie;
+        // this comes off Descriptor's property set after a describe
+        // context independent
+        Descriptor _baseDescriptor;
         
         /// map to store contexts in
-        std::map<std::string, ImageEffectDescriptor *> _contexts;
+        std::map<std::string, Descriptor *> _contexts;
+
+        std::set<std::string> _knownContexts;
+
+        bool _madeKnownContexts;
+
+        PluginHandle* _pluginHandle;
+
       public:
-			  ImageEffectPlugin(PluginCache &pc, PluginBinary *pb, int pi, OfxPlugin *pl)
-          : Plugin(pb, pi, pl)
-          , _pc(pc)
-          , _ie(this) {
-        }
+			  ImageEffectPlugin(PluginCache &pc, PluginBinary *pb, int pi, OfxPlugin *pl);
 
         ImageEffectPlugin(PluginCache &pc,
                           PluginBinary *pb,
@@ -41,31 +77,29 @@ namespace OFX {
                           int apiVersion,
                           const std::string &pluginId,
                           int pluginMajorVersion,
-                          int pluginMinorVersion)
-          : Plugin(pb, pi, api, apiVersion, pluginId, pluginMajorVersion, pluginMinorVersion)
-          , _pc(pc)
-          , _ie(this) {
-        }
+                          int pluginMinorVersion);
 
         /// return the API handler this plugin was constructed by
         APICache::PluginAPICacheI &getApiHandler();
 
-        /// get the properties
-        Property::Set &getProps() {
-          return _ie.getProps();
-        }
 
         /// get the image effect descriptor
-        ImageEffectDescriptor &getImageEffect() {
-          return _ie;
-        }
+        Descriptor &getDescriptor();
 
-        void addContext(const std::string &context, ImageEffectDescriptor *ied)
-        {
-          _contexts[context] = ied;
-        }
+        Descriptor *getContext(const std::string &context);
+
+        void addContext(const std::string &context);
+        void addContext(const std::string &context, Descriptor *ied);
 
         virtual void saveXML(std::ostream &os);
+
+        const std::set<std::string> getContexts();
+
+        PluginHandle *getPluginHandle();
+
+        /// this is called to make an instance of the effect
+        /// the client data ptr is what is passed back to the client creation function
+        ImageEffect::Instance* createInstance(const std::string &context, void *clientDataPtr);
 
       };
 
@@ -104,7 +138,8 @@ namespace OFX {
 
       /// implementation of the specific Image Effect handler API cache.
       class PluginCache : public APICache::PluginAPICacheI {
-        
+      public:      
+
       private:
         /// all plugins
         std::vector<ImageEffectPlugin *> _plugins;
@@ -114,29 +149,25 @@ namespace OFX {
 
         /// latest minor version of each plugin by (ID,major)
         std::map<MajorPlugin, ImageEffectPlugin *> _pluginsByIDMajor;
-        
+
         /// xml parsing state
         ImageEffectPlugin *_currentPlugin;
         /// xml parsing state
         Property::Property *_currentProp;
         
-        ImageEffectDescriptor *_currentContext;
-        Param::Param *_currentParam;
-        Clip::ClipDescriptor *_currentClip;
+        Descriptor *_currentContext;
+        Param::Descriptor *_currentParam;
+        ClipDescriptor *_currentClip;
 
-      public:      
-        PluginCache() 
-          : PluginAPICacheI("OfxImageEffectPluginAPI", 1, 1)
-          , _currentPlugin(0)
-          , _currentProp(0)
-          , _currentContext(0)
-          , _currentParam(0)
-          , _currentClip(0)
-        {
-        }
-        
-        virtual ~PluginCache();
-        
+        /// pointer to our image effect host
+        OFX::Host::ImageEffect::Host* _host;
+
+      public:  
+
+        explicit PluginCache(OFX::Host::ImageEffect::Host &host);
+
+        virtual ~PluginCache();        
+
         /// get the plugin by id.  vermaj and vermin can be specified.  if they are not it will
         /// pick the highest found version.
         ImageEffectPlugin *getPluginById(const std::string &id, int vermaj=-1, int vermin=-1);
@@ -145,15 +176,13 @@ namespace OFX {
         /// pick the highest found version.
         ImageEffectPlugin *getPluginByLabel(const std::string &label, int vermaj=-1, int vermin=-1);
 
-        const std::vector<ImageEffectPlugin *>& getPlugins()
-        {
-          return _plugins;
+        OFX::Host::ImageEffect::Host *getHost() {
+          return _host;
         }
 
-        const std::map<std::string, ImageEffectPlugin *>& getPluginsByID()
-        {
-          return _pluginsByID;
-        }
+        const std::vector<ImageEffectPlugin *>& getPlugins();
+
+        const std::map<std::string, ImageEffectPlugin *>& getPluginsByID();
 
         const std::map<MajorPlugin, ImageEffectPlugin *>& getPluginsByIDMajor()
         {
@@ -164,43 +193,26 @@ namespace OFX {
         void loadFromPlugin(Plugin *p);
         
         /// handler for preparing to read in a chunk of XML from the cache, set up context to do this
-        void beginXmlParsing(Plugin *p) {
-          _currentPlugin = dynamic_cast<ImageEffectPlugin*>(p);
-        }
-        
+        void beginXmlParsing(Plugin *p);
+
         /// XML handler : element begins (everything is stored in elements and attributes)       
         virtual void xmlElementBegin(const std::string &el, std::map<std::string, std::string> map);
 
-        virtual void xmlCharacterHandler(const std::string &) {
-        }
+        virtual void xmlCharacterHandler(const std::string &);
         
-        virtual void xmlElementEnd(const std::string &el) {
-          if (el == "param") {
-            _currentParam = 0;
-          }
-
-          if (el == "context") {
-            _currentContext = 0;
-          }
-        }
+        virtual void xmlElementEnd(const std::string &el);
         
-        virtual void endXmlParsing() {
-          _currentPlugin = 0;
-        }
+        virtual void endXmlParsing();
         
-        virtual void saveXML(Plugin *ip, std::ostream &os) {
-          ImageEffectPlugin *p = dynamic_cast<ImageEffectPlugin*>(ip);
-          p->saveXML(os);
-        }
+        virtual void saveXML(Plugin *ip, std::ostream &os);
 
         void confirmPlugin(Plugin *p);
 
+        virtual bool pluginSupported(Plugin *p, std::string &reason);
+
         Plugin *newPlugin(PluginBinary *pb,
                           int pi,
-                          OfxPlugin *pl) {
-          ImageEffectPlugin *plugin = new ImageEffectPlugin(*this, pb, pi, pl);
-          return plugin;
-        }
+                          OfxPlugin *pl);
 
         Plugin *newPlugin(PluginBinary *pb,
                           int pi,
@@ -208,14 +220,13 @@ namespace OFX {
                           int apiVersion,
                           const std::string &pluginId,
                           int pluginMajorVersion,
-                          int pluginMinorVersion) 
-        {
-          ImageEffectPlugin *plugin = new ImageEffectPlugin(*this, pb, pi, api, apiVersion, pluginId, pluginMajorVersion, pluginMinorVersion);
-          return plugin;
-        }
+                          int pluginMinorVersion);
       };
-    }
-  }
-}
+    
+    } // ImageEffect
+
+  } // Host
+
+} // OFX
 
 #endif

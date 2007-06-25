@@ -35,8 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ostream>
 #include <map>
 
-#include "ofxhPluginCache.h"
-#include "ofxhHost.h"
+#include "ofxhPropertySuite.h"
 
 namespace OFX
 {
@@ -93,14 +92,19 @@ namespace OFX
 
         virtual void confirmPlugin(Plugin *) = 0;
 
+        virtual bool pluginSupported(Plugin *, std::string &reason) = 0;
+
         void registerInCache(OFX::Host::PluginCache &pluginCache);
       };
       
-      /// helper function to build a property set from XML
+      /// helper function to build a property set from XML. Really should be a member of the property set!!!
       void propertySetXMLRead(const std::string &el, std::map<std::string, std::string> map, Property::Set &set, Property::Property*&);
 
-      /// helper function to write a property set to XML
+      /// helper function to write a property set to XML. Really should be a member of the property set!!!
       void propertySetXMLWrite(std::ostream &o, Property::Set &set, int indent=0);
+
+      /// helper function to write a single property from a set to XML. Really should be a member of the property set!!!
+      void propertyXMLWrite(std::ostream &o, Property::Set &set, const std::string &name, int indent=0);
 
     }
   }

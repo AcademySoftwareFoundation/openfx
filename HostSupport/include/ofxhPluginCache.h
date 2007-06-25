@@ -41,14 +41,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "expat.h"
 
 #include "ofxCore.h"
-#include "ofxProperty.h"
-
-#include "ofxhBinary.h"
+#include "ofxhPropertySuite.h"
 #include "ofxhPluginAPICache.h"
+#include "ofxhBinary.h"
 
 namespace OFX {
 
   namespace Host {
+
+    class Host;
 
     // forward delcarations
     class PluginDesc;   
@@ -133,6 +134,11 @@ namespace OFX {
       Plugin();
 
       PluginBinary *getBinary()
+      {
+        return _binary;
+      }
+
+      const PluginBinary *getBinary() const
       {
         return _binary;
       }
@@ -251,6 +257,10 @@ namespace OFX {
         return _binaryChanged;
       }
 
+      bool isLoaded() {
+        return _binary.isLoaded();
+      }
+
       void addPlugin(Plugin *pe) {
         _plugins.push_back(pe);
       }
@@ -258,7 +268,7 @@ namespace OFX {
       void loadPluginInfo(PluginCache *);
 
       /// how many plugins?
-      int getNPlugins() {return _plugins.size(); }
+      int getNPlugins() {return (int)_plugins.size(); }
 
       /// get a plugin 
       Plugin &getPlugin(int idx) {return *_plugins[idx];}
@@ -274,7 +284,7 @@ namespace OFX {
       OfxPlugin *_op;
 
     public:
-      PluginHandle(Plugin *p);
+      PluginHandle(Plugin *p, OFX::Host::Host *_host);
       ~PluginHandle();
 
       OfxPlugin *getOfxPlugin() {
@@ -307,10 +317,13 @@ namespace OFX {
       }
     };
 
-    /// Where we keep our plugins.
+    /// Where we keep our plugins.    
     class PluginCache {
     protected :
+      OFX::Host::Property::PropSpec* _hostSpec;
+
       std::list<std::string>    _pluginPath;  ///< list of directories to look in
+      std::set<std::string>     _nonrecursePath; ///< list of directories to look in (non-recursively)
       std::list<PluginBinary *> _binaries; ///< all the binaries we know about, we own these
       std::list<Plugin *>       _plugins;  ///< all the plugins inside the binaries, we don't own these, populated from _binaries
       std::set<std::string>     _knownBinFiles;
@@ -318,31 +331,41 @@ namespace OFX {
       PluginBinary *_xmlCurrentBinary;
       Plugin *_xmlCurrentPlugin;
 
-      bool _abortXml;
-
       std::list<PluginCacheSupportedApi> _apiHandlers;
 
-      bool _dirty;
+      void scanDirectory(std::set<std::string> &foundBinFiles, const std::string &dir, bool recurse);
 
-      void scanDirectory(std::set<std::string> &foundBinFiles, const std::string &dir);
-  
+      bool _ignoreCache;
+      std::string _cacheVersion;
+
     public:
       /// ctor, which inits _pluginPath to default locations and not much else
       PluginCache();
-      
+
+      /// get the list in which plugins are sought
+      const std::list<std::string> &getPluginPath() {
+        return _pluginPath;
+      }
+
       /// add a file to the plugin path
-      void addFileToPath(const std::string &f);
+      void addFileToPath(const std::string &f, bool recurse=true) {
+        _pluginPath.push_back(f);
+        if (!recurse) {
+          _nonrecursePath.insert(f);
+        }
+      }
+
+      /// set the version string to write to the cache, 
+      /// and also that we expect on cachess read in
+      void setCacheVersion(const std::string &cacheVersion) {
+        _cacheVersion = cacheVersion;
+      }
 
       // populate the cache.  must call scanPluginFiles() after to check for changes.
       void readCache(std::istream &is);
 
       /// scan for plugins
       void scanPluginFiles();
-
-      /// did this alter from the last readCache()?
-      bool isDirty() {
-        return _dirty;
-      }
 
       // write the plugin cache output file to the given stream
       void writePluginCache(std::ostream &os);

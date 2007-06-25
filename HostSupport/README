@@ -2,9 +2,17 @@ This directory contains source to an implementation of an OFX host C++ support l
 This library skins the raw C API with a C++ layer, which is easy to program and abstracts
 the base API.
 
+You will need to understand the API to quite an extent to use this support layer.
+
+Documentation :
+ is extremely light at the moment. Ask the authors or start a wiki.
+
 Released under a BSD-style licence: see source.
 
-Author: Abigail Brady <abigail@thefoundry.co.uk>
+Authors:
+         Abigail Brady <abigail@thefoundry.co.uk>
+         Andrew Whitmore <andy@thefoundry.co.uk>
+         Bruno Nicoletti <bruno@thefoundry.co.uk>
 
 Release Notes
 -------------
@@ -18,3 +26,18 @@ parameters not fully enabled.
 29/03/2007
 
 Support for describing in contexts and parameters.  These are cached as well.
+
+25/06/2007
+
+Major overhaul of the thing,
+      - propertys made simpler to use
+      - re-namespaced several classes so that anything to do with image effects are
+         in the ImageEffect namespace
+      - made the host layer do the logic for several Image Effect actions
+        - clip preferences
+        - regions of interest
+      - simplified the function signatures of the actions
+      - the 'Host' class now acts as,
+         - a factory,
+         - a filter for constructed objects,
+         - a description of the host application to the plugin.

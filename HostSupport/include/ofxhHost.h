@@ -35,173 +35,55 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
-
+#include "ofxTimeLine.h"
 #include "ofxhPropertySuite.h"
 
 namespace OFX {
+
   namespace Host {
+
+    /// a plugin what we use
     class Plugin;
-
+   
+    /// a param descriptor 
     namespace Param {
-
-      /// the description of a plugin parameter
-      class Param {
-        Param();
-
-        std::string _paramType;
-        Property::Set _properties;        
-        
-      public:
-        /// make a parameter, with the given type and name
-        explicit Param(const std::string &type, const std::string &name);
-        
-        /// grab a handle on the parameter for passing to the C API
-        OfxParamHandle getHandle() {
-          return (OfxParamHandle)this;
-        }
-        
-        /// grab a handle on the properties of this parameter for the C api
-        OfxPropertySetHandle getPropHandle() {
-          return _properties.getHandle();
-        }
-
-        Property::Set &getProperties() {
-          return _properties;
-        }
-
-        const std::string &getType() {
-          return _paramType;
-        }
-      };
-      
-      /// a set of parameters
-      class ParamSet {
-        std::map<std::string, Param*> _params;
-
-        Property::Set _props;
-        
-      public:
-        ParamSet() : _props(true) { }
-
-        std::map<std::string, Param*> &getParams()
-        {
-          return _params;
-        }
-
-        Property::Set &getProps()
-        {
-          return _props;
-        }
-
-        /// obtain a handle on this set for passing to the C api
-        OfxParamSetHandle getHandle() {
-          return (OfxParamSetHandle)this;
-        }
-
-        void addParam(const std::string &name, Param *p) {
-          _params[name] = p;
-        }
-      };
-    }
-
-    namespace Clip {
-      
-      /// a clip descriptor
-      class ClipDescriptor {
-        Property::Set _properties;        
-
-      public:
-        
-        /// constructor
-        ClipDescriptor();
-        
-        /// get a handle on the clip descriptor for the C api
-        OfxImageClipHandle getHandle() {
-          return (OfxImageClipHandle)this;
-        }
-        
-        /// get a handle on the properties of the clip descriptor for the C api
-        OfxPropertySetHandle getPropHandle() {
-          return _properties.getHandle();
-        }
-
-        Property::Set &getProps() {
-          return _properties;
-        }
-      };
-
-    }
-
-    namespace ImageEffect {
-      
-      /// an image effect plugin descriptor
-      class ImageEffectDescriptor {
-        std::map<std::string, Clip::ClipDescriptor*> _clips;
-        Param::ParamSet _params;
-        Property::Set _properties;
-        
-      public:
-
-        ImageEffectDescriptor(const ImageEffectDescriptor &other)
-          : _clips(other._clips)
-          , _params(other._params)
-          , _properties(other._properties)
-        {
-        }
-
-        /// constructor
-        ImageEffectDescriptor(Plugin *plug);
-        
-        ImageEffectDescriptor(const std::string &bundlePath);
-
-        /// obtain a handle on this for passing to the C api
-        OfxImageEffectHandle getHandle() {
-          return (OfxImageEffectHandle)this;
-        }
-        
-        /// create a new clip and add this to the clip map
-        Clip::ClipDescriptor *defineClip(const std::string &name) {
-          Clip::ClipDescriptor *c = new Clip::ClipDescriptor();
-          _clips[name] = c;
-          return c;
-        }
-
-        /// get the properties set
-        Property::Set &getProps() {
-          return _properties;
-        }
-
-        /// get the clips
-        std::map<std::string, Clip::ClipDescriptor*> &getClips() {
-          return _clips;
-        }
-
-        /// get the parameters set
-        Param::ParamSet &getParams() {
-          return _params;
-        }
-
-        void addClip(const std::string &name, Clip::ClipDescriptor *clip) {
-          _clips[name] = clip;
-        }
-      };
-    }
-
-    /// a host descriptor: used to hold the OfxHost for the C api, and a property set
-    class HostDescriptor {
-      OfxHost _host;
-      Property::Set _properties;
-     
-    public:
-      
-      HostDescriptor();
-      
-      OfxHost *getHandle() {
-        return &_host;
-      }
+      class Descriptor;
     };
+    
+    /// Base class for all objects passed to a plugin by the 'setHost' function 
+    /// passed back by any plug-in.
+    class Host {
+    protected :
+      OfxHost       _host;
+      Property::Set _properties;
 
+    public:
+      Host();
+      virtual ~Host() {}
+
+      
+      /// get the props on this host
+      Property::Set &getProperties() {return _properties; }
+
+
+      /// fetch a suite
+      /// The base class returns the following suites
+      ///    PropertySuite
+      ///    MemorySuite
+      virtual void *fetchSuite(const char *suiteName, int suiteVersion);
+      
+      /// get the C API handle that is passed across the API to represent this host
+      OfxHost *getHandle();
+
+      /// override this to handle do post-construction initialisation on a Param::Descriptor
+      virtual void initDescriptor(Param::Descriptor *) { }
+
+      /// is my magic number valid?
+      bool verifyMagic() { return true; }
+    };
+    
   }
 }
 
 #endif
+

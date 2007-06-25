@@ -27,6 +27,8 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <assert.h>
+
 #include <map>
 #include <string>
 #include <iostream>
@@ -35,33 +37,47 @@
 
 #include <stdlib.h>
 
+#include "expat.h"
+
+// ofx
+#include "ofxCore.h"
+#include "ofxImageEffect.h"
+
+// ofx host
 #include "ofxhBinary.h"
-#include "ofxhPluginCache.h"
-#include "ofxhPluginAPICache.h"
 #include "ofxhPropertySuite.h"
+#include "ofxhMemory.h"
+#include "ofxhPluginAPICache.h"
+#include "ofxhPluginCache.h"
 #include "ofxhHost.h"
 #include "ofxhXml.h"
 
-#include "expat.h"
-#include "ofxImageEffect.h"
+#if defined (__linux__)
 
-#if defined (UNIX)
 #define DIRLIST_SEP_CHAR ":"
 #define ARCHSTR "Linux-x86"
 #define DIRSEP "/"
+#include <dirent.h>
 
+#elif defined (__APPLE__)
+
+#define DIRLIST_SEP_CHAR ";"
+#define ARCHSTR "MacOS"
+#define DIRSEP "/"
 #include <dirent.h>
 
 #elif defined (WINDOWS)
 #define DIRLIST_SEP_CHAR ";"
+#ifdef WIN64
+#define ARCHSTR "win64"
+#else
 #define ARCHSTR "win32"
+#endif
 #define DIRSEP "\\"
 
 #include "shlobj.h"
 #include "tchar.h"
 #endif
-
-#define CACHE_VERSION 1
 
 namespace OFX {
 
@@ -108,11 +124,18 @@ namespace OFX {
       }
     }
 
-    PluginHandle::PluginHandle(Plugin *p) : _p(p) {
+    PluginHandle::PluginHandle(Plugin *p, OFX::Host::Host *host) : _p(p) 
+    {
       _b = p->getBinary();
       _b->_binary.ref();
+      _op = 0;
       OfxPlugin* (*getPlug)(int) = (OfxPlugin*(*)(int)) _b->_binary.findSymbol("OfxGetPlugin");
-      _op = getPlug(p->getIndex());
+      if (getPlug) {
+        _op = getPlug(p->getIndex());
+        if (_op) {         
+          _op->setHost(host->getHandle());
+        }
+      }
     }
 
     PluginHandle::~PluginHandle() {
@@ -135,8 +158,11 @@ namespace OFX {
     }
 #endif
 
-    PluginCache::PluginCache() : _xmlCurrentBinary(0), _xmlCurrentPlugin(0), _abortXml(false), _dirty(false) {
-      
+    PluginCache::PluginCache() : _xmlCurrentBinary(0), _xmlCurrentPlugin(0) {
+
+      _cacheVersion = "";
+      _ignoreCache = false;
+
       const char *envpath = getenv("OFX_PLUGIN_PATH");
 
       if (envpath) {
@@ -163,12 +189,16 @@ namespace OFX {
 #if defined(WINDOWS)
       _pluginPath.push_back(getStdOFXPluginPath());
       _pluginPath.push_back("C:\\Program Files\\Common Files\\OFX\\Plugins");
-#elif defined(UNIX)
+#endif
+#if defined(__linux__)
       _pluginPath.push_back("/usr/OFX/Plugins");
+#endif
+#if defined(__APPLE__)
+      _pluginPath.push_back("/Library/OFX/Plugins");
 #endif
     }
 
-    void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std::string &dir)
+    void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std::string &dir, bool recurse)
     {
 #if defined (WINDOWS)
       WIN32_FIND_DATA findData;
@@ -198,12 +228,9 @@ namespace OFX {
 #else
           std::string name = findData.cFileName;
 #endif
-#if defined (UNIX)
-#elif defined (WINDOWS)
-#endif
 
-          if (name[0] != '@' && name != "." && name != "..") {
-            scanDirectory(foundBinFiles, dir + DIRSEP + name);
+          if (recurse && name[0] != '@' && name != "." && name != "..") {
+            scanDirectory(foundBinFiles, dir + DIRSEP + name, recurse);
           }
 
           if (name.find(".ofx.bundle") != std::string::npos) {
@@ -220,8 +247,7 @@ namespace OFX {
               PluginBinary *pb = new PluginBinary(binpath, bundlename, this);
               _binaries.push_back(pb);
               _knownBinFiles.insert(binpath);
-              _dirty = true;
-              
+
               for (int j=0;j<pb->getNPlugins();j++) {
                 Plugin *plug = &pb->getPlugin(j);
                 APICache::PluginAPICacheI &api = plug->getApiHandler();
@@ -244,60 +270,59 @@ namespace OFX {
       FindClose(findHandle);
 #endif
     }
-
-    //#define NO_RESCAN
     
     void PluginCache::scanPluginFiles()
     {
       std::set<std::string> foundBinFiles;
 
-#ifndef NO_RESCAN
       for (std::list<std::string>::iterator paths= _pluginPath.begin();
            paths != _pluginPath.end();
            paths++) {
-        scanDirectory(foundBinFiles, *paths);
+        scanDirectory(foundBinFiles, *paths, _nonrecursePath.find(*paths) == _nonrecursePath.end());
       }
-#endif
 
       std::list<PluginBinary *>::iterator i=_binaries.begin();
       while (i!=_binaries.end()) {
         PluginBinary *pb = *i;
 
-#ifndef NO_RESCAN
         if (foundBinFiles.find(pb->getFilePath()) == foundBinFiles.end()) {
 
           // the binary was in the cache, but was not on the path
 
-          _dirty = true;
           i = _binaries.erase(i);
           delete pb;
 
         } else {
-#endif
 
           bool binChanged = pb->hasBinaryChanged();
 
           // the binary was in the cache, but the binary has changed and thus we need to reload
           if (binChanged) {
             pb->loadPluginInfo(this);
-            _dirty = true;
           }
 
           for (int j=0;j<pb->getNPlugins();j++) {
             Plugin *plug = &pb->getPlugin(j);
-            _plugins.push_back(plug);
             APICache::PluginAPICacheI &api = plug->getApiHandler();
+
             if (binChanged) {
               api.loadFromPlugin(plug);
             }
-            api.confirmPlugin(plug);
+
+            std::string reason;
+
+            if (api.pluginSupported(plug, reason)) {
+              _plugins.push_back(plug);
+              api.confirmPlugin(plug);
+            } else {
+              std::cerr << "ignoring plugin " << plug->getIdentifier() <<
+                           " as unsupported (" << reason << ")" << std::endl;
+            }
           }
 
           i++;
         }
-#ifndef NO_RESCAN
       }
-#endif
     }
 
 
@@ -327,6 +352,10 @@ namespace OFX {
     }
 
     void PluginCache::elementBeginCallback(void *userData, const XML_Char *name, const XML_Char **atts) {
+      if (_ignoreCache) {
+        return;
+      }
+
       std::string ename = name;
       std::map<std::string, std::string> attmap;
 
@@ -335,15 +364,14 @@ namespace OFX {
         atts += 2;
       }
 
+      /// XXX: validate in general
+
       if (ename == "cache") {
-        int version = attmap.find("version") == attmap.end() ? 1 : OFX::Host::Property::stringToInt(attmap["version"]);
-        if (version != CACHE_VERSION) {
-          _abortXml = true;
-          return;
+        std::string cacheversion = attmap["version"];
+        if (cacheversion != _cacheVersion) {
+          _ignoreCache = true;
         }
       }
-
-      /// XXX: validate in general
 
       if (ename == "binary") {
         const char *binAtts[] = {"path", "bundlepath", "mtime", "size", NULL};
@@ -398,6 +426,10 @@ namespace OFX {
 
     void PluginCache::elementCharCallback(void *userData, const XML_Char *data, int size) 
     {
+      if (_ignoreCache) {
+        return;
+      }
+
       std::string s(data, size);
       if (_xmlCurrentPlugin) {
         APICache::PluginAPICacheI &api = _xmlCurrentPlugin->getApiHandler();
@@ -408,6 +440,10 @@ namespace OFX {
     }
 
     void PluginCache::elementEndCallback(void *userData, const XML_Char *name) {
+      if (_ignoreCache) {
+        return;
+      }
+
       std::string ename = name;
 
       /// XXX: validation?
@@ -449,16 +485,9 @@ namespace OFX {
         int p = XML_Parse(xP, buf, strlen(buf), XML_FALSE);
 
         if (p == XML_STATUS_ERROR) {
-          std::cerr << "xml error : " << XML_GetErrorCode(xP) << std::endl;
-          // XXX: do something here
+          std::cout << "xml error : " << XML_GetErrorCode(xP) << std::endl;
+          /// XXX: do something here
           break;
-        }
-
-        if (_abortXml) {
-          // XXX: do something here
-          // these two blocks should probably both wipe the slate clean on this object, deleting
-          // any part-plugins loaded from the cache etc
-          //          break;
         }
       }
 
@@ -466,7 +495,7 @@ namespace OFX {
     }
 
     void PluginCache::writePluginCache(std::ostream &os) {
-      os << "<cache version=\"" << CACHE_VERSION << "\">\n";
+      os << "<cache version=\"" << _cacheVersion << "\">\n";
       for (std::list<PluginBinary *>::iterator i=_binaries.begin();i!=_binaries.end();i++) {
         PluginBinary *b = *i;
         os << "<bundle>\n";

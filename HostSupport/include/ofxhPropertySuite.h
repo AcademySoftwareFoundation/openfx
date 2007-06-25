@@ -1,3 +1,33 @@
+
+/*
+Software License :
+
+Copyright (c) 2007, The Foundry Visionmongers Ltd. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+    * Neither the name The Foundry Visionmongers Ltd, nor the names of its 
+      contributors may be used to endorse or promote products derived from this
+      software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
 #ifndef OFX_PROPERTY_SUITE_H
 #define OFX_PROPERTY_SUITE_H
 
@@ -36,20 +66,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <algorithm>
 #include <sstream>
 
-#include "ofxCore.h"
-#include "ofxProperty.h"
-
-#include "ofxhBinary.h"
+#ifndef WINDOWS
+#define OFX_EXCEPTION_SPEC throw (OFX::Host::Property::Exception)
+#else
+#define OFX_EXCEPTION_SPEC 
+#endif
 
 namespace OFX {
   namespace Host {
     namespace Property {
+      /// simple function to turn a thing into a std string
       template<class T> inline std::string castToString(T i) {
         std::ostringstream o;
         o << i;
         return o.str();
       }
 
+      /// simple function to turn a string into an int
       inline int stringToInt(const std::string &s) {
         std::istringstream is(s);
         int number;
@@ -57,6 +90,7 @@ namespace OFX {
         return number;
       }
 
+      /// simple function to turn a string into a double
       inline double stringToDouble(const std::string &s) {
         std::istringstream is(s);
         double number;
@@ -64,6 +98,7 @@ namespace OFX {
         return number;
       }
       
+      // forward declarations
       class Property; 
       class Set;
 
@@ -93,144 +128,191 @@ namespace OFX {
         ePointer = 3
       };
 
-      /// type holder, for integers
+      /// type holder, for integers, used to template up int properties
       struct IntValue { 
-        typedef int OuterType;
-        typedef int OuterTypeConstless;
-        typedef int InnerType;
+        typedef int APIType; ///< C type of the property that is passed across the raw API
+        typedef int APITypeConstless;  ///< C type of the property that is passed across the raw API, without any const it
+        typedef int Type; ///< Type we actually hold and deal with the propery in everything by the raw API
+        typedef int ReturnType; ///< type to return from a function call
         static const TypeEnum typeCode = eInt;
+        static int kEmpty;
       };
 
-      /// type holder, for doubles
+      /// type holder, for doubles, used to template up double properties
       struct DoubleValue { 
-        typedef double OuterType;
-        typedef double OuterTypeConstless;
-        typedef double InnerType;
+        typedef double APIType;
+        typedef double APITypeConstless;
+        typedef double Type;
+        typedef double ReturnType; ///< type to return from a function call
         static const TypeEnum typeCode = eDouble;
+        static double kEmpty;
       };
 
-      /// type holder, for pointers
+      /// type holder, for pointers, used to template up pointer properties
       struct PointerValue { 
-        typedef void *OuterType;
-        typedef void *OuterTypeConstless;
-        typedef void *InnerType;
+        typedef void *APIType;
+        typedef void *APITypeConstless;
+        typedef void *Type;
+        typedef void *ReturnType; ///< type to return from a function call
         static const TypeEnum typeCode = ePointer;
+        static void *kEmpty;
       };
 
-      /// type holder, for strings
+      /// type holder, for strings, used to template up string properties
       struct StringValue { 
-        typedef const char *OuterType;
-        typedef char *OuterTypeConstless;
-        typedef std::string InnerType;
+        typedef const char *APIType;
+        typedef char *APITypeConstless;
+        typedef std::string Type;
+        typedef const std::string &ReturnType; ///< type to return from a function call
         static const TypeEnum typeCode = eString;
+        static std::string kEmpty;
       };
 
       /// array representing the names of the various types, in order of TypeEnum
-      static const char *typeNames[] = {
-        "int", "double", "string", "pointer"
-      };
+      extern const char *gTypeNames[];
 
       /// Sits on a property and can override the local property value when a value is being fetched
-      template<class T>
-      class GetHook {
       /// only one of these can be in any property (as the thing has only a single value).
+      /// We deliberately don't have a getStringPropertyN as it is somewhat more painfull and never
+      /// used in practice.
+      class GetHook {
       public :
-        typedef typename T::OuterType OuterType;
-
         /// dtor
         virtual ~GetHook()
         {
         }
 
-        /// override this to fetch a single value at the given index.
-        virtual void getProperty(const std::string &name, OuterType &ret, int index) throw(Exception) = 0;
+        /// We specialise this to do some magic so that it calls get string/int/double/pointer appropriately
+        /// this is what is called by the propertytemplate code to fetch values out of a hook.
+        template<class T> typename T::ReturnType getProperty(const std::string &name, int index=0) OFX_EXCEPTION_SPEC;
 
-        /// override this to get n values and put them into memory starting at first.
-        virtual void getPropertyN(const std::string &name, OuterType *first, int n) throw(Exception) = 0;
+        /// We specialise this to do some magic so that it calls get int/double/pointer appropriately
+        /// this is what is called by the propertytemplate code to fetch values out of a hook.
+        template<class T> void getPropertyN(const std::string &name, typename T::APIType *values, int count) OFX_EXCEPTION_SPEC;
+
+        /// override this to fetch a single value at the given index.
+        virtual const std::string &getStringProperty(const std::string &name, int index = 0) OFX_EXCEPTION_SPEC;
+
+        /// override this to fetch a single value at the given index.
+        virtual int getIntProperty(const std::string &name, int index = 0) OFX_EXCEPTION_SPEC;
+
+        /// override this to fetch a multiple values in a multi-dimension property
+        virtual void getIntPropertyN(const std::string &name, int *values, int count) OFX_EXCEPTION_SPEC;
+
+        /// override this to fetch a single value at the given index.
+        virtual double getDoubleProperty(const std::string &name, int index = 0) OFX_EXCEPTION_SPEC;
+
+        /// override this to fetch a multiple values in a multi-dimension property
+        virtual void getDoublePropertyN(const std::string &name, double *values, int count) OFX_EXCEPTION_SPEC;
+
+        /// override this to fetch a single value at the given index.
+        virtual void *getPointerProperty(const std::string &name, int index = 0) OFX_EXCEPTION_SPEC;
+        
+        /// override this to fetch a multiple values in a multi-dimension property
+        virtual void getPointerPropertyN(const std::string &name, void **values, int count) OFX_EXCEPTION_SPEC;
 
         /// override this to fetch the dimension size.
-        virtual int getDimension(const std::string &name) throw(Exception) = 0;
+        virtual int getDimension(const std::string &name) OFX_EXCEPTION_SPEC;
 
-        /// override this to handle a reset().  this is on get() not set() deliberately, as the hook
-        /// needs to know what the default value is in this case.
-        virtual void reset(const std::string &name) throw (Exception) = 0;
+        /// override this to handle a reset(). 
+        virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC;
       };
-
-      typedef GetHook<IntValue> IntGetHook;
-      typedef GetHook<DoubleValue> DoubleGetHook;
-      typedef GetHook<StringValue> StringGetHook;
-      typedef GetHook<PointerValue> PointerGetHook;
 
       /// Sits on a property and is called when the local property is being set.
-      template<class T>
-      class SetHook {
+      /// It notify or notifyN is called whenever the plugin sets a property
       /// Many of these can sit on a property, as various objects will need to know when a property
-      /// has been changed.
+      /// has been changed. On notification you should fetch properties with a 'raw' call, rather
+      /// than the standard calls, as you may be fetching through a getHook and you won't see
+      /// the local value that has been shoved into the property.
+      class NotifyHook {
       public :
-        typedef typename T::OuterType OuterType;
-
         /// dtor
-        virtual ~SetHook() {
-        }
+        virtual ~NotifyHook() {}
 
-        /// override this to set a single value at the given index
-        virtual void setProperty(const std::string &name, OuterType value, int index) throw (Exception) = 0;
-
-        /// override this to get n values and put them into memory starting at first.
-        virtual void setPropertyN(const std::string &name, OuterType *first, int n) throw (Exception) = 0;
+        /// override this to be notified when a property changes
+        /// \arg name is the name of the property just set
+        /// \arg singleValue is whether setProperty on a single index was call, otherwise N properties were set
+        /// \arg indexOrN is the index if single value is true, or the count if singleValue is false
+        virtual void notify(const std::string &name, bool singleValue, int indexOrN) OFX_EXCEPTION_SPEC = 0;
       };
-
-      typedef SetHook<IntValue> IntSetHook;
-      typedef SetHook<DoubleValue> DoubleSetHook;
-      typedef SetHook<StringValue> StringSetHook;
-      typedef SetHook<PointerValue> PointerSetHook;
 
       /// base class for all properties
       class Property {
       protected :
-        std::string  _name; ///< name of this property
-        TypeEnum     _type; ///< type of this property
-        int          _dimension; ///< the fixed dimension of this property, 0 implies no fixed dimension
-        bool         _pluginReadOnly; ///< set is forbidden through suite: value may still change between get() calls
+        std::string  _name;                     ///< name of this property
+        TypeEnum     _type;                     ///< type of this property
+        int          _dimension;                ///< the fixed dimension of this property 
+        bool         _pluginReadOnly;           ///< set is forbidden through suite: value may still change between get() calls
+        std::vector<NotifyHook *> _notifyHooks; ///< hooks to call whenever the property is set
+        GetHook                  *_getHook;     ///< if we are not storing props locally, they are stored via fetching from here
 
+        friend class Set;
       public :
         /// ctor
         Property(const std::string &name,
                  TypeEnum type,
                  int dimension = 1,
-                 bool pluginReadOnly=false)
-          : _name(name)
-          , _type(type)
-          , _dimension(dimension)
-          , _pluginReadOnly(pluginReadOnly) {
-        }
+                 bool pluginReadOnly=false);
+            
+        /// copy ctor
+        Property(const Property &other);
 
-        virtual Property *deepCopy() = 0;
-        
         /// dtor
         virtual ~Property()
         {
         }
+        
+        /// is it read only?
+        bool getPluginReadOnly() const {return _pluginReadOnly; }
 
-        // get the name of this property
+        /// change the state of readonlyness
+        void setPluginReadOnly(bool v) {_pluginReadOnly = v;}
+
+        /// override this to return a clone of the property
+        virtual Property *deepCopy() = 0;
+        
+        /// get the name of this property
         const std::string &getName()
         {
           return _name;
         }
         
-        // get the type of this property
+        /// get the type of this property
         TypeEnum getType()
         {
           return _type;
         }
 
-        // get the current dimension of this property
-        virtual int getDimension()
+        /// add a notify hook
+        void addNotifyHook(NotifyHook *hook)
         {
+          _notifyHooks.push_back(hook);
+        }
+        
+        /// set the get hook
+        void setGetHook(GetHook *hook)
+        {
+          _getHook = hook;
+        }
+        
+        /// call notify on the contained notify hooks
+        void notify(bool single, int indexOrN);
+
+        // get the current dimension of this property
+        virtual int getDimension() = 0;
+
+        /// get the fixed dimension of this property
+        int getFixedDimension() {
           return _dimension;
         }
 
-        // reset this property to the default
+        /// are we a fixed dim property
+        bool isFixedSize() const 
+        {
+          return _dimension != 0;
+        }
+
+        /// reset this property to the default
         virtual void reset() = 0;
 
         // get a string representing the value of this property at element nth
@@ -238,43 +320,33 @@ namespace OFX {
       };
       
       /// this represents a generic property.
-      template<class T>
       /// template parameter T is the type descriptor of the
       /// type of property to model.  the class holds an internal _value vector which can be used
       /// to store the values.  if set and get hooks are installed, these will be called instead
       /// of using this variable.
+      template<class T>
       class PropertyTemplate : public Property
       {
       public :
-        typedef typename T::InnerType InnerType; 
-        typedef typename T::OuterType OuterType;
-
+        typedef typename T::Type Type; 
+        typedef typename T::ReturnType ReturnType; 
+        typedef typename T::APIType APIType;
+        
       protected :
         /// this is the present value of the property
-        std::vector<InnerType> _value;
+        std::vector<Type> _value;
 
         /// this is the default value of the property
-        std::vector<InnerType> _defaultValue;
+        std::vector<Type> _defaultValue;
 
-        /// the hook to use for getting (or null)
-        GetHook<T> *_getHook;
-
-        /// the hooks to use for setting
-        std::vector<SetHook<T> *> _setHooks;
-        
       public :
         /// constructor
         PropertyTemplate(const std::string &name,
                          int dimension,
                          bool pluginReadOnly,
-                         OuterType defaultValue);
+                         APIType defaultValue);
 
-        PropertyTemplate(const PropertyTemplate<T> &pt)
-          : Property(pt._name, pt._type, pt._dimension, pt._pluginReadOnly)
-          , _value(pt._value)
-          , _defaultValue(pt._defaultValue)
-        {
-        }
+        PropertyTemplate(const PropertyTemplate<T> &pt);
           
         PropertyTemplate<T> *deepCopy() {
           return new PropertyTemplate(*this);
@@ -284,183 +356,225 @@ namespace OFX {
         {
         }
 
-        /// set the getting hook.  usually called via PropertySet.  a setHook must be specified at 
-        /// the same time.
-        void setGetHook(GetHook<T> *getHook, SetHook<T> *setHook)
+        /// get the vector
+        const std::vector<Type> &getValues()
         {
-          _getHook = getHook;
-          _setHooks.push_back(setHook);
-        }
-
-        /// add an additional setting hook
-        void addSetHook(SetHook<T> *setHook)
-        {
-          _setHooks.push_back(setHook);
+          return _value;
         }
 
         /// get one value
-        const OuterType getValue(int index=0) throw(Exception);
+        const ReturnType getValue(int index=0) OFX_EXCEPTION_SPEC;
 
         // get multiple values
-        void getValueN(OuterType *value, int count) throw (Exception);
+        void getValueN(APIType *value, int count) OFX_EXCEPTION_SPEC;
+
+        /// get one value, without going through the getHook
+        const ReturnType getValueRaw(int index=0) OFX_EXCEPTION_SPEC;
+
+        // get multiple values, without going through the getHook
+        void getValueNRaw(APIType *value, int count) OFX_EXCEPTION_SPEC;
 
         /// set one value
-        void setValue(const OuterType &value, int index=0) throw (Exception);
+        void setValue(const Type &value, int index=0) OFX_EXCEPTION_SPEC;
 
         /// set multiple values
-        void setValueN(OuterType *value, int count) throw (Exception);
+        void setValueN(const APIType *value, int count) OFX_EXCEPTION_SPEC;
 
         /// reset 
-        void reset() throw (Exception);
+        void reset() OFX_EXCEPTION_SPEC;
         
         /// get the size of the vector
-        int getDimension() throw (Exception);
-
-        std::string getStringValue(int idx) {
+        int getDimension() OFX_EXCEPTION_SPEC;
+        
+        /// return the value as a string
+        inline std::string getStringValue(int idx) {
           return castToString(_value[idx]);
         }
       };
 
-      typedef PropertyTemplate<IntValue> Int;
-      typedef PropertyTemplate<DoubleValue> Double;
-      typedef PropertyTemplate<StringValue> String;
-      typedef PropertyTemplate<PointerValue> Pointer;
 
-      /// used in creating initialised arrays to pass to set::buildFromPropSpec()
+      typedef PropertyTemplate<IntValue>     Int;     /// Our int property
+      typedef PropertyTemplate<DoubleValue>  Double;  /// Our double property
+      typedef PropertyTemplate<StringValue>  String;  /// Our string property
+      typedef PropertyTemplate<PointerValue> Pointer; /// Our pointer property
+
+      /// A class that is used to initialise a property set. Feed in an array of these to
+      /// a property and it will construct a bunch of properties. Terminate such an array
+      /// with an empty (all zero) set.
       struct PropSpec {
-        const char *name;
-        TypeEnum type;
-        int dimension;
-        bool readonly;
-        const char *defaultValue;
+        const char *name;          ///< name of the property 
+        TypeEnum type;             ///< type
+        int dimension;             ///< fixed dimension of the property, set to zero if variable dimension
+        bool readonly;             ///< is the property plug-in read only
+        const char *defaultValue;  ///< Default value as a string. Pointers are ignored and always null.
       };
+      
+      /// A std::map of properties by name
+      typedef std::map<std::string, Property *> PropertyMap;
 
-      /// represents a set of properties
+
+      //................................................................................
+      /// Class that holds a set of properties and manipulates them
+      /// The 'fetch' methods return a property object.
+      /// The 'get' methods return a property value
       class Set {
-      protected :
-        bool _sloppy;
+      private :
+        static const int kMagic = 0x12082007; ///< magic number for property sets, and Connie's birthday :-)
+        const int   _magic; ///< to check for handles being nice
 
-        std::map<std::string, Property *> _props;
+      protected :
+        PropertyMap _props; ///< Our properties.
+
+        /// chained property set, which is read only
+        /// these are searched on a get if not found 
+        /// on a local search
+        Set *_chainedSet;
 
         /// hide assignment
         void operator=(const Set &);
 
-        /// get property with the particular name and type.  if the property is 
-        /// missing or is of the wrong type, return an error status.  if this is a sloppy
-        /// property set and the property is missing, a new one will be created of the right
-        /// type
-        template<class T> OfxStatus getProperty(const std::string &name, T *&prop);
+        /// set a particular property
+        template<class T> void setProperty(const std::string &property, int index, const typename T::Type &value);
 
-        /// as getProperty(), but will not create new properties even when sloppy
-        template<class T> OfxStatus underlyingGetProperty(const std::string &name, T *&prop);
+        /// set the first N of a particular property
+        template<class T> void setPropertyN(const std::string &property, int count, const typename T::APIType *value);
 
-        /// static functions for the suite
-        template<class T> static OfxStatus propSet(OfxPropertySetHandle properties,
-                                                   const char *property,
-                                                   int index,
-                                                   typename T::OuterType value);
+        /// get a particular property
+        template<class T> typename T::ReturnType getProperty(const std::string &property, int index)  const;
 
-        /// static functions for the suite
-        template<class T> static OfxStatus propSetN(OfxPropertySetHandle properties,
-                                                   const char *property,
-                                                   int count,
-                                                    typename T::OuterType *value);
+        /// get the first N of a particular property
+        template<class T> void getPropertyN(const std::string &property, int index, typename T::APIType *v)  const;
 
-        /// static functions for the suite
-        template<class T> static OfxStatus propGet(OfxPropertySetHandle properties,
-                                                   const char *property,
-                                                   int index,
-                                                   typename T::OuterTypeConstless *value);
+        /// get a particular property without going through any getHook
+        template<class T> typename T::ReturnType getPropertyRaw(const std::string &property, int index)  const;
 
-        /// static functions for the suite
-        template<class T> static OfxStatus propGetN(OfxPropertySetHandle properties,
-                                                   const char *property,
-                                                   int count,
-                                                    typename T::OuterTypeConstless *value);
-
-        /// static functions for the suite
-        static OfxStatus propReset(OfxPropertySetHandle properties, const char *property);
-
-        /// static functions for the suite
-        static OfxStatus propGetDimension(OfxPropertySetHandle properties, const char *property, int *count);
+        /// get a particular property without going through any getHook
+        template<class T> void getPropertyRawN(const std::string &property, int count, typename T::APIType *v)  const;
 
       public :
         /// take an array of of PropSpecs (which must be terminated with an entry in which
         /// ->name is null), and turn these into a Set
-        Set(const PropSpec *);
+        explicit Set(const PropSpec *);
 
-        /// create a sloppy property set (new properties can be added just by adding thing)
-        Set(bool sloppy) : _sloppy(sloppy) {
-        }
-        
         /// deep copies the property set
-        Set(const Set &);
+        explicit Set(const Set &);
+
+        /// empty ctor
+        explicit Set();
 
         /// destructor
-        ~Set();
+        virtual ~Set();
 
         /// adds a bunch of properties from PropSpec
         void addProperties(const PropSpec *);
         
         /// add one new property
-        void addProperty(Property *newProp) {
-          _props[newProp->getName()] = newProp;
-        }
+        void createProperty(const PropSpec &s);
+
+        /// add one new property
+        void addProperty(Property *prop);
+
+        /// set the chained property set
+        void setChainedSet(Set *s) {_chainedSet = s;}
 
         /// grab the internal properties map
-        const std::map<std::string, Property *> &getProperties()
+        const PropertyMap &getProperties() const
         {
           return _props;
         }
 
         /// set the get hook for a particular property.  users may need to call particular
         /// specialised versions of this.
-        template<class T>
-        void setGetHook(const std::string &s, GetHook<T> *hook)
-        {
-          PropertyTemplate<T> *prop;
-          if (getProperty(s, prop) != kOfxStatOK) {
-            return;
-          }
-
-          prop->setGetHook(hook);
-        }
+        void setGetHook(const std::string &s, GetHook *ghook) const;
 
         /// add a set hook for a particular property.  users may need to call particular
         /// specialised versions of this.
-        template<class T>
-        void addSetHook(const std::string &s, SetHook<T> *hook)
-        {
-          PropertyTemplate<T> *prop;
-          if (getProperty(s, prop) != kOfxStatOK) {
-            return;
-          }
+        void addNotifyHook(const std::string &name, NotifyHook *hook) const;
+                
+        /// Fetchs a pointer to a property of the given name, following the property chain if the
+        /// 'followChain' arg is not false.
+        Property *fetchProperty(const std::string &name, bool followChain = false) const;
 
-          prop->addSetHook(hook);
-        }
+        /// get property with the particular name and type.  if the property is 
+        /// missing or is of the wrong type, return an error status.  if this is a sloppy
+        /// property set and the property is missing, a new one will be created of the right
+        /// type
+        template<class T> bool fetchTypedProperty(const std::string &name, T *&prop, bool followChain = false) const;
 
-        /// the suite 
-        static struct OfxPropertySuiteV1 suite;
+        /// retrieve the nameed string property
+        String *fetchStringProperty(const std::string &name,  bool followChain = false) const;
+
+        /// retrieve the named double property
+        Double *fetchDoubleProperty(const std::string &name,  bool followChain = false) const;
+
+        /// retrieve the named double property
+        Pointer *fetchPointerProperty(const std::string &name, bool followChain = false) const;
+
+        /// retrieve the named double property
+        Int *fetchIntProperty(const std::string &name, bool followChain = false) const;
+
+
+
+        /// get a particular int property without fetching via a get hook, useful for notifies
+        int getIntPropertyRaw(const std::string &property, int index = 0) const;
         
-        /// set a particular property
-        template<class T> void setProperty(const std::string &property, int index, typename T::OuterType value) {
-          propSet<T>(this->getHandle(), property.c_str(), index, value);
-        }
+        /// get a particular double property without fetching via a get hook, useful for notifies
+        double getDoublePropertyRaw(const std::string &property, int index = 0) const;
 
-        /// get a particular property
-        template<class T> typename T::InnerType getProperty(const std::string &property, int index) {
-          typename T::OuterTypeConstless value;
-          propGet<T>(this->getHandle(), property.c_str(), index, &value);
-          return value;
-        }
+        /// get a particular pointer property without fetching via a get hook, useful for notifies
+        void *getPointerPropertyRaw(const std::string &property, int index = 0) const;
+
+        /// get a particular string property
+        const std::string &getStringPropertyRaw(const std::string &property, int index = 0) const;
+                
+        /// get the value of a particular string property
+        const std::string &getStringProperty(const std::string &property, int index = 0) const;
+        
+        /// get the value of a particular int property
+        int getIntProperty(const std::string &property, int index = 0) const;
+        
+        /// get the value of a particular double property
+        void getIntPropertyN(const std::string &property,  int *v, int N) const;
+
+        /// get the value of a particular double property
+        double getDoubleProperty(const std::string &property, int index = 0) const;
+
+        /// get the value of a particular double property
+        void getDoublePropertyN(const std::string &property,  double *v, int N) const;
+
+        /// get the value of a particular pointer property
+        void *getPointerProperty(const std::string &property, int index = 0) const;
+
+
+
+        /// set a particular string property without fetching via a get hook, useful for notifies
+        void setStringProperty(const std::string &property, const std::string &value, int index = 0);
+
+        /// get a particular int property
+        void setIntProperty(const std::string &property, int v, int index = 0);
+
+        /// get a particular double property
+        void setIntPropertyN(const std::string &property, const int *v, int N);
+        
+        /// get a particular double property
+        void setDoubleProperty(const std::string &property, double v, int index = 0);
+
+        /// get a particular double property
+        void setDoublePropertyN(const std::string &property, const double *v, int N);
+
+        /// get a particular double property
+        void setPointerProperty(const std::string &property,  void *v, int index = 0);
+        
+
 
         /// get the dimension of a particular property
-        int getDimension(const std::string &property)
-        {
-          int dim;
-          propGetDimension(this->getHandle(), property.c_str(), &dim);
-          return dim;
-        }
+        int getDimension(const std::string &property) const;
+
+        /// is the given string one of the values of a multi-dimensional string prop
+        /// this returns a non negative index if it is found, otherwise, -1
+        int findStringPropValueIndex(const std::string &propName,
+                                     const std::string &propValue) const;
+
 
         /// get a handle on this object for passing to the C API
         OfxPropertySetHandle getHandle() 
@@ -468,7 +582,13 @@ namespace OFX {
           return (OfxPropertySetHandle)this;
         }
 
+        /// is this a nice property set, or a dodgy pointer passed back to us
+        bool verifyMagic() { return this != NULL && _magic == kMagic; }
       };
+
+      
+      /// return the OFX function suite that manages properties
+      void *GetSuite(int version);
     }
   }
 }
