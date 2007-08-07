@@ -42,6 +42,8 @@ England
 This file only holds code that is visible to a plugin implementation, and so hides much
 of the direct OFX objects and any library side only functions.
  */
+#include <map>
+#include <string>
 #include "ofxsParam.h"
 #include "ofxsInteract.h"
 #include "ofxsMessage.h"
@@ -126,6 +128,7 @@ namespace OFX {
   public :
     std::string hostName;
     bool hostIsBackground;
+    bool licenseIsBackground;
     bool supportsOverlays;
     bool supportsMultiResolution;
     bool supportsTiles;
@@ -225,6 +228,13 @@ namespace OFX {
     /** @brief Set of all previously defined parameters, defined on demand */
     std::map<std::string, ClipDescriptor *> _definedClips;
 
+    /** @brief Set of strings for clip preferences action (stored in here so the array persists and can be used in a property name)*/
+    std::map<std::string, std::string> _clipComponentsPropNames;
+    std::map<std::string, std::string> _clipDepthPropNames;
+    std::map<std::string, std::string> _clipPARPropNames;
+    std::map<std::string, std::string> _clipROIPropNames;
+    std::map<std::string, std::string> _clipFrameRangePropNames;
+
   public :
     /** @brief ctor */
     ImageEffectDescriptor(OfxImageEffectHandle handle);
@@ -283,6 +293,15 @@ namespace OFX {
         The returned clip \em must not be deleted by the client code. This is all managed by the ImageEffectDescriptor itself.
     */
     ClipDescriptor *defineClip(const std::string &name);
+
+    /** @brief Access to the string maps needed for runtime properties. Because the char array must persist after the call,
+    we need these to be stored in the descriptor, which is only deleted on unload.*/
+
+    const std::map<std::string, std::string>& getClipComponentPropNames() const { return _clipComponentsPropNames; }
+    const std::map<std::string, std::string>& getClipDepthPropNames() const { return _clipDepthPropNames; }
+    const std::map<std::string, std::string>& getClipPARPropNames() const { return _clipPARPropNames; }
+    const std::map<std::string, std::string>& getClipROIPropNames() const { return _clipROIPropNames; }
+    const std::map<std::string, std::string>& getClipFrameRangePropNames() const { return _clipFrameRangePropNames; }
   };  
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -570,10 +589,21 @@ namespace OFX {
   class ClipPreferencesSetter {
     OFX::PropertySet outArgs_;
     bool doneSomething_;
+    typedef std::map<std::string, std::string> StringStringMap;
+    const StringStringMap& clipDepthPropNames_;
+    const StringStringMap& clipComponentPropNames_;
+    const StringStringMap& clipPARPropNames_;
+    const std::string& extractValueForName(const StringStringMap& m, const std::string& name);
   public :
-    ClipPreferencesSetter( OFX::PropertySet props) 
+    ClipPreferencesSetter( OFX::PropertySet props, 
+                           const StringStringMap& depthPropNames,
+                           const StringStringMap& componentPropNames,
+                           const StringStringMap& PARPropNames) 
       : outArgs_(props)
       , doneSomething_(false)
+      , clipDepthPropNames_(depthPropNames)
+      , clipComponentPropNames_(componentPropNames)
+      , clipPARPropNames_(PARPropNames)
     {}
 
     bool didSomething(void) const {return doneSomething_;}

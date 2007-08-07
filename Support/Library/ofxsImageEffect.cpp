@@ -473,6 +473,11 @@ namespace OFX {
     ClipDescriptor *clip = new ClipDescriptor(name, propSet);
 
     _definedClips[name] = clip;
+    _clipComponentsPropNames[name] = std::string("OfxImageClipPropComponents_") + name;
+    _clipDepthPropNames[name] = std::string("OfxImageClipPropDepth_") + name;
+    _clipPARPropNames[name] = std::string("OfxImageClipPropPAR_") + name;
+    _clipROIPropNames[name] = std::string("OfxImageClipPropRoI_") + name;
+    _clipFrameRangePropNames[name] = std::string("OfxImageClipPropFrameRange_") + name;
     return clip;
   }
   
@@ -1140,20 +1145,27 @@ namespace OFX {
       
   ////////////////////////////////////////////////////////////////////////////////
   // Class used to set the clip preferences of the effect. */ 
-    
+  
+  const std::string& ClipPreferencesSetter::extractValueForName(const StringStringMap& m, const std::string& name)
+  {
+    StringStringMap::const_iterator it = m.find(name);
+    if(it==m.end())
+      throw(Exception::PropertyUnknownToHost(name.c_str()));
+    return it->second;
+  }
+
   /** @brief, force the host to set a clip's mapped component type to be \em comps.  */
   void ClipPreferencesSetter::setClipComponents(Clip &clip, PixelComponentEnum comps)
   {
     doneSomething_ = true;
-    std::string propName = "OfxImageClipPropComponents_";
-    propName += clip.name();
-
+    const std::string& propName = extractValueForName(clipComponentPropNames_, clip.name());
+    
     switch(comps) {
     case ePixelComponentRGBA : 
-      outArgs_.propSetString(propName, kOfxImageComponentRGBA); 
+      outArgs_.propSetString(propName.c_str(), kOfxImageComponentRGBA); 
       break;
     case ePixelComponentAlpha : 
-      outArgs_.propSetString(propName, kOfxImageComponentAlpha); 
+      outArgs_.propSetString(propName.c_str(), kOfxImageComponentAlpha); 
       break;
     }
   }
@@ -1162,18 +1174,17 @@ namespace OFX {
   void ClipPreferencesSetter::setClipBitDepth(Clip &clip, BitDepthEnum bitDepth)
   {
     doneSomething_ = true;
-    std::string propName = "OfxImageClipPropDepth_";
-    propName += clip.name();
-
+    const std::string& propName = extractValueForName(clipDepthPropNames_, clip.name());
+    
     switch(bitDepth) {
     case eBitDepthUByte : 
-      outArgs_.propSetString(propName, kOfxBitDepthByte); 
+      outArgs_.propSetString(propName.c_str(), kOfxBitDepthByte); 
       break;
     case eBitDepthUShort : 
-      outArgs_.propSetString(propName, kOfxBitDepthShort); 
+      outArgs_.propSetString(propName.c_str(), kOfxBitDepthShort); 
       break;
     case eBitDepthFloat : 
-      outArgs_.propSetString(propName, kOfxBitDepthFloat); 
+      outArgs_.propSetString(propName.c_str(), kOfxBitDepthFloat); 
       break;
     }
   }
@@ -1182,9 +1193,8 @@ namespace OFX {
   void ClipPreferencesSetter::setPixelAspectRatio(Clip &clip, double PAR)
   {
     doneSomething_ = true;
-    std::string propName = "OfxImageClipPropPAR_";
-    propName += clip.name();
-    outArgs_.propSetDouble(propName, PAR);
+    const std::string& propName = extractValueForName(clipPARPropNames_, clip.name());
+    outArgs_.propSetDouble(propName.c_str(), PAR);
   }
 
   /** @brief Allows an effect to change the output frame rate */
@@ -1296,6 +1306,11 @@ namespace OFX {
         // and get some properties
         gHostDescription.hostName                   = hostProps.propGetString(kOfxPropName);
         gHostDescription.hostIsBackground           = hostProps.propGetInt(kOfxImageEffectHostPropIsBackground) != 0;
+				
+				int licenseIsBackground;
+ 				OfxStatus stat = gPropSuite->propGetInt(hostProps.propSetHandle(),kFnOfxImageEffectHostPropLicenseIsBackground,0,&licenseIsBackground);
+				gHostDescription.licenseIsBackground        = stat==kOfxStatOK? licenseIsBackground:gHostDescription.hostIsBackground;
+
         gHostDescription.supportsOverlays           = hostProps.propGetInt(kOfxImageEffectPropSupportsOverlays) != 0;
         gHostDescription.supportsMultiResolution    = hostProps.propGetInt(kOfxImageEffectPropSupportsMultiResolution) != 0;
         gHostDescription.supportsTiles              = hostProps.propGetInt(kOfxImageEffectPropSupportsTiles) != 0;
@@ -1600,12 +1615,13 @@ namespace OFX {
       class ActualROISetter : public OFX::RegionOfInterestSetter {
         bool doneSomething_;
         OFX::PropertySet &outArgs_;
-
+        const std::map<std::string, std::string>& clipROIPropNames_;
       public :
         /** @brief ctor */
-        ActualROISetter(OFX::PropertySet &args) 
+        ActualROISetter(OFX::PropertySet &args, const std::map<std::string, std::string>& clipROIPropNames) 
           : outArgs_(args)
           , doneSomething_(false) 
+          , clipROIPropNames_(clipROIPropNames)
         { }
                 
         /** @brief did we set something ? */
@@ -1614,15 +1630,18 @@ namespace OFX {
         /** @brief set the RoI of the clip */
         virtual void setRegionOfInterest(const Clip &clip, const OfxRectD &roi)
         {
+          std::map<std::string, std::string>::const_iterator it = clipROIPropNames_.find(clip.name());
+          if(it==clipROIPropNames_.end())
+            throw(Exception::PropertyUnknownToHost(clip.name().c_str()));
+
           // construct the name of the property
-          std::string propName = "OfxImageClipPropRoI_";
-          propName = propName + clip.name();
+          const std::string& propName = it->second;
 
           // and set it
-          outArgs_.propSetDouble(propName, roi.x1, 0);
-          outArgs_.propSetDouble(propName, roi.y1, 1);
-          outArgs_.propSetDouble(propName, roi.x2, 2);
-          outArgs_.propSetDouble(propName, roi.y2, 3);      
+          outArgs_.propSetDouble(propName.c_str(), roi.x1, 0);
+          outArgs_.propSetDouble(propName.c_str(), roi.y1, 1);
+          outArgs_.propSetDouble(propName.c_str(), roi.x2, 2);
+          outArgs_.propSetDouble(propName.c_str(), roi.y2, 3);      
 
           // and record the face we have done something
           doneSomething_ = true;
@@ -1645,7 +1664,7 @@ namespace OFX {
       args.time = inArgs.propGetDouble(kOfxPropTime);
             
       // make a roi setter object
-      ActualROISetter setRoIs(outArgs);
+      ActualROISetter setRoIs(outArgs, gEffectDescriptors[effectInstance->getContext()]->getClipROIPropNames());
 
       // and call the plugin client code
       effectInstance->getRegionsOfInterest(args, setRoIs);
@@ -1664,11 +1683,11 @@ namespace OFX {
       class ActualSetter : public OFX::FramesNeededSetter {
         OFX::PropertySet &outArgs_;                                  /**< @brief property set to set values in */
         std::map<std::string, std::vector<OfxRangeD> > frameRanges_;  /**< @brief map holding a bunch of frame ranges, one for each clip */
-
+        const std::map<std::string, std::string>& _clipFrameRangePropNames;
       public :
         /** @brief ctor */
-        ActualSetter(OFX::PropertySet &args) 
-          : outArgs_(args)
+        ActualSetter(OFX::PropertySet &args, const std::map<std::string, std::string>& clipFrameRangePropNames) 
+          : outArgs_(args), _clipFrameRangePropNames(clipFrameRangePropNames) 
         { }
                 
         /** @brief set the RoI of the clip */
@@ -1690,9 +1709,12 @@ namespace OFX {
               didSomething = true;
 
               // Make the property name we are setting
-              std::string propName = "OfxImageClipPropFrameRange_";
-              propName = propName + i->first;
+              const std::map<std::string, std::string>::const_iterator it = _clipFrameRangePropNames.find(i->first);
+              if(it==_clipFrameRangePropNames.end())
+                throw(Exception::PropertyUnknownToHost(i->first.c_str()));
 
+              const std::string& propName = it->second;
+              
               // fetch the list of frame ranges
               std::vector<OfxRangeD> &clipRange = i->second;
               std::vector<OfxRangeD>::iterator j;
@@ -1700,8 +1722,8 @@ namespace OFX {
 
               // and set 'em
               for(j = clipRange.begin(); j < clipRange.end(); ++j) {
-                outArgs_.propSetDouble(propName, j->min, n++);
-                outArgs_.propSetDouble(propName, j->max, n++);
+                outArgs_.propSetDouble(propName.c_str(), j->min, n++);
+                outArgs_.propSetDouble(propName.c_str(), j->max, n++);
               }
             }
           }
@@ -1719,7 +1741,7 @@ namespace OFX {
       args.time = inArgs.propGetDouble(kOfxPropTime);
             
       // make a roi setter object
-      ActualSetter setFrames(outArgs);
+      ActualSetter setFrames(outArgs, gEffectDescriptors[effectInstance->getContext()]->getClipFrameRangePropNames());
 
       // and call the plugin client code
       effectInstance->getFramesNeeded(args, setFrames);
@@ -1761,9 +1783,10 @@ namespace OFX {
       ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
 
       // set up our clip preferences setter
-      ClipPreferencesSetter prefs(outArgs);
+      ImageEffectDescriptor* desc = gEffectDescriptors[effectInstance->getContext()];
+      ClipPreferencesSetter prefs(outArgs, desc->getClipDepthPropNames(), desc->getClipComponentPropNames(), desc->getClipPARPropNames());
             
-      // and call the plugin client code
+      // and call the plug-in client code
       effectInstance->getClipPreferences(prefs);
 
       // did we do anything ?

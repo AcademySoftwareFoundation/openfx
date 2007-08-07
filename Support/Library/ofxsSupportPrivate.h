@@ -38,7 +38,6 @@ England
 #ifndef _ofxsSupportPrivate_H_
 #define _ofxsSupportPrivate_H_
 
-#include <iostream>
 #include "ofxsInteract.h"
 #include "ofxsImageEffect.h"
 #include "ofxsLog.h"

@@ -2,7 +2,7 @@
 #define _ofxsMultiThread_H_
 /*
   OFX Support Library, a library that skins the OFX plug-in API with C++ classes.
-  Copyright (C) 2004-2005 The Foundry Visionmongers Ltd
+  Copyright (C) 2004-2007 The Foundry Visionmongers Ltd
   Author Bruno Nicoletti bruno@thefoundry.co.uk
 
 Redistribution and use in source and binary forms, with or without
@@ -110,6 +110,28 @@ namespace OFX {
             */
             bool tryLock();
         };
+
+      /// a class to wrap around a mutex which is exception safe
+      /// it locks the mutex on construction and unlocks it on destruction
+      class AutoMutex {
+      protected :
+        Mutex &_mutex;
+        
+      public :
+        /// ctor, acquires the lock
+        explicit AutoMutex(Mutex &m)
+          : _mutex(m)
+        {
+          _mutex.lock();
+        }
+
+        /// dtor, releases the lock
+        virtual ~AutoMutex()
+        {
+          _mutex.unlock();
+        }
+
+      };
     };
 };
 

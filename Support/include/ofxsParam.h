@@ -183,6 +183,13 @@ namespace OFX {
         /** @brief name */
         const std::string &getName(void) const {return _paramName;}
 
+      /** @brief Get the property set */
+      PropertySet &getPropertySet()
+      {
+        return _paramProps;
+      }
+
+
         /** @brief set the label properties in a plugin */
         void setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel);
 

@@ -123,6 +123,8 @@ namespace OFX {
         /** @brief virtual destructor */
         virtual ~Interact(); 
 
+        PropertySet &getProperties() { return _interactProperties; }
+
         /** @brief The bitdepth of each component in the openGL frame buffer */
         int getBitDepth(void) const;
 
