@@ -34,6 +34,7 @@ England
 
 */
 #include "./ofxsSupportPrivate.h"
+#include <iostream>
 
 namespace OFX {
     /** @brief Throws an @ref OFX::Exception depending on the status flag passed in */

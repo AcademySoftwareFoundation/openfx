@@ -38,7 +38,7 @@ England
 
 #include "ofxsSupportPrivate.h"
 #include <algorithm> // for find
-
+#include <iostream>
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {
@@ -1306,11 +1306,6 @@ namespace OFX {
         // and get some properties
         gHostDescription.hostName                   = hostProps.propGetString(kOfxPropName);
         gHostDescription.hostIsBackground           = hostProps.propGetInt(kOfxImageEffectHostPropIsBackground) != 0;
-				
-				int licenseIsBackground;
- 				OfxStatus stat = gPropSuite->propGetInt(hostProps.propSetHandle(),kFnOfxImageEffectHostPropLicenseIsBackground,0,&licenseIsBackground);
-				gHostDescription.licenseIsBackground        = stat==kOfxStatOK? licenseIsBackground:gHostDescription.hostIsBackground;
-
         gHostDescription.supportsOverlays           = hostProps.propGetInt(kOfxImageEffectPropSupportsOverlays) != 0;
         gHostDescription.supportsMultiResolution    = hostProps.propGetInt(kOfxImageEffectPropSupportsMultiResolution) != 0;
         gHostDescription.supportsTiles              = hostProps.propGetInt(kOfxImageEffectPropSupportsTiles) != 0;
