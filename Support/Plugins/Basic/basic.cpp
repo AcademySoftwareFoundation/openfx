@@ -173,10 +173,14 @@ public :
                 // are we doing masking
                 if(_doMasking) {
                     // we do, get the pixel from the mask
-                    PIX *maskPix = (PIX *)  (_maskImg ? _maskImg->getPixelAddress(x, y) : 0);
-
-                    // figure the scale factor from that pixel
-                    maskScale = maskPix != 0 ? float(*maskPix)/float(max) : 0.0f;
+                    if(!_maskImg)
+                      maskScale = 1.0f;
+                    else
+                    {
+                      PIX *maskPix = (PIX *)  (_maskImg ? _maskImg->getPixelAddress(x, y) : 0);
+                      // figure the scale factor from that pixel
+                      maskScale = maskPix != 0 ? float(*maskPix)/float(max) : 0.0f;
+                    }
                 }
 
                 // do we have a source image to scale up
