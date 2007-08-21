@@ -104,6 +104,9 @@
 	    
 	    <listitem>Win32 - for Microsoft Windows (compiled 32
 	      bit)</listitem>
+
+	    <listitem>Win64 - for Microsoft Windows (compiled 64
+	      bit)</listitem>
 	    
 	    <listitem>IRIX - for SGI IRIX plug-ins (compiled 32
 	      bit)</listitem>
