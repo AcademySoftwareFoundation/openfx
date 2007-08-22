@@ -1,5 +1,5 @@
 # local stylesheet dir as it takes ages over a network connection
-STYLESHEETDIR = http://docbook.sourceforge.net/release/xsl/snapshot/xhtml/
+STYLESHEETDIR = http://docbook.xml-doc.org/snapshots/xsl/xhtml/
 
 STYLESHEET = docbook.xsl 
 
@@ -26,6 +26,7 @@ PROPERY_SUITE_REFERENCE_FILES = \
 	ofxThreadingSuiteReference.xml \
 	ofxImageEffectSuiteReference.xml \
 	ofxProgressSuiteReference.xml \
+      ofxInteractSuiteReference.xml \
 	ofxTimeLineSuiteReference.xml 
 
 all : chunks ofxProgrammingGuide.html ofxProgrammingReference.html 
