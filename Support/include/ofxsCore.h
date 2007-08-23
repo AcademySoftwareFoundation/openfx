@@ -208,6 +208,7 @@ namespace OFX {
       std::string _what;
     public :
       PropertyUnknownToHost(const char *what) : _what(what) {}
+      virtual ~PropertyUnknownToHost() throw() {}
 
       /** @brief reimplemented from std::exception */
       virtual const char * what () const throw ()
@@ -222,6 +223,7 @@ namespace OFX {
       std::string _what;
     public :
       PropertyValueIllegalToHost(const char *what) : _what(what) {}
+      virtual ~PropertyValueIllegalToHost() throw() {}
 
       /** @brief reimplemented from std::exception */
       virtual const char * what () const throw ()
@@ -238,6 +240,7 @@ namespace OFX {
       std::string _what;
     public :
       TypeRequest(const char *what) : _what(what) {}
+      virtual ~TypeRequest() throw() {}
 
       /** @brief reimplemented from std::exception */
       virtual const char * what () const throw ()
@@ -257,6 +260,7 @@ namespace OFX {
       std::string _what;
     public :
       HostInadequate(char *what) : _what(what) {}
+      virtual ~HostInadequate() throw() {}
 
       /** @brief reimplemented from std::exception */
       virtual const char * what () const throw ()
