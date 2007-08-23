@@ -39,8 +39,8 @@ England
 */
 
 
-#include "ofxsImageEffect.H"
-#include "ofxsMultiThread.H"
+#include "ofxsImageEffect.h"
+#include "ofxsMultiThread.h"
 
 /** @file This file contains a useful base class that can be used to process images 
 
