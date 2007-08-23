@@ -45,9 +45,9 @@ Contains the core OFX architectural struct and function definitions. For more de
 /** @brief Platform independent export macro.
  *
  * This macro is to be used before any symbol that is to be
- * exported from a plug-in. This is OS/compiler dependant.
+ * exported from a plug-in. This is OS/compiler dependent.
  */
-#ifdef WIN32
+#if defined(WIN32) || defined(WIN64)
 	#define OfxExport extern __declspec(dllexport)
 #else
 	#define OfxExport extern
