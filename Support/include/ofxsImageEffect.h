@@ -128,7 +128,6 @@ namespace OFX {
   public :
     std::string hostName;
     bool hostIsBackground;
-    bool licenseIsBackground;
     bool supportsOverlays;
     bool supportsMultiResolution;
     bool supportsTiles;
