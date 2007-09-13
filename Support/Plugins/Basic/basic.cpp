@@ -190,7 +190,7 @@ public :
 
                         // scale the component up by the scale factor, modulated by the maskScale
                         if(maskScale != 1.0f) 
-                            v = srcPix[c] * 1.0 + (scales[c] - 1.0) * maskScale;
+                            v = srcPix[c] * (1.0 + (scales[c] - 1.0) * maskScale);
                         else
                             v = srcPix[c] * scales[c];
 
