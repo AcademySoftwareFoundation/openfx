@@ -345,6 +345,35 @@ namespace OFX {
         backGroundColour = getBackgroundColour(props);
     }
 
+    
+    void ParamInteractDescriptor::setInteractSizeAspect(double asp)
+    {
+      _props->propSetDouble(kOfxParamPropInteractSizeAspect , asp);
+    }
+
+    void ParamInteractDescriptor::setInteractMinimumSize(int x, int y)
+    {
+      _props->propSetInt(kOfxParamPropInteractMinimumSize, x, 0);
+      _props->propSetInt(kOfxParamPropInteractMinimumSize, y, 1);
+    }
+
+    void ParamInteractDescriptor::setInteractPreferredSize(int x, int y)
+    {
+      _props->propSetInt(kOfxParamPropInteractPreferredSize, x, 0);
+      _props->propSetInt(kOfxParamPropInteractPreferredSize, y, 1);
+    }
+
+    ParamInteract::ParamInteract(OfxInteractHandle handle, ImageEffect* effect):Interact(handle), _effect(effect)
+    {}
+
+    OfxPointI ParamInteract::getInteractSize() const
+    {
+      OfxPointI ret;
+      ret.x =  _interactProperties.propGetInt(kOfxParamPropInteractSize, 0);
+      ret.y =  _interactProperties.propGetInt(kOfxParamPropInteractSize, 1);
+      return ret;
+    }
+
     namespace Private {
         /** @brief fetches our pointer out of the props on the handle */
         Interact *retrieveInteractPointer(OfxInteractHandle handle) 
@@ -447,13 +476,12 @@ namespace OFX {
             return stat;
         }
 
-
         /** @brief The main entry for image effect overlays */
-        OfxStatus
-        overlayInteractMainEntry(const char             *actionRaw,
-                                 const void             *handleRaw,
-                                 OfxPropertySetHandle    inArgsRaw,
-                                 OfxPropertySetHandle    outArgsRaw)
+        OfxStatus interactMainEntry(const char             *actionRaw,
+                                    const void             *handleRaw,
+                                    OfxPropertySetHandle    inArgsRaw,
+                                    OfxPropertySetHandle    outArgsRaw,
+                                    InteractDescriptor& desc)
         {
             OFX::Log::print("********************************************************************************");
             OFX::Log::print("START overlayInteractMainEntry (%s)", actionRaw);
@@ -473,15 +501,18 @@ namespace OFX {
 
                 // figure the actions
                 if (action == kOfxActionDescribe) {
-                  stat = kOfxStatOK;
+                  OfxPropertySetHandle propHandle;
+                  OfxStatus stat = OFX::Private::gInteractSuite->interactGetPropertySet(handle, &propHandle);
+                  throwSuiteStatusException(stat);
+                  PropertySet interactProperties(propHandle);
+                  desc.setPropertySet(&interactProperties);
+                  desc.describe();
                 }
-                else if (action == kOfxActionCreateInstance) {
+                else if (action == kOfxActionCreateInstance) 
+                {
                     // fetch the image effect we are being made for out of the interact's property handle
                     ImageEffect *effect = retrieveEffectFromInteractHandle(handle);
-
-                    // ok make an interact
-                    OverlayInteract *interact = effect->createOverlayInteract(handle);
-
+                    OFX::Interact* interact = desc.createInstance(handle, effect);
                     // and all was well
                     stat = kOfxStatOK;
                 }

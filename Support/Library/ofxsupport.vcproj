@@ -653,6 +653,38 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath="..\include\ofxscore.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ofxsImageEffect.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ofxsInteract.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ofxsLog.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ofxsMemory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ofxsMessage.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ofxsMultiThread.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ofxsParam.h"
+				>
+			</File>
+			<File
 				RelativePath="ofxsSupportPrivate.H"
 				>
 			</File>

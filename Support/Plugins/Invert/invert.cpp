@@ -1,20 +1,20 @@
 /*
-  OFX Invert Example plugin, a plugin that illustrates the use of the OFX Support library.
+OFX Invert Example plugin, a plugin that illustrates the use of the OFX Support library.
 
-  Copyright (C) 2007 The Foundry Visionmongers Ltd
-  Author Bruno Nicoletti bruno@thefoundry.co.uk
+Copyright (C) 2007 The Foundry Visionmongers Ltd
+Author Bruno Nicoletti bruno@thefoundry.co.uk
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
-      this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-      and/or other materials provided with the distribution.
-    * Neither the name The Foundry Visionmongers Ltd, nor the names of its 
-      contributors may be used to endorse or promote products derived from this
-      software without specific prior written permission.
+* Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+* Neither the name The Foundry Visionmongers Ltd, nor the names of its 
+contributors may be used to endorse or promote products derived from this
+software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -55,17 +55,17 @@ England
 // Base class for the RGBA and the Alpha processor
 class InvertBase : public OFX::ImageProcessor {
 protected :
-    OFX::Image *_srcImg;
+  OFX::Image *_srcImg;
 public :
-    /** @brief no arg ctor */
-    InvertBase(OFX::ImageEffect &instance)
-      : OFX::ImageProcessor(instance)
-      , _srcImg(0)
-    {        
-    }
+  /** @brief no arg ctor */
+  InvertBase(OFX::ImageEffect &instance)
+    : OFX::ImageProcessor(instance)
+    , _srcImg(0)
+  {        
+  }
 
-    /** @brief set the src image */
-    void setSrcImg(OFX::Image *v) {_srcImg = v;}
+  /** @brief set the src image */
+  void setSrcImg(OFX::Image *v) {_srcImg = v;}
 };
 
 // template to do the RGBA processing
@@ -86,7 +86,7 @@ public :
       PIX *dstPix = (PIX *) _dstImg->getPixelAddress(procWindow.x1, y);
 
       for(int x = procWindow.x1; x < procWindow.x2; x++) {
-        
+
         PIX *srcPix = (PIX *)  (_srcImg ? _srcImg->getPixelAddress(x, y) : 0);
 
         // do we have a source image to scale up
@@ -113,26 +113,26 @@ public :
 /** @brief The plugin that does our work */
 class InvertPlugin : public OFX::ImageEffect {
 protected :
-    // do not need to delete these, the ImageEffect is managing them for us
-    OFX::Clip *dstClip_;
-    OFX::Clip *srcClip_;
+  // do not need to delete these, the ImageEffect is managing them for us
+  OFX::Clip *dstClip_;
+  OFX::Clip *srcClip_;
 
 public :
-    /** @brief ctor */
-    InvertPlugin(OfxImageEffectHandle handle)
-      : ImageEffect(handle)
-      , dstClip_(0)
-      , srcClip_(0)
-    {
-        dstClip_ = fetchClip("Output");
-        srcClip_ = fetchClip("Source");
-    }
+  /** @brief ctor */
+  InvertPlugin(OfxImageEffectHandle handle)
+    : ImageEffect(handle)
+    , dstClip_(0)
+    , srcClip_(0)
+  {
+    dstClip_ = fetchClip("Output");
+    srcClip_ = fetchClip("Source");
+  }
 
-    /* Override the render */
-    virtual void render(const OFX::RenderArguments &args);
+  /* Override the render */
+  virtual void render(const OFX::RenderArguments &args);
 
-    /* set up and run a processor */
-    void setupAndProcess(InvertBase &, const OFX::RenderArguments &args);
+  /* set up and run a processor */
+  void setupAndProcess(InvertBase &, const OFX::RenderArguments &args);
 };
 
 
@@ -151,7 +151,7 @@ InvertPlugin::setupAndProcess(InvertBase &processor, const OFX::RenderArguments 
   std::auto_ptr<OFX::Image> dst(dstClip_->fetchImage(args.time));
   OFX::BitDepthEnum dstBitDepth       = dst->getPixelDepth();
   OFX::PixelComponentEnum dstComponents  = dst->getPixelComponents();
-  
+
   // fetch main input image
   std::auto_ptr<OFX::Image> src(srcClip_->fetchImage(args.time));
 
@@ -159,7 +159,7 @@ InvertPlugin::setupAndProcess(InvertBase &processor, const OFX::RenderArguments 
   if(src.get()) {
     OFX::BitDepthEnum    srcBitDepth      = src->getPixelDepth();
     OFX::PixelComponentEnum srcComponents = src->getPixelComponents();
-        
+
     // see if they have the same depths and bytes and all
     if(srcBitDepth != dstBitDepth || srcComponents != dstComponents)
       throw int(1); // HACK!! need to throw an sensible exception here!
@@ -187,126 +187,118 @@ InvertPlugin::render(const OFX::RenderArguments &args)
   // do the rendering
   if(dstComponents == OFX::ePixelComponentRGBA) {
     switch(dstBitDepth) {
-    case OFX::eBitDepthUByte : {      
-      ImageInverter<unsigned char, 4, 255> fred(*this);
-      setupAndProcess(fred, args);
-    }
-      break;
+case OFX::eBitDepthUByte : {      
+  ImageInverter<unsigned char, 4, 255> fred(*this);
+  setupAndProcess(fred, args);
+                           }
+                           break;
 
-    case OFX::eBitDepthUShort : {
-      ImageInverter<unsigned short, 4, 65535> fred(*this);
-      setupAndProcess(fred, args);
-    }                          
-      break;
+case OFX::eBitDepthUShort : {
+  ImageInverter<unsigned short, 4, 65535> fred(*this);
+  setupAndProcess(fred, args);
+                            }                          
+                            break;
 
-    case OFX::eBitDepthFloat : {
-      ImageInverter<float, 4, 1> fred(*this);
-      setupAndProcess(fred, args);
-    }
-      break;
+case OFX::eBitDepthFloat : {
+  ImageInverter<float, 4, 1> fred(*this);
+  setupAndProcess(fred, args);
+                           }
+                           break;
     }
   }
   else {
     switch(dstBitDepth) {
-    case OFX::eBitDepthUByte : {
-      ImageInverter<unsigned char, 1, 255> fred(*this);
-      setupAndProcess(fred, args);
-    }
-      break;
+case OFX::eBitDepthUByte : {
+  ImageInverter<unsigned char, 1, 255> fred(*this);
+  setupAndProcess(fred, args);
+                           }
+                           break;
 
-    case OFX::eBitDepthUShort : {
-      ImageInverter<unsigned short, 1, 65536> fred(*this);
-      setupAndProcess(fred, args);
-    }                          
-      break;
+case OFX::eBitDepthUShort : {
+  ImageInverter<unsigned short, 1, 65536> fred(*this);
+  setupAndProcess(fred, args);
+                            }                          
+                            break;
 
-    case OFX::eBitDepthFloat : {
-      ImageInverter<float, 1, 1> fred(*this);
-      setupAndProcess(fred, args);
-    }                          
-      break;
+case OFX::eBitDepthFloat : {
+  ImageInverter<float, 1, 1> fred(*this);
+  setupAndProcess(fred, args);
+                           }                          
+                           break;
     }
   } 
 }
 
+using namespace OFX;
 
-
-////////////////////////////////////////////////////////////////////////////////
-// code below is description code and instance creation code
-
-/** @brief OFX namespace */
-namespace OFX {
-
-  /** @brief plugin namespace */
-  namespace Plugin {
-    
-    /** @brief identify the plug-in */
-    void getPluginID(OFX::PluginID &id)
-    {
-      id.pluginIdentifier = "net.sf.openfx.invertPlugin";
-      id.pluginVersionMajor = 1;
-      id.pluginVersionMinor = 0;      
-    }
-
-    /** @brief empty load function */
-    void loadAction(void)
-    {
-    }
-
-    /** brief empty unload function */
-    void unloadAction(void)    
-    {
-    }
-
-    /** @brief The basic describe function, passed a plugin descriptor */
-    void describe(OFX::ImageEffectDescriptor &desc) 
-    {
-      // basic labels
-      desc.setLabels("Invert", "Invert", "Invert");
-      desc.setPluginGrouping("OFX");
-
-      // add the supported contexts, only filter at the moment
-      desc.addSupportedContext(eContextFilter);
-
-      // add supported pixel depths
-      desc.addSupportedBitDepth(eBitDepthUByte);
-      desc.addSupportedBitDepth(eBitDepthUShort);
-      desc.addSupportedBitDepth(eBitDepthFloat);
-
-      // set a few flags
-      desc.setSingleInstance(false);
-      desc.setHostFrameThreading(false);
-      desc.setSupportsMultiResolution(true);
-      desc.setSupportsTiles(true);
-      desc.setTemporalClipAccess(false);
-      desc.setRenderTwiceAlways(false);
-      desc.setSupportsMultipleClipPARs(false);
-    }        
-        
-
-    /** @brief The describe in context function, passed a plugin descriptor and a context */
-    void describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context) 
-    {
-      // Source clip only in the filter context
-      // create the mandated source clip
-      ClipDescriptor *srcClip = desc.defineClip("Source");
-      srcClip->addSupportedComponent(ePixelComponentRGBA);
-      srcClip->addSupportedComponent(ePixelComponentAlpha);
-      srcClip->setTemporalClipAccess(false);
-      srcClip->setSupportsTiles(true);
-      srcClip->setIsMask(false);
-
-      // create the mandated output clip
-      ClipDescriptor *dstClip = desc.defineClip("Output");
-      dstClip->addSupportedComponent(ePixelComponentRGBA);
-      dstClip->addSupportedComponent(ePixelComponentAlpha);
-      dstClip->setSupportsTiles(true);
-    }
-
-    /** @brief The create instance function, the plugin must return an object derived from the \ref OFX::ImageEffect class */
-    ImageEffect *createInstance(OfxImageEffectHandle handle, ContextEnum context)
-    {
-      return new InvertPlugin(handle);
-    }
-  };
+class InvertExamplePluginFactory : public OFX::PluginFactoryHelper<InvertExamplePluginFactory>
+{
+public:
+  InvertExamplePluginFactory():OFX::PluginFactoryHelper<InvertExamplePluginFactory>("net.sf.openfx:invertPlugin", 1, 0){}
+  virtual void describe(OFX::ImageEffectDescriptor &desc);
+  virtual void describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context);
+  virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context);
 };
+
+std::string FactoryMainEntryHelper<InvertExamplePluginFactory>::_uid;
+
+void InvertExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
+{
+  // basic labels
+  desc.setLabels("Invert", "Invert", "Invert");
+  desc.setPluginGrouping("OFX");
+
+  // add the supported contexts, only filter at the moment
+  desc.addSupportedContext(eContextFilter);
+
+  // add supported pixel depths
+  desc.addSupportedBitDepth(eBitDepthUByte);
+  desc.addSupportedBitDepth(eBitDepthUShort);
+  desc.addSupportedBitDepth(eBitDepthFloat);
+
+  // set a few flags
+  desc.setSingleInstance(false);
+  desc.setHostFrameThreading(false);
+  desc.setSupportsMultiResolution(true);
+  desc.setSupportsTiles(true);
+  desc.setTemporalClipAccess(false);
+  desc.setRenderTwiceAlways(false);
+  desc.setSupportsMultipleClipPARs(false);
+
+}
+
+void InvertExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context)
+{
+  // Source clip only in the filter context
+  // create the mandated source clip
+  ClipDescriptor *srcClip = desc.defineClip("Source");
+  srcClip->addSupportedComponent(ePixelComponentRGBA);
+  srcClip->addSupportedComponent(ePixelComponentAlpha);
+  srcClip->setTemporalClipAccess(false);
+  srcClip->setSupportsTiles(true);
+  srcClip->setIsMask(false);
+
+  // create the mandated output clip
+  ClipDescriptor *dstClip = desc.defineClip("Output");
+  dstClip->addSupportedComponent(ePixelComponentRGBA);
+  dstClip->addSupportedComponent(ePixelComponentAlpha);
+  dstClip->setSupportsTiles(true);
+
+}
+
+OFX::ImageEffect* InvertExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context)
+{
+  return new InvertPlugin(handle);
+}
+
+namespace OFX 
+{
+  namespace Plugin 
+  {  
+    void getPluginIDs(OFX::PluginFactoryArray &ids)
+    {
+      static InvertExamplePluginFactory p;
+      ids.push_back(&p);
+    }
+  }
+}

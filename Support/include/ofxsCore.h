@@ -103,6 +103,7 @@ of the direct OFX objects and any library side only functions.
 #include <map>
 #include <exception>
 #include <stdexcept>
+#include <sstream>
 
 #ifdef OFX_CLIENT_EXCEPTION_HEADER
 #include OFX_CLIENT_EXCEPTION_HEADER
@@ -283,11 +284,81 @@ namespace OFX {
   /** @brief This struct is used to return an identifier for the plugin by the function @ref OFX:Plugin::getPlugin. 
       The members correspond to those in the OfxPlugin struct defined in ofxCore.h.
   */
-  struct PluginID {
-    std::string  pluginIdentifier;
-    unsigned int pluginVersionMajor;
-    unsigned int pluginVersionMinor;
+
+  class ImageEffectDescriptor;
+  enum ContextEnum;
+  class ImageEffect;
+
+  class PluginFactory
+  {
+  public:
+    virtual void load() {}
+    virtual void unload() {}
+    virtual void describe(OFX::ImageEffectDescriptor &desc) = 0;
+    virtual void describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context) = 0;
+    virtual ImageEffect* createInstance(OfxImageEffectHandle handle, ContextEnum context) = 0;
+    virtual const std::string& getID() const = 0;
+    virtual const std::string& getUID() const = 0;
+    virtual unsigned int getMajorVersion() const = 0;
+    virtual unsigned int getMinorVersion() const = 0;
+    virtual OfxPluginEntryPoint* getMainEntry() = 0;
   };
+
+  template<class FACTORY>
+  class FactoryMainEntryHelper
+  {
+  protected:
+    const std::string& getHelperID() const { return _id; }
+    unsigned int getHelperMajorVersion() const  { return  _maj; }
+    unsigned int getHelperMinorVersion() const  { return  _min; }
+    std::string toString(unsigned int val)
+    {
+      std::ostringstream ss;
+      ss << val;
+      return ss.str();
+    }
+    FactoryMainEntryHelper(const std::string& id, unsigned int maj, unsigned int min): _id(id), _maj(maj), _min(min)
+    {
+      _uid = id + toString(maj) + toString(min);
+    }
+    const std::string& getHelperUID() const { return _uid; }
+    static OfxStatus mainEntry(const char *action, const void* handle, OfxPropertySetHandle in, OfxPropertySetHandle out)
+    { 
+      return OFX::Private::mainEntryStr(action, handle, in, out, _uid.c_str());
+    }
+    static std::string _uid;
+    std::string _id;
+    unsigned int _maj;
+    unsigned int _min;
+  };
+
+  template<class FACTORY>
+  class PluginFactoryHelper : public FactoryMainEntryHelper<FACTORY>, public PluginFactory
+  {
+  public:
+    PluginFactoryHelper(const std::string& id, unsigned int maj, unsigned int min): FactoryMainEntryHelper<FACTORY>(id, maj, min)
+    {}
+    OfxPluginEntryPoint* getMainEntry() { return FactoryMainEntryHelper<FACTORY>::mainEntry; }
+    const std::string& getID() const { return FactoryMainEntryHelper<FACTORY>::getHelperID(); }
+    const std::string& getUID() const { return FactoryMainEntryHelper<FACTORY>::getHelperUID(); }
+    unsigned int getMajorVersion() const { return FactoryMainEntryHelper<FACTORY>::getHelperMajorVersion(); }
+    unsigned int getMinorVersion() const { return FactoryMainEntryHelper<FACTORY>::getHelperMinorVersion(); }
+  };
+
+#define mDeclarePluginFactory(CLASS, LOADFUNCDEF, UNLOADFUNCDEF) \
+  class CLASS : public OFX::PluginFactoryHelper<CLASS> \
+  { \
+  public: \
+    CLASS(const std::string& id, unsigned int verMaj, unsigned int verMin):OFX::PluginFactoryHelper<CLASS>(id, verMaj, verMin){} \
+    virtual void load() LOADFUNCDEF ;\
+    virtual void unload() UNLOADFUNCDEF ;\
+    virtual void describe(OFX::ImageEffectDescriptor &desc); \
+    virtual void describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context); \
+    virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context); \
+  }; \
+  std::string OFX::FactoryMainEntryHelper<CLASS>::_uid; \
+
+  typedef std::vector<PluginFactory*> PluginFactoryArray;
 
   /** @brief This class wraps up an OFX property set */
   class PropertySet {

@@ -61,6 +61,7 @@ each represent the actions that can be carried out on those particular OFX objec
  */
 namespace OFX {
 
+    class ParamInteractDescriptor;
     /* forward class declarations of the  descriptors */
     class ParamDescriptor;
     class ValueParamDescriptor;
@@ -231,7 +232,7 @@ namespace OFX {
         ValueParamDescriptor(const std::string &name, ParamTypeEnum type, OfxPropertySetHandle props);
 
         friend class ParamSetDescriptor;
-
+        std::auto_ptr<ParamInteractDescriptor> _interact;
     public :
         /** @brief dtor */
         ~ValueParamDescriptor();
@@ -250,6 +251,8 @@ namespace OFX {
 
         /// @brief Set whether the param should appear on any undo stack
         void setCanUndo(bool v);
+
+        void setInteractDescriptor(ParamInteractDescriptor* desc);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -297,7 +300,7 @@ namespace OFX {
         void setRange(int min, int max);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void setDislayRange(int min, int max);
+        void setDisplayRange(int min, int max);
     };
     
     ////////////////////////////////////////////////////////////////////////////////
@@ -326,7 +329,7 @@ namespace OFX {
                       int maxX, int maxY);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void setDislayRange(int minX, int minY,
+        void setDisplayRange(int minX, int minY,
                             int maxX, int maxY);
     };
   
@@ -357,7 +360,7 @@ namespace OFX {
                       int maxX, int maxY, int maxZ);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void setDislayRange(int minX, int minY, int minZ,
+        void setDisplayRange(int minX, int minY, int minZ,
                             int maxX, int maxY, int maxZ);
     };
 
@@ -408,7 +411,7 @@ namespace OFX {
         void setRange(double min, double max);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void setDislayRange(double min, double max);
+        void setDisplayRange(double min, double max);
     };
   
     ////////////////////////////////////////////////////////////////////////////////
@@ -437,7 +440,7 @@ namespace OFX {
                       double maxX, double maxY);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void setDislayRange(double minX, double minY,
+        void setDisplayRange(double minX, double minY,
                             double maxX, double maxY);
     };
   
@@ -468,7 +471,7 @@ namespace OFX {
                       double maxX, double maxY, double maxZ);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void setDislayRange(double minX, double minY, double minZ,
+        void setDisplayRange(double minX, double minY, double minZ,
                             double maxX, double maxY, double maxZ);
     };
 
@@ -806,7 +809,6 @@ namespace OFX {
     protected :
         mDeclareProtectedAssignAndCC(ValueParam);
         ValueParam(void) {assert(false);}
-
     protected :
         /** @brief hidden constructor */
         ValueParam(const ParamSet *paramSet, const std::string &name, ParamTypeEnum type, OfxParamHandle handle);
@@ -871,7 +873,7 @@ namespace OFX {
         void setRange(int min, int max);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void setDislayRange(int min, int max);
+        void setDisplayRange(int min, int max);
 
         /** @brief het the default value */
         void getDefault(int &v);
@@ -883,7 +885,7 @@ namespace OFX {
         void getRange(int &min, int &max);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void getDislayRange(int &min, int &max);
+        void getDisplayRange(int &min, int &max);
 
         /** @brief get value */
         void  getValue(int &v);
@@ -928,7 +930,7 @@ namespace OFX {
                       int maxX, int maxY);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void setDislayRange(int minX, int minY,
+        void setDisplayRange(int minX, int minY,
                             int maxX, int maxY);
 
         /** @brief het the default value */
@@ -942,7 +944,7 @@ namespace OFX {
                       int& maxX, int &maxY);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void getDislayRange(int &minX, int &minY,
+        void getDisplayRange(int &minX, int &minY,
                             int &maxX, int &maxY);
 
         /** @brief get value */
@@ -991,7 +993,7 @@ namespace OFX {
                       int maxX, int maxY, int maxZ);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void setDislayRange(int minX, int minY, int minZ,
+        void setDisplayRange(int minX, int minY, int minZ,
                             int maxX, int maxY, int maxZ);
 
         /** @brief het the default value */
@@ -1002,7 +1004,7 @@ namespace OFX {
                       int& maxX, int &maxY, int &maxZ);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void getDislayRange(int &minX, int &minY, int &minZ,
+        void getDisplayRange(int &minX, int &minY, int &minZ,
                             int& maxX, int &maxY, int &maxZ);
 
         /** @brief get value */
@@ -1070,7 +1072,7 @@ namespace OFX {
         void setRange(double min, double max);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void setDislayRange(double min, double max);
+        void setDisplayRange(double min, double max);
 
         /** @brief het the default value */
         void getDefault(double &v);
@@ -1082,7 +1084,7 @@ namespace OFX {
         void getRange(double &min, double &max);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void getDislayRange(double &min, double &max);
+        void getDisplayRange(double &min, double &max);
 
         /** @brief get value */
         void getValue(double &v);
@@ -1136,7 +1138,7 @@ namespace OFX {
                       double maxX, double maxY);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void setDislayRange(double minX, double minY,
+        void setDisplayRange(double minX, double minY,
                             double maxX, double maxY);
 
         /** @brief het the default value */
@@ -1147,7 +1149,7 @@ namespace OFX {
                       double& maxX, double &maxY);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void getDislayRange(double &minX, double &minY,
+        void getDisplayRange(double &minX, double &minY,
                             double &maxX, double &maxY);
 
         /** @brief get value */
@@ -1196,7 +1198,7 @@ namespace OFX {
                       double maxX, double maxY, double maxZ);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void setDislayRange(double minX, double minY, double minZ,
+        void setDisplayRange(double minX, double minY, double minZ,
                             double maxX, double maxY, double maxZ);
 
         /** @brief het the default value */
@@ -1207,7 +1209,7 @@ namespace OFX {
                       double& maxX, double &maxY, double &maxZ);
 
         /** @brief set the display min and max, default is to be the same as the range param */
-        void getDislayRange(double &minX, double &minY, double &minZ,
+        void getDisplayRange(double &minX, double &minY, double &minZ,
                             double& maxX, double &maxY, double &maxZ);
 
         /** @brief get value */

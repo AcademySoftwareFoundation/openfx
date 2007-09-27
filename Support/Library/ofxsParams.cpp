@@ -232,6 +232,13 @@ namespace OFX {
         }
     }
 
+    void ValueParamDescriptor::setInteractDescriptor(ParamInteractDescriptor* desc)
+    {
+      _interact.reset(desc);
+      _paramProps.propSetPointer(kOfxParamPropInteractV1, desc->getMainEntry());
+      desc->setParamName(getName());
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // int param descriptor
 
@@ -258,7 +265,7 @@ namespace OFX {
 
     /** @brief set the display min and max, default is to be the same as the range param */
     void 
-    IntParamDescriptor::setDislayRange(int min, int max)
+    IntParamDescriptor::setDisplayRange(int min, int max)
     {
         _paramProps.propSetInt(kOfxParamPropDisplayMin, min);
         _paramProps.propSetInt(kOfxParamPropDisplayMax, max);
@@ -294,7 +301,7 @@ namespace OFX {
 
     /** @brief set the display min and max, default is to be the same as the range param */
     void 
-    Int2DParamDescriptor::setDislayRange(int xmin, int ymin,
+    Int2DParamDescriptor::setDisplayRange(int xmin, int ymin,
                                          int xmax, int ymax)
     {
         _paramProps.propSetInt(kOfxParamPropDisplayMin, xmin, 0);
@@ -303,6 +310,11 @@ namespace OFX {
         _paramProps.propSetInt(kOfxParamPropDisplayMax, ymax, 1);
     }
   
+    void Int2DParamDescriptor::setDimensionLabels(const std::string& x, const std::string& y)
+    {
+      _paramProps.propSetString(kOfxParamPropDimensionLabel, x, 0);
+      _paramProps.propSetString(kOfxParamPropDimensionLabel, y, 1);
+    }
   
     ////////////////////////////////////////////////////////////////////////////////
     // 3D int param descriptor
@@ -337,7 +349,7 @@ namespace OFX {
 
     /** @brief set the display min and max, default is to be the same as the range param */
     void 
-    Int3DParamDescriptor::setDislayRange(int xmin, int ymin, int zmin,
+    Int3DParamDescriptor::setDisplayRange(int xmin, int ymin, int zmin,
                                          int xmax, int ymax, int zmax)
     {
         _paramProps.propSetInt(kOfxParamPropDisplayMin, xmin, 0);
@@ -346,6 +358,13 @@ namespace OFX {
         _paramProps.propSetInt(kOfxParamPropDisplayMax, xmax, 0);
         _paramProps.propSetInt(kOfxParamPropDisplayMax, ymax, 1);
         _paramProps.propSetInt(kOfxParamPropDisplayMax, zmax, 2);
+    }
+
+    void Int3DParamDescriptor::setDimensionLabels(const std::string& x, const std::string& y, const std::string& z)
+    {
+      _paramProps.propSetString(kOfxParamPropDimensionLabel, x, 0);
+      _paramProps.propSetString(kOfxParamPropDimensionLabel, y, 1);
+      _paramProps.propSetString(kOfxParamPropDimensionLabel, z, 2);
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -435,7 +454,7 @@ namespace OFX {
 
     /** @brief set the display min and max, default is to be the same as the range param */
     void 
-    DoubleParamDescriptor::setDislayRange(double min, double max)
+    DoubleParamDescriptor::setDisplayRange(double min, double max)
     {
         _paramProps.propSetDouble(kOfxParamPropDisplayMin, min);
         _paramProps.propSetDouble(kOfxParamPropDisplayMax, max);
@@ -471,7 +490,7 @@ namespace OFX {
 
     /** @brief set the display min and max, default is to be the same as the range param */
     void 
-    Double2DParamDescriptor::setDislayRange(double xmin, double ymin,
+    Double2DParamDescriptor::setDisplayRange(double xmin, double ymin,
                                             double xmax, double ymax)
     {
         _paramProps.propSetDouble(kOfxParamPropDisplayMin, xmin, 0);
@@ -480,6 +499,12 @@ namespace OFX {
         _paramProps.propSetDouble(kOfxParamPropDisplayMax, ymax, 1);
     }
     
+    void Double2DParamDescriptor::setDimensionLabels(const std::string& x, const std::string& y)
+    {
+      _paramProps.propSetString(kOfxParamPropDimensionLabel, x, 0);
+      _paramProps.propSetString(kOfxParamPropDimensionLabel, y, 1);
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // 3D double param descriptor
  
@@ -513,7 +538,7 @@ namespace OFX {
 
     /** @brief set the display min and max, default is to be the same as the range param */
     void 
-    Double3DParamDescriptor::setDislayRange(double xmin, double ymin, double zmin,
+    Double3DParamDescriptor::setDisplayRange(double xmin, double ymin, double zmin,
                                             double xmax, double ymax, double zmax)
     {
         _paramProps.propSetDouble(kOfxParamPropDisplayMin, xmin, 0);
@@ -522,6 +547,13 @@ namespace OFX {
         _paramProps.propSetDouble(kOfxParamPropDisplayMax, xmax, 0);
         _paramProps.propSetDouble(kOfxParamPropDisplayMax, ymax, 1);
         _paramProps.propSetDouble(kOfxParamPropDisplayMax, zmax, 2);
+    }
+
+    void Double3DParamDescriptor::setDimensionLabels(const std::string& x, const std::string& y, const std::string& z)
+    {
+      _paramProps.propSetString(kOfxParamPropDimensionLabel, x, 0);
+      _paramProps.propSetString(kOfxParamPropDimensionLabel, y, 1);
+      _paramProps.propSetString(kOfxParamPropDimensionLabel, z, 2);
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -1125,7 +1157,6 @@ namespace OFX {
         OfxStatus stat = OFX::Private::gParamSuite->paramDeleteAllKeys(_paramHandle);
         throwSuiteStatusException(stat); 
     }
-
   
     ////////////////////////////////////////////////////////////////////////////////
     // Wraps up an integer param */
@@ -1150,7 +1181,7 @@ namespace OFX {
     }
 
     /** @brief set the display min and max, default is to be the same as the range param */
-    void IntParam::setDislayRange(int min, int max)
+    void IntParam::setDisplayRange(int min, int max)
     {
         _paramProps.propSetInt(kOfxParamPropDisplayMin, min);
         _paramProps.propSetInt(kOfxParamPropDisplayMax, max);
@@ -1170,7 +1201,7 @@ namespace OFX {
     }
 
     /** @brief set the display min and max, default is to be the same as the range param */
-    void IntParam::getDislayRange(int &min, int &max)
+    void IntParam::getDisplayRange(int &min, int &max)
     {
         min = _paramProps.propGetInt(kOfxParamPropDisplayMin);
         max = _paramProps.propGetInt(kOfxParamPropDisplayMax);
@@ -1234,7 +1265,7 @@ namespace OFX {
 
     /** @brief set the display min and max, default is to be the same as the range param */
     void 
-    Int2DParam::setDislayRange(int xmin, int ymin,
+    Int2DParam::setDisplayRange(int xmin, int ymin,
                                int xmax, int ymax)
     {
         _paramProps.propSetInt(kOfxParamPropDisplayMin, xmin, 0);
@@ -1264,7 +1295,7 @@ namespace OFX {
 
     /** @brief set the display min and max, default is to be the same as the range param */
     void 
-    Int2DParam::getDislayRange(int &xmin, int &ymin,
+    Int2DParam::getDisplayRange(int &xmin, int &ymin,
                                int &xmax, int &ymax)
     {
         xmin = _paramProps.propGetInt(kOfxParamPropDisplayMin, 0);
@@ -1335,7 +1366,7 @@ namespace OFX {
 
     /** @brief set the display min and max, default is to be the same as the range param */
     void 
-    Int3DParam::setDislayRange(int xmin, int ymin, int zmin,
+    Int3DParam::setDisplayRange(int xmin, int ymin, int zmin,
                                int xmax, int ymax, int zmax)
     {
         _paramProps.propSetInt(kOfxParamPropDisplayMin, xmin, 0);
@@ -1370,7 +1401,7 @@ namespace OFX {
 
     /** @brief set the display min and max, default is to be the same as the range param */
     void 
-    Int3DParam::getDislayRange(int &xmin, int &ymin, int &zmin,
+    Int3DParam::getDisplayRange(int &xmin, int &ymin, int &zmin,
                                int &xmax, int &ymax, int &zmax)
     {
         xmin = _paramProps.propGetInt(kOfxParamPropDisplayMin, 0);
@@ -1497,7 +1528,7 @@ namespace OFX {
     }
 
     /** @brief set the display min and max, default is to be the same as the range param */
-    void DoubleParam::setDislayRange(double min, double max)
+    void DoubleParam::setDisplayRange(double min, double max)
     {
         _paramProps.propSetDouble(kOfxParamPropDisplayMin, min);
         _paramProps.propSetDouble(kOfxParamPropDisplayMax, max);
@@ -1517,7 +1548,7 @@ namespace OFX {
     }
 
     /** @brief set the display min and max, default is to be the same as the range param */
-    void DoubleParam::getDislayRange(double &min, double &max)
+    void DoubleParam::getDisplayRange(double &min, double &max)
     {
         min = _paramProps.propGetDouble(kOfxParamPropDisplayMin);
         max = _paramProps.propGetDouble(kOfxParamPropDisplayMax);
@@ -1597,7 +1628,7 @@ namespace OFX {
 
     /** @brief set the display min and max, default is to be the same as the range param */
     void 
-    Double2DParam::setDislayRange(double xmin, double ymin,
+    Double2DParam::setDisplayRange(double xmin, double ymin,
                                   double xmax, double ymax)
     {
         _paramProps.propSetDouble(kOfxParamPropDisplayMin, xmin, 0);
@@ -1627,7 +1658,7 @@ namespace OFX {
 
     /** @brief set the display min and max, default is to be the same as the range param */
     void 
-    Double2DParam::getDislayRange(double &xmin, double &ymin,
+    Double2DParam::getDisplayRange(double &xmin, double &ymin,
                                   double &xmax, double &ymax)
     {
         xmin = _paramProps.propGetDouble(kOfxParamPropDisplayMin, 0);
@@ -1714,7 +1745,7 @@ namespace OFX {
 
     /** @brief set the display min and max, default is to be the same as the range param */
     void 
-    Double3DParam::setDislayRange(double xmin, double ymin, double zmin,
+    Double3DParam::setDisplayRange(double xmin, double ymin, double zmin,
                                   double xmax, double ymax, double zmax)
     {
         _paramProps.propSetDouble(kOfxParamPropDisplayMin, xmin, 0);
@@ -1749,7 +1780,7 @@ namespace OFX {
 
     /** @brief set the display min and max, default is to be the same as the range param */
     void 
-    Double3DParam::getDislayRange(double &xmin, double &ymin, double &zmin,
+    Double3DParam::getDisplayRange(double &xmin, double &ymin, double &zmin,
                                   double &xmax, double &ymax, double &zmax)
     {
         xmin = _paramProps.propGetDouble(kOfxParamPropDisplayMin, 0);

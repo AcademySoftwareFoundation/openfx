@@ -44,6 +44,7 @@ of the direct OFX objects and any library side only functions.
  */
 #include <map>
 #include <string>
+#include <sstream>
 #include "ofxsParam.h"
 #include "ofxsInteract.h"
 #include "ofxsMessage.h"
@@ -54,6 +55,19 @@ of the direct OFX objects and any library side only functions.
 #define mDeclareProtectedAssignAndCC(CLASS) \
   CLASS &operator=(const CLASS &v1) {assert(false); return *this;}	\
   CLASS(const CLASS &v) {assert(false); } 
+
+namespace OFX
+{
+  namespace Private
+  {
+    OfxStatus mainEntryStr(const char    *actionRaw,
+                           const void    *handleRaw,
+                           OfxPropertySetHandle   inArgsRaw,
+                           OfxPropertySetHandle   outArgsRaw,
+                           const char* plugname);
+   }
+}
+
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries.
  */
@@ -234,6 +248,7 @@ namespace OFX {
     std::map<std::string, std::string> _clipROIPropNames;
     std::map<std::string, std::string> _clipFrameRangePropNames;
 
+    std::auto_ptr<EffectOverlayDescriptor> _overlayDescriptor;
   public :
     /** @brief ctor */
     ImageEffectDescriptor(OfxImageEffectHandle handle);
@@ -301,6 +316,9 @@ namespace OFX {
     const std::map<std::string, std::string>& getClipPARPropNames() const { return _clipPARPropNames; }
     const std::map<std::string, std::string>& getClipROIPropNames() const { return _clipROIPropNames; }
     const std::map<std::string, std::string>& getClipFrameRangePropNames() const { return _clipFrameRangePropNames; }
+
+    /** @brief override this to create an interact for the effect */
+    virtual void setOverlayInteractDescriptor(EffectOverlayDescriptor* desc);
   };  
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -844,9 +862,6 @@ namespace OFX {
     */
     virtual bool getTimeDomain(OfxRangeD &range);
 
-    /** @brief override this to create an interact for the effect */
-    virtual OverlayInteract *createOverlayInteract(OfxInteractHandle handle);
-
     /// Start doing progress. 
     void progressStart(const std::string &message);
 
@@ -874,22 +889,7 @@ namespace OFX {
    */  
   namespace Plugin {
     /** @brief Plugin side function used to identify the plugin to the support library */
-    void getPluginID(OFX::PluginID &id);
-
-    /** @brief Plugin side function called during the load action */
-    void loadAction(void);
-
-    /** @brief Plugin side function called during the unload action */
-    void unloadAction(void);
-
-    /** @brief The describe function, passed a plugin descriptor */
-    void describe(OFX::ImageEffectDescriptor &desc);
-
-    /** @brief The describe in context function, passed a plugin descriptor and a context */
-    void describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context);
-
-    /** @brief The create instance function, the plugin must return an object derived from the \ref OFX::ImageEffect class */
-    ImageEffect *createInstance(OfxImageEffectHandle handle, ContextEnum context);
+    void getPluginID(OFX::PluginFactoryArray &id);
 
     /// If the client has defined its own exception type, allow it to catch it in the main function
 #ifdef OFX_CLIENT_EXCEPTION_TYPE

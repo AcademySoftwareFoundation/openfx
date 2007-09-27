@@ -97,28 +97,15 @@ namespace OFX {
 
         /** @brief fetches our pointer out of the props on the handle */
         ImageEffect *retrieveImageEffectPointer(OfxImageEffectHandle handle);
-
-        /** @brief The main entry point for the plugin
-        */
-        OfxStatus
-        mainEntry(const char		*actionRaw,
-                  const void		*handleRaw,
-                  OfxPropertySetHandle	 inArgsRaw,
-                  OfxPropertySetHandle	 outArgsRaw);
-
-        /** @brief The main entry point for overlays */
-        OfxStatus
-        overlayInteractMainEntry(const char		*actionRaw,
-                                 const void		*handleRaw,
-                                 OfxPropertySetHandle	 inArgsRaw,
-                                 OfxPropertySetHandle	 outArgsRaw);
-
+    
         /** @brief fetch the prop set from the effect handle */
         OFX::PropertySet
         fetchEffectProps(OfxImageEffectHandle handle);
 
         /** @brief the set of descriptors, one per context used by kOfxActionDescribeInContext,  'eContextNone' is the one used by the kOfxActionDescribe */
-        extern std::map<ContextEnum, ImageEffectDescriptor *> gEffectDescriptors;
+        typedef std::map<ContextEnum, ImageEffectDescriptor*> EffectContextMap;
+        typedef std::map<std::string, EffectContextMap> EffectDescriptorMap;
+        extern EffectDescriptorMap gEffectDescriptors;
     };
 
     /** @brief The validation code has its own namespace */

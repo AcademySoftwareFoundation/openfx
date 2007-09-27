@@ -108,12 +108,10 @@ namespace OFX {
     /** @brief Wraps up an OFX interact object for an Image Effect. It won't work for any other plug-in type at present (it would need to be broken into a hierarchy of classes).
     */
     class Interact {
-    private :
+    protected :
         OfxInteractHandle  _interactHandle;     /**< @brief The handle for this interact */
         PropertySet        _interactProperties; /**< @brief The property set on this interact */
         std::list<Param *> _slaveParams;        /**< @brief List of params we are currently slaved to */
-
-    protected :
         ImageEffect *_effect;                   /**< @brief The instance we are associated with */
 
     public : 
@@ -212,6 +210,90 @@ namespace OFX {
 
         /** @brief dtor */
         virtual ~OverlayInteract();
+    };
+
+    class InteractDescriptor
+    {
+    public:
+      InteractDescriptor():_props(0) {}
+      virtual ~InteractDescriptor() {}
+      void setPropertySet(OFX::PropertySet* props){ _props = props; }
+      virtual Interact* createInstance(OfxInteractHandle handle, ImageEffect *effect) = 0;
+      void setHasAlpha();
+      bool getHasAlpha() const;
+      void setBitDepth();
+      int getBitDepth() const;
+      virtual OfxPluginEntryPoint* getMainEntry() = 0;
+      virtual void describe() {}
+    protected:
+      OFX::PropertySet* _props;
+    };
+
+    typedef InteractDescriptor EffectOverlayDescriptor;
+    
+    class ParamInteractDescriptor : public InteractDescriptor
+    {
+    public:
+      ParamInteractDescriptor():InteractDescriptor(){}
+      virtual ~ParamInteractDescriptor() {}
+      void setInteractSizeAspect(double asp);
+      void setInteractMinimumSize(int x, int y);
+      void setInteractPreferredSize(int x, int y);
+      virtual void setParamName(const std::string& pName) { _paramName = pName; }
+    protected:
+      std::string _paramName;
+    };
+
+    class ParamInteract : public Interact 
+    {
+    public:
+      ParamInteract(OfxInteractHandle handle, ImageEffect* effect);
+      virtual ~ParamInteract() {}
+      double getInteractSizeAspect() const;
+      OfxPointI getInteractMinimumSize() const;
+      OfxPointI getInteractPreferredSize() const;
+      OfxPointI getInteractSize() const;
+    protected:
+      ImageEffect* _effect;
+    };
+
+    namespace Private
+    {
+      OfxStatus interactMainEntry(const char		*actionRaw,
+                                  const void		*handleRaw,
+                                  OfxPropertySetHandle	 inArgsRaw,
+                                  OfxPropertySetHandle	 outArgsRaw,
+                                  InteractDescriptor& desc);
+    }
+
+    template<class DESC>
+    class InteractMainEntry
+    {
+    protected:
+      static OfxStatus overlayInteractMainEntry(const char *action, const void* handle, OfxPropertySetHandle in, OfxPropertySetHandle out)
+      {
+        static DESC desc;
+        return OFX::Private::interactMainEntry(action, handle, in, out, desc);
+      }
+    };
+
+    template<class DESC, class INSTANCE>
+    class DefaultEffectOverlayDescriptor : public EffectOverlayDescriptor, public InteractMainEntry<DESC>
+    {
+    public:
+      Interact* createInstance(OfxInteractHandle handle, ImageEffect *effect) { return new INSTANCE(handle, effect); }
+      virtual OfxPluginEntryPoint* getMainEntry() { return InteractMainEntry<DESC>::overlayInteractMainEntry; }
+    };
+
+    template<class DESC, class INSTANCE>
+    class DefaultParamInteractDescriptor : public ParamInteractDescriptor, public InteractMainEntry<DESC>
+    {
+    public:
+      Interact* createInstance(OfxInteractHandle handle, ImageEffect *effect) { return new INSTANCE(handle, effect, _paramNameStatic); }
+      virtual OfxPluginEntryPoint* getMainEntry() { return InteractMainEntry<DESC>::overlayInteractMainEntry; }
+      virtual void setParamName(const std::string& pName) { _paramNameStatic = pName; }
+    protected:
+      static std::string _paramNameStatic;
     };
 };
 

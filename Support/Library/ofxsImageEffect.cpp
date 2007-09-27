@@ -39,10 +39,27 @@ England
 #include "ofxsSupportPrivate.h"
 #include <algorithm> // for find
 #include <iostream>
+#include <sstream>
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {
-  
+
+  // globals to keep consistent data structures around.
+  OFX::PluginFactoryArray plugIDs;
+  //Put it all into a map, so we know when to delete what!
+  struct OfxPlugInfo
+  {
+    OfxPlugInfo(){}
+    OfxPlugInfo(OFX::PluginFactory* f, OfxPlugin* p):_factory(f), _plug(p){}
+    OFX::PluginFactory* _factory;
+    OfxPlugin* _plug;
+  };
+  typedef std::map<std::string, OfxPlugInfo> OfxPlugInfoMap;
+  OfxPlugInfoMap plugInfoMap;
+
+  typedef std::vector<OfxPlugin*> OfxPluginArray;
+  OfxPluginArray ofxPlugs;
+
   /** @brief the global host description */
   ImageEffectHostDescription gHostDescription;
   bool gHostDescriptionHasInit = false;
@@ -68,8 +85,9 @@ namespace OFX {
     OfxTimeLineSuiteV1     *gTimeLineSuite = 0;
   
 
-    /** @brief the set of descriptors, one per context used by kOfxActionDescribeInContext,  'eContextNone' is the one used by the kOfxActionDescribe */
-    std::map<ContextEnum, ImageEffectDescriptor *> gEffectDescriptors;
+    // @brief the set of descriptors, one per context used by kOfxActionDescribeInContext,
+    //'eContextNone' is the one used by the kOfxActionDescribe
+    EffectDescriptorMap gEffectDescriptors;
   };
 
   /** @brief map a std::string to a context */
@@ -309,11 +327,7 @@ namespace OFX {
     stat = OFX::Private::gEffectSuite->getParamSet(handle, &paramSetHandle);
     throwSuiteStatusException(stat);
     setParamSetHandle(paramSetHandle);
-
-    // set the overlay interact function only if it supports interacts
-    if(OFX::gHostDescription.supportsOverlays)
-      _effectProps.propSetPointer(kOfxImageEffectPluginPropOverlayInteractV1, (void *) OFX::Private::overlayInteractMainEntry);
-  }
+    }
   
 
   /** @brief dtor */
@@ -367,6 +381,13 @@ namespace OFX {
       _effectProps.propSetString(kOfxImageEffectPropSupportedContexts, kOfxImageEffectContextRetimer, n);
       break;
     }
+  }
+
+  void ImageEffectDescriptor::setOverlayInteractDescriptor(EffectOverlayDescriptor* desc)
+  {
+     _overlayDescriptor.reset(desc);
+    if(OFX::gHostDescription.supportsOverlays)
+      _effectProps.propSetPointer(kOfxImageEffectPluginPropOverlayInteractV1, desc ? desc->getMainEntry() : 0);
   }
 
   /** @brief Add a pixel depth to those supported */
@@ -599,7 +620,7 @@ namespace OFX {
     BitDepthEnum e;
     try {
       e = mapStrToBitDepthEnum(str);
-      if(e == eBitDepthNone && !isConnected()) {
+      if(e == eBitDepthNone && isConnected()) {
         OFX::Log::error(true, "Clip %s is connected and has no pixel depth.", _clipName.c_str());
       }
     }
@@ -618,7 +639,7 @@ namespace OFX {
     PixelComponentEnum e;
     try {
       e = mapStrToPixelComponentEnum(str);
-      if(e == ePixelComponentNone && !isConnected()) {
+      if(e == ePixelComponentNone && isConnected()) {
         OFX::Log::error(true, "Clip %s is connected and has no pixel component type!", _clipName.c_str());
       }
     }
@@ -1079,13 +1100,6 @@ namespace OFX {
     return false;
   }
 
-  /** @brief create the interact */
-  OverlayInteract *ImageEffect::createOverlayInteract(OfxInteractHandle handle)
-  {
-    // by default don't make one
-    return NULL;
-  }
-
   /// Start doing progress. 
   void ImageEffect::progressStart(const std::string &message)
   {
@@ -1350,7 +1364,6 @@ namespace OFX {
     /** @brief Library side load action, this fetches all the suite pointers */
     void loadAction(void)
     {
-      OFX::Log::error(gLoadCount != 0, "Load action called more than once without unload being called.");
       gLoadCount++;  
   
       OfxStatus status = kOfxStatOK;
@@ -1390,32 +1403,39 @@ namespace OFX {
     }
 
     /** @brief Library side unload action, this fetches all the suite pointers */
-    void
-    unloadAction(void)
+    void unloadAction(const char* id)
     {
       gLoadCount--;
-      OFX::Log::error(gLoadCount != 0, "UnLoad action called without a corresponding load action having been called.");
   
-      // force these to null
-      gEffectSuite = 0;
-      gPropSuite = 0;
-      gParamSuite = 0;
-      gMemorySuite = 0;
-      gThreadSuite = 0;
-      gMessageSuite = 0;
-      gInteractSuite = 0;
-
-      // delete the effect descriptors
-      std::map<ContextEnum, ImageEffectDescriptor *>::iterator iter;
-      for(iter = gEffectDescriptors.begin(); iter != gEffectDescriptors.end(); ++iter) {
-        if(iter->second) {
-          delete iter->second;
-          iter->second = NULL;
-        }
+      if(gLoadCount==0)
+      {
+        // force these to null
+        gEffectSuite = 0;
+        gPropSuite = 0;
+        gParamSuite = 0;
+        gMemorySuite = 0;
+        gThreadSuite = 0;
+        gMessageSuite = 0;
+        gInteractSuite = 0;
       }
 
-      // and clobber the map
-      gEffectDescriptors.clear();
+      {
+        EffectDescriptorMap::iterator it = gEffectDescriptors.find(id);
+        EffectContextMap& toBeDeleted = it->second;
+        for(EffectContextMap::iterator it2 = toBeDeleted.begin(); it2 != toBeDeleted.end(); ++it2)
+        {
+          OFX::ImageEffectDescriptor* desc = it2->second;
+          delete desc;
+        }
+        toBeDeleted.clear();
+      }
+      { 
+        OFX::OfxPlugInfoMap::iterator it = OFX::plugInfoMap.find(id);
+        OfxPlugin* plug = it->second._plug;
+        OFX::OfxPluginArray::iterator it2 = std::find(ofxPlugs.begin(), ofxPlugs.end(), plug);
+        (*it2) = 0;
+        delete plug;
+      }
     }
 
 
@@ -1604,13 +1624,14 @@ namespace OFX {
 
     /** @brief Library side get regions of interest function */
     bool
-    regionsOfInterestAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs)
+    regionsOfInterestAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs, const char* plugname)
     {
       /** @brief local class to set the roi of a clip */
       class ActualROISetter : public OFX::RegionOfInterestSetter {
         bool doneSomething_;
         OFX::PropertySet &outArgs_;
         const std::map<std::string, std::string>& clipROIPropNames_;
+        const char* _plugname;
       public :
         /** @brief ctor */
         ActualROISetter(OFX::PropertySet &args, const std::map<std::string, std::string>& clipROIPropNames) 
@@ -1659,7 +1680,7 @@ namespace OFX {
       args.time = inArgs.propGetDouble(kOfxPropTime);
             
       // make a roi setter object
-      ActualROISetter setRoIs(outArgs, gEffectDescriptors[effectInstance->getContext()]->getClipROIPropNames());
+      ActualROISetter setRoIs(outArgs, gEffectDescriptors[plugname][effectInstance->getContext()]->getClipROIPropNames());
 
       // and call the plugin client code
       effectInstance->getRegionsOfInterest(args, setRoIs);
@@ -1672,7 +1693,7 @@ namespace OFX {
         
     /** @brief Library side frames needed action */
     bool
-    framesNeededAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs)
+    framesNeededAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs, const char* plugname)
     {
       /** @brief local class to set the frames needed from a clip */
       class ActualSetter : public OFX::FramesNeededSetter {
@@ -1736,7 +1757,7 @@ namespace OFX {
       args.time = inArgs.propGetDouble(kOfxPropTime);
             
       // make a roi setter object
-      ActualSetter setFrames(outArgs, gEffectDescriptors[effectInstance->getContext()]->getClipFrameRangePropNames());
+      ActualSetter setFrames(outArgs, gEffectDescriptors[plugname][effectInstance->getContext()]->getClipFrameRangePropNames());
 
       // and call the plugin client code
       effectInstance->getFramesNeeded(args, setFrames);
@@ -1772,13 +1793,13 @@ namespace OFX {
 
     /** @brief Library side get regions of interest function */
     bool
-    clipPreferencesAction(OfxImageEffectHandle handle, OFX::PropertySet &outArgs)
+    clipPreferencesAction(OfxImageEffectHandle handle, OFX::PropertySet &outArgs, const char* plugname)
     {
       // fetch our effect pointer 
       ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
 
       // set up our clip preferences setter
-      ImageEffectDescriptor* desc = gEffectDescriptors[effectInstance->getContext()];
+      ImageEffectDescriptor* desc = gEffectDescriptors[plugname][effectInstance->getContext()];
       ClipPreferencesSetter prefs(outArgs, desc->getClipDepthPropNames(), desc->getClipComponentPropNames(), desc->getClipPARPropNames());
             
       // and call the plug-in client code
@@ -1847,21 +1868,27 @@ namespace OFX {
       // and call the plugin client code
       effectInstance->endChanged(reason);
     }
-        
-
+     
     /** @brief The main entry point for the plugin
      */
-    OfxStatus
-    mainEntry(const char    *actionRaw,
-              const void    *handleRaw,
-              OfxPropertySetHandle   inArgsRaw,
-              OfxPropertySetHandle   outArgsRaw)
+    OfxStatus mainEntryStr(const char    *actionRaw,
+                           const void    *handleRaw,
+                           OfxPropertySetHandle   inArgsRaw,
+                           OfxPropertySetHandle   outArgsRaw,
+                           const char* plugname)
     {
       OFX::Log::print("********************************************************************************");
       OFX::Log::print("START mainEntry (%s)", actionRaw);
       OFX::Log::indent();
       OfxStatus stat = kOfxStatReplyDefault;
       try {
+
+        OfxPlugInfoMap::iterator it = plugInfoMap.find(plugname);
+        if(it==plugInfoMap.end())
+          throw;
+        
+        OFX::PluginFactory* factory = it->second._factory;
+
         // Cast the raw handle to be an image effect handle, because that is what it is
         OfxImageEffectHandle handle = (OfxImageEffectHandle) handleRaw;
 
@@ -1878,7 +1905,7 @@ namespace OFX {
           OFX::Private::loadAction(); 
       
           // call the plugin side load action, param-less
-          OFX::Plugin::loadAction();
+          factory->load();
 
           // got here, must be good
           stat = kOfxStatOK;
@@ -1888,12 +1915,12 @@ namespace OFX {
         else if (action == kOfxActionUnload) {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, true, true, true);
 
-          // call the support unload function, param-less
-          OFX::Private::unloadAction(); 
-      
-          // call the plugin side unload action, param-less, should be called, eve if the stat above failed!
-          OFX::Plugin::unloadAction();
+           // call the plugin side unload action, param-less, should be called, eve if the stat above failed!
+          factory->unload();
 
+          // call the support unload function, param-less
+          OFX::Private::unloadAction(plugname); 
+      
           // got here, must be good
           stat = kOfxStatOK;
         }
@@ -1908,10 +1935,11 @@ namespace OFX {
           OFX::Validation::validatePluginDescriptorProperties(fetchEffectProps(handle));
 
           //  and pass it to the plugin to do something with it
-          OFX::Plugin::describe(*desc);
+
+          factory->describe(*desc);
 
           // add it to our map
-          gEffectDescriptors[eContextNone] = desc;
+          gEffectDescriptors[plugname][eContextNone] = desc;
 
           // got here, must be good
           stat = kOfxStatOK;
@@ -1930,10 +1958,10 @@ namespace OFX {
           OFX::Validation::validatePluginDescriptorProperties(fetchEffectProps(handle));
 
           // call plugin descibe in context
-          OFX::Plugin::describeInContext(*desc, context);
+          factory->describeInContext(*desc, context);
 
           // add it to our map
-          gEffectDescriptors[context] = desc;
+          gEffectDescriptors[plugname][context] = desc;
 
           // got here, must be good
           stat = kOfxStatOK;
@@ -1949,7 +1977,7 @@ namespace OFX {
           ContextEnum context = mapToContextEnum(str);
 
           // make the image effect instance for this context
-          ImageEffect *instance = OFX::Plugin::createInstance(handle, context);
+          ImageEffect *instance = factory->createInstance(handle, context);
 
           // validate the plugin handle's properties
           OFX::Validation::validatePluginInstanceProperties(fetchEffectProps(handle));
@@ -2008,21 +2036,21 @@ namespace OFX {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
           // call the RoI action, return OK if it does something
-          if(regionsOfInterestAction(handle, inArgs, outArgs))
+          if(regionsOfInterestAction(handle, inArgs, outArgs, plugname))
             stat = kOfxStatOK;
         }
         else if(action == kOfxImageEffectActionGetFramesNeeded) {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
           // call the frames needed action, return OK if it does something
-          if(framesNeededAction(handle, inArgs, outArgs))
+          if(framesNeededAction(handle, inArgs, outArgs, plugname))
             stat = kOfxStatOK;
         }
         else if(action == kOfxImageEffectActionGetClipPreferences) {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, false);
 
           // call the frames needed action, return OK if it does something
-          if(clipPreferencesAction(handle, outArgs))
+          if(clipPreferencesAction(handle, outArgs, plugname))
             stat = kOfxStatOK;
         }
         else if(action == kOfxActionPurgeCaches) {
@@ -2170,11 +2198,56 @@ namespace OFX {
 
 }; // namespace OFX
 
-/** @brief, mandated function returning the number of plugins, which is always 1 */
-OfxExport int 
-OfxGetNumberOfPlugins(void)
+namespace OFX
 {
-  return 1;
+  namespace Plugin
+  {
+    void getPluginIDs(OFX::PluginFactoryArray& ids);
+  }
+}
+
+
+OFX::OfxPlugInfo generatePlugInfo(OFX::PluginFactory* factory, std::string& newID)
+{
+  newID = factory->getUID();
+  std::auto_ptr<OfxPlugin> ofxPlugin(new OfxPlugin());
+  ofxPlugin->pluginApi  = kOfxImageEffectPluginApi;
+  ofxPlugin->apiVersion = 1;
+  ofxPlugin->pluginIdentifier   = factory->getID().c_str();
+  ofxPlugin->pluginVersionMajor = factory->getMajorVersion();
+  ofxPlugin->pluginVersionMinor = factory->getMinorVersion();
+  ofxPlugin->setHost    = OFX::Private::setHost;
+  ofxPlugin->mainEntry  = factory->getMainEntry();
+  return OFX::OfxPlugInfo(factory, ofxPlugin.release());
+}
+
+bool gHasInit = false;
+
+void init()
+{
+  if(gHasInit)
+    return;
+
+  OFX::Plugin::getPluginIDs(OFX::plugIDs);
+  if(OFX::ofxPlugs.empty())
+    OFX::ofxPlugs.resize(OFX::plugIDs.size());
+
+  int counter = 0;
+  for (OFX::PluginFactoryArray::const_iterator it = OFX::plugIDs.begin(); it != OFX::plugIDs.end(); ++it, ++counter)
+  {
+    std::string newID;
+    OFX::OfxPlugInfo info = generatePlugInfo(*it, newID);
+    OFX::plugInfoMap[newID] = info;
+    OFX::ofxPlugs[counter] = info._plug;
+  }
+  gHasInit = true;
+}
+
+/** @brief, mandated function returning the number of plugins, which is always 1 */
+OfxExport int OfxGetNumberOfPlugins(void)
+{
+  init();
+  return (int)OFX::plugIDs.size();
 }
 
 /** @brief, mandated function returning the nth plugin 
@@ -2182,31 +2255,17 @@ OfxGetNumberOfPlugins(void)
   We call the plugin side defined OFX::Plugin::getPluginID function to find out what to set.
 */
 
-OfxExport OfxPlugin *
-OfxGetPlugin(int nth)
+OfxExport OfxPlugin* OfxGetPlugin(int nth)
 {
-  OFX::Log::error(nth != 0, "Host attempted to get plugin %d, when there is only 1 plugin, so it should have asked for 0", nth);
-  // the raw OFX plugin struct returned to the host
-  static OfxPlugin      ofxPlugin;
-
-  // struct identifying the plugin to the support lib 
-  static OFX::PluginID id;
-
-  // API is always an image effect plugin
-  ofxPlugin.pluginApi  = kOfxImageEffectPluginApi;
-  ofxPlugin.apiVersion = 1;
-
-  // call the plugin defined id function
-  OFX::Plugin::getPluginID(id);
-
-  // set identifier, version major and version minor 
-  ofxPlugin.pluginIdentifier   = id.pluginIdentifier.c_str();
-  ofxPlugin.pluginVersionMajor = id.pluginVersionMajor;
-  ofxPlugin.pluginVersionMinor = id.pluginVersionMinor;
-
-  // set up our two routines
-  ofxPlugin.setHost    = OFX::Private::setHost;
-  ofxPlugin.mainEntry  = OFX::Private::mainEntry;
-
-  return &ofxPlugin;
+  init();
+  int numPlugs = (int)OFX::plugInfoMap.size();
+  OFX::Log::error(nth >= numPlugs, "Host attempted to get plugin %d, when there is only %d plugin(s), so it should have asked for 0.", nth, numPlugs);
+  if(OFX::ofxPlugs[nth] == 0)
+  {
+    std::string newID;
+    OFX::OfxPlugInfo info = generatePlugInfo(OFX::plugIDs[nth], newID);
+    OFX::plugInfoMap[newID] = info;
+    OFX::ofxPlugs[nth] = info._plug;
+  }
+  return OFX::ofxPlugs[nth];
 }

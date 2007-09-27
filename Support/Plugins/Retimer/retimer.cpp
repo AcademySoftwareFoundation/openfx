@@ -185,7 +185,7 @@ RetimerPlugin::setupAndProcess(OFX::ImageBlenderBase &processor, const OFX::Rend
     processor.setRenderWindow(args.renderWindow);
 
     // set the blend between
-    processor.setBlend(blend);
+    processor.setBlend((float)blend);
 
     // Call the base class process member, this will call the derived templated process code
     processor.process();
@@ -266,134 +266,140 @@ RetimerPlugin::render(const OFX::RenderArguments &args)
     } // switch
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// code below is description code and instance creation code
+using namespace OFX;
 
-/** @brief OFX namespace */
-namespace OFX {
-
-    /** @brief plugin namespace */
-    namespace Plugin {
-    
-        /** @brief identify the plug-in */
-        void getPluginID(OFX::PluginID &id)
-        {
-            id.pluginIdentifier = "net.sf.openfx:Retimer";
-            id.pluginVersionMajor = 1;
-            id.pluginVersionMinor = 0;      
-        }
-
-        /** @brief empty load function */
-        void loadAction(void)
-        {
-            // we can't be used on hosts that don't perfrom temporal clip access
-            if(!gHostDescription.temporalClipAccess) {
-                throw OFX::Exception::HostInadequate("Need random temporal image access to work");
-            }
-        }
-
-        /** brief empty unload function */
-        void unloadAction(void)    
-        {
-        }
-
-        /** @brief The basic describe function, passed a plugin descriptor */
-        void describe(OFX::ImageEffectDescriptor &desc) 
-        {
-            // basic labels
-            desc.setLabels("Retimer", "Retimer", "Retimer");
-            desc.setPluginGrouping("OFX");
-
-            // Say we are a transition context
-            desc.addSupportedContext(OFX::eContextRetimer);
-            desc.addSupportedContext(OFX::eContextFilter);
-            desc.addSupportedContext(OFX::eContextGeneral);
-
-            // Add supported pixel depths
-            desc.addSupportedBitDepth(eBitDepthUByte);
-            desc.addSupportedBitDepth(eBitDepthUShort);
-            desc.addSupportedBitDepth(eBitDepthFloat);
-
-            // set a few flags
-            desc.setSingleInstance(false);
-            desc.setHostFrameThreading(false);
-            desc.setSupportsMultiResolution(true);
-            desc.setSupportsTiles(true);
-            desc.setTemporalClipAccess(true); // say we will be doing random time access on clips
-            desc.setRenderTwiceAlways(false);
-            desc.setSupportsMultipleClipPARs(false);
-        }        
-        
-        /** @brief The describe in context function, passed a plugin descriptor and a context */
-        void describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context) 
-        {
-            // we are a transition, so define the sourceTo input clip
-            ClipDescriptor *toClip = desc.defineClip("Source");
-            toClip->addSupportedComponent(ePixelComponentRGBA);
-            toClip->addSupportedComponent(ePixelComponentAlpha);
-            toClip->setTemporalClipAccess(true); // say we will be doing random time access on this clip
-            toClip->setSupportsTiles(true);
-            toClip->setFieldExtraction(eFieldExtractDoubled); // which is the default anyway
-
-            // create the mandated output clip
-            ClipDescriptor *dstClip = desc.defineClip("Output");
-            dstClip->addSupportedComponent(ePixelComponentRGBA);
-            dstClip->addSupportedComponent(ePixelComponentAlpha);
-            toClip->setFieldExtraction(eFieldExtractDoubled); // which is the default anyway
-            dstClip->setSupportsTiles(true);
-
-            // what param we have is dependant on the host
-            if(context == OFX::eContextRetimer) {
-                // Define the mandated "SourceTime" param, note that we don't do anything with this other than.
-                // describe it. It is not a true param but how the host indicates to the plug-in which frame
-                // it wants you to retime to. It appears on no plug-in side UI, it is purely the host's to manage.
-                DoubleParamDescriptor *param = desc.defineDoubleParam("SourceTime");
-            }
-            else {
-                // We are a general or filter context, define a speed param and a page of controls to put that in
-                DoubleParamDescriptor *param = desc.defineDoubleParam("Speed");
-                param->setLabels("speed", "speed", "speed");
-                param->setScriptName("speed");
-                param->setHint("How much to changed the speed of the input clip");
-                param->setDefault(1);
-                param->setRange(-FLT_MAX, FLT_MAX);
-                param->setIncrement(0.05);
-                param->setDislayRange(0, 1);
-                param->setAnimates(true); // can animate
-                param->setDoubleType(eDoubleTypeScale);
-
-                // make a page to put it in
-                PageParamDescriptor *page = desc.definePageParam("Controls");
-
-                // add our speed param into it
-                page->addChild(*param);
-
-                // If we are a general context, we can changed the duration of the effect, so have a param to do that
-                // We need a separate param as it is impossible to derive this from a speed param and the input clip
-                // duration (the speed may be animating or wired to an expression).
-                if(context == OFX::eContextGeneral) {
-                    // We are a general or filter context, define a speed param and a page of controls to put that in
-                    DoubleParamDescriptor *param = desc.defineDoubleParam("Duration");
-                    param->setLabels("duration", "duraction", "duration");
-                    param->setScriptName("duration");
-                    param->setHint("How long the output clip should be, as a proportion of the input clip's length.");
-                    param->setDefault(1);
-                    param->setRange(0, 10);
-                    param->setIncrement(0.1);
-                    param->setDislayRange(0, 10);
-                    param->setAnimates(false); // no animation here!
-                    param->setDoubleType(eDoubleTypeScale);
-
-                    // add param to page
-                    page->addChild(*param);
-                }
-            }
-        }
-
-        /** @brief The create instance function, the plugin must return an object derived from the \ref OFX::ImageEffect class */
-        ImageEffect *createInstance(OfxImageEffectHandle handle, ContextEnum context)
-        {
-            return new RetimerPlugin(handle);
-        }
-    };
+class RetimerExamplePluginFactory : public OFX::PluginFactoryHelper<RetimerExamplePluginFactory>
+{
+public:
+  RetimerExamplePluginFactory():OFX::PluginFactoryHelper<RetimerExamplePluginFactory>("net.sf.openfx:Retimer", 1, 0){}
+  virtual void describe(OFX::ImageEffectDescriptor &desc);
+  virtual void describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context);
+  virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context);
+  virtual void load();
 };
+
+std::string FactoryMainEntryHelper<RetimerExamplePluginFactory>::_uid;
+
+namespace OFX
+{
+  namespace Plugin
+  {
+    void getPluginIDs(OFX::PluginFactoryArray &ids)
+    {
+      static RetimerExamplePluginFactory p;
+      ids.push_back(&p);
+    }
+  };
+};
+
+void RetimerExamplePluginFactory::load()
+{
+  // we can't be used on hosts that don't perfrom temporal clip access
+  if(!gHostDescription.temporalClipAccess) {
+    throw OFX::Exception::HostInadequate("Need random temporal image access to work");
+  }
+}
+
+/** brief empty unload function */
+void unloadAction(void)    
+{
+}
+
+/** @brief The basic describe function, passed a plugin descriptor */
+void RetimerExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc) 
+{
+  // basic labels
+  desc.setLabels("Retimer", "Retimer", "Retimer");
+  desc.setPluginGrouping("OFX");
+
+  // Say we are a transition context
+  desc.addSupportedContext(OFX::eContextRetimer);
+  desc.addSupportedContext(OFX::eContextFilter);
+  desc.addSupportedContext(OFX::eContextGeneral);
+
+  // Add supported pixel depths
+  desc.addSupportedBitDepth(eBitDepthUByte);
+  desc.addSupportedBitDepth(eBitDepthUShort);
+  desc.addSupportedBitDepth(eBitDepthFloat);
+
+  // set a few flags
+  desc.setSingleInstance(false);
+  desc.setHostFrameThreading(false);
+  desc.setSupportsMultiResolution(true);
+  desc.setSupportsTiles(true);
+  desc.setTemporalClipAccess(true); // say we will be doing random time access on clips
+  desc.setRenderTwiceAlways(false);
+  desc.setSupportsMultipleClipPARs(false);
+}        
+
+/** @brief The describe in context function, passed a plugin descriptor and a context */
+void RetimerExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context) 
+{
+  // we are a transition, so define the sourceTo input clip
+  ClipDescriptor *toClip = desc.defineClip("Source");
+  toClip->addSupportedComponent(ePixelComponentRGBA);
+  toClip->addSupportedComponent(ePixelComponentAlpha);
+  toClip->setTemporalClipAccess(true); // say we will be doing random time access on this clip
+  toClip->setSupportsTiles(true);
+  toClip->setFieldExtraction(eFieldExtractDoubled); // which is the default anyway
+
+  // create the mandated output clip
+  ClipDescriptor *dstClip = desc.defineClip("Output");
+  dstClip->addSupportedComponent(ePixelComponentRGBA);
+  dstClip->addSupportedComponent(ePixelComponentAlpha);
+  toClip->setFieldExtraction(eFieldExtractDoubled); // which is the default anyway
+  dstClip->setSupportsTiles(true);
+
+  // what param we have is dependant on the host
+  if(context == OFX::eContextRetimer) {
+    // Define the mandated "SourceTime" param, note that we don't do anything with this other than.
+    // describe it. It is not a true param but how the host indicates to the plug-in which frame
+    // it wants you to retime to. It appears on no plug-in side UI, it is purely the host's to manage.
+    DoubleParamDescriptor *param = desc.defineDoubleParam("SourceTime");
+  }
+  else {
+    // We are a general or filter context, define a speed param and a page of controls to put that in
+    DoubleParamDescriptor *param = desc.defineDoubleParam("Speed");
+    param->setLabels("speed", "speed", "speed");
+    param->setScriptName("speed");
+    param->setHint("How much to changed the speed of the input clip");
+    param->setDefault(1);
+    param->setRange(-FLT_MAX, FLT_MAX);
+    param->setIncrement(0.05);
+    param->setDisplayRange(0, 1);
+    param->setAnimates(true); // can animate
+    param->setDoubleType(eDoubleTypeScale);
+
+    // make a page to put it in
+    PageParamDescriptor *page = desc.definePageParam("Controls");
+
+    // add our speed param into it
+    page->addChild(*param);
+
+    // If we are a general context, we can changed the duration of the effect, so have a param to do that
+    // We need a separate param as it is impossible to derive this from a speed param and the input clip
+    // duration (the speed may be animating or wired to an expression).
+    if(context == OFX::eContextGeneral) {
+      // We are a general or filter context, define a speed param and a page of controls to put that in
+      DoubleParamDescriptor *param = desc.defineDoubleParam("Duration");
+      param->setLabels("duration", "duraction", "duration");
+      param->setScriptName("duration");
+      param->setHint("How long the output clip should be, as a proportion of the input clip's length.");
+      param->setDefault(1);
+      param->setRange(0, 10);
+      param->setIncrement(0.1);
+      param->setDisplayRange(0, 10);
+      param->setAnimates(false); // no animation here!
+      param->setDoubleType(eDoubleTypeScale);
+
+      // add param to page
+      page->addChild(*param);
+    }
+  }
+}
+
+/** @brief The create instance function, the plugin must return an object derived from the \ref OFX::ImageEffect class */
+ImageEffect* RetimerExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum context)
+{
+  return new RetimerPlugin(handle);
+}
