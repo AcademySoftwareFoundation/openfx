@@ -197,7 +197,7 @@ See \ref ParametersInterfacesPagedLayouts for more details.
     - Type - pointer X 1
     - Property Set - plugin parameter descriptor (read/write) and instance (read only)
     - Default - NULL
-    - Valid Values -  must point to a OfxInteractClientApiV1
+    - Valid Values -  must point to a OfxPluginEntryPoint
 
 If set, the parameter's normal interface is replaced completely by the interact gui.
 */
@@ -212,7 +212,7 @@ This is set by a host to indicate the current size of a custom interface if the 
 */
 #define kOfxParamPropInteractSize "OfxParamPropInteractSize"
 
-/** @brief The prefered aspect ratio of a parameter's custom interface.
+/** @brief The preferred aspect ratio of a parameter's custom interface.
 
     - Type - double x 1
     - Property Set - plugin parameter descriptor (read/write) and instance (read only)
@@ -234,7 +234,7 @@ Any custom interface will not be less than this size.
 */
 #define kOfxParamPropInteractMinimumSize "OfxParamPropInteractMinimumSize"
 
-/** @brief The prefered size of a parameter's custom interface.
+/** @brief The preferred size of a parameter's custom interface.
 
     - Type - int x 2
     - Property Set - plugin parameter descriptor (read/write) and instance (read only)
@@ -477,7 +477,7 @@ any marker should be made visible on the host's time line.
     - Default - ""
     - Valid Values - the names of any page param in the plugin
 
-This property sets the prefered order of parameter pages on a host. If this is never set, the prefered order is the order the parameters were declared in.
+This property sets the preferred order of parameter pages on a host. If this is never set, the preferred order is the order the parameters were declared in.
 */
 #define kOfxPluginPropParamPageOrder "OfxPluginPropParamPageOrder"
 
