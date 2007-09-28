@@ -215,18 +215,8 @@ CrossFadePlugin::isIdentity(const OFX::RenderArguments &args, OFX::Clip * &ident
   return false;
 }
 
+mDeclarePluginFactory(CrossFadeExamplePluginFactory, {}, {});
 using namespace OFX;
-
-class CrossFadeExamplePluginFactory : public OFX::PluginFactoryHelper<CrossFadeExamplePluginFactory>
-{
-public:
-  CrossFadeExamplePluginFactory():OFX::PluginFactoryHelper<CrossFadeExamplePluginFactory>("net.sf.openfx:crossFade", 1, 0){}
-  virtual void describe(OFX::ImageEffectDescriptor &desc);
-  virtual void describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context);
-  virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context);
-};
-
-std::string FactoryMainEntryHelper<CrossFadeExamplePluginFactory>::_uid;
 
 void CrossFadeExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc) 
 {
@@ -293,7 +283,7 @@ namespace OFX
   {
     void getPluginIDs(OFX::PluginFactoryArray &ids)
     {
-      static CrossFadeExamplePluginFactory p;
+      static CrossFadeExamplePluginFactory p("net.sf.openfx:crossFade", 1, 0);
       ids.push_back(&p);
     }
   }

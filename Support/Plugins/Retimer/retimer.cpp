@@ -267,18 +267,7 @@ RetimerPlugin::render(const OFX::RenderArguments &args)
 }
 
 using namespace OFX;
-
-class RetimerExamplePluginFactory : public OFX::PluginFactoryHelper<RetimerExamplePluginFactory>
-{
-public:
-  RetimerExamplePluginFactory():OFX::PluginFactoryHelper<RetimerExamplePluginFactory>("net.sf.openfx:Retimer", 1, 0){}
-  virtual void describe(OFX::ImageEffectDescriptor &desc);
-  virtual void describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context);
-  virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context);
-  virtual void load();
-};
-
-std::string FactoryMainEntryHelper<RetimerExamplePluginFactory>::_uid;
+mDeclarePluginFactory(RetimerExamplePluginFactory, ;, {});
 
 namespace OFX
 {
@@ -286,7 +275,7 @@ namespace OFX
   {
     void getPluginIDs(OFX::PluginFactoryArray &ids)
     {
-      static RetimerExamplePluginFactory p;
+      static RetimerExamplePluginFactory p("net.sf.openfx:retimer", 1, 0);
       ids.push_back(&p);
     }
   };
@@ -298,11 +287,6 @@ void RetimerExamplePluginFactory::load()
   if(!gHostDescription.temporalClipAccess) {
     throw OFX::Exception::HostInadequate("Need random temporal image access to work");
   }
-}
-
-/** brief empty unload function */
-void unloadAction(void)    
-{
 }
 
 /** @brief The basic describe function, passed a plugin descriptor */
