@@ -129,6 +129,78 @@ namespace OFX {
                                eImageUnPreMultiplied, /**< @brief the image is unpremultiplied */
   };
 
+
+  class PluginFactory
+  {
+  public:
+    virtual void load() {}
+    virtual void unload() {}
+    virtual void describe(OFX::ImageEffectDescriptor &desc) = 0;
+    virtual void describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context) = 0;
+    virtual ImageEffect* createInstance(OfxImageEffectHandle handle, ContextEnum context) = 0;
+    virtual const std::string& getID() const = 0;
+    virtual const std::string& getUID() const = 0;
+    virtual unsigned int getMajorVersion() const = 0;
+    virtual unsigned int getMinorVersion() const = 0;
+    virtual OfxPluginEntryPoint* getMainEntry() = 0;
+  };
+
+  template<class FACTORY>
+  class FactoryMainEntryHelper
+  {
+  protected:
+    const std::string& getHelperID() const { return _id; }
+    unsigned int getHelperMajorVersion() const  { return  _maj; }
+    unsigned int getHelperMinorVersion() const  { return  _min; }
+    std::string toString(unsigned int val)
+    {
+      std::ostringstream ss;
+      ss << val;
+      return ss.str();
+    }
+    FactoryMainEntryHelper(const std::string& id, unsigned int maj, unsigned int min): _id(id), _maj(maj), _min(min)
+    {
+      _uid = id + toString(maj) + toString(min);
+    }
+    const std::string& getHelperUID() const { return _uid; }
+    static OfxStatus mainEntry(const char *action, const void* handle, OfxPropertySetHandle in, OfxPropertySetHandle out)
+    { 
+      return OFX::Private::mainEntryStr(action, handle, in, out, _uid.c_str());
+    }
+    static std::string _uid;
+    std::string _id;
+    unsigned int _maj;
+    unsigned int _min;
+  };
+  template<class T> std::string OFX::FactoryMainEntryHelper<T>::_uid; 
+
+  template<class FACTORY>
+  class PluginFactoryHelper : public FactoryMainEntryHelper<FACTORY>, public PluginFactory
+  {
+  public:
+    PluginFactoryHelper(const std::string& id, unsigned int maj, unsigned int min): FactoryMainEntryHelper<FACTORY>(id, maj, min)
+    {}
+    OfxPluginEntryPoint* getMainEntry() { return FactoryMainEntryHelper<FACTORY>::mainEntry; }
+    const std::string& getID() const { return FactoryMainEntryHelper<FACTORY>::getHelperID(); }
+    const std::string& getUID() const { return FactoryMainEntryHelper<FACTORY>::getHelperUID(); }
+    unsigned int getMajorVersion() const { return FactoryMainEntryHelper<FACTORY>::getHelperMajorVersion(); }
+    unsigned int getMinorVersion() const { return FactoryMainEntryHelper<FACTORY>::getHelperMinorVersion(); }
+  };
+
+#define mDeclarePluginFactory(CLASS, LOADFUNCDEF, UNLOADFUNCDEF) \
+  class CLASS : public OFX::PluginFactoryHelper<CLASS> \
+  { \
+  public: \
+    CLASS(const std::string& id, unsigned int verMaj, unsigned int verMin):OFX::PluginFactoryHelper<CLASS>(id, verMaj, verMin){} \
+    virtual void load() LOADFUNCDEF ;\
+    virtual void unload() UNLOADFUNCDEF ;\
+    virtual void describe(OFX::ImageEffectDescriptor &desc); \
+    virtual void describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context); \
+    virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context); \
+  };
+
+  typedef std::vector<PluginFactory*> PluginFactoryArray;
+
   /** @brief Fetch's a suite from the host and logs errors 
       
       All the standard suites are fetched by the support code, you should use this
