@@ -8,3 +8,4 @@ public:
   virtual void describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context);
   virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context);
 };
+

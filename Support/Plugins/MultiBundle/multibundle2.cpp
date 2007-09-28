@@ -50,7 +50,7 @@ England
 #include "ofxsMultiThread.h"
 #include "../include/ofxsProcessing.H"
 
-#include "multiBundle2.h"
+#include "multibundle2.h"
 
 static const OfxPointD kBoxSize = {20, 20};
 
@@ -457,4 +457,3 @@ ImageEffect* DotExamplePluginFactory::createInstance(OfxImageEffectHandle handle
   return new DotExamplePlugin(handle);
 }
 
-std::string FactoryMainEntryHelper<DotExamplePluginFactory>::_uid;

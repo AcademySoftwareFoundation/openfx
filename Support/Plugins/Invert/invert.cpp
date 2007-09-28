@@ -229,19 +229,9 @@ case OFX::eBitDepthFloat : {
   } 
 }
 
+mDeclarePluginFactory(InvertExamplePluginFactory, {}, {});
+
 using namespace OFX;
-
-class InvertExamplePluginFactory : public OFX::PluginFactoryHelper<InvertExamplePluginFactory>
-{
-public:
-  InvertExamplePluginFactory():OFX::PluginFactoryHelper<InvertExamplePluginFactory>("net.sf.openfx:invertPlugin", 1, 0){}
-  virtual void describe(OFX::ImageEffectDescriptor &desc);
-  virtual void describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context);
-  virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context);
-};
-
-std::string FactoryMainEntryHelper<InvertExamplePluginFactory>::_uid;
-
 void InvertExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 {
   // basic labels
@@ -297,7 +287,7 @@ namespace OFX
   {  
     void getPluginIDs(OFX::PluginFactoryArray &ids)
     {
-      static InvertExamplePluginFactory p;
+      static InvertExamplePluginFactory p("net.sf.openfx:invertPlugin", 1, 0);
       ids.push_back(&p);
     }
   }

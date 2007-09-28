@@ -51,7 +51,7 @@ England
 #include "ofxsMultiThread.h"
 #include "../include/ofxsProcessing.H"
 
-#include "multiBundle1.h"
+#include "multibundle1.h"
 
 static const OfxPointD kBoxSize = {20, 20};
 class GammaInteract : public OFX::OverlayInteract 
@@ -556,4 +556,3 @@ ImageEffect* GammaExamplePluginFactory::createInstance(OfxImageEffectHandle hand
   return new GammaPlugin(handle);
 }
 
-std::string FactoryMainEntryHelper<GammaExamplePluginFactory>::_uid;
