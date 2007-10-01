@@ -359,8 +359,8 @@ namespace OFX {
 
     void ParamInteractDescriptor::setInteractPreferredSize(int x, int y)
     {
-      _props->propSetInt(kOfxParamPropInteractPreferredSize, x, 0);
-      _props->propSetInt(kOfxParamPropInteractPreferredSize, y, 1);
+      _props->propSetInt(kOfxParamPropInteractPreferedSize, x, 0);
+      _props->propSetInt(kOfxParamPropInteractPreferedSize, y, 1);
     }
 
     ParamInteract::ParamInteract(OfxInteractHandle handle, ImageEffect* effect):Interact(handle), _effect(effect)
