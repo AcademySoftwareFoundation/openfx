@@ -295,6 +295,8 @@ namespace OFX {
     protected:
       static std::string _paramNameStatic;
     };
+
+   template<class DESC, class INSTANCE> std::string OFX::DefaultParamInteractDescriptor<DESC, INSTANCE>::_paramNameStatic;
 };
 
 
