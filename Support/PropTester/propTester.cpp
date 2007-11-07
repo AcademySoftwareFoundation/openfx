@@ -44,7 +44,7 @@ England
 #endif
 
 #include <stdio.h>
-#include "ofxsImageEffect.H"
+#include "ofxsImageEffect.h"
 
 class ColourInteract : public OFX::ParamInteract
 {
@@ -175,6 +175,9 @@ template<int INSTANCECOUNT>
 class ColourInteractDescriptor : public OFX::DefaultParamInteractDescriptor<ColourInteractDescriptor<INSTANCECOUNT>, ColourInteract>
 {
 public:
+  using OFX::DefaultParamInteractDescriptor<ColourInteractDescriptor<INSTANCECOUNT>,ColourInteract>::setInteractSizeAspect;
+  using OFX::DefaultParamInteractDescriptor<ColourInteractDescriptor<INSTANCECOUNT>,ColourInteract>::setInteractMinimumSize;
+  using OFX::DefaultParamInteractDescriptor<ColourInteractDescriptor<INSTANCECOUNT>,ColourInteract>::setInteractPreferredSize;
   virtual void describe()
   {
     setInteractSizeAspect(1.0);
@@ -183,8 +186,6 @@ public:
   }
 };
 
-std::string OFX::DefaultParamInteractDescriptor<ColourInteractDescriptor<0>, ColourInteract>::_paramNameStatic;
-std::string OFX::DefaultParamInteractDescriptor<ColourInteractDescriptor<1>, ColourInteract>::_paramNameStatic;
 
 ////////////////////////////////////////////////////////////////////////////////
 /** @brief base class of the plugin */
@@ -265,8 +266,6 @@ public:
   virtual void describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context);
   virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context);
 };
-
-std::string FactoryMainEntryHelper<PropTesterPluginFactory>::_uid;
 
 namespace OFX 
 {
