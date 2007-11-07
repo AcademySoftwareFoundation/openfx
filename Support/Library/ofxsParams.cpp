@@ -235,7 +235,7 @@ namespace OFX {
     void ValueParamDescriptor::setInteractDescriptor(ParamInteractDescriptor* desc)
     {
       _interact.reset(desc);
-      _paramProps.propSetPointer(kOfxParamPropInteractV1, desc->getMainEntry());
+      _paramProps.propSetPointer(kOfxParamPropInteractV1, (void*)desc->getMainEntry());
       desc->setParamName(getName());
     }
 

@@ -386,8 +386,8 @@ namespace OFX {
   void ImageEffectDescriptor::setOverlayInteractDescriptor(EffectOverlayDescriptor* desc)
   {
      _overlayDescriptor.reset(desc);
-    if(OFX::gHostDescription.supportsOverlays)
-      _effectProps.propSetPointer(kOfxImageEffectPluginPropOverlayInteractV1, desc ? desc->getMainEntry() : 0);
+    if(OFX::gHostDescription.supportsOverlays && desc->getMainEntry())
+      _effectProps.propSetPointer(kOfxImageEffectPluginPropOverlayInteractV1, (void*)desc->getMainEntry());
   }
 
   /** @brief Add a pixel depth to those supported */
