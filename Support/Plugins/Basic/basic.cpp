@@ -515,6 +515,7 @@ bool BasicInteract::draw(const OFX::DrawArgs &args)
   glEnd();
   glPopMatrix();
 
+  glPushMatrix();
   // draw a complementary outline
   glColor3f(1.0f - col.r, 1.0f - col.g, 1.0f - col.b);
   glTranslated(_position.x, _position.y, 0);
