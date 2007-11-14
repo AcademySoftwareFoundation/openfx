@@ -91,8 +91,7 @@ namespace OFX {
   };
 
   /** @brief map a std::string to a context */
-  ContextEnum 
-    mapToContextEnum(const std::string &s) throw(std::invalid_argument)
+  ContextEnum mapToContextEnum(const std::string &s) throw(std::invalid_argument)
   {
     if(s == kOfxImageEffectContextGenerator) return eContextGenerator;
     if(s == kOfxImageEffectContextFilter) return eContextFilter;
@@ -135,8 +134,7 @@ namespace OFX {
   }
 
   /** @brief map a std::string to a context */
-  InstanceChangeReason
-    mapToInstanceChangedReason(const std::string &s) throw(std::invalid_argument)
+  InstanceChangeReason mapToInstanceChangedReason(const std::string &s) throw(std::invalid_argument)
   {
     if(s == kOfxChangePluginEdited) return eChangePluginEdit;
     if(s == kOfxChangeUserEdited) return eChangeUserEdit;
@@ -146,8 +144,7 @@ namespace OFX {
   }
 
   /** @brief turns a bit depth string into and enum */
-  static BitDepthEnum
-    mapStrToBitDepthEnum(const std::string &str) throw(std::invalid_argument)
+  static BitDepthEnum mapStrToBitDepthEnum(const std::string &str) throw(std::invalid_argument)
   {
     if(str == kOfxBitDepthByte) {
       return eBitDepthUByte;
@@ -167,8 +164,7 @@ namespace OFX {
   }
 
   /** @brief turns a pixel component string into and enum */
-  static PixelComponentEnum
-    mapStrToPixelComponentEnum(const std::string &str) throw(std::invalid_argument)
+  static PixelComponentEnum mapStrToPixelComponentEnum(const std::string &str) throw(std::invalid_argument)
   {
     if(str == kOfxImageComponentRGBA) {
       return ePixelComponentRGBA;
@@ -185,8 +181,7 @@ namespace OFX {
   }
 
   /** @brief turns a premultiplication string into and enum */
-  static PreMultiplicationEnum
-    mapStrToPreMultiplicationEnum(const std::string &str) throw(std::invalid_argument)
+  static PreMultiplicationEnum mapStrToPreMultiplicationEnum(const std::string &str) throw(std::invalid_argument)
   {
     if(str == kOfxImageOpaque) {
       return eImageOpaque;
@@ -826,6 +821,7 @@ namespace OFX {
     : _effectHandle(handle)
     , _effectProps(0)
     , _context(eContextNone)
+    , _progressStartSuccess(false)
   {
     // get the property handle
     _effectProps = OFX::Private::fetchEffectProps(handle);
@@ -1111,14 +1107,15 @@ namespace OFX {
   void ImageEffect::progressStart(const std::string &message)
   {
     if(OFX::Private::gProgressSuite) {
-      OFX::Private::gProgressSuite->progressStart((void *) _effectHandle, message.c_str());
+      OfxStatus stat = OFX::Private::gProgressSuite->progressStart((void *) _effectHandle, message.c_str());
+      _progressStartSuccess = ( stat == kOfxStatOK );
     }
   }
 
   /// finish yer progress
   void ImageEffect::progressEnd()
   {
-    if(OFX::Private::gProgressSuite) {
+    if(OFX::Private::gProgressSuite && _progressStartSuccess) {
       OFX::Private::gProgressSuite->progressEnd((void *) _effectHandle);
     }
   }
@@ -1127,7 +1124,7 @@ namespace OFX {
   /// false if you should abandon processing, true to continue
   bool ImageEffect::progressUpdate(double t)
   {
-    if(OFX::Private::gProgressSuite) {
+    if(OFX::Private::gProgressSuite && _progressStartSuccess) {
       OfxStatus stat = OFX::Private::gProgressSuite->progressUpdate((void *) _effectHandle, t);
       if(stat == kOfxStatReplyNo)
         return false;
