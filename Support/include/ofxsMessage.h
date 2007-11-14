@@ -1,3 +1,6 @@
+#ifndef _ofxsMessage_H_
+#define _ofxsMessage_H_
+
 namespace OFX 
 {
   namespace Message 
@@ -20,3 +23,5 @@ namespace OFX
     };
   };
 };
+
+#endif

@@ -1,21 +1,21 @@
 #ifndef _ofxsImageEffect_H_
 #define _ofxsImageEffect_H_
 /*
-  OFX Support Library, a library that skins the OFX plug-in API with C++ classes.
-  Copyright (C) 2004-2005 The Foundry Visionmongers Ltd
-  Author Bruno Nicoletti bruno@thefoundry.co.uk
+OFX Support Library, a library that skins the OFX plug-in API with C++ classes.
+Copyright (C) 2004-2005 The Foundry Visionmongers Ltd
+Author Bruno Nicoletti bruno@thefoundry.co.uk
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
-      this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-      and/or other materials provided with the distribution.
-    * Neither the name The Foundry Visionmongers Ltd, nor the names of its 
-      contributors may be used to endorse or promote products derived from this
-      software without specific prior written permission.
+* Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+* Neither the name The Foundry Visionmongers Ltd, nor the names of its 
+contributors may be used to endorse or promote products derived from this
+software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -41,7 +41,7 @@ England
 
 This file only holds code that is visible to a plugin implementation, and so hides much
 of the direct OFX objects and any library side only functions.
- */
+*/
 #include <map>
 #include <string>
 #include <sstream>
@@ -61,16 +61,16 @@ namespace OFX
   namespace Private
   {
     OfxStatus mainEntryStr(const char    *actionRaw,
-                           const void    *handleRaw,
-                           OfxPropertySetHandle   inArgsRaw,
-                           OfxPropertySetHandle   outArgsRaw,
-                           const char* plugname);
-   }
+      const void    *handleRaw,
+      OfxPropertySetHandle   inArgsRaw,
+      OfxPropertySetHandle   outArgsRaw,
+      const char* plugname);
+  }
 }
 
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries.
- */
+*/
 namespace OFX {
   /** forward class declarations */
   class ClipDescriptor;
@@ -83,50 +83,50 @@ namespace OFX {
 
   /** @brief Enumerates the contexts a plugin can be used in */
   enum ContextEnum {eContextNone,
-                    eContextGenerator,
-                    eContextFilter,
-                    eContextTransition,
-                    eContextPaint,
-                    eContextGeneral,
-                    eContextRetimer};
+    eContextGenerator,
+    eContextFilter,
+    eContextTransition,
+    eContextPaint,
+    eContextGeneral,
+    eContextRetimer};
 
   /** @brief Enumerates the pixel depths supported */
   enum BitDepthEnum {eBitDepthNone, /**< @brief bit depth that indicates no data is present */
-                     eBitDepthUByte,
-                     eBitDepthUShort,
-                     eBitDepthFloat,
-                     eBitDepthCustom ///< some non standard bit depth
+    eBitDepthUByte,
+    eBitDepthUShort,
+    eBitDepthFloat,
+    eBitDepthCustom ///< some non standard bit depth
   };
 
   /** @brief Enumerates the component types supported */
   enum PixelComponentEnum {ePixelComponentNone,
-                           ePixelComponentRGBA,
-                           ePixelComponentAlpha,
-                           ePixelComponentCustom ///< some non standard pixel type
+    ePixelComponentRGBA,
+    ePixelComponentAlpha,
+    ePixelComponentCustom ///< some non standard pixel type
   };
 
   /** @brief Enumerates the ways a fielded image can be extracted from a clip */
   enum FieldExtractionEnum {eFieldExtractBoth,   /**< @brief extract both fields */
-                            eFieldExtractSingle, /**< @brief extracts a single field, so you have a half height image */
-                            eFieldExtractDoubled /**< @brief extracts a single field, but doubles up the field, so you have a full height image */
+    eFieldExtractSingle, /**< @brief extracts a single field, so you have a half height image */
+    eFieldExtractDoubled /**< @brief extracts a single field, but doubles up the field, so you have a full height image */
   };
-  
+
   /** @brief Enumerates the kind of render thread safety a plugin has */
   enum RenderSafetyEnum {eRenderUnsafe,       /**< @brief can only render a single instance at any one time */
-                         eRenderInstanceSafe, /**< @brief can call a single render on an instance, but can render multiple instances simultaneously */
-                         eRenderFullySafe     /**< @brief can call render any number of times on an instance, and render multiple instances simultaneously */
+    eRenderInstanceSafe, /**< @brief can call a single render on an instance, but can render multiple instances simultaneously */
+    eRenderFullySafe     /**< @brief can call render any number of times on an instance, and render multiple instances simultaneously */
   };
-  
+
   /** @brief Enumerates the fields present in an image */
   enum FieldEnum {eFieldNone,   /**< @brief unfielded image */
-                  eFieldBoth,   /**< @brief fielded image with both fields present */
-                  eFieldLower,  /**< @brief only the spatially lower field is present */
-                  eFieldUpper   /**< @brief only the spatially upper field is present  */
+    eFieldBoth,   /**< @brief fielded image with both fields present */
+    eFieldLower,  /**< @brief only the spatially lower field is present */
+    eFieldUpper   /**< @brief only the spatially upper field is present  */
   };
 
   enum PreMultiplicationEnum { eImageOpaque,          /**< @brief the image is opaque and so has no premultiplication state */
-                               eImagePreMultiplied,   /**< @brief the image is premultiplied by it's alpha */
-                               eImageUnPreMultiplied, /**< @brief the image is unpremultiplied */
+    eImagePreMultiplied,   /**< @brief the image is premultiplied by it's alpha */
+    eImageUnPreMultiplied, /**< @brief the image is unpremultiplied */
   };
 
 
@@ -191,20 +191,20 @@ namespace OFX {
   class CLASS : public OFX::PluginFactoryHelper<CLASS> \
   { \
   public: \
-    CLASS(const std::string& id, unsigned int verMaj, unsigned int verMin):OFX::PluginFactoryHelper<CLASS>(id, verMaj, verMin){} \
-    virtual void load() LOADFUNCDEF ;\
-    virtual void unload() UNLOADFUNCDEF ;\
-    virtual void describe(OFX::ImageEffectDescriptor &desc); \
-    virtual void describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context); \
-    virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context); \
+  CLASS(const std::string& id, unsigned int verMaj, unsigned int verMin):OFX::PluginFactoryHelper<CLASS>(id, verMaj, verMin){} \
+  virtual void load() LOADFUNCDEF ;\
+  virtual void unload() UNLOADFUNCDEF ;\
+  virtual void describe(OFX::ImageEffectDescriptor &desc); \
+  virtual void describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context); \
+  virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context); \
   };
 
   typedef std::vector<PluginFactory*> PluginFactoryArray;
 
   /** @brief Fetch's a suite from the host and logs errors 
-      
-      All the standard suites are fetched by the support code, you should use this
-      to fetch any extra non-standard suites.
+
+  All the standard suites are fetched by the support code, you should use this
+  to fetch any extra non-standard suites.
   */
   void * fetchSuite(char *suiteName, int suiteVersion, bool optional = false);
 
@@ -249,7 +249,7 @@ namespace OFX {
   protected :
     mDeclareProtectedAssignAndCC(ClipDescriptor);
     ClipDescriptor(void) {assert(false);}
-    
+
   protected :
     /** @brief name of the clip */
     std::string _clipName;
@@ -279,7 +279,7 @@ namespace OFX {
     void addSupportedComponent(PixelComponentEnum v);
 
     /** @brief set which components are supported. This version adds by the raw C-string label, allowing you to add
-        custom component types */
+    custom component types */
     void addSupportedComponent(const std::string &comp);
 
     /** @brief say whether we are going to do random temporal access on this clip, defaults to false */
@@ -302,7 +302,7 @@ namespace OFX {
   protected :
     mDeclareProtectedAssignAndCC(ImageEffectDescriptor);
     ImageEffectDescriptor(void) {assert(false);}
-    
+
   protected :
     /** @brief The effect handle */
     OfxImageEffectHandle _effectHandle;
@@ -324,14 +324,14 @@ namespace OFX {
   public :
     /** @brief ctor */
     ImageEffectDescriptor(OfxImageEffectHandle handle);
-    
+
     /** @brief dtor */
     ~ImageEffectDescriptor();
 
     const PropertySet &getPropertySet() const {return _effectProps;}
 
     PropertySet &getPropertySet() {return _effectProps;}
-      
+
     /** @brief, set the label properties in a plugin */
     void setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel);
 
@@ -349,7 +349,7 @@ namespace OFX {
 
     /** @brief Does the plugin expect the host to perform per frame SMP threading defaults to true */
     void setHostFrameThreading(bool v);
-    
+
     /** @brief Does the plugin support multi resolution images, defaults to true */
     void setSupportsMultiResolution(bool v);
 
@@ -358,7 +358,7 @@ namespace OFX {
 
     /** @brief Does the plugin perform temporal clip access, defaults to false */
     void setTemporalClipAccess(bool v);
-    
+
     /** @brief Does the plugin want to have render called twice per frame in all circumanstances for fielded images ? defaults to true */
     void setRenderTwiceAlways(bool v);
 
@@ -375,8 +375,8 @@ namespace OFX {
     void addClipPreferencesSlaveParam(ParamDescriptor &p);
 
     /** @brief Create a clip, only callable from describe in context 
-        
-        The returned clip \em must not be deleted by the client code. This is all managed by the ImageEffectDescriptor itself.
+
+    The returned clip \em must not be deleted by the client code. This is all managed by the ImageEffectDescriptor itself.
     */
     ClipDescriptor *defineClip(const std::string &name);
 
@@ -438,7 +438,7 @@ namespace OFX {
 
     /** @brief premultiplication on the image */
     PreMultiplicationEnum getPreMultiplication(void) const { return _preMultiplication;}
-    
+
     /** @brief get the scale factor that has been applied to this image */
     OfxPointD getRenderScale(void) const { return _renderScale;}
 
@@ -464,11 +464,11 @@ namespace OFX {
     std::string getUniqueIdentifier(void) const { return _uniqueID;}
 
     /** @brief return a pixel pointer, returns NULL if (x,y) is outside the image bounds
-        
-        x and y are in pixel coordinates
 
-        If the components are custom, then this will return NULL as the support code
-        can't know the pixel size to do the work.
+    x and y are in pixel coordinates
+
+    If the components are custom, then this will return NULL as the support code
+    can't know the pixel size to do the work.
     */
     void *getPixelAddress(int x, int y);
   };
@@ -506,7 +506,7 @@ namespace OFX {
 
     /// get the OFX clip handle
     OfxImageClipHandle getHandle() {return _clipHandle;}
-    
+
     /** @brief get the name */
     const std::string &name(void) const {return _clipName;}
 
@@ -518,7 +518,7 @@ namespace OFX {
 
     /** @brief what is the components images will be given to us as */
     PixelComponentEnum getPixelComponents(void) const;
-    
+
     /** @brief get the string representing the pixel components */
     std::string getPixelComponentsProperty(void) const { return _clipProps.propGetString(kOfxImageEffectPropComponents);}
 
@@ -527,7 +527,7 @@ namespace OFX {
 
     /** @brief what is the component type of the clip */
     PixelComponentEnum getUnmappedPixelComponents(void) const;
-    
+
     /** @brief get the string representing the pixel components */
     std::string getUnmappedPixelComponentsProperty(void) const { return _clipProps.propGetString(kOfxImageClipPropUnmappedComponents);}
 
@@ -545,16 +545,16 @@ namespace OFX {
 
     /** @brief get the scale factor that has been applied to this clip */
     double getPixelAspectRatio(void) const;
-      
+
     /** @brief get the frame rate, in frames per second on this clip, after any clip preferences have been applied */
     double getFrameRate(void) const;
-      
+
     /** @brief return the range of frames over which this clip has images, after any clip preferences have been applied */
     OfxRangeD getFrameRange(void) const;
 
     /** @brief get the frame rate, in frames per second on this clip, before any clip preferences have been applied */
     double getUnmappedFrameRate(void) const;
-      
+
     /** @brief return the range of frames over which this clip has images, before any clip preferences have been applied */
     OfxRangeD getUnmappedFrameRange(void) const;
 
@@ -562,26 +562,26 @@ namespace OFX {
     OfxRectD getRegionOfDefinition(double t);
 
     /** @brief fetch an image
-        
-        When finished with, the client code must delete the image.
 
-        If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
+    When finished with, the client code must delete the image.
+
+    If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
     */
     Image *fetchImage(double t);
 
     /** @brief fetch an image, with a specific region in cannonical coordinates
-        
-        When finished with, the client code must delete the image.
 
-        If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
+    When finished with, the client code must delete the image.
+
+    If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
     */
     Image *fetchImage(double t, OfxRectD bounds);
 
     /** @brief fetch an image, with a specific region in cannonical coordinates
-        
-        When finished with, the client code must delete the image.
 
-        If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
+    When finished with, the client code must delete the image.
+
+    If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
     */
     Image *fetchImage(double t, OfxRectD *bounds)
     {
@@ -650,7 +650,7 @@ namespace OFX {
 
   /** @brief Class used to set regions of interest on a clip in @ref OFX::ImageEffect::getRegionsOfInterest
 
-      This is a base class, the actual class is private and you don't need to see the glue involved.
+  This is a base class, the actual class is private and you don't need to see the glue involved.
   */ 
   class RegionOfInterestSetter {
   public :
@@ -665,7 +665,7 @@ namespace OFX {
 
   /** @brief Class used to set the frames needed to render a single frame of a clip in @ref OFX::ImageEffect::getFramesNeeded
 
-      This is a base class, the actual class is private and you don't need to see the glue involved.
+  This is a base class, the actual class is private and you don't need to see the glue involved.
   */ 
   class FramesNeededSetter {
   public :
@@ -674,7 +674,7 @@ namespace OFX {
   };
 
   /** @brief Class used to set the clip preferences of the effect.
-   */ 
+  */ 
   class ClipPreferencesSetter {
     OFX::PropertySet outArgs_;
     bool doneSomething_;
@@ -685,9 +685,9 @@ namespace OFX {
     const std::string& extractValueForName(const StringStringMap& m, const std::string& name);
   public :
     ClipPreferencesSetter( OFX::PropertySet props, 
-                           const StringStringMap& depthPropNames,
-                           const StringStringMap& componentPropNames,
-                           const StringStringMap& PARPropNames) 
+      const StringStringMap& depthPropNames,
+      const StringStringMap& componentPropNames,
+      const StringStringMap& PARPropNames) 
       : outArgs_(props)
       , doneSomething_(false)
       , clipDepthPropNames_(depthPropNames)
@@ -699,62 +699,62 @@ namespace OFX {
 
     /** @brief, force the host to set a clip's mapped component type to be \em comps. 
 
-        Only callable on non optional clips in all contexts. Must set comps to be one of the types the effect says it supports on the given clip.
+    Only callable on non optional clips in all contexts. Must set comps to be one of the types the effect says it supports on the given clip.
 
-        See the OFX API documentation for the default values of this.
+    See the OFX API documentation for the default values of this.
     */
     void setClipComponents(Clip &clip, PixelComponentEnum comps);
 
     /** @brief, force the host to set a clip's mapped bit depth be \em bitDepth
 
-        Only callable if the OFX::ImageEffectHostDescription::supportsMultipleClipDepths is true.
+    Only callable if the OFX::ImageEffectHostDescription::supportsMultipleClipDepths is true.
 
-        See the OFX API documentation for the default values of this.
+    See the OFX API documentation for the default values of this.
     */
     void setClipBitDepth(Clip &clip, BitDepthEnum bitDepth);
 
     /** @brief, force the host to set a clip's mapped Pixel Aspect Ratio to be \em PAR
 
-        Only callable if the OFX::ImageEffectHostDescription::supportsMultipleClipPARs is true.
+    Only callable if the OFX::ImageEffectHostDescription::supportsMultipleClipPARs is true.
 
-        Default is up to the host, generally based on the input clips. 
+    Default is up to the host, generally based on the input clips. 
 
-        Not supported by most host applications.
+    Not supported by most host applications.
     */
     void setPixelAspectRatio(Clip &clip, double PAR);
 
     /** @brief Allows an effect to change the output frame rate 
 
-        Only callable if OFX::ImageEffectHostDescription::supportsSetableFrameRate is true.
+    Only callable if OFX::ImageEffectHostDescription::supportsSetableFrameRate is true.
 
-        Default is controlled by the host, typically the framerate of the input clips.
+    Default is controlled by the host, typically the framerate of the input clips.
     */
     void setOutputFrameRate(double v);
 
     /** @brief Set the premultiplication state of the output clip.
-        
-        Defaults to the premultiplication state of ???
+
+    Defaults to the premultiplication state of ???
     */
     void setOutputPremultiplication(PreMultiplicationEnum v);
-        
+
     /** @brief Set whether the effect can be continously sampled.
-        
-        Defaults to false. 
+
+    Defaults to false. 
     */
     void setOutputHasContinousSamples(bool v);
 
     /** @brief Sets whether the effect will produce different images in all frames, even if the no params or input images are varying (eg: a noise generator).
 
-        Defaults to false.
+    Defaults to false.
     */
     void setOutputFrameVarying(bool v);
 
     /** @brief Sets the output fielding
 
-        Default is host dependent, must be one of 
-         - eFieldNone,  
-         - eFieldLower, 
-         - eFieldUpper  
+    Default is host dependent, must be one of 
+    - eFieldNone,  
+    - eFieldLower, 
+    - eFieldUpper  
     */
     void setOutputFielding(FieldEnum v);
   };
@@ -791,7 +791,7 @@ namespace OFX {
 
     /** @brief the overlay interacts that are open on this image effect */
     std::list<OverlayInteract *> _overlayInteracts;
-        
+
   public :
     /** @brief ctor */
     ImageEffect(OfxImageEffectHandle handle);
@@ -811,7 +811,7 @@ namespace OFX {
 
     /** @brief size of the project */
     OfxPointD getProjectSize(void) const;
-    
+
     /** @brief origin of the project */
     OfxPointD getProjectOffset(void) const;
 
@@ -837,10 +837,10 @@ namespace OFX {
     bool getSequentialRender(void) const;
 
     OFX::Message::MessageReplyEnum sendMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg);
-    
+
     /** @brief Fetch the named clip from this instance
 
-        The returned clip \em must not be deleted by the client code. This is all managed by the ImageEffect itself.
+    The returned clip \em must not be deleted by the client code. This is all managed by the ImageEffect itself.
     */
     Clip *fetchClip(const std::string &name);
 
@@ -876,34 +876,34 @@ namespace OFX {
 
     /** @brief client is identity function, returns the clip and time for the identity function 
 
-        If the effect would do no processing for the given param set and render arguments, then this
-        function should return true and set the \em identityClip pointer to point to the clip that is the identity
-        and \em identityTime to be the time at which to access the clip for the identity operation.
+    If the effect would do no processing for the given param set and render arguments, then this
+    function should return true and set the \em identityClip pointer to point to the clip that is the identity
+    and \em identityTime to be the time at which to access the clip for the identity operation.
     */
     virtual bool isIdentity(const RenderArguments &args, Clip * &identityClip, double &identityTime);
 
     /** @brief The get RoD action. 
 
-        If the effect wants change the rod from the default value (which is the union of RoD's of all input clips)
-        it should set the \em rod argument and return true.
+    If the effect wants change the rod from the default value (which is the union of RoD's of all input clips)
+    it should set the \em rod argument and return true.
 
-        This is all in cannonical coordinates.
+    This is all in cannonical coordinates.
     */
     virtual bool getRegionOfDefinition(const RegionOfDefinitionArguments &args, OfxRectD &rod);
 
     /** @brief the get region of interest action
 
-        If the effect wants change its region of interest on any input clip from the default values (which is the same as the RoI in the arguments)
-        it should do so by calling the OFX::RegionOfInterestSetter::setRegionOfInterest function on the \em rois argument.
+    If the effect wants change its region of interest on any input clip from the default values (which is the same as the RoI in the arguments)
+    it should do so by calling the OFX::RegionOfInterestSetter::setRegionOfInterest function on the \em rois argument.
 
-        Note, everything is in \em cannonical \em coordinates.
+    Note, everything is in \em cannonical \em coordinates.
     */
     virtual void getRegionsOfInterest(const RegionsOfInterestArguments &args, RegionOfInterestSetter &rois);
 
     /** @brief the get frames needed action
 
-        If the effect wants change the frames needed on an input clip from the default values (which is the same as the frame to be renderred)
-        it should do so by calling the OFX::FramesNeededSetter::setFramesNeeded function on the \em frames argument.
+    If the effect wants change the frames needed on an input clip from the default values (which is the same as the frame to be renderred)
+    it should do so by calling the OFX::FramesNeededSetter::setFramesNeeded function on the \em frames argument.
     */
     virtual void getFramesNeeded(const FramesNeededArguments &args, FramesNeededSetter &frames);
 
@@ -915,7 +915,7 @@ namespace OFX {
 
     /** @brief the effect is no longer being edited by a user, called when the last user interface is closed on an instance */
     virtual void endEdit(void);
-        
+
     /** @brief the effect is about to have some values changed */
     virtual void beginChanged(InstanceChangeReason reason);
 
@@ -930,7 +930,7 @@ namespace OFX {
 
     /** @brief what is the time domain of this effect, valid only in the general context
 
-        return true is range was set, otherwise the default (the union of the time domain of all input clips) is used
+    return true is range was set, otherwise the default (the union of the time domain of all input clips) is used
     */
     virtual bool getTimeDomain(OfxRangeD &range);
 
@@ -943,22 +943,22 @@ namespace OFX {
     /// set the progress to some level of completion, returns
     /// false if you should abandon processing, true to continue
     bool progressUpdate(double t);   
-      
+
     /// get the current time on the timeline. This is not necessarily the same
     /// time as being passed to an action (eg render)
     double timeLineGetTime();
-      
+
     /// set the timeline to a specific time
     void timeLineGotoTime(double t);
-      
+
     /// get the first and last times available on the effect's timeline
     void timeLineGetBounds(double &t1, double &t2);  
   };  
 
- 
+
   ////////////////////////////////////////////////////////////////////////////////
   /** @brief The OFX::Plugin namespace. All the functions in here needs to be defined by each plugin that uses the support libs.
-   */  
+  */  
   namespace Plugin {
     /** @brief Plugin side function used to identify the plugin to the support library */
     void getPluginID(OFX::PluginFactoryArray &id);
