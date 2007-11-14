@@ -28,7 +28,7 @@ pushd  $CHECKOUTPATH
 
 mkdir Docs
 
-cvs -z3 -d:pserver:anonymous@openfx.cvs.sourceforge.net:/cvsroot/openfx checkout -r $CVSTAG include Examples Documentation
+cvs -z3 -d:pserver:anonymous@openfx.cvs.sourceforge.net:/cvsroot/openfx checkout -r $CVSTAG include Documentation
 
 find . -name CVS -depth -exec rm -rf {} \;
 
@@ -43,7 +43,6 @@ mv *.html ../Docs
 cd ..
 
 tar cvf - Docs | gzip > openfx-doc-$LABEL.tar.gz 
-tar cvf - Examples | gzip > openfx-examples-$LABEL.tar.gz 
 tar cvf - include | gzip > openfx-include-$LABEL.tar.gz 
 
 ftp upload.sourceforge.net << wibble
@@ -52,7 +51,6 @@ brunonicoletti@users.sourceforge.net
 bin
 cd /incoming
 put openfx-doc-$LABEL.tar.gz
-put openfx-examples-$LABEL.tar.gz
 put openfx-include-$LABEL.tar.gz
 exit
 wibble
