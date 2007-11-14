@@ -792,6 +792,8 @@ namespace OFX {
     /** @brief the overlay interacts that are open on this image effect */
     std::list<OverlayInteract *> _overlayInteracts;
 
+    /** @brief cached result of whether progress start succeeded. */
+    bool _progressStartSuccess;
   public :
     /** @brief ctor */
     ImageEffect(OfxImageEffectHandle handle);
