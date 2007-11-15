@@ -1,6 +1,0 @@
-CXXFLAGS = -I../../include 
-OPTIMIZER = -O3
-
-depthConverter.bundle : depthConverter.o
-	$(CXX) -bundle depthConverter.o -o depthConverter.bundle
-

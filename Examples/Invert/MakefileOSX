@@ -1,5 +1,0 @@
-CXXFLAGS = -I../../include
-OPTIMIZER = -O3
-
-invert.bundle : invert.o
-	$(CXX) -bundle invert.o -o invert.bundle
