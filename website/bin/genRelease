@@ -14,7 +14,6 @@ if ($#argv >  1) then
 endif
 
 set CHECKOUTPATH = ./OFXRELEASE
-
 echo Checking out to $CHECKOUTPATH, release is $LABEL, cvs tag is $CVSTAG.
 
 if (-d $CHECKOUTPATH) then
@@ -22,10 +21,7 @@ if (-d $CHECKOUTPATH) then
 endif
 
 mkdir $CHECKOUTPATH
-
 pushd  $CHECKOUTPATH
-
-
 mkdir Docs
 
 cvs -z3 -d:pserver:anonymous@openfx.cvs.sourceforge.net:/cvsroot/openfx checkout -r $CVSTAG include Documentation
@@ -45,14 +41,17 @@ cd ..
 tar cvf - Docs | gzip > openfx-doc-$LABEL.tar.gz 
 tar cvf - include | gzip > openfx-include-$LABEL.tar.gz 
 
-ftp upload.sourceforge.net << wibble
-anonymous
-brunonicoletti@users.sourceforge.net
-bin
-cd /incoming
+set CURRENTDIR =  `pwd`
+ftp -n upload.sourceforge.net << wibble
+quote USER anonymous
+quote PASS brunonicoletti@users.sourceforge.net
+binary
+passive
+lcd $CURRENTDIR
+cd incoming
 put openfx-doc-$LABEL.tar.gz
 put openfx-include-$LABEL.tar.gz
-exit
+quit
 wibble
 
 popd

@@ -40,14 +40,17 @@ cd ..
 tar cvf - doc | gzip > openfxSupport-doc-$LABEL.tar.gz 
 tar cvf - Support | gzip > openfxSupport-src-$LABEL.tar.gz 
 
-ftp upload.sourceforge.net << wibble
-anonymous
-brunonicoletti@users.sourceforge.net
-bin
-cd /incoming
+set CURRENTDIR = `pwd`
+ftp -n upload.sourceforge.net << wibble
+quote USER anonymous
+quote PASS brunonicoletti@users.sourceforge.net
+binary
+passive
+lcd $CURRENTDIR
+cd incoming
 put openfxSupport-doc-$LABEL.tar.gz 
 put openfxSupport-src-$LABEL.tar.gz 
-exit
+quit
 wibble
 
 popd
