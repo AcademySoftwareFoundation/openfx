@@ -235,6 +235,8 @@ namespace OFX {
     PixelComponentArray _supportedComponents;
     typedef std::vector<ContextEnum> ContextArray;
     ContextArray _supportedContexts;
+    typedef std::vector<BitDepthEnum> PixelDepthArray;
+    PixelDepthArray _supportedPixelDepths;
     bool supportsProgressSuite;
     bool supportsTimeLineSuite;
   };
