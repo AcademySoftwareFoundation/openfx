@@ -1352,6 +1352,10 @@ namespace OFX {
         int numContexts = hostProps.propGetDimension(kOfxImageEffectPropSupportedContexts);
         for(int i=0; i<numContexts; ++i)
           gHostDescription._supportedContexts.push_back(mapToContextEnum(hostProps.propGetString(kOfxImageEffectPropSupportedContexts, i)));
+
+	int numPixelDepths = hostProps.propGetDimension(kOfxImageEffectPropSupportedPixelDepths);
+        for(int i=0; i<numPixelDepths; ++i)
+          gHostDescription._supportedPixelDepths.push_back(mapStrToBitDepthEnum(hostProps.propGetString(kOfxImageEffectPropSupportedPixelDepths, i)));
       }
     }
 
@@ -2165,7 +2169,7 @@ namespace OFX {
 #ifdef OFX_CLIENT_EXCEPTION_TYPE
       catch (OFX_CLIENT_EXCEPTION_TYPE &ex)
       {
-        stat = OFX_CLIENT_EXCEPTION_HANDLER(ex);
+        stat = OFX_CLIENT_EXCEPTION_HANDLER(ex, plugname);
       }
 #endif
       // Catch anything else, unknown
