@@ -7,14 +7,14 @@ Copyright (c) 2007, The Foundry Visionmongers Ltd. All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
-      this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-      and/or other materials provided with the distribution.
-    * Neither the name The Foundry Visionmongers Ltd, nor the names of its 
-      contributors may be used to endorse or promote products derived from this
-      software without specific prior written permission.
+* Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+* Neither the name The Foundry Visionmongers Ltd, nor the names of its 
+contributors may be used to endorse or promote products derived from this
+software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -59,59 +59,60 @@ namespace OFX {
         virtual ~Base();
 
         /// grab a handle on the parameter for passing to the C API
-        OfxParamHandle getHandle();
+        OfxParamHandle getHandle() const;
 
         virtual bool verifyMagic() { return true; }
-        
-        /// grab a handle on the properties of this parameter for the C api
-        OfxPropertySetHandle getPropHandle();
 
+        /// grab a handle on the properties of this parameter for the C api
+        OfxPropertySetHandle getPropHandle() const;
+
+        const Property::Set &getProperties() const;
         Property::Set &getProperties();
 
-        const std::string &getType();
+        const std::string &getType() const;
 
-        const std::string &getName();
+        const std::string &getName() const;
 
-        const std::string &getParentName();
+        const std::string &getParentName() const;
 
-        const std::string &getLabel();
+        const std::string &getLabel() const;
 
-        const std::string &getShortLabel();
+        const std::string &getShortLabel() const;
 
-        const std::string &getLongLabel();
+        const std::string &getLongLabel() const;
 
-        const std::string &getScriptName();
+        const std::string &getScriptName() const;
 
-        const std::string &getDoubleType();
+        const std::string &getDoubleType() const;
 
-        const std::string &getHint();
+        const std::string &getHint() const;
 
-        bool getEnabled();
+        bool getEnabled() const;
 
-        bool getCanUndo();
+        bool getCanUndo() const;
 
-        bool getSecret();
+        bool getSecret() const;
 
-        bool getEvaluateOnChange();
+        bool getEvaluateOnChange() const;
       };
 
       /// the Descriptor of a plugin parameter
       class Descriptor : public Base {
         Descriptor();
-       
+
       public:
         /// make a parameter, with the given type and name
         explicit Descriptor(const std::string &type, const std::string &name);
 
       };
-      
+
       /// base class to the param set instance and param set descriptor
       class BaseSet {
       public:
         virtual ~BaseSet();
 
         /// obtain a handle on this set for passing to the C api
-        OfxParamSetHandle getParamSetHandle();
+        OfxParamSetHandle getParamSetHandle() const;
 
         /// get the property handle that lives with the set
         /// The plugin descriptor/instance that derives from
@@ -120,10 +121,11 @@ namespace OFX {
       };
 
       /// a set of parameters
-      class SetDescriptor : public BaseSet {
+      class SetDescriptor : public BaseSet 
+      {
         std::map<std::string, Descriptor*> _paramMap;
         std::list<Descriptor *> _paramList;
-        
+
         /// doesn't exist
         SetDescriptor(const SetDescriptor &);
 
@@ -132,9 +134,9 @@ namespace OFX {
 
         ~SetDescriptor();
 
-        std::map<std::string, Descriptor*> &getParams();
+        const std::map<std::string, Descriptor*>& getParams() const;
 
-        std::list<Descriptor *> &getParamList();
+        const std::list<Descriptor*>& getParamList() const;
 
         void addParam(const std::string &name, Descriptor *p);
       };
@@ -187,30 +189,30 @@ namespace OFX {
 
       class KeyframeParam {
       public:
-        virtual OfxStatus getNumKeys(unsigned int &nKeys) ;
-        virtual OfxStatus getKeyTime(int nth, OfxTime& time) ;
-        virtual OfxStatus getKeyIndex(OfxTime time, int direction, int & index) ;
+        virtual OfxStatus getNumKeys(unsigned int &nKeys) const;
+        virtual OfxStatus getKeyTime(int nth, OfxTime& time) const;
+        virtual OfxStatus getKeyIndex(OfxTime time, int direction, int & index) const;
         virtual OfxStatus deleteKey(OfxTime time) ;
-        virtual OfxStatus deleteAllKeys() ;
-
-        virtual ~KeyframeParam() {
-        }
+        virtual OfxStatus deleteAllKeys();
+        virtual ~KeyframeParam() {}
       };
 
-      class GroupInstance : public Instance {
+      class GroupInstance : public Instance 
+      {
       protected:
         std::vector<Param::Instance*> _children;
       public:
         GroupInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
-
         void setChildren(std::vector<Param::Instance*> children);
-        std::vector<Param::Instance*> getChildren();
+        const std::vector<Param::Instance*>& getChildren() const;
       };
 
       class PageInstance : public Instance {
       public:
         PageInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
-        std::map<int,Param::Instance*> getChildren();
+        const std::map<int,Param::Instance*>& getChildren() const;
+      protected:
+        mutable std::map<int,Param::Instance*> _children;
       };
 
       class IntegerInstance : public Instance, public KeyframeParam {
@@ -292,7 +294,7 @@ namespace OFX {
         virtual OfxStatus derive(OfxTime time, double&,double&,double&) ;
         virtual OfxStatus integrate(OfxTime time1, OfxTime time2, double&,double&,double&) ;
       };
-        
+
       class Double2DInstance : public Instance, public KeyframeParam {
       public:
         Double2DInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
@@ -388,13 +390,14 @@ namespace OFX {
         virtual ~SetInstance();
 
         /// get the params
-        std::map<std::string, Instance*> &getParams();
+        const std::map<std::string, Instance*>& getParams() const;
 
         /// get the params
-        std::list<Instance*> &getParamList();
+        const std::list<Instance*>& getParamList() const;
 
         // get the param
-        Instance* getParam(std::string name) {
+        Instance* getParam(std::string name) 
+        {
           std::map<std::string,Instance*>::iterator it = _params.find(name);
           if(it!=_params.end())
             return it->second;

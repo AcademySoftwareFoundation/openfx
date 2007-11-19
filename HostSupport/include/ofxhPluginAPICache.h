@@ -9,14 +9,14 @@ Copyright (c) 2007, The Foundry Visionmongers Ltd. All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
-      this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-      and/or other materials provided with the distribution.
-    * Neither the name The Foundry Visionmongers Ltd, nor the names of its 
-      contributors may be used to endorse or promote products derived from this
-      software without specific prior written permission.
+* Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+* Neither the name The Foundry Visionmongers Ltd, nor the names of its 
+contributors may be used to endorse or promote products derived from this
+software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -54,8 +54,8 @@ namespace OFX
 {
   namespace Host
   {
-    namespace APICache {
-
+    namespace APICache 
+    {
       /// this acts as an interface for the Plugin Cache, handling api-specific cacheing
       class PluginAPICacheI
       {
@@ -64,48 +64,40 @@ namespace OFX
         int _apiVersionMin, _apiVersionMax;
       public:
         PluginAPICacheI(std::string apiName, int verMin, int verMax)
-          : _apiName(apiName)
-            , _apiVersionMin(verMin)
-            , _apiVersionMax(verMax)
+          : _apiName(apiName), _apiVersionMin(verMin), _apiVersionMax(verMax)
         {
         }
-        
-        virtual ~PluginAPICacheI() {
-        }
-        
-        virtual void loadFromPlugin(Plugin *) = 0;
+
+        virtual ~PluginAPICacheI() {}
+
+        virtual void loadFromPlugin(Plugin *) const = 0;
 
         /// factory method, to create a new plugin (from binary)
         virtual Plugin *newPlugin(PluginBinary *, int pi, OfxPlugin *plug) = 0;
 
         /// factory method, to create a new plugin (from the 
         virtual Plugin *newPlugin(PluginBinary *pb, int pi, const std::string &api, int apiVersion, const std::string &pluginId,
-                                  int pluginMajorVersion, int pluginMinorVersion) = 0;
-        
+          int pluginMajorVersion, int pluginMinorVersion) = 0;
+
         virtual void beginXmlParsing(Plugin *) = 0;
         virtual void xmlElementBegin(const std::string &, std::map<std::string, std::string>) = 0;
         virtual void xmlCharacterHandler(const std::string &) = 0;
         virtual void xmlElementEnd(const std::string &) = 0;
         virtual void endXmlParsing() = 0;
-        
-        virtual void saveXML(Plugin *, std::ostream &) = 0;
-
+        virtual void saveXML(Plugin *, std::ostream &) const = 0;
         virtual void confirmPlugin(Plugin *) = 0;
-
-        virtual bool pluginSupported(Plugin *, std::string &reason) = 0;
-
+        virtual bool pluginSupported(Plugin *, std::string &reason) const= 0;
         void registerInCache(OFX::Host::PluginCache &pluginCache);
       };
-      
+
       /// helper function to build a property set from XML. Really should be a member of the property set!!!
       void propertySetXMLRead(const std::string &el, std::map<std::string, std::string> map, Property::Set &set, Property::Property*&);
 
       /// helper function to write a property set to XML. Really should be a member of the property set!!!
-      void propertySetXMLWrite(std::ostream &o, Property::Set &set, int indent=0);
+      void propertySetXMLWrite(std::ostream &o, const Property::Set &set, int indent=0);
 
       /// helper function to write a single property from a set to XML. Really should be a member of the property set!!!
-      void propertyXMLWrite(std::ostream &o, Property::Set &set, const std::string &name, int indent=0);
-
+      void propertyXMLWrite(std::ostream &o, const Property::Set &set, const std::string &name, int indent=0);
     }
   }
 }
