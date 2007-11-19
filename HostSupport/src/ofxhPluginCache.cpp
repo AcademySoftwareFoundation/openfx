@@ -171,8 +171,10 @@ namespace OFX {
       }
       return "";
 #else
-      return getenv(e);
+      if(getenv(e))
+        return getenv(e);
 #endif
+      return "";
     }
 
     PluginCache::PluginCache() : _xmlCurrentBinary(0), _xmlCurrentPlugin(0) {
