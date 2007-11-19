@@ -1,41 +1,41 @@
 # Variables to set to help you
 #   EXPAT_INCLUDE - the directory to find the expat XML parser header files in
 #   DST_DIR       - the directory to put the built library in
-
-DST_DIR ?= lib
+#   DEBUG         - whether to build the libraries with debug information, or optimise.
+#   OPTIMISE      - optimisation flags override.
 
 OS = $(shell uname)
-
-#CXX = icl
-
 DEBUG ?= false
+EXPAT_INCLUDE ?= expat-2.0.1/lib
+OBJSUF ?= .o
+LIBSUF ?= .a
+LIBPREFIX ?= lib
+LIBNAME ?= ofxHost
 
-ifneq ($(OS),CYGWIN_NT-5.1)
-  ifeq ($(DEBUG),true)
-    OPTIMISE ?= -g -Wall
-  else
-    OPTIMISE ?= -O2 -Wall
-  endif
+LIBTARGET = $(LIBPREFIX)$(LIBNAME)$(LIBSUF)
+EXPATLIB = $(LIBPREFIX)expat$(LIBSUF)
+
+ifeq ($(DEBUG), true)
+  DST_DIR = $(OS)-debug
+  OPTIMISE ?= -g -Wall
+  EXPATFLAG = --enable-debug
+else ifeq ($(DEBUG), instrument)
+  DST_DIR = $(OS)-instrument
+  OPTIMISE ?= -g -O3 -Wall
 else
-  ifeq ($(DEBUG),true)
-    OPTIMISE ?= /MDd /Od /Ob1 /DWIN32 /DXML_STATIC /GR /GX
-    INTDIR ?= private/DEBUG/w2k_intel/
-    OUTLIB ?= ofxhostd.lib
-  else
-    OPTIMISE ?= /MD /O2 /Ob1 /DWIN32 /DXML_STATIC /GR /GX
-    INTDIR ?= private/OPTIMISE/w2k_intel/
-    OUTLIB ?= ofxhost.lib
-  endif
+  DST_DIR = $(OS)-release
+  OPTIMISE ?= -O2 -Wall
+  EXPATFLAGS = --disable-debug
 endif
 
-ifeq ($(OS),Darwin) 
-CXX_OSFLAGS = -arch ppc -arch i386 
-RANLIB = ranlib
-endif
+INT_DIR ?= $(DST_DIR)
 
-ifeq ($(OS),Linux) 
 CXX_OSFLAGS = 
 RANLIB = echo
+
+ifeq ($(OS),Darwin) 
+  CXX_OSFLAGS = -arch ppc -arch i386 
+  RANLIB = ranlib
 endif
 
 HEADERS = include/ofxhBinary.h                  \
@@ -66,81 +66,44 @@ HEADERS = include/ofxhBinary.h                  \
   ../include/ofxTimeLine.h
 
 
-INCLUDES += -I../include -Iinclude $(EXPAT_INCLUDE) 
+INCLUDES += -I../include -Iinclude -I$(EXPAT_INCLUDE) 
 
 CXXFLAGS = $(CXX_OSFLAGS) $(INCLUDES) $(OPTIMISE)
 
-ifeq ($(OS),CYGWIN_NT-5.1)
-objects = 	 \
-	src/ofxhUtilities.obj \
-	src/ofxhHost.obj \
-	src/ofxhInteract.obj \
-	src/ofxhBinary.obj \
-	src/ofxhClip.obj \
-	src/ofxhImageEffect.obj \
-	src/ofxhImageEffectAPI.obj \
-	src/ofxhMemory.obj \
-	src/ofxhParam.obj \
-	src/ofxhPluginAPICache.obj \
-	src/ofxhPluginCache.obj \
-	src/ofxhPropertySuite.obj \
-	../../Expat/lib/xmltok.obj \
-	../../Expat/lib/xmlparse.obj \
-	../../Expat/lib/xmlrole.obj
-else
-objects = 	 \
-	src/ofxhParam.o \
-	src/ofxhImageEffectAPI.o \
-	src/ofxhUtilities.o \
-	src/ofxhHost.o \
-	src/ofxhInteract.o \
-	src/ofxhBinary.o \
-	src/ofxhClip.o \
-	src/ofxhImageEffect.o \
-	src/ofxhMemory.o \
-	src/ofxhPluginAPICache.o \
-	src/ofxhPluginCache.o \
-	src/ofxhPropertySuite.o
-endif
+objects = $(INT_DIR)/ofxhParam$(OBJSUF) \
+	$(INT_DIR)/ofxhImageEffectAPI$(OBJSUF) \
+	$(INT_DIR)/ofxhUtilities$(OBJSUF) \
+	$(INT_DIR)/ofxhHost$(OBJSUF) \
+	$(INT_DIR)/ofxhInteract$(OBJSUF) \
+	$(INT_DIR)/ofxhBinary$(OBJSUF) \
+	$(INT_DIR)/ofxhClip$(OBJSUF) \
+	$(INT_DIR)/ofxhImageEffect$(OBJSUF) \
+	$(INT_DIR)/ofxhMemory$(OBJSUF) \
+	$(INT_DIR)/ofxhPluginAPICache$(OBJSUF) \
+	$(INT_DIR)/ofxhPluginCache$(OBJSUF) \
+	$(INT_DIR)/ofxhPropertySuite$(OBJSUF)
 
-ifeq ($(OS),CYGWIN_NT-5.1)
-.SUFFIXES : .obj
+$(DST_DIR)/$(LIBTARGET): $(objects) $(DST_DIR)/$(EXPATLIB)
+	rm -f $(DST_DIR)/$(LIBTARGET)
+	ar -rc $(DST_DIR)/$(LIBTARGET) $(objects)
+	$(RANLIB) $(DST_DIR)/$(LIBTARGET)
 
-.cpp.obj:
-	@mkdir -p $(INTDIR)
-	$(CXX) $(CXXFLAGS) /c /Tp$(<) /Fo'$(INTDIR)$(notdir $(@))'
-
-.c.obj:
-	@mkdir -p $(INTDIR)
-	$(CXX) $(CXXFLAGS) /D_LIB /DCOMPILED_FROM_DSP /c $(<) /Fo$(INTDIR)$(notdir $(@))
-
-$(DST_DIR)/$(OUTLIB):$(objects)
-	@mkdir -p $(DST_DIR)
-	@rm -f $(DST_DIR)/$(OUTLIB)
-	@xilib $(patsubst ../../Expat/lib/%,$(INTDIR)%,$(patsubst src/%,$(INTDIR)%,$(objects))) /OUT:$(DST_DIR)/$(OUTLIB)
-else
-$(DST_DIR)/libofxHost.a:$(objects)
-	mkdir -p $(DST_DIR)
-	rm -f $(DST_DIR)/libofxHost.a
-	ar -rc $(DST_DIR)/libofxHost.a $(objects)
-	$(RANLIB) $(DST_DIR)/libofxHost.a
-endif
+$(objects) : $(DST_DIR)/%.o : src/%.cpp
+	mkdir -p $(INT_DIR)
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 $(objects) : $(HEADERS)
 
-ifeq ($(OS),CYGWIN_NT-5.1)
-all : 
-	$(DST_DIR)/$(OUTLIB)
+$(DST_DIR)/$(EXPATLIB):
+	mkdir -p $(DST_DIR)
+	cd expat-2.0.1;	pwd; ./configure --disable-shared $(EXPATFLAGS); make
+	cp expat-2.0.1/.libs/libexpat.a $(DST_DIR)
 
-clean : 
-	rm -rf $(INTDIR)
-	rm -rf $(DST_DIR)/$(OUTLIB)
-
-else
-all : $(DST_DIR)/libofxHost.a
+all :	@echo "$(DST_DIR)/$(EXPATLIB)" $(DST_DIR)/$(EXPATLIB) $(DST_DIR)/$(LIBTARGET)
 
 clean :
-	rm -f $(DST_DIR)/libofxHost.a
-	rm -f */*.o
-endif
+	rm -f $(DST_DIR)/$(EXPATLIB)
+	rm -f $(DST_DIR)/$(LIBTARGET)
+	rm -f $(INT_DIR)/*$(OBJSUF)
+
 
