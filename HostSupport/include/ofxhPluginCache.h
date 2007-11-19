@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <list>
 #include <set>
 #include <iostream>
+#include <assert.h>
 
 #include <stdio.h>
 
