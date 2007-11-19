@@ -43,7 +43,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// create instances etc...
 /// For the purposes of this example, we don't actually
 /// need it to do anything. In reality we do.
-class CacheHost : public OFX::Host::ImageEffect::Host{
+class CacheHost : public OFX::Host::ImageEffect::Host
+{
 public :
   /// This should really return a new plugin instance, however
   /// we don't need to for the purposes of this example.
@@ -81,8 +82,5 @@ int main(int argc, char **argv)
   OFX::Host::gPluginCache.writePluginCache(of);
   of.close();
 
-  std::cout << imageEffectPluginCache.getPluginById("uk.co.thefoundry.furnace.f_steadiness") << std::endl;
-  std::cout << imageEffectPluginCache.getPluginByLabel("F_Steadiness", 2) << std::endl;
-  std::cout << imageEffectPluginCache.getPluginByLabel("F_Align", 3) << std::endl;
-  std::cout << imageEffectPluginCache.getPluginByLabel("F_MAlign", 2) << std::endl;
+  imageEffectPluginCache.dumpToStdOut();
 }

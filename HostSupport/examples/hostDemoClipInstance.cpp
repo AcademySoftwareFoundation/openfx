@@ -28,6 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include <iostream>
 #include <fstream>
+#include <math.h>
 #include <time.h>
 
 // ofx
@@ -62,17 +63,24 @@ namespace MyHost {
   
 
   /// images are always SD PAL progressive full res images for the purpose of this example only
-  MyImage::MyImage(MyClipInstance &clip)
+  MyImage::MyImage(MyClipInstance &clip, OfxTime time)
     : OFX::Host::ImageEffect::Image(clip) /// this ctor will set basic props on the image
     , _data(NULL)
   {
     // make some memory
     _data = new OfxRGBAColourB[kPalSizeXPixels * kPalSizeYPixels] ; /// PAL SD RGBA
     
-    // now blank it
-    memset(_data, sizeof(OfxRGBAColourB) * kPalSizeXPixels * kPalSizeYPixels, 0);
+    int fillValue = (int)(floor(255.0 * (time/OFXHOSTDEMOCLIPLENGTH)));
+    int realFillValue = fillValue;
+    realFillValue = realFillValue << 8;
+    realFillValue += fillValue;
+    realFillValue = realFillValue << 8;
+    realFillValue += fillValue;
+    realFillValue = realFillValue << 8;
+    realFillValue += fillValue;
 
-    // set some properties on the image
+    // now blank it
+    memset(_data, realFillValue, sizeof(OfxRGBAColourB) * kPalSizeXPixels * kPalSizeYPixels);
 
     // render scale x and y of 1.0
     setDoubleProperty(kOfxImageEffectPropRenderScale, 1.0, 0);
@@ -95,7 +103,19 @@ namespace MyHost {
     // row bytes
     setIntProperty(kOfxImagePropRowBytes, kPalSizeXPixels * sizeof(OfxRGBAColourB));
   }
-  
+
+  OfxRGBAColourB* MyImage::pixel(int x, int y) const
+  {
+    OfxRectI bounds = getBounds();
+    if ((x >= bounds.x1) && ( x< bounds.x2) && ( y >= bounds.y1) && ( y < bounds.y2) )
+    {
+      int rowBytes = getIntProperty(kOfxImagePropRowBytes);
+      int offset = (y = bounds.y1) * rowBytes + (x - bounds.x1) * sizeof(OfxRGBAColourB);
+      return &(_data[offset]);
+    }
+    return 0;
+  }
+
   MyImage::~MyImage() 
   {
     delete _data;
@@ -110,14 +130,14 @@ namespace MyHost {
   }
 
   /// Get the Raw Unmapped Pixel Depth from the host. We are always 8 bits in our example
-  const std::string &MyClipInstance::getUnmappedBitDepth()
+  const std::string &MyClipInstance::getUnmappedBitDepth() const
   {
     static const std::string v(kOfxBitDepthByte);
     return v;
   }
     
   /// Get the Raw Unmapped Components from the host. In our example we are always RGBA
-  const std::string &MyClipInstance::getUnmappedComponents()
+  const std::string &MyClipInstance::getUnmappedComponents() const
   {
     static const std::string v(kOfxImageComponentRGBA);
     return v;
@@ -128,7 +148,7 @@ namespace MyHost {
   //  kOfxImageOpaque - the image is opaque and so has no premultiplication state
   //  kOfxImagePreMultiplied - the image is premultiplied by it's alpha
   //  kOfxImageUnPreMultiplied - the image is unpremultiplied
-  const std::string &MyClipInstance::getPremult()
+  const std::string &MyClipInstance::getPremult() const
   {
     static const std::string v(kOfxImageUnPreMultiplied);
     return v;
@@ -137,23 +157,23 @@ namespace MyHost {
   // Pixel Aspect Ratio -
   //
   //  The pixel aspect ratio of a clip or image.
-  double MyClipInstance::getAspectRatio()
+  double MyClipInstance::getAspectRatio() const
   {
     /// our clip is pretending to be progressive PAL SD, so return 1.06666
     return kPalPixelAspect;
   }
   
   // Frame Rate -
-  double MyClipInstance::getFrameRate()
+  double MyClipInstance::getFrameRate() const
   {
     /// our clip is pretending to be progressive PAL SD, so return 25
-    return 25;
+    return 25.0;
   }
   
   // Frame Range (startFrame, endFrame) -
   //
   //  The frame range over which a clip has images.
-  void MyClipInstance::getFrameRange(double &startFrame, double &endFrame)
+  void MyClipInstance::getFrameRange(double &startFrame, double &endFrame) const
   {
     // pretend we have a second's worth of PAL SD
     startFrame = 0;
@@ -165,7 +185,7 @@ namespace MyHost {
   ///  - kOfxImageFieldNone - the clip material is unfielded
   ///  - kOfxImageFieldLower - the clip material is fielded, with image rows 0,2,4.... occuring first in a frame
   ///  - kOfxImageFieldUpper - the clip material is fielded, with image rows line 1,3,5.... occuring first in a frame
-  const std::string &MyClipInstance::getFieldOrder()
+  const std::string &MyClipInstance::getFieldOrder() const
   {
     /// our clip is pretending to be progressive PAL SD, so return kOfxImageFieldNone
     static const std::string v(kOfxImageFieldNone);
@@ -175,7 +195,7 @@ namespace MyHost {
   // Connected -
   //
   //  Says whether the clip is actually connected at the moment.
-  bool MyClipInstance::getConnected()
+  bool MyClipInstance::getConnected() const
   {
     return true;
   }
@@ -183,7 +203,7 @@ namespace MyHost {
   // Unmapped Frame Rate -
   //
   //  The unmaped frame range over which an output clip has images.
-  double MyClipInstance::getUnmappedFrameRate()
+  double MyClipInstance::getUnmappedFrameRate() const
   {
     /// our clip is pretending to be progressive PAL SD, so return 25
     return 25;
@@ -193,7 +213,7 @@ namespace MyHost {
   //
   //  The unmaped frame range over which an output clip has images.
   // this is applicable only to hosts and plugins that allow a plugin to change frame rates
-  void MyClipInstance::getUnmappedFrameRange(double &unmappedStartFrame, double &unmappedEndFrame)
+  void MyClipInstance::getUnmappedFrameRange(double &unmappedStartFrame, double &unmappedEndFrame) const
   {
     // pretend we have a second's worth of PAL SD
     unmappedStartFrame = 0;
@@ -204,7 +224,7 @@ namespace MyHost {
   //
   //  0 if the images can only be sampled at discreet times (eg: the clip is a sequence of frames),
   //  1 if the images can only be sampled continuously (eg: the clip is infact an animating roto spline and can be rendered anywhen). 
-  bool MyClipInstance::getContinuousSamples()
+  bool MyClipInstance::getContinuousSamples() const
   {
     return false;
   }
@@ -232,7 +252,7 @@ namespace MyHost {
     if(_name == "Output") {
       if(!_outputImage) {
         // make a new ref counted image
-        _outputImage = new MyImage(*this);
+        _outputImage = new MyImage(*this, 0);
       }
      
       // add another reference to the member image for this fetch
@@ -251,7 +271,7 @@ namespace MyHost {
       // 
       // You should do somewhat more sophisticated image management
       // than this.
-      MyImage *image = new MyImage(*this);
+      MyImage *image = new MyImage(*this, time);
       return image;
     }
   }

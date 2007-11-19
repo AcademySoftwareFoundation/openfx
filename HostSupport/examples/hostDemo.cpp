@@ -69,6 +69,29 @@ modification, are permitted provided that the following conditions are met:
 //
 // There is no file io to work with this.
 
+void exportToPGM(const std::string& fname, MyHost::MyImage* im)
+{
+  std::ofstream op(fname.c_str());
+  OfxRectI rod = im->getROD();
+  OfxRectI bounds = im->getBounds();
+  op << "P3" << "\t# FORMAT" << std::endl;
+  op << rod.x2 - rod.x1 << "\t#WIDTH" << std::endl;
+  op << rod.y2 - rod.y1 << "\t#HEIGHT" <<std::endl;
+  //This assumes 8-bit.
+  op << "255" << std::endl;
+  for (int x = rod.x1; x < rod.x2; ++x)
+  {
+    for (int y = rod.y1; y< rod.y2; ++y)
+    {
+      OfxRGBAColourB* pix = im->pixel(x,y);
+      if(pix)
+        op << (int)pix->r << " " << (int)pix->g << " " << (int)pix->b << " " << std::endl;
+      else
+        op << "0 0 0" << std::endl;
+    }
+  }
+}
+
 int main(int argc, char **argv) 
 {
   // set the version label in the global cache
@@ -98,14 +121,18 @@ int main(int argc, char **argv)
   of.close();
 
   // get the invert example plugin which uses the OFX C++ support code
-  OFX::Host::ImageEffect::ImageEffectPlugin* plugin = imageEffectPluginCache.getPluginById("net.sf.openfx.invertPlugin");
+  OFX::Host::ImageEffect::ImageEffectPlugin* plugin = imageEffectPluginCache.getPluginById("net.sf.openfx:invertPlugin");
+
+  imageEffectPluginCache.dumpToStdOut();
 
   if(plugin) {
     // create an instance of it as a filter
     // the first arg is the context, the second is client data we are allowed to pass down the call chain
-    OFX::Host::ImageEffect::Instance* instance = plugin->createInstance(kOfxImageEffectContextFilter, NULL);
 
-    if(instance){
+    std::auto_ptr<OFX::Host::ImageEffect::Instance> instance(plugin->createInstance(kOfxImageEffectContextFilter, NULL));
+
+    if(instance.get())
+    {
       // now we need to call the create instance action. Only call this once you have initialised all the params
       // and clips to their correct values. So if you are loading a saved plugin state, set up your params from
       // that state, _then_ call create instance.
@@ -132,13 +159,16 @@ int main(int argc, char **argv)
       regionOfInterest.x2 = renderWindow.x2 * instance->getProjectPixelAspectRatio();
       regionOfInterest.y2 = 576;
       
+      int numFramesToRender = OFXHOSTDEMOCLIPLENGTH;
+
       // say we are about to render a bunch of frames 
-      instance->beginRenderAction(0, 25, 1.0, false, renderScale);
+      instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale);
 
       // get the output clip
       MyHost::MyClipInstance* outputClip = dynamic_cast<MyHost::MyClipInstance*>(instance->getClip("Output"));
 
-      for(int t = 0; t <= 25; ++t) {
+      for(int t = 0; t <= numFramesToRender; ++t) 
+      {
         // call get region of interest on each of the inputs
         OfxTime frame = t;
 
@@ -150,20 +180,19 @@ int main(int argc, char **argv)
         // In our example we are doing full frame fetches regardless.
         std::map<OFX::Host::ImageEffect::ClipInstance *, OfxRectD> rois;
         instance->getRegionOfInterestAction(frame, renderScale, regionOfInterest, rois);
-
+  
         // render a frame
         instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale);
 
         // get the output image buffer
         MyHost::MyImage *outputImage = outputClip->getOutputImage();
 
-        // do something
+        std::ostringstream ss;
+        ss << "Output." << t << ".pgm";
+        exportToPGM(ss.str(), outputImage);
       }
 
-      instance->endRenderAction(0, 25, 1.0, false, renderScale);
-
-      // delete the instance
-      delete instance;
+      instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale);
     }
   }
 

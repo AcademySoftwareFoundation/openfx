@@ -74,7 +74,7 @@ namespace MyHost {
     
   /// get default output fielding. This is passed into the clip prefs action
   /// and  might be mapped (if the host allows such a thing)
-  const std::string &MyEffectInstance::getDefaultOutputFielding()
+  const std::string &MyEffectInstance::getDefaultOutputFielding() const
   {
     /// our clip is pretending to be progressive PAL SD, so return kOfxImageFieldNone
     static const std::string v(kOfxImageFieldNone);
@@ -93,54 +93,57 @@ namespace MyHost {
   }
   
   // get the project size in CANONICAL pixels, so PAL SD return 768, 576
-  void MyEffectInstance::getProjectSize(double& xSize, double& ySize) {
+  void MyEffectInstance::getProjectSize(double& xSize, double& ySize) const
+  {
     xSize = 768; 
     ySize = 576;
   }
 
   // get the project offset in CANONICAL pixels, we are at 0,0
-  void MyEffectInstance::getProjectOffset(double& xOffset, double& yOffset){
+  void MyEffectInstance::getProjectOffset(double& xOffset, double& yOffset) const
+  {
     xOffset = 0;
     yOffset = 0;
   }
 
   // get the project extent in CANONICAL pixels, so PAL SD return 768, 576
-  void MyEffectInstance::getProjectExtent(double& xSize, double& ySize){
+  void MyEffectInstance::getProjectExtent(double& xSize, double& ySize) const
+  {
     xSize = 768; 
     ySize = 576;
   }
 
   // get the PAR, SD PAL is 1.0666
-  double MyEffectInstance::getProjectPixelAspectRatio()
+  double MyEffectInstance::getProjectPixelAspectRatio() const
   {
     return double(768)/double(720);
   }
 
   // we are only 25 frames
-  double MyEffectInstance::getEffectDuration()
+  double MyEffectInstance::getEffectDuration() const
   {
-    return 25;
+    return 25.0;
   }
 
   // get frame rate, so progressive PAL SD return 25
-  double MyEffectInstance::getFrameRate()
+  double MyEffectInstance::getFrameRate() const
   {
-    return 25;
+    return 25.0;
   }
 
   /// This is called whenever a param is changed by the plugin so that
   /// the recursive instanceChangedAction will be fed the correct frame 
-  double MyEffectInstance::getFrameRecursive()
+  double MyEffectInstance::getFrameRecursive() const
   {
-    return 0;    
+    return 0.0;    
   }
 
   /// This is called whenever a param is changed by the plugin so that
   /// the recursive instanceChangedAction will be fed the correct
   /// renderScale
-  void MyEffectInstance::getRenderScaleRecursive(double &x, double &y)
+  void MyEffectInstance::getRenderScaleRecursive(double &x, double &y) const
   {
-    x = y = 1;
+    x = y = 1.0;
   }
 
   // make a parameter instance
@@ -195,6 +198,7 @@ namespace MyHost {
   /// false if you should abandon processing, true to continue
   bool  MyEffectInstance::progressUpdate(double t)
   {
+    return true;
   }
 
 

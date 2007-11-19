@@ -48,7 +48,7 @@ namespace MyHost {
     
     /// get default output fielding. This is passed into the clip prefs action
     /// and  might be mapped (if the host allows such a thing)
-    virtual const std::string &getDefaultOutputFielding();
+    virtual const std::string &getDefaultOutputFielding() const;
     
     /// make a clip
     OFX::Host::ImageEffect::ClipInstance* newClipInstance(OFX::Host::ImageEffect::Instance* plugin,
@@ -66,40 +66,40 @@ namespace MyHost {
     // The size of a project is a sub set of the kOfxImageEffectPropProjectExtent. For example a 
     // project may be a PAL SD project, but only be a letter-box within that. The project size is 
     // the size of this sub window. 
-    virtual void getProjectSize(double& xSize, double& ySize);
+    virtual void getProjectSize(double& xSize, double& ySize) const;
 
     // The offset of the current project in canonical coordinates. 
     // The offset is related to the kOfxImageEffectPropProjectSize and is the offset from the origin 
     // of the project 'subwindow'. For example for a PAL SD project that is in letterbox form, the
     // project offset is the offset to the bottom left hand corner of the letter box. The project 
     // offset is in canonical coordinates. 
-    virtual void getProjectOffset(double& xOffset, double& yOffset);
+    virtual void getProjectOffset(double& xOffset, double& yOffset) const;
 
     // The extent of the current project in canonical coordinates. 
     // The extent is the size of the 'output' for the current project. See ProjectCoordinateSystems 
     // for more infomation on the project extent. The extent is in canonical coordinates and only 
     // returns the top right position, as the extent is always rooted at 0,0. For example a PAL SD 
     // project would have an extent of 768, 576. 
-    virtual void getProjectExtent(double& xSize, double& ySize);
+    virtual void getProjectExtent(double& xSize, double& ySize) const;
 
     // The pixel aspect ratio of the current project 
-    virtual double getProjectPixelAspectRatio();
+    virtual double getProjectPixelAspectRatio() const;
 
     // The duration of the effect 
     // This contains the duration of the plug-in effect, in frames. 
-    virtual double getEffectDuration();
+    virtual double getEffectDuration() const;
 
     // For an instance, this is the frame rate of the project the effect is in. 
-    virtual double getFrameRate();
+    virtual double getFrameRate() const;
 
     /// This is called whenever a param is changed by the plugin so that
     /// the recursive instanceChangedAction will be fed the correct frame 
-    virtual double getFrameRecursive();
+    virtual double getFrameRecursive() const;
 
     /// This is called whenever a param is changed by the plugin so that
     /// the recursive instanceChangedAction will be fed the correct
     /// renderScale
-    virtual void getRenderScaleRecursive(double &x, double &y);
+    virtual void getRenderScaleRecursive(double &x, double &y) const;
 
 
     ////////////////////////////////////////////////////////////////////////////////
