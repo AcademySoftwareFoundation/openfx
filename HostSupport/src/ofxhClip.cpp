@@ -6,14 +6,14 @@ Copyright (c) 2007, The Foundry Visionmongers Ltd. All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
-      this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-      and/or other materials provided with the distribution.
-    * Neither the name The Foundry Visionmongers Ltd, nor the names of its 
-      contributors may be used to endorse or promote products derived from this
-      software without specific prior written permission.
+* Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+* Neither the name The Foundry Visionmongers Ltd, nor the names of its 
+contributors may be used to endorse or promote products derived from this
+software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -60,7 +60,7 @@ namespace OFX {
         { kOfxImageEffectPropSupportsTiles,   Property::eInt, 1, false, "1" },  
         { 0 },
       };
-      
+
       ////////////////////////////////////////////////////////////////////////////////
       // props to clips descriptors and instances
 
@@ -91,7 +91,7 @@ namespace OFX {
         }
         return s;
       }
-      
+
       /// name of the clip
       const std::string &ClipBase::getLabel() const
       {
@@ -101,7 +101,7 @@ namespace OFX {
         }
         return s;
       }
-      
+
       /// name of the clip
       const std::string &ClipBase::getLongLabel() const
       {
@@ -111,7 +111,7 @@ namespace OFX {
         }
         return s;
       }
-      
+
       /// return a std::vector of supported comp
       const std::vector<std::string> &ClipBase::getSupportedComponents() const
       {
@@ -119,56 +119,61 @@ namespace OFX {
         assert(p != NULL);
         return p->getValues();
       }
-      
+
       /// is the given component supported
       bool ClipBase::isSupportedComponent(const std::string &comp) const
       {
         return _properties.findStringPropValueIndex(kOfxImageEffectPropSupportedComponents, comp) != -1;
       }
-      
+
       /// does the clip do random temporal access
       bool ClipBase::temporalAccess() const
       {
-        return _properties.getIntProperty(kOfxImageEffectPropTemporalClipAccess);
+        return _properties.getIntProperty(kOfxImageEffectPropTemporalClipAccess) > 0 ? true : false;
       }
-      
+
       /// is the clip optional
       bool ClipBase::isOptional() const
       {
-        return _properties.getIntProperty(kOfxImageClipPropOptional);
+        return _properties.getIntProperty(kOfxImageClipPropOptional) > 0 ? true : false;
       }
-      
+
       /// is the clip a nominal 'mask' clip
       bool ClipBase::isMask() const
       {
-        return _properties.getIntProperty(kOfxImageClipPropIsMask);
+        return _properties.getIntProperty(kOfxImageClipPropIsMask) > 0 ? true : false;
       }
-      
+
       /// how does this clip like fielded images to be presented to it
-      const std::string &ClipBase::getFieldExtraction()
+      const std::string &ClipBase::getFieldExtraction() const
       {
         return _properties.getStringProperty(kOfxImageClipPropFieldExtraction);
       }
-      
+
       /// is the clip a nominal 'mask' clip
       bool ClipBase::supportsTiles() const
       {
-        return _properties.getIntProperty(kOfxImageEffectPropSupportsTiles);
+        return _properties.getIntProperty(kOfxImageEffectPropSupportsTiles) > 0 ? true : false;
       }
 
-      Property::Set& ClipBase::getProps() 
+      const Property::Set& ClipBase::getProps()  const
+      {
+        return _properties;
+      }
+
+      Property::Set& ClipBase::getProps()
       {
         return _properties;
       }
 
       /// get a handle on the properties of the clip descriptor for the C api
-      OfxPropertySetHandle ClipBase::getPropHandle() 
+      OfxPropertySetHandle ClipBase::getPropHandle() const
       {
         return _properties.getHandle();
       }
 
       /// get a handle on the clip descriptor for the C api
-      OfxImageClipHandle ClipBase::getHandle() 
+      OfxImageClipHandle ClipBase::getHandle() const
       {
         return (OfxImageClipHandle)this;
       }
@@ -180,7 +185,7 @@ namespace OFX {
       {
         _properties.setStringProperty(kOfxPropName,name);
       }
-      
+
       /// extra properties for the instance, these are fetched from the host
       /// via a get hook and some virtuals
       static Property::PropSpec clipInstanceStuffs[] = { 
@@ -232,7 +237,7 @@ namespace OFX {
       }
 
       // do nothing
-      int ClipInstance::getDimension(const std::string &name) OFX_EXCEPTION_SPEC 
+      int ClipInstance::getDimension(const std::string &name) const OFX_EXCEPTION_SPEC 
       {
         if(name == kOfxImageEffectPropUnmappedFrameRange || name == kOfxImageEffectPropFrameRange)
           return 2;
@@ -246,7 +251,7 @@ namespace OFX {
       }
 
       // get the virutals for viewport size, pixel scale, background colour
-      void ClipInstance::getDoublePropertyN(const std::string &name, double *values, int n) OFX_EXCEPTION_SPEC
+      void ClipInstance::getDoublePropertyN(const std::string &name, double *values, int n) const  OFX_EXCEPTION_SPEC
       {
         if(name==kOfxImagePropPixelAspectRatio){
           if(n>1) throw Property::Exception(kOfxStatErrValue);
@@ -273,7 +278,7 @@ namespace OFX {
       }
 
       // get the virutals for viewport size, pixel scale, background colour
-      double ClipInstance::getDoubleProperty(const std::string &name, int n) OFX_EXCEPTION_SPEC
+      double ClipInstance::getDoubleProperty(const std::string &name, int n) const  OFX_EXCEPTION_SPEC
       {
         if(name==kOfxImagePropPixelAspectRatio){
           if(n!=0) throw Property::Exception(kOfxStatErrValue);
@@ -304,7 +309,7 @@ namespace OFX {
       }
 
       // get the virutals for viewport size, pixel scale, background colour
-      int ClipInstance::getIntProperty(const std::string &name, int n) OFX_EXCEPTION_SPEC
+      int ClipInstance::getIntProperty(const std::string &name, int n) const  OFX_EXCEPTION_SPEC
       {
         if(n!=0) throw Property::Exception(kOfxStatErrValue);
         if(name==kOfxImageClipPropConnected){
@@ -318,14 +323,14 @@ namespace OFX {
       }
 
       // get the virutals for viewport size, pixel scale, background colour
-      void ClipInstance::getIntPropertyN(const std::string &name, int *values, int n) OFX_EXCEPTION_SPEC
+      void ClipInstance::getIntPropertyN(const std::string &name, int *values, int n) const  OFX_EXCEPTION_SPEC
       {
         if(n!=0) throw Property::Exception(kOfxStatErrValue);
         *values = getIntProperty(name, 0);
       }
 
       // get the virutals for viewport size, pixel scale, background colour
-      const std::string &ClipInstance::getStringProperty(const std::string &name, int n) OFX_EXCEPTION_SPEC
+      const std::string &ClipInstance::getStringProperty(const std::string &name, int n) const  OFX_EXCEPTION_SPEC
       {
         if(n!=0) throw Property::Exception(kOfxStatErrValue);
         if(name==kOfxImageEffectPropPixelDepth){
@@ -356,8 +361,8 @@ namespace OFX {
       }
 
       OfxStatus ClipInstance::instanceChangedAction(std::string why,
-                                                OfxTime     time,
-                                                OfxPointD   renderScale)
+        OfxTime     time,
+        OfxPointD   renderScale)
       {
         Property::PropSpec stuff[] = {
           { kOfxPropType, Property::eString, 1, true, kOfxTypeClip },
@@ -382,7 +387,7 @@ namespace OFX {
       }
 
       /// given the colour component, find the nearest set of supported colour components
-      const std::string &ClipInstance::findSupportedComp(const std::string &s)
+      const std::string &ClipInstance::findSupportedComp(const std::string &s) const
       { 
         static const std::string none(kOfxImageComponentNone);
         static const std::string rgba(kOfxImageComponentRGBA);
@@ -404,7 +409,7 @@ namespace OFX {
 
         if(s == kOfxImageComponentAlpha && isSupportedComponent(kOfxImageComponentRGBA))
           return rgba;
-        
+
         /// wierd, must be some custom bit , if only one, choose that, otherwise no idea
         /// how to map, you need to derive to do so.
         const std::vector<std::string> &supportedComps = getSupportedComponents();
@@ -413,8 +418,8 @@ namespace OFX {
 
         return none;
       }
-      
-      
+
+
       ////////////////////////////////////////////////////////////////////////////////
       // Image
       //
@@ -445,21 +450,21 @@ namespace OFX {
       void Image::getClipBits(ClipInstance& instance)
       {
         Property::Set& clipProperties = instance.getProps();
-        
+
         // get and set the clip instance pixel depth
         const std::string &depth = clipProperties.getStringProperty(kOfxImageEffectPropPixelDepth);
         setStringProperty(kOfxImageEffectPropPixelDepth, depth); 
-        
+
         // get and set the clip instance components
         const std::string &comps = clipProperties.getStringProperty(kOfxImageEffectPropComponents);
         setStringProperty(kOfxImageEffectPropComponents, comps);
-        
+
         // get and set the clip instance premultiplication
         setStringProperty(kOfxImageEffectPropPreMultiplication, clipProperties.getStringProperty(kOfxImageEffectPropPreMultiplication));
 
         // get and set the clip instance pixel aspect ratio
         setDoubleProperty(kOfxImagePropPixelAspectRatio, clipProperties.getDoubleProperty(kOfxImagePropPixelAspectRatio));
-        
+
         // get and set the clip instance pixel aspect ratio
         setDoubleProperty(kOfxImagePropPixelAspectRatio, clipProperties.getDoubleProperty(kOfxImagePropPixelAspectRatio));
       }
@@ -474,14 +479,14 @@ namespace OFX {
 
       // construction based on clip instance
       Image::Image(ClipInstance& instance,
-                   double renderScaleX, 
-                   double renderScaleY,
-                   void* data,
-                   const OfxRectI &bounds,
-                   const OfxRectI &rod,
-                   int rowBytes,
-                   std::string field,
-                   std::string uniqueIdentifier) 
+        double renderScaleX, 
+        double renderScaleY,
+        void* data,
+        const OfxRectI &bounds,
+        const OfxRectI &rod,
+        int rowBytes,
+        std::string field,
+        std::string uniqueIdentifier) 
         : Property::Set(imageStuffs)
         , _referenceCount(1)
       {
@@ -500,14 +505,27 @@ namespace OFX {
         setIntProperty(kOfxImagePropRegionOfDefinition,rod.x2, 2);
         setIntProperty(kOfxImagePropRegionOfDefinition,rod.y2, 3);        
         setIntProperty(kOfxImagePropRowBytes,rowBytes);
-        
+
         setStringProperty(kOfxImagePropField,field);
         setStringProperty(kOfxImageClipPropFieldOrder,field);
         setStringProperty(kOfxImagePropUniqueIdentifier,uniqueIdentifier);
       }
 
-      Image::~Image() {
+      OfxRectI Image::getBounds() const
+      {
+        OfxRectI bounds;
+        getIntPropertyN(kOfxImagePropBounds, &bounds.x1, 4);
+        return bounds;
       }
+
+      OfxRectI Image::getROD() const
+      {
+        OfxRectI rod;
+        getIntPropertyN(kOfxImagePropBounds, &rod.x1, 4);
+        return rod;
+      }
+
+      Image::~Image() {}
 
       // release the reference 
       void Image::releaseReference()
@@ -516,9 +534,6 @@ namespace OFX {
         if(_referenceCount <= 0)
           delete this;
       }
-
     } // Clip
-
   } // Host
-
 } // OFX

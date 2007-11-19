@@ -6,14 +6,14 @@ Copyright (c) 2007, The Foundry Visionmongers Ltd. All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
-      this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-      and/or other materials provided with the distribution.
-    * Neither the name The Foundry Visionmongers Ltd, nor the names of its 
-      contributors may be used to endorse or promote products derived from this
-      software without specific prior written permission.
+* Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+* Neither the name The Foundry Visionmongers Ltd, nor the names of its 
+contributors may be used to endorse or promote products derived from this
+software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -83,16 +83,16 @@ namespace OFX {
 
       // call the interactive entry point
       OfxStatus Descriptor::callEntry(const char *action, 
-                                      void *handle,
-                                      OfxPropertySetHandle inArgs, 
-                                      OfxPropertySetHandle outArgs)
+        void *handle,
+        OfxPropertySetHandle inArgs, 
+        OfxPropertySetHandle outArgs) const
       {
         if(_entryPoint && _state != eFailed) {
           return _entryPoint(action, handle, inArgs, outArgs);
         }
         else
           return kOfxStatFailed;
-        
+
         return kOfxStatOK;
       }
 
@@ -132,7 +132,7 @@ namespace OFX {
         , _argProperties(interactArgsStuffs)
       {
         _properties.setPointerProperty(kOfxPropEffectInstance, effectInstance);
-        _properties.setChainedSet(&desc.getProperties()); /// chain it into the descriptor props
+        _properties.setChainedSet(&desc.getProperties()); // chain it into the descriptor props
         _properties.setGetHook(kOfxInteractPropPixelScale, this);
         _properties.setGetHook(kOfxInteractPropBackgroundColour,this);
         _properties.setGetHook(kOfxInteractPropViewportSize,this);
@@ -145,20 +145,20 @@ namespace OFX {
       Instance::~Instance()
       {
         /// call it directly incase CI failed and we should always tidy up after create instance
-        _descriptor.callEntry(kOfxActionDestroyInstance,getHandle(), 0,0);
+        _descriptor.callEntry(kOfxActionDestroyInstance, getHandle(), 0,0);
       }
 
       /// call the entry point in the descriptor with action and the given args
       OfxStatus Instance::callEntry(const char *action, 
-                                    OfxPropertySetHandle inArgs, 
-                                    OfxPropertySetHandle outArgs)
+        OfxPropertySetHandle inArgs, 
+        OfxPropertySetHandle outArgs)
       {
         if(_state != eFailed) {
           return _descriptor.callEntry(action, getHandle(), inArgs, outArgs);        
         }
         return kOfxStatFailed;
       }
-      
+
       // do nothing
       int Instance::getDimension(const std::string &name) OFX_EXCEPTION_SPEC
       {
@@ -174,7 +174,7 @@ namespace OFX {
         else
           throw Property::Exception(kOfxStatErrValue);
       }
-        
+
       // do nothing function
       void Instance::reset(const std::string &name) OFX_EXCEPTION_SPEC
       {
@@ -226,32 +226,32 @@ namespace OFX {
       void Instance::getSlaveToParam(std::vector<std::string>& params)
       {        
         int nSlaveParams = _properties.getDimension(kOfxInteractPropSlaveToParam);
-                    
+
         for(int i=0;i<nSlaveParams;i++){
           std::string param = _properties.getStringProperty(kOfxInteractPropSlaveToParam, i);
           params.push_back(param);
         }
       }    
-      
+
       /// initialise the argument properties
       void Instance::initArgProp(OfxTime time, 
-                                 const OfxPointD &renderScale)
+        const OfxPointD &renderScale)
       {
         _argProperties.setPointerProperty(kOfxPropEffectInstance, _effectInstance);
         _argProperties.setPointerProperty(kOfxPropInstanceData, _properties.getPointerProperty(kOfxPropInstanceData));
         _argProperties.setDoubleProperty(kOfxPropTime,time);
         _argProperties.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
       }
-               
+
       void Instance::setPenArgProps(const OfxPointD &penPos,
-                                    double  pressure)
+        double  pressure)
       {
         _argProperties.setDoublePropertyN(kOfxInteractPropPenPosition, &penPos.x, 2);
         _argProperties.setDoubleProperty(kOfxInteractPropPenPressure, pressure);
       }
 
       void Instance::setKeyArgProps(int     key,
-                                    char*   keyString)
+        char*   keyString)
       {
         _argProperties.setIntProperty(kOfxPropKeySym,key);
         _argProperties.setStringProperty(kOfxPropKeyString,keyString);
@@ -270,16 +270,16 @@ namespace OFX {
       }
 
       OfxStatus Instance::drawAction(OfxTime time,  
-                                     const OfxPointD &renderScale)
+        const OfxPointD &renderScale)
       {        
         initArgProp(time, renderScale);
         return callEntry(kOfxInteractActionDraw, _argProperties.getHandle(),0);
       }
 
       OfxStatus Instance::penMotionAction(OfxTime time, 
-                                          const OfxPointD &renderScale,
-                                          const OfxPointD &penPos,
-                                          double  pressure)
+        const OfxPointD &renderScale,
+        const OfxPointD &penPos,
+        double  pressure)
       {
         initArgProp(time, renderScale);
         setPenArgProps(penPos, pressure);
@@ -287,9 +287,9 @@ namespace OFX {
       }
 
       OfxStatus Instance::penUpAction(OfxTime time, 
-                                      const OfxPointD &renderScale,
-                                      const OfxPointD &penPos,
-                                      double pressure)
+        const OfxPointD &renderScale,
+        const OfxPointD &penPos,
+        double pressure)
       {
         initArgProp(time, renderScale);
         setPenArgProps(penPos, pressure);
@@ -297,9 +297,9 @@ namespace OFX {
       }
 
       OfxStatus Instance::penDownAction(OfxTime time, 
-                                        const OfxPointD &renderScale,
-                                        const OfxPointD &penPos,
-                                        double pressure)
+        const OfxPointD &renderScale,
+        const OfxPointD &penPos,
+        double pressure)
       {
         initArgProp(time, renderScale);
         setPenArgProps(penPos, pressure);
@@ -307,9 +307,9 @@ namespace OFX {
       }
 
       OfxStatus Instance::keyDownAction(OfxTime time, 
-                                        const OfxPointD &renderScale,
-                                        int     key,
-                                        char*   keyString)
+        const OfxPointD &renderScale,
+        int     key,
+        char*   keyString)
       {
         initArgProp(time, renderScale);
         setKeyArgProps(key, keyString);
@@ -317,9 +317,9 @@ namespace OFX {
       }
 
       OfxStatus Instance::keyUpAction(OfxTime time, 
-                                      const OfxPointD &renderScale,
-                                      int     key,
-                                      char*   keyString)
+        const OfxPointD &renderScale,
+        int     key,
+        char*   keyString)
       {
         initArgProp(time, renderScale);
         setKeyArgProps(key, keyString);
@@ -327,24 +327,24 @@ namespace OFX {
       }
 
       OfxStatus Instance::keyRepeatAction(OfxTime time,
-                                          const OfxPointD &renderScale,
-                                          int     key,
-                                          char*   keyString)
+        const OfxPointD &renderScale,
+        int     key,
+        char*   keyString)
       {
         initArgProp(time, renderScale);
         setKeyArgProps(key, keyString);
         return callEntry(kOfxInteractActionKeyRepeat,_argProperties.getHandle(),0);
       }
-      
+
       OfxStatus Instance::gainFocusAction(OfxTime time,
-                                          const OfxPointD &renderScale)
+        const OfxPointD &renderScale)
       {
         initArgProp(time, renderScale);
         return callEntry(kOfxInteractActionGainFocus,_argProperties.getHandle(),0);
       }
 
       OfxStatus Instance::loseFocusAction(OfxTime  time,
-                                          const OfxPointD &renderScale)
+        const OfxPointD &renderScale)
       {
         initArgProp(time, renderScale);
         return callEntry(kOfxInteractActionLoseFocus,_argProperties.getHandle(),0);
@@ -363,7 +363,7 @@ namespace OFX {
         else
           return kOfxStatErrBadHandle;
       }
-      
+
       static OfxStatus interactRedraw(OfxInteractHandle handle)
       {
         Interact::Instance *interactInstance = reinterpret_cast<Interact::Instance*>(handle);
@@ -372,7 +372,7 @@ namespace OFX {
         else
           return kOfxStatErrBadHandle;
       }
-      
+
       static OfxStatus interactGetPropertySet(OfxInteractHandle handle, OfxPropertySetHandle *property)
       {
         Interact::Base *interact = reinterpret_cast<Interact::Base*>(handle);
@@ -382,7 +382,7 @@ namespace OFX {
         }
         return kOfxStatErrBadHandle;
       }
-      
+
       /// the interact suite
       static OfxInteractSuiteV1 gSuite = {
         interactSwapBuffers,

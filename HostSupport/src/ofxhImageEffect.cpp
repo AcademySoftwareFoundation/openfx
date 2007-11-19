@@ -94,12 +94,16 @@ namespace OFX {
       Base::~Base() {}
 
       /// obtain a handle on this for passing to the C api
-      OfxImageEffectHandle Base::getHandle() {
+      OfxImageEffectHandle Base::getHandle() const {
         return (OfxImageEffectHandle)this;
       }
       
       /// get the properties set
-      Property::Set &Base::getProps() {
+      const Property::Set& Base::getProps() const {
+        return _properties;
+      }
+
+      Property::Set& Base::getProps() {
         return _properties;
       }
 
@@ -289,7 +293,7 @@ namespace OFX {
       }
 
       /// get the clips
-      std::map<std::string, ClipDescriptor*> &Descriptor::getClips() {
+      const std::map<std::string, ClipDescriptor*> &Descriptor::getClips() const {
         return _clips;
       }
 
@@ -340,7 +344,7 @@ namespace OFX {
         _properties.setIntProperty(kOfxPropIsInteractive,interactive);
 
         // copy is sequential over
-        bool sequential = other.getProps().getIntProperty(kOfxImageEffectInstancePropSequentialRender);
+        bool sequential = other.getProps().getIntProperty(kOfxImageEffectInstancePropSequentialRender) > 0 ? true : false;
         _properties.setIntProperty(kOfxImageEffectInstancePropSequentialRender,sequential);
 
         while(effectInstanceStuff[i].name) {
@@ -377,24 +381,23 @@ namespace OFX {
       {        
         const std::vector<ClipDescriptor*>& clips = _descriptor->getClipsByOrder();
 
-        for(std::vector<ClipDescriptor*>::const_iterator it=clips.begin();
-            it!=clips.end();
-            it++)
+        for(std::vector<ClipDescriptor*>::const_iterator it=clips.begin(); it!=clips.end(); it++)
           {
-            const std::string name =  (*it)->getName();
+            const std::string& name =  (*it)->getName();
             // foreach clip descriptor make a clip instance
             ClipInstance* instance = newClipInstance(this, *it);   
-            if(!instance) return kOfxStatFailed;
+            if(!instance) 
+              return kOfxStatFailed;
 
             _clips[name] = instance;
           }        
 
-        std::list<Param::Descriptor*>& map = _descriptor->getParamList();
+        const std::list<Param::Descriptor*>& map = _descriptor->getParamList();
 
         std::map<std::string,std::vector<Param::Instance*> > parameters;
         std::map<std::string, Param::Instance*> groups;
 
-        for(std::list<Param::Descriptor*>::iterator it=map.begin();
+        for(std::list<Param::Descriptor*>::const_iterator it=map.begin();
             it!=map.end();
             it++)
           {
@@ -407,7 +410,8 @@ namespace OFX {
 
             // get a param instance from a param descriptor
             Param::Instance* instance = newParam(name,*descriptor);
-            if(!instance) return kOfxStatFailed;
+            if(!instance) 
+              return kOfxStatFailed;
           
             // add the value into the param set instance
             OfxStatus st = addParam(name,instance);
@@ -446,7 +450,8 @@ namespace OFX {
       }
 
       // do nothing
-      int Instance::getDimension(const std::string &name) OFX_EXCEPTION_SPEC {
+      int Instance::getDimension(const std::string &name) const OFX_EXCEPTION_SPEC 
+      {
         printf("failing in %s with name=%s\n", __PRETTY_FUNCTION__, name.c_str());
         throw Property::Exception(kOfxStatErrMissingHostFeature);
       }
@@ -467,7 +472,7 @@ namespace OFX {
       }
 
       // get the virutals for viewport size, pixel scale, background colour
-      double Instance::getDoubleProperty(const std::string &name, int index) OFX_EXCEPTION_SPEC
+      double Instance::getDoubleProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC
       {
         if(name==kOfxImageEffectPropProjectSize){
           if(index>=2) throw Property::Exception(kOfxStatErrBadIndex);
@@ -503,7 +508,7 @@ namespace OFX {
           throw Property::Exception(kOfxStatErrUnknown);        
       }
 
-      void Instance::getDoublePropertyN(const std::string &name, double* first, int n) OFX_EXCEPTION_SPEC
+      void Instance::getDoublePropertyN(const std::string &name, double* first, int n) const OFX_EXCEPTION_SPEC
       {
         if(name==kOfxImageEffectPropProjectSize){
           if(n>2) throw Property::Exception(kOfxStatErrBadIndex);
@@ -1340,7 +1345,7 @@ namespace OFX {
 
       /// find the most chromatic components out of the two. Override this if you define
       /// more chromatic components
-      const std::string &Instance::findMostChromaticComponents(const std::string &a, const std::string &b)
+      const std::string &Instance::findMostChromaticComponents(const std::string &a, const std::string &b) const
       {
         if(a == kOfxImageComponentNone)
           return b;
@@ -1352,7 +1357,7 @@ namespace OFX {
       }
 
       /// given the bit depth, find the best match for it.
-      const std::string &Instance::bestSupportedDepth(const std::string &depth)
+      const std::string &Instance::bestSupportedDepth(const std::string &depth) const
       {
         static const std::string none(kOfxBitDepthNone);
         static const std::string bytes(kOfxBitDepthByte);
@@ -1903,7 +1908,6 @@ namespace OFX {
         { 0 },
       };    
 
-      /// ctor
       Host::Host() 
       {
         /// add the properties for an image effect host, derived classs to set most of them
@@ -1913,10 +1917,9 @@ namespace OFX {
       /// optionally over-ridden function to register the creation of a new descriptor in the host app
       void Host::initDescriptor(Descriptor* desc)
       {
-        /// do nothing
       }
 
-      bool Host::pluginSupported(ImageEffectPlugin *plugin, std::string &reason)
+      bool Host::pluginSupported(ImageEffectPlugin *plugin, std::string &reason) const
       {
         return true;
       }
@@ -1963,9 +1966,6 @@ namespace OFX {
         else  /// otherwise just grab the base class one, which is props and memory
           return OFX::Host::Host::fetchSuite(suiteName, suiteVersion);
       }
-
     } // ImageEffect
-
   } // Host
-
 } // OFX
