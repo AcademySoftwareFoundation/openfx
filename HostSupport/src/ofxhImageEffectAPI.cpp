@@ -483,7 +483,6 @@ namespace OFX {
         for(std::map<std::string, ImageEffectPlugin *>::const_iterator it =  _pluginsByID.begin(); it != _pluginsByID.end(); ++it)
         {
           std::cout << "Plug-in:" << it->first << std::endl;
-          Plugin* plug = it->second;
           std::cout << "\t" << "Filepath: " << it->second->getBinary()->getFilePath();
           std::cout<< "(" << it->second->getIndex() << ")" << std::endl;
 
