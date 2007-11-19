@@ -47,7 +47,7 @@ Binary::Binary(const std::string &binaryPath): _binaryPath(binaryPath), _invalid
 // actually open the binary.
 void Binary::load() {
 #if defined (UNIX)
-  _dlHandle = dlopen(_binaryPath.c_str(), RTLD_NOW);
+  _dlHandle = dlopen(_binaryPath.c_str(), RTLD_LAZY);
 #else
   _dlHandle = LoadLibrary(_binaryPath.c_str());
 #endif
