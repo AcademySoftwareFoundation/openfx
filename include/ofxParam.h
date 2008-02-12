@@ -172,7 +172,7 @@ Hosts that do not support paged parameter layout should set this to zero.
     - Type - int X 2
     - Property Set - host descriptor (read only)
 
-If the host has supports paged parameter layout, used dimension 0 as the number of columns per page and dimension 2 as the number of rows per page.
+If the host has supports paged parameter layout, used dimension 0 as the number of columns per page and dimension 1 as the number of rows per page.
 */
 #define kOfxParamHostPropPageRowColumnCount "OfxParamHostPropPageRowColumnCount"
 
