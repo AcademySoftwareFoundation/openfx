@@ -1805,7 +1805,7 @@ Source    -2            12          25
 
       <para>
 	Scanlines need <emphasis>not</emphasis> be contiguously packed. The number of <emphasis>bytes</emphasis> between between a pixel in 
-	the same column, but separated by a scan line is known as the \b rowbytes of an image. Rowbytes can be negative, 
+	the same column, but separated by a scan line is known as the  <emphasis>rowbytes</emphasis> of an image. Rowbytes can be negative, 
 	allowing for compositing systems with a native top to bottom scanline order to trivially support bottom to top images.
       </para>
 

@@ -14,6 +14,12 @@
       The OFX Parameters Suite is the means by which  parameters are defined and used by the 
       plug-in but maintained the host. It is defined in the ofxParam.h header file.
     </para>
+    <para>
+      Note that the entire state of the plugin is encoded in the value of its parameter set. If you need to persist some sort of private data,
+      you must do so by setting param values in the effects. The <link linkend="kOfxActionSyncPrivateData">Sync Private Data Action</link> is
+      an action that tells you when to flush any values that need persisting out to the effects param set. You can reconstruct your private
+      data during the <link linkEnd="kOfxActionCreateInstance">Create Instance Action</link>.
+    </para>
   </section>
   
   <section id="ParametersDefining">
@@ -373,7 +379,7 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
   <section id="ParametersPersistance"><title>Parameter Persistance </title>
     
     <para>
-      All parameters flagged with the <link linkend='kOfxParamPropPersistant'><code>kOfxParamPropPersistant</code></link> property will persist when an effect is saved. How the effect is saved is completely up to the host, it may be in a file, a data base, where ever. We call a saved set of parameters a \b setup. A host will need to save the major version number of the plugin, as well as the plugin's unique identifier, in any setup.
+      All parameters flagged with the <link linkend='kOfxParamPropPersistant'><code>kOfxParamPropPersistant</code></link> property will persist when an effect is saved. How the effect is saved is completely up to the host, it may be in a file, a data base, where ever. We call a saved set of parameters a <emphasis>setup</emphasis>. A host will need to save the major version number of the plugin, as well as the plugin's unique identifier, in any setup.
     </para>
     <para>
       When an host loads a set up it should do so in the following manner...
@@ -522,6 +528,34 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
     
     <para>
       Normalised parameters specify thier increments in cannonical coordinates, rather than in normalised coordinates. So an increment of '1' means 1 pixel, not '1 project width', otherwise sliders would be a bit wild.
+    </para>
+  </section>
+  <section id="SettingParams">
+    <title>Setting Parameters</title>
+    <para>
+       Plugins are free to set parameters in limited set of circumstances, typically relating to user interaction. You can only set parameters in the 
+       following actions passed to the plug-in's <link linkEnd="mainEntryPoint">main entry</link> function...
+      <itemizedlist>
+	      <listitem>The <link linkEnd="kOfxActionCreateInstance">Create Instance Action</link></listitem>
+	      <listitem>The <link linkend="kOfxActionBeginInstanceChanged">The Begin Instance Changed Action</link></listitem>
+	      <listitem>The <link linkend="kOfxActionInstanceChanged">The Instance Changed Action</link></listitem>
+	      <listitem>The <link linkend="kOfxActionEndInstanceChanged">The End Instance Changed Action</link></listitem>
+	      <listitem>The <link linkend="kOfxActionSyncPrivateData">The Sync Private Data Action</link></listitem>
+      </itemizedlist>
+    </para>
+        
+    <para>
+       Plugins can also set parameter values during the following actions passed to any of its  <link linkEnd="CustomInteracts">interacts</link>
+       main entry function...
+      <itemizedlist>
+	     <listitem><link linkend="kOfxInteractActionPenDown">The Pen Down Action</link></listitem>
+	     <listitem><link linkend="kOfxInteractActionPenMotion">The Pen Motion Action</link></listitem>
+	     <listitem><link linkend="kOfxInteractActionPenUp">The Pen Up Action</link></listitem>
+	     <listitem><link linkend="kOfxInteractActionKeyDown">The Key Down Action</link></listitem>
+     	 <listitem><link linkend="kOfxInteractActionKeyRepeat">The Key Repeat Action</link></listitem>
+       <listitem><link linkend="kOfxInteractActionKeyUp">The Key Up Action</link></listitem>
+       <listitem><link linkend="kOfxInteractActionLoseFocus">The Lose Focus Action</link></listitem>
+      </itemizedlist>
     </para>
   </section>
 </chapter>
