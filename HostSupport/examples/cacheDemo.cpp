@@ -59,8 +59,12 @@ public :
 
 int main(int argc, char **argv) 
 {
+#ifdef _WIN32
+  _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+#endif
+
   /// set the version label in the global cache
-  OFX::Host::gPluginCache.setCacheVersion("cacheDemoV1");
+  OFX::Host::PluginCache::getPluginCache()->setCacheVersion("cacheDemoV1");
 
   /// create our derived image effect host
   CacheHost myHost;
@@ -69,18 +73,20 @@ int main(int argc, char **argv)
   OFX::Host::ImageEffect::PluginCache imageEffectPluginCache(myHost);
 
   /// register the image effect cache with the global plugin cache
-  imageEffectPluginCache.registerInCache(OFX::Host::gPluginCache);
+  imageEffectPluginCache.registerInCache(*OFX::Host::PluginCache::getPluginCache());
 
   /// now read an old cache cache
   std::ifstream ifs("oldcache.xml");
-  OFX::Host::gPluginCache.readCache(ifs);
-  OFX::Host::gPluginCache.scanPluginFiles();
+  OFX::Host::PluginCache::getPluginCache()->readCache(ifs);
+  OFX::Host::PluginCache::getPluginCache()->scanPluginFiles();
   ifs.close();
 
   /// and write a new cache, long version with everything in there
   std::ofstream of("newCache.xml");
-  OFX::Host::gPluginCache.writePluginCache(of);
+  OFX::Host::PluginCache::getPluginCache()->writePluginCache(of);
   of.close();
 
   imageEffectPluginCache.dumpToStdOut();
+  //Clean up, to be polite.
+  OFX::Host::PluginCache::clearPluginCache();
 }

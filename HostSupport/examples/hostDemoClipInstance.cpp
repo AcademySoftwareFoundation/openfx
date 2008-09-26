@@ -129,6 +129,12 @@ namespace MyHost {
   {
   }
 
+  MyClipInstance::~MyClipInstance()
+  {
+    if(_outputImage)
+      _outputImage->releaseReference();
+  }
+   
   /// Get the Raw Unmapped Pixel Depth from the host. We are always 8 bits in our example
   const std::string &MyClipInstance::getUnmappedBitDepth() const
   {

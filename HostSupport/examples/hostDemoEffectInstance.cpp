@@ -66,7 +66,8 @@ namespace MyHost {
 
   // get a new clip instance
   OFX::Host::ImageEffect::ClipInstance* MyEffectInstance::newClipInstance(OFX::Host::ImageEffect::Instance* plugin,
-                                                                          OFX::Host::ImageEffect::ClipDescriptor* descriptor)
+                                                                          OFX::Host::ImageEffect::ClipDescriptor* descriptor,
+                                                                          int index)
   {
     return new MyClipInstance(this,descriptor);
   }

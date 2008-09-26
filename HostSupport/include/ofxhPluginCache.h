@@ -249,7 +249,7 @@ namespace OFX {
 
     public:
       PluginHandle(Plugin *p, OFX::Host::Host *_host);
-      ~PluginHandle();
+      virtual ~PluginHandle();
 
       OfxPlugin *getOfxPlugin() { return _op; }
 
@@ -298,11 +298,15 @@ namespace OFX {
 
       bool _ignoreCache;
       std::string _cacheVersion;
-
+      static PluginCache* gPluginCachePtr;
     public:
       /// ctor, which inits _pluginPath to default locations and not much else
       PluginCache();
+      virtual ~PluginCache();
 
+      static PluginCache* getPluginCache();
+      static void clearPluginCache();
+      
       /// get the list in which plugins are sought
       const std::list<std::string> &getPluginPath() const {
         return _pluginPath;
@@ -349,10 +353,6 @@ namespace OFX {
         return _plugins;
       }
     };
-
-    /// the global plugin cache
-    extern PluginCache gPluginCache;
-
   }
 }
 

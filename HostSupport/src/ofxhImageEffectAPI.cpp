@@ -65,7 +65,6 @@ namespace OFX {
         , _pc(pc)
         , _baseDescriptor(this)
         , _madeKnownContexts(false)
-        , _pluginHandle(0)
       {}
 
       ImageEffectPlugin::ImageEffectPlugin(PluginCache &pc,
@@ -80,7 +79,6 @@ namespace OFX {
         , _pc(pc)
         , _baseDescriptor(this) 
         , _madeKnownContexts(false)
-        , _pluginHandle(0)
       {}
 
 #ifdef WINDOWS
@@ -140,36 +138,33 @@ namespace OFX {
 
       PluginHandle *ImageEffectPlugin::getPluginHandle() 
       {
-        if(!_pluginHandle) 
+        if(!_pluginHandle.get()) 
         {
-          _pluginHandle = new OFX::Host::PluginHandle(this, _pc.getHost()); 
+          _pluginHandle.reset(new OFX::Host::PluginHandle(this, _pc.getHost())); 
 
           OfxPlugin *op = _pluginHandle->getOfxPlugin();
 
           if (!op) {
-            delete _pluginHandle;
-            _pluginHandle = 0;
+            _pluginHandle.reset(0);
             return 0;
           }
 
           int rval = op->mainEntry(kOfxActionLoad, 0, 0, 0);
 
           if (rval != kOfxStatOK && rval != kOfxStatReplyDefault) {
-            delete _pluginHandle;
-            _pluginHandle = 0;
+            _pluginHandle.reset(0);
             return 0;
           }
 
           rval = op->mainEntry(kOfxActionDescribe, getDescriptor().getHandle(), 0, 0);
 
           if (rval != kOfxStatOK && rval != kOfxStatReplyDefault) {
-            delete _pluginHandle;
-            _pluginHandle = 0;
+            _pluginHandle.reset(0);
             return 0;
           }
         }
 
-        return _pluginHandle;
+        return _pluginHandle.get();
       }
 
       Descriptor *ImageEffectPlugin::getContext(const std::string &context) 
@@ -191,18 +186,30 @@ namespace OFX {
         OFX::Host::Property::Set inarg(inargspec);
 
         PluginHandle *ph = getPluginHandle();
-        ImageEffect::Descriptor *newContext = new ImageEffect::Descriptor(getDescriptor(), this);
+        std::auto_ptr<ImageEffect::Descriptor> newContext(new ImageEffect::Descriptor(getDescriptor(), this));
 
         int rval = ph->getOfxPlugin()->mainEntry(kOfxImageEffectActionDescribeInContext, newContext->getHandle(), inarg.getHandle(), 0);
 
         if (rval == kOfxStatOK || rval == kOfxStatReplyDefault) 
         {
-          _contexts[context] = newContext;
-          return newContext;
+          _contexts[context] = newContext.release();
+          return _contexts[context];
         }
-
-        delete newContext;
         return 0;
+      }
+
+      ImageEffectPlugin::~ImageEffectPlugin()
+      {
+        for(std::map<std::string, Descriptor *>::iterator it =  _contexts.begin(); it != _contexts.end(); ++it)
+        {
+          delete it->second;
+        }
+        _contexts.clear();
+        if(_pluginHandle.get())
+        {
+          OfxPlugin *op = _pluginHandle->getOfxPlugin();
+          op->mainEntry(kOfxActionUnload, 0, 0, 0);
+        }
       }
 
       ImageEffect::Instance* ImageEffectPlugin::createInstance(const std::string &context, void *clientData)

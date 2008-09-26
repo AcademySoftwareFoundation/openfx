@@ -70,6 +70,8 @@ namespace OFX {
         /// CTOR
         Descriptor();
 
+        virtual ~Descriptor() {}
+
         /// set the main entry points
         void setEntryPoint(OfxPluginEntryPoint *entryPoint) {_entryPoint = entryPoint;}
 
@@ -133,13 +135,13 @@ namespace OFX {
 
         /// hooks to kOfxInteractPropViewportSize in the property set
         /// this is actually redundant and is to be deprecated
-        virtual void getViewportSize(double &width, double &height) = 0;
+        virtual void getViewportSize(double &width, double &height) const = 0;
 
         // hooks to live kOfxInteractPropPixelScale in the property set
-        virtual void getPixelScale(double& xScale, double& yScale) = 0;
+        virtual void getPixelScale(double& xScale, double& yScale) const = 0;
 
         // hooks to kOfxInteractPropBackgroundColour in the property set
-        virtual void getBackgroundColour(double &r, double &g, double &b) = 0;
+        virtual void getBackgroundColour(double &r, double &g, double &b) const = 0;
 
         /// implement
         virtual OfxStatus swapBuffers() = 0;
@@ -157,10 +159,10 @@ namespace OFX {
         virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC;
 
         /// the gethook virutals for  pixel scale, background colour
-        virtual double getDoubleProperty(const std::string &name, int index) OFX_EXCEPTION_SPEC;
+        virtual double getDoubleProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC;
 
         /// for pixel scale and background colour
-        virtual void getDoublePropertyN(const std::string &name, double *first, int n) OFX_EXCEPTION_SPEC;
+        virtual void getDoublePropertyN(const std::string &name, double *first, int n) const OFX_EXCEPTION_SPEC;
 
         /// call create instance
         virtual OfxStatus createInstanceAction();

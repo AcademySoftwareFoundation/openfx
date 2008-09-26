@@ -64,11 +64,12 @@ namespace OFX {
         mutable std::set<std::string> _knownContexts;
         mutable bool _madeKnownContexts;
 
-        PluginHandle* _pluginHandle;
+        std::auto_ptr<PluginHandle> _pluginHandle;
 
         void addContextInternal(const std::string &context) const;
 
       public:
+        virtual ~ImageEffectPlugin();
 			  ImageEffectPlugin(PluginCache &pc, PluginBinary *pb, int pi, OfxPlugin *pl);
 
         ImageEffectPlugin(PluginCache &pc,
@@ -79,7 +80,7 @@ namespace OFX {
                           const std::string &pluginId,
                           int pluginMajorVersion,
                           int pluginMinorVersion);
-
+       
         /// return the API handler this plugin was constructed by
         APICache::PluginAPICacheI& getApiHandler();
 

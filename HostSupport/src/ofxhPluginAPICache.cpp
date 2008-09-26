@@ -60,10 +60,10 @@ namespace OFX
       }      
 
       void propertySetXMLRead(const std::string &el,
-        std::map<std::string,
-        std::string> map,
+        std::map<std::string,std::string> map,
         Property::Set &set,
-        Property::Property *&_currentProp) {
+        Property::Property *&_currentProp) 
+      {
           if (el == "property") {
             std::string propName = map["name"];
             std::string propType = map["type"];

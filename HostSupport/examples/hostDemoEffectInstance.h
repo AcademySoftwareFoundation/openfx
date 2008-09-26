@@ -52,7 +52,8 @@ namespace MyHost {
     
     /// make a clip
     OFX::Host::ImageEffect::ClipInstance* newClipInstance(OFX::Host::ImageEffect::Instance* plugin,
-                                                          OFX::Host::ImageEffect::ClipDescriptor* descriptor);
+                                                          OFX::Host::ImageEffect::ClipDescriptor* descriptor,
+                                                          int index);
 
     
     /// vmessage

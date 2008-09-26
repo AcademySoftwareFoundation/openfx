@@ -266,6 +266,13 @@ namespace OFX {
         gImageEffectHost->initDescriptor(this);
       }
 
+      Descriptor::~Descriptor()
+      {
+        for(std::map<std::string, ClipDescriptor*>::iterator it = _clips.begin(); it != _clips.end(); ++it)
+          delete it->second;
+        _clips.clear();
+      }
+
       /// create a new clip and add this to the clip map
       ClipDescriptor *Descriptor::defineClip(const std::string &name) {
         ClipDescriptor *c = new ClipDescriptor(name);
@@ -380,12 +387,12 @@ namespace OFX {
       OfxStatus Instance::populate() 
       {        
         const std::vector<ClipDescriptor*>& clips = _descriptor->getClipsByOrder();
-
-        for(std::vector<ClipDescriptor*>::const_iterator it=clips.begin(); it!=clips.end(); it++)
+        int counter = 0;
+        for(std::vector<ClipDescriptor*>::const_iterator it=clips.begin(); it!=clips.end(); it++, counter++)
           {
             const std::string& name =  (*it)->getName();
             // foreach clip descriptor make a clip instance
-            ClipInstance* instance = newClipInstance(this, *it);   
+            ClipInstance* instance = newClipInstance(this, *it, counter);   
             if(!instance) 
               return kOfxStatFailed;
 
@@ -1648,7 +1655,7 @@ namespace OFX {
         Memory::Instance *memoryInstance = reinterpret_cast<Memory::Instance*>(memoryHandle);
 
         if(memoryInstance && memoryInstance->verifyMagic()) {
-          memoryInstance->free();
+          memoryInstance->freeMem();
           delete memoryInstance;
           return kOfxStatOK;
         }
@@ -1952,10 +1959,14 @@ namespace OFX {
             return 0;
         }
         else if (strcmp(suiteName, kOfxTimeLineSuite)==0) {
-          if(suiteVersion==1) 
-            return (void*)&gTimelineSuite;
-          else
-            return 0;
+			// Temporary change to disable timeline suite function calls
+			return 0;
+			/*
+			if(suiteVersion==1) 
+			return (void*)&gTimelineSuite;
+			else
+			return 0;
+			*/
         }
         else if (strcmp(suiteName, kOfxMultiThreadSuite)==0) {
           if(suiteVersion == 1)

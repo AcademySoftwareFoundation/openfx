@@ -341,7 +341,7 @@ namespace OFX {
           return new PropertyTemplate(*this);
         }
 
-        ~PropertyTemplate()
+        virtual ~PropertyTemplate()
         {
         }
 

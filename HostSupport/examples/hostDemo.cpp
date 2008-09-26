@@ -94,8 +94,12 @@ void exportToPGM(const std::string& fname, MyHost::MyImage* im)
 
 int main(int argc, char **argv) 
 {
+  //_CrtSetBreakAlloc(3168);
+#ifdef _WIN32
+  _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+#endif
   // set the version label in the global cache
-  OFX::Host::gPluginCache.setCacheVersion("hostDemoV1");
+  OFX::Host::PluginCache::getPluginCache()->setCacheVersion("hostDemoV1");
 
   // create our derived image effect host which provides
   // a factory to make plugin instances and acts
@@ -107,17 +111,17 @@ int main(int argc, char **argv)
   OFX::Host::ImageEffect::PluginCache imageEffectPluginCache(myHost);
 
   // register the image effect cache with the global plugin cache
-  imageEffectPluginCache.registerInCache(OFX::Host::gPluginCache);
+  imageEffectPluginCache.registerInCache(*OFX::Host::PluginCache::getPluginCache());
 
   // try to read an old cache
   std::ifstream ifs("hostDemoPluginCache.xml");
-  OFX::Host::gPluginCache.readCache(ifs);
-  OFX::Host::gPluginCache.scanPluginFiles();
+  OFX::Host::PluginCache::getPluginCache()->readCache(ifs);
+  OFX::Host::PluginCache::getPluginCache()->scanPluginFiles();
   ifs.close();
 
   /// flush out the current cache
   std::ofstream of("hostDemoPluginCache.xml");
-  OFX::Host::gPluginCache.writePluginCache(of);
+  OFX::Host::PluginCache::getPluginCache()->writePluginCache(of);
   of.close();
 
   // get the invert example plugin which uses the OFX C++ support code
@@ -195,6 +199,6 @@ int main(int argc, char **argv)
       instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale);
     }
   }
-
+  OFX::Host::PluginCache::clearPluginCache();
   return 0;
 }

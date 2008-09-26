@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef HOST_DEMO_CLIP_INSTANCE_H
 #define HOST_DEMO_CLIP_INSTANCE_H
 
-#define OFXHOSTDEMOCLIPLENGTH 25.0
+#define OFXHOSTDEMOCLIPLENGTH 1.0
 
 namespace MyHost {
 
@@ -57,6 +57,7 @@ namespace MyHost {
   public:
     MyClipInstance(MyEffectInstance* effect, OFX::Host::ImageEffect::ClipDescriptor* desc);
 
+    virtual ~MyClipInstance();
     MyImage* getOutputImage() { return _outputImage; }
 
     /// Get the Raw Unmapped Pixel Depth from the host

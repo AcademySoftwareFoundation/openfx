@@ -190,6 +190,7 @@ namespace OFX {
         /// used to construct the global description
         Descriptor(Plugin *plug);        
 
+        virtual ~Descriptor();
         /// used to construct a context description, 'other' is the main context
         Descriptor(const Descriptor &rootContext);
 
@@ -332,7 +333,7 @@ namespace OFX {
 
         /// make a clip
         virtual ClipInstance* newClipInstance(ImageEffect::Instance* plugin,
-          ClipDescriptor* descriptor) = 0;
+          ClipDescriptor* descriptor, int index) = 0;
 
 
         /// vmessage

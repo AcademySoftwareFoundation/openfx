@@ -132,7 +132,7 @@ namespace OFX {
       public:
         SetDescriptor();
 
-        ~SetDescriptor();
+        virtual ~SetDescriptor();
 
         const std::map<std::string, Descriptor*>& getParams() const;
 

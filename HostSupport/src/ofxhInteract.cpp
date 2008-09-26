@@ -181,7 +181,7 @@ namespace OFX {
         // no-op
       }
 
-      double Instance::getDoubleProperty(const std::string &name, int index) OFX_EXCEPTION_SPEC
+      double Instance::getDoubleProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC
       {   
         if(name == kOfxInteractPropPixelScale){
           if(index>=2) throw Property::Exception(kOfxStatErrBadIndex);
@@ -205,7 +205,7 @@ namespace OFX {
           throw Property::Exception(kOfxStatErrUnknown);
       }
 
-      void Instance::getDoublePropertyN(const std::string &name, double *first, int n) OFX_EXCEPTION_SPEC
+      void Instance::getDoublePropertyN(const std::string &name, double *first, int n) const OFX_EXCEPTION_SPEC
       {
         if(name == kOfxInteractPropPixelScale){
           if(n>2) throw Property::Exception(kOfxStatErrBadIndex);
@@ -237,6 +237,8 @@ namespace OFX {
       void Instance::initArgProp(OfxTime time, 
         const OfxPointD &renderScale)
       {
+        double vals[2];
+        _argProperties.getDoublePropertyN(kOfxInteractPropPixelScale, vals, 2);
         _argProperties.setPointerProperty(kOfxPropEffectInstance, _effectInstance);
         _argProperties.setPointerProperty(kOfxPropInstanceData, _properties.getPointerProperty(kOfxPropInstanceData));
         _argProperties.setDoubleProperty(kOfxPropTime,time);

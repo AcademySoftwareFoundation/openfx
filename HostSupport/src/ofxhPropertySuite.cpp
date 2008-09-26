@@ -497,6 +497,9 @@ namespace OFX {
       /// add one new property
       void Set::addProperty(Property *prop)
       {
+        PropertyMap::iterator t = _props.find(prop->getName());
+        if(t != _props.end())
+           delete t->second;
         _props[prop->getName()] = prop;
       }
 
