@@ -2,7 +2,7 @@
 #define _ofxsCore_H_
 /*
 OFX Support Library, a library that skins the OFX plug-in API with C++ classes.
-Copyright (C) 2004-2005 The Foundry Visionmongers Ltd
+Copyright (C) 2004-2005 The Open Effects Association Ltd
 Author Bruno Nicoletti bruno@thefoundry.co.uk
 
 Redistribution and use in source and binary forms, with or without
@@ -13,7 +13,7 @@ this list of conditions and the following disclaimer.
 * Redistributions in binary form must reproduce the above copyright notice,
 this list of conditions and the following disclaimer in the documentation
 and/or other materials provided with the distribution.
-* Neither the name The Foundry Visionmongers Ltd, nor the names of its 
+* Neither the name The Open Effects Association Ltd, nor the names of its 
 contributors may be used to endorse or promote products derived from this
 software without specific prior written permission.
 
@@ -28,7 +28,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-The Foundry Visionmongers Ltd
+The Open Effects Association Ltd
 1 Wardour St
 London W1D 6PA
 England
@@ -69,7 +69,7 @@ The OFX::ImageEffect class has a set of members you can override to do various t
 
 @section license Copyright and License
 
-The library is copyright 2004-2005, The Foundry Visionmongers Ltd, and was
+The library is copyright 2004-2005, The Open Effects Association Ltd, and was
 written by Bruno Nicoletti (bruno@thefoundry.co.uk).
 
 It has been released under the GNU Lesser General Public License, see the 

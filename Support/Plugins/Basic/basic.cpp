@@ -1,7 +1,7 @@
 /*
 OFX Basic Example plugin, a plugin that illustrates the use of the OFX Support library.
 
-Copyright (C) 2004-2005 The Foundry Visionmongers Ltd
+Copyright (C) 2004-2005 The Open Effects Association Ltd
 Author Bruno Nicoletti bruno@thefoundry.co.uk
 
 Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@ this list of conditions and the following disclaimer.
 * Redistributions in binary form must reproduce the above copyright notice,
 this list of conditions and the following disclaimer in the documentation
 and/or other materials provided with the distribution.
-* Neither the name The Foundry Visionmongers Ltd, nor the names of its 
+* Neither the name The Open Effects Association Ltd, nor the names of its 
 contributors may be used to endorse or promote products derived from this
 software without specific prior written permission.
 
@@ -27,7 +27,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-The Foundry Visionmongers Ltd
+The Open Effects Association Ltd
 1 Wardour St
 London W1D 6PA
 England
