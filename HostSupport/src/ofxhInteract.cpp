@@ -160,7 +160,7 @@ namespace OFX {
       }
 
       // do nothing
-      int Instance::getDimension(const std::string &name) OFX_EXCEPTION_SPEC
+      int Instance::getDimension(const std::string &name) const OFX_EXCEPTION_SPEC
       {
         if(name == kOfxInteractPropPixelScale){
           return 2;

@@ -153,7 +153,7 @@ namespace OFX {
         virtual void getSlaveToParam(std::vector<std::string>& params);
 
         // do nothing
-        virtual int  getDimension(const std::string &name) OFX_EXCEPTION_SPEC;
+        virtual int  getDimension(const std::string &name) const OFX_EXCEPTION_SPEC;
 
         // don't know what to do
         virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC;

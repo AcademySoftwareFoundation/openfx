@@ -123,7 +123,7 @@ namespace OFX {
       /// name of the clip
       const std::string &Base::getLabel() const
       {
-        const std::string &s = _properties.getStringProperty(kOfxPropShortLabel);
+        const std::string &s = _properties.getStringProperty(kOfxPropLabel);
         if(s == "") {
           return _properties.getStringProperty(kOfxPropName);
         }
@@ -1959,14 +1959,10 @@ namespace OFX {
             return 0;
         }
         else if (strcmp(suiteName, kOfxTimeLineSuite)==0) {
-			// Temporary change to disable timeline suite function calls
-			return 0;
-			/*
-			if(suiteVersion==1) 
-			return (void*)&gTimelineSuite;
-			else
-			return 0;
-			*/
+          if(suiteVersion==1) 
+            return (void*)&gTimelineSuite;
+          else
+            return 0;
         }
         else if (strcmp(suiteName, kOfxMultiThreadSuite)==0) {
           if(suiteVersion == 1)
