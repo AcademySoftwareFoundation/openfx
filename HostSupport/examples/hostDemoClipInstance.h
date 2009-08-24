@@ -136,7 +136,7 @@ namespace MyHost {
     virtual OFX::Host::ImageEffect::Image* getImage(OfxTime time, OfxRectD *optionalBounds);
 
     /// override this to return the rod on the clip
-    virtual OfxRectD getRegionOfDefinition(OfxTime time);
+    virtual OfxRectD getRegionOfDefinition(OfxTime time) const;
 
   };
 

@@ -91,4 +91,62 @@ namespace MyHost
   {
     return new MyEffectInstance(plugin, desc, context);
   }
+  
+  /// Override this to create a descriptor, this makes the 'root' descriptor
+  OFX::Host::ImageEffect::Descriptor *Host::makeDescriptor(OFX::Host::ImageEffect::ImageEffectPlugin* plugin)
+  {
+    OFX::Host::ImageEffect::Descriptor *desc = new OFX::Host::ImageEffect::Descriptor(plugin);
+    return desc;
+  }
+  
+  /// used to construct a context description, rootContext is the main context
+  OFX::Host::ImageEffect::Descriptor *Host::makeDescriptor(const OFX::Host::ImageEffect::Descriptor &rootContext, 
+                                                           OFX::Host::ImageEffect::ImageEffectPlugin *plugin)
+  {
+    OFX::Host::ImageEffect::Descriptor *desc = new OFX::Host::ImageEffect::Descriptor(rootContext, plugin);
+    return desc;
+  }
+  
+  /// used to construct populate the cache
+  OFX::Host::ImageEffect::Descriptor *Host::makeDescriptor(const std::string &bundlePath, 
+                                                           OFX::Host::ImageEffect::ImageEffectPlugin *plugin)
+  {
+    OFX::Host::ImageEffect::Descriptor *desc = new OFX::Host::ImageEffect::Descriptor(bundlePath, plugin);
+    return desc;
+  }
+  
+  /// message
+  OfxStatus Host::vmessage(const char* type,
+                           const char* id,
+                           const char* format,
+                           va_list args)
+  {
+    bool isQuestion = false;
+    const char *prefix = "Message : ";
+    if (strcmp(type, kOfxMessageLog) == 0) {
+      prefix = "Log : ";
+    }
+    else if(strcmp(type, kOfxMessageFatal) == 0 ||
+            strcmp(type, kOfxMessageError) == 0) {
+      prefix = "Error : ";
+    }
+    else if(strcmp(type, kOfxMessageQuestion) == 0)  {
+      prefix = "Question : ";
+      isQuestion = true;
+    }
+    
+    // Just dump our message to stdout, should be done with a proper
+    // UI in a full ap, and post a dialogue for yes/no questions.
+    fputs(prefix, stdout);
+    vprintf(format, args);
+    printf("\n");
+
+    if(isQuestion) {
+      /// cant do this properly inour example, as we need to raise a dialogue to ask a question, so just return yes
+      return kOfxStatReplyYes;      
+    }
+    else {
+      return kOfxStatOK;
+    }
+  }
 }

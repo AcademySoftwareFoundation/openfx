@@ -1,19 +1,19 @@
 /*
 Software License :
 
-Copyright (c) 2007, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2007-2009, The Open Effects Association Ltd. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-* Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-* Neither the name The Open Effects Association Ltd, nor the names of its 
-contributors may be used to endorse or promote products derived from this
-software without specific prior written permission.
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+    * Neither the name The Open Effects Association Ltd, nor the names of its 
+      contributors may be used to endorse or promote products derived from this
+      software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <limits.h>
 #include <math.h>
 #include <float.h>
-#include <stdarg.h>
+#include <string.h>
 
 // ofx
 #include "ofxCore.h"
@@ -43,7 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 typedef OfxPlugin* (*OfxGetPluginType)(int);
 
 namespace OFX {
-
+  
   namespace Host {
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -58,13 +58,13 @@ namespace OFX {
           return kOfxStatErrMemory;
         }
       }
-
+      
       static OfxStatus memoryFree(void *data)
       {
         free(data);
         return kOfxStatOK;
       }
-
+      
       static struct OfxMemorySuiteV1 gMallocSuite = {
         memoryAlloc,
         memoryFree
@@ -91,42 +91,42 @@ namespace OFX {
     static void *fetchSuite(OfxPropertySetHandle hostProps, const char *suiteName, int suiteVersion)
     {      
       Property::Set* properties = reinterpret_cast<Property::Set*>(hostProps);
-
+      
       Host* host = (Host*)properties->getPointerProperty(kOfxHostSupportHostPointer);
-
+      
       if(host)
         return host->fetchSuite(suiteName,suiteVersion);
       else
         return 0;
     }
-  }
-}
 
-using namespace OFX::Host;
+    // Base Host
+    Host::Host() : _properties(hostStuffs) 
+    {
+      _host.host = _properties.getHandle();
+      _host.fetchSuite = OFX::Host::fetchSuite;
 
-// Base Host
-Host::Host() : _properties(hostStuffs) 
-{
-  _host.host = _properties.getHandle();
-  _host.fetchSuite = OFX::Host::fetchSuite;
+      // record the host descriptor in the propert set
+      _properties.setPointerProperty(kOfxHostSupportHostPointer,this);
+    }
 
-  // record the host descriptor in the propert set
-  _properties.setPointerProperty(kOfxHostSupportHostPointer,this);
-}
+    OfxHost *Host::getHandle() {
+      return &_host;
+    }
 
-OfxHost *Host::getHandle() {
-  return &_host;
-}
+    void *Host::fetchSuite(const char *suiteName, int suiteVersion)
+    {
+      if (strcmp(suiteName, kOfxPropertySuite)==0  && suiteVersion == 1) {
+        return Property::GetSuite(suiteVersion);
+      }
+      else if (strcmp(suiteName, kOfxMemorySuite)==0 && suiteVersion == 1) {
+        return (void*)&Memory::gMallocSuite;
+      }  
+    
+      ///printf("fetchSuite failed with host = %p, name = %s, version = %i\n", this, suiteName, suiteVersion);
+      return NULL;
+    }
 
-void *Host::fetchSuite(const char *suiteName, int suiteVersion)
-{
-  if (strcmp(suiteName, kOfxPropertySuite)==0  && suiteVersion == 1) {
-    return Property::GetSuite(suiteVersion);
-  }
-  else if (strcmp(suiteName, kOfxMemorySuite)==0 && suiteVersion == 1) {
-    return (void*)&Memory::gMallocSuite;
-  }  
+  } // Host
 
-  ///printf("fetchSuite failed with host = %p, name = %s, version = %i\n", this, suiteName, suiteVersion);
-  return NULL;
-}
+} // OFX 

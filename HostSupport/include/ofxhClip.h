@@ -2,19 +2,19 @@
 /*
 Software License :
 
-Copyright (c) 2007, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2007-2009, The Open Effects Association Ltd.  All Rights Reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-* Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-* Neither the name The Open Effects Association Ltd, nor the names of its 
-contributors may be used to endorse or promote products derived from this
-software without specific prior written permission.
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+    * Neither the name The Open Effects Association Ltd, nor the names of its 
+      contributors may be used to endorse or promote products derived from this
+      software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define OFX_CLIP_H
 
 #include "ofxImageEffect.h"
+#include "ofxhUtilities.h"
 
 namespace OFX {
 
@@ -48,11 +49,11 @@ namespace OFX {
       class ClipBase {
       protected :
         Property::Set _properties;   
-
+        
       public :
         /// base ctor, for a descriptor
         ClipBase();
-
+        
         virtual ~ClipBase() { }
 
         /// ctor, when copy constructing an instance from a descripto
@@ -66,16 +67,16 @@ namespace OFX {
 
         /// name of the clip
         const std::string &getShortLabel() const;
-
+        
         /// name of the clip
         const std::string &getLabel() const;
-
+        
         /// name of the clip
         const std::string &getLongLabel() const;
 
         /// return a std::vector of supported comp
         const std::vector<std::string> &getSupportedComponents() const;
-
+        
         /// is the given component supported
         bool isSupportedComponent(const std::string &comp) const;
 
@@ -87,16 +88,18 @@ namespace OFX {
 
         /// is the clip a nominal 'mask' clip
         bool isMask() const;
-
+        
         /// how does this clip like fielded images to be presented to it
         const std::string &getFieldExtraction() const;
 
         /// is the clip a nominal 'mask' clip
         bool supportsTiles() const;
 
-        // get props
+        /// get property set, const version
         const Property::Set &getProps() const;
-        Property::Set &getProps();
+
+        /// get property set , non const version
+        Property::Set &getProps(); 
 
         /// get a handle on the properties of the clip descriptor for the C api
         OfxPropertySetHandle getPropHandle() const;
@@ -104,89 +107,99 @@ namespace OFX {
         /// get a handle on the clip descriptor/instance for the C api
         OfxImageClipHandle getHandle() const;
 
-        virtual bool verifyMagic() { return true; }
+        virtual bool verifyMagic() {
+          return true;
+        }
       };
-
-      /// a clip descriptor
+      
+        /// a clip descriptor
       class ClipDescriptor : public ClipBase {
       public:
         /// constructor
         ClipDescriptor(std::string name);
-
+        
         /// is the clip an output clip
         bool isOutput() const {return  getName() == kOfxImageEffectOutputClipName; }
       };
 
       /// a clip instance
-      class ClipInstance : public ClipBase, private Property::GetHook, private Property::NotifyHook 
-      {
+      class ClipInstance : public ClipBase
+                         , protected Property::GetHook
+                         , protected Property::NotifyHook {
       protected:
         ImageEffect::Instance*  _effectInstance; ///< image effect instance
         bool  _isOutput;                         ///< are we the output clip
         std::string             _pixelDepth;     ///< what is the bit depth we is at. Set during the clip prefernces action.
         std::string             _components;     ///< what components do we have.  Set during the clip prefernces action.
-
+        
       public:
         ClipInstance(ImageEffect::Instance* effectInstance, ClipDescriptor& desc);
-
+        
         /// is the clip an output clip
         bool isOutput() const {return  _isOutput;}
 
         /// notify override properties
         virtual void notify(const std::string &name, bool isSingle, int indexOrN)  OFX_EXCEPTION_SPEC;
-
+        
         /// get hook override
         virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC;
 
-        // get the virutals for viewport size, pixel scale, background colour
+        // get the virtuals for viewport size, pixel scale, background colour
         virtual double getDoubleProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC;
 
-        // get the virutals for viewport size, pixel scale, background colour
+        // get the virtuals for viewport size, pixel scale, background colour
         virtual void getDoublePropertyN(const std::string &name, double *values, int count) const  OFX_EXCEPTION_SPEC;
 
-        // get the virutals for viewport size, pixel scale, background colour
+        // get the virtuals for viewport size, pixel scale, background colour
         virtual int getIntProperty(const std::string &name, int index) const  OFX_EXCEPTION_SPEC;
 
-        // get the virutals for viewport size, pixel scale, background colour
+        // get the virtuals for viewport size, pixel scale, background colour
         virtual void getIntPropertyN(const std::string &name, int *values, int count) const  OFX_EXCEPTION_SPEC;
 
-        // get the virutals for viewport size, pixel scale, background colour
+        // get the virtuals for viewport size, pixel scale, background colour
         virtual const std::string &getStringProperty(const std::string &name, int index) const  OFX_EXCEPTION_SPEC;
 
-        // do nothing
-        virtual int getDimension(const std::string &name) const  OFX_EXCEPTION_SPEC;
+        // get hook virtuals
+        virtual int  getDimension(const std::string &name) const OFX_EXCEPTION_SPEC;
 
         // instance changed action
         OfxStatus instanceChangedAction(std::string why,
-          OfxTime     time,
-          OfxPointD   renderScale);
+                                        OfxTime     time,
+                                        OfxPointD   renderScale);
 
         // properties of an instance that are live
 
-        // Pixel Depth -
-        //
-        //  kOfxBitDepthNone (implying a clip is unconnected, not valid for an image)
-        //  kOfxBitDepthByte
-        //  kOfxBitDepthShort
-        //  kOfxBitDepthFloat
-        const std::string &getPixelDepth() const { return _pixelDepth; }
+        /// Pixel Depth - fetch depth of all chromatic component in this clip
+        ///
+        ///  kOfxBitDepthNone (implying a clip is unconnected, not valid for an image)
+        ///  kOfxBitDepthByte
+        ///  kOfxBitDepthShort
+        ///  kOfxBitDepthFloat
+        const std::string &getPixelDepth() const
+        {
+          return _pixelDepth;
+        }
 
         /// set the current pixel depth
         /// called by clip preferences action 
-        void setPixelDepth(const std::string &s) { _pixelDepth = s; }
+        void setPixelDepth(const std::string &s)
+        {
+          _pixelDepth =  s;
+        }
 
-        // Components -
-        //
-        //  kOfxImageComponentNone (implying a clip is unconnected, not valid for an image)
-        //  kOfxImageComponentRGBA
-        //  kOfxImageComponentAlpha
-        const std::string &getComponents() const { return _components; }
+        /// Components that can be fetched from this clip -
+        ///
+        /// kOfxImageComponentNone (implying a clip is unconnected, not valid for an image)
+        /// kOfxImageComponentRGBA
+        /// kOfxImageComponentAlpha
+        /// and any custom ones you may think of
+        const std::string &getComponents() const;
 
         /// set the current set of components
         /// called by clip preferences action 
-        void setComponents(const std::string &s) { _components = s; }
+        virtual void setComponents(const std::string &s);
 
-        /// Get the Raw Unmapped Pixel Depth from the host
+        /// Get the Raw Unmapped Pixel Depth from the host for chromatic planes
         ///
         /// \returns
         ///    - kOfxBitDepthNone (implying a clip is unconnected image)
@@ -231,7 +244,7 @@ namespace OFX {
         ///  - kOfxImageFieldLower - the clip material is fielded, with image rows 0,2,4.... occuring first in a frame
         ///  - kOfxImageFieldUpper - the clip material is fielded, with image rows line 1,3,5.... occuring first in a frame
         virtual const std::string &getFieldOrder() const = 0;
-
+        
         // Connected -
         //
         //  Says whether the clip is actually connected at the moment.
@@ -262,14 +275,14 @@ namespace OFX {
         virtual ImageEffect::Image* getImage(OfxTime time, OfxRectD *optionalBounds) = 0;
 
         /// override this to return the rod on the clip
-        virtual OfxRectD getRegionOfDefinition(OfxTime time) = 0;
+        virtual OfxRectD getRegionOfDefinition(OfxTime time) const = 0;
 
         /// given the colour component, find the nearest set of supported colour components
         /// override this for extra wierd custom component depths
         virtual const std::string &findSupportedComp(const std::string &s) const;
       };
 
-
+      
       /// instance of an image inside an image effect
       class Image : public Property::Set {
       protected :
@@ -280,7 +293,7 @@ namespace OFX {
       public:
         // default constructor
         virtual ~Image();
-
+        
         /// basic ctor, makes empty property set but sets not value
         Image();
 
@@ -329,19 +342,23 @@ namespace OFX {
 
         // construction based on clip instance
         Image(ClipInstance& instance,     // construct from clip instance taking pixel depth, components, pre mult and aspect ratio
-          double renderScaleX, 
-          double renderScaleY,
-          void* data,
-          const OfxRectI &bounds,
-          const OfxRectI &rod,
-          int rowBytes,
-          std::string field,
-          std::string uniqueIdentifier);
+              double renderScaleX, 
+              double renderScaleY,
+              void* data,
+              const OfxRectI &bounds,
+              const OfxRectI &rod,
+              int rowBytes,
+              std::string field,
+              std::string uniqueIdentifier);
 
-        OfxRectI getBounds() const;
-        OfxRectI getROD() const;
         // OfxImageClipHandle getHandle();
-        OfxPropertySetHandle getPropHandle() { return Property::Set::getHandle(); }
+        OfxPropertySetHandle getPropHandle() const { return Property::Set::getHandle(); }
+
+        /// get the bounds of the pixels in memory
+        OfxRectI getBounds() const;
+
+        /// get the full region of this image
+        OfxRectI getROD() const;
 
         /// release the reference count, which, if zero, deletes this
         void releaseReference();

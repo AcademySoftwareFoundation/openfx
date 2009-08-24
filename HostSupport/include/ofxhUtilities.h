@@ -4,7 +4,7 @@
 /*
 Software License :
 
-Copyright (c) 2007, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2007-2009, The Open Effects Association Ltd. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -31,27 +31,46 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include <string>
+#include <vector>
 #include "ofxCore.h"
 
 namespace OFX {
+
+  /// class that is a std::vector of std::strings
+  typedef std::vector<std::string> StringVec;
+
+  /// class that is a std::vector of std::strings
+  inline void SetStringVecValue(StringVec &sv, const std::string &value, size_t index = 0) 
+  {
+    size_t size = sv.size();
+    if(size <= index) {
+      while(size < index) {
+        sv.push_back("");
+        ++size;
+      }
+      sv.push_back(value);
+    }
+    else 
+      sv[index] = value;
+  }
 
   /// get me deepest bit depth 
   std::string FindDeepestBitDepth(const std::string &s1, const std::string &s2);
 
   /// get the min value
-  template<class T> T Minimum(const T &a, const T &b)
+  template<class T> inline T Minimum(const T &a, const T &b)
   {
     return a < b ? a : b;
   }
 
   /// get the min value
-  template<class T> T Maximum(const T &a, const T &b)
+  template<class T> inline T Maximum(const T &a, const T &b)
   {
     return a > b ? a : b;
   }
 
   /// clamp the value
-  template<class T> T Clamp(const T &v, const T &mn, const T &mx)
+  template<class T> inline T Clamp(const T &v, const T &mn, const T &mx)
   {
     if(v < mn) return mn;
     if(v > mx) return mx;
@@ -60,7 +79,7 @@ namespace OFX {
 
   /// clamp the rect in v to the given bounds
   inline OfxRectD Clamp(const OfxRectD &v,
-    const OfxRectD &bounds)
+                        const OfxRectD &bounds)
   {
     OfxRectD r;
     r.x1 = Clamp(v.x1, bounds.x1, bounds.x2);
@@ -72,7 +91,7 @@ namespace OFX {
 
   /// get the union of the two rects
   inline OfxRectD Union(const OfxRectD &a,
-    const OfxRectD &b)
+                        const OfxRectD &b)
   {
     OfxRectD r;
     r.x1 = Minimum(a.x1, b.x1);
@@ -82,7 +101,7 @@ namespace OFX {
     return r;
   }
 
-
+  
 }
 #endif
 

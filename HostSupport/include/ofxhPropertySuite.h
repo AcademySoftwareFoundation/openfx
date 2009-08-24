@@ -4,19 +4,19 @@
 /*
 Software License :
 
-Copyright (c) 2007, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2007-2009, The Open Effects Association Ltd.  All Rights Reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-* Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-* Neither the name The Open Effects Association Ltd, nor the names of its 
-contributors may be used to endorse or promote products derived from this
-software without specific prior written permission.
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+    * Neither the name The Open Effects Association Ltd, nor the names of its 
+      contributors may be used to endorse or promote products derived from this
+      software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -67,7 +67,7 @@ namespace OFX {
         is >> number;
         return number;
       }
-
+      
       // forward declarations
       class Property; 
       class Set;
@@ -83,7 +83,10 @@ namespace OFX {
         }
 
         /// get the status
-        OfxStatus getStatus() const { return _stat; }
+        OfxStatus getStatus()
+        {
+          return _stat;
+        }
       };
 
       /// type of a property
@@ -174,7 +177,7 @@ namespace OFX {
 
         /// override this to fetch a single value at the given index.
         virtual void *getPointerProperty(const std::string &name, int index = 0) const OFX_EXCEPTION_SPEC;
-
+        
         /// override this to fetch a multiple values in a multi-dimension property
         virtual void getPointerPropertyN(const std::string &name, void **values, int count) const OFX_EXCEPTION_SPEC;
 
@@ -217,10 +220,10 @@ namespace OFX {
       public :
         /// ctor
         Property(const std::string &name,
-          TypeEnum type,
-          int dimension = 1,
-          bool pluginReadOnly=false);
-
+                 TypeEnum type,
+                 int dimension = 1,
+                 bool pluginReadOnly=false);
+            
         /// copy ctor
         Property(const Property &other);
 
@@ -228,7 +231,7 @@ namespace OFX {
         virtual ~Property()
         {
         }
-
+        
         /// is it read only?
         bool getPluginReadOnly() const {return _pluginReadOnly; }
 
@@ -237,25 +240,31 @@ namespace OFX {
 
         /// override this to return a clone of the property
         virtual Property *deepCopy() = 0;
-
+        
         /// get the name of this property
-        const std::string &getName() const { return _name; }
-
+        const std::string &getName()
+        {
+          return _name;
+        }
+        
         /// get the type of this property
-        TypeEnum getType() const { return _type; }
+        TypeEnum getType()
+        {
+          return _type;
+        }
 
         /// add a notify hook
         void addNotifyHook(NotifyHook *hook)
         {
           _notifyHooks.push_back(hook);
         }
-
+        
         /// set the get hook
         void setGetHook(GetHook *hook)
         {
           _getHook = hook;
         }
-
+        
         /// call notify on the contained notify hooks
         void notify(bool single, int indexOrN);
 
@@ -263,7 +272,9 @@ namespace OFX {
         virtual int getDimension() const = 0;
 
         /// get the fixed dimension of this property
-        int getFixedDimension() const { return _dimension; }
+        int getFixedDimension() const {
+          return _dimension;
+        }
 
         /// are we a fixed dim property
         bool isFixedSize() const 
@@ -277,12 +288,13 @@ namespace OFX {
         // get a string representing the value of this property at element nth
         virtual std::string getStringValue(int nth) = 0;
       };
-
+      
       /// this represents a generic property.
       /// template parameter T is the type descriptor of the
       /// type of property to model.  the class holds an internal _value vector which can be used
       /// to store the values.  if set and get hooks are installed, these will be called instead
       /// of using this variable.
+      /// Make sure that T::ReturnType is const if appropriate, as no extra qualifiers are applied here.
       template<class T>
       class PropertyTemplate : public Property
       {
@@ -290,7 +302,7 @@ namespace OFX {
         typedef typename T::Type Type; 
         typedef typename T::ReturnType ReturnType; 
         typedef typename T::APIType APIType;
-
+        
       protected :
         /// this is the present value of the property
         std::vector<Type> _value;
@@ -301,9 +313,9 @@ namespace OFX {
       public :
         /// constructor
         PropertyTemplate(const std::string &name,
-          int dimension,
-          bool pluginReadOnly,
-          APIType defaultValue);
+                         int dimension,
+                         bool pluginReadOnly,
+                         APIType defaultValue);
 
         PropertyTemplate(const PropertyTemplate<T> &pt);
 
@@ -316,14 +328,17 @@ namespace OFX {
         }
 
         /// get the vector
-        const std::vector<Type> &getValues() const {  return _value; }
+        const std::vector<Type> &getValues()
+        {
+          return _value;
+        }
 
         // get multiple values
         void getValueN(APIType *value, int count) const OFX_EXCEPTION_SPEC;
 
 #ifdef WINDOWS
-#pragma warning( disable : 4181 )
-#endif
+#pragma warning( disable : 4181 )	
+#endif		
         /// get one value
         const ReturnType getValue(int index=0) const OFX_EXCEPTION_SPEC;
 
@@ -331,8 +346,8 @@ namespace OFX {
         const ReturnType getValueRaw(int index=0) const OFX_EXCEPTION_SPEC;
 
 #ifdef WINDOWS
-#pragma warning( default : 4181 )
-#endif
+#pragma warning( default : 4181 )	
+#endif				
         // get multiple values, without going through the getHook
         void getValueNRaw(APIType *value, int count) const OFX_EXCEPTION_SPEC;
 
@@ -344,10 +359,10 @@ namespace OFX {
 
         /// reset 
         void reset() OFX_EXCEPTION_SPEC;
-
+        
         /// get the size of the vector
         int getDimension() const OFX_EXCEPTION_SPEC;
-
+        
         /// return the value as a string
         inline std::string getStringValue(int idx) {
           return castToString(_value[idx]);
@@ -370,7 +385,7 @@ namespace OFX {
         bool readonly;             ///< is the property plug-in read only
         const char *defaultValue;  ///< Default value as a string. Pointers are ignored and always null.
       };
-
+      
       /// A std::map of properties by name
       typedef std::map<std::string, Property *> PropertyMap;
 
@@ -429,7 +444,7 @@ namespace OFX {
 
         /// adds a bunch of properties from PropSpec
         void addProperties(const PropSpec *);
-
+        
         /// add one new property
         void createProperty(const PropSpec &s);
 
@@ -452,7 +467,7 @@ namespace OFX {
         /// add a set hook for a particular property.  users may need to call particular
         /// specialised versions of this.
         void addNotifyHook(const std::string &name, NotifyHook *hook) const;
-
+                
         /// Fetchs a pointer to a property of the given name, following the property chain if the
         /// 'followChain' arg is not false.
         Property *fetchProperty(const std::string &name, bool followChain = false) const;
@@ -479,7 +494,7 @@ namespace OFX {
 
         /// get a particular int property without fetching via a get hook, useful for notifies
         int getIntPropertyRaw(const std::string &property, int index = 0) const;
-
+        
         /// get a particular double property without fetching via a get hook, useful for notifies
         double getDoublePropertyRaw(const std::string &property, int index = 0) const;
 
@@ -488,13 +503,13 @@ namespace OFX {
 
         /// get a particular string property
         const std::string &getStringPropertyRaw(const std::string &property, int index = 0) const;
-
+                
         /// get the value of a particular string property
         const std::string &getStringProperty(const std::string &property, int index = 0) const;
-
+        
         /// get the value of a particular int property
         int getIntProperty(const std::string &property, int index = 0) const;
-
+        
         /// get the value of a particular double property
         void getIntPropertyN(const std::string &property,  int *v, int N) const;
 
@@ -517,7 +532,7 @@ namespace OFX {
 
         /// get a particular double property
         void setIntPropertyN(const std::string &property, const int *v, int N);
-
+        
         /// get a particular double property
         void setDoubleProperty(const std::string &property, double v, int index = 0);
 
@@ -526,13 +541,17 @@ namespace OFX {
 
         /// get a particular double property
         void setPointerProperty(const std::string &property,  void *v, int index = 0);
+        
+
 
         /// get the dimension of a particular property
         int getDimension(const std::string &property) const;
 
         /// is the given string one of the values of a multi-dimensional string prop
         /// this returns a non negative index if it is found, otherwise, -1
-        int findStringPropValueIndex(const std::string &propName, const std::string &propValue) const;
+        int findStringPropValueIndex(const std::string &propName,
+                                     const std::string &propValue) const;
+
 
         /// get a handle on this object for passing to the C API
         OfxPropertySetHandle getHandle() const
@@ -544,7 +563,7 @@ namespace OFX {
         bool verifyMagic() { return this != NULL && _magic == kMagic; }
       };
 
-
+      
       /// return the OFX function suite that manages properties
       void *GetSuite(int version);
     }

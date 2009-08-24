@@ -2,19 +2,19 @@
 /*
 Software License :
 
-Copyright (c) 2007, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2007-2009, The Open Effects Association Ltd.  All Rights Reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-* Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-* Neither the name The Open Effects Association Ltd, nor the names of its 
-contributors may be used to endorse or promote products derived from this
-software without specific prior written permission.
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+    * Neither the name The Open Effects Association Ltd, nor the names of its 
+      contributors may be used to endorse or promote products derived from this
+      software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -44,6 +44,9 @@ namespace OFX {
       /// fetch the param suite
       void *GetSuite(int version);
 
+      /// is this a standard type
+      bool isStandardType(const std::string &type);
+      
       /// base class for all params
       class Base {
 
@@ -62,11 +65,12 @@ namespace OFX {
         OfxParamHandle getHandle() const;
 
         virtual bool verifyMagic() { return true; }
-
+        
         /// grab a handle on the properties of this parameter for the C api
         OfxPropertySetHandle getPropHandle() const;
 
         const Property::Set &getProperties() const;
+
         Property::Set &getProperties();
 
         const std::string &getType() const;
@@ -85,6 +89,8 @@ namespace OFX {
 
         const std::string &getDoubleType() const;
 
+        const std::string &getCacheInvalidation() const;
+
         const std::string &getHint() const;
 
         bool getEnabled() const;
@@ -94,18 +100,31 @@ namespace OFX {
         bool getSecret() const;
 
         bool getEvaluateOnChange() const;
+
+        bool getCanAnimate() const;
       };
 
       /// the Descriptor of a plugin parameter
       class Descriptor : public Base {
         Descriptor();
-
+       
       public:
         /// make a parameter, with the given type and name
-        explicit Descriptor(const std::string &type, const std::string &name);
+        Descriptor(const std::string &type, const std::string &name);
+        
+        /// add standard param props, will call the below
+        void addStandardParamProps(const std::string &type);
 
+        /// add standard properties to a params that can take an interact
+        void addInteractParamProps(const std::string &type);
+
+        /// add standard properties to a value holding param
+        void addValueParamProps(const std::string &type, Property::TypeEnum valueType, int dim);
+
+        /// add standard properties to a value holding param
+        void addNumericParamProps(const std::string &type, Property::TypeEnum valueType, int dim);
       };
-
+      
       /// base class to the param set instance and param set descriptor
       class BaseSet {
       public:
@@ -121,24 +140,32 @@ namespace OFX {
       };
 
       /// a set of parameters
-      class SetDescriptor : public BaseSet 
-      {
+      class SetDescriptor : public BaseSet {
         std::map<std::string, Descriptor*> _paramMap;
         std::list<Descriptor *> _paramList;
-
-        /// doesn't exist
+        
+        /// CC doesn't exist
         SetDescriptor(const SetDescriptor &);
 
       public:
+        /// default ctor
         SetDescriptor();
 
+        /// dtor
         virtual ~SetDescriptor();
 
-        const std::map<std::string, Descriptor*>& getParams() const;
+        /// get the map of params
+        const std::map<std::string, Descriptor*> &getParams() const;
 
-        const std::list<Descriptor*>& getParamList() const;
+        /// get the list of params
+        const std::list<Descriptor *> &getParamList() const;
 
-        void addParam(const std::string &name, Descriptor *p);
+        /// define a param
+        virtual Descriptor *paramDefine(const char *paramType,
+                                        const char *name);
+
+        /// add a param in
+        virtual void addParam(const std::string &name, Descriptor *p);
       };
 
       // forward declare
@@ -175,169 +202,348 @@ namespace OFX {
         virtual OfxStatus copy(const Instance &instance, OfxTime offset, OfxRangeD range);
 
         // callback which should set enabled state as appropriate
-        virtual void setEnabled()
-        {
-        }
+        virtual void setEnabled();
+
+        // callback which should set secret state as appropriate
+        virtual void setSecret();
+
+        /// callback which should update label
+        virtual void setLabel();
+
+        /// callback which should set 
+        virtual void setDisplayRange();
+
+        // va list calls below turn the var args (oh what a mistake)
+        // suite functions into virtual function calls on instances
+        // they are not to be overridden by host implementors by
+        // by the various typeed param instances so that they can
+        // deconstruct the var args lists
+
+        /// get a value, implemented by instances to deconstruct var args
+        virtual OfxStatus getV(va_list arg);
+
+        /// get a value, implemented by instances to deconstruct var args
+        virtual OfxStatus getV(OfxTime time, va_list arg);
+
+        /// set a value, implemented by instances to deconstruct var args
+        virtual OfxStatus setV(va_list arg);
+
+        /// key a value, implemented by instances to deconstruct var args
+        virtual OfxStatus setV(OfxTime time, va_list arg);
+
+        /// derive a value, implemented by instances to deconstruct var args
+        virtual OfxStatus deriveV(OfxTime time, va_list arg);
+
+        /// integrate a value, implemented by instances to deconstruct var args
+        virtual OfxStatus integrateV(OfxTime time1, OfxTime time2, va_list arg);
 
         /// overridden from Property::NotifyHook
-        virtual void notify(const std::string &name, bool single, int num) OFX_EXCEPTION_SPEC {
-          if (name == kOfxParamPropEnabled) {
-            setEnabled();
-          }
-        }
+        virtual void notify(const std::string &name, bool single, int num) OFX_EXCEPTION_SPEC;
       };
 
       class KeyframeParam {
       public:
-        virtual OfxStatus getNumKeys(unsigned int &nKeys) const;
-        virtual OfxStatus getKeyTime(int nth, OfxTime& time) const;
-        virtual OfxStatus getKeyIndex(OfxTime time, int direction, int & index) const;
+        virtual OfxStatus getNumKeys(unsigned int &nKeys) const ;
+        virtual OfxStatus getKeyTime(int nth, OfxTime& time) const ;
+        virtual OfxStatus getKeyIndex(OfxTime time, int direction, int & index) const ;
         virtual OfxStatus deleteKey(OfxTime time) ;
-        virtual OfxStatus deleteAllKeys();
-        virtual ~KeyframeParam() {}
+        virtual OfxStatus deleteAllKeys() ;
+
+        virtual ~KeyframeParam() {
+        }
       };
 
-      class GroupInstance : public Instance 
-      {
+      class GroupInstance : public Instance {
       protected:
         std::vector<Param::Instance*> _children;
       public:
         GroupInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
+
         void setChildren(std::vector<Param::Instance*> children);
-        const std::vector<Param::Instance*>& getChildren() const;
+        const std::vector<Param::Instance*> &getChildren() const;
       };
 
       class PageInstance : public Instance {
       public:
         PageInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
-        const std::map<int,Param::Instance*>& getChildren() const;
-      protected:
-        mutable std::map<int,Param::Instance*> _children;
+        const std::map<int,Param::Instance*> &getChildren() const;
+      protected :
+        mutable std::map<int,Param::Instance*> _children; // if set in a notify hook, this need not be mutable
       };
 
       class IntegerInstance : public Instance, public KeyframeParam {
       public:
         IntegerInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
-        // needed 
+        // Deriving implementatation needs to overide these 
         virtual OfxStatus get(int&) = 0;
         virtual OfxStatus get(OfxTime time, int&) = 0;
         virtual OfxStatus set(int) = 0;
         virtual OfxStatus set(OfxTime time, int) = 0;
 
-        // probably not needed
+        // probably derived class does not need to implement, default is an approximation
         virtual OfxStatus derive(OfxTime time, int&) ;
         virtual OfxStatus integrate(OfxTime time1, OfxTime time2, int&) ;
+
+        /// implementation of var args function
+        virtual OfxStatus getV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus getV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus deriveV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus integrateV(OfxTime time1, OfxTime time2, va_list arg);
       };
 
       class ChoiceInstance : public Instance, public KeyframeParam {
       public:
         ChoiceInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
-        // needed 
+        // Deriving implementatation needs to overide these 
         virtual OfxStatus get(int&) = 0;
         virtual OfxStatus get(OfxTime time, int&) = 0;
         virtual OfxStatus set(int) = 0;
         virtual OfxStatus set(OfxTime time, int) = 0;
+
+        /// implementation of var args function
+        virtual OfxStatus getV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus getV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(OfxTime time, va_list arg);
       };
 
       class DoubleInstance : public Instance, public KeyframeParam {
       public:
         DoubleInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
-        // needed 
+        // Deriving implementatation needs to overide these 
         virtual OfxStatus get(double&) = 0;
         virtual OfxStatus get(OfxTime time, double&) = 0;
         virtual OfxStatus set(double) = 0;
         virtual OfxStatus set(OfxTime time, double) = 0;
         virtual OfxStatus derive(OfxTime time, double&) = 0;
         virtual OfxStatus integrate(OfxTime time1, OfxTime time2, double&) = 0;
+
+        /// implementation of var args function
+        virtual OfxStatus getV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus getV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus deriveV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus integrateV(OfxTime time1, OfxTime time2, va_list arg);
       };
 
       class BooleanInstance : public Instance, public KeyframeParam {
       public:
         BooleanInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
-        // needed
+        // Deriving implementatation needs to overide these
         virtual OfxStatus get(bool&) = 0;
         virtual OfxStatus get(OfxTime time, bool&) = 0;
         virtual OfxStatus set(bool) = 0;
         virtual OfxStatus set(OfxTime time, bool) = 0;
+
+        /// implementation of var args function
+        virtual OfxStatus getV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus getV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(OfxTime time, va_list arg);
       };
 
       class RGBAInstance : public Instance, public KeyframeParam {
       public:
         RGBAInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
-        // needed
+        // Deriving implementatation needs to overide these
         virtual OfxStatus get(double&,double&,double&,double&) = 0;
         virtual OfxStatus get(OfxTime time, double&,double&,double&,double&) = 0;
         virtual OfxStatus set(double,double,double,double) = 0;
         virtual OfxStatus set(OfxTime time, double,double,double,double) = 0;
 
-        // needed
+        // derived class does not need to implement, default is an approximation
         virtual OfxStatus derive(OfxTime time, double&,double&,double&,double&) ;
         virtual OfxStatus integrate(OfxTime time1, OfxTime time2, double&,double&,double&,double&) ;
+
+        /// implementation of var args function
+        virtual OfxStatus getV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus getV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus deriveV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus integrateV(OfxTime time1, OfxTime time2, va_list arg);
       };
 
       class RGBInstance : public Instance, public KeyframeParam {
       public:
         RGBInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
-        // needed
+        // Deriving implementatation needs to overide these
         virtual OfxStatus get(double&,double&,double&) = 0;
         virtual OfxStatus get(OfxTime time, double&,double&,double&) = 0;
         virtual OfxStatus set(double,double,double) = 0;
         virtual OfxStatus set(OfxTime time, double,double,double) = 0;
 
-        // not needed
+        // derived class does not need to implement, default is an approximation
         virtual OfxStatus derive(OfxTime time, double&,double&,double&) ;
         virtual OfxStatus integrate(OfxTime time1, OfxTime time2, double&,double&,double&) ;
-      };
 
+        /// implementation of var args function
+        virtual OfxStatus getV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus getV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus deriveV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus integrateV(OfxTime time1, OfxTime time2, va_list arg);
+      };
+        
       class Double2DInstance : public Instance, public KeyframeParam {
       public:
         Double2DInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
-        // needed
+        // Deriving implementatation needs to overide these
         virtual OfxStatus get(double&,double&) = 0;
         virtual OfxStatus get(OfxTime time, double&,double&) = 0;
         virtual OfxStatus set(double,double) = 0;
         virtual OfxStatus set(OfxTime time, double,double) = 0;
 
-        // not needed
+        // derived class does not need to implement, default is an approximation
         virtual OfxStatus derive(OfxTime time, double&,double&) ;
         virtual OfxStatus integrate(OfxTime time1, OfxTime time2, double&,double&) ;
+
+        /// implementation of var args function
+        virtual OfxStatus getV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus getV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus deriveV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus integrateV(OfxTime time1, OfxTime time2, va_list arg);
       };
 
       class Integer2DInstance : public Instance, public KeyframeParam {
       public:
         Integer2DInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
-        // needed
+        // Deriving implementatation needs to overide these
         virtual OfxStatus get(int&,int&) = 0;
         virtual OfxStatus get(OfxTime time, int&,int&) = 0;
         virtual OfxStatus set(int,int) = 0;
         virtual OfxStatus set(OfxTime time, int,int) = 0;
 
-        // not needed
+        // derived class does not need to implement, default is an approximation
         virtual OfxStatus derive(OfxTime time, int&,int&) ;
         virtual OfxStatus integrate(OfxTime time1, OfxTime time2, int&,int&) ;
+
+        /// implementation of var args function
+        virtual OfxStatus getV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus getV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus deriveV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus integrateV(OfxTime time1, OfxTime time2, va_list arg);
       };
 
       class Double3DInstance : public Instance , public KeyframeParam{
       public:
         Double3DInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
-        // needed
+        // Deriving implementatation needs to overide these
         virtual OfxStatus get(double&,double&,double&)  = 0;
         virtual OfxStatus get(OfxTime time, double&,double&,double&)  = 0;
         virtual OfxStatus set(double,double,double)  = 0;
         virtual OfxStatus set(OfxTime time, double,double,double)  = 0;
 
-        // not needed
+        // derived class does not need to implement, default is an approximation
         virtual OfxStatus derive(OfxTime time, double&,double&,double&) ;
         virtual OfxStatus integrate(OfxTime time1, OfxTime time2, double&,double&,double&) ;
+
+        /// implementation of var args function
+        virtual OfxStatus getV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus getV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus deriveV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus integrateV(OfxTime time1, OfxTime time2, va_list arg);
       };
 
       class Integer3DInstance : public Instance, public KeyframeParam {
@@ -349,12 +555,31 @@ namespace OFX {
         virtual OfxStatus set(int,int,int) = 0;
         virtual OfxStatus set(OfxTime time, int,int,int) = 0;
 
-        // not needed
+        // derived class does not need to implement, default is an approximation
         virtual OfxStatus derive(OfxTime time, int&,int&,int&) ;
         virtual OfxStatus integrate(OfxTime time1, OfxTime time2, int&,int&,int&) ;
+
+        /// implementation of var args function
+        virtual OfxStatus getV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus getV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus deriveV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus integrateV(OfxTime time1, OfxTime time2, va_list arg);
       };
 
       class StringInstance : public Instance, public KeyframeParam {
+        std::string _returnValue; ///< location to hold temporary return value. Should delegate this to implementation!!!
       public:
         StringInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
@@ -362,6 +587,23 @@ namespace OFX {
         virtual OfxStatus get(OfxTime time, std::string &) = 0;
         virtual OfxStatus set(const char*) = 0;
         virtual OfxStatus set(OfxTime time, const char*) = 0;
+
+        /// implementation of var args function
+        virtual OfxStatus getV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus getV(OfxTime time, va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(va_list arg);
+
+        /// implementation of var args function
+        virtual OfxStatus setV(OfxTime time, va_list arg);
+      };
+
+      class CustomInstance : public StringInstance {
+      public:
+        CustomInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : StringInstance(descriptor,instance) {}
       };
 
       class PushbuttonInstance : public Instance, public KeyframeParam {
@@ -390,14 +632,13 @@ namespace OFX {
         virtual ~SetInstance();
 
         /// get the params
-        const std::map<std::string, Instance*>& getParams() const;
+        const std::map<std::string, Instance*> &getParams() const;
 
         /// get the params
-        const std::list<Instance*>& getParamList() const;
+        const std::list<Instance*> &getParamList() const;
 
         // get the param
-        Instance* getParam(std::string name) 
-        {
+        Instance* getParam(std::string name) {
           std::map<std::string,Instance*>::iterator it = _params.find(name);
           if(it!=_params.end())
             return it->second;

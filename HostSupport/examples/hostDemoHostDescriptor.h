@@ -40,7 +40,9 @@ namespace MyHost {
   ///      which is passed back to the plugin.
   class Host : public OFX::Host::ImageEffect::Host
   {
-  public:
+  public:    
+    Host();
+
     /// Create a new instance of an image effect plug-in.
     ///
     /// It is called by ImageEffectPlugin::createInstance which the
@@ -54,7 +56,24 @@ namespace MyHost {
                                                           OFX::Host::ImageEffect::ImageEffectPlugin* plugin,
                                                           OFX::Host::ImageEffect::Descriptor& desc,
                                                           const std::string& context);
-    Host();
+
+    /// Override this to create a descriptor, this makes the 'root' descriptor
+    virtual OFX::Host::ImageEffect::Descriptor *makeDescriptor(OFX::Host::ImageEffect::ImageEffectPlugin* plugin);
+
+    /// used to construct a context description, rootContext is the main context
+    virtual OFX::Host::ImageEffect::Descriptor *makeDescriptor(const OFX::Host::ImageEffect::Descriptor &rootContext, 
+                                                               OFX::Host::ImageEffect::ImageEffectPlugin *plug);        
+
+    /// used to construct populate the cache
+    virtual OFX::Host::ImageEffect::Descriptor *makeDescriptor(const std::string &bundlePath, 
+                                                               OFX::Host::ImageEffect::ImageEffectPlugin *plug);
+
+    /// vmessage
+    virtual OfxStatus vmessage(const char* type,
+                               const char* id,
+                               const char* format,
+                               va_list args);
+
   };
 
   // my ofx host object

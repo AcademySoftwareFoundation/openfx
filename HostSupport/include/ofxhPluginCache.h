@@ -4,19 +4,19 @@
 /*
 Software License :
 
-Copyright (c) 2007, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2007-2009, The Open Effects Association Ltd.  All Rights Reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-* Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-* Neither the name The Open Effects Association Ltd, nor the names of its 
-contributors may be used to endorse or promote products derived from this
-software without specific prior written permission.
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+    * Neither the name The Open Effects Association Ltd, nor the names of its 
+      contributors may be used to endorse or promote products derived from this
+      software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -35,7 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <list>
 #include <set>
 #include <iostream>
-#include <assert.h>
 
 #include <stdio.h>
 
@@ -65,31 +64,51 @@ namespace OFX {
       int _apiVersion;         ///< the version of the API
 
       std::string _identifier; ///< the identifier of the plugin
+      std::string _rawIdentifier; ///< the original identifier of the plugin
       int _versionMajor;       ///< the plugin major version
       int _versionMinor;       ///< the plugin minor version
 
     public:
 
-      const std::string &getPluginApi() const { return _pluginApi; }
+      const std::string &getPluginApi() const {
+        return _pluginApi;
+      }
+      
+      int getApiVersion() const {
+        return _apiVersion;
+      }
+      
+      const std::string &getIdentifier() const {
+        return _identifier;
+      }
 
-      int getApiVersion() const { return _apiVersion; }
+      const std::string &getRawIdentifier() const {
+        return _rawIdentifier;
+      }
+      
+      int getVersionMajor() const {
+        return _versionMajor;
+      }
+      
+      int getVersionMinor() const  {
+        return _versionMinor;
+      }
 
-      const std::string &getIdentifier() const { return _identifier; }
+      PluginDesc() {
+      }
 
-      int getVersionMajor() const { return _versionMajor; }
-
-      int getVersionMinor() const { return _versionMinor; }
-
-      PluginDesc() {}
+      virtual ~PluginDesc() {}
 
       PluginDesc(const std::string &api,
-        int apiVersion,
-        const std::string &identifier,
-        int versionMajor,
-        int versionMinor)
+                 int apiVersion,
+                 const std::string &identifier,
+                 const std::string &rawIdentifier,
+                 int versionMajor,
+                 int versionMinor)
         : _pluginApi(api)
         , _apiVersion(apiVersion)
         , _identifier(identifier)
+        , _rawIdentifier(rawIdentifier)
         , _versionMajor(versionMajor)
         , _versionMinor(versionMinor)
       {
@@ -101,41 +120,58 @@ namespace OFX {
       PluginDesc(OfxPlugin *ofxPlugin) {
         _pluginApi = ofxPlugin->pluginApi;
         _apiVersion = ofxPlugin->apiVersion;
+        _rawIdentifier = ofxPlugin->pluginIdentifier;
         _identifier = ofxPlugin->pluginIdentifier;
+
+        for (size_t i=0;i<_identifier.size();i++) {
+          _identifier[i] = tolower(_identifier[i]);
+        }
         _versionMajor = ofxPlugin->pluginVersionMajor;
         _versionMinor = ofxPlugin->pluginVersionMinor;
       }
 
     };
-
+    
     /// class that we use to manipulate a plugin
-    class Plugin : public PluginDesc 
-    {
-      /// owned by the PluginBinary it lives inside
-      /// Plugins can only be pass about either by pointer or reference
+    class Plugin : public PluginDesc {
+    /// owned by the PluginBinary it lives inside
+    /// Plugins can only be pass about either by pointer or reference
     private :
-      Plugin(const Plugin&) { assert(false); }                          ///< hidden
-      Plugin &operator= (const Plugin&) { assert(false); return *this;} ///< hidden
+      Plugin(const Plugin&) {}                          ///< hidden
+      Plugin &operator= (const Plugin&) {return *this;} ///< hidden
 
     protected :
       PluginBinary *_binary; ///< the file I live inside
       int           _index;  ///< where I live inside that file
     public :
       Plugin();
-      PluginBinary *getBinary() { return _binary; }
-      const PluginBinary *getBinary() const { return _binary; }
-      int getIndex() const { return _index; }
 
-      /// construct this based on the struct returned by the getNthPlugin() in the binary
-      explicit Plugin(PluginBinary *bin, int idx, OfxPlugin *o) : PluginDesc(o), _binary(bin), _index(idx)
+      PluginBinary *getBinary()
       {
+        return _binary;
       }
 
+      const PluginBinary *getBinary() const
+      {
+        return _binary;
+      }
+
+      int getIndex() const
+      {
+        return _index;
+      }
+
+      /// construct this based on the struct returned by the getNthPlugin() in the binary
+      Plugin(PluginBinary *bin, int idx, OfxPlugin *o) : PluginDesc(o), _binary(bin), _index(idx)
+      {
+      }
+      
       /// construct me from the cache
-      explicit Plugin(PluginBinary *bin, int idx, const std::string &api,
-        int apiVersion, const std::string &identifier, 
-        int majorVersion, int minorVersion)
-        : PluginDesc(api, apiVersion, identifier, majorVersion, minorVersion)
+      Plugin(PluginBinary *bin, int idx, const std::string &api,
+             int apiVersion, const std::string &identifier, 
+             const std::string &rawIdentifier,
+             int majorVersion, int minorVersion)
+        : PluginDesc(api, apiVersion, identifier, rawIdentifier, majorVersion, minorVersion)
         , _binary(bin)
         , _index(idx) 
       {
@@ -144,7 +180,7 @@ namespace OFX {
       virtual ~Plugin() {
       }
 
-      virtual APICache::PluginAPICacheI& getApiHandler() = 0;
+      virtual APICache::PluginAPICacheI &getApiHandler() = 0;
 
       bool trumps(Plugin *other) {
         int myMajor = getVersionMajor();
@@ -156,7 +192,7 @@ namespace OFX {
         if (myMajor > theirMajor) {
           return true;
         }
-
+        
         if (myMajor == theirMajor && myMinor > theirMinor) {
           return true;
         }
@@ -169,8 +205,8 @@ namespace OFX {
 
     /// class that represents a binary file which holds plugins
     class PluginBinary {
-      /// has a set of plugins inside it and which it owns
-      /// These are owned by a PluginCache
+    /// has a set of plugins inside it and which it owns
+    /// These are owned by a PluginCache
       friend class PluginHandle;
 
     protected :
@@ -181,7 +217,7 @@ namespace OFX {
       time_t _fileModificationTime;   ///< used as a time stamp to check modification times, used for caching
       size_t _fileSize;               ///< file size last time we check, used for caching
       bool _binaryChanged;            ///< whether the timestamp/filesize in this cache is different from that in the actual binary
-
+      
     public :
 
       /// create one from the cache.  this will invoke the Binary() constructor which
@@ -210,29 +246,43 @@ namespace OFX {
       {
         loadPluginInfo(cache);
       }
-
+    
       /// dtor
       virtual ~PluginBinary();
 
 
-      time_t getFileModificationTime() const { return _fileModificationTime; }
+      time_t getFileModificationTime() const {
+      	return _fileModificationTime;
+      }
+    
+      size_t getFileSize() {
+      	return _fileSize;
+      }
 
-      size_t getFileSize() const {	return _fileSize; }
+      const std::string &getFilePath() const {
+        return _filePath;
+      }
+      
+      const std::string &getBundlePath() const {
+        return _bundlePath;
+      }
+      
+      bool hasBinaryChanged() const {
+        return _binaryChanged;
+      }
 
-      const std::string &getFilePath() const { return _filePath; }
+      bool isLoaded() const {
+        return _binary.isLoaded();
+      }
 
-      const std::string &getBundlePath() const { return _bundlePath; }
-
-      bool hasBinaryChanged() const { return _binaryChanged; }
-
-      bool isLoaded() const { return _binary.isLoaded(); }
-
-      void addPlugin(Plugin *pe) { _plugins.push_back(pe); }
+      void addPlugin(Plugin *pe) {
+        _plugins.push_back(pe);
+      }
 
       void loadPluginInfo(PluginCache *);
 
       /// how many plugins?
-      int getNPlugins() const { return (int)_plugins.size(); }
+      int getNPlugins() const {return (int)_plugins.size(); }
 
       /// get a plugin 
       Plugin &getPlugin(int idx) {return *_plugins[idx];}
@@ -251,11 +301,15 @@ namespace OFX {
       PluginHandle(Plugin *p, OFX::Host::Host *_host);
       virtual ~PluginHandle();
 
-      OfxPlugin *getOfxPlugin() { return _op; }
+      OfxPlugin *getOfxPlugin() {
+        return _op;
+      }
 
-      OfxPlugin *operator->() { return _op; }
+      OfxPlugin *operator->() {
+        return _op;
+      }
     };
-
+    
     /// for later 
     struct PluginCacheSupportedApi {
       std::string api;
@@ -264,10 +318,10 @@ namespace OFX {
       APICache::PluginAPICacheI *handler;
 
       PluginCacheSupportedApi(std::string _api, int _minVersion, int _maxVersion, APICache::PluginAPICacheI *_handler) :
-      api(_api), minVersion(_minVersion), maxVersion(_maxVersion), handler(_handler)
+        api(_api), minVersion(_minVersion), maxVersion(_maxVersion), handler(_handler)
       {
       }
-
+      
       bool matches(std::string _api, int _version) const
       {
         if (_api == api && _version >= minVersion && _version <= maxVersion) {
@@ -278,13 +332,13 @@ namespace OFX {
     };
 
     /// Where we keep our plugins.    
-    class PluginCache 
-    {
+    class PluginCache {
     protected :
       OFX::Host::Property::PropSpec* _hostSpec;
 
       std::list<std::string>    _pluginPath;  ///< list of directories to look in
       std::set<std::string>     _nonrecursePath; ///< list of directories to look in (non-recursively)
+      std::list<std::string>    _pluginDirs;  ///< list of directories we found
       std::list<PluginBinary *> _binaries; ///< all the binaries we know about, we own these
       std::list<Plugin *>       _plugins;  ///< all the plugins inside the binaries, we don't own these, populated from _binaries
       std::set<std::string>     _knownBinFiles;
@@ -298,18 +352,33 @@ namespace OFX {
 
       bool _ignoreCache;
       std::string _cacheVersion;
-      static PluginCache* gPluginCachePtr;
+
+      bool _dirty;
+      bool _enablePluginSeek;       ///< Turn off to make all seekPluginFile() calls return an empty string
+
+      static PluginCache* gPluginCachePtr; ///< singleton plugin cache
+
     public:
       /// ctor, which inits _pluginPath to default locations and not much else
       PluginCache();
-      virtual ~PluginCache();
 
+      /// dtor
+      ~PluginCache();
+
+      /// get our plugin cache
       static PluginCache* getPluginCache();
-      static void clearPluginCache();
-      
+
+      /// clear our plugin cache
+      static void clearPluginCache();		
+
       /// get the list in which plugins are sought
-      const std::list<std::string> &getPluginPath() const {
+      const std::list<std::string> &getPluginPath() {
         return _pluginPath;
+      }
+
+      /// was the cache outdated?
+      bool dirty() const {
+        return _dirty;
       }
 
       /// add a file to the plugin path
@@ -320,6 +389,10 @@ namespace OFX {
         }
       }
 
+      /// specify which subdirectory of /usr/OFX or equivilant
+      /// (as well as 'Plugins') to look in for plugins.
+      void setPluginHostPath(const std::string &hostId);
+
       /// set the version string to write to the cache, 
       /// and also that we expect on cachess read in
       void setCacheVersion(const std::string &cacheVersion) {
@@ -329,12 +402,19 @@ namespace OFX {
       // populate the cache.  must call scanPluginFiles() after to check for changes.
       void readCache(std::istream &is);
 
+      // seek a particular file on the OFX plugin path
+      std::string seekPluginFile(const std::string &baseName) const;
+      
+      /// Sets behaviour of seekPluginFile().
+      /// Enable (the default): normal operation; disable: returns an empty string instead
+      void setPluginSeekEnabled(bool enabled) { _enablePluginSeek = enabled; }
+
       /// scan for plugins
       void scanPluginFiles();
 
       // write the plugin cache output file to the given stream
       void writePluginCache(std::ostream &os) const;
-
+      
       // callback function for the XML
       void elementBeginCallback(void *userData, const XML_Char *name, const XML_Char **attrs);
       void elementCharCallback(void *userData, const XML_Char *data, int len);
@@ -344,7 +424,7 @@ namespace OFX {
       void registerAPICache(const std::string &api, int min, int max, APICache::PluginAPICacheI *apiCache) {
         _apiHandlers.push_back(PluginCacheSupportedApi(api, min, max, apiCache));
       }
-
+      
       /// find the API cache handler for the given api/apiverson
       APICache::PluginAPICacheI* findApiHandler(const std::string &api, int apiver);
 
@@ -353,6 +433,7 @@ namespace OFX {
         return _plugins;
       }
     };
+
   }
 }
 

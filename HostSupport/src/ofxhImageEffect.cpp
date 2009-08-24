@@ -1,7 +1,7 @@
 /*
 Software License :
 
-Copyright (c) 2007, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2007-2009, The Open Effects Association Ltd. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -46,6 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhImageEffectAPI.h"
 #include "ofxhUtilities.h"
 
+#include <string.h>
 #include <stdarg.h>
 
 namespace OFX {
@@ -99,11 +100,12 @@ namespace OFX {
       }
       
       /// get the properties set
-      const Property::Set& Base::getProps() const {
+      Property::Set &Base::getProps() {
         return _properties;
       }
 
-      Property::Set& Base::getProps() {
+      /// get the properties set, const version
+      const Property::Set &Base::getProps() const {
         return _properties;
       }
 
@@ -162,7 +164,7 @@ namespace OFX {
       }
 
       /// what is the thread safety on this effect
-      const std::string &Base::getRenderThreadSaftey() const
+      const std::string &Base::getRenderThreadSafety() const
       {
         return _properties.getStringProperty(kOfxImageEffectPluginRenderThreadSafety);
       }
@@ -242,14 +244,6 @@ namespace OFX {
         gImageEffectHost->initDescriptor(this);
       }
 
-      // Descriptor
-      Descriptor::Descriptor(const Descriptor &other)
-        : Base(other._properties)
-        , _plugin(other._plugin)
-      {
-        gImageEffectHost->initDescriptor(this);
-      }
-
       Descriptor::Descriptor(const Descriptor &other, Plugin *plug) 
         : Base(other._properties)
         , _plugin(plug)
@@ -266,12 +260,13 @@ namespace OFX {
         gImageEffectHost->initDescriptor(this);
       }
 
-      Descriptor::~Descriptor()
-      {
-        for(std::map<std::string, ClipDescriptor*>::iterator it = _clips.begin(); it != _clips.end(); ++it)
+      Descriptor::~Descriptor()	
+      {	
+        for(std::map<std::string, ClipDescriptor*>::iterator it = _clips.begin(); it != _clips.end(); ++it)	
           delete it->second;
         _clips.clear();
-      }
+      }		
+
 
       /// create a new clip and add this to the clip map
       ClipDescriptor *Descriptor::defineClip(const std::string &name) {
@@ -351,7 +346,7 @@ namespace OFX {
         _properties.setIntProperty(kOfxPropIsInteractive,interactive);
 
         // copy is sequential over
-        bool sequential = other.getProps().getIntProperty(kOfxImageEffectInstancePropSequentialRender) > 0 ? true : false;
+        bool sequential = other.getProps().getIntProperty(kOfxImageEffectInstancePropSequentialRender) != 0;
         _properties.setIntProperty(kOfxImageEffectInstancePropSequentialRender,sequential);
 
         while(effectInstanceStuff[i].name) {
@@ -387,14 +382,16 @@ namespace OFX {
       OfxStatus Instance::populate() 
       {        
         const std::vector<ClipDescriptor*>& clips = _descriptor->getClipsByOrder();
+
         int counter = 0;
-        for(std::vector<ClipDescriptor*>::const_iterator it=clips.begin(); it!=clips.end(); it++, counter++)
+        for(std::vector<ClipDescriptor*>::const_iterator it=clips.begin();
+            it!=clips.end();
+            it++, ++counter)
           {
-            const std::string& name =  (*it)->getName();
+            const std::string &name =  (*it)->getName();
             // foreach clip descriptor make a clip instance
             ClipInstance* instance = newClipInstance(this, *it, counter);   
-            if(!instance) 
-              return kOfxStatFailed;
+            if(!instance) return kOfxStatFailed;
 
             _clips[name] = instance;
           }        
@@ -417,8 +414,7 @@ namespace OFX {
 
             // get a param instance from a param descriptor
             Param::Instance* instance = newParam(name,*descriptor);
-            if(!instance) 
-              return kOfxStatFailed;
+            if(!instance) return kOfxStatFailed;
           
             // add the value into the param set instance
             OfxStatus st = addParam(name,instance);
@@ -457,8 +453,7 @@ namespace OFX {
       }
 
       // do nothing
-      int Instance::getDimension(const std::string &name) const OFX_EXCEPTION_SPEC 
-      {
+      int Instance::getDimension(const std::string &name) const OFX_EXCEPTION_SPEC {
         printf("failing in %s with name=%s\n", __PRETTY_FUNCTION__, name.c_str());
         throw Property::Exception(kOfxStatErrMissingHostFeature);
       }
@@ -560,6 +555,21 @@ namespace OFX {
         }
       }
 
+      /// this is used to populate with any extra action in argumnents that may be needed
+      void Instance::setCustomInArgs(const std::string &action, Property::Set &inArgs)
+      {
+      }
+      
+      /// this is used to populate with any extra action out argumnents that may be needed
+      void Instance::setCustomOutArgs(const std::string &action, Property::Set &outArgs)
+      {
+      }
+
+      /// this is used to populate with any extra action out argumnents that may be needed
+      void Instance::examineOutArgs(const std::string &action, OfxStatus, const Property::Set &outArgs)
+      {
+      }
+
       /// check for connection
       bool Instance::checkClipConnectionStatus() const
       {
@@ -597,15 +607,33 @@ namespace OFX {
       // call the effect entry point
       OfxStatus Instance::mainEntry(const char *action, 
                                     const void *handle, 
-                                    OfxPropertySetHandle inArgs,                        
-                                    OfxPropertySetHandle outArgs)
+                                    Property::Set *inArgs,
+                                    Property::Set *outArgs)
       {
         if(_plugin){
           PluginHandle* pHandle = _plugin->getPluginHandle();
           if(pHandle){
             OfxPlugin* ofxPlugin = pHandle->getOfxPlugin();
             if(ofxPlugin){
-              return ofxPlugin->mainEntry(action,handle,inArgs,outArgs);        
+              
+              OfxPropertySetHandle inHandle = 0;
+              if(inArgs) {
+                setCustomInArgs(action, *inArgs);
+                inHandle = inArgs->getHandle();
+              }
+              
+              OfxPropertySetHandle outHandle = 0;
+              if(outArgs) {
+                setCustomOutArgs(action, *outArgs);
+                outHandle = outArgs->getHandle();
+              }
+                
+              OfxStatus stat = ofxPlugin->mainEntry(action, handle, inHandle, outHandle);
+
+              if(outArgs) 
+                examineOutArgs(action, stat, *outArgs);
+
+              return stat;
             }
             return kOfxStatFailed;
           }
@@ -656,7 +684,7 @@ namespace OFX {
 
         Property::Set inArgs(stuff);
 
-        return mainEntry(kOfxActionBeginInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
+        return mainEntry(kOfxActionBeginInstanceChanged,this->getHandle(), &inArgs, 0);
       }
 
       OfxStatus Instance::paramInstanceChangedAction(const std::string & paramName,
@@ -689,7 +717,7 @@ namespace OFX {
 
         inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
         
-        return mainEntry(kOfxActionInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
+        return mainEntry(kOfxActionInstanceChanged,this->getHandle(), &inArgs, 0);
       }
 
       OfxStatus Instance::clipInstanceChangedAction(const std::string & clipName,
@@ -714,7 +742,7 @@ namespace OFX {
 
         Property::Set inArgs(whyStuff);
 
-        return mainEntry(kOfxActionEndInstanceChanged,this->getHandle(),inArgs.getHandle(),0);
+        return mainEntry(kOfxActionEndInstanceChanged,this->getHandle(), &inArgs, 0);
       }
 
       // purge your caches
@@ -761,7 +789,7 @@ namespace OFX {
 
         inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
 
-        return  mainEntry(kOfxImageEffectActionBeginSequenceRender,this->getHandle(),inArgs.getHandle(),0);        
+        return  mainEntry(kOfxImageEffectActionBeginSequenceRender, this->getHandle(), &inArgs, 0);        
       }
 
       OfxStatus Instance::renderAction(OfxTime      time,
@@ -784,7 +812,7 @@ namespace OFX {
         inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
 
 
-        return mainEntry(kOfxImageEffectActionRender,this->getHandle(),inArgs.getHandle(),0);        
+        return mainEntry(kOfxImageEffectActionRender,this->getHandle(), &inArgs, 0);        
       }
 
       OfxStatus Instance::endRenderAction(OfxTime  startFrame,
@@ -809,7 +837,74 @@ namespace OFX {
         inArgs.setDoubleProperty(kOfxPropIsInteractive,interactive);
         inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
 
-        return mainEntry(kOfxImageEffectActionEndSequenceRender,this->getHandle(),inArgs.getHandle(),0);        
+        return mainEntry(kOfxImageEffectActionEndSequenceRender,this->getHandle(), &inArgs, 0);        
+      }
+
+      /// calculate the default rod for this effect instance
+      OfxRectD Instance::calcDefaultRegionOfDefinition(OfxTime  time,
+                                                       OfxPointD   renderScale)
+      {
+        OfxRectD rod;
+
+        // figure out the default contexts
+        if(_context == kOfxImageEffectContextGenerator) {
+          // generator is the extent
+          rod.x1 = rod.y1 = 0;
+          getProjectExtent(rod.x2, rod.y2);
+        }                                     
+        else if(_context == kOfxImageEffectContextFilter ||
+                _context == kOfxImageEffectContextPaint) {
+          // filter and paint default to the input clip
+          ClipInstance *clip = getClip(kOfxImageEffectSimpleSourceClipName);
+          if(clip) {
+            rod = clip->getRegionOfDefinition(time);
+          }
+        }
+        else if(_context == kOfxImageEffectContextTransition) {
+          // transition is the union of the two clips
+          ClipInstance *clipFrom = getClip(kOfxImageEffectTransitionSourceFromClipName);
+          ClipInstance *clipTo = getClip(kOfxImageEffectTransitionSourceToClipName);
+          if(clipFrom && clipTo) {
+            rod = clipFrom->getRegionOfDefinition(time);
+            rod = Union(rod, clipTo->getRegionOfDefinition(time));
+          }
+        }
+        else if(_context == kOfxImageEffectContextGeneral) {
+          // general context is the union of all the non optional clips
+          bool gotOne = false;
+          for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
+              it!=_clips.end();
+              it++) { 
+            ClipInstance *clip = it->second;
+            if(!clip->isOutput() && !clip->isOptional()) {
+              if(!gotOne)
+                rod = clip->getRegionOfDefinition(time);
+              else
+                rod = Union(rod, clip->getRegionOfDefinition(time));
+              gotOne = true;
+            }
+          }
+            
+          if(!gotOne) {
+            /// no non optionals? then be the extent
+            rod.x1 = rod.y1 = 0;
+            getProjectExtent(rod.x2, rod.y2);
+          }
+            
+        }
+        else if(_context == kOfxImageEffectContextRetimer) {
+          // retimer
+          ClipInstance *clip = getClip(kOfxImageEffectSimpleSourceClipName);
+          if(clip) {
+            Param::DoubleInstance *param = dynamic_cast<Param::DoubleInstance *>(getParam(kOfxImageEffectRetimerParamName));
+            if(param) {
+              rod = clip->getRegionOfDefinition(floor(time));
+              rod = Union(rod, clip->getRegionOfDefinition(floor(time) + 1));
+            }
+          }
+        }
+
+        return rod;
       }
 
       ////////////////////////////////////////////////////////////////////////////////
@@ -838,72 +933,15 @@ namespace OFX {
 
         OfxStatus stat = mainEntry(kOfxImageEffectActionGetRegionOfDefinition,
                                    this->getHandle(),
-                                   inArgs.getHandle(),
-                                   outArgs.getHandle());
+                                   &inArgs,
+                                   &outArgs);
 
         if(stat == kOfxStatOK) {
           outArgs.getDoublePropertyN(kOfxImageEffectPropRegionOfDefinition, &rod.x1, 4);
         }
         else if(stat == kOfxStatReplyDefault) {
-          // figure out the default contexts
-          if(_context == kOfxImageEffectContextGenerator) {
-            // generator is the extent
-            rod.x1 = rod.y1 = 0;
-            getProjectExtent(rod.x2, rod.y2);
-          }                                     
-          else if(_context == kOfxImageEffectContextFilter ||
-                  _context == kOfxImageEffectContextPaint) {
-            // filter and paint default to the input clip
-            ClipInstance *clip = getClip(kOfxImageEffectSimpleSourceClipName);
-            if(clip) {
-              rod = clip->getRegionOfDefinition(time);
-            }
-          }
-          else if(_context == kOfxImageEffectContextTransition) {
-            // transition is the union of the two clips
-            ClipInstance *clipFrom = getClip(kOfxImageEffectTransitionSourceFromClipName);
-            ClipInstance *clipTo = getClip(kOfxImageEffectTransitionSourceToClipName);
-            if(clipFrom && clipTo) {
-              rod = clipFrom->getRegionOfDefinition(time);
-              rod = Union(rod, clipTo->getRegionOfDefinition(time));
-            }
-          }
-          else if(_context == kOfxImageEffectContextGeneral) {
-            // general context is the union of all the non optional clips
-            bool gotOne = false;
-            for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
-                it!=_clips.end();
-                it++) { 
-              ClipInstance *clip = it->second;
-              if(!clip->isOutput() && !clip->isOptional()) {
-                if(!gotOne)
-                  rod = clip->getRegionOfDefinition(time);
-                else
-                  rod = Union(rod, clip->getRegionOfDefinition(time));
-                gotOne = true;
-              }
-            }
-            
-            if(!gotOne) {
-              /// no non optionals? then be the extent
-              rod.x1 = rod.y1 = 0;
-              getProjectExtent(rod.x2, rod.y2);
-            }
-            
-          }
-          else if(_context == kOfxImageEffectContextRetimer) {
-            // retimer
-            ClipInstance *clip = getClip(kOfxImageEffectSimpleSourceClipName);
-            if(clip) {
-              Param::DoubleInstance *param = dynamic_cast<Param::DoubleInstance *>(getParam(kOfxImageEffectRetimerParamName));
-              if(param) {
-                rod = clip->getRegionOfDefinition(floor(time));
-                rod = Union(rod, clip->getRegionOfDefinition(floor(time) + 1));
-              }
-            }
-          }
-        }
-        
+          rod = calcDefaultRegionOfDefinition(time, renderScale);
+        }        
 
         return stat;
       }
@@ -968,8 +1006,8 @@ namespace OFX {
           /// call the action
           stat = mainEntry(kOfxImageEffectActionGetRegionsOfInterest,
                            this->getHandle(),
-                           inArgs.getHandle(),
-                           outArgs.getHandle());
+                           &inArgs,
+                           &outArgs);
 
           /// set the thing up
           for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
@@ -1039,8 +1077,8 @@ namespace OFX {
 
           stat = mainEntry(kOfxImageEffectActionGetFramesNeeded,
                            this->getHandle(),
-                           inArgs.getHandle(),
-                           outArgs.getHandle());
+                           &inArgs,
+                           &outArgs);
         }
         
         OfxRangeD defaultRange;
@@ -1116,8 +1154,8 @@ namespace OFX {
 
         OfxStatus st = mainEntry(kOfxImageEffectActionIsIdentity,
                                  this->getHandle(),
-                                 inArgs.getHandle(),
-                                 outArgs.getHandle());        
+                                 &inArgs,
+                                 &outArgs);        
 
         if(st==kOfxStatOK){
           time = outArgs.getDoubleProperty(kOfxPropTime);
@@ -1188,18 +1226,19 @@ namespace OFX {
 
           if(!clip->isOutput()) {
             frameRate = Maximum(frameRate, clip->getFrameRate());
+
             std::string rawComp  = clip->getUnmappedComponents(); 
             rawComp = clip->findSupportedComp(rawComp); // turn that into a comp the plugin expects on that clip
 
             const std::string &rawDepth = clip->getUnmappedBitDepth();
             const std::string &rawPreMult = clip->getPremult();            
-
+              
             if(isChromaticComponent(rawComp)) {
               if(rawPreMult == kOfxImagePreMultiplied)
                 premult = kOfxImagePreMultiplied;
               else if(rawPreMult == kOfxImageUnPreMultiplied && premult != kOfxImagePreMultiplied)
                 premult = kOfxImageUnPreMultiplied;                
-
+                
               deepestBitDepth = FindDeepestBitDepth(deepestBitDepth, rawDepth);
               mostComponents  = findMostChromaticComponents(mostComponents, rawComp);
             }
@@ -1223,33 +1262,34 @@ namespace OFX {
           ClipInstance *clip = it->second;
 
           std::string comp, depth;
-          //double PAR;
 
-          if(clip->isOutput()) {
-            depth = deepestBitDepth;
-            comp = clip->findSupportedComp(mostComponents);
-          }
-          else {
-            std::string rawComp  = clip->getUnmappedComponents();
-            rawComp = clip->findSupportedComp(rawComp); // turn that into a comp the plugin expects on that clip
-            const std::string &rawDepth = clip->getUnmappedBitDepth();
+          std::string rawComp  = clip->getUnmappedComponents();
+          rawComp = clip->findSupportedComp(rawComp); // turn that into a comp the plugin expects on that clip
+          const std::string &rawDepth = clip->getUnmappedBitDepth();
 
-            if(isChromaticComponent(rawComp)) {
+          if(isChromaticComponent(rawComp)) {
+                
+            if(clip->isOutput()) {
+              depth = deepestBitDepth;
+              comp = clip->findSupportedComp(mostComponents);
+                  
+              clip->setPixelDepth(depth);
+              clip->setComponents(comp);
+            }
+            else {                 
               comp  = rawComp;
               depth = multiBitDepth ? bestSupportedDepth(rawDepth) : deepestBitDepth;
-            }
-            else {
-              /// hmm custom component type, don't touch it and pass it through
-              comp  = rawComp;
-              depth = rawDepth;
+                  
+              clip->setPixelDepth(depth);
+              clip->setComponents(comp);
             }
           }
-
-          /// now set them up 
-          clip->setPixelDepth(depth);
-          clip->setComponents(comp);
+          else {
+            /// hmm custom component type, don't touch it and pass it through
+            clip->setPixelDepth(rawDepth);
+            clip->setComponents(rawComp);
+          }
         }
-
       }
 
       /// Initialise the clip preferences arguments, override this to do
@@ -1290,12 +1330,14 @@ namespace OFX {
           std::string depthParamName     = "OfxImageClipPropDepth_"+it->first;
           std::string parParamName       = "OfxImageClipPropPAR_"+it->first;
 
-          Property::PropSpec specComp = {componentParamName.c_str(),  Property::eString, 1, false,          clip->getComponents().c_str()};
-          Property::PropSpec specDep = {depthParamName.c_str(),       Property::eString, 1, !multiBitDepth, clip->getPixelDepth().c_str()};
-          Property::PropSpec specPAR = {parParamName.c_str(),         Property::eDouble, 1, false,          "1"};
-
+          Property::PropSpec specComp = {componentParamName.c_str(),  Property::eString, 0, false,          ""}; // note the support for multi-planar clips
           outArgs.createProperty(specComp);
+          outArgs.setStringProperty(componentParamName.c_str(), clip->getComponents().c_str()); // as it is variable dimension, there is no default value, so we have to set it explicitly
+
+          Property::PropSpec specDep = {depthParamName.c_str(),       Property::eString, 1, !multiBitDepth, clip->getPixelDepth().c_str()};
           outArgs.createProperty(specDep);
+
+          Property::PropSpec specPAR = {parParamName.c_str(),         Property::eDouble, 1, false,          "1"};
           outArgs.createProperty(specPAR);
         }
       }
@@ -1315,7 +1357,7 @@ namespace OFX {
         OfxStatus st = mainEntry(kOfxImageEffectActionGetClipPreferences,
                                  this->getHandle(),
                                  0,
-                                 outArgs.getHandle());
+                                 &outArgs);
 
         if(st!=kOfxStatOK && st!=kOfxStatReplyDefault) {
           /// ouch
@@ -1421,7 +1463,7 @@ namespace OFX {
         OfxStatus st = mainEntry(kOfxImageEffectActionGetTimeDomain,
                                  this->getHandle(),
                                  0,
-                                 outArgs.getHandle());
+                                 &outArgs);
         if(st!=kOfxStatOK) return st;
 
         range.min = outArgs.getDoubleProperty(kOfxImageEffectActionGetTimeDomain,0);
@@ -1915,6 +1957,7 @@ namespace OFX {
         { 0 },
       };    
 
+      /// ctor
       Host::Host() 
       {
         /// add the properties for an image effect host, derived classs to set most of them
@@ -1923,6 +1966,11 @@ namespace OFX {
 
       /// optionally over-ridden function to register the creation of a new descriptor in the host app
       void Host::initDescriptor(Descriptor* desc)
+      {
+      }
+
+      /// Use this in any dialogue etc... showing progress
+      void Host::loadingStatus(const std::string &)
       {
       }
 
@@ -1973,6 +2021,9 @@ namespace OFX {
         else  /// otherwise just grab the base class one, which is props and memory
           return OFX::Host::Host::fetchSuite(suiteName, suiteVersion);
       }
+
     } // ImageEffect
+
   } // Host
+
 } // OFX

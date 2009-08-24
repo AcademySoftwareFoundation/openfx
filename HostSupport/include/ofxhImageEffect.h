@@ -2,19 +2,19 @@
 /*
 Software License :
 
-Copyright (c) 2007, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2007-2009, The Open Effects Association Ltd.  All Rights Reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-* Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-* Neither the name The Open Effects Association Ltd, nor the names of its 
-contributors may be used to endorse or promote products derived from this
-software without specific prior written permission.
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+    * Neither the name The Open Effects Association Ltd, nor the names of its 
+      contributors may be used to endorse or promote products derived from this
+      software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -61,7 +61,6 @@ namespace OFX {
       class Instance;
       class Descriptor;
 
-
       /// An image effect host, passed to the setHost function of all image effect plugins
       class Host : public OFX::Host::Host {
       public :
@@ -80,24 +79,36 @@ namespace OFX {
         ///   \arg desc - the descriptor for that plugin
         ///   \arg context - the context to be created in
         virtual Instance* newInstance(void* clientData,
-          ImageEffectPlugin* plugin,
-          Descriptor& desc,
-          const std::string& context) = 0;
+                                      ImageEffectPlugin* plugin,
+                                      Descriptor& desc,
+                                      const std::string& context) = 0;
 
+        /// Function called as each plugin binary is found and loaded from disk
+        ///
+        /// Use this in any dialogue etc... showing progress
+        virtual void loadingStatus(const std::string &);
+        
         /// Override this to filter out plugins which the host can't support for whatever reason
         ///
         ///   \arg plugin - the plugin to examine
         ///   \arg reason - set this to report the reason the plugin was not loaded
         virtual bool pluginSupported(ImageEffectPlugin *plugin, std::string &reason) const;
 
-        using OFX::Host::Host::initDescriptor;
+        /// Override this to create a descriptor, this makes the 'root' descriptor
+        virtual Descriptor *makeDescriptor(ImageEffectPlugin* plugin) = 0;
+
+        /// used to construct a context description, rootContext is the main context
+        virtual Descriptor *makeDescriptor(const Descriptor &rootContext, ImageEffectPlugin *plug) = 0;        
+
+        /// used to construct populate the cache
+        virtual Descriptor *makeDescriptor(const std::string &bundlePath, ImageEffectPlugin *plug) = 0;
 
         /// Override this to initialise an image effect descriptor after it has been
         /// created.
         virtual void initDescriptor(Descriptor* desc);
       };
 
-      /// our global host bobject, set when the plugin cache is created
+      /// our global host object, set when the plugin cache is created
       extern Host *gImageEffectHost;
 
       ////////////////////////////////////////////////////////////////////////////////
@@ -118,15 +129,17 @@ namespace OFX {
         OfxImageEffectHandle getHandle() const;
 
         /// get the properties set
-        const Property::Set& getProps() const;
-        Property::Set& getProps();
+        Property::Set &getProps();
+
+        /// get the properties set, const version
+        const Property::Set &getProps() const;
 
         /// name of the clip
         const std::string &getShortLabel() const;
-
+        
         /// name of the clip
         const std::string &getLabel() const;
-
+        
         /// name of the clip
         const std::string &getLongLabel() const;
 
@@ -140,7 +153,7 @@ namespace OFX {
         bool isSingleInstance() const;
 
         /// what is the thread safety on this effect
-        const std::string &getRenderThreadSaftey() const;
+        const std::string &getRenderThreadSafety() const;
 
         /// should the host attempt to managed multi-threaded rendering if it can
         /// via tiling or some such
@@ -164,13 +177,13 @@ namespace OFX {
         /// when field rendering, does the effect need to be called
         /// twice to render a frame in all circumstances (with different fields)
         bool fieldRenderTwiceAlways() const;
-
+        
         /// does the effect support multiple clip depths
         bool supportsMultipleClipDepths() const;
-
+        
         /// does the effect support multiple clip pixel aspect ratios
         bool supportsMultipleClipPARs() const;
-
+        
         /// does changing the named param re-tigger a clip preferences action
         bool isClipPreferencesSlaveParam(const std::string &s) const;
       };
@@ -179,6 +192,13 @@ namespace OFX {
       class Descriptor 
         : public Base
         , public Param::SetDescriptor {
+      private :
+        // private CC
+        Descriptor(const Descriptor &other)
+          : Base(other._properties)
+          , _plugin(other._plugin)
+        {}
+
       protected:
         Plugin                                 *_plugin;       ///< the plugin I belong to
         std::map<std::string, ClipDescriptor*>  _clips;        ///< clips descriptors by name
@@ -189,16 +209,15 @@ namespace OFX {
       public:
         /// used to construct the global description
         Descriptor(Plugin *plug);        
-
-        virtual ~Descriptor();
-        /// used to construct a context description, 'other' is the main context
-        Descriptor(const Descriptor &rootContext);
-
+        
         /// used to construct a context description, 'other' is the main context
         Descriptor(const Descriptor &rootContext, Plugin *plug);        
-
-        /// lightweight one? Or something. HACK BJN WHAT IS THIS FOR AND HOW DO I FIX IT?
+        
+        /// used to construct populate the cache
         Descriptor(const std::string &bundlePath, Plugin *plug);
+
+        /// dtor
+        virtual ~Descriptor();
 
         /// implemented for Param::SetDescriptor
         virtual Property::Set &getParamSetProps();
@@ -207,10 +226,10 @@ namespace OFX {
         Plugin *getPlugin() const {return _plugin;}
 
         /// create a new clip and add this to the clip map
-        ClipDescriptor *defineClip(const std::string &name);
+        virtual ClipDescriptor *defineClip(const std::string &name);
 
         /// get the clips
-        const std::map<std::string, ClipDescriptor*>& getClips() const;
+        const std::map<std::string, ClipDescriptor*> &getClips() const;
 
         /// add a new clip
         void addClip(const std::string &name, ClipDescriptor *clip);
@@ -234,11 +253,11 @@ namespace OFX {
       ///
       /// Client code needs to filling the pure virtuals in this.
       class Instance : public Base,
-        public Param::SetInstance,
-        public Progress::ProgressI,
-        public TimeLine::TimeLineI,
-        private Property::NotifyHook, 
-        private Property::GetHook
+                       public Param::SetInstance,
+                       public Progress::ProgressI,
+                       public TimeLine::TimeLineI,
+                       private Property::NotifyHook, 
+                       private Property::GetHook
       {
       protected:
         OFX::Host::ImageEffect::ImageEffectPlugin    *_plugin;
@@ -258,9 +277,9 @@ namespace OFX {
       public:        
         /// constructor based on clip descriptor
         Instance(ImageEffectPlugin* plugin,
-          Descriptor         &other, 
-          const std::string  &context,
-          bool               interactive);
+                 Descriptor         &other, 
+                 const std::string  &context,
+                 bool               interactive);
 
         virtual ~Instance();
 
@@ -272,6 +291,12 @@ namespace OFX {
 
         /// get the descriptor for this instance
         const Descriptor &getDescriptor() const {return *_descriptor;}
+
+        /// return the plugin this instance was created with
+        OFX::Host::ImageEffect::ImageEffectPlugin*getPlugin() const { return _plugin; }
+
+        /// return the context this instance was created with
+        const std::string &getContext() const { return _context; }
 
         /// get the descriptor for this instance
         Descriptor &getDescriptor() {return *_descriptor;}
@@ -302,7 +327,7 @@ namespace OFX {
         /// get the nth clip, in order of declaration
         int getNClips() const
         {
-          return (int)_clips.size();
+          return int(_clips.size());
         }
 
         /// are the clip preferences currently dirty
@@ -333,20 +358,20 @@ namespace OFX {
 
         /// make a clip
         virtual ClipInstance* newClipInstance(ImageEffect::Instance* plugin,
-          ClipDescriptor* descriptor, int index) = 0;
+                                              ClipDescriptor* descriptor, 
+                                              int index) = 0;
 
-
-        /// vmessage
         virtual OfxStatus vmessage(const char* type,
-          const char* id,
-          const char* format,
-          va_list args) = 0;       
+                                   const char* id,
+                                   const char* format,	
+                                   va_list args) = 0;  
+
 
         /// call the effect entry point
-        OfxStatus mainEntry(const char *action, 
-          const void *handle, 
-          OfxPropertySetHandle inArgs,                        
-          OfxPropertySetHandle outArgs);     
+        virtual OfxStatus mainEntry(const char *action, 
+                                    const void *handle, 
+                                    Property::Set *inArgs,
+                                    Property::Set *outArgs);
 
         int upperGetDimension(const std::string &name);
 
@@ -358,7 +383,7 @@ namespace OFX {
 
         /// overridden from gethook,  get the virutals for viewport size, pixel scale, background colour
         virtual void getDoublePropertyN(const std::string &name, double *values, int count) const OFX_EXCEPTION_SPEC;
-
+        
         /// overridden from gethook, don't know what to do
         virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC;
 
@@ -418,10 +443,23 @@ namespace OFX {
         /// The answer will depend on host, plugin and context
         virtual bool canCurrentlyHandleMultipleClipDepths() const;
 
+        /// calculate the default rod for this effect instance
+        virtual OfxRectD calcDefaultRegionOfDefinition(OfxTime  time,
+                                                       OfxPointD   renderScale);
+
         //
         // actions
         //
 
+        /// this is used to populate with any extra action in argumnents that may be needed
+        virtual void setCustomInArgs(const std::string &action, Property::Set &inArgs);
+        
+        /// this is used to populate with any extra action out argumnents that may be needed
+        virtual void setCustomOutArgs(const std::string &action, Property::Set &outArgs);
+        
+        /// this is used retrieve any out args after the action was called in mainEntry
+        virtual void examineOutArgs(const std::string &action, OfxStatus stat, const Property::Set &outArgs);
+        
         /// create an instance. This needs to be called _after_ construction and
         /// _after_ the host populates it's params and clips with the 'correct'
         /// values (either persisted ones or the defaults)
@@ -443,14 +481,14 @@ namespace OFX {
         virtual OfxStatus beginInstanceChangedAction(const std::string &why);
 
         virtual OfxStatus paramInstanceChangedAction(const std::string &paramName,
-          const std::string & why,
-          OfxTime     time,
-          OfxPointD   renderScale);
+                                                     const std::string & why,
+                                                     OfxTime     time,
+                                                     OfxPointD   renderScale);
 
         virtual OfxStatus clipInstanceChangedAction(const std::string &clipName,
-          const std::string & why,
-          OfxTime     time,
-          OfxPointD   renderScale);
+                                                     const std::string & why,
+                                                    OfxTime     time,
+                                                    OfxPointD   renderScale);
 
         virtual OfxStatus endInstanceChangedAction(const std::string &why);
 
@@ -466,30 +504,30 @@ namespace OFX {
 
         // render action
         virtual OfxStatus beginRenderAction(OfxTime  startFrame,
-          OfxTime  endFrame,
-          OfxTime  step,
-          bool     interactive,
-          OfxPointD   renderScale);
+                                            OfxTime  endFrame,
+                                            OfxTime  step,
+                                            bool     interactive,
+                                            OfxPointD   renderScale);
 
         virtual OfxStatus renderAction(OfxTime      time,
-          const std::string &  field,
-          const OfxRectI &renderRoI,
-          OfxPointD   renderScale);
+                                       const std::string &  field,
+                                       const OfxRectI &renderRoI,
+                                       OfxPointD   renderScale);
 
         virtual OfxStatus endRenderAction(OfxTime  startFrame,
-          OfxTime  endFrame,
-          OfxTime  step,
-          bool     interactive,
-          OfxPointD   renderScale);
+                                          OfxTime  endFrame,
+                                          OfxTime  step,
+                                          bool     interactive,
+                                          OfxPointD   renderScale);
 
         /// Call the region of definition action the plugin at the given time
         /// and with the given render scales. The value is returned in rod.
         /// Note that if the plugin does not trap the action the default
         /// RoD is calculated and returned. 
         virtual OfxStatus getRegionOfDefinitionAction(OfxTime  time,
-          OfxPointD   renderScale,
-          OfxRectD &rod);
-
+                                                      OfxPointD   renderScale,
+                                                      OfxRectD &rod);
+        
         /// call the get region of interest action on the plugin for the 
         /// given frame and renderscale. The render RoI is passed in in
         /// roi, the std::map will contain the requested rois. Note
@@ -497,20 +535,20 @@ namespace OFX {
         /// default replies and set up the correct rois in these cases
         /// as well
         virtual OfxStatus getRegionOfInterestAction(OfxTime  time,
-          OfxPointD   renderScale,
-          const OfxRectD &roi,
-          std::map<ClipInstance *, OfxRectD> &rois);
+                                                    OfxPointD   renderScale,
+                                                    const OfxRectD &roi,
+                                                    std::map<ClipInstance *, OfxRectD> &rois);
 
         // get frames needed to render the given frame
         virtual OfxStatus getFrameNeededAction(OfxTime time, 
-          RangeMap &rangeMap);
-
+                                               RangeMap &rangeMap);
+ 
         // is identity
         virtual OfxStatus isIdentityAction(OfxTime     &time,
-          const std::string &  field,
-          const OfxRectI  &renderRoI,
-          OfxPointD   renderScale,
-          std::string &clip);
+                                           const std::string &  field,
+                                           const OfxRectI  &renderRoI,
+                                           OfxPointD   renderScale,
+                                           std::string &clip);
 
         // time domain
         virtual OfxStatus getTimeDomainAction(OfxRangeD& range);
@@ -520,7 +558,7 @@ namespace OFX {
         /// otherwise it will return the described overlay
         /// This is called by the CTOR of OverlayInteract to get the descriptor to do things with
         Interact::Descriptor &getOverlayDescriptor(int bitDepthPerComponent = 8, bool hasAlpha = false);
-
+       
         /// Setup the default clip preferences on the clips
         virtual void setDefaultClipPreferences();
 
@@ -551,16 +589,20 @@ namespace OFX {
         virtual bool getClipPreferences();
 
         /// calls getClipPreferences only if the prefs are dirty
+        ///
+        /// returns whether the clips prefs were dirty or not
         bool runGetClipPrefsConditionally()
         {
-          if(areClipPrefsDirty())
-            return getClipPreferences();
-          return true;
+          if(areClipPrefsDirty()) {
+            getClipPreferences();
+            return true;
+          }
+          return false;
         }
-
+        
         /// find the best supported bit depth for the given one. Override this if you define
         /// more depths
-        virtual const std::string &bestSupportedDepth(const std::string &depth) const ;
+        virtual const std::string &bestSupportedDepth(const std::string &depth) const;
 
         /// find the most chromatic components out of the two. Override this if you define
         /// more chromatic components
@@ -579,8 +621,12 @@ namespace OFX {
         /// ctor this calls Instance->getOverlayDescriptor to get the descriptor
         OverlayInteract(ImageEffect::Instance &v, int bitDepthPerComponent = 8, bool hasAlpha = false);
       };
+
+
     } // namespace ImageEffect
+
   } // namespace Host
+
 } // namespace OFX
 
 #endif // OFX_IMAGE_EFFECT_H

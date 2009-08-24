@@ -2,7 +2,7 @@
 /*
 Software License :
 
-Copyright (c) 2007, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2007-2009, The Open Effects Association Ltd.  All Rights Reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -50,13 +50,13 @@ namespace OFX {
 
       /// subclass of Plugin representing an ImageEffect plugin.  used to store API-specific
       /// data
-      class ImageEffectPlugin : public Plugin 
-      {
+      class ImageEffectPlugin : public Plugin {
+
         PluginCache &_pc;
 
         // this comes off Descriptor's property set after a describe
         // context independent
-        Descriptor _baseDescriptor;
+        Descriptor *_baseDescriptor; /// NEEDS TO BE MADE WITH A FACTORY FUNCTION ON THE HOST!!!!!!
         
         /// map to store contexts in
         std::map<std::string, Descriptor *> _contexts;
@@ -69,7 +69,6 @@ namespace OFX {
         void addContextInternal(const std::string &context) const;
 
       public:
-        virtual ~ImageEffectPlugin();
 			  ImageEffectPlugin(PluginCache &pc, PluginBinary *pb, int pi, OfxPlugin *pl);
 
         ImageEffectPlugin(PluginCache &pc,
@@ -78,19 +77,26 @@ namespace OFX {
                           const std::string &api,
                           int apiVersion,
                           const std::string &pluginId,
+                          const std::string &rawId,
                           int pluginMajorVersion,
                           int pluginMinorVersion);
-       
+
+        virtual ~ImageEffectPlugin();
+
         /// return the API handler this plugin was constructed by
-        APICache::PluginAPICacheI& getApiHandler();
+        APICache::PluginAPICacheI &getApiHandler();
 
-        /// get the image effect descriptor
-        const Descriptor& getDescriptor() const;
-        Descriptor& getDescriptor();
 
+        /// get the base image effect descriptor
+        Descriptor &getDescriptor();
+
+        /// get the base image effect descriptor, const version
+        const Descriptor &getDescriptor() const;
+
+        /// get the image effect descriptor for the context
         Descriptor *getContext(const std::string &context);
 
-        void addContext(const std::string &context) { addContextInternal(context); }
+        void addContext(const std::string &context);
         void addContext(const std::string &context, Descriptor *ied);
 
         virtual void saveXML(std::ostream &os);
@@ -99,9 +105,12 @@ namespace OFX {
 
         PluginHandle *getPluginHandle();
 
+        void unload();
+
         /// this is called to make an instance of the effect
         /// the client data ptr is what is passed back to the client creation function
         ImageEffect::Instance* createInstance(const std::string &context, void *clientDataPtr);
+
       };
 
       class MajorPlugin {
@@ -109,13 +118,19 @@ namespace OFX {
         int _major;
 
       public:
-        MajorPlugin(const std::string &id, int major) : _id(id), _major(major) {}
+        MajorPlugin(const std::string &id, int major) : _id(id), _major(major) {
+        }
 
-        MajorPlugin(ImageEffectPlugin *iep) : _id(iep->getIdentifier()), _major(iep->getVersionMajor()) {}
+        MajorPlugin(ImageEffectPlugin *iep) : _id(iep->getIdentifier()), _major(iep->getVersionMajor()) {
+        }
 
-        const std::string& getId() const { return _id; }
+        const std::string &getId() const {
+          return _id;
+        }
 
-        int getMajor() const { return _major; }
+        int getMajor() const {
+          return _major;
+        }
 
         bool operator<(const MajorPlugin &other) const {
           if (_id < other._id)
@@ -132,8 +147,9 @@ namespace OFX {
       };
 
       /// implementation of the specific Image Effect handler API cache.
-      class PluginCache : public APICache::PluginAPICacheI 
-      {
+      class PluginCache : public APICache::PluginAPICacheI {
+      public:      
+
       private:
         /// all plugins
         std::vector<ImageEffectPlugin *> _plugins;
@@ -204,20 +220,26 @@ namespace OFX {
 
         virtual bool pluginSupported(Plugin *p, std::string &reason) const;
 
-        Plugin *newPlugin(PluginBinary *pb, int pi, OfxPlugin *pl);
+        Plugin *newPlugin(PluginBinary *pb,
+                          int pi,
+                          OfxPlugin *pl);
 
         Plugin *newPlugin(PluginBinary *pb,
                           int pi,
                           const std::string &api,
                           int apiVersion,
                           const std::string &pluginId,
+                          const std::string &rawId,
                           int pluginMajorVersion,
                           int pluginMinorVersion);
 
         void dumpToStdOut();
       };
+    
     } // ImageEffect
+
   } // Host
+
 } // OFX
 
 #endif

@@ -4,7 +4,7 @@
 /*
 Software License :
 
-Copyright (c) 2007, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2007-2009, The Open Effects Association Ltd. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -79,34 +79,37 @@ namespace OFX
     int _users;
   public :
 
-    // create object representing the binary.  will stat() it, 
-    // and this fails, will set binary to be invalid.
+    /// create object representing the binary.  will stat() it, 
+    /// and this fails, will set binary to be invalid.
     Binary(const std::string &binaryPath);
 
     ~Binary() { unload(); }
 
-    bool isLoaded() const { return _dlHandle == 0 ? false : true; }
+    bool isLoaded() const { return _dlHandle != 0; }
 
-    // is this binary invalid? (did the a stat() or load() on the file fail,
-    // or are we missing a some of the symbols?
+    /// is this binary invalid? (did the a stat() or load() on the file fail,
+    /// or are we missing a some of the symbols?
     bool isInvalid() const { return _invalid; }
 
-    // set invalid status (e.g. called by user if a mandatory symbol was missing)
+    /// set invalid status (e.g. called by user if a mandatory symbol was missing)
     void setInvalid(bool invalid) { _invalid = invalid; }
-    //Last modification time of the file.
+
+    /// Last modification time of the file.
     time_t getTime() const { return _time; }
-    //Current size of the file.
+
+    /// Current size of the file.
     size_t getSize() const { return _size; }
-    //Path to the file.
+
+    /// Path to the file.
     const std::string &getBinaryPath() const { return _binaryPath; }
 
     void ref();
     void unref();
 
-    // open the binary.
+    /// open the binary.
     void load();
 
-    // close the binary
+    /// close the binary
     void unload();
 
     /// look up a symbol in the binary file and return it as a pointer.
