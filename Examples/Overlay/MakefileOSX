@@ -1,6 +1,0 @@
-CXXFLAGS = -I../../include 
-OPTIMIZER = -O3
-
-overlay.bundle : overlay.o
-	$(CXX) -bundle overlay.o -o overlay.bundle -framework opengl
-
