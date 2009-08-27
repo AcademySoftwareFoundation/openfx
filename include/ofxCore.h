@@ -308,6 +308,39 @@ This property is used to label objects uniquely amoung objects of that type. It 
 */
 #define kOfxPropName "OfxPropName"
 
+/** @brief Identifies a specific version of a host or plugin.
+
+    - Type - int X N
+    - Property Set - host descriptor (read only), plugin descriptor (read/write)
+    - Default - "0"
+    - Valid Values - positive integers
+
+This is a multi dimensional integer property that represents the version of a host (host descriptor), or plugin (plugin descriptor). These represent a version number of the form '1.2.3.4', with each dimension adding another 'dot' on the right.
+
+A version is considered to be more recent than another if it's ordered set of values is lexicographically greater than another, reading left to right. (ie: 1.2.4 is smaller than 1.2.6). Also, if the number of dimensions is different, then the values of the missing dimensions are considered to be zero (so 1.2.4 is greater than 1.2).
+*/
+#define kOfxPropVersion "OfxPropVersion"
+
+/** @brief Unique user readable version string for that identifies something from other versions
+
+    - Type - string X 1
+    - Property Set - host descriptor (read only), plugin descriptor (read/write)
+    - Default - none, the host needs to set this
+    - Valid Values - ASCII string
+*/
+#define kOfxPropVersionLabel "OfxPropVersionLabel"
+
+/** @brief Description of the plug-in to a user.
+
+    - Type - string X 1
+    - Property Set - plugin descriptor (read/write) and instance (read only)
+    - Default - ""
+    - Valid Values - UTF8 string
+
+This is a string giving a potentially verbose description of the effect.
+*/
+#define kOfxPropPluginDescription "OfxPropPluginDescription"
+
 /** @brief User visible name of an object.
 
     - Type - UTF8 C string X 1
@@ -320,6 +353,16 @@ Note that resetting this will also reset ::kOfxPropShortLabel and ::kOfxPropLong
 */
 #define kOfxPropLabel "OfxPropLabel"
 
+/** @brief If set this tells the host to use an icon instead of a label for some object in the interface.
+
+    - Type - string X 1
+    - Property Set - various descriptors in the API
+    - Default - blank
+    - Valid Values - ASCII string
+
+The value is a path is defined relative to the Resource folder that points to an SVG or PNG file containing the icon.
+*/
+#define kOfxPropIcon "OfxPropIcon"
 
 /** @brief Short user visible name of an object.
 
@@ -363,6 +406,16 @@ This property is used to link an object to the effect. For example if the plug-i
 the interact instance will have one of these so that the plug-in can connect back to the effect the GUI links to.
 */
 #define kOfxPropEffectInstance "OfxPropEffectInstance"
+
+/** @brief A pointer to an operating system specific application handle.
+
+    - Type - pointer X 1
+    - Property Set - host descriptor.
+
+Some plug-in vendor want raw OS specific handles back from the host so they can do interesting things with host OS APIs. Typically this is to control windowing properly on Microsoft Windows. This property returns the appropriate 'root' window handle on the current operating system. So on Windows this would be the hWnd of the application main window.
+*/
+#define kOfxHostOSHandle "OfxHostOSHandle"
+
 /*@}*/
 
 /*@}*/
@@ -440,44 +493,6 @@ Infinite regions are flagged by setting
 typedef struct OfxRectD {
   double x1, y1, x2, y2;
 } OfxRectD;
-
-/** @brief Defines an 8 bit per component RGBA pixel */
-typedef struct OfxRGBAColourB {
-  unsigned char r, g, b, a;
-}OfxRGBAColourB;
-
-/** @brief Defines a 16 bit per component RGBA pixel */
-typedef struct OfxRGBAColourS {
-  unsigned short r, g, b, a;
-}OfxRGBAColourS;
-
-/** @brief Defines a floating point component RGBA pixel */
-typedef struct OfxRGBAColourF {
-  float r, g, b, a;
-}OfxRGBAColourF;
-
-
-/** @brief Defines a double precision floating point component RGBA pixel */
-typedef struct OfxRGBAColourD {
-  double r, g, b, a;
-}OfxRGBAColourD;
-
-
-/** @brief Defines an 8 bit per component YUVA pixel */
-typedef struct OfxYUVAColourB {
-  unsigned char y, u, v, a;
-}OfxYUVAColourB;
-
-/** @brief Defines an 16 bit per component YUVA pixel */
-typedef struct OfxYUVAColourS {
-  unsigned short y, u, v, a;
-}OfxYUVAColourS;
-
-/** @brief Defines an floating point component YUVA pixel */
-typedef struct OfxYUVAColourF {
-  float y, u, v, a;
-}OfxYUVAColourF;
-
 
 /** @brief String used to label unset bitdepths */
 #define kOfxBitDepthNone "OfxBitDepthNone"

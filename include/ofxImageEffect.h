@@ -71,10 +71,16 @@ typedef struct OfxImageMemoryStruct *OfxImageMemoryHandle;
 /** @brief String to label images with RGBA components */
 #define kOfxImageComponentRGBA "OfxImageComponentRGBA"
 
+/** @brief String to label images with RGB components */
+#define kOfxImageComponentRGB "OfxImageComponentRGB"
+
 /** @brief String to label images with only Alpha components */
 #define kOfxImageComponentAlpha "OfxImageComponentAlpha"
 
-/** @brief String to label images with YUVA components */
+/** @brief String to label images with YUVA components
+
+Note, this has been deprecated.
+ */
 #define kOfxImageComponentYUVA "OfxImageComponentYUVA"
 
 /** @brief Use to define the generator image effect context. See \ref ImageEffectContexts

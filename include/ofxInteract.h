@@ -110,6 +110,15 @@ This value passes the postion of the pen into an interact. This is in the intera
  */
 #define kOfxInteractPropPenPosition "OfxInteractPropPenPosition"
 
+/** @brief The position of the pen in an interact in viewport coordinates.
+
+   - Type - int X 2
+   - Property Set - read only in argument to the ::kOfxInteractActionPenMotion, ::kOfxInteractActionPenDown and ::kOfxInteractActionPenUp actions
+
+This value passes the postion of the pen into an interact. This is in the interact's openGL viewport coordinates, with 0,0 being at the bottom left.
+ */
+#define kOfxInteractPropPenViewportPosition "OfxInteractPropPenViewportPosition"
+
 /** @brief The pressure of the pen in an interact.
 
    - Type - double X 1
