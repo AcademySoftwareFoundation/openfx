@@ -48,7 +48,9 @@
 		  <itemizedlist>
 		    <listitem>NAME.xml</listitem>
 		    <listitem>PLUGIN_A.png</listitem>
+		    <listitem>PLUGIN_A.svg</listitem>
 		    <listitem>PLUGIN_B.png</listitem>
+		    <listitem>PLUGIN_B.svg</listitem>
 		    <listitem>...</listitem>
 		  </itemizedlist>
 		</listitem>
@@ -84,7 +86,7 @@
 	</listitem>
 	
 	<listitem>
-	  PLUGIN.png - is the image to use as an icon for the plug-in in the binary which has a matching 
+	  PLUGIN.png - is an optional portable graphics file image to use as an icon for the plug-in in the binary which has a matching 
 	  
 	  <structfield>pluginIdentifier</structfield>
 	  
@@ -93,6 +95,18 @@
 	  <structname>OfxPlugin</structname>
 	  
 	  struct, 
+	</listitem>
+
+	<listitem>
+	  PLUGIN.svg - is an optional scalable vector graphic file to use as an icon for the plug-in in the binary which has a matching 
+	  
+	  <structfield>pluginIdentifier</structfield>
+	  
+	  field in the 
+	  
+	  <structname>OfxPlugin</structname>
+	  
+	  struct,
 	</listitem>
 	
 	<listitem>
