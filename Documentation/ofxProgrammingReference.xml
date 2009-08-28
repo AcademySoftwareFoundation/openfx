@@ -1771,7 +1771,7 @@ Source    -2            12          25
 	Images and clips contain pixels, these pixels can currently be of the following types...
 	<itemizedlist>
 	  <listitem>a colour pixel with red, green, blue, alpha components</listitem>
-	  <listitem>a colour pixel with YUV and alpha components</listitem>
+	  <listitem>a colour pixel with red, green and blue components</listitem>
 	  <listitem>single component 'alpha' images</listitem>
 	</itemizedlist>
       </para>
@@ -1790,7 +1790,7 @@ Source    -2            12          25
 	Components are packed per pixel in the following manner...
 	<itemizedlist>
 	  <listitem>RGBA pixels as R, G, B, A</listitem>
-	  <listitem>YUVA pixels as Y, U, V, A.</listitem>
+	  <listitem>RGB pixels as R, G, B</listitem>
 	  </itemizedlist>
       </para>
 
@@ -2540,7 +2540,9 @@ source 0.0 0.0 0.5 0.5 1.0 1.0 1.5 1.5
 
   &interactActionsChapter;
 
-  <chapter id="PropertySuiteReference">
+  <chapter id="SuiteReference">
+    <title>Suite Reference</title>
+  <section id="PropertySuiteReference">
     <title>Property Suite</title>
     <para>The files <filename class="headerfile">ofxCore.h</filename> and <filename class="headerfile">ofxProperty.h</filename> contain the basic definitions for the property suite. </para>
     <para>The property suite is the most basic and important suite in OFX, it is used to get and set the values of various objects defined by other suites. 
@@ -2587,24 +2589,24 @@ typedef struct OfxPropertySetStruct *OfxPropertySetHandle; </programlisting></bl
     </refentry>
     
     &ofxPropertySuiteReference;
-  </chapter>
+  </section>
   
-  <chapter id="ImageEffectSuite">
+  <section id="ImageEffectSuite">
     <title>Image Effect Suite</title>
     &ofxImageEffectSuiteReference;
-  </chapter>
+  </section>
   
-  <chapter id="ProgressSuite">
+  <section id="ProgressSuite">
     <title>Progress Suite</title>
     &ofxProgressSuiteReference;
-  </chapter>
+  </section>
 
-  <chapter id="TimeLineSuite">
+  <section id="TimeLineSuite">
     <title>Timeline Suite</title>
     &ofxTimeLineSuiteReference;
-  </chapter>
+  </section>
 
-  <chapter id="ParametersSuite">
+  <section id="ParametersSuite">
     <title>Parameters Suite</title>
     &ofxParametersSuiteReference;
 
@@ -2667,14 +2669,19 @@ the <link linkend="kOfxParamPropCustomValue"><code>kOfxParamPropCustomValue</cod
       </refsect2>
     </refentry>
 
-  </chapter>
+  </section>
   
-  <chapter id="MemorySuite">
+  <section id="ParametricParamSuite">
+    <title>Parametric Parameters Suite</title>
+    &ofxParametricParamSuiteReference;
+  </section>
+
+  <section id="MemorySuite">
     <title>Memory Suite</title>
     &ofxMemorySuiteReference;
-  </chapter>
+  </section>
   
-  <chapter id="MultiThreadingSuite">
+  <section id="MultiThreadingSuite">
     <title>Multi Threading Suite</title>
     <para>
     This chapter describes the multithreading suite designed for simple SMP multi-processing.
@@ -2726,11 +2733,17 @@ the <link linkend="kOfxParamPropCustomValue"><code>kOfxParamPropCustomValue</cod
     </refentry>
     
     &ofxThreadingSuiteReference;
-  </chapter>
+  </section>
   
-  <chapter id="InteractSuite">
+  <section id="InteractSuite">
     <title>Interact Suite</title>
     &ofxInteractSuiteReference;
+  </section>
+    
+  <section id="MessageSuiteV2">
+    <title>Message Suite V2</title>
+    &ofxMessageSuiteV2Reference;
+  </section>
   </chapter>
   
   <chapter id="PropertiesByObject">

@@ -35,29 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 This header file defines the optional OFX extension to define and manipulate parametric
 parameters.
 
-Parametric parameters are in effect 'functions' a plug-in can ask a host to arbitrarily 
-evaluate for some value 'x'. A classic use case would be for constructing look-up tables, 
-a plug-in would ask the host to evaluate one at multiple values from 0 to 1 and use that 
-to fill an array.
-
-A host would probably represent this to a user as a cubic curve in a standard curve editor 
-interface, or possibly through scripting. The user would then use this to define the 'shape'
-of the parameter.
-
-The evaluation of such params is not the same as animation, they are returning values based 
-on some arbitrary argument orthogonal to time, so to evaluate such a param, you need to pass
-a parametric position and time.
-
-Often, you would want such a parametric parameter to be multi-dimensional, for example, a
-colour look-up table might want three values, one for red, green and blue. Rather than 
-declare three separate parametric parameters, it would be better to have one such parameter 
-with multiple values in it.
-
-The major complication with these parameters is how to allow a plug-in to set values, and 
-defaults. The default default value of a parametric curve is to be an identity lookup. If
-a plugin wishes to set a different default value for a curve, it can use the suite to set
-key/value pairs on the \em descriptor of the param. When a new instance is made, it will
-have these curve values as a default.
 */
 
 #include "ofxParam.h"
@@ -159,8 +136,34 @@ This controls the min and max values that the parameter will be evaluated at.
 /*@}*/
 
 
-/** @brief The OFX suite used to define and manipulate user visible parameters 
- */
+/** @brief The OFX suite used to define and manipulate 'parametric' parameters.
+
+This is an optional suite.
+
+Parametric parameters are in effect 'functions' a plug-in can ask a host to arbitrarily 
+evaluate for some value 'x'. A classic use case would be for constructing look-up tables, 
+a plug-in would ask the host to evaluate one at multiple values from 0 to 1 and use that 
+to fill an array.
+
+A host would probably represent this to a user as a cubic curve in a standard curve editor 
+interface, or possibly through scripting. The user would then use this to define the 'shape'
+of the parameter.
+
+The evaluation of such params is not the same as animation, they are returning values based 
+on some arbitrary argument orthogonal to time, so to evaluate such a param, you need to pass
+a parametric position and time.
+
+Often, you would want such a parametric parameter to be multi-dimensional, for example, a
+colour look-up table might want three values, one for red, green and blue. Rather than 
+declare three separate parametric parameters, it would be better to have one such parameter 
+with multiple values in it.
+
+The major complication with these parameters is how to allow a plug-in to set values, and 
+defaults. The default default value of a parametric curve is to be an identity lookup. If
+a plugin wishes to set a different default value for a curve, it can use the suite to set
+key/value pairs on the \em descriptor of the param. When a new instance is made, it will
+have these curve values as a default.
+*/
 typedef struct OfxParametricParameterSuiteV1 {
   
   /** @brief Evaluates a parametric parameter

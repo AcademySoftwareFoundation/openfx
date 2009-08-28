@@ -454,6 +454,7 @@ Note that for a clip, this is the value set by the clip preferences action, not 
    - Valid Values - This must be one of
      - kOfxImageComponentNone (implying a clip is unconnected, not valid for an image)
      - kOfxImageComponentRGBA
+     - kOfxImageComponentRGB
      - kOfxImageComponentAlpha
 
 Note that for a clip, this is the value set by the clip preferences action, not the raw 'actual' value of the clip.
@@ -507,6 +508,7 @@ This is the actual value of the component depth, before any mapping by clip pref
    - Valid Values - This must be one of
      - kOfxImageComponentNone (implying a clip is unconnected)
      - kOfxImageComponentRGBA
+     - kOfxImageComponentRGB
      - kOfxImageComponentAlpha
 */
 #define kOfxImageClipPropUnmappedComponents "OfxImageClipPropUnmappedComponents"
@@ -556,6 +558,7 @@ The default for a plugin is to have none set, the plugin \em must define at leas
    - Valid Values - This must be one of
      - kOfxImageComponentNone (implying a clip is unconnected)
      - kOfxImageComponentRGBA
+     - kOfxImageComponentRGB
      - kOfxImageComponentAlpha
 
 This list of strings indicate what component types are supported by a host or are expected as input to a clip.

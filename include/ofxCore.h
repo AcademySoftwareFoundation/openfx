@@ -355,12 +355,14 @@ Note that resetting this will also reset ::kOfxPropShortLabel and ::kOfxPropLong
 
 /** @brief If set this tells the host to use an icon instead of a label for some object in the interface.
 
-    - Type - string X 1
+    - Type - string X 2
     - Property Set - various descriptors in the API
-    - Default - blank
+    - Default - ""
     - Valid Values - ASCII string
 
 The value is a path is defined relative to the Resource folder that points to an SVG or PNG file containing the icon.
+
+The first dimension, if set, will the name of and SVG file, the second a PNG file.
 */
 #define kOfxPropIcon "OfxPropIcon"
 
@@ -414,7 +416,7 @@ the interact instance will have one of these so that the plug-in can connect bac
 
 Some plug-in vendor want raw OS specific handles back from the host so they can do interesting things with host OS APIs. Typically this is to control windowing properly on Microsoft Windows. This property returns the appropriate 'root' window handle on the current operating system. So on Windows this would be the hWnd of the application main window.
 */
-#define kOfxHostOSHandle "OfxHostOSHandle"
+#define kOfxPropHostOSHandle "OfxPropHostOSHandle"
 
 /*@}*/
 

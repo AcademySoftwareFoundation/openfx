@@ -524,17 +524,17 @@ Deprecated in favour of ::kOfxParamDoubleTypeXYAbsolute
 /** @brief Describes in which coordinate system a spatial double parameter's default value is specified.
 
    - Type - C string X 1
-   - Default - ::kOfxParamCoordinatesCanonical
+   - Default - kOfxParamCoordinatesCanonical
    - Property Set - Non normalised spatial double parameters, ie: any double param who's ::kOfxParamPropDoubleType is set to one of...
-      - ::kOfxParamDoubleTypeX 
-      - ::kOfxParamDoubleTypeXAbsolute 
-      - ::kOfxParamDoubleTypeY 
-      - ::kOfxParamDoubleTypeYAbsolute 
-      - ::kOfxParamDoubleTypeXY 
-      - ::kOfxParamDoubleTypeXYAbsolute 
+      - kOfxParamDoubleTypeX 
+      - kOfxParamDoubleTypeXAbsolute 
+      - kOfxParamDoubleTypeY 
+      - kOfxParamDoubleTypeYAbsolute 
+      - kOfxParamDoubleTypeXY 
+      - kOfxParamDoubleTypeXYAbsolute 
    - Valid Values - This must be one of
-      - ::kOfxParamCoordinatesCanonical - the default is in cannonical coords
-      - ::kOfxParamCoordinatesNormalised - the default is in normalised coordinates
+      - kOfxParamCoordinatesCanonical - the default is in cannonical coords
+      - kOfxParamCoordinatesNormalised - the default is in normalised coordinates
 
 This allows a spatial param to specify what its default is, so by saying normalised and "0.5" it would be in the 'middle', by saying canonical and 100 it would be at value 100 independent of the size of the image being applied to.
 */

@@ -31,7 +31,7 @@
       Parameters are uniquely labelled within a plugin with an ASCII null terminated C-string. This name is not necassarily meant to be end-user readable, various properties are provided to set the user visible labels on the param.
     </para>
     <para>
-      All parameters hold properties, though the exact set of properties on a parameter is dependant on the type of the parameter. For more information on properties see \ref PropertiesPage.
+      All parameters hold properties, though the exact set of properties on a parameter is dependant on the type of the parameter. 
     </para>
     <para>
       A parameter's handle comes in two slightly different flavours. The handle returned inside a plugin's describe action is not an actual instance of a parameter, it is there for the purpose description only. You can only set properties on that handle (eg: label, min/max value, default ...), you cannot get values from it or set values in it. The parameters defined in the describe action will common to all instances of a plugin.
@@ -185,7 +185,7 @@ gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, n, "nth Choic
       </para>
       
       <para>
-	Page parameters are coverred in \ref ParametersInterfacesPagedLayouts.
+  Page parameters are covered in detail in their own <link linkend="ParametersInterfacesPagedLayouts">secion.</link>.
       </para>
     </section>
     
@@ -372,7 +372,7 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
   </section>
   <section id='ParametersXML'><title>XML Resource Specification for Parameters</title>
     <para>
-      Parameters can have various properties overriden via a seperate XML based resource file. For more information see \ref ExternalResourcesPage.
+      Parameters can have various properties overriden via a seperate XML based resource file. 
     </para>
   </section>
   
@@ -437,9 +437,14 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
 	<listitem><code>kOfxParamDoubleTypeNormalisedYAbsolute</code> - normalised absolute position on the Y axis (1D only)</listitem>
 	<listitem><code>kOfxParamDoubleTypeNormalisedXY</code> - normalised to the project's X and Y size (2D only),</listitem>
 	<listitem><code>kOfxParamDoubleTypeNormalisedXYAbsolute</code> - normalised to the projects X and Y size, and is an absolute position on the image plane.</listitem>
+	<listitem><code>kOfxParamDoubleTypeX</code> - size in the X dimension, in canonical coords (1D double only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeXAbsolute</code> - positing in the X axis, in canonical coords (1D double only)</listitem>
+	<listitem><code>kOfxParamDoubleTypeY</code> - size in the Y dimension, in canonical coords (1D double only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeYAbsolute</code> - positing in the Y axis, in canonical coords (1D double only)</listitem>
+	<listitem><code>kOfxParamDoubleTypeXY</code> - 2D size, in canonical coords (2D double only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeXYAbsolute</code> - 2D position, in canonical coords. (2D double only)</listitem>
       </itemizedlist>
     </para>
-  </section>
   
   <section id='kOfxParamDoubleTypePlain'><title>Plain Double Parameters </title>
     
@@ -490,10 +495,44 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
     </para>
   </section>
   
-  <section id='ParameterPropertiesDoubleTypesNormalised'><title>Normalised Double Parameters</title>
+  <section id='ParameterPropertiesDoubleTypesSpatial'><title>Spatial Parameters</title>
+    <para> Parameters that can represent a size or position are essential. To that end there are several values of the <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> that say it should be interpretted as a size or position, in either one or two dimensions.</para>
+
+    <para>The original OFX API only specifed <link linkend='ParameterPropertiesDoubleTypesNormalised'>normalised</link> parameters, this proved to be somewhat more of a problem than expected. With the 1.2 version of the API, <link linkend='ParameterPropertiesDoubleTypesStrictlySpatial'>spatial</link> parameters were introduced. Ideally these should be used and the normalised parameter types should be deprecated.</para>
+
+    <para>
+      See the section on <link linkend="CoordinateSystems">coordinate systems</link> to understand some of the terms being discussed.
+    </para>
+
+    <section id='ParameterPropertiesDoubleTypesStrictlySpatial'><title>Spatial Double Parameters</title>
     
     <para>
-      There are several values of the <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> that allow a double parameters (1, 2 and 3 dimensional) to be made proportional to the current project's size. This will allow the parameter to scale cleanly with project size changes and to be represented to the user in an appropriate range.
+      These parameter types represent a size or position in one or two dimensions in <link linkend="CanonicalCoordinates">Canonical Coordinate</link>. The host 
+      and plug-in get and set values in this coordinate system. Scaling to  <link linkend='PixelCoordinates'>Pixel Coordinate</link> is the reponsibility of the effect.
+    </para>
+
+    <para>
+      The default value of a spatial parameter can be set in either a normalised coordinate system or the canonical coordinate system. This is controlled by the <link linkend="kOfxParamPropDefaultCoordinateSystem">kOfxParamPropDefaultCoordinateSystem</link> on the parameter descriptor.
+    </para>
+    
+    <para>
+      Parameters can choose to be spatial in several ways...
+      <itemizedlist>
+	<listitem><code>kOfxParamDoubleTypeX</code> - size in the X dimension, in canonical coords (1D double only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeXAbsolute</code> - positing in the X axis, in canonical coords (1D double only)</listitem>
+	<listitem><code>kOfxParamDoubleTypeY</code> - size in the Y dimension, in canonical coords (1D double only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeYAbsolute</code> - positing in the Y axis, in canonical coords (1D double only)</listitem>
+	<listitem><code>kOfxParamDoubleTypeXY</code> - 2D size, in canonical coords (2D double only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeXYAbsolute</code> - 2D position, in canonical coords. (2D double only).</listitem>
+      </itemizedlist>
+    </para>
+  </section>
+
+  <section id='ParameterPropertiesDoubleTypesNormalised'><title>Spatial Normalised Double Parameters</title>
+    <para>Ideally, normalised parameters should be deprecated and no longer used if <link linkend="ParameterPropertiesDoubleTypesSpatial">spatial</link> parameters are available.</para>
+
+    <para>
+      There are several values of the <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> that say it should be interpretted as a size or position. These are expressed  and proportional to the current project's size. This will allow the parameter to scale cleanly with project size changes and to be represented to the user in an appropriate range.
     </para>
     <para>
       For example, the sensible X range of a visual effect plugin is the project's width, say 768 pixels
@@ -516,8 +555,10 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
       </itemizedlist>
     </para>
     <para>
-      See \ref ImageEffectsCoordinates from more on coordinate systems and how to scale parameters.
+      See the section on <link linkend="CoordinateSystems">coordinate systems</link> on how to scale between normalised, cannonical and pixel coordinates.
     </para>
+  </section>
+  
   </section>
   
   <section id='ParameterPropertiesDoubleTypesDefaultsAndAll'><title>Double Parameters Defaults, Increments, Mins and Maxs</title>
@@ -530,6 +571,8 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
       Normalised parameters specify thier increments in cannonical coordinates, rather than in normalised coordinates. So an increment of '1' means 1 pixel, not '1 project width', otherwise sliders would be a bit wild.
     </para>
   </section>
+  </section>
+
   <section id="SettingParams">
     <title>Setting Parameters</title>
     <para>

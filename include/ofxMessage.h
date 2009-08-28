@@ -98,7 +98,7 @@ typedef struct OfxMessageSuiteV1 {
 
 \returns 
   - ::kOfxStatOK - if the message was sucessfully posted 
-  - ::kOfxStatReplyYes - if the message was of type  ::kOfxMessageQuestion and the user reply yes
+  - ::kOfxStatReplyYes - if the message was of type  kOfxMessageQuestion and the user reply yes
   - ::kOfxStatReplyNo - if the message was of type kOfxMessageQuestion and the user reply no
   - ::kOfxStatFailed - if the message could not be posted for some reason
 
@@ -111,7 +111,12 @@ typedef struct OfxMessageSuiteV1 {
 
 } OfxMessageSuiteV1;
 
-/** @brief The OFX suite that allows a plug-in to pass messages back to a user. Second version.
+/** @brief The OFX suite that allows a plug-in to pass messages back to a user.
+
+    This extends OfxMessageSuiteV1, and should be considered a replacement to version 1. 
+
+    Note that this suite has been extended in backwards compatible manner, so that a host can return this struct
+    for both V1 and V2.
  */
 typedef struct OfxMessageSuiteV2 {
 
@@ -125,7 +130,7 @@ typedef struct OfxMessageSuiteV2 {
 
       \returns 
       - ::kOfxStatOK - if the message was sucessfully posted 
-      - ::kOfxStatReplyYes - if the message was of type  ::kOfxMessageQuestion and the user reply yes
+      - ::kOfxStatReplyYes - if the message was of type  kOfxMessageQuestion and the user reply yes
       - ::kOfxStatReplyNo - if the message was of type kOfxMessageQuestion and the user reply no
       - ::kOfxStatFailed - if the message could not be posted for some reason
    */

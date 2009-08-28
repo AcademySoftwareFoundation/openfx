@@ -71,8 +71,26 @@ kOfxTypeParameterInstance => 1 );
 
 sub stripSurroundingWhite
 {
-    $_[0] =~ /\s*(.*)\s*/;
-    return $1;
+    my $str =  $_[0];
+    
+    my @lines = split(/\n/, $str);
+    my $str = "";
+
+    # remove blank lines at the start and leading /trailing white space
+    my $blankSoFar = 1;
+
+    while(@lines) {
+        my $line = shift @lines;
+        $line =~ /^\s*(.*)\s*$/;  
+        if ($1 eq "" and $blankSoFar) {
+        }
+        else {
+            $blankSoFar = 0;
+            $str .= $line . "\n";
+        }
+    }
+
+    return $str;
 }
 
 # look for doxgen reference tags, either \ref or "::"
