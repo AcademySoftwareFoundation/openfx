@@ -101,6 +101,17 @@ The components are in the order red, green then blue.
  */
 #define kOfxInteractPropBackgroundColour "OfxInteractPropBackgroundColour"
 
+/** @brief The suggested colour to draw a widget in an interact, typically for overlays.
+ 
+    - Type - double X 3
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Default - 1.0
+    - Valid Values - greater than or equal to 0.0
+ 
+This is a property of an overlay interact instance. 
+*/
+#define kOfxInteractPropSuggestedColour "OfxInteractPropSuggestedColour"
+
 /** @brief The position of the pen in an interact.
 
    - Type - double X 2
