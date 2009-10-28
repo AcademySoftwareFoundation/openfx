@@ -322,12 +322,9 @@ See \ref ImageEffectClipPreferences.
    - Property Set - plugin descriptor (read/write) or plugin instance (read/write), and host descriptor (read only)
    - Default - 0
    - Valid Values - 
-     - 0 - for a plugin, indicates that a plugin does not need to be sequentially rendered to be correct,
-           for a host, indicates that it cannot ever guarantee sequential rendering,
-     - 1 - for a plugin, indicates that it needs to be sequentially rendered to be correct,, 
-           for a host, indicates that it can always support sequential rendering of plugins that are sequentially rendered,
-     - 2 - for a plugin, indicates that it is best to render sequentially, but will still produce correct results if not,
-           for a host, indicates that it can sometimes render sequentially, and will have set ::kOfxImageEffectPropSequentialRenderHint on the relevant actions
+     - 0 - for a plugin, indicates that a plugin does not need to be sequentially rendered to be correct, for a host, indicates that it cannot ever guarantee sequential rendering,
+     - 1 - for a plugin, indicates that it needs to be sequentially rendered to be correct, for a host, indicates that it can always support sequential rendering of plugins that are sequentially rendered,
+     - 2 - for a plugin, indicates that it is best to render sequentially, but will still produce correct results if not, for a host, indicates that it can sometimes render sequentially, and will have set ::kOfxImageEffectPropSequentialRenderHint on the relevant actions
 
 Some effects have temporal dependancies, some information from from the rendering of frame N-1 is needed to render frame N correctly. This property is set by an effect to indicate such a situation. Also, some effects are more efficient if they run sequentially, but can still render correct images even if they do not, eg: a complex particle system.
 
@@ -354,7 +351,7 @@ This property is set to indicate whether the effect is currently being rendered 
 */
 #define kOfxImageEffectPropSequentialRenderStatus "OfxImageEffectPropSequentialRenderStatus"
 
-/** @brief Property that indicates if a plugin is being rendered in response to a user interaction
+/** @brief Property that indicates if a plugin is being rendered in response to user interaction.
 
    - Type - int X 1
    - Property Set - read only property on the inArgs of the following actions...
