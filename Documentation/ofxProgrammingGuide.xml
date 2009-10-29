@@ -1161,7 +1161,7 @@ typedef struct OfxMemorySuiteV1 {
       <title>Contexts</title>
     </section>
 
-    <section id="ProjectCoordinateSystems">
+    <section id="NormalisedCoordinateSystem">
       <title>Co-ordinate Systems</title>
     </section>
 

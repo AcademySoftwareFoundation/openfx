@@ -215,6 +215,7 @@
 	    <listitem> <link linkend="kOfxPropTime"><code>kOfxPropTime</code></link>         - the effect time at which changed occured</listitem>
 	    <listitem> <link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link>     - the render scale applied to any image fetched</listitem>
 	    <listitem> <link linkend="kOfxInteractPropPenPosition"><code>kOfxInteractPropPenPosition</code></link> - postion of the pen in,</listitem>
+	    <listitem> <link linkend="kOfxInteractPropPenViewportPosition"><code>kOfxInteractPropPenViewportPosition</code></link> - postion of the pen in,</listitem>
 	    <listitem> <link linkend="kOfxInteractPropPenPressure"><code>kOfxInteractPropPenPressure</code></link> - the pressure of the pen,</listitem>
 	  </itemizedlist>
 	</listitem>
@@ -273,6 +274,7 @@
 	    <listitem> <link linkend="kOfxPropTime"><code>kOfxPropTime</code></link>         - the effect time at which changed occured</listitem>
 	    <listitem> <link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link>     - the render scale applied to any image fetched</listitem>
 	    <listitem> <link linkend="kOfxInteractPropPenPosition"><code>kOfxInteractPropPenPosition</code></link> - postion of the pen in,</listitem>
+	    <listitem> <link linkend="kOfxInteractPropPenViewportPosition"><code>kOfxInteractPropPenViewportPosition</code></link> - postion of the pen in,</listitem>
 	    <listitem> <link linkend="kOfxInteractPropPenPressure"><code>kOfxInteractPropPenPressure</code></link> - the pressure of the pen,</listitem>
 	  </itemizedlist>
 	</listitem>
@@ -330,6 +332,7 @@
 	    <listitem> <link linkend="kOfxPropTime"><code>kOfxPropTime</code></link>         - the effect time at which changed occured</listitem>
 	    <listitem> <link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link>     - the render scale applied to any image fetched</listitem>
 	    <listitem> <link linkend="kOfxInteractPropPenPosition"><code>kOfxInteractPropPenPosition</code></link> - postion of the pen in,</listitem>
+	    <listitem> <link linkend="kOfxInteractPropPenViewportPosition"><code>kOfxInteractPropPenViewportPosition</code></link> - postion of the pen in,</listitem>
 	    <listitem> <link linkend="kOfxInteractPropPenPressure"><code>kOfxInteractPropPenPressure</code></link> - the pressure of the pen,</listitem>
 	  </itemizedlist>
 	</listitem>

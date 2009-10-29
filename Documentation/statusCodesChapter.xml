@@ -1,0 +1,453 @@
+  <chapter>
+    <title>Status Codes</title>
+    
+    <para>Status codes are returned by most functions in OFX suites and all
+      plug-in actions to indicate the sucess or failure of the operation. All
+      status codes are defined in <filename class="headerfile">ofxCore.h</filename> and
+      <code>#defined</code> to be integers.</para>
+    
+    <refentry id="OfxStatus">
+      <refmeta>
+        <refentrytitle><type>OfxStatus</type></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><type>OfxStatus</type></refname>
+	
+        <refpurpose>type returned to indicate success or failure of an
+	  operation.</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+typedef int OfxStatus; </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+	
+        <para>Most OFX functions in host suites and all actions in a plug-in
+	  return a status code, where the status codes are all 32 bit integers.
+	  This typedef is used to label that status code.</para>
+      </refsect1>
+    </refentry>
+    
+    <refentry id="kOfxStatOK">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatOK</errorcode></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><errorcode>kOfxStatOK</errorcode></refname>
+	
+        <refpurpose>(0), indicates an operation completed
+	  sucessfully.</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+#define kOfxStatOK 0 </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+	
+        <para>This error code is returned by <itemizedlist>
+            <listitem>
+	      host functions to indicate success of the operation, 
+            </listitem>
+	    
+            <listitem>
+	      plug-in actions to indicate that the action was trapped and suceeded. 
+            </listitem>
+          </itemizedlist></para>
+      </refsect1>
+    </refentry>
+    
+    <refentry id="kOfxStatFailed">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatFailed</errorcode></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><errorcode>kOfxStatFailed</errorcode></refname>
+	
+        <refpurpose>(1), indicates a failed operation.</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+#define kOfxStatFailed  ((int)1) </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+	
+        <para>This error code is returned when a function or action could not
+	  complete normally and its operation failed.</para>
+      </refsect1>
+    </refentry>
+    
+    <refentry id="kOfxStatErrFatal">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrFatal</errorcode></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrFatal</errorcode></refname>
+	
+        <refpurpose>(2), indicates a fatal operation.</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrFatal  ((int)2) </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+	
+        <para>This status is only returned in the case where the plug-in or
+	  host has encountered an error that is likely to be fatal to continued programme execution.
+        </para>
+        <para>If a plug-in returns this, a host may attempt to continue.</para>
+      </refsect1>
+    </refentry>
+    
+    <refentry id="kOfxStatErrUnknown">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrUnknown</errorcode></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrUnknown</errorcode></refname>
+	
+        <refpurpose>(3), status error code for an unknown object.</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrUnknown ((int)3) </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+	
+        <para>This error is returned when an operation is attempted on an
+	  unknown object or an unknown object was requested. For example, a host
+	  may not support a property on an object because it is written to a
+	  slightly earlier version of an API, in which case it should return
+	  with <errorcode>kOfxStatErrUnknown</errorcode>.</para>
+      </refsect1>
+    </refentry>
+    
+    <refentry id="kOfxStatErrMissingHostFeature">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrMissingHostFeature</errorcode></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrMissingHostFeature</errorcode></refname>
+	
+        <refpurpose>(4) returned by a plug-in if a host is
+	  inadequate.</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrMissingHostFeature ((int) 4) </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+	
+        <para>This status is returned by plug-ins'
+	  <function>mainEntry</function> if the host is missing a feature they
+	  need to operate. For example, a plug-in may need an overlay GUI to
+	  operate sucessfully, which is an optional feature.</para>
+	
+        <para>This should be returned from the
+	  <literal>kOfxActionLoad</literal>,
+	  <literal>kOfxActionDescribe</literal> or
+	  <literal>kOfxImageEffectActionDescribeInContext</literal> actions, so
+	  a host can unload the plug-in before it attempts to create an instance
+	  of the plug-in.</para>
+      </refsect1>
+    </refentry>
+    
+    <refentry id="kOfxStatErrUnsupported">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrUnsupported</errorcode></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrUnsupported</errorcode></refname>
+	
+        <refpurpose>(5), error code for an unsupported
+	  feature/operation</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrUnsupported ((int) 5) </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+	
+        <para>This is returned by suite functions to indicate an operation is
+	  unsupported. For example, a plug-in may attempt to use a custom
+	  parameter GUI on a host that does not support it, in which case the
+	  host should return <errorcode>kOfxStatErrUnsupported</errorcode> when
+	  the plug-in does so.</para>
+      </refsect1>
+    </refentry>
+    
+    <refentry id="kOfxStatErrExists">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrExists</errorcode></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrExists</errorcode></refname>
+	
+        <refpurpose>(6), something already exists.</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrExists  ((int) 6) </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+	
+        <para>This error code is returned from a host function when a plug-in
+	  attempts to create an object that already exists. For example, a
+	  plug-in attempting to create two parameters with the same name, as the
+	  name of a parameter is what defines it.</para>
+      </refsect1>
+    </refentry>
+    
+    <refentry id="kOfxStatErrFormat">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrFormat</errorcode></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrFormat</errorcode></refname>
+	
+        <refpurpose>(7), indicates an incorrect format.</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrFormat ((int) 7) </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+	
+        <para>This error code is returned when a plug-in or hosts receives
+	  something in the wrong format.</para>
+      </refsect1>
+    </refentry>
+    
+    <refentry id="kOfxStatErrMemory">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrMemory</errorcode></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrMemory</errorcode></refname>
+	
+        <refpurpose>(8), a memory shortage was encountered.</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrMemory  ((int) 8) </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+	
+        <para>This is returned when a plug-in or host cannot complete its
+	  operation because of a memory shortage.</para>
+      </refsect1>
+    </refentry>
+    
+    <refentry id="kOfxStatErrBadHandle">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrBadHandle</errorcode></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrBadHandle</errorcode></refname>
+	
+        <refpurpose>(9), indicates a bad handle</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrBadHandle ((int) 9) </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+	
+        <para>This status code is returned when a bad handle is passed to a
+	  host function or a plug-in action.</para>
+      </refsect1>
+    </refentry>
+    
+    <refentry id="kOfxStatErrBadIndex">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrBadIndex</errorcode></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><errorcode>kOfxStatErrBadIndex</errorcode></refname>
+	
+        <refpurpose>(10), a property index was invalid.</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrBadIndex ((int)10) </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+	
+        <para>This is returned by host functions if an operation was requested
+	  on an invalid dimension index.</para>
+      </refsect1>
+    </refentry>
+    
+    <refentry id="kOfxStatErrValue">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatErrValue</errorcode></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><errorcode> kOfxStatErrValue </errorcode></refname>
+	
+        <refpurpose>(11), an illegal value was passed.</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+#define kOfxStatErrValue ((int) 11) </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+	
+        <para>This error code is returned if an attempt was made to set an
+	  illegal value on an object. For example if an image effect plug-in
+	  attempted to set a supported pixel depth of "wibble".</para>
+      </refsect1>
+    </refentry>
+    
+    <refentry id="kOfxStatReplyYes">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatReplyYes</errorcode></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><errorcode>kOfxStatReplyYes</errorcode></refname>
+	
+        <refpurpose>(12), returned to indicate a positive
+	  response.</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+#define kOfxStatReplyYes ((int) 12) </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+	
+        <para>This is typically returned from a function involving user
+	  interaction and indicates they had a positive response. e.g. the
+	  messaging suite can ask the user a question to which they can reply
+	  "yes" or "no".</para>
+      </refsect1>
+    </refentry>
+    
+    <refentry id="kOfxStatReplyNo">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatReplyNo</errorcode></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><errorcode>kOfxStatReplyNo</errorcode></refname>
+	
+        <refpurpose>(13), returned to indicate a positive
+	  response.</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+#define kOfxStatReplyNo ((int) 13) </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+	
+        <para>This is typically returned from a function involving user
+	  interaction and indicates they had a negative response. e.g. the
+	  messaging suite can ask the user a question to which they can reply
+	  "yes" or "no".</para>
+      </refsect1>
+    </refentry>
+    
+    <refentry id="kOfxStatReplyDefault">
+      <refmeta>
+        <refentrytitle><errorcode>kOfxStatReplyDefault</errorcode></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><errorcode>kOfxStatReplyDefault</errorcode></refname>
+	
+        <refpurpose>(14), indicates the default should occur.</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+#define kOfxStatReplyDefault ((int) 14) </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+	
+        <para>This is returned by plug-ins' <function>mainEntry</function>
+	  function to indicate that they did not trap the action passed and that
+	  the default operation should occur. It does not imply failure.</para>
+	
+        <para>A subtle but specific use of this is made by plug-in interacts
+	  GUIs. If they return this value from any event actions (eg:
+	  <literal>kOfxInteractActionPenDown</literal>), then the host is free
+	  to pass the event on to another GUI element in the interact
+	  window.</para>
+      </refsect1>
+    </refentry>
+  </chapter>

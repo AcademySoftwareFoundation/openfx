@@ -1,6 +1,6 @@
 <book>
   <bookinfo>
-    <title>The OFX Image Effect Plug-in API, 1.0, Programming Reference. Including extension.</title>
+    <title>The OFX Image Effect Plug-in API, 1.2, Programming Reference.</title>
 
     <author>
       <firstname>Bruno</firstname>
@@ -14,24 +14,12 @@
       <holder>Bruno Nicoletti</holder>
     </copyright>
 
-    <releaseinfo>Document version 0.6</releaseinfo>
+    <releaseinfo>Document version 1.2.1</releaseinfo>
   </bookinfo>
 
   <preface>
     <title>Foreword</title>
-    <para>This is a mostly complete reference guide to the OFX image effect plugin architecture.
-    </para>
-    <para>
-      <emphasis>THINGS TO DO!</emphasis>
-      <itemizedlist>
-       <listitem>pictures</listitem>
-	<listitem>edit the thing into a somewhat cleaner form
-	  <itemizedlist>
-	    <listitem>a section devoted to clipGetImage and what has to happen</listitem>
-	    <listitem>a section on caveats for hosts and effects</listitem>
-	  </itemizedlist>
-	</listitem>
-      </itemizedlist>
+    <para>This is a mostly complete reference guide to the OFX image effect plugin architecture. It is a backwards compatible update to the 1.1 version of the API. The changes to the API are listed in an addendum.
     </para>
   </preface>
   
@@ -1576,7 +1564,8 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	</programlisting></blockquote>
       </section>
 
-      <section id="ProjectCoordinateSystems"><title>The Normalized Coordinate System</title>
+      <section id="NormalisedCoordinateSystem"><title>The Normalized Coordinate System</title>
+  <para>Note, normalised parameters and the normalised coordinate system are being deprecated in favour of <link linkend='ParameterPropertiesDoubleTypesSpatial'>spatial parameters</link> which can handle the project rescaling without the problems of converting to/from normalised coordinates.</para>
 	<para>
 	  On most editing an compositing systems projects can be moved on resolutions, for example a
 	  project may be set up at high definition then have several versions rendered out at different sizes, say a
@@ -1671,12 +1660,19 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	  can choose to represent them to the user in whatever space it chooses. The values that this property can
 	  take are...
 	  <itemizedlist>
-	    <listitem><code>kOfxParamDoubleTypeNormalisedX</code> - normalised size with respect to the project's X dimension (1D only),</listitem>
-	    <listitem><code>kOfxParamDoubleTypeNormalisedXAbsolute</code> - normalised absolute position on the X axis (1D only)</listitem>
-	    <listitem><code>kOfxParamDoubleTypeNormalisedY</code> - normalised size wrt to the project's Y dimension(1D only),</listitem>
-	    <listitem><code>kOfxParamDoubleTypeNormalisedYAbsolute</code> - normalised absolute position on the Y axis (1D only)</listitem>
-	    <listitem><code>kOfxParamDoubleTypeNormalisedXY</code> - normalised to the project's X and Y size (2D only),</listitem>
-	    <listitem><code>kOfxParamDoubleTypeNormalisedXYAbsolute</code> - normalised to the projects X and Y size, and is an absolute position on the image plane.</listitem>
+	    <listitem><code>kOfxParamDoubleTypeX</code> - a size in the X dimension dimension (1D only), new for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeXAbsolute</code> - a position in the X dimension (1D only), new for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeY</code> - a size in the Y dimension dimension (1D only), new for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeYAbsolute</code> - a position in the X dimension (1D only), new for 1.2 </listitem>
+	    <listitem><code>kOfxParamDoubleTypeXY</code> - a size in the X and Y dimension (2D only), new for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeXYAbsolute</code> - a position in the X and Y dimension (2D only), new for 1.2</listitem>
+
+	    <listitem><code>kOfxParamDoubleTypeNormalisedX</code> - normalised size with respect to the project's X dimension (1D only), deprecated for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeNormalisedXAbsolute</code> - normalised absolute position on the X axis (1D only), deprecated for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeNormalisedY</code> - normalised size wrt to the project's Y dimension (1D only), deprecated for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeNormalisedYAbsolute</code> - normalised absolute position on the Y axis (1D only), deprecated for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeNormalisedXY</code> - normalised to the project's X and Y size (2D only), deprecated for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeNormalisedXYAbsolute</code> - normalised to the projects X and Y size, and is an absolute position on the image plane, deprecated for 1.2.</listitem>
 	  </itemizedlist>
 	</para>
 
@@ -2168,24 +2164,52 @@ Source    -2            12          25
       </section>
       
       <section id="ImageEffectsSequentialRendering"><title>Rendering Sequential Effects</title>
-	<para>
-	  Some plugin's need to cache interframe behaviour to work correctly, for example: a particle system, an image stabilisation system. 
-	  In such cases a plugin instance will need to be rendered sequentially from frame 0 on single instance in a single computer.
-	  Such plugins should set the 
-	  <link linkend="kOfxImageEffectInstancePropSequentialRender"><code>kOfxImageEffectInstancePropSequentialRender</code></link>
-	  instance property.
-	  This property can be set to...
+      <para>
+	  Some plugins need the output of the previous frame to render the next, typically they cache some information about the last render and use that 
+    somehow on the next frame. Some temporally averaging degraining algorithms work that way. Such effects cannot render correctly unless they are 
+    strictly rendered in order, from first to last frame, on a single instance.
+      </para>
+    <para>
+Other plugins are able to render correctly when called in an arbitrary frame order, but render much more efficiently if rendered in order. For example a particle system which mantains the state of the particle system in an instance would simply increment the simulation by a frame if rendering in-order, but would need to restart the particle system from scratch if the frame jumped backwards.
+</para>
+    <para>
+    Most plug-ins do not have any sequential dependence. For example, a simple gain operation has no dependence on the previous frame.
+    </para>
+    <para>
+    Similarly, host applications, due to their architectures, may or may not be able to guarantee that a plugin can be rendered strictly in-order. Node based applications 
+    typically have much more difficulty in guaranteeing such behaviour. 
+    </para>
+
+    <para> To indicate whether a plugin needs to be rendered in a strictly sequential order, and to indicate whether a host supports such behaviour we have a property, 
+   <link linkend="kOfxImageEffectInstancePropSequentialRender"><code>kOfxImageEffectInstancePropSequentialRender</code></link>. For plug-ins this can be one of three values...
 	  <itemizedlist>
 	    <listitem>0, in which case the host can render an instance over arbitrary frame ranges on an arbitrary number of computers without any problem (default),</listitem>
 	    <listitem>1, in which case the host must render an instance on a single computer over it's entire frame range, from first to last.</listitem>
+	    <listitem>2, in which case the effect is more efficiently rendered in frame order, but can compute the correct result irregardless of render order.</listitem>
+	  </itemizedlist>
+	</para>	
+
+  <para> For hosts, this property takes three values...
+	  <itemizedlist>
+	    <listitem>0, which indicates thet the host can never guarantee sequential rendering,</listitem>
+	    <listitem>1, which indicates thet the host can guarantee sequential rendering for plugins that request it,</listitem>
+	    <listitem>2, which indicates thet the host can sometimes perform sequential rendering.</listitem>
 	  </itemizedlist>
 	</para>
 	
+  <para> When rendering, a host will set the in args property on <link linkend="kOfxImageEffectPropSequentialRenderStatus"><code>kOfxImageEffectPropSequentialRenderStatus</code></link> to indicate whether the host is currently supporting sequential renders. This will be passed to the following actions,
+    <itemizedlist>
+      <listitem><link linkend="kOfxImageEffectActionBeginSequenceRender">the begin sequence render action</link></listitem>
+      <listitem><link linkend="kOfxImageEffectActionRender">the sequence render action</link></listitem>
+      <listitem><link linkend="kOfxImageEffectActionEndSequenceRender">the end sequence render action</link></listitem>
+	  </itemizedlist>
+  </para>
+
 	<para>
 	  Hosts may still render sequential effects with random frame access in interactive sessions, for example when the user 
 	  scrubs the current frame on the timeline and the host asks an effect to render a preview frame. In such cases, 
-	  the plugin can detect that the instance is being interactively manipulated and hack an approximation together for UI purposes.
-	  When eventually rendering the sequence, the host <emphasis>must</emphasis> ignore all frames rendered out of order and not cache them 
+	  the plugin can detect that the instance is being interactively manipulated via the <link linkend="kOfxImageEffectPropInteractiveRenderStatus"><code>kOfxImageEffectPropInteractiveRenderStatus</code></link> property and hack an approximation together for UI purposes.
+	  If eventually rendering the sequence, the host <emphasis>must</emphasis> ignore all frames rendered out of order and not cache them 
 	  for use in the final result.
 	</para>
       </section>
@@ -2742,6 +2766,9 @@ the <link linkend="kOfxParamPropCustomValue"><code>kOfxParamPropCustomValue</cod
     
   <section id="MessageSuiteV2">
     <title>Message Suite V2</title>
+    <para>
+    Version 2 of the message suite is a backwards compatible replacement for the V1 message suite. It extends V1 by adding support for persistent users messages, typically to indicate a plugin is in an error state.
+    </para>
     &ofxMessageSuiteV2Reference;
   </section>
   </chapter>
@@ -2760,457 +2787,6 @@ the <link linkend="kOfxParamPropCustomValue"><code>kOfxParamPropCustomValue</cod
     &propertiesReference; 
   </chapter>
   
-  <chapter>
-    <title>Status Codes</title>
-    
-    <para>Status codes are returned by most functions in OFX suites and all
-      plug-in actions to indicate the sucess or failure of the operation. All
-      status codes are defined in <filename class="headerfile">ofxCore.h</filename> and
-      <code>#defined</code> to be integers.</para>
-    
-    <refentry id="OfxStatus">
-      <refmeta>
-        <refentrytitle><type>OfxStatus</type></refentrytitle>
-      </refmeta>
-      
-      <refnamediv>
-        <refname><type>OfxStatus</type></refname>
-	
-        <refpurpose>type returned to indicate success or failure of an
-	  operation.</refpurpose>
-      </refnamediv>
-      
-      <refsynopsisdiv>
-        <blockquote><programlisting>
-#include "ofxCore.h"
-typedef int OfxStatus; </programlisting></blockquote>
-      </refsynopsisdiv>
-      
-      <refsect1>
-        <title>Description</title>
-	
-        <para>Most OFX functions in host suites and all actions in a plug-in
-	  return a status code, where the status codes are all 32 bit integers.
-	  This typedef is used to label that status code.</para>
-      </refsect1>
-    </refentry>
-    
-    <refentry id="kOfxStatOK">
-      <refmeta>
-        <refentrytitle><errorcode>kOfxStatOK</errorcode></refentrytitle>
-      </refmeta>
-      
-      <refnamediv>
-        <refname><errorcode>kOfxStatOK</errorcode></refname>
-	
-        <refpurpose>(0), indicates an operation completed
-	  sucessfully.</refpurpose>
-      </refnamediv>
-      
-      <refsynopsisdiv>
-        <blockquote><programlisting>
-#include "ofxCore.h"
-#define kOfxStatOK 0 </programlisting></blockquote>
-      </refsynopsisdiv>
-      
-      <refsect1>
-        <title>Description</title>
-	
-        <para>This error code is returned by <itemizedlist>
-            <listitem>
-	      host functions to indicate success of the operation, 
-            </listitem>
-	    
-            <listitem>
-	      plug-in actions to indicate that the action was trapped and suceeded. 
-            </listitem>
-          </itemizedlist></para>
-      </refsect1>
-    </refentry>
-    
-    <refentry id="kOfxStatFailed">
-      <refmeta>
-        <refentrytitle><errorcode>kOfxStatFailed</errorcode></refentrytitle>
-      </refmeta>
-      
-      <refnamediv>
-        <refname><errorcode>kOfxStatFailed</errorcode></refname>
-	
-        <refpurpose>(1), indicates a failed operation.</refpurpose>
-      </refnamediv>
-      
-      <refsynopsisdiv>
-        <blockquote><programlisting>
-#include "ofxCore.h"
-#define kOfxStatFailed  ((int)1) </programlisting></blockquote>
-      </refsynopsisdiv>
-      
-      <refsect1>
-        <title>Description</title>
-	
-        <para>This error code is returned when a function or action could not
-	  complete normally and its operation failed.</para>
-      </refsect1>
-    </refentry>
-    
-    <refentry id="kOfxStatErrFatal">
-      <refmeta>
-        <refentrytitle><errorcode>kOfxStatErrFatal</errorcode></refentrytitle>
-      </refmeta>
-      
-      <refnamediv>
-        <refname><errorcode>kOfxStatErrFatal</errorcode></refname>
-	
-        <refpurpose>(2), indicates a fatal operation.</refpurpose>
-      </refnamediv>
-      
-      <refsynopsisdiv>
-        <blockquote><programlisting>
-#include "ofxCore.h"
-#define kOfxStatErrFatal  ((int)2) </programlisting></blockquote>
-      </refsynopsisdiv>
-      
-      <refsect1>
-        <title>Description</title>
-	
-        <para>This status is only returned in the case where the plug-in or
-	  host has encountered an error that is likely to be fatal to continued programme execution.
-        </para>
-        <para>If a plug-in returns this, a host may attempt to continue.</para>
-      </refsect1>
-    </refentry>
-    
-    <refentry id="kOfxStatErrUnknown">
-      <refmeta>
-        <refentrytitle><errorcode>kOfxStatErrUnknown</errorcode></refentrytitle>
-      </refmeta>
-      
-      <refnamediv>
-        <refname><errorcode>kOfxStatErrUnknown</errorcode></refname>
-	
-        <refpurpose>(3), status error code for an unknown object.</refpurpose>
-      </refnamediv>
-      
-      <refsynopsisdiv>
-        <blockquote><programlisting>
-#include "ofxCore.h"
-#define kOfxStatErrUnknown ((int)3) </programlisting></blockquote>
-      </refsynopsisdiv>
-      
-      <refsect1>
-        <title>Description</title>
-	
-        <para>This error is returned when an operation is attempted on an
-	  unknown object or an unknown object was requested. For example, a host
-	  may not support a property on an object because it is written to a
-	  slightly earlier version of an API, in which case it should return
-	  with <errorcode>kOfxStatErrUnknown</errorcode>.</para>
-      </refsect1>
-    </refentry>
-    
-    <refentry id="kOfxStatErrMissingHostFeature">
-      <refmeta>
-        <refentrytitle><errorcode>kOfxStatErrMissingHostFeature</errorcode></refentrytitle>
-      </refmeta>
-      
-      <refnamediv>
-        <refname><errorcode>kOfxStatErrMissingHostFeature</errorcode></refname>
-	
-        <refpurpose>(4) returned by a plug-in if a host is
-	  inadequate.</refpurpose>
-      </refnamediv>
-      
-      <refsynopsisdiv>
-        <blockquote><programlisting>
-#include "ofxCore.h"
-#define kOfxStatErrMissingHostFeature ((int) 4) </programlisting></blockquote>
-      </refsynopsisdiv>
-      
-      <refsect1>
-        <title>Description</title>
-	
-        <para>This status is returned by plug-ins'
-	  <function>mainEntry</function> if the host is missing a feature they
-	  need to operate. For example, a plug-in may need an overlay GUI to
-	  operate sucessfully, which is an optional feature.</para>
-	
-        <para>This should be returned from the
-	  <literal>kOfxActionLoad</literal>,
-	  <literal>kOfxActionDescribe</literal> or
-	  <literal>kOfxImageEffectActionDescribeInContext</literal> actions, so
-	  a host can unload the plug-in before it attempts to create an instance
-	  of the plug-in.</para>
-      </refsect1>
-    </refentry>
-    
-    <refentry id="kOfxStatErrUnsupported">
-      <refmeta>
-        <refentrytitle><errorcode>kOfxStatErrUnsupported</errorcode></refentrytitle>
-      </refmeta>
-      
-      <refnamediv>
-        <refname><errorcode>kOfxStatErrUnsupported</errorcode></refname>
-	
-        <refpurpose>(5), error code for an unsupported
-	  feature/operation</refpurpose>
-      </refnamediv>
-      
-      <refsynopsisdiv>
-        <blockquote><programlisting>
-#include "ofxCore.h"
-#define kOfxStatErrUnsupported ((int) 5) </programlisting></blockquote>
-      </refsynopsisdiv>
-      
-      <refsect1>
-        <title>Description</title>
-	
-        <para>This is returned by suite functions to indicate an operation is
-	  unsupported. For example, a plug-in may attempt to use a custom
-	  parameter GUI on a host that does not support it, in which case the
-	  host should return <errorcode>kOfxStatErrUnsupported</errorcode> when
-	  the plug-in does so.</para>
-      </refsect1>
-    </refentry>
-    
-    <refentry id="kOfxStatErrExists">
-      <refmeta>
-        <refentrytitle><errorcode>kOfxStatErrExists</errorcode></refentrytitle>
-      </refmeta>
-      
-      <refnamediv>
-        <refname><errorcode>kOfxStatErrExists</errorcode></refname>
-	
-        <refpurpose>(6), something already exists.</refpurpose>
-      </refnamediv>
-      
-      <refsynopsisdiv>
-        <blockquote><programlisting>
-#include "ofxCore.h"
-#define kOfxStatErrExists  ((int) 6) </programlisting></blockquote>
-      </refsynopsisdiv>
-      
-      <refsect1>
-        <title>Description</title>
-	
-        <para>This error code is returned from a host function when a plug-in
-	  attempts to create an object that already exists. For example, a
-	  plug-in attempting to create two parameters with the same name, as the
-	  name of a parameter is what defines it.</para>
-      </refsect1>
-    </refentry>
-    
-    <refentry id="kOfxStatErrFormat">
-      <refmeta>
-        <refentrytitle><errorcode>kOfxStatErrFormat</errorcode></refentrytitle>
-      </refmeta>
-      
-      <refnamediv>
-        <refname><errorcode>kOfxStatErrFormat</errorcode></refname>
-	
-        <refpurpose>(7), indicates an incorrect format.</refpurpose>
-      </refnamediv>
-      
-      <refsynopsisdiv>
-        <blockquote><programlisting>
-#include "ofxCore.h"
-#define kOfxStatErrFormat ((int) 7) </programlisting></blockquote>
-      </refsynopsisdiv>
-      
-      <refsect1>
-        <title>Description</title>
-	
-        <para>This error code is returned when a plug-in or hosts receives
-	  something in the wrong format.</para>
-      </refsect1>
-    </refentry>
-    
-    <refentry id="kOfxStatErrMemory">
-      <refmeta>
-        <refentrytitle><errorcode>kOfxStatErrMemory</errorcode></refentrytitle>
-      </refmeta>
-      
-      <refnamediv>
-        <refname><errorcode>kOfxStatErrMemory</errorcode></refname>
-	
-        <refpurpose>(8), a memory shortage was encountered.</refpurpose>
-      </refnamediv>
-      
-      <refsynopsisdiv>
-        <blockquote><programlisting>
-#include "ofxCore.h"
-#define kOfxStatErrMemory  ((int) 8) </programlisting></blockquote>
-      </refsynopsisdiv>
-      
-      <refsect1>
-        <title>Description</title>
-	
-        <para>This is returned when a plug-in or host cannot complete its
-	  operation because of a memory shortage.</para>
-      </refsect1>
-    </refentry>
-    
-    <refentry id="kOfxStatErrBadHandle">
-      <refmeta>
-        <refentrytitle><errorcode>kOfxStatErrBadHandle</errorcode></refentrytitle>
-      </refmeta>
-      
-      <refnamediv>
-        <refname><errorcode>kOfxStatErrBadHandle</errorcode></refname>
-	
-        <refpurpose>(9), indicates a bad handle</refpurpose>
-      </refnamediv>
-      
-      <refsynopsisdiv>
-        <blockquote><programlisting>
-#include "ofxCore.h"
-#define kOfxStatErrBadHandle ((int) 9) </programlisting></blockquote>
-      </refsynopsisdiv>
-      
-      <refsect1>
-        <title>Description</title>
-	
-        <para>This status code is returned when a bad handle is passed to a
-	  host function or a plug-in action.</para>
-      </refsect1>
-    </refentry>
-    
-    <refentry id="kOfxStatErrBadIndex">
-      <refmeta>
-        <refentrytitle><errorcode>kOfxStatErrBadIndex</errorcode></refentrytitle>
-      </refmeta>
-      
-      <refnamediv>
-        <refname><errorcode>kOfxStatErrBadIndex</errorcode></refname>
-	
-        <refpurpose>(10), a property index was invalid.</refpurpose>
-      </refnamediv>
-      
-      <refsynopsisdiv>
-        <blockquote><programlisting>
-#include "ofxCore.h"
-#define kOfxStatErrBadIndex ((int)10) </programlisting></blockquote>
-      </refsynopsisdiv>
-      
-      <refsect1>
-        <title>Description</title>
-	
-        <para>This is returned by host functions if an operation was requested
-	  on an invalid dimension index.</para>
-      </refsect1>
-    </refentry>
-    
-    <refentry id="kOfxStatErrValue">
-      <refmeta>
-        <refentrytitle><errorcode>kOfxStatErrValue</errorcode></refentrytitle>
-      </refmeta>
-      
-      <refnamediv>
-        <refname><errorcode> kOfxStatErrValue </errorcode></refname>
-	
-        <refpurpose>(11), an illegal value was passed.</refpurpose>
-      </refnamediv>
-      
-      <refsynopsisdiv>
-        <blockquote><programlisting>
-#include "ofxCore.h"
-#define kOfxStatErrValue ((int) 11) </programlisting></blockquote>
-      </refsynopsisdiv>
-      
-      <refsect1>
-        <title>Description</title>
-	
-        <para>This error code is returned if an attempt was made to set an
-	  illegal value on an object. For example if an image effect plug-in
-	  attempted to set a supported pixel depth of "wibble".</para>
-      </refsect1>
-    </refentry>
-    
-    <refentry id="kOfxStatReplyYes">
-      <refmeta>
-        <refentrytitle><errorcode>kOfxStatReplyYes</errorcode></refentrytitle>
-      </refmeta>
-      
-      <refnamediv>
-        <refname><errorcode>kOfxStatReplyYes</errorcode></refname>
-	
-        <refpurpose>(12), returned to indicate a positive
-	  response.</refpurpose>
-      </refnamediv>
-      
-      <refsynopsisdiv>
-        <blockquote><programlisting>
-#include "ofxCore.h"
-#define kOfxStatReplyYes ((int) 12) </programlisting></blockquote>
-      </refsynopsisdiv>
-      
-      <refsect1>
-        <title>Description</title>
-	
-        <para>This is typically returned from a function involving user
-	  interaction and indicates they had a positive response. e.g. the
-	  messaging suite can ask the user a question to which they can reply
-	  "yes" or "no".</para>
-      </refsect1>
-    </refentry>
-    
-    <refentry id="kOfxStatReplyNo">
-      <refmeta>
-        <refentrytitle><errorcode>kOfxStatReplyNo</errorcode></refentrytitle>
-      </refmeta>
-      
-      <refnamediv>
-        <refname><errorcode>kOfxStatReplyNo</errorcode></refname>
-	
-        <refpurpose>(13), returned to indicate a positive
-	  response.</refpurpose>
-      </refnamediv>
-      
-      <refsynopsisdiv>
-        <blockquote><programlisting>
-#include "ofxCore.h"
-#define kOfxStatReplyNo ((int) 13) </programlisting></blockquote>
-      </refsynopsisdiv>
-      
-      <refsect1>
-        <title>Description</title>
-	
-        <para>This is typically returned from a function involving user
-	  interaction and indicates they had a negative response. e.g. the
-	  messaging suite can ask the user a question to which they can reply
-	  "yes" or "no".</para>
-      </refsect1>
-    </refentry>
-    
-    <refentry id="kOfxStatReplyDefault">
-      <refmeta>
-        <refentrytitle><errorcode>kOfxStatReplyDefault</errorcode></refentrytitle>
-      </refmeta>
-      
-      <refnamediv>
-        <refname><errorcode>kOfxStatReplyDefault</errorcode></refname>
-	
-        <refpurpose>(14), indicates the default should occur.</refpurpose>
-      </refnamediv>
-      
-      <refsynopsisdiv>
-        <blockquote><programlisting>
-#include "ofxCore.h"
-#define kOfxStatReplyDefault ((int) 14) </programlisting></blockquote>
-      </refsynopsisdiv>
-      
-      <refsect1>
-        <title>Description</title>
-	
-        <para>This is returned by plug-ins' <function>mainEntry</function>
-	  function to indicate that they did not trap the action passed and that
-	  the default operation should occur. It does not imply failure.</para>
-	
-        <para>A subtle but specific use of this is made by plug-in interacts
-	  GUIs. If they return this value from any event actions (eg:
-	  <literal>kOfxInteractActionPenDown</literal>), then the host is free
-	  to pass the event on to another GUI element in the interact
-	  window.</para>
-      </refsect1>
-    </refentry>
-  </chapter>
+   &statusCodesChapter;
+   &apiChanges_1_2_Chapter;
 </book>

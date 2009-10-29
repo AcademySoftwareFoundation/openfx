@@ -1,6 +1,7 @@
 <section id="ImageEffectHostProperties"><title>Properties on the Image Effect Host</title>
   <itemizedlist>
-    <listitem><link linkend="kOfxPropType">kOfxPropType</link> - (read only) set to </listitem>
+    <listitem><link linkend="kOfxPropAPIVersion">kOfxPropAPIVersion</link> - (read only) the version of the API implemented by the host, if not present, it is safe to assume "1.0"</listitem>
+    <listitem><link linkend="kOfxPropType">kOfxPropType</link> - (read only) set to "host"</listitem>
     <listitem><link linkend="kOfxPropName">kOfxPropName</link> - (read only) the globally unique name of the application, eg: "com.acmesofware.funkyCompositor"</listitem>
     <listitem><link linkend="kOfxPropLabel">kOfxPropLabel</link> - (read only) the user visible name of the appliaction,</listitem>
     <listitem><link linkend="kOfxPropVersion">kOfxPropVersion</link> - (read only) the version number of the host </listitem>
@@ -25,6 +26,7 @@
     <listitem><link linkend="kOfxParamHostPropMaxPages">kOfxParamHostPropMaxPages</link> - (read only) the maximum number of parameter pages the application allows a plug-in to have</listitem>
     <listitem><link linkend="kOfxParamHostPropPageRowColumnCount">kOfxParamHostPropPageRowColumnCount</link> - (read only) the number of rows and columns on a page parameter</listitem>
     <listitem><link linkend="kOfxPropHostOSHandle">kOfxPropHostOSHandle</link> - (read only) a pointer to an OS specific application handle (eg: the root hWnd on Windows) </listitem>
+    <listitem><link linkend="kOfxParamHostPropSupportsParametricAnimation">kOfxParamHostPropSupportsParametricAnimation</link> - (read only) does the host support animation of parametric parameters</listitem>
   </itemizedlist>
 </section>
 
@@ -165,6 +167,11 @@
     </itemizedlist>
   </section>
   
+  <section><title>Properties On Group Parameters</title>
+    <itemizedlist>
+      <listitem><link linkend="kOfxParamPropGroupOpen">kOfxParamPropGroupOpen</link> read/write in the descriptor, read only on an instance</listitem>
+    </itemizedlist>
+  </section>
   <section><title>Properties Common to All But Group and Page Parameters</title>
     <itemizedlist>
       <listitem><link linkend="kOfxParamPropInteractV1">kOfxParamPropInteractV1</link> read/write in the descriptor, read only on an instance</listitem>
@@ -174,7 +181,8 @@
       <listitem><link linkend="kOfxParamPropInteractPreferedSize">kOfxParamPropInteractPreferedSize</link> read/write in the descriptor, read only on an instance</listitem>
       <listitem><link linkend="kOfxParamPropHasHostOverlayHandle">kOfxParamPropHasHostOverlayHandle</link> read only in the descriptor and instance</listitem>
       <listitem><link linkend="kOfxParamPropUseHostOverlayHandle">kOfxParamPropUseHostOverlayHandle</link> read/write in the descriptor and read only in the instance</listitem>
-    </itemizedlist></section>
+    </itemizedlist>
+  </section>
   
   <section><title>Properties Common to All Parameters That Hold Values</title>
     <itemizedlist>
@@ -253,6 +261,22 @@
   <section><title>Properties On Page Parameters</title>
     <itemizedlist>
       <listitem><link linkend="kOfxParamPropPageChild">kOfxParamPropPageChild</link> read/write in the descriptor, read only on an instance</listitem>
+    </itemizedlist>
+  </section>
+  <section><title>On Parametric Parameters</title>
+    <itemizedlist>
+      <listitem><link linkend="kOfxParamPropAnimates">kOfxParamPropAnimates</link> read/write in the descriptor, read only on an instance</listitem>
+      <listitem><link linkend="kOfxParamPropIsAnimating">kOfxParamPropIsAnimating</link> read/write in the descriptor, read only on an instance</listitem>
+      <listitem><link linkend="kOfxParamPropIsAutoKeying">kOfxParamPropIsAutoKeying</link> read/write in the descriptor, read only on an instance</listitem>
+      <listitem><link linkend="kOfxParamPropPersistant">kOfxParamPropPersistant</link> read/write in the descriptor, read only on an instance</listitem>
+      <listitem><link linkend="kOfxParamPropEvaluateOnChange">kOfxParamPropEvaluateOnChange</link>  read/write in the descriptor and instance</listitem>
+      <listitem><link linkend="kOfxParamPropPluginMayWrite">kOfxParamPropPluginMayWrite</link> read/write in the descriptor, read only on an instance</listitem>
+      <listitem><link linkend="kOfxParamPropCacheInvalidation">kOfxParamPropCacheInvalidation</link> read/write in the descriptor, read only on an instance</listitem>
+      <listitem><link linkend="kOfxParamPropCanUndo">kOfxParamPropCanUndo</link> read/write in the descriptor, read only on an instance</listitem>
+      <listitem><link linkend="kOfxParamPropParametricDimension">kOfxParamPropParametricDimension</link> read/write in the descriptor, read only on an instance</listitem>
+      <listitem><link linkend="kOfxParamPropParametricUIColour">kOfxParamPropParametricUIColour</link> read/write in the descriptor, read only on an instance</listitem>
+      <listitem><link linkend="kOfxParamPropParametricInteractBackground">kOfxParamPropParametricInteractBackground</link> read/write in the descriptor, read only on an instance</listitem>
+      <listitem><link linkend="kOfxParamPropParametricRange">kOfxParamPropParametricRange</link> read/write in the descriptor, read only on an instance</listitem>
     </itemizedlist>
   </section>
 </section>
