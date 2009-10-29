@@ -104,11 +104,15 @@ The components are in the order red, green then blue.
 /** @brief The suggested colour to draw a widget in an interact, typically for overlays.
  
     - Type - double X 3
-    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+    - Property Set - read only on the interact instance
     - Default - 1.0
     - Valid Values - greater than or equal to 0.0
- 
-This is a property of an overlay interact instance. 
+
+Some applications allow the user to specify colours of any overlay via a colour picker, this
+property represents the value of that colour. Plugins are at liberty to use this or not when
+they draw an overlay.
+
+If a host does not support such a colour, it should return kOfxStatReplyDefault
 */
 #define kOfxInteractPropSuggestedColour "OfxInteractPropSuggestedColour"
 

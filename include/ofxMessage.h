@@ -84,7 +84,8 @@ the user responds. When asking a question, the OfxStatus code returned by the me
  */
 #define kOfxMessageQuestion "OfxMessageQuestion"
 
-/** @brief The OFX suite that allows a plug-in to pass messages back to a user.
+/** @brief The OFX suite that allows a plug-in to pass messages back to a user. The V2 suite extends on this
+    in a backwards compatible manner.
  */
 typedef struct OfxMessageSuiteV1 {
 
@@ -120,7 +121,7 @@ typedef struct OfxMessageSuiteV1 {
  */
 typedef struct OfxMessageSuiteV2 {
 
-  /** @brief Post a transient message on the host, using printf style varargs
+  /** @brief Post a transient message on the host, using printf style varargs. Same as the V1 message suite call.
 
       \arg handle     - effect handle (descriptor or instance) the message should be associated with, may be null
       \arg messageType - string describing the kind of message to post, one of the kOfxMessageType* constants
@@ -140,7 +141,7 @@ typedef struct OfxMessageSuiteV2 {
 		       const char *format,
 		       ...);
 
-  /** @brief Post a persistant message on an effect, using printf style varargs, and set error states.
+  /** @brief Post a persistant message on an effect, using printf style varargs, and set error states. New for V2 message suite.
 
       \arg handle     - effect instance handle the message should be associated with, may NOT be null,
       \arg messageType - string describing the kind of message to post, should be one of...
@@ -167,7 +168,7 @@ typedef struct OfxMessageSuiteV2 {
                                     ...);
 
   
-  /** @brief Clears any persistant message on an effect handle that was set by OfxMessageSuiteV2::setPersistantMessage
+  /** @brief Clears any persistant message on an effect handle that was set by OfxMessageSuiteV2::setPersistantMessage. New for V2 message suite.
 
       \arg handle     - effect instance handle messages should be cleared from.
       \arg handle     - effect handle (descriptor or instance) 

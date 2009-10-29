@@ -241,6 +241,18 @@ These properties are general properties and  apply to may objects across OFX
 */
 /*@{*/
 
+/** @brief Property on the host descriptor, saying what API version of the API is being implemented
+
+    - Type - int X N
+    - Property Set - host descriptor.
+
+This is a version string that will specify which version of the API is being implemented by a host. It
+can have multiple values. For example "1.0", "1.2.4" etc.....
+
+If this is not present, it is safe to assume that the version of the API is "1.0".
+*/
+#define kOfxPropAPIVersion "OfxPropAPIVersion"
+
 /** @brief General property used to get/set the time of something.
 
     - Type - double X 1
@@ -321,12 +333,15 @@ A version is considered to be more recent than another if it's ordered set of va
 */
 #define kOfxPropVersion "OfxPropVersion"
 
-/** @brief Unique user readable version string for that identifies something from other versions
+/** @brief Unique user readable version string of a plugin or host.
 
     - Type - string X 1
     - Property Set - host descriptor (read only), plugin descriptor (read/write)
     - Default - none, the host needs to set this
     - Valid Values - ASCII string
+
+This is purely for user feedback, a plugin or host should use ::kOfxPropVersion if they need
+to check for specific versions.
 */
 #define kOfxPropVersionLabel "OfxPropVersionLabel"
 

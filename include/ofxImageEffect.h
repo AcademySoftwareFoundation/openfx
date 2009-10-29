@@ -324,7 +324,7 @@ See \ref ImageEffectClipPreferences.
    - Valid Values - 
      - 0 - for a plugin, indicates that a plugin does not need to be sequentially rendered to be correct, for a host, indicates that it cannot ever guarantee sequential rendering,
      - 1 - for a plugin, indicates that it needs to be sequentially rendered to be correct, for a host, indicates that it can always support sequential rendering of plugins that are sequentially rendered,
-     - 2 - for a plugin, indicates that it is best to render sequentially, but will still produce correct results if not, for a host, indicates that it can sometimes render sequentially, and will have set ::kOfxImageEffectPropSequentialRenderHint on the relevant actions
+     - 2 - for a plugin, indicates that it is best to render sequentially, but will still produce correct results if not, for a host, indicates that it can sometimes render sequentially, and will have set ::kOfxImageEffectPropSequentialRenderStatus on the relevant actions
 
 Some effects have temporal dependancies, some information from from the rendering of frame N-1 is needed to render frame N correctly. This property is set by an effect to indicate such a situation. Also, some effects are more efficient if they run sequentially, but can still render correct images even if they do not, eg: a complex particle system.
 
@@ -736,7 +736,7 @@ This should be applied to any spatial parameters to position them correctly. Not
     - Type - double X 2
     - Property Set - a plugin  instance (read only)
 
-The extent is the size of the 'output' for the current project. See \ref ProjectCoordinateSystems for more infomation on the project extent.
+The extent is the size of the 'output' for the current project. See \ref NormalisedCoordinateSystem for more infomation on the project extent.
 
 The extent is in canonical coordinates and only returns the top right position, as the extent is always rooted at 0,0.
 
@@ -753,7 +753,7 @@ The size of a project is a sub set of the ::kOfxImageEffectPropProjectExtent. Fo
 
 The project size is in canonical coordinates.
 
-See \ref ProjectCoordinateSystems for more infomation on the project extent.
+See \ref NormalisedCoordinateSystem for more infomation on the project extent.
  */
 #define kOfxImageEffectPropProjectSize "OfxImageEffectPropProjectSize"
 
@@ -768,7 +768,7 @@ For example for a PAL SD project that is in letterbox form, the project offset i
  
 The project offset is in canonical coordinates.
 
-See \ref ProjectCoordinateSystems for more infomation on the project extent.
+See \ref NormalisedCoordinateSystem for more infomation on the project extent.
 */
 #define kOfxImageEffectPropProjectOffset "OfxImageEffectPropProjectOffset"
 
