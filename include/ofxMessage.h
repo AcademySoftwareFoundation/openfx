@@ -141,7 +141,7 @@ typedef struct OfxMessageSuiteV2 {
 		       const char *format,
 		       ...);
 
-  /** @brief Post a persistant message on an effect, using printf style varargs, and set error states. New for V2 message suite.
+  /** @brief Post a persistent message on an effect, using printf style varargs, and set error states. New for V2 message suite.
 
       \arg handle     - effect instance handle the message should be associated with, may NOT be null,
       \arg messageType - string describing the kind of message to post, should be one of...
@@ -161,14 +161,14 @@ typedef struct OfxMessageSuiteV2 {
 
      If \e messageType is error or warning, associated error states should be flagged on host applications. Posting an error message implies that the host cannot proceeed, a warning allows the host to proceed, whilst a simple message should have no stop anything.
    */
-  OfxStatus (*setPersistantMessage)(void *handle,
+  OfxStatus (*setPersistentMessage)(void *handle,
                                     const char *messageType,
                                     const char *messageId,
                                     const char *format,
                                     ...);
 
   
-  /** @brief Clears any persistant message on an effect handle that was set by OfxMessageSuiteV2::setPersistantMessage. New for V2 message suite.
+  /** @brief Clears any persistent message on an effect handle that was set by OfxMessageSuiteV2::setPersistentMessage. New for V2 message suite.
 
       \arg handle     - effect instance handle messages should be cleared from.
       \arg handle     - effect handle (descriptor or instance) 
@@ -180,7 +180,7 @@ typedef struct OfxMessageSuiteV2 {
 
      Clearing a message will clear any associated error state.
   */
-  OfxStatus (*clearPersistantMessage)(void *handle);
+  OfxStatus (*clearPersistentMessage)(void *handle);
 
 } OfxMessageSuiteV2;
 
