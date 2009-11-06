@@ -52,7 +52,7 @@ typedef struct OfxMemorySuiteV1 {
   \arg nBytes        - the number of bytes to allocate
   \arg allocatedData - a pointer to the return value. Allocated memory will be alligned for any use.
 
-  This function has the host allocate memory using it's own memory resources
+  This function has the host allocate memory using its own memory resources
   and returns that to the plugin.
 
   @returns

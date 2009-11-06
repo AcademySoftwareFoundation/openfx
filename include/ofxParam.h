@@ -331,7 +331,7 @@ This is used to tell the host whether the value of the parameter is important an
     - Default - 1
     - Valid Values - 0 or 1
 
-This is used to indicate if the value of a parameter has any affect on an effect's output, eg: the parameter may be purely for GUI purposes, and so changing it's value should not trigger a re-render.
+This is used to indicate if the value of a parameter has any affect on an effect's output, eg: the parameter may be purely for GUI purposes, and so changing its value should not trigger a re-render.
 */
 #define kOfxParamPropEvaluateOnChange "OfxParamPropEvaluateOnChange"
 
@@ -438,12 +438,12 @@ The exact type and dimension is dependant on the type of the parameter. These ar
       - ::kOfxParamDoubleTypeNormalisedXY - normalised to the project's X and Y size (2D only),
       - ::kOfxParamDoubleTypeNormalisedXYAbsolute - normalised to the projects X and Y size, and is an absolute position on the image plane,
 
-      - ::kOfxParamDoubleTypeX - size wrt to the project's X dimension (1D only), in cannonical coordinates,
-      - ::kOfxParamDoubleTypeXAbsolute - absolute position on the X axis (1D only), in cannonical coordinates,
-      - ::kOfxParamDoubleTypeY - size wrt to the project's Y dimension(1D only), in cannonical coordinates,
-      - ::kOfxParamDoubleTypeYAbsolute - absolute position on the Y axis (1D only), in cannonical coordinates,
-      - ::kOfxParamDoubleTypeXY - size in 2D (2D only), in cannonical coordinates,
-      - ::kOfxParamDoubleTypeXYAbsolute - an absolute position on the image plane, in cannonical coordinates.
+      - ::kOfxParamDoubleTypeX - size wrt to the project's X dimension (1D only), in canonical coordinates,
+      - ::kOfxParamDoubleTypeXAbsolute - absolute position on the X axis (1D only), in canonical coordinates,
+      - ::kOfxParamDoubleTypeY - size wrt to the project's Y dimension(1D only), in canonical coordinates,
+      - ::kOfxParamDoubleTypeYAbsolute - absolute position on the Y axis (1D only), in canonical coordinates,
+      - ::kOfxParamDoubleTypeXY - size in 2D (2D only), in canonical coordinates,
+      - ::kOfxParamDoubleTypeXYAbsolute - an absolute position on the image plane, in canonical coordinates.
 
 Double parameters can be interpreted in several different ways, this property tells the host how to do so and thus gives hints
 as to the interface of the parameter.
@@ -503,22 +503,22 @@ Deprecated in favour of ::kOfxParamDoubleTypeXYAbsolute
 
 
 
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating a size in cannonical coords in the X dimension. See \ref ParameterPropertiesDoubleTypes. */
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating a size in canonical coords in the X dimension. See \ref ParameterPropertiesDoubleTypes. */
 #define kOfxParamDoubleTypeX  "OfxParamDoubleTypeX"
 
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating a size in cannonical coords in the Y dimension. See \ref ParameterPropertiesDoubleTypes. */
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating a size in canonical coords in the Y dimension. See \ref ParameterPropertiesDoubleTypes. */
 #define kOfxParamDoubleTypeY  "OfxParamDoubleTypeY"
 
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating an absolute position in cannonical coords in the X dimension. See \ref ParameterPropertiesDoubleTypes. */
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating an absolute position in canonical coords in the X dimension. See \ref ParameterPropertiesDoubleTypes. */
 #define kOfxParamDoubleTypeXAbsolute  "OfxParamDoubleTypeXAbsolute"
 
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating an absolute position in cannonical coords in the Y dimension. See \ref ParameterPropertiesDoubleTypes. */
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating an absolute position in canonical coords in the Y dimension. See \ref ParameterPropertiesDoubleTypes. */
 #define kOfxParamDoubleTypeYAbsolute  "OfxParamDoubleTypeYAbsolute"
 
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating a 2D size in cannonical coords. See \ref ParameterPropertiesDoubleTypes. */
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating a 2D size in canonical coords. See \ref ParameterPropertiesDoubleTypes. */
 #define kOfxParamDoubleTypeXY  "OfxParamDoubleTypeXY"
 
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating a 2D position in cannonical coords. See \ref ParameterPropertiesDoubleTypes. */
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating a 2D position in canonical coords. See \ref ParameterPropertiesDoubleTypes. */
 #define kOfxParamDoubleTypeXYAbsolute  "OfxParamDoubleTypeXYAbsolute"
 
 /** @brief Describes in which coordinate system a spatial double parameter's default value is specified.
@@ -533,14 +533,14 @@ Deprecated in favour of ::kOfxParamDoubleTypeXYAbsolute
       - kOfxParamDoubleTypeXY 
       - kOfxParamDoubleTypeXYAbsolute 
    - Valid Values - This must be one of
-      - kOfxParamCoordinatesCanonical - the default is in cannonical coords
+      - kOfxParamCoordinatesCanonical - the default is in canonical coords
       - kOfxParamCoordinatesNormalised - the default is in normalised coordinates
 
 This allows a spatial param to specify what its default is, so by saying normalised and "0.5" it would be in the 'middle', by saying canonical and 100 it would be at value 100 independent of the size of the image being applied to.
 */
 #define kOfxParamPropDefaultCoordinateSystem "OfxParamPropDefaultCoordinateSystem"
 
-/** @brief Define the cannonical coordinate system */
+/** @brief Define the canonical coordinate system */
 #define kOfxParamCoordinatesCanonical "OfxParamCoordinatesCanonical"
 
 /** @brief Define the normalised coordinate system */
@@ -641,7 +641,7 @@ When set to 0 a user should not be able to modify the value of the parameter. No
 */
 #define kOfxParamPropEnabled "OfxParamPropEnabled"
 
-/** @brief A private data pointer that the plug-in can store it's own data behind.
+/** @brief A private data pointer that the plug-in can store its own data behind.
 
     - Type - pointer X 1
     - Property Set - plugin parameter instance (read/write),
@@ -708,7 +708,7 @@ If a user interface represents a parameter with a slider or similar, this should
     - Default - 1
     - Valid Values - any greater than 0.
 
-This value is always in cannonical coordinates for double parameters that are normalised.
+This value is always in canonical coordinates for double parameters that are normalised.
 */
 #define kOfxParamPropIncrement "OfxParamPropIncrement"
 

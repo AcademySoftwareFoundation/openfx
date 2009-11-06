@@ -61,7 +61,7 @@ typedef int OfxStatus;
 
 /** @brief Generic host structure passed to OfxPlugin::setHost function
 
-    This structure contains what is needed by a plug-in to bootstrap it's connection
+    This structure contains what is needed by a plug-in to bootstrap its connection
     to the host.
 */
 typedef struct OfxHost {
@@ -106,9 +106,9 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 /** @brief The structure that defines a plug-in to a host.
  *
  * This structure is the first element in any plug-in structure
- * using the OFX plug-in architecture. By examining it's members
+ * using the OFX plug-in architecture. By examining its members
  * a host can determine the API that the plug-in implements,
- * the version of that API, it's name and version.
+ * the version of that API, its name and version.
  *
  * For details see \ref Architecture.
  *
@@ -144,7 +144,7 @@ typedef struct OfxPlugin {
 
       Mandatory function. 
 
-      The very first function called in a plug-in. The plug-in \em must \em not call any OFX functions within this, it must only set it's local copy of the host pointer.
+      The very first function called in a plug-in. The plug-in \em must \em not call any OFX functions within this, it must only set its local copy of the host pointer.
 
       \pre
         - nothing else has been called
@@ -269,7 +269,7 @@ If this is not present, it is safe to assume that the version of the API is "1.0
 
 If false the effect currently has no interface, however this may be because the effect is loaded in a background render host, or it may be loaded on an interactive host that has not yet opened an editor for the effect.
 
-The output of an effect should only ever depend on the state of it's parameters, not on the interactive flag. The interactive flag is more a courtesy flag to let a plugin know that it has an interace. If a plugin want's to have its behaviour dependant on the interactive flag, it can always make a secret parameter which shadows the state if the flag.
+The output of an effect should only ever depend on the state of its parameters, not on the interactive flag. The interactive flag is more a courtesy flag to let a plugin know that it has an interace. If a plugin want's to have its behaviour dependant on the interactive flag, it can always make a secret parameter which shadows the state if the flag.
 */
 #define kOfxPropIsInteractive "OfxPropIsInteractive"
 
@@ -286,7 +286,7 @@ eg:  '/usr/OFX/Plugins/AcmePlugins/AcmeFantasticPlugin.ofx.bundle'
 */
 #define kOfxPluginPropFilePath "OfxPluginPropFilePath"
 
-/** @brief  A private data pointer that the plug-in can store it's own data behind.
+/** @brief  A private data pointer that the plug-in can store its own data behind.
 
     - Type - pointer X 1
     - Property Set - plugin instance (read/write),
@@ -329,7 +329,7 @@ This property is used to label objects uniquely amoung objects of that type. It 
 
 This is a multi dimensional integer property that represents the version of a host (host descriptor), or plugin (plugin descriptor). These represent a version number of the form '1.2.3.4', with each dimension adding another 'dot' on the right.
 
-A version is considered to be more recent than another if it's ordered set of values is lexicographically greater than another, reading left to right. (ie: 1.2.4 is smaller than 1.2.6). Also, if the number of dimensions is different, then the values of the missing dimensions are considered to be zero (so 1.2.4 is greater than 1.2).
+A version is considered to be more recent than another if its ordered set of values is lexicographically greater than another, reading left to right. (ie: 1.2.4 is smaller than 1.2.6). Also, if the number of dimensions is different, then the values of the missing dimensions are considered to be zero (so 1.2.4 is greater than 1.2).
 */
 #define kOfxPropVersion "OfxPropVersion"
 

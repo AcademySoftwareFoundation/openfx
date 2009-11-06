@@ -73,7 +73,7 @@ The interact can be slaved to multiple parameters (setting index 0, then index 1
  */
 #define kOfxInteractPropSlaveToParam "OfxInteractPropSlaveToParam"
 
-/** @brief The size of a real screen pixel under the interact's cannonical projection.
+/** @brief The size of a real screen pixel under the interact's canonical projection.
 
    - Type - double X 2
    - Property Set - interact instance and actions (read only)

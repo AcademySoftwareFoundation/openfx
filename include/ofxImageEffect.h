@@ -552,7 +552,7 @@ This is the actual value of the component depth, before any mapping by clip pref
    - Property Set - clip instance (read only), image instance (read only), out args property in the ::kOfxImageEffectActionGetClipPreferences action (read/write)
    - Valid Values - This must be one of
       - kOfxImageOpaque          - the image is opaque and so has no premultiplication state
-      - kOfxImagePreMultiplied   - the image is premultiplied by it's alpha
+      - kOfxImagePreMultiplied   - the image is premultiplied by its alpha
       - kOfxImageUnPreMultiplied - the image is unpremultiplied
 
 See the documentation on clip preferences for more details on how this is used with the ::kOfxImageEffectActionGetClipPreferences action.
@@ -580,7 +580,7 @@ See the documentation on clip preferences for more details on how this is used w
        - kOfxBitDepthShort
        - kOfxBitDepthFloat
 
-The default for a plugin is to have none set, the plugin \em must define at least one in it's describe action.
+The default for a plugin is to have none set, the plugin \em must define at least one in its describe action.
 */
 #define kOfxImageEffectPropSupportedPixelDepths "OfxImageEffectPropSupportedPixelDepths"
 
@@ -596,7 +596,7 @@ The default for a plugin is to have none set, the plugin \em must define at leas
 
 This list of strings indicate what component types are supported by a host or are expected as input to a clip.
 
-The default for a clip descriptor is to have none set, the plugin \em must define at least one in it's define function
+The default for a clip descriptor is to have none set, the plugin \em must define at least one in its define function
 */
 #define kOfxImageEffectPropSupportedComponents "OfxImageEffectPropSupportedComponents"
 
@@ -837,7 +837,7 @@ The order of the values is x1, y1, x2, y2.
 X values are x1 <= X < x2 
 Y values are y1 <= Y < y2
 
-The ::kOfxImagePropBounds property contains the actuall addressable pixels in an image, which may be less than it's full region of definition.
+The ::kOfxImagePropBounds property contains the actuall addressable pixels in an image, which may be less than its full region of definition.
  */
 #define kOfxImagePropRegionOfDefinition "OfxImagePropRegionOfDefinition"
 
@@ -875,8 +875,8 @@ Note that row bytes can be negative, which allows hosts with a native top down r
     - Property Set - a plugin descriptor (read/write)
     - Default - 1
     - Valid Values - This must be one of
-       - 0 - the plugin is to have it's render function called twice, only if there is animation in any of it's parameters
-       - 1 - the plugin is to have it's render function called twice always
+       - 0 - the plugin is to have its render function called twice, only if there is animation in any of its parameters
+       - 1 - the plugin is to have its render function called twice always
 */
 #define kOfxImageEffectPluginPropFieldRenderTwiceAlways "OfxImageEffectPluginPropFieldRenderTwiceAlways"
 
