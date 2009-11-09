@@ -286,8 +286,17 @@ A plug-in uses this property to indicate if a parameter is able to animate.
 The plugin should set this flag to true whenever any internal state has not
 been flushed to the set of params.
 
-Hosts will then call the sync private data action only if this is true and
-reset the value to 0.
+The host will examine this property each time it does a copy or save
+operation on the instance.
+ * If it is set to 1, the host will call SyncPrivateData and then set
+   it to zero before doing the copy/save.
+ * If it is set to 0, the host will assume that the param data
+   correctly represents the private state, and will not call
+   SyncPrivateData before copying/saving.
+ * If this property is not set, the host will always call
+   SyncPrivateData before copying or saving the effect (as if the
+   property were set to 1 -- but the host will not create or
+   modify the property).
 */
 #define kOfxPropParamSetNeedsSyncing "OfxPropParamSetNeedsSyncing"
  
