@@ -1171,6 +1171,8 @@ If clipGetImage is called twice with the same parameters, then two separate imag
   Generally this is done in interactive threads in response to users tweaking some parameter.
 
   This function indicates whether a plugin should stop whatever processing it is doing.
+
+  If the host supports API 1.2 or later, a plugin which aborts as a result of this function should return kOfxStatCancel from its action call to indicate that it has aborted.
   
   @returns
      - 0 if the effect should continue whatever processing it is doing
