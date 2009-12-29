@@ -114,7 +114,7 @@
 	  
 	  <itemizedlist>
 	    <listitem>MacOS - for Apple Macintosh OS X 32 bit and/or univeral binaries</listitem>
-	    <listitem>MacOS-x86-64 - for Apple Macintosh OS X, specifically on intel x86 CPUs running AMD's 64 bit extensions</listitem>
+	    <listitem>MacOS-x86-64 - for Apple Macintosh OS X, specifically on intel x86 CPUs running AMD's 64 bit extensions. 64 bit host applications should check this first, and if it doesn't exist or is empty, fall back to "MacOS" looking for a universal binary.</listitem>
 	    <listitem>Win32 - for Microsoft Windows (compiled 32 bit)</listitem>
 	    <listitem>Win64 - for Microsoft Windows (compiled 64 bit)</listitem>
 	    <listitem>IRIX - for SGI IRIX plug-ins (compiled 32 bit)</listitem>
