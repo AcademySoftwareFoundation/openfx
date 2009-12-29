@@ -1118,7 +1118,7 @@ namespace OFX {
     };  
 
     ////////////////////////////////////////////////////////////////////////////////
-    /** @brief Wraps up an doubleeger param */
+    /** @brief Wraps up an double param */
     class Double2DParam : public BaseDoubleParam {
     protected :
         mDeclareProtectedAssignAndCC(Double2DParam);
