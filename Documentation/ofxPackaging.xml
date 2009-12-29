@@ -113,26 +113,14 @@
 	  ARCHITECTURE is the specific operating system architecture the plug-in was built for, these are currently... 
 	  
 	  <itemizedlist>
-	    <listitem>MacOS - for Apple Macintosh OS X (compiled 32
-	      bit)</listitem>
-	    
-	    <listitem>Win32 - for Microsoft Windows (compiled 32
-	      bit)</listitem>
-
-	    <listitem>Win64 - for Microsoft Windows (compiled 64
-	      bit)</listitem>
-	    
-	    <listitem>IRIX - for SGI IRIX plug-ins (compiled 32
-	      bit)</listitem>
-	    
-	    <listitem>IRIX64 - for SGI IRIX plug-ins (compiled 64
-	      bit)</listitem>
-	    
-	    <listitem>Linux-x86 - for Linux on intel x86 CPUs (compiled 32
-	      bit)</listitem>
-	    
-	    <listitem>Linux-x86-64 - for Linux on intel x86 CPUs running
-	      AMD's 64 bit extensions</listitem>
+	    <listitem>MacOS - for Apple Macintosh OS X 32 bit and/or univeral binaries</listitem>
+	    <listitem>MacOS-x86-64 - for Apple Macintosh OS X, specifically on intel x86 CPUs running AMD's 64 bit extensions</listitem>
+	    <listitem>Win32 - for Microsoft Windows (compiled 32 bit)</listitem>
+	    <listitem>Win64 - for Microsoft Windows (compiled 64 bit)</listitem>
+	    <listitem>IRIX - for SGI IRIX plug-ins (compiled 32 bit)</listitem>
+	    <listitem>IRIX64 - for SGI IRIX plug-ins (compiled 64 bit)</listitem>
+	    <listitem>Linux-x86 - for Linux on x86 CPUs (compiled 32 bit)</listitem>
+	    <listitem>Linux-x86-64 - for Linux on x86 CPUs running AMD's 64 bit extensions</listitem>
 	  </itemizedlist>
 	  
 	  
