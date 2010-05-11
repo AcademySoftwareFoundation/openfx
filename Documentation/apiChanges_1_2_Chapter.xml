@@ -11,6 +11,7 @@
   <section id="APIChanges_1_2_Packaging"><title>Packaging</title>
     <para>
       A new architecture directory was added to the bundle heirarchy to specifically contain Mac OSX 64 bit builds. The current 'MacOS' architecture is a fall back for 32 bit only and/or universal binary builds.
+    </para>
   </section>
 
   <section id="APIChanges_1_2_Versioning"><title>Versioning</title>
