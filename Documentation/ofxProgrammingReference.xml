@@ -26,7 +26,7 @@
   <chapter><title>Structure of The OFX and the Image Effect API</title>
     <section> <title>The Structure Of The Generic OFX API</title>
       <para>
-	OFX is actually several things. At its the base it is a generic plug-in architecture with which can be used to implement a variety of
+	OFX is actually several things. At its base it is a generic plug-in architecture which can be used to implement a variety of
 	plug-in APIs. The first such API to be implemented on the core architecture is the OFX Image Effect Plug-in API.
       </para>
       
@@ -35,7 +35,7 @@
       </para>
 
       <para>
-	APIs are defined inOFX by only a set of C header files and associated documentation. There are no binary libraries for a plug-in or host to link against.
+	APIs are defined in OFX by only a set of C header files and associated documentation. There are no binary libraries for a plug-in or host to link against.
       </para>
 
       <para>
@@ -47,15 +47,15 @@
       </para>
 
       <para>
-	A host communicates with a plug-in via sending 'actions' to the plug-in's main entry function. Actions are C strings that indicate the specific operation to be carried out. They are associated with sets of properties which allows the main entry function to behave as a generic function.
+	A host communicates with a plug-in via sending 'actions' to the plug-in's main entry function. Actions are C strings that indicate the specific operation to be carried out. They are associated with sets of properties, which allows the main entry function to behave as a generic function.
       </para>
 
       <para>
-	A plug-in communicates with a host by using sets of functions pointers given it by the host. These sets of function pointers, known as 'suites', are named via a C string and a version number. They are returned on request from the host as pointers within a C struct.
+	A plug-in communicates with a host by using sets of function pointers given it by the host. These sets of function pointers, known as 'suites', are named via a C string and a version number. They are returned on request from the host as pointers within a C struct.
       </para>
 
       <para>
-	Properties are typed value/name pairs that exist on the various OFX objects and are action rguments values to the plug-in's main entry point. They are how a plug-in and host pass individual values back and forth to each other. The property suite, defined inside <filename class="headerfile">ofxProperty.h</filename> is used to do this.
+	Properties are typed value/name pairs that exist on the various OFX objects and are action argument values to the plug-in's main entry point. They are how a plug-in and host pass individual values back and forth to each other. The property suite, defined inside <filename class="headerfile">ofxProperty.h</filename> is used to do this.
       </para>
     </section>
 
@@ -108,7 +108,7 @@
 	    <emphasis>instances</emphasis> - which hosts and plug-ins use to control the behaviour of a specific 'live' object.
 	  </listitem>
 	</itemizedlist>
-	In most APIs descriptors are typically passed from a host to a plug-in during the <link linkEnd="kOfxActionDescribe">kOfxActionDescribe</link> action, whilst all other actions are passed and instance, e.g: the object passed to the <link linkEnd="kOfxActionCreateInstance">kOfxActionCreateInstance</link> action.
+	In most APIs descriptors are typically passed from a host to a plug-in during the <link linkEnd="kOfxActionDescribe">kOfxActionDescribe</link> action, whilst all other actions are passed an instance, e.g: the object passed to the <link linkEnd="kOfxActionCreateInstance">kOfxActionCreateInstance</link> action.
       </para>
       
     </section>
@@ -116,12 +116,12 @@
     <section>
       <title>The OFX Image Effect API.</title>
       <para>
-	The OFX Image Effect Plug-in API is a designed for image effect plug-ins for 2D visual effects. This includes such host applications as compositors,
+	The OFX Image Effect Plug-in API is designed for image effect plug-ins for 2D visual effects. This includes such host applications as compositors,
 	editors, rotoscoping tools and colour grading sytems.
       </para>
       
       <para>
-	At heart the image effect API allows a host to send a plug-in a set of images, state the value of a set of parameters and get a resulting back. 
+	At heart the image effect API allows a host to send a plug-in a set of images, state the value of a set of parameters and get a resulting image back. 
 	However how it does this is somewhat complicated, as the plug-in and host have to negotiate what kind of images are handled, how they
 	can be processed and much more.
       </para>
@@ -132,7 +132,7 @@
   <chapter>
     <title>The Generic Core API</title>
     <section>
-      This chapter describes how plug-ins are distributed and the core API for loading and identifying image effect plug-ins, and the methods of communications between plug-and host.
+      This chapter describes how plug-ins are distributed and the core API for loading and identifying image effect plug-ins, and the methods of communications between plug-in and host.
     </section>
     
     &ofxPackaging;
@@ -141,13 +141,13 @@
     <section id="Core OFX include files">
       <title>OFX Include Files</title>
       <para>
-	The 'C' include files that define an OFX API are all that are needed by a plug-in or host to implement the API. Most include files define a set of independant 'suites' which are used by a plug-in to communicate with a host applications. 
+	The 'C' include files that define an OFX API are all that are needed by a plug-in or host to implement the API. Most include files define a set of independant 'suites' which are used by a plug-in to communicate with a host application. 
       </para>
       
       <para>
 	There are two include files that are used with nearly every derived API. These are...
 	<itemizedlist>
-	  <listitem><filename class="headerfile">ofxCore.h</filename> is used to define the basic communication mechanisms between a host and a plug-in. This includes the way in which a plug-in is defined to a host and how a plug-in and how to boostrap the two way comminications. It also has several other basic action and property definitions.
+	  <listitem><filename class="headerfile">ofxCore.h</filename> is used to define the basic communication mechanisms between a host and a plug-in. This includes the way in which a plug-in is defined to a host and how to bootstrap the two way communications. It also has several other basic action and property definitions.
 	  </listitem>
 	  <listitem><filename class="headerfile">ofxProperty.h</filename> specifies the property suite, which is how a plug-in gets and sets values on various objects in a host application.
 	  </listitem>
@@ -156,7 +156,7 @@
     </section>
 
     <section><title>Identifying and Loading Plug-ins</title>
-      <para>Plug-ins must implement two exported functions for a host to identify the plug-ins and to initiate the who boot strapping of communication between the two. These functions are...
+      <para>Plug-ins must implement two exported functions for a host to identify the plug-ins and to initiate the boot strapping of communication between the two. These functions are...
 	<itemizedlist>
 	  <listitem><code>int OfxGetNumberOfPlugins(void)</code> - identifies how many plug-ins are implemented in the file,</listitem>
 	  <listitem><code>OfxPlugin *OfxGetPlugin(int N)</code> - returns a structure identifying the Nth plug-in in the file.</listitem>
@@ -186,14 +186,14 @@ OfxExport OfxPlugin *OfxGetPlugin(int nth); </programlisting></blockquote>
         <para>This function returns a pointer to the <varname>nth</varname>
 	  <structname>OfxPlugin</structname> struct in the binary.
 	  <varname>nth</varname> is between 0 and the number returned by
-	  <function>OfxGetNumberOfPlugins</function>. The returned structure
+	  <function>OfxGetNumberOfPlugins</function>, minus one. The returned structure
 	  defines the plug-in to the host.</para>
 	
         &preconditions;
         <para>
           <itemizedlist>
             <listitem> <function>OfxGetNumberOfPlugins</function> has been previously called, </listitem>
-            <listitem> <varname>nth</varname> is between 0 and the value returned by <function>OfxGetNumberOfPlugins</function>.
+            <listitem> <varname>nth</varname> is between 0 and the value returned by <function>OfxGetNumberOfPlugins</function>, minus one.
             </listitem>
           </itemizedlist>
         </para>
@@ -249,8 +249,8 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 
       <para>
 	There are a few explicit exceptions to this. For example, when an image effect asks for an image from a host
-	it is passed back a property set handle which represents the image. That handle needs to later be desposed of
-	by an effect by an explicit function call back to the host. These few exceptions are documented with the suite
+	it is passed back a property set handle which represents the image. That handle needs to later be disposed of
+	by an effect, by an explicit function call back to the host. These few exceptions are documented with the suite
 	functions that access the object.
       </para>
 
@@ -272,7 +272,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	</para>
 	
 	<para>
-	  Label strings are considerred to be static constant strings, when passed across the API the host/plug-in recieving the string neither needs to duplicate or free the string, it can simply retain the orginal pointer passed over and use that in future, as it will not change. A host must be aware that when it unloads a plug-in all such pointers will be invalid, and be prepared to cope with such a situation.
+	  Label strings are considered to be static constant strings. When passed across the API the host/plug-in receiving the string neither needs to duplicate nor free the string, it can simply retain the orginal pointer passed over and use that in future, as it will not change. A host must be aware that when it unloads a plug-in all such pointers will be invalid, and be prepared to cope with such a situation.
 	</para>
 	
 	<para>
@@ -284,7 +284,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	</para>
 
 	<para>
-	  Value strings have no assumptions made about them, when one is passed across the
+	  Value strings have no assumptions made about them. When one is passed across the
 	  API, the thing that passed the string retains ownership of it. The thing getting the 
 	  string is not responsible for freeing that string. The scope of the string's validity
 	  is until the next OFX API function is called. For example, within a plugin
@@ -318,7 +318,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
       </para>
 
       <para>
-	Plug-Ins that implement the image effect API set the <code>pluginApi</code> member of the <code>OfxPlugin struct</code> 
+	Plug-ins that implement the image effect API set the <code>pluginApi</code> member of the <code>OfxPlugin struct</code> 
 	returned by the global <code>OfxGetPlugin</code> to be <literal>kOfxImageEffectPluginApi</literal>.
 	The current version of the API is 1. This is enough to label the plug-in as an image effect plug-in.
       </para>
@@ -350,7 +350,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	  </listitem>
 	  <listitem>
 	    <filename class="headerfile">ofxKeySyms.h</filename>
-	    - key symbols used by 'Interacts' to represent keyboard events, 
+	    - provides key symbols used by 'Interacts' to represent keyboard events, 
 	  </listitem>
 	  <listitem>
 	    <filename class="headerfile">ofxMemory.h</filename>
@@ -358,7 +358,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	  </listitem>
 	  <listitem>
 	    <filename class="headerfile">ofxMessage.h</filename>
-	    - a simple messaging suite to communicate with an end user, 
+	    - provides a simple messaging suite to communicate with an end user, 
 	  </listitem>
 	  <listitem>
 	    <filename class="headerfile">ofxImageEffect.h</filename>
@@ -387,7 +387,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	    <link linkend="kOfxActionUnload">The Generic Unload Action</link> called just before a plug-in is unloaded,
 	  </listitem>
       	  <listitem>
-	    <link linkend="kOfxActionDescribe">The Generic Describe Action</link> called to described a plug-in's behaviour to a host,
+	    <link linkend="kOfxActionDescribe">The Generic Describe Action</link> called to describe a plug-in's behaviour to a host,
 	    </listitem>
 	  <listitem>
 	    <link linkend="kOfxActionCreateInstance">The Generic Create Instance Action</link> called just after an instance is created,
@@ -396,7 +396,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	    <link linkend="kOfxActionDestroyInstance">The Generic Destroy Instance Action</link> called just before an instance is destroyed,
 	    </listitem>
 	  <listitem>
-	    <link linkend="kOfxActionBeginInstanceChanged">The Generic Begin/End Instance Changed Actions</link> a pair of actions used to bracket a set Instance Changed actions,
+	    <link linkend="kOfxActionBeginInstanceChanged">The Generic Begin/End Instance Changed Actions</link>, a pair of actions used to bracket a set of Instance Changed actions,
 	    </listitem>
 	  <listitem>
 	    <link linkend="kOfxActionInstanceChanged">The Generic Instance Changed Action</link> an action used to indicate that a value has changed in a plug-in instance,
@@ -459,7 +459,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 
     <section><title>Main Objects Used by the API</title>
       <para>
-	The image effect API uses a variety of different objects. Some defined via blind data handles, other via property sets, or a combination of the two. These objects are...
+	The image effect API uses a variety of different objects. Some are defined via blind data handles, others via property sets, and some by a combination of the two. These objects are...
 	<itemizedlist>
 	  <listitem>
 	    <emphasis>Host Descriptor</emphasis> - a descriptor object used by a host to describe its behaviour to a plug-in,
@@ -486,7 +486,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	    <emphasis>Parameter Set Descriptor</emphasis> - a descriptor object used to specify a set of user visible parameters in an effect descriptor,
 	  </listitem>
 	  <listitem>
-	    <emphasis>Parameter Set Instance</emphasis> - an instance object that maintains state about a set of user visible parameter in an effect instance,
+	    <emphasis>Parameter Set Instance</emphasis> - an instance object that maintains state about a set of user visible parameters in an effect instance,
 	  </listitem>
 	  <listitem>
 	    <emphasis>Image Instance</emphasis> - a instance object that maintains state about a 2D image being passed to an effect instance.
@@ -509,7 +509,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	</para>
 	
 	<para>
-	  These set of properties are there to describe the capabilities of the host to a plug-in, thus giving a plug-in the ability to modify
+	  These sets of properties are there to describe the capabilities of the host to a plug-in, thus giving a plug-in the ability to modify
 	  its behaviour depending on the capabilities of the host. 
 	</para>
 	
@@ -520,9 +520,9 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
       
       <section> <title>Effects</title>
 	<para>
-	  An effect is an object in the OFX Image Effect API that represents an image processing plug-in. It has associated with it associated with it
-	  a set of properties, a set of image clips and a set of properties. These component objects of an effect are defined and used by an effect
-	  to do whatever processing it needs to. A handle to an image effect (instance or descriptor) is passed into a plug-ins  
+	  An effect is an object in the OFX Image Effect API that represents an image processing plug-in. It has associated with it
+	  a set of properties, a set of image clips and a set of parameters. These component objects of an effect are defined and used by an effect
+	  to do whatever processing it needs to. A handle to an image effect (instance or descriptor) is passed into a plug-in's  
 	  <link linkend="mainEntryPoint">main entry point</link> <code>handle</code> argument. 
 	</para>
 	
@@ -538,7 +538,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	    it is passed to are...
 	    <itemizedlist>
 	      <listitem><link linkEnd="kOfxActionDescribe">kOfxActionDescribe</link></listitem>
-	      <listitem><link linkEnd="kOfxImageEffectActionDescribeInContext">kOfxActionDescribe</link></listitem>
+	      <listitem><link linkEnd="kOfxImageEffectActionDescribeInContext">kOfxImageEffectActionDescribeInContext</link></listitem>
 	    </itemizedlist>
 	  </para>
 	  
@@ -555,7 +555,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	  </para>
 	  
 	  <para>
-	    Effect descriptors are only valid in a effect for the duration of the instance they were passed into.2
+	    Effect descriptors are only valid in a effect for the duration of the instance they were passed into.
 	  </para>
 	  
 	  <para>
@@ -578,7 +578,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	  </para>
 	  
 	  <para>
-	    Generally multiple instances of an effect can be in existance at the same time, each with a different set of parameters, clips and properties.
+	    Generally multiple instances of an effect can be in existence at the same time, each with a different set of parameters, clips and properties.
 	  </para>
 	  
 	  <para>
@@ -633,12 +633,12 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
       
       <section> <title>Parameters</title>
 	<para>
-	  Parameters are user visible objects that an effect uses to specify its state. For example a floating point values used to control the
-	  blur size in a blur effect. Parameters (both descriptors and instances) are represented as blind data handles of type <code>OfxParamHandle</code>
+	  Parameters are user visible objects that an effect uses to specify its state, for example a floating point value used to control the
+	  blur size in a blur effect. Parameters (both descriptors and instances) are represented as blind data handles of type <code>OfxParamHandle</code>.
 	</para>
 	
 	<para>
-	  Parameter sets the collection of parameters that an effect has associated with it. They are represented by the type <code>OfxParamSetHandle</code>.
+	  Parameter sets are the collection of parameters that an effect has associated with it. They are represented by the type <code>OfxParamSetHandle</code>.
 	  The contents of an effect's parameter set are defined during the 
 	  <link linkend="kOfxImageEffectActionDescribeInContext"><code>kOfxImageEffectActionDescribeInContext</code></link> action. Parameters cannot be
 	  dynamically added to, or deleted from an effect instance.
@@ -672,7 +672,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	<section> <title>Parameter Descriptors</title>
 	  <para>
 	    Parameter descriptors are returned by the <link linkend="OfxParameterSuiteV1_paramDefine"><code>OfxParameterSuiteV1::paramDefine</code></link>
-	    function. They are are used to define the existance of a parameter to the host, and to set the various attributes of that parameter. Later,
+	    function. They are used to define the existence of a parameter to the host, and to set the various attributes of that parameter. Later,
 	    when an effect instance is created, an instance of the described parameter will also be created.
 	  </para>
 	  
@@ -691,7 +691,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	  </para>
 	  
 	  <para>
-	    A parameter set handle instance is valid while the associate effect instance remains valid.
+	    A parameter set handle instance is valid while the associated effect instance remains valid.
 	  </para>
 	</section>
 	
@@ -711,7 +711,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	<section> <title>Image Instances</title>
 	  <para>
 	    An image instance is an object returned by the <link linkend="OfxImageEffectSuiteV1_clipGetImage"><code>OfxImageEffectSuiteV1::clipGetImage</code></link>
-	    function. This fetches and image out of a clip and returns it as a property set to the plugin. The image can be accessed by looking up the property
+	    function. This fetches an image out of a clip and returns it as a property set to the plugin. The image can be accessed by looking up the property
 	    values in that set, which includes the data pointer to the image.
 	  </para>
 	  
@@ -731,7 +731,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
       
       <section> <title>Interacts</title>
 	<para>
-	  An interact is an OFX object that is used to draw custom user interface elements, for example overlays ontop of a host's image viewer
+	  An interact is an OFX object that is used to draw custom user interface elements, for example overlays on top of a host's image viewer
 	  or custom parameter widgets. Interacts have their own <link linkend="mainEntryPoint">main entry point</link>, which is separate to the
 	  effect's main entry point. Typically an interact's main entry point is specified as a pointer property on an OFX object, for example
 	  the <link linkend="kOfxImageEffectPluginPropOverlayInteractV1"><code>kOfxImageEffectPluginPropOverlayInteractV1</code></link>
@@ -739,15 +739,15 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	</para>
 	
 	<para>
-	  The functions that directly manipulate interacts in the <link linkend="OfxInteractSuiteV1">interact suite</link>
-	  found in the header file <filename class="headerfile">ofxInteract.h</filename>. As well as the properties and
+	  The functions that directly manipulate interacts are in the <link linkend="OfxInteractSuiteV1">interact suite</link>
+	  found in the header file <filename class="headerfile">ofxInteract.h</filename>, as well as the properties and
 	  specific actions that apply to interacts.
 	</para>
 	
 	<section> <title>Interact Descriptors</title>
 	  <para>
 	    Interact descriptors are blind handles passed to the <link linkend="kOfxActionDescribeInteract">describe action</link> sent to 
-	    an interact's separate main entry point. They should be case to the type <code>OfxInteractHandle</code>.
+	    an interact's separate main entry point. They should be cast to the type <code>OfxInteractHandle</code>.
 	  </para>
 	  
 	  <para>
@@ -759,7 +759,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	<section> <title>Interact Instances</title>
 	  <para>
 	    Interact instances are blind handles passed to all actions but the <link linkend="kOfxActionDescribeInteract">describe action</link> sent to 
-	    an interact's separate main entry point. They should be case to the type <code>OfxInteractHandle</code>.
+	    an interact's separate main entry point. They should be cast to the type <code>OfxInteractHandle</code>.
 	  </para>
 	  
 	  <para>
