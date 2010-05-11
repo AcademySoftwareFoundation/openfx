@@ -48,7 +48,9 @@
 		  <itemizedlist>
 		    <listitem>NAME.xml</listitem>
 		    <listitem>PLUGIN_A.png</listitem>
+		    <listitem>PLUGIN_A.svg</listitem>
 		    <listitem>PLUGIN_B.png</listitem>
+		    <listitem>PLUGIN_B.svg</listitem>
 		    <listitem>...</listitem>
 		  </itemizedlist>
 		</listitem>
@@ -84,7 +86,7 @@
 	</listitem>
 	
 	<listitem>
-	  PLUGIN.png - is the image to use as an icon for the plug-in in the binary which has a matching 
+	  PLUGIN.png - is an optional portable graphics file image to use as an icon for the plug-in in the binary which has a matching 
 	  
 	  <structfield>pluginIdentifier</structfield>
 	  
@@ -94,31 +96,31 @@
 	  
 	  struct, 
 	</listitem>
+
+	<listitem>
+	  PLUGIN.svg - is an optional scalable vector graphic file to use as an icon for the plug-in in the binary which has a matching 
+	  
+	  <structfield>pluginIdentifier</structfield>
+	  
+	  field in the 
+	  
+	  <structname>OfxPlugin</structname>
+	  
+	  struct,
+	</listitem>
 	
 	<listitem>
 	  ARCHITECTURE is the specific operating system architecture the plug-in was built for, these are currently... 
 	  
 	  <itemizedlist>
-	    <listitem>MacOS - for Apple Macintosh OS X (compiled 32
-	      bit)</listitem>
-	    
-	    <listitem>Win32 - for Microsoft Windows (compiled 32
-	      bit)</listitem>
-
-	    <listitem>Win64 - for Microsoft Windows (compiled 64
-	      bit)</listitem>
-	    
-	    <listitem>IRIX - for SGI IRIX plug-ins (compiled 32
-	      bit)</listitem>
-	    
-	    <listitem>IRIX64 - for SGI IRIX plug-ins (compiled 64
-	      bit)</listitem>
-	    
-	    <listitem>Linux-x86 - for Linux on intel x86 CPUs (compiled 32
-	      bit)</listitem>
-	    
-	    <listitem>Linux-x86-64 - for Linux on intel x86 CPUs running
-	      AMD's 64 bit extensions</listitem>
+	    <listitem>MacOS - for Apple Macintosh OS X 32 bit and/or univeral binaries</listitem>
+	    <listitem>MacOS-x86-64 - for Apple Macintosh OS X, specifically on intel x86 CPUs running AMD's 64 bit extensions. 64 bit host applications should check this first, and if it doesn't exist or is empty, fall back to "MacOS" looking for a universal binary.</listitem>
+	    <listitem>Win32 - for Microsoft Windows (compiled 32 bit)</listitem>
+	    <listitem>Win64 - for Microsoft Windows (compiled 64 bit)</listitem>
+	    <listitem>IRIX - for SGI IRIX plug-ins (compiled 32 bit)</listitem>
+	    <listitem>IRIX64 - for SGI IRIX plug-ins (compiled 64 bit)</listitem>
+	    <listitem>Linux-x86 - for Linux on x86 CPUs (compiled 32 bit)</listitem>
+	    <listitem>Linux-x86-64 - for Linux on x86 CPUs running AMD's 64 bit extensions</listitem>
 	  </itemizedlist>
 	  
 	  

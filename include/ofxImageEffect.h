@@ -71,10 +71,16 @@ typedef struct OfxImageMemoryStruct *OfxImageMemoryHandle;
 /** @brief String to label images with RGBA components */
 #define kOfxImageComponentRGBA "OfxImageComponentRGBA"
 
+/** @brief String to label images with RGB components */
+#define kOfxImageComponentRGB "OfxImageComponentRGB"
+
 /** @brief String to label images with only Alpha components */
 #define kOfxImageComponentAlpha "OfxImageComponentAlpha"
 
-/** @brief String to label images with YUVA components */
+/** @brief String to label images with YUVA components
+
+Note, this has been deprecated.
+ */
 #define kOfxImageComponentYUVA "OfxImageComponentYUVA"
 
 /** @brief Use to define the generator image effect context. See \ref ImageEffectContexts
@@ -310,22 +316,55 @@ See \ref ImageEffectClipPreferences.
 */
 #define kOfxImageEffectPropSetableFielding "OfxImageEffectPropSetableFielding"
 
-/** @brief Says whether an effect needs to be rendered sequentially or not
+/** @brief Indicates whether a plugin needs sequential rendering, and a host support it
 
    - Type - int X 1
-   - Property Set - plugin descriptor (read/write) or plugin instance (read/write)
+   - Property Set - plugin descriptor (read/write) or plugin instance (read/write), and host descriptor (read only)
    - Default - 0
-   - Valid Values - This must be one of
-     - 0 - which means the host can render arbitrary frames of an instance in any order with any number of cloned instances
-     - 1 - which means the host should render all frames in an output clip on a single instance from first to last
+   - Valid Values - 
+     - 0 - for a plugin, indicates that a plugin does not need to be sequentially rendered to be correct, for a host, indicates that it cannot ever guarantee sequential rendering,
+     - 1 - for a plugin, indicates that it needs to be sequentially rendered to be correct, for a host, indicates that it can always support sequential rendering of plugins that are sequentially rendered,
+     - 2 - for a plugin, indicates that it is best to render sequentially, but will still produce correct results if not, for a host, indicates that it can sometimes render sequentially, and will have set ::kOfxImageEffectPropSequentialRenderStatus on the relevant actions
 
-Some effects have temporal dependancies, some information from from the rendering of frame N-1 is needed to render frame N correctly. This property is set by an effect to indicate such a situation.
+Some effects have temporal dependancies, some information from from the rendering of frame N-1 is needed to render frame N correctly. This property is set by an effect to indicate such a situation. Also, some effects are more efficient if they run sequentially, but can still render correct images even if they do not, eg: a complex particle system.
 
 During an interactive session a host may attempt to render a frame out of sequence (for example when the user scrubs the current time), and the effect needs to deal with such a situation as best it can to provide feedback to the user.
 
 However if a host caches output, any frame frame generated in random temporal order needs to be considered invalid and needs to be re-rendered when the host finally performs a first to last render of the output sequence.
+
+In all cases, a host will set the kOfxImageEffectPropSequentialRenderStatus flag to indicate its sequential render status.
 */
 #define kOfxImageEffectInstancePropSequentialRender "OfxImageEffectInstancePropSequentialRender"
+
+/** @brief Property on all the render action that indicate the current sequential render status of a host
+
+   - Type - int X 1
+   - Property Set - read only property on the inArgs of the following actions...
+     - ::kOfxImageEffectActionBeginSequenceRender
+     - ::kOfxImageEffectActionRender
+     - ::kOfxImageEffectActionEndSequenceRender
+   - Valid Values - 
+     - 0 - the host is not currently sequentially rendering,
+     - 1 - the host is currentely rendering in a way so that it guarantees sequential rendering.
+
+This property is set to indicate whether the effect is currently being rendered in frame order on a single effect instance. See ::kOfxImageEffectInstancePropSequentialRender for more details on sequential rendering.
+*/
+#define kOfxImageEffectPropSequentialRenderStatus "OfxImageEffectPropSequentialRenderStatus"
+
+/** @brief Property that indicates if a plugin is being rendered in response to user interaction.
+
+   - Type - int X 1
+   - Property Set - read only property on the inArgs of the following actions...
+     - ::kOfxImageEffectActionBeginSequenceRender
+     - ::kOfxImageEffectActionRender
+     - ::kOfxImageEffectActionEndSequenceRender
+   - Valid Values - 
+     - 0 - the host is rendering the instance due to some reason other than an interactive tweak on a UI,
+     - 1 - the instance is being rendered because a user is modifying parameters in an interactive session.
+
+This property is set to 1 on all render calls that have been triggered because a user is actively modifying an effect (or up stream effect) in an interactive session. This typically means that the effect is not being rendered as a part of a sequence, but as a single frame.
+*/
+#define kOfxImageEffectPropInteractiveRenderStatus "OfxImageEffectPropInteractiveRenderStatus"
 
 /** @brief Indicates the effect group for this plugin.
 
@@ -448,6 +487,7 @@ Note that for a clip, this is the value set by the clip preferences action, not 
    - Valid Values - This must be one of
      - kOfxImageComponentNone (implying a clip is unconnected, not valid for an image)
      - kOfxImageComponentRGBA
+     - kOfxImageComponentRGB
      - kOfxImageComponentAlpha
 
 Note that for a clip, this is the value set by the clip preferences action, not the raw 'actual' value of the clip.
@@ -501,6 +541,7 @@ This is the actual value of the component depth, before any mapping by clip pref
    - Valid Values - This must be one of
      - kOfxImageComponentNone (implying a clip is unconnected)
      - kOfxImageComponentRGBA
+     - kOfxImageComponentRGB
      - kOfxImageComponentAlpha
 */
 #define kOfxImageClipPropUnmappedComponents "OfxImageClipPropUnmappedComponents"
@@ -511,7 +552,7 @@ This is the actual value of the component depth, before any mapping by clip pref
    - Property Set - clip instance (read only), image instance (read only), out args property in the ::kOfxImageEffectActionGetClipPreferences action (read/write)
    - Valid Values - This must be one of
       - kOfxImageOpaque          - the image is opaque and so has no premultiplication state
-      - kOfxImagePreMultiplied   - the image is premultiplied by it's alpha
+      - kOfxImagePreMultiplied   - the image is premultiplied by its alpha
       - kOfxImageUnPreMultiplied - the image is unpremultiplied
 
 See the documentation on clip preferences for more details on how this is used with the ::kOfxImageEffectActionGetClipPreferences action.
@@ -539,7 +580,7 @@ See the documentation on clip preferences for more details on how this is used w
        - kOfxBitDepthShort
        - kOfxBitDepthFloat
 
-The default for a plugin is to have none set, the plugin \em must define at least one in it's describe action.
+The default for a plugin is to have none set, the plugin \em must define at least one in its describe action.
 */
 #define kOfxImageEffectPropSupportedPixelDepths "OfxImageEffectPropSupportedPixelDepths"
 
@@ -550,11 +591,12 @@ The default for a plugin is to have none set, the plugin \em must define at leas
    - Valid Values - This must be one of
      - kOfxImageComponentNone (implying a clip is unconnected)
      - kOfxImageComponentRGBA
+     - kOfxImageComponentRGB
      - kOfxImageComponentAlpha
 
 This list of strings indicate what component types are supported by a host or are expected as input to a clip.
 
-The default for a clip descriptor is to have none set, the plugin \em must define at least one in it's define function
+The default for a clip descriptor is to have none set, the plugin \em must define at least one in its define function
 */
 #define kOfxImageEffectPropSupportedComponents "OfxImageEffectPropSupportedComponents"
 
@@ -694,7 +736,7 @@ This should be applied to any spatial parameters to position them correctly. Not
     - Type - double X 2
     - Property Set - a plugin  instance (read only)
 
-The extent is the size of the 'output' for the current project. See \ref ProjectCoordinateSystems for more infomation on the project extent.
+The extent is the size of the 'output' for the current project. See \ref NormalisedCoordinateSystem for more infomation on the project extent.
 
 The extent is in canonical coordinates and only returns the top right position, as the extent is always rooted at 0,0.
 
@@ -711,7 +753,7 @@ The size of a project is a sub set of the ::kOfxImageEffectPropProjectExtent. Fo
 
 The project size is in canonical coordinates.
 
-See \ref ProjectCoordinateSystems for more infomation on the project extent.
+See \ref NormalisedCoordinateSystem for more infomation on the project extent.
  */
 #define kOfxImageEffectPropProjectSize "OfxImageEffectPropProjectSize"
 
@@ -726,7 +768,7 @@ For example for a PAL SD project that is in letterbox form, the project offset i
  
 The project offset is in canonical coordinates.
 
-See \ref ProjectCoordinateSystems for more infomation on the project extent.
+See \ref NormalisedCoordinateSystem for more infomation on the project extent.
 */
 #define kOfxImageEffectPropProjectOffset "OfxImageEffectPropProjectOffset"
 
@@ -795,7 +837,7 @@ The order of the values is x1, y1, x2, y2.
 X values are x1 <= X < x2 
 Y values are y1 <= Y < y2
 
-The ::kOfxImagePropBounds property contains the actuall addressable pixels in an image, which may be less than it's full region of definition.
+The ::kOfxImagePropBounds property contains the actuall addressable pixels in an image, which may be less than its full region of definition.
  */
 #define kOfxImagePropRegionOfDefinition "OfxImagePropRegionOfDefinition"
 
@@ -833,8 +875,8 @@ Note that row bytes can be negative, which allows hosts with a native top down r
     - Property Set - a plugin descriptor (read/write)
     - Default - 1
     - Valid Values - This must be one of
-       - 0 - the plugin is to have it's render function called twice, only if there is animation in any of it's parameters
-       - 1 - the plugin is to have it's render function called twice always
+       - 0 - the plugin is to have its render function called twice, only if there is animation in any of its parameters
+       - 1 - the plugin is to have its render function called twice always
 */
 #define kOfxImageEffectPluginPropFieldRenderTwiceAlways "OfxImageEffectPluginPropFieldRenderTwiceAlways"
 

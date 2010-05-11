@@ -1,12 +1,16 @@
-# local stylesheet dir as it takes ages over a network connection
-STYLESHEETDIR = http://docbook.xml-doc.org/snapshots/xsl/xhtml/
+# where to get our style shee from
+STYLESHEETARCHIVE = http://docbook.xml-doc.org/snapshots/docbook-xsl-snapshot.tar.bz2
 
+# local stylesheet dir as it takes ages over a network connection
+STYLESHEETDIR = docbook-xsl-snapshot/xhtml/
+
+# stylesheet to use
 STYLESHEET = docbook.xsl 
 
 #  args for xsltproc
 XSLARGS = --stringparam  funcsynopsis.style "ansi" \
 	--stringparam  toc.section.depth "3" \
-        --stringparam generate.toc "book toc,title,figure,table,example,equation" \
+  --stringparam generate.toc "book toc,title,figure,table,example,equation" \
 	--stringparam html.stylesheet ofxStyle.css
 
 # .h files we are scanning for specially formated property definitions
@@ -16,7 +20,8 @@ PROPERTY_HEADER_FILES = ../include/ofxParam.h \
 	../include/ofxImageEffect.h \
 	../include/ofxInteract.h \
 	../include/ofxCore.h \
-	../include/ofxKeySyms.h
+	../include/ofxKeySyms.h \
+	../include/ofxParametricParam.h
 
 # files generate from the C comments in the actual headers and used as reference
 PROPERY_SUITE_REFERENCE_FILES = \
@@ -26,12 +31,15 @@ PROPERY_SUITE_REFERENCE_FILES = \
 	ofxThreadingSuiteReference.xml \
 	ofxImageEffectSuiteReference.xml \
 	ofxProgressSuiteReference.xml \
-      ofxInteractSuiteReference.xml \
-	ofxTimeLineSuiteReference.xml 
+  ofxInteractSuiteReference.xml \
+	ofxTimeLineSuiteReference.xml \
+	ofxMessageSuiteV1Reference.xml \
+	ofxMessageSuiteV2Reference.xml \
+	ofxParametricParamReference.xml 
 
-all : chunks ofxProgrammingGuide.html ofxProgrammingReference.html 
+all : chunks ofxProgrammingGuide.html ofxProgrammingReference.html
 
-nochunks : ofxProgrammingGuide.html ofxProgrammingReference.html 
+nochunks : ofxProgrammingGuide.html ofxProgrammingReference.html
 
 chunks :
 	rm -f *.html
@@ -47,16 +55,21 @@ chunkreference : ofxProgrammingReference.html
 	mkdir -p Reference
 	mv *.html Reference
 
+docbook-xsl-snapshot :
+	curl $(STYLESHEETARCHIVE) > docbook-xsl-snapshot_download.bz2; \
+	tar xfj docbook-xsl-snapshot_download.bz2; \
+	rm -f docbook-xsl-snapshot_download.bz2;
 
 # Common srcs
 COMMON_SRCS = header.xml \
 	ofxPackaging.xml
 
 # programming guide, all in one
-GUIDE_SRCS = header.xml ofxProgrammingGuide.xml
-ofxProgrammingGuide.html : $(GUIDE_SRCS)
+GUIDE_SRCS = header.xml ofxProgrammingGuide.xml 
+
+ofxProgrammingGuide.html : $(GUIDE_SRCS) docbook-xsl-snapshot
 	cat  header.xml ofxProgrammingGuide.xml > tmp.xml
-	xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)$(STYLESHEET) tmp.xml
+	xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)/$(STYLESHEET) tmp.xml
 	rm -f tmp.xml
 
 # programming reference, all in one 
@@ -70,9 +83,9 @@ REF_SRCS = ofxProgrammingReference.xml \
 	clipPreferencesChapter.xml \
 	ofxParameterChapter.xml 
 
-ofxProgrammingReference.html : $(REF_SRCS) 
+ofxProgrammingReference.html : $(REF_SRCS) docbook-xsl-snapshot
 	cat  header.xml $(<:.html=.xml) > tmp.xml
-	xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)$(STYLESHEET) tmp.xml
+	xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)/$(STYLESHEET) tmp.xml
 	rm -f tmp.xml
 
 # generate property definitions from the property headers
@@ -114,5 +127,15 @@ ofxProgressSuiteReference.xml : ../include/ofxProgress.h
 ofxTimeLineSuiteReference.xml : ../include/ofxTimeLine.h
 	./getSuiteReference.perl OfxTimeLineSuiteV1 $^ > $@
 
+# Extract references on the progress suite
+ofxMessageSuiteV1Reference.xml : ../include/ofxMessage.h
+	./getSuiteReference.perl OfxMessageSuiteV1 $^ > $@
+
+ofxMessageSuiteV2Reference.xml : ../include/ofxMessage.h
+	./getSuiteReference.perl OfxMessageSuiteV2 $^ > $@
+
+ofxParametricParamReference.xml : ../include/ofxParametricParam.h
+	./getSuiteReference.perl OfxParametricParameterSuiteV1 $^ > $@
+
 clean :
-	rm -rf *.html props $(PROPERY_SUITE_REFERENCE_FILES) ofxPropertiesReference.xml Reference Guide
+	rm -rf *.html props $(PROPERY_SUITE_REFERENCE_FILES) ofxPropertiesReference.xml Reference Guide docbook-xsl-snapshot

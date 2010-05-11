@@ -73,7 +73,7 @@ The interact can be slaved to multiple parameters (setting index 0, then index 1
  */
 #define kOfxInteractPropSlaveToParam "OfxInteractPropSlaveToParam"
 
-/** @brief The size of a real screen pixel under the interact's cannonical projection.
+/** @brief The size of a real screen pixel under the interact's canonical projection.
 
    - Type - double X 2
    - Property Set - interact instance and actions (read only)
@@ -101,6 +101,21 @@ The components are in the order red, green then blue.
  */
 #define kOfxInteractPropBackgroundColour "OfxInteractPropBackgroundColour"
 
+/** @brief The suggested colour to draw a widget in an interact, typically for overlays.
+ 
+    - Type - double X 3
+    - Property Set - read only on the interact instance
+    - Default - 1.0
+    - Valid Values - greater than or equal to 0.0
+
+Some applications allow the user to specify colours of any overlay via a colour picker, this
+property represents the value of that colour. Plugins are at liberty to use this or not when
+they draw an overlay.
+
+If a host does not support such a colour, it should return kOfxStatReplyDefault
+*/
+#define kOfxInteractPropSuggestedColour "OfxInteractPropSuggestedColour"
+
 /** @brief The position of the pen in an interact.
 
    - Type - double X 2
@@ -109,6 +124,15 @@ The components are in the order red, green then blue.
 This value passes the postion of the pen into an interact. This is in the interact's canonical coordinates.
  */
 #define kOfxInteractPropPenPosition "OfxInteractPropPenPosition"
+
+/** @brief The position of the pen in an interact in viewport coordinates.
+
+   - Type - int X 2
+   - Property Set - read only in argument to the ::kOfxInteractActionPenMotion, ::kOfxInteractActionPenDown and ::kOfxInteractActionPenUp actions
+
+This value passes the postion of the pen into an interact. This is in the interact's openGL viewport coordinates, with 0,0 being at the bottom left.
+ */
+#define kOfxInteractPropPenViewportPosition "OfxInteractPropPenViewportPosition"
 
 /** @brief The pressure of the pen in an interact.
 

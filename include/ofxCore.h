@@ -61,7 +61,7 @@ typedef int OfxStatus;
 
 /** @brief Generic host structure passed to OfxPlugin::setHost function
 
-    This structure contains what is needed by a plug-in to bootstrap it's connection
+    This structure contains what is needed by a plug-in to bootstrap its connection
     to the host.
 */
 typedef struct OfxHost {
@@ -106,9 +106,9 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 /** @brief The structure that defines a plug-in to a host.
  *
  * This structure is the first element in any plug-in structure
- * using the OFX plug-in architecture. By examining it's members
+ * using the OFX plug-in architecture. By examining its members
  * a host can determine the API that the plug-in implements,
- * the version of that API, it's name and version.
+ * the version of that API, its name and version.
  *
  * For details see \ref Architecture.
  *
@@ -144,7 +144,7 @@ typedef struct OfxPlugin {
 
       Mandatory function. 
 
-      The very first function called in a plug-in. The plug-in \em must \em not call any OFX functions within this, it must only set it's local copy of the host pointer.
+      The very first function called in a plug-in. The plug-in \em must \em not call any OFX functions within this, it must only set its local copy of the host pointer.
 
       \pre
         - nothing else has been called
@@ -241,6 +241,18 @@ These properties are general properties and  apply to may objects across OFX
 */
 /*@{*/
 
+/** @brief Property on the host descriptor, saying what API version of the API is being implemented
+
+    - Type - int X N
+    - Property Set - host descriptor.
+
+This is a version string that will specify which version of the API is being implemented by a host. It
+can have multiple values. For example "1.0", "1.2.4" etc.....
+
+If this is not present, it is safe to assume that the version of the API is "1.0".
+*/
+#define kOfxPropAPIVersion "OfxPropAPIVersion"
+
 /** @brief General property used to get/set the time of something.
 
     - Type - double X 1
@@ -257,7 +269,7 @@ These properties are general properties and  apply to may objects across OFX
 
 If false the effect currently has no interface, however this may be because the effect is loaded in a background render host, or it may be loaded on an interactive host that has not yet opened an editor for the effect.
 
-The output of an effect should only ever depend on the state of it's parameters, not on the interactive flag. The interactive flag is more a courtesy flag to let a plugin know that it has an interace. If a plugin want's to have its behaviour dependant on the interactive flag, it can always make a secret parameter which shadows the state if the flag.
+The output of an effect should only ever depend on the state of its parameters, not on the interactive flag. The interactive flag is more a courtesy flag to let a plugin know that it has an interace. If a plugin want's to have its behaviour dependant on the interactive flag, it can always make a secret parameter which shadows the state if the flag.
 */
 #define kOfxPropIsInteractive "OfxPropIsInteractive"
 
@@ -274,7 +286,7 @@ eg:  '/usr/OFX/Plugins/AcmePlugins/AcmeFantasticPlugin.ofx.bundle'
 */
 #define kOfxPluginPropFilePath "OfxPluginPropFilePath"
 
-/** @brief  A private data pointer that the plug-in can store it's own data behind.
+/** @brief  A private data pointer that the plug-in can store its own data behind.
 
     - Type - pointer X 1
     - Property Set - plugin instance (read/write),
@@ -308,6 +320,42 @@ This property is used to label objects uniquely amoung objects of that type. It 
 */
 #define kOfxPropName "OfxPropName"
 
+/** @brief Identifies a specific version of a host or plugin.
+
+    - Type - int X N
+    - Property Set - host descriptor (read only), plugin descriptor (read/write)
+    - Default - "0"
+    - Valid Values - positive integers
+
+This is a multi dimensional integer property that represents the version of a host (host descriptor), or plugin (plugin descriptor). These represent a version number of the form '1.2.3.4', with each dimension adding another 'dot' on the right.
+
+A version is considered to be more recent than another if its ordered set of values is lexicographically greater than another, reading left to right. (ie: 1.2.4 is smaller than 1.2.6). Also, if the number of dimensions is different, then the values of the missing dimensions are considered to be zero (so 1.2.4 is greater than 1.2).
+*/
+#define kOfxPropVersion "OfxPropVersion"
+
+/** @brief Unique user readable version string of a plugin or host.
+
+    - Type - string X 1
+    - Property Set - host descriptor (read only), plugin descriptor (read/write)
+    - Default - none, the host needs to set this
+    - Valid Values - ASCII string
+
+This is purely for user feedback, a plugin or host should use ::kOfxPropVersion if they need
+to check for specific versions.
+*/
+#define kOfxPropVersionLabel "OfxPropVersionLabel"
+
+/** @brief Description of the plug-in to a user.
+
+    - Type - string X 1
+    - Property Set - plugin descriptor (read/write) and instance (read only)
+    - Default - ""
+    - Valid Values - UTF8 string
+
+This is a string giving a potentially verbose description of the effect.
+*/
+#define kOfxPropPluginDescription "OfxPropPluginDescription"
+
 /** @brief User visible name of an object.
 
     - Type - UTF8 C string X 1
@@ -320,6 +368,18 @@ Note that resetting this will also reset ::kOfxPropShortLabel and ::kOfxPropLong
 */
 #define kOfxPropLabel "OfxPropLabel"
 
+/** @brief If set this tells the host to use an icon instead of a label for some object in the interface.
+
+    - Type - string X 2
+    - Property Set - various descriptors in the API
+    - Default - ""
+    - Valid Values - ASCII string
+
+The value is a path is defined relative to the Resource folder that points to an SVG or PNG file containing the icon.
+
+The first dimension, if set, will the name of and SVG file, the second a PNG file.
+*/
+#define kOfxPropIcon "OfxPropIcon"
 
 /** @brief Short user visible name of an object.
 
@@ -363,6 +423,16 @@ This property is used to link an object to the effect. For example if the plug-i
 the interact instance will have one of these so that the plug-in can connect back to the effect the GUI links to.
 */
 #define kOfxPropEffectInstance "OfxPropEffectInstance"
+
+/** @brief A pointer to an operating system specific application handle.
+
+    - Type - pointer X 1
+    - Property Set - host descriptor.
+
+Some plug-in vendor want raw OS specific handles back from the host so they can do interesting things with host OS APIs. Typically this is to control windowing properly on Microsoft Windows. This property returns the appropriate 'root' window handle on the current operating system. So on Windows this would be the hWnd of the application main window.
+*/
+#define kOfxPropHostOSHandle "OfxPropHostOSHandle"
+
 /*@}*/
 
 /*@}*/
@@ -440,44 +510,6 @@ Infinite regions are flagged by setting
 typedef struct OfxRectD {
   double x1, y1, x2, y2;
 } OfxRectD;
-
-/** @brief Defines an 8 bit per component RGBA pixel */
-typedef struct OfxRGBAColourB {
-  unsigned char r, g, b, a;
-}OfxRGBAColourB;
-
-/** @brief Defines a 16 bit per component RGBA pixel */
-typedef struct OfxRGBAColourS {
-  unsigned short r, g, b, a;
-}OfxRGBAColourS;
-
-/** @brief Defines a floating point component RGBA pixel */
-typedef struct OfxRGBAColourF {
-  float r, g, b, a;
-}OfxRGBAColourF;
-
-
-/** @brief Defines a double precision floating point component RGBA pixel */
-typedef struct OfxRGBAColourD {
-  double r, g, b, a;
-}OfxRGBAColourD;
-
-
-/** @brief Defines an 8 bit per component YUVA pixel */
-typedef struct OfxYUVAColourB {
-  unsigned char y, u, v, a;
-}OfxYUVAColourB;
-
-/** @brief Defines an 16 bit per component YUVA pixel */
-typedef struct OfxYUVAColourS {
-  unsigned short y, u, v, a;
-}OfxYUVAColourS;
-
-/** @brief Defines an floating point component YUVA pixel */
-typedef struct OfxYUVAColourF {
-  float y, u, v, a;
-}OfxYUVAColourF;
-
 
 /** @brief String used to label unset bitdepths */
 #define kOfxBitDepthNone "OfxBitDepthNone"

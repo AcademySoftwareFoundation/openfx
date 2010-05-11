@@ -20,72 +20,72 @@ while ($line = <SRC>) {
 
     # strip comments
     while(@chars) {
-	$ch = shift(@chars);
+        $ch = shift(@chars);
 
-	# Handle comments
-	if($inComment) {
-	    if($ch eq "*") {
-		$ch1 = shift @chars;
-		if($ch1 eq "/") {
-		    $inComment = 0;
-		    $ch = "";
-		    $lastCode = "";
-		}
-		else {
-		    unshift @chars, $ch1;
-		}
-	    }
-	    else {
-		$lastComment .= $ch;
-	    }
-	}
-	else {
-	    if($ch eq "/") {
-		$ch1 = shift @chars;
-		if ($ch1 eq "*") {
-		    $inComment = 1;
-		    $lastComment = "";
-		}
-		else {
-		    unshift @chars, $ch1;
-		}
-	    }
-	}
+        # Handle comments
+        if($inComment) {
+            if($ch eq "*") {
+                $ch1 = shift @chars;
+                if($ch1 eq "/") {
+                    $inComment = 0;
+                    $ch = "";
+                    $lastCode = "";
+                }
+                else {
+                    unshift @chars, $ch1;
+                }
+            }
+            else {
+                $lastComment .= $ch;
+            }
+        }
+        else {
+            if($ch eq "/") {
+                $ch1 = shift @chars;
+                if ($ch1 eq "*") {
+                    $inComment = 1;
+                    $lastComment = "";
+                }
+                else {
+                    unshift @chars, $ch1;
+                }
+            }
+        }
 
-	# if not in a comment output it
-	if(!$inComment) {
-	    #at end of line
-	    if($ch eq "\n") {
-		if($inSuite) {
-		    if(not($outLine =~ /^\s*$/)) {
-			$suiteDefinition = $suiteDefinition . $outLine . "\n" ;
-		    }
-		}
+        # if not in a comment output it
+        if(!$inComment) {
+            #at end of line
+            if($ch eq "\n") {
+                if($inSuite) {
+                    if(not($outLine =~ /^\s*$/)) {
+                        $suiteDefinition = $suiteDefinition . $outLine . "\n" ;
+                    }
+                }
 
-		# look for our property definitions
-		if( $outLine =~ /^typedef struct $suiteName/) {
-		    #print "Suite comment is '$lastComment'\n";
-		    $inSuite = 1;
-		    $suiteDefinition = $outLine . "\n";
-		    $suiteComment = $lastComment;
-		}
-		elsif($inSuite and $outLine =~ /} $suiteName/) {
-		    #print "End of suite! it was \n$suiteDefinition '\n";
-		    $inSuite = 0;
-		    $suiteRef = WriteSuiteDefinition($suiteComment, $suiteDefinition);
-		}
-		elsif($outLine =~ /;/ and $inSuite) {
-		    #print "end of statement, it was \n$lastCode\n";
-		    $suiteFuncs .= WriteSuiteFunctionRef($lastComment, $lastCode);
-		}
+                # look for our property definitions
+                if( $outLine =~ /^typedef struct $suiteName/) {
+                    #print "Suite comment is '$lastComment'\n";
+                    $inSuite = 1;
+                    $suiteDefinition = $outLine . "\n";
+                    $suiteComment = $lastComment;
+                }
+                elsif($inSuite and $outLine =~ /} $suiteName/) {
+                    #print "End of suite! it was \n$suiteDefinition '\n";
+                    $inSuite = 0;
+                    $suiteRef = WriteSuiteDefinition($suiteComment, $suiteDefinition);
+                }
+                elsif($outLine =~ /;/ and $inSuite) {
+                    #print "end of statement, it was \n$lastCode\n";
+                    $suiteFuncs .= WriteSuiteFunctionRef($lastComment, $lastCode);
+                }
 
-		$outLine = "";
-	    }
-	    else {
-		$lastCode .= $ch;
-		$outLine .= $ch;
-	    }
-	}
+                $outLine = "";
+            }
+            else {
+                $lastCode .= $ch;
+                $outLine .= $ch;
+            }
+        }
 
     }
 }
@@ -105,12 +105,12 @@ sub getBriefDescription
 
     my @commentLines = split(/\n/, $comment);
     while(@commentLines) {
-	my $line = shift @commentLines;
+        my $line = shift @commentLines;
 
-	if($line =~ /\@brief(.*)/) {
-	    $briefDescription = stripSurroundingWhite($1); #formatIt($1);
-	    last;
-	}
+        if($line =~ /\@brief(.*)/) {
+            $briefDescription = stripSurroundingWhite($1); #formatIt($1);
+            last;
+        }
     }
     return formatIt($briefDescription);
 }
@@ -123,32 +123,33 @@ sub getDescription
 
     my @commentLines = split(/\n/, $comment);
     while(@commentLines) {
-	my $line = shift @commentLines;
+        my $line = shift @commentLines;
 
-	if($line =~ /\@brief(.*)/) {
-	}
-	# ignore arg and return lines
-	elsif($line =~ /^\s*\\arg/ or $line =~ /\@returns/) {
-	    # eat up until blank 
-	    while(@commentLines) {
-		$line = shift @commentLines;
-		if($line =~ /^\s*$/) {
-		    unshift @commentLines, $line;
-		    last;
-		}
-	    }
-	}
-	else {
-	    $description .= $line . "\n";
-	}
+        if($line =~ /\@brief(.*)/) {
+        }
+        # ignore arg and return lines
+        elsif($line =~ /^\s*\\arg/ or $line =~ /\@returns/) {
+            # eat up until blank 
+            while(@commentLines) {
+                $line = shift @commentLines;
+                if($line =~ /^\s*$/) {
+                    unshift @commentLines, $line;
+                    last;
+                }
+            }
+        }
+        else {
+            $description .= $line . "\n";    
+        }
     }
+
     $description = stripSurroundingWhite($description);
 
     if($description eq "") {
-	return "";
+        return "";
     }
     else {
-	return formatParagraph($description, 1);
+        return formatParagraph($description, 1);
     }
 }
 
@@ -192,7 +193,7 @@ sub WriteSuiteFunctionRef
 {
     my $comment = $_[0];
     my $code = $_[1];
-    
+
     # find the function name
     $funcName = $code;
     $funcName =~ s/.*\(\*//; 
@@ -202,28 +203,28 @@ sub WriteSuiteFunctionRef
     my @argNames;
     # define a class func name
     $decoratedFuncName = "$suiteName" . "::" . "$funcName";
-    
+
     # get the parameters out of it
     $code =~ /\(.*\)\s*\((.*)\)/;
     $paramsString = $1;
     @params = split( /,/, $paramsString);
     while(@params) {
-	my $p = stripSurroundingWhite(shift @params);
-	$arg = {};
-	if($p =~ /\.\.\./) {
-	    $args->{$2}->{type} = "";
-	    push @argNames, "...";
-	}
-	elsif($p =~ /\*/) {
-	    $p =~ /(.*\*)(.*)/;
-	    $args->{$2}->{type} = $1;
-	    push @argNames, $2;
-	}
-	else {
-	    $p =~ /(.*) (.*)/ ;
-	    $args->{$2}->{type} = $1;
-	    push @argNames, $2;
-	}
+        my $p = stripSurroundingWhite(shift @params);
+        $arg = {};
+        if($p =~ /\.\.\./) {
+            $args->{$2}->{type} = "";
+            push @argNames, "...";
+        }
+        elsif($p =~ /\*/) {
+            $p =~ /(.*\*)(.*)/;
+            $args->{$2}->{type} = $1;
+            push @argNames, $2;
+        }
+        else {
+            $p =~ /(.*) (.*)/ ;
+            $args->{$2}->{type} = $1;
+            push @argNames, $2;
+        }
     }
 
     # find return type
@@ -239,51 +240,51 @@ sub WriteSuiteFunctionRef
     # extract argument comments from the code
     my @commentLines = split(/\n/, $comment);
     while(@commentLines) {
-	my $line = shift @commentLines;
+        my $line = shift @commentLines;
 
-	if($line =~ /\s*\\arg/) {
-	    $line =~ s/\\arg//;
-	    $line = stripSurroundingWhite($line);
-	    my $argName;
-	    my $desc;
-	    if($line =~ /^\.\.\./) {
-		$line =~ /^\.\.\.(.*)/;
-		$argName = "...";
-		$desc = stripSurroundingWhite($1);
-	    }
-	    else {
-		$line =~ /^(\w*)(.*)/;
-		$argName = $1;
-		$desc = stripSurroundingWhite($2);
-	    }
-	    # remove any leading dashes..
-	    $desc =~ s/^-//;
+        if($line =~ /\s*\\arg/) {
+            $line =~ s/\\arg//;
+            $line = stripSurroundingWhite($line);
+            my $argName;
+            my $desc;
+            if($line =~ /^\.\.\./) {
+                $line =~ /^\.\.\.(.*)/;
+                $argName = "...";
+                $desc = stripSurroundingWhite($1);
+            }
+            else {
+                $line =~ /^(\w*)(.*)/;
+                $argName = $1;
+                $desc = stripSurroundingWhite($2);
+            }
+            # remove any leading dashes..
+            $desc =~ s/^-//;
 
-	    $args->{$argName}->{desc} = $desc;
+            $args->{$argName}->{desc} = $desc;
 
-	    # all you lines are belong to us, until we get to another \arg or a blank
-	    while(@commentLines) {
-		$line = shift @commentLines;
-		if($line =~ /\\arg/ or $line =~ /^\s*$/) {
-		    unshift @commentLines, $line;
-		    last;
-		}
-		$args->{$argName}->{desc} .= "\n" . $line;
-	    }
-	}
-	elsif($line =~ /\@returns/) {
-	    $returnValues = "";
+            # all you lines are belong to us, until we get to another \arg or a blank
+            while(@commentLines) {
+                $line = shift @commentLines;
+                if($line =~ /\\arg/ or $line =~ /^\s*$/) {
+                    unshift @commentLines, $line;
+                    last;
+                }
+                $args->{$argName}->{desc} .= "\n" . $line;
+            }
+        }
+        elsif($line =~ /\@returns/) {
+            $returnValues = "";
 
-	    # all you lines are belong to us, until we get to another \arg or a blank
-	    while(@commentLines) {
-		$line = shift @commentLines;
-		if($line =~ /^\s*$/) {
-		    unshift @commentLines, $line;
-		    last;
-		}
-		$returnValues .= "\n" . $line;
-	    }
-	}
+            # all you lines are belong to us, until we get to another \arg or a blank
+            while(@commentLines) {
+                $line = shift @commentLines;
+                if($line =~ /^\s*$/) {
+                    unshift @commentLines, $line;
+                    last;
+                }
+                $returnValues .= "\n" . $line;
+            }
+        }
     }
 
     my $value = "
@@ -303,11 +304,11 @@ sub WriteSuiteFunctionRef
 ";
     # do the args
     for my $arg (@argNames) {
-	$value .= "              <paramdef>$args->{$arg}->{type}<parameter>$arg</parameter></paramdef>\n"
+        $value .= "              <paramdef>$args->{$arg}->{type}<parameter>$arg</parameter></paramdef>\n"
     }
-    
+
     $value .= 
-"        </funcprototype>
+        "        </funcprototype>
     </funcsynopsis>
   </refsynopsisdiv>
   <refsect2>
@@ -316,16 +317,16 @@ sub WriteSuiteFunctionRef
 ";
     # do the args
     foreach my $arg (@argNames) {
-	my $desc = formatParagraph($args->{$arg}->{desc}, 0);
-	$value .= "
+        my $desc = formatParagraph($args->{$arg}->{desc}, 0);
+        $value .= "
 <listitem>$arg - $desc</listitem>";
     }
-$value .= "
+    $value .= "
     </itemizedlist>
   </refsect2>";
 
     if($description ne "") {
-	$value .= "
+        $value .= "
   <refsect2>
     <title>Description</title>
       $description
@@ -334,14 +335,14 @@ $value .= "
     }
 
     if($returnValues ne "") {
-	$returnValues = formatParagraph($returnValues, 1);
-	$value .= "
+        $returnValues = formatParagraph($returnValues, 1);
+        $value .= "
   <refsect2>
     <title>Returns</title>
       $returnValues
   </refsect2>";
     }
-$value .= "
+    $value .= "
 </refentry>
 ";
     return $value;

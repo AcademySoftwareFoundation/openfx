@@ -102,7 +102,7 @@
     </para>
     
     <para>
-      For more details on on how to describe an OFX Image Effect, see the chapter <link linkend="describingImageEffects">Describing Image Effects</link>. Most importantly, the effect must set what image effect contexts it is capable of working in.
+      Most importantly, the effect must set what image effect contexts it is capable of working in.
     </para>
     
     <para>
@@ -552,11 +552,7 @@
     <para>
       This action will be called multiple times, one for each of the contexts the plugin says it is capable of implementing. If a host does not support a certain context, then it need not call <code>kOfxImageEffectActionDescribeInContext</code> for that context.
     </para>
-    
-    <para>
-      For more details on on how to describe an OFX Image Effect, see the chapter <link linkend="describingImageEffects">Describing Image Effects</link>.
-    </para>
-    
+        
     <para>
       This action <emphasis>must</emphasis> be trapped, it is not optional.
     </para>
@@ -805,6 +801,8 @@
 	    <listitem><link linkend="kOfxImageEffectPropFieldToRender"><code>kOfxImageEffectPropFieldToRender</code></link> - the field to test for identity</listitem>
 	    <listitem><link linkend="kOfxImageEffectPropRenderWindow"><code>kOfxImageEffectPropRenderWindow</code></link> - the window (in \ref PixelCoordinates) to test for identity under</listitem>
 	    <listitem><link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link> - the scale factor being applied to the images being renderred</listitem>
+	    <listitem><link linkend="kOfxImageEffectPropSequentialRenderStatus"><code>kOfxImageEffectPropSequentialRenderStatus</code></link> - whether the effect is currently being rendered in strict frame order on a single instance</listitem>
+	    <listitem><link linkend="kOfxImageEffectPropInteractiveRenderStatus"><code>kOfxImageEffectPropInteractiveRenderStatus</code></link> - if the render is in response to a user modifying the effect in an interactive session</listitem>
 	  </itemizedlist>
 	</listitem>
 	<listitem><code>outArgs</code> is redundant and should be set to NULL.</listitem>
@@ -864,6 +862,8 @@
 	    <listitem><link linkend="kOfxImageEffectPropFrameStep"><code>kOfxImageEffectPropFrameStep</code></link>  - what is the step between frames, generally set to 1 (for full frame renders) or 0.5 (for fielded renders),</listitem>
 	    <listitem><link linkend="kOfxPropIsInteractive"><code>kOfxPropIsInteractive</code></link>  - is this a single frame render due to user interaction in a GUI, or a proper full sequence render.</listitem>
 	    <listitem><link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link>   - the scale factor to apply to images for this call</listitem>
+	    <listitem><link linkend="kOfxImageEffectPropSequentialRenderStatus"><code>kOfxImageEffectPropSequentialRenderStatus</code></link> - whether the effect is currently being rendered in strict frame order on a single instance</listitem>
+	    <listitem><link linkend="kOfxImageEffectPropInteractiveRenderStatus"><code>kOfxImageEffectPropInteractiveRenderStatus</code></link> - if the render is in response to a user modifying the effect in an interactive session</listitem>
 	  </itemizedlist>
 	</listitem>
 	<listitem><code>outArgs</code> is redundant and is set to NULL.</listitem>
@@ -918,6 +918,8 @@
 	    <listitem><link linkend="kOfxImageEffectPropFrameStep"><code>kOfxImageEffectPropFrameStep</code></link>  - what is the step between frames, generally set to 1 (for full frame renders) or 0.5 (for fielded renders),</listitem>
 	    <listitem><link linkend="kOfxPropIsInteractive"><code>kOfxPropIsInteractive</code></link>  - is this a single frame render due to user interaction in a GUI, or a proper full sequence render.</listitem>
 	    <listitem><link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link>   - the scale factor to apply to images for this call</listitem>
+	    <listitem><link linkend="kOfxImageEffectPropSequentialRenderStatus"><code>kOfxImageEffectPropSequentialRenderStatus</code></link> - whether the effect is currently being rendered in strict frame order on a single instance</listitem>
+	    <listitem><link linkend="kOfxImageEffectPropInteractiveRenderStatus"><code>kOfxImageEffectPropInteractiveRenderStatus</code></link> - if the render is in response to a user modifying the effect in an interactive session</listitem>
 	  </itemizedlist>
 	</listitem>
 	<listitem><code>outArgs</code> is redundant and is set to NULL.</listitem>

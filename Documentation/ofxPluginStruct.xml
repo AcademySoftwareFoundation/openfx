@@ -19,7 +19,7 @@ typedef struct OfxPlugin {
             <term><structfield>pluginApi</structfield></term>
 
             <listitem>
-              <para>This cstring tells the host what API the plug-in
+              <para>This C string tells the host what API the plug-in
               implements.</para>
             </listitem>
           </varlistentry>
@@ -95,14 +95,14 @@ typedef struct OfxPlugin {
         of plug-in, the host then knows what suites and host handles are
         required for that plug-in and what functions the plug-in itself will
         have. The host passes a <structname>OfxHost</structname> structure
-        appropriate to that plug-in via it's <function>setHost</function>
+        appropriate to that plug-in via its <function>setHost</function>
         function. This allows for the same basic architecture to support
         different plug-in types trivially.</para>
 
         <para>OFX explicitly versions plug-in APIs. By examining the
         <structfield>apiVersion</structfield>, the host knows exactly what set
         of functions the plug-in is going to supply and what version of what
-        suites it will need to provide. This also allows plug ins to implement
+        suites it will need to provide. This also allows plug-ins to implement
         several versions of themselves in the same binary, so it can take
         advantages of new features in a V2 API, but present a V1 plug-in to
         older hosts that only support V1.</para>
@@ -124,7 +124,7 @@ typedef struct OfxPlugin {
         struct. They serve two separate functions and are, <itemizedlist>
             <listitem>
               <structfield>pluginVersionMajor</structfield>
-               flags the functionality contained within a plug-in, incrementing this number means that you have broken backwards compatibility of the plug-in. More specifically, this means a setup from an earlier version, when loaded into this version, will not yield the same result. 
+               flags the functionality contained within a plug-in. Incrementing this number means that you have broken backwards compatibility of the plug-in. More specifically, this means a setup from an earlier version, when loaded into this version, will not yield the same result. 
             </listitem>
 
             <listitem>
@@ -144,11 +144,11 @@ typedef struct OfxPlugin {
             </listitem>
           </itemizedlist></para>
 
-        <para>A more concrete example of versioning, the plug-in identified by
-        "org.wibble:Fred" is initially released as 1.0, however a few months
-        later, wibble.org figured out how to make it faster and release it as
+        <para>As a more concrete example of versioning: the plug-in identified by
+        "org.wibble:Fred" is initially released as 1.0, However a few months
+        later, wibble.org figure out how to make it faster and release it as
         1.1. A year later, Fred can now do automatically what a user once
-        needed to set five parameters up to do, thus making it much simpler to
+        needed to set up five parameters to do, thus making it much simpler to
         use. However this breaks backwards compatibility as the effect can no
         longer produce the same output as before, so wibble.org then release
         this as v2.0.</para>
@@ -157,7 +157,7 @@ typedef struct OfxPlugin {
         on it, v1.0, v1.1 and v2.0. When creating a new instance of the
         plug-in, the host should always use v2.0. When loading an old project
         which has a setup from a v1.x plug-in, it should always use the
-        latest, in this case being v1.1</para>
+        latest, in this case being v1.1.</para>
 
         <para>Note that plug-ins can change the set of parameters between
         minor version releases. If a plug-in does so, it should do so in a

@@ -301,7 +301,7 @@ typedef struct OfxPropertySuiteV1 {
   */
   OfxStatus (*propGetIntN)    (OfxPropertySetHandle properties, const char *property, int count, int *value);
 
-  /** @brief Resets all dimensions of a property to it's default value
+  /** @brief Resets all dimensions of a property to its default value
 
       \arg properties is the handle of the thing holding the property
       \arg property is the string labelling the property we are resetting

@@ -12,7 +12,7 @@
     </para>
     <para>
       The OFX Parameters Suite is the means by which  parameters are defined and used by the 
-      plug-in but maintained the host. It is defined in the ofxParam.h header file.
+      plug-in but maintained by the host. It is defined in the ofxParam.h header file.
     </para>
     <para>
       Note that the entire state of the plugin is encoded in the value of its parameter set. If you need to persist some sort of private data,
@@ -25,25 +25,25 @@
   <section id="ParametersDefining">
     <title>Defining Parameters</title>
     <para>
-      A plugin needs to define it's parameters during it's 'describe' call. It does this with the <link linkend='OfxParameterSuiteV1_paramDefine'><code>OfxParameterSuiteV1::paramDefine</code></link> function, which returns a handle to a parameter <emphasis>description</emphasis>. Parameters cannot be defined outside of the plugins 'describe' actions.
+      A plugin needs to define it's parameters during a describe action. It does this with the <link linkend='OfxParameterSuiteV1_paramDefine'><code>OfxParameterSuiteV1::paramDefine</code></link> function, which returns a handle to a parameter <emphasis>description</emphasis>. Parameters cannot currently be defined outside of the plugins describe actions.
     </para>
     <para>
       Parameters are uniquely labelled within a plugin with an ASCII null terminated C-string. This name is not necassarily meant to be end-user readable, various properties are provided to set the user visible labels on the param.
     </para>
     <para>
-      All parameters hold properties, though the exact set of properties on a parameter is dependant on the type of the parameter. For more information on properties see \ref PropertiesPage.
+      All parameters hold properties, though the exact set of properties on a parameter is dependant on the type of the parameter. 
     </para>
     <para>
       A parameter's handle comes in two slightly different flavours. The handle returned inside a plugin's describe action is not an actual instance of a parameter, it is there for the purpose description only. You can only set properties on that handle (eg: label, min/max value, default ...), you cannot get values from it or set values in it. The parameters defined in the describe action will common to all instances of a plugin.
     </para>
     <para>
-      The handle returned by <link linkend='OfxParameterSuiteV1_paramGetHandle'><code>OfxParameterSuiteV1::paramGetHandle</code></link> or by paramDefine outside of a describe action will be a working instance of a parameter, you can still set (some) properties of the parameter, but all the get/set value functions are now useable.
+      The handle returned by <link linkend='OfxParameterSuiteV1_paramGetHandle'><code>OfxParameterSuiteV1::paramGetHandle</code></link> outside of a describe action will be a working instance of a parameter, you can still set (some) properties of the parameter, and all the get/set value functions are now useable.
     </para>
   </section>
   
   <section id="ParametersTypes"><title>Parameter Types</title>
     <para>
-      There are sixteen types of parameter. These are 
+      There are seventeen types of parameter. These are 
       <itemizedlist>
 	<listitem>integers, 1, 2 and 3 dimensional</listitem>
 	<listitem>doubles, 1, 2 and 3 dimensional</listitem>
@@ -55,6 +55,7 @@
 	<listitem>push button</listitem>
 	<listitem>group</listitem>
 	<listitem>page</listitem>
+	<listitem>parametric</listitem>
       </itemizedlist>
     </para>
     
@@ -69,6 +70,7 @@
 	  <listitem><code>kOfxParamTypeInteger3D</code>   - int X 3</listitem>
 	  <listitem><code>kOfxParamTypeRGB</code>         - double X 3</listitem>
 	  <listitem><code>kOfxParamTypeRGBA</code>        - double X 4</listitem>
+	  <listitem><code>kOfxParamTypeParametric</code>  - variable dimension</listitem>
 	</itemizedlist>
       </para>
       <para>
@@ -185,7 +187,7 @@ gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, n, "nth Choic
       </para>
       
       <para>
-	Page parameters are coverred in \ref ParametersInterfacesPagedLayouts.
+  Page parameters are covered in detail in their own <link linkend="ParametersInterfacesPagedLayouts">section.</link>.
       </para>
     </section>
     
@@ -341,7 +343,7 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
       &note;
       <para>
 	<itemizedlist>
-	  <listitem>parameters <emphasis>can</emphasis> placed on more than a single page (this is often useful),</listitem>
+	  <listitem>parameters <emphasis>can</emphasis> be placed on more than a single page (this is often useful),</listitem>
 	  <listitem>group parameters cannot be added to a page,</listitem>
 	  <listitem>page parameters cannot be added to a page or group.</listitem>
 	</itemizedlist>
@@ -372,7 +374,7 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
   </section>
   <section id='ParametersXML'><title>XML Resource Specification for Parameters</title>
     <para>
-      Parameters can have various properties overriden via a seperate XML based resource file. For more information see \ref ExternalResourcesPage.
+      Parameters can have various properties overriden via a seperate XML based resource file. 
     </para>
   </section>
   
@@ -431,6 +433,12 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
 	<listitem><code>kOfxParamDoubleTypeScale</code> - parameter is to be interpretted as a scale factor,</listitem>
 	<listitem><code>kOfxParamDoubleTypeTime</code>  - parameter represents a time value (1D only),</listitem>
 	<listitem><code>kOfxParamDoubleTypeAbsoluteTime</code>  - parameter represents an absolute time value (1D only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeX</code> - size in the X dimension, in canonical coords (1D double only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeXAbsolute</code> - positing in the X axis, in canonical coords (1D double only)</listitem>
+	<listitem><code>kOfxParamDoubleTypeY</code> - size in the Y dimension, in canonical coords (1D double only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeYAbsolute</code> - positing in the Y axis, in canonical coords (1D double only)</listitem>
+	<listitem><code>kOfxParamDoubleTypeXY</code> - 2D size, in canonical coords (2D double only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeXYAbsolute</code> - 2D position, in canonical coords. (2D double only)</listitem>
 	<listitem><code>kOfxParamDoubleTypeNormalisedX</code> - normalised size with respect to the project's X dimension (1D only),</listitem>
 	<listitem><code>kOfxParamDoubleTypeNormalisedXAbsolute</code> - normalised absolute position on the X axis (1D only)</listitem>
 	<listitem><code>kOfxParamDoubleTypeNormalisedY</code> - normalised size wrt to the project's Y dimension(1D only),</listitem>
@@ -439,7 +447,6 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
 	<listitem><code>kOfxParamDoubleTypeNormalisedXYAbsolute</code> - normalised to the projects X and Y size, and is an absolute position on the image plane.</listitem>
       </itemizedlist>
     </para>
-  </section>
   
   <section id='kOfxParamDoubleTypePlain'><title>Plain Double Parameters </title>
     
@@ -490,10 +497,45 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
     </para>
   </section>
   
-  <section id='ParameterPropertiesDoubleTypesNormalised'><title>Normalised Double Parameters</title>
+  <section id='ParameterPropertiesDoubleTypesSpatial'><title>Spatial Parameters</title>
+    <para> Parameters that can represent a size or position are essential. To that end there are several values of the <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> that say it should be interpretted as a size or position, in either one or two dimensions.</para>
+
+    <para>The original OFX API only specifed <link linkend='ParameterPropertiesDoubleTypesNormalised'>normalised</link> parameters, this proved to be somewhat more of a problem than expected. With the 1.2 version of the API, <link linkend='ParameterPropertiesDoubleTypesStrictlySpatial'>spatial</link> parameters were introduced. Ideally these should be used and the normalised parameter types should be deprecated.</para>
+
+  <para>Plugins can check <link linkend="kOfxPropAPIVersion">kOfxPropAPIVersion</link> to see if these new parameter types are supported, in hosts with version 1.2 or greater they will be.</para>
+    <para>
+      See the section on <link linkend="CoordinateSystems">coordinate systems</link> to understand some of the terms being discussed.
+    </para>
+
+    <section id='ParameterPropertiesDoubleTypesStrictlySpatial'><title>Spatial Double Parameters</title>
     
     <para>
-      There are several values of the <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> that allow a double parameters (1, 2 and 3 dimensional) to be made proportional to the current project's size. This will allow the parameter to scale cleanly with project size changes and to be represented to the user in an appropriate range.
+      These parameter types represent a size or position in one or two dimensions in <link linkend="CanonicalCoordinates">Canonical Coordinate</link>. The host 
+      and plug-in get and set values in this coordinate system. Scaling to  <link linkend='PixelCoordinates'>Pixel Coordinate</link> is the reponsibility of the effect.
+    </para>
+
+    <para>
+      The default value of a spatial parameter can be set in either a normalised coordinate system or the canonical coordinate system. This is controlled by the <link linkend="kOfxParamPropDefaultCoordinateSystem">kOfxParamPropDefaultCoordinateSystem</link> on the parameter descriptor.
+    </para>
+    
+    <para>
+      Parameters can choose to be spatial in several ways...
+      <itemizedlist>
+	<listitem><code>kOfxParamDoubleTypeX</code> - size in the X dimension, in canonical coords (1D double only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeXAbsolute</code> - positing in the X axis, in canonical coords (1D double only)</listitem>
+	<listitem><code>kOfxParamDoubleTypeY</code> - size in the Y dimension, in canonical coords (1D double only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeYAbsolute</code> - positing in the Y axis, in canonical coords (1D double only)</listitem>
+	<listitem><code>kOfxParamDoubleTypeXY</code> - 2D size, in canonical coords (2D double only),</listitem>
+	<listitem><code>kOfxParamDoubleTypeXYAbsolute</code> - 2D position, in canonical coords. (2D double only).</listitem>
+      </itemizedlist>
+    </para>
+  </section>
+
+  <section id='ParameterPropertiesDoubleTypesNormalised'><title>Spatial Normalised Double Parameters</title>
+    <para>Ideally, normalised parameters should be deprecated and no longer used if <link linkend="ParameterPropertiesDoubleTypesSpatial">spatial</link> parameters are available.</para>
+
+    <para>
+      There are several values of the <link linkend='kOfxParamPropDoubleType'><code>kOfxParamPropDoubleType</code></link> that say it should be interpretted as a size or position. These are expressed  and proportional to the current project's size. This will allow the parameter to scale cleanly with project size changes and to be represented to the user in an appropriate range.
     </para>
     <para>
       For example, the sensible X range of a visual effect plugin is the project's width, say 768 pixels
@@ -516,8 +558,10 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
       </itemizedlist>
     </para>
     <para>
-      See \ref ImageEffectsCoordinates from more on coordinate systems and how to scale parameters.
+      See the section on <link linkend="CoordinateSystems">coordinate systems</link> on how to scale between normalised, cannonical and pixel coordinates.
     </para>
+  </section>
+  
   </section>
   
   <section id='ParameterPropertiesDoubleTypesDefaultsAndAll'><title>Double Parameters Defaults, Increments, Mins and Maxs</title>
@@ -530,6 +574,170 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
       Normalised parameters specify thier increments in cannonical coordinates, rather than in normalised coordinates. So an increment of '1' means 1 pixel, not '1 project width', otherwise sliders would be a bit wild.
     </para>
   </section>
+  </section>
+
+  <section id="ParametersParametric">
+    <title>Parametric Parameters</title>
+  <section id="ParametersParametricIntro">
+    <title>Introduction</title>
+    <para>Parametric params are new for 1.2 and are optinally supported by host applications. They are specified via the
+          <code>kOfxParamTypeParametric</code> identifier passed into 
+          <link linkend='OfxParameterSuiteV1_paramDefine'><code>OfxParameterSuiteV1::paramDefine</code></link>.
+    </para>
+    <para>
+       These parameters are somewhat more complex than normal parameters and require their own set of functions to manage and manipulate them. 
+       The new <link linkend="OfxParametricParameterSuiteV1">OfxParametricParameterSuiteV1</link> is there to do that.</para>
+    <para>
+       All the defines and suite definitions for parameteric parameters are defined in the file <code>ofxParametricParam.h</code></para>
+    <para> 
+       Parametric parameters are in effect 'functions' a plug-in can ask a host to arbitrarily evaluate for some value 'x'. A classic use
+       case would be for constructing look-up tables, a plug-in would ask the host to evaluate one at multiple values from 0 to 1 and use that to fill an array.
+    </para>
+    <para>
+       A host would probably represent this to a user as a cubic curve in a standard curve editor interface, or possibly through scripting. 
+       The user would then use this to define the 'shape' of the parameter.
+    </para>
+    <para>
+      The evaluation of such params is not the same as animation, they are returning values based on some arbitrary argument 
+      orthogonal to time, so to evaluate such a param, you need to pass a parametric position and time.
+    </para>
+    <para>
+      Often, you would want such a parametric parameter to be multi-dimensional, for example, a colour look-up table might want 
+      three values, one for red, green and blue. Rather than declare three separate parametric parameters, so a parametric parameter can be multi-dimensional.
+    </para>
+    <para>
+       Due to the nature of the underlying data, you <emphasis>cannot</emphasis> call certain functions in the ordinary parameter suite when manipulating a parametric parameter. 
+       All functions in the standard parameter suite are valid when called on a parametric parameter, with the exception of the following....
+      <itemizedlist>
+	      <listitem><link linkEnd="OfxParameterSuiteV1_paramGetValue">OfxParameterSuiteV1::paramGetValue</link></listitem>
+	      <listitem><link linkEnd="OfxParameterSuiteV1_paramGetValueAtTime">OfxParameterSuiteV1::paramGetValueAtTime</link></listitem>
+	      <listitem><link linkEnd="OfxParameterSuiteV1_paramGetDerivative">OfxParameterSuiteV1::paramGetDerivative</link></listitem>
+	      <listitem><link linkEnd="OfxParameterSuiteV1_paramGetIntegral">OfxParameterSuiteV1::paramGetIntegral</link></listitem>
+	      <listitem><link linkEnd="OfxParameterSuiteV1_paramSetValue">OfxParameterSuiteV1::paramSetValue</link></listitem>
+	      <listitem><link linkEnd="OfxParameterSuiteV1_paramSetValueAtTime">OfxParameterSuiteV1::paramSetValueAtTime</link></listitem>
+      </itemizedlist>        
+    </para>
+  </section>
+  <section>
+    <title>Defining Parametric Parameters</title>
+    Parametric parameters are defined using the standard parameter suite function 
+   <link linkend='OfxParameterSuiteV1_paramDefine'><code>OfxParameterSuiteV1::paramDefine</code></link>. 
+   The descriptor returned by this call have several non standard parameter properties available. These are
+      <itemizedlist>
+	      <listitem><link linkEnd="kOfxParamPropParametricDimension">kOfxParamPropParametricDimension</link> - the dimension of the parametric parameter,</listitem>
+	      <listitem><link linkEnd="kOfxParamPropParametricUIColour">kOfxParamPropParametricUIColour</link> - the colour of the curves of a parametric parameter in any user interface</listitem>
+	      <listitem><link linkEnd="kOfxParamPropParametricInteractBackground">kOfxParamPropParametricInteractBackground</link> - a pointer to an interact entry point, which will be used to draw a background under any user interface,</listitem>
+	      <listitem><link linkEnd="kOfxParamPropParametricRange">kOfxParamPropParametricRange</link> - the min and max value that the parameter will be evaluated over.</listitem>
+      </itemizedlist>
+  </section>
+
+  <section>
+    <title>Animating Parametric Parameters</title>
+    Animation is an optional host feature for parametric parameters. Hosts flag whether they support this feature by setting the host descriptor property <link linkEnd="kOfxParamHostPropSupportsParametricAnimation">kOfxParamHostPropSupportsParametricAnimation</link>. 
+  </section>
+
+  <section>
+    <title>Getting and Setting Values on a Parametric Parameters</title>
+    <para>
+      Seeing as we need to pass in the parametric position and dimenstion to evaluate, parametric parameters need a new evaluation mechanism.
+      They do this with the <link linkEnd="OfxParametricParameterSuiteV1_parametricParamGetValue">OfxParametricParameterSuiteV1::parametricParamGetValue</link>
+      function. This function returns the value of the parameter at the given time, for the given dimension, adt the given parametric position,.</para>
+    <para>
+      Parametric parameters are effectively interfaces to some sort of host based curve library. To get/set/delete points in the curve that
+      represents a parameter, the new suite has several functions available to manipulate control points of the underlying curve.
+    </para>
+    <para>
+      To set the default value of a parametric parameter to anything but the identity, you use the control point setting functions in the new suite to 
+      set up a curve on the <emphasis>descriptor</emphasis> returned by <link linkend='OfxParameterSuiteV1_paramDefine'><code>OfxParameterSuiteV1::paramDefine</code></link>.
+      Any instances later created, will have that curve as a default.
+    </para>
+  </section>
+
+  <section>
+    <title>Example</title>
+    <para>This simple example defines a colour lookup table, defines a default, and show how to evaluate the curve</para>
+<blockquote><programlisting>// describe our parameter in 
+static OfxStatus
+describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
+{
+  ....
+  // define it
+  OfxPropertySetHandle props;
+  gParamHost->paramDefine(paramSet, kOfxParamTypeParametric, "lookupTable", &amp; props);
+
+  // set standard names and labeles
+  gPropHost->propSetString(props, kOfxParamPropHint, 0, "Colour lookup table");
+  gPropHost->propSetString(props, kOfxParamPropScriptName, 0, "lookupTable");
+  gPropHost->propSetString(props, kOfxPropLabel, 0, "Lookup Table");
+
+  // define it as three dimensional
+  gPropHost->propSetInt(props, kOfxParamPropParametricDimension, 0, 3);
+
+  // label our dimensions are r/g/b
+  gPropHost->propSetString(props, kOfxParamPropDimensionLabel, 0, "red");
+  gPropHost->propSetString(props, kOfxParamPropDimensionLabel, 1, "green");
+  gPropHost->propSetString(props, kOfxParamPropDimensionLabel, 2, "blue");
+
+  // set the UI colour for each dimension
+  for(int component = 0; component &lt; 3; ++component) {
+     gPropHost->propSetDouble(props, kOfxParamPropParametricUIColour, component * 3 + 0, component % 3 == 0 ? 1 : 0);
+     gPropHost->propSetDouble(props, kOfxParamPropParametricUIColour, component * 3 + 1, component % 3 == 1 ? 1 : 0);
+     gPropHost->propSetDouble(props, kOfxParamPropParametricUIColour, component * 3 + 2, component % 3 == 2 ? 1 : 0);
+  }
+
+  // set the min/max parametric range to 0..1
+  gPropHost->propSetDouble(props, kOfxParamPropParametricRange, 0, 0.0);
+  gPropHost->propSetDouble(props, kOfxParamPropParametricRange, 1, 1.0);
+ 
+  // set a default curve, this example sets an invert 
+  OfxParamHandle descriptor;
+  gParamHost->paramGetHandle(paramSet, "lookupTable", &amp;descriptor, NULL);
+  for(int component = 0; component &lt; 3; ++component) {
+    // add a control point at 0, value is 1
+    gParametricParamHost->parametricParamAddControlPoint(descriptor,
+                                                          component, // curve to set 
+                                                          0.0,   // time, ignored in this case, as we are not adding a ket
+                                                          0.0,   // parametric position, zero
+                                                          1.0,   // value to be, 1
+                                                          false);   // don't add a key
+    // add a control point at 1, value is 0
+    gParametricParamHost->parametricParamAddControlPoint(descriptor, component, 0.0, 1.0, 0.0, false);
+  }
+ 
+  ...
+}
+
+void render8Bits(double currentFrame, otherStuff...)
+{
+   ...
+
+   // make three luts from our curves   
+   unsigned char lut[3][256];
+
+  OfxParamHandle param;
+  gParamHost->paramGetHandle(paramSet, "lookupTable", &amp;param, NULL);
+  for(int component = 0; component &lt; 3; ++component) {
+    for(int position = 0; position &lt; 256; ++position) {
+      // position to evaluate the param at
+      float parametricPos = float(position)/255.0f;
+       
+      // evaluate the parametric param
+      float value;
+      gParametricParamHost->parametricParamGetValue(param, component, currentFrame, parametricPos, &amp;value);
+      value = value * 255;
+      value = clamp(value, 0, 255);
+
+      // set that in the lut
+      lut[dimension][position] = (unsigned char)value;
+    }
+  }
+  ...
+}
+
+</programlisting></blockquote>
+   </section>
+ </section>
+
   <section id="SettingParams">
     <title>Setting Parameters</title>
     <para>
@@ -558,4 +766,5 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
       </itemizedlist>
     </para>
   </section>
+
 </chapter>

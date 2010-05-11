@@ -9,9 +9,9 @@
     </author>
 
     <copyright>
-      <year>2005</year>
+      <year>2005-2010</year>
 
-      <holder>Bruno Nicoletti</holder>
+      <holder>The Open Effects Association</holder>
     </copyright>
 
     <releaseinfo>Document version 0.3</releaseinfo>
@@ -1161,7 +1161,7 @@ typedef struct OfxMemorySuiteV1 {
       <title>Contexts</title>
     </section>
 
-    <section id="ProjectCoordinateSystems">
+    <section id="NormalisedCoordinateSystem">
       <title>Co-ordinate Systems</title>
     </section>
 
