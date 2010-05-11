@@ -399,7 +399,7 @@ typedef int OfxStatus; </programlisting></blockquote>
       <refnamediv>
         <refname><errorcode>kOfxStatReplyNo</errorcode></refname>
 	
-        <refpurpose>(13), returned to indicate a positive
+        <refpurpose>(13), returned to indicate a negative
 	  response.</refpurpose>
       </refnamediv>
       
