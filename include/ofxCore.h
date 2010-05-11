@@ -591,11 +591,6 @@ General status codes start at 1 and continue until 999
 /** @brief OfxStatus returned indicating that a default action should be performed */
 #define kOfxStatReplyDefault ((int) 14)
 
-/** @brief OfxStatus returned indicating that an action has been cancelled.
-    Added in API version 1.2; do not use without checking API version is 1.2 or later
-*/
-#define kOfxStatCancel ((int) 15)
-
 /*@}*/
 
 /*@}*/
