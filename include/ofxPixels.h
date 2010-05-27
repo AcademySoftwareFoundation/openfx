@@ -76,11 +76,10 @@ typedef struct OfxRGBColourF {
   float r, g, b;
 }OfxRGBColourF;
 
-
-/** @brief Defines a double precision floating point component RGBA pixel */
-typedef struct OfxRGBAColourD {
+/** @brief Defines a double precision floating point component RGB pixel */
+typedef struct OfxRGBColourD {
   double r, g, b, a;
-}OfxRGBAColourD;
+}OfxRGBColourD;
 
 /** @brief Defines an 8 bit per component YUVA pixel */
 typedef struct OfxYUVAColourB {
