@@ -1,6 +1,7 @@
 #ifndef __ofxUtilities_H_
 
 #include "ofxMessage.h"
+#include "ofxPixels.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // This is a set of utility functions that got placed here as I got tired of
