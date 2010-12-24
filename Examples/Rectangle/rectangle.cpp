@@ -315,8 +315,6 @@ Lerp(float a, float b, float v)
   return float(a + (b - a) * v);
 }
 
-
-
 // look up a pixel in the image, does bounds checking to see if it is in the image rectangle
 template <class PIX> inline PIX *
 pixelAddress(PIX *img, OfxRectI rect, int x, int y, int bytesPerLine)
@@ -398,16 +396,16 @@ Processor::process(void)
 // template to do the RGBA processing
 template <class PIX, int max, int isFloat>
 class ProcessRGBA : public Processor{
- public :
+public :
   ProcessRGBA(OfxImageEffectHandle eff,
-	      OfxRectI pos,
-	      OfxRGBAColourD col,
-	      bool unpremult,
-	      void *src, OfxRectI sRect, int sBytesPerLine,
-	      void *dst, OfxRectI dRect, int dBytesPerLine,
-	      OfxRectI  win)
+              OfxRectI pos,
+              OfxRGBAColourD col,
+              bool unpremult,
+              void *src, OfxRectI sRect, int sBytesPerLine,
+              void *dst, OfxRectI dRect, int dBytesPerLine,
+              OfxRectI  win)
     : Processor(eff,
-		pos, col, unpremult,
+                pos, col, unpremult,
                 src,  sRect,  sBytesPerLine,
                 dst,  dRect,  dBytesPerLine,
                 win)
@@ -458,73 +456,73 @@ class ProcessRGBA : public Processor{
 
       for(int x = procWindow.x1; x < procWindow.x2; x++) {
         
-	// if a generator, we have no source
-	PIX *srcPix = 0;
-	if(src)
-	  srcPix = pixelAddress(src, srcRect, x, y, srcBytesPerLine);        
+        // if a generator, we have no source
+        PIX *srcPix = 0;
+        if(src)
+          srcPix = pixelAddress(src, srcRect, x, y, srcBytesPerLine);        
         
-	if(x < position.x1 || x >= position.x2 || y < position.y1 || y >= position.y2) {
-	  // we are outside the rectangle
-	  *dstPix = srcPix ? *srcPix : black;
-	  if(srcPix)
-	    srcPix++;
-	}
-	else {
-	  // we are inside the rectangle, composite it over the source image
-	  if(srcPix) {
-	    if(unpremultiplied) {	
-	      // we have to premultiply, then unpremultiply the composite
-	      float a = srcPix->a + value.a - (srcPix->a * value.a)/max;
-	      float r, g, b;
-	      if(srcPix->a == 0) {
-		r = g = b = 0;
-	      }
-	      else {
-		r = Lerp(srcPix->r * max/srcPix->a, value.r, colour.a) * a/max;
-		g = Lerp(srcPix->g * max/srcPix->a, value.g, colour.a) * a/max;
-		b = Lerp(srcPix->b * max/srcPix->a, value.b, colour.a) * a/max;
-	      }
+        if(x < position.x1 || x >= position.x2 || y < position.y1 || y >= position.y2) {
+          // we are outside the rectangle
+          *dstPix = srcPix ? *srcPix : black;
+          if(srcPix)
+            srcPix++;
+        }
+        else {
+          // we are inside the rectangle, composite it over the source image
+          if(srcPix) {
+            if(unpremultiplied) {	
+              // we have to premultiply, then unpremultiply the composite
+              float a = srcPix->a + value.a - (srcPix->a * value.a)/max;
+              float r, g, b;
+              if(srcPix->a == 0) {
+                r = g = b = 0;
+              }
+              else {
+                r = Lerp(srcPix->r * max/srcPix->a, value.r, colour.a) * a/max;
+                g = Lerp(srcPix->g * max/srcPix->a, value.g, colour.a) * a/max;
+                b = Lerp(srcPix->b * max/srcPix->a, value.b, colour.a) * a/max;
+              }
 
-	      // clamp or not depending on if it is floating
-	      if(isFloat) {
-		dstPix->r = r;
-		dstPix->g = g;
-		dstPix->b = b;
-		dstPix->a = a;
-	      }
-	      else {
-		dstPix->r = Clamp(r, 0, max);
-		dstPix->g = Clamp(g, 0, max);
-		dstPix->b = Clamp(b, 0, max);
-		dstPix->a = Clamp(a, 0, max);
-	      }
-	    }
-	    else {
-	      // source is premultiplied, easier composite
-	      if(isFloat) {
-		dstPix->r = Lerp(srcPix->r, value.r, colour.a);
-		dstPix->g = Lerp(srcPix->g, value.g, colour.a);
-		dstPix->b = Lerp(srcPix->b, value.b, colour.a);
-		dstPix->a = srcPix->a + value.a - (srcPix->a * value.a)/max;
-	      }
-	      else {
-		dstPix->r = Clamp(int(Lerp(srcPix->r, value.r, colour.a)), 0, max);
-		dstPix->g = Clamp(int(Lerp(srcPix->g, value.g, colour.a)), 0, max);
-		dstPix->b = Clamp(int(Lerp(srcPix->b, value.b, colour.a)), 0, max);
-		dstPix->a = Clamp(int(srcPix->a + value.a - (srcPix->a * value.a)/max), 0, max);
-	      }
-	    }
+              // clamp or not depending on if it is floating
+              if(isFloat) {
+                dstPix->r = r;
+                dstPix->g = g;
+                dstPix->b = b;
+                dstPix->a = a;
+              }
+              else {
+                dstPix->r = Clamp(r, 0, max);
+                dstPix->g = Clamp(g, 0, max);
+                dstPix->b = Clamp(b, 0, max);
+                dstPix->a = Clamp(a, 0, max);
+              }
+            }
+            else {
+              // source is premultiplied, easier composite
+              if(isFloat) {
+                dstPix->r = Lerp(srcPix->r, value.r, colour.a);
+                dstPix->g = Lerp(srcPix->g, value.g, colour.a);
+                dstPix->b = Lerp(srcPix->b, value.b, colour.a);
+                dstPix->a = srcPix->a + value.a - (srcPix->a * value.a)/max;
+              }
+              else {
+                dstPix->r = Clamp(int(Lerp(srcPix->r, value.r, colour.a)), 0, max);
+                dstPix->g = Clamp(int(Lerp(srcPix->g, value.g, colour.a)), 0, max);
+                dstPix->b = Clamp(int(Lerp(srcPix->b, value.b, colour.a)), 0, max);
+                dstPix->a = Clamp(int(srcPix->a + value.a - (srcPix->a * value.a)/max), 0, max);
+              }
+            }
 
-	    srcPix++;
-	  }
-	  else {
-	    // no src pixel, just set it
-	    if(unpremultiplied)
-	      *dstPix = premultValue;
-	    else
-	      *dstPix = value;
-	  }
-	}
+            srcPix++;
+          }
+          else {
+            // no src pixel, just set it
+            if(unpremultiplied)
+              *dstPix = premultValue;
+            else
+              *dstPix = value;
+          }
+        }
         dstPix++;
       }
     }
@@ -569,32 +567,32 @@ class ProcessAlpha : public Processor {
 
       for(int x = procWindow.x1; x < procWindow.x2; x++) {
         
-	// if a generator, we have no source
-	PIX *srcPix = 0;
-	if(src)
-	  srcPix = pixelAddress(src, srcRect, x, y, srcBytesPerLine);        
+        // if a generator, we have no source
+        PIX *srcPix = 0;
+        if(src)
+          srcPix = pixelAddress(src, srcRect, x, y, srcBytesPerLine);        
         
-	if(x < position.x1 || x >= position.x2 || y < position.y1 || y >= position.y2) {
-	  // we are outside the rectangle we are drawing?
-	  *dstPix = srcPix ? *srcPix : 0;
-	  if(srcPix)
-	    srcPix++;
-	}
-	else {
-	  // we are inside the rectangle, set it to the alpha of the colour
-	  if(srcPix) {
-	    // switch will be compiled out
-	    if(isFloat) {
-	      *dstPix = *srcPix + value - *srcPix * value;
-	    }
-	    else {
-	      *dstPix = Clamp(int(*srcPix + value - *srcPix * value), 0, max);
-	    }
-	    srcPix++;
-	  }
-	  else {
-	    *dstPix = value;
-	  }
+        if(x < position.x1 || x >= position.x2 || y < position.y1 || y >= position.y2) {
+          // we are outside the rectangle we are drawing?
+          *dstPix = srcPix ? *srcPix : 0;
+          if(srcPix)
+            srcPix++;
+        }
+        else {
+          // we are inside the rectangle, set it to the alpha of the colour
+          if(srcPix) {
+            // switch will be compiled out
+            if(isFloat) {
+              *dstPix = *srcPix + value - *srcPix * value;
+            }
+            else {
+              *dstPix = Clamp(int(*srcPix + value - *srcPix * value), 0, max);
+            }
+            srcPix++;
+          }
+          else {
+            *dstPix = value;
+          }
         }
         dstPix++;
       }
@@ -604,12 +602,13 @@ class ProcessAlpha : public Processor {
 
 // the process code  that the host sees
 static OfxStatus render(OfxImageEffectHandle effect,
-			OfxPropertySetHandle inArgs,
-			OfxPropertySetHandle outArgs)
+                        OfxPropertySetHandle inArgs,
+                        OfxPropertySetHandle outArgs)
 {
   // get the render window and the time from the inArgs
   OfxTime time;
   OfxRectI renderWindow;
+  OfxStatus status = kOfxStatOK;
   
   gPropHost->propGetDouble(inArgs, kOfxPropTime, 0, &time);
   gPropHost->propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &renderWindow.x1);
@@ -617,134 +616,135 @@ static OfxStatus render(OfxImageEffectHandle effect,
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
 
-  // fetch output
-  OfxPropertySetHandle outputImg;
-  gEffectHost->clipGetImage(myData->outputClip, time, NULL, &outputImg);
-  int dstRowBytes  =  ofxuGetImageRowBytes(outputImg);
-  int dstBitDepth  =  ofxuGetImagePixelDepth(outputImg);
-  bool dstIsAlpha  = !ofxuGetImagePixelsAreRGBA(outputImg);
-  OfxRectI dstRect =  ofxuGetImageBounds(outputImg);
-  void *dst        =  ofxuGetImageData(outputImg);
+  // property handles and members of each image
+  // in reality, we would put this in a struct as the C++ support layer does
+  OfxPropertySetHandle sourceImg = NULL, outputImg = NULL;
+  int srcRowBytes, srcBitDepth, dstRowBytes, dstBitDepth;
+  bool srcIsAlpha, dstIsAlpha;
+  OfxRectI dstRect, srcRect;
+  void *src, *dst;
   
   // by default we are premultiplied
   bool unpremultiplied = false;
-
-  // fetch main input
-  OfxPropertySetHandle sourceImg;
-  int srcRowBytes  =  0;
-  int srcBitDepth  =  0;
-  bool srcIsAlpha  =  false;
-  OfxRectI srcRect;
-  void *src        =  0;
   
-  if(myData->context != eIsGenerator) {
-    gEffectHost->clipGetImage(myData->sourceClip, time, NULL, &sourceImg);
-    srcRowBytes  =  ofxuGetImageRowBytes(sourceImg);
-    srcBitDepth  =  ofxuGetImagePixelDepth(sourceImg);
-    srcIsAlpha   = !ofxuGetImagePixelsAreRGBA(sourceImg);
-    srcRect      =  ofxuGetImageBounds(sourceImg);
-    src          =  ofxuGetImageData(sourceImg);
-    unpremultiplied = ofxuIsUnPremultiplied(myData->sourceClip);
-  }
+  try {
+    outputImg = ofxuGetImage(myData->outputClip, time, dstRowBytes, dstBitDepth, dstIsAlpha, dstRect, dst);
+    if(outputImg == NULL) throw OfxuNoImageException();
 
-  // get the render scale
-  OfxPointD renderScale;
-  gPropHost->propGetDoubleN(inArgs, kOfxImageEffectPropRenderScale, 2, &renderScale.x);
 
-  // If we are rendering a single field, then have a field scale of 0.5
-  double fieldScale = 1.0;
-  char *field;
-  gPropHost->propGetString(outputImg, kOfxImagePropField, 0, &field);
-  if(strcmp(field, kOfxImageFieldLower) == 0 || strcmp(field, kOfxImageFieldUpper) == 0)
-    fieldScale = 0.5;
+    if(myData->context != eIsGenerator) {
+      sourceImg = ofxuGetImage(myData->sourceClip, time, srcRowBytes, srcBitDepth, srcIsAlpha, srcRect, src);
+      if(sourceImg == NULL) throw OfxuNoImageException();
+      unpremultiplied = ofxuIsUnPremultiplied(myData->sourceClip);
+    }
+    
+    // get the render scale
+    OfxPointD renderScale;
+    gPropHost->propGetDoubleN(inArgs, kOfxImageEffectPropRenderScale, 2, &renderScale.x);
 
-  // get the pixel aspect ratio from the image
-  double pixelAspectRatio;
-  gPropHost->propGetDouble(outputImg, kOfxImagePropPixelAspectRatio, 0, &pixelAspectRatio);
+    // If we are rendering a single field, then have a field scale of 0.5
+    double fieldScale = 1.0;
+    char *field;
+    gPropHost->propGetString(outputImg, kOfxImagePropField, 0, &field);
+    if(strcmp(field, kOfxImageFieldLower) == 0 || strcmp(field, kOfxImageFieldUpper) == 0)
+      fieldScale = 0.5;
 
-  // get the rect in cannonical coordinates  
-  OfxRectD rect;
-  getCannonicalRect(effect, time, rect);
+    // get the pixel aspect ratio from the image
+    double pixelAspectRatio;
+    gPropHost->propGetDouble(outputImg, kOfxImagePropPixelAspectRatio, 0, &pixelAspectRatio);
+
+    // get the rect in cannonical coordinates  
+    OfxRectD rect;
+    getCannonicalRect(effect, time, rect);
   
-  // Turn that into pixel coordinates
-  OfxRectI rectI;
-  rectI.x1 = int(rect.x1 * renderScale.x / pixelAspectRatio);
-  rectI.x2 = int(rect.x2 * renderScale.x / pixelAspectRatio);
-  rectI.y1 = int(rect.y1 * renderScale.y * fieldScale);
-  rectI.y2 = int(rect.y2 * renderScale.y * fieldScale);
+    // Turn that into pixel coordinates
+    OfxRectI rectI;
+    rectI.x1 = int(rect.x1 * renderScale.x / pixelAspectRatio);
+    rectI.x2 = int(rect.x2 * renderScale.x / pixelAspectRatio);
+    rectI.y1 = int(rect.y1 * renderScale.y * fieldScale);
+    rectI.y2 = int(rect.y2 * renderScale.y * fieldScale);
 
-  // get the colour of it
-  OfxRGBAColourD colour;
-  gParamHost->paramGetValueAtTime(myData->colourParam, time, &colour.r, &colour.g, &colour.b, &colour.a);
+    // get the colour of it
+    OfxRGBAColourD colour;
+    gParamHost->paramGetValueAtTime(myData->colourParam, time, &colour.r, &colour.g, &colour.b, &colour.a);
 
-  // do the rendering
-  if(!dstIsAlpha) {
-    switch(dstBitDepth) {
-    case 8 : {      
-      ProcessRGBA<OfxRGBAColourB, 255, 0> fred(effect, rectI, colour, unpremultiplied,
-					       src, srcRect, srcRowBytes,
-					       dst, dstRect, dstRowBytes,
-					       renderWindow);
-      fred.process();                                          
+    // do the rendering
+    if(!dstIsAlpha) {
+      switch(dstBitDepth) {
+      case 8 : {      
+        ProcessRGBA<OfxRGBAColourB, 255, 0> fred(effect, rectI, colour, unpremultiplied,
+                                                 src, srcRect, srcRowBytes,
+                                                 dst, dstRect, dstRowBytes,
+                                                 renderWindow);
+        fred.process();                                          
+      }
+        break;
+
+      case 16 : {
+        ProcessRGBA<OfxRGBAColourS, 65535, 0> fred(effect, rectI, colour, unpremultiplied,
+                                                   src, srcRect, srcRowBytes,
+                                                   dst, dstRect, dstRowBytes,
+                                                   renderWindow);
+        fred.process();           
+      }                          
+        break;
+
+      case 32 : {
+        ProcessRGBA<OfxRGBAColourF, 1, 1> fred(effect, rectI, colour, unpremultiplied,
+                                               src, srcRect, srcRowBytes,
+                                               dst, dstRect, dstRowBytes,
+                                               renderWindow);
+        fred.process();                                          
+        break;
+      }
+      }
     }
-      break;
+    else {
+      switch(dstBitDepth) {
+      case 8 : {
+        ProcessAlpha<unsigned char, 255, 0> fred(effect, rectI, colour, 
+                                                 src, srcRect, srcRowBytes,
+                                                 dst, dstRect, dstRowBytes,
+                                                 renderWindow);
+        fred.process();                                                                                  
+      }
+        break;
 
-    case 16 : {
-      ProcessRGBA<OfxRGBAColourS, 65535, 0> fred(effect, rectI, colour, unpremultiplied,
-						 src, srcRect, srcRowBytes,
-						 dst, dstRect, dstRowBytes,
-						 renderWindow);
-      fred.process();           
-    }                          
-      break;
+      case 16 : {
+        ProcessAlpha<unsigned short, 65535, 0> fred(effect, rectI, colour, 
+                                                    src, srcRect, srcRowBytes,
+                                                    dst, dstRect, dstRowBytes,
+                                                    renderWindow);
+        fred.process();           
+      }                          
+        break;
 
-    case 32 : {
-      ProcessRGBA<OfxRGBAColourF, 1, 1> fred(effect, rectI, colour, unpremultiplied,
-					     src, srcRect, srcRowBytes,
-					     dst, dstRect, dstRowBytes,
-					     renderWindow);
-      fred.process();                                          
-      break;
-    }
+      case 32 : {
+        ProcessAlpha<float, 1, 1> fred(effect, rectI, colour,
+                                       src, srcRect, srcRowBytes,
+                                       dst, dstRect, dstRowBytes,
+                                       renderWindow);
+        fred.process();           
+      }                          
+        break;
+      }
     }
   }
-  else {
-    switch(dstBitDepth) {
-    case 8 : {
-      ProcessAlpha<unsigned char, 255, 0> fred(effect, rectI, colour, 
-                                                              src, srcRect, srcRowBytes,
-                                                              dst, dstRect, dstRowBytes,
-                                                              renderWindow);
-      fred.process();                                                                                  
-    }
-    break;
-
-    case 16 : {
-      ProcessAlpha<unsigned short, 65535, 0> fred(effect, rectI, colour, 
-                                                                  src, srcRect, srcRowBytes,
-                                                                  dst, dstRect, dstRowBytes,
-                                                                  renderWindow);
-      fred.process();           
-    }                          
-    break;
-
-    case 32 : {
-      ProcessAlpha<float, 1, 1> fred(effect, rectI, colour,
-                                            src, srcRect, srcRowBytes,
-                                            dst, dstRect, dstRowBytes,
-                                            renderWindow);
-      fred.process();           
-    }                          
-    break;
+  catch(OfxuNoImageException &ex) {
+    // if we were interrupted, the failed fetch is fine, just return kOfxStatOK
+    // otherwise, something wierd happened
+    if(!gEffectHost->abort(effect)) {
+      status = kOfxStatFailed;
     }
   }
 
   // release the data pointers
   if(sourceImg)
     gEffectHost->clipReleaseImage(sourceImg);
-  gEffectHost->clipReleaseImage(outputImg);
+  if(outputImg)
+    gEffectHost->clipReleaseImage(outputImg);
   
-  return kOfxStatOK;
+  return status;
 }
 
 // Set our clip preferences 
@@ -823,6 +823,10 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
   gPropHost->propSetString(paramProps, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeNormalisedXYAbsolute);
   gPropHost->propSetString(paramProps, kOfxParamPropHint, 0, "A corner of the rectangle to draw");
   gPropHost->propSetString(paramProps, kOfxPropLabel, 0, "Corner 2");
+  gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 0, 0);
+  gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 1, 0);
+  gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 2, 0);
+  gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 3, 1);
 
   // make an rgba colour parameter
   gParamHost->paramDefine(paramSet, kOfxParamTypeRGBA, "colour", &paramProps);

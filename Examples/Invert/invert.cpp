@@ -43,6 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
+#include "ofxPixels.h"
 
 // pointers to various bits of the host
 OfxHost               *gHost;
@@ -60,26 +61,35 @@ pixelAddress(OfxRGBAColourB *img, OfxRectI rect, int x, int y, int bytesPerLine)
   return pix;
 }
 
+// throws this if it can't fetch an image
+class NoImageEx {};
+
 // the process code  that the host sees
 static OfxStatus render(OfxImageEffectHandle  instance,
                         OfxPropertySetHandle inArgs,
                         OfxPropertySetHandle outArgs)
 {
-    // get the render window and the time from the inArgs
-    OfxTime time;
-    OfxRectI renderWindow;
+  // get the render window and the time from the inArgs
+  OfxTime time;
+  OfxRectI renderWindow;
+  OfxStatus status = kOfxStatOK;
   
-    gPropHost->propGetDouble(inArgs, kOfxPropTime, 0, &time);
-    gPropHost->propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &renderWindow.x1);
+  gPropHost->propGetDouble(inArgs, kOfxPropTime, 0, &time);
+  gPropHost->propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &renderWindow.x1);
 
-    // fetch output clip
-    OfxImageClipHandle outputClip;
-    gEffectHost->clipGetHandle(instance, "Output", &outputClip, 0);
+  // fetch output clip
+  OfxImageClipHandle outputClip;
+  gEffectHost->clipGetHandle(instance, "Output", &outputClip, 0);
+    
 
+  OfxPropertySetHandle outputImg = NULL, sourceImg = NULL;
+  try {
     // fetch image to render into from that clip
     OfxPropertySetHandle outputImg;
-    gEffectHost->clipGetImage(outputClip, time, NULL, &outputImg);
-
+    if(gEffectHost->clipGetImage(outputClip, time, NULL, &outputImg) != kOfxStatOK) {
+      throw NoImageEx();
+    }
+      
     // fetch output image info from that handle
     int dstRowBytes, dstBitDepth;
     OfxRectI dstRect;
@@ -88,15 +98,16 @@ static OfxStatus render(OfxImageEffectHandle  instance,
     gPropHost->propGetIntN(outputImg, kOfxImagePropBounds, 4, &dstRect.x1);
     gPropHost->propGetInt(outputImg, kOfxImagePropRowBytes, 0, &dstRowBytes);
     gPropHost->propGetPointer(outputImg, kOfxImagePropData, 0, &dstPtr);
-  
+      
     // fetch main input clip
     OfxImageClipHandle sourceClip;
     gEffectHost->clipGetHandle(instance, "Source", &sourceClip, 0);
-
+      
     // fetch image at render time from that clip
-    OfxPropertySetHandle sourceImg;
-    gEffectHost->clipGetImage(sourceClip, time, NULL, &sourceImg);
-
+    if (gEffectHost->clipGetImage(sourceClip, time, NULL, &sourceImg) != kOfxStatOK) {
+      throw NoImageEx();
+    }
+      
     // fetch image info out of that handle
     int srcRowBytes, srcBitDepth;
     OfxRectI srcRect;
@@ -112,36 +123,47 @@ static OfxStatus render(OfxImageEffectHandle  instance,
 
     // and do some inverting
     for(int y = renderWindow.y1; y < renderWindow.y2; y++) {
-        if(gEffectHost->abort(instance)) break;
+      if(gEffectHost->abort(instance)) break;
 
-        OfxRGBAColourB *dstPix = pixelAddress(dst, dstRect, renderWindow.x1, y, dstRowBytes);
+      OfxRGBAColourB *dstPix = pixelAddress(dst, dstRect, renderWindow.x1, y, dstRowBytes);
 
-        for(int x = renderWindow.x1; x < renderWindow.x2; x++) {
+      for(int x = renderWindow.x1; x < renderWindow.x2; x++) {
         
-            OfxRGBAColourB *srcPix = pixelAddress(src, srcRect, x, y, srcRowBytes);
+        OfxRGBAColourB *srcPix = pixelAddress(src, srcRect, x, y, srcRowBytes);
 
-            if(srcPix) {
-                dstPix->r = 255 - srcPix->r;
-                dstPix->g = 255 - srcPix->g;
-                dstPix->b = 255 - srcPix->b;
-                dstPix->a = 255 - srcPix->a;
-            }
-            else {
-                dstPix->r = 0;
-                dstPix->g = 0;
-                dstPix->b = 0;
-                dstPix->a = 0;
-            }
-            dstPix++;
+        if(srcPix) {
+          dstPix->r = 255 - srcPix->r;
+          dstPix->g = 255 - srcPix->g;
+          dstPix->b = 255 - srcPix->b;
+          dstPix->a = 255 - srcPix->a;
         }
+        else {
+          dstPix->r = 0;
+          dstPix->g = 0;
+          dstPix->b = 0;
+          dstPix->a = 0;
+        }
+        dstPix++;
+      }
     }
 
     // we are finished with the source images so release them
+  }
+  catch(NoImageEx &) {
+    // if we were interrupted, the failed fetch is fine, just return kOfxStatOK
+    // otherwise, something wierd happened
+    if(!gEffectHost->abort(instance)) {
+      status = kOfxStatFailed;
+    }      
+  }
+
+  if(sourceImg)
     gEffectHost->clipReleaseImage(sourceImg);
+  if(outputImg)
     gEffectHost->clipReleaseImage(outputImg);
   
-    // all was well
-    return kOfxStatOK;
+  // all was well
+  return status;
 }
 
 //  describe the plugin in context

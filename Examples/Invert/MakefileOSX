@@ -1,5 +1,7 @@
 CXXFLAGS = -I../../include
-OPTIMIZER = -O3
+OPTIMIZER = -g
 
-invert.bundle : invert.o
-	$(CXX) -bundle invert.o -o invert.bundle
+invert.ofx : invert.o
+	$(CXX) -bundle invert.o -o invert.ofx
+	mkdir -p invert.ofx.bundle/Contents/MacOS/
+	cp invert.ofx invert.ofx.bundle/Contents/MacOS/

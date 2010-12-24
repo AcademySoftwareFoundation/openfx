@@ -254,5 +254,47 @@ ofxuInfiniteRect(const RECT &rect)
 }
 
 
+// fetch an image an associated bits from a clip
+//
+// In real code, all the params should be bundled up into a class, as
+// does the OFX C++ support code
+inline OfxPropertySetHandle ofxuGetImage(OfxImageClipHandle &clip,
+                                         OfxTime time,
+                                         int &rowBytes,
+                                         int &bitDepth,
+                                         bool &isAlpha,
+                                         OfxRectI &rect,
+                                         void * &data)
+{
+  OfxPropertySetHandle imageProps = NULL;
+  if(gEffectHost->clipGetImage(clip, time, NULL, &imageProps) == kOfxStatOK) {
+    rowBytes  =  ofxuGetImageRowBytes(imageProps);
+    bitDepth  =  ofxuGetImagePixelDepth(imageProps);
+    isAlpha   = !ofxuGetImagePixelsAreRGBA(imageProps);
+    rect      =  ofxuGetImageBounds(imageProps);
+    data      =  ofxuGetImageData(imageProps);
+    if(data == NULL) {
+      gEffectHost->clipReleaseImage(imageProps);
+      imageProps = NULL;
+    }
+  }
+  return imageProps;
+}
+
+/// exception thrown when images are missing
+class OfxuNoImageException{};                     
+
+/// exception thrown with an status to return
+class OfxuStatusException {
+public :
+  explicit OfxuStatusException(OfxStatus stat)
+    : status_(stat)
+  {}
+
+  OfxStatus status() const {return status_;}
+
+protected :
+  OfxStatus status_;
+};
 
 #endif

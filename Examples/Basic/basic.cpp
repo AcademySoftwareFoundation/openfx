@@ -562,7 +562,7 @@ public :
             dstPix->b = Clamp(int(srcPix->b * sB), 0, max);
             dstPix->a = Clamp(int(srcPix->a * sA), 0, max);
           }
-	  srcPix++;
+          srcPix++;
         }
         else {
           dstPix->r = dstPix->g = dstPix->b = dstPix->a= 0;
@@ -627,7 +627,7 @@ public :
           else {
             *dstPix = Clamp(int(*srcPix * theScale), 0, max);
           }
-	  srcPix++;
+          srcPix++;
         }
         else {
           *dstPix = 0;
@@ -640,180 +640,160 @@ public :
 
 // the process code  that the host sees
 static OfxStatus render( OfxImageEffectHandle  instance,
-			 OfxPropertySetHandle inArgs,
-			 OfxPropertySetHandle outArgs)
+                         OfxPropertySetHandle inArgs,
+                         OfxPropertySetHandle outArgs)
 {
   // get the render window and the time from the inArgs
   OfxTime time;
   OfxRectI renderWindow;
-  
+  OfxStatus status = kOfxStatOK;
+
   gPropHost->propGetDouble(inArgs, kOfxPropTime, 0, &time);
   gPropHost->propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &renderWindow.x1);
 
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(instance);
 
-  // fetch output
-  OfxPropertySetHandle outputImg;
-  gEffectHost->clipGetImage(myData->outputClip, time, NULL, &outputImg);
-  int dstRowBytes  =  ofxuGetImageRowBytes(outputImg);
-  int dstBitDepth  =  ofxuGetImagePixelDepth(outputImg);
-  bool dstIsAlpha  = !ofxuGetImagePixelsAreRGBA(outputImg);
-  OfxRectI dstRect =  ofxuGetImageBounds(outputImg);
-  void *dst        =  ofxuGetImageData(outputImg);
-  
-  // fetch main input
-  OfxPropertySetHandle sourceImg;
-  gEffectHost->clipGetImage(myData->sourceClip, time, NULL, &sourceImg);
-  int srcRowBytes  =  ofxuGetImageRowBytes(sourceImg);
-  int srcBitDepth  =  ofxuGetImagePixelDepth(sourceImg);
-  bool srcIsAlpha  = !ofxuGetImagePixelsAreRGBA(sourceImg);
-  OfxRectI srcRect =  ofxuGetImageBounds(sourceImg);
-  void *src        =  ofxuGetImageData(sourceImg);
+  // property handles and members of each image
+  // in reality, we would put this in a struct as the C++ support layer does
+  OfxPropertySetHandle sourceImg = NULL, outputImg = NULL, maskImg = NULL;
+  int srcRowBytes, srcBitDepth, dstRowBytes, dstBitDepth, maskRowBytes, maskBitDepth;
+  bool srcIsAlpha, dstIsAlpha, maskIsAlpha;
+  OfxRectI dstRect, srcRect, maskRect;
+  void *src, *dst, *mask = NULL;
 
-  // examine my private instance data to see if we are a general effect
-  // in which case we may have a mask input attached
-  OfxPropertySetHandle maskImg = 0;
-  void     *mask = 0;
-  OfxRectI  maskRect = {0,0,0,0};
-  int       maskRowBytes = 0;
-  int       maskBitDepth = 8;
-  bool      maskIsAlpha = 0;
-  bool      hasMask = false;
-  if(myData->isGeneralEffect) {
-    // is the mask connected?
-    if(ofxuIsClipConnected(instance, "Mask")) {
-      // get its data
-      OfxStatus stat = gEffectHost->clipGetImage(myData->maskClip, time, NULL, &maskImg);
-      if(stat == kOfxStatOK) {
-            
-        maskRowBytes  =  ofxuGetImageRowBytes(maskImg);
-        maskBitDepth  =  ofxuGetImagePixelDepth(maskImg);
-        maskIsAlpha   = !ofxuGetImagePixelsAreRGBA(maskImg);
-        maskRect      =  ofxuGetImageBounds(maskImg);
-        mask          =  ofxuGetImageData(maskImg);
-            
-        // and see that it is a single component
-        if(!maskIsAlpha || maskBitDepth != srcBitDepth) {
-          gEffectHost->clipReleaseImage(maskImg);
-          gEffectHost->clipReleaseImage(sourceImg);
-          gEffectHost->clipReleaseImage(outputImg);
-          return kOfxStatErrImageFormat;
-        }  
-      }
-      else {
-        // we have a mask consisting of all zeros, but no data pointer for it
-        // fake a data pointer
-        maskRowBytes  =  0;
-        maskBitDepth  =  srcBitDepth;
-        maskIsAlpha   = true;
-        maskRect.x1 = maskRect.y1 = 0;
-        maskRect.x2 = maskRect.y2 = 0; // empty rect
-        static float blackMask = 0; // all zeros of 8, 16 and float case, nicely aligned
-        mask        =  (void *) &blackMask;        
+  try {
+    // get the source image
+    sourceImg = ofxuGetImage(myData->sourceClip, time, srcRowBytes, srcBitDepth, srcIsAlpha, srcRect, src);
+    if(sourceImg == NULL) throw OfxuNoImageException();
+
+    // get the output image
+    outputImg = ofxuGetImage(myData->outputClip, time, dstRowBytes, dstBitDepth, dstIsAlpha, dstRect, dst);
+    if(outputImg == NULL) throw OfxuNoImageException();
+
+    if(myData->isGeneralEffect) {
+      // is the mask connected?
+      if(ofxuIsClipConnected(instance, "Mask")) {
+        maskImg = ofxuGetImage(myData->maskClip, time, maskRowBytes, maskBitDepth, maskIsAlpha, maskRect, mask);
+
+        if(maskImg != NULL) {                        
+          // and see that it is a single component
+          if(!maskIsAlpha || maskBitDepth != srcBitDepth) {
+            throw OfxuStatusException(kOfxStatErrImageFormat);
+          }  
+        }
       }
     }
-  }
 
-  // see if they have the same depths and bytes and all
-  if(srcBitDepth != dstBitDepth || srcIsAlpha != dstIsAlpha) {
-    if(maskImg)
-      gEffectHost->clipReleaseImage(maskImg);
-    gEffectHost->clipReleaseImage(sourceImg);
-    gEffectHost->clipReleaseImage(outputImg);
-  }
+    // see if they have the same depths and bytes and all
+    if(srcBitDepth != dstBitDepth || srcIsAlpha != dstIsAlpha) {
+      throw OfxuStatusException(kOfxStatErrImageFormat);
+    }
 
-  // are we compenent scaling
-  bool scaleComponents;
-  gParamHost->paramGetValueAtTime(myData->perComponentScaleParam, time, &scaleComponents);
+    // are we compenent scaling
+    bool scaleComponents;
+    gParamHost->paramGetValueAtTime(myData->perComponentScaleParam, time, &scaleComponents);
 
-  // get the scale parameters
-  double scale, rScale = 1, gScale = 1, bScale = 1, aScale = 1;
-  gParamHost->paramGetValueAtTime(myData->scaleParam, time, &scale);
+    // get the scale parameters
+    double scale, rScale = 1, gScale = 1, bScale = 1, aScale = 1;
+    gParamHost->paramGetValueAtTime(myData->scaleParam, time, &scale);
 
-  if(scaleComponents) {
-    gParamHost->paramGetValueAtTime(myData->scaleRParam, time, &rScale);
-    gParamHost->paramGetValueAtTime(myData->scaleGParam, time, &gScale);
-    gParamHost->paramGetValueAtTime(myData->scaleBParam, time, &bScale);
-    gParamHost->paramGetValueAtTime(myData->scaleAParam, time, &aScale);
-  }
-  rScale *= scale; gScale *= scale; bScale *= scale; aScale *= scale;
+    if(scaleComponents) {
+      gParamHost->paramGetValueAtTime(myData->scaleRParam, time, &rScale);
+      gParamHost->paramGetValueAtTime(myData->scaleGParam, time, &gScale);
+      gParamHost->paramGetValueAtTime(myData->scaleBParam, time, &bScale);
+      gParamHost->paramGetValueAtTime(myData->scaleAParam, time, &aScale);
+    }
+    rScale *= scale; gScale *= scale; bScale *= scale; aScale *= scale;
   
-  // do the rendering
-  if(!dstIsAlpha) {
-    switch(dstBitDepth) {
-    case 8 : {      
-      ProcessRGBA<OfxRGBAColourB, unsigned char, 255, 0> fred(instance, rScale, gScale, bScale, aScale,
-                                                              src, srcRect, srcRowBytes,
-                                                              dst, dstRect, dstRowBytes,
-                                                              mask, maskRect, maskRowBytes,
-                                                              renderWindow);
-      fred.process();                                          
-    }
-      break;
+    // do the rendering
+    if(!dstIsAlpha) {
+      switch(dstBitDepth) {
+      case 8 : {      
+        ProcessRGBA<OfxRGBAColourB, unsigned char, 255, 0> fred(instance, rScale, gScale, bScale, aScale,
+                                                                src, srcRect, srcRowBytes,
+                                                                dst, dstRect, dstRowBytes,
+                                                                mask, maskRect, maskRowBytes,
+                                                                renderWindow);
+        fred.process();                                          
+      }
+        break;
 
-    case 16 : {
-      ProcessRGBA<OfxRGBAColourS, unsigned short, 65535, 0> fred(instance, rScale, gScale, bScale, aScale,
-                                                                 src, srcRect, srcRowBytes,
-                                                                 dst, dstRect, dstRowBytes,
-                                                                 mask, maskRect, maskRowBytes,
-                                                                 renderWindow);
-      fred.process();           
-    }                          
-      break;
+      case 16 : {
+        ProcessRGBA<OfxRGBAColourS, unsigned short, 65535, 0> fred(instance, rScale, gScale, bScale, aScale,
+                                                                   src, srcRect, srcRowBytes,
+                                                                   dst, dstRect, dstRowBytes,
+                                                                   mask, maskRect, maskRowBytes,
+                                                                   renderWindow);
+        fred.process();           
+      }                          
+        break;
 
-    case 32 : {
-      ProcessRGBA<OfxRGBAColourF, float, 1, 1> fred(instance, rScale, gScale, bScale, aScale,
-                                                    src, srcRect, srcRowBytes,
-                                                    dst, dstRect, dstRowBytes,
-                                                    mask, maskRect, maskRowBytes,
-                                                    renderWindow);
-      fred.process();                                          
-      break;
+      case 32 : {
+        ProcessRGBA<OfxRGBAColourF, float, 1, 1> fred(instance, rScale, gScale, bScale, aScale,
+                                                      src, srcRect, srcRowBytes,
+                                                      dst, dstRect, dstRowBytes,
+                                                      mask, maskRect, maskRowBytes,
+                                                      renderWindow);
+        fred.process();                                          
+        break;
+      }
+      }
     }
+    else {
+      switch(dstBitDepth) {
+      case 8 : {
+        ProcessAlpha<unsigned char, unsigned char, 255, 0> fred(instance, scale, 
+                                                                src, srcRect, srcRowBytes,
+                                                                dst, dstRect, dstRowBytes,
+                                                                mask, maskRect, maskRowBytes,
+                                                                renderWindow);
+        fred.process();                                                                                  
+      }
+        break;
+
+      case 16 : {
+        ProcessAlpha<unsigned short, unsigned short, 65535, 0> fred(instance, scale, 
+                                                                    src, srcRect, srcRowBytes,
+                                                                    dst, dstRect, dstRowBytes,
+                                                                    mask, maskRect, maskRowBytes,
+                                                                    renderWindow);
+        fred.process();           
+      }                          
+        break;
+
+      case 32 : {
+        ProcessAlpha<float, float, 1, 1> fred(instance, scale, 
+                                              src, srcRect, srcRowBytes,
+                                              dst, dstRect, dstRowBytes,
+                                              mask, maskRect, maskRowBytes,
+                                              renderWindow);
+        fred.process();           
+      }                          
+        break;
+      }
     }
   }
-  else {
-    switch(dstBitDepth) {
-    case 8 : {
-      ProcessAlpha<unsigned char, unsigned char, 255, 0> fred(instance, scale, 
-                                                              src, srcRect, srcRowBytes,
-                                                              dst, dstRect, dstRowBytes,
-                                                              mask, maskRect, maskRowBytes,
-                                                              renderWindow);
-      fred.process();                                                                                  
+  catch(OfxuNoImageException &ex) {
+    // if we were interrupted, the failed fetch is fine, just return kOfxStatOK
+    // otherwise, something wierd happened
+    if(!gEffectHost->abort(instance)) {
+      status = kOfxStatFailed;
     }
-      break;
-
-    case 16 : {
-      ProcessAlpha<unsigned short, unsigned short, 65535, 0> fred(instance, scale, 
-                                                                  src, srcRect, srcRowBytes,
-                                                                  dst, dstRect, dstRowBytes,
-                                                                  mask, maskRect, maskRowBytes,
-                                                                  renderWindow);
-      fred.process();           
-    }                          
-      break;
-
-    case 32 : {
-      ProcessAlpha<float, float, 1, 1> fred(instance, scale, 
-                                            src, srcRect, srcRowBytes,
-                                            dst, dstRect, dstRowBytes,
-                                            mask, maskRect, maskRowBytes,
-                                            renderWindow);
-      fred.process();           
-    }                          
-      break;
-    }
+  }
+  catch(OfxuStatusException &ex) {
+    status = ex.status();
   }
 
   // release the data pointers
-  if(mask)
+  if(maskImg)
     gEffectHost->clipReleaseImage(maskImg);
-  gEffectHost->clipReleaseImage(sourceImg);
-  gEffectHost->clipReleaseImage(outputImg);
+  if(sourceImg)
+    gEffectHost->clipReleaseImage(sourceImg);
+  if(outputImg)
+    gEffectHost->clipReleaseImage(outputImg);
   
-  return kOfxStatOK;
+  return status;
 }
 
 // convience function to define scaling parameter

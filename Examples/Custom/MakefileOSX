@@ -1,6 +1,8 @@
 CXXFLAGS = -I../../include 
-OPTIMIZER = -O3
+OPTIMIZER = -g
 
-custom.bundle : custom.o
-	$(CXX) -bundle custom.o -o custom.bundle -framework opengl
+custom.ofx : custom.o
+	$(CXX) -bundle custom.o -o custom.ofx -framework OpenGL
+	mkdir -p custom.ofx.bundle/Contents/MacOS/
+	cp custom.ofx custom.ofx.bundle/Contents/MacOS/
 

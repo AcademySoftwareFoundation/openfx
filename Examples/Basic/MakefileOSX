@@ -1,4 +1,4 @@
-CXXFLAGS = -I../../include -g
+CXXFLAGS = -I../../include
 OPTIMIZER = -g
 
 basic.ofx : basic.o

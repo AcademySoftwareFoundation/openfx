@@ -280,26 +280,26 @@ class ProcessPix : public Processor {
 
       for(int x = procWindow.x1; x < procWindow.x2; x++) {
         
-	// if a generator, we have no source
-	SRCPIX *srcPix = pixelAddress(src, srcRect, x, y, srcBytesPerLine);        
+        // if a generator, we have no source
+        SRCPIX *srcPix = pixelAddress(src, srcRect, x, y, srcBytesPerLine);        
         
-	// change my pixel depths
-	if(srcPix) {
-	  for(int c = 0; c < nComponents; c++) {
-	    if(dstIsFloat)
-	      dstPix[c] = srcPix[c] * scaleF;
-	    else if (srcIsFloat) 
-	      dstPix[c] = Clamp(srcPix[c] * scaleF, 0, kDstMax);
-	    else
-	      dstPix[c] = Clamp(srcPix[c] * kDstMax/kSrcMax, 0, kDstMax);	    
-	  }
-	  srcPix += nComponents;
-	}
-	else {
-	  for(int c = 0; c < nComponents; c++)
-	    dstPix[c] = 0;
-	}
-	dstPix += nComponents;
+        // change my pixel depths
+        if(srcPix) {
+          for(int c = 0; c < nComponents; c++) {
+            if(dstIsFloat)
+              dstPix[c] = srcPix[c] * scaleF;
+            else if (srcIsFloat) 
+              dstPix[c] = Clamp(srcPix[c] * scaleF, 0, kDstMax);
+            else
+              dstPix[c] = Clamp(srcPix[c] * kDstMax/kSrcMax, 0, kDstMax);	    
+          }
+          srcPix += nComponents;
+        }
+        else {
+          for(int c = 0; c < nComponents; c++)
+            dstPix[c] = 0;
+        }
+        dstPix += nComponents;
       }
     }
   }
@@ -308,12 +308,13 @@ class ProcessPix : public Processor {
 
 // the process code  that the host sees
 static OfxStatus render(OfxImageEffectHandle effect,
-			OfxPropertySetHandle inArgs,
-			OfxPropertySetHandle outArgs)
+                        OfxPropertySetHandle inArgs,
+                        OfxPropertySetHandle outArgs)
 {
   // get the render window and the time from the inArgs
   OfxTime time;
   OfxRectI renderWindow;
+  OfxStatus status = kOfxStatOK;
   
   gPropHost->propGetDouble(inArgs, kOfxPropTime, 0, &time);
   gPropHost->propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &renderWindow.x1);
@@ -321,67 +322,74 @@ static OfxStatus render(OfxImageEffectHandle effect,
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
 
-  // fetch output
-  OfxPropertySetHandle outputImg;
-  gEffectHost->clipGetImage(myData->outputClip, time, NULL, &outputImg);
-  int dstRowBytes  =  ofxuGetImageRowBytes(outputImg);
-  int dstBitDepth  =  ofxuGetImagePixelDepth(outputImg);
-  bool dstIsAlpha  = !ofxuGetImagePixelsAreRGBA(outputImg);
-  OfxRectI dstRect =  ofxuGetImageBounds(outputImg);
-  void *dst        =  ofxuGetImageData(outputImg);
+  // property handles and members of each image
+  // in reality, we would put this in a struct as the C++ support layer does
+  OfxPropertySetHandle sourceImg = NULL, outputImg = NULL;
+  int srcRowBytes, srcBitDepth, dstRowBytes, dstBitDepth;
+  bool srcIsAlpha, dstIsAlpha;
+  OfxRectI dstRect, srcRect;
+  void *src, *dst;
+
+  try {
+    outputImg = ofxuGetImage(myData->outputClip, time, dstRowBytes, dstBitDepth, dstIsAlpha, dstRect, dst);
+    if(outputImg == NULL) throw OfxuNoImageException();
+
+    sourceImg = ofxuGetImage(myData->sourceClip, time, srcRowBytes, srcBitDepth, srcIsAlpha, srcRect, src);
+    if(sourceImg == NULL) throw OfxuNoImageException();
+    
+    int nComponents = dstIsAlpha ? 1 : 4;
+    
+    // set up the processor that we pass to the individual constructors
+    Processor proc(effect, nComponents,
+                   src, srcRect, srcRowBytes,
+                   dst, dstRect, dstRowBytes,
+                   renderWindow);
+    
+    // now instantiate the templated processor depending on src and dest pixel types, 9 cases in all
+    switch(dstBitDepth) {
+    case 8 : {
+      switch(srcBitDepth) {
+      case 8 :  {ProcessPix<unsigned char,  255,   0, unsigned char, 255, 0> pixProc(proc); break;}
+      case 16 : {ProcessPix<unsigned short, 65535, 0, unsigned char, 255, 0> pixProc(proc); break;}
+      case 32 : {ProcessPix<float,          1,     1, unsigned char, 255, 0> pixProc(proc); break;}
+      }
+    }
+      break;
+
+    case 16 : {
+      switch(srcBitDepth) {
+      case 8 :  {ProcessPix<unsigned char,  255,   0, unsigned short, 65535, 0> pixProc(proc); break;}
+      case 16 : {ProcessPix<unsigned short, 65535, 0, unsigned short, 65535, 0> pixProc(proc); break;}
+      case 32 : {ProcessPix<float,          1,     1, unsigned short, 65535, 0> pixProc(proc); break;}
+      }
+    }
+      break;
+
+    case 32 : {
+      switch(srcBitDepth) {
+      case 8 :  {ProcessPix<unsigned char,  255,   0, float, 1, 1> pixProc(proc); break;}
+      case 16 : {ProcessPix<unsigned short, 65535, 0, float, 1, 1> pixProc(proc); break;}
+      case 32 : {ProcessPix<float,          1,     1, float, 1, 1> pixProc(proc); break;}
+      }
+    }                          
+      break;
+    }
+  }
+  catch(OfxuNoImageException &ex) {
+    // if we were interrupted, the failed fetch is fine, just return kOfxStatOK
+    // otherwise, something wierd happened
+    if(!gEffectHost->abort(effect)) {
+      status = kOfxStatFailed;
+    }
+  }
+
+  // release the data pointers;
+  if(sourceImg)
+    gEffectHost->clipReleaseImage(sourceImg);
+  if(outputImg)
+    gEffectHost->clipReleaseImage(outputImg);
   
-  // fetch main input
-  OfxPropertySetHandle sourceImg;
-  gEffectHost->clipGetImage(myData->sourceClip, time, NULL, &sourceImg);
-  int srcRowBytes  =  ofxuGetImageRowBytes(sourceImg);
-  int srcBitDepth  =  ofxuGetImagePixelDepth(sourceImg);
-  bool srcIsAlpha  = !ofxuGetImagePixelsAreRGBA(sourceImg);
-  OfxRectI srcRect =  ofxuGetImageBounds(sourceImg);
-  void *src        =  ofxuGetImageData(sourceImg);
-
-  int nComponents = dstIsAlpha ? 1 : 4;
-
-  // set up the processor that we pass to the individual constructors
-  Processor proc(effect, nComponents,
-		 src, srcRect, srcRowBytes,
-		 dst, dstRect, dstRowBytes,
-		 renderWindow);
-
-  // now instantiate the templated processor depending on src and dest pixel types, 9 cases in all
-  switch(dstBitDepth) {
-  case 8 : {
-    switch(srcBitDepth) {
-    case 8 :  {ProcessPix<unsigned char,  255,   0, unsigned char, 255, 0> pixProc(proc); break;}
-    case 16 : {ProcessPix<unsigned short, 65535, 0, unsigned char, 255, 0> pixProc(proc); break;}
-    case 32 : {ProcessPix<float,          1,     1, unsigned char, 255, 0> pixProc(proc); break;}
-    }
-  }
-  break;
-
-  case 16 : {
-    switch(srcBitDepth) {
-    case 8 :  {ProcessPix<unsigned char,  255,   0, unsigned short, 65535, 0> pixProc(proc); break;}
-    case 16 : {ProcessPix<unsigned short, 65535, 0, unsigned short, 65535, 0> pixProc(proc); break;}
-    case 32 : {ProcessPix<float,          1,     1, unsigned short, 65535, 0> pixProc(proc); break;}
-    }
-  }
-  break;
-
-  case 32 : {
-    switch(srcBitDepth) {
-    case 8 :  {ProcessPix<unsigned char,  255,   0, float, 1, 1> pixProc(proc); break;}
-    case 16 : {ProcessPix<unsigned short, 65535, 0, float, 1, 1> pixProc(proc); break;}
-    case 32 : {ProcessPix<float,          1,     1, float, 1, 1> pixProc(proc); break;}
-    }
-  }                          
-  break;
-  }
-
-  // release the data pointers
-  gEffectHost->clipReleaseImage(sourceImg);
-  gEffectHost->clipReleaseImage(outputImg);
-  
-  return kOfxStatOK;
+  return status;
 }
 
 // Set our clip preferences 
