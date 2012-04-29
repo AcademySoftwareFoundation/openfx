@@ -1,3 +1,4 @@
+
 #ifndef _ofxOpenGLRender_h_
 #define _ofxOpenGLRender_h_
 
@@ -204,16 +205,16 @@ typedef struct OfxImageEffectOpenGLRenderSuiteV1
   host ensures it gives the requested format.
   When the clip specified is the "Output" clip, the format is ignored and
   the host must bind the resulting texture as the current color buffer
-  (render target). This may also be done prior to calling the 
+  (render target). This may also be done prior to calling the
   kOfxImageEffectActionRender or kOfxImageEffectActionAnalyse actions.
-  If the \e region parameter is not set to NULL, then it will be clipped to
+  If the \em region parameter is set to non-NULL, then it will be clipped to
   the clip's Region of Definition for the given time.
   The returned image will be \em at \em least as big as this region.
-  If the region parameter is not set, then the region fetched will be at
-  least the Region of Interest the effect has previously specified, clipped
+  If the region parameter is not set or is NULL, then the region fetched will be at
+  least the Region of Interest the effect has previously specified, clipped to
   the clip's Region of Definition.
   Information about the texture, including the texture index, is returned in
-  the \e textureHandle argument.
+  the \em textureHandle argument.
   The properties on this handle will be...
     - ::kOfxImageEffectPropOpenGLTextureIndex
     - ::kOfxImageEffectPropOpenGLTextureTarget
@@ -240,7 +241,7 @@ typedef struct OfxImageEffectOpenGLRenderSuiteV1
 returns
  - when the clip specified is the "Output" clip, the format is ignored and
    the host must bind the resulting texture as the current color buffer
-   (render target). 
+   (render target).
    This may also be done prior to calling the render or analyse actions.
 
 @returns
@@ -504,8 +505,8 @@ the output texture.
 
 \endverbatim
 
-Prior to calling the render or analyse action the host may also choose to 
-bind the output texture as the current color buffer (render target), or they 
+Prior to calling the render or analyse action the host may also choose to
+bind the output texture as the current color buffer (render target), or they
 may defer doing this until clipLoadTexture is called for the output clip.
 
 After this, it is completely up to the effect to choose what OpenGL
