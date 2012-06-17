@@ -395,9 +395,9 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   glTexParameteri(source_texture_target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-  // texture is upside down in Y from viewport
-  float tymin = 1;
-  float tymax = 0;
+  // textures are oriented with Y up (standard orientation)
+  float tymin = 0;
+  float tymax = 1;
 
   // now draw the textured quad containing the source
   glBegin(GL_QUADS);
