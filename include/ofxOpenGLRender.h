@@ -39,7 +39,8 @@ extern "C" {
 /** @file ofxOpenGLRender.h
 
 	This file contains an optional suite for performing OpenGL accelerated
-	rendering of OpenFX Image Effect Plug-ins.
+	rendering of OpenFX Image Effect Plug-ins.  For details see
+        \ref ofxOpenGLRender.
 */
 
 /** @brief The name of the OpenGL render suite, used to fetch from a host
@@ -49,9 +50,9 @@ via OfxHost::fetchSuite
 #define kOfxOpenGLRenderSuite_ext		"OfxImageEffectOpenGLRenderSuite_ext"
 
 
+#ifndef kOfxBitDepthHalf
 /** @brief String used to label the OpenGL half float (16 bit floating
 point) sample format */
-#ifndef kOfxBitDepthHalf
   #define kOfxBitDepthHalf "OfxBitDepthHalf"
 #endif
 
@@ -76,12 +77,12 @@ only)
 
 /** @brief Indicates the bit depths supported by a plug-in during OpenGL renders.
 
-    This is analogous to kOfxImageEffectPropSupportedPixelDepths. When a
+    This is analogous to ::kOfxImageEffectPropSupportedPixelDepths. When a
     plug-in sets this property, the host will try to provide buffers/textures
     in one of the supported formats. Additionally, the target buffers where
     the plug-in renders to will be set to one of the supported formats.
 
-    Unlike kOfxImageEffectPropSupportedPixelDepths, this property is
+    Unlike ::kOfxImageEffectPropSupportedPixelDepths, this property is
     optional. Shader-based effects might not really care about any
     format specifics when using OpenGL textures, so they can leave this unset
     and allow the host the decide the format.
@@ -91,12 +92,12 @@ only)
    - Property Set - plugin descriptor (read only)
    - Default - none set
    - Valid Values - This must be one of
-       - kOfxBitDepthNone (implying a clip is unconnected, not valid for an
+       - ::kOfxBitDepthNone (implying a clip is unconnected, not valid for an
          image)
-       - kOfxBitDepthByte
-       - kOfxBitDepthShort
-       - kOfxBitDepthHalf
-       - kOfxBitDepthFloat
+       - ::kOfxBitDepthByte
+       - ::kOfxBitDepthShort
+       - ::kOfxBitDepthHalf
+       - ::kOfxBitDepthFloat
 */
 #define kOfxOpenGLPropPixelDepth "OfxOpenGLPropPixelDepth"
 
@@ -130,27 +131,23 @@ OpenGL suite.
 #define kOfxImageEffectPropOpenGLEnabled "OfxImageEffectPropOpenGLEnabled"
 
 
+/** @brief Indicates the texture index of an image turned into an OpenGL
+texture by the host
 
-/**
-   These are the list of properties set when OpenGL rendering is active
-   The property set of the following actions should contain these:
+   - Type - int X 1
+   - Property Set - texture handle returned by
+`        OfxImageEffectOpenGLRenderSuiteV1::clipLoadTexture (read only)
+
+	This value should be cast to a GLuint and used as the texture index when
+        performing OpenGL texture operations.
+
+   The property set of the following actions should contain this property:
       - ::kOfxImageEffectActionRender
       - ::kOfxImageEffectActionBeginSequenceRender
       - ::kOfxImageEffectActionEndSequenceRender
       - ::kOfxImageEffectActionAnalyse
       - ::kOfxImageEffectActionBeginSequenceAnalyse
       - ::kOfxImageEffectActionEndSequenceAnalyse
-*/
-
-/** @brief Indicates the texture index of an image turned into an OpenGL
-texture by the host
-
-   - Type - int X 1
-   - Property Set - texture handle returned by
-        OfxOpenGLRenderSuiteV1::clipLoadTexture (read only)
-
-	This value should be cast to a GLuint and used as the texture index when
-        performing OpenGL texture operations.
 */
 #define kOfxImageEffectPropOpenGLTextureIndex "OfxImageEffectPropOpenGLTextureIndex"
 
@@ -160,25 +157,37 @@ texture by the host
 
    - Type - int X 1
    - Property Set - texture handle returned by
-        OfxOpenGLRenderSuiteV1::clipLoadTexture (read only)
+        OfxImageEffectOpenGLRenderSuiteV1::clipLoadTexture (read only)
 	This value should be cast to a GLenum and used as the texture target
 	when performing OpenGL texture operations.
+
+   The property set of the following actions should contain this property:
+      - ::kOfxImageEffectActionRender
+      - ::kOfxImageEffectActionBeginSequenceRender
+      - ::kOfxImageEffectActionEndSequenceRender
+      - ::kOfxImageEffectActionAnalyse
+      - ::kOfxImageEffectActionBeginSequenceAnalyse
+      - ::kOfxImageEffectActionEndSequenceAnalyse
 */
 #define kOfxImageEffectPropOpenGLTextureTarget "OfxImageEffectPropOpenGLTextureTarget"
 
 
-/** @brief OfxStatus returns indicating that a OpenGL render error has occurred
+/** @name StatusReturnValues
+OfxStatus returns indicating that a OpenGL render error has occurred:
 
-If a plug-in returns kOfxStatGLRenderFailed, the host should retry the
-render with OpenGL rendering disabled.
+ - If a plug-in returns ::kOfxStatGLRenderFailed, the host should retry the
+   render with OpenGL rendering disabled.
 
-If a plug-in returns kOfxStatGLOutOfMemory, the host may choose to free
-resources on the GPU and retry the OpenGL render, rather than immediately
-falling back to CPU rendering.
-
+ - If a plug-in returns ::kOfxStatGLOutOfMemory, the host may choose to free
+   resources on the GPU and retry the OpenGL render, rather than immediately
+   falling back to CPU rendering.
  */
+/** @{ */
+/** @brief render ran out of memory */
 #define kOfxStatGLOutOfMemory  ((int) 1001)
+/** @brief render failed in a non-memory-related way */
 #define kOfxStatGLRenderFailed ((int) 1002)
+/** @} */
 
 /** @brief OFX suite that provides image to texture conversion for OpenGL
     processing
@@ -206,7 +215,7 @@ typedef struct OfxImageEffectOpenGLRenderSuiteV1
   When the clip specified is the "Output" clip, the format is ignored and
   the host must bind the resulting texture as the current color buffer
   (render target). This may also be done prior to calling the
-  kOfxImageEffectActionRender or kOfxImageEffectActionAnalyse actions.
+  ::kOfxImageEffectActionRender or ::kOfxImageEffectActionAnalyse actions.
   If the \em region parameter is set to non-NULL, then it will be clipped to
   the clip's Region of Definition for the given time.
   The returned image will be \em at \em least as big as this region.
@@ -256,7 +265,7 @@ returns
   - ::kOfxStatErrMemory    - not enough OpenGL memory was available for the
                              effect to load the texture.
                              The plugin should abort the GL render and
-			     return kOfxStatErrMemory, after which the host can
+			     return ::kOfxStatErrMemory, after which the host can
 			     decide to retry the operation with CPU based processing.
 
 \note
@@ -326,10 +335,10 @@ to do OpenGL rendering in an instance. For example...
      context so it can share buffers.
 
 The plugin will be responsible for deallocating any such shared resource in the
-\ref kOfxActionOpenGLContextDetached action.
+\ref ::kOfxActionOpenGLContextDetached action.
 
-A host cannot call kOfxActionOpenGLContextAttached on the same instance
-without an intervening kOfxActionOpenGLContextDetached. A host can have a
+A host cannot call ::kOfxActionOpenGLContextAttached on the same instance
+without an intervening ::kOfxActionOpenGLContextDetached. A host can have a
 plugin swap OpenGL contexts by issuing a attach/detach for the first context
 then another attach for the next context.
 
@@ -340,11 +349,11 @@ The arguments to the action are...
   \arg outArgs - is redundant and set to null
 
 A plugin can return...
-  - kOfxStatOK, the action was trapped and all was well
-  - kOfxStatReplyDefault, the action was ignored, but all was well anyway
-  - kOfxStatErrMemory, in which case this may be called again after a memory
+  - ::kOfxStatOK, the action was trapped and all was well
+  - ::kOfxStatReplyDefault, the action was ignored, but all was well anyway
+  - ::kOfxStatErrMemory, in which case this may be called again after a memory
     purge
-  - kOfxStatFailed, something went wrong, but no error code appropriate,
+  - ::kOfxStatFailed, something went wrong, but no error code appropriate,
     the plugin should to post a message if possible and the host should not
     attempt to run the plugin in OpenGL render mode.
 */
@@ -354,10 +363,10 @@ A plugin can return...
 OpenGL context
 
 The purpose of this action is to allow a plugin to deallocate any resource
-allocated in \ref kOfxActionOpenGLContextAttached just before the host
+allocated in \ref ::kOfxActionOpenGLContextAttached just before the host
 decouples a plugin from an OpenGL context.
 The host must call this with the same OpenGL context active as it
-called with the corresponding kOfxActionOpenGLContextAttached.
+called with the corresponding ::kOfxActionOpenGLContextAttached.
 
 The arguments to the action are...
   \arg handle - handle to the plug-in instance, cast to an
@@ -366,11 +375,11 @@ The arguments to the action are...
   \arg outArgs - is redundant and set to null
 
 A plugin can return...
-  - kOfxStatOK, the action was trapped and all was well
-  - kOfxStatReplyDefault, the action was ignored, but all was well anyway
-  - kOfxStatErrMemory, in which case this may be called again after a memory
+  - ::kOfxStatOK, the action was trapped and all was well
+  - ::kOfxStatReplyDefault, the action was ignored, but all was well anyway
+  - ::kOfxStatErrMemory, in which case this may be called again after a memory
     purge
-  - kOfxStatFailed, something went wrong, but no error code appropriate,
+  - ::kOfxStatFailed, something went wrong, but no error code appropriate,
     the plugin should to post a message if possible and the host should not
     attempt to run the plugin in OpenGL render mode.
 */
@@ -390,8 +399,8 @@ of their outputs. The basic scheme is simple....
     ::kOfxImageEffectOpenGLRenderSupported on it's descriptor
   - In an effect's ::kOfxImageEffectActionGetClipPreferences action, an
     effect indicates what clips it will be loading images from onto the GPU's
-    memory during an effect's kOfxImageEffectActionRender or
-    kOfxImageEffectActionAnalyse actions.
+    memory during an effect's ::kOfxImageEffectActionRender or
+    ::kOfxImageEffectActionAnalyse actions.
 
 @section ofxOpenGLRenderHouseKeeping OpenGL House Keeping
 
@@ -421,7 +430,7 @@ actions...
   - ::kOfxImageEffectActionAnalyse
 
 If an effect has indicated that it optionally supports OpenGL acceleration,
-it should check the property kOfxImageEffectPropOpenGLEnabled
+it should check the property ::kOfxImageEffectPropOpenGLEnabled
 passed as an in argument to the following actions,
   - ::kOfxImageEffectActionRender
   - ::kOfxImageEffectActionBeginSequenceRender
@@ -517,19 +526,19 @@ operations to render with, including projections and so on.
 The host is only required to make the OpenGL context current (e.g.,
 using wglMakeCurrent, for Windows) during the following actions:
 
-   - kOfxImageEffectActionRender
-   - kOfxImageEffectActionBeginSequenceRender
-   - kOfxImageEffectActionEndSequenceRender
-   - kOfxImageEffectActionAnalyse
-   - kOfxImageEffectActionBeginSequenceAnalyse
-   - kOfxImageEffectActionEndSequenceAnalyse
-   - kOfxActionOpenGLContextAttached
-   - kOfxActionOpenGLContextDetached
+   - ::kOfxImageEffectActionRender
+   - ::kOfxImageEffectActionBeginSequenceRender
+   - ::kOfxImageEffectActionEndSequenceRender
+   - ::kOfxImageEffectActionAnalyse
+   - ::kOfxImageEffectActionBeginSequenceAnalyse
+   - ::kOfxImageEffectActionEndSequenceAnalyse
+   - ::kOfxActionOpenGLContextAttached
+   - ::kOfxActionOpenGLContextDetached
 
 For the first 6 actions, Render through EndSequenceAnalyse, the host is only
-required to set the OpenGL context if kOfxImageEffectPropOpenGLEnabled is
+required to set the OpenGL context if ::kOfxImageEffectPropOpenGLEnabled is
 set.  In other words, a plug-in should not expect the OpenGL context to be
-current for other OFX calls, such as kOfxImageEffectActionDescribeInContext.
+current for other OFX calls, such as ::kOfxImageEffectActionDescribeInContext.
 
 */
 
