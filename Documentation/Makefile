@@ -1,5 +1,5 @@
-# where to get our style shee from
-STYLESHEETARCHIVE = http://docbook.xml-doc.org/snapshots/docbook-xsl-snapshot.tar.bz2
+# where to get our style sheet from
+STYLESHEETARCHIVE = http://docbook.sourceforge.net/snapshot/docbook-xsl-snapshot.zip
 
 # local stylesheet dir as it takes ages over a network connection
 STYLESHEETDIR = docbook-xsl-snapshot/xhtml/
@@ -56,9 +56,9 @@ chunkreference : ofxProgrammingReference.html
 	mv *.html Reference
 
 docbook-xsl-snapshot :
-	curl $(STYLESHEETARCHIVE) > docbook-xsl-snapshot_download.bz2; \
-	tar xfj docbook-xsl-snapshot_download.bz2; \
-	rm -f docbook-xsl-snapshot_download.bz2;
+	curl $(STYLESHEETARCHIVE) > docbook-xsl-snapshot_download.zip; \
+	unzip docbook-xsl-snapshot_download.zip; \
+	rm -f docbook-xsl-snapshot_download.zip;
 
 # Common srcs
 COMMON_SRCS = header.xml \
@@ -69,7 +69,7 @@ GUIDE_SRCS = header.xml ofxProgrammingGuide.xml
 
 ofxProgrammingGuide.html : $(GUIDE_SRCS) docbook-xsl-snapshot
 	cat  header.xml ofxProgrammingGuide.xml > tmp.xml
-	xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)/$(STYLESHEET) tmp.xml
+	-xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)/$(STYLESHEET) tmp.xml
 	rm -f tmp.xml
 
 # programming reference, all in one 
@@ -85,7 +85,7 @@ REF_SRCS = ofxProgrammingReference.xml \
 
 ofxProgrammingReference.html : $(REF_SRCS) docbook-xsl-snapshot
 	cat  header.xml $(<:.html=.xml) > tmp.xml
-	xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)/$(STYLESHEET) tmp.xml
+	-xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)/$(STYLESHEET) tmp.xml
 	rm -f tmp.xml
 
 # generate property definitions from the property headers
