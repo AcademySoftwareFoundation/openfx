@@ -1,42 +1,32 @@
-#! /bin/tcsh 
+#! /bin/sh 
 
-if ($#argv < 1) then
-  echo 'USAGE : genRelease LABEL [CVSTAG]'
-  echo where 
+die()
+{
+  echo '*** ERROR ***' $*
+  exit 1
+}
+
+if [ $# -lt 1 ] ; then
+  echo 'USAGE : genRelease LABEL'
   echo '   LABEL is the label for the release'
-  echo '   CVSTAG is an optional CVS tag to checkout, the default is the head'
-endif
+  exit 1
+fi
 
-set LABEL = $1
-set CVSTAG = HEAD
-if ($#argv >  1) then
-  set CVSTAG = $2
-endif
 
-set CHECKOUTPATH = ./OFXRELEASE
+LABEL=$1; shift
 
-echo Checking out to $CHECKOUTPATH, release is $LABEL, cvs tag is $CVSTAG.
-
-if (-d $CHECKOUTPATH) then
-    rm -rf $CHECKOUTPATH
-endif
-
-mkdir $CHECKOUTPATH
-
-pushd  $CHECKOUTPATH
-
-cvs -d :pserver:anonymous@openfx.cvs.sourceforge.net:/cvsroot/openfx co -r $CVSTAG include Examples
-
+set -v
 cd include
 
-doxygen ofx.doxy
+doxygen ofx.doxy  || die "building docs"
 
-mv doc/html ../doc
+rm -rf ../doc/html
+mv doc/html ../doc || die "Moving docs"
 
 cd ..
 
-tar cvf - doc | gzip > openfx-doc-$LABEL.tar.gz 
-tar cvf - Examples | gzip > openfx-examples-$LABEL.tar.gz 
-tar cvf - include | gzip > openfx-include-$LABEL.tar.gz 
+(tar cf - doc | gzip > openfx-doc-$LABEL.tar.gz)  || die "Tarring docs"
+(tar cf - Examples | gzip > openfx-examples-$LABEL.tar.gz) || die "Tarring examples"
+(tar cf - include | gzip > openfx-include-$LABEL.tar.gz) || die "Tarring include"
 
 echo YOU NOW NEED TO COPY THIS TO frs.sourceforge.net and ADD THE RELEASE VIA THE SF WEB INTERFACE
