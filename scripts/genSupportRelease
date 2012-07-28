@@ -1,0 +1,42 @@
+#! /bin/tcsh -v
+
+if ($#argv < 1) then
+  echo 'USAGE : genSupportRelease LABEL [CVSTAG]'
+  echo where 
+  echo '   LABEL is the label for the release'
+  echo '   CVSTAG is an optional CVS tag to checkout, the default is the head'
+endif
+
+set LABEL = $1
+set CVSTAG = HEAD
+if ($#argv >  1) then
+  set CVSTAG = $2
+endif
+
+set CHECKOUTPATH = ./OFXSUPPORTRELEASE
+
+echo Checking out to $CHECKOUTPATH, release is $LABEL, cvs tag is $CVSTAG.
+
+if (-d $CHECKOUTPATH) then
+    rm -rf $CHECKOUTPATH
+endif
+
+mkdir $CHECKOUTPATH
+
+pushd  $CHECKOUTPATH
+
+cvs -d:pserver:anonymous@openfx.cvs.sourceforge.net:/cvsroot/openfx checkout -r $CVSTAG Support
+
+cd Support
+
+doxygen support.doxy
+
+mv doc/html ../doc
+
+cd ..
+
+tar cvf - doc | gzip > openfxSupport-doc-$LABEL.tar.gz 
+tar cvf - Support | gzip > openfxSupport-src-$LABEL.tar.gz 
+
+echo YOU NOW NEED TO COPY THIS TO frs.sourceforge.net and ADD THE RELEASE VIA THE SF WEB INTERFACE
+
