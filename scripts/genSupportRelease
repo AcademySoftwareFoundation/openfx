@@ -1,0 +1,29 @@
+#! /bin/sh 
+
+die()
+{
+  echo '*** ERROR ***' $*
+  exit 1
+}
+
+if [ $# -lt 1 ] ; then
+  echo 'USAGE : genSupportRelease LABEL'
+  echo '   LABEL is the label for the release'
+fi
+
+LABEL=$1; shift
+
+cd Support
+
+doxygen support.doxy || die "building doc"
+
+rm -rf ../doc/html
+mv doc/html ../doc || die "Moving docs"
+
+cd ..
+
+(tar cf - doc | gzip > openfxSupport-doc-$LABEL.tar.gz) || die "Tarring support docs"
+(tar cf - Support | gzip > openfxSupport-src-$LABEL.tar.gz) || die "Tarring support srcs"
+
+echo YOU NOW NEED TO COPY THIS TO frs.sourceforge.net and ADD THE RELEASE VIA THE SF WEB INTERFACE
+
