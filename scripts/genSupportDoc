@@ -1,0 +1,31 @@
+#! /bin/tcsh
+
+set CHECKOUTPATH = ./OFXSUPPORTDOC
+
+echo Checking out to $CHECKOUTPATH
+
+if (-d $CHECKOUTPATH) then
+    rm -rf $CHECKOUTPATH
+endif
+
+mkdir $CHECKOUTPATH
+
+pushd  $CHECKOUTPATH
+
+cvs -z3 -d:pserver:anonymous@openfx.cvs.sourceforge.net:/cvsroot/openfx co -P Support
+
+cd Support
+
+doxygen support.doxy
+
+if (-d /home/groups/o/op/openfx/htdocs/Documentation/SupportDoxygen) then
+	rm -rf /home/groups/o/op/openfx/htdocs/Documentation/SupportDoxygen
+endif
+
+mv doc/html /home/groups/o/op/openfx/htdocs/Documentation/SupportDoxygen
+cd /home/groups/o/op/openfx/htdocs/Documentation/
+tar cvzf supportDoxygenDocs.tgz SupportDoxygen
+
+popd
+
+rm -rf $CHECKOUTPATH
