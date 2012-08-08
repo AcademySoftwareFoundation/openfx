@@ -47,7 +47,7 @@ extern "C" {
 via OfxHost::fetchSuite
 */
 #define kOfxOpenGLRenderSuite			"OfxImageEffectOpenGLRenderSuite"
-#define kOfxOpenGLRenderSuite_ext		"OfxImageEffectOpenGLRenderSuite_ext"
+//#define kOfxOpenGLRenderSuite_ext		"OfxImageEffectOpenGLRenderSuite_ext"
 
 
 #ifndef kOfxBitDepthHalf
@@ -115,9 +115,6 @@ the current action
       - ::kOfxImageEffectActionRender
       - ::kOfxImageEffectActionBeginSequenceRender
       - ::kOfxImageEffectActionEndSequenceRender
-      - ::kOfxImageEffectActionAnalyse
-      - ::kOfxImageEffectActionBeginSequenceAnalyse
-      - ::kOfxImageEffectActionEndSequenceAnalyse
    - Valid Values
       - 0 indicates that the effect cannot use the OpenGL suite
       - 1 indicates that the effect should render into the texture,
@@ -145,9 +142,6 @@ texture by the host
       - ::kOfxImageEffectActionRender
       - ::kOfxImageEffectActionBeginSequenceRender
       - ::kOfxImageEffectActionEndSequenceRender
-      - ::kOfxImageEffectActionAnalyse
-      - ::kOfxImageEffectActionBeginSequenceAnalyse
-      - ::kOfxImageEffectActionEndSequenceAnalyse
 */
 #define kOfxImageEffectPropOpenGLTextureIndex "OfxImageEffectPropOpenGLTextureIndex"
 
@@ -165,9 +159,6 @@ texture by the host
       - ::kOfxImageEffectActionRender
       - ::kOfxImageEffectActionBeginSequenceRender
       - ::kOfxImageEffectActionEndSequenceRender
-      - ::kOfxImageEffectActionAnalyse
-      - ::kOfxImageEffectActionBeginSequenceAnalyse
-      - ::kOfxImageEffectActionEndSequenceAnalyse
 */
 #define kOfxImageEffectPropOpenGLTextureTarget "OfxImageEffectPropOpenGLTextureTarget"
 
@@ -215,7 +206,7 @@ typedef struct OfxImageEffectOpenGLRenderSuiteV1
   When the clip specified is the "Output" clip, the format is ignored and
   the host must bind the resulting texture as the current color buffer
   (render target). This may also be done prior to calling the
-  ::kOfxImageEffectActionRender or ::kOfxImageEffectActionAnalyse actions.
+  ::kOfxImageEffectActionRender action.
   If the \em region parameter is set to non-NULL, then it will be clipped to
   the clip's Region of Definition for the given time.
   The returned image will be \em at \em least as big as this region.
@@ -251,7 +242,7 @@ returns
  - when the clip specified is the "Output" clip, the format is ignored and
    the host must bind the resulting texture as the current color buffer
    (render target).
-   This may also be done prior to calling the render or analyse actions.
+   This may also be done prior to calling the render action.
 
 @returns
   - ::kOfxStatOK           - the image was successfully fetched and returned
@@ -399,8 +390,7 @@ of their outputs. The basic scheme is simple....
     ::kOfxImageEffectOpenGLRenderSupported on it's descriptor
   - In an effect's ::kOfxImageEffectActionGetClipPreferences action, an
     effect indicates what clips it will be loading images from onto the GPU's
-    memory during an effect's ::kOfxImageEffectActionRender or
-    ::kOfxImageEffectActionAnalyse actions.
+    memory during an effect's ::kOfxImageEffectActionRender action.
 
 @section ofxOpenGLRenderHouseKeeping OpenGL House Keeping
 
@@ -424,10 +414,9 @@ ways....
 
 Hosts can examine this flag and respond to it appropriately.
 
-Effects can use OpenGL accelerated rendering during the following two
-actions...
+Effects can use OpenGL accelerated rendering during the following
+action...
   - ::kOfxImageEffectActionRender
-  - ::kOfxImageEffectActionAnalyse
 
 If an effect has indicated that it optionally supports OpenGL acceleration,
 it should check the property ::kOfxImageEffectPropOpenGLEnabled
@@ -435,9 +424,6 @@ passed as an in argument to the following actions,
   - ::kOfxImageEffectActionRender
   - ::kOfxImageEffectActionBeginSequenceRender
   - ::kOfxImageEffectActionEndSequenceRender
-  - ::kOfxImageEffectActionAnalyse
-  - ::kOfxImageEffectActionBeginSequenceAnalyse
-  - ::kOfxImageEffectActionEndSequenceAnalyse
 
 If this property is set to 0, then it should not attempt to use any calls to
 the OpenGL suite or OpenGL calls whilst rendering.
@@ -497,7 +483,7 @@ CPU. The effect must leave output on the graphics card in the provided output
 image texture buffer.
 
 The host will create a default OpenGL viewport that is the size of the
-render window passed to the render or analyse action. The following
+render window passed to the render action. The following
 code snippet shows how the viewport should be rooted at the bottom left of
 the output texture.
 
@@ -514,7 +500,7 @@ the output texture.
 
 \endverbatim
 
-Prior to calling the render or analyse action the host may also choose to
+Prior to calling the render action the host may also choose to
 bind the output texture as the current color buffer (render target), or they
 may defer doing this until clipLoadTexture is called for the output clip.
 
@@ -529,13 +515,10 @@ using wglMakeCurrent, for Windows) during the following actions:
    - ::kOfxImageEffectActionRender
    - ::kOfxImageEffectActionBeginSequenceRender
    - ::kOfxImageEffectActionEndSequenceRender
-   - ::kOfxImageEffectActionAnalyse
-   - ::kOfxImageEffectActionBeginSequenceAnalyse
-   - ::kOfxImageEffectActionEndSequenceAnalyse
    - ::kOfxActionOpenGLContextAttached
    - ::kOfxActionOpenGLContextDetached
 
-For the first 6 actions, Render through EndSequenceAnalyse, the host is only
+For the first 3 actions, Render through EndSequenceRender, the host is only
 required to set the OpenGL context if ::kOfxImageEffectPropOpenGLEnabled is
 set.  In other words, a plug-in should not expect the OpenGL context to be
 current for other OFX calls, such as ::kOfxImageEffectActionDescribeInContext.
