@@ -307,7 +307,8 @@ operation on the instance.
     - Valid Values - 0 or 1
 
 Set by a host on a parameter instance to indicate if the parameter has a non-constant value set on it. This can
-be as a consequence of animation or of scripting modifying the value.
+be as a consequence of animation or of scripting modifying the value, or of a parameter being connected to
+an expression in the host.
 */
 #define kOfxParamPropIsAnimating "OfxParamPropIsAnimating"
 
@@ -810,6 +811,9 @@ If set to 0, it implies the user can specify a new file name, not just a pre-exi
     value to be passed to a kOfxParamPropStringMode property  */
 #define kOfxParamStringIsLabel         "OfxParamStringIsLabel"
 
+/** @brief String value on the OfxParamPropStringMode property of a
+    string parameter (added in 1.3) */
+#define kOfxParamStringIsRichTextFormat "OfxParamStringIsRichTextFormat"
 
 /** @brief Used by interpolating custom parameters to get and set interpolated values.
     - Type - C string X 1 or 2
