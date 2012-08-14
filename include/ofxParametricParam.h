@@ -248,8 +248,8 @@ typedef struct OfxParametricParameterSuiteV1 {
    */
   OfxStatus (*parametricParamSetNthControlPoint)(OfxParamHandle param,
                                                  int   curveIndex,
-                                                 double time,,
-                                                 int   nthCtl
+                                                 double time,
+                                                 int   nthCtl,
                                                  double key,
                                                  double value,
                                                  bool addAnimationKey);
