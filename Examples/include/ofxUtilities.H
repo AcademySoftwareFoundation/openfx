@@ -1,4 +1,5 @@
 #ifndef __ofxUtilities_H_
+#define __ofxUtilities_H_
 
 #include "ofxMessage.h"
 #include "ofxPixels.h"
