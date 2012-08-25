@@ -1,0 +1,74 @@
+#! /bin/sh 
+
+# Upload all the files for a release to Sourceforge (and anywhere else they need to go)
+
+# Do this after you've made sure all is ready, run genRelease, and tested out the docs.
+
+die()
+{
+  echo '*** ERROR ***' $*
+  exit 1
+}
+
+if [ $# -lt 2 ] ; then
+  echo 'USAGE : uploadRelease LABEL SF_USER'
+  echo '   LABEL is the label for the release'
+  echo '   SF_USER is your Sourceforge user name (must have admin, and ssh key in your agent)'
+  exit 1
+fi
+
+
+LABEL=$1; shift
+SF_USER=$1; shift
+
+# This ends up issuing commands something like this:
+# scp *.tar.gz garyo@frs.sourceforge.net:/home/frs/project/openfx/openfx/-1.3
+
+RSYNC='rsync'
+RSYNCOPTS='-v -e ssh'
+SF_MACHINE='frs.sourceforge.net'
+SF_TOPDIR='/home/frs/project/openfx'
+SFWEB_MACHINE='web.sourceforge.net'
+SFWEB_TOPDIR='/home/project-web/openfx/htdocs'
+
+set -x
+
+#
+# Upload the release files:
+#
+$RSYNC $RSYNCOPTS *.tar.gz $SF_USER@$SF_MACHINE:$SF_TOPDIR/openfx/openfx-$LABEL/
+
+#
+# Upload the docs to SF:
+#
+
+# Sourceforge (project) web site is on
+#   web.sourceforge.net:/home/project-web/openfx/htdocs
+# Our copy of the important files is in website/.
+# We update index.html (main page), Documentation/index.html (to add new release), and
+# the actual doc files into Documentation/X.Y/*
+
+# Tar up the doc files since we make them available as tgz files:
+tar zcf Documentation/ofxDoxygenDocs_$LABEL.tgz doc
+tar zcf Documentation/ofxProgrammingReference_$LABEL.tgz Documentation/Reference
+
+# Now upload everything
+scp website/htdocs/index.html  \
+  $SF_USER@$SFWEB_MACHINE:$SFWEB_TOPDIR/index.html
+scp website/htdocs/Documentation/index.html  \
+  $SF_USER@$SFWEB_MACHINE:$SFWEB_TOPDIR/Documentation/index.html
+
+$RSYNC -az $RSYNCOPTS \
+  Documentation/ofxProgrammingReference.html \
+  Documentation/ofxProgrammingGuide.html \
+  Documentation/ofxProgrammingReference_$LABEL.tgz \
+  Documentation/ofxDoxygenDocs_$LABEL.tgz \
+  Documentation/Reference \
+  Documentation/sourceforge/index.html  \
+ $SF_USER@$SFWEB_MACHINE:$SFWEB_TOPDIR/Documentation/$LABEL
+# Do this separately due to name change
+$RSYNC -az $RSYNCOPTS doc/ \
+  $SF_USER@$SFWEB_MACHINE:$SFWEB_TOPDIR/Documentation/$LABEL/Doxygen
+
+
+
