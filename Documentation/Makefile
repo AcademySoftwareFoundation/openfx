@@ -1,8 +1,8 @@
 # where to get our style sheet from
-STYLESHEETARCHIVE = http://docbook.sourceforge.net/snapshot/docbook-xsl-snapshot.zip
-
+#STYLESHEETARCHIVE = http://docbook.sourceforge.net/snapshot/docbook-xsl-snapshot.zip
+STYLESHEETARCHIVE = http://downloads.sourceforge.net/project/docbook/docbook-xsl/1.77.1/docbook-xsl-1.77.1.zip
 # local stylesheet dir as it takes ages over a network connection
-STYLESHEETDIR = docbook-xsl-snapshot/xhtml/
+STYLESHEETDIR = docbook-xsl-1.77.1/xhtml/
 
 # stylesheet to use
 STYLESHEET = docbook.xsl 
@@ -21,7 +21,8 @@ PROPERTY_HEADER_FILES = ../include/ofxParam.h \
 	../include/ofxInteract.h \
 	../include/ofxCore.h \
 	../include/ofxKeySyms.h \
-	../include/ofxParametricParam.h
+	../include/ofxParametricParam.h \
+	../include/ofxOpenGLRender.h
 
 # files generate from the C comments in the actual headers and used as reference
 PROPERY_SUITE_REFERENCE_FILES = \
@@ -31,11 +32,12 @@ PROPERY_SUITE_REFERENCE_FILES = \
 	ofxThreadingSuiteReference.xml \
 	ofxImageEffectSuiteReference.xml \
 	ofxProgressSuiteReference.xml \
-  ofxInteractSuiteReference.xml \
+	ofxInteractSuiteReference.xml \
 	ofxTimeLineSuiteReference.xml \
 	ofxMessageSuiteV1Reference.xml \
 	ofxMessageSuiteV2Reference.xml \
-	ofxParametricParamReference.xml 
+	ofxParametricParamReference.xml \
+	ofxOpenGLRenderSuiteReference.xml
 
 all : chunks ofxProgrammingGuide.html ofxProgrammingReference.html
 
@@ -55,10 +57,10 @@ chunkreference : ofxProgrammingReference.html
 	mkdir -p Reference
 	mv *.html Reference
 
-docbook-xsl-snapshot :
-	curl $(STYLESHEETARCHIVE) > docbook-xsl-snapshot_download.zip; \
-	unzip docbook-xsl-snapshot_download.zip; \
-	rm -f docbook-xsl-snapshot_download.zip;
+docbook-xsl :
+	wget --output-document=docbook-xsl-download.zip '$(STYLESHEETARCHIVE)'; \
+	unzip -o docbook-xsl-download.zip; \
+	rm -f docbook-xsl-download.zip
 
 # Common srcs
 COMMON_SRCS = header.xml \
@@ -67,7 +69,7 @@ COMMON_SRCS = header.xml \
 # programming guide, all in one
 GUIDE_SRCS = header.xml ofxProgrammingGuide.xml 
 
-ofxProgrammingGuide.html : $(GUIDE_SRCS) docbook-xsl-snapshot
+ofxProgrammingGuide.html : $(GUIDE_SRCS) docbook-xsl
 	cat  header.xml ofxProgrammingGuide.xml > tmp.xml
 	-xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)/$(STYLESHEET) tmp.xml
 	rm -f tmp.xml
@@ -83,7 +85,7 @@ REF_SRCS = ofxProgrammingReference.xml \
 	clipPreferencesChapter.xml \
 	ofxParameterChapter.xml 
 
-ofxProgrammingReference.html : $(REF_SRCS) docbook-xsl-snapshot
+ofxProgrammingReference.html : $(REF_SRCS) docbook-xsl
 	cat  header.xml $(<:.html=.xml) > tmp.xml
 	-xsltproc -o $@ $(XSLARGS) $(STYLESHEETDIR)/$(STYLESHEET) tmp.xml
 	rm -f tmp.xml
@@ -137,5 +139,8 @@ ofxMessageSuiteV2Reference.xml : ../include/ofxMessage.h
 ofxParametricParamReference.xml : ../include/ofxParametricParam.h
 	./getSuiteReference.perl OfxParametricParameterSuiteV1 $^ > $@
 
+ofxOpenGLRenderSuiteReference.xml : ../include/ofxOpenGLRender.h
+	./getSuiteReference.perl OfxImageEffectOpenGLRenderSuiteV1 $^ > $@
+
 clean :
-	rm -rf *.html props $(PROPERY_SUITE_REFERENCE_FILES) ofxPropertiesReference.xml Reference Guide docbook-xsl-snapshot
+	rm -rf *.html props $(PROPERY_SUITE_REFERENCE_FILES) ofxPropertiesReference.xml Reference Guide docbook-xsl

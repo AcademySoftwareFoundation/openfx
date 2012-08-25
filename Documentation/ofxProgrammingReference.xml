@@ -1,6 +1,6 @@
 <book>
   <bookinfo>
-    <title>The OFX Image Effect Plug-in API, 1.2, Programming Reference.</title>
+    <title>The OFX Image Effect Plug-in API, 1.3, Programming Reference.</title>
 
     <author>
       <firstname>Bruno</firstname>
@@ -9,17 +9,17 @@
     </author>
 
     <copyright>
-      <year>2005-2010</year>
+      <year>2005-2012</year>
 
       <holder>The Open Effects Association</holder>
     </copyright>
 
-    <releaseinfo>Document version 1.2.1</releaseinfo>
+    <releaseinfo>Document version 1.3</releaseinfo>
   </bookinfo>
 
   <preface>
     <title>Foreword</title>
-    <para>This is a mostly complete reference guide to the OFX image effect plugin architecture. It is a backwards compatible update to the 1.1 version of the API. The changes to the API are listed in an addendum.
+    <para>This is a mostly complete reference guide to the OFX image effect plugin architecture. It is a backwards compatible update to the 1.2 version of the API. The changes to the API are listed in an addendum.
     </para>
   </preface>
   
@@ -1258,7 +1258,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	<itemizedlist>
 	  <listitem>an input clip names 'Source'</listitem>
 	  <listitem>an output clip named 'Output'</listitem>
-	  <listitem>a 1D double parameter named 'SourceTime" (see <link linkend="ImageEffectContextMandatedParameters">Mandated Parameters</link>)</listitem>
+	  <listitem>a 1D double parameter named 'SourceTime' (see <link linkend="ImageEffectContextMandatedParameters">Mandated Parameters</link>)</listitem>
 	</itemizedlist>
       </para>
 
@@ -2771,6 +2771,16 @@ the <link linkend="kOfxParamPropCustomValue"><code>kOfxParamPropCustomValue</cod
     </para>
     &ofxMessageSuiteV2Reference;
   </section>
+  
+  <section id="OpenGLRenderSuite">
+    <title>OpenGL Render Suite</title>
+    <para>
+    The OpenGL Render Suite is used to transfer images between host and plug-in using OpenGL.
+    This speeds processing when the host and plug-in can both process on the GPU.
+    </para>
+    &ofxOpenGLRenderSuiteReference;
+  </section>
+
   </chapter>
   
   <chapter id="PropertiesByObject">

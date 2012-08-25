@@ -15,6 +15,7 @@ processFile("../include/ofxMemory.h");
 processFile("../include/ofxMessage.h");
 processFile("../include/ofxParam.h");
 processFile("../include/ofxParametricParam.h");
+processFile("../include/ofxOpenGLRender.h");
 
 exit;
 

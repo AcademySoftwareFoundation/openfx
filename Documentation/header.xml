@@ -17,6 +17,7 @@
 <!ENTITY ofxTimeLineSuiteReference    SYSTEM "ofxTimeLineSuiteReference.xml">
 <!ENTITY ofxMessageSuiteV1Reference    SYSTEM "ofxMessageSuiteV1Reference.xml">
 <!ENTITY ofxMessageSuiteV2Reference    SYSTEM "ofxMessageSuiteV2Reference.xml">
+<!ENTITY ofxOpenGLRenderSuiteReference SYSTEM "ofxOpenGLRenderSuiteReference.xml">
 <!ENTITY ofxParametricParamSuiteReference    SYSTEM "ofxParametricParamReference.xml">
 <!ENTITY ofxHostStruct    SYSTEM "ofxHostStruct.xml">
 <!ENTITY ofxPluginStruct    SYSTEM "ofxPluginStruct.xml">
