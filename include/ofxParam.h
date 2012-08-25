@@ -886,7 +886,7 @@ typedef struct OfxParameterSuiteV1 {
   This function does not actually create a parameter, it only says that one should exist in any subsequent instances. To fetch an
   parameter instance paramGetHandle must be called on an instance.
 
-  This function can always be called in one of a plug-in's 'describe' functions which defines the parameter sets common to all instances of a plugin.
+  This function can always be called in one of a plug-in's "describe" functions which defines the parameter sets common to all instances of a plugin.
 
 @returns
   - ::kOfxStatOK             - the parameter was created correctly
@@ -1080,6 +1080,20 @@ typedef struct OfxParameterSuiteV1 {
 				   ...);
 
 
+/** @name Keyframe Handling
+
+These functions allow the plug-in to delete and get information about keyframes.
+
+To set keyframes, use paramSetValueAtTime().
+
+paramGetKeyTime and paramGetKeyIndex use indices to refer to keyframes.
+Keyframes are stored by the host in increasing time order, so time(kf[i]) < time(kf[i+1]).
+Keyframe indices will change whenever keyframes are added, deleted, or moved in time,
+whether by the host or by the plug-in.  They may vary between actions if the user
+changes a keyframe.  The keyframe indices will not change within a single action.
+ */
+/** @{ */
+
   /** @brief Returns the number of keyframes in the parameter
 
   \arg paramHandle parameter handle to interogate
@@ -1157,6 +1171,8 @@ typedef struct OfxParameterSuiteV1 {
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
   */
   OfxStatus (*paramDeleteAllKeys)(OfxParamHandle  paramHandle);
+
+/** @} */
 
   /** @brief Copies one parameter to another, including any animation etc...
 
