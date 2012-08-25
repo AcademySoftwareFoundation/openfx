@@ -260,7 +260,7 @@ sub WriteSuiteFunctionRef
             # remove any leading dashes
             $desc =~ s/^-\s*//;
 
-	    print STDERR "Found arg <$argName>, desc: <$desc>\n";
+	    # print STDERR "Found arg <$argName>, desc: <$desc>\n";
             $args->{$argName}->{desc} = $desc;
 
             # all you lines are belong to us, until we get to another \arg or a blank
