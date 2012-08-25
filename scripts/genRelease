@@ -16,13 +16,27 @@ fi
 LABEL=$1; shift
 
 set -v
-cd include
 
-doxygen ofx.doxy  || die "building docs"
+if [ `git ls-files --modified | wc -l` -ne 0 ]; then
+  die "You have modified files; commit to git first before building release!"
+fi
+
+git clean -f	   # start clean; remove everything not managed by git
+
+cd include
+rm -r doc
+
+# Build the doxygen docs)
+doxygen ofx.doxy  || die "building doxygen docs"
 
 rm -rf ../doc/html
-mv doc/html ../doc || die "Moving docs"
+mv doc/html ../doc || die "Moving doxygen docs"
 
+cd ..
+
+# Build the ProgrammingGuide and ProgrammingReference
+cd Documentation
+make || die "building Programming Guide and Reference"
 cd ..
 
 (tar cf - doc | gzip > openfx-doc-$LABEL.tar.gz)  || die "Tarring docs"
