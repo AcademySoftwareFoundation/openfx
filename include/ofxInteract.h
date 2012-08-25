@@ -170,9 +170,9 @@ This is used to indicate the status of the 'pen' in an interact. If a pen has on
 */
 /*@{*/
 /**
-   \defgroup InteractActions Intereact Actions
+   \defgroup InteractActions Interact Actions
 
-These are the list of actions passed to an interacts' entry point function. For more details on how to deal with actions, see \ref InteractActions.
+These are the list of actions passed to an interact's entry point function. For more details on how to deal with actions, see \ref InteractActions.
 */
 /*@{*/
 

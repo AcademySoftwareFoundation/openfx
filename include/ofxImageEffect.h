@@ -83,23 +83,23 @@ Note, this has been deprecated.
  */
 #define kOfxImageComponentYUVA "OfxImageComponentYUVA"
 
-/** @brief Use to define the generator image effect context. See \ref ImageEffectContexts
+/** @brief Use to define the generator image effect context. See \ref ::kOfxImageEffectPropContext
  */
 #define kOfxImageEffectContextGenerator "OfxImageEffectContextGenerator"
 
-/** @brief Use to define the filter effect image effect context See \ref ImageEffectContexts */
+/** @brief Use to define the filter effect image effect context See \ref ::kOfxImageEffectPropContext */
 #define kOfxImageEffectContextFilter "OfxImageEffectContextFilter"
 
-/** @brief Use to define the transition image effect context See \ref ImageEffectContexts */
+/** @brief Use to define the transition image effect context See \ref ::kOfxImageEffectPropContext */
 #define kOfxImageEffectContextTransition "OfxImageEffectContextTransition"
 
-/** @brief Use to define the paint image effect context  See \ref ImageEffectContexts */
+/** @brief Use to define the paint image effect context  See \ref ::kOfxImageEffectPropContext */
 #define kOfxImageEffectContextPaint "OfxImageEffectContextPaint"
 
-/** @brief Use to define the general image effect context  See \ref ImageEffectContexts */
+/** @brief Use to define the general image effect context  See \ref ::kOfxImageEffectPropContext */
 #define kOfxImageEffectContextGeneral "OfxImageEffectContextGeneral"
 
-/** @brief Use to define the retimer effect context  See \ref ImageEffectContexts */
+/** @brief Use to define the retimer effect context  See \ref ::kOfxImageEffectPropContext */
 #define kOfxImageEffectContextRetimer "OfxImageEffectContextRetimer"
 
 /** @brief Used as a value for ::kOfxPropType on image effect host handles */
