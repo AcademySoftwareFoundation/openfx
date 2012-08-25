@@ -243,7 +243,7 @@ sub WriteSuiteFunctionRef
         my $line = shift @commentLines;
 
         if($line =~ /\s*\\arg/) {
-            $line =~ s/\\arg//;
+            $line =~ s/\s*\\arg\s*//;
             $line = stripSurroundingWhite($line);
             my $argName;
             my $desc;
@@ -253,13 +253,14 @@ sub WriteSuiteFunctionRef
                 $desc = stripSurroundingWhite($1);
             }
             else {
-                $line =~ /^(\w*)(.*)/;
-                $argName = $1;
-                $desc = stripSurroundingWhite($2);
+                $line =~ /^(\\e\s*)?(\w*)(.*)/;
+                $argName = $2;
+                $desc = stripSurroundingWhite($3);
             }
-            # remove any leading dashes..
-            $desc =~ s/^-//;
+            # remove any leading dashes
+            $desc =~ s/^-\s*//;
 
+	    print STDERR "Found arg <$argName>, desc: <$desc>\n";
             $args->{$argName}->{desc} = $desc;
 
             # all you lines are belong to us, until we get to another \arg or a blank

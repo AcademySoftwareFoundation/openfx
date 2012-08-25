@@ -86,10 +86,11 @@ sub stripSurroundingWhite
         }
         else {
             $blankSoFar = 0;
-            $str .= $line . "\n";
+            $str .= $1 . "\n";
         }
     }
 
+    chomp($str);
     return $str;
 }
 
