@@ -57,9 +57,10 @@ chunkreference : ofxProgrammingReference.html
 	mkdir -p Reference
 	mv *.html Reference
 
+.PHONY: docbook-xsl
 docbook-xsl :
 	wget --output-document=docbook-xsl-download.zip '$(STYLESHEETARCHIVE)'; \
-	unzip -o docbook-xsl-download.zip; \
+	unzip -q -o docbook-xsl-download.zip; \
 	rm -f docbook-xsl-download.zip
 
 # Common srcs
