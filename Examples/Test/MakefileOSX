@@ -1,7 +1,7 @@
 CXXFLAGS = -I../../include
 OPTIMIZER = -g
 
-testProperties.ofx : testProperties.o
-	$(CXX) -bundle testProperties.o -o testProperties.ofx
+testProperties.ofx : testProperties.o ofxLog.o
+	$(CXX) -bundle testProperties.o ofxLog.o -o testProperties.ofx
 	mkdir -p testProperties.ofx.bundle/Contents/MacOS/
 	cp testProperties.ofx testProperties.ofx.bundle/Contents/MacOS/

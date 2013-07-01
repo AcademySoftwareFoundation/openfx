@@ -1,0 +1,8 @@
+
+*.o
+
+*.ofx
+
+*.a
+
+Support/PropTester/Darwin-64-debug/PropTester.ofx.bundle/Contents/Info.plist
