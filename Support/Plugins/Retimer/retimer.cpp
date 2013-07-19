@@ -340,6 +340,7 @@ void RetimerExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &
     // describe it. It is not a true param but how the host indicates to the plug-in which frame
     // it wants you to retime to. It appears on no plug-in side UI, it is purely the host's to manage.
     DoubleParamDescriptor *param = desc.defineDoubleParam("SourceTime");
+    (void)param;
   }
   else {
     // We are a general or filter context, define a speed param and a page of controls to put that in
