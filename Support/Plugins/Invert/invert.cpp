@@ -39,12 +39,6 @@ England
 #include <windows.h>
 #endif
 
-#ifdef __APPLE__
-#include <AGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-
 #include <stdio.h>
 #include "ofxsImageEffect.h"
 #include "ofxsMultiThread.h"
@@ -215,7 +209,7 @@ case OFX::eBitDepthUByte : {
                            break;
 
 case OFX::eBitDepthUShort : {
-  ImageInverter<unsigned short, 1, 65536> fred(*this);
+  ImageInverter<unsigned short, 1, 65535> fred(*this);
   setupAndProcess(fred, args);
                             }                          
                             break;
