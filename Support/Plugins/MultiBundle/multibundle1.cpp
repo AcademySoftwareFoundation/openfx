@@ -40,7 +40,7 @@ England
 #endif
 
 #ifdef __APPLE__
-#include <AGL/gl.h>
+#include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif
@@ -296,7 +296,7 @@ void GammaPlugin::render(const OFX::RenderArguments &args)
       }
     case OFX::eBitDepthUShort :
       {
-        ImageScaler<unsigned short, 1, 65536> fred(*this);
+        ImageScaler<unsigned short, 1, 65535> fred(*this);
         setupAndProcess(fred, args);
         break;
       }
