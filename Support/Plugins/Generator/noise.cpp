@@ -156,8 +156,8 @@ NoisePlugin::setupAndProcess(NoiseGeneratorBase &processor, const OFX::RenderArg
 {
   // get a dst image
   std::auto_ptr<OFX::Image>  dst(dstClip_->fetchImage(args.time));
-  OFX::BitDepthEnum         dstBitDepth    = dst->getPixelDepth();
-  OFX::PixelComponentEnum   dstComponents  = dst->getPixelComponents();
+  //OFX::BitDepthEnum         dstBitDepth    = dst->getPixelDepth();
+  //OFX::PixelComponentEnum   dstComponents  = dst->getPixelComponents();
 
   // set the images
   processor.setDstImg(dst.get());
@@ -237,7 +237,7 @@ NoisePlugin::render(const OFX::RenderArguments &args)
 
     case OFX::eBitDepthUShort : 
       {
-        NoiseGenerator<unsigned short, 1, 65536> fred(*this);
+        NoiseGenerator<unsigned short, 1, 65535> fred(*this);
         setupAndProcess(fred, args);
       }                          
       break;
