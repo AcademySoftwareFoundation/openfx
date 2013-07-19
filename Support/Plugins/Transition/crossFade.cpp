@@ -269,7 +269,7 @@ void CrossFadeExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor
   // describe it. It is not a true param but how the host indicates to the plug-in how far through
   // the transition it is. It appears on no plug-in side UI, it is purely the hosts to manage.
   DoubleParamDescriptor *param = desc.defineDoubleParam("Transition");
-
+  (void)param;
 }
 
 ImageEffect* CrossFadeExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum context)
