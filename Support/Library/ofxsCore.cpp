@@ -65,7 +65,7 @@ namespace OFX {
 
 
   /** @brief maps status to a string */
-  char* mapStatusToString(OfxStatus stat)
+  const char* mapStatusToString(OfxStatus stat)
   {
     switch(stat) 
     {    

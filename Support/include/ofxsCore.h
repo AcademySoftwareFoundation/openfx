@@ -184,7 +184,7 @@ namespace OFX {
   };
 
   /** @brief maps a status to a string for debugging purposes, note a c-str for printf */
-  char * mapStatusToString(OfxStatus stat);
+  const char * mapStatusToString(OfxStatus stat);
 
   /** @brief namespace for OFX support lib exceptions, all derive from std::exception, calling it */
   namespace Exception {
@@ -261,7 +261,7 @@ namespace OFX {
     protected :
       std::string _what;
     public :
-      HostInadequate(char *what) : _what(what) {}
+      HostInadequate(const char *what) : _what(what) {}
       virtual ~HostInadequate() throw() {}
 
       /** @brief reimplemented from std::exception */
