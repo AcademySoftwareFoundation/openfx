@@ -513,6 +513,7 @@ namespace OFX {
           // fetch the image effect we are being made for out of the interact's property handle
           ImageEffect *effect = retrieveEffectFromInteractHandle(handle);
           OFX::Interact* interact = desc.createInstance(handle, effect);
+          (void)interact;
           // and all was well
           stat = kOfxStatOK;
         }

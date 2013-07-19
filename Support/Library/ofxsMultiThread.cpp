@@ -126,6 +126,7 @@ namespace OFX {
     Mutex::~Mutex(void)
     {
       OfxStatus stat = OFX::Private::gThreadSuite->mutexDestroy(_handle);
+      (void)stat;
     }
 
     /** @brief lock it, blocks until lock is gained */

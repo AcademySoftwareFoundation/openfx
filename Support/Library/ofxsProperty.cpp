@@ -209,7 +209,7 @@ namespace OFX {
     OFX::Exception::Suite)
   {
     assert(_propHandle != 0);
-    char *value = "";
+    char *value = NULL;
     OfxStatus stat = gPropSuite->propGetString(_propHandle, property, idx, &value);
     OFX::Log::error(stat != kOfxStatOK, "Failed on getting string property %s[%d], host returned status %s;", 
       property, idx, mapStatusToString(stat));

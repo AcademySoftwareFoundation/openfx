@@ -2537,12 +2537,14 @@ namespace OFX {
   void ParamSet::beginEditBlock(const std::string &name)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramEditBegin(_paramSetHandle, name.c_str());
+    (void)stat;
   }
 
   /// close an undoblock
   void ParamSet::endEditBlock()
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramEditEnd(_paramSetHandle);
+    (void)stat;
   }
 
 };

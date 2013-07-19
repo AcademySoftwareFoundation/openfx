@@ -28,7 +28,7 @@ main(int argc, char *argv[])
 
   if(myBundle) {
     // Value returned from the loaded function.
-    long result; 
+    //long result;
   
     OfxGetNumberOfPluginsFunc *nPluginsFunc = (OfxGetNumberOfPluginsFunc *)CFBundleGetFunctionPointerForName(myBundle, CFSTR("OfxGetNumberOfPlugins") );
     OfxGetPluginFunc *getPlugin = (OfxGetPluginFunc *)CFBundleGetFunctionPointerForName(myBundle, CFSTR("OfxGetPlugin") );
