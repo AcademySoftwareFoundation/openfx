@@ -101,6 +101,7 @@ namespace OFX {
   /** @brief Enumerates the component types supported */
   enum PixelComponentEnum {ePixelComponentNone,
     ePixelComponentRGBA,
+    ePixelComponentRGB,
     ePixelComponentAlpha,
     ePixelComponentCustom ///< some non standard pixel type
   };
@@ -121,7 +122,9 @@ namespace OFX {
   enum FieldEnum {eFieldNone,   /**< @brief unfielded image */
     eFieldBoth,   /**< @brief fielded image with both fields present */
     eFieldLower,  /**< @brief only the spatially lower field is present */
-    eFieldUpper   /**< @brief only the spatially upper field is present  */
+    eFieldUpper,  /**< @brief only the spatially upper field is present  */
+    eFieldSingle, /**< @brief image that consists of a single field, and so is half height  */
+    eFieldDoubled /**< @brief image that consists of a single field, but each scan line is double, and so is full height  */
   };
 
   enum PreMultiplicationEnum { eImageOpaque,          /**< @brief the image is opaque and so has no premultiplication state */
@@ -206,7 +209,7 @@ namespace OFX {
   All the standard suites are fetched by the support code, you should use this
   to fetch any extra non-standard suites.
   */
-  void * fetchSuite(char *suiteName, int suiteVersion, bool optional = false);
+  void * fetchSuite(const char *suiteName, int suiteVersion, bool optional = false);
 
   ////////////////////////////////////////////////////////////////////////////////
   /** @brief A class that lists all the properties of a host */

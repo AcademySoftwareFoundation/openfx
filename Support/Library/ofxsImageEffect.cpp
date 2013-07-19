@@ -262,8 +262,16 @@ namespace OFX {
     int n = _clipProps.propGetDimension(kOfxImageEffectPropSupportedComponents);
     switch(v) 
     {
+    case ePixelComponentNone :
+      _clipProps.propSetString(kOfxImageEffectPropSupportedComponents, kOfxImageComponentNone, n);
+      break;
+
     case ePixelComponentRGBA :
       _clipProps.propSetString(kOfxImageEffectPropSupportedComponents, kOfxImageComponentRGBA, n);
+      break;
+
+    case ePixelComponentRGB :
+      _clipProps.propSetString(kOfxImageEffectPropSupportedComponents, kOfxImageComponentRGB, n);
       break;
 
     case ePixelComponentAlpha :
@@ -360,6 +368,8 @@ namespace OFX {
     int n = _effectProps.propGetDimension(kOfxImageEffectPropSupportedContexts);
     switch (v) 
     {
+    case eContextNone :
+      break;
     case eContextGenerator :
       _effectProps.propSetString(kOfxImageEffectPropSupportedContexts, kOfxImageEffectContextGenerator, n);
       break;
@@ -394,6 +404,9 @@ namespace OFX {
     int n = _effectProps.propGetDimension(kOfxImageEffectPropSupportedPixelDepths);
     switch(v) 
     {
+    case eBitDepthNone :
+      _effectProps.propSetString(kOfxImageEffectPropSupportedPixelDepths, kOfxBitDepthNone  , n);
+      break;
     case eBitDepthUByte :
       _effectProps.propSetString(kOfxImageEffectPropSupportedPixelDepths, kOfxBitDepthByte  , n);
       break;
@@ -490,6 +503,7 @@ namespace OFX {
     // no, so make it
     OfxPropertySetHandle propSet;
     OfxStatus stat = OFX::Private::gEffectSuite->clipDefine(_effectHandle, name.c_str(), &propSet);
+    (void)stat;
 
     ClipDescriptor *clip = new ClipDescriptor(name, propSet);
 
@@ -525,13 +539,16 @@ namespace OFX {
     _pixelBytes = 0;
     switch(_pixelComponents) 
     {
+    case ePixelComponentNone : _pixelBytes = 0; break;
     case ePixelComponentRGBA  : _pixelBytes = 4; break;
+    case ePixelComponentRGB  : _pixelBytes = 3; break;
     case ePixelComponentAlpha : _pixelBytes = 1; break;
     case ePixelComponentCustom : _pixelBytes = 0; break;
     }
 
     switch(_pixelDepth) 
     {
+    case eBitDepthNone   : _pixelBytes *= 0; break;
     case eBitDepthUByte  : _pixelBytes *= 1; break;
     case eBitDepthUShort : _pixelBytes *= 2; break;
     case eBitDepthFloat  : _pixelBytes *= 4; break;
@@ -1180,8 +1197,14 @@ namespace OFX {
 
     switch(comps) 
     {
+    case ePixelComponentNone :
+      outArgs_.propSetString(propName.c_str(), kOfxImageComponentNone);
+      break;
     case ePixelComponentRGBA : 
       outArgs_.propSetString(propName.c_str(), kOfxImageComponentRGBA); 
+      break;
+    case ePixelComponentRGB :
+      outArgs_.propSetString(propName.c_str(), kOfxImageComponentRGB);
       break;
     case ePixelComponentAlpha : 
       outArgs_.propSetString(propName.c_str(), kOfxImageComponentAlpha); 
@@ -1197,6 +1220,9 @@ namespace OFX {
 
     switch(bitDepth) 
     {
+    case eBitDepthNone :
+      outArgs_.propSetString(propName.c_str(), kOfxBitDepthNone);
+      break;
     case eBitDepthUByte : 
       outArgs_.propSetString(propName.c_str(), kOfxBitDepthByte); 
       break;
@@ -1265,6 +1291,9 @@ namespace OFX {
     case eFieldNone : outArgs_.propSetString(kOfxImageClipPropFieldOrder, kOfxImageFieldNone, 0, false); break;
     case eFieldLower : outArgs_.propSetString(kOfxImageClipPropFieldOrder, kOfxImageFieldLower, 0, false); break;
     case eFieldUpper : outArgs_.propSetString(kOfxImageClipPropFieldOrder, kOfxImageFieldUpper, 0, false); break;
+    case eFieldBoth : outArgs_.propSetString(kOfxImageClipPropFieldOrder, kOfxImageFieldBoth, 0, false); break;
+    case eFieldSingle : outArgs_.propSetString(kOfxImageClipPropFieldOrder, kOfxImageFieldSingle, 0, false); break;
+    case eFieldDoubled : outArgs_.propSetString(kOfxImageClipPropFieldOrder, kOfxImageFieldDoubled, 0, false); break;
     }
   }
 
@@ -1291,6 +1320,7 @@ namespace OFX {
   {
     OfxStatus stat = OFX::Private::gEffectSuite->imageMemoryFree(_handle);
     // ignore status code for exception purposes
+    (void)stat;
   }
 
   /** @brief lock the memory and return a pointer to it */
@@ -1308,6 +1338,7 @@ namespace OFX {
   void ImageMemory::unlock(void)
   {
     OfxStatus stat = OFX::Private::gEffectSuite->imageMemoryUnlock(_handle);
+    (void)stat;
   }
 
 
@@ -1378,7 +1409,7 @@ namespace OFX {
     {
       gLoadCount++;  
 
-      OfxStatus status = kOfxStatOK;
+      //OfxStatus status = kOfxStatOK;
 
       // fetch the suites
       OFX::Log::error(gHost == 0, "Host pointer has not been set.");
@@ -1990,6 +2021,7 @@ namespace OFX {
 
           // make the image effect instance for this context
           ImageEffect *instance = factory->createInstance(handle, context);
+          (void)instance;
 
           // validate the plugin handle's properties
           OFX::Validation::validatePluginInstanceProperties(fetchEffectProps(handle));
@@ -2092,7 +2124,7 @@ namespace OFX {
 
           // fetch our pointer out of the props on the handle
           ImageEffect *instance = retrieveImageEffectPointer(handle);
-
+          (void)instance;
         }
         else if(action == kOfxActionBeginInstanceChanged) {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
@@ -2194,7 +2226,7 @@ namespace OFX {
   }; // namespace Private
 
   /** @brief Fetch's a suite from the host and logs errors */
-  void * fetchSuite(char *suiteName, int suiteVersion, bool optional)
+  void * fetchSuite(const char *suiteName, int suiteVersion, bool optional)
   {
     void *suite = Private::gHost->fetchSuite(Private::gHost->host, suiteName, suiteVersion);
     if(suite==0)
