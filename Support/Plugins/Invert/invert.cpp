@@ -118,8 +118,8 @@ public :
     , dstClip_(0)
     , srcClip_(0)
   {
-    dstClip_ = fetchClip("Output");
-    srcClip_ = fetchClip("Source");
+    dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
+    srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
   }
 
   /* Override the render */
@@ -255,7 +255,7 @@ void InvertExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &d
 {
   // Source clip only in the filter context
   // create the mandated source clip
-  ClipDescriptor *srcClip = desc.defineClip("Source");
+  ClipDescriptor *srcClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
   srcClip->addSupportedComponent(ePixelComponentRGBA);
   srcClip->addSupportedComponent(ePixelComponentAlpha);
   srcClip->setTemporalClipAccess(false);
@@ -263,7 +263,7 @@ void InvertExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &d
   srcClip->setIsMask(false);
 
   // create the mandated output clip
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
   dstClip->setSupportsTiles(true);

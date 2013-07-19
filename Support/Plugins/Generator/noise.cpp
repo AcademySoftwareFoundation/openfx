@@ -125,7 +125,7 @@ public :
     , dstClip_(0)
     , noise_(0)
   {
-    dstClip_ = fetchClip("Output");
+    dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
     noise_   = fetchDoubleParam("Noise");
   }
 

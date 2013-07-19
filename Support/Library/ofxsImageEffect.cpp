@@ -1764,7 +1764,7 @@ namespace OFX {
           std::map<std::string, std::vector<OfxRangeD> >::iterator i;
 
           for(i = frameRanges_.begin(); i != frameRanges_.end(); ++i) {
-            if(i->first != "Output") {
+            if(i->first != kOfxImageEffectOutputClipName) {
               didSomething = true;
 
               // Make the property name we are setting

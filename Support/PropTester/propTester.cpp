@@ -200,7 +200,7 @@ public :
     : ImageEffect(handle)
     , dstClip_(0)
   {
-    dstClip_ = fetchClip("Output");
+    dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
   }
 
 };
@@ -231,7 +231,7 @@ public :
     : BasePlugin(handle)
     , srcClip_(0)
   {
-    srcClip_ = fetchClip("Source");
+    srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
   }
 
   /** @brief client render function, this is one of the few that must be set */
@@ -380,7 +380,7 @@ void PropTesterPluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   // Source clip only in the filter context
   if(context == eContextFilter || context == eContextGeneral) {
     // create the mandated source clip
-    ClipDescriptor *srcClip = desc.defineClip("Source");
+    ClipDescriptor *srcClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
     srcClip->addSupportedComponent(ePixelComponentRGBA);
     srcClip->setTemporalClipAccess(false);
     //srcClip->setOptional(false);
@@ -389,7 +389,7 @@ void PropTesterPluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   }
 
   // create the mandated output clip
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->setTemporalClipAccess(false);
   //dstClip->setOptional(false);

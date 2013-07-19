@@ -72,13 +72,13 @@ public :
       , duration_(0)
       , speed_(0)
     {
-        dstClip_ = fetchClip("Output");
-        srcClip_ = fetchClip("Source");
+        dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
+        srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
 
         // What parameters we instantiate depend on the context
         if(getContext() == OFX::eContextRetimer)
             // fetch the mandated parameter which the host uses to pass us the frame to retime to
-            sourceTime_   = fetchDoubleParam("SourceTime");
+            sourceTime_   = fetchDoubleParam(kOfxImageEffectRetimerParamName);
         else // context == OFX::eContextFilter || context == OFX::eContextGeneral
             // filter context means we are in charge of how to retime, and our example is using a speed curve to do that
             speed_   = fetchDoubleParam("Speed");
@@ -133,7 +133,7 @@ RetimerPlugin::setupAndProcess(OFX::ImageBlenderBase &processor, const OFX::Rend
     double sourceTime;
     
     if(getContext() == OFX::eContextRetimer) {
-        // the host is specifying it, so fetch it from the "sourceTime" pseudo-param
+        // the host is specifying it, so fetch it from the kOfxImageEffectRetimerParamName pseudo-param
         sourceTime = sourceTime_->getValueAtTime(args.time);
     }
     else {
@@ -320,7 +320,7 @@ void RetimerExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 void RetimerExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context) 
 {
   // we are a transition, so define the sourceTo input clip
-  ClipDescriptor *toClip = desc.defineClip("Source");
+  ClipDescriptor *toClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
   toClip->addSupportedComponent(ePixelComponentRGBA);
   toClip->addSupportedComponent(ePixelComponentAlpha);
   toClip->setTemporalClipAccess(true); // say we will be doing random time access on this clip
@@ -328,7 +328,7 @@ void RetimerExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &
   toClip->setFieldExtraction(eFieldExtractDoubled); // which is the default anyway
 
   // create the mandated output clip
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
   toClip->setFieldExtraction(eFieldExtractDoubled); // which is the default anyway
@@ -336,10 +336,10 @@ void RetimerExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &
 
   // what param we have is dependant on the host
   if(context == OFX::eContextRetimer) {
-    // Define the mandated "SourceTime" param, note that we don't do anything with this other than.
+    // Define the mandated kOfxImageEffectRetimerParamName param, note that we don't do anything with this other than.
     // describe it. It is not a true param but how the host indicates to the plug-in which frame
     // it wants you to retime to. It appears on no plug-in side UI, it is purely the host's to manage.
-    DoubleParamDescriptor *param = desc.defineDoubleParam("SourceTime");
+    DoubleParamDescriptor *param = desc.defineDoubleParam(kOfxImageEffectRetimerParamName);
     (void)param;
   }
   else {

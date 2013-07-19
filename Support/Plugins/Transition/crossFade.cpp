@@ -62,9 +62,9 @@ public :
     , toClip_(0)
     , transition_(0)
   {
-    dstClip_ = fetchClip("Output");
-    fromClip_ = fetchClip("SourceFrom");
-    toClip_   = fetchClip("SourceTo");
+    dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
+    fromClip_ = fetchClip(kOfxImageEffectTransitionSourceFromClipName);
+    toClip_   = fetchClip(kOfxImageEffectTransitionSourceToClipName);
     transition_   = fetchDoubleParam("Transition");
   }
 
@@ -226,6 +226,7 @@ void CrossFadeExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 
   // Say we are a transition context
   desc.addSupportedContext(eContextTransition);
+  desc.addSupportedContext(eContextGeneral);
 
   // Add supported pixel depths
   desc.addSupportedBitDepth(eBitDepthUByte);
@@ -246,21 +247,21 @@ void CrossFadeExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 void CrossFadeExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context)
 {
   // we are a transition, so define the sourceFrom input clip
-  ClipDescriptor *fromClip = desc.defineClip("SourceFrom");
+  ClipDescriptor *fromClip = desc.defineClip(kOfxImageEffectTransitionSourceFromClipName);
   fromClip->addSupportedComponent(ePixelComponentRGBA);
   fromClip->addSupportedComponent(ePixelComponentAlpha);
   fromClip->setTemporalClipAccess(false);
   fromClip->setSupportsTiles(true);
 
   // we are a transition, so define the sourceTo input clip
-  ClipDescriptor *toClip = desc.defineClip("SourceTo");
+  ClipDescriptor *toClip = desc.defineClip(kOfxImageEffectTransitionSourceToClipName);
   toClip->addSupportedComponent(ePixelComponentRGBA);
   toClip->addSupportedComponent(ePixelComponentAlpha);
   toClip->setTemporalClipAccess(false);
   toClip->setSupportsTiles(true);
 
   // create the mandated output clip
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
   dstClip->setSupportsTiles(true);

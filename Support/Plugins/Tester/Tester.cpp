@@ -286,8 +286,8 @@ protected :
 public :
   GenericTestPlugin(OfxImageEffectHandle handle) : ImageEffect(handle), dstClip_(0), srcClip_(0)
   {
-    dstClip_ = fetchClip("Output");
-    srcClip_ = fetchClip("Source");
+    dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
+    srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
   }
 
   virtual void render(const OFX::RenderArguments &args);
@@ -472,14 +472,14 @@ void GenericTestExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 
 void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context)
 {
-  ClipDescriptor *srcClip = desc.defineClip("Source");
+  ClipDescriptor *srcClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
   srcClip->addSupportedComponent(ePixelComponentRGBA);
   srcClip->addSupportedComponent(ePixelComponentAlpha);
   srcClip->setTemporalClipAccess(false);
   srcClip->setSupportsTiles(true);
   srcClip->setIsMask(false);
 
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
   dstClip->setSupportsTiles(true);

@@ -149,7 +149,7 @@ protected:
 public:
   DotExamplePlugin(OfxImageEffectHandle handle): ImageEffect(handle), dstClip_(0), radius_(0) , colour_(0), position_(0)
   {
-    dstClip_ = fetchClip("Output");
+    dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
     radius_   = fetchDoubleParam("radius");
     colour_ = fetchRGBAParam("colour");
     position_ = fetchDouble2DParam("position");

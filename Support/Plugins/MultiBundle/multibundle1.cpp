@@ -188,8 +188,8 @@ public :
   GammaPlugin(OfxImageEffectHandle handle): ImageEffect(handle), dstClip_(0), srcClip_(0), scale_(0)
     , rScale_(0), gScale_(0), bScale_(0), aScale_(0), componentScalesEnabled_(0)
   {
-    dstClip_ = fetchClip("Output");
-    srcClip_ = fetchClip("Source");
+    dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
+    srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
     maskClip_ = getContext() == OFX::eContextFilter ? NULL : fetchClip(getContext() == OFX::eContextPaint ? "Brush" : "Mask");
     scale_   = fetchDoubleParam("scale");
     rScale_  = fetchDoubleParam("scaleR");
@@ -348,7 +348,7 @@ void GammaPlugin::changedParam(const OFX::InstanceChangedArgs &args, const std::
 
 void GammaPlugin::changedClip(const OFX::InstanceChangedArgs &args, const std::string &clipName)
 {
-  if(clipName == "Source")  
+  if(clipName == kOfxImageEffectSimpleSourceClipName)  
     setEnabledness();
 }
 
@@ -498,7 +498,7 @@ DoubleParamDescriptor *defineScaleParam(OFX::ImageEffectDescriptor &desc,
 
 void GammaExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context)
 {
-  ClipDescriptor *srcClip = desc.defineClip("Source");
+  ClipDescriptor *srcClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
   srcClip->addSupportedComponent(ePixelComponentRGBA);
   srcClip->addSupportedComponent(ePixelComponentAlpha);
   srcClip->setTemporalClipAccess(false);
@@ -516,7 +516,7 @@ void GammaExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &de
     maskClip->setIsMask(true);
   }
 
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
   dstClip->setSupportsTiles(true);

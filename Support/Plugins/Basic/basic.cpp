@@ -242,8 +242,8 @@ public :
     , aScale_(0)
     , componentScalesEnabled_(0)
   {
-    dstClip_ = fetchClip("Output");
-    srcClip_ = fetchClip("Source");
+    dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
+    srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
     // name of mask clip depends on the context
     maskClip_ = getContext() == OFX::eContextFilter ? NULL : fetchClip(getContext() == OFX::eContextPaint ? "Brush" : "Mask");
     scale_   = fetchDoubleParam("scale");
@@ -480,7 +480,7 @@ BasicPlugin::changedParam(const OFX::InstanceChangedArgs &args, const std::strin
 void
 BasicPlugin::changedClip(const OFX::InstanceChangedArgs &args, const std::string &clipName)
 {
-  if(clipName == "Source")  setEnabledness();
+  if(clipName == kOfxImageEffectSimpleSourceClipName)  setEnabledness();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -682,7 +682,7 @@ void BasicExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor& de
 {
   // Source clip only in the filter context
   // create the mandated source clip
-  ClipDescriptor *srcClip = desc.defineClip("Source");
+  ClipDescriptor *srcClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
   srcClip->addSupportedComponent(ePixelComponentRGBA);
   srcClip->addSupportedComponent(ePixelComponentAlpha);
   srcClip->setTemporalClipAccess(false);
@@ -702,7 +702,7 @@ void BasicExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor& de
   }
 
   // create the mandated output clip
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
   dstClip->setSupportsTiles(true);
