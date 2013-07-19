@@ -40,7 +40,7 @@ England
 #endif
 
 #ifdef __APPLE__
-#include <AGL/gl.h>
+#include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif
@@ -259,7 +259,7 @@ void DotExamplePlugin::render(const OFX::RenderArguments &args)
       break;
     case OFX::eBitDepthUShort : 
       {
-        DotGenerator<unsigned short, 1, 65536> fred(*this);
+        DotGenerator<unsigned short, 1, 65535> fred(*this);
         setupAndProcess(fred, args);
       }
       break;
