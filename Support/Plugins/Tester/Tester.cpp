@@ -40,7 +40,7 @@ England
 #endif
 
 #ifdef __APPLE__
-#include <AGL/gl.h>
+#include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif
@@ -430,7 +430,7 @@ void GenericTestPlugin::render(const OFX::RenderArguments &args)
 
     case OFX::eBitDepthUShort : 
       {
-        ImageGenericTester<unsigned short, 1, 65536> fred(*this);
+        ImageGenericTester<unsigned short, 1, 65535> fred(*this);
         setupAndProcess(fred, args);
       }                          
       break;
