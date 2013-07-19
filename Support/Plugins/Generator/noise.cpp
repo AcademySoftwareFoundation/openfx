@@ -261,6 +261,7 @@ void NoiseExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.setLabels("Noise", "Noise", "Noise");
   desc.setPluginGrouping("OFX");
   desc.addSupportedContext(eContextGenerator);
+  desc.addSupportedContext(eContextGeneral);
   desc.addSupportedBitDepth(eBitDepthUByte);
   desc.addSupportedBitDepth(eBitDepthUShort);
   desc.addSupportedBitDepth(eBitDepthFloat);
@@ -276,7 +277,14 @@ void NoiseExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 
 void NoiseExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context) 
 {
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  // there has to be an input clip, even for generators
+  ClipDescriptor* srcClip = desc.defineClip( kOfxImageEffectSimpleSourceClipName );
+  srcClip->addSupportedComponent( OFX::ePixelComponentRGBA );
+  srcClip->addSupportedComponent( OFX::ePixelComponentAlpha );
+  srcClip->setSupportsTiles(true);
+  srcClip->setOptional(true);
+
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
   dstClip->setSupportsTiles(true);

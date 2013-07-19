@@ -399,6 +399,7 @@ void DotExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.setLabels("Dot Generator", "Dot Generator", "Dot Generator");
   desc.setPluginGrouping("OFX");
   desc.addSupportedContext(eContextGenerator);
+  desc.addSupportedContext(eContextGeneral);
   desc.addSupportedBitDepth(eBitDepthUByte);
   desc.addSupportedBitDepth(eBitDepthUShort);
   desc.addSupportedBitDepth(eBitDepthFloat);
@@ -415,7 +416,14 @@ void DotExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 
 void DotExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context)
 {
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  // there has to be an input clip, even for generators
+  ClipDescriptor* srcClip = desc.defineClip( kOfxImageEffectSimpleSourceClipName );
+  srcClip->addSupportedComponent( OFX::ePixelComponentRGBA );
+  srcClip->addSupportedComponent( OFX::ePixelComponentAlpha );
+  srcClip->setSupportsTiles(true);
+  srcClip->setOptional(true);
+
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
   dstClip->setSupportsTiles(true);
