@@ -39,12 +39,6 @@ England
 #include <windows.h>
 #endif
 
-#ifdef __APPLE__
-#include <AGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-
 #include <iostream>
 #include <stdio.h>
 #include "ofxsImageEffect.h"
@@ -243,7 +237,7 @@ FieldPlugin::render(const OFX::RenderArguments &args)
       
     case OFX::eBitDepthUShort : 
     {
-      ImageFielder<unsigned short, 1, 65536> fred(*this, field);
+      ImageFielder<unsigned short, 1, 65535> fred(*this, field);
       setupAndProcess(fred, args);
     }                          
     break;
