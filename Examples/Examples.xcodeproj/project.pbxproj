@@ -1,0 +1,791 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		1E551F461799509100A4135C /* all */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 1E551F471799509100A4135C /* Build configuration list for PBXAggregateTarget "all" */;
+			buildPhases = (
+			);
+			dependencies = (
+				1E551F4B1799509A00A4135C /* PBXTargetDependency */,
+				1E551F4D1799509A00A4135C /* PBXTargetDependency */,
+				1E551F4F1799509A00A4135C /* PBXTargetDependency */,
+				1E551F511799509A00A4135C /* PBXTargetDependency */,
+				1E551F531799509A00A4135C /* PBXTargetDependency */,
+				1E551F551799509A00A4135C /* PBXTargetDependency */,
+				1E551F571799509A00A4135C /* PBXTargetDependency */,
+			);
+			name = all;
+			productName = all;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		1E551ED417994E0100A4135C /* basic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E551ED317994E0100A4135C /* basic.cpp */; };
+		1E551EE817994EA300A4135C /* custom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E551EE717994EA300A4135C /* custom.cpp */; };
+		1E551EFB17994EDF00A4135C /* invert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E551EF917994ED500A4135C /* invert.cpp */; };
+		1E551F0D17994F6900A4135C /* opengl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E551F0C17994F6900A4135C /* opengl.cpp */; };
+		1E551F2117994FB600A4135C /* overlay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E551F2017994FB600A4135C /* overlay.cpp */; };
+		1E551F431799506500A4135C /* rectangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E551F421799506500A4135C /* rectangle.cpp */; };
+		1E551F451799507700A4135C /* testProperties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E551F441799507700A4135C /* testProperties.cpp */; };
+		1E551F5B179950EC00A4135C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E551F5A179950EC00A4135C /* OpenGL.framework */; };
+		1E551F5C1799510200A4135C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E551F5A179950EC00A4135C /* OpenGL.framework */; };
+		1E551F5D1799511E00A4135C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E551F5A179950EC00A4135C /* OpenGL.framework */; };
+		1E551F601799515400A4135C /* ofxLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E551F5E1799515400A4135C /* ofxLog.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1E551F4A1799509A00A4135C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E551EB917994D4000A4135C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E551EC017994D4000A4135C;
+			remoteInfo = basic.ofx;
+		};
+		1E551F4C1799509A00A4135C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E551EB917994D4000A4135C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E551ED817994E8100A4135C;
+			remoteInfo = custom.ofx;
+		};
+		1E551F4E1799509A00A4135C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E551EB917994D4000A4135C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E551EEC17994EB700A4135C;
+			remoteInfo = invert.ofx;
+		};
+		1E551F501799509A00A4135C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E551EB917994D4000A4135C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E551EFF17994F0600A4135C;
+			remoteInfo = opengl.ofx;
+		};
+		1E551F521799509A00A4135C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E551EB917994D4000A4135C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E551F1117994F7D00A4135C;
+			remoteInfo = overlay.ofx;
+		};
+		1E551F541799509A00A4135C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E551EB917994D4000A4135C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E551F2517994FE400A4135C;
+			remoteInfo = rectangle.ofx;
+		};
+		1E551F561799509A00A4135C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E551EB917994D4000A4135C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E551F3517994FF900A4135C;
+			remoteInfo = testProperties.ofx;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1E551EC117994D4000A4135C /* basic.ofx.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = basic.ofx.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E551ED317994E0100A4135C /* basic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = basic.cpp; path = Basic/basic.cpp; sourceTree = "<group>"; };
+		1E551ED917994E8100A4135C /* custom.ofx.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = custom.ofx.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E551EE717994EA300A4135C /* custom.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = custom.cpp; path = Custom/custom.cpp; sourceTree = "<group>"; };
+		1E551EED17994EB700A4135C /* invert.ofx.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = invert.ofx.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E551EF917994ED500A4135C /* invert.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = invert.cpp; path = Invert/invert.cpp; sourceTree = "<group>"; };
+		1E551F0017994F0600A4135C /* opengl.ofx.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = opengl.ofx.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E551F0C17994F6900A4135C /* opengl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = opengl.cpp; path = OpenGL/opengl.cpp; sourceTree = "<group>"; };
+		1E551F1217994F7D00A4135C /* overlay.ofx.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = overlay.ofx.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E551F2017994FB600A4135C /* overlay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = overlay.cpp; path = Overlay/overlay.cpp; sourceTree = "<group>"; };
+		1E551F2617994FE400A4135C /* rectangle.ofx.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = rectangle.ofx.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E551F3617994FF900A4135C /* testProperties.ofx.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = testProperties.ofx.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E551F421799506500A4135C /* rectangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = rectangle.cpp; path = Rectangle/rectangle.cpp; sourceTree = "<group>"; };
+		1E551F441799507700A4135C /* testProperties.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = testProperties.cpp; path = Test/testProperties.cpp; sourceTree = "<group>"; };
+		1E551F5A179950EC00A4135C /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		1E551F5E1799515400A4135C /* ofxLog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxLog.cpp; path = Test/ofxLog.cpp; sourceTree = "<group>"; };
+		1E551F5F1799515400A4135C /* ofxLog.H */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ofxLog.H; path = Test/ofxLog.H; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1E551EBE17994D4000A4135C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551ED617994E8100A4135C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E551F5B179950EC00A4135C /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551EEA17994EB700A4135C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551EFD17994F0600A4135C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E551F5D1799511E00A4135C /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551F0F17994F7D00A4135C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E551F5C1799510200A4135C /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551F2317994FE400A4135C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551F3317994FF900A4135C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1E551EB817994D4000A4135C = {
+			isa = PBXGroup;
+			children = (
+				1E551ED217994DEF00A4135C /* Sources */,
+				1E551EDA17994E8100A4135C /* Frameworks */,
+				1E551EC217994D4000A4135C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1E551EC217994D4000A4135C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1E551EC117994D4000A4135C /* basic.ofx.bundle */,
+				1E551ED917994E8100A4135C /* custom.ofx.bundle */,
+				1E551EED17994EB700A4135C /* invert.ofx.bundle */,
+				1E551F0017994F0600A4135C /* opengl.ofx.bundle */,
+				1E551F1217994F7D00A4135C /* overlay.ofx.bundle */,
+				1E551F2617994FE400A4135C /* rectangle.ofx.bundle */,
+				1E551F3617994FF900A4135C /* testProperties.ofx.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1E551ED217994DEF00A4135C /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				1E551F5E1799515400A4135C /* ofxLog.cpp */,
+				1E551F5F1799515400A4135C /* ofxLog.H */,
+				1E551ED317994E0100A4135C /* basic.cpp */,
+				1E551EE717994EA300A4135C /* custom.cpp */,
+				1E551EF917994ED500A4135C /* invert.cpp */,
+				1E551F0C17994F6900A4135C /* opengl.cpp */,
+				1E551F2017994FB600A4135C /* overlay.cpp */,
+				1E551F421799506500A4135C /* rectangle.cpp */,
+				1E551F441799507700A4135C /* testProperties.cpp */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		1E551EDA17994E8100A4135C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1E551F5A179950EC00A4135C /* OpenGL.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1E551EC017994D4000A4135C /* basic.ofx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E551ECF17994D4000A4135C /* Build configuration list for PBXNativeTarget "basic.ofx" */;
+			buildPhases = (
+				1E551EBD17994D4000A4135C /* Sources */,
+				1E551EBE17994D4000A4135C /* Frameworks */,
+				1E551EBF17994D4000A4135C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = basic.ofx;
+			productName = Examples;
+			productReference = 1E551EC117994D4000A4135C /* basic.ofx.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+		1E551ED817994E8100A4135C /* custom.ofx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E551EE417994E8100A4135C /* Build configuration list for PBXNativeTarget "custom.ofx" */;
+			buildPhases = (
+				1E551ED517994E8100A4135C /* Sources */,
+				1E551ED617994E8100A4135C /* Frameworks */,
+				1E551ED717994E8100A4135C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = custom.ofx;
+			productName = custom.ofx;
+			productReference = 1E551ED917994E8100A4135C /* custom.ofx.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+		1E551EEC17994EB700A4135C /* invert.ofx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E551EF617994EB700A4135C /* Build configuration list for PBXNativeTarget "invert.ofx" */;
+			buildPhases = (
+				1E551EE917994EB700A4135C /* Sources */,
+				1E551EEA17994EB700A4135C /* Frameworks */,
+				1E551EEB17994EB700A4135C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = invert.ofx;
+			productName = invert.ofx;
+			productReference = 1E551EED17994EB700A4135C /* invert.ofx.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+		1E551EFF17994F0600A4135C /* opengl.ofx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E551F0917994F0600A4135C /* Build configuration list for PBXNativeTarget "opengl.ofx" */;
+			buildPhases = (
+				1E551EFC17994F0600A4135C /* Sources */,
+				1E551EFD17994F0600A4135C /* Frameworks */,
+				1E551EFE17994F0600A4135C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = opengl.ofx;
+			productName = opengl.ofx;
+			productReference = 1E551F0017994F0600A4135C /* opengl.ofx.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+		1E551F1117994F7D00A4135C /* overlay.ofx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E551F1B17994F7D00A4135C /* Build configuration list for PBXNativeTarget "overlay.ofx" */;
+			buildPhases = (
+				1E551F0E17994F7D00A4135C /* Sources */,
+				1E551F0F17994F7D00A4135C /* Frameworks */,
+				1E551F1017994F7D00A4135C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = overlay.ofx;
+			productName = overlay.ofx;
+			productReference = 1E551F1217994F7D00A4135C /* overlay.ofx.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+		1E551F2517994FE400A4135C /* rectangle.ofx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E551F2F17994FE400A4135C /* Build configuration list for PBXNativeTarget "rectangle.ofx" */;
+			buildPhases = (
+				1E551F2217994FE400A4135C /* Sources */,
+				1E551F2317994FE400A4135C /* Frameworks */,
+				1E551F2417994FE400A4135C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = rectangle.ofx;
+			productName = rectangle.ofx;
+			productReference = 1E551F2617994FE400A4135C /* rectangle.ofx.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+		1E551F3517994FF900A4135C /* testProperties.ofx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E551F3F17994FF900A4135C /* Build configuration list for PBXNativeTarget "testProperties.ofx" */;
+			buildPhases = (
+				1E551F3217994FF900A4135C /* Sources */,
+				1E551F3317994FF900A4135C /* Frameworks */,
+				1E551F3417994FF900A4135C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = testProperties.ofx;
+			productName = testProperties.ofx;
+			productReference = 1E551F3617994FF900A4135C /* testProperties.ofx.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1E551EB917994D4000A4135C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = OpenFX;
+			};
+			buildConfigurationList = 1E551EBC17994D4000A4135C /* Build configuration list for PBXProject "Examples" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 1E551EB817994D4000A4135C;
+			productRefGroup = 1E551EC217994D4000A4135C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1E551EC017994D4000A4135C /* basic.ofx */,
+				1E551ED817994E8100A4135C /* custom.ofx */,
+				1E551EEC17994EB700A4135C /* invert.ofx */,
+				1E551EFF17994F0600A4135C /* opengl.ofx */,
+				1E551F1117994F7D00A4135C /* overlay.ofx */,
+				1E551F2517994FE400A4135C /* rectangle.ofx */,
+				1E551F3517994FF900A4135C /* testProperties.ofx */,
+				1E551F461799509100A4135C /* all */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1E551EBF17994D4000A4135C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551ED717994E8100A4135C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551EEB17994EB700A4135C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551EFE17994F0600A4135C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551F1017994F7D00A4135C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551F2417994FE400A4135C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551F3417994FF900A4135C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1E551EBD17994D4000A4135C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E551ED417994E0100A4135C /* basic.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551ED517994E8100A4135C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E551EE817994EA300A4135C /* custom.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551EE917994EB700A4135C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E551EFB17994EDF00A4135C /* invert.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551EFC17994F0600A4135C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E551F0D17994F6900A4135C /* opengl.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551F0E17994F7D00A4135C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E551F2117994FB600A4135C /* overlay.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551F2217994FE400A4135C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E551F431799506500A4135C /* rectangle.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E551F3217994FF900A4135C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E551F451799507700A4135C /* testProperties.cpp in Sources */,
+				1E551F601799515400A4135C /* ofxLog.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1E551F4B1799509A00A4135C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E551EC017994D4000A4135C /* basic.ofx */;
+			targetProxy = 1E551F4A1799509A00A4135C /* PBXContainerItemProxy */;
+		};
+		1E551F4D1799509A00A4135C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E551ED817994E8100A4135C /* custom.ofx */;
+			targetProxy = 1E551F4C1799509A00A4135C /* PBXContainerItemProxy */;
+		};
+		1E551F4F1799509A00A4135C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E551EEC17994EB700A4135C /* invert.ofx */;
+			targetProxy = 1E551F4E1799509A00A4135C /* PBXContainerItemProxy */;
+		};
+		1E551F511799509A00A4135C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E551EFF17994F0600A4135C /* opengl.ofx */;
+			targetProxy = 1E551F501799509A00A4135C /* PBXContainerItemProxy */;
+		};
+		1E551F531799509A00A4135C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E551F1117994F7D00A4135C /* overlay.ofx */;
+			targetProxy = 1E551F521799509A00A4135C /* PBXContainerItemProxy */;
+		};
+		1E551F551799509A00A4135C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E551F2517994FE400A4135C /* rectangle.ofx */;
+			targetProxy = 1E551F541799509A00A4135C /* PBXContainerItemProxy */;
+		};
+		1E551F571799509A00A4135C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E551F3517994FF900A4135C /* testProperties.ofx */;
+			targetProxy = 1E551F561799509A00A4135C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1E551ECD17994D4000A4135C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../include;
+				ONLY_ACTIVE_ARCH = YES;
+			};
+			name = Debug;
+		};
+		1E551ECE17994D4000A4135C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../include;
+			};
+			name = Release;
+		};
+		1E551ED017994D4000A4135C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		1E551ED117994D4000A4135C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		1E551EE517994E8100A4135C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		1E551EE617994E8100A4135C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		1E551EF717994EB700A4135C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		1E551EF817994EB700A4135C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		1E551F0A17994F0600A4135C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		1E551F0B17994F0600A4135C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		1E551F1C17994F7D00A4135C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		1E551F1D17994F7D00A4135C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		1E551F3017994FE400A4135C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		1E551F3117994FE400A4135C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		1E551F4017994FF900A4135C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		1E551F4117994FF900A4135C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		1E551F481799509100A4135C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		1E551F491799509100A4135C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1E551EBC17994D4000A4135C /* Build configuration list for PBXProject "Examples" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E551ECD17994D4000A4135C /* Debug */,
+				1E551ECE17994D4000A4135C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1E551ECF17994D4000A4135C /* Build configuration list for PBXNativeTarget "basic.ofx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E551ED017994D4000A4135C /* Debug */,
+				1E551ED117994D4000A4135C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1E551EE417994E8100A4135C /* Build configuration list for PBXNativeTarget "custom.ofx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E551EE517994E8100A4135C /* Debug */,
+				1E551EE617994E8100A4135C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		1E551EF617994EB700A4135C /* Build configuration list for PBXNativeTarget "invert.ofx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E551EF717994EB700A4135C /* Debug */,
+				1E551EF817994EB700A4135C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		1E551F0917994F0600A4135C /* Build configuration list for PBXNativeTarget "opengl.ofx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E551F0A17994F0600A4135C /* Debug */,
+				1E551F0B17994F0600A4135C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		1E551F1B17994F7D00A4135C /* Build configuration list for PBXNativeTarget "overlay.ofx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E551F1C17994F7D00A4135C /* Debug */,
+				1E551F1D17994F7D00A4135C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		1E551F2F17994FE400A4135C /* Build configuration list for PBXNativeTarget "rectangle.ofx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E551F3017994FE400A4135C /* Debug */,
+				1E551F3117994FE400A4135C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		1E551F3F17994FF900A4135C /* Build configuration list for PBXNativeTarget "testProperties.ofx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E551F4017994FF900A4135C /* Debug */,
+				1E551F4117994FF900A4135C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		1E551F471799509100A4135C /* Build configuration list for PBXAggregateTarget "all" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E551F481799509100A4135C /* Debug */,
+				1E551F491799509100A4135C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1E551EB917994D4000A4135C /* Project object */;
+}
