@@ -674,6 +674,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -699,6 +700,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -739,6 +741,7 @@
 				1E3CB87B1799312D0032B538 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1E3CB886179931470032B538 /* Build configuration list for PBXNativeTarget "cacheDemo" */ = {
 			isa = XCConfigurationList;
@@ -747,6 +750,7 @@
 				1E3CB888179931470032B538 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1E3CB89E179931E50032B538 /* Build configuration list for PBXAggregateTarget "HostSupport" */ = {
 			isa = XCConfigurationList;
@@ -755,6 +759,7 @@
 				1E3CB8A0179931E50032B538 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1E3CB8B0179934420032B538 /* Build configuration list for PBXNativeTarget "expat" */ = {
 			isa = XCConfigurationList;
@@ -763,6 +768,7 @@
 				1E3CB8B2179934420032B538 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1E742FE517992CF9007D295B /* Build configuration list for PBXProject "HostSupport" */ = {
 			isa = XCConfigurationList;
