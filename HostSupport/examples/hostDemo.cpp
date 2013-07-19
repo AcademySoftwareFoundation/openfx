@@ -34,6 +34,7 @@ modification, are permitted provided that the following conditions are met:
 // ofx
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
+#include "ofxPixels.h"
 
 // ofx host
 #include "ofxhBinary.h"

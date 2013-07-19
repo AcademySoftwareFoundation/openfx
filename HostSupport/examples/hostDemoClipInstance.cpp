@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ofx
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
+#include "ofxPixels.h"
 
 // ofx host
 #include "ofxhBinary.h"
@@ -237,7 +238,7 @@ namespace MyHost {
 
 
   /// override this to return the rod on the clip cannoical coords!
-  OfxRectD MyClipInstance::getRegionOfDefinition(OfxTime time)
+  OfxRectD MyClipInstance::getRegionOfDefinition(OfxTime time) const
   {
     /// our clip is pretending to be progressive PAL SD, so return 0<=x<768, 0<=y<576 
     OfxRectD v;
