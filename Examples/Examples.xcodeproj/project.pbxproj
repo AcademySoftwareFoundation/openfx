@@ -124,6 +124,7 @@
 		1E551F5A179950EC00A4135C /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		1E551F5E1799515400A4135C /* ofxLog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxLog.cpp; path = Test/ofxLog.cpp; sourceTree = "<group>"; };
 		1E551F5F1799515400A4135C /* ofxLog.H */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ofxLog.H; path = Test/ofxLog.H; sourceTree = "<group>"; };
+		1EC2A5AC179D42A8008FC1CF /* ofxUtilities.H */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ofxUtilities.H; path = include/ofxUtilities.H; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -231,6 +232,7 @@
 		1E551ED217994DEF00A4135C /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				1EC2A5AC179D42A8008FC1CF /* ofxUtilities.H */,
 				1E551F5E1799515400A4135C /* ofxLog.cpp */,
 				1E551F5F1799515400A4135C /* ofxLog.H */,
 				1E551ED317994E0100A4135C /* basic.cpp */,
