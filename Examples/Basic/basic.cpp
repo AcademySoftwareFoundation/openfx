@@ -111,7 +111,7 @@ getMyInstanceData( OfxImageEffectHandle effect)
 // Convinience wrapper to set the enabledness of a parameter
 static inline void
 setParamEnabledness( OfxImageEffectHandle effect,
-                    char *paramName,
+                    const char *paramName,
                     int enabledState)
 {
   // fetch the parameter set for this effect
@@ -140,7 +140,7 @@ setPerComponentScaleEnabledness( OfxImageEffectHandle effect)
   int perComponentScale;
   gParamHost->paramGetValue(myData->perComponentScaleParam, &perComponentScale);
 
-  if(ofxuIsClipConnected(effect, "Source")) {
+  if(ofxuIsClipConnected(effect, kOfxImageEffectSimpleSourceClipName)) {
     OfxPropertySetHandle props; gEffectHost->clipGetPropertySet(myData->sourceClip, &props);
 
     // get the input clip format
@@ -201,8 +201,8 @@ createInstance( OfxImageEffectHandle effect)
   gParamHost->paramGetHandle(paramSet, "scaleA", &myData->scaleAParam, 0);
 
   // cache away out clip handles
-  gEffectHost->clipGetHandle(effect, "Source", &myData->sourceClip, 0);
-  gEffectHost->clipGetHandle(effect, "Output", &myData->outputClip, 0);
+  gEffectHost->clipGetHandle(effect, kOfxImageEffectSimpleSourceClipName, &myData->sourceClip, 0);
+  gEffectHost->clipGetHandle(effect, kOfxImageEffectOutputClipName, &myData->outputClip, 0);
   
   if(myData->isGeneralEffect) {
     gEffectHost->clipGetHandle(effect, "Mask", &myData->maskClip, 0);
@@ -360,7 +360,7 @@ isIdentity( OfxImageEffectHandle  effect,
   // if the scale values are all 1, then we have an identity xfm on the Source clip
   if(scaleValue == 1.0 && sR==1 && sG == 1 && sB == 1 && sA == 1) {
     // set the property in the out args indicating which is the identity clip
-    gPropHost->propSetString(outArgs, kOfxPropName, 0, "Source");
+    gPropHost->propSetString(outArgs, kOfxPropName, 0, kOfxImageEffectSimpleSourceClipName);
     return kOfxStatOK;
   }
 
@@ -395,7 +395,7 @@ instanceChanged( OfxImageEffectHandle  effect,
   gPropHost->propGetString(inArgs, kOfxPropName, 0, &objChanged);
 
   // Did the source clip change or the 'scaleComponents' change? In which case enable/disable individual component scale parameters
-  if((isClip && strcmp(objChanged, "Source")  == 0) ||
+  if((isClip && strcmp(objChanged, kOfxImageEffectSimpleSourceClipName)  == 0) ||
      (isParam && strcmp(objChanged, "scaleComponents")  == 0)) {
     setPerComponentScaleEnabledness(effect);
     return kOfxStatOK;
@@ -799,13 +799,12 @@ static OfxStatus render( OfxImageEffectHandle  instance,
 // convience function to define scaling parameter
 static void
 defineScaleParam( OfxParamSetHandle effectParams,
-                 char *name,
-                 char *label,
-                 char *scriptName,
-                 char *hint,
-                 char *parent)
+                 const char *name,
+                 const char *label,
+                 const char *scriptName,
+                 const char *hint,
+                 const char *parent)
 {
-  OfxParamHandle param;
   OfxPropertySetHandle props;
   gParamHost->paramDefine(effectParams, kOfxParamTypeDouble, name, &props);
 
@@ -833,14 +832,14 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
 
   OfxPropertySetHandle props;
   // define the single output clip in both contexts
-  gEffectHost->clipDefine(effect, "Output", &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectOutputClipName, &props);
 
   // set the component types we can handle on out output
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
 
   // define the single source clip in both contexts
-  gEffectHost->clipDefine(effect, "Source", &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectSimpleSourceClipName, &props);
 
   // set the component types we can handle on our main input
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
@@ -886,7 +885,6 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
 
   
   // make a page of controls and add my parameters to it
-  OfxParamHandle page;
   gParamHost->paramDefine(paramSet, kOfxParamTypePage, "Main", &props);
   gPropHost->propSetString(props, kOfxParamPropPageChild, 0, "scale");
   gPropHost->propSetString(props, kOfxParamPropPageChild, 1, "scaleComponents");

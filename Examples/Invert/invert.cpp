@@ -79,7 +79,7 @@ static OfxStatus render(OfxImageEffectHandle  instance,
 
   // fetch output clip
   OfxImageClipHandle outputClip;
-  gEffectHost->clipGetHandle(instance, "Output", &outputClip, 0);
+  gEffectHost->clipGetHandle(instance, kOfxImageEffectOutputClipName, &outputClip, 0);
     
 
   OfxPropertySetHandle outputImg = NULL, sourceImg = NULL;
@@ -91,7 +91,7 @@ static OfxStatus render(OfxImageEffectHandle  instance,
     }
       
     // fetch output image info from that handle
-    int dstRowBytes, dstBitDepth;
+    int dstRowBytes;
     OfxRectI dstRect;
     void *dstPtr;
     gPropHost->propGetInt(outputImg, kOfxImagePropRowBytes, 0, &dstRowBytes);
@@ -101,7 +101,7 @@ static OfxStatus render(OfxImageEffectHandle  instance,
       
     // fetch main input clip
     OfxImageClipHandle sourceClip;
-    gEffectHost->clipGetHandle(instance, "Source", &sourceClip, 0);
+    gEffectHost->clipGetHandle(instance, kOfxImageEffectSimpleSourceClipName, &sourceClip, 0);
       
     // fetch image at render time from that clip
     if (gEffectHost->clipGetImage(sourceClip, time, NULL, &sourceImg) != kOfxStatOK) {
@@ -109,7 +109,7 @@ static OfxStatus render(OfxImageEffectHandle  instance,
     }
       
     // fetch image info out of that handle
-    int srcRowBytes, srcBitDepth;
+    int srcRowBytes;
     OfxRectI srcRect;
     void *srcPtr;
     gPropHost->propGetInt(sourceImg, kOfxImagePropRowBytes, 0, &srcRowBytes);
@@ -172,13 +172,13 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
 {
   OfxPropertySetHandle props;
   // define the single output clip in both contexts
-  gEffectHost->clipDefine(effect, "Output", &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectOutputClipName, &props);
 
   // set the component types we can handle on out output
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
 
   // define the single source clip in both contexts
-  gEffectHost->clipDefine(effect, "Source", &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectSimpleSourceClipName, &props);
 
   // set the component types we can handle on our main input
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);

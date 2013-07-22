@@ -54,7 +54,7 @@ static OfxMessageSuiteV1     *gMessageSuite;
 ////////////////////////////////////////////////////////////////////////////////
 // fetch a suite
 static void *
-fetchSuite(char *suiteName, int suiteVersion, bool optional = false)
+fetchSuite(const char *suiteName, int suiteVersion, bool optional = false)
 {
   void *suite = gHost->fetchSuite(gHost->host, suiteName, suiteVersion);
   if(optional)
@@ -114,13 +114,13 @@ struct PropertyValueOnion {
   void  *vPointer;
   
   PropertyValueOnion(void) {}
-  PropertyValueOnion(char  *s) : vString(s) {}
+  PropertyValueOnion(const char  *s) : vString(s) {}
   PropertyValueOnion(int    i) : vInt(i) {}
   PropertyValueOnion(double d) : vDouble(d) {}
   PropertyValueOnion(void  *p) : vPointer(p) {}
   
-  PropertyValueOnion &operator = (char *v)  {vString = v; return *this;}
-  PropertyValueOnion &operator = (std::string v)  {vString = v; return *this;}
+  PropertyValueOnion &operator = (const char *v)  {vString = v; return *this;}
+  PropertyValueOnion &operator = (const std::string &v)  {vString = v; return *this;}
   PropertyValueOnion &operator = (void *v)  {vPointer = v; return *this;}
   PropertyValueOnion &operator = (int v)    {vInt = v; return *this;}
   PropertyValueOnion &operator = (double v) {vDouble = v; return *this;}
@@ -141,7 +141,7 @@ public :
                  eInt,
                  eString,
                  eDouble};
-  char *   _name;
+  const char * _name;
   int      _dimension;        // -1 implies variable dim
   TypeEnum _ilk;
   
@@ -158,8 +158,8 @@ protected :
   
   // set basic beets
   template <class T> void
-  initialise( char *nm, int dim, TypeEnum ilk,
-              T *wantedVals, int nWantedVals, T *defs, int nDefs)
+  initialise( const char *nm, int dim, TypeEnum ilk,
+              const T *wantedVals, int nWantedVals, const T *defs, int nDefs)
   {
     _name = nm;
     _dimension = dim;
@@ -191,13 +191,13 @@ public :
   }
   
   // multi dimension string prop
-  PropertyDescription(char *nm, int dim,  char **wantedVals, int nV,  char **defs, int nD)
+  PropertyDescription(const char *nm, int dim,  const char * const *wantedVals, int nV,  const char * const *defs, int nD)
   {
     initialise(nm, dim, eString, wantedVals, nV, defs, nD);
   }
   
   // single dimension string prop
-  PropertyDescription(char *nm, int dim,  char *value, bool setValue,  char *def, bool hasDefault) 
+  PropertyDescription(const char *nm, int dim,  const char *value, bool setValue,  const char *def, bool hasDefault)
   {
     initialise(nm, dim, eString,
                &value, setValue ? 1 : 0,
@@ -205,13 +205,13 @@ public :
   }
   
   // multi dimension int prop
-  PropertyDescription(char *nm, int dim, int  *wantedVals, int nV, int *defs, int nD)
+  PropertyDescription(const char *nm, int dim, const int  *wantedVals, int nV, const int *defs, int nD)
   {
     initialise(nm, dim, eInt, wantedVals, nV, defs, nD);
   }
   
   // single dimension int prop
-  PropertyDescription(char *nm, int dim, int value, bool setValue, int def, bool hasDefault) 
+  PropertyDescription(const char *nm, int dim, int value, bool setValue, int def, bool hasDefault)
   {
     initialise(nm, dim, eInt,
                &value, setValue ? 1 : 0,
@@ -219,13 +219,13 @@ public :
   }
   
   // multi dimension double prop
-  PropertyDescription(char *nm, int dim, double  *wantedVals, int nV, double *defs, int nD)
+  PropertyDescription(const char *nm, int dim, const double  *wantedVals, int nV, const double *defs, int nD)
   {
     initialise(nm, dim, eDouble, wantedVals, nV, defs, nD);
   }
   
   // single dimension double prop
-  PropertyDescription(char *nm, int dim, double value, bool setValue, double def, bool hasDefault) 
+  PropertyDescription(const char *nm, int dim, double value, bool setValue, double def, bool hasDefault)
   {
     initialise(nm, dim, eDouble,
                &value, setValue ? 1 : 0,
@@ -233,7 +233,7 @@ public :
   }
   
   // single dimension pointer prop
-  PropertyDescription(char *nm, int dim, void *value, bool setValue, void *def, bool hasDefault)
+  PropertyDescription(const char *nm, int dim, void *value, bool setValue, void *def, bool hasDefault)
   {
     initialise(nm, dim, ePointer,
                &value, setValue ? 1 : 0,
@@ -251,14 +251,14 @@ public :
 // Describes a set of properties
 class PropertySetDescription : PropertySet {
 protected :
-  char                  *_setName;
+  const char            *_setName;
   PropertyDescription   *_descriptions;
   int                   _nDescriptions;
   
   std::map<std::string, PropertyDescription *> _descriptionsByName;
   
 public :
-  PropertySetDescription(char *setName, OfxPropertySetHandle handle, PropertyDescription *v, int nV);
+  PropertySetDescription(const char *setName, OfxPropertySetHandle handle, PropertyDescription *v, int nV);
   void checkProperties(bool logOrdinaryMessages = false); // see if they are there in the first place
   void checkDefaults(bool logOrdinaryMessages = false);   // check default values
   void retrieveValues(bool logOrdinaryMessages = false);  // get current values on the host
@@ -275,7 +275,7 @@ public :
 
 ////////////////////////////////////////////////////////////////////////////////
 // maps status to a string
-static char *
+static const char *
 mapStatus(OfxStatus stat)
 {
   switch(stat) {    
@@ -496,7 +496,8 @@ void PropertyDescription::checkDefault(PropertySet &propSet)
     // fetch the dimension on the host
     int hostDimension;
     OfxStatus stat = propSet.propGetDimension(_name, hostDimension);
-    
+    (void)stat;
+
     OFX::logError(hostDimension != _nDefs, "Host reports default dimension of '%s' is %d, which is different to the default value %d;", _name, hostDimension, _nDefs);
     
     int N = hostDimension < _nDefs ? hostDimension : _nDefs;
@@ -638,8 +639,8 @@ PropertyDescription::setValue(PropertySet &propSet)
 
 ////////////////////////////////////////////////////////////////////////////////
 // a set of property descriptions
-PropPropertySetDescription::PropertySetDescription(char *setName, OfxPropertySetHandle handle, PropertyDescription *v, int nV)
-PropertySet(handle)
+PropertySetDescription::PropertySetDescription(const char *setName, OfxPropertySetHandle handle, PropertyDescription *v, int nV)
+  : PropertySet(handle)
   , _setName(setName)
   , _descriptions(v)
   , _nDescriptions(nV)
@@ -1031,7 +1032,8 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
 // code for the plugin's description routine
 
 // contexts we can be 
-statstatic char *gSupportedContexts[] =
+static const char *gSupportedContexts[] =
+  {
     kOfxImageEffectContextGenerator,
     kOfxImageEffectContextFilter,
     kOfxImageEffectContextTransition, 
@@ -1041,7 +1043,8 @@ statstatic char *gSupportedContexts[] =
   };
 
 // pixel depths we can be
-statstatic char *gSupportedPixelDepths[] =
+static const char *gSupportedPixelDepths[] =
+  {
     kOfxBitDepthByte,
     kOfxBitDepthShort,
     kOfxBitDepthFloat

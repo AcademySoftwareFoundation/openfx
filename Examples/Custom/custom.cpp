@@ -185,7 +185,7 @@ isIdentity(OfxImageEffectHandle pluginInstance,
 	   OfxPropertySetHandle outArgs)
 {
   // set the property in the out args indicating which is the identity clip
-  gPropHost->propSetString(outArgs, kOfxPropName, 0, "Source");
+  gPropHost->propSetString(outArgs, kOfxPropName, 0, kOfxImageEffectSimpleSourceClipName);
   return kOfxStatOK;
 }
 
@@ -442,6 +442,7 @@ overlayMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs
     else if(strcmp(action, kOfxInteractActionPenUp) == 0) {
       return interactPenUp(pluginInstance, interact, inArgs);
     }
+      return kOfxStatReplyDefault;
   }
 }
 
@@ -457,7 +458,7 @@ describe(OfxImageEffectHandle effect)
     return stat;
   
   // see if the host supports overlays and custom params and custom param animation
-  int supportsOverlays, supportsCustomAnim;
+  int supportsOverlays;
   gPropHost->propGetInt(gHost->host, kOfxImageEffectPropSupportsOverlays, 0, &supportsOverlays);
   if(supportsOverlays == 0)
     return kOfxStatErrMissingHostFeature;
@@ -489,12 +490,12 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
 {
   // define the mandated single source clip
   OfxPropertySetHandle props;
-  gEffectHost->clipDefine(effect, "Source", &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectSimpleSourceClipName, &props);
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
 
   // define the output clip
-  gEffectHost->clipDefine(effect, "Output", &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectOutputClipName, &props);
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
   

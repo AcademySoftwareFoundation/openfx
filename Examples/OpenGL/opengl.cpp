@@ -159,8 +159,8 @@ createInstance( OfxImageEffectHandle effect)
   gParamHost->paramGetHandle(paramSet, "source_scale", &myData->sourceScaleParam, 0);
 
   // cache away our clip handles
-  gEffectHost->clipGetHandle(effect, "Source", &myData->sourceClip, 0);
-  gEffectHost->clipGetHandle(effect, "Output", &myData->outputClip, 0);
+  gEffectHost->clipGetHandle(effect, kOfxImageEffectSimpleSourceClipName, &myData->sourceClip, 0);
+  gEffectHost->clipGetHandle(effect, kOfxImageEffectOutputClipName, &myData->outputClip, 0);
 
   // set my private instance data
   gPropHost->propSetPointer(effectProps, kOfxPropInstanceData, 0, (void *) myData);
@@ -214,6 +214,7 @@ getSpatialRoI( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxP
 
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
+  (void)myData;
 
   return kOfxStatOK;
 }
@@ -316,14 +317,9 @@ static OfxStatus render( OfxImageEffectHandle  instance,
 
   // property handles and members of each image
   OfxPropertySetHandle sourceImg = NULL, outputImg = NULL;
-  int srcRowBytes, srcBitDepth, dstRowBytes, dstBitDepth;
-  bool srcIsAlpha, dstIsAlpha;
-  OfxRectI dstRect, srcRect;
-  void *src, *dst = NULL;
   int gl_enabled = 0;
   int source_texture_index = -1, source_texture_target = -1;
   int output_texture_index = -1, output_texture_target = -1;
-  void *source_ptr, *output;
   char *tmps;
 
   DPRINT(("render: openGLSuite %s\n", gOpenGLSuite ? "found" : "not found"));
@@ -341,7 +337,6 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   }
 
   // get the output image texture
-  OfxPropertySetHandle output_texture = NULL;
   status = gOpenGLSuite->clipLoadTexture(myData->outputClip, time, NULL, NULL, &outputImg);
   DPRINT(("openGL: clipLoadTexture (output) returns status %d\n", status));
 
@@ -353,7 +348,6 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   DPRINT(("openGL: output texture index %d, target %d, depth %s\n",
 	  output_texture_index, output_texture_target, tmps));
 
-  OfxPropertySetHandle source_texture = NULL;
   status = gOpenGLSuite->clipLoadTexture(myData->sourceClip, time, NULL, NULL, &sourceImg);
   DPRINT(("openGL: clipLoadTexture (source) returns status %d\n", status));
 
@@ -446,13 +440,12 @@ static OfxStatus render( OfxImageEffectHandle  instance,
 // convience function to define parameters
 static void
 defineParam( OfxParamSetHandle effectParams,
-	     char *name,
-	     char *label,
-	     char *scriptName,
-	     char *hint,
-	     char *parent)
+	     const char *name,
+	     const char *label,
+	     const char *scriptName,
+	     const char *hint,
+	     const char *parent)
 {
-  OfxParamHandle param;
   OfxPropertySetHandle props;
   gParamHost->paramDefine(effectParams, kOfxParamTypeDouble, name, &props);
 
@@ -477,18 +470,18 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
   // get the context from the inArgs handle
   char *context;
   gPropHost->propGetString(inArgs, kOfxImageEffectPropContext, 0, &context);
-  bool isGeneralContext = strcmp(context, kOfxImageEffectContextGeneral) == 0;
+  //bool isGeneralContext = strcmp(context, kOfxImageEffectContextGeneral) == 0;
 
   OfxPropertySetHandle props;
   // define the single output clip in both contexts
-  gEffectHost->clipDefine(effect, "Output", &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectOutputClipName, &props);
 
   // set the component types we can handle on out output
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
 
   // define the single source clip in both contexts
-  gEffectHost->clipDefine(effect, "Source", &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectSimpleSourceClipName, &props);
 
   // set the component types we can handle on our main input
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
@@ -507,7 +500,6 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
 	      "Scales the source image", 0);
 
   // make a page of controls and add my parameters to it
-  OfxParamHandle page;
   gParamHost->paramDefine(paramSet, kOfxParamTypePage, "Main", &props);
   gPropHost->propSetString(props, kOfxParamPropPageChild, 0, "scale");
   gPropHost->propSetString(props, kOfxParamPropPageChild, 1, "source_scale");
@@ -558,7 +550,7 @@ describe(OfxImageEffectHandle  effect)
   gPropHost->propSetString(effectProps, kOfxImageEffectPropOpenGLRenderSupported, 0, "true");
 
   {
-    char *s = "<undefined>";
+    char *s = NULL;
     stat = gPropHost->propGetString(gHost->host, kOfxImageEffectPropOpenGLRenderSupported, 0, &s);
     DPRINT(("Host has OpenGL render support: %s (stat=%d)\n", s, stat));
     gHostSupportsOpenGL = stat == 0 && !strcmp(s, "true");
