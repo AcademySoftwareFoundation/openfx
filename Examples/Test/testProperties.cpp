@@ -165,7 +165,7 @@ protected :
     _dimension = dim;
     _ilk = ilk;
     _defs = _wantedVals = _currentVals = 0;
-    _nDefs = nWantedVals = _nCurrentVals = 0;
+    _nDefs = _nWantedVals = _nCurrentVals = 0;
     
     // make the default and value arrays and set them
     if(nWantedVals) {
@@ -522,7 +522,7 @@ void PropertyDescription::checkDefault(PropertySet &propSet)
         break;
       case PropertyDescription::eDouble  :
         propSet.propGet(_name, vD, i); 
-        OFX::logError(vD != (double) _defs[i], "Default value of %s[%d] = %g, it should be %g;", _name, i, vP, (double) _defs[i]);
+        OFX::logError(vD != (double) _defs[i], "Default value of %s[%d] = %g, it should be %g;", _name, i, vD, (double) _defs[i]);
         break;
       }
     }
@@ -564,7 +564,7 @@ PropertyDescription::retrieveValue(PropertySet &propSet)
           if(stat == kOfxStatOK)
                                   _currentVals[i] = vS;
                                   else
-                                        _currentVals[i] =_currentVals[i] = std::string("");
+                                        _currentVals[i] = std::string("");
 	  break;
       case PropertyDescription::eDouble  :
         stat = propSet.propGet(_name, vD, i); 
@@ -638,8 +638,8 @@ PropertyDescription::setValue(PropertySet &propSet)
 
 ////////////////////////////////////////////////////////////////////////////////
 // a set of property descriptions
-PropertySetDescription::PropertySetDescription(char *setName, OfxPropertySetHandle handle, PropertyDescription *v, int nV)
-  : PropertySet(handle)
+PropPropertySetDescription::PropertySetDescription(char *setName, OfxPropertySetHandle handle, PropertyDescription *v, int nV)
+PropertySet(handle)
   , _setName(setName)
   , _descriptions(v)
   , _nDescriptions(nV)
@@ -723,7 +723,6 @@ PropertySetDescription::setValues(bool logOrdinaryMessages)
 PropertyDescription *
 PropertySetDescription::findDescription(const std::string &name)
 {
-  PropertyDescription *desc = 0;
   std::map<std::string, PropertyDescription *>::iterator iter;
   iter = _descriptionsByName.find(name);
   if (iter != _descriptionsByName.end()) {
@@ -737,7 +736,7 @@ int
 PropertySetDescription::intPropValue(const std::string &name, int idx)
 {
   PropertyDescription *desc = 0;
-  if(desc = findDescription(name)) {
+  if(desc == findDescription(name)) {
     if(idx < desc->_nCurrentVals) {
       return int(desc->_currentVals[idx]);
     }
@@ -933,7 +932,7 @@ actionLoad(void)
 static OfxStatus
 unLoadAction(void)
 {
-  OFX::logError(gLoadCount != 0, "UnLoad action called without a corresponding load action having been called;");
+  OFX::logError(gLoadCount <= 0, "UnLoad action called without a corresponding load action having been called;");
   gLoadCount--;
   
   // force these to null
@@ -1032,8 +1031,7 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
 // code for the plugin's description routine
 
 // contexts we can be 
-static char *gSupportedContexts[] =
-  {
+statstatic char *gSupportedContexts[] =
     kOfxImageEffectContextGenerator,
     kOfxImageEffectContextFilter,
     kOfxImageEffectContextTransition, 
@@ -1043,8 +1041,7 @@ static char *gSupportedContexts[] =
   };
 
 // pixel depths we can be
-static char *gSupportedPixelDepths[] =
-  {
+statstatic char *gSupportedPixelDepths[] =
     kOfxBitDepthByte,
     kOfxBitDepthShort,
     kOfxBitDepthFloat
