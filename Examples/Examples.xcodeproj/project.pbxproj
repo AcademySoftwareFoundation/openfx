@@ -93,14 +93,28 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1E3F3953179D245500F32184 /* ofxCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxCore.h; sourceTree = "<group>"; };
+		1E3F3954179D245500F32184 /* ofxImageEffect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxImageEffect.h; sourceTree = "<group>"; };
+		1E3F3955179D245500F32184 /* ofxInteract.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxInteract.h; sourceTree = "<group>"; };
+		1E3F3956179D245500F32184 /* ofxKeySyms.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxKeySyms.h; sourceTree = "<group>"; };
+		1E3F3957179D245500F32184 /* ofxMemory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMemory.h; sourceTree = "<group>"; };
+		1E3F3958179D245500F32184 /* ofxMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMessage.h; sourceTree = "<group>"; };
+		1E3F3959179D245500F32184 /* ofxMultiThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMultiThread.h; sourceTree = "<group>"; };
+		1E3F395A179D245500F32184 /* ofxOpenGLRender.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxOpenGLRender.h; sourceTree = "<group>"; };
+		1E3F395B179D245500F32184 /* ofxParam.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxParam.h; sourceTree = "<group>"; };
+		1E3F395C179D245500F32184 /* ofxParametricParam.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxParametricParam.h; sourceTree = "<group>"; };
+		1E3F395D179D245500F32184 /* ofxPixels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxPixels.h; sourceTree = "<group>"; };
+		1E3F395E179D245500F32184 /* ofxProgress.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxProgress.h; sourceTree = "<group>"; };
+		1E3F395F179D245500F32184 /* ofxProperty.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxProperty.h; sourceTree = "<group>"; };
+		1E3F3960179D245500F32184 /* ofxTimeLine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxTimeLine.h; sourceTree = "<group>"; };
 		1E551EC117994D4000A4135C /* basic.ofx.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = basic.ofx.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
-		1E551ED317994E0100A4135C /* basic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = basic.cpp; path = Basic/basic.cpp; sourceTree = "<group>"; };
+		1E551ED317994E0100A4135C /* basic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; name = basic.cpp; path = Basic/basic.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		1E551ED917994E8100A4135C /* custom.ofx.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = custom.ofx.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
-		1E551EE717994EA300A4135C /* custom.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = custom.cpp; path = Custom/custom.cpp; sourceTree = "<group>"; };
+		1E551EE717994EA300A4135C /* custom.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; name = custom.cpp; path = Custom/custom.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		1E551EED17994EB700A4135C /* invert.ofx.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = invert.ofx.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
-		1E551EF917994ED500A4135C /* invert.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = invert.cpp; path = Invert/invert.cpp; sourceTree = "<group>"; };
+		1E551EF917994ED500A4135C /* invert.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; name = invert.cpp; path = Invert/invert.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		1E551F0017994F0600A4135C /* opengl.ofx.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = opengl.ofx.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
-		1E551F0C17994F6900A4135C /* opengl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = opengl.cpp; path = OpenGL/opengl.cpp; sourceTree = "<group>"; };
+		1E551F0C17994F6900A4135C /* opengl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; name = opengl.cpp; path = OpenGL/opengl.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		1E551F1217994F7D00A4135C /* overlay.ofx.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = overlay.ofx.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E551F2017994FB600A4135C /* overlay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = overlay.cpp; path = Overlay/overlay.cpp; sourceTree = "<group>"; };
 		1E551F2617994FE400A4135C /* rectangle.ofx.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = rectangle.ofx.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -168,9 +182,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1E3F3952179D23C100F32184 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				1E3F3953179D245500F32184 /* ofxCore.h */,
+				1E3F3954179D245500F32184 /* ofxImageEffect.h */,
+				1E3F3955179D245500F32184 /* ofxInteract.h */,
+				1E3F3956179D245500F32184 /* ofxKeySyms.h */,
+				1E3F3957179D245500F32184 /* ofxMemory.h */,
+				1E3F3958179D245500F32184 /* ofxMessage.h */,
+				1E3F3959179D245500F32184 /* ofxMultiThread.h */,
+				1E3F395A179D245500F32184 /* ofxOpenGLRender.h */,
+				1E3F395B179D245500F32184 /* ofxParam.h */,
+				1E3F395C179D245500F32184 /* ofxParametricParam.h */,
+				1E3F395D179D245500F32184 /* ofxPixels.h */,
+				1E3F395E179D245500F32184 /* ofxProgress.h */,
+				1E3F395F179D245500F32184 /* ofxProperty.h */,
+				1E3F3960179D245500F32184 /* ofxTimeLine.h */,
+			);
+			name = Headers;
+			path = ../include;
+			sourceTree = "<group>";
+		};
 		1E551EB817994D4000A4135C = {
 			isa = PBXGroup;
 			children = (
+				1E3F3952179D23C100F32184 /* Headers */,
 				1E551ED217994DEF00A4135C /* Sources */,
 				1E551EDA17994E8100A4135C /* Frameworks */,
 				1E551EC217994D4000A4135C /* Products */,
@@ -358,6 +395,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				1E551F461799509100A4135C /* all */,
 				1E551EC017994D4000A4135C /* basic.ofx */,
 				1E551ED817994E8100A4135C /* custom.ofx */,
 				1E551EEC17994EB700A4135C /* invert.ofx */,
@@ -365,7 +403,6 @@
 				1E551F1117994F7D00A4135C /* overlay.ofx */,
 				1E551F2517994FE400A4135C /* rectangle.ofx */,
 				1E551F3517994FF900A4135C /* testProperties.ofx */,
-				1E551F461799509100A4135C /* all */,
 			);
 		};
 /* End PBXProject section */
