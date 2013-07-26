@@ -330,6 +330,7 @@ overlayMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs
       return interactPenUp(pluginInstance, interact, inArgs);
     }
   }
+  return kOfxStatReplyDefault;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
