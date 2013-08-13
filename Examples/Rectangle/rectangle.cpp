@@ -134,8 +134,8 @@ createInstance(OfxImageEffectHandle effect)
 
   // cache away clip handles
   if( myData->context  != eIsGenerator)
-    gEffectHost->clipGetHandle(effect, "Source", &myData->sourceClip, 0);
-  gEffectHost->clipGetHandle(effect, "Output", &myData->outputClip, 0);
+    gEffectHost->clipGetHandle(effect, kOfxImageEffectSimpleSourceClipName, &myData->sourceClip, 0);
+  gEffectHost->clipGetHandle(effect, kOfxImageEffectOutputClipName, &myData->outputClip, 0);
   
   // set my private instance data
   gPropHost->propSetPointer(effectProps, kOfxPropInstanceData, 0, (void *) myData);
@@ -284,7 +284,7 @@ isIdentity(OfxImageEffectHandle effect,
     if(col.a <= 0.0 || rect.x1 > renderWindow.x2 ||  rect.y1 > renderWindow.y2 || 
        rect.x2 < renderWindow.x1 ||  rect.y2 < renderWindow.y1) {
       // set the property in the out args indicating which is the identity clip
-      gPropHost->propSetString(outArgs, kOfxPropName, 0, "Source");
+      gPropHost->propSetString(outArgs, kOfxPropName, 0, kOfxImageEffectSimpleSourceClipName);
       return kOfxStatOK;
     }
   }
@@ -423,7 +423,6 @@ public :
 
     // value and premulitplied of the colour scaled up to quantisation space
     PIX value, premultValue;
-    float alpha = float(colour.a);
     if(isFloat) {
       // no need to clamp
       value.r = colour.r * max;
@@ -783,7 +782,7 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
 
   OfxPropertySetHandle clipProps;
   // define the single output clip in both contexts
-  gEffectHost->clipDefine(effect, "Output", &clipProps);
+  gEffectHost->clipDefine(effect, kOfxImageEffectOutputClipName, &clipProps);
 
   // set the component types we can handle on out output
   gPropHost->propSetString(clipProps, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
@@ -792,7 +791,7 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
 
   if(!isGeneratorContext) {
     // define the single source clip in filter and general contexts
-    gEffectHost->clipDefine(effect, "Source", &clipProps);
+    gEffectHost->clipDefine(effect, kOfxImageEffectSimpleSourceClipName, &clipProps);
 
     // set the component types we can handle on our main input
     gPropHost->propSetString(clipProps, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
