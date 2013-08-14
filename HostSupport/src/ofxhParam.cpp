@@ -252,62 +252,72 @@ namespace OFX {
       }
 
       /// make a parameter, with the given type and name
-      void Descriptor::addStandardParamProps(const std::string &type) 
-      {
-        Property::TypeEnum propType = Property::eString;
-        int propDim = 1;
-        findType(type, propType, propDim);
+           void Descriptor::addStandardParamProps(const std::string &type)
+           {
+             Property::TypeEnum propType = Property::eString;
+             int propDim = 1;
+             findType(type, propType, propDim);
 
 
-        static Property::PropSpec allString[] = {
-          { kOfxParamPropStringMode,  Property::eString,    1,    false,    kOfxParamStringIsSingleLine },
-          { kOfxParamPropStringFilePathExists, Property::eInt,    1,    false,    "1" },
-          { 0 }
-        };
-    
-        static Property::PropSpec allChoice[] = {
-          { kOfxParamPropChoiceOption,    Property::eString,    0,    false,    "" },
-          { 0 }
-        };
+             static Property::PropSpec allString[] = {
+               { kOfxParamPropStringMode,  Property::eString,    1,    false,    kOfxParamStringIsSingleLine },
+                 { kOfxParamPropStringFilePathExists, Property::eInt,    1,    false,    "1" },
+               { 0 }
+             };
 
-        static Property::PropSpec allCustom[] = {
-          { kOfxParamPropCustomInterpCallbackV1,    Property::ePointer,    1,    false,    0 },
-          { 0 },
-        };
+             static Property::PropSpec allChoice[] = {
+               { kOfxParamPropChoiceOption,    Property::eString,    0,    false,    "" },
+                 // { kOfxParamPropChoiceLabelOption, Property::eString, 0, false, "" }//<< @Alex: add this to support tuttle choice param extension
+               { 0 }
+             };
 
-        static Property::PropSpec allPage[] = {
-          { kOfxParamPropPageChild,    Property::eString,    0,    false,    "" },
-          { 0 }
-        };
+             static Property::PropSpec allCustom[] = {
+               { kOfxParamPropCustomInterpCallbackV1,    Property::ePointer,    1,    false,    0 },
+               { 0 },
+             };
 
-        if (propType != Property::eNone) {
-          addValueParamProps(type, propType, propDim);
-        }
+             static Property::PropSpec allPage[] = {
+               { kOfxParamPropPageChild,    Property::eString,    0,    false,    "" },
+               { 0 }
+             };
 
-        if (type == kOfxParamTypeString) {
-          _properties.addProperties(allString);
-        }
-  
-        if (isDoubleParam(type) || isIntParam(type) || isColourParam(type)) {
-          addNumericParamProps(type, propType, propDim);
-        }
+             if (propType != Property::eNone) {
+               addValueParamProps(type, propType, propDim);
+             }
 
-        if (type != kOfxParamTypeGroup && type != kOfxParamTypePage) {
-          addInteractParamProps(type);
-        }
+             if (type == kOfxParamTypeString) {
+               _properties.addProperties(allString);
+             }
 
-        if (type == kOfxParamTypeChoice) {
-          _properties.addProperties(allChoice);
-        }
+             if (isDoubleParam(type) || isIntParam(type) || isColourParam(type)) {
+               addNumericParamProps(type, propType, propDim);
+             }
 
-        if (type == kOfxParamTypeCustom) {
-          _properties.addProperties(allCustom);
-        }
+             if (type != kOfxParamTypeGroup && type != kOfxParamTypePage) {
+               addInteractParamProps(type);
+             }
 
-        if (type == kOfxParamTypePage) {
-          _properties.addProperties(allPage);
-        }
-      }
+             if (type == kOfxParamTypeChoice) {
+               _properties.addProperties(allChoice);
+             }
+
+             if (type == kOfxParamTypeCustom) {
+               _properties.addProperties(allCustom);
+             }
+
+             if (type == kOfxParamTypePage) {
+               _properties.addProperties(allPage);
+             }
+             /*Fix Alex on 08/13/13: added this to deal with group params. Otherwise they would not work.*/
+             if( type == kOfxParamTypeGroup )
+             {
+                 static const Property::PropSpec allGroup[] = {
+                     { kOfxParamPropGroupOpen, Property::eInt, 1, false, "1" },
+                     { 0 }
+                 };
+                 getProperties().addProperties(allGroup);
+             }
+           }
 
       /// add standard properties to a params that can take an interact
       void Descriptor::addInteractParamProps(const std::string &type)
