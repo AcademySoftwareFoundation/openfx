@@ -553,6 +553,7 @@ namespace OFX {
     case eBitDepthUShort : _pixelBytes *= 2; break;
     case eBitDepthFloat  : _pixelBytes *= 4; break;
     }
+
     str = _imageProps.propGetString(kOfxImageEffectPropPreMultiplication);
     _preMultiplication =  mapStrToPreMultiplicationEnum(str);
 

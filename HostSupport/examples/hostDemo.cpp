@@ -126,7 +126,7 @@ int main(int argc, char **argv)
   of.close();
 
   // get the invert example plugin which uses the OFX C++ support code
-  OFX::Host::ImageEffect::ImageEffectPlugin* plugin = imageEffectPluginCache.getPluginById("net.sf.openfx:invertplugin");
+  OFX::Host::ImageEffect::ImageEffectPlugin* plugin = imageEffectPluginCache.getPluginById("net.sf.openfx:invertPlugin");
 
   imageEffectPluginCache.dumpToStdOut();
 

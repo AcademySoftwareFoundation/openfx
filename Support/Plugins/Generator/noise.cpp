@@ -196,8 +196,6 @@ NoisePlugin::getRegionOfDefinition(const OFX::RegionOfDefinitionArguments &args,
 void
 NoisePlugin::render(const OFX::RenderArguments &args)
 {
-    printf("(NOISE) Render: scale x = %f , y = %f , RenderWindow : x1 = %i , y1 = %i , x2 = %i , y2 = %i\n",
-           args.renderScale.x,args.renderScale.y,args.renderWindow.x1,args.renderWindow.y1,args.renderWindow.x2,args.renderWindow.y2);
   // instantiate the render code based on the pixel depth of the dst clip
   OFX::BitDepthEnum       dstBitDepth    = dstClip_->getPixelDepth();
   OFX::PixelComponentEnum dstComponents  = dstClip_->getPixelComponents();
