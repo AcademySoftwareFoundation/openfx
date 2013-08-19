@@ -75,7 +75,7 @@ namespace OFX {
       OfxHost *getHandle();
 
       /// override this to handle do post-construction initialisation on a Param::Descriptor
-      virtual void initDescriptor(Param::Descriptor *) { }
+      virtual void initParamDescriptor(Param::Descriptor *) { }
 
       /// is my magic number valid?
       bool verifyMagic() { return true; }
