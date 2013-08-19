@@ -579,6 +579,7 @@ namespace OFX {
       };
 
       class StringInstance : public Instance, public KeyframeParam {
+      protected: //fix by Alex on 08/18/13 to allow derived class to handle the return value
         std::string _returnValue; ///< location to hold temporary return value. Should delegate this to implementation!!!
       public:
         StringInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}

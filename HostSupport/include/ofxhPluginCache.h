@@ -274,6 +274,12 @@ namespace OFX {
       bool isLoaded() const {
         return _binary.isLoaded();
       }
+        
+      /*Added by Alex on 08/17/13 to check whether a binary is valid while scanning a directory.
+       This is used to check different architecture for osx*/
+      bool isValid() const{
+        return !_binary.isInvalid();
+      }
 
       void addPlugin(Plugin *pe) {
         _plugins.push_back(pe);

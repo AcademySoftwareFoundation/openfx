@@ -74,7 +74,11 @@ static const char *getArchStr()
 #elif defined (__APPLE__)
 
 #define DIRLIST_SEP_CHARS ";:"
+#if defined(__x86_64) || defined(__x86_64__) //added by Alex on 08/17/13
+#define ARCHSTR "MacOS-x86-64"
+#else
 #define ARCHSTR "MacOS"
+#endif
 #define DIRSEP "/"
 #include <dirent.h>
 
@@ -308,10 +312,22 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
         std::string barename = name.substr(0, name.length() - strlen(".bundle"));
         std::string bundlename = dir + DIRSEP + name;
         std::string binpath = dir + DIRSEP + name + DIRSEP "Contents" DIRSEP + ARCHSTR + DIRSEP + barename;
+          
+          /*Changed by Alex on 08/17/13 to stick to the OpenFX specification:
+           
+           MacOS-x86-64 - for Apple Macintosh OS X, specifically on intel x86 CPUs running AMD's 64 bit extensions. 64 bit host applications should check this first, and if it doesn't exist or is empty, fall back to "MacOS" looking for a universal binary.
+           
+           */
+          
+        bool foundUniversal = false;
+        std::string binpath_universal = dir + DIRSEP + name + DIRSEP "Contents" DIRSEP + "MacOS" + DIRSEP + barename;
+#if defined(__x86_64) || defined(__x86_64__)
+          foundUniversal = _knownBinFiles.find(binpath_universal) != _knownBinFiles.end();
+        if (!foundUniversal && _knownBinFiles.find(binpath) == _knownBinFiles.end()) {
+#else
+        if (_knownBinFiles.find(binpath) == _knownBinFiles.end()) {     
+#endif
         
-        foundBinFiles.insert(binpath);
-        
-        if (_knownBinFiles.find(binpath) == _knownBinFiles.end()) {
 #ifdef CACHE_DEBUG
           printf("found non-cached binary %s\n", binpath.c_str());
 #endif
@@ -319,10 +335,22 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
           
           // the binary was not in the cache
           
-          PluginBinary *pb = new PluginBinary(binpath, bundlename, this);
+            PluginBinary *pb = 0;
+#if defined(__x86_64) || defined(__x86_64__)
+            pb = new PluginBinary(binpath, bundlename, this);
+            if (!pb->isValid()) {
+                //fallback to "MacOS"
+                delete pb;
+                binpath = binpath_universal;
+                pb = new PluginBinary(binpath, bundlename, this);
+            }
+#else
+            pb = new PluginBinary(binpath, bundlename, this);
+#endif
           _binaries.push_back(pb);
           _knownBinFiles.insert(binpath);
-          
+        foundBinFiles.insert(binpath);
+
           for (int j=0;j<pb->getNPlugins();j++) {
             Plugin *plug = &pb->getPlugin(j);
             const APICache::PluginAPICacheI &api = plug->getApiHandler();
@@ -332,7 +360,12 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
 #ifdef CACHE_DEBUG
           printf("found cached binary %s\n", binpath.c_str());
 #endif
+            if(foundUniversal)
+                foundBinFiles.insert(binpath_universal);
+            else
+                foundBinFiles.insert(binpath);
         }
+
       } else {
         if (isdir && (recurse && name[0] != '@' && name != "." && name != "..")) {
           scanDirectory(foundBinFiles, dir + DIRSEP + name, recurse);
@@ -381,15 +414,13 @@ void PluginCache::scanPluginFiles()
        paths++) {
     scanDirectory(foundBinFiles, *paths, _nonrecursePath.find(*paths) == _nonrecursePath.end());
   }
-  
+
   std::list<PluginBinary *>::iterator i=_binaries.begin();
   while (i!=_binaries.end()) {
     PluginBinary *pb = *i;
-    
     if (foundBinFiles.find(pb->getFilePath()) == foundBinFiles.end()) {
       
       // the binary was in the cache, but was not on the path
-      
       _dirty = true;
       i = _binaries.erase(i);
       delete pb;

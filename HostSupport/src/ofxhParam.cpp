@@ -37,6 +37,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhParam.h"
 #include "ofxhImageEffect.h"
 
+#ifdef OFX_EXTENSIONS_NUKE
+//nuke extensions (added on 08/16/13 by Alex).
+//We need to add to the rep. the extensions so it finds it automatically.
+#include <nuke/fnPublicOfxExtensions.h>
+#endif
+
 #include <assert.h>
 #include <float.h>
 #include <limits.h>
@@ -245,6 +251,10 @@ namespace OFX {
           { kOfxPropLabel,      Property::eString, 1, false, cname },
           { kOfxPropShortLabel, Property::eString, 1, false, cname },
           { kOfxPropLongLabel,  Property::eString, 1, false, cname },
+#ifdef OFX_EXTENSIONS_NUKE
+          { kOfxParamPropLayoutHint, Property::eInt, 1, false, "0" }, //!< Nuke extension (@Alex on 08/16/13)
+          { kOfxParamPropLayoutPadWidth, Property::eInt, 1, false, "0"}, //!< Nuke extension (@Alex on 08/16/13)
+#endif
           { 0 }
         };
         
@@ -308,11 +318,14 @@ namespace OFX {
              if (type == kOfxParamTypePage) {
                _properties.addProperties(allPage);
              }
-             /*Fix Alex on 08/13/13: added this to deal with group params. Otherwise they would not work.*/
+             /*Fix @Alex on 08/13/13: added this to deal with group params. Otherwise they would not work.*/
              if( type == kOfxParamTypeGroup )
              {
                  static const Property::PropSpec allGroup[] = {
                      { kOfxParamPropGroupOpen, Property::eInt, 1, false, "1" },
+#ifdef OFX_EXTENSIONS_NUKE
+                     { kFnOfxParamPropGroupIsTab, Property::eInt, 1, false, "0" }, //!< Nuke extension (@Alex on 08/16/13)
+#endif
                      { 0 }
                  };
                  getProperties().addProperties(allGroup);
