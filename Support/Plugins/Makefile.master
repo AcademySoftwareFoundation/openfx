@@ -41,7 +41,7 @@ default: $(OBJECTPATH)/$(PLUGINNAME).ofx
     ARCH = MacOS
   endif
 	
-  CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include $(BITSFLAG) -fPIC
+  CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include -I$(PATHTOROOT)/Plugins/include $(BITSFLAG) -fPIC
 	
   $(OBJECTPATH)/$(PLUGINNAME).ofx : $(OBJECTPATH)/$(PLUGINOBJECTS) $(SUPPORTOBJECTS)
 	mkdir -p $(OBJECTPATH)/
