@@ -246,7 +246,7 @@ namespace OFX {
 
       // don't know what to do
       void ClipInstance::reset(const std::string &/*name*/) OFX_EXCEPTION_SPEC {
-        printf("failing in %s\n", __PRETTY_FUNCTION__);
+        //printf("failing in %s\n", __PRETTY_FUNCTION__);
         throw Property::Exception(kOfxStatErrMissingHostFeature);
       }
 
