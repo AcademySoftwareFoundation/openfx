@@ -77,7 +77,7 @@ namespace OFX {
         { kOfxImageEffectPropSupportsMultipleClipPARs,   Property::eInt, 1, false, "0" },
         { kOfxImageEffectPropClipPreferencesSlaveParam, Property::eString, 0, false, "" },
         { kOfxPluginPropFilePath, Property::eString, 1, true, ""},
-        { 0 }
+        Property::propSpecEnd
       };
 
       //
@@ -321,7 +321,7 @@ namespace OFX {
         { kOfxImageEffectInstancePropSequentialRender, Property::eInt, 1, false, "0" },
         { kOfxImageEffectPropFrameRate ,        Property::eDouble,     1, true,  "0" },
         { kOfxPropIsInteractive,                Property::eInt,        1, true, "0" },
-        { 0 }
+        Property::propSpecEnd
       };
 
       Instance::Instance(ImageEffectPlugin* plugin,
@@ -462,13 +462,13 @@ namespace OFX {
         return _properties.getDimension(name);
       }
 
-      void Instance::notify(const std::string &name, bool singleValue, int indexOrN) OFX_EXCEPTION_SPEC 
+      void Instance::notify(const std::string &/*name*/, bool /*singleValue*/, int /*indexOrN*/) OFX_EXCEPTION_SPEC
       { 
         printf("failing in %s\n", __PRETTY_FUNCTION__);
       }
 
       // don't know what to do
-      void Instance::reset(const std::string &name) OFX_EXCEPTION_SPEC {
+      void Instance::reset(const std::string &/*name*/) OFX_EXCEPTION_SPEC {
         printf("failing in %s\n", __PRETTY_FUNCTION__);
         throw Property::Exception(kOfxStatErrMissingHostFeature);
       }
@@ -556,17 +556,17 @@ namespace OFX {
       }
 
       /// this is used to populate with any extra action in argumnents that may be needed
-      void Instance::setCustomInArgs(const std::string &action, Property::Set &inArgs)
+      void Instance::setCustomInArgs(const std::string &/*action*/, Property::Set &/*inArgs*/)
       {
       }
       
       /// this is used to populate with any extra action out argumnents that may be needed
-      void Instance::setCustomOutArgs(const std::string &action, Property::Set &outArgs)
+      void Instance::setCustomOutArgs(const std::string &/*action*/, Property::Set &/*outArgs*/)
       {
       }
 
       /// this is used to populate with any extra action out argumnents that may be needed
-      void Instance::examineOutArgs(const std::string &action, OfxStatus, const Property::Set &outArgs)
+      void Instance::examineOutArgs(const std::string &/*action*/, OfxStatus, const Property::Set &/*outArgs*/)
       {
       }
 
@@ -588,7 +588,7 @@ namespace OFX {
       }
 
       // override this to use your own memory instance - must inherrit from memory::instance
-      Memory::Instance* Instance::newMemoryInstance(size_t nBytes) { 
+      Memory::Instance* Instance::newMemoryInstance(size_t /*nBytes*/) {
         return 0; 
       }
 
@@ -679,7 +679,7 @@ namespace OFX {
       {
         Property::PropSpec stuff[] = {
           { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
-          { 0 }
+          Property::propSpecEnd
         };
 
         Property::Set inArgs(stuff);
@@ -707,7 +707,7 @@ namespace OFX {
           { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
           { kOfxPropTime, Property::eDouble, 1, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
-          { 0 }
+          Property::propSpecEnd
         };
 
         Property::Set inArgs(stuff);
@@ -737,7 +737,7 @@ namespace OFX {
       {
         Property::PropSpec whyStuff[] = {
           { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
-          { 0 }
+          Property::propSpecEnd
         };
 
         Property::Set inArgs(whyStuff);
@@ -774,7 +774,7 @@ namespace OFX {
           { kOfxImageEffectPropFrameStep, Property::eDouble, 1, true, "0" }, 
           { kOfxPropIsInteractive, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
-          { 0 }
+          Property::propSpecEnd
         };
 
         Property::Set inArgs(stuff);
@@ -801,7 +801,7 @@ namespace OFX {
           { kOfxImageEffectPropFieldToRender, Property::eString, 1, true, "" }, 
           { kOfxImageEffectPropRenderWindow, Property::eInt, 4, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
-          { 0 }
+          Property::propSpecEnd
         };
 
         Property::Set inArgs(stuff);
@@ -825,7 +825,7 @@ namespace OFX {
           { kOfxImageEffectPropFrameStep, Property::eDouble, 1, true, "0" }, 
           { kOfxPropIsInteractive, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
-          { 0 }
+          Property::propSpecEnd
         };
 
         Property::Set inArgs(stuff);
@@ -842,7 +842,7 @@ namespace OFX {
 
       /// calculate the default rod for this effect instance
       OfxRectD Instance::calcDefaultRegionOfDefinition(OfxTime  time,
-                                                       OfxPointD   renderScale)
+                                                       OfxPointD   /*renderScale*/)
       {
         OfxRectD rod;
 
@@ -916,12 +916,12 @@ namespace OFX {
         Property::PropSpec inStuff[] = {
           { kOfxPropTime, Property::eDouble, 1, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
-          { 0 }
+          Property::propSpecEnd
         };
 
         Property::PropSpec outStuff[] = {
           { kOfxImageEffectPropRegionOfDefinition , Property::eDouble, 4, false, "0" },
-          { 0 }
+          Property::propSpecEnd
         };
 
         Property::Set inArgs(inStuff);
@@ -975,7 +975,7 @@ namespace OFX {
             { kOfxPropTime, Property::eDouble, 1, true, "0" },
             { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
             { kOfxImageEffectPropRegionOfInterest , Property::eDouble, 4, true, 0 },
-            { 0 }
+            Property::propSpecEnd
           };
           Property::Set inArgs(inStuff);
 
@@ -1050,7 +1050,7 @@ namespace OFX {
         if(temporalAccess()) {
           Property::PropSpec inStuff[] = {
             { kOfxPropTime, Property::eDouble, 1, true, "0" },          
-            { 0 }
+            Property::propSpecEnd
           };
           Property::Set inArgs(inStuff);       
           inArgs.setDoubleProperty(kOfxPropTime,time);
@@ -1134,13 +1134,13 @@ namespace OFX {
           { kOfxImageEffectPropFieldToRender, Property::eString, 1, true, "" }, 
           { kOfxImageEffectPropRenderWindow, Property::eInt, 4, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
-          { 0 }
+          Property::propSpecEnd
         };
 
         static Property::PropSpec outStuff[] = {
           { kOfxPropTime, Property::eDouble, 1, false, "0.0" },
           { kOfxPropName, Property::eString, 1, false, "" },
-          { 0 }
+          Property::propSpecEnd
         };
 
         Property::Set inArgs(inStuff);        
@@ -1306,7 +1306,7 @@ namespace OFX {
             { kOfxImageClipPropFieldOrder,           Property::eString,  1, false,  "" },
             { kOfxImageClipPropContinuousSamples,    Property::eInt,     1, false,  "0" },
             { kOfxImageEffectFrameVarying,           Property::eInt,     1, false,  "0" },
-            { 0 }
+            Property::propSpecEnd
           };
         
         outArgs.addProperties(clipPrefsStuffs);
@@ -1455,7 +1455,7 @@ namespace OFX {
       {
         Property::PropSpec outStuff[] = {
           { kOfxImageEffectPropFrameRange , Property::eDouble, 2, false, "0.0" },
-          { 0 }
+          Property::propSpecEnd
         };
 
         Property::Set outArgs(outStuff);  
@@ -1855,7 +1855,7 @@ namespace OFX {
       ////////////////////////////////////////////////////////////////////////////////
       /// a simple multithread suite
       static OfxStatus multiThread(OfxThreadFunctionV1 func,
-                                   unsigned int nThreads,
+                                   unsigned int /*nThreads*/,
                                    void *customArg)
       {
         func(0,1,customArg);
@@ -1869,7 +1869,7 @@ namespace OFX {
       }
 
       static OfxStatus multiThreadIndex(unsigned int *threadIndex){
-        threadIndex = 0;
+        *threadIndex = 0;
         return kOfxStatOK;
       }
 
@@ -1877,30 +1877,30 @@ namespace OFX {
         return false;
       }
 
-      static OfxStatus mutexCreate(const OfxMutexHandle *mutex, int lockCount)
+      static OfxStatus mutexCreate(const OfxMutexHandle */*mutex*/, int /*lockCount*/)
       {
         // do nothing single threaded
-        mutex = 0;
+        //mutex = 0;
         return kOfxStatOK;
       }
 
-      static OfxStatus mutexDestroy(const OfxMutexHandle mutex)
+      static OfxStatus mutexDestroy(const OfxMutexHandle /*mutex*/)
       {
         // do nothing single threaded
         return kOfxStatOK;
       }
 
-      static OfxStatus mutexLock(const OfxMutexHandle mutex){
+      static OfxStatus mutexLock(const OfxMutexHandle /*mutex*/){
         // do nothing single threaded
         return kOfxStatOK;
       }
        
-      static OfxStatus mutexUnLock(const OfxMutexHandle mutex){
+      static OfxStatus mutexUnLock(const OfxMutexHandle /*mutex*/){
         // do nothing single threaded
         return kOfxStatOK;
       }       
 
-      static OfxStatus mutexTryLock(const OfxMutexHandle mutex){
+      static OfxStatus mutexTryLock(const OfxMutexHandle /*mutex*/){
         // do nothing single threaded
         return kOfxStatOK;
       }
@@ -1954,7 +1954,7 @@ namespace OFX {
         { kOfxParamHostPropMaxParameters, Property::eInt, 1, true, "-1" },
         { kOfxParamHostPropMaxPages, Property::eInt, 1, true, "0" },
         { kOfxParamHostPropPageRowColumnCount, Property::eInt, 2, true, "0" },
-        { 0 },
+        Property::propSpecEnd
       };    
 
       /// ctor
@@ -1965,7 +1965,7 @@ namespace OFX {
       }
 
       /// optionally over-ridden function to register the creation of a new descriptor in the host app
-      void Host::initDescriptor(Descriptor* desc)
+      void Host::initDescriptor(Descriptor* /*desc*/)
       {
       }
 
@@ -1974,7 +1974,7 @@ namespace OFX {
       {
       }
 
-      bool Host::pluginSupported(ImageEffectPlugin *plugin, std::string &reason) const
+      bool Host::pluginSupported(ImageEffectPlugin */*plugin*/, std::string &/*reason*/) const
       {
         return true;
       }

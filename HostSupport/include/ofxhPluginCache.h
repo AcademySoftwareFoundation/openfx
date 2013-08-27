@@ -137,7 +137,7 @@ namespace OFX {
     /// owned by the PluginBinary it lives inside
     /// Plugins can only be pass about either by pointer or reference
     private :
-      Plugin(const Plugin&) {}                          ///< hidden
+      Plugin(const Plugin&) : PluginDesc() {}                          ///< hidden
       Plugin &operator= (const Plugin&) {return *this;} ///< hidden
 
     protected :

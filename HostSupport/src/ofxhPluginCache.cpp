@@ -485,7 +485,7 @@ static bool mapHasAll(const std::map<std::string, std::string> &attmap, const ch
   return true;
 }
 
-void PluginCache::elementBeginCallback(void *userData, const XML_Char *name, const XML_Char **atts) {
+void PluginCache::elementBeginCallback(void */*userData*/, const XML_Char *name, const XML_Char **atts) {
   if (_ignoreCache) {
     return;
   }
@@ -570,7 +570,7 @@ void PluginCache::elementBeginCallback(void *userData, const XML_Char *name, con
   
 }
 
-void PluginCache::elementCharCallback(void *userData, const XML_Char *data, int size) 
+void PluginCache::elementCharCallback(void */*userData*/, const XML_Char *data, int size)
 {
   if (_ignoreCache) {
     return;
@@ -585,7 +585,7 @@ void PluginCache::elementCharCallback(void *userData, const XML_Char *data, int 
   }
 }
 
-void PluginCache::elementEndCallback(void *userData, const XML_Char *name) {
+void PluginCache::elementEndCallback(void */*userData*/, const XML_Char *name) {
   if (_ignoreCache) {
     return;
   }

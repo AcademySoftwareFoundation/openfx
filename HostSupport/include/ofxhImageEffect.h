@@ -196,6 +196,7 @@ namespace OFX {
         // private CC
         Descriptor(const Descriptor &other)
           : Base(other._properties)
+          , Param::SetDescriptor()
           , _plugin(other._plugin)
         {}
 

@@ -53,7 +53,7 @@ namespace OFX {
       static Property::PropSpec interactDescriptorStuffs[] = {
         { kOfxInteractPropHasAlpha , Property::eInt, 1, true, "0" },
         { kOfxInteractPropBitDepth , Property::eInt, 1, true, "0" },
-        { 0 },
+        Property::propSpecEnd
       };
 
       Descriptor::Descriptor()
@@ -109,7 +109,7 @@ namespace OFX {
         { kOfxInteractPropBackgroundColour , Property::eDouble, 3, true, "0.0f" },
         { kOfxInteractPropViewportSize, Property::eDouble, 2, true, "100.0f" },
         { kOfxInteractPropSlaveToParam , Property::eString, 0, false, ""},
-        { 0 },
+        Property::propSpecEnd
       };
 
       static Property::PropSpec interactArgsStuffs[] = {
@@ -126,7 +126,7 @@ namespace OFX {
         { kOfxInteractPropPenPressure, Property::eDouble, 1, false, "0.0" },
         { kOfxPropKeyString, Property::eString, 1, false, "" },
         { kOfxPropKeySym, Property::eInt, 1, false, "0" },
-        { 0 },
+        Property::propSpecEnd
       };
 
       // instance
@@ -182,7 +182,7 @@ namespace OFX {
       }
         
       // do nothing function
-      void Instance::reset(const std::string &name) OFX_EXCEPTION_SPEC
+      void Instance::reset(const std::string &/*name*/) OFX_EXCEPTION_SPEC
       {
         // no-op
       }

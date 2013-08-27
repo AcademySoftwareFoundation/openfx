@@ -92,7 +92,7 @@ namespace OFX {
       }
 
       /// override this to get a single value at the given index.
-      const std::string &GetHook::getStringProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC
+      const std::string &GetHook::getStringProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
       {        
 #ifdef DEBUG
         std::cout << "Calling un-overriden GetHook::getStringProperty!!!! " << std::endl;
@@ -101,7 +101,7 @@ namespace OFX {
       }
       
       /// override this to fetch a single value at the given index.
-      int GetHook::getIntProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC
+      int GetHook::getIntProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
       {
 #ifdef DEBUG
         std::cout << "Calling un-overriden GetHook::getIntProperty!!!! " << std::endl;
@@ -110,7 +110,7 @@ namespace OFX {
       }
       
       /// override this to fetch a single value at the given index.
-      double GetHook::getDoubleProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC
+      double GetHook::getDoubleProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
       {
 #ifdef DEBUG
         std::cout << "Calling un-overriden GetHook::getDoubleProperty!!!! " << std::endl;
@@ -119,7 +119,7 @@ namespace OFX {
       }
       
       /// override this to fetch a single value at the given index.
-      void *GetHook::getPointerProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC
+      void *GetHook::getPointerProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
       {
 #ifdef DEBUG
         std::cout << "Calling un-overriden GetHook::getPointerProperty!!!! " << std::endl;
@@ -128,7 +128,7 @@ namespace OFX {
       }
       
       /// override this to fetch a multiple values in a multi-dimension property
-      void GetHook::getDoublePropertyN(const std::string &name, double *values, int count) const OFX_EXCEPTION_SPEC
+      void GetHook::getDoublePropertyN(const std::string &/*name*/, double *values, int count) const OFX_EXCEPTION_SPEC
       {
 #ifdef DEBUG
         std::cout << "Calling un-overriden GetHook::getDoublePropertyN!!!! " << std::endl;
@@ -137,7 +137,7 @@ namespace OFX {
       }
 
       /// override this to fetch a multiple values in a multi-dimension property
-      void GetHook::getIntPropertyN(const std::string &name, int *values, int count) const OFX_EXCEPTION_SPEC
+      void GetHook::getIntPropertyN(const std::string &/*name*/, int *values, int count) const OFX_EXCEPTION_SPEC
       {
 #ifdef DEBUG
         std::cout << "Calling un-overriden GetHook::getIntPropertyN!!!! " << std::endl;
@@ -146,7 +146,7 @@ namespace OFX {
       }
 
       /// override this to fetch a multiple values in a multi-dimension property
-      void GetHook::getPointerPropertyN(const std::string &name, void **values, int count) const OFX_EXCEPTION_SPEC
+      void GetHook::getPointerPropertyN(const std::string &/*name*/, void **values, int count) const OFX_EXCEPTION_SPEC
       {
 #ifdef DEBUG
         std::cout << "Calling un-overriden GetHook::getPointerPropertyN!!!! " << std::endl;
@@ -156,7 +156,7 @@ namespace OFX {
 
 
       /// override this to fetch the dimension size.
-      int GetHook::getDimension(const std::string &name) const OFX_EXCEPTION_SPEC
+      int GetHook::getDimension(const std::string &/*name*/) const OFX_EXCEPTION_SPEC
       {
 #ifdef DEBUG
         std::cout << "Calling un-overriden GetHook::getDimension!!!! " << std::endl;
@@ -165,7 +165,7 @@ namespace OFX {
       }
       
       /// override this to handle a reset(). 
-      void GetHook::reset(const std::string &name) OFX_EXCEPTION_SPEC
+      void GetHook::reset(const std::string &/*name*/) OFX_EXCEPTION_SPEC
       {
 #ifdef DEBUG
         std::cout << "Calling un-overriden GetHook::reset!!!! " << std::endl;
@@ -209,7 +209,7 @@ namespace OFX {
 
       template<class T> PropertyTemplate<T>::PropertyTemplate(const std::string &name,					    
         int dimension,													    
-        bool pluginReadOnly,												    
+        bool /*pluginReadOnly*/,
         APIType defaultValue)												    
         : Property(name, T::typeCode, dimension)									    
       {															    

@@ -385,7 +385,8 @@ namespace OFX {
         bool readonly;             ///< is the property plug-in read only
         const char *defaultValue;  ///< Default value as a string. Pointers are ignored and always null.
       };
-      
+      static const PropSpec propSpecEnd = {0, eNone, 0, false, 0};
+
       /// A std::map of properties by name
       typedef std::map<std::string, Property *> PropertyMap;
 

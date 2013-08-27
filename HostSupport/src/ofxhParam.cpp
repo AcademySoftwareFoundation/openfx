@@ -199,10 +199,10 @@ namespace OFX {
         { kOfxParamTypeInteger3D, Property::eInt,    3 },
         { kOfxParamTypeString,    Property::eString, 1 },
         { kOfxParamTypeCustom,    Property::eString, 1 },
-        { kOfxParamTypeGroup,     Property::eNone },
-        { kOfxParamTypePage,      Property::eNone },
-        { kOfxParamTypePushButton,Property::eNone },
-        { 0 }
+        { kOfxParamTypeGroup,     Property::eNone,   0 },
+        { kOfxParamTypePage,      Property::eNone,   0 },
+        { kOfxParamTypePushButton,Property::eNone,   0 },
+        { 0,                      Property::eNone,   0  }
       };
       
       /// is this a standard type
@@ -255,7 +255,7 @@ namespace OFX {
           { kOfxParamPropLayoutHint, Property::eInt, 1, false, "0" }, //!< Nuke extension (@Alex on 08/16/13)
           { kOfxParamPropLayoutPadWidth, Property::eInt, 1, false, "0"}, //!< Nuke extension (@Alex on 08/16/13)
 #endif
-          { 0 }
+          Property::propSpecEnd
         };
         
         _properties.addProperties(universalProps);
@@ -272,23 +272,23 @@ namespace OFX {
              static Property::PropSpec allString[] = {
                { kOfxParamPropStringMode,  Property::eString,    1,    false,    kOfxParamStringIsSingleLine },
                  { kOfxParamPropStringFilePathExists, Property::eInt,    1,    false,    "1" },
-               { 0 }
+               Property::propSpecEnd
              };
 
              static Property::PropSpec allChoice[] = {
                { kOfxParamPropChoiceOption,    Property::eString,    0,    false,    "" },
                  // { kOfxParamPropChoiceLabelOption, Property::eString, 0, false, "" }//<< @Alex: add this to support tuttle choice param extension
-               { 0 }
+               Property::propSpecEnd
              };
 
              static Property::PropSpec allCustom[] = {
                { kOfxParamPropCustomInterpCallbackV1,    Property::ePointer,    1,    false,    0 },
-               { 0 },
+               Property::propSpecEnd
              };
 
              static Property::PropSpec allPage[] = {
                { kOfxParamPropPageChild,    Property::eString,    0,    false,    "" },
-               { 0 }
+               Property::propSpecEnd
              };
 
              if (propType != Property::eNone) {
@@ -326,14 +326,14 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                      { kFnOfxParamPropGroupIsTab, Property::eInt, 1, false, "0" }, //!< Nuke extension (@Alex on 08/16/13)
 #endif
-                     { 0 }
+                     Property::propSpecEnd
                  };
                  getProperties().addProperties(allGroup);
              }
            }
 
       /// add standard properties to a params that can take an interact
-      void Descriptor::addInteractParamProps(const std::string &type)
+      void Descriptor::addInteractParamProps(const std::string &/*type*/)
       {
         static Property::PropSpec allButGroupPageProps[] = {
           { kOfxParamPropInteractV1,          Property::ePointer, 1, false, 0 },
@@ -341,7 +341,7 @@ namespace OFX {
           { kOfxParamPropInteractSizeAspect,  Property::eDouble,  1, false, "1" },
           { kOfxParamPropInteractMinimumSize, Property::eDouble,  2, false, "10" },
           { kOfxParamPropInteractPreferedSize,Property::eInt,     2, false, "10" },
-          { 0 }
+          Property::propSpecEnd
         };
 
         
@@ -349,7 +349,7 @@ namespace OFX {
       }
 
       /// add standard properties to a value holding param
-      void Descriptor::addValueParamProps(const std::string &type, Property::TypeEnum valueType, int dim)
+      void Descriptor::addValueParamProps(const std::string &/*type*/, Property::TypeEnum valueType, int dim)
       {
         static Property::PropSpec invariantProps[] = {
           { kOfxParamPropAnimates,    Property::eInt, 1,       false, "1" },
@@ -360,12 +360,12 @@ namespace OFX {
           { kOfxParamPropPluginMayWrite,    Property::eInt,    1,    false,    "0" },
           { kOfxParamPropCanUndo,    Property::eInt,    1,    false,    "1" },
           { kOfxParamPropCacheInvalidation,    Property::eString,    1,    false,    kOfxParamInvalidateValueChange },
-          { 0 }
+          Property::propSpecEnd
         };
 
         Property::PropSpec variantProps[] = {
           { kOfxParamPropDefault,     valueType,               dim, false, valueType == Property::eString ? "" : "0" },
-          { 0 }
+          Property::propSpecEnd
         };
 
         _properties.addProperties(invariantProps);
@@ -397,7 +397,7 @@ namespace OFX {
           { kOfxParamPropDisplayMax, valueType, dim, false, isColourParam(type) ? "1" : (valueType == Property::eDouble ? dbl_maxstr : int_maxstr).c_str() },
           { kOfxParamPropMin, valueType, dim, false, (valueType == Property::eDouble ? dbl_minstr : int_minstr).c_str() },
           { kOfxParamPropMax, valueType, dim, false, (valueType == Property::eDouble ? dbl_maxstr : int_maxstr).c_str() },
-          { 0 }
+          Property::propSpecEnd
         };
 
         _properties.addProperties(allNumeric);
@@ -407,7 +407,7 @@ namespace OFX {
           static Property::PropSpec allDouble[] = {
             { kOfxParamPropIncrement,  Property::eDouble,    1,    false,    "1" },
             { kOfxParamPropDigits,     Property::eInt,       1,    false,    "2" },
-            { 0}
+            Property::propSpecEnd
           };
           _properties.addProperties(allDouble);
         }
@@ -416,14 +416,14 @@ namespace OFX {
         if(isDoubleParam(type)) {
           static Property::PropSpec allDouble[] = {
             { kOfxParamPropDoubleType, Property::eString,    1,    false,    kOfxParamDoubleTypePlain },
-            { 0}
+            Property::propSpecEnd
           };
           _properties.addProperties(allDouble);
           
           if(dim == 1) {
             static Property::PropSpec allDouble1D[] = {
               { kOfxParamPropShowTimeMarker, Property::eInt,   1,    false,    "0" },    
-              { 0 }
+              Property::propSpecEnd
             };
             
             _properties.addProperties(allDouble1D);
@@ -434,7 +434,7 @@ namespace OFX {
         if (isDoubleParam(type) && (dim == 2 || dim == 3)) {
           Property::PropSpec all2D3D[] = {
             { kOfxParamPropDimensionLabel,  Property::eString, dim, false, "" },
-            { 0 },
+            Property::propSpecEnd
           };  
 
           _properties.addProperties(all2D3D);
@@ -449,7 +449,7 @@ namespace OFX {
         if (isColourParam(type)) {
           Property::PropSpec allColor[] = {
             { kOfxParamPropDimensionLabel,  Property::eString, dim, false, "" },
-            { 0 },
+            Property::propSpecEnd
           };  
 
           _properties.addProperties(allColor);
@@ -549,43 +549,43 @@ namespace OFX {
       }
 
       /// get a value, implemented by instances to deconstruct var args
-      OfxStatus Instance::getV(va_list arg)
+      OfxStatus Instance::getV(va_list /*arg*/)
       {
         return kOfxStatErrUnsupported;
       }
       
       /// get a value, implemented by instances to deconstruct var args
-      OfxStatus Instance::getV(OfxTime time, va_list arg)
+      OfxStatus Instance::getV(OfxTime /*time*/, va_list /*arg*/)
       {
         return kOfxStatErrUnsupported;
       }
 
       /// set a value, implemented by instances to deconstruct var args
-      OfxStatus Instance::setV(va_list arg)
+      OfxStatus Instance::setV(va_list /*arg*/)
       {
         return kOfxStatErrUnsupported;
       }
 
       /// key a value, implemented by instances to deconstruct var args
-      OfxStatus Instance::setV(OfxTime time, va_list arg)
+      OfxStatus Instance::setV(OfxTime /*time*/, va_list /*arg*/)
       {
         return kOfxStatErrUnsupported;
       }
 
       /// derive a value, implemented by instances to deconstruct var args
-      OfxStatus Instance::deriveV(OfxTime time, va_list arg)
+      OfxStatus Instance::deriveV(OfxTime /*time*/, va_list /*arg*/)
       {
         return kOfxStatErrUnsupported;
       }
 
       /// integrate a value, implemented by instances to deconstruct var args
-      OfxStatus Instance::integrateV(OfxTime time1, OfxTime time2, va_list arg)
+      OfxStatus Instance::integrateV(OfxTime /*time1*/, OfxTime /*time2*/, va_list /*arg*/)
       {
         return kOfxStatErrUnsupported;
       }
 
       /// overridden from Property::NotifyHook
-      void Instance::notify(const std::string &name, bool single, int num) OFX_EXCEPTION_SPEC 
+      void Instance::notify(const std::string &name, bool /*single*/, int /*num*/) OFX_EXCEPTION_SPEC
       {
         if (name == kOfxPropLabel) {
           setLabel();
@@ -602,12 +602,12 @@ namespace OFX {
       }
 
       // copy one parameter to another
-      OfxStatus Instance::copy(const Instance &instance, OfxTime offset) { 
+      OfxStatus Instance::copy(const Instance &/*instance*/, OfxTime /*offset*/) {
         return kOfxStatErrMissingHostFeature; 
       }
 
       // copy one parameter to another, with a range
-      OfxStatus Instance::copy(const Instance &instance, OfxTime offset, OfxRangeD range) { 
+      OfxStatus Instance::copy(const Instance &/*instance*/, OfxTime /*offset*/, OfxRangeD /*range*/) {
         return kOfxStatErrMissingHostFeature; 
       }
 
@@ -623,19 +623,19 @@ namespace OFX {
       // KeyframeParam
       // 
 
-      OfxStatus KeyframeParam::getNumKeys(unsigned int &nKeys) const { 
+      OfxStatus KeyframeParam::getNumKeys(unsigned int &/*nKeys*/) const {
         return kOfxStatErrMissingHostFeature; 
       }
 
-      OfxStatus KeyframeParam::getKeyTime(int nth, OfxTime& time) const { 
+      OfxStatus KeyframeParam::getKeyTime(int /*nth*/, OfxTime& /*time*/) const {
         return kOfxStatErrMissingHostFeature; 
       }
 
-      OfxStatus KeyframeParam::getKeyIndex(OfxTime time, int direction, int & index) const { 
+      OfxStatus KeyframeParam::getKeyIndex(OfxTime /*time*/, int /*direction*/, int & /*index*/) const {
         return kOfxStatErrMissingHostFeature; 
       }
 
-      OfxStatus KeyframeParam::deleteKey(OfxTime time) { 
+      OfxStatus KeyframeParam::deleteKey(OfxTime /*time*/) {
         return kOfxStatErrMissingHostFeature; 
       }
 
@@ -714,11 +714,11 @@ namespace OFX {
       //
       // IntegerInstance
       //
-      OfxStatus IntegerInstance::derive(OfxTime time, int&) { 
+      OfxStatus IntegerInstance::derive(OfxTime /*time*/, int&) {
         return kOfxStatErrUnsupported; 
       }
 
-      OfxStatus IntegerInstance::integrate(OfxTime time1, OfxTime time2, int&) { 
+      OfxStatus IntegerInstance::integrate(OfxTime /*time1*/, OfxTime /*time2*/, int&) {
         return kOfxStatErrUnsupported; 
       }
 
@@ -853,11 +853,11 @@ namespace OFX {
       // RGBAInstance
       // 
 
-      OfxStatus RGBAInstance::derive(OfxTime time, double&, double&, double&, double&) { 
+      OfxStatus RGBAInstance::derive(OfxTime /*time*/, double&, double&, double&, double&) {
         return kOfxStatErrMissingHostFeature; 
       }
 
-      OfxStatus RGBAInstance::integrate(OfxTime time1, OfxTime time2, double&,double&,double&,double&) { 
+      OfxStatus RGBAInstance::integrate(OfxTime /*time1*/, OfxTime /*time2*/, double&,double&,double&,double&) {
         return kOfxStatErrMissingHostFeature; 
       }
 
@@ -924,11 +924,11 @@ namespace OFX {
       //
       // RGBInstance
       //
-      OfxStatus RGBInstance::derive(OfxTime time, double&,double&,double&) { 
+      OfxStatus RGBInstance::derive(OfxTime /*time*/, double&,double&,double&) {
         return kOfxStatErrMissingHostFeature; 
       }
 
-      OfxStatus RGBInstance::integrate(OfxTime time1, OfxTime time2, double&,double&,double&) { 
+      OfxStatus RGBInstance::integrate(OfxTime /*time1*/, OfxTime /*time2*/, double&,double&,double&) {
         return kOfxStatErrMissingHostFeature; 
       }
 
@@ -990,11 +990,11 @@ namespace OFX {
       // Double2DInstance
       //
 
-      OfxStatus Double2DInstance::derive(OfxTime time, double&,double&) { 
+      OfxStatus Double2DInstance::derive(OfxTime /*time*/, double&,double&) {
         return kOfxStatErrMissingHostFeature; 
       }
 
-      OfxStatus Double2DInstance::integrate(OfxTime time1, OfxTime time2, double&,double&) { 
+      OfxStatus Double2DInstance::integrate(OfxTime /*time1*/, OfxTime /*time2*/, double&,double&) {
         return kOfxStatErrMissingHostFeature; 
       }
 
@@ -1049,11 +1049,11 @@ namespace OFX {
       // Integer2DInstance
       //
 
-      OfxStatus Integer2DInstance::derive(OfxTime time, int&,int&) { 
+      OfxStatus Integer2DInstance::derive(OfxTime /*time*/, int&,int&) {
         return kOfxStatErrMissingHostFeature; 
       }
 
-      OfxStatus Integer2DInstance::integrate(OfxTime time1, OfxTime time2, int&,int&) { 
+      OfxStatus Integer2DInstance::integrate(OfxTime /*time1*/, OfxTime /*time2*/, int&,int&) {
         return kOfxStatErrMissingHostFeature; 
       }
 
@@ -1108,11 +1108,11 @@ namespace OFX {
       // Double3DInstance
       //
 
-      OfxStatus Double3DInstance::derive(OfxTime time, double&,double&,double&) { 
+      OfxStatus Double3DInstance::derive(OfxTime /*time*/, double&,double&,double&) {
         return kOfxStatErrMissingHostFeature; 
       }
 
-      OfxStatus Double3DInstance::integrate(OfxTime time1, OfxTime time2, double&,double&,double&) { 
+      OfxStatus Double3DInstance::integrate(OfxTime /*time1*/, OfxTime /*time2*/, double&,double&,double&) {
         return kOfxStatErrMissingHostFeature; 
       }
 
@@ -1172,11 +1172,11 @@ namespace OFX {
       //
       // Integer3DInstance
       //
-      OfxStatus Integer3DInstance::derive(OfxTime time, int&,int&,int&) { 
+      OfxStatus Integer3DInstance::derive(OfxTime /*time*/, int&,int&,int&) {
         return kOfxStatErrMissingHostFeature; 
       }
 
-      OfxStatus Integer3DInstance::integrate(OfxTime time1, OfxTime time2, int&,int&,int&) { 
+      OfxStatus Integer3DInstance::integrate(OfxTime /*time1*/, OfxTime /*time2*/, int&,int&,int&) {
         return kOfxStatErrMissingHostFeature; 
       }
 

@@ -58,7 +58,7 @@ namespace OFX {
         { kOfxImageClipPropIsMask,   Property::eInt, 1, false, "0" },
         { kOfxImageClipPropFieldExtraction, Property::eString, 1, false, kOfxImageFieldDoubled },
         { kOfxImageEffectPropSupportsTiles,   Property::eInt, 1, false, "1" },  
-        { 0 },
+        Property::propSpecEnd,
       };
       
       ////////////////////////////////////////////////////////////////////////////////
@@ -202,7 +202,7 @@ namespace OFX {
         { kOfxImageEffectPropUnmappedFrameRange, Property::eDouble, 2, true, "0" },
         { kOfxImageEffectPropUnmappedFrameRate, Property::eDouble, 1, true, "25.0" },
         { kOfxImageClipPropContinuousSamples, Property::eInt, 1, true, "0" },
-        { 0 },
+        Property::propSpecEnd,
       };
 
 
@@ -245,7 +245,7 @@ namespace OFX {
       }
 
       // don't know what to do
-      void ClipInstance::reset(const std::string &name) OFX_EXCEPTION_SPEC {
+      void ClipInstance::reset(const std::string &/*name*/) OFX_EXCEPTION_SPEC {
         printf("failing in %s\n", __PRETTY_FUNCTION__);
         throw Property::Exception(kOfxStatErrMissingHostFeature);
       }
@@ -368,7 +368,7 @@ namespace OFX {
       }
 
       // notify override properties
-      void ClipInstance::notify(const std::string &name, bool isSingle, int indexOrN)  OFX_EXCEPTION_SPEC
+      void ClipInstance::notify(const std::string &/*name*/, bool /*isSingle*/, int /*indexOrN*/)  OFX_EXCEPTION_SPEC
       {
       }
 
@@ -382,7 +382,7 @@ namespace OFX {
           { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
           { kOfxPropTime, Property::eDouble, 1, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
-          { 0 }
+          Property::propSpecEnd
         };
 
         Property::Set inArgs(stuff);
@@ -449,7 +449,7 @@ namespace OFX {
         { kOfxImagePropRowBytes, Property::eInt, 1, true, "0", },
         { kOfxImagePropField, Property::eString, 1, true, "", },
         { kOfxImagePropUniqueIdentifier, Property::eString, 1, true, "" },
-        { 0 }
+        Property::propSpecEnd
       };
 
       Image::Image()

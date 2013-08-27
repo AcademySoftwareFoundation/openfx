@@ -208,7 +208,7 @@ namespace OFX {
 
         OFX::Host::Property::PropSpec inargspec[] = {
           { kOfxImageEffectPropContext, OFX::Host::Property::eString, 1, true, context.c_str() },
-          { 0 }
+            Property::propSpecEnd
         };
         
         OFX::Host::Property::Set inarg(inargspec);

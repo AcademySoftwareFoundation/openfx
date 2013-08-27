@@ -49,7 +49,7 @@ namespace OFX {
     ////////////////////////////////////////////////////////////////////////////////
     /// simple memory suite 
     namespace Memory {
-      static OfxStatus memoryAlloc(void *handle, size_t bytes, void **data)
+      static OfxStatus memoryAlloc(void */*handle*/, size_t bytes, void **data)
       {
         *data = malloc(bytes);
         if (*data) {
@@ -85,7 +85,7 @@ namespace OFX {
       { kOfxPropName, Property::eString, 1, false, "UNKNOWN" },
       { kOfxPropLabel, Property::eString, 1, false, "UNKNOWN" },
       { kOfxHostSupportHostPointer,    Property::ePointer,    0,    false,    NULL },
-      { 0 },
+      Property::propSpecEnd
     };    
 
     static void *fetchSuite(OfxPropertySetHandle hostProps, const char *suiteName, int suiteVersion)
