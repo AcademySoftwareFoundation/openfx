@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <map>
 #include <string>
+#include <cstdarg>
 
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
