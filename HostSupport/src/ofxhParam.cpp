@@ -646,7 +646,7 @@ namespace OFX {
       void GroupInstance::setChildren(std::vector<Param::Instance*> children)
       {
         _children = children;
-        for(std::vector<Param::Instance*>::iterator it=children.begin();it!=children.end();it++){
+        for (std::vector<Param::Instance*>::iterator it=children.begin(); it!=children.end(); ++it) {
           if(*it){
             (*it)->setParentInstance(this);
           }

@@ -386,8 +386,7 @@ namespace OFX {
         int counter = 0;
         for(std::vector<ClipDescriptor*>::const_iterator it=clips.begin();
             it!=clips.end();
-            it++, ++counter)
-          {
+            ++it, ++counter) {
               const std::string &name =  (*it)->getName();
             // foreach clip descriptor make a clip instance
             ClipInstance* instance = newClipInstance(this, *it, counter);   
@@ -403,8 +402,7 @@ namespace OFX {
 
         for(std::list<Param::Descriptor*>::const_iterator it=map.begin();
             it!=map.end();
-            it++)
-          {
+            ++it) {
             Param::Descriptor* descriptor = (*it);
             // get the param descriptor
             if(!descriptor) return kOfxStatErrValue;
@@ -433,8 +431,7 @@ namespace OFX {
         // for each group parameter made
         for(std::map<std::string, Param::Instance*>::iterator it=groups.begin();
             it!=groups.end();
-            it++)
-          {
+            ++it) {
             // cast to a group instance
             Param::GroupInstance* group = dynamic_cast<Param::GroupInstance*>(it->second);
 
@@ -874,7 +871,7 @@ namespace OFX {
           bool gotOne = false;
           for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
               it!=_clips.end();
-              it++) { 
+              ++it) {
             ClipInstance *clip = it->second;
             if(!clip->isOutput() && !clip->isOptional()) {
               if(!gotOne)
@@ -961,7 +958,7 @@ namespace OFX {
           /// No tiling support on the effect at all. So set the roi of each input clip to be the RoD of that clip.
           for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
               it!=_clips.end();
-              it++) {
+              ++it) {
             if(!it->second->isOutput()) {
               OfxRectD roi = it->second->getRegionOfDefinition(time);
               rois[it->second] = roi;
@@ -986,7 +983,7 @@ namespace OFX {
           Property::Set outArgs;
           for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
               it!=_clips.end();
-              it++) { 
+              ++it) {
             if(!it->second->isOutput()) {
               Property::PropSpec s;
               std::string name = "OfxImageClipPropRoI_"+it->first;
@@ -1012,8 +1009,7 @@ namespace OFX {
           /// set the thing up
           for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
               it!=_clips.end();
-              it++)
-            {
+              ++it) {
               if(!it->second->isOutput()) {
                 OfxRectD rod = it->second->getRegionOfDefinition(time);
                 if(it->second->supportsTiles()) {
@@ -1058,7 +1054,7 @@ namespace OFX {
         
           for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
               it!=_clips.end();
-              it++) { 
+              ++it) {
             if(!it->second->isOutput()) {
               Property::PropSpec s;
               std::string name = "OfxImageClipPropFrameRange_"+it->first;
@@ -1087,7 +1083,7 @@ namespace OFX {
 
         for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
             it!=_clips.end();
-            it++) {
+            ++it) {
           ClipInstance *clip = it->second;
           
           if(!clip->isOutput()) {
@@ -1221,7 +1217,7 @@ namespace OFX {
         std::string premult = kOfxImageOpaque;
         for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
             it!=_clips.end();
-            it++) {
+            ++it) {
           ClipInstance *clip = it->second;
 
           if(!clip->isOutput()) {
@@ -1258,7 +1254,7 @@ namespace OFX {
         /// now add the clip gubbins to the out args
         for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
             it!=_clips.end();
-            it++) {
+            ++it) {
           ClipInstance *clip = it->second;
 
           std::string comp, depth;
@@ -1323,7 +1319,7 @@ namespace OFX {
         /// now add the clip gubbins to the out args
         for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
             it!=_clips.end();
-            it++) {
+            ++it) {
           ClipInstance *clip = it->second;
 
           std::string componentParamName = "OfxImageClipPropComponents_"+it->first;
@@ -1367,8 +1363,7 @@ namespace OFX {
         /// OK, go pump the components/depths back into the clips themselves
         for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
             it!=_clips.end();
-            it++)
-          {
+            ++it) {
             ClipInstance *clip = it->second;
 
             std::string componentParamName = "OfxImageClipPropComponents_"+it->first;
