@@ -38,6 +38,8 @@
 		1E551F5C1799510200A4135C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E551F5A179950EC00A4135C /* OpenGL.framework */; };
 		1E551F5D1799511E00A4135C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E551F5A179950EC00A4135C /* OpenGL.framework */; };
 		1E551F601799515400A4135C /* ofxLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E551F5E1799515400A4135C /* ofxLog.cpp */; };
+		1E74522D17CF632200AFFAC2 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E551F5A179950EC00A4135C /* OpenGL.framework */; };
+		1E74523417CF634D00AFFAC2 /* depthConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E74523317CF634D00AFFAC2 /* depthConverter.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -124,6 +126,8 @@
 		1E551F5A179950EC00A4135C /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		1E551F5E1799515400A4135C /* ofxLog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxLog.cpp; path = Test/ofxLog.cpp; sourceTree = "<group>"; };
 		1E551F5F1799515400A4135C /* ofxLog.H */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ofxLog.H; path = Test/ofxLog.H; sourceTree = "<group>"; };
+		1E74523217CF632200AFFAC2 /* depthConverter.ofx.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = depthConverter.ofx.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E74523317CF634D00AFFAC2 /* depthConverter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = depthConverter.cpp; path = DepthConverter/depthConverter.cpp; sourceTree = "<group>"; };
 		1EC2A5AC179D42A8008FC1CF /* ofxUtilities.H */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ofxUtilities.H; path = include/ofxUtilities.H; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -180,6 +184,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1E74522C17CF632200AFFAC2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E74522D17CF632200AFFAC2 /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -225,6 +237,7 @@
 				1E551F1217994F7D00A4135C /* overlay.ofx.bundle */,
 				1E551F2617994FE400A4135C /* rectangle.ofx.bundle */,
 				1E551F3617994FF900A4135C /* testProperties.ofx.bundle */,
+				1E74523217CF632200AFFAC2 /* depthConverter.ofx.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -232,6 +245,7 @@
 		1E551ED217994DEF00A4135C /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				1E74523317CF634D00AFFAC2 /* depthConverter.cpp */,
 				1EC2A5AC179D42A8008FC1CF /* ofxUtilities.H */,
 				1E551F5E1799515400A4135C /* ofxLog.cpp */,
 				1E551F5F1799515400A4135C /* ofxLog.H */,
@@ -376,6 +390,23 @@
 			productReference = 1E551F3617994FF900A4135C /* testProperties.ofx.bundle */;
 			productType = "com.apple.product-type.bundle";
 		};
+		1E74522917CF632200AFFAC2 /* depthConverter.ofx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E74522F17CF632200AFFAC2 /* Build configuration list for PBXNativeTarget "depthConverter.ofx" */;
+			buildPhases = (
+				1E74522A17CF632200AFFAC2 /* Sources */,
+				1E74522C17CF632200AFFAC2 /* Frameworks */,
+				1E74522E17CF632200AFFAC2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = depthConverter.ofx;
+			productName = custom.ofx;
+			productReference = 1E74523217CF632200AFFAC2 /* depthConverter.ofx.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -400,6 +431,7 @@
 				1E551F461799509100A4135C /* all */,
 				1E551EC017994D4000A4135C /* basic.ofx */,
 				1E551ED817994E8100A4135C /* custom.ofx */,
+				1E74522917CF632200AFFAC2 /* depthConverter.ofx */,
 				1E551EEC17994EB700A4135C /* invert.ofx */,
 				1E551EFF17994F0600A4135C /* opengl.ofx */,
 				1E551F1117994F7D00A4135C /* overlay.ofx */,
@@ -453,6 +485,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		1E551F3417994FF900A4135C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E74522E17CF632200AFFAC2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -516,6 +555,14 @@
 			files = (
 				1E551F451799507700A4135C /* testProperties.cpp in Sources */,
 				1E551F601799515400A4135C /* ofxLog.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E74522A17CF632200AFFAC2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E74523417CF634D00AFFAC2 /* depthConverter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -765,6 +812,26 @@
 			};
 			name = Release;
 		};
+		1E74523017CF632200AFFAC2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Examples/include/osxSymbols";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
+				PRODUCT_NAME = depthConverter.ofx;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		1E74523117CF632200AFFAC2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Examples/include/osxSymbols";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
+				PRODUCT_NAME = depthConverter.ofx;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -845,6 +912,15 @@
 			buildConfigurations = (
 				1E551F481799509100A4135C /* Debug */,
 				1E551F491799509100A4135C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1E74522F17CF632200AFFAC2 /* Build configuration list for PBXNativeTarget "depthConverter.ofx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E74523017CF632200AFFAC2 /* Debug */,
+				1E74523117CF632200AFFAC2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
