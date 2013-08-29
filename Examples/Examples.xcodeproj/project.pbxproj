@@ -612,7 +612,7 @@
 		1E551ED017994D4000A4135C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Support/include/osxSymbols";
+				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Examples/include/osxSymbols";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = bundle;
@@ -622,7 +622,7 @@
 		1E551ED117994D4000A4135C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Support/include/osxSymbols";
+				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Examples/include/osxSymbols";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = bundle;
@@ -632,7 +632,7 @@
 		1E551EE517994E8100A4135C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Support/include/osxSymbols";
+				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Examples/include/osxSymbols";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = bundle;
@@ -642,7 +642,7 @@
 		1E551EE617994E8100A4135C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Support/include/osxSymbols";
+				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Examples/include/osxSymbols";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = bundle;
@@ -652,7 +652,7 @@
 		1E551EF717994EB700A4135C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Support/include/osxSymbols";
+				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Examples/include/osxSymbols";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = bundle;
@@ -662,7 +662,7 @@
 		1E551EF817994EB700A4135C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Support/include/osxSymbols";
+				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Examples/include/osxSymbols";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = bundle;
@@ -672,7 +672,7 @@
 		1E551F0A17994F0600A4135C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Support/include/osxSymbols";
+				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Examples/include/osxSymbols";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = bundle;
@@ -682,7 +682,7 @@
 		1E551F0B17994F0600A4135C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Support/include/osxSymbols";
+				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Examples/include/osxSymbols";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = bundle;
@@ -692,7 +692,7 @@
 		1E551F1C17994F7D00A4135C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Support/include/osxSymbols";
+				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Examples/include/osxSymbols";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = bundle;
@@ -702,7 +702,7 @@
 		1E551F1D17994F7D00A4135C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Support/include/osxSymbols";
+				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Examples/include/osxSymbols";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = bundle;
@@ -712,7 +712,7 @@
 		1E551F3017994FE400A4135C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Support/include/osxSymbols";
+				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Examples/include/osxSymbols";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = bundle;
@@ -722,7 +722,7 @@
 		1E551F3117994FE400A4135C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Support/include/osxSymbols";
+				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Examples/include/osxSymbols";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = bundle;
@@ -732,7 +732,7 @@
 		1E551F4017994FF900A4135C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Support/include/osxSymbols";
+				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Examples/include/osxSymbols";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
 				OFX_PATH = ..;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -743,7 +743,7 @@
 		1E551F4117994FF900A4135C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Support/include/osxSymbols";
+				EXPORTED_SYMBOLS_FILE = "$(OFX_PATH)/Examples/include/osxSymbols";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/OFX/Plugins/$(PROJECT_NAME)";
 				OFX_PATH = ..;
 				PRODUCT_NAME = "$(TARGET_NAME)";

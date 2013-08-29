@@ -1,5 +1,5 @@
-PLUGINOBJECTS = custom.o
-PLUGINNAME = custom
+PLUGINOBJECTS = opengl.o
+PLUGINNAME = opengl
 PATHTOROOT = ../
 
 include ../Makefile.master

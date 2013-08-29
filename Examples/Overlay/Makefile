@@ -1,7 +1,6 @@
-CXXFLAGS = -I../../include 
-OPTIMIZER = -O3
+PLUGINOBJECTS = overlay.o
+PLUGINNAME = overlay
+PATHTOROOT = ../
 
-overlay.dso : overlay.o
-	$(CXX) -shared overlay.o -o overlay.dso
-	strip -fhls overlay.dso
+include ../Makefile.master
 

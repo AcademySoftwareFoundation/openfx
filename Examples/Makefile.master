@@ -1,0 +1,44 @@
+BITS := 32
+OS := $(shell uname -s)
+DEBUGFLAG ?= -g
+DEBUGNAME = debug
+ifeq ($(DEBUGFLAG),-O3)
+  DEBUGNAME = release
+endif
+
+OBJECTPATH = $(OS)-$(BITS)-$(DEBUGNAME)
+
+$(OBJECTPATH)/%.o : %.cpp
+	mkdir -p $(OBJECTPATH)
+	$(CXX) -c $(CXXFLAGS) $< -o $@
+
+default: $(OBJECTPATH)/$(PLUGINNAME).ofx
+  ifeq ($(OS),Linux)
+    LINKFLAGS = -shared -Xlinker --version-script=$(PATHTOROOT)/include/linuxSymbols -lGL
+    ARCH = Linux-x86
+    BITSFLAG = -m32
+    ifeq ($(BITS), 64)
+      BITSFLAG = -m64
+      ARCH = Linux-x86-64
+      LINKFLAGS := $(LINKFLAGS) -m64
+    endif
+  else
+    LINKFLAGS = -bundle -all_load -exported_symbols_list $(PATHTOROOT)/include/osxSymbols -framework opengl
+    ARCH = MacOS
+  endif
+	
+  CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include $(BITSFLAG) -fPIC
+	
+  $(OBJECTPATH)/$(PLUGINNAME).ofx : $(OBJECTPATH)/$(PLUGINOBJECTS)
+	mkdir -p $(OBJECTPATH)/
+	g++ $(LINKFLAGS) -o $(OBJECTPATH)/$(PLUGINNAME).ofx $(OBJECTPATH)/$(PLUGINOBJECTS)
+	mkdir -p  $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle/Contents/$(ARCH)
+	cp  $(OBJECTPATH)/$(PLUGINNAME).ofx  $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle/Contents/$(ARCH)
+	cp  Info.plist  $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle/Contents/
+
+clean:
+	rm -rf $(OBJECTPATH)/ $(PATHTOROOT)/Library/$(OBJECTPATH)/ 
+
+release:
+	make DEBUGFLAG=-O3
+
