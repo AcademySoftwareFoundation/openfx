@@ -36,6 +36,7 @@ England
 
 /** @brief This file contains code that skins the ofx param suite */
 
+#include <cstring>
 #include "./ofxsSupportPrivate.h"
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */

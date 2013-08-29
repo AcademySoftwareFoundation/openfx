@@ -50,6 +50,7 @@ each represent the actions that can be carried out on those particular OFX objec
 
  */
 
+#include <memory>
 #include "ofxsCore.h"
 
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */

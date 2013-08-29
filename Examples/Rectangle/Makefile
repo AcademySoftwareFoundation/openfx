@@ -1,7 +1,6 @@
-CXXFLAGS = -I../../include
-OPTIMIZER = -O3
+PLUGINOBJECTS = rectangle.o
+PLUGINNAME = rectangle
+PATHTOROOT = ../
 
-rectangle.dso : rectangle.o
-	$(CXX) -shared rectangle.o -o rectangle.dso
-	strip -fhls rectangle.dso
+include ../Makefile.master
 
