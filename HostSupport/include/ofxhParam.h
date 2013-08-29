@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 #include <list>
 #include <cstdarg>
+#include <memory>
 
 namespace OFX {
 
