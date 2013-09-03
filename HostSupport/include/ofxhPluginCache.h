@@ -299,7 +299,6 @@ namespace OFX {
 
     /// wrapper class for Plugin/PluginBinary.  use in a RAIA fashion to make sure the binary gets unloaded when needed and not before.
     class PluginHandle {
-      Plugin *_p;
       PluginBinary *_b;
       OfxPlugin *_op;
 

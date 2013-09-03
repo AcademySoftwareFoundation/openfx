@@ -144,7 +144,7 @@ PluginBinary::~PluginBinary() {
   }
 }
 
-PluginHandle::PluginHandle(Plugin *p, OFX::Host::Host *host) : _p(p) 
+PluginHandle::PluginHandle(Plugin *p, OFX::Host::Host *host)
 {
   _b = p->getBinary();
   _b->_binary.ref();
