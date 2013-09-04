@@ -236,7 +236,7 @@ namespace OFX {
         void addClip(const std::string &name, ClipDescriptor *clip);
 
         /// get the clips in order of construction
-        const std::vector<ClipDescriptor*> &getClipsByOrder() 
+        const std::vector<ClipDescriptor*> &getClipsByOrder() const
         {
           return _clipsByOrder;
         }
