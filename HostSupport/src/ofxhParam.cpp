@@ -376,7 +376,7 @@ namespace OFX {
       void Descriptor::addNumericParamProps(const std::string &type, Property::TypeEnum valueType, int dim)
       {
         static std::string dbl_minstr, dbl_maxstr, int_minstr, int_maxstr;
-        bool doneOne = false;
+        static bool doneOne = false;
 
         if(!doneOne) {
           std::ostringstream dbl_min, dbl_max, int_min, int_max;
