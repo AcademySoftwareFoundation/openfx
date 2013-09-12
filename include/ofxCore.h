@@ -473,7 +473,7 @@ typedef struct OfxPointD {
 
 This is effectively INT_MAX. 
  */
-#define kOfxFlagInfiniteMax ((int)((1 << (sizeof(int)*8 - 1)) - 1))
+#define kOfxFlagInfiniteMax ((int)(((unsigned)1 << (sizeof(int)*8 - 1)) - 1))
 
 /** @brief Used to flag infinite rects. Set minimums to this to indicate infinite.
 
