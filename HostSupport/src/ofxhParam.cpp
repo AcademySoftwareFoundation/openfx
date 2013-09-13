@@ -1327,6 +1327,7 @@ namespace OFX {
 
         if(desc) {
           *propertySet = desc->getPropHandle();
+          delete desc;
           return kOfxStatOK;
         }
         else 
