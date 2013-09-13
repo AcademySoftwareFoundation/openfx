@@ -104,6 +104,7 @@ namespace OFX {
           OfxPlugin *op = _pluginHandle->getOfxPlugin();
           op->mainEntry(kOfxActionUnload, 0, 0, 0);
         }
+        delete _baseDescriptor;
       }
 
       APICache::PluginAPICacheI &ImageEffectPlugin::getApiHandler()
