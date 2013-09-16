@@ -477,6 +477,12 @@ namespace OFX {
 
       SetDescriptor::~SetDescriptor()
       {
+        // iterate the params and delete them
+        std::list<Descriptor *>::iterator i;
+        for(i = _paramList.begin(); i != _paramList.end(); ++i) {
+          if(*i)
+            delete (*i);
+        }
       }
 
       const std::map<std::string, Descriptor*> &SetDescriptor::getParams() const
