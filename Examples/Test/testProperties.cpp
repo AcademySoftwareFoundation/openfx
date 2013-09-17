@@ -35,6 +35,7 @@ run it through a c beautifier or emacs auto formating, automagic indenting will 
 */
 #include <string> // stl strings
 #include <map> // stl maps
+#include <stdexcept>
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
@@ -1204,15 +1205,25 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgsH
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, false, true);
     }
     else {
-      OFX::logError("Unknown action '%s';", action);
+      OFX::logError(true, "Unknown action '%s';", action);
     }
+  } catch (std::bad_alloc) {
+    // catch memory
+    OFX::logError(true, "OFX Plugin Memory error;");
+    stat = kOfxStatErrMemory;
+  } catch ( const std::exception& e ) {
+    // standard exceptions
+    OFX::logError(true, "OFX Plugin error: '%s';", e.what());
+    stat = kOfxStatErrUnknown;
+  } catch (int err) {
+    // ho hum, gone wrong somehow
+    OFX::logError(true, "OFX Plugin error: '%s';", mapStatus(err));
+    stat = err;
+  } catch ( ... ) {
+    // everything else
+    OFX::logError(true, "OFX Plugin error;");
+    stat = kOfxStatErrUnknown;
   }
-  
-  catch (int err)
-    {
-      // ho hum, gone wrong somehow
-      stat = err;
-    }
   
   OFX::logPrint("}pluginMain - stop;");
   

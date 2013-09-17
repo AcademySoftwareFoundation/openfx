@@ -38,14 +38,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <windows.h>
 #endif 
 
-#include <string.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif
-#include <math.h>
+#include <cmath>
+#include <stdexcept>
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
@@ -529,6 +530,7 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
 static OfxStatus
 pluginMain(const char *action,  const void *handle,  OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs)
 {
+  try {
   // cast to appropriate type
   OfxImageEffectHandle effect = (OfxImageEffectHandle) handle;
 
@@ -541,7 +543,23 @@ pluginMain(const char *action,  const void *handle,  OfxPropertySetHandle inArgs
   else if(strcmp(action, kOfxImageEffectActionIsIdentity) == 0) {
     return isIdentity(effect, inArgs, outArgs);
   }    
-    
+  } catch (std::bad_alloc) {
+    // catch memory
+    //std::cout << "OFX Plugin Memory error." << std::endl;
+    return kOfxStatErrMemory;
+  } catch ( const std::exception& e ) {
+    // standard exceptions
+    //std::cout << "OFX Plugin error: " << e.what() << std::endl;
+    return kOfxStatErrUnknown;
+  } catch (int err) {
+      // ho hum, gone wrong somehow
+      return err;
+  } catch ( ... ) {
+    // everything else
+    //std::cout << "OFX Plugin error" << std::endl;
+    return kOfxStatErrUnknown;
+  }
+
   // other actions to take the default value
   return kOfxStatReplyDefault;
 }

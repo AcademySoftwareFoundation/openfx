@@ -49,7 +49,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     - multi threaded rendering
     - call back functions for user edited events on parameters
  */
-#include <string.h>
+#include <stdexcept>
+#include <cstring>
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
@@ -806,7 +807,8 @@ defineScaleParam( OfxParamSetHandle effectParams,
                  const char *parent)
 {
   OfxPropertySetHandle props;
-  gParamHost->paramDefine(effectParams, kOfxParamTypeDouble, name, &props);
+  OfxStatus stat;
+  stat = gParamHost->paramDefine(effectParams, kOfxParamTypeDouble, name, &props);
 
   // say we are a scaling parameter
   gPropHost->propSetString(props, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeScale);
@@ -942,6 +944,7 @@ describe(OfxImageEffectHandle  effect)
 static OfxStatus
 pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
 {
+  try {
   // cast to appropriate type
   OfxImageEffectHandle effect = (OfxImageEffectHandle) handle;
 
@@ -984,8 +987,23 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,
   else if(strcmp(action, kOfxImageEffectActionGetTimeDomain) == 0) {
     return getTemporalDomain(effect, inArgs, outArgs);
   }  
+  } catch (std::bad_alloc) {
+    // catch memory
+    //std::cout << "OFX Plugin Memory error." << std::endl;
+    return kOfxStatErrMemory;
+  } catch ( const std::exception& e ) {
+    // standard exceptions
+    //std::cout << "OFX Plugin error: " << e.what() << std::endl;
+    return kOfxStatErrUnknown;
+  } catch (int err) {
+    // ho hum, gone wrong somehow
+    return err;
+  } catch ( ... ) {
+    // everything else
+    //std::cout << "OFX Plugin error" << std::endl;
+    return kOfxStatErrUnknown;
+  }
 
-    
   // other actions to take the default value
   return kOfxStatReplyDefault;
 }
