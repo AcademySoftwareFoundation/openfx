@@ -31,7 +31,7 @@ default: $(OBJECTPATH)/$(PLUGINNAME).ofx
 	
   $(OBJECTPATH)/$(PLUGINNAME).ofx : $(OBJECTPATH)/$(PLUGINOBJECTS)
 	mkdir -p $(OBJECTPATH)/
-	g++ $(LINKFLAGS) -o $(OBJECTPATH)/$(PLUGINNAME).ofx $(OBJECTPATH)/$(PLUGINOBJECTS)
+	g++ $(OBJECTPATH)/$(PLUGINOBJECTS) $(LINKFLAGS) -o $(OBJECTPATH)/$(PLUGINNAME).ofx
 	mkdir -p  $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle/Contents/$(ARCH)
 	cp  $(OBJECTPATH)/$(PLUGINNAME).ofx  $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle/Contents/$(ARCH)
 	cp  Info.plist  $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle/Contents/
