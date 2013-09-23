@@ -77,6 +77,7 @@ namespace OFX {
         { kOfxImageEffectPropSupportsMultipleClipPARs,   Property::eInt, 1, false, "0" },
         { kOfxImageEffectPropClipPreferencesSlaveParam, Property::eString, 0, false, "" },
         { kOfxPluginPropFilePath, Property::eString, 1, true, ""},
+        { kOfxPropPluginDescription, Property::eString, 1,false, ""}, /*Added by Alex on 09/23/13*/
         Property::propSpecEnd
       };
 
@@ -321,6 +322,7 @@ namespace OFX {
         { kOfxImageEffectInstancePropSequentialRender, Property::eInt, 1, false, "0" },
         { kOfxImageEffectPropFrameRate ,        Property::eDouble,     1, true,  "0" },
         { kOfxPropIsInteractive,                Property::eInt,        1, true, "0" },
+        { kOfxPropPluginDescription,            Property::eString,     1, true, ""},/*Added by Alex on 09/23/13*/
         Property::propSpecEnd
       };
 
@@ -342,6 +344,9 @@ namespace OFX {
         int i = 0;
         _properties.setChainedSet(&other.getProps());
 
+        /*Added by Alex on 09/23/13*/
+        _properties.setStringProperty(kOfxPropPluginDescription, other.getProps().getStringProperty(kOfxPropPluginDescription));
+          
         _properties.setStringProperty(kOfxImageEffectPropContext,context);
         _properties.setIntProperty(kOfxPropIsInteractive,interactive);
 
