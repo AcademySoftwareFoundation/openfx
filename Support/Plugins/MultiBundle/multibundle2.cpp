@@ -131,7 +131,7 @@ public :
         for(int c = 0; c < nComponents; c++) 
         {
           dstPix[c] = val < 1.0f ? PIX((1.0f-val)*max) : PIX(0);
-          dstPix[c] *= _colour[c];
+          dstPix[c] = (PIX)(dstPix[c] * _colour[c]);
         }
         dstPix += nComponents;
       }
