@@ -138,7 +138,10 @@ namespace OFX {
         eStringTypeMultiLine,
         eStringTypeFilePath,
         eStringTypeDirectoryPath,
-        eStringTypeLabel
+        eStringTypeLabel,
+#ifdef OFX_EXTENSIONS_VEGAS
+        eStringTypeRichTextFormat
+#endif
     };
 
     /** @brief Enumerates the differing types of double params */
@@ -153,12 +156,47 @@ namespace OFX {
         eDoubleTypeNormalisedXAbsolute,
         eDoubleTypeNormalisedYAbsolute,
         eDoubleTypeNormalisedXY,
-        eDoubleTypeNormalisedXYAbsolute    
+        eDoubleTypeNormalisedXYAbsolute,    
+#ifdef OFX_EXTENSIONS_VEGAS
+        eDoubleTypePolar,
+        eDoubleTypeChrominance 
+#endif
     };
+
+#ifdef OFX_EXTENSIONS_VEGAS
+    /** @brief Enumerates the types of interpolation for vegas keyframes */
+    enum VegasInterpolationEnum {
+      eVegasInterpolationUnknown,
+      eVegasInterpolationLinear, 
+      eVegasInterpolationFast,   
+      eVegasInterpolationSlow,   
+      eVegasInterpolationSmooth, 
+      eVegasInterpolationSharp,  
+      eVegasInterpolationHold,   
+      eVegasInterpolationManual, 
+      eVegasInterpolationSplit
+      };
+
+    /** @brief Enumerates the types of color spaces vegas uses in color UI parameters */
+    enum ColorSpaceEnum {
+      eColorSpaceRGB,
+      eColorSpaceHSV,
+      eColorSpaceHSL,
+      eColorSpaceLab
+    };
+#endif
 
     /** @brief turns a ParamTypeEnum into the char * that raw OFX uses */
     const char *
     mapParamTypeEnumToString(ParamTypeEnum v);
+
+#ifdef OFX_EXTENSIONS_VEGAS
+    VegasInterpolationEnum 
+    mapToInterpolationEnum(const std::string &s) throw(std::invalid_argument);
+
+    const char* 
+    mapToInterpolationTypeEnum(OFX::VegasInterpolationEnum type);
+#endif
 
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Base class for all param descriptors */
@@ -203,6 +241,11 @@ namespace OFX {
 
         /** @brief set the secretness of the param, defaults to false */
         void setIsSecret(bool v);
+
+#ifdef OFX_EXTENSIONS_VEGAS
+        /** @brief set the default expanded of the param, defaults to false */
+        void setParameterExpanded(bool v);
+#endif
 
         /** @brief set the group param that is the parent of this one, default is to be ungrouped at the root level */
         void setParent(const GroupParamDescriptor &v);
@@ -433,6 +476,11 @@ namespace OFX {
         void setDimensionLabels(const std::string &x,
                                 const std::string &y);
 
+#ifdef OFX_EXTENSIONS_VEGAS
+        /** @brief set kOfxParamPropUseHostOverlayHandle */
+        void setUseHostOverlayHandle(bool v);
+#endif
+
         /** @brief set the default value, default is 0 */
         void setDefault(double x, double y);
 
@@ -443,6 +491,11 @@ namespace OFX {
         /** @brief set the display min and max, default is to be the same as the range param */
         void setDisplayRange(double minX, double minY,
                             double maxX, double maxY);
+
+#ifdef OFX_EXTENSIONS_VEGAS
+        /** @brief set the color wheel level value, default is 0.75 */
+        void setColorWheelLevel(double x);
+#endif
     };
   
     ////////////////////////////////////////////////////////////////////////////////
@@ -492,6 +545,10 @@ namespace OFX {
     public :
         /** @brief set the default value */
         void setDefault(double r, double g, double b);
+#ifdef OFX_EXTENSIONS_VEGAS
+        /** @brief set the default UI color space of the RGB param, defaults to eColorSpaceHSV */
+        void setDefaultColorSpace(ColorSpaceEnum v);
+#endif
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -510,6 +567,10 @@ namespace OFX {
     public :
         /** @brief set the default value */
         void setDefault(double r, double g, double b, double a);
+#ifdef OFX_EXTENSIONS_VEGAS
+        /** @brief set the default UI color space of the RGB param, defaults to eColorSpaceHSV */
+        void setDefaultColorSpace(ColorSpaceEnum v);
+#endif
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -630,6 +691,10 @@ namespace OFX {
     public :
         /** @brief set the default value of the param */
         void setDefault(const std::string &v);    
+
+#ifdef OFX_EXTENSIONS_VEGAS
+        void setCustomInterpolation(bool v);
+#endif
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -785,6 +850,11 @@ namespace OFX {
         /** @brief whether the param is enabled */
         void setEnabled(bool v);
 
+#ifdef OFX_EXTENSIONS_VEGAS
+        /** @brief set the param data ptr */
+        void setDataPtr(void* ptr);
+#endif
+
         /** @brief fetch the labels */
         void getLabels(std::string &label, std::string &shortLabel, std::string &longLabel) const;
     
@@ -794,6 +864,11 @@ namespace OFX {
         /** @brief whether the param is enabled */
         bool getIsEnable(void) const;
     
+#ifdef OFX_EXTENSIONS_VEGAS
+        /** @brief get the param data ptr */
+        void* getDataPtr(void) const;
+#endif
+
         /** @brief get the param hint */
         std::string getHint(void) const;
 
@@ -852,6 +927,14 @@ namespace OFX {
 
         /** @brief delete all the keys */
         void deleteAllKeys(void);
+
+#ifdef OFX_EXTENSIONS_VEGAS
+        /** @brief gets the interpolation type of a key at the given time */
+        VegasInterpolationEnum getKeyInterpolation(double time);
+    
+        /** @brief sets the interpolation type of a key at the given time */
+        void setKeyInterpolation(double time, VegasInterpolationEnum interpolation);
+#endif
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -876,10 +959,10 @@ namespace OFX {
         /** @brief set the display min and max, default is to be the same as the range param */
         void setDisplayRange(int min, int max);
 
-        /** @brief het the default value */
+        /** @brief get the default value */
         void getDefault(int &v);
 
-        /** @brief het the default value */
+        /** @brief get the default value */
         int getDefault(void) {int v; getDefault(v); return v;}
 
         /** @brief set the hard min/max range, default is INT_MIN, INT_MAX */
@@ -934,7 +1017,7 @@ namespace OFX {
         void setDisplayRange(int minX, int minY,
                             int maxX, int maxY);
 
-        /** @brief het the default value */
+        /** @brief get the default value */
         void getDefault(int &x, int &y);
 
         /** @brief get the default value */
@@ -997,7 +1080,7 @@ namespace OFX {
         void setDisplayRange(int minX, int minY, int minZ,
                             int maxX, int maxY, int maxZ);
 
-        /** @brief het the default value */
+        /** @brief get the default value */
         void getDefault(int &x, int &y, int &z);
 
         /** @brief set the hard min/max range, default is INT_MIN, INT_MAX */
@@ -1075,10 +1158,10 @@ namespace OFX {
         /** @brief set the display min and max, default is to be the same as the range param */
         void setDisplayRange(double min, double max);
 
-        /** @brief het the default value */
+        /** @brief get the default value */
         void getDefault(double &v);
 
-        /** @brief het the default value */
+        /** @brief get the default value */
         double getDefault(void) {double v; getDefault(v); return v;}
 
         /** @brief set the hard min/max range, default is DOUBLE_MIN, DOUBLE_MAX */
@@ -1142,7 +1225,7 @@ namespace OFX {
         void setDisplayRange(double minX, double minY,
                             double maxX, double maxY);
 
-        /** @brief het the default value */
+        /** @brief get the default value */
         void getDefault(double &x, double &y);
 
         /** @brief set the hard min/max range, default is DOUBLE_MIN, DOUBLE_MAX */
@@ -1202,7 +1285,7 @@ namespace OFX {
         void setDisplayRange(double minX, double minY, double minZ,
                             double maxX, double maxY, double maxZ);
 
-        /** @brief het the default value */
+        /** @brief get the default value */
         void getDefault(double &x, double &y, double &z);
 
         /** @brief set the hard min/max range, default is DOUBLE_MIN, DOUBLE_MAX */
@@ -1362,6 +1445,14 @@ namespace OFX {
         /** @brief append an option, default is to have not there */
         void appendOption(const std::string &v);
     
+#ifdef OFX_EXTENSIONS_VEGAS
+        /** @brief set an option */
+        void setOption(int item, const std::string &str);
+    
+        /** @brief get the option value */
+        void getOption(int ix, std::string &v);
+#endif
+
         /** @brief clear all the options so as to add some new ones in */
         void resetOptions(void);
 
@@ -1434,6 +1525,10 @@ namespace OFX {
         // so it can make one
         friend class ParamSet;
     public :
+#ifdef OFX_EXTENSIONS_VEGAS
+        /** @brief set the open of the group defaults to false */
+        void setIsOpen(bool v);
+#endif
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -1480,6 +1575,9 @@ namespace OFX {
 
         /** @brief set value */
         void setValue(const std::string &v);
+#ifdef OFX_EXTENSIONS_VEGAS
+        void setValue(const char* str);
+#endif
 
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, const std::string &v);

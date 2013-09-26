@@ -115,6 +115,39 @@ namespace OFX {
     return ePushButtonParam ;
   }
 
+#ifdef OFX_EXTENSIONS_VEGAS
+  /** @brief map a std::string to a keyframe interpolation type */
+  VegasInterpolationEnum mapToInterpolationEnum(const std::string &s) throw(std::invalid_argument)
+  {
+    if(s == kOfxVegasKeyframeInterpolationUnknown) return eVegasInterpolationUnknown;
+    if(s == kOfxVegasKeyframeInterpolationLinear)  return eVegasInterpolationLinear;
+    if(s == kOfxVegasKeyframeInterpolationFast)    return eVegasInterpolationFast; 
+    if(s == kOfxVegasKeyframeInterpolationSlow)    return eVegasInterpolationSlow; 
+    if(s == kOfxVegasKeyframeInterpolationSmooth)  return eVegasInterpolationSmooth; 
+    if(s == kOfxVegasKeyframeInterpolationSharp)   return eVegasInterpolationSharp;  
+    if(s == kOfxVegasKeyframeInterpolationHold)    return eVegasInterpolationHold;  
+    if(s == kOfxVegasKeyframeInterpolationManual)  return eVegasInterpolationManual; 
+    if(s == kOfxVegasKeyframeInterpolationSplit)   return eVegasInterpolationSplit;
+    OFX::Log::error(true, "Unknown keyframe Interpolation '%s'", s.c_str());
+    throw std::invalid_argument(s);
+  }
+
+  const char* mapToInterpolationTypeEnum(OFX::VegasInterpolationEnum type)
+  {
+         if(type == OFX::eVegasInterpolationUnknown) return kOfxVegasKeyframeInterpolationUnknown;
+    else if(type == OFX::eVegasInterpolationLinear)  return kOfxVegasKeyframeInterpolationLinear; 
+    else if(type == OFX::eVegasInterpolationFast)    return kOfxVegasKeyframeInterpolationFast;   
+    else if(type == OFX::eVegasInterpolationSlow)    return kOfxVegasKeyframeInterpolationSlow;   
+    else if(type == OFX::eVegasInterpolationSmooth)  return kOfxVegasKeyframeInterpolationSmooth; 
+    else if(type == OFX::eVegasInterpolationSharp)   return kOfxVegasKeyframeInterpolationSharp;  
+    else if(type == OFX::eVegasInterpolationHold)    return kOfxVegasKeyframeInterpolationHold;   
+    else if(type == OFX::eVegasInterpolationManual)  return kOfxVegasKeyframeInterpolationManual; 
+    else if(type == OFX::eVegasInterpolationSplit)   return kOfxVegasKeyframeInterpolationSplit;  
+    OFX::Log::error(true, "Unknown interpolation type enum '%d'", type);
+    return 0;
+  }
+#endif
+
   ////////////////////////////////////////////////////////////////////////////////
   // the base class for all param descriptors
 
@@ -163,12 +196,21 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropSecret, v);
   }
 
-  /** @brief set the secretness of the param, defaults to false */
+  /** @brief set the if the param is enabled, defaults to true */
   void 
     ParamDescriptor::setEnabled(bool v)
   {
     _paramProps.propSetInt(kOfxParamPropEnabled, v);
   }
+
+#ifdef OFX_EXTENSIONS_VEGAS
+  /** @brief set if the parameter is expanded (Vegas specific), defaults to true */
+  void 
+    ParamDescriptor::setParameterExpanded(bool v)
+  {
+    _paramProps.propSetInt(kOfxParamPropParameterExpanded, v);
+  }
+#endif
 
   /** @brief set the group param that is the parent of this one, default is to be ungrouped at the root level */
   void 
@@ -417,6 +459,14 @@ namespace OFX {
     case eDoubleTypeNormalisedXYAbsolute :
       _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeNormalisedXYAbsolute);
       break;
+#ifdef OFX_EXTENSIONS_VEGAS
+    case eDoubleTypePolar :
+      _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypePolar);
+      break;
+    case eDoubleTypeChrominance :
+      _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeChrominance);
+      break;
+#endif
     }
   }
 
@@ -509,6 +559,20 @@ namespace OFX {
     _paramProps.propSetString(kOfxParamPropDimensionLabel, y, 1);
   }
 
+#ifdef OFX_EXTENSIONS_VEGAS
+  /** @brief set kOfxParamPropUseHostOverlayHandle */
+  void Double2DParamDescriptor::setUseHostOverlayHandle(bool v)
+  {
+    _paramProps.propSetInt(kOfxParamPropUseHostOverlayHandle, v);
+  }
+
+  /** @brief set the color wheel level value, default is 0.75 */
+  void Double2DParamDescriptor::setColorWheelLevel(double x)
+  {
+    _paramProps.propSetDouble(kOfxParamPropColorWheelLevel, x);
+  }
+#endif
+
   ////////////////////////////////////////////////////////////////////////////////
   // 3D double param descriptor
 
@@ -577,6 +641,28 @@ namespace OFX {
     _paramProps.propSetDouble(kOfxParamPropDefault, b, 2);
   }
 
+#ifdef OFX_EXTENSIONS_VEGAS
+  /** @brief set the default UI color space of the RGB param, defaults to eColorSpaceHSV */
+  void RGBParamDescriptor::setDefaultColorSpace(ColorSpaceEnum v)
+  {
+    switch(v) 
+    {
+    case eColorSpaceRGB :
+      _paramProps.propSetString(kOfxParamColorDefaultColorspace, kOfxParamColorColorspaceRGB);
+      break;
+    case eColorSpaceHSV :
+      _paramProps.propSetString(kOfxParamColorDefaultColorspace, kOfxParamColorColorspaceHSV);
+      break;
+    case eColorSpaceHSL :
+      _paramProps.propSetString(kOfxParamColorDefaultColorspace, kOfxParamColorColorspaceHSL);
+      break;
+    case eColorSpaceLab :
+      _paramProps.propSetString(kOfxParamColorDefaultColorspace, kOfxParamColorColorspaceLab);
+      break;
+    }
+  }
+#endif
+
   ////////////////////////////////////////////////////////////////////////////////
   // RGBA param descriptor
 
@@ -594,6 +680,28 @@ namespace OFX {
     _paramProps.propSetDouble(kOfxParamPropDefault, b, 2);
     _paramProps.propSetDouble(kOfxParamPropDefault, a, 3);
   }
+
+#ifdef OFX_EXTENSIONS_VEGAS
+  /** @brief set the default UI color space of the RGB param, defaults to eColorSpaceHSV */
+  void RGBAParamDescriptor::setDefaultColorSpace(ColorSpaceEnum v)
+  {
+    switch(v) 
+    {
+    case eColorSpaceRGB :
+      _paramProps.propSetString(kOfxParamColorDefaultColorspace, kOfxParamColorColorspaceRGB);
+      break;
+    case eColorSpaceHSV :
+      _paramProps.propSetString(kOfxParamColorDefaultColorspace, kOfxParamColorColorspaceHSV);
+      break;
+    case eColorSpaceHSL :
+      _paramProps.propSetString(kOfxParamColorDefaultColorspace, kOfxParamColorColorspaceHSL);
+      break;
+    case eColorSpaceLab :
+      _paramProps.propSetString(kOfxParamColorDefaultColorspace, kOfxParamColorColorspaceLab);
+      break;
+    }
+  }
+#endif
 
   ////////////////////////////////////////////////////////////////////////////////
   // bool param descriptor
@@ -680,6 +788,11 @@ namespace OFX {
     case eStringTypeLabel :
       _paramProps.propSetString(kOfxParamPropStringMode,  kOfxParamStringIsLabel);
       break;
+#ifdef OFX_EXTENSIONS_VEGAS
+    case eStringTypeRichTextFormat :
+      _paramProps.propSetString(kOfxParamPropStringMode,  kOfxParamStringIsRichTextFormat);
+      break;
+#endif
     }
   }
 
@@ -703,6 +816,13 @@ namespace OFX {
   {
     _paramProps.propSetString(kOfxParamPropDefault, v);
   }
+
+#ifdef OFX_EXTENSIONS_VEGAS
+  void CustomParamDescriptor::setCustomInterpolation(bool v)
+  {
+    _paramProps.propSetPointer(kOfxParamPropCustomInterpCallbackV1, v ? (void*)OFX::Private::customParamIterpolationV1Entry : NULL);
+  }
+#endif
 
   ////////////////////////////////////////////////////////////////////////////////
   // group param descriptor
@@ -993,6 +1113,14 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropEnabled, v);
   }
 
+#ifdef OFX_EXTENSIONS_VEGAS
+  /** @brief set the private data pointer */
+  void Param::setDataPtr(void* ptr)
+  {
+    _paramProps.propSetPointer(kOfxParamPropDataPtr, ptr);
+  }
+#endif
+
   /** @brief fetch the labels */
   void Param::getLabels(std::string &label, std::string &shortLabel, std::string &longLabel) const
   {
@@ -1014,6 +1142,14 @@ namespace OFX {
     bool v = _paramProps.propGetInt(kOfxParamPropEnabled) != 0;
     return v;
   }
+
+#ifdef OFX_EXTENSIONS_VEGAS
+  /** @brief get the private data pointer */
+  void* Param::getDataPtr(void) const
+  {
+    return   _paramProps.propGetPointer(kOfxParamPropDataPtr);
+  }
+#endif
 
   /** @brief get the param hint */
   std::string Param::getHint(void) const
@@ -1065,14 +1201,14 @@ namespace OFX {
     return _paramProps.propGetInt(kOfxParamPropIsAnimating) != 0;
   }
 
-  /** @brief is the param animating */
+  /** @brief is the param auto keing */
   bool 
     ValueParam::getIsAutoKeying(void) const
   {
     return _paramProps.propGetInt(kOfxParamPropIsAutoKeying) != 0;
   }
 
-  /** @brief is the param animating */
+  /** @brief is the param persistant */
   bool 
     ValueParam::getIsPersistant(void) const
   {
@@ -1163,6 +1299,26 @@ namespace OFX {
     throwSuiteStatusException(stat); 
   }
 
+#ifdef OFX_EXTENSIONS_VEGAS
+  /** @brief gets the interpolation type of a key at the given time */
+  VegasInterpolationEnum ValueParam::getKeyInterpolation(double time)
+  {
+    if(!OFX::Private::gVegasKeyframeSuite) throwHostMissingSuiteException("vegasKeyframeSuite");
+    char *cStr;
+    OfxStatus stat = OFX::Private::gVegasKeyframeSuite->paramGetKeyInterpolation(_paramHandle, time, &cStr);
+    throwSuiteStatusException(stat); 
+    return mapToInterpolationEnum(cStr);
+  }
+  
+  /** @brief sets the interpolation type of a key at the given time */
+  void ValueParam::setKeyInterpolation(double time, VegasInterpolationEnum interpolation)
+  {
+    if(!OFX::Private::gVegasKeyframeSuite) throwHostMissingSuiteException("vegasKeyframeSuite");
+    OfxStatus stat = OFX::Private::gVegasKeyframeSuite->paramSetKeyInterpolation(_paramHandle, time, mapToInterpolationTypeEnum(interpolation));
+    throwSuiteStatusException(stat); 
+  }
+#endif
+
   ////////////////////////////////////////////////////////////////////////////////
   // Wraps up an integer param */
 
@@ -1192,7 +1348,7 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropDisplayMax, max);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void IntParam::getDefault(int &v)
   {    
     v = _paramProps.propGetInt(kOfxParamPropDefault);
@@ -1366,7 +1522,7 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropMin, zmin, 2);
     _paramProps.propSetInt(kOfxParamPropMax, xmax, 0);
     _paramProps.propSetInt(kOfxParamPropMax, ymax, 1);
-    _paramProps.propSetInt(kOfxParamPropMin, zmax, 2);
+    _paramProps.propSetInt(kOfxParamPropMax, zmax, 2);
   }
 
   /** @brief set the display min and max, default is to be the same as the range param */
@@ -1382,7 +1538,7 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropDisplayMax, zmax, 2);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void Int3DParam::getDefault(int &x, int &y, int &z)
   {    
     x = _paramProps.propGetInt(kOfxParamPropDefault, 0);
@@ -1539,7 +1695,7 @@ namespace OFX {
     _paramProps.propSetDouble(kOfxParamPropDisplayMax, max);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void DoubleParam::getDefault(double &v)
   {    
     v = _paramProps.propGetDouble(kOfxParamPropDefault);
@@ -1642,7 +1798,7 @@ namespace OFX {
     _paramProps.propSetDouble(kOfxParamPropDisplayMax, ymax, 1);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void Double2DParam::getDefault(double &x, double &y)
   {    
     x = _paramProps.propGetDouble(kOfxParamPropDefault, 0);
@@ -1745,7 +1901,7 @@ namespace OFX {
     _paramProps.propSetDouble(kOfxParamPropMin, zmin, 2);
     _paramProps.propSetDouble(kOfxParamPropMax, xmax, 0);
     _paramProps.propSetDouble(kOfxParamPropMax, ymax, 1);
-    _paramProps.propSetDouble(kOfxParamPropMin, zmax, 2);
+    _paramProps.propSetDouble(kOfxParamPropMax, zmax, 2);
   }
 
   /** @brief set the display min and max, default is to be the same as the range param */
@@ -1761,7 +1917,7 @@ namespace OFX {
     _paramProps.propSetDouble(kOfxParamPropDisplayMax, zmax, 2);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void Double3DParam::getDefault(double &x, double &y, double &z)
   {    
     x = _paramProps.propGetDouble(kOfxParamPropDefault, 0);
@@ -1857,7 +2013,7 @@ namespace OFX {
   }
 
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void RGBParam::getDefault(double &r, double &g, double &b)
   {    
     r = _paramProps.propGetDouble(kOfxParamPropDefault, 0);
@@ -1912,7 +2068,7 @@ namespace OFX {
   }
 
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void RGBAParam::getDefault(double &r, double &g, double &b, double &a)
   {    
     r = _paramProps.propGetDouble(kOfxParamPropDefault, 0);
@@ -1965,7 +2121,7 @@ namespace OFX {
     _paramProps.propSetString(kOfxParamPropDefault, v);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void StringParam::getDefault(std::string &v)
   {    
     v = _paramProps.propGetString(kOfxParamPropDefault);
@@ -2019,7 +2175,7 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropDefault, v);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void BooleanParam::getDefault(bool &v)
   {    
     v = _paramProps.propGetInt(kOfxParamPropDefault) != 0;
@@ -2076,7 +2232,7 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropDefault, v);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void ChoiceParam::getDefault(int &v)
   {    
     v = _paramProps.propGetInt(kOfxParamPropDefault);
@@ -2118,14 +2274,30 @@ namespace OFX {
     return nCurrentValues;
   }
 
-  /** @brief set the default value */
+#ifdef OFX_EXTENSIONS_VEGAS
+  /** @brief get the option value */
+  void ChoiceParam::getOption(int ix, std::string &v)
+  {    
+    v = _paramProps.propGetString(kOfxParamPropChoiceOption, ix);
+  }
+#endif
+
+  /** @brief add another option */
   void ChoiceParam::appendOption(const std::string &v)
   {
     int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
     _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
   }
 
-  /** @brief set the default value */
+#ifdef OFX_EXTENSIONS_VEGAS
+  /** @brief set the string of a specific option */
+  void ChoiceParam::setOption(int item, const std::string &str)
+  {
+    _paramProps.propSetString(kOfxParamPropChoiceOption, str, item);
+  }
+#endif
+
+  /** @brief set to the default value */
   void ChoiceParam::resetOptions(void)
   {
     _paramProps.propReset(kOfxParamPropChoiceOption);
@@ -2146,7 +2318,7 @@ namespace OFX {
     _paramProps.propSetString(kOfxParamPropDefault, v);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void CustomParam::getDefault(std::string &v)
   {    
     v = _paramProps.propGetString(kOfxParamPropDefault);
@@ -2177,6 +2349,15 @@ namespace OFX {
     throwSuiteStatusException(stat);
   }
 
+#ifdef OFX_EXTENSIONS_VEGAS
+  /** @brief set value */
+  void CustomParam::setValue(const char* str)
+  {
+    OfxStatus stat = OFX::Private::gParamSuite->paramSetValue(_paramHandle, str);
+    throwSuiteStatusException(stat);
+  }
+#endif
+
   /** @brief set the value at a time, implicitly adds a keyframe */
   void CustomParam::setValueAtTime(double t, const std::string &v)
   {
@@ -2192,6 +2373,14 @@ namespace OFX {
     : Param(paramSet, name, eGroupParam, handle)
   {
   }
+
+#ifdef OFX_EXTENSIONS_VEGAS
+  /** @brief set the open/closed of the group, defaults to false */
+  void GroupParam::setIsOpen(bool v)
+  {
+    _paramProps.propSetInt(kOfxParamPropGroupOpen, v);
+  }
+#endif
 
   ////////////////////////////////////////////////////////////////////////////////
   // Wraps up a page param

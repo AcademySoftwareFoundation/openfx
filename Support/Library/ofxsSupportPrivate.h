@@ -39,6 +39,11 @@ England
 #define _ofxsSupportPrivate_H_
 
 #include "ofxsInteract.h"
+#ifdef OFX_EXTENSIONS_VEGAS
+#if defined(WIN32) || defined(WIN64)
+#include "ofxsHWndInteract.h"
+#endif
+#endif
 #include "ofxsImageEffect.h"
 #include "ofxsLog.h"
 #include "ofxsMultiThread.h"
@@ -82,8 +87,19 @@ namespace OFX {
     /** @brief Pointer to the optional progress suite */
     extern OfxProgressSuiteV1     *gProgressSuite;
 
-    /** @brief Pointer to the optional progress suite */
+    /** @brief Pointer to the optional timeline suite */
     extern OfxTimeLineSuiteV1     *gTimeLineSuite;
+
+#ifdef OFX_EXTENSIONS_VEGAS
+    /** @brief Pointer to the optional progress suite */
+    extern OfxVegasProgressSuiteV1 *gVegasProgressSuite;
+
+    /** @brief Pointer to the optional stereoscopic image suite */
+    extern OfxVegasStereoscopicImageSuiteV1 *gVegasStereoscopicImageSuite;
+
+    /** @brief Pointer to the optional keyframe suite */
+    extern OfxVegasKeyframeSuiteV1 *gVegasKeyframeSuite;
+#endif
 
     /** @brief Support lib function called on an ofx load action */
     void loadAction(void);
