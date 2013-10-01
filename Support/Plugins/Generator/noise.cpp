@@ -35,7 +35,7 @@ England
 
 */
 
-
+#include <limits>
 #include <stdio.h>
 #include "ofxsImageEffect.h"
 #include "ofxsMultiThread.h"
