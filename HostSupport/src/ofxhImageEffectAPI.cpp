@@ -357,14 +357,14 @@ namespace OFX {
 
         int rval = plug->mainEntry(kOfxActionLoad, 0, 0, 0);
 
-        if (rval != 0 && rval != 14) {
+        if (rval != kOfxStatOK && rval != kOfxStatReplyDefault) {
           std::cerr << "load failed on plugin " << op->getIdentifier() << std::endl;          
           return;
         }
 
         rval = plug->mainEntry(kOfxActionDescribe, p->getDescriptor().getHandle(), 0, 0);
 
-        if (rval != 0 && rval != 14) {
+        if (rval != kOfxStatOK && rval != kOfxStatReplyDefault) {
           std::cerr << "describe failed on plugin " << op->getIdentifier() << std::endl;          
           return;
         }
@@ -380,7 +380,12 @@ namespace OFX {
         }
 
         rval = plug->mainEntry(kOfxActionUnload, 0, 0, 0);
-      }      
+
+        if (rval != kOfxStatOK && rval != kOfxStatReplyDefault) {
+          std::cerr << "unload failed on plugin " << op->getIdentifier() << std::endl;
+          return;
+        }
+      }
 
 
       /// handler for preparing to read in a chunk of XML from the cache, set up context to do this
