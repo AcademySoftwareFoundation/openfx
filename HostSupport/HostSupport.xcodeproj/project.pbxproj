@@ -23,6 +23,9 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		1E31EC3117F5CA44004AB554 /* ofxOpenGLRender.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E31EC2E17F5CA44004AB554 /* ofxOpenGLRender.h */; };
+		1E31EC3217F5CA44004AB554 /* ofxParametricParam.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E31EC2F17F5CA44004AB554 /* ofxParametricParam.h */; };
+		1E31EC3317F5CA44004AB554 /* ofxSonyVegas.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E31EC3017F5CA44004AB554 /* ofxSonyVegas.h */; };
 		1E3CB82917992E520032B538 /* ofxhBinary.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB81A17992E520032B538 /* ofxhBinary.h */; };
 		1E3CB82A17992E520032B538 /* ofxhClip.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB81B17992E520032B538 /* ofxhClip.h */; };
 		1E3CB82B17992E520032B538 /* ofxhHost.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB81C17992E520032B538 /* ofxhHost.h */; };
@@ -134,6 +137,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1E31EC2E17F5CA44004AB554 /* ofxOpenGLRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxOpenGLRender.h; sourceTree = "<group>"; };
+		1E31EC2F17F5CA44004AB554 /* ofxParametricParam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxParametricParam.h; sourceTree = "<group>"; };
+		1E31EC3017F5CA44004AB554 /* ofxSonyVegas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxSonyVegas.h; sourceTree = "<group>"; };
 		1E3CB81A17992E520032B538 /* ofxhBinary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhBinary.h; sourceTree = "<group>"; };
 		1E3CB81B17992E520032B538 /* ofxhClip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhClip.h; sourceTree = "<group>"; };
 		1E3CB81C17992E520032B538 /* ofxhHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhHost.h; sourceTree = "<group>"; };
@@ -273,9 +279,12 @@
 				1E3CB83D17992E990032B538 /* ofxMemory.h */,
 				1E3CB83E17992E990032B538 /* ofxMessage.h */,
 				1E3CB83F17992E990032B538 /* ofxMultiThread.h */,
+				1E31EC2E17F5CA44004AB554 /* ofxOpenGLRender.h */,
 				1E3CB84017992E990032B538 /* ofxParam.h */,
+				1E31EC2F17F5CA44004AB554 /* ofxParametricParam.h */,
 				1E3CB84117992E990032B538 /* ofxProgress.h */,
 				1E3CB84217992E990032B538 /* ofxProperty.h */,
+				1E31EC3017F5CA44004AB554 /* ofxSonyVegas.h */,
 				1E3CB84317992E990032B538 /* ofxTimeLine.h */,
 			);
 			name = "External Headers";
@@ -392,6 +401,7 @@
 				1E3CB82A17992E520032B538 /* ofxhClip.h in Headers */,
 				1E3CB82B17992E520032B538 /* ofxhHost.h in Headers */,
 				1E3CB82C17992E520032B538 /* ofxhImageEffect.h in Headers */,
+				1E31EC3217F5CA44004AB554 /* ofxParametricParam.h in Headers */,
 				1E3CB82D17992E520032B538 /* ofxhImageEffectAPI.h in Headers */,
 				1E3CB82E17992E520032B538 /* ofxhInteract.h in Headers */,
 				1E3CB82F17992E520032B538 /* ofxhMemory.h in Headers */,
@@ -409,10 +419,12 @@
 				1E3CB84717992E990032B538 /* ofxKeySyms.h in Headers */,
 				1E3CB84817992E990032B538 /* ofxMemory.h in Headers */,
 				1E3CB84917992E990032B538 /* ofxMessage.h in Headers */,
+				1E31EC3317F5CA44004AB554 /* ofxSonyVegas.h in Headers */,
 				1E3CB84A17992E990032B538 /* ofxMultiThread.h in Headers */,
 				1E3CB84B17992E990032B538 /* ofxParam.h in Headers */,
 				1E3CB84C17992E990032B538 /* ofxProgress.h in Headers */,
 				1E3CB84D17992E990032B538 /* ofxProperty.h in Headers */,
+				1E31EC3117F5CA44004AB554 /* ofxOpenGLRender.h in Headers */,
 				1E3CB84E17992E990032B538 /* ofxTimeLine.h in Headers */,
 				1E3CB8AA179932800032B538 /* ofxPixels.h in Headers */,
 			);

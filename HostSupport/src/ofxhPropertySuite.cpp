@@ -377,6 +377,11 @@ namespace OFX {
         }
       }
 
+      // explicit instanciations (required by ofxhPluginAPICache.cpp)
+      template class PropertyTemplate<IntValue>;
+      template class PropertyTemplate<DoubleValue>;
+      template class PropertyTemplate<PointerValue>;
+      template class PropertyTemplate<StringValue>;
 
       inline int castAwayConst(int i) { return i; }
       inline double castAwayConst(double d) { return d; }

@@ -96,6 +96,7 @@ of the direct OFX objects and any library side only functions.
 #include "ofxMultiThread.h"
 #include "ofxParam.h"
 #include "ofxProperty.h"
+#include "ofxPixels.h"
 
 #include <assert.h>
 #include <vector>
@@ -108,38 +109,6 @@ of the direct OFX objects and any library side only functions.
 #ifdef OFX_CLIENT_EXCEPTION_HEADER
 #include OFX_CLIENT_EXCEPTION_HEADER
 #endif
-
-/** @brief Defines an 8 bit per component RGB pixel 
-
-Should migrate this to the ofxCore.h in a v1.1
-*/
-struct OfxRGBColourB {
-  unsigned char r, g, b;
-};
-
-/** @brief Defines a 16 bit per component RGB pixel
-
-Should migrate this to the ofxCore.h in a v1.1
-*/
-struct OfxRGBColourS {
-  unsigned short r, g, b;
-};
-
-/** @brief Defines a floating point component RGB pixel
-
-Should migrate this to the ofxCore.h in a v1.1
-*/
-struct OfxRGBColourF {
-  float r, g, b;
-};
-
-/** @brief Defines a double precision floating point component RGB pixel
-
-Should migrate this to the ofxCore.h in a v1.1
-*/
-struct OfxRGBColourD {
-  double r, g, b;
-};
 
 /** @brief Defines an integer 3D point
 
