@@ -346,7 +346,7 @@ namespace OFX {
         bool isFrameVarying() const {return _frameVarying;}
 
         /// pure virtuals that must  be overriden
-        virtual ClipInstance* getClip(const std::string& name);
+        virtual ClipInstance* getClip(const std::string& name) const;
 
         /// override this to make processing abort, return 1 to abort processing
         virtual int abort();

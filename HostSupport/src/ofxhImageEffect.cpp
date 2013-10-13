@@ -651,8 +651,8 @@ namespace OFX {
         return _clips[name];
       }
 
-      ClipInstance* Instance::getClip(const std::string& name){
-        std::map<std::string,ClipInstance*>::iterator it = _clips.find(name);
+      ClipInstance* Instance::getClip(const std::string& name) const {
+        std::map<std::string,ClipInstance*>::const_iterator it = _clips.find(name);
         if(it!=_clips.end()){
           return it->second;
         }
