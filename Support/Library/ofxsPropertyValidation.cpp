@@ -857,12 +857,41 @@ namespace OFX {
       PropertyDescription(kOfxParamPropDimensionLabel,       OFX::eString, 3, eDescDefault, "x", "y", "z", eDescFinished),
     };
 
+    /** @brief properties for a group param */
+    static PropertyDescription gGroupParamProps[ ] =
+    {
+      PropertyDescription(kOfxParamPropGroupOpen,           OFX::eInt, 2, eDescFinished),
+    };
+
     /** @brief properties for a page param */
     static PropertyDescription gPageParamProps[ ] =
     {
       PropertyDescription(kOfxParamPropPageChild,            OFX::eString, -1, eDescFinished),
     };
 
+    /** @brief properties for a parametric param */
+    static PropertyDescription gParametricParamProps[ ] =
+    {
+      PropertyDescription(kOfxParamPropAnimates,                     OFX::eInt,     1, eDescDefault, 1, eDescFinished),
+      PropertyDescription(kOfxParamPropCanUndo,                      OFX::eInt,     1, eDescDefault, 1, eDescFinished),
+      PropertyDescription(kOfxParamPropParametricDimension,          OFX::eInt,     1, eDescDefault, 1, eDescFinished),
+      PropertyDescription(kOfxParamPropParametricUIColour,           OFX::eDouble, -1, eDescFinished),
+      PropertyDescription(kOfxParamPropParametricInteractBackground, OFX::ePointer, 1, eDescDefault, (void*)(0), eDescFinished),
+      PropertyDescription(kOfxParamPropParametricRange,              OFX::eDouble,  2, eDescDefault, 0.0, 1.0, eDescFinished),
+    };
+
+#ifdef OFX_EXTENSIONS_NUKE
+    /** @brief properties for a camera param */
+    static PropertyDescription gCameraParamProps[ ] =
+    {
+      PropertyDescription(kOfxPropType,                           OFX::eString, 1, eDescDefault, "NukeCamera", eDescFinished),
+      PropertyDescription(kOfxPropName,                           OFX::eString, 1, eDescFinished),
+      PropertyDescription(kOfxPropLabel,                          OFX::eString, 1,  eDescFinished),
+      PropertyDescription(kOfxPropShortLabel,                     OFX::eString, 1,  eDescFinished),
+      PropertyDescription(kOfxPropLongLabel,                      OFX::eString, 1, eDescFinished),
+      PropertyDescription(kOfxImageClipPropOptional,              OFX::eInt, 1, eDescDefault, 0, eDescFinished),
+    };
+#endif
 
     /** @brief Property set for 1D ints */
     static PropertySetDescription gInt1DParamPropSet("1D Integer parameter",
@@ -971,17 +1000,30 @@ namespace OFX {
       mPropDescriptionArg(gInteractOverideParamProps),
       NULLPTR);
 
-    /** @brief Property set for push button params */
+    /** @brief Property set for group params */
     static PropertySetDescription gGroupParamPropSet("Group Parameter",
       mPropDescriptionArg(gBasicParamProps),
+      mPropDescriptionArg(gGroupParamProps),
       NULLPTR);
 
-    /** @brief Property set for push button params */
-    static PropertySetDescription gPageParamPropSet("Group Parameter",
+    /** @brief Property set for page params */
+    static PropertySetDescription gPageParamPropSet("Page Parameter",
       mPropDescriptionArg(gBasicParamProps),
       mPropDescriptionArg(gPageParamProps),
       NULLPTR);
 
+    static PropertySetDescription gParametricParamPropSet("Parametric Parameter",
+      mPropDescriptionArg(gBasicParamProps),
+      mPropDescriptionArg(gInteractOverideParamProps),
+      mPropDescriptionArg(gValueHolderParamProps),
+      mPropDescriptionArg(gParametricParamProps),
+      NULLPTR);
+
+#ifdef OFX_EXTENSIONS_NUKE
+    static PropertySetDescription gCameraParamPropSet("Camera Parameter",
+      mPropDescriptionArg(gCameraParamProps),
+      NULLPTR);
+#endif
 #endif
     /** @brief Validates the host structure and property handle */
     void
@@ -1143,6 +1185,17 @@ namespace OFX {
       case ePushButtonParam :
         gPushButtonParamPropSet.validate(paramProps, checkDefaults);
         break;
+      case eParametricParam:
+        gParametricParamPropSet.validate(paramProps, checkDefaults);
+        break;
+#ifdef OFX_EXTENSIONS_NUKE
+      case eCameraParam:
+        gCameraParamPropSet.validate(paramProps, checkDefaults);
+        break;
+#endif
+      case eDummyParam:
+      //default:
+            break;
       }
 #endif
     }

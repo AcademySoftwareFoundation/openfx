@@ -59,6 +59,10 @@ of the direct OFX objects and any library side only functions.
 #ifdef OFX_EXTENSIONS_VEGAS
 #include "ofxSonyVegas.h"
 #endif
+#include "ofxParametricParam.h"
+#ifdef OFX_EXTENSIONS_NUKE
+#include "nuke/camera.h"
+#endif
 
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
@@ -331,6 +335,10 @@ namespace OFX {
     bool supportsChoiceAnimation;
     bool supportsBooleanAnimation;
     bool supportsCustomAnimation;
+    bool supportsParametricParameter;
+#ifdef OFX_EXTENSIONS_NUKE
+    bool supportsCameraParameter;
+#endif
     int maxParameters;
     int maxPages;
     int pageRowCount;
@@ -1053,6 +1061,14 @@ namespace OFX {
     The returned clip \em must not be deleted by the client code. This is all managed by the ImageEffect itself.
     */
     Clip *fetchClip(const std::string &name);
+
+#ifdef OFX_EXTENSIONS_NUKE
+    /** @brief Fetch the named camera param from this instance
+
+    The returned camera param \em must not be deleted by the client code. This is all managed by the ImageEffect itself.
+    */
+    CameraParam* fetchCameraParam(const std::string& name) const;
+#endif
 
     /** @brief does the host want us to abort rendering? */
     bool abort(void) const;

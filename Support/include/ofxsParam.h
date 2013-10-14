@@ -53,6 +53,11 @@ each represent the actions that can be carried out on those particular OFX objec
 #include <memory>
 #include "ofxsCore.h"
 
+#ifdef OFX_EXTENSIONS_NUKE
+#include "nuke/camera.h"
+#include "nuke/fnPublicOfxExtensions.h"
+#endif
+
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
   CLASS &operator=(const CLASS &v1) {assert(false); return *this;}	\
@@ -120,7 +125,12 @@ namespace OFX {
                         eCustomParam,
                         eGroupParam,
                         ePageParam,
-                        ePushButtonParam};
+                        ePushButtonParam,
+                        eParametricParam,
+#ifdef OFX_EXTENSIONS_NUKE
+                        eCameraParam,
+#endif
+                        };
 
     /** @brief Enumerates the different types of cache invalidation */
     enum CacheInvalidationEnum {eCacheInvalidateValueChange,
@@ -162,6 +172,14 @@ namespace OFX {
         eDoubleTypeChrominance 
 #endif
     };
+
+#ifdef OFX_EXTENSIONS_NUKE
+    enum ELayoutHint {
+      eLayoutHintNormal = kOfxParamPropLayoutHintNormal,
+      eLayoutHintDivider = kOfxParamPropLayoutHintDivider,
+      eLayoutHintNoNewLine = kOfxParamPropLayoutHintNoNewLine
+    };
+#endif
 
 #ifdef OFX_EXTENSIONS_VEGAS
     /** @brief Enumerates the types of interpolation for vegas keyframes */
@@ -252,6 +270,10 @@ namespace OFX {
     
         /** @brief whether the param is enabled, defaults to true */
         void setEnabled(bool v);
+
+#ifdef OFX_EXTENSIONS_NUKE
+        void setLayoutHint( const ELayoutHint layoutHint );
+#endif
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -676,6 +698,47 @@ namespace OFX {
     };
 
     ////////////////////////////////////////////////////////////////////////////////
+    /** @brief Wraps up a push button param, not much to it at all */
+    class ParametricParamDescriptor : public ParamDescriptor
+    {
+    protected:
+        mDeclareProtectedAssignAndCC(ParametricParamDescriptor);
+        ParametricParamDescriptor(void) {assert(false);}
+
+    protected:
+        /** @brief hidden constructor */
+        ParametricParamDescriptor(const std::string& name, OfxPropertySetHandle props);
+
+        OfxParamHandle _ofxParamHandle;
+        ParamSetDescriptor* _paramSet;
+        std::auto_ptr<ParamInteractDescriptor> _interact;
+
+        // so it can make one
+        friend class ParamSetDescriptor;
+        void setParamSet( ParamSetDescriptor& paramSet );
+
+    public:
+        void setDimension( const int dimension );
+
+        void setRange( const double min, const double max );
+
+        void setLabel( const std::string& label );
+
+        void setDimensionLabel( const std::string& label, const int id );
+
+        void setUIColour( const int id, const OfxRGBColourD& color );
+
+        void addControlPoint( const int id, const OfxTime time, const double x, const double y, const bool addKey );
+        
+        void setIdentity( const int id );
+        
+        void setIdentity();
+        
+        void setInteractDescriptor( ParamInteractDescriptor* desc );
+        
+    };
+
+    ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up a custom param, haven't added animation support yet */
     class CustomParamDescriptor : public ValueParamDescriptor {
     protected :
@@ -755,6 +818,11 @@ namespace OFX {
         ParamDescriptor *findPreviouslyDefinedParam(const std::string &name);
 
     public :
+        OfxParamSetHandle getParamSetHandle()
+        {
+            return _paramSetHandle;
+        }
+
         virtual ~ParamSetDescriptor();
         /** @brief tries to fetch a ParamDescriptor, returns 0 if it isn't there*/
         ParamDescriptor* getParamDescriptor(const std::string& name) const;
@@ -803,6 +871,9 @@ namespace OFX {
 
         /** @brief Define a push button param */
         PushButtonParamDescriptor *definePushButtonParam(const std::string &name);
+
+        /** @brief Define a parametric param */
+        ParametricParamDescriptor* defineParametricParam(const std::string &name);
 
         /** @brief Define a custom param */
         CustomParamDescriptor *defineCustomParam(const std::string &name);
@@ -1600,6 +1671,73 @@ namespace OFX {
     };
 
     ////////////////////////////////////////////////////////////////////////////////
+    /** @brief Wraps up a parametric param */
+    class ParametricParam : public Param {
+    private:
+        mDeclareProtectedAssignAndCC(ParametricParam);
+        ParametricParam(void) {assert( false);}
+
+    protected:
+        /** @brief hidden constructor */
+        ParametricParam(const ParamSet* paramSet, const std::string& name, OfxParamHandle handle);
+
+        // so it can make one
+        friend class ParamSet;
+
+    public:
+        double getValue(const int curveIndex,
+                        const OfxTime time,
+                        const double parametricPosition);
+        int getNControlPoints(const int curveIndex,
+                              const OfxTime time);
+        std::pair<double, double> getNthControlPoints(const int curveIndex,
+                                                      const OfxTime time,
+                                                      const int nthCtl);
+        void setNthControlPoints(const int curveIndex,
+                                 const OfxTime time,
+                                 const int nthCtl,
+                                 const double key,
+                                 const double value,
+                                 const bool addAnimationKey);
+        void setNthControlPoints(const int curveIndex,
+                                 const OfxTime time,
+                                 const int nthCtl,
+                                 const std::pair<double, double> ctrlPoint,
+                                 const bool addAnimationKey);
+        void addControlPoint(const int curveIndex,
+                             const OfxTime time,
+                             const double key,
+                             const double value,
+                             const bool addAnimationKey);
+        void deleteControlPoint(const int curveIndex,
+                                const int nthCtl);
+        void deleteControlPoint(const int curveIndex);
+    };
+
+#ifdef OFX_EXTENSIONS_NUKE
+    ////////////////////////////////////////////////////////////////////////////////
+    /** @brief Wraps up a camera param */
+    class CameraParam : public Param {
+    private:
+        mDeclareProtectedAssignAndCC(CameraParam);
+        CameraParam(void) {assert(false);}
+
+    protected:
+        /** @brief hidden constructor */
+        CameraParam(OfxImageEffectHandle imageEffectHandle, const ParamSet* paramSet, const std::string& name, NukeOfxCameraHandle handle);
+
+        // so it can make one
+        friend class ParamSet;
+            
+    public:
+        Param* getParameter( const std::string& name );
+            
+    private:
+        OfxImageEffectHandle _imageEffectHandle;
+    };
+#endif
+
+    ////////////////////////////////////////////////////////////////////////////////
     /** @brief A set of parameters in a plugin instance */
     class ParamSet { 
     protected :
@@ -1620,7 +1758,9 @@ namespace OFX {
 
         /** @brief calls the raw OFX routine to define a param */
         void fetchRawParam(const std::string &name, ParamTypeEnum paramType, OfxParamHandle &handle) const;
-
+#ifdef OFX_EXTENSIONS_NUKE
+        void fetchRawCameraParam(OfxImageEffectHandle pluginHandle, const std::string& name, NukeOfxCameraHandle& handle) const;
+#endif
 
         /** @brief Fetch a param of the given name and type */
         template <class T> void
@@ -1647,6 +1787,15 @@ namespace OFX {
                 // add it to our map of described ones
                 _fetchedParams[name] = paramPtr;
             }
+        }
+
+    protected:
+        // the following function should be specialized for each param type T
+        // (see example below with T = CameraParam)
+        template<class T> void
+        fetchAttribute(OfxImageEffectHandle pluginHandle, const std::string& name, T * &paramPtr) const
+        {
+            assert(false);
         }
 
     protected :
@@ -1713,8 +1862,41 @@ namespace OFX {
 
         /** @brief Fetch a custom param */
         CustomParam *fetchCustomParam(const std::string &name) const;
-    };
 
+        /** @brief Fetch a parametric param */
+        ParametricParam* fetchParametricParam(const std::string &name) const;
+    };
+#ifdef OFX_EXTENSIONS_NUKE
+    /** @brief Fetch a camera param */
+    template<> inline void
+    ParamSet::fetchAttribute<CameraParam>(OfxImageEffectHandle pluginHandle, const std::string& name, CameraParam * &paramPtr) const
+    {
+        typedef CameraParam T;
+        const ParamTypeEnum paramType = eCameraParam;
+        paramPtr = NULL;
+
+        // have we made it already in this param set and is it an int?
+        if(Param * param  = findPreviouslyFetchedParam(name))
+        {
+            if(param->getType() == paramType)
+            {
+                paramPtr = (T*) param;
+            }
+        }
+        else
+        {
+            // ok define one and add it in
+            NukeOfxCameraHandle paramHandle;
+            fetchRawCameraParam(pluginHandle, name, paramHandle);
+
+            // make out support descriptor class
+            paramPtr = new T(pluginHandle, this, name, paramHandle);
+            
+            // add it to our map of described ones
+            _fetchedParams[name] = paramPtr;
+        }
+    }
+#endif
 };
 
 // undeclare the protected assign and CC macro

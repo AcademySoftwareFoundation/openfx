@@ -90,6 +90,13 @@ namespace OFX {
     /** @brief Pointer to the optional timeline suite */
     extern OfxTimeLineSuiteV1     *gTimeLineSuite;
 
+    /** @brief Pointer to the parametric parameter suite */
+    extern OfxParametricParameterSuiteV1* gParametricParameterSuite;
+
+#ifdef OFX_EXTENSIONS_NUKE
+    /** @brief Pointer to the camera parameter suite (nuke ofx extension) */
+    extern NukeOfxCameraSuiteV1* gCameraParameterSuite;
+#endif
 #ifdef OFX_EXTENSIONS_VEGAS
     /** @brief Pointer to the optional progress suite */
     extern OfxVegasProgressSuiteV1 *gVegasProgressSuite;

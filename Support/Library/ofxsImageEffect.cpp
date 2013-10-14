@@ -83,6 +83,10 @@ namespace OFX {
     OfxMessageSuiteV1     *gMessageSuite = 0;
     OfxProgressSuiteV1     *gProgressSuite = 0;
     OfxTimeLineSuiteV1     *gTimeLineSuite = 0;
+    OfxParametricParameterSuiteV1* gParametricParameterSuite = 0;
+#ifdef OFX_EXTENSIONS_NUKE
+    NukeOfxCameraSuiteV1* gCameraParameterSuite = 0;
+#endif
 #ifdef OFX_EXTENSIONS_VEGAS
 #if defined(WIN32) || defined(WIN64)
     OfxHWNDInteractSuiteV1 *gHWNDInteractSuite = 0;
@@ -1167,6 +1171,15 @@ namespace OFX {
     return newClip;
   }
 
+#ifdef OFX_EXTENSIONS_NUKE
+  /** @brief Fetch a camera param */
+  CameraParam* ImageEffect::fetchCameraParam(const std::string& name) const
+  {
+    CameraParam *paramPtr;
+    fetchAttribute(_effectHandle, name, paramPtr);
+    return paramPtr;
+  }
+#endif
 
   /** @brief does the host want us to abort rendering? */
   bool ImageEffect::abort(void) const
@@ -1650,6 +1663,10 @@ namespace OFX {
         gHostDescription.supportsChoiceAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsChoiceAnimation) != 0;
         gHostDescription.supportsBooleanAnimation   = hostProps.propGetInt(kOfxParamHostPropSupportsBooleanAnimation) != 0;
         gHostDescription.supportsCustomAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsCustomAnimation) != 0;
+        gHostDescription.supportsParametricParameter = gParametricParameterSuite != 0;
+#ifdef OFX_EXTENSIONS_NUKE
+        gHostDescription.supportsCameraParameter    = gCameraParameterSuite != 0;
+#endif
         gHostDescription.maxParameters              = hostProps.propGetInt(kOfxParamHostPropMaxParameters);
         gHostDescription.maxPages                   = hostProps.propGetInt(kOfxParamHostPropMaxPages);
         gHostDescription.pageRowCount               = hostProps.propGetInt(kOfxParamHostPropPageRowColumnCount, 0);
@@ -1702,6 +1719,10 @@ namespace OFX {
         gMessageSuite   = (OfxMessageSuiteV1 *)     fetchSuite(kOfxMessageSuite, 1);
         gProgressSuite   = (OfxProgressSuiteV1 *)     fetchSuite(kOfxProgressSuite, 1, true);
         gTimeLineSuite   = (OfxTimeLineSuiteV1 *)     fetchSuite(kOfxTimeLineSuite, 1, true);
+        gParametricParameterSuite = (OfxParametricParameterSuiteV1*) fetchSuite(kOfxParametricParameterSuite, 1, true );
+#ifdef OFX_EXTENSIONS_NUKE
+        gCameraParameterSuite = (NukeOfxCameraSuiteV1*) fetchSuite(kNukeOfxCameraSuite, 1, true );
+#endif
 #ifdef OFX_EXTENSIONS_VEGAS
         gMessageSuiteV2 = (OfxMessageSuiteV2 *)     fetchSuite(kOfxMessageSuite, 2, true);
         gVegasProgressSuite   = (OfxVegasProgressSuiteV1 *)     fetchSuite(kOfxVegasProgressSuite, 1, true);
@@ -1755,6 +1776,10 @@ namespace OFX {
         gThreadSuite = 0;
         gMessageSuite = 0;
         gInteractSuite = 0;
+        gParametricParameterSuite = 0;
+#ifdef OFX_EXTENSIONS_NUKE
+        gCameraParameterSuite = 0;
+#endif
 #ifdef OFX_EXTENSIONS_VEGAS
         gMessageSuiteV2 = 0;
 #if defined(WIN32) || defined(WIN64)
