@@ -1,4 +1,4 @@
-SUBDIRS = Basic Generator Retimer Transition Invert
+SUBDIRS = Basic Field Generator Invert MultiBundle Retimer Tester Transition
 
 default : 
 	@ echo making sub projects... $(SUBDIRS)
