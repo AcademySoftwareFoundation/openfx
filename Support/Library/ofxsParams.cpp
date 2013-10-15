@@ -3028,6 +3028,14 @@ namespace OFX {
     return param;
   }
 
+  /** @brief Fetch a parametric param */
+  ParametricParam *ParamSet::fetchParametricParam(const std::string &name) const
+  {
+    ParametricParam *param = NULL;
+    fetchParam(name, eParametricParam, param);
+    return param;
+  }
+
   /// open an undoblock
   void ParamSet::beginEditBlock(const std::string &name)
   {
