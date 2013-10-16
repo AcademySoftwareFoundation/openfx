@@ -2542,9 +2542,9 @@ namespace OFX {
 
       @returns a pair with key and value
   */
-  std::pair<double, double> ParametricParam::getNthControlPoints(const int curveIndex,
-                                                                  const OfxTime time,
-                                                                  const int nthCtl)
+  std::pair<double, double> ParametricParam::getNthControlPoint(const int curveIndex,
+                                                                const OfxTime time,
+                                                                const int nthCtl)
   {
     std::pair<double, double> returnValue;
     OfxStatus stat = OFX::Private::gParametricParameterSuite->parametricParamGetNthControlPoint(_paramHandle,

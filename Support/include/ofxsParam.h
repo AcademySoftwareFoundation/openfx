@@ -1690,9 +1690,9 @@ namespace OFX {
                         const double parametricPosition);
         int getNControlPoints(const int curveIndex,
                               const OfxTime time);
-        std::pair<double, double> getNthControlPoints(const int curveIndex,
-                                                      const OfxTime time,
-                                                      const int nthCtl);
+        std::pair<double, double> getNthControlPoint(const int curveIndex,
+                                                     const OfxTime time,
+                                                     const int nthCtl);
         void setNthControlPoints(const int curveIndex,
                                  const OfxTime time,
                                  const int nthCtl,
