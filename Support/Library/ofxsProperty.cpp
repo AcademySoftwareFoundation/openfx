@@ -217,8 +217,7 @@ namespace OFX {
       throwPropertyException(stat, property);
 
     if(_gPropLogging > 0) Log::print("Retrieved string property %s[%d], was given %s.",  property, idx, value);
-
-    return std::string(value);
+    return value != NULL ?  std::string(value) : std::string();
   }
 
   /** @brief Get single double property */
