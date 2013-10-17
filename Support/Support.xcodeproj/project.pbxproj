@@ -270,6 +270,9 @@
 		1E3E3DA717996464005F2132 /* pluginLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pluginLoader.cpp; path = OSXStaticLoader/pluginLoader.cpp; sourceTree = "<group>"; };
 		1E3E3DA91799646E005F2132 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = DEVELOPER_DIR; };
 		1E551F5A179950EC00A4135C /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		1E9FC1CE180BF74400EFE0F9 /* camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
+		1E9FC1CF180BF74400EFE0F9 /* fnPublicOfxExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fnPublicOfxExtensions.h; sourceTree = "<group>"; };
+		1E9FC1E7180C2A4500EFE0F9 /* tester.ofx copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "tester.ofx copy-Info.plist"; path = "/Users/devernay/Development/openfx/Support/tester.ofx copy-Info.plist"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -393,6 +396,7 @@
 		1E3E3D30179960F9005F2132 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
+				1E9FC1CC180BF70A00EFE0F9 /* nuke */,
 				1E009D5F17F44D70003071CC /* ofxCore.h */,
 				1E009D6017F44D70003071CC /* ofxImageEffect.h */,
 				1E009D6117F44D70003071CC /* ofxInteract.h */,
@@ -429,6 +433,7 @@
 				1E551ED217994DEF00A4135C /* Sources */,
 				1E551EDA17994E8100A4135C /* Frameworks */,
 				1E551EC217994D4000A4135C /* Products */,
+				1E9FC1E7180C2A4500EFE0F9 /* tester.ofx copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -466,6 +471,16 @@
 				1E551F5A179950EC00A4135C /* OpenGL.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1E9FC1CC180BF70A00EFE0F9 /* nuke */ = {
+			isa = PBXGroup;
+			children = (
+				1E9FC1CE180BF74400EFE0F9 /* camera.h */,
+				1E9FC1CF180BF74400EFE0F9 /* fnPublicOfxExtensions.h */,
+			);
+			name = nuke;
+			path = ../../include/nuke;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1269,6 +1284,9 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
+					OFX_EXTENSIONS_NUKE,
+					OFX_EXTENSIONS_VEGAS,
+					OFX_EXTENSIONS_TUTTLE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

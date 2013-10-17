@@ -38,6 +38,10 @@ England
 
 #include <cstring>
 #include "./ofxsSupportPrivate.h"
+#include "ofxParametricParam.h"
+#ifdef OFX_EXTENSIONS_NUKE
+#include "nuke/camera.h"
+#endif
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {  
@@ -68,6 +72,7 @@ namespace OFX {
     case eGroupParam : return kOfxParamTypeGroup ;
     case ePageParam : return kOfxParamTypePage ;
     case ePushButtonParam : return kOfxParamTypePushButton ;
+    case eParametricParam : return kOfxParamTypeParametric ;
     default: assert(false);
     }
     return kOfxParamTypeInteger;
@@ -110,6 +115,8 @@ namespace OFX {
       return ePageParam ;
     else if(isEqual(kOfxParamTypePushButton,v))
       return ePushButtonParam ;
+    else if(isEqual(kOfxParamTypeParametric,v))
+      return eParametricParam ;
     else
       assert(false);
     return ePushButtonParam ;
@@ -858,6 +865,74 @@ namespace OFX {
   {
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  // parametric param descriptor
+
+  /** @brief hidden constructor */
+  ParametricParamDescriptor::ParametricParamDescriptor(const std::string &name, OfxPropertySetHandle props)
+    : ParamDescriptor(name, eParametricParam, props)
+  {
+  }
+
+  void ParametricParamDescriptor::setParamSet(ParamSetDescriptor& paramSet)
+  {
+    _paramSet = &paramSet;
+    OFX::Private::gParamSuite->paramGetHandle(_paramSet->getParamSetHandle(), getName().c_str(), &_ofxParamHandle, 0);
+  }
+
+  void ParametricParamDescriptor::setRange(const double min, const double max)
+  {
+    _paramProps.propSetDouble(kOfxParamPropParametricRange, min, 0);
+    _paramProps.propSetDouble(kOfxParamPropParametricRange, max, 1);
+  }
+
+  void ParametricParamDescriptor::setDimension(const int dimension)
+  {
+    _paramProps.propSetInt(kOfxParamPropParametricDimension, dimension);
+  }
+
+  void ParametricParamDescriptor::setLabel(const std::string& label)
+  {
+    _paramProps.propSetString(kOfxPropLabel, label);
+  }
+
+  void ParametricParamDescriptor::setDimensionLabel(const std::string& label, const int id)
+  {
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, label, id);
+  }
+
+  void ParametricParamDescriptor::setUIColour(const int id, const OfxRGBColourD& color)
+  {
+    _paramProps.propSetDouble(kOfxParamPropParametricUIColour, color.r, id*3 + 0);
+    _paramProps.propSetDouble(kOfxParamPropParametricUIColour, color.g, id*3 + 1);
+    _paramProps.propSetDouble(kOfxParamPropParametricUIColour, color.b, id*3 + 2);
+  }
+
+  void ParametricParamDescriptor::addControlPoint(const int id, const OfxTime time, const double x, const double y, const bool addKey)
+  {
+    OFX::Private::gParametricParameterSuite->parametricParamAddControlPoint(_ofxParamHandle, id, time, x, y, addKey);
+  }
+
+  void ParametricParamDescriptor::setIdentity(const int id)
+  {
+    addControlPoint(id, 0, 0, 0, false);
+    addControlPoint(id, 0, 1, 1, false);
+  }
+    
+  void ParametricParamDescriptor::setIdentity()
+  {
+    const int nbCurves = _paramProps.propGetInt(kOfxParamPropParametricDimension);
+    for(int i = 0; i < nbCurves; ++i) {
+      setIdentity(i);
+    }
+  }
+    
+  void ParametricParamDescriptor::setInteractDescriptor(ParamInteractDescriptor* desc)
+  {
+    _interact.reset(desc);
+    _paramProps.propSetPointer(kOfxParamPropParametricInteractBackground, (void*)desc->getMainEntry());
+    desc->setParamName(getName());
+  }
 
   ////////////////////////////////////////////////////////////////////////////////
   // Descriptor for a set of parameters
@@ -1046,6 +1121,16 @@ namespace OFX {
   {
     PushButtonParamDescriptor *param = NULL;
     defineParamDescriptor(name, ePushButtonParam, param);
+    return param;
+  }
+
+  /** @brief Define a parametric param */
+  ParametricParamDescriptor* ParamSetDescriptor::defineParametricParam(const std::string &name)
+  {
+    ParametricParamDescriptor* param = NULL;
+    defineParamDescriptor(name, eParametricParam, param);
+    // Parametric parameters need the ParamSet !
+    param->setParamSet(*this);
     return param;
   }
 
@@ -2401,6 +2486,198 @@ namespace OFX {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
+  // Wraps up a Parametric param
+
+  /** @brief hidden constructor */
+  ParametricParam::ParametricParam(const ParamSet* paramSet, const std::string &name, OfxParamHandle handle)
+      : Param(paramSet, name, eParametricParam, handle)
+  {}
+
+  /** @brief Evaluates a parametric parameter
+
+      \arg curveIndex            which dimension to evaluate
+      \arg time                  the time to evaluate to the parametric param at
+      \arg parametricPosition    the position to evaluate the parametric param at
+
+      @returns the double value is returned
+  */
+  double ParametricParam::getValue(const int curveIndex,
+                                    const OfxTime time,
+                                    const double parametricPosition)
+  {
+    double returnValue = 0.0;
+    OfxStatus stat = OFX::Private::gParametricParameterSuite->parametricParamGetValue(_paramHandle,
+                                                                                       curveIndex,
+                                                                                       time,
+                                                                                       parametricPosition,
+                                                                                       &returnValue);
+    throwSuiteStatusException(stat);
+    return returnValue;
+  }
+
+  /** @brief Returns the number of control points in the parametric param.
+
+      \arg curveIndex            which dimension to check
+      \arg time                  the time to check
+
+      @returns the integer value is returned
+  */
+  int ParametricParam::getNControlPoints(const int curveIndex,
+                                          const OfxTime time)
+  {
+    int returnValue = 0;
+    OfxStatus stat = OFX::Private::gParametricParameterSuite->parametricParamGetNControlPoints(_paramHandle,
+                                                                                                curveIndex,
+                                                                                                time,
+                                                                                                &returnValue);
+    throwSuiteStatusException(stat);
+    return returnValue;
+  }
+
+  /** @brief Returns the key/value pair of the nth control point.
+
+      \arg curveIndex            which dimension to check
+      \arg time                  the time to check
+      \arg nthCtl                the nth control point to get the value of
+
+      @returns a pair with key and value
+  */
+  std::pair<double, double> ParametricParam::getNthControlPoint(const int curveIndex,
+                                                                const OfxTime time,
+                                                                const int nthCtl)
+  {
+    std::pair<double, double> returnValue;
+    OfxStatus stat = OFX::Private::gParametricParameterSuite->parametricParamGetNthControlPoint(_paramHandle,
+                                                                                                 curveIndex,
+                                                                                                 time,
+                                                                                                 nthCtl,
+                                                                                                 &returnValue.first,
+                                                                                                 &returnValue.second);
+    throwSuiteStatusException(stat);
+    return returnValue;
+  }
+
+  /** @brief Modifies an existing control point on a curve
+
+      \arg curveIndex            which dimension to set
+      \arg time                  the time to set the value at
+      \arg nthCtl                the control point to modify
+      \arg key                   key of the control point
+      \arg value                 value of the control point
+      \arg addAnimationKey       if the param is an animatable, setting this to true will
+      force an animation keyframe to be set as well as a curve key,
+      otherwise if false, a key will only be added if the curve is already
+      animating.
+
+      @returns
+      - ::kOfxStatOK            - all was fine
+      - ::kOfxStatErrBadHandle  - if the paramter handle was invalid
+      - ::kOfxStatErrUnknown    - if the type is unknown
+
+      This modifies an existing control point. Note that by changing key, the order of the
+      control point may be modified (as you may move it before or after anther point). So be
+      careful when iterating over a curves control points and you change a key.
+  */
+  void ParametricParam::setNthControlPoints(const int curveIndex,
+                                             const OfxTime time,
+                                             const int nthCtl,
+                                             const double key,
+                                             const double value,
+                                             const bool addAnimationKey)
+  {
+    OfxStatus stat = OFX::Private::gParametricParameterSuite->parametricParamSetNthControlPoint(_paramHandle,
+                                                                                                 curveIndex,
+                                                                                                 time,
+                                                                                                 nthCtl,
+                                                                                                 key,
+                                                                                                 value,
+                                                                                                 addAnimationKey);
+    throwSuiteStatusException(stat);
+  }
+
+  void ParametricParam::setNthControlPoints(const int curveIndex,
+                                             const OfxTime time,
+                                             const int nthCtl,
+                                             const std::pair<double, double> ctrlPoint,
+                                             const bool addAnimationKey)
+  {
+    setNthControlPoints(curveIndex,
+                         time,
+                         nthCtl,
+                         ctrlPoint.first,
+                         ctrlPoint.second,
+                         addAnimationKey);
+  }
+
+  /** @brief Adds a control point to the curve.
+
+      \arg curveIndex            which dimension to set
+      \arg time                  the time to set the value at
+      \arg key                   key of the control point
+      \arg value                 value of the control point
+      \arg addAnimationKey       if the param is an animatable, setting this to true will
+      force an animation keyframe to be set as well as a curve key,
+      otherwise if false, a key will only be added if the curve is already
+      animating.
+
+      This will add a new control point to the given dimension of a parametric parameter. If a key exists
+      sufficiently close to 'key', then it will be set to the indicated control point.
+  */
+  void ParametricParam::addControlPoint(const int curveIndex,
+                                         const OfxTime time,
+                                         const double key,
+                                         const double value,
+                                         const bool addAnimationKey)
+  {
+    OfxStatus stat = OFX::Private::gParametricParameterSuite->parametricParamAddControlPoint(_paramHandle, curveIndex, time, key, value, addAnimationKey);
+    throwSuiteStatusException(stat);
+  }
+
+  /** @brief Deletes the nth control point from a parametric param.
+
+      \arg curveIndex            which dimension to delete
+      \arg nthCtl                the control point to delete
+  */
+  void ParametricParam::deleteControlPoint(const int curveIndex,
+                                            const int nthCtl)
+  {
+    OfxStatus stat = OFX::Private::gParametricParameterSuite->parametricParamDeleteControlPoint(_paramHandle, curveIndex, nthCtl);
+    throwSuiteStatusException(stat);
+  }
+
+  /** @brief Delete all curve control points on the given param.
+
+      \arg curveIndex            which dimension to clear
+  */
+  void ParametricParam::deleteControlPoint(const int curveIndex)
+  {
+    OfxStatus stat = OFX::Private::gParametricParameterSuite->parametricParamDeleteAllControlPoints(_paramHandle, curveIndex);
+    throwSuiteStatusException(stat);
+  }
+
+#ifdef OFX_EXTENSIONS_NUKE
+  ////////////////////////////////////////////////////////////////////////////////
+  // Wraps up a camera param
+
+  /** @brief hidden constructor */
+  CameraParam::CameraParam(OfxImageEffectHandle imageEffectHandle, const ParamSet* paramSet, const std::string &name, NukeOfxCameraHandle handle)
+      : Param(paramSet, name, eCameraParam, (OfxParamHandle)handle)
+      , _imageEffectHandle(imageEffectHandle)
+  {
+    // fetch all parameters
+    // NukeOfxCameraHandle *camera;
+    // OfxPropertySetHandle *propertySet;
+    // OfxStatus stat = OFX::Private::gCameraParameterSuite->cameraGetHandle(_paramHandle, name.c_str(), camera, propertySet);
+    // throwSuiteStatusException(stat);
+  }
+
+  Param* CameraParam::getParameter(const std::string &name)
+  {
+    return this;
+  }
+#endif
+
+  ////////////////////////////////////////////////////////////////////////////////
   //  for a set of parameters
   /** @brief hidden ctor */
   ParamSet::ParamSet(void)
@@ -2456,6 +2733,18 @@ namespace OFX {
       throw OFX::Exception::TypeRequest("Parameter exists but is of the wrong type");
     }
   }
+
+#ifdef OFX_EXTENSIONS_NUKE
+  /** @brief calls the raw OFX routine to fetch a camera param */
+  void ParamSet::fetchRawCameraParam(OfxImageEffectHandle pluginHandle, const std::string& name, NukeOfxCameraHandle& handle) const
+  {
+    OfxPropertySetHandle propHandle;
+
+    OfxStatus stat = OFX::Private::gCameraParameterSuite->cameraGetHandle(pluginHandle, name.c_str(), &handle, &propHandle);
+
+    throwSuiteStatusException( stat );
+  }
+#endif
 
   ParamTypeEnum ParamSet::getParamType(const std::string& name) const
   {
@@ -2583,6 +2872,22 @@ namespace OFX {
         fetchParam(name, t, ptr);
         return ptr;
       }
+    case eParametricParam : 
+      {
+        ParametricParam* ptr = 0;
+        fetchParam(name, t, ptr);
+        return ptr;
+      }
+#ifdef OFX_EXTENSIONS_NUKE
+    case eCameraParam:
+      {
+        // You can't fetch a camera parameter from here...
+        throwSuiteStatusException(kOfxStatErrFatal);
+        //CameraParam* ptr = 0;
+        //fetchParam(name, t, ptr);
+        //return ptr;
+      }
+#endif
     default:
       assert(false);
     }
@@ -2720,6 +3025,14 @@ namespace OFX {
   {
     CustomParam *param = NULL;
     fetchParam(name, eCustomParam, param);
+    return param;
+  }
+
+  /** @brief Fetch a parametric param */
+  ParametricParam *ParamSet::fetchParametricParam(const std::string &name) const
+  {
+    ParametricParam *param = NULL;
+    fetchParam(name, eParametricParam, param);
     return param;
   }
 

@@ -498,11 +498,13 @@ describe(OfxImageEffectHandle  effect)
   // we cant do any work, so refuse to load and explain why.
   if(!hostSupportsMultipleDepths || nHostDepths == 1) {
     // post a message
-    gMessageSuite->message(effect, kOfxMessageError, kMessageNotEnoughBits, 
-			   "OFX GeneratorExample : cannot run on this application because the it does not allow effects to change the bit depth of images.");
+    // - disabled, because posting a message within describe() crashes Nuke 6
+    //gMessageSuite->message(effect, kOfxMessageError, kMessageNotEnoughBits,
+	//		   "OFX GeneratorExample : cannot run on this application because the it does not allow effects to change the bit depth of images.");
 
     // and refuse to load
-    return kOfxStatErrMissingHostFeature;
+    // - disabled, because Nuke 6 still loads it - it's better to load it even if it's non-functional
+    //return kOfxStatErrMissingHostFeature;
   }
 
   // get the property handle for the plugin
