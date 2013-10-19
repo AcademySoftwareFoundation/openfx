@@ -580,7 +580,9 @@ namespace OFX {
       };
 
       class StringInstance : public Instance, public KeyframeParam {
+#ifdef OFX_MT_UNSAFE
         std::string _returnValue; ///< location to hold temporary return value. Should delegate this to implementation!!!
+#endif
       public:
         StringInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
