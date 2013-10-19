@@ -580,9 +580,7 @@ namespace OFX {
       };
 
       class StringInstance : public Instance, public KeyframeParam {
-#ifdef OFX_MT_UNSAFE
         std::string _returnValue; ///< location to hold temporary return value. Should delegate this to implementation!!!
-#endif
       public:
         StringInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
@@ -591,15 +589,15 @@ namespace OFX {
         virtual OfxStatus set(const char*) = 0;
         virtual OfxStatus set(OfxTime time, const char*) = 0;
 
-#ifdef OFX_MT_UNSAFE
         /// implementation of var args function
-        /// This function is not MT-safe because it uses local storage. Prefer using get()
+        /// Be careful: the char* is only valid until next API call
+        /// see http://openfx.sourceforge.net/Documentation/1.3/ofxProgrammingReference.html#ArchitectureStrings
         virtual OfxStatus getV(va_list arg);
 
         /// implementation of var args function
-        /// This function is not MT-safe because it uses local storage. Prefer using get()
+        /// Be careful: the char* is only valid until next API call
+        /// see http://openfx.sourceforge.net/Documentation/1.3/ofxProgrammingReference.html#ArchitectureStrings
         virtual OfxStatus getV(OfxTime time, va_list arg);
-#endif
 
         /// implementation of var args function
         virtual OfxStatus setV(va_list arg);
