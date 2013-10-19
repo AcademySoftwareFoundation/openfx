@@ -145,7 +145,7 @@ InvertPlugin::setupAndProcess(InvertBase &processor, const OFX::RenderArguments 
   std::auto_ptr<OFX::Image> dst(dstClip_->fetchImage(args.time));
   OFX::BitDepthEnum dstBitDepth       = dst->getPixelDepth();
   OFX::PixelComponentEnum dstComponents  = dst->getPixelComponents();
-
+    printf("l= %i , b= %i , r= %i , t= %i\n",args.renderWindow.x1,args.renderWindow.y1,args.renderWindow.x2,args.renderWindow.y2);
   // fetch main input image
   std::auto_ptr<OFX::Image> src(srcClip_->fetchImage(args.time));
 
