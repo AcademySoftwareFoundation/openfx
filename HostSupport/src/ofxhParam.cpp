@@ -1231,26 +1231,21 @@ namespace OFX {
       // string param
       OfxStatus StringInstance::getV(va_list arg)
       {
-          /*Fixed by Alex on 10/19/13 to avoid race condition on the _returnValue member.
-           Btw this member should go away*/
-          const char **value = va_arg(arg, const char **);
-          std::string ret;
-          OfxStatus stat = get(ret);
-          *value = ret.c_str();
-          return stat;
+        const char **value = va_arg(arg, const char **);
+
+        OfxStatus stat = get(_returnValue); // I so don't like this, temp storage should be delegated to the implementation
+        *value = _returnValue.c_str();
+        return stat;
       }
       
       /// implementation of var args function
       OfxStatus StringInstance::getV(OfxTime time, va_list arg)
       {
-          /*Fixed by Alex on 10/19/13 to avoid race condition on the _returnValue member.
-           Btw this member should go away*/
-          const char **value = va_arg(arg, const char **);
-          std::string ret;
-          OfxStatus stat = get(time,ret);
-          *value = ret.c_str();
-          return stat;
+        const char **value = va_arg(arg, const char **);
 
+        OfxStatus stat = get(time, _returnValue); // I so don't like this, temp storage should be delegated to the implementation
+        *value = _returnValue.c_str();
+        return stat;
       }
       
       /// implementation of var args function

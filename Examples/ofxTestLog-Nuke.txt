@@ -1,0 +1,134 @@
+OfxGetPlugin - start();
+{
+  asking for 0th plugin;
+}OfxGetPlugin - stop;
+setHostFunc - start();
+{
+}setHostFunc - stop;
+OfxGetPlugin - start();
+{
+  asking for 0th plugin;
+}OfxGetPlugin - stop;
+setHostFunc - start();
+{
+}setHostFunc - stop;
+pluginMain - start();
+{
+  action is 'OfxActionLoad';
+loadAction - start();
+{
+WARNING : Could not fetch the optional suite 'OfxImageEffectOpenGLRenderSuite' version 1;
+HostDescription::HostDescription - start ( fetching host description);
+{
+PropertySetDescription::checkProperties - start(checking properties on Host);
+{
+ERROR : Failed on fetching dimension for property OfxImageEffectPropOpenGLRenderSupported, host returned status kOfxStatErrUnknown;
+}PropertySetDescription::checkProperties - stop;
+PropertySetDescription::checkDefaults - start(checking default value of properties on Host);
+{
+ERROR : Default value of OfxPropType[0] = 'Host', it should be 'OfxTypeImageEffectHost';
+}PropertySetDescription::checkDefaults - stop;
+PropertySetDescription::retrieveValues - start(retrieving values of properties on Host);
+{
+Fetched string property OfxPropType[0] = 'Host';
+Fetched string property OfxPropName[0] = 'uk.co.thefoundry.nuke';
+Fetched string property OfxPropLabel[0] = 'nuke';
+Fetched int property OfxImageEffectHostPropIsBackground[0] = 0;
+Fetched int property OfxImageEffectPropSupportsOverlays[0] = 1;
+Fetched int property OfxImageEffectPropSupportsMultiResolution[0] = 1;
+Fetched int property OfxImageEffectPropSupportsTiles[0] = 1;
+Fetched int property OfxImageEffectPropTemporalClipAccess[0] = 1;
+Fetched int property OfxImageEffectPropMultipleClipDepths[0] = 0;
+Fetched int property OfxImageEffectPropSupportsMultipleClipPARs[0] = 0;
+Fetched int property OfxImageEffectPropSetableFrameRate[0] = 0;
+Fetched int property OfxImageEffectPropSetableFielding[0] = 0;
+Fetched string property OfxImageEffectPropSupportedComponents[0] = 'OfxImageComponentRGBA';
+Fetched string property OfxImageEffectPropSupportedComponents[1] = 'OfxImageComponentAlpha';
+Fetched string property OfxImageEffectPropSupportedComponents[2] = 'uk.co.thefoundry.OfxImageComponentMotionVectors';
+Fetched string property OfxImageEffectPropSupportedComponents[3] = 'uk.co.thefoundry.OfxImageComponentStereoDisparity';
+Fetched string property OfxImageEffectPropSupportedContexts[0] = 'OfxImageEffectContextFilter';
+Fetched string property OfxImageEffectPropSupportedContexts[1] = 'OfxImageEffectContextGeneral';
+ERROR : Failed on fetching dimension for property OfxImageEffectPropOpenGLRenderSupported, host returned status kOfxStatErrUnknown;
+Fetched int property OfxParamHostPropSupportsStringAnimation[0] = 0;
+Fetched int property OfxParamHostPropSupportsCustomInteract[0] = 1;
+Fetched int property OfxParamHostPropSupportsChoiceAnimation[0] = 1;
+Fetched int property OfxParamHostPropSupportsBooleanAnimation[0] = 1;
+Fetched int property OfxParamHostPropSupportsCustomAnimation[0] = 0;
+Fetched int property OfxParamHostPropMaxParameters[0] = -1;
+Fetched int property OfxParamHostPropMaxPages[0] = 0;
+Fetched int property OfxParamHostPropPageRowColumnCount[0] = 0;
+Fetched int property OfxParamHostPropPageRowColumnCount[1] = 0;
+}PropertySetDescription::retrieveValues - stop;
+}HostDescription::HostDescription - stop;
+testMemorySuite - start();
+{
+}HostDescription::HostDescription - stop;
+}loadAction - stop;
+}pluginMain - stop;
+pluginMain - start();
+{
+  action is 'OfxActionDescribe';
+PropertySetDescription::checkProperties - start(checking properties on Plugin);
+{
+}PropertySetDescription::checkProperties - stop;
+PropertySetDescription::checkDefaults - start(checking default value of properties on Plugin);
+{
+}PropertySetDescription::checkDefaults - stop;
+PropertySetDescription::retrieveValues - start(retrieving values of properties on Plugin);
+{
+Fetched string property OfxPropType[0] = 'OfxTypeImageEffect';
+Fetched string property OfxPropLabel[0] = 'OFX Test Properties';
+Fetched string property OfxPropShortLabel[0] = 'OFX Test Props';
+Fetched string property OfxPropLongLabel[0] = 'OFX Test Properties';
+Fetched string property OfxPluginPropFilePath[0] = '/Library/OFX/Plugins/Examples/testProperties.ofx.bundle';
+Fetched string property OfxImageEffectPluginPropGrouping[0] = 'OFX Test';
+Fetched int property OfxImageEffectPluginPropSingleInstance[0] = 0;
+Fetched string property OfxImageEffectPluginRenderThreadSafety[0] = 'OfxImageEffectRenderFullySafe';
+Fetched int property OfxImageEffectPluginPropHostFrameThreading[0] = 0;
+Fetched pointer property OfxImageEffectPluginPropOverlayInteractV1[0] = 0x0;
+Fetched int property OfxImageEffectPropSupportsMultiResolution[0] = 1;
+Fetched int property OfxImageEffectPropSupportsTiles[0] = 1;
+Fetched int property OfxImageEffectPropTemporalClipAccess[0] = 0;
+Fetched int property OfxImageEffectPluginPropFieldRenderTwiceAlways[0] = 1;
+Fetched int property OfxImageEffectPropMultipleClipDepths[0] = 0;
+Fetched int property OfxImageEffectPropSupportsMultipleClipPARs[0] = 0;
+Fetched string property OfxImageEffectPropSupportedContexts[0] = 'OfxImageEffectContextGenerator';
+Fetched string property OfxImageEffectPropSupportedContexts[1] = 'OfxImageEffectContextFilter';
+Fetched string property OfxImageEffectPropSupportedContexts[2] = 'OfxImageEffectContextTransition';
+Fetched string property OfxImageEffectPropSupportedContexts[3] = 'OfxImageEffectContextPaint';
+Fetched string property OfxImageEffectPropSupportedContexts[4] = 'OfxImageEffectContextGeneral';
+Fetched string property OfxImageEffectPropSupportedContexts[5] = 'OfxImageEffectContextRetimer';
+Fetched string property OfxImageEffectPropSupportedPixelDepths[0] = 'OfxBitDepthByte';
+Fetched string property OfxImageEffectPropSupportedPixelDepths[1] = 'OfxBitDepthShort';
+Fetched string property OfxImageEffectPropSupportedPixelDepths[2] = 'OfxBitDepthFloat';
+}PropertySetDescription::retrieveValues - stop;
+PropertySetDescription::setValues - start(retrieving values of properties on Plugin);
+{
+}PropertySetDescription::setValues - stop;
+}pluginMain - stop;
+pluginMain - start();
+{
+  action is 'OfxImageEffectActionDescribeInContext';
+}pluginMain - stop;
+pluginMain - start();
+{
+  action is 'OfxActionCreateInstance';
+}pluginMain - stop;
+pluginMain - start();
+{
+  action is 'OfxImageEffectActionGetClipPreferences';
+ERROR : 'inArgs' handle passed to 'OfxImageEffectActionGetClipPreferences' is null;
+}pluginMain - stop;
+pluginMain - start();
+{
+  action is 'OfxActionBeginInstanceEdit';
+}pluginMain - stop;
+pluginMain - start();
+{
+  action is 'OfxImageEffectActionIsIdentity';
+}pluginMain - stop;
+pluginMain - start();
+{
+  action is 'OfxImageEffectActionGetClipPreferences';
+ERROR : 'inArgs' handle passed to 'OfxImageEffectActionGetClipPreferences' is null;
+}pluginMain - stop;
