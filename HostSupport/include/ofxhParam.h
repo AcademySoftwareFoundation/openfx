@@ -580,7 +580,6 @@ namespace OFX {
       };
 
       class StringInstance : public Instance, public KeyframeParam {
-      protected: //fix by Alex on 08/18/13 to allow derived class to handle the return value
         std::string _returnValue; ///< location to hold temporary return value. Should delegate this to implementation!!!
       public:
         StringInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
@@ -590,11 +589,15 @@ namespace OFX {
         virtual OfxStatus set(const char*) = 0;
         virtual OfxStatus set(OfxTime time, const char*) = 0;
 
+#ifdef OFX_MT_UNSAFE
         /// implementation of var args function
+        /// This function is not MT-safe because it uses local storage. Prefer using get()
         virtual OfxStatus getV(va_list arg);
 
         /// implementation of var args function
+        /// This function is not MT-safe because it uses local storage. Prefer using get()
         virtual OfxStatus getV(OfxTime time, va_list arg);
+#endif
 
         /// implementation of var args function
         virtual OfxStatus setV(va_list arg);

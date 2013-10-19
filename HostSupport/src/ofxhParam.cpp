@@ -1227,6 +1227,7 @@ namespace OFX {
         return integrate(time1, time2, *value1, *value2, *value3);
       }
 
+#ifdef OFX_MT_UNSAFE
       ////////////////////////////////////////////////////////////////////////////////
       // string param
       OfxStatus StringInstance::getV(va_list arg)
@@ -1247,6 +1248,7 @@ namespace OFX {
         *value = _returnValue.c_str();
         return stat;
       }
+#endif
       
       /// implementation of var args function
       OfxStatus StringInstance::setV(va_list arg)

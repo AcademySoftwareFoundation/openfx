@@ -392,7 +392,7 @@ namespace OFX {
         for(std::vector<ClipDescriptor*>::const_iterator it=clips.begin();
             it!=clips.end();
             ++it, ++counter) {
-              const std::string &name =  (*it)->getName();
+            const std::string &name =  (*it)->getName();
             // foreach clip descriptor make a clip instance
             ClipInstance* instance = newClipInstance(this, *it, counter);   
             if(!instance) return kOfxStatFailed;
@@ -413,7 +413,7 @@ namespace OFX {
             if(!descriptor) return kOfxStatErrValue;
 
             // name of the parameter
-              std::string name = descriptor->getName();
+            std::string name = descriptor->getName();
 
             // get a param instance from a param descriptor
             Param::Instance* instance = newParam(name,*descriptor);
