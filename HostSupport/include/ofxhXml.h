@@ -37,8 +37,18 @@ namespace OFX {
     inline std::string escape(const std::string &s) {
       std::string ns;
       for (size_t i=0;i<s.size();i++) {
+        // The are exactly five characters which must be escaped
+        // http://www.w3.org/TR/xml/#syntax
         if (s[i] == '\"') {
           ns += "&quot;";
+        } else if (s[i] == '&') {
+            ns += "&amp;";
+        } else if (s[i] == '<') {
+            ns += "&lt;";
+        } else if (s[i] == '>') {
+            ns += "&gt;";
+        } else if (s[i] == '\'') {
+            ns += "&apos;";
         } else {
           ns += s[i];
         }
