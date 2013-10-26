@@ -196,6 +196,9 @@ namespace OFX {
     if(str == kOfxImageComponentRGBA) {
       return ePixelComponentRGBA;
     }
+    else if(str == kOfxImageComponentRGB) {
+      return ePixelComponentRGB;
+    }
     else if(str == kOfxImageComponentAlpha) {
       return ePixelComponentAlpha;
     }

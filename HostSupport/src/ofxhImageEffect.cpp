@@ -1174,6 +1174,8 @@ namespace OFX {
       {
         if(str == kOfxImageComponentRGBA)
           return true;
+        if(str == kOfxImageComponentRGB)
+          return true;
         if(str == kOfxImageComponentAlpha)
           return true;
         return false;
@@ -1410,6 +1412,10 @@ namespace OFX {
         if(a == kOfxImageComponentRGBA)
           return a;
         if(b == kOfxImageComponentRGBA)
+          return b;
+        if(a == kOfxImageComponentRGB)
+          return a;
+        if(b == kOfxImageComponentRGB)
           return b;
         return a;
       }

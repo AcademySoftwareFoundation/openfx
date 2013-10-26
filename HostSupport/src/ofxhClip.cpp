@@ -403,6 +403,7 @@ namespace OFX {
       { 
         static const std::string none(kOfxImageComponentNone);
         static const std::string rgba(kOfxImageComponentRGBA);
+        static const std::string rgb(kOfxImageComponentRGB);
         static const std::string alpha(kOfxImageComponentAlpha);
 
         /// is it there
@@ -416,12 +417,18 @@ namespace OFX {
 
         /// Means we have RGBA or Alpha being passed in and the clip
         /// only supports the other one, so return that
-        if(s == kOfxImageComponentRGBA && isSupportedComponent(kOfxImageComponentAlpha))
-          return alpha;
+        if(s == rgba) {
+          if(isSupportedComponent(rgb))
+            return rgb;
+          if(isSupportedComponent(alpha))
+            return alpha;
+        } else if(s == alpha) {
+          if(isSupportedComponent(rgba))
+            return rgba;
+          if(isSupportedComponent(rgb))
+            return rgb;
+        }
 
-        if(s == kOfxImageComponentAlpha && isSupportedComponent(kOfxImageComponentRGBA))
-          return rgba;
-        
         /// wierd, must be some custom bit , if only one, choose that, otherwise no idea
         /// how to map, you need to derive to do so.
         const std::vector<std::string> &supportedComps = getSupportedComponents();
@@ -538,6 +545,7 @@ namespace OFX {
       }
 
       Image::~Image() {
+        //assert(_referenceCount <= 0);
       }
 
       // release the reference 

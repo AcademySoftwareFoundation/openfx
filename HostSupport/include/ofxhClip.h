@@ -191,6 +191,7 @@ namespace OFX {
         ///
         /// kOfxImageComponentNone (implying a clip is unconnected, not valid for an image)
         /// kOfxImageComponentRGBA
+        /// kOfxImageComponentRGB
         /// kOfxImageComponentAlpha
         /// and any custom ones you may think of
         const std::string &getComponents() const;
@@ -252,12 +253,12 @@ namespace OFX {
 
         // Unmapped Frame Rate -
         //
-        //  The unmaped frame range over which an output clip has images.
+        //  The unmapped frame rate.
         virtual double getUnmappedFrameRate() const = 0;
 
         // Unmapped Frame Range -
         //
-        //  The unmaped frame range over which an output clip has images.
+        //  The unmapped frame range over which an output clip has images.
         virtual void getUnmappedFrameRange(double &unmappedStartFrame, double &unmappedEndFrame) const = 0;
 
         // Continuous Samples -
