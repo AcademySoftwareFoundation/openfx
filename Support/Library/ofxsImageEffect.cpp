@@ -2179,6 +2179,8 @@ namespace OFX {
       OFX::Log::error(effectInstance->getContext() != eContextGeneral, "Calling kOfxImageEffectActionGetTimeDomain on an effect that is not a general context effect.");
 
       OfxRangeD timeDomain;
+      timeDomain.min = outArgs.propGetDouble(kOfxImageEffectPropFrameRange, 0);
+      timeDomain.max = outArgs.propGetDouble(kOfxImageEffectPropFrameRange, 1);
 
       // and call the plugin client code
       bool v = effectInstance->getTimeDomain(timeDomain);
