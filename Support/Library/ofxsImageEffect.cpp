@@ -1768,6 +1768,10 @@ namespace OFX {
     void unloadAction(const char* id)
     {
       gLoadCount--;
+      if (gLoadCount<0) {
+        OFX::Log::warning(true, "OFX Plugin '%s' is already unloaded.", id);
+        return;
+      }
 
       if(gLoadCount==0)
       {
