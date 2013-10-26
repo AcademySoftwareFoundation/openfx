@@ -909,7 +909,11 @@ namespace OFX {
   /** @brief get the scale factor that has been applied to this clip */
   double Clip::getPixelAspectRatio(void) const
   {
-    return _clipProps.propGetDouble(kOfxImagePropPixelAspectRatio);
+    try {
+      return _clipProps.propGetDouble(kOfxImagePropPixelAspectRatio);
+    } catch(...) {
+      return 1.0;  // This error could happen in Eyeon Fusion.
+    }
   }
 
   /** @brief get the frame rate, in frames per second on this clip, after any clip preferences have been applied */
