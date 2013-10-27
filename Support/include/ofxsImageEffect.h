@@ -351,9 +351,7 @@ namespace OFX {
     PixelDepthArray _supportedPixelDepths;
     bool supportsProgressSuite;
     bool supportsTimeLineSuite;
-#ifdef OFX_EXTENSIONS_VEGAS
     bool supportsMessageSuiteV2;
-#endif
   };
 
 

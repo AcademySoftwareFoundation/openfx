@@ -81,8 +81,11 @@ namespace OFX {
     /** @brief Pointer to the threading suite */
     extern OfxMultiThreadSuiteV1 *gThreadSuite;
 
-    /** @brief Pointer to the message  suite */
+    /** @brief Pointer to the message suite */
     extern OfxMessageSuiteV1     *gMessageSuite;
+
+    /** @brief Pointer to the optional message suite V2 */
+    extern OfxMessageSuiteV2     *gMessageSuiteV2;
 
     /** @brief Pointer to the optional progress suite */
     extern OfxProgressSuiteV1     *gProgressSuite;

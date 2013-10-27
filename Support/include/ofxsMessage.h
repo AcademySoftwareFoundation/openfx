@@ -18,9 +18,7 @@ namespace OFX
       eMessageFatal,
       eMessageError,
       eMessageMessage,
-#ifdef OFX_EXTENSIONS_VEGAS
       eMessageWarning,
-#endif
       eMessageLog,
       eMessageQuestion
     };

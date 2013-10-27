@@ -81,6 +81,7 @@ namespace OFX {
     OfxMemorySuiteV1      *gMemorySuite = 0;
     OfxMultiThreadSuiteV1 *gThreadSuite = 0;
     OfxMessageSuiteV1     *gMessageSuite = 0;
+    OfxMessageSuiteV2     *gMessageSuiteV2 = 0;
     OfxProgressSuiteV1     *gProgressSuite = 0;
     OfxTimeLineSuiteV1     *gTimeLineSuite = 0;
     OfxParametricParameterSuiteV1* gParametricParameterSuite = 0;
@@ -91,7 +92,6 @@ namespace OFX {
 #if defined(WIN32) || defined(WIN64)
     OfxHWNDInteractSuiteV1 *gHWNDInteractSuite = 0;
 #endif // #if defined(WIN32) || defined(WIN64)
-    OfxMessageSuiteV2     *gMessageSuiteV2 = 0;
     OfxVegasProgressSuiteV1 *gVegasProgressSuite = 0;
     OfxVegasStereoscopicImageSuiteV1 *gVegasStereoscopicImageSuite = 0;
     OfxVegasKeyframeSuiteV1 *gVegasKeyframeSuite = 0;
@@ -123,10 +123,8 @@ namespace OFX {
       return kOfxMessageError;
     else if(type == OFX::Message::eMessageMessage)
       return kOfxMessageMessage;
-#ifdef OFX_EXTENSIONS_VEGAS
     else if(type == OFX::Message::eMessageWarning)
       return kOfxMessageWarning;
-#endif
     else if(type == OFX::Message::eMessageLog)
       return kOfxMessageLog;
     else if(type == OFX::Message::eMessageQuestion)
@@ -1135,7 +1133,6 @@ namespace OFX {
     return mapToMessageReplyEnum(stat);
   }
 
-#ifdef OFX_EXTENSIONS_VEGAS
   OFX::Message::MessageReplyEnum ImageEffect::setPersistentMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg)
   {   
     if(!OFX::Private::gMessageSuiteV2){ throwHostMissingSuiteException("setPersistentMessage"); }
@@ -1151,7 +1148,6 @@ namespace OFX {
     OfxStatus stat = OFX::Private::gMessageSuiteV2->clearPersistentMessage(_effectHandle);
     return mapToMessageReplyEnum(stat);
   }
-#endif
 
   /** @brief Fetch the named clip from this instance */
   Clip *ImageEffect::fetchClip(const std::string &name)
@@ -1724,6 +1720,7 @@ namespace OFX {
         gMemorySuite    = (OfxMemorySuiteV1 *)      fetchSuite(kOfxMemorySuite, 1);
         gThreadSuite    = (OfxMultiThreadSuiteV1 *) fetchSuite(kOfxMultiThreadSuite, 1);
         gMessageSuite   = (OfxMessageSuiteV1 *)     fetchSuite(kOfxMessageSuite, 1);
+        gMessageSuiteV2 = (OfxMessageSuiteV2 *)     fetchSuite(kOfxMessageSuite, 2, true);
         gProgressSuite   = (OfxProgressSuiteV1 *)     fetchSuite(kOfxProgressSuite, 1, true);
         gTimeLineSuite   = (OfxTimeLineSuiteV1 *)     fetchSuite(kOfxTimeLineSuite, 1, true);
         gParametricParameterSuite = (OfxParametricParameterSuiteV1*) fetchSuite(kOfxParametricParameterSuite, 1, true );
@@ -1731,7 +1728,6 @@ namespace OFX {
         gCameraParameterSuite = (NukeOfxCameraSuiteV1*) fetchSuite(kNukeOfxCameraSuite, 1, true );
 #endif
 #ifdef OFX_EXTENSIONS_VEGAS
-        gMessageSuiteV2 = (OfxMessageSuiteV2 *)     fetchSuite(kOfxMessageSuite, 2, true);
         gVegasProgressSuite   = (OfxVegasProgressSuiteV1 *)     fetchSuite(kOfxVegasProgressSuite, 1, true);
         gVegasStereoscopicImageSuite  = (OfxVegasStereoscopicImageSuiteV1 *) fetchSuite(kOfxVegasStereoscopicImageEffectSuite, 1, true);
         gVegasKeyframeSuite   = (OfxVegasKeyframeSuiteV1 *)     fetchSuite(kOfxVegasKeyframeSuite, 1, true);
@@ -1741,9 +1737,9 @@ namespace OFX {
         fetchHostDescription(gHost);
 
         /// and set some dendent flags
+        OFX::gHostDescription.supportsMessageSuiteV2 = gMessageSuiteV2 != NULL;
 #ifdef OFX_EXTENSIONS_VEGAS
         OFX::gHostDescription.supportsProgressSuite = gProgressSuite != NULL || gVegasProgressSuite != NULL;
-        OFX::gHostDescription.supportsMessageSuiteV2 = gMessageSuiteV2 != NULL;
 #else
         OFX::gHostDescription.supportsProgressSuite = gProgressSuite != NULL;
 #endif
@@ -1786,13 +1782,13 @@ namespace OFX {
         gMemorySuite = 0;
         gThreadSuite = 0;
         gMessageSuite = 0;
+        gMessageSuiteV2 = 0;
         gInteractSuite = 0;
         gParametricParameterSuite = 0;
 #ifdef OFX_EXTENSIONS_NUKE
         gCameraParameterSuite = 0;
 #endif
 #ifdef OFX_EXTENSIONS_VEGAS
-        gMessageSuiteV2 = 0;
 #if defined(WIN32) || defined(WIN64)
         gHWNDInteractSuite  = 0;
 #endif // #if defined(WIN32) || defined(WIN64)
