@@ -35,6 +35,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
 #include "ofxPixels.h"
+#ifdef OFX_EXTENSIONS_VEGAS
+#include "ofxSonyVegas.h"
+#endif
 
 // ofx host
 #include "ofxhBinary.h"
@@ -64,7 +67,7 @@ namespace MyHost {
   
 
   /// images are always SD PAL progressive full res images for the purpose of this example only
-  MyImage::MyImage(MyClipInstance &clip, OfxTime time)
+  MyImage::MyImage(MyClipInstance &clip, OfxTime time, int view)
     : OFX::Host::ImageEffect::Image(clip) /// this ctor will set basic props on the image
     , _data(NULL)
   {
@@ -76,7 +79,8 @@ namespace MyHost {
     realFillValue = realFillValue << 8;
     realFillValue += fillValue;
     realFillValue = realFillValue << 8;
-    realFillValue += fillValue;
+    if (view == 0)
+      realFillValue += fillValue;
     realFillValue = realFillValue << 8;
     realFillValue += fillValue;
 
@@ -259,7 +263,12 @@ namespace MyHost {
     if(_name == "Output") {
       if(!_outputImage) {
         // make a new ref counted image
+#ifdef OFX_EXTENSIONS_VEGAS
+#warning "does the ClipInstance have the kOfxImageEffectPropRenderView property correctly set?"
+        _outputImage = new MyImage(*this, 0, getIntProperty(kOfxImageEffectPropRenderView, 0));
+#else
         _outputImage = new MyImage(*this, 0);
+#endif
       }
      
       // add another reference to the member image for this fetch
@@ -278,9 +287,50 @@ namespace MyHost {
       // 
       // You should do somewhat more sophisticated image management
       // than this.
+#ifdef OFX_EXTENSIONS_VEGAS
+      MyImage *image = new MyImage(*this, time, getIntProperty(kOfxImageEffectPropRenderView, 0));
+#else
       MyImage *image = new MyImage(*this, time);
+#endif
       return image;
     }
   }
 
+#ifdef OFX_EXTENSIONS_VEGAS
+  /// override this to fill in the image at the given time from a specific view
+  /// (using the standard callback gets you the current view being rendered, @see getImage).
+  /// The bounds of the image on the image plane should be
+  /// 'appropriate', typically the value returned in getRegionsOfInterest
+  /// on the effect instance. Outside a render call, the optionalBounds should
+  /// be 'appropriate' for the.
+  /// If bounds is not null, fetch the indicated section of the canonical image plane.
+  OFX::Host::ImageEffect::Image* MyClipInstance::getStereoscopicImage(OfxTime time, int view, OfxRectD *optionalBounds)
+  {
+    if(_name == "Output") {
+      if(!_outputImage) {
+        // make a new ref counted image
+        _outputImage = new MyImage(*this, 0, view);
+      }
+     
+      // add another reference to the member image for this fetch
+      // as we have a ref count of 1 due to construction, this will
+      // cause the output image never to delete by the plugin
+      // when it releases the image
+      _outputImage->addReference();
+
+      // return it
+      return _outputImage;
+    }
+    else {
+      // Fetch on demand for the input clip.
+      // It does get deleted after the plugin is done with it as we
+      // have not incremented the auto ref
+      // 
+      // You should do somewhat more sophisticated image management
+      // than this.
+      MyImage *image = new MyImage(*this, time, view);
+      return image;
+    }
+  }
+#endif
 } // MyHost

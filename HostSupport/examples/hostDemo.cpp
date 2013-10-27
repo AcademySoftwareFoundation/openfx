@@ -186,8 +186,16 @@ int main(int argc, char **argv)
         std::map<OFX::Host::ImageEffect::ClipInstance *, OfxRectD> rois;
         instance->getRegionOfInterestAction(frame, renderScale, regionOfInterest, rois);
   
+#ifdef OFX_EXTENSIONS_VEGAS
+        // render a stereoscopic frame
+        instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale,
+                               0 /*view*/, 2 /*nViews*/);
+        instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale,
+                               1 /*view*/, 2 /*nViews*/);
+#else
         // render a frame
         instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale);
+#endif
 
         // get the output image buffer
         MyHost::MyImage *outputImage = outputClip->getOutputImage();

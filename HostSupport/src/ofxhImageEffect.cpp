@@ -32,6 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ofx
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
+#ifdef OFX_EXTENSIONS_VEGAS
+#include "ofxSonyVegas.h"
+#endif
 
 // ofx host
 #include "ofxhBinary.h"
@@ -797,12 +800,22 @@ namespace OFX {
       OfxStatus Instance::renderAction(OfxTime      time,
                                        const std::string &  field,
                                        const OfxRectI    &renderRoI,
-                                       OfxPointD   renderScale) {
+                                       OfxPointD   renderScale
+#ifdef OFX_EXTENSIONS_VEGAS
+                                       ,
+                                       int view,
+                                       int nViews
+#endif
+                                       ) {
         Property::PropSpec stuff[] = {
           { kOfxPropTime, Property::eDouble, 1, true, "0" },
           { kOfxImageEffectPropFieldToRender, Property::eString, 1, true, "" }, 
           { kOfxImageEffectPropRenderWindow, Property::eInt, 4, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+#ifdef OFX_EXTENSIONS_VEGAS
+          { kOfxImageEffectPropRenderView, Property::eInt, 1, true, "0" },
+          { kOfxImageEffectPropViewsToRender, Property::eInt, 1, true, "1" },
+#endif
           Property::propSpecEnd
         };
 
@@ -812,6 +825,10 @@ namespace OFX {
         inArgs.setDoubleProperty(kOfxPropTime,time);
         inArgs.setIntPropertyN(kOfxImageEffectPropRenderWindow, &renderRoI.x1, 4);
         inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
+#ifdef OFX_EXTENSIONS_VEGAS
+        inArgs.setIntProperty(kOfxImageEffectPropRenderView,view);
+        inArgs.setIntProperty(kOfxImageEffectPropViewsToRender,nViews);
+#endif
 
 
         return mainEntry(kOfxImageEffectActionRender,this->getHandle(), &inArgs, 0);        
@@ -1606,6 +1623,35 @@ namespace OFX {
         
         return kOfxStatErrBadHandle;
       }
+
+#ifdef OFX_EXTENSIONS_VEGAS
+      static OfxStatus clipGetStereoscopicImage(OfxImageClipHandle h1,
+                                                OfxTime time,
+                                                int view,
+                                                OfxRectD *h2,
+                                                OfxPropertySetHandle *h3)
+      {
+        ClipInstance *clipInstance = reinterpret_cast<ClipInstance*>(h1);
+
+        if (!clipInstance || !clipInstance->verifyMagic()) {
+          return kOfxStatErrBadHandle;
+        }
+
+        if(clipInstance){
+          Image* image = clipInstance->getStereoscopicImage(time,view,h2);
+          if(!image) {
+            h3 = NULL;
+            return kOfxStatFailed;
+          }
+
+          *h3 = image->getPropHandle();
+
+          return kOfxStatOK;
+        }
+        
+        return kOfxStatErrBadHandle;
+      }
+#endif
       
       static OfxStatus clipReleaseImage(OfxPropertySetHandle h1)
       {
@@ -1762,6 +1808,11 @@ namespace OFX {
         imageMemoryUnlock
       };
 
+#ifdef OFX_EXTENSIONS_VEGAS
+      static struct OfxVegasStereoscopicImageEffectSuiteV1 gVegasStereoscopicImageEffectSuite = {
+        clipGetStereoscopicImage
+      };
+#endif
 
       /// message suite function for an image effect
       static OfxStatus message(void *handle, const char *type, const char *id, const char *format, ...)
