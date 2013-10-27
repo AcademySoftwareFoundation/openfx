@@ -190,12 +190,26 @@ int main(int argc, char **argv)
         // render a stereoscopic frame
         instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale,
                                0 /*view*/, 2 /*nViews*/);
+
+        // get the output image buffer
+        MyHost::MyImage *outputImage = outputClip->getOutputImage();
+
+        std::ostringstream ss;
+        ss << "Output." << t << "l.ppm";
+        exportToPPM(ss.str(), outputImage);
+
         instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale,
                                1 /*view*/, 2 /*nViews*/);
+
+        // get the output image buffer
+        outputImage = outputClip->getOutputImage();
+
+        std::ostringstream ss;
+        ss << "Output." << t << "r.ppm";
+        exportToPPM(ss.str(), outputImage);
 #else
         // render a frame
         instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale);
-#endif
 
         // get the output image buffer
         MyHost::MyImage *outputImage = outputClip->getOutputImage();
@@ -203,6 +217,7 @@ int main(int argc, char **argv)
         std::ostringstream ss;
         ss << "Output." << t << ".ppm";
         exportToPPM(ss.str(), outputImage);
+#endif
       }
 
       instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale);
