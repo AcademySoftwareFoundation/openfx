@@ -70,7 +70,7 @@ modification, are permitted provided that the following conditions are met:
 //
 // There is no file io to work with this.
 
-void exportToPGM(const std::string& fname, MyHost::MyImage* im)
+void exportToPPM(const std::string& fname, MyHost::MyImage* im)
 {
   std::ofstream op(fname.c_str());
   OfxRectI rod = im->getROD();
@@ -201,8 +201,8 @@ int main(int argc, char **argv)
         MyHost::MyImage *outputImage = outputClip->getOutputImage();
 
         std::ostringstream ss;
-        ss << "Output." << t << ".pgm";
-        exportToPGM(ss.str(), outputImage);
+        ss << "Output." << t << ".ppm";
+        exportToPPM(ss.str(), outputImage);
       }
 
       instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale);
