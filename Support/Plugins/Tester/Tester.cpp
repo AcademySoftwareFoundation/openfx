@@ -495,8 +495,8 @@ void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescript
 
   ChoiceParamDescriptor* param2 = desc.defineChoiceParam("enableTest");
   param2->setLabels("Enabler", "Enabler", "Enabler");
-  param2->appendOption("Enable parameter");
-  param2->appendOption("Disable parameter");
+  param2->appendOption("Enable parameter", "Enable parameter");
+  param2->appendOption("Disable parameter", "Disable parameter");
 
   DoubleParamDescriptor *param3 = desc.defineDoubleParam("enableDbl");
   param3->setLabels("Enabled by Enabler", "Enabled by Enabler", "Enabled by Enabler");

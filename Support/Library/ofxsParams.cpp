@@ -219,6 +219,12 @@ namespace OFX {
   }
 #endif
 
+  void
+    ParamDescriptor::setLayoutHint(const ELayoutHint layoutHint)
+  {
+    _paramProps.propSetInt(kOfxParamPropLayoutHint, static_cast<int>(layoutHint));
+  }
+
   /** @brief set the group param that is the parent of this one, default is to be ungrouped at the root level */
   void 
     ParamDescriptor::setParent(const GroupParamDescriptor &v)
@@ -748,10 +754,11 @@ namespace OFX {
   }
 
   /** @brief set the default value */
-  void ChoiceParamDescriptor::appendOption(const std::string &v)
+  void ChoiceParamDescriptor::appendOption(const std::string &v, const std::string& label)
   {
     int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
     _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
+    _paramProps.propSetString(kOfxParamPropChoiceLabelOption, label, nCurrentValues, false);
   }
 
   /** @brief set the default value */
@@ -839,6 +846,19 @@ namespace OFX {
     : ParamDescriptor(name, eGroupParam, props)
   {
   }
+
+  /** @brief whether the initial state of a group is open or closed in a hierarchical layout, defaults to false */
+  void GroupParamDescriptor::setOpen(const bool v)
+  {
+    _paramProps.propSetInt(kOfxParamPropGroupOpen, v);
+  }
+
+#ifdef OFX_EXTENSIONS_NUKE
+  void GroupParamDescriptor::setAsTab()
+  {
+    _paramProps.propSetInt(kFnOfxParamPropGroupIsTab, 1);
+  }
+#endif
 
   ////////////////////////////////////////////////////////////////////////////////
   // page param descriptor
@@ -2368,10 +2388,11 @@ namespace OFX {
 #endif
 
   /** @brief add another option */
-  void ChoiceParam::appendOption(const std::string &v)
+  void ChoiceParam::appendOption(const std::string &v, const std::string& label)
   {
     int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
     _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
+    _paramProps.propSetString(kOfxParamPropChoiceLabelOption, label, nCurrentValues, false);
   }
 
 #ifdef OFX_EXTENSIONS_VEGAS
@@ -2459,13 +2480,11 @@ namespace OFX {
   {
   }
 
-#ifdef OFX_EXTENSIONS_VEGAS
   /** @brief set the open/closed of the group, defaults to false */
   void GroupParam::setIsOpen(bool v)
   {
     _paramProps.propSetInt(kOfxParamPropGroupOpen, v);
   }
-#endif
 
   ////////////////////////////////////////////////////////////////////////////////
   // Wraps up a page param

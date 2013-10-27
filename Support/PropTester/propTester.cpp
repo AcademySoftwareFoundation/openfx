@@ -447,13 +447,13 @@ void PropTesterPluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   // choice 
   ChoiceParamDescriptor *choice = desc.defineChoiceParam("choice");
   choice->setLabels("choice", "choice", "choice");
-  choice->appendOption("This");
-  choice->appendOption("That");
-  choice->appendOption("The Other");
+  choice->appendOption("This", "This");
+  choice->appendOption("That", "That");
+  choice->appendOption("The Other", "The Other");
   choice->resetOptions();
-  choice->appendOption("Tom");
-  choice->appendOption("Dick");
-  choice->appendOption("Harry");
+  choice->appendOption("Tom", "Tom");
+  choice->appendOption("Dick", "Dick");
+  choice->appendOption("Harry", "Harry");
   choice->setDefault(0);
 
   page1->addChild(*choice);
