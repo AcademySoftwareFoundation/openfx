@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 #include <map>
+#include <ctype.h>
 
 // ofx
 #include "ofxImageEffect.h"
@@ -274,11 +275,16 @@ namespace OFX {
       {
         // return the highest version one, which fits the pattern provided
         ImageEffectPlugin *sofar = 0;
+        std::string identifier = id;
+
+        for (size_t i=0;i<identifier.size();i++) {
+            identifier[i] = tolower(identifier[i]);
+        }
 
         for (std::vector<ImageEffectPlugin *>::iterator i=_plugins.begin();i!=_plugins.end();i++) {
           ImageEffectPlugin *p = *i;
 
-          if (p->getIdentifier() != id) {
+          if (p->getIdentifier() != identifier) {
             continue;
           }
 
