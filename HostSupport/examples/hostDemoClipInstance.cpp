@@ -29,8 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <fstream>
 #include <cassert>
-#include <math.h>
-#include <time.h>
+#include <algorithm>
+#include <cmath>
+#include <ctime>
 
 // ofx
 #include "ofxCore.h"
@@ -150,23 +151,28 @@ namespace MyHost {
     // make some memory
     _data = new OfxRGBAColourB[kPalSizeXPixels * kPalSizeYPixels] ; /// PAL SD RGBA
     
-    int fillValue = (int)(100 + floor(255.0 * (time/OFXHOSTDEMOCLIPLENGTH))) & 0xff;
-    int realFillValue = fillValue;
-    realFillValue = realFillValue << 8;
-    realFillValue += fillValue;
-    realFillValue = realFillValue << 8;
-    if (view == 0)
-      realFillValue += fillValue;
-    realFillValue = realFillValue << 8;
-    realFillValue += fillValue;
+    int fillValue = (int)(floor(255.0 * (time/OFXHOSTDEMOCLIPLENGTH))) & 0xff;
+    OfxRGBAColourB color;
+#ifdef OFX_EXTENSIONS_VEGAS
+    color.r = view == 0 ? fillValue : 0;
+    color.g = view == 1 ? fillValue : 0;
+    color.b = view == 1 ? fillValue : 0;
+#else
+    color.r = color.g = color.b = fillValue;
+#endif
+    color.a = 255;
 
-    // now blank it
-    memset(_data, realFillValue, sizeof(OfxRGBAColourB) * kPalSizeXPixels * kPalSizeYPixels);
+    std::fill(_data, _data + kPalSizeXPixels * kPalSizeYPixels, color);
     // draw the time and the view number in reverse color
     const int scale = 5;
     const int charwidth = 4*scale;
-    realFillValue = realFillValue ^ ~0; // inverse
-    const OfxRGBAColourB color = *(reinterpret_cast<OfxRGBAColourB*>(&realFillValue));
+#ifdef OFX_EXTENSIONS_VEGAS
+    color.r = view == 0 ? 255-fillValue : 0;
+    color.g = view == 1 ? 255-fillValue : 0;
+    color.b = view == 1 ? 255-fillValue : 0;
+#else
+    color.r = color.g = color.b = 255-fillValue;
+#endif
     int xx = 50;
     int yy = 50;
     int d;
