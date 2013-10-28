@@ -214,7 +214,7 @@ namespace MyHost {
     if ((x >= bounds.x1) && ( x< bounds.x2) && ( y >= bounds.y1) && ( y < bounds.y2) )
     {
       int rowBytes = getIntProperty(kOfxImagePropRowBytes);
-      int offset = (y = bounds.y1) * rowBytes + (x - bounds.x1) * sizeof(OfxRGBAColourB);
+      int offset = (y - bounds.y1) * rowBytes + (x - bounds.x1) * sizeof(OfxRGBAColourB);
       return &(_data[offset]);
     }
     return 0;
