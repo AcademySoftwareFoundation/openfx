@@ -28,6 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include <iostream>
 #include <fstream>
+#include <cassert>
 #include <math.h>
 #include <time.h>
 

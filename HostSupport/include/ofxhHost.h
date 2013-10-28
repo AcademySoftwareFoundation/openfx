@@ -86,7 +86,14 @@ namespace OFX {
                                  const char* id,
                                  const char* format,
                                  va_list args) = 0;
-      
+
+      /// setPersistentMessage
+      virtual OfxStatus setPersistentMessage(const char* type,
+                                             const char* id,
+                                             const char* format,
+                                             va_list args) = 0;
+      /// clearPersistentMessage
+      virtual OfxStatus clearPersistentMessage() = 0;
     };
     
   }

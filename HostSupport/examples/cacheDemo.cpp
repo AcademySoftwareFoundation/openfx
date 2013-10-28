@@ -114,6 +114,18 @@ public :
     }
   }
 
+  OfxStatus setPersistentMessage(const char* type,
+                                 const char* id,
+                                 const char* format,
+                                 va_list args)
+  {
+    return vmessage(type, id, format, args);
+  }
+
+  OfxStatus clearPersistentMessage()
+  {
+    return kOfxStatOK;
+  }
 };
 
 int main(int argc, char **argv) 

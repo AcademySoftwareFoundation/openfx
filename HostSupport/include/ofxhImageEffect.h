@@ -362,10 +362,18 @@ namespace OFX {
                                               ClipDescriptor* descriptor, 
                                               int index) = 0;
 
+        /// message suite
         virtual OfxStatus vmessage(const char* type,
                                    const char* id,
                                    const char* format,	
                                    va_list args) = 0;  
+
+        virtual OfxStatus setPersistentMessage(const char* type,
+                                               const char* id,
+                                               const char* format,
+                                               va_list args) = 0;
+
+        virtual OfxStatus clearPersistentMessage() = 0;  
 
 
         /// call the effect entry point

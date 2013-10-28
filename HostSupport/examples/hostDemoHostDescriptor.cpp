@@ -150,4 +150,17 @@ namespace MyHost
       return kOfxStatOK;
     }
   }
+
+  OfxStatus Host::setPersistentMessage(const char* type,
+                                       const char* id,
+                                       const char* format,
+                                       va_list args)
+  {
+    return vmessage(type, id, format, args);
+  }
+
+  OfxStatus Host::clearPersistentMessage()
+  {
+    return kOfxStatOK;
+  }
 }

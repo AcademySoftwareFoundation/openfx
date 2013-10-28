@@ -1898,10 +1898,11 @@ namespace OFX {
       static OfxStatus message(void *handle, const char *type, const char *id, const char *format, ...)
       {
         ImageEffect::Instance *effectInstance = reinterpret_cast<ImageEffect::Instance*>(handle);
+        OfxStatus stat;
         if(effectInstance){
           va_list args;
           va_start(args,format);
-          effectInstance->vmessage(type,id,format,args);
+          stat = effectInstance->vmessage(type,id,format,args);
           va_end(args);
         }
         else{
@@ -1909,13 +1910,49 @@ namespace OFX {
           va_start(args,format);
           vprintf(format,args);
           va_end(args);
+          stat = kOfxStatErrBadHandle;
         }
-        return kOfxStatOK;
+        return stat;
       }
 
-      /// message suite for an image effect plugin
-      static struct OfxMessageSuiteV1 gMessageSuite = {
-        message
+      static OfxStatus setPersistentMessage(void *handle, const char *type, const char *id, const char *format, ...)
+      {
+        ImageEffect::Instance *effectInstance = reinterpret_cast<ImageEffect::Instance*>(handle);
+        OfxStatus stat;
+        if(effectInstance){
+          va_list args;
+          va_start(args,format);
+          stat = effectInstance->setPersistentMessage(type,id,format,args);
+          va_end(args);
+        }
+        else{
+          va_list args;
+          va_start(args,format);
+          vprintf(format,args);
+          va_end(args);
+          stat = kOfxStatErrBadHandle;
+        }
+        return stat;
+      }
+
+      OfxStatus clearPersistentMessage(void *handle)
+      {
+        ImageEffect::Instance *effectInstance = reinterpret_cast<ImageEffect::Instance*>(handle);
+        OfxStatus stat;
+        if(effectInstance){
+          stat = effectInstance->clearPersistentMessage();
+        }
+        else{
+          stat = kOfxStatErrBadHandle;
+        }
+        return stat;
+      }
+
+      /// message suite for an image effect plugin (backward-compatible with OfxMessageSuiteV1)
+      static struct OfxMessageSuiteV2 gMessageSuite = {
+        message,
+        setPersistentMessage,
+        clearPersistentMessage
       };
 
 
@@ -2140,7 +2177,8 @@ namespace OFX {
           return Param::GetSuite(suiteVersion);
         }
         else if (strcmp(suiteName, kOfxMessageSuite)==0) {
-          if(suiteVersion==1)
+          // version 2 is backward-compatible
+          if(suiteVersion==1 || suiteVersion==2)
             return (void *)&gMessageSuite;
           else 
             return NULL;

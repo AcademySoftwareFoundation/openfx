@@ -93,7 +93,20 @@ namespace MyHost {
     vprintf(format,args);
     return kOfxStatOK;
   }
-  
+
+  OfxStatus MyEffectInstance::setPersistentMessage(const char* type,
+                                                   const char* id,
+                                                   const char* format,
+                                                   va_list args)
+  {
+    return vmessage(type, id, format, args);
+  }
+
+  OfxStatus MyEffectInstance::clearPersistentMessage()
+  {
+    return kOfxStatOK;
+  }
+
   // get the project size in CANONICAL pixels, so PAL SD return 768, 576
   void MyEffectInstance::getProjectSize(double& xSize, double& ySize) const
   {

@@ -74,6 +74,13 @@ namespace MyHost {
                                const char* format,
                                va_list args);
 
+    /// vmessage
+    virtual OfxStatus setPersistentMessage(const char* type,
+                                           const char* id,
+                                           const char* format,
+                                           va_list args);
+    /// vmessage
+    virtual OfxStatus clearPersistentMessage();
   };
 
   // my ofx host object
