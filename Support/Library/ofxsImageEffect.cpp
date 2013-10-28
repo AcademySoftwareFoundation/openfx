@@ -252,7 +252,7 @@ namespace OFX {
     if(s == kOfxImageEffectPropRenderQualityDraft  )       return eVegasRenderQualityDraft;
     if(s == kOfxImageEffectPropRenderQualityPreview)       return eVegasRenderQualityPreview;
     if(s == kOfxImageEffectPropRenderQualityGood   )       return eVegasRenderQualityGood;
-    if(s == kOfxImageEffectPropRenderQualityBest   )       return eVegasRenderQualityBest;
+    if(s.empty() || s == kOfxImageEffectPropRenderQualityBest   )       return eVegasRenderQualityBest;
     OFX::Log::error(true, "Unknown Vegas RenderQuality '%s'", s.c_str());
     throw std::invalid_argument(s);
   }
@@ -260,7 +260,7 @@ namespace OFX {
   /** @brief map a std::string to a context */
   VegasContextEnum mapToVegasContextEnum(const std::string &s) throw(std::invalid_argument)
   {
-    if(s == kOfxImageEffectPropVegasContextUnknown)       return eVegasContextUnknown;
+    if(s.empty() || s == kOfxImageEffectPropVegasContextUnknown)       return eVegasContextUnknown;
     if(s == kOfxImageEffectPropVegasContextMedia)         return eVegasContextMedia;
     if(s == kOfxImageEffectPropVegasContextTrack)         return eVegasContextTrack;
     if(s == kOfxImageEffectPropVegasContextEvent)         return eVegasContextEvent;
