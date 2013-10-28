@@ -80,9 +80,9 @@ void exportToPPM(const std::string& fname, MyHost::MyImage* im)
   op << rod.y2 - rod.y1 << "\t#HEIGHT" <<std::endl;
   //This assumes 8-bit.
   op << "255" << std::endl;
-  for (int x = rod.x1; x < rod.x2; ++x)
+  for (int y = rod.y1; y< rod.y2; ++y)
   {
-    for (int y = rod.y1; y< rod.y2; ++y)
+    for (int x = rod.x1; x < rod.x2; ++x)
     {
       OfxRGBAColourB* pix = im->pixel(x,y);
       if(pix)

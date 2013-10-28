@@ -150,7 +150,7 @@ namespace MyHost {
     // make some memory
     _data = new OfxRGBAColourB[kPalSizeXPixels * kPalSizeYPixels] ; /// PAL SD RGBA
     
-    int fillValue = (int)(floor(255.0 * (time/OFXHOSTDEMOCLIPLENGTH)));
+    int fillValue = (int)(100 + floor(255.0 * (time/OFXHOSTDEMOCLIPLENGTH))) & 0xff;
     int realFillValue = fillValue;
     realFillValue = realFillValue << 8;
     realFillValue += fillValue;
@@ -215,7 +215,7 @@ namespace MyHost {
     {
       int rowBytes = getIntProperty(kOfxImagePropRowBytes);
       int offset = (y - bounds.y1) * rowBytes + (x - bounds.x1) * sizeof(OfxRGBAColourB);
-      return &(_data[offset]);
+      return reinterpret_cast<OfxRGBAColourB*>(&(reinterpret_cast<char*>(_data)[offset]));
     }
     return 0;
   }
