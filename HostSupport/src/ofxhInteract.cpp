@@ -373,30 +373,42 @@ namespace OFX {
 
       static OfxStatus interactSwapBuffers(OfxInteractHandle handle)
       {
+        try {
         Interact::Instance *interactInstance = reinterpret_cast<Interact::Instance*>(handle);
         if(interactInstance)
           return interactInstance->swapBuffers();
         else
           return kOfxStatErrBadHandle;
+        } catch (...) {
+          return kOfxStatFailed;
+        }
       }
       
       static OfxStatus interactRedraw(OfxInteractHandle handle)
       {
+        try {
         Interact::Instance *interactInstance = reinterpret_cast<Interact::Instance*>(handle);
         if(interactInstance)
           return interactInstance->redraw();
         else
           return kOfxStatErrBadHandle;
+        } catch (...) {
+          return kOfxStatFailed;
+        }
       }
       
       static OfxStatus interactGetPropertySet(OfxInteractHandle handle, OfxPropertySetHandle *property)
       {
+        try {
         Interact::Base *interact = reinterpret_cast<Interact::Base*>(handle);
         if (interact) {
           *property = interact->getPropHandle();
           return kOfxStatOK;
         }
         return kOfxStatErrBadHandle;
+        } catch (...) {
+          return kOfxStatFailed;
+        }
       }
       
       /// the interact suite
