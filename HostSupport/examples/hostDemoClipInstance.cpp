@@ -62,7 +62,85 @@ namespace MyHost {
   const int       kPalSizeYPixels = 576;
   const OfxRectI  kPalRegionPixels = {0, 0, kPalSizeXPixels, kPalSizeYPixels};
   const OfxRectD  kPalRegionCanon = {0,0, kPalSizeXPixels * kPalPixelAspect ,kPalSizeYPixels};
-  
+
+  // 5x3 bitmaps for digits 0..9 and period
+  const char digits[11][5][3] = {
+    { {0,1,0},
+      {1,0,1},
+      {1,0,1},
+      {1,0,1},
+      {0,1,0} },
+    { {0,1,0},
+      {1,1,0},
+      {0,1,0},
+      {0,1,0},
+      {0,1,0} },    
+    { {0,1,0},
+      {1,0,1},
+      {0,0,1},
+      {0,1,0},
+      {1,1,1} },    
+    { {1,1,0},
+      {0,0,1},
+      {0,1,1},
+      {0,0,1},
+      {1,1,0} },      
+    { {0,1,0},
+      {1,0,0},
+      {1,0,1},
+      {1,1,1},
+      {0,0,1} },    
+    { {1,1,1},
+      {1,0,0},
+      {1,1,0},
+      {0,0,1},
+      {1,1,0} },  
+    { {0,1,1},
+      {1,0,0},
+      {1,1,0},
+      {1,0,1},
+      {0,1,0} },      
+    { {1,1,1},
+      {0,0,1},
+      {0,1,0},
+      {0,1,1},
+      {0,1,0} },      
+    { {0,1,0},
+      {1,0,1},
+      {0,1,0},
+      {1,0,1},
+      {0,1,0} },  
+    { {0,1,0},
+      {1,0,1},
+      {0,1,1},
+      {0,0,1},
+      {1,1,0} },
+    { {0,0,0},
+      {0,0,0},
+      {0,0,0},
+      {0,0,0},
+      {0,1,0} }
+  };
+
+  // draw digit d at x,y int the width*height image pointed to by data
+  static void drawDigit(OfxRGBAColourB* data, int width, int height, int d, int x, int y , int scale, OfxRGBAColourB color) {
+    assert(0 <= x && x+3*scale < width);
+    assert(0 <= y && y+5*scale < height);
+
+    for (int j = 0; j < 5; ++j) {
+      for (int i = 0; i < 3; ++i) {
+        if (digits[d][j][i]) {
+          for (int jj = 0; jj < scale; ++jj) {
+            for (int ii = 0; ii < scale; ++ii) {
+              int x1 = x + i*scale + ii;
+              int y1 = y + j*scale + jj;
+              data[x1+y1*width] = color;
+            }
+          }
+        }
+      }
+    }
+  }
 
   /// images are always SD PAL progressive full res images for the purpose of this example only
   MyImage::MyImage(MyClipInstance &clip, OfxTime time, int view)
@@ -84,6 +162,29 @@ namespace MyHost {
 
     // now blank it
     memset(_data, realFillValue, sizeof(OfxRGBAColourB) * kPalSizeXPixels * kPalSizeYPixels);
+    // draw the time and the view number in reverse color
+    const int scale = 5;
+    const int charwidth = 4*scale;
+    realFillValue = realFillValue ^ ~0; // inverse
+    const OfxRGBAColourB color = *(reinterpret_cast<OfxRGBAColourB*>(&realFillValue));
+    int xx = 50;
+    int yy = 50;
+    int d;
+    d = (int(time)/10)%10;
+    drawDigit(_data, kPalSizeXPixels, kPalSizeYPixels, d, xx, yy, scale, color);
+    xx += charwidth;
+    d = int(time)%10;
+    drawDigit(_data, kPalSizeXPixels, kPalSizeYPixels, d, xx, yy, scale, color);
+    xx += charwidth;
+    d = 10;
+    drawDigit(_data, kPalSizeXPixels, kPalSizeYPixels, d, xx, yy, scale, color);
+    xx += charwidth;
+    d = int(time*10)%10;
+    drawDigit(_data, kPalSizeXPixels, kPalSizeYPixels, d, xx, yy, scale, color);
+    xx = 50;
+    yy += 8*scale;
+    d = int(view)%10;
+    drawDigit(_data, kPalSizeXPixels, kPalSizeYPixels, d, xx, yy, scale, color);
 
     // render scale x and y of 1.0
     setDoubleProperty(kOfxImageEffectPropRenderScale, 1.0, 0);
