@@ -1903,6 +1903,7 @@ namespace OFX {
       /// message suite function for an image effect
       static OfxStatus message(void *handle, const char *type, const char *id, const char *format, ...)
       {
+        try {
         ImageEffect::Instance *effectInstance = reinterpret_cast<ImageEffect::Instance*>(handle);
         OfxStatus stat;
         if(effectInstance){
@@ -1919,39 +1920,50 @@ namespace OFX {
           stat = kOfxStatErrBadHandle;
         }
         return stat;
+        } catch (...) {
+          return kOfxStatFailed;
+        }
       }
 
       static OfxStatus setPersistentMessage(void *handle, const char *type, const char *id, const char *format, ...)
       {
-        ImageEffect::Instance *effectInstance = reinterpret_cast<ImageEffect::Instance*>(handle);
-        OfxStatus stat;
-        if(effectInstance){
-          va_list args;
-          va_start(args,format);
-          stat = effectInstance->setPersistentMessage(type,id,format,args);
-          va_end(args);
+        try {
+          ImageEffect::Instance *effectInstance = reinterpret_cast<ImageEffect::Instance*>(handle);
+          OfxStatus stat;
+          if(effectInstance){
+            va_list args;
+            va_start(args,format);
+            stat = effectInstance->setPersistentMessage(type,id,format,args);
+            va_end(args);
+          }
+          else{
+            va_list args;
+            va_start(args,format);
+            vprintf(format,args);
+            va_end(args);
+            stat = kOfxStatErrBadHandle;
+          }
+          return stat;
+        } catch (...) {
+          return kOfxStatFailed;
         }
-        else{
-          va_list args;
-          va_start(args,format);
-          vprintf(format,args);
-          va_end(args);
-          stat = kOfxStatErrBadHandle;
-        }
-        return stat;
       }
 
       OfxStatus clearPersistentMessage(void *handle)
       {
-        ImageEffect::Instance *effectInstance = reinterpret_cast<ImageEffect::Instance*>(handle);
-        OfxStatus stat;
-        if(effectInstance){
-          stat = effectInstance->clearPersistentMessage();
+        try {
+          ImageEffect::Instance *effectInstance = reinterpret_cast<ImageEffect::Instance*>(handle);
+          OfxStatus stat;
+          if(effectInstance){
+            stat = effectInstance->clearPersistentMessage();
+          }
+          else{
+            stat = kOfxStatErrBadHandle;
+          }
+          return stat;
+        } catch (...) {
+          return kOfxStatFailed;
         }
-        else{
-          stat = kOfxStatErrBadHandle;
-        }
-        return stat;
       }
 
       /// message suite for an image effect plugin (backward-compatible with OfxMessageSuiteV1)
@@ -1979,6 +1991,8 @@ namespace OFX {
       static OfxStatus ProgressStart(void *effectInstance,
                               const char *label)
       {
+        if (!effectInstance)
+          return kOfxStatErrBadHandle;
         Instance *me = reinterpret_cast<Instance *>(effectInstance);
         me->progressStart(label);
         return kOfxStatOK;
@@ -1987,6 +2001,8 @@ namespace OFX {
       /// finish progressing
       static OfxStatus ProgressEnd(void *effectInstance)
       {
+        if (!effectInstance)
+          return kOfxStatErrBadHandle;
         Instance *me = reinterpret_cast<Instance *>(effectInstance);
         me->progressEnd();
         return kOfxStatOK;
@@ -1995,6 +2011,8 @@ namespace OFX {
       /// update progressing
       static OfxStatus ProgressUpdate(void *effectInstance, double progress)
       {
+        if (!effectInstance)
+          return kOfxStatErrBadHandle;
         Instance *me = reinterpret_cast<Instance *>(effectInstance);
         bool v = me->progressUpdate(progress);
         return v ? kOfxStatOK : kOfxStatReplyNo;          
@@ -2015,6 +2033,8 @@ namespace OFX {
       /// timeline suite function
       static OfxStatus TimeLineGetTime(void *effectInstance, double *time)
       {
+        if (!effectInstance)
+          return kOfxStatErrBadHandle;
         Instance *me = reinterpret_cast<Instance *>(effectInstance);
         *time = me->timeLineGetTime();
         return kOfxStatOK;
@@ -2023,6 +2043,8 @@ namespace OFX {
       /// timeline suite function
       static OfxStatus TimeLineGotoTime(void *effectInstance, double time)
       {
+        if (!effectInstance)
+          return kOfxStatErrBadHandle;
         Instance *me = reinterpret_cast<Instance *>(effectInstance);
         me->timeLineGotoTime(time);
         return kOfxStatOK;
@@ -2031,6 +2053,8 @@ namespace OFX {
       /// timeline suite function
       static OfxStatus TimeLineGetBounds(void *effectInstance, double *firstTime, double *lastTime)
       {
+        if (!effectInstance)
+          return kOfxStatErrBadHandle;
         Instance *me = reinterpret_cast<Instance *>(effectInstance);
         me->timeLineGetBounds(*firstTime, *lastTime);
         return kOfxStatOK;
@@ -2049,17 +2073,23 @@ namespace OFX {
                                    unsigned int /*nThreads*/,
                                    void *customArg)
       {
+        if (!func)
+          return kOfxStatFailed;
         func(0,1,customArg);
         return kOfxStatOK;
       }
 
       static OfxStatus multiThreadNumCPUs(unsigned int *nCPUs)
       {
+        if (!nCPUs)
+          return kOfxStatFailed;
         *nCPUs = 1;
         return kOfxStatOK;
       }
 
       static OfxStatus multiThreadIndex(unsigned int *threadIndex){
+        if (!threadIndex)
+          return kOfxStatFailed;
         *threadIndex = 0;
         return kOfxStatOK;
       }
@@ -2068,30 +2098,40 @@ namespace OFX {
         return false;
       }
 
-      static OfxStatus mutexCreate(const OfxMutexHandle */*mutex*/, int /*lockCount*/)
+      static OfxStatus mutexCreate(const OfxMutexHandle *mutex, int /*lockCount*/)
       {
+        if (!mutex)
+          return kOfxStatFailed;
         // do nothing single threaded
-        //mutex = 0;
+        *mutex = 0;
         return kOfxStatOK;
       }
 
-      static OfxStatus mutexDestroy(const OfxMutexHandle /*mutex*/)
+      static OfxStatus mutexDestroy(const OfxMutexHandle mutex)
       {
+        if (mutex != 0)
+          return kOfxStatErrBadHandle;
         // do nothing single threaded
         return kOfxStatOK;
       }
 
-      static OfxStatus mutexLock(const OfxMutexHandle /*mutex*/){
+      static OfxStatus mutexLock(const OfxMutexHandle mutex){
+        if (mutex != 0)
+          return kOfxStatErrBadHandle;
         // do nothing single threaded
         return kOfxStatOK;
       }
        
-      static OfxStatus mutexUnLock(const OfxMutexHandle /*mutex*/){
+      static OfxStatus mutexUnLock(const OfxMutexHandle mutex){
+        if (mutex != 0)
+          return kOfxStatErrBadHandle;
         // do nothing single threaded
         return kOfxStatOK;
       }       
 
-      static OfxStatus mutexTryLock(const OfxMutexHandle /*mutex*/){
+      static OfxStatus mutexTryLock(const OfxMutexHandle mutex){
+        if (mutex != 0)
+          return kOfxStatErrBadHandle;
         // do nothing single threaded
         return kOfxStatOK;
       }
