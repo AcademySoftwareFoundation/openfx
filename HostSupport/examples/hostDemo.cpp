@@ -30,6 +30,7 @@ modification, are permitted provided that the following conditions are met:
 
 #include <iostream>
 #include <fstream>
+#include <cassert>
 
 // ofx
 #include "ofxCore.h"
@@ -74,7 +75,6 @@ void exportToPPM(const std::string& fname, MyHost::MyImage* im)
 {
   std::ofstream op(fname.c_str());
   OfxRectI rod = im->getROD();
-  OfxRectI bounds = im->getBounds();
   op << "P3" << "\t# FORMAT" << std::endl;
   op << rod.x2 - rod.x1 << "\t#WIDTH" << std::endl;
   op << rod.y2 - rod.y1 << "\t#HEIGHT" <<std::endl;
@@ -138,14 +138,18 @@ int main(int argc, char **argv)
 
     if(instance.get())
     {
+        OfxStatus stat;
+
       // now we need to call the create instance action. Only call this once you have initialised all the params
       // and clips to their correct values. So if you are loading a saved plugin state, set up your params from
       // that state, _then_ call create instance.
-      instance->createInstanceAction();
+      stat = instance->createInstanceAction();
+      assert(stat == kOfxStatOK || stat == kOfxStatReplyDefault);
 
       // now we need to to call getClipPreferences on the instance so that it does the clip component/depth
       // logic and caches away the components and depth on each clip.
-      instance->getClipPreferences();
+      bool ok = instance->getClipPreferences();
+      assert(ok);
       
       // current render scale of 1
       OfxPointD renderScale;
@@ -167,10 +171,12 @@ int main(int argc, char **argv)
       int numFramesToRender = OFXHOSTDEMOCLIPLENGTH;
 
       // say we are about to render a bunch of frames 
-      instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale);
+      stat = instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale);
+      assert(stat == kOfxStatOK || stat == kOfxStatReplyDefault);
 
       // get the output clip
       MyHost::MyClipInstance* outputClip = dynamic_cast<MyHost::MyClipInstance*>(instance->getClip("Output"));
+      assert(outputClip);
 
       for(int t = 0; t <= numFramesToRender; ++t) 
       {
@@ -184,32 +190,41 @@ int main(int argc, char **argv)
         //
         // In our example we are doing full frame fetches regardless.
         std::map<OFX::Host::ImageEffect::ClipInstance *, OfxRectD> rois;
-        instance->getRegionOfInterestAction(frame, renderScale, regionOfInterest, rois);
-  
+        stat = instance->getRegionOfInterestAction(frame, renderScale, regionOfInterest, rois);
+        assert(stat == kOfxStatOK || stat == kOfxStatReplyDefault);
+
 #ifdef OFX_EXTENSIONS_VEGAS
         // render a stereoscopic frame
-        instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale,
-                               0 /*view*/, 2 /*nViews*/);
+        { // left view
+          stat = instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale,
+                                        0 /*view*/, 2 /*nViews*/);
+          assert(stat == kOfxStatOK);
 
-        // get the output image buffer
-        MyHost::MyImage *outputImage = outputClip->getOutputImage();
+          // get the output image buffer
+          MyHost::MyImage *outputImage = outputClip->getOutputImage();
+          assert(outputImage);
 
-        std::ostringstream ss;
-        ss << "Output." << t << "l.ppm";
-        exportToPPM(ss.str(), outputImage);
+          std::ostringstream ss;
+          ss << "Output." << t << "l.ppm";
+          exportToPPM(ss.str(), outputImage);
+        }
+        {  // right view
+          instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale,
+                                 1 /*view*/, 2 /*nViews*/);
+          assert(stat == kOfxStatOK);
 
-        instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale,
-                               1 /*view*/, 2 /*nViews*/);
+          // get the output image buffer
+          MyHost::MyImage *outputImage = outputClip->getOutputImage();
+          assert(outputImage);
 
-        // get the output image buffer
-        outputImage = outputClip->getOutputImage();
-
-        std::ostringstream ss;
-        ss << "Output." << t << "r.ppm";
-        exportToPPM(ss.str(), outputImage);
+          std::ostringstream ss;
+          ss << "Output." << t << "r.ppm";
+          exportToPPM(ss.str(), outputImage);
+        }
 #else
         // render a frame
-        instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale);
+        stat = instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale);
+        assert(stat == kOfxStatOK);
 
         // get the output image buffer
         MyHost::MyImage *outputImage = outputClip->getOutputImage();
