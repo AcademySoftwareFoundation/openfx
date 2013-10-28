@@ -53,6 +53,9 @@ namespace MyHost {
     MyEffectInstance *_effect;
     std::string       _name;
     MyImage          *_outputImage; ///< only set for output clips
+#ifdef OFX_EXTENSIONS_VEGAS
+    int               _view; ///< view used by the last renderAction 
+#endif
 
   public:
     MyClipInstance(MyEffectInstance* effect, OFX::Host::ImageEffect::ClipDescriptor* desc);
@@ -144,6 +147,9 @@ namespace MyHost {
     /// be 'appropriate' for the.
     /// If bounds is not null, fetch the indicated section of the canonical image plane.
     virtual OFX::Host::ImageEffect::Image* getStereoscopicImage(OfxTime time, int view, OfxRectD *optionalBounds);
+
+    /// set the default view returned by getImage()
+    virtual void setView(int view);
 #endif
 
     /// override this to return the rod on the clip

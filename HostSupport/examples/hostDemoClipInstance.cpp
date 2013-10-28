@@ -36,9 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
 #include "ofxPixels.h"
-#ifdef OFX_EXTENSIONS_VEGAS
-#include "ofxSonyVegas.h"
-#endif
 
 // ofx host
 #include "ofxhBinary.h"
@@ -132,6 +129,9 @@ namespace MyHost {
     , _effect(effect)
     , _name(desc->getName())
     , _outputImage(NULL)
+#ifdef OFX_EXTENSIONS_VEGAS
+    , _view(0)
+#endif
   {
   }
 
@@ -265,8 +265,7 @@ namespace MyHost {
       if(!_outputImage) {
         // make a new ref counted image
 #ifdef OFX_EXTENSIONS_VEGAS
-#warning "does the ClipInstance have the kOfxImageEffectPropRenderView property correctly set?"
-        _outputImage = new MyImage(*this, 0, getIntProperty(kOfxImageEffectPropRenderView, 0));
+        _outputImage = new MyImage(*this, 0, _view);
 #else
         _outputImage = new MyImage(*this, 0);
 #endif
@@ -289,7 +288,7 @@ namespace MyHost {
       // You should do somewhat more sophisticated image management
       // than this.
 #ifdef OFX_EXTENSIONS_VEGAS
-      MyImage *image = new MyImage(*this, time, getIntProperty(kOfxImageEffectPropRenderView, 0));
+      MyImage *image = new MyImage(*this, time, _view);
 #else
       MyImage *image = new MyImage(*this, time);
 #endif
@@ -331,6 +330,17 @@ namespace MyHost {
       // than this.
       MyImage *image = new MyImage(*this, time, view);
       return image;
+    }
+  }
+
+    /// set the default view returned by getImage()
+  void MyClipInstance::setView(int view) {
+    if (view != _view) {
+      if (_outputImage) {
+        delete _outputImage;
+        _outputImage = NULL;
+      }
+      _view = view;
     }
   }
 #endif

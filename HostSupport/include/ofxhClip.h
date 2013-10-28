@@ -284,6 +284,14 @@ namespace OFX {
         /// be 'appropriate' for the.
         /// If bounds is not null, fetch the indicated section of the canonical image plane.
         virtual ImageEffect::Image* getStereoscopicImage(OfxTime time, int view, OfxRectD *optionalBounds) = 0;
+
+
+        /// override this to set the view to be returned by getImage()
+        /// This is called by Instance::renderAction() for each clip, before calling
+        /// kOfxImageEffectActionRender on the Instance.
+        /// The view number has to be stored in the Clip, so this is typically not thread-safe,
+        /// except if thread-local storage is used.
+        virtual void setView(int view) = 0;
 #endif
 
         /// override this to return the rod on the clip

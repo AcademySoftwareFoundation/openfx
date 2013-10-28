@@ -828,6 +828,12 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_VEGAS
         inArgs.setIntProperty(kOfxImageEffectPropRenderView,view);
         inArgs.setIntProperty(kOfxImageEffectPropViewsToRender,nViews);
+
+        for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
+            it!=_clips.end();
+            ++it) {
+            it->second->setView(view);
+        }
 #endif
 
 
@@ -2204,6 +2210,30 @@ namespace OFX {
           else 
             return NULL;
         }
+#ifdef OFX_EXTENSIONS_VEGAS
+#if 0
+        else if (strcmp(suiteName, kOfxVegasProgressSuite)==0) {
+            if(suiteVersion == 1)
+                return (void*)&gVegasProgressSuiteV1;
+            if(suiteVersion == 2)
+                return (void*)&gVegasProgressSuiteV2;
+            else
+                return NULL;
+        }
+        else if (strcmp(suiteName, kOfxVegasKeyframeSuite)==0) {
+            if(suiteVersion == 1)
+                return (void*)&gVegasKeyframeSuite;
+            else
+                return NULL;
+        }
+#endif
+        else if (strcmp(suiteName, kOfxVegasStereoscopicImageEffectSuite)==0) {
+            if(suiteVersion == 1)
+                return (void*)&gVegasStereoscopicImageEffectSuite;
+            else
+                return NULL;
+        }
+#endif
         else  /// otherwise just grab the base class one, which is props and memory
           return OFX::Host::Host::fetchSuite(suiteName, suiteVersion);
       }
