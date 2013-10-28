@@ -1525,22 +1525,30 @@ namespace OFX {
       static OfxStatus getPropertySet(OfxImageEffectHandle h1, 
                                       OfxPropertySetHandle *h2)
       {        
+        try {
         Base *effectBase = reinterpret_cast<Base*>(h1);
 
         if (!effectBase || !effectBase->verifyMagic()) {
+          *h2 = NULL;
           return kOfxStatErrBadHandle;
         }
 
         *h2 = effectBase->getProps().getHandle();
         return kOfxStatOK;
+        } catch (...) {
+          *h2 = NULL;
+          return kOfxStatErrBadHandle;
+        }
       }
 
       static OfxStatus getParamSet(OfxImageEffectHandle h1, 
                                    OfxParamSetHandle *h2)
       {
+        try {
         ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(h1);
 
         if (!effectBase || !effectBase->verifyMagic()) {
+          *h2 = NULL;
           return kOfxStatErrBadHandle;
         }
 
@@ -1558,16 +1566,23 @@ namespace OFX {
           return kOfxStatOK;
         }
 
+        *h2 = NULL;
         return kOfxStatErrBadHandle;
+        } catch (...) {
+          *h2 = NULL;
+          return kOfxStatErrBadHandle;
+        }
       }
       
       static OfxStatus clipDefine(OfxImageEffectHandle h1, 
                                   const char *name, 
                                   OfxPropertySetHandle *h2)
       {
+        try {
         ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(h1);
         
         if (!effectBase || !effectBase->verifyMagic()) {
+          *h2 = NULL;
           return kOfxStatErrBadHandle;
         }
 
@@ -1579,11 +1594,17 @@ namespace OFX {
           return kOfxStatOK;
         }
 
+        *h2 = NULL;
         return kOfxStatErrBadHandle;
+        } catch (...) {
+          *h2 = NULL;
+          return kOfxStatErrBadHandle;
+        }
       }
       
       static OfxStatus clipGetPropertySet(OfxImageClipHandle clip,
                                           OfxPropertySetHandle *propHandle){        
+        try {
         ClipInstance *clipInstance = reinterpret_cast<ClipInstance*>(clip);
 
         if (!clipInstance || !clipInstance->verifyMagic()) {
@@ -1594,8 +1615,13 @@ namespace OFX {
           *propHandle = clipInstance->getPropHandle();
           return kOfxStatOK;
         }
-        
+
+        *propHandle = NULL;
         return kOfxStatErrBadHandle;
+        } catch (...) {
+          *propHandle = NULL;
+          return kOfxStatErrBadHandle;
+        }
       }
       
       static OfxStatus clipGetImage(OfxImageClipHandle h1, 
@@ -1603,6 +1629,7 @@ namespace OFX {
                                     OfxRectD *h2, 
                                     OfxPropertySetHandle *h3)
       {
+        try {
         ClipInstance *clipInstance = reinterpret_cast<ClipInstance*>(h1);
 
         if (!clipInstance || !clipInstance->verifyMagic()) {
@@ -1612,7 +1639,7 @@ namespace OFX {
         if(clipInstance){
           Image* image = clipInstance->getImage(time,h2);
           if(!image) {
-            h3 = NULL;
+            *h3 = NULL;
             return kOfxStatFailed;
           }
 
@@ -1622,6 +1649,10 @@ namespace OFX {
         }
         
         return kOfxStatErrBadHandle;
+        } catch (...) {
+          *h3 = NULL;
+          return kOfxStatErrBadHandle;
+        }
       }
 
 #ifdef OFX_EXTENSIONS_VEGAS
@@ -1631,6 +1662,7 @@ namespace OFX {
                                                 OfxRectD *h2,
                                                 OfxPropertySetHandle *h3)
       {
+        try {
         ClipInstance *clipInstance = reinterpret_cast<ClipInstance*>(h1);
 
         if (!clipInstance || !clipInstance->verifyMagic()) {
@@ -1640,7 +1672,7 @@ namespace OFX {
         if(clipInstance){
           Image* image = clipInstance->getStereoscopicImage(time,view,h2);
           if(!image) {
-            h3 = NULL;
+            *h3 = NULL;
             return kOfxStatFailed;
           }
 
@@ -1650,11 +1682,16 @@ namespace OFX {
         }
         
         return kOfxStatErrBadHandle;
+        } catch (...) {
+          *h3 = NULL;
+          return kOfxStatErrBadHandle;
+        }
       }
 #endif
       
       static OfxStatus clipReleaseImage(OfxPropertySetHandle h1)
       {
+        try {
         Property::Set *pset = reinterpret_cast<Property::Set*>(h1);
 
         if (!pset || !pset->verifyMagic()) {
@@ -1670,6 +1707,9 @@ namespace OFX {
         }
         else 
           return kOfxStatErrBadHandle;
+        } catch (...) {
+          return kOfxStatErrBadHandle;
+        }
       }
       
       static OfxStatus clipGetHandle(OfxImageEffectHandle imageEffect,
@@ -1677,6 +1717,7 @@ namespace OFX {
                                      OfxImageClipHandle *clip,
                                      OfxPropertySetHandle *propertySet)
       {
+        try {
         ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(imageEffect);
 
         if (!effectBase || !effectBase->verifyMagic()) {
@@ -1694,12 +1735,16 @@ namespace OFX {
         }
 
         return kOfxStatErrBadHandle;
+        } catch (...) {
+          return kOfxStatErrBadHandle;
+        }
       }
       
       static OfxStatus clipGetRegionOfDefinition(OfxImageClipHandle clip,
                                                  OfxTime time,
                                                  OfxRectD *bounds)
       {
+        try {
         ClipInstance *clipInstance = reinterpret_cast<ClipInstance*>(clip);
 
         if (!clipInstance || !clipInstance->verifyMagic()) {
@@ -1712,11 +1757,15 @@ namespace OFX {
         }
          
         return kOfxStatErrBadHandle;
+        } catch (...) {
+          return kOfxStatErrBadHandle;
+        }
       }
 
       // should processing be aborted?
       static int abort(OfxImageEffectHandle imageEffect)
       {
+        try {
         ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(imageEffect);
 
         if (!effectBase || !effectBase->verifyMagic()) {
@@ -1729,12 +1778,16 @@ namespace OFX {
           return effectInstance->abort();
         else 
           return kOfxStatErrBadHandle;        
+        } catch (...) {
+          return kOfxStatErrBadHandle;
+        }
       }
       
       static OfxStatus imageMemoryAlloc(OfxImageEffectHandle instanceHandle, 
                                         size_t nBytes,
                                         OfxImageMemoryHandle *memoryHandle)
       {
+        try {
         ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(instanceHandle);
         ImageEffect::Instance *effectInstance = reinterpret_cast<ImageEffect::Instance*>(effectBase);
         Memory::Instance* memory;
@@ -1742,6 +1795,7 @@ namespace OFX {
         if(effectInstance){
 
           if (!effectInstance->verifyMagic()) {
+            *memoryHandle = NULL;
             return kOfxStatErrBadHandle;
           }
 
@@ -1752,11 +1806,24 @@ namespace OFX {
           memory->alloc(nBytes);
         }
 
-        *memoryHandle = memory->getHandle();
-        return kOfxStatOK;
+        if (memory) {
+          *memoryHandle = memory->getHandle();
+          return kOfxStatOK;
+        } else {
+          *memoryHandle = NULL;
+          return kOfxStatErrMemory;
+        }
+        } catch (std::bad_alloc) {
+          *memoryHandle = NULL;
+          return kOfxStatErrMemory;
+        } catch (...) {
+          *memoryHandle = NULL;
+          return kOfxStatErrBadHandle;
+        }
       }
       
       static OfxStatus imageMemoryFree(OfxImageMemoryHandle memoryHandle){
+        try {
         Memory::Instance *memoryInstance = reinterpret_cast<Memory::Instance*>(memoryHandle);
 
         if(memoryInstance && memoryInstance->verifyMagic()) {
@@ -1766,22 +1833,32 @@ namespace OFX {
         }
         else 
           return kOfxStatErrBadHandle; 
+        } catch (...) {
+          return kOfxStatErrBadHandle;
+        }
       }
       
       OfxStatus imageMemoryLock(OfxImageMemoryHandle memoryHandle,
                                 void **returnedPtr){
+        try {
         Memory::Instance *memoryInstance = reinterpret_cast<Memory::Instance*>(memoryHandle);
 
         if(memoryInstance && memoryInstance->verifyMagic()) {
           memoryInstance->lock();          
           *returnedPtr = memoryInstance->getPtr();
-          return kOfxStatOK;
+          return (*returnedPtr) ? kOfxStatOK : kOfxStatErrMemory;
         }
 
+        *returnedPtr = NULL;
         return kOfxStatErrBadHandle; 
+        } catch (...) {
+          *returnedPtr = NULL;
+          return kOfxStatErrBadHandle;
+        }
       }
       
       static OfxStatus imageMemoryUnlock(OfxImageMemoryHandle memoryHandle){
+        try {
         Memory::Instance *memoryInstance = reinterpret_cast<Memory::Instance*>(memoryHandle);
 
         if(memoryInstance && memoryInstance->verifyMagic()){
@@ -1790,6 +1867,9 @@ namespace OFX {
         }
 
         return kOfxStatErrBadHandle; 
+        } catch (...) {
+          return kOfxStatErrBadHandle;
+        }
       }
 
       static struct OfxImageEffectSuiteV1 gImageEffectSuite = {
