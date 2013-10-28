@@ -768,6 +768,8 @@ namespace OFX {
 #ifdef DEBUG
         std::cout << "propSet - " << properties << " " << property << "[" << index << "] = " << value << " \n";
 #endif
+        if (!properties)
+          return kOfxStatErrBadHandle;
         try {            
           Set *thisSet = reinterpret_cast<Set*>(properties);
           if(!thisSet->verifyMagic())
@@ -782,6 +784,8 @@ namespace OFX {
           std::cout << " returning status " << e.getStatus() << "\n";
 #endif
           return e.getStatus();
+        } catch (...) {
+          return kOfxStatErrUnknown;
         }
         return kOfxStatOK;
       }
@@ -794,7 +798,8 @@ namespace OFX {
 #ifdef DEBUG
         std::cout << "propSetN - " << properties << " " << property << " \n";
 #endif
-
+        if (!properties)
+          return kOfxStatErrBadHandle;
         try {
           Set *thisSet = reinterpret_cast<Set*>(properties);
           if(!thisSet->verifyMagic())
@@ -806,6 +811,8 @@ namespace OFX {
           prop->setValueN(values, count);
         } catch (Exception e) {
           return e.getStatus();
+        } catch (...) {
+          return kOfxStatErrUnknown;
         }
         return kOfxStatOK;
       }
@@ -818,7 +825,8 @@ namespace OFX {
 #ifdef DEBUG
         std::cout << "propGet - " << properties << " " << property << " = ...";
 #endif
-
+        if (!properties)
+          return kOfxStatErrBadHandle;
         try {
           Set *thisSet = reinterpret_cast<Set*>(properties);
           if(!thisSet->verifyMagic())
@@ -838,6 +846,8 @@ namespace OFX {
           std::cout  << "\n";
 #endif
           return e.getStatus();
+        } catch (...) {
+          return kOfxStatErrUnknown;
         }
         return kOfxStatOK;
       }
@@ -847,6 +857,8 @@ namespace OFX {
                                             const char *property,
                                             int count,
                                             typename T::APITypeConstless *values) {
+        if (!properties)
+          return kOfxStatErrBadHandle;
         try {
           Set *thisSet = reinterpret_cast<Set*>(properties);
           if(!thisSet->verifyMagic())
@@ -859,12 +871,16 @@ namespace OFX {
         } 
         catch (Exception e) {
           return e.getStatus();
+        } catch (...) {
+          return kOfxStatErrUnknown;
         }
         return kOfxStatOK;
       }
       
       /// static functions for the suite
       static OfxStatus propReset(OfxPropertySetHandle properties, const char *property) {
+        if (!properties)
+          return kOfxStatErrBadHandle;
         try {            
           Set *thisSet = reinterpret_cast<Set*>(properties);
           if(!thisSet->verifyMagic())
@@ -877,12 +893,17 @@ namespace OFX {
         }
         catch (Exception e) {
           return e.getStatus();
+        } catch (...) {
+          return kOfxStatErrUnknown;
         }
         return kOfxStatOK;
       }
       
       /// static functions for the suite
       static OfxStatus propGetDimension(OfxPropertySetHandle properties, const char *property, int *count) {
+        if (!properties)
+          return kOfxStatErrBadHandle;
+        try {            
         Set *thisSet = reinterpret_cast<Set*>(properties);
         Property *prop = thisSet->fetchProperty(property, true);
         if(!prop) {
@@ -890,6 +911,9 @@ namespace OFX {
         }
         *count = prop->getDimension();
         return kOfxStatOK;
+        } catch (...) {
+          return kOfxStatErrUnknown;
+        }
       }    
 
       /// the actual suite that is passed across the API to manage properties
