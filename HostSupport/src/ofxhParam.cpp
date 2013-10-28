@@ -1320,7 +1320,8 @@ namespace OFX {
         Descriptor *desc = paramSetDescriptor->paramDefine(paramType, name);
 
         if(desc) {
-          *propertySet = desc->getPropHandle();
+          if (propertySet)
+            *propertySet = desc->getPropHandle();
           // desc is still referenced by _paramList and _paramMap
           return kOfxStatOK;
         }
@@ -1350,7 +1351,8 @@ namespace OFX {
           if(it==params.end()) return kOfxStatErrUnknown;
 
           // get the param
-          *param = (it->second)->getHandle(); 
+          if (param)
+            *param = (it->second)->getHandle(); 
 
           // get the param property set
           if(propertySet)
@@ -1369,7 +1371,8 @@ namespace OFX {
           if(it==params.end()) return kOfxStatErrUnknown;
           
           // get the param
-          *param = (it->second)->getHandle();  
+          if (param)
+            *param = (it->second)->getHandle();  
           
           // get the param property set
           if(propertySet)
@@ -1387,7 +1390,8 @@ namespace OFX {
         BaseSet *baseSet = reinterpret_cast<BaseSet*>(paramSet);
 
         if (baseSet) {
-          *propHandle = baseSet->getParamSetProps().getHandle();
+          if (propHandle)
+            *propHandle = baseSet->getParamSetProps().getHandle();
           return kOfxStatOK;
         }
         return kOfxStatErrBadHandle;
@@ -1400,7 +1404,8 @@ namespace OFX {
         
         if(paramInstance && paramInstance->verifyMagic()){
           // get the param property set
-          *propHandle = paramInstance->getPropHandle();
+          if (propHandle)
+            *propHandle = paramInstance->getPropHandle();
 
           return kOfxStatOK;
         }
