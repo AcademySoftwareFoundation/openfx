@@ -2098,7 +2098,7 @@ namespace OFX {
         return false;
       }
 
-      static OfxStatus mutexCreate(const OfxMutexHandle *mutex, int /*lockCount*/)
+      static OfxStatus mutexCreate(OfxMutexHandle *mutex, int /*lockCount*/)
       {
         if (!mutex)
           return kOfxStatFailed;
