@@ -2397,7 +2397,7 @@ namespace OFX {
           // validate the host
           OFX::Validation::validatePluginDescriptorProperties(fetchEffectProps(handle));
 
-          // call plugin descibe in context
+          // call plugin describe in context
           factory->describeInContext(*desc, context);
 
           // add it to our map
