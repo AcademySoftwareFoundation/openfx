@@ -1506,8 +1506,8 @@ namespace OFX {
                                  &outArgs);
         if(st!=kOfxStatOK) return st;
 
-        range.min = outArgs.getDoubleProperty(kOfxImageEffectActionGetTimeDomain,0);
-        range.max = outArgs.getDoubleProperty(kOfxImageEffectActionGetTimeDomain,1);
+        range.min = outArgs.getDoubleProperty(kOfxImageEffectPropFrameRange,0);
+        range.max = outArgs.getDoubleProperty(kOfxImageEffectPropFrameRange,1);
 
         return kOfxStatOK;
       }
