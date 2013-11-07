@@ -369,7 +369,7 @@ namespace OFX {
         if(!doneOne) {
           std::ostringstream dbl_min, dbl_max, int_min, int_max;
           doneOne = true;
-          dbl_min << -DBL_MAX;
+          dbl_min << DBL_MIN;
           dbl_max << DBL_MAX;
           int_min << INT_MIN;
           int_max << INT_MAX;
