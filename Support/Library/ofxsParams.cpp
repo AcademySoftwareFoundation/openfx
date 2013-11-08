@@ -219,11 +219,13 @@ namespace OFX {
   }
 #endif
 
+#ifdef OFX_EXTENSIONS_NUKE
   void
     ParamDescriptor::setLayoutHint(const ELayoutHint layoutHint)
   {
     _paramProps.propSetInt(kOfxParamPropLayoutHint, static_cast<int>(layoutHint));
   }
+#endif
 
   /** @brief set the group param that is the parent of this one, default is to be ungrouped at the root level */
   void 
