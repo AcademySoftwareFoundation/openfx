@@ -51,7 +51,7 @@ default: $(OBJECTPATH)/$(PLUGINNAME).ofx
 	cp  Info.plist  $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle/Contents/
 
 clean :
-	rm -rf $(OBJECTPATH)/ $(PATHTOROOT)/Library/$(OBJECTPATH)/ 
+	rm -rf $(SUPPORTOBJECTS) $(OBJECTPATH)/ $(PATHTOROOT)/Library/$(OBJECTPATH)/ 
 
 release :
 	make DEBUGFLAG=-O3
