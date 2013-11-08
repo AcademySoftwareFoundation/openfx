@@ -1522,13 +1522,11 @@ namespace OFX {
         /** @brief append an option, default is to have not there */
         void appendOption(const std::string &v, const std::string& label);
     
-#ifdef OFX_EXTENSIONS_VEGAS
         /** @brief set an option */
         void setOption(int item, const std::string &str);
     
         /** @brief get the option value */
         void getOption(int ix, std::string &v);
-#endif
 
         /** @brief clear all the options so as to add some new ones in */
         void resetOptions(void);
