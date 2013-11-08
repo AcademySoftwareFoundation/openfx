@@ -1047,10 +1047,8 @@ namespace OFX {
 
     OFX::Message::MessageReplyEnum sendMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg);
 
-#ifdef OFX_EXTENSIONS_VEGAS
       OFX::Message::MessageReplyEnum setPersistentMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg);
       OFX::Message::MessageReplyEnum clearPersistentMessage();
-#endif
 
     /** @brief Fetch the named clip from this instance
 
