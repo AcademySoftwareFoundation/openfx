@@ -1128,6 +1128,7 @@ namespace OFX {
 
   OFX::Message::MessageReplyEnum ImageEffect::sendMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg)
   {   
+    if(!OFX::Private::gMessageSuite){ throwHostMissingSuiteException("message"); }
     if(!OFX::Private::gMessageSuite->message){ throwHostMissingSuiteException("message"); }
     OfxStatus stat = OFX::Private::gMessageSuite->message(_effectHandle, mapToMessageTypeEnum(type), id.c_str(), msg.c_str());
     return mapToMessageReplyEnum(stat);
