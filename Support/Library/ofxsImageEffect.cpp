@@ -418,13 +418,11 @@ namespace OFX {
     _effectProps.propSetString(kOfxImageEffectPluginPropGrouping, group);
   }
 
-#ifdef OFX_EXTENSIONS_VEGAS
   /** @brief Set the plugin description, defaults to "" */
   void ImageEffectDescriptor::setPluginDescription(const std::string &description)
   {
     _effectProps.propSetString(kOfxPropPluginDescription, description);
   }
-#endif
 
   /** @brief Add a context to those supported */
   void ImageEffectDescriptor::addSupportedContext(ContextEnum v)
@@ -988,6 +986,8 @@ namespace OFX {
   /** @brief fetch an image */
   Image *Clip::fetchStereoscopicImage(double t, int view)
   {
+    if(!OFX::Private::gVegasStereoscopicImageSuite){ throwHostMissingSuiteException("clipGetStereoscopicImage"); }
+    if(!OFX::Private::gVegasStereoscopicImageSuite->clipGetStereoscopicImage){ throwHostMissingSuiteException("clipGetStereoscopicImage"); }
     OfxPropertySetHandle imageHandle;
     OfxStatus stat = OFX::Private::gVegasStereoscopicImageSuite->clipGetStereoscopicImage(_clipHandle, t, view, NULL, &imageHandle);
     if(stat == kOfxStatFailed) {

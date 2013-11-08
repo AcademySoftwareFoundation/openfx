@@ -458,10 +458,8 @@ namespace OFX {
     /** @brief Set the plugin grouping, defaults to "" */
     void setPluginGrouping(const std::string &group);
 
-#ifdef OFX_EXTENSIONS_VEGAS
     /** @brief Set the plugin description, defaults to "" */
     void setPluginDescription(const std::string &description);
-#endif
 
     /** @brief Add a context to those supported, defaults to none, must be called at least once */
     void addSupportedContext(ContextEnum v);
