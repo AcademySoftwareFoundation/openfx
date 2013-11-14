@@ -132,6 +132,10 @@ namespace OFX {
         return _properties.getIntProperty(kOfxParamPropSecret, 0) != 0;
       }
 
+      bool Base::getIsPersistant() const {
+        return _properties.getIntProperty(kOfxParamPropPersistant, 0) != 0;
+      }
+
       bool Base::getEvaluateOnChange() const {
         return _properties.getIntProperty(kOfxParamPropEvaluateOnChange, 0) != 0;
       }
