@@ -631,7 +631,7 @@ namespace OFX {
         void setDefault(int v);
 
         /** @brief append an option, default is to have not there */
-        void appendOption(const std::string &v, const std::string& label);
+        void appendOption(const std::string &v, const std::string& label = "");
     
         /** @brief how many options do we have */
         int getNOptions(void);
