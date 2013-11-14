@@ -498,10 +498,8 @@ namespace OFX {
         void setDimensionLabels(const std::string &x,
                                 const std::string &y);
 
-#ifdef OFX_EXTENSIONS_VEGAS
         /** @brief set kOfxParamPropUseHostOverlayHandle */
         void setUseHostOverlayHandle(bool v);
-#endif
 
         /** @brief set the default value, default is 0 */
         void setDefault(double x, double y);
@@ -761,9 +759,7 @@ namespace OFX {
         /** @brief set the default value of the param */
         void setDefault(const std::string &v);    
 
-#ifdef OFX_EXTENSIONS_VEGAS
         void setCustomInterpolation(bool v);
-#endif
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -927,10 +923,8 @@ namespace OFX {
         /** @brief whether the param is enabled */
         void setEnabled(bool v);
 
-#ifdef OFX_EXTENSIONS_VEGAS
         /** @brief set the param data ptr */
         void setDataPtr(void* ptr);
-#endif
 
         /** @brief fetch the labels */
         void getLabels(std::string &label, std::string &shortLabel, std::string &longLabel) const;
@@ -941,10 +935,8 @@ namespace OFX {
         /** @brief whether the param is enabled */
         bool getIsEnable(void) const;
     
-#ifdef OFX_EXTENSIONS_VEGAS
         /** @brief get the param data ptr */
         void* getDataPtr(void) const;
-#endif
 
         /** @brief get the param hint */
         std::string getHint(void) const;
@@ -1600,10 +1592,8 @@ namespace OFX {
         // so it can make one
         friend class ParamSet;
     public :
-#ifdef OFX_EXTENSIONS_VEGAS
         /** @brief set the open of the group defaults to false */
         void setIsOpen(bool v);
-#endif
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -1650,9 +1640,9 @@ namespace OFX {
 
         /** @brief set value */
         void setValue(const std::string &v);
-#ifdef OFX_EXTENSIONS_VEGAS
+
+        /** @brief set value */
         void setValue(const char* str);
-#endif
 
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, const std::string &v);

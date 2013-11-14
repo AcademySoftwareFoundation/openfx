@@ -574,13 +574,13 @@ namespace OFX {
     _paramProps.propSetString(kOfxParamPropDimensionLabel, y, 1);
   }
 
-#ifdef OFX_EXTENSIONS_VEGAS
   /** @brief set kOfxParamPropUseHostOverlayHandle */
   void Double2DParamDescriptor::setUseHostOverlayHandle(bool v)
   {
     _paramProps.propSetInt(kOfxParamPropUseHostOverlayHandle, v);
   }
 
+#ifdef OFX_EXTENSIONS_VEGAS
   /** @brief set the color wheel level value, default is 0.75 */
   void Double2DParamDescriptor::setColorWheelLevel(double x)
   {
@@ -833,12 +833,10 @@ namespace OFX {
     _paramProps.propSetString(kOfxParamPropDefault, v);
   }
 
-#ifdef OFX_EXTENSIONS_VEGAS
   void CustomParamDescriptor::setCustomInterpolation(bool v)
   {
-    _paramProps.propSetPointer(kOfxParamPropCustomInterpCallbackV1, v ? (void*)OFX::Private::customParamIterpolationV1Entry : NULL);
+    _paramProps.propSetPointer(kOfxParamPropCustomInterpCallbackV1, v ? (void*)OFX::Private::customParamInterpolationV1Entry : NULL);
   }
-#endif
 
   ////////////////////////////////////////////////////////////////////////////////
   // group param descriptor
@@ -1220,13 +1218,11 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropEnabled, v);
   }
 
-#ifdef OFX_EXTENSIONS_VEGAS
   /** @brief set the private data pointer */
   void Param::setDataPtr(void* ptr)
   {
     _paramProps.propSetPointer(kOfxParamPropDataPtr, ptr);
   }
-#endif
 
   /** @brief fetch the labels */
   void Param::getLabels(std::string &label, std::string &shortLabel, std::string &longLabel) const
@@ -1250,13 +1246,11 @@ namespace OFX {
     return v;
   }
 
-#ifdef OFX_EXTENSIONS_VEGAS
   /** @brief get the private data pointer */
   void* Param::getDataPtr(void) const
   {
     return   _paramProps.propGetPointer(kOfxParamPropDataPtr);
   }
-#endif
 
   /** @brief get the param hint */
   std::string Param::getHint(void) const
