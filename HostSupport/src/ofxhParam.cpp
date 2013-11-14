@@ -268,7 +268,7 @@ namespace OFX {
 
              static Property::PropSpec allChoice[] = {
                { kOfxParamPropChoiceOption,    Property::eString,    0,    false,    "" },
-                 // { kOfxParamPropChoiceLabelOption, Property::eString, 0, false, "" }//<< @Alex: add this to support tuttle choice param extension
+               { kOfxParamPropChoiceLabelOption, Property::eString,  0,    false,    "" },
                Property::propSpecEnd
              };
 
