@@ -715,7 +715,7 @@ If a user interface represents a parameter with a slider or similar, this should
 
     - Type - int or double X N
     - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
-    - Default - the largest possible value corresponding to the parameter type (eg: INT_MIN for an integer, -DBL_MAX for a double parameter)
+    - Default - the largest possible value corresponding to the parameter type (eg: INT_MAX for an integer, DBL_MAX for a double parameter)
 
 If a user interface represents a parameter with a slider or similar, this should be the maximum bound on that slider.
 */
