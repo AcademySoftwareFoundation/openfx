@@ -1497,8 +1497,6 @@ namespace OFX {
         };
 
         Property::Set outArgs(outStuff);  
-        outArgs.setDoubleProperty(kOfxImageEffectPropFrameRange, range.min, 0);
-        outArgs.setDoubleProperty(kOfxImageEffectPropFrameRange, range.max, 1);
 
         OfxStatus st = mainEntry(kOfxImageEffectActionGetTimeDomain,
                                  this->getHandle(),
