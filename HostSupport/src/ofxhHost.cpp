@@ -114,6 +114,22 @@ namespace OFX {
       return &_host;
     }
 
+    OfxStatus Host::message(const char* type,
+                            const char* id,
+                            const char* format,
+                            ...) {
+      try {
+        OfxStatus stat;
+        va_list args;
+        va_start(args,format);
+        stat = vmessage(type,id,format,args);
+        va_end(args);
+        return stat;
+      } catch (...) {
+        return kOfxStatFailed;
+      }
+    }
+
     void *Host::fetchSuite(const char *suiteName, int suiteVersion)
     {
       if (strcmp(suiteName, kOfxPropertySuite)==0  && suiteVersion == 1) {

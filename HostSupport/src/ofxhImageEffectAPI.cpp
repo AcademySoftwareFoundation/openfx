@@ -103,7 +103,10 @@ namespace OFX {
         _contexts.clear();
         if(_pluginHandle.get()) {
           OfxPlugin *op = _pluginHandle->getOfxPlugin();
-          op->mainEntry(kOfxActionUnload, 0, 0, 0);
+          OfxStatus stat;
+          try {
+            stat = op->mainEntry(kOfxActionUnload, 0, 0, 0);
+          } CatchAllSetStatus(stat, gImageEffectHost, op, kOfxActionUnload);
         }
         delete _baseDescriptor;
       }
@@ -175,16 +178,21 @@ namespace OFX {
             return 0;
           }
 
-          int rval = op->mainEntry(kOfxActionLoad, 0, 0, 0);
+          OfxStatus stat;
+          try {
+            stat = op->mainEntry(kOfxActionLoad, 0, 0, 0);
+          } CatchAllSetStatus(stat, gImageEffectHost, op, kOfxActionLoad);
 
-          if (rval != kOfxStatOK && rval != kOfxStatReplyDefault) {
+          if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
             _pluginHandle.reset(0);
             return 0;
           }
           
-          rval = op->mainEntry(kOfxActionDescribe, getDescriptor().getHandle(), 0, 0);
-          
-          if (rval != kOfxStatOK && rval != kOfxStatReplyDefault) {
+          try {
+            stat = op->mainEntry(kOfxActionDescribe, getDescriptor().getHandle(), 0, 0);
+          } CatchAllSetStatus(stat, gImageEffectHost, op, kOfxActionDescribe);
+
+          if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
             _pluginHandle.reset(0);
             return 0;
           }
@@ -218,9 +226,12 @@ namespace OFX {
         PluginHandle *ph = getPluginHandle();
         std::auto_ptr<ImageEffect::Descriptor> newContext( gImageEffectHost->makeDescriptor(getDescriptor(), this));
 
-        int rval = ph->getOfxPlugin()->mainEntry(kOfxImageEffectActionDescribeInContext, newContext->getHandle(), inarg.getHandle(), 0);
-        
-        if (rval == kOfxStatOK || rval == kOfxStatReplyDefault) {
+        OfxStatus stat;
+        try {
+          stat = ph->getOfxPlugin()->mainEntry(kOfxImageEffectActionDescribeInContext, newContext->getHandle(), inarg.getHandle(), 0);
+        } CatchAllSetStatus(stat, gImageEffectHost, ph->getOfxPlugin(), kOfxImageEffectActionDescribeInContext);
+
+        if (stat == kOfxStatOK || stat == kOfxStatReplyDefault) {
           _contexts[context] = newContext.release();
           return _contexts[context];
         }
@@ -251,7 +262,10 @@ namespace OFX {
 
       void ImageEffectPlugin::unload() {
         if (_pluginHandle.get()) {
-          (*_pluginHandle)->mainEntry(kOfxActionUnload, 0, 0, 0);
+          OfxStatus stat;
+          try {
+            stat = (*_pluginHandle)->mainEntry(kOfxActionUnload, 0, 0, 0);
+          } CatchAllSetStatus(stat, gImageEffectHost, (*_pluginHandle), kOfxActionUnload);
         }
       }
 
@@ -361,16 +375,21 @@ namespace OFX {
 
         PluginHandle plug(p, _host);
 
-        int rval = plug->mainEntry(kOfxActionLoad, 0, 0, 0);
+        OfxStatus stat;
+        try {
+          stat = plug->mainEntry(kOfxActionLoad, 0, 0, 0);
+        } CatchAllSetStatus(stat, gImageEffectHost, plug, kOfxActionLoad);
 
-        if (rval != kOfxStatOK && rval != kOfxStatReplyDefault) {
+        if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
           std::cerr << "load failed on plugin " << op->getIdentifier() << std::endl;          
           return;
         }
 
-        rval = plug->mainEntry(kOfxActionDescribe, p->getDescriptor().getHandle(), 0, 0);
+        try {
+          stat = plug->mainEntry(kOfxActionDescribe, p->getDescriptor().getHandle(), 0, 0);
+        } CatchAllSetStatus(stat, gImageEffectHost, plug, kOfxActionDescribe);
 
-        if (rval != kOfxStatOK && rval != kOfxStatReplyDefault) {
+        if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
           std::cerr << "describe failed on plugin " << op->getIdentifier() << std::endl;          
           return;
         }
@@ -385,9 +404,11 @@ namespace OFX {
           p->addContext(context);
         }
 
-        rval = plug->mainEntry(kOfxActionUnload, 0, 0, 0);
+        try {
+          stat = plug->mainEntry(kOfxActionUnload, 0, 0, 0);
+        } CatchAllSetStatus(stat, gImageEffectHost, plug, kOfxActionUnload);
 
-        if (rval != kOfxStatOK && rval != kOfxStatReplyDefault) {
+        if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
           std::cerr << "unload failed on plugin " << op->getIdentifier() << std::endl;
           return;
         }

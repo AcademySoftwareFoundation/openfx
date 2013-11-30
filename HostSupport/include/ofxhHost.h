@@ -81,6 +81,12 @@ namespace OFX {
       /// is my magic number valid?
       bool verifyMagic() { return true; }
 
+      /// message (called when an exception occurs, calls vmessage)
+      OfxStatus message(const char* type,
+                        const char* id,
+                        const char* format,
+                        ...);
+
       /// vmessage
       virtual OfxStatus vmessage(const char* type,
                                  const char* id,

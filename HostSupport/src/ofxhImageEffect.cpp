@@ -633,7 +633,10 @@ namespace OFX {
                 outHandle = outArgs->getHandle();
               }
                 
-              OfxStatus stat = ofxPlugin->mainEntry(action, handle, inHandle, outHandle);
+              OfxStatus stat;
+              try {
+                 stat = ofxPlugin->mainEntry(action, handle, inHandle, outHandle);
+              } CatchAllSetStatus(stat, gImageEffectHost, ofxPlugin, action);
 
               if(outArgs) 
                 examineOutArgs(action, stat, *outArgs);

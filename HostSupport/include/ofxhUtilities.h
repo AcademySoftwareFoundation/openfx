@@ -34,6 +34,40 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include "ofxCore.h"
 
+// macro that intercepts any exception that passes through a plugin's entry point, and transforms it into a message on the host using Host::vmessage()
+#define CatchAllSetStatus(stat,host,plugin,msg)                         \
+  catch ( const std::bad_alloc& ba ) {                                  \
+    (stat) = kOfxStatErrMemory;                                         \
+    if (host) {                                                         \
+      try {                                                             \
+        (host)->message(kOfxMessageError, "",                           \
+                        "%s: Memory allocation error occured in plugin %s (%s)", \
+                        (msg), (plugin)->pluginIdentifier, ba.what());  \
+      } catch (...) {                                                   \
+      }                                                                 \
+    }                                                                   \
+  } catch ( const std::exception &e ) {                                 \
+    (stat) = kOfxStatFailed;                                            \
+    if (host) {                                                         \
+      try {                                                             \
+        (host)->message(kOfxMessageError, "",                           \
+                        "%s: Exception occured in plugin %s (%s)",      \
+                        (msg), (plugin)->pluginIdentifier, e.what());   \
+      } catch (...) {                                                   \
+      }                                                                 \
+    }                                                                   \
+  } catch ( ... ) {                                                     \
+    (stat) = kOfxStatFailed;                                            \
+    if (host) {                                                         \
+      try {                                                             \
+        (host)->message(kOfxMessageError, "",                           \
+                        "%s:Exception occured in plugin %s",            \
+                        (msg), (plugin)->pluginIdentifier);             \
+      } catch (...) {                                                   \
+      }                                                                 \
+    }                                                                   \
+  }
+
 namespace OFX {
 
   /// class that is a std::vector of std::strings
