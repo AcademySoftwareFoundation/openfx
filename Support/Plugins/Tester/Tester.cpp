@@ -513,9 +513,9 @@ void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescript
   bparam2->setHint("Shouldn't be shown in the user interface.");
 
   BooleanParamDescriptor* bparam3 = desc.defineBooleanParam("nonPersistant");
-  bparam->setLabels("Non-persistant", "Non-persistant", "Non-persistant");
-  bparam->setHint("Shouldn't be saved in the plugin description.");
-  bparam->setIsPersistant(false);
+  bparam3->setLabels("Non-persistant", "Non-persistant", "Non-persistant");
+  bparam3->setHint("Shouldn't be saved in the plugin description.");
+  bparam3->setIsPersistant(false);
     
   DoubleParamDescriptor *param5 = desc.defineDoubleParam("animateDbl");
   param5->setLabels("No Animation", "No Animation", "No Animation");
