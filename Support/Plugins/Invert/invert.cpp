@@ -198,6 +198,8 @@ case OFX::eBitDepthFloat : {
   setupAndProcess(fred, args);
                            }
                            break;
+default :
+  OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   }
   else {
@@ -219,6 +221,8 @@ case OFX::eBitDepthFloat : {
   setupAndProcess(fred, args);
                            }                          
                            break;
+default :
+  OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   } 
 }

@@ -185,8 +185,8 @@ void DotExamplePlugin::getPositionInPixels(double& x, double& y, const ARGS& arg
 void DotExamplePlugin::setupAndProcess(DotGeneratorBase &processor, const OFX::RenderArguments &args)
 {
   std::auto_ptr<OFX::Image>  dst(dstClip_->fetchImage(args.time));
-  OFX::BitDepthEnum         dstBitDepth    = dst->getPixelDepth();
-  OFX::PixelComponentEnum   dstComponents  = dst->getPixelComponents();
+  //OFX::BitDepthEnum         dstBitDepth    = dst->getPixelDepth();
+  //OFX::PixelComponentEnum   dstComponents  = dst->getPixelComponents();
   double rad = radius_->getValueAtTime(args.time);
   OfxPointD size = getProjectSize();
   processor.setRadius((float)(rad * size.x));
@@ -245,6 +245,8 @@ void DotExamplePlugin::render(const OFX::RenderArguments &args)
         setupAndProcess(fred, args);
       }
       break;
+    default :
+      OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   }
   else 
@@ -269,6 +271,8 @@ void DotExamplePlugin::render(const OFX::RenderArguments &args)
         setupAndProcess(fred, args);
       }
       break;
+    default :
+      OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   } 
 }

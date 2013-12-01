@@ -333,6 +333,8 @@ namespace OFX {
     case ePixelComponentAlpha :
       _clipProps.propSetString(kOfxImageEffectPropSupportedComponents, kOfxImageComponentAlpha, n);
       break;
+    case ePixelComponentCustom :
+      break;
     }
   }
 
@@ -500,6 +502,8 @@ namespace OFX {
       _effectProps.propSetString(kOfxImageEffectPropSupportedPixelDepths, kOfxBitDepthFloatBGR  , n);
       break;
 #endif
+    case eBitDepthCustom :
+      break;
     }
   }
 
@@ -680,6 +684,7 @@ namespace OFX {
     case eBitDepthUShortBGRA : _pixelBytes *= 2; break;
     case eBitDepthFloatBGRA  : _pixelBytes *= 4; break;
 #endif
+    case eBitDepthCustom : _pixelBytes *= 0; break;
     }
 
     str = _imageProps.propGetString(kOfxImageEffectPropPreMultiplication);
@@ -1493,6 +1498,8 @@ namespace OFX {
     case ePixelComponentAlpha : 
       outArgs_.propSetString(propName.c_str(), kOfxImageComponentAlpha); 
       break;
+    case ePixelComponentCustom :
+      break;
     }
   }
 
@@ -1527,6 +1534,8 @@ namespace OFX {
       outArgs_.propSetString(propName.c_str(), kOfxBitDepthFloatBGR); 
       break;
 #endif
+    case eBitDepthCustom :
+      break;
     }
   }
 

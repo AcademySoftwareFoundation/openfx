@@ -335,6 +335,8 @@ public :
             Analyser<float, 4, 1> analyse(srcClip_, dbl);
             break;
           }
+        default :
+          OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
         }
       }
       else 
@@ -356,6 +358,8 @@ public :
             Analyser<float, 1, 1> analyse(srcClip_, dbl);
             break;
           }
+        default :
+          OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
         }
       }
     }
@@ -416,6 +420,8 @@ void GenericTestPlugin::render(const OFX::RenderArguments &args)
         setupAndProcess(fred, args);
       }
       break;
+    default :
+      OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   }
   else {
@@ -441,6 +447,8 @@ void GenericTestPlugin::render(const OFX::RenderArguments &args)
         setupAndProcess(fred, args);
       }                          
       break;
+    default :
+      OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   } 
 }
