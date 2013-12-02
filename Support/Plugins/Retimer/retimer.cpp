@@ -324,18 +324,18 @@ void RetimerExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 void RetimerExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context) 
 {
   // we are a transition, so define the sourceTo input clip
-  ClipDescriptor *toClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
-  toClip->addSupportedComponent(ePixelComponentRGBA);
-  toClip->addSupportedComponent(ePixelComponentAlpha);
-  toClip->setTemporalClipAccess(true); // say we will be doing random time access on this clip
-  toClip->setSupportsTiles(true);
-  toClip->setFieldExtraction(eFieldExtractDoubled); // which is the default anyway
+  ClipDescriptor *srcClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
+  srcClip->addSupportedComponent(ePixelComponentRGBA);
+  srcClip->addSupportedComponent(ePixelComponentAlpha);
+  srcClip->setTemporalClipAccess(true); // say we will be doing random time access on this clip
+  srcClip->setSupportsTiles(true);
+  srcClip->setFieldExtraction(eFieldExtractDoubled); // which is the default anyway
 
   // create the mandated output clip
   ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
-  toClip->setFieldExtraction(eFieldExtractDoubled); // which is the default anyway
+  dstClip->setFieldExtraction(eFieldExtractDoubled); // which is the default anyway
   dstClip->setSupportsTiles(true);
 
   // what param we have is dependant on the host
