@@ -40,6 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GL/gl.h>
 #endif
 #include <stdexcept>
+#include <new>
 
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"

@@ -50,6 +50,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     - call back functions for user edited events on parameters
  */
 #include <stdexcept>
+#include <new>
 #include <cstring>
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
