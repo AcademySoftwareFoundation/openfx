@@ -1060,7 +1060,7 @@ static PropertyDescription gPluginPropertyDescriptions[] =
     PropertyDescription(kOfxPropShortLabel,                              1, "OFX Test Props",               true,  "",                             false),
     PropertyDescription(kOfxPropLongLabel,                               1, "OFX Test Properties",          true,  "",                             false),
     PropertyDescription(kOfxPluginPropFilePath,                          1, "",                             false, "",                             false),
-    PropertyDescription(kOfxImageEffectPluginPropGrouping,               1, "OFX Test",                     true,  "",                             false),
+    PropertyDescription(kOfxImageEffectPluginPropGrouping,               1, "OFX Example",                  true,  "",                             false),
     PropertyDescription(kOfxImageEffectPluginPropSingleInstance,         1, 0,                              true,  0,                              true),
     PropertyDescription(kOfxImageEffectPluginRenderThreadSafety,         1, kOfxImageEffectRenderFullySafe, true,  kOfxImageEffectRenderFullySafe, true),
     PropertyDescription(kOfxImageEffectPluginPropHostFrameThreading,     1, 0,                              true,  0,                              true),

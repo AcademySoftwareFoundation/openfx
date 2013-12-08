@@ -542,7 +542,7 @@ describe(OfxImageEffectHandle  effect)
 
   // set some labels and the group it belongs to
   gPropHost->propSetString(effectProps, kOfxPropLabel, 0, "OFX OpenGL Example");
-  gPropHost->propSetString(effectProps, kOfxImageEffectPluginPropGrouping, 0, "OFX OpenGL Example");
+  gPropHost->propSetString(effectProps, kOfxImageEffectPluginPropGrouping, 0, "OFX Example");
 
   // define the contexts we can be used in
   gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 0, kOfxImageEffectContextFilter);
