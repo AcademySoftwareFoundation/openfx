@@ -36,6 +36,7 @@ run it through a c beautifier or emacs auto formating, automagic indenting will 
 #include <string> // stl strings
 #include <map> // stl maps
 #include <stdexcept>
+#include <iostream>
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
@@ -1027,6 +1028,9 @@ static OfxStatus render(OfxImageEffectHandle  instance,
 static OfxStatus
 describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
 {
+  if (!OFX::logOpenFile()) {
+    std::cout << "Error: OFX Test Properties plugin cannot open log file " << OFX::logGetFileName() << std::endl;
+  }
   return kOfxStatOK;
 }
 
