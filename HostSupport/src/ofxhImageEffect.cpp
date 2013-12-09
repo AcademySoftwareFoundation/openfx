@@ -1735,6 +1735,8 @@ namespace OFX {
 
         if(effectInstance){
           ClipInstance* instance = effectInstance->getClip(name);
+          if(!instance)
+            return kOfxStatErrBadHandle;
           *clip = instance->getHandle();
           if(propertySet)
             *propertySet = instance->getPropHandle();
