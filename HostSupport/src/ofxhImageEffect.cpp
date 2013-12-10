@@ -1698,7 +1698,7 @@ namespace OFX {
                                  &outArgs);
 #       ifdef OFX_DEBUG_ACTIONS
           std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionGetTimeDomain<<"()->"<<StatStr(st);
-          if (stat == kOfxStatOK) {
+          if (st == kOfxStatOK) {
               std::cout << ": ("<<outArgs.getDoubleProperty(kOfxImageEffectPropFrameRange,0)<<","<<outArgs.getDoubleProperty(kOfxImageEffectPropFrameRange,1)<<")";
           }
           std::cout << std::endl;
