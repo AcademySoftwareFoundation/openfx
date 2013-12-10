@@ -135,7 +135,42 @@ namespace OFX {
     return r;
   }
 
-  
+    inline const char* StatStr(OfxStatus stat) {
+        switch(stat) {
+            case kOfxStatOK:
+                return "kOfxStatOK";
+            case kOfxStatFailed:
+                return "kOfxStatFailed";
+            case kOfxStatErrFatal:
+                return "kOfxStatErrFatal";
+            case kOfxStatErrUnknown:
+                return "kOfxStatErrUnknown";
+            case kOfxStatErrMissingHostFeature:
+                return "kOfxStatErrMissingHostFeature";
+            case kOfxStatErrUnsupported:
+                return "kOfxStatErrUnsupported";
+            case kOfxStatErrExists:
+                return "kOfxStatErrExists";
+            case kOfxStatErrFormat:
+                return "kOfxStatErrFormat";
+            case kOfxStatErrMemory:
+                return "kOfxStatErrMemory";
+            case kOfxStatErrBadHandle:
+                return "kOfxStatErrBadHandle";
+            case kOfxStatErrBadIndex:
+                return "kOfxStatErrBadIndex";
+            case kOfxStatErrValue:
+                return "kOfxStatErrValue";
+            case kOfxStatReplyYes:
+                return "kOfxStatReplyYes";
+            case kOfxStatReplyNo:
+                return "kOfxStatReplyNo";
+            case kOfxStatReplyDefault:
+                return "kOfxStatReplyDefault";
+            default:
+                return "(unknown error code)";
+        }
+    }
 }
 #endif
 

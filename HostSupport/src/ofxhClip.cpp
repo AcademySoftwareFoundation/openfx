@@ -390,12 +390,20 @@ namespace OFX {
         // add the second dimension of the render scale
         inArgs.setDoubleProperty(kOfxPropTime,time);
         inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
+#       ifdef OFX_DEBUG_ACTIONS
+          std::cout << "OFX: "<<(void*)_effectInstance<<"->"<<kOfxActionInstanceChanged<<"("<<kOfxTypeClip<<","<<getName()<<","<<why<<","<<time<<",("<<renderScale.x<<","<<renderScale.y<<"))"<<std::endl;
+#       endif
 
+        OfxStatus st;
         if(_effectInstance){
-          return _effectInstance->mainEntry(kOfxActionInstanceChanged, _effectInstance->getHandle(), &inArgs, 0);
+          st = _effectInstance->mainEntry(kOfxActionInstanceChanged, _effectInstance->getHandle(), &inArgs, 0);
+        } else {
+          st = kOfxStatFailed;
         }
-
-        return kOfxStatFailed;
+#       ifdef OFX_DEBUG_ACTIONS
+          std::cout << "OFX: "<<(void*)_effectInstance<<"->"<<kOfxActionInstanceChanged<<"("<<kOfxTypeClip<<","<<getName()<<","<<why<<","<<time<<",("<<renderScale.x<<","<<renderScale.y<<"))->"<<StatStr(st)<<std::endl;
+#       endif
+        return st;
       }
 
       /// given the colour component, find the nearest set of supported colour components
