@@ -105,7 +105,13 @@ namespace OFX {
           OfxPlugin *op = _pluginHandle->getOfxPlugin();
           OfxStatus stat;
           try {
+#           ifdef OFX_DEBUG_ACTIONS
+              std::cout << "OFX: "<<(void*)op<<"->"<<kOfxActionUnload<<"()"<<std::endl;
+#           endif
             stat = op->mainEntry(kOfxActionUnload, 0, 0, 0);
+#           ifdef OFX_DEBUG_ACTIONS
+              std::cout << "OFX: "<<(void*)op<<"->"<<kOfxActionUnload<<"()->"<<StatStr(stat)<<std::endl;
+#           endif
           } CatchAllSetStatus(stat, gImageEffectHost, op, kOfxActionUnload);
         }
         delete _baseDescriptor;
@@ -180,7 +186,13 @@ namespace OFX {
 
           OfxStatus stat;
           try {
+#           ifdef OFX_DEBUG_ACTIONS
+              std::cout << "OFX: "<<(void*)op<<"->"<<kOfxActionLoad<<"()"<<std::endl;
+#           endif
             stat = op->mainEntry(kOfxActionLoad, 0, 0, 0);
+#           ifdef OFX_DEBUG_ACTIONS
+              std::cout << "OFX: "<<(void*)op<<"->"<<kOfxActionLoad<<"()->"<<StatStr(stat)<<std::endl;
+#           endif
           } CatchAllSetStatus(stat, gImageEffectHost, op, kOfxActionLoad);
 
           if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
@@ -189,7 +201,13 @@ namespace OFX {
           }
           
           try {
+#           ifdef OFX_DEBUG_ACTIONS
+              std::cout << "OFX: "<<(void*)op<<"->"<<kOfxActionDescribe<<"()"<<std::endl;
+#           endif
             stat = op->mainEntry(kOfxActionDescribe, getDescriptor().getHandle(), 0, 0);
+#           ifdef OFX_DEBUG_ACTIONS
+              std::cout << "OFX: "<<(void*)op<<"->"<<kOfxActionDescribe<<"()->"<<StatStr(stat)<<std::endl;
+#           endif
           } CatchAllSetStatus(stat, gImageEffectHost, op, kOfxActionDescribe);
 
           if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
@@ -228,7 +246,13 @@ namespace OFX {
 
         OfxStatus stat;
         try {
+#         ifdef OFX_DEBUG_ACTIONS
+            std::cout << "OFX: "<<(void*)ph->getOfxPlugin()<<"->"<<kOfxImageEffectActionDescribeInContext<<"("<<context<<")"<<std::endl;
+#         endif
           stat = ph->getOfxPlugin()->mainEntry(kOfxImageEffectActionDescribeInContext, newContext->getHandle(), inarg.getHandle(), 0);
+#         ifdef OFX_DEBUG_ACTIONS
+            std::cout << "OFX: "<<(void*)ph->getOfxPlugin()<<"->"<<kOfxImageEffectActionDescribeInContext<<"("<<context<<")->"<<StatStr(stat)<<std::endl;
+#         endif
         } CatchAllSetStatus(stat, gImageEffectHost, ph->getOfxPlugin(), kOfxImageEffectActionDescribeInContext);
 
         if (stat == kOfxStatOK || stat == kOfxStatReplyDefault) {
@@ -264,7 +288,13 @@ namespace OFX {
         if (_pluginHandle.get()) {
           OfxStatus stat;
           try {
+#           ifdef OFX_DEBUG_ACTIONS
+              std::cout << "OFX: "<<(void*)_pluginHandle->getOfxPlugin()<<"->"<<kOfxActionUnload<<"()"<<std::endl;
+#           endif
             stat = (*_pluginHandle)->mainEntry(kOfxActionUnload, 0, 0, 0);
+#           ifdef OFX_DEBUG_ACTIONS
+              std::cout << "OFX: "<<(void*)_pluginHandle->getOfxPlugin()<<"->"<<kOfxActionUnload<<"()->"<<StatStr(stat)<<std::endl;
+#           endif
           } CatchAllSetStatus(stat, gImageEffectHost, (*_pluginHandle), kOfxActionUnload);
         }
       }
@@ -377,7 +407,13 @@ namespace OFX {
 
         OfxStatus stat;
         try {
+#         ifdef OFX_DEBUG_ACTIONS
+            std::cout << "OFX: "<<(void*)plug.getOfxPlugin()<<"->"<<kOfxActionLoad<<"()"<<std::endl;
+#         endif
           stat = plug->mainEntry(kOfxActionLoad, 0, 0, 0);
+#         ifdef OFX_DEBUG_ACTIONS
+            std::cout << "OFX: "<<(void*)plug.getOfxPlugin()<<"->"<<kOfxActionLoad<<"()->"<<StatStr(stat)<<std::endl;
+#         endif
         } CatchAllSetStatus(stat, gImageEffectHost, plug, kOfxActionLoad);
 
         if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
@@ -386,7 +422,13 @@ namespace OFX {
         }
 
         try {
+#         ifdef OFX_DEBUG_ACTIONS
+            std::cout << "OFX: "<<(void*)plug.getOfxPlugin()<<"->"<<kOfxActionDescribe<<"()"<<std::endl;
+#         endif
           stat = plug->mainEntry(kOfxActionDescribe, p->getDescriptor().getHandle(), 0, 0);
+#         ifdef OFX_DEBUG_ACTIONS
+            std::cout << "OFX: "<<(void*)plug.getOfxPlugin()<<"->"<<kOfxActionDescribe<<"()->"<<StatStr(stat)<<std::endl;
+#         endif
         } CatchAllSetStatus(stat, gImageEffectHost, plug, kOfxActionDescribe);
 
         if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
@@ -405,7 +447,13 @@ namespace OFX {
         }
 
         try {
+#         ifdef OFX_DEBUG_ACTIONS
+            std::cout << "OFX: "<<(void*)plug.getOfxPlugin()<<"->"<<kOfxActionUnload<<"()"<<std::endl;
+#         endif
           stat = plug->mainEntry(kOfxActionUnload, 0, 0, 0);
+#         ifdef OFX_DEBUG_ACTIONS
+            std::cout << "OFX: "<<(void*)plug.getOfxPlugin()<<"->"<<kOfxActionUnload<<"()->"<<StatStr(stat)<<std::endl;
+#         endif
         } CatchAllSetStatus(stat, gImageEffectHost, plug, kOfxActionUnload);
 
         if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {

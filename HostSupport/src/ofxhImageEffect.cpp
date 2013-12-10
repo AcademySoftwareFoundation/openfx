@@ -1560,16 +1560,29 @@ namespace OFX {
 
         setupClipPreferencesArgs(outArgs);
 
+
+#       ifdef OFX_DEBUG_ACTIONS
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionGetClipPreferences<<"()"<<std::endl;
+#       endif
         OfxStatus st = mainEntry(kOfxImageEffectActionGetClipPreferences,
                                  this->getHandle(),
                                  0,
                                  &outArgs);
+#       ifdef OFX_DEBUG_ACTIONS
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionGetClipPreferences<<"()->"<<StatStr(st);
+#       endif
 
         if(st!=kOfxStatOK && st!=kOfxStatReplyDefault) {
+#       ifdef OFX_DEBUG_ACTIONS
+            std::cout << std::endl;
+#       endif
           /// ouch
           return false;
         }
 
+#       ifdef OFX_DEBUG_ACTIONS
+          std::cout << ": ";
+#       endif
         /// OK, go pump the components/depths back into the clips themselves
         for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
             it!=_clips.end();
@@ -1580,10 +1593,13 @@ namespace OFX {
             std::string depthParamName = "OfxImageClipPropDepth_"+it->first;
             std::string parParamName = "OfxImageClipPropPAR_"+it->first;
 
+#       ifdef OFX_DEBUG_ACTIONS
+            std::cout << it->first<<"->"<<outArgs.getStringProperty(depthParamName)<<","<<outArgs.getStringProperty(componentParamName)<<","<<outArgs.getDoubleProperty(parParamName)<<" ";
+#       endif
 
             clip->setPixelDepth(outArgs.getStringProperty(depthParamName));
             clip->setComponents(outArgs.getStringProperty(componentParamName));
-            //            clip->setPixelAspect(outArgs.getStringProperty(componentParamName));
+            //clip->setPixelAspect(outArgs.getDoubleProperty(parParamName));
           }
 
         _outputFrameRate           = outArgs.getDoubleProperty(kOfxImageEffectPropFrameRate);
@@ -1591,6 +1607,9 @@ namespace OFX {
         _outputPreMultiplication   = outArgs.getStringProperty(kOfxImageEffectPropPreMultiplication);
         _continuousSamples = outArgs.getIntProperty(kOfxImageClipPropContinuousSamples) != 0;
         _frameVarying      = outArgs.getIntProperty(kOfxImageEffectFrameVarying) != 0;
+#       ifdef OFX_DEBUG_ACTIONS
+          std::cout << _outputFrameRate<<","<<_outputFielding<<","<<_outputPreMultiplication<<","<<_continuousSamples<<","<<_frameVarying<<std::endl;
+#       endif
 
         _clipPrefsDirty  = false;
 
