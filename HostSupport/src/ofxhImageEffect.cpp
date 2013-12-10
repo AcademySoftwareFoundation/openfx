@@ -1179,6 +1179,8 @@ namespace OFX {
 
         Property::Set outArgs(outStuff);
 
+        outArgs.setDoubleProperty(kOfxPropTime,time);
+
         OfxStatus st = mainEntry(kOfxImageEffectActionIsIdentity,
                                  this->getHandle(),
                                  &inArgs,
