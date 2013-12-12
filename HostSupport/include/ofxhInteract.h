@@ -151,6 +151,11 @@ namespace OFX {
         // hooks to kOfxInteractPropBackgroundColour in the property set
         virtual void getBackgroundColour(double &r, double &g, double &b) const = 0;
 
+#ifdef OFX_EXTENSIONS_NUKE
+        // hooks to kOfxPropOverlayColour in the property set
+        virtual void getOverlayColour(double &r, double &g, double &b) const = 0;
+#endif
+
         /// implement
         virtual OfxStatus swapBuffers() = 0;
 
