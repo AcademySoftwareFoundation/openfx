@@ -94,8 +94,8 @@ namespace OFX {
       /// override this to get a single value at the given index.
       const std::string &GetHook::getStringProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
       {        
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::getStringProperty!!!! " << std::endl;
+#ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getStringProperty!!!! " << std::endl;
 #endif
         return StringValue::kEmpty;
       }
@@ -103,8 +103,8 @@ namespace OFX {
       /// override this to fetch a single value at the given index.
       int GetHook::getIntProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
       {
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::getIntProperty!!!! " << std::endl;
+#ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getIntProperty!!!! " << std::endl;
 #endif
         return 0;
       }
@@ -112,8 +112,8 @@ namespace OFX {
       /// override this to fetch a single value at the given index.
       double GetHook::getDoubleProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
       {
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::getDoubleProperty!!!! " << std::endl;
+#ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getDoubleProperty!!!! " << std::endl;
 #endif
         return 0;
       }
@@ -121,8 +121,8 @@ namespace OFX {
       /// override this to fetch a single value at the given index.
       void *GetHook::getPointerProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
       {
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::getPointerProperty!!!! " << std::endl;
+#ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getPointerProperty!!!! " << std::endl;
 #endif
         return NULL;
       }
@@ -130,8 +130,8 @@ namespace OFX {
       /// override this to fetch a multiple values in a multi-dimension property
       void GetHook::getDoublePropertyN(const std::string &/*name*/, double *values, int count) const OFX_EXCEPTION_SPEC
       {
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::getDoublePropertyN!!!! " << std::endl;
+#ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getDoublePropertyN!!!! " << std::endl;
 #endif
         memset(values, 0, sizeof(double) * count);
       }
@@ -139,8 +139,8 @@ namespace OFX {
       /// override this to fetch a multiple values in a multi-dimension property
       void GetHook::getIntPropertyN(const std::string &/*name*/, int *values, int count) const OFX_EXCEPTION_SPEC
       {
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::getIntPropertyN!!!! " << std::endl;
+#ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getIntPropertyN!!!! " << std::endl;
 #endif
         memset(values, 0, sizeof(int) * count);
       }
@@ -148,8 +148,8 @@ namespace OFX {
       /// override this to fetch a multiple values in a multi-dimension property
       void GetHook::getPointerPropertyN(const std::string &/*name*/, void **values, int count) const OFX_EXCEPTION_SPEC
       {
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::getPointerPropertyN!!!! " << std::endl;
+#ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getPointerPropertyN!!!! " << std::endl;
 #endif
         memset(values, 0, sizeof(void *) * count);
       }
@@ -158,8 +158,8 @@ namespace OFX {
       /// override this to fetch the dimension size.
       int GetHook::getDimension(const std::string &/*name*/) const OFX_EXCEPTION_SPEC
       {
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::getDimension!!!! " << std::endl;
+#ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getDimension!!!! " << std::endl;
 #endif
         return 0;
       }
@@ -167,8 +167,8 @@ namespace OFX {
       /// override this to handle a reset(). 
       void GetHook::reset(const std::string &/*name*/) OFX_EXCEPTION_SPEC
       {
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::reset!!!! " << std::endl;
+#ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::reset!!!! " << std::endl;
 #endif
       }
 
@@ -469,7 +469,9 @@ namespace OFX {
       void Set::createProperty(const PropSpec &spec)
       {
         if (_props.find(spec.name) != _props.end()) {
-          std::cerr << "Tried to add a duplicate property to a Property::Set" << spec.name << std::endl;
+#ifdef OFX_DEBUG_PROPERTIES
+          std::cout << "OFX: Tried to add a duplicate property to a Property::Set" << spec.name << std::endl;
+#endif
           return;
         }
 
@@ -765,8 +767,8 @@ namespace OFX {
                                                  const char *property,
                                                  int index,
                                                  typename T::APIType value) {          
-#ifdef DEBUG
-        std::cout << "propSet - " << properties << " " << property << "[" << index << "] = " << value << " \n";
+#ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: propSet - " << properties << " " << property << "[" << index << "] = " << value << " ...";
 #endif
         if (!properties)
           return kOfxStatErrBadHandle;
@@ -780,13 +782,19 @@ namespace OFX {
           }
           prop->setValue(value, index);
         } catch (Exception e) {
-#ifdef DEBUG
-          std::cout << " returning status " << e.getStatus() << "\n";
+#ifdef OFX_DEBUG_PROPERTIES
+          std::cout << " error " << e.getStatus() << "\n";
 #endif
           return e.getStatus();
         } catch (...) {
+#ifdef OFX_DEBUG_PROPERTIES
+          std::cout << " error\n";
+#endif
           return kOfxStatErrUnknown;
         }
+#ifdef OFX_DEBUG_PROPERTIES
+        std::cout << " OK\n";
+#endif
         return kOfxStatOK;
       }
       
@@ -795,8 +803,8 @@ namespace OFX {
                                                 const char *property,
                                                 int count,
                                                 typename T::APIType *values) {          
-#ifdef DEBUG
-        std::cout << "propSetN - " << properties << " " << property << " \n";
+#ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: propSetN - " << properties << " " << property;
 #endif
         if (!properties)
           return kOfxStatErrBadHandle;
@@ -810,10 +818,19 @@ namespace OFX {
           }
           prop->setValueN(values, count);
         } catch (Exception e) {
+#ifdef OFX_DEBUG_PROPERTIES
+          std::cout << " error " << e.getStatus() << "\n";
+#endif
           return e.getStatus();
         } catch (...) {
+#ifdef OFX_DEBUG_PROPERTIES
+          std::cout << " error\n";
+#endif
           return kOfxStatErrUnknown;
         }
+#ifdef OFX_DEBUG_PROPERTIES
+        std::cout << " OK\n";
+#endif
         return kOfxStatOK;
       }
       
@@ -822,8 +839,8 @@ namespace OFX {
                                                const char *property,
                                                int index,
                                                typename T::APITypeConstless *value) {
-#ifdef DEBUG
-        std::cout << "propGet - " << properties << " " << property << " = ...";
+#ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: propGet - " << properties << " " << property << "[" << index << "] = ...";
 #endif
         if (!properties)
           return kOfxStatErrBadHandle;
@@ -837,16 +854,19 @@ namespace OFX {
           }
           *value = castAwayConst(castToAPIType(prop->getValue(index)));
 
-#ifdef DEBUG
+#ifdef OFX_DEBUG_PROPERTIES
           std::cout << *value << "\n";
 #endif
         } catch (Exception e) {
 
-#ifdef DEBUG
-          std::cout  << "\n";
+#ifdef OFX_DEBUG_PROPERTIES
+          std::cout  << "error, stat=" << e.getStatus() << "\n";
 #endif
           return e.getStatus();
         } catch (...) {
+#ifdef OFX_DEBUG_PROPERTIES
+          std::cout  << "error\n";
+#endif
           return kOfxStatErrUnknown;
         }
         return kOfxStatOK;
