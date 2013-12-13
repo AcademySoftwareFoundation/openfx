@@ -711,6 +711,9 @@ namespace OFX {
       OfxStatus ChoiceInstance::setV(va_list arg)
       {
         int value = va_arg(arg, int);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << value;
+#       endif
         return set(value);
       }
 
@@ -718,6 +721,9 @@ namespace OFX {
       OfxStatus ChoiceInstance::setV(OfxTime time, va_list arg)
       {
         int value = va_arg(arg, int);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << value;
+#       endif
         return set(time, value);
       }
       
@@ -762,6 +768,9 @@ namespace OFX {
       OfxStatus IntegerInstance::setV(va_list arg)
       {
         int value = va_arg(arg, int);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << value;
+#       endif
         return set(value);
       }
 
@@ -769,6 +778,9 @@ namespace OFX {
       OfxStatus IntegerInstance::setV(OfxTime time, va_list arg)
       {
         int value = va_arg(arg, int);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << value;
+#       endif
         return set(time, value);
       }
       
@@ -831,6 +843,9 @@ namespace OFX {
       OfxStatus DoubleInstance::setV(va_list arg)
       {
         double value = va_arg(arg, double);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << value;
+#       endif
         return set(value);
       }
 
@@ -838,6 +853,9 @@ namespace OFX {
       OfxStatus DoubleInstance::setV(OfxTime time, va_list arg)
       {
         double value = va_arg(arg, double);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << value;
+#       endif
         return set(time, value);
       }
       
@@ -906,6 +924,9 @@ namespace OFX {
       OfxStatus BooleanInstance::setV(va_list arg)
       {
         bool value = va_arg(arg, int) != 0;
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << value;
+#       endif
         return set(value);
       }
 
@@ -913,6 +934,9 @@ namespace OFX {
       OfxStatus BooleanInstance::setV(OfxTime time, va_list arg)
       {
         bool value = va_arg(arg, int) != 0;
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << value;
+#       endif
         return set(time, value);
       }
       
@@ -968,6 +992,9 @@ namespace OFX {
         double g = va_arg(arg, double);
         double b = va_arg(arg, double);
         double a = va_arg(arg, double);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << '(' << r << ',' << g << ',' << b << ',' << a << ')';
+#       endif
         return set(r, g, b, a);
       }
 
@@ -978,6 +1005,9 @@ namespace OFX {
         double g = va_arg(arg, double);
         double b = va_arg(arg, double);
         double a = va_arg(arg, double);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << '(' << r << ',' << g << ',' << b << ',' << a << ')';
+#       endif
         return set(time, r, g, b, a);
       }
       
@@ -1060,6 +1090,9 @@ namespace OFX {
         double r = va_arg(arg, double);
         double g = va_arg(arg, double);
         double b = va_arg(arg, double);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << '(' << r << ',' << g << ',' << b << ')';
+#       endif
         return set(r, g, b);
       }
 
@@ -1069,6 +1102,9 @@ namespace OFX {
         double r = va_arg(arg, double);
         double g = va_arg(arg, double);
         double b = va_arg(arg, double);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << '(' << r << ',' << g << ',' << b << ')';
+#       endif
         return set(time, r, g, b);
       }
       
@@ -1146,6 +1182,9 @@ namespace OFX {
       {
         double value1 = va_arg(arg, double);
         double value2 = va_arg(arg, double);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << '(' << value1 << ',' << value2 << ')';
+#       endif
         return set(value1, value2);
       }
 
@@ -1154,6 +1193,9 @@ namespace OFX {
       {
         double value1 = va_arg(arg, double);
         double value2 = va_arg(arg, double);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << '(' << value1 << ',' << value2 << ')';
+#       endif
         return set(time, value1, value2);
       }
       
@@ -1229,6 +1271,9 @@ namespace OFX {
       {
         int value1 = va_arg(arg, int);
         int value2 = va_arg(arg, int);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << '(' << value1 << ',' << value2 << ')';
+#       endif
         return set(value1, value2);
       }
 
@@ -1237,6 +1282,9 @@ namespace OFX {
       {
         int value1 = va_arg(arg, int);
         int value2 = va_arg(arg, int);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << '(' << value1 << ',' << value2 << ')';
+#       endif
         return set(time, value1, value2);
       }
       
@@ -1315,6 +1363,9 @@ namespace OFX {
         double value1 = va_arg(arg, double);
         double value2 = va_arg(arg, double);
         double value3 = va_arg(arg, double);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << '(' << value1 << ',' << value2 ',' << value3 << ')';
+#       endif
         return set(value1, value2, value3);
       }
 
@@ -1324,6 +1375,9 @@ namespace OFX {
         double value1 = va_arg(arg, double);
         double value2 = va_arg(arg, double);
         double value3 = va_arg(arg, double);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << '(' << value1 << ',' << value2 ',' << value3 << ')';
+#       endif
         return set(time, value1, value2, value3);
       }
       
@@ -1403,6 +1457,9 @@ namespace OFX {
         int value1 = va_arg(arg, int);
         int value2 = va_arg(arg, int);
         int value3 = va_arg(arg, int);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << '(' << value1 << ',' << value2 ',' << value3 << ')';
+#       endif
         return set(value1, value2, value3);
       }
 
@@ -1412,6 +1469,9 @@ namespace OFX {
         int value1 = va_arg(arg, int);
         int value2 = va_arg(arg, int);
         int value3 = va_arg(arg, int);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << '(' << value1 << ',' << value2 ',' << value3 << ')';
+#       endif
         return set(time, value1, value2, value3);
       }
       
@@ -1480,6 +1540,9 @@ namespace OFX {
       OfxStatus StringInstance::setV(va_list arg)
       {
         char *value = va_arg(arg, char*);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << value;
+#       endif
         return set(value);
       }
 
@@ -1487,6 +1550,9 @@ namespace OFX {
       OfxStatus StringInstance::setV(OfxTime time, va_list arg)
       {
         char *value = va_arg(arg, char*);
+#       ifdef OFX_DEBUG_PARAMETERS
+        std::cout << value;
+#       endif
         return set(time, value);
       }
       
@@ -1855,12 +1921,12 @@ namespace OFX {
                                      ...) 
       {
 #       ifdef OFX_DEBUG_PARAMETERS
-        std::cout << "OFX: paramSetValue - " << paramHandle << " ...";
+        std::cout << "OFX: paramSetValue - " << paramHandle << " ";
 #       endif
         Instance *paramInstance = reinterpret_cast<Instance*>(paramHandle);
         if(!paramInstance || !paramInstance->verifyMagic()) {
 #         ifdef OFX_DEBUG_PARAMETERS
-          std::cout << " " << StatStr(kOfxStatErrBadHandle) << "\n";
+          std::cout << " ... " << StatStr(kOfxStatErrBadHandle) << "\n";
 #         endif
           return kOfxStatErrBadHandle;
         }
@@ -1881,7 +1947,7 @@ namespace OFX {
         }
 
 #       ifdef OFX_DEBUG_PARAMETERS
-        std::cout << " " << StatStr(stat) << "\n";
+        std::cout << " ... " << StatStr(stat) << "\n";
 #       endif
         return stat;
       }
@@ -1893,12 +1959,12 @@ namespace OFX {
                                            ...)
       {
 #       ifdef OFX_DEBUG_PARAMETERS
-        std::cout << "OFX: paramSetValueAtTime - " << paramHandle << " " << time << " ...";
+        std::cout << "OFX: paramSetValueAtTime - " << paramHandle << " " << time << " ";
 #       endif
         Instance *paramInstance = reinterpret_cast<Instance*>(paramHandle);
         if(!paramInstance || !paramInstance->verifyMagic()) {
 #         ifdef OFX_DEBUG_PARAMETERS
-          std::cout << " " << StatStr(kOfxStatErrBadHandle) << "\n";
+          std::cout << " ... " << StatStr(kOfxStatErrBadHandle) << "\n";
 #         endif
           return kOfxStatErrBadHandle;
         }
@@ -1919,7 +1985,7 @@ namespace OFX {
         }
 
 #       ifdef OFX_DEBUG_PARAMETERS
-        std::cout << " " << StatStr(stat) << "\n";
+        std::cout << " ... " << StatStr(stat) << "\n";
 #       endif
         return stat;
       }
