@@ -83,7 +83,7 @@ namespace OFX {
         }
 
         /// get the status
-        OfxStatus getStatus()
+        OfxStatus getStatus() const
         {
           return _stat;
         }
