@@ -36,6 +36,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <list>
 #include <cstdarg>
 
+//ofx
+#include "ofxParam.h"
+
+//ofxh
+#include "ofxhPropertySuite.h"
+
+
 namespace OFX {
 
   namespace Host {
