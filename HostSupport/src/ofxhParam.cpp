@@ -30,7 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ofx
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
+#ifdef OFX_SUPPORTS_PARAMETRIC
 #include "ofxParametricParam.h"
+#endif
 
 // ofx host
 #include "ofxhBinary.h"
@@ -202,7 +204,9 @@ namespace OFX {
         { kOfxParamTypeGroup,     Property::eNone,   0 },
         { kOfxParamTypePage,      Property::eNone,   0 },
         { kOfxParamTypePushButton,Property::eNone,   0 },
+#ifdef OFX_SUPPORTS_PARAMETRIC
         { kOfxParamTypeParametric,Property::eDouble, 0 },
+#endif
         { 0,                      Property::eNone,   0  }
       };
       
@@ -293,6 +297,16 @@ namespace OFX {
                Property::propSpecEnd
              };
 
+#ifdef OFX_SUPPORTS_PARAMETRIC
+             static const Property::PropSpec allParametric[] = {
+               { kOfxParamPropParametricDimension,         Property::eInt,     1,  false, "1" },
+               { kOfxParamPropParametricUIColour,          Property::eDouble,  0,  false, ""  },
+               { kOfxParamPropParametricInteractBackground,Property::ePointer, 1,  false, 0   },
+               { kOfxParamPropParametricRange,             Property::eDouble,  2,  false, "0" },
+               Property::propSpecEnd
+             };
+#endif
+
              if (propType != Property::eNone) {
                addValueParamProps(type, propType, propDim);
              }
@@ -324,6 +338,14 @@ namespace OFX {
              if (type == kOfxParamTypeGroup) {
                _properties.addProperties(allGroup);
              }
+
+#ifdef OFX_SUPPORTS_PARAMETRIC
+             if (type == kOfxParamTypeParametric) {
+               _properties.addProperties(allParametric);
+               _properties.setDoubleProperty(kOfxParamPropParametricRange, 0., 0);
+               _properties.setDoubleProperty(kOfxParamPropParametricRange, 1., 1);
+             }
+#endif
            }
 
       /// add standard properties to a params that can take an interact
