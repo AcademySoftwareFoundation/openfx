@@ -48,6 +48,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhHost.h"
 #include "ofxhImageEffectAPI.h"
 #include "ofxhUtilities.h"
+#ifdef OFX_SUPPORTS_PARAMETRIC
+#include "ofxhParametricParam.h"
+#endif
 
 #include <string.h>
 #include <stdarg.h>
@@ -2479,6 +2482,11 @@ namespace OFX {
                 return (void*)&gVegasStereoscopicImageEffectSuite;
             else
                 return NULL;
+        }
+#endif
+#ifdef OFX_SUPPORTS_PARAMETRIC
+        else if (strcmp(suiteName, kOfxParametricParameterSuite)==0) {
+          return ParametricParam::GetSuite(suiteVersion);
         }
 #endif
         else  /// otherwise just grab the base class one, which is props and memory
