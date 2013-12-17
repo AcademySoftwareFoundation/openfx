@@ -158,7 +158,42 @@ namespace OFX {
       // Descriptor
       //
 
-      
+      class ParamsTypeRegistery
+      {
+          struct Type {
+              Property::TypeEnum propType;
+              int propDimension;
+                
+              Type(Property::TypeEnum type,int dimension)
+              : propType(type)
+              , propDimension(dimension)
+              {}
+          };
+            
+      public:
+            
+          ParamsTypeRegistery();
+            
+          bool isDoubleParam(const std::string &paramType);
+            
+          bool isColourParam(const std::string &paramType);
+            
+          bool isIntParam(const std::string &paramType);
+            
+          /// allows to add more types than the built-in ones (e.g parametric params)
+          void addStandardType(const std::string& typeName,Property::TypeEnum type,int dimension);
+            
+          /// is this a standard type
+          bool isStandardType(const std::string &type);
+            
+          bool findType(const std::string paramType, Property::TypeEnum &propType, int &propDim);
+            
+      private:
+            
+          std::map<std::string,Type> _typesMap;
+      };
+        
+      static ParamsTypeRegistery globalParamsTypeRegistery = ParamsTypeRegistery();
         
       ParamsTypeRegistery::ParamsTypeRegistery()
         : _typesMap()
@@ -211,6 +246,17 @@ namespace OFX {
       {
           _typesMap.insert(std::make_pair(typeName, Type(type,dimension)));
       }
+        
+      void addStandardType(const std::string& typeName,Property::TypeEnum type,int dimension)
+      {
+          globalParamsTypeRegistery.addStandardType(typeName, type, dimension);
+      }
+        
+        /// is this a standard type
+      bool isStandardType(const std::string &type)
+     {
+         return globalParamsTypeRegistery.isStandardType(type);
+     }
   
       bool ParamsTypeRegistery::findType(const std::string paramType, Property::TypeEnum &propType, int &propDim)
       {

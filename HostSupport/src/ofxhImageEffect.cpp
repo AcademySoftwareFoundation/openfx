@@ -2487,7 +2487,7 @@ namespace OFX {
         
       void Host::registerExtraParamTypeSupported(const std::string& typeName,Property::TypeEnum type,int dimension)
       {
-          Param::globalParamsTypeRegistery.addStandardType(typeName, type, dimension);
+          Param::addStandardType(typeName, type, dimension);
       }
 
     } // ImageEffect
