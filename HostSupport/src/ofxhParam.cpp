@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ofx
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
+#include "ofxParametricParam.h"
 
 // ofx host
 #include "ofxhBinary.h"
@@ -201,6 +202,7 @@ namespace OFX {
         { kOfxParamTypeGroup,     Property::eNone,   0 },
         { kOfxParamTypePage,      Property::eNone,   0 },
         { kOfxParamTypePushButton,Property::eNone,   0 },
+        { kOfxParamTypeParametric,Property::eDouble, 0 },
         { 0,                      Property::eNone,   0  }
       };
       
