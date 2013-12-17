@@ -2484,11 +2484,6 @@ namespace OFX {
         else  /// otherwise just grab the base class one, which is props and memory
           return OFX::Host::Host::fetchSuite(suiteName, suiteVersion);
       }
-        
-      void Host::registerExtraParamTypeSupported(const std::string& typeName,Property::TypeEnum type,int dimension)
-      {
-          Param::globalParamsTypeRegistery.addStandardType(typeName, type, dimension);
-      }
 
     } // ImageEffect
 

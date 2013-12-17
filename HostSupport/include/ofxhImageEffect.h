@@ -106,10 +106,6 @@ namespace OFX {
         /// Override this to initialise an image effect descriptor after it has been
         /// created.
         virtual void initDescriptor(Descriptor* desc);
-        
-        /// Call this to inform the plugins that you support a wider range of parameters than the built-in ones.
-        /// For instance you would need to override this if you want to support kOfxParamTypeParametric
-        void registerExtraParamTypeSupported(const std::string& typeName,Property::TypeEnum type,int dimension);
       };
 
       /// our global host object, set when the plugin cache is created
