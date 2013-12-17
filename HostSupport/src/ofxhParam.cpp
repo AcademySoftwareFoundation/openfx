@@ -158,76 +158,72 @@ namespace OFX {
       // Descriptor
       //
 
-      struct TypeMap {
-        const char *paramType;
-        Property::TypeEnum propType;
-        int propDimension;
-      };
+      
+        
+      ParamsTypeRegistery::ParamsTypeRegistery()
+        : _typesMap()
+      {
+          _typesMap.insert(std::make_pair(kOfxParamTypeInteger,   Type(Property::eInt ,   1)));
+          _typesMap.insert(std::make_pair(kOfxParamTypeDouble,    Type(Property::eDouble, 1)));
+          _typesMap.insert(std::make_pair(kOfxParamTypeBoolean,   Type(Property::eInt ,   1)));
+          _typesMap.insert(std::make_pair(kOfxParamTypeChoice,    Type(Property::eInt ,   1)));
+          _typesMap.insert(std::make_pair(kOfxParamTypeRGBA,      Type(Property::eDouble, 4)));
+          _typesMap.insert(std::make_pair(kOfxParamTypeRGB,       Type(Property::eDouble, 3)));
+          _typesMap.insert(std::make_pair(kOfxParamTypeDouble2D,  Type(Property::eDouble, 2)));
+          _typesMap.insert(std::make_pair(kOfxParamTypeInteger2D, Type(Property::eInt,    2)));
+          _typesMap.insert(std::make_pair(kOfxParamTypeDouble3D,  Type(Property::eDouble, 3)));
+          _typesMap.insert(std::make_pair(kOfxParamTypeInteger3D, Type(Property::eInt,    3)));
+          _typesMap.insert(std::make_pair(kOfxParamTypeString,    Type(Property::eString, 1)));
+          _typesMap.insert(std::make_pair(kOfxParamTypeCustom,    Type(Property::eString, 1)));
+          _typesMap.insert(std::make_pair(kOfxParamTypeGroup,     Type(Property::eNone,   0)));
+          _typesMap.insert(std::make_pair(kOfxParamTypePage,      Type(Property::eNone,   0)));
+          _typesMap.insert(std::make_pair(kOfxParamTypePushButton,Type(Property::eNone,   0)));
+      }
 
-      bool isDoubleParam(const std::string &paramType) 
+      bool ParamsTypeRegistery::isDoubleParam(const std::string &paramType)
       {
         return paramType == kOfxParamTypeDouble ||
                paramType == kOfxParamTypeDouble2D ||
                paramType == kOfxParamTypeDouble3D;
       }
 
-      bool isColourParam(const std::string &paramType) 
+      bool ParamsTypeRegistery::isColourParam(const std::string &paramType)
       {
         return 
           paramType == kOfxParamTypeRGBA ||
           paramType == kOfxParamTypeRGB;
       }
 
-      bool isIntParam(const std::string &paramType) 
+      bool ParamsTypeRegistery::isIntParam(const std::string &paramType)
       {
         return paramType == kOfxParamTypeInteger ||
                paramType == kOfxParamTypeInteger2D ||
                paramType == kOfxParamTypeInteger3D;
       }
-
-      static TypeMap typeMap[] = {
-        { kOfxParamTypeInteger,   Property::eInt,    1 },
-        { kOfxParamTypeDouble,    Property::eDouble, 1 },
-        { kOfxParamTypeBoolean,   Property::eInt,    1 },
-        { kOfxParamTypeChoice,    Property::eInt,    1 },
-        { kOfxParamTypeRGBA,      Property::eDouble, 4 },
-        { kOfxParamTypeRGB,       Property::eDouble, 3 },
-        { kOfxParamTypeDouble2D,  Property::eDouble, 2 },
-        { kOfxParamTypeInteger2D, Property::eInt,    2 },
-        { kOfxParamTypeDouble3D,  Property::eDouble, 3 },
-        { kOfxParamTypeInteger3D, Property::eInt,    3 },
-        { kOfxParamTypeString,    Property::eString, 1 },
-        { kOfxParamTypeCustom,    Property::eString, 1 },
-        { kOfxParamTypeGroup,     Property::eNone,   0 },
-        { kOfxParamTypePage,      Property::eNone,   0 },
-        { kOfxParamTypePushButton,Property::eNone,   0 },
-        { 0,                      Property::eNone,   0  }
-      };
-      
+    
       /// is this a standard type
-      bool isStandardType(const std::string &type)
+      bool ParamsTypeRegistery::isStandardType(const std::string &type)
       {
-        TypeMap *tm = typeMap;
-        while (tm->paramType) {
-          if (tm->paramType == type) 
-            return true;
-          tm++;
-        }
-        return false;
+          return _typesMap.find(type) != _typesMap.end();
+      }
+        
+      void ParamsTypeRegistery::addStandardType(const std::string& typeName,Property::TypeEnum type,int dimension)
+      {
+          _typesMap.insert(std::make_pair(typeName, Type(type,dimension)));
       }
   
-      bool findType(const std::string paramType, Property::TypeEnum &propType, int &propDim) 
+      bool ParamsTypeRegistery::findType(const std::string paramType, Property::TypeEnum &propType, int &propDim)
       {
-        TypeMap *tm = typeMap;
-        while (tm->paramType) {
-          if (tm->paramType == paramType) {
-            propType = tm->propType;
-            propDim = tm->propDimension;
-            return true;
+          std::map<std::string,Type>::const_iterator it = _typesMap.find(paramType);
+          if(it != _typesMap.end()){
+              propType = it->second.propType;
+              propDim = it->second.propDimension;
+              return true;
+          }else{
+              propType = Property::eNone;
+              propDim = 0;
+              return false;
           }
-          tm++;
-        }
-        return false;
       }
 
       /// make a parameter, with the given type and name
@@ -261,7 +257,7 @@ namespace OFX {
            {
              Property::TypeEnum propType = Property::eString;
              int propDim = 1;
-             findType(type, propType, propDim);
+             globalParamsTypeRegistery.findType(type, propType, propDim);
 
 
              static Property::PropSpec allString[] = {
@@ -299,7 +295,9 @@ namespace OFX {
                _properties.addProperties(allString);
              }
 
-             if (isDoubleParam(type) || isIntParam(type) || isColourParam(type)) {
+             if (globalParamsTypeRegistery.isDoubleParam(type) ||
+                 globalParamsTypeRegistery.isIntParam(type) ||
+                 globalParamsTypeRegistery.isColourParam(type)) {
                addNumericParamProps(type, propType, propDim);
              }
 
@@ -383,10 +381,13 @@ namespace OFX {
           int_minstr = int_min.str();
           int_maxstr = int_max.str();
         }
+        
+        bool isColourParam = globalParamsTypeRegistery.isColourParam(type);
+        bool isDoubleParam = globalParamsTypeRegistery.isDoubleParam(type);
           
         Property::PropSpec allNumeric[] = {
-          { kOfxParamPropDisplayMin, valueType, dim, false, isColourParam(type) ? "0" : (valueType == Property::eDouble ? dbl_minstr : int_minstr).c_str() },
-          { kOfxParamPropDisplayMax, valueType, dim, false, isColourParam(type) ? "1" : (valueType == Property::eDouble ? dbl_maxstr : int_maxstr).c_str() },
+          { kOfxParamPropDisplayMin, valueType, dim, false, isColourParam ? "0" : (valueType == Property::eDouble ? dbl_minstr : int_minstr).c_str() },
+          { kOfxParamPropDisplayMax, valueType, dim, false, isColourParam ? "1" : (valueType == Property::eDouble ? dbl_maxstr : int_maxstr).c_str() },
           { kOfxParamPropMin, valueType, dim, false, (valueType == Property::eDouble ? dbl_minstr : int_minstr).c_str() },
           { kOfxParamPropMax, valueType, dim, false, (valueType == Property::eDouble ? dbl_maxstr : int_maxstr).c_str() },
           Property::propSpecEnd
@@ -405,7 +406,7 @@ namespace OFX {
         }
 
         /// if a double param type
-        if(isDoubleParam(type)) {
+        if(isDoubleParam) {
           static Property::PropSpec allDouble[] = {
             { kOfxParamPropDoubleType, Property::eString,    1,    false,    kOfxParamDoubleTypePlain },
             Property::propSpecEnd
@@ -423,7 +424,7 @@ namespace OFX {
         }
 
         /// if a multi dimensional param
-        if (isDoubleParam(type) && (dim == 2 || dim == 3)) {
+        if (isDoubleParam && (dim == 2 || dim == 3)) {
           Property::PropSpec all2D3D[] = {
             { kOfxParamPropDimensionLabel,  Property::eString, dim, false, "" },
             Property::propSpecEnd
@@ -438,7 +439,7 @@ namespace OFX {
         }
 
         /// if a multi dimensional param
-        if (isColourParam(type)) {
+        if (isColourParam) {
           Property::PropSpec allColor[] = {
             { kOfxParamPropDimensionLabel,  Property::eString, dim, false, "" },
             Property::propSpecEnd
@@ -496,7 +497,7 @@ namespace OFX {
       Descriptor *SetDescriptor::paramDefine(const char *paramType,
                                              const char *name)
       {
-        if(!isStandardType(paramType)) 
+        if(!globalParamsTypeRegistery.isStandardType(paramType))
           return NULL; /// << EEK! This is bad.
 
         Descriptor *desc = new Descriptor(paramType, name); 
