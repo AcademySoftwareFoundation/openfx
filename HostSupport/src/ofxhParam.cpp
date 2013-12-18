@@ -447,7 +447,7 @@ namespace OFX {
         }
 
         /// if a multi dimensional param
-        if (isDoubleParam(type) && (dim == 2 || dim == 3)) {
+        if (isDoubleParam(type) && (dim == 0 || dim == 2 || dim == 3)) {
           Property::PropSpec all2D3D[] = {
             { kOfxParamPropDimensionLabel,  Property::eString, dim, false, "" },
             Property::propSpecEnd
