@@ -171,7 +171,11 @@ namespace OFX {
       {
         return paramType == kOfxParamTypeDouble ||
                paramType == kOfxParamTypeDouble2D ||
-               paramType == kOfxParamTypeDouble3D;
+               paramType == kOfxParamTypeDouble3D
+#ifdef OFX_SUPPORTS_PARAMETRIC
+            || paramType == kOfxParamTypeParametric
+#endif
+          ;
       }
 
       bool isColourParam(const std::string &paramType) 
@@ -447,7 +451,11 @@ namespace OFX {
         }
 
         /// if a multi dimensional param
-        if (isDoubleParam(type) && (dim == 0 || dim == 2 || dim == 3)) {
+        if (isDoubleParam(type) && (dim == 2 || dim == 3
+#ifdef OFX_SUPPORTS_PARAMETRIC
+                                    || dim == 0
+#endif
+                                    )) {
           Property::PropSpec all2D3D[] = {
             { kOfxParamPropDimensionLabel,  Property::eString, dim, false, "" },
             Property::propSpecEnd
