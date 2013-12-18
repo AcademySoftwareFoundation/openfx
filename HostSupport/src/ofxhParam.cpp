@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
 #ifdef OFX_SUPPORTS_PARAMETRIC
-#include "ofxParametricParam.h"
+#include "ofxhParametricParam.h"
 #endif
 
 // ofx host
@@ -514,8 +514,16 @@ namespace OFX {
       {
         if(!isStandardType(paramType)) 
           return NULL; /// << EEK! This is bad.
-
-        Descriptor *desc = new Descriptor(paramType, name); 
+        Descriptor *desc;
+#ifdef OFX_SUPPORTS_PARAMETRIC
+          if(strcmp(paramType, kOfxParamTypeParametric) == 0){
+              desc = new ParametricParam::ParametricDescriptor(paramType,name);
+          }else{
+              desc = new Descriptor(paramType,name);
+          }
+#else
+          desc = new Descriptor(paramType,name);
+#endif
         desc->addStandardParamProps(paramType);
         addParam(name, desc);
         return desc;
