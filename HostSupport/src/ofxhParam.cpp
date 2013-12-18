@@ -301,15 +301,6 @@ namespace OFX {
                Property::propSpecEnd
              };
 
-#ifdef OFX_SUPPORTS_PARAMETRIC
-             static const Property::PropSpec allParametric[] = {
-               { kOfxParamPropParametricDimension,         Property::eInt,     1,  false, "1" },
-               { kOfxParamPropParametricUIColour,          Property::eDouble,  0,  false, ""  },
-               { kOfxParamPropParametricInteractBackground,Property::ePointer, 1,  false, 0   },
-               { kOfxParamPropParametricRange,             Property::eDouble,  2,  false, "0" },
-               Property::propSpecEnd
-             };
-#endif
 
              if (propType != Property::eNone) {
                addValueParamProps(type, propType, propDim);
@@ -343,13 +334,6 @@ namespace OFX {
                _properties.addProperties(allGroup);
              }
 
-#ifdef OFX_SUPPORTS_PARAMETRIC
-             if (type == kOfxParamTypeParametric) {
-               _properties.addProperties(allParametric);
-               _properties.setDoubleProperty(kOfxParamPropParametricRange, 0., 0);
-               _properties.setDoubleProperty(kOfxParamPropParametricRange, 1., 1);
-             }
-#endif
            }
 
       /// add standard properties to a params that can take an interact
