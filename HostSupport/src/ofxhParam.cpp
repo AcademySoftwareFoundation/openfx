@@ -34,6 +34,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhParametricParam.h"
 #endif
 
+#ifdef OFX_EXTENSIONS_NUKE
+#include "nuke/fnPublicOfxExtensions.h"
+#endif
+
 // ofx host
 #include "ofxhBinary.h"
 #include "ofxhPropertySuite.h"
@@ -260,6 +264,10 @@ namespace OFX {
           { kOfxPropLabel,      Property::eString, 1, false, cname },
           { kOfxPropShortLabel, Property::eString, 1, false, cname },
           { kOfxPropLongLabel,  Property::eString, 1, false, cname },
+#ifdef OFX_EXTENSIONS_NUKE
+          { kOfxParamPropLayoutHint,  Property::eInt, 1, false, "0" },
+          { kOfxParamPropLayoutPadWidth,  Property::eInt, 1, false, "0" },
+#endif
           Property::propSpecEnd
         };
         
@@ -298,6 +306,9 @@ namespace OFX {
 
              static const Property::PropSpec allGroup[] = {
                { kOfxParamPropGroupOpen, Property::eInt, 1, false, "1" },
+#ifdef OFX_EXTENSIONS_NUKE
+               { kFnOfxParamPropGroupIsTab, Property::eInt, 1, false, "0" },
+#endif
                Property::propSpecEnd
              };
 
