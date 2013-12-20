@@ -230,48 +230,6 @@ namespace OFX {
     { 
       return OFX::Private::mainEntryStr(action, handle, in, out, _uid.c_str());
     }
-#ifdef OFX_EXTENSIONS_VEGAS
-#if 0
-          static const char* mapToMessageTypeEnum(OFX::Message::MessageTypeEnum type)
-          {
-            if(type == OFX::Message::eMessageFatal)
-              return kOfxMessageFatal;
-            else if(type == OFX::Message::eMessageError)
-              return kOfxMessageError;
-            else if(type == OFX::Message::eMessageMessage)
-              return kOfxMessageMessage;
-            else if(type == OFX::Message::eMessageLog)
-              return kOfxMessageLog;
-            else if(type == OFX::Message::eMessageQuestion)
-              return kOfxMessageQuestion;
-            OFX::Log::error(true, "Unknown message type enum '%d'", type);
-            return 0;
-          }
-
-          static OFX::Message::MessageReplyEnum mapToMessageReplyEnum(OfxStatus stat)
-          {
-            if(stat == kOfxStatOK)
-              return OFX::Message::eMessageReplyOK;
-            else if(stat == kOfxStatReplyYes)
-              return OFX::Message::eMessageReplyYes;
-            else if(stat == kOfxStatReplyNo)
-              return OFX::Message::eMessageReplyNo;
-            else if(stat == kOfxStatFailed)
-              return OFX::Message::eMessageReplyFailed;
-            OFX::Log::error(true, "Unknown message reply status enum '%d'", stat);
-            return OFX::Message::eMessageReplyFailed;
-          }
-
-      static OFX::Message::MessageReplyEnum sendMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg)
-      {   
-        OfxMessageSuiteV1* messageSuite;
-        messageSuite   = (OfxMessageSuiteV1 *)     fetchSuite(kOfxMessageSuite, 1);
-        //OfxStatus stat = messageSuite->message(_effectHandle, mapToMessageTypeEnum(type), id.c_str(), msg.c_str());
-        OfxStatus stat = messageSuite->message(NULL, mapToMessageTypeEnum(type), id.c_str(), msg.c_str());
-        return mapToMessageReplyEnum(stat);
-      }
-#endif
-#endif
 
     static std::string _uid;
     std::string _id;
