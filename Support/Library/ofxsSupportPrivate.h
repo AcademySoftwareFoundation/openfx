@@ -47,6 +47,9 @@ England
 #include "ofxsImageEffect.h"
 #include "ofxsLog.h"
 #include "ofxsMultiThread.h"
+#ifdef OFX_EXTENSIONS_NATRON
+#include "ofxsColorSpace.h"
+#endif
 
 /** @brief Namespace private to the ofx support library.
 */
@@ -96,6 +99,10 @@ namespace OFX {
     /** @brief Pointer to the parametric parameter suite */
     extern OfxParametricParameterSuiteV1* gParametricParameterSuite;
 
+#ifdef OFX_EXTENSIONS_NATRON
+    /** @brief Pointer to the color-space conversion suite (Natron ofx extension) **/
+    extern OfxColorSpaceConversionSuiteV1* gColorSpaceConversionSuite;
+#endif
 #ifdef OFX_EXTENSIONS_NUKE
     /** @brief Pointer to the camera parameter suite (nuke ofx extension) */
     extern NukeOfxCameraSuiteV1* gCameraParameterSuite;

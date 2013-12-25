@@ -85,6 +85,9 @@ namespace OFX {
     OfxProgressSuiteV1     *gProgressSuite = 0;
     OfxTimeLineSuiteV1     *gTimeLineSuite = 0;
     OfxParametricParameterSuiteV1* gParametricParameterSuite = 0;
+#ifdef OFX_EXTENSIONS_NATRON
+    OfxColorSpaceConversionSuiteV1 *gColorSpaceConversionSuite = 0;
+#endif
 #ifdef OFX_EXTENSIONS_NUKE
     NukeOfxCameraSuiteV1* gCameraParameterSuite = 0;
 #endif
@@ -1734,6 +1737,9 @@ namespace OFX {
         gProgressSuite   = (OfxProgressSuiteV1 *)     fetchSuite(kOfxProgressSuite, 1, true);
         gTimeLineSuite   = (OfxTimeLineSuiteV1 *)     fetchSuite(kOfxTimeLineSuite, 1, true);
         gParametricParameterSuite = (OfxParametricParameterSuiteV1*) fetchSuite(kOfxParametricParameterSuite, 1, true );
+#ifdef OFX_EXTENSIONS_NATRON
+        gColorSpaceConversionSuite = (OfxColorSpaceConversionSuiteV1*) fetchSuite(kOfxColorSpaceConversionSuite, 1,true);
+#endif
 #ifdef OFX_EXTENSIONS_NUKE
         gCameraParameterSuite = (NukeOfxCameraSuiteV1*) fetchSuite(kNukeOfxCameraSuite, 1, true );
 #endif
@@ -1795,6 +1801,9 @@ namespace OFX {
         gMessageSuiteV2 = 0;
         gInteractSuite = 0;
         gParametricParameterSuite = 0;
+#ifdef OFX_EXTENSIONS_NATRON
+        gColorSpaceConversionSuite = 0;
+#endif
 #ifdef OFX_EXTENSIONS_NUKE
         gCameraParameterSuite = 0;
 #endif
