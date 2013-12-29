@@ -2341,7 +2341,7 @@ namespace OFX {
         
         static OfxStatus mutexDestroy(const OfxMutexHandle mutex)
         {
-            if (mutex != 0)
+            if (mutex == 0)
                 return kOfxStatErrBadHandle;
             if(gImageEffectHost->implementsMultiThreadSuite()){
                 gImageEffectHost->mutexDestroy(mutex);
@@ -2350,7 +2350,7 @@ namespace OFX {
         }
         
         static OfxStatus mutexLock(const OfxMutexHandle mutex){
-            if (mutex != 0)
+            if (mutex == 0)
                 return kOfxStatErrBadHandle;
             if(gImageEffectHost->implementsMultiThreadSuite()){
                 gImageEffectHost->mutexLock(mutex);
@@ -2360,7 +2360,7 @@ namespace OFX {
         }
         
         static OfxStatus mutexUnLock(const OfxMutexHandle mutex){
-            if (mutex != 0)
+            if (mutex == 0)
                 return kOfxStatErrBadHandle;
             if(gImageEffectHost->implementsMultiThreadSuite()){
                 gImageEffectHost->mutexUnLock(mutex);
@@ -2369,7 +2369,7 @@ namespace OFX {
         }
         
         static OfxStatus mutexTryLock(const OfxMutexHandle mutex){
-            if (mutex != 0)
+            if (mutex == 0)
                 return kOfxStatErrBadHandle;
             if(gImageEffectHost->implementsMultiThreadSuite()){
                 return gImageEffectHost->mutexTryLock(mutex);
