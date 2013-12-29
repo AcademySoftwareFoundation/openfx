@@ -185,14 +185,14 @@ namespace OFX {
            
            A sucessful lock causes the mutex's lock count to be increased by one and to block any other calls to lock the mutex until it is unlocked.
            */
-        virtual void mutexLock(const OfxMutexHandle mutex) const {}
+        virtual void mutexLock(const OfxMutexHandle /*mutex*/) const {}
           
           /** @brief Unlock the mutex
            
            This  unlocks a mutex. Unlocking a mutex decreases its lock count by one.
            
            */
-        virtual void mutexUnLock(const OfxMutexHandle mutex) const {}
+        virtual void mutexUnLock(const OfxMutexHandle /*mutex*/) const {}
           
           /** @brief Non blocking attempt to lock the mutex
            
@@ -204,7 +204,7 @@ namespace OFX {
            - kOfxStatOK - if it got the lock
            - kOfxStatFailed - if it did not get the lock
            */
-        virtual OfxStatus mutexTryLock(const OfxMutexHandle mutex) const { return kOfxStatFailed; }
+        virtual OfxStatus mutexTryLock(const OfxMutexHandle/* mutex*/) const { return kOfxStatFailed; }
       };
 
       /// our global host object, set when the plugin cache is created
