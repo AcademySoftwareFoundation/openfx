@@ -273,8 +273,6 @@
 		1E9FC1CE180BF74400EFE0F9 /* camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
 		1E9FC1CF180BF74400EFE0F9 /* fnPublicOfxExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fnPublicOfxExtensions.h; sourceTree = "<group>"; };
 		D7335C66186B50C70018881A /* ColorSpaceConversionSuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorSpaceConversionSuite.h; sourceTree = "<group>"; };
-		D7335C67186B514A0018881A /* ofxsColorSpace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxsColorSpace.h; sourceTree = "<group>"; };
-		D7335C68186B51750018881A /* ofxsColorSpace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxsColorSpace.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -391,7 +389,6 @@
 				1E3E3CBB17995D5C005F2132 /* ofxsProperty.cpp */,
 				1E3E3CBC17995D5C005F2132 /* ofxsPropertyValidation.cpp */,
 				1E3E3CBD17995D5C005F2132 /* ofxsSupportPrivate.h */,
-				D7335C68186B51750018881A /* ofxsColorSpace.cpp */,
 			);
 			path = Library;
 			sourceTree = "<group>";
@@ -424,7 +421,6 @@
 				1E3E3D3617996112005F2132 /* ofxsMessage.h */,
 				1E3E3D3717996112005F2132 /* ofxsMultiThread.h */,
 				1E3E3D3817996112005F2132 /* ofxsParam.h */,
-				D7335C67186B514A0018881A /* ofxsColorSpace.h */,
 			);
 			name = Headers;
 			path = include;
