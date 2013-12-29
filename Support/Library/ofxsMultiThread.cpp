@@ -76,7 +76,10 @@ namespace OFX {
       }
       else {
         // OK do it
-        OfxStatus stat = OFX::Private::gThreadSuite->multiThread(staticMultiThreadFunction, nCPUs, (void *)this);
+          OfxStatus stat = kOfxStatFailed;
+          if(OFX::Private::gThreadSuite){
+              stat = OFX::Private::gThreadSuite->multiThread(staticMultiThreadFunction, nCPUs, (void *)this);
+          }
 
         // did we do it?
         throwSuiteStatusException(stat);
@@ -89,24 +92,35 @@ namespace OFX {
     /** @brief Has the current thread been spawned from an MP */
     bool isSpawnedThread(void)
     {
-      int v = OFX::Private::gThreadSuite->multiThreadIsSpawnedThread();
-      return v != 0;
+      if(OFX::Private::gThreadSuite){
+          int v = OFX::Private::gThreadSuite->multiThreadIsSpawnedThread();
+          return v != 0;
+      }else{
+          return false;
+      }
     }
 
     /** @brief The number of CPUs that can be used for MP-ing */
     unsigned  int getNumCPUs(void)
     {
-      unsigned int n = 1;
-      OfxStatus stat = OFX::Private::gThreadSuite->multiThreadNumCPUs(&n);
-      if(stat != kOfxStatOK) n = 1;
-      return n;
+        unsigned int n = 1;
+          
+        OfxStatus stat = kOfxStatFailed;
+        if(OFX::Private::gThreadSuite){
+            stat = OFX::Private::gThreadSuite->multiThreadNumCPUs(&n);
+        }
+        if(stat != kOfxStatOK) n = 1;
+        return n;
     }
-
+      
     /** @brief The index of the current thread. From 0 to numCPUs() - 1 */
     unsigned int getThreadIndex(void)
     {
       unsigned int n = 0;
-      OfxStatus stat = OFX::Private::gThreadSuite->multiThreadIndex(&n);
+      OfxStatus stat = kOfxStatFailed;
+      if(OFX::Private::gThreadSuite){
+        stat = OFX::Private::gThreadSuite->multiThreadIndex(&n);
+      }
       if(stat != kOfxStatOK) n = 0;
       return n;
     }
@@ -118,36 +132,48 @@ namespace OFX {
     Mutex::Mutex(int lockCount)
       : _handle(0)
     {
-      OfxStatus stat = OFX::Private::gThreadSuite->mutexCreate(&_handle, lockCount);
-      throwSuiteStatusException(stat);
+        OfxStatus stat = kOfxStatReplyDefault;//< we don't want to throw an exception if the suite is no longer available.
+        if(OFX::Private::gThreadSuite){
+            stat = OFX::Private::gThreadSuite->mutexCreate(&_handle, lockCount);
+        }
+        throwSuiteStatusException(stat);
     }
 
     /** @brief dtor */
     Mutex::~Mutex(void)
     {
-      OfxStatus stat = OFX::Private::gThreadSuite->mutexDestroy(_handle);
-      (void)stat;
+        OfxStatus stat = OFX::Private::gThreadSuite->mutexDestroy(_handle);
+        (void)stat;
     }
 
     /** @brief lock it, blocks until lock is gained */
     void Mutex::lock()
     {
-      OfxStatus stat = OFX::Private::gThreadSuite->mutexLock(_handle);
-      throwSuiteStatusException(stat);
+        OfxStatus stat = kOfxStatReplyDefault;
+        if(OFX::Private::gThreadSuite){
+            OFX::Private::gThreadSuite->mutexLock(_handle);
+        }
+        throwSuiteStatusException(stat);
     }
 
     /** @brief unlock it */
     void Mutex::unlock()
     {
-      OfxStatus stat = OFX::Private::gThreadSuite->mutexUnLock(_handle);
-      throwSuiteStatusException(stat);
+        OfxStatus stat = kOfxStatReplyDefault;
+        if(OFX::Private::gThreadSuite){
+            OFX::Private::gThreadSuite->mutexUnLock(_handle);
+        }
+        throwSuiteStatusException(stat);
     }
 
     /** @brief attempt to lock, non-blocking */
     bool Mutex::tryLock()
     {
-      OfxStatus stat = OFX::Private::gThreadSuite->mutexTryLock(_handle);
-      return stat == kOfxStatOK;            
+        OfxStatus stat = kOfxStatReplyDefault;
+        if(OFX::Private::gThreadSuite){
+            OFX::Private::gThreadSuite->mutexTryLock(_handle);
+        }
+        return stat == kOfxStatOK;
     }
 
   };
