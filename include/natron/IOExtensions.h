@@ -51,3 +51,18 @@
  - Valid Values - Any value >= 0.
  **/
 #define kOfxImageEffectPropFormatsCount "OfxImageEffectPropFormatsCount"
+
+/**
+ @brief Indicates for a string parameter that has the property kOfxParamPropStringMode set to kOfxParamStringIsFilePath
+ whether the file is an image/video file. For image readers, it indicates the input images files whereas for image writers
+ , it indicates the output images files.
+ - Type - int X 1
+ - Property Set - plugin string parameter descriptor (read/write) and instance (read only)
+ - Valid Values:
+    - 0 : The file path is not an image path.
+    - 1 : The file path is an image path.
+ - Default value - 0
+ 
+ **/
+#define kOfxParamFilePathIsImage "OfxParamFilePathIsImage"
+
