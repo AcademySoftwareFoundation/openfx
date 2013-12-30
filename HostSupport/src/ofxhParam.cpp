@@ -38,6 +38,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nuke/fnPublicOfxExtensions.h"
 #endif
 
+#ifdef OFX_EXTENSIONS_NATRON
+#include "natron/IOExtensions.h"
+#endif
+
 // ofx host
 #include "ofxhBinary.h"
 #include "ofxhPropertySuite.h"
