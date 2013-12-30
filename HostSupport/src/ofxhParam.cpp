@@ -283,9 +283,12 @@ namespace OFX {
 
 
              static Property::PropSpec allString[] = {
-               { kOfxParamPropStringMode,  Property::eString,    1,    false,    kOfxParamStringIsSingleLine },
+                 { kOfxParamPropStringMode,  Property::eString,    1,    false,    kOfxParamStringIsSingleLine },
                  { kOfxParamPropStringFilePathExists, Property::eInt,    1,    false,    "1" },
-               Property::propSpecEnd
+#ifdef OFX_EXTENSIONS_NATRON
+                 { kOfxParamFilePathIsImage, Property::eInt, 1, false, "0"},
+#endif
+                 Property::propSpecEnd
              };
 
              static Property::PropSpec allChoice[] = {
