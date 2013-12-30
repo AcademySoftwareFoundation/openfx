@@ -142,8 +142,10 @@ namespace OFX {
     /** @brief dtor */
     Mutex::~Mutex(void)
     {
-        OfxStatus stat = OFX::Private::gThreadSuite->mutexDestroy(_handle);
-        (void)stat;
+        OfxStatus stat = kOfxStatReplyDefault;
+        if(OFX::Private::gThreadSuite){
+            stat = OFX::Private::gThreadSuite->mutexDestroy(_handle);
+        }
     }
 
     /** @brief lock it, blocks until lock is gained */
