@@ -287,6 +287,7 @@ namespace OFX {
                  { kOfxParamPropStringFilePathExists, Property::eInt,    1,    false,    "1" },
 #ifdef OFX_EXTENSIONS_NATRON
                  { kOfxParamFilePathIsImage, Property::eInt, 1, false, "0"},
+                 { kOfxParamImageFilePathLoadNearest, Property::eInt, 1, false, "0"},
 #endif
                  Property::propSpecEnd
              };
