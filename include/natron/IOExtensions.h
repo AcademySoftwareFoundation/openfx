@@ -33,8 +33,6 @@
  78153 Le Chesnay Cedex - France
  
  */
-#include "ofxImageEffect.h"
-
 
 /**
 @brief Indicates what file formats a decoder/encoder can handle.
