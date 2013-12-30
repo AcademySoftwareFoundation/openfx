@@ -339,7 +339,8 @@ namespace OFX {
         //{ ".verbosityProp",                Property::eInt,        2, true, "0" }, // Unknown Nuke property
 #endif
 #ifdef OFX_EXTENSIONS_NATRON
-        { kOfxImageEffectPropFormatsDecoded, Property::eString,      0, false, ""}, //< Natron's IOExtensions.h
+        { kOfxImageEffectPropFormats, Property::eString,      0, false, ""}, //< Natron's IOExtensions.h
+        { kOfxImageEffectPropFormatsCount, Property::eInt,    1, false, "0"},
 #endif
         Property::propSpecEnd
       };

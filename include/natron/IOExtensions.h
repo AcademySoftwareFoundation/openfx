@@ -39,8 +39,17 @@
 /**
 @brief Indicates what file formats a decoder/encoder can handle.
  - Type - string X N
- - Property Set - image effect instance (read only)
+ - Property Set - image effect instance (read-write)
  - Valid Values - Any image or video file format extension
     e.g: "jpg" , "png", "avi", etc...
  **/
-#define kOfxImageEffectPropFormatsDecoded "OfxImageEffectPropFormatsDecoded"
+#define kOfxImageEffectPropFormats "OfxImageEffectPropFormats"
+
+/**
+ @brief Indicates how many strings are contained in kOfxImageEffectPropFormats
+ - Type - int X 1
+ - Property Set - image effect instance (read-write)
+ - Default - 0.
+ - Valid Values - Any value >= 0.
+ **/
+#define kOfxImageEffectPropFormatsCount "OfxImageEffectPropFormatsCount"
