@@ -75,7 +75,7 @@
  - Valid Values:
  - 0 : The getValueAtTime function gor this parameter should return an empty string if no image could be found at the given time.
  - 1 : The getValueAtTime function for this parameter should return the file name of the closest image in the sequence at the given time.
- - Default value - 0
+ - Default value - 1
  
  **/
 #define kOfxParamImageFilePathLoadNearest "OfxParamImageFilePathLoadNearest"
