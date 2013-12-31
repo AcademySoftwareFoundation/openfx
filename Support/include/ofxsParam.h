@@ -347,9 +347,11 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NATRON
         /**
          * @brief if the string param is a file path, say that this param is the one that we use to select image files we're going
-         * to read/write
+         * to read/write.
+         * If isOutput is true, the property kOfxParamImageFilePathIsOutput will be set to 1.
          **/
-        void setFilePathIsImage(bool v);
+        void setFilePathIsImage(bool v,bool isOutput);
+        
 #endif
     };
 

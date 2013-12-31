@@ -826,8 +826,9 @@ namespace OFX {
      * @brief if the string param is a file path, say that this param is the one that we use to select image files we're going
      * to read/write
      **/
-    void StringParamDescriptor::setFilePathIsImage(bool v){
+    void StringParamDescriptor::setFilePathIsImage(bool v,bool isOutput){
         _paramProps.propSetInt(kOfxParamFilePathIsImage,int(v));
+        _paramProps.propSetInt(kOfxParamImageFilePathIsOutput,int(isOutput));
     }
 #endif
 
