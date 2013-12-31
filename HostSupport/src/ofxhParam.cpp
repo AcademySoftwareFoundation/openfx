@@ -330,6 +330,13 @@ namespace OFX {
                Property::propSpecEnd
              };
 #endif
+               
+#ifdef OFX_EXTENSIONS_NATRON
+             static const Property::PropSpec allButton[] = {
+                { kOfxParamPropButtonIsRender,         Property::eInt,     1,  false, "0" },
+                Property::propSpecEnd
+              };
+#endif
 
              if (propType != Property::eNone) {
                addValueParamProps(type, propType, propDim);
@@ -362,6 +369,12 @@ namespace OFX {
              if (type == kOfxParamTypeGroup) {
                _properties.addProperties(allGroup);
              }
+               
+#ifdef OFX_EXTENSIONS_NATRON
+            if(type == kOfxParamTypePushButton) {
+                _properties.addProperties(allButton);
+            }
+#endif
 
 #ifdef OFX_SUPPORTS_PARAMETRIC
              if (type == kOfxParamTypeParametric) {
