@@ -107,3 +107,18 @@
  **/
 #define kOfxParamImageFilePathIsOutput "OfxParamImageFilePathIsOutput"
 
+
+/**
+ @brief Indicates for a button param that it is the render button of a writer. When pressed (i.e:
+ when calling instanceChangedAction on this parameter), the host should render all the frame range
+ returned by getTimeDomainAction.
+ - Type - int X 1
+ - Property Set - plugin button parameter descriptor (read/write) and instance (read only)
+ - Valid Values:
+ - 0 : The button is not the render button of a writer.
+ - 1 : The button is the render button of the writer.
+ - Default value - 0
+ 
+ **/
+#define kOfxParamPropButtonIsRender "OfxParamPropButtonIsRender"
+
