@@ -899,6 +899,16 @@ namespace OFX {
   {
   }
 
+#ifdef OFX_EXTENSIONS_NATRON
+    /**
+     * @brief Set the kOfxParamPropButtonIsRender property to true, indicating that this button is the
+     * render button of a writer. Whenever it is pressed, the whole frame range returned by getTimeDomainAction
+     * will be rendered.
+     **/
+    void PushButtonParamDescriptor::setAsRenderButton(){
+        _paramProps.propSetInt(kOfxParamPropButtonIsRender,1);
+    }
+#endif
   ////////////////////////////////////////////////////////////////////////////////
   // parametric param descriptor
 
