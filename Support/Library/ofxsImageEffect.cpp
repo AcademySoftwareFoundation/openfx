@@ -733,7 +733,7 @@ namespace OFX {
 
   No attempt made to be uber efficient here.
   */
-  void *Image::getPixelAddress(int x, int y)
+  void *Image::getPixelAddress(int x, int y) const
   {
     // are we in the image bounds
     if(x < _bounds.x1 || x >= _bounds.x2 || y < _bounds.y1 || y > _bounds.y2 || _pixelBytes == 0)

@@ -569,7 +569,7 @@ namespace OFX {
     If the components are custom, then this will return NULL as the support code
     can't know the pixel size to do the work.
     */
-    void *getPixelAddress(int x, int y);
+    void *getPixelAddress(int x, int y) const;
   };
 
   ////////////////////////////////////////////////////////////////////////////////
