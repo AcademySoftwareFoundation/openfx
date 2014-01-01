@@ -90,6 +90,10 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
         //{ ".length", Property::eDouble, 1, false, ""}, // Unknown Nuke property
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+        { kOfxImageEffectPropFormats, Property::eString,      0, false, ""}, //< Natron's IOExtensions.h
+        { kOfxImageEffectPropFormatsCount, Property::eInt,    1, false, "0"},
+#endif
         Property::propSpecEnd
       };
 
@@ -337,10 +341,6 @@ namespace OFX {
         { kOfxPropPluginDescription,            Property::eString,     1, true, ""},/*Added by Alex on 09/23/13*/
 #ifdef OFX_EXTENSIONS_NUKE
         //{ ".verbosityProp",                Property::eInt,        2, true, "0" }, // Unknown Nuke property
-#endif
-#ifdef OFX_EXTENSIONS_NATRON
-        { kOfxImageEffectPropFormats, Property::eString,      0, false, ""}, //< Natron's IOExtensions.h
-        { kOfxImageEffectPropFormatsCount, Property::eInt,    1, false, "0"},
 #endif
         Property::propSpecEnd
       };
