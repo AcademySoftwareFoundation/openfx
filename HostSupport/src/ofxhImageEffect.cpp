@@ -52,7 +52,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhParametricParam.h"
 #endif
 #ifdef OFX_EXTENSIONS_NATRON
-#include "IOExtensions.h"
+#include <natron/IOExtensions.h>
 #endif
 
 #include <string.h>
