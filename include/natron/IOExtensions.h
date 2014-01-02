@@ -41,7 +41,7 @@
  - Valid Values - Any image or video file format extension
     e.g: "jpg" , "png", "avi", etc...
  **/
-#define kOfxImageEffectPropFormats "OfxImageEffectPropFormats"
+#define kNatronImageEffectPropFormats "NatronImageEffectPropFormats"
 
 /**
  @brief Indicates how many strings are contained in kOfxImageEffectPropFormats
@@ -50,7 +50,7 @@
  - Default - 0.
  - Valid Values - Any value >= 0.
  **/
-#define kOfxImageEffectPropFormatsCount "OfxImageEffectPropFormatsCount"
+#define kNatronImageEffectPropFormatsCount "NatronImageEffectPropFormatsCount"
 
 /**
  @brief Indicates for a string parameter that has the property kOfxParamPropStringMode set to kOfxParamStringIsFilePath
@@ -64,7 +64,7 @@
  - Default value - 0
  
  **/
-#define kOfxParamFilePathIsImage "OfxParamFilePathIsImage"
+#define kNatronParamFilePathIsImage "NatronParamFilePathIsImage"
 
 /**
  @brief Indicates for a string parameter that has the property kOfxParamFilePathIsImage set to 1
@@ -78,11 +78,11 @@
  - Default value - 1
  
  **/
-#define kOfxParamImageFilePathLoadNearest "OfxParamImageFilePathLoadNearest"
+#define kNatronParamImageFilePathLoadNearest "NatronParamImageFilePathLoadNearest"
 
 /**
- @brief Indicates for a string parameter that has the property kOfxParamFilePathIsImage set to 1 whether the file
- is an output image or not. 
+ @brief Indicates for a string parameter that has the property  kOfxParamPropStringMode set to kOfxParamStringIsFilePath whether the file
+ is an output file or not.
  If so, then the getValueAtTime() function should return the path, where all '#' characters have been replaced by the time
  that was given in parameter. If the time contains less digits than the number of '#' digits, the left # digits should
  be replaced with 0's. The '#' characters MUST be placed right before the '.' character separating the file extension and its path.
@@ -105,7 +105,7 @@
  - Default value - 0
  
  **/
-#define kOfxParamImageFilePathIsOutput "OfxParamImageFilePathIsOutput"
+#define kNatronParamFilePathIsOutput "NatronParamFilePathIsOutput"
 
 
 /**
@@ -120,5 +120,5 @@
  - Default value - 0
  
  **/
-#define kOfxParamPropButtonIsRender "OfxParamPropButtonIsRender"
+#define kNatronParamPropButtonIsRender "NatronParamPropButtonIsRender"
 
