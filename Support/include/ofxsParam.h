@@ -348,9 +348,15 @@ namespace OFX {
         /**
          * @brief if the string param is a file path, say that this param is the one that we use to select image files we're going
          * to read/write.
-         * If isOutput is true, the property kOfxParamImageFilePathIsOutput will be set to 1.
+         * If isOutput is true, the property kNatronParamImageFilePathIsOutput will be set to 1.
          **/
-        void setFilePathIsImage(bool v,bool isOutput);
+        void setFilePathIsImage(bool v);
+        
+        /**
+         * @brief if the string param is a file path and v is true then it indicates to the host that this file path
+         * is an output file path.
+         **/
+        void setFilePathIsOutput(bool v);
         
 #endif
     };
@@ -711,7 +717,7 @@ namespace OFX {
     public :
 #ifdef OFX_EXTENSIONS_NATRON
         /**
-         * @brief Set the kOfxParamPropButtonIsRender property to true, indicating that this button is the
+         * @brief Set the kNatronParamPropButtonIsRender property to true, indicating that this button is the
          * render button of a writer. Whenever it is pressed, the whole frame range returned by getTimeDomainAction
          * will be rendered.
          **/

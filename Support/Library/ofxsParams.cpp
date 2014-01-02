@@ -822,13 +822,12 @@ namespace OFX {
   }
     
 #ifdef OFX_EXTENSIONS_NATRON
-    /**
-     * @brief if the string param is a file path, say that this param is the one that we use to select image files we're going
-     * to read/write
-     **/
-    void StringParamDescriptor::setFilePathIsImage(bool v,bool isOutput){
-        _paramProps.propSetInt(kOfxParamFilePathIsImage,int(v));
-        _paramProps.propSetInt(kOfxParamImageFilePathIsOutput,int(isOutput));
+    void StringParamDescriptor::setFilePathIsImage(bool v) {
+        _paramProps.propSetInt(kNatronParamFilePathIsImage,int(v));
+    }
+    
+    void StringParamDescriptor::setFilePathIsOutput(bool v) {
+        _paramProps.propSetInt(kNatronParamFilePathIsOutput,int(v));
     }
 #endif
 
@@ -901,12 +900,12 @@ namespace OFX {
 
 #ifdef OFX_EXTENSIONS_NATRON
     /**
-     * @brief Set the kOfxParamPropButtonIsRender property to true, indicating that this button is the
+     * @brief Set the kNatronParamPropButtonIsRender property to true, indicating that this button is the
      * render button of a writer. Whenever it is pressed, the whole frame range returned by getTimeDomainAction
      * will be rendered.
      **/
     void PushButtonParamDescriptor::setAsRenderButton(){
-        _paramProps.propSetInt(kOfxParamPropButtonIsRender,1);
+        _paramProps.propSetInt(kNatronParamPropButtonIsRender,1);
     }
 #endif
   ////////////////////////////////////////////////////////////////////////////////
@@ -2287,7 +2286,7 @@ namespace OFX {
 
 #ifdef OFX_EXTENSIONS_NATRON
     void StringParam::setImageFilePathShouldLoadNearestFrame(bool b){
-        _paramProps.propSetInt(kOfxParamImageFilePathLoadNearest, int(b), 0);
+        _paramProps.propSetInt(kNatronParamImageFilePathLoadNearest, int(b), 0);
     }
 #endif
     
