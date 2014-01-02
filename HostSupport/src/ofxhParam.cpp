@@ -290,9 +290,9 @@ namespace OFX {
                  { kOfxParamPropStringMode,  Property::eString,    1,    false,    kOfxParamStringIsSingleLine },
                  { kOfxParamPropStringFilePathExists, Property::eInt,    1,    false,    "1" },
 #ifdef OFX_EXTENSIONS_NATRON
-                 { kOfxParamFilePathIsImage, Property::eInt, 1, false, "0"},
-                 { kOfxParamImageFilePathIsOutput, Property::eInt, 1, false,"0"},
-                 { kOfxParamImageFilePathLoadNearest, Property::eInt, 1, false, "1"},
+                 { kNatronParamFilePathIsImage, Property::eInt, 1, false, "0"},
+                 { kNatronParamFilePathIsOutput, Property::eInt, 1, false,"0"},
+                 { kNatronParamImageFilePathLoadNearest, Property::eInt, 1, false, "1"},
 #endif
                  Property::propSpecEnd
              };
@@ -333,7 +333,7 @@ namespace OFX {
                
 #ifdef OFX_EXTENSIONS_NATRON
              static const Property::PropSpec allButton[] = {
-                { kOfxParamPropButtonIsRender,         Property::eInt,     1,  false, "0" },
+                { kNatronParamPropButtonIsRender,         Property::eInt,     1,  false, "0" },
                 Property::propSpecEnd
               };
 #endif

@@ -91,8 +91,8 @@ namespace OFX {
         //{ ".length", Property::eDouble, 1, false, ""}, // Unknown Nuke property
 #endif
 #ifdef OFX_EXTENSIONS_NATRON
-        { kOfxImageEffectPropFormats, Property::eString,      0, false, ""}, //< Natron's IOExtensions.h
-        { kOfxImageEffectPropFormatsCount, Property::eInt,    1, false, "0"},
+        { kNatronImageEffectPropFormats, Property::eString,      0, false, ""}, //< Natron's IOExtensions.h
+        { kNatronImageEffectPropFormatsCount, Property::eInt,    1, false, "0"},
 #endif
         Property::propSpecEnd
       };

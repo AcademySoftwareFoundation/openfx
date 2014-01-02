@@ -44,7 +44,7 @@
 #define kNatronImageEffectPropFormats "NatronImageEffectPropFormats"
 
 /**
- @brief Indicates how many strings are contained in kOfxImageEffectPropFormats
+ @brief Indicates how many strings are contained in kNatronImageEffectPropFormats
  - Type - int X 1
  - Property Set - image effect descriptor (read-write)
  - Default - 0.
@@ -67,7 +67,7 @@
 #define kNatronParamFilePathIsImage "NatronParamFilePathIsImage"
 
 /**
- @brief Indicates for a string parameter that has the property kOfxParamFilePathIsImage set to 1
+ @brief Indicates for a string parameter that has the property kNatronParamFilePathIsImage set to 1
  whether the getValueAtTime function should return the nearest image in the sequence if it wasn't found, or
  return an empty string otherwise.
  - Type - int X 1
