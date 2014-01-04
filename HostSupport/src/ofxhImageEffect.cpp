@@ -2289,7 +2289,7 @@ namespace OFX {
       // Forward all multithread suite calls to the host implementation.
  
       static OfxStatus multiThread(OfxThreadFunctionV1 func,
-                                   unsigned int /*nThreads*/,
+                                   unsigned int nThreads,
                                    void *customArg)
       {
         return gImageEffectHost->multiThread(func, nThreads, customArg);
@@ -2308,7 +2308,7 @@ namespace OFX {
         return gImageEffectHost->multiThreadIsSpawnedThread();
       }
 
-      static OfxStatus mutexCreate(OfxMutexHandle *mutex, int /*lockCount*/)
+      static OfxStatus mutexCreate(OfxMutexHandle *mutex, int lockCount)
       {
         return gImageEffectHost->mutexCreate(mutex, lockCount);
       }
