@@ -912,7 +912,9 @@ namespace OFX {
     OfxPointD            renderScale; /**< the renderscale on the instance */
   };
 
-  /** @brief POD struct to pass arguments into @ref OFX::ImageEffect::interpolateCustomParam */
+  /** @brief struct to pass arguments into @ref OFX::ImageEffect::interpolateCustomParam.
+  It is non-POD (it contains std::string), but it is passed as const ref, so that does
+  not matter */
   struct InterpolateCustomArgs {
     double      time;
     std::string value1;
