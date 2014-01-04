@@ -113,31 +113,31 @@ namespace OFX {
         //
 
         /// @see OfxMultiThreadSuiteV1.multiThread()
-        virtual OfxStatus multiThread(OfxThreadFunctionV1 /*func*/,unsigned int /*nThreads*/, void */*customArg*/) = 0;
+        virtual OfxStatus multiThread(OfxThreadFunctionV1 func,unsigned int nThreads, void *customArg) = 0;
           
         /// @see OfxMultiThreadSuiteV1.multiThreadNumCPUS()
-        virtual OfxStatus multiThreadNumCPUS(unsigned int */*nCPUs*/) const = 0;
+        virtual OfxStatus multiThreadNumCPUS(unsigned int *nCPUs) const = 0;
 
         /// @see OfxMultiThreadSuiteV1.multiThreadIndex()
-        virtual OfxStatus multiThreadIndex(unsigned int */*threadIndex*/) const = 0;
+        virtual OfxStatus multiThreadIndex(unsigned int *threadIndex) const = 0;
           
         /// @see OfxMultiThreadSuiteV1.multiThreadIsSpawnedThread()
         virtual int multiThreadIsSpawnedThread() const = 0;
           
         /// @see OfxMultiThreadSuiteV1.mutexCreate()
-        virtual OfxStatus mutexCreate(OfxMutexHandle */*mutex*/, int /*lockCount*/) const = 0;
+        virtual OfxStatus mutexCreate(OfxMutexHandle *mutex, int lockCount) = 0;
           
         /// @see OfxMultiThreadSuiteV1.mutexDestroy()
-        virtual OfxStatus mutexDestroy(const OfxMutexHandle /*mutex*/) const = 0;
+        virtual OfxStatus mutexDestroy(const OfxMutexHandle mutex) = 0;
 
         /// @see OfxMultiThreadSuiteV1.mutexLock()
-        virtual OfxStatus mutexLock(const OfxMutexHandle /*mutex*/) const = 0;
+        virtual OfxStatus mutexLock(const OfxMutexHandle mutex) = 0;
           
         /// @see OfxMultiThreadSuiteV1.mutexUnLock()
-        virtual OfxStatus mutexUnLock(const OfxMutexHandle /*mutex*/) const = 0;
+        virtual OfxStatus mutexUnLock(const OfxMutexHandle mutex) = 0;
           
         /// @see OfxMultiThreadSuiteV1.mutexTryLock()
-        virtual OfxStatus mutexTryLock(const OfxMutexHandle/* mutex*/) const = 0;
+        virtual OfxStatus mutexTryLock(const OfxMutexHandle mutex) = 0;
 #endif // OFX_SUPPORTS_MULTITHREAD
       };
 
