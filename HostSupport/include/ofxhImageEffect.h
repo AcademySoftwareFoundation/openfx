@@ -106,105 +106,39 @@ namespace OFX {
         /// Override this to initialise an image effect descriptor after it has been
         /// created.
         virtual void initDescriptor(Descriptor* desc);
+
+#ifdef OFX_SUPPORTS_MULTITHREAD
+        // these functions must be implemented if the host supports OfxMultiThreadSuiteV1
+        // all the following functions are described in ofxMultiThread.h
+        //
+
+        /// @see OfxMultiThreadSuiteV1.multiThread()
+        virtual OfxStatus multiThread(OfxThreadFunctionV1 /*func*/,unsigned int /*nThreads*/, void */*customArg*/) = 0;
           
+        /// @see OfxMultiThreadSuiteV1.multiThreadNumCPUS()
+        virtual OfxStatus multiThreadNumCPUS(unsigned int */*nCPUs*/) const = 0;
+
+        /// @see OfxMultiThreadSuiteV1.multiThreadIndex()
+        virtual OfxStatus multiThreadIndex(unsigned int */*threadIndex*/) const = 0;
           
-          ////functions to implement for the multi-thread suite
-          ////see the corresponding functions in ofxMultiThread.h
-        virtual bool implementsMultiThreadSuite() const { return false; }
+        /// @see OfxMultiThreadSuiteV1.multiThreadIsSpawnedThread()
+        virtual int multiThreadIsSpawnedThread() const = 0;
           
-          /**@brief Function to spawn SMP threads
-           
-           \arg func The function to call in each thread.
-           \arg nThreads The number of threads to launch
-           \arg customArg The paramter to pass to customArg of func in each thread.
-           
-           This function will spawn nThreads separate threads of computation (typically one per CPU)
-           to allow something to perform symmetric multi processing. Each thread will call 'func' passing
-           in the index of the thread and the number of threads actually launched.
-           
-           multiThread will not return until all the spawned threads have returned. It is up to the host
-           how it waits for all the threads to return (busy wait, blocking, whatever).
-           
-           \e nThreads can be more than the value returned by multiThreadNumCPUs, however the threads will
-           be limitted to the number of CPUs returned by multiThreadNumCPUs.
-           
-           This function cannot be called recursively.
-           
-           @returns
-           - ::kOfxStatOK, the function func has executed and returned sucessfully
-           - ::kOfxStatFailed, the threading function failed to launch
-           - ::kOfxStatErrExists, failed in an attempt to call multiThread recursively,
-           
-           */
-        virtual OfxStatus multiThread(OfxThreadFunctionV1 /*func*/,unsigned int /*nThreads*/, void */*customArg*/){ return kOfxStatFailed; }
+        /// @see OfxMultiThreadSuiteV1.mutexCreate()
+        virtual OfxStatus mutexCreate(OfxMutexHandle */*mutex*/, int /*lockCount*/) const = 0;
           
-          /**@brief Function which indicates the number of CPUs available for SMP processing
-           
-           \arg nCPUs pointer to an integer where the result is returned
-           
-           This value may be less than the actual number of CPUs on a machine, as the host may reserve other CPUs for itself.
-           */
-        virtual void multiThreadNumCPUS(unsigned int */*nCPUs*/) const {}
+        /// @see OfxMultiThreadSuiteV1.mutexDestroy()
+        virtual OfxStatus mutexDestroy(const OfxMutexHandle /*mutex*/) const = 0;
+
+        /// @see OfxMultiThreadSuiteV1.mutexLock()
+        virtual void mutexLock(const OfxMutexHandle /*mutex*/) const = 0;
           
-          /**@brief Function which indicates the index of the current thread
-           
-           \arg threadIndex  pointer to an integer where the result is returned
-           
-           This function returns the thread index, which is the same as the \e threadIndex argument passed to the ::OfxThreadFunctionV1.
-           
-           If there are no threads currently spawned, then this function will set threadIndex to 0
-           */
-        virtual void multiThreadIndex(unsigned int */*threadIndex*/) const {}
+        /// @see OfxMultiThreadSuiteV1.mutexUnLock()
+        virtual void mutexUnLock(const OfxMutexHandle /*mutex*/) const = 0;
           
-          /**@brief Function to enquire if the calling thread was spawned by multiThread
-           
-           @returns
-           - false if the thread is not one spawned by multiThread
-           - true if the thread was spawned by multiThread
-           */
-        virtual bool multiThreadIsSpawnedThread() const{ return false; }
-          
-          /** @brief Create a mutex
-           
-           \arg mutex - where the new handle is returned
-           \arg count - initial lock count on the mutex. This can be negative.
-           
-           Creates a new mutex with lockCount locks on the mutex intially set.
-           */
-        virtual void mutexCreate(OfxMutexHandle */*mutex*/, int /*lockCount*/) const {}
-          
-          /** @brief Destroy a mutex
-           
-           Destroys a mutex intially created by mutexCreate.
-           */
-        virtual void mutexDestroy(const OfxMutexHandle /*mutex*/) const {}
-          
-          /** @brief Blocking lock on the mutex
-           
-           This trys to lock a mutex and blocks the thread it is in until the lock suceeds.
-           
-           A sucessful lock causes the mutex's lock count to be increased by one and to block any other calls to lock the mutex until it is unlocked.
-           */
-        virtual void mutexLock(const OfxMutexHandle /*mutex*/) const {}
-          
-          /** @brief Unlock the mutex
-           
-           This  unlocks a mutex. Unlocking a mutex decreases its lock count by one.
-           
-           */
-        virtual void mutexUnLock(const OfxMutexHandle /*mutex*/) const {}
-          
-          /** @brief Non blocking attempt to lock the mutex
-           
-           This attempts to lock a mutex, if it cannot, it returns and says so, rather than blocking.
-           
-           A sucessful lock causes the mutex's lock count to be increased by one, if the lock did not suceed, the call returns immediately and the lock count remains unchanged.
-           
-           @returns
-           - kOfxStatOK - if it got the lock
-           - kOfxStatFailed - if it did not get the lock
-           */
-        virtual OfxStatus mutexTryLock(const OfxMutexHandle/* mutex*/) const { return kOfxStatFailed; }
+        /// @see OfxMultiThreadSuiteV1.mutexTryLock()
+        virtual OfxStatus mutexTryLock(const OfxMutexHandle/* mutex*/) const = 0;
+#endif // OFX_SUPPORTS_MULTITHREAD
       };
 
       /// our global host object, set when the plugin cache is created
