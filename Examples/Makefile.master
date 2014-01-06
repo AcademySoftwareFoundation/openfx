@@ -24,6 +24,11 @@ default: $(OBJECTPATH)/$(PLUGINNAME).ofx
     endif
   else
     LINKFLAGS = -bundle -all_load -exported_symbols_list $(PATHTOROOT)/include/osxSymbols -framework opengl
+    ifeq ($(BITS), Universal)
+      # Universal 32/64 is useful only on OSX 10.5 and 10.6. Default to 10.6. (it can be changed with "make MACOSX=10.5")
+      MACOSX := 10.6
+      BITSFLAG = -isysroot /Developer/SDKs/MacOSX$(MACOSX).sdk -arch i386 -arch x86_64 -mmacosx-version-min=$(MACOSX)
+    endif
     ARCH = MacOS
   endif
 	
