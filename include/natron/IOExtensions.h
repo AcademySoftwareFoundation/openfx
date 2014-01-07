@@ -66,10 +66,6 @@
  **/
 #define kNatronParamFilePathIsImage "NatronParamFilePathIsImage"
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 903704877278dbb7830824b8e6a0826d76abb19a
 /**
  @brief Indicates for a string parameter that has the property  kOfxParamPropStringMode set to kOfxParamStringIsFilePath whether the file
  is an output file or not.
