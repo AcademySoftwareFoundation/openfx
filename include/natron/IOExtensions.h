@@ -67,20 +67,6 @@
 #define kNatronParamFilePathIsImage "NatronParamFilePathIsImage"
 
 /**
- @brief Indicates for a string parameter that has the property kNatronParamFilePathIsImage set to 1
- whether the getValueAtTime function should return the nearest image in the sequence if it wasn't found, or
- return an empty string otherwise.
- - Type - int X 1
- - Property Set - plugin string parameter descriptor (read/write) and instance (read only)
- - Valid Values:
- - 0 : The getValueAtTime function gor this parameter should return an empty string if no image could be found at the given time.
- - 1 : The getValueAtTime function for this parameter should return the file name of the closest image in the sequence at the given time.
- - Default value - 1
- 
- **/
-#define kNatronParamImageFilePathLoadNearest "NatronParamImageFilePathLoadNearest"
-
-/**
  @brief Indicates for a string parameter that has the property  kOfxParamPropStringMode set to kOfxParamStringIsFilePath whether the file
  is an output file or not.
  If so, then the getValueAtTime() function should return the path, where all '#' characters have been replaced by the time

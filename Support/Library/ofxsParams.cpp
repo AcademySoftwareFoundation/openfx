@@ -2284,13 +2284,6 @@ namespace OFX {
     throwSuiteStatusException(stat);
   }
 
-#ifdef OFX_EXTENSIONS_NATRON
-  void StringParam::setImageFilePathShouldLoadNearestFrame(bool b)
-  {
-    _paramProps.propSetInt(kNatronParamImageFilePathLoadNearest, int(b), 0);
-  }
-#endif
-    
   ////////////////////////////////////////////////////////////////////////////////
   // Wraps up a Boolean integer param */
 

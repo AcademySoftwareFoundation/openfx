@@ -292,7 +292,6 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NATRON
           { kNatronParamFilePathIsImage, Property::eInt, 1, false, "0"},
           { kNatronParamFilePathIsOutput, Property::eInt, 1, false,"0"},
-          { kNatronParamImageFilePathLoadNearest, Property::eInt, 1, false, "1"},
 #endif
           Property::propSpecEnd
         };
