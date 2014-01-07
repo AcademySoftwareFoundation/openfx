@@ -1510,6 +1510,10 @@ namespace OFX {
 
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, const std::string &v);
+<<<<<<< HEAD
+=======
+        
+>>>>>>> 903704877278dbb7830824b8e6a0826d76abb19a
     };
 
     ////////////////////////////////////////////////////////////////////////////////
