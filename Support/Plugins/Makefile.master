@@ -54,7 +54,8 @@ default: $(OBJECTPATH)/$(PLUGINNAME).ofx
 	mkdir -p  $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle/Contents/$(ARCH)
 	cp  $(OBJECTPATH)/$(PLUGINNAME).ofx  $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle/Contents/$(ARCH)
 	cp  Info.plist  $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle/Contents/
-	test $(ARCH) = "MacOS" && bash $(PATHTOROOT)/include/osxDeploy.sh $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle $(PLUGINNAME).ofx
+	if [$(ARCH) = "MacOS"]; then bash $(PATHTOROOT)/include/osxDeploy.sh $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle $(PLUGINNAME).ofx;
+fi
 
 clean :
 	rm -rf $(SUPPORTOBJECTS) $(OBJECTPATH)/ $(PATHTOROOT)/Library/$(OBJECTPATH)/ 
