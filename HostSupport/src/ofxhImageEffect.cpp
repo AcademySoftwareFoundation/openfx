@@ -92,7 +92,6 @@ namespace OFX {
 #endif
 #ifdef OFX_EXTENSIONS_NATRON
         { kNatronImageEffectPropFormats, Property::eString,      0, false, ""}, //< Natron's IOExtensions.h
-        { kNatronImageEffectPropFormatsCount, Property::eInt,    1, false, "0"},
 #endif
         Property::propSpecEnd
       };

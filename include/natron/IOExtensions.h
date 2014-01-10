@@ -44,15 +44,6 @@
 #define kNatronImageEffectPropFormats "NatronImageEffectPropFormats"
 
 /**
- @brief Indicates how many strings are contained in kNatronImageEffectPropFormats
- - Type - int X 1
- - Property Set - image effect descriptor (read-write)
- - Default - 0.
- - Valid Values - Any value >= 0.
- **/
-#define kNatronImageEffectPropFormatsCount "NatronImageEffectPropFormatsCount"
-
-/**
  @brief Indicates for a string parameter that has the property kOfxParamPropStringMode set to kOfxParamStringIsFilePath
  whether the file is an image/video file. For image readers, it indicates the input images files whereas for image writers
  , it indicates the output images files.
