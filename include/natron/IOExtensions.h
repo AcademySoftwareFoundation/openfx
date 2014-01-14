@@ -83,6 +83,7 @@
  
  **/
 #define kNatronParamFilePathIsOutput "NatronParamFilePathIsOutput"
+<<<<<<< HEAD
 
 /**
  @brief Indicates for a string parameter that has the property kNatronParamFilePathIsImage set to 1
@@ -93,6 +94,8 @@
  - Default value - (INT_MIN,INT_MAX), indicating to the plugin that the host doesn't know this property.
  **/
 #define kNatronImageSequenceRange "NatronImageSequenceRange"
+=======
+>>>>>>> parent of 0dbfbff... Remove useless kNatronParamFilePathIsOutput extension (let the GenericWriter do the output file name)
 
 
 /**
