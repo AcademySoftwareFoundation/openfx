@@ -826,9 +826,6 @@ namespace OFX {
         _paramProps.propSetInt(kNatronParamFilePathIsImage,int(v));
     }
     
-    void StringParamDescriptor::setFilePathIsOutput(bool v) {
-        _paramProps.propSetInt(kNatronParamFilePathIsOutput,int(v));
-    }
 #endif
 
   ////////////////////////////////////////////////////////////////////////////////

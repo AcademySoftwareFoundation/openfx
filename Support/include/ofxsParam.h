@@ -352,12 +352,6 @@ namespace OFX {
          **/
         void setFilePathIsImage(bool v);
         
-        /**
-         * @brief if the string param is a file path and v is true then it indicates to the host that this file path
-         * is an output file path.
-         **/
-        void setFilePathIsOutput(bool v);
-        
 #endif
     };
 
