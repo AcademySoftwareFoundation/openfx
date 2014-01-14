@@ -291,10 +291,14 @@ namespace OFX {
           { kOfxParamPropStringFilePathExists, Property::eInt,    1,    false,    "1" },
 #ifdef OFX_EXTENSIONS_NATRON
           { kNatronParamFilePathIsImage, Property::eInt, 1, false, "0"},
+          { kNatronImageSequenceRange, Property::eInt, 1, false, ""},
 #endif
           Property::propSpecEnd
         };
-    
+#ifdef OFX_EXTENSIONS_NATRON
+        _properties.setIntProperty(kNatronImageSequenceRange,INT_MIN,0);
+        _properties.setIntProperty(kNatronImageSequenceRange,INT_MAX,1);
+#endif
         static Property::PropSpec allChoice[] = {
           { kOfxParamPropChoiceOption,    Property::eString,    0,    false,    "" },
           { kOfxParamPropChoiceLabelOption, Property::eString,  0,    false,    "" },

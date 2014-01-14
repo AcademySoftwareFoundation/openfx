@@ -58,6 +58,16 @@
 #define kNatronParamFilePathIsImage "NatronParamFilePathIsImage"
 
 
+/**
+ @brief Indicates for a string parameter that has the property kNatronParamFilePathIsImage set to 1
+ the frame range of the image sequence. This can be used by the host to inform the readers about
+ the frame range of the string param.
+ - Type - int X 2
+ - Property Set - plugin string parameter descriptor (read/write) and instance (read write)
+ - Default value - (INT_MIN,INT_MAX), indicating to the plugin that the host doesn't know this property.
+ **/
+#define kNatronImageSequenceRange "NatronImageSequenceRange"
+
 
 /**
  @brief Indicates for a button param that it is the render button of a writer. When pressed (i.e:
