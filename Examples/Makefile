@@ -1,11 +1,15 @@
 SUBDIRS = Basic Custom DepthConverter Invert OpenGL Overlay Rectangle Test
 
-default: 
-	@ echo making sub projects... $(SUBDIRS)
-	for i in $(SUBDIRS) ; do cd $$i; make ; cd ..; done
+all: subdirs
 
-clean:
-	for i in $(SUBDIRS) ; do cd $$i; make clean; cd ..; done
+.PHONY: subdirs clean $(SUBDIRS)
 
-release:
-	for i in $(SUBDIRS) ; do cd $$i; make release; cd ..; done
+subdirs: $(SUBDIRS)
+
+$(SUBDIRS):
+	$(MAKE) -C $@
+
+clean :
+	for i in $(SUBDIRS) ; do \
+	  $(MAKE) -C $$i clean; \
+	done
