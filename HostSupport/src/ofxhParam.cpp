@@ -291,7 +291,7 @@ namespace OFX {
           { kOfxParamPropStringFilePathExists, Property::eInt,    1,    false,    "1" },
 #ifdef OFX_EXTENSIONS_NATRON
           { kNatronParamFilePathIsImage, Property::eInt, 1, false, "0"},
-          { kNatronImageSequenceRange, Property::eInt, 1, false, ""},
+          { kNatronImageSequenceRange, Property::eInt, 2, false, ""},
           { kNatronParamFilePathIsOutput, Property::eInt, 1, false,"0"},
 #endif
           Property::propSpecEnd
