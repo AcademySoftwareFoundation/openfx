@@ -291,7 +291,11 @@ namespace OFX {
           { kOfxParamPropStringFilePathExists, Property::eInt,    1,    false,    "1" },
 #ifdef OFX_EXTENSIONS_NATRON
           { kNatronParamFilePathIsImage, Property::eInt, 1, false, "0"},
+<<<<<<< HEAD
           { kNatronImageSequenceRange, Property::eInt, 1, false, ""},
+=======
+          { kNatronParamFilePathIsOutput, Property::eInt, 1, false,"0"},
+>>>>>>> parent of 0dbfbff... Remove useless kNatronParamFilePathIsOutput extension (let the GenericWriter do the output file name)
 #endif
           Property::propSpecEnd
         };
