@@ -60,19 +60,6 @@
 /**
  @brief Indicates for a string parameter that has the property  kOfxParamPropStringMode set to kOfxParamStringIsFilePath whether the file
  is an output file or not.
- If so, then the getValueAtTime() function should return the path, where all '#' characters have been replaced by the time
- that was given in parameter. If the time contains less digits than the number of '#' digits, the left # digits should
- be replaced with 0's. The '#' characters MUST be placed right before the '.' character separating the file extension and its path.
- It is an error if they are placed elsewhere.
- 
- For example: pathToFile/file#.jpg is valid, whereas pathToFile/#file.jpg is not.
- 
- Note that a file path without '#' charaters are perfectly valid, and the host should automatically append the time value
- right after the file path and before the '.' character separating the path from the extension.
- For instance, the following path pathToFile/file.jpg should be replaced at time 14 by 
- pathToFile/file14.jpg.
- If the path was pathToFile/file####.jpg instead, the resulting string at time 14 should be
- pathToFile/file0014.jpg instead.
  
  - Type - int X 1
  - Property Set - plugin string parameter descriptor (read/write) and instance (read only)
@@ -83,7 +70,6 @@
  
  **/
 #define kNatronParamFilePathIsOutput "NatronParamFilePathIsOutput"
-<<<<<<< HEAD
 
 /**
  @brief Indicates for a string parameter that has the property kNatronParamFilePathIsImage set to 1
@@ -94,8 +80,6 @@
  - Default value - (INT_MIN,INT_MAX), indicating to the plugin that the host doesn't know this property.
  **/
 #define kNatronImageSequenceRange "NatronImageSequenceRange"
-=======
->>>>>>> parent of 0dbfbff... Remove useless kNatronParamFilePathIsOutput extension (let the GenericWriter do the output file name)
 
 
 /**
