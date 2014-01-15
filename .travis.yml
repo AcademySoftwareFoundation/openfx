@@ -3,8 +3,8 @@ compiler:
   - gcc
   - clang
 script:
-  - make -C HostSupport DEBUGFLAGS=-O3 BITS=64
-  - make -C Examples DEBUGFLAGS=-O3 BITS=64
-  - make -C Support/Plugins DEBUGFLAGS=-O3 BITS=64
-  - make -C Support/PropTester DEBUGFLAGS=-O3 BITS=64
+  - make -C HostSupport DEBUGFLAG=-O3 BITS=64
+  - make -C Examples DEBUGFLAG=-O3 BITS=64
+  - make -C Support/Plugins DEBUGFLAG=-O3 BITS=64
+  - make -C Support/PropTester DEBUGFLAG=-O3 BITS=64
 
