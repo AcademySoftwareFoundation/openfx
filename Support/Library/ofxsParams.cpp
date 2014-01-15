@@ -2283,6 +2283,13 @@ namespace OFX {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, v.c_str());
     throwSuiteStatusException(stat);
   }
+    
+#ifdef OFX_EXTENSIONS_NATRON
+   void StringParam::getImageSequenceRange(int& first,int &last) const {
+       first = _paramProps.propGetInt(kNatronImageSequenceRange,0,true);
+       last = _paramProps.propGetInt(kNatronImageSequenceRange,1,true);
+   }
+#endif
 
   ////////////////////////////////////////////////////////////////////////////////
   // Wraps up a Boolean integer param */
