@@ -749,6 +749,13 @@ namespace OFX {
       // ChoiceInstance
       //
 
+      /// make a parameter, with the given type and name
+      ChoiceInstance::ChoiceInstance(Descriptor& descriptor, Param::SetInstance* paramSet) 
+        : Instance(descriptor,instance)
+      {
+        _properties.addNotifyHook(kOfxParamPropChoiceOption, this);
+      }
+
       // callback which should set option as appropriate
       void ChoiceInstance::setOption(int /*num*/)
       {

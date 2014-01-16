@@ -316,7 +316,7 @@ namespace OFX {
 
       class ChoiceInstance : public Instance, public KeyframeParam {
       public:
-        ChoiceInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
+        ChoiceInstance(Descriptor& descriptor, Param::SetInstance* instance = 0);
 
         // callback which should set option as appropriate
         virtual void setOption(int num);
