@@ -162,7 +162,7 @@ customParamInterpFunction(OfxImageEffectHandle instance,
   // now encode the value and set it 
   char str[1024];
   writeCustomParam(str, 1024, x, y);
-  gPropHost->propSetString(inArgs, kOfxParamPropCustomValue, 0, str);
+  gPropHost->propSetString(outArgs, kOfxParamPropCustomValue, 0, str);
 
   return kOfxStatOK;
 }
