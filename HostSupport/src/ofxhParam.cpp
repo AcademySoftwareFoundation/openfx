@@ -748,6 +748,12 @@ namespace OFX {
       //
       // ChoiceInstance
       //
+
+      // callback which should set option as appropriate
+      void ChoiceInstance::setOption(int /*num*/)
+      {
+      }
+
       /// implementation of var args function
       OfxStatus ChoiceInstance::getV(va_list arg)
       {
@@ -794,6 +800,14 @@ namespace OFX {
         return set(time, value);
       }
       
+      /// overridden from Instance
+      void ChoiceInstance::notify(const std::string &name, bool single, int num) OFX_EXCEPTION_SPEC
+      {
+        Instance::notify(name, single, num);
+        if (name == kOfxParamPropChoiceOption) {
+          setOption(num);
+        }
+      }
       //
       // IntegerInstance
       //

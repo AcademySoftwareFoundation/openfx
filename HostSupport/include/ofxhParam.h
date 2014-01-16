@@ -318,6 +318,9 @@ namespace OFX {
       public:
         ChoiceInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
 
+        // callback which should set option as appropriate
+        virtual void setOption(int num);
+
         // Deriving implementatation needs to overide these 
         virtual OfxStatus get(int&) = 0;
         virtual OfxStatus get(OfxTime time, int&) = 0;
@@ -335,6 +338,9 @@ namespace OFX {
 
         /// implementation of var args function
         virtual OfxStatus setV(OfxTime time, va_list arg);
+
+        /// overridden from Instance
+        virtual void notify(const std::string &name, bool single, int num) OFX_EXCEPTION_SPEC;
       };
 
       class DoubleInstance : public Instance, public KeyframeParam {
