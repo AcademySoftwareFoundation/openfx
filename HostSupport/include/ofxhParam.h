@@ -182,7 +182,7 @@ namespace OFX {
       class SetInstance;
 
       /// the description of a plugin parameter
-      class Instance : public Base, private Property::NotifyHook {
+      class Instance : public Base, protected Property::NotifyHook {
         Instance();  
       protected:
         SetInstance*  _paramSetInstance;

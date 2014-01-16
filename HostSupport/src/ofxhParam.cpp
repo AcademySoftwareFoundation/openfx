@@ -750,7 +750,7 @@ namespace OFX {
       //
 
       /// make a parameter, with the given type and name
-      ChoiceInstance::ChoiceInstance(Descriptor& descriptor, Param::SetInstance* paramSet) 
+      ChoiceInstance::ChoiceInstance(Descriptor& descriptor, Param::SetInstance* instance)
         : Instance(descriptor,instance)
       {
         _properties.addNotifyHook(kOfxParamPropChoiceOption, this);
