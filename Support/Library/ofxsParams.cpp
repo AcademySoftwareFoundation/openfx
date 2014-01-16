@@ -763,7 +763,27 @@ namespace OFX {
   {
     int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
     _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
-    _paramProps.propSetString(kOfxParamPropChoiceLabelOption, label, nCurrentValues, false);
+    if(!label.empty()) {
+      // Choice label is an ofx extension. If the host doesn't support it,
+      // we put this information into the parameter hint.
+      // from https://github.com/tuttleofx/TuttleOFX/commit/ae6e14e99f62b5efa89e4de4a3bc33129ac6afd0
+      try {
+        // this property is an optional extension.
+         _paramProps.propSetString(kOfxParamPropChoiceLabelOption, label, nCurrentValues);
+      } catch(std::exception&) {
+        // If the kOfxParamPropChoiceLabelOption doesn't exist, we put that information into the Hint.
+        // It's better than nothing...
+        std::string hint = _paramProps.propGetString(kOfxParamPropHint);
+        if(!hint.empty()) {
+          hint += "\n";
+          if( nCurrentValues == 0 ) {
+            hint += "\n";
+          }
+        }
+        hint += v + ": " + label;
+        _paramProps.propSetString(kOfxParamPropHint, hint);
+      }
+    }
   }
 
   /** @brief set the default value */
@@ -2416,7 +2436,27 @@ namespace OFX {
   {
     int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
     _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
-    _paramProps.propSetString(kOfxParamPropChoiceLabelOption, label, nCurrentValues, false);
+    if(!label.empty()) {
+      // Choice label is an ofx extension. If the host doesn't support it,
+      // we put this information into the parameter hint.
+      // from https://github.com/tuttleofx/TuttleOFX/commit/ae6e14e99f62b5efa89e4de4a3bc33129ac6afd0
+      try {
+        // this property is an optional extension.
+         _paramProps.propSetString(kOfxParamPropChoiceLabelOption, label, nCurrentValues);
+      } catch(std::exception&) {
+        // If the kOfxParamPropChoiceLabelOption doesn't exist, we put that information into the Hint.
+        // It's better than nothing...
+        std::string hint = _paramProps.propGetString(kOfxParamPropHint);
+        if(!hint.empty()) {
+          hint += "\n";
+          if( nCurrentValues == 0 ) {
+            hint += "\n";
+          }
+        }
+        hint += v + ": " + label;
+        _paramProps.propSetString(kOfxParamPropHint, hint);
+      }
+    }
   }
 
   /** @brief set the string of a specific option */
