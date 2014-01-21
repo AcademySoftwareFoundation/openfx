@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxSonyVegas.h"
 #endif
 #ifdef OFX_EXTENSIONS_TUTTLE
-#include "ofxReadWrite.h"
+#include "tuttle/ofxReadWrite.h"
 #endif
 
 // ofx host
