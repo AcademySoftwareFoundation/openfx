@@ -34,13 +34,13 @@ default: $(OBJECTPATH)/$(PLUGINNAME).ofx
 	
   CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include $(BITSFLAG) -fPIC
 	
-  $(OBJECTPATH)/$(PLUGINNAME).ofx : $(OBJECTPATH)/$(PLUGINOBJECTS)
+  $(OBJECTPATH)/$(PLUGINNAME).ofx : $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS))
 	mkdir -p $(OBJECTPATH)/
-	g++ $(OBJECTPATH)/$(PLUGINOBJECTS) $(LINKFLAGS) -o $(OBJECTPATH)/$(PLUGINNAME).ofx
-	mkdir -p  $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle/Contents/$(ARCH)
-	cp  $(OBJECTPATH)/$(PLUGINNAME).ofx  $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle/Contents/$(ARCH)
-	cp  Info.plist  $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle/Contents/
-	if [ $(DEBUGNAME) = "release" -a $(ARCH) = "MacOS" ]; then bash $(PATHTOROOT)/include/osxDeploy.sh $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle $(PLUGINNAME).ofx; fi
+	g++ $^ $(LINKFLAGS) -o $@
+	mkdir -p  $@.bundle/Contents/$(ARCH)
+	cp  $@  $@.bundle/Contents/$(ARCH)
+	cp  Info.plist  $@.bundle/Contents/
+	if [ $(DEBUGNAME) = "release" -a $(ARCH) = "MacOS" ]; then bash $(PATHTOROOT)/include/osxDeploy.sh $@.bundle $(PLUGINNAME).ofx; fi
 
 clean:
 	rm -rf $(OBJECTPATH)/ $(PATHTOROOT)/Library/$(OBJECTPATH)/ 
