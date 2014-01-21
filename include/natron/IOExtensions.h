@@ -35,15 +35,6 @@
  */
 
 /**
-@brief Indicates what file formats a decoder/encoder can handle.
- - Type - string X N
- - Property Set - image effect descriptor (read-write)
- - Valid Values - Any image or video file format extension
-    e.g: "jpg" , "png", "avi", etc...
- **/
-#define kNatronImageEffectPropFormats "NatronImageEffectPropFormats"
-
-/**
  @brief Indicates for a string parameter that has the property kOfxParamPropStringMode set to kOfxParamStringIsFilePath
  whether the file is an image/video file. For image readers, it indicates the input images files whereas for image writers
  , it indicates the output images files.

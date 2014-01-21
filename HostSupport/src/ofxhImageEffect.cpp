@@ -35,6 +35,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef OFX_EXTENSIONS_VEGAS
 #include "ofxSonyVegas.h"
 #endif
+#ifdef OFX_EXTENSIONS_TUTTLE
+#include "ofxReadWrite.h"
+#endif
 
 // ofx host
 #include "ofxhBinary.h"
@@ -90,8 +93,8 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
         //{ ".length", Property::eDouble, 1, false, ""}, // Unknown Nuke property
 #endif
-#ifdef OFX_EXTENSIONS_NATRON
-        { kNatronImageEffectPropFormats, Property::eString,      0, false, ""}, //< Natron's IOExtensions.h
+#ifdef OFX_EXTENSIONS_TUTTLE
+        { kTuttleOfxImageEffectPropSupportedExtensions, Property::eString,     0, false, "" },
 #endif
         Property::propSpecEnd
       };
@@ -982,12 +985,19 @@ namespace OFX {
         OfxRectD rod;
 
         // figure out the default contexts
-        if(_context == kOfxImageEffectContextGenerator) {
+        if(
+#ifdef OFX_EXTENSIONS_TUTTLE
+           _context == kOfxImageEffectContextReader ||
+#endif
+           _context == kOfxImageEffectContextGenerator) {
           // generator is the extent
           rod.x1 = rod.y1 = 0;
           getProjectExtent(rod.x2, rod.y2);
         }                                     
         else if(_context == kOfxImageEffectContextFilter ||
+#ifdef OFX_EXTENSIONS_TUTTLE
+                _context == kOfxImageEffectContextWriter ||
+#endif
                 _context == kOfxImageEffectContextPaint) {
           // filter and paint default to the input clip
           ClipInstance *clip = getClip(kOfxImageEffectSimpleSourceClipName);
@@ -1108,9 +1118,16 @@ namespace OFX {
           for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
               it!=_clips.end();
               ++it) {
-            if(!it->second->isOutput()) {
-              OfxRectD roi = it->second->getRegionOfDefinition(time);
-              rois[it->second] = roi;
+            if(!it->second->isOutput() ||
+#ifdef OFX_EXTENSIONS_TUTTLE
+               getContext() == kOfxImageEffectContextReader ||
+#endif
+               getContext() == kOfxImageEffectContextGenerator) {
+              if (it->second->isOutput() || it->second->getConnected()) {// needed to be able to fetch the RoD
+					/// @todo tuttle: how to support size on generators... check if this is correct in all cases.
+                OfxRectD roi = it->second->getRegionOfDefinition(time);
+                rois[it->second] = roi;
+              }
             }
           }
           stat = kOfxStatOK;
@@ -1133,7 +1150,11 @@ namespace OFX {
           for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
               it!=_clips.end();
               ++it) {
-            if(!it->second->isOutput()) {
+            if(!it->second->isOutput() ||
+#ifdef OFX_EXTENSIONS_TUTTLE
+               getContext() == kOfxImageEffectContextReader ||
+#endif
+               getContext() == kOfxImageEffectContextGenerator) {
               Property::PropSpec s;
               std::string name = "OfxImageClipPropRoI_"+it->first;
             
@@ -1180,23 +1201,29 @@ namespace OFX {
           for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
               it!=_clips.end();
               ++it) {
-              if(!it->second->isOutput()) {
-                OfxRectD rod = it->second->getRegionOfDefinition(time);
-                if(it->second->supportsTiles()) {
-                  std::string name = "OfxImageClipPropRoI_"+it->first;
-                  OfxRectD thisRoi;
-                  thisRoi.x1 = outArgs.getDoubleProperty(name,0);
-                  thisRoi.y1 = outArgs.getDoubleProperty(name,1);
-                  thisRoi.x2 = outArgs.getDoubleProperty(name,2);
-                  thisRoi.y2 = outArgs.getDoubleProperty(name,3);
+              if(!it->second->isOutput() ||
+#ifdef OFX_EXTENSIONS_TUTTLE
+               getContext() == kOfxImageEffectContextReader ||
+#endif
+               getContext() == kOfxImageEffectContextGenerator) {
+                if (it->second->isOutput() || it->second->getConnected()) { // needed to be able to fetch the RoD
+                  OfxRectD rod = it->second->getRegionOfDefinition(time);
+                  if(it->second->supportsTiles()) {
+                    std::string name = "OfxImageClipPropRoI_"+it->first;
+                    OfxRectD thisRoi;
+                    thisRoi.x1 = outArgs.getDoubleProperty(name,0);
+                    thisRoi.y1 = outArgs.getDoubleProperty(name,1);
+                    thisRoi.x2 = outArgs.getDoubleProperty(name,2);
+                    thisRoi.y2 = outArgs.getDoubleProperty(name,3);
                   
-                  /// and clamp it to the clip's rod
-                  thisRoi = Clamp(thisRoi, rod);
-                  rois[it->second] = thisRoi;
-                }
-                else {
-                  /// not supporting tiles on this input, so set it to the rod
-                  rois[it->second] = rod;
+                    /// and clamp it to the clip's rod
+                    thisRoi = Clamp(thisRoi, rod);
+                    rois[it->second] = thisRoi;
+                  }
+                  else {
+                    /// not supporting tiles on this input, so set it to the rod
+                    rois[it->second] = rod;
+                  }
                 }
               }
             }

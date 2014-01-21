@@ -102,6 +102,19 @@ Note, this has been deprecated.
 /** @brief Use to define the retimer effect context  See \ref ::kOfxImageEffectPropContext */
 #define kOfxImageEffectContextRetimer "OfxImageEffectContextRetimer"
 
+#ifdef OFX_EXTENSIONS_TUTTLE
+/** @brief Use to define the reader effect context  See \ref ::kOfxImageEffectPropContext
+ An image effect that supports this context must has a string parameter
+ with script name "filename", and the image effect descriptor may have
+ the property kTuttleOfxImageEffectPropSupportedExtensions
+ ("TuttleOfxImageEffectPropSupportedExtensions"), which is an
+ n-dimensional string. */
+#define kOfxImageEffectContextReader "OfxImageEffectContextReader"
+
+/** @brief Use to define the writer effect context  See \ref ::kOfxImageEffectPropContext */
+#define kOfxImageEffectContextWriter "OfxImageEffectContextWriter"
+#endif
+
 /** @brief Used as a value for ::kOfxPropType on image effect host handles */
 #define kOfxTypeImageEffectHost "OfxTypeImageEffectHost"
 

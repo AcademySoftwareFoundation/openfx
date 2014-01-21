@@ -13,6 +13,7 @@
 			buildPhases = (
 			);
 			dependencies = (
+				1E27F595188D86C900BDF0EA /* PBXTargetDependency */,
 				1E551F4B1799509A00A4135C /* PBXTargetDependency */,
 				1E551F4D1799509A00A4135C /* PBXTargetDependency */,
 				1E551F4F1799509A00A4135C /* PBXTargetDependency */,
@@ -43,6 +44,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1E27F594188D86C900BDF0EA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E551EB917994D4000A4135C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E74522917CF632200AFFAC2;
+			remoteInfo = depthConverter.ofx;
+		};
 		1E551F4A1799509A00A4135C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1E551EB917994D4000A4135C /* Project object */;
@@ -569,6 +577,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1E27F595188D86C900BDF0EA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E74522917CF632200AFFAC2 /* depthConverter.ofx */;
+			targetProxy = 1E27F594188D86C900BDF0EA /* PBXContainerItemProxy */;
+		};
 		1E551F4B1799509A00A4135C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1E551EC017994D4000A4135C /* basic.ofx */;

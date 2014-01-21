@@ -208,6 +208,7 @@
 		1E3CB8C0179935430032B538 /* xmltok_ns.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xmltok_ns.c; sourceTree = "<group>"; };
 		1E3CB8C1179935430032B538 /* xmltok.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xmltok.c; sourceTree = "<group>"; };
 		1E742FEA17992CF9007D295B /* libofxHost.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libofxHost.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		1EEF23C7188E98E4009A07EE /* ofxReadWrite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxReadWrite.h; sourceTree = "<group>"; };
 		D7C9CA591871CCBF00ADF73D /* IOExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOExtensions.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -250,6 +251,7 @@
 		1E3CB81917992E2B0032B538 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
+				1EEF23C6188E98BD009A07EE /* tuttle */,
 				D7C9CA581871CCBF00ADF73D /* natron */,
 				1E3CB81A17992E520032B538 /* ofxhBinary.h */,
 				1E3CB81B17992E520032B538 /* ofxhClip.h */,
@@ -375,6 +377,15 @@
 				1E3CB8AF179934420032B538 /* libexpat.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		1EEF23C6188E98BD009A07EE /* tuttle */ = {
+			isa = PBXGroup;
+			children = (
+				1EEF23C7188E98E4009A07EE /* ofxReadWrite.h */,
+			);
+			name = tuttle;
+			path = ../../include/tuttle;
 			sourceTree = "<group>";
 		};
 		D7C9CA581871CCBF00ADF73D /* natron */ = {
