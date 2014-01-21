@@ -104,14 +104,19 @@ Note, this has been deprecated.
 
 #ifdef OFX_EXTENSIONS_TUTTLE
 /** @brief Use to define the reader effect context  See \ref ::kOfxImageEffectPropContext
- An image effect that supports this context must has a string parameter
- with script name "filename", and the image effect descriptor may have
- the property kTuttleOfxImageEffectPropSupportedExtensions
+ An image effect that supports this context must have a string parameter
+ with script name (@see kOfxParamPropScriptName) "filename" (@see kOfxParamPropScriptName),
+ and the image effect descriptor may have the property kTuttleOfxImageEffectPropSupportedExtensions
  ("TuttleOfxImageEffectPropSupportedExtensions"), which is an
  n-dimensional string. */
 #define kOfxImageEffectContextReader "OfxImageEffectContextReader"
 
-/** @brief Use to define the writer effect context  See \ref ::kOfxImageEffectPropContext */
+/** @brief Use to define the writer effect context  See \ref ::kOfxImageEffectPropContext
+ An image effect that supports this context must have a string parameter
+ with script name (@see kOfxParamPropScriptName) "filename" (@see kOfxParamPropScriptName),
+ and the image effect descriptor may have the property kTuttleOfxImageEffectPropSupportedExtensions
+ ("TuttleOfxImageEffectPropSupportedExtensions"), which is an
+ n-dimensional string. */
 #define kOfxImageEffectContextWriter "OfxImageEffectContextWriter"
 #endif
 
