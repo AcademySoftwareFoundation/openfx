@@ -302,7 +302,9 @@ namespace OFX {
 #endif
         static Property::PropSpec allChoice[] = {
           { kOfxParamPropChoiceOption,    Property::eString,    0,    false,    "" },
+#ifdef OFX_EXTENSIONS_TUTTLE
           { kOfxParamPropChoiceLabelOption, Property::eString,  0,    false,    "" },
+#endif
           Property::propSpecEnd
         };
 

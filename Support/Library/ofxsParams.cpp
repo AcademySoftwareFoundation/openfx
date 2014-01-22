@@ -764,13 +764,16 @@ namespace OFX {
     int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
     _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
     if(!label.empty()) {
+#ifdef OFX_EXTENSIONS_TUTTLE
       // Choice label is an ofx extension. If the host doesn't support it,
       // we put this information into the parameter hint.
       // from https://github.com/tuttleofx/TuttleOFX/commit/ae6e14e99f62b5efa89e4de4a3bc33129ac6afd0
       try {
         // this property is an optional extension.
          _paramProps.propSetString(kOfxParamPropChoiceLabelOption, label, nCurrentValues);
-      } catch(std::exception&) {
+      } catch(std::exception&)
+#endif
+      {
         // If the kOfxParamPropChoiceLabelOption doesn't exist, we put that information into the Hint.
         // It's better than nothing...
         std::string hint = _paramProps.propGetString(kOfxParamPropHint);
@@ -2437,13 +2440,16 @@ namespace OFX {
     int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
     _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
     if(!label.empty()) {
+#ifdef OFX_EXTENSIONS_TUTTLE
       // Choice label is an ofx extension. If the host doesn't support it,
       // we put this information into the parameter hint.
       // from https://github.com/tuttleofx/TuttleOFX/commit/ae6e14e99f62b5efa89e4de4a3bc33129ac6afd0
       try {
         // this property is an optional extension.
          _paramProps.propSetString(kOfxParamPropChoiceLabelOption, label, nCurrentValues);
-      } catch(std::exception&) {
+      } catch(std::exception&)
+#endif
+      {
         // If the kOfxParamPropChoiceLabelOption doesn't exist, we put that information into the Hint.
         // It's better than nothing...
         std::string hint = _paramProps.propGetString(kOfxParamPropHint);

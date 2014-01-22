@@ -671,6 +671,7 @@ This property contains the set of options that will be presented to a user from 
 */
 #define kOfxParamPropChoiceOption "OfxParamPropChoiceOption"
 
+#ifdef OFX_EXTENSIONS_TUTTLE
 /** @brief Set an label option in a choice parameter.
 
     - Type - UTF8 C string X N
@@ -680,6 +681,7 @@ This property contains the set of options that will be presented to a user from 
 This property contains the set of options that will be presented to a user from a choice parameter. See @ref ParametersChoice for more details.
 */
 #define kOfxParamPropChoiceLabelOption "OfxParamPropChoiceLabelOption"
+#endif
 
 /** @brief The minimum value for a numeric parameter.
 
