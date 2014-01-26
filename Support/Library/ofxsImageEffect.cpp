@@ -547,6 +547,23 @@ namespace OFX {
       // ignore exception
     }
   }
+
+  void ImageEffectDescriptor::addSupportedExtensions(const char*extensions[])
+  {
+    // only Tuttle support this property ( out of standard )
+    //if( OFX::Private::gHostDescription.hostName == "TuttleOfx" ) {
+    try {
+      int n = _effectProps.propGetDimension( kTuttleOfxImageEffectPropSupportedExtensions );
+      
+      while (*extensions) {
+        _effectProps.propSetString(kTuttleOfxImageEffectPropSupportedExtensions, *extensions, n);
+        ++extensions;
+        ++n;
+      }
+    } catch (OFX::Exception::PropertyUnknownToHost &e) {
+      // ignore exception
+    }
+  }
 #endif
 
   /** @brief Is the plugin single instance only ? */
