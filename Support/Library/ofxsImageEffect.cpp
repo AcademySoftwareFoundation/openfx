@@ -40,6 +40,7 @@ England
 #include <algorithm> // for find
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {
@@ -2698,6 +2699,11 @@ namespace OFX {
       }
 #endif
       // Catch anything else, unknown
+      catch (const std::exception &e)
+      {
+        std::cout << "Caught exception: " << e.what() << std::endl;
+        stat = kOfxStatFailed;
+      }
       catch (...)
       {
         std::cout << "Caught Unknown exception" << std::endl;
@@ -2781,6 +2787,11 @@ namespace OFX {
       }
 #endif
       // Catch anything else, unknown
+      catch (const std::exception &e)
+      {
+        std::cout << "Caught exception: " << e.what() << std::endl;
+        stat = kOfxStatFailed;
+      }
       catch (...)
       {
         std::cout << "Caught Unknown exception" << std::endl;
