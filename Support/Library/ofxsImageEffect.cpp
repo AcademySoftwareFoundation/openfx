@@ -796,7 +796,7 @@ namespace OFX {
   void *Image::getPixelAddress(int x, int y) const
   {
     // are we in the image bounds
-    if(x < _bounds.x1 || x >= _bounds.x2 || y < _bounds.y1 || y > _bounds.y2 || _pixelBytes == 0)
+    if(x < _bounds.x1 || x >= _bounds.x2 || y < _bounds.y1 || y >= _bounds.y2 || _pixelBytes == 0)
       return 0;
 
     char *pix = (char *) (((char *) _pixelData) + (y - _bounds.y1) * _rowBytes);
@@ -2787,11 +2787,6 @@ namespace OFX {
       }
 #endif
       // Catch anything else, unknown
-      catch (const std::exception &e)
-      {
-        std::cout << "Caught exception: " << e.what() << std::endl;
-        stat = kOfxStatFailed;
-      }
       catch (...)
       {
         std::cout << "Caught Unknown exception" << std::endl;
