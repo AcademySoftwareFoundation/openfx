@@ -848,10 +848,6 @@ namespace OFX {
     void StringParamDescriptor::setFilePathIsImage(bool v) {
         _paramProps.propSetInt(kNatronParamFilePathIsImage,int(v));
     }
-    
-    void StringParamDescriptor::setFilePathIsOutput(bool v) {
-        _paramProps.propSetInt(kNatronParamFilePathIsOutput,int(v));
-    }
 #endif
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -921,16 +917,6 @@ namespace OFX {
   {
   }
 
-#ifdef OFX_EXTENSIONS_NATRON
-    /**
-     * @brief Set the kNatronParamPropButtonIsRender property to true, indicating that this button is the
-     * render button of a writer. Whenever it is pressed, the whole frame range returned by getTimeDomainAction
-     * will be rendered.
-     **/
-    void PushButtonParamDescriptor::setAsRenderButton(){
-        _paramProps.propSetInt(kNatronParamPropButtonIsRender,1);
-    }
-#endif
   ////////////////////////////////////////////////////////////////////////////////
   // parametric param descriptor
 
