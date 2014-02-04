@@ -1,4 +1,4 @@
-SUBDIRS = Basic Custom DepthConverter Overlay Rectangle
+SUBDIRS = Basic Custom DepthConverter Invert OpenGL Overlay Rectangle Test
 
 
 default : 
