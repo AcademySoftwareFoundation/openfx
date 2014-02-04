@@ -363,7 +363,7 @@ namespace OFX {
       {
         int i = 0;
         _properties.setChainedSet(&other.getProps());
-          
+
         _properties.setStringProperty(kOfxImageEffectPropContext,context);
         _properties.setIntProperty(kOfxPropIsInteractive,interactive);
 
