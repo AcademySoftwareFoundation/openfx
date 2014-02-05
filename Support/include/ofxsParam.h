@@ -349,7 +349,7 @@ namespace OFX {
          * @brief if the string param is a file path, say that this param is the one that we use to select image files we're going
          * to read/write.
          **/
-        void setFilePathIsImage(bool v);
+        void setFilePathSupportsImageSequences(bool v);
 #endif
     };
 

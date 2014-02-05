@@ -845,7 +845,7 @@ namespace OFX {
   }
     
 #ifdef OFX_EXTENSIONS_NATRON
-    void StringParamDescriptor::setFilePathIsImage(bool v) {
+    void StringParamDescriptor::setFilePathSupportsImageSequences(bool v) {
         _paramProps.propSetInt(kNatronParamFilePathIsImage,int(v));
     }
 #endif
