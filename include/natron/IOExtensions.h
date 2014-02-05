@@ -35,15 +35,17 @@
  */
 
 /**
- @brief Indicates for a string parameter that has the property kOfxParamPropStringMode set to kOfxParamStringIsFilePath
- whether the file is an image/video file. For image readers, it indicates the input images files whereas for image writers
- , it indicates the output images files.
+ @brief Indicates for a string parameter that is the filename of an effect in context kOfxImageEffectContextReader
+ whether the parameter can handle image sequences or not. If not the user interface should prevent the user from selecting
+ multiple files (for example via a dialog). This extension is here to provide a meaningful feedback to a user who might
+ be tempted to feed a file parameter who can only handle 1 file with multiple files, in which case the plug-in would be 
+ confused on which file it should use.
  - Type - int X 1
  - Property Set - plugin string parameter descriptor (read/write) and instance (read only)
  - Valid Values:
-    - 0 : The file path is not an image path.
-    - 1 : The file path is an image path.
+    - 0 : The file path is not an image sequence.
+    - 1 : The file path is an image sequence.
  - Default value - 0
  
  **/
-#define kNatronParamFilePathIsImage "NatronParamFilePathIsImage"
+#define kNatronParamFilePathIsImageSequence "NatronParamFilePathIsImageSequence"
