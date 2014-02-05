@@ -42,7 +42,7 @@ namespace OFX {
 
     namespace Memory {
 
-      Instance::Instance() : _ptr(0), _locked(false) {}
+      Instance::Instance() : _ptr(0), _locked(0) {}
 
       Instance::~Instance() {
         delete [] _ptr;
@@ -66,6 +66,7 @@ namespace OFX {
       void Instance::freeMem(){
         delete [] _ptr;
         _ptr = 0;
+        _locked = 0;
       }
 
       void* Instance::getPtr() {
@@ -73,11 +74,11 @@ namespace OFX {
       }
 
       void Instance::lock() {
-        _locked = true;
+        ++_locked;
       }
 
       void Instance::unlock() {
-        _locked = false;
+        --_locked;
       }
 
     } // Memory

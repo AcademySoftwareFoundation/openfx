@@ -53,7 +53,7 @@ namespace OFX {
 
       protected:
         char*   _ptr;
-        bool    _locked;
+        int     _locked;
       };
 
     } // Memory
