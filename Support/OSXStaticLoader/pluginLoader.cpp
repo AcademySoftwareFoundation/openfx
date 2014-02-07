@@ -17,7 +17,7 @@ main(int argc, char *argv[])
 						     kCFStringEncodingASCII);
 
   // Make a CFURLRef from the CFString representation of the 
-  // bundle’s path.
+  // bundle's path.
   bundleURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, 
 					    bundlePath,
 					    kCFURLPOSIXPathStyle,
