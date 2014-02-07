@@ -78,7 +78,7 @@ namespace OFX {
       }
 
       void Instance::unlock() {
-        if (locked > 0) {
+        if (_locked > 0) {
           --_locked;
         }
       }
