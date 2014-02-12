@@ -113,6 +113,7 @@ namespace OFX {
               std::cout << "OFX: "<<(void*)op<<"->"<<kOfxActionUnload<<"()->"<<StatStr(stat)<<std::endl;
 #           endif
           } CatchAllSetStatus(stat, gImageEffectHost, op, kOfxActionUnload);
+          (void)stat;
         }
         delete _baseDescriptor;
       }
@@ -296,6 +297,7 @@ namespace OFX {
               std::cout << "OFX: "<<(void*)_pluginHandle->getOfxPlugin()<<"->"<<kOfxActionUnload<<"()->"<<StatStr(stat)<<std::endl;
 #           endif
           } CatchAllSetStatus(stat, gImageEffectHost, (*_pluginHandle), kOfxActionUnload);
+          (void)stat;
         }
       }
 
