@@ -54,9 +54,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef OFX_SUPPORTS_PARAMETRIC
 #include "ofxhParametricParam.h"
 #endif
-#ifdef OFX_EXTENSIONS_NATRON
-#include <natron/IOExtensions.h>
-#endif
 
 #include <string.h>
 #include <stdarg.h>
