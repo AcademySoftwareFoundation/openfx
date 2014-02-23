@@ -43,9 +43,6 @@ England
 #include "nuke/camera.h"
 #endif
 
-#ifdef OFX_EXTENSIONS_NATRON
-#include "natron/IOExtensions.h"
-#endif
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {  
 
@@ -843,12 +840,6 @@ namespace OFX {
   {
     _paramProps.propSetInt(kOfxParamPropStringFilePathExists, int(v));
   }
-    
-#ifdef OFX_EXTENSIONS_NATRON
-    void StringParamDescriptor::setFilePathSupportsImageSequences(bool v) {
-        _paramProps.propSetInt(kNatronParamFilePathIsImageSequence,int(v));
-    }
-#endif
 
   ////////////////////////////////////////////////////////////////////////////////
   // custom param descriptor

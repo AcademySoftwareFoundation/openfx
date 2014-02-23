@@ -343,14 +343,6 @@ namespace OFX {
 
         /** @brief if the string param is a file path, say that we are picking an existing file, rather than posibly specifying a new one, defaults to true */
         void setFilePathExists(bool v);
-
-#ifdef OFX_EXTENSIONS_NATRON
-        /**
-         * @brief if the string param is a file path, say that this param is the one that we use to select image files we're going
-         * to read/write.
-         **/
-        void setFilePathSupportsImageSequences(bool v);
-#endif
     };
 
     ////////////////////////////////////////////////////////////////////////////////
