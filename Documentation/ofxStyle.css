@@ -2,8 +2,18 @@ body {
   margin: 40px 10%;
   font-family Helvetica, Arial, sans-serif;
 }
-h2.title {
-  color: 
+h1 {
+  background-image: url('OFX_small.png');
+  background-repeat: no-repeat;
+  background-position: right center;
+}
+h2 {
+  color: #333;
+}
+h3 {
+  color: #666;
+  font-style: italic;
+}
 pre.programlisting { 
   background-color: #A0D0A0;
 	border: 1px solid #006600 ;
