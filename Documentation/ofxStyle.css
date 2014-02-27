@@ -1,5 +1,13 @@
+body {
+  margin: 40px 10%;
+  font-family Helvetica, Arial, sans-serif;
+}
+h2.title {
+  color: 
 pre.programlisting { 
-		   background-color: #A0D0A0;
-		   border: 1px solid #006600 ;
+  background-color: #A0D0A0;
+	border: 1px solid #006600 ;
+	overflow: auto
+	margin: 0.5em 2em;
 }
 
