@@ -2362,7 +2362,7 @@ namespace OFX {
 
     /** @brief Library side invoke About function */
     bool
-      invokeAbout(OfxImageEffectHandle handle, const char* plugname)
+      invokeAbout(OfxImageEffectHandle handle, const char* /*plugname*/)
     {
       // fetch our effect pointer 
       ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
@@ -2373,7 +2373,7 @@ namespace OFX {
 
     /** @brief Library side invoke Help function */
     bool
-      invokeHelp(OfxImageEffectHandle handle, const char* plugname)
+      invokeHelp(OfxImageEffectHandle handle, const char* /*plugname*/)
     {
       // fetch our effect pointer 
       ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
