@@ -418,7 +418,7 @@ void DotExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.setOverlayInteractDescriptor( new DotExampleOverlayDescriptor );
 }
 
-void DotExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context)
+void DotExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum /*context*/)
 {
   // there has to be an input clip, even for generators
   ClipDescriptor* srcClip = desc.defineClip( kOfxImageEffectSimpleSourceClipName );
@@ -464,7 +464,7 @@ void DotExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   page->addChild(*param3);
 }
 
-ImageEffect* DotExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context)
+ImageEffect* DotExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum /*context*/)
 {
   return new DotExamplePlugin(handle);
 }

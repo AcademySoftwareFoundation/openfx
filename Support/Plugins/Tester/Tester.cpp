@@ -478,7 +478,7 @@ void GenericTestExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.setOverlayInteractDescriptor( new PositionOverlayDescriptor);
 }
 
-void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context)
+void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum /*context*/)
 {
   ClipDescriptor *srcClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
   srcClip->addSupportedComponent(ePixelComponentRGBA);
@@ -551,7 +551,7 @@ void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescript
   widgetPos->setDefault(0.5, 0.5);
 }
 
-OFX::ImageEffect* GenericTestExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context)
+OFX::ImageEffect* GenericTestExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum /*context*/)
 {
   return new GenericTestPlugin(handle);
 }

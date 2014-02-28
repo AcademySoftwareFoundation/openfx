@@ -12,6 +12,10 @@ main(int argc, char *argv[])
   CFURLRef bundleURL;
   CFBundleRef myBundle;
 
+  if (argc != 2) {
+    fprintf(stderr, "Usage: %s <plugin>\n", argv[0]);
+    exit(1);
+  }
   CFStringRef bundlePath = CFStringCreateWithCString(kCFAllocatorDefault,
 						     argv[1],
 						     kCFStringEncodingASCII);

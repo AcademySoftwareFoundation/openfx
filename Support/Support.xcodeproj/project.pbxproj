@@ -1292,6 +1292,10 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @loader_path/../Libraries";
 				OFX_PATH = ..;
 				ONLY_ACTIVE_ARCH = YES;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+				);
 			};
 			name = Debug;
 		};
@@ -1313,6 +1317,10 @@
 				HEADER_SEARCH_PATHS = "$(OFX_PATH)/include";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @loader_path/../Libraries";
 				OFX_PATH = ..;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+				);
 			};
 			name = Release;
 		};

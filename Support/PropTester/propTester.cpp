@@ -158,7 +158,7 @@ public:
     }
     return false;
   }
-  virtual bool penUp(const OFX::PenArgs &args)
+  virtual bool penUp(const OFX::PenArgs &/*args*/)
   {
     _state = ePoised;
     requestRedraw();

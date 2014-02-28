@@ -60,8 +60,8 @@ each represent the actions that can be carried out on those particular OFX objec
 
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
-  CLASS &operator=(const CLASS &v1) {assert(false); return *this;}	\
-  CLASS(const CLASS &v) {assert(false); } 
+  CLASS &operator=(const CLASS &) {assert(false); return *this;}	\
+  CLASS(const CLASS &) {assert(false); } 
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries.
  */
@@ -886,16 +886,16 @@ namespace OFX {
     class Param {
     protected :
         // don't ever use these!
-        Param &operator=(const Param &v1) {assert(false); return *this;} 
+        Param &operator=(const Param &/*v1*/) {assert(false); return *this;}
         Param(const Param &v) : _paramSet(v._paramSet) {assert(false); } 
         Param(void) {assert(false);}
     
     protected :
+        const ParamSet      *_paramSet; // who do I belong to
         std::string    _paramName;
         ParamTypeEnum  _paramType;
         PropertySet    _paramProps;
         OfxParamHandle _paramHandle;
-        const ParamSet      *_paramSet; // who do I belong to
 
         /** @brief hidden constructor */
         Param(const ParamSet *paramSet, const std::string &name, ParamTypeEnum type, OfxParamHandle handle);
@@ -1787,7 +1787,7 @@ namespace OFX {
         // the following function should be specialized for each param type T
         // (see example below with T = CameraParam)
         template<class T> void
-        fetchAttribute(OfxImageEffectHandle pluginHandle, const std::string& name, T * &paramPtr) const
+        fetchAttribute(OfxImageEffectHandle /*pluginHandle*/, const std::string& /*name*/, T * &/*paramPtr*/) const
         {
             assert(false);
         }

@@ -178,7 +178,7 @@ namespace OFX {
     {
     public :
       /** @brief name of the property */
-      std::string _name;
+      const std::string _name;
 
       /** @brief Was it validated */
       bool _exists;
@@ -194,7 +194,7 @@ namespace OFX {
 
     public :
       /** @brief var args constructor that is use to describe properties */
-      PropertyDescription(char *name, OFX::PropertyTypeEnum ilk, int dimension, ...);
+      PropertyDescription(const char *name, OFX::PropertyTypeEnum ilk, int dimension, ...);
 
       /** @brief Die! Die! Die! */
       virtual ~PropertyDescription(void) {}
@@ -207,7 +207,7 @@ namespace OFX {
     class PropertySetDescription {
     protected :
       /** @brief name of the property set */
-      std::string           _setName;
+      const std::string           _setName;
 
       /** @brief the descriptions of each property */
       std::vector<PropertyDescription *> _descriptions;
@@ -221,7 +221,7 @@ namespace OFX {
       The varargs zero terminated are made from pairs of PropertyDescription * and ints indicating the number of properties pointed to.
       These are to come from static arrays and need not be deleted
       */
-      PropertySetDescription(char *setName, ...);// [PropertyDescription *v, int nSetToThese]
+      PropertySetDescription(const char *setName, ...);// [PropertyDescription *v, int nSetToThese]
 
       /** @brief destructor */
       virtual ~PropertySetDescription();

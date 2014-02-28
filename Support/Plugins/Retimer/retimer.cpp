@@ -69,8 +69,8 @@ public :
       , dstClip_(0)
       , srcClip_(0)
       , sourceTime_(0)
-      , duration_(0)
       , speed_(0)
+      , duration_(0)
     {
         dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
         srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
@@ -388,7 +388,7 @@ void RetimerExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &
 }
 
 /** @brief The create instance function, the plugin must return an object derived from the \ref OFX::ImageEffect class */
-ImageEffect* RetimerExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum context)
+ImageEffect* RetimerExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum /*context*/)
 {
   return new RetimerPlugin(handle);
 }

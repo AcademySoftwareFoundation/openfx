@@ -51,8 +51,8 @@ of the direct OFX objects and any library side only functions.
 
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
-  CLASS &operator=(const CLASS &v1) {assert(false); return *this;}      \
-  CLASS(const CLASS &v) {assert(false); } 
+  CLASS &operator=(const CLASS &) {assert(false); return *this;}      \
+  CLASS(const CLASS &) {assert(false); } 
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries.
 */

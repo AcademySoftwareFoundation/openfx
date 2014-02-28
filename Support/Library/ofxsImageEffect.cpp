@@ -1299,37 +1299,37 @@ namespace OFX {
 
   /** @brief client is identity function, returns the clip and time for the identity function 
   */
-  bool ImageEffect::isIdentity(const RenderArguments &args, Clip * &identityClip, double &identityTime)
+  bool ImageEffect::isIdentity(const RenderArguments &/*args*/, Clip * &/*identityClip*/, double &/*identityTime*/)
   {
     return false; // by default, we are not an identity operation
   }
 
   /** @brief The get RoD action */
-  bool ImageEffect::getRegionOfDefinition(const RegionOfDefinitionArguments &args, OfxRectD &rod)
+  bool ImageEffect::getRegionOfDefinition(const RegionOfDefinitionArguments &/*args*/, OfxRectD &/*rod*/)
   {
     return false; // by default, we are not setting the RoD
   }
 
   /** @brief the get RoI action */
-  void ImageEffect::getRegionsOfInterest(const RegionsOfInterestArguments &args, RegionOfInterestSetter &rois)
+  void ImageEffect::getRegionsOfInterest(const RegionsOfInterestArguments &/*args*/, RegionOfInterestSetter &/*rois*/)
   {
     // fa niente
   }
 
   /** @brief the get frames needed action */
-  void ImageEffect::getFramesNeeded(const FramesNeededArguments &args, FramesNeededSetter &frames)
+  void ImageEffect::getFramesNeeded(const FramesNeededArguments &/*args*/, FramesNeededSetter &/*frames*/)
   {
     // fa niente
   }
 
   /** @brief client begin sequence render function */
-  void ImageEffect::beginSequenceRender(const BeginSequenceRenderArguments &args)
+  void ImageEffect::beginSequenceRender(const BeginSequenceRenderArguments &/*args*/)
   {
     // fa niente
   }
 
   /** @brief client end sequence render function, this is one of the few that must be set */
-  void ImageEffect::endSequenceRender(const EndSequenceRenderArguments &args)
+  void ImageEffect::endSequenceRender(const EndSequenceRenderArguments &/*args*/)
   {
     // fa niente
   }
@@ -1347,7 +1347,7 @@ namespace OFX {
   }
 
   /** @brief get the clip preferences */
-  void ImageEffect::getClipPreferences(ClipPreferencesSetter &clipPreferences)
+  void ImageEffect::getClipPreferences(ClipPreferencesSetter &/*clipPreferences*/)
   {
     // fa niente
   }
@@ -1365,27 +1365,27 @@ namespace OFX {
   }
 
   /** @brief the effect is about to have some values changed */
-  void ImageEffect::beginChanged(InstanceChangeReason reason)
+  void ImageEffect::beginChanged(InstanceChangeReason /*reason*/)
   {
   }
 
   /** @brief called when a param has just had its value changed */
-  void ImageEffect::changedParam(const InstanceChangedArgs &args, const std::string &paramName)
+  void ImageEffect::changedParam(const InstanceChangedArgs &/*args*/, const std::string &/*paramName*/)
   {
   }
 
   /** @brief called when a clip has just been changed in some way (a rewire maybe) */
-  void ImageEffect::changedClip(const InstanceChangedArgs &args, const std::string &clipName)
+  void ImageEffect::changedClip(const InstanceChangedArgs &/*args*/, const std::string &/*clipName*/)
   {
   }
 
   /** @brief the effect has just had some values changed */
-  void ImageEffect::endChanged(InstanceChangeReason reason)
+  void ImageEffect::endChanged(InstanceChangeReason /*reason*/)
   {
   }
 
   /** @brief get the time domain */
-  bool ImageEffect::getTimeDomain(OfxRangeD &range)
+  bool ImageEffect::getTimeDomain(OfxRangeD &/*range*/)
   {
     // by default, do the default
     return false;
@@ -1393,7 +1393,7 @@ namespace OFX {
 
 #ifdef OFX_EXTENSIONS_VEGAS
   /** @brief Vegas requires conversion of keyframe data */
-  void ImageEffect::upliftVegasKeyframes(const SonyVegasUpliftArguments &upliftInfo)
+  void ImageEffect::upliftVegasKeyframes(const SonyVegasUpliftArguments &/*upliftInfo*/)
   {
     // fa niente
   }
@@ -1414,7 +1414,7 @@ namespace OFX {
 #endif
 
   /** @brief called when a custom param needs to be interpolated */
-  std::string ImageEffect::interpolateCustomParam(const InterpolateCustomArgs &args, const std::string &paramName)
+  std::string ImageEffect::interpolateCustomParam(const InterpolateCustomArgs &args, const std::string &/*paramName*/)
   {
       return args.value1;
   }
@@ -2095,10 +2095,9 @@ namespace OFX {
     {
       /** @brief local class to set the roi of a clip */
       class ActualROISetter : public OFX::RegionOfInterestSetter {
-        bool doneSomething_;
         OFX::PropertySet &outArgs_;
+        bool doneSomething_;
         const std::map<std::string, std::string>& clipROIPropNames_;
-        const char* _plugname;
       public :
         /** @brief ctor */
         ActualROISetter(OFX::PropertySet &args, const std::map<std::string, std::string>& clipROIPropNames) 

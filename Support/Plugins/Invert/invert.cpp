@@ -255,7 +255,7 @@ void InvertExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 
 }
 
-void InvertExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context)
+void InvertExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum /*context*/)
 {
   // Source clip only in the filter context
   // create the mandated source clip
@@ -274,7 +274,7 @@ void InvertExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &d
 
 }
 
-OFX::ImageEffect* InvertExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context)
+OFX::ImageEffect* InvertExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum /*context*/)
 {
   return new InvertPlugin(handle);
 }
