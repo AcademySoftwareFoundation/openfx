@@ -89,7 +89,6 @@
 		1E3CB8CF179935430032B538 /* xmltok.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB8C1179935430032B538 /* xmltok.c */; };
 		1E3CB8D01799364A0032B538 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E3CB8AF179934420032B538 /* libexpat.a */; };
 		1E3CB8D1179936810032B538 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E3CB8AF179934420032B538 /* libexpat.a */; };
-		D7C9CA5A1871CCBF00ADF73D /* IOExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = D7C9CA591871CCBF00ADF73D /* IOExtensions.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -208,8 +207,10 @@
 		1E3CB8C0179935430032B538 /* xmltok_ns.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xmltok_ns.c; sourceTree = "<group>"; };
 		1E3CB8C1179935430032B538 /* xmltok.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xmltok.c; sourceTree = "<group>"; };
 		1E742FEA17992CF9007D295B /* libofxHost.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libofxHost.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		1EC2BF3518C4E30400AA53D5 /* camera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
+		1EC2BF3618C4E30400AA53D5 /* fnPublicOfxExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fnPublicOfxExtensions.h; sourceTree = "<group>"; };
+		1EC2BF3718C4E39000AA53D5 /* fnOfxExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fnOfxExtensions.h; sourceTree = "<group>"; };
 		1EEF23C7188E98E4009A07EE /* ofxReadWrite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxReadWrite.h; sourceTree = "<group>"; };
-		D7C9CA591871CCBF00ADF73D /* IOExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOExtensions.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -251,8 +252,6 @@
 		1E3CB81917992E2B0032B538 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
-				1EEF23C6188E98BD009A07EE /* tuttle */,
-				D7C9CA581871CCBF00ADF73D /* natron */,
 				1E3CB81A17992E520032B538 /* ofxhBinary.h */,
 				1E3CB81B17992E520032B538 /* ofxhClip.h */,
 				1E3CB81C17992E520032B538 /* ofxhHost.h */,
@@ -276,6 +275,8 @@
 		1E3CB83817992E620032B538 /* External Headers */ = {
 			isa = PBXGroup;
 			children = (
+				1EC2BF3418C4E2EB00AA53D5 /* nuke */,
+				1EEF23C6188E98BD009A07EE /* tuttle */,
 				1E3CB8A9179932800032B538 /* ofxPixels.h */,
 				1E3CB83917992E990032B538 /* ofxCore.h */,
 				1E3CB83A17992E990032B538 /* ofxImageEffect.h */,
@@ -379,22 +380,22 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1EC2BF3418C4E2EB00AA53D5 /* nuke */ = {
+			isa = PBXGroup;
+			children = (
+				1EC2BF3518C4E30400AA53D5 /* camera.h */,
+				1EC2BF3718C4E39000AA53D5 /* fnOfxExtensions.h */,
+				1EC2BF3618C4E30400AA53D5 /* fnPublicOfxExtensions.h */,
+			);
+			path = nuke;
+			sourceTree = "<group>";
+		};
 		1EEF23C6188E98BD009A07EE /* tuttle */ = {
 			isa = PBXGroup;
 			children = (
 				1EEF23C7188E98E4009A07EE /* ofxReadWrite.h */,
 			);
-			name = tuttle;
-			path = ../../include/tuttle;
-			sourceTree = "<group>";
-		};
-		D7C9CA581871CCBF00ADF73D /* natron */ = {
-			isa = PBXGroup;
-			children = (
-				D7C9CA591871CCBF00ADF73D /* IOExtensions.h */,
-			);
-			name = natron;
-			path = ../../include/natron;
+			path = tuttle;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -430,7 +431,6 @@
 				1E3CB82F17992E520032B538 /* ofxhMemory.h in Headers */,
 				1E3CB83017992E520032B538 /* ofxhParam.h in Headers */,
 				1E3CB83117992E520032B538 /* ofxhPluginAPICache.h in Headers */,
-				D7C9CA5A1871CCBF00ADF73D /* IOExtensions.h in Headers */,
 				1E3CB83217992E520032B538 /* ofxhPluginCache.h in Headers */,
 				1E3CB83317992E520032B538 /* ofxhProgress.h in Headers */,
 				1E3CB83417992E520032B538 /* ofxhPropertySuite.h in Headers */,
