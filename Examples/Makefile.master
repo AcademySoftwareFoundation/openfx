@@ -8,10 +8,8 @@ endif
 
 OBJECTPATH = $(OS)-$(BITS)-$(DEBUGNAME)
 
-$(OBJECTPATH):
-	mkdir -p $@
-
-$(OBJECTPATH)/%.o: $(OBJECTPATH) %.cpp
+$(OBJECTPATH)/%.o : %.cpp
+	mkdir -p $(OBJECTPATH)
 	$(CXX) -c $(CXXFLAGS) $< -o $@
 
 all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
@@ -38,7 +36,8 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
 	
   CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include $(BITSFLAG) -fPIC
 	
-$(OBJECTPATH)/$(PLUGINNAME).ofx: $(OBJECTPATH) $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS))
+$(OBJECTPATH)/$(PLUGINNAME).ofx: $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS))
+	mkdir -p $(OBJECTPATH)/
 	g++ $^ $(LINKFLAGS) -o $@
 
 $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle: $(OBJECTPATH)/$(PLUGINNAME).ofx
