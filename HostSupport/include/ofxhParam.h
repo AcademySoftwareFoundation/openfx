@@ -220,8 +220,11 @@ namespace OFX {
         /// callback which should update label
         virtual void setLabel();
 
-        /// callback which should set 
+        /// callback which should set display range
         virtual void setDisplayRange();
+
+        /// callback which should set evaluate on change
+        virtual void setEvaluateOnChange();
 
         // va list calls below turn the var args (oh what a mistake)
         // suite functions into virtual function calls on instances

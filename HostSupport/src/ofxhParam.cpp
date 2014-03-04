@@ -569,6 +569,7 @@ namespace OFX {
         _properties.addNotifyHook(kOfxPropLabel, this);
         _properties.addNotifyHook(kOfxParamPropDisplayMin, this);
         _properties.addNotifyHook(kOfxParamPropDisplayMax, this);
+        _properties.addNotifyHook(kOfxParamPropEvaluateOnChange, this);
       }
 
       // callback which should set enabled state as appropriate
@@ -586,8 +587,13 @@ namespace OFX {
       {
       }
       
-      /// callback which should set 
+      /// callback which should set display range
       void Instance::setDisplayRange()
+      {
+      }
+      
+      /// callback which should set evaluate on change
+      void Instance::setEvaluateOnChange()
       {
       }
 
@@ -641,6 +647,9 @@ namespace OFX {
         }
         if (name == kOfxParamPropDisplayMin || name == kOfxParamPropDisplayMax) {
           setDisplayRange();
+        }
+        if (name == kOfxParamPropEvaluateOnChange) {
+          setEvaluateOnChange();
         }
       }
 
