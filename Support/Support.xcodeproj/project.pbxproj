@@ -272,6 +272,7 @@
 		1E551F5A179950EC00A4135C /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		1E9FC1CE180BF74400EFE0F9 /* camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
 		1E9FC1CF180BF74400EFE0F9 /* fnPublicOfxExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fnPublicOfxExtensions.h; sourceTree = "<group>"; };
+		1EA6849218C51E42006EE43D /* fnOfxExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fnOfxExtensions.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -475,6 +476,7 @@
 			isa = PBXGroup;
 			children = (
 				1E9FC1CE180BF74400EFE0F9 /* camera.h */,
+				1EA6849218C51E42006EE43D /* fnOfxExtensions.h */,
 				1E9FC1CF180BF74400EFE0F9 /* fnPublicOfxExtensions.h */,
 			);
 			name = nuke;

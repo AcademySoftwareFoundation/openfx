@@ -134,6 +134,10 @@ namespace OFX {
     ePixelComponentRGBA,
     ePixelComponentRGB,
     ePixelComponentAlpha,
+#ifdef OFX_EXTENSIONS_NUKE
+    ePixelComponentMotionVectors,
+    ePixelComponentStereoDisparity,
+#endif
     ePixelComponentCustom ///< some non standard pixel type
   };
 
