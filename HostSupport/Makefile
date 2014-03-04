@@ -84,20 +84,21 @@ objects = $(INT_DIR)/ofxhParam$(OBJSUF) \
 	$(INT_DIR)/ofxhPropertySuite$(OBJSUF)
 
 $(DST_DIR)/$(LIBTARGET): $(objects) $(DST_DIR)/$(EXPATLIB)
-	rm -f $(DST_DIR)/$(LIBTARGET)
-	ar -rc $(DST_DIR)/$(LIBTARGET) $(objects)
-	$(RANLIB) $(DST_DIR)/$(LIBTARGET)
+	rm -f $(DST_DIR)/$(LIBTARGET); ar -rc $(DST_DIR)/$(LIBTARGET) $(objects) && $(RANLIB) $(DST_DIR)/$(LIBTARGET)
 
-$(objects) : $(DST_DIR)/%.o : src/%.cpp
-	mkdir -p $(INT_DIR)
+$(INT_DIR):
+	mkdir -p $@
+
+$(objects) : $(INT_DIR) $(DST_DIR)/%.o : src/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 $(objects) : $(HEADERS)
 
-$(DST_DIR)/$(EXPATLIB):
-	mkdir -p $(DST_DIR)
-	cd expat-2.0.1;	pwd; ./configure --disable-shared $(EXPATFLAGS); make
-	cp expat-2.0.1/.libs/libexpat.a $(DST_DIR)
+$(DST_DIR):
+	mkdir -p $@
+
+$(DST_DIR)/$(EXPATLIB): $(DST_DIR)
+	(cd expat-2.0.1 && ./configure --disable-shared $(EXPATFLAGS) && make) && cp expat-2.0.1/.libs/libexpat.a $(DST_DIR)
 
 all :	@echo "$(DST_DIR)/$(EXPATLIB)" $(DST_DIR)/$(EXPATLIB) $(DST_DIR)/$(LIBTARGET)
 

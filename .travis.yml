@@ -2,9 +2,12 @@ language: cpp
 compiler:
   - gcc
   - clang
+# Travis CI has 1.5 cores per VM, take advantage of it
+env:
+  - MAKEFLAGS="-j 2"
 script:
-  - make -C HostSupport BITS=64
-  - make -C Examples BITS=64
-  - make -C Support/Plugins BITS=64
-  - make -C Support/PropTester BITS=64
+  - make $(MAKEFLAGS) -C HostSupport BITS=64
+  - make $(MAKEFLAGS) -C Examples BITS=64
+  - make $(MAKEFLAGS) -C Support/Plugins BITS=64
+  - make $(MAKEFLAGS) -C Support/PropTester BITS=64
 

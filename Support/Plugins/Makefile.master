@@ -8,12 +8,16 @@ endif
 
 OBJECTPATH = $(OS)-$(BITS)-$(DEBUGNAME)
 
-$(PATHTOROOT)/Library/$(OBJECTPATH)/%.o : $(PATHTOROOT)/Library/%.cpp
-	mkdir -p $(PATHTOROOT)/Library/$(OBJECTPATH)
+$(PATHTOROOT)/Library/$(OBJECTPATH):
+	mkdir -p $@
+
+$(PATHTOROOT)/Library/$(OBJECTPATH)/%.o: $(PATHTOROOT)/Library/$(OBJECTPATH) $(PATHTOROOT)/Library/%.cpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@
 
-$(OBJECTPATH)/%.o : %.cpp
-	mkdir -p $(OBJECTPATH)
+$(OBJECTPATH):
+	mkdir -p $@
+
+$(OBJECTPATH)/%.o : $(OBJECTPATH) %.cpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@
 
 SUPPORTOBJECTS = $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsMultiThread.o \
@@ -50,8 +54,7 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
 	
   CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include -I$(PATHTOROOT)/Plugins/include $(BITSFLAG) -fPIC
 	
-$(OBJECTPATH)/$(PLUGINNAME).ofx: $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS)) $(SUPPORTOBJECTS)
-	mkdir -p $(OBJECTPATH)/
+$(OBJECTPATH)/$(PLUGINNAME).ofx: $(OBJECTPATH) $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS)) $(SUPPORTOBJECTS)
 	$(CXX) $^ $(LINKFLAGS) -o $@
 
 $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle: $(OBJECTPATH)/$(PLUGINNAME).ofx
@@ -61,7 +64,7 @@ $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle: $(OBJECTPATH)/$(PLUGINNAME).ofx
 	if [ $(DEBUGNAME) = "release" -a $(ARCH) = "MacOS" ]; then bash $(PATHTOROOT)/include/osxDeploy.sh $@ $(PLUGINNAME).ofx; fi
 
 clean :
-	rm -rf $(SUPPORTOBJECTS) $(OBJECTPATH)/ $(PATHTOROOT)/Library/$(OBJECTPATH)/ 
+	rm -rf $(SUPPORTOBJECTS) $(OBJECTPATH)/ $(PATHTOROOT)/Library/$(OBJECTPATH)
 
 release :
 	make DEBUGFLAG=-O3
