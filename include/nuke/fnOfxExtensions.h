@@ -450,7 +450,7 @@ This is a property on the descriptor.
 #define kFnOfxImageEffectActionGetTransform "uk.co.thefoundry.FnOfxImageEffectActionGetTransform"
 
 /** @brief Property that represents a 2D matrix
-/** this was originally a 4 by 4 matrix but as Phil said, we cant guess the depth z therefore we can't produce a correct 3D matrix, the host has to do it
+this was originally a 4 by 4 matrix but as Phil said, we cant guess the depth z therefore we can't produce a correct 3D matrix, the host has to do it
 
 - Type - double X 9
 - Property Set - varies, but on the out args of kFnOfxImageEffectActionGetTransform
