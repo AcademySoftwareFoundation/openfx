@@ -215,7 +215,7 @@ namespace OFX {
   void 
     ParamDescriptor::setParameterExpanded(bool v)
   {
-    _paramProps.propSetInt(kOfxParamPropParameterExpanded, v);
+    _paramProps.propSetInt(kOfxParamPropParameterExpanded, v, false);
   }
 #endif
 
@@ -223,7 +223,7 @@ namespace OFX {
   void
     ParamDescriptor::setLayoutHint(const ELayoutHint layoutHint)
   {
-    _paramProps.propSetInt(kOfxParamPropLayoutHint, static_cast<int>(layoutHint));
+    _paramProps.propSetInt(kOfxParamPropLayoutHint, static_cast<int>(layoutHint), false);
   }
 #endif
 
