@@ -273,6 +273,8 @@
 		1E9FC1CE180BF74400EFE0F9 /* camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
 		1E9FC1CF180BF74400EFE0F9 /* fnPublicOfxExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fnPublicOfxExtensions.h; sourceTree = "<group>"; };
 		1EA6849218C51E42006EE43D /* fnOfxExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fnOfxExtensions.h; sourceTree = "<group>"; };
+		1ECA10E818C7492E00D6E38C /* ofxDialog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ofxDialog.h; path = ../../include/ofxDialog.h; sourceTree = "<group>"; };
+		1ECA10E918C7492E00D6E38C /* ofxSonyVegas.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ofxSonyVegas.h; path = ../../include/ofxSonyVegas.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -398,6 +400,7 @@
 			children = (
 				1E9FC1CC180BF70A00EFE0F9 /* nuke */,
 				1E009D5F17F44D70003071CC /* ofxCore.h */,
+				1ECA10E818C7492E00D6E38C /* ofxDialog.h */,
 				1E009D6017F44D70003071CC /* ofxImageEffect.h */,
 				1E009D6117F44D70003071CC /* ofxInteract.h */,
 				1E009D6217F44D70003071CC /* ofxKeySyms.h */,
@@ -410,6 +413,7 @@
 				1E009D6917F44D70003071CC /* ofxPixels.h */,
 				1E009D6A17F44D70003071CC /* ofxProgress.h */,
 				1E009D6B17F44D70003071CC /* ofxProperty.h */,
+				1ECA10E918C7492E00D6E38C /* ofxSonyVegas.h */,
 				1E009D6C17F44D70003071CC /* ofxTimeLine.h */,
 				1E3E3D3117996112005F2132 /* ofxsCore.h */,
 				1E009D5E17F44D5C003071CC /* ofxsHWNDInteract.h */,
