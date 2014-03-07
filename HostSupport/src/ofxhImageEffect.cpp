@@ -1781,6 +1781,10 @@ namespace OFX {
       /// implemented for Param::SetInstance
       void Instance::paramChangedByPlugin(Param::Instance *param)
       {
+        if (!_created) {
+          // setValue() was probably called from kOfxActionCreateInstance 
+          throw Property::Exception(kOfxStatFailed);
+        }
         double frame  = getFrameRecursive();
         OfxPointD renderScale; getRenderScaleRecursive(renderScale.x, renderScale.y);
 
