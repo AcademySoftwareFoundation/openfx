@@ -100,6 +100,12 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_TUTTLE
         { kTuttleOfxImageEffectPropSupportedExtensions, Property::eString,     0, false, "" },
 #endif
+#ifdef OFX_EXTENSIONS_VEGAS
+        { kOfxProbPluginVegasPresetThumbnail,   Property::eString,     0, false, "" },
+        { kOfxImageEffectPropVegasUpliftGUID,   Property::eString,     0, false, "" },
+        { kOfxImageEffectPropHelpFile,          Property::eString,     1, false, "" },
+        { kOfxImageEffectPropHelpContextID,     Property::eInt,        1, false, "0" },
+#endif
         Property::propSpecEnd
       };
 
@@ -346,6 +352,9 @@ namespace OFX {
         { kOfxPropIsInteractive,                Property::eInt,        1, true, "0" },
 #ifdef OFX_EXTENSIONS_NUKE
         //{ ".verbosityProp",                Property::eInt,        2, true, "0" }, // Unknown Nuke property
+#endif
+#ifdef OFX_EXTENSIONS_VEGAS
+        { kOfxImageEffectPropVegasContext,      Property::eString,     1, true, "" },
 #endif
         Property::propSpecEnd
       };
@@ -912,6 +921,7 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_VEGAS
           { kOfxImageEffectPropRenderView, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropViewsToRender, Property::eInt, 1, true, "1" },
+          { kOfxImageEffectPropRenderQuality, Property::eString, 1, true, "" },
 #endif
 #ifdef OFX_EXTENSIONS_NUKE
           { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },

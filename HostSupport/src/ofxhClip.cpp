@@ -202,6 +202,9 @@ namespace OFX {
         { kOfxImageEffectPropUnmappedFrameRange, Property::eDouble, 2, true, "0" },
         { kOfxImageEffectPropUnmappedFrameRate, Property::eDouble, 1, true, "25.0" },
         { kOfxImageClipPropContinuousSamples, Property::eInt, 1, true, "0" },
+#ifdef OFX_EXTENSIONS_VEGAS
+        { kOfxImagePropPixelOrder, Property::eInt, 1, true, kOfxImagePixelOrderRGBA },
+#endif
         Property::propSpecEnd,
       };
 
