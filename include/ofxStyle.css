@@ -4,6 +4,7 @@ body {
   padding: 20px 40px;
   border: solid 1px #aaa; 
   background-color: #e9eeFF;
+  line-height: 1.5;
 }
 .navheader {
   background-image: url('OFX_navheader.png');
@@ -12,6 +13,16 @@ body {
   background-repeat: no-repeat;
   padding: 100px 20px 20px 20px;
   border: solid 2px #ccc;
+}
+.navheader th {
+  font-size: 150%;
+  color: #6a0487;
+}
+a {
+  color: Navy;
+}
+.refpurpose {
+  color: #666;
 }
 .navheader a, .navfooter a {
   text-decoration: none;
@@ -32,6 +43,7 @@ h1 {
   background-repeat: no-repeat;
   background-position: right center;
   min-height: 45px;
+  color: #6a0487;
 }
 h2 {
   color: #333;
@@ -41,9 +53,10 @@ h3 {
   font-style: italic;
 }
 pre.programlisting { 
-  background-color: #A0D0A0;
+  background-color: #f3f3d8;
 	border: 1px solid #006600 ;
 	overflow: auto
 	margin: 0.5em 2em;
+	padding: 20px;
 }
 
