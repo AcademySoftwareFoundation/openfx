@@ -4,6 +4,20 @@ body, table, div, p, dl {
 	font: 400 14px/22px Roboto,sans-serif;
 }
 
+/* OFX Top level nav */
+.navbar-nav {
+  font-size: 13px;
+  background-color: #222;
+  border-color: #080808;
+  &>li>a{
+    color: #999;
+    &:hover{
+      color: #fff;
+      background-color: #000;
+    }
+  }
+}
+
 /* @group Heading Levels */
 
 h1.groupheader {
