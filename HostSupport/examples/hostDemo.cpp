@@ -171,7 +171,7 @@ int main(int argc, char **argv)
       int numFramesToRender = OFXHOSTDEMOCLIPLENGTH;
 
       // say we are about to render a bunch of frames 
-      stat = instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale);
+      stat = instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale, true, false);
       assert(stat == kOfxStatOK || stat == kOfxStatReplyDefault);
 
       // get the output clip
@@ -223,7 +223,7 @@ int main(int argc, char **argv)
         }
 #else
         // render a frame
-        stat = instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale);
+        stat = instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, true, false);
         assert(stat == kOfxStatOK);
 
         // get the output image buffer
@@ -235,7 +235,7 @@ int main(int argc, char **argv)
 #endif
       }
 
-      instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale);
+      instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale, true, false);
     }
   }
   OFX::Host::PluginCache::clearPluginCache();
