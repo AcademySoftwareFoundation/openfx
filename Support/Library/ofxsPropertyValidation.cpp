@@ -53,7 +53,7 @@ This file contains headers for classes that are used to validate property sets a
 #define  kOfxsDisableValidation
 #endif
 
-#define kOfxsDisableValidation
+//#define kOfxsDisableValidation
 /** @brief OFX namespace
 */
 namespace OFX {

@@ -11,6 +11,5 @@ compiler:
 script:
   - make $MAKEFLAGS -C HostSupport BITS=64
   - make $MAKEFLAGS -C Examples BITS=64
-  - make $MAKEFLAGS -C Support/Plugins BITS=64
-  - make $MAKEFLAGS -C Support/PropTester BITS=64
-
+  - make $MAKEFLAGS -C Support/Plugins BITS=64 DEBUGFLAG="-g -DDEBUG"
+  - make $MAKEFLAGS -C Support/PropTester BITS=64 DEBUGFLAG="-g -DDEBUG"
