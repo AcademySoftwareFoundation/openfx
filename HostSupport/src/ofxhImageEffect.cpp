@@ -834,7 +834,18 @@ namespace OFX {
 #       ifdef OFX_DEBUG_ACTIONS
           std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionSyncPrivateData<<"()"<<std::endl;
 #       endif
-        OfxStatus st = mainEntry(kOfxActionSyncPrivateData,this->getHandle(),0,0);
+        // Only call kOfxActionSyncPrivateData if kOfxPropParamSetNeedsSyncing is not set,
+        // or if it is set to 1.
+        // see http://openfx.sourceforge.net/Documentation/1.3/ofxProgrammingReference.html#kOfxPropParamSetNeedsSyncing
+        Property::Int* s = _properties.fetchIntProperty(kOfxPropParamSetNeedsSyncing);
+        bool needsSyncing = s ? s->getValue() : true;
+        OfxStatus st = kOfxStatReplyDefault;
+        if (needsSyncing) {
+          st = mainEntry(kOfxActionSyncPrivateData,this->getHandle(),0,0);
+          if (s) {
+            s->setValue(0);
+          }
+        }
 #       ifdef OFX_DEBUG_ACTIONS
           std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionSyncPrivateData<<"()->"<<StatStr(st)<<std::endl;
 #       endif
