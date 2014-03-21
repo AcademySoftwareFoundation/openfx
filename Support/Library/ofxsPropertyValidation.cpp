@@ -753,6 +753,11 @@ namespace OFX {
     {
       PropertyDescription(kOfxParamPropDefault,              OFX::eDouble, 3, eDescFinished),
       PropertyDescription(kOfxParamPropAnimates,             OFX::eInt,    1, eDescDefault, 1, eDescFinished),
+      PropertyDescription(kOfxParamPropMin,                  OFX::eDouble, 3, eDescDefault, 0., 0., 0., eDescFinished),
+      PropertyDescription(kOfxParamPropMax,                  OFX::eDouble, 3, eDescDefault, 1., 1., 1., eDescFinished),
+      PropertyDescription(kOfxParamPropDisplayMin,           OFX::eDouble, 3, eDescDefault, 0., 0., 0., eDescFinished),
+      PropertyDescription(kOfxParamPropDisplayMax,           OFX::eDouble, 3, eDescDefault, 1., 1., 1., eDescFinished),
+      PropertyDescription(kOfxParamPropDimensionLabel,       OFX::eString, 3, eDescDefault, "r", "g", "b", eDescFinished),
     };
 
     /** @brief properties for an RGBA colour param */
@@ -760,6 +765,11 @@ namespace OFX {
     {
       PropertyDescription(kOfxParamPropDefault,              OFX::eDouble, 4, eDescFinished),
       PropertyDescription(kOfxParamPropAnimates,             OFX::eInt,    1, eDescDefault, 1, eDescFinished),
+      PropertyDescription(kOfxParamPropMin,                  OFX::eDouble, 4, eDescDefault, 0., 0., 0., 0., eDescFinished),
+      PropertyDescription(kOfxParamPropMax,                  OFX::eDouble, 4, eDescDefault, 1., 1., 1., 1., eDescFinished),
+      PropertyDescription(kOfxParamPropDisplayMin,           OFX::eDouble, 4, eDescDefault, 0., 0., 0., 0., eDescFinished),
+      PropertyDescription(kOfxParamPropDisplayMax,           OFX::eDouble, 4, eDescDefault, 1., 1., 1., 1., eDescFinished),
+      PropertyDescription(kOfxParamPropDimensionLabel,       OFX::eString, 4, eDescDefault, "r", "g", "b", "a", eDescFinished),
     };
 
     /** @brief properties for a boolean param */
