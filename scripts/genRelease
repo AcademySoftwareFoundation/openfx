@@ -40,9 +40,7 @@ make || die "building Programming Guide and Reference"
 
 # Copy style assets to Ref and Guide directories
 cp ../include/ofxStyle.css Reference/
-cp ../include/OFX_small.png Reference/
 cp ../include/ofxStyle.css Guide/
-cp ../include/OFX_small.png Guide/
 cd ..
 
 (tar cf - doc | gzip > openfx-doc-$LABEL.tar.gz)  || die "Tarring docs"
