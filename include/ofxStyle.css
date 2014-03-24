@@ -7,7 +7,7 @@ body {
   line-height: 1.5;
 }
 .navheader {
-  background-image: url('OFX_navheader.png');
+  background-image: url('/assets/OFX_navheader.png');
   background-color: #fff;
   background-position: center top;
   background-repeat: no-repeat;
