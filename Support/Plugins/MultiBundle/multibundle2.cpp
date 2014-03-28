@@ -215,7 +215,7 @@ bool DotExamplePlugin::getRegionOfDefinition(const OFX::RegionOfDefinitionArgume
   rod.x1 = x * size.x - scaledR + offset.x;
   rod.y1 = y * size.y - scaledR  + offset.y;
   rod.x2 = x * size.x + scaledR  + offset.x;
-  rod.y2 = x * size.y + scaledR  + offset.y;
+  rod.y2 = y * size.y + scaledR  + offset.y;
   return true;
 }
 
