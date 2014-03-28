@@ -38,6 +38,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef OFX_EXTENSIONS_TUTTLE
 #include "tuttle/ofxReadWrite.h"
 #endif
+#ifdef OFX_EXTENSIONS_NUKE
+#include "nuke/fnOfxExtensions.h"
+#endif
 
 // ofx host
 #include "ofxhBinary.h"
@@ -53,9 +56,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhUtilities.h"
 #ifdef OFX_SUPPORTS_PARAMETRIC
 #include "ofxhParametricParam.h"
-#endif
-#ifdef OFX_EXTENSIONS_NATRON
-#include <natron/IOExtensions.h>
 #endif
 
 #include <string.h>
@@ -91,10 +91,20 @@ namespace OFX {
         { kOfxPluginPropFilePath, Property::eString, 1, true, ""},
         { kOfxPropPluginDescription, Property::eString, 1,false, ""},
 #ifdef OFX_EXTENSIONS_NUKE
+        { kFnOfxImageEffectPropMultiPlanar,   Property::eInt, 1, false, "0" },
+        { kFnOfxImageEffectPropViewAware,   Property::eInt, 1, false, "0" },
+        { kFnOfxImageEffectPropViewInvariance,   Property::eInt, 1, false, "0" },
+        { kFnOfxImageEffectCanTransform,   Property::eInt, 1, false, "0" },
         //{ ".length", Property::eDouble, 1, false, ""}, // Unknown Nuke property
 #endif
 #ifdef OFX_EXTENSIONS_TUTTLE
         { kTuttleOfxImageEffectPropSupportedExtensions, Property::eString,     0, false, "" },
+#endif
+#ifdef OFX_EXTENSIONS_VEGAS
+        { kOfxProbPluginVegasPresetThumbnail,   Property::eString,     0, false, "" },
+        { kOfxImageEffectPropVegasUpliftGUID,   Property::eString,     0, false, "" },
+        { kOfxImageEffectPropHelpFile,          Property::eString,     1, false, "" },
+        { kOfxImageEffectPropHelpContextID,     Property::eInt,        1, false, "0" },
 #endif
         Property::propSpecEnd
       };
@@ -342,6 +352,9 @@ namespace OFX {
         { kOfxPropIsInteractive,                Property::eInt,        1, true, "0" },
 #ifdef OFX_EXTENSIONS_NUKE
         //{ ".verbosityProp",                Property::eInt,        2, true, "0" }, // Unknown Nuke property
+#endif
+#ifdef OFX_EXTENSIONS_VEGAS
+        { kOfxImageEffectPropVegasContext,      Property::eString,     1, true, "" },
 #endif
         Property::propSpecEnd
       };
@@ -749,6 +762,9 @@ namespace OFX {
           { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
           { kOfxPropTime, Property::eDouble, 1, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+#ifdef OFX_EXTENSIONS_NUKE
+          { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
+#endif
           Property::propSpecEnd
         };
 
@@ -818,7 +834,18 @@ namespace OFX {
 #       ifdef OFX_DEBUG_ACTIONS
           std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionSyncPrivateData<<"()"<<std::endl;
 #       endif
-        OfxStatus st = mainEntry(kOfxActionSyncPrivateData,this->getHandle(),0,0);
+        // Only call kOfxActionSyncPrivateData if kOfxPropParamSetNeedsSyncing is not set,
+        // or if it is set to 1.
+        // see http://openfx.sourceforge.net/Documentation/1.3/ofxProgrammingReference.html#kOfxPropParamSetNeedsSyncing
+        Property::Int* s = _properties.fetchIntProperty(kOfxPropParamSetNeedsSyncing);
+        bool needsSyncing = s ? s->getValue() : true;
+        OfxStatus st = kOfxStatReplyDefault;
+        if (needsSyncing) {
+          st = mainEntry(kOfxActionSyncPrivateData,this->getHandle(),0,0);
+          if (s) {
+            s->setValue(0);
+          }
+        }
 #       ifdef OFX_DEBUG_ACTIONS
           std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionSyncPrivateData<<"()->"<<StatStr(st)<<std::endl;
 #       endif
@@ -852,12 +879,25 @@ namespace OFX {
                                             OfxTime  endFrame,
                                             OfxTime  step,
                                             bool     interactive,
-                                            OfxPointD   renderScale) {
+                                            OfxPointD   renderScale,
+                                            bool     sequentialRender,
+                                            bool     interactiveRender
+#ifdef OFX_EXTENSIONS_NUKE
+                                            ,
+                                            int view
+#endif
+                                            )
+      {
         Property::PropSpec stuff[] = {
           { kOfxImageEffectPropFrameRange, Property::eDouble, 2, true, "0" },
           { kOfxImageEffectPropFrameStep, Property::eDouble, 1, true, "0" }, 
           { kOfxPropIsInteractive, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { kOfxImageEffectPropSequentialRenderStatus, Property::eInt, 1, true, "0" },
+          { kOfxImageEffectPropInteractiveRenderStatus, Property::eInt, 1, true, "0" },
+#ifdef OFX_EXTENSIONS_NUKE
+          { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
+#endif
           Property::propSpecEnd
         };
 
@@ -869,16 +909,32 @@ namespace OFX {
 
         inArgs.setDoubleProperty(kOfxImageEffectPropFrameStep,step);
 
-        inArgs.setDoubleProperty(kOfxPropIsInteractive,interactive);
+        inArgs.setIntProperty(kOfxPropIsInteractive,interactive);
 
         inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
+
+        inArgs.setIntProperty(kOfxImageEffectPropSequentialRenderStatus,sequentialRender);
+        inArgs.setIntProperty(kOfxImageEffectPropInteractiveRenderStatus,interactiveRender);
+
+#ifdef OFX_EXTENSIONS_NUKE
+        inArgs.setIntProperty(kFnOfxImageEffectPropView,view);
+#endif
+
 #       ifdef OFX_DEBUG_ACTIONS
-          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionBeginSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"))"<<std::endl;
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionBeginSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","interactiveRender
+#         ifdef OFX_EXTENSIONS_NUKE
+          <<","<<view
+#         endif
+          <<")"<<std::endl;
 #       endif
 
         OfxStatus st = mainEntry(kOfxImageEffectActionBeginSequenceRender, this->getHandle(), &inArgs, 0);
 #       ifdef OFX_DEBUG_ACTIONS
-          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionBeginSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"))->"<<StatStr(st)<<std::endl;
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionBeginSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","interactiveRender
+#         ifdef OFX_EXTENSIONS_NUKE
+          <<","<<view
+#         endif
+          <<")->"<<StatStr(st)<<std::endl;
 #       endif
         return st;
       }
@@ -886,10 +942,15 @@ namespace OFX {
       OfxStatus Instance::renderAction(OfxTime      time,
                                        const std::string &  field,
                                        const OfxRectI    &renderRoI,
-                                       OfxPointD   renderScale
+                                       OfxPointD   renderScale,
+                                       bool     sequentialRender,
+                                       bool     interactiveRender
+#if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
+                                       ,
+                                       int view
+#endif
 #ifdef OFX_EXTENSIONS_VEGAS
                                        ,
-                                       int view,
                                        int nViews
 #endif
                                        )
@@ -899,9 +960,15 @@ namespace OFX {
           { kOfxImageEffectPropFieldToRender, Property::eString, 1, true, "" }, 
           { kOfxImageEffectPropRenderWindow, Property::eInt, 4, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { kOfxImageEffectPropSequentialRenderStatus, Property::eInt, 1, true, "0" },
+          { kOfxImageEffectPropInteractiveRenderStatus, Property::eInt, 1, true, "0" },
 #ifdef OFX_EXTENSIONS_VEGAS
           { kOfxImageEffectPropRenderView, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropViewsToRender, Property::eInt, 1, true, "1" },
+          { kOfxImageEffectPropRenderQuality, Property::eString, 1, true, "" },
+#endif
+#ifdef OFX_EXTENSIONS_NUKE
+          { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
 #endif
           Property::propSpecEnd
         };
@@ -912,10 +979,16 @@ namespace OFX {
         inArgs.setDoubleProperty(kOfxPropTime,time);
         inArgs.setIntPropertyN(kOfxImageEffectPropRenderWindow, &renderRoI.x1, 4);
         inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
+        inArgs.setIntProperty(kOfxImageEffectPropSequentialRenderStatus,sequentialRender);
+        inArgs.setIntProperty(kOfxImageEffectPropInteractiveRenderStatus,interactiveRender);
 #ifdef OFX_EXTENSIONS_VEGAS
         inArgs.setIntProperty(kOfxImageEffectPropRenderView,view);
         inArgs.setIntProperty(kOfxImageEffectPropViewsToRender,nViews);
-
+#endif
+#ifdef OFX_EXTENSIONS_NUKE
+        inArgs.setIntProperty(kFnOfxImageEffectPropView,view);
+#endif
+#if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
         for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
             it!=_clips.end();
             ++it) {
@@ -924,18 +997,24 @@ namespace OFX {
 #endif
 
 #       ifdef OFX_DEBUG_ACTIONS
-          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionRender<<"("<<time<<","<<field<<",("<<renderRoI.x1<<","<<renderRoI.y1<<","<<renderRoI.x2<<","<<renderRoI.y2<<"),("<<renderScale.x<<","<<renderScale.y<<")"
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionRender<<"("<<time<<","<<field<<",("<<renderRoI.x1<<","<<renderRoI.y1<<","<<renderRoI.x2<<","<<renderRoI.y2<<"),("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","interactiveRender
+#         if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
+          <<","<<view
+#         endif
 #         ifdef OFX_EXTENSIONS_VEGAS
-          <<","<<view<<","<<nViews
+          <<","<<nViews
 #         endif
           <<")"<<std::endl;
 #       endif
 
         OfxStatus st = mainEntry(kOfxImageEffectActionRender,this->getHandle(), &inArgs, 0);
 #       ifdef OFX_DEBUG_ACTIONS
-          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionRender<<"("<<time<<","<<field<<",("<<renderRoI.x1<<","<<renderRoI.y1<<","<<renderRoI.x2<<","<<renderRoI.y2<<"),("<<renderScale.x<<","<<renderScale.y<<")"
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionRender<<"("<<time<<","<<field<<",("<<renderRoI.x1<<","<<renderRoI.y1<<","<<renderRoI.x2<<","<<renderRoI.y2<<"),("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","interactiveRender
+#         if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
+          <<","<<view
+#         endif
 #         ifdef OFX_EXTENSIONS_VEGAS
-          <<","<<view<<","<<nViews
+          <<","<<nViews
 #         endif
           <<")->"<<StatStr(st)<<std::endl;
 #       endif
@@ -946,12 +1025,25 @@ namespace OFX {
                                           OfxTime  endFrame,
                                           OfxTime  step,
                                           bool     interactive,
-                                          OfxPointD   renderScale) {
+                                          OfxPointD   renderScale,
+                                          bool     sequentialRender,
+                                          bool     interactiveRender
+#ifdef OFX_EXTENSIONS_NUKE
+                                          ,
+                                          int view
+#endif
+                                          )
+      {
         Property::PropSpec stuff[] = {
           { kOfxImageEffectPropFrameRange, Property::eDouble, 2, true, "0" },
           { kOfxImageEffectPropFrameStep, Property::eDouble, 1, true, "0" }, 
           { kOfxPropIsInteractive, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { kOfxImageEffectPropSequentialRenderStatus, Property::eInt, 1, true, "0" },
+          { kOfxImageEffectPropInteractiveRenderStatus, Property::eInt, 1, true, "0" },
+#ifdef OFX_EXTENSIONS_NUKE
+          { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
+#endif
           Property::propSpecEnd
         };
 
@@ -961,15 +1053,28 @@ namespace OFX {
 
         inArgs.setDoubleProperty(kOfxImageEffectPropFrameRange,startFrame, 0);
         inArgs.setDoubleProperty(kOfxImageEffectPropFrameRange,endFrame, 1);
-        inArgs.setDoubleProperty(kOfxPropIsInteractive,interactive);
+        inArgs.setIntProperty(kOfxPropIsInteractive,interactive);
         inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
+        inArgs.setIntProperty(kOfxImageEffectPropSequentialRenderStatus,sequentialRender);
+        inArgs.setIntProperty(kOfxImageEffectPropInteractiveRenderStatus,interactiveRender);
+#ifdef OFX_EXTENSIONS_NUKE
+        inArgs.setIntProperty(kFnOfxImageEffectPropView,view);
+#endif
 #       ifdef OFX_DEBUG_ACTIONS
-          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionEndSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"))"<<std::endl;
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionEndSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","interactiveRender
+#         ifdef OFX_EXTENSIONS_NUKE
+          <<","<<view
+#         endif
+          <<")"<<std::endl;
 #       endif
 
         OfxStatus st = mainEntry(kOfxImageEffectActionEndSequenceRender,this->getHandle(), &inArgs, 0);
 #       ifdef OFX_DEBUG_ACTIONS
-          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionEndSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"))->"<<StatStr(st)<<std::endl;
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionEndSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","interactiveRender
+#         ifdef OFX_EXTENSIONS_NUKE
+          <<","<<view
+#         endif
+          <<")->"<<StatStr(st)<<std::endl;
 #       endif
         return st;
       }
@@ -1057,6 +1162,9 @@ namespace OFX {
         Property::PropSpec inStuff[] = {
           { kOfxPropTime, Property::eDouble, 1, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+#ifdef OFX_EXTENSIONS_NUKE
+          { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
+#endif
           Property::propSpecEnd
         };
 
@@ -1134,6 +1242,9 @@ namespace OFX {
             { kOfxPropTime, Property::eDouble, 1, true, "0" },
             { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
             { kOfxImageEffectPropRegionOfInterest , Property::eDouble, 4, true, 0 },
+#ifdef OFX_EXTENSIONS_NUKE
+            { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
+#endif
             Property::propSpecEnd
           };
           Property::Set inArgs(inStuff);
@@ -1239,6 +1350,9 @@ namespace OFX {
         if(temporalAccess()) {
           Property::PropSpec inStuff[] = {
             { kOfxPropTime, Property::eDouble, 1, true, "0" },          
+#ifdef OFX_EXTENSIONS_NUKE
+            { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
+#endif
             Property::propSpecEnd
           };
           Property::Set inArgs(inStuff);       
@@ -1355,6 +1469,9 @@ namespace OFX {
           { kOfxImageEffectPropFieldToRender, Property::eString, 1, true, "" }, 
           { kOfxImageEffectPropRenderWindow, Property::eInt, 4, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+#ifdef OFX_EXTENSIONS_NUKE
+          { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
+#endif
           Property::propSpecEnd
         };
 
@@ -1753,6 +1870,12 @@ namespace OFX {
       /// implemented for Param::SetInstance
       void Instance::paramChangedByPlugin(Param::Instance *param)
       {
+        if (!_created) {
+          // setValue() was probably called from kOfxActionCreateInstance 
+          // this is legal according to http://openfx.sourceforge.net/Documentation/1.3/ofxProgrammingReference.html#SettingParams
+          // but kOfxActionInstanceChanged should not be called according to the preconditions of http://openfx.sourceforge.net/Documentation/1.3/ofxProgrammingReference.html#kOfxActionInstanceChanged
+          return;
+        }
         double frame  = getFrameRecursive();
         OfxPointD renderScale; getRenderScaleRecursive(renderScale.x, renderScale.y);
 
@@ -2470,6 +2593,9 @@ namespace OFX {
         { kOfxParamHostPropMaxParameters, Property::eInt, 1, true, "-1" },
         { kOfxParamHostPropMaxPages, Property::eInt, 1, true, "0" },
         { kOfxParamHostPropPageRowColumnCount, Property::eInt, 2, true, "0" },
+#ifdef OFX_EXTENSIONS_NUKE
+        { kFnOfxImageEffectPropMultiPlanar,   Property::eInt, 1, false, "0" },
+#endif
         Property::propSpecEnd
       };    
 

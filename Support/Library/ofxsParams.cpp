@@ -43,9 +43,6 @@ England
 #include "nuke/camera.h"
 #endif
 
-#ifdef OFX_EXTENSIONS_NATRON
-#include "natron/IOExtensions.h"
-#endif
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {  
 
@@ -218,7 +215,7 @@ namespace OFX {
   void 
     ParamDescriptor::setParameterExpanded(bool v)
   {
-    _paramProps.propSetInt(kOfxParamPropParameterExpanded, v);
+    _paramProps.propSetInt(kOfxParamPropParameterExpanded, v, false);
   }
 #endif
 
@@ -226,7 +223,7 @@ namespace OFX {
   void
     ParamDescriptor::setLayoutHint(const ELayoutHint layoutHint)
   {
-    _paramProps.propSetInt(kOfxParamPropLayoutHint, static_cast<int>(layoutHint));
+    _paramProps.propSetInt(kOfxParamPropLayoutHint, static_cast<int>(layoutHint), false);
   }
 #endif
 
@@ -609,7 +606,7 @@ namespace OFX {
     _paramProps.propSetDouble(kOfxParamPropDefault, z, 2);
   }
 
-  /** @brief set the hard min/max range, default is DOUBLE_MIN, DOUBLE_MAX */
+  /** @brief set the hard min/max range, default is -DBL_MAX, DBL_MAX */
   void 
     Double3DParamDescriptor::setRange(double xmin, double ymin, double zmin,
     double xmax, double ymax, double zmax)
@@ -659,6 +656,39 @@ namespace OFX {
     _paramProps.propSetDouble(kOfxParamPropDefault, b, 2);
   }
 
+  /** @brief set the hard min/max range, default is 0., 1. */
+  void 
+    RGBParamDescriptor::setRange(double rmin, double gmin, double bmin,
+    double rmax, double gmax, double bmax)
+  {
+    _paramProps.propSetDouble(kOfxParamPropMin, rmin, 0);
+    _paramProps.propSetDouble(kOfxParamPropMin, gmin, 1);
+    _paramProps.propSetDouble(kOfxParamPropMin, bmin, 2);
+    _paramProps.propSetDouble(kOfxParamPropMax, rmax, 0);
+    _paramProps.propSetDouble(kOfxParamPropMax, gmax, 1);
+    _paramProps.propSetDouble(kOfxParamPropMax, bmax, 2);
+  }
+
+  /** @brief set the display min and max, default is to be the same as the range param */
+  void 
+    RGBParamDescriptor::setDisplayRange(double rmin, double gmin, double bmin,
+    double rmax, double gmax, double bmax)
+  {
+    _paramProps.propSetDouble(kOfxParamPropDisplayMin, rmin, 0);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMin, gmin, 1);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMin, bmin, 2);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMax, rmax, 0);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMax, gmax, 1);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMax, bmax, 2);
+  }
+
+  void RGBParamDescriptor::setDimensionLabels(const std::string& r, const std::string& g, const std::string& b)
+  {
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, r, 0);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, g, 1);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, b, 2);
+  }
+
 #ifdef OFX_EXTENSIONS_VEGAS
   /** @brief set the default UI color space of the RGB param, defaults to eColorSpaceHSV */
   void RGBParamDescriptor::setDefaultColorSpace(ColorSpaceEnum v)
@@ -697,6 +727,45 @@ namespace OFX {
     _paramProps.propSetDouble(kOfxParamPropDefault, g, 1);
     _paramProps.propSetDouble(kOfxParamPropDefault, b, 2);
     _paramProps.propSetDouble(kOfxParamPropDefault, a, 3);
+  }
+
+
+  /** @brief set the hard min/max range, default is 0., 1. */
+  void 
+    RGBAParamDescriptor::setRange(double rmin, double gmin, double bmin, double amin,
+    double rmax, double gmax, double bmax, double amax)
+  {
+    _paramProps.propSetDouble(kOfxParamPropMin, rmin, 0);
+    _paramProps.propSetDouble(kOfxParamPropMin, gmin, 1);
+    _paramProps.propSetDouble(kOfxParamPropMin, bmin, 2);
+    _paramProps.propSetDouble(kOfxParamPropMin, amin, 3);
+    _paramProps.propSetDouble(kOfxParamPropMax, rmax, 0);
+    _paramProps.propSetDouble(kOfxParamPropMax, gmax, 1);
+    _paramProps.propSetDouble(kOfxParamPropMax, bmax, 2);
+    _paramProps.propSetDouble(kOfxParamPropMax, amax, 3);
+  }
+
+  /** @brief set the display min and max, default is to be the same as the range param */
+  void 
+    RGBAParamDescriptor::setDisplayRange(double rmin, double gmin, double bmin, double amin,
+    double rmax, double gmax, double bmax, double amax)
+  {
+    _paramProps.propSetDouble(kOfxParamPropDisplayMin, rmin, 0);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMin, gmin, 1);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMin, bmin, 2);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMin, amin, 3);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMax, rmax, 0);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMax, gmax, 1);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMax, bmax, 2);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMax, amax, 3);
+  }
+
+  void RGBAParamDescriptor::setDimensionLabels(const std::string& r, const std::string& g, const std::string& b, const std::string& a)
+  {
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, r, 0);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, g, 1);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, b, 2);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, a, 3);
   }
 
 #ifdef OFX_EXTENSIONS_VEGAS
@@ -843,12 +912,6 @@ namespace OFX {
   {
     _paramProps.propSetInt(kOfxParamPropStringFilePathExists, int(v));
   }
-    
-#ifdef OFX_EXTENSIONS_NATRON
-    void StringParamDescriptor::setFilePathSupportsImageSequences(bool v) {
-        _paramProps.propSetInt(kNatronParamFilePathIsImageSequence,int(v));
-    }
-#endif
 
   ////////////////////////////////////////////////////////////////////////////////
   // custom param descriptor
@@ -1180,9 +1243,10 @@ namespace OFX {
   ParametricParamDescriptor* ParamSetDescriptor::defineParametricParam(const std::string &name)
   {
     ParametricParamDescriptor* param = NULL;
-    defineParamDescriptor(name, eParametricParam, param);
-    // Parametric parameters need the ParamSet !
-    param->setParamSet(*this);
+    if (defineParamDescriptor(name, eParametricParam, param)) {
+      // Parametric parameters need the ParamSet !
+      param->setParamSet(*this);
+    }
     return param;
   }
 
@@ -2726,7 +2790,7 @@ namespace OFX {
   /** @brief hidden constructor */
   CameraParam::CameraParam(OfxImageEffectHandle imageEffectHandle, const ParamSet* paramSet, const std::string &name, NukeOfxCameraHandle handle)
       : Param(paramSet, name, eCameraParam, (OfxParamHandle)handle)
-      , _imageEffectHandle(imageEffectHandle)
+      //, _imageEffectHandle(imageEffectHandle)
   {
     // fetch all parameters
     // NukeOfxCameraHandle *camera;
@@ -2735,7 +2799,7 @@ namespace OFX {
     // throwSuiteStatusException(stat);
   }
 
-  Param* CameraParam::getParameter(const std::string &name)
+  Param* CameraParam::getParameter(const std::string &/*name*/)
   {
     return this;
   }

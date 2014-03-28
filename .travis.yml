@@ -2,9 +2,14 @@ language: cpp
 compiler:
   - gcc
   - clang
-script:
-  - make -C HostSupport BITS=64
-  - make -C Examples BITS=64
-  - make -C Support/Plugins BITS=64
-  - make -C Support/PropTester BITS=64
 
+# Travis CI has 1.5 cores per VM, take advantage of it
+# But first, the makefiles have to be fixed: all plugins are using the same .o's
+#env:
+#  - MAKEFLAGS="-j 2"
+
+script:
+  - make $MAKEFLAGS -C HostSupport BITS=64
+  - make $MAKEFLAGS -C Examples BITS=64
+  - make $MAKEFLAGS -C Support/Plugins BITS=64 DEBUGFLAG="-g -DDEBUG"
+  - make $MAKEFLAGS -C Support/PropTester BITS=64 DEBUGFLAG="-g -DDEBUG"

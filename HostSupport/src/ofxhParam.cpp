@@ -38,10 +38,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nuke/fnPublicOfxExtensions.h"
 #endif
 
-#ifdef OFX_EXTENSIONS_NATRON
-#include "natron/IOExtensions.h"
-#endif
-
 // ofx host
 #include "ofxhBinary.h"
 #include "ofxhPropertySuite.h"
@@ -289,9 +285,6 @@ namespace OFX {
         static Property::PropSpec allString[] = {
           { kOfxParamPropStringMode,  Property::eString,    1,    false,    kOfxParamStringIsSingleLine },
           { kOfxParamPropStringFilePathExists, Property::eInt,    1,    false,    "1" },
-#ifdef OFX_EXTENSIONS_NATRON
-          { kNatronParamFilePathIsImageSequence, Property::eInt, 1, false, "0"},
-#endif
           Property::propSpecEnd
         };
 
@@ -576,6 +569,7 @@ namespace OFX {
         _properties.addNotifyHook(kOfxPropLabel, this);
         _properties.addNotifyHook(kOfxParamPropDisplayMin, this);
         _properties.addNotifyHook(kOfxParamPropDisplayMax, this);
+        _properties.addNotifyHook(kOfxParamPropEvaluateOnChange, this);
       }
 
       // callback which should set enabled state as appropriate
@@ -593,8 +587,13 @@ namespace OFX {
       {
       }
       
-      /// callback which should set 
+      /// callback which should set display range
       void Instance::setDisplayRange()
+      {
+      }
+      
+      /// callback which should set evaluate on change
+      void Instance::setEvaluateOnChange()
       {
       }
 
@@ -648,6 +647,9 @@ namespace OFX {
         }
         if (name == kOfxParamPropDisplayMin || name == kOfxParamPropDisplayMax) {
           setDisplayRange();
+        }
+        if (name == kOfxParamPropEvaluateOnChange) {
+          setEvaluateOnChange();
         }
       }
 

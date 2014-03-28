@@ -12,7 +12,8 @@ $(OBJECTPATH)/%.o : %.cpp
 	mkdir -p $(OBJECTPATH)
 	$(CXX) -c $(CXXFLAGS) $< -o $@
 
-default: $(OBJECTPATH)/$(PLUGINNAME).ofx
+all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
+
   ifeq ($(OS),Linux)
     # use $ORIGIN to link to bundled libraries first, see http://itee.uq.edu.au/~daniel/using_origin/
     LINKFLAGS = -shared -Xlinker --version-script=$(PATHTOROOT)/include/linuxSymbols -lGL -Wl,-rpath,'$$ORIGIN'/../../Libraries
@@ -35,13 +36,15 @@ default: $(OBJECTPATH)/$(PLUGINNAME).ofx
 	
   CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include $(BITSFLAG) -fPIC
 	
-  $(OBJECTPATH)/$(PLUGINNAME).ofx : $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS))
+$(OBJECTPATH)/$(PLUGINNAME).ofx: $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS))
 	mkdir -p $(OBJECTPATH)/
 	g++ $^ $(LINKFLAGS) -o $@
-	mkdir -p  $@.bundle/Contents/$(ARCH)
-	cp  $@  $@.bundle/Contents/$(ARCH)
-	cp  Info.plist  $@.bundle/Contents/
-	if [ $(DEBUGNAME) = "release" -a $(ARCH) = "MacOS" ]; then bash $(PATHTOROOT)/include/osxDeploy.sh $@.bundle $(PLUGINNAME).ofx; fi
+
+$(OBJECTPATH)/$(PLUGINNAME).ofx.bundle: $(OBJECTPATH)/$(PLUGINNAME).ofx
+	mkdir -p  $@/Contents/$(ARCH)
+	cp  $^  $@/Contents/$(ARCH)
+	cp  Info.plist  $@/Contents/
+	if [ $(DEBUGNAME) = "release" -a $(ARCH) = "MacOS" ]; then bash $(PATHTOROOT)/include/osxDeploy.sh $@ $(PLUGINNAME).ofx; fi
 
 clean:
 	rm -rf $(OBJECTPATH)/ $(PATHTOROOT)/Library/$(OBJECTPATH)/ 

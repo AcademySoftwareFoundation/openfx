@@ -53,7 +53,7 @@ This file contains headers for classes that are used to validate property sets a
 #define  kOfxsDisableValidation
 #endif
 
-#define kOfxsDisableValidation
+//#define kOfxsDisableValidation
 /** @brief OFX namespace
 */
 namespace OFX {
@@ -101,11 +101,11 @@ namespace OFX {
 
 
     /** @brief PropertyDescription var-args constructor */
-    PropertyDescription::PropertyDescription(char *name, OFX::PropertyTypeEnum ilk, int dimension, ...)
+    PropertyDescription::PropertyDescription(const char *name, OFX::PropertyTypeEnum ilk, int dimension, ...)
       : _name(name)
+      , _exists(false) // only set when we have validated it
       , _dimension(dimension)
       , _ilk(ilk)
-      , _exists(false) // only set when we have validated it
     {      
       // go through the var args to extract defaults to check against and values to set to
       va_list argp;
@@ -141,7 +141,7 @@ namespace OFX {
       // see if it exists by fetching the dimension, 
 
       try {
-        int hostDimension = propSet.propGetDimension(_name);
+        int hostDimension = propSet.propGetDimension(_name.c_str());
         _exists = true;  
 
         if(_dimension != -1) // -1 implies variable dimension
@@ -150,15 +150,15 @@ namespace OFX {
         if(hostDimension > 0) {
           switch(_ilk) 
           {
-          case OFX::ePointer : { void *vP = propSet.propGetPointer(_name); }break;
-          case OFX::eInt :     { int vI = propSet.propGetInt(_name); } break;
-          case OFX::eString  : { std::string vS = propSet.propGetString(_name); } break;
-          case OFX::eDouble  : { double vD = propSet.propGetDouble(_name); } break;
+          case OFX::ePointer : { void *vP = propSet.propGetPointer(_name.c_str()); (void)vP; }break;
+          case OFX::eInt :     { int vI = propSet.propGetInt(_name.c_str()); (void)vI; } break;
+          case OFX::eString  : { std::string vS = propSet.propGetString(_name.c_str()); (void)vS; } break;
+          case OFX::eDouble  : { double vD = propSet.propGetDouble(_name.c_str()); (void)vD; } break;
           }
         }
 
         // check the defaults are OK, if there are any
-        int nDefs = _defaultValue.size();
+        int nDefs = (int)_defaultValue.size();
         if(checkDefaults && nDefs > 0) {
           OFX::Log::error(hostDimension != nDefs, "Host reports default dimension of '%s' as %d, which is different to the default dimension size of %d;", 
             _name.c_str(), hostDimension, nDefs);
@@ -169,25 +169,25 @@ namespace OFX {
             switch(_ilk) 
             {
             case OFX::ePointer : {
-              void *vP = propSet.propGetPointer(_name, i); 
+              void *vP = propSet.propGetPointer(_name.c_str(), i);
               OFX::Log::error(vP != (void *) _defaultValue[i], "Default value of %s[%d] = %p, it should be %p;",
                 _name.c_str(), i, vP, (void *) _defaultValue[i]);
                                  }
                                  break;
             case OFX::eInt : {
-              int vI = propSet.propGetInt(_name, i);
+              int vI = propSet.propGetInt(_name.c_str(), i);
               OFX::Log::error(vI != (int) _defaultValue[i], "Default value of %s[%d] = %d, it should be %d;",
                 _name.c_str(), i, vI, (int) _defaultValue[i]);
                              }
                              break;
             case OFX::eString  : {
-              std::string vS = propSet.propGetString(_name, i); 
+              std::string vS = propSet.propGetString(_name.c_str(), i);
               OFX::Log::error(vS != _defaultValue[i].vString, "Default value of %s[%d] = '%s', it should be '%s';",
                 _name.c_str(), i, vS.c_str(), _defaultValue[i].vString.c_str());
                                  }
                                  break;
             case OFX::eDouble  : {
-              double vD = propSet.propGetDouble(_name, i); 
+              double vD = propSet.propGetDouble(_name.c_str(), i);
               OFX::Log::error(vD != (double) _defaultValue[i], "Default value of %s[%d] = %g, it should be %g;",
                 _name.c_str(), i, vD, (double) _defaultValue[i]);
                                  }
@@ -222,7 +222,7 @@ namespace OFX {
     Passed in as a zero terminated pairs of (PropertyDescription *descArray, int nDescriptions)
 
     */
-    PropertySetDescription::PropertySetDescription(char *setName, ...) // PropertyDescription *v, int nV)
+    PropertySetDescription::PropertySetDescription(const char *setName, ...) // PropertyDescription *v, int nV)
       : _setName(setName)
     {
 
@@ -230,7 +230,6 @@ namespace OFX {
       va_list argp;
       va_start(argp, setName);
 
-      bool going = true;
       while(1) {
         // get a pointer 
         PropertyDescription *descs = (PropertyDescription *) va_arg(argp, PropertyDescription *);
@@ -254,7 +253,7 @@ namespace OFX {
     /** @brief destructor */
     PropertySetDescription::~PropertySetDescription()
     {
-      int nToDelete  = _deleteThese.size();
+      int nToDelete  = (int)_deleteThese.size();
       for(int i = 0; i < nToDelete; i++) {
         delete _deleteThese[i];
       }
@@ -283,7 +282,7 @@ namespace OFX {
       if(!logOrdinaryMessages) PropertySet::propDisableLogging();
 
       // check each property in the description
-      int n = _descriptions.size();
+      int n = (int)_descriptions.size();
       for(int i = 0; i < n; i++) 
         _descriptions[i]->validate(checkDefaults, propSet);
 
@@ -754,6 +753,11 @@ namespace OFX {
     {
       PropertyDescription(kOfxParamPropDefault,              OFX::eDouble, 3, eDescFinished),
       PropertyDescription(kOfxParamPropAnimates,             OFX::eInt,    1, eDescDefault, 1, eDescFinished),
+      PropertyDescription(kOfxParamPropMin,                  OFX::eDouble, 3, eDescDefault, 0., 0., 0., eDescFinished),
+      PropertyDescription(kOfxParamPropMax,                  OFX::eDouble, 3, eDescDefault, 1., 1., 1., eDescFinished),
+      PropertyDescription(kOfxParamPropDisplayMin,           OFX::eDouble, 3, eDescDefault, 0., 0., 0., eDescFinished),
+      PropertyDescription(kOfxParamPropDisplayMax,           OFX::eDouble, 3, eDescDefault, 1., 1., 1., eDescFinished),
+      PropertyDescription(kOfxParamPropDimensionLabel,       OFX::eString, 3, eDescDefault, "r", "g", "b", eDescFinished),
     };
 
     /** @brief properties for an RGBA colour param */
@@ -761,6 +765,11 @@ namespace OFX {
     {
       PropertyDescription(kOfxParamPropDefault,              OFX::eDouble, 4, eDescFinished),
       PropertyDescription(kOfxParamPropAnimates,             OFX::eInt,    1, eDescDefault, 1, eDescFinished),
+      PropertyDescription(kOfxParamPropMin,                  OFX::eDouble, 4, eDescDefault, 0., 0., 0., 0., eDescFinished),
+      PropertyDescription(kOfxParamPropMax,                  OFX::eDouble, 4, eDescDefault, 1., 1., 1., 1., eDescFinished),
+      PropertyDescription(kOfxParamPropDisplayMin,           OFX::eDouble, 4, eDescDefault, 0., 0., 0., 0., eDescFinished),
+      PropertyDescription(kOfxParamPropDisplayMax,           OFX::eDouble, 4, eDescDefault, 1., 1., 1., 1., eDescFinished),
+      PropertyDescription(kOfxParamPropDimensionLabel,       OFX::eString, 4, eDescDefault, "r", "g", "b", "a", eDescFinished),
     };
 
     /** @brief properties for a boolean param */
@@ -1029,7 +1038,9 @@ namespace OFX {
     void
       validateHostProperties(OfxHost *host)
     {
-#ifndef kOfxsDisableValidation
+#ifdef kOfxsDisableValidation
+    (void)host;
+#else
       // make a description set
       PropertySet props(host->host);
       gHostPropSet.validate(props);
@@ -1040,7 +1051,9 @@ namespace OFX {
     void
       validatePluginDescriptorProperties(PropertySet props)
     {
-#ifndef kOfxsDisableValidation
+#ifdef kOfxsDisableValidation
+    (void)props;
+#else
       gPluginDescriptorPropSet.validate(props);
 #endif
     }
@@ -1049,7 +1062,9 @@ namespace OFX {
     void
       validatePluginInstanceProperties(PropertySet props)
     {
-#ifndef kOfxsDisableValidation
+#ifdef kOfxsDisableValidation
+    (void)props;
+#else
       gPluginInstancePropSet.validate(props);
 #endif
     }
@@ -1058,7 +1073,9 @@ namespace OFX {
     void
       validateClipDescriptorProperties(PropertySet props)
     {
-#ifndef kOfxsDisableValidation
+#ifdef kOfxsDisableValidation
+    (void)props;
+#else
       gClipDescriptorPropSet.validate(props);
 #endif
     }
@@ -1067,7 +1084,9 @@ namespace OFX {
     void
       validateClipInstanceProperties(PropertySet props)
     {
-#ifndef kOfxsDisableValidation
+#ifdef kOfxsDisableValidation
+    (void)props;
+#else
       gClipInstancePropSet.validate(props);
 #endif
     }
@@ -1076,7 +1095,9 @@ namespace OFX {
     void
       validateImageProperties(PropertySet props)
     {
-#ifndef kOfxsDisableValidation
+#ifdef kOfxsDisableValidation
+    (void)props;
+#else
       gImageInstancePropSet.validate(props);
 #endif
     }
@@ -1085,7 +1106,11 @@ namespace OFX {
     void
       validateActionArgumentsProperties(const std::string &action, PropertySet inArgs, PropertySet outArgs)
     {
-#ifndef kOfxsDisableValidation
+#ifdef kOfxsDisableValidation
+    (void)action;
+    (void)inArgs;
+    (void)outArgs;
+#else
       if(action == kOfxActionInstanceChanged) {
         gInstanceChangedInArgPropSet.validate(inArgs);
       }
@@ -1136,7 +1161,11 @@ namespace OFX {
       OFX::PropertySet paramProps,
       bool checkDefaults)
     {
-#ifndef kOfxsDisableValidation
+#ifdef kOfxsDisableValidation
+    (void)paramType;
+    (void)paramProps;
+    (void)checkDefaults;
+#else
       // should use a map here
       switch(paramType) 
       {

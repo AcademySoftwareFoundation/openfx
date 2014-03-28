@@ -283,7 +283,7 @@ void FieldExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.setSupportsMultipleClipPARs(false);
 }
 
-void FieldExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context)
+void FieldExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum /*context*/)
 {
   // Source clip only in the filter context
   // create the mandated source clip
@@ -303,7 +303,7 @@ void FieldExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &de
 
 }
 
-OFX::ImageEffect* FieldExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context)
+OFX::ImageEffect* FieldExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum /*context*/)
 {
   return new FieldPlugin(handle);
 }

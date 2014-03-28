@@ -65,7 +65,7 @@ protected :
   OfxPointD _position;
   StateEnum _state;
 public :
-  GammaInteract(OfxInteractHandle handle, OFX::ImageEffect* effect) : OFX::OverlayInteract(handle), _state(eInActive)
+  GammaInteract(OfxInteractHandle handle, OFX::ImageEffect* /*effect*/) : OFX::OverlayInteract(handle), _state(eInActive)
   {
     _position.x = 0;
     _position.y = 0;
@@ -344,13 +344,13 @@ void GammaPlugin::setEnabledness(void)
   aScale_->setEnabled(v);
 }
 
-void GammaPlugin::changedParam(const OFX::InstanceChangedArgs &args, const std::string &paramName)
+void GammaPlugin::changedParam(const OFX::InstanceChangedArgs &/*args*/, const std::string &paramName)
 {
   if(paramName == "scaleComponents")  
     setEnabledness(); 
 }
 
-void GammaPlugin::changedClip(const OFX::InstanceChangedArgs &args, const std::string &clipName)
+void GammaPlugin::changedClip(const OFX::InstanceChangedArgs &/*args*/, const std::string &clipName)
 {
   if(clipName == kOfxImageEffectSimpleSourceClipName)  
     setEnabledness();
@@ -555,7 +555,7 @@ void GammaExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &de
 
 }
 
-ImageEffect* GammaExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context)
+ImageEffect* GammaExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum /*context*/)
 {
   return new GammaPlugin(handle);
 }

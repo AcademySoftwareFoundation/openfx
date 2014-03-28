@@ -41,6 +41,9 @@ England
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#ifdef OFX_EXTENSIONS_NUKE
+#include "nuke/fnOfxExtensions.h"
+#endif
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {
@@ -88,6 +91,8 @@ namespace OFX {
     OfxParametricParameterSuiteV1* gParametricParameterSuite = 0;
 #ifdef OFX_EXTENSIONS_NUKE
     NukeOfxCameraSuiteV1* gCameraParameterSuite = 0;
+    FnOfxImageEffectPlaneSuiteV1* gImageEffectPlaneSuiteV1 = 0;
+    FnOfxImageEffectPlaneSuiteV2* gImageEffectPlaneSuiteV2 = 0;
 #endif
 #ifdef OFX_EXTENSIONS_VEGAS
 #if defined(WIN32) || defined(WIN64)
@@ -208,6 +213,14 @@ namespace OFX {
     else if(str == kOfxImageComponentNone) {
       return ePixelComponentNone;
     }
+#ifdef OFX_EXTENSIONS_NUKE
+    else if(str == kFnOfxImageComponentMotionVectors) {
+        return ePixelComponentMotionVectors;
+    }
+    else if(str == kFnOfxImageComponentStereoDisparity) {
+        return ePixelComponentStereoDisparity;
+    }
+#endif
     else {
       return ePixelComponentCustom;
     }
@@ -338,6 +351,15 @@ namespace OFX {
     case ePixelComponentAlpha :
       _clipProps.propSetString(kOfxImageEffectPropSupportedComponents, kOfxImageComponentAlpha, n);
       break;
+#ifdef OFX_EXTENSIONS_NUKE
+    case ePixelComponentMotionVectors :
+      _clipProps.propSetString(kOfxImageEffectPropSupportedComponents, kFnOfxImageComponentMotionVectors, n);
+      break;
+
+    case ePixelComponentStereoDisparity :
+      _clipProps.propSetString(kOfxImageEffectPropSupportedComponents, kFnOfxImageComponentStereoDisparity, n);
+      break;
+#endif
     case ePixelComponentCustom :
       break;
     }
@@ -730,6 +752,10 @@ namespace OFX {
     case ePixelComponentRGBA  : _pixelBytes = 4; break;
     case ePixelComponentRGB  : _pixelBytes = 3; break;
     case ePixelComponentAlpha : _pixelBytes = 1; break;
+#ifdef OFX_EXTENSIONS_NUKE
+    case ePixelComponentMotionVectors  : _pixelBytes = 2; break;
+    case ePixelComponentStereoDisparity : _pixelBytes = 2; break;
+#endif
     case ePixelComponentCustom : _pixelBytes = 0; break;
     }
 
@@ -1299,37 +1325,37 @@ namespace OFX {
 
   /** @brief client is identity function, returns the clip and time for the identity function 
   */
-  bool ImageEffect::isIdentity(const RenderArguments &args, Clip * &identityClip, double &identityTime)
+  bool ImageEffect::isIdentity(const RenderArguments &/*args*/, Clip * &/*identityClip*/, double &/*identityTime*/)
   {
     return false; // by default, we are not an identity operation
   }
 
   /** @brief The get RoD action */
-  bool ImageEffect::getRegionOfDefinition(const RegionOfDefinitionArguments &args, OfxRectD &rod)
+  bool ImageEffect::getRegionOfDefinition(const RegionOfDefinitionArguments &/*args*/, OfxRectD &/*rod*/)
   {
     return false; // by default, we are not setting the RoD
   }
 
   /** @brief the get RoI action */
-  void ImageEffect::getRegionsOfInterest(const RegionsOfInterestArguments &args, RegionOfInterestSetter &rois)
+  void ImageEffect::getRegionsOfInterest(const RegionsOfInterestArguments &/*args*/, RegionOfInterestSetter &/*rois*/)
   {
     // fa niente
   }
 
   /** @brief the get frames needed action */
-  void ImageEffect::getFramesNeeded(const FramesNeededArguments &args, FramesNeededSetter &frames)
+  void ImageEffect::getFramesNeeded(const FramesNeededArguments &/*args*/, FramesNeededSetter &/*frames*/)
   {
     // fa niente
   }
 
   /** @brief client begin sequence render function */
-  void ImageEffect::beginSequenceRender(const BeginSequenceRenderArguments &args)
+  void ImageEffect::beginSequenceRender(const BeginSequenceRenderArguments &/*args*/)
   {
     // fa niente
   }
 
   /** @brief client end sequence render function, this is one of the few that must be set */
-  void ImageEffect::endSequenceRender(const EndSequenceRenderArguments &args)
+  void ImageEffect::endSequenceRender(const EndSequenceRenderArguments &/*args*/)
   {
     // fa niente
   }
@@ -1347,7 +1373,7 @@ namespace OFX {
   }
 
   /** @brief get the clip preferences */
-  void ImageEffect::getClipPreferences(ClipPreferencesSetter &clipPreferences)
+  void ImageEffect::getClipPreferences(ClipPreferencesSetter &/*clipPreferences*/)
   {
     // fa niente
   }
@@ -1365,27 +1391,27 @@ namespace OFX {
   }
 
   /** @brief the effect is about to have some values changed */
-  void ImageEffect::beginChanged(InstanceChangeReason reason)
+  void ImageEffect::beginChanged(InstanceChangeReason /*reason*/)
   {
   }
 
   /** @brief called when a param has just had its value changed */
-  void ImageEffect::changedParam(const InstanceChangedArgs &args, const std::string &paramName)
+  void ImageEffect::changedParam(const InstanceChangedArgs &/*args*/, const std::string &/*paramName*/)
   {
   }
 
   /** @brief called when a clip has just been changed in some way (a rewire maybe) */
-  void ImageEffect::changedClip(const InstanceChangedArgs &args, const std::string &clipName)
+  void ImageEffect::changedClip(const InstanceChangedArgs &/*args*/, const std::string &/*clipName*/)
   {
   }
 
   /** @brief the effect has just had some values changed */
-  void ImageEffect::endChanged(InstanceChangeReason reason)
+  void ImageEffect::endChanged(InstanceChangeReason /*reason*/)
   {
   }
 
   /** @brief get the time domain */
-  bool ImageEffect::getTimeDomain(OfxRangeD &range)
+  bool ImageEffect::getTimeDomain(OfxRangeD &/*range*/)
   {
     // by default, do the default
     return false;
@@ -1393,7 +1419,7 @@ namespace OFX {
 
 #ifdef OFX_EXTENSIONS_VEGAS
   /** @brief Vegas requires conversion of keyframe data */
-  void ImageEffect::upliftVegasKeyframes(const SonyVegasUpliftArguments &upliftInfo)
+  void ImageEffect::upliftVegasKeyframes(const SonyVegasUpliftArguments &/*upliftInfo*/)
   {
     // fa niente
   }
@@ -1414,7 +1440,7 @@ namespace OFX {
 #endif
 
   /** @brief called when a custom param needs to be interpolated */
-  std::string ImageEffect::interpolateCustomParam(const InterpolateCustomArgs &args, const std::string &paramName)
+  std::string ImageEffect::interpolateCustomParam(const InterpolateCustomArgs &args, const std::string &/*paramName*/)
   {
       return args.value1;
   }
@@ -1559,6 +1585,14 @@ namespace OFX {
     case ePixelComponentAlpha : 
       outArgs_.propSetString(propName.c_str(), kOfxImageComponentAlpha); 
       break;
+#ifdef OFX_EXTENSIONS_NUKE
+    case ePixelComponentMotionVectors :
+      outArgs_.propSetString(propName.c_str(), kFnOfxImageComponentMotionVectors);
+      break;
+    case ePixelComponentStereoDisparity :
+      outArgs_.propSetString(propName.c_str(), kFnOfxImageComponentStereoDisparity);
+      break;
+#endif
     case ePixelComponentCustom :
       break;
     }
@@ -1797,6 +1831,8 @@ namespace OFX {
         gParametricParameterSuite = (OfxParametricParameterSuiteV1*) fetchSuite(kOfxParametricParameterSuite, 1, true );
 #ifdef OFX_EXTENSIONS_NUKE
         gCameraParameterSuite = (NukeOfxCameraSuiteV1*) fetchSuite(kNukeOfxCameraSuite, 1, true );
+        gImageEffectPlaneSuiteV1 = (FnOfxImageEffectPlaneSuiteV1*) fetchSuite(kFnOfxImageEffectPlaneSuite, 1, true );
+        gImageEffectPlaneSuiteV2 = (FnOfxImageEffectPlaneSuiteV2*) fetchSuite(kFnOfxImageEffectPlaneSuite, 2, true );
 #endif
 #ifdef OFX_EXTENSIONS_VEGAS
         gVegasProgressSuite   = (OfxVegasProgressSuiteV1 *)     fetchSuite(kOfxVegasProgressSuite, 1, true);
@@ -2095,10 +2131,9 @@ namespace OFX {
     {
       /** @brief local class to set the roi of a clip */
       class ActualROISetter : public OFX::RegionOfInterestSetter {
-        bool doneSomething_;
         OFX::PropertySet &outArgs_;
+        bool doneSomething_;
         const std::map<std::string, std::string>& clipROIPropNames_;
-        const char* _plugname;
       public :
         /** @brief ctor */
         ActualROISetter(OFX::PropertySet &args, const std::map<std::string, std::string>& clipROIPropNames) 
@@ -2363,7 +2398,7 @@ namespace OFX {
 
     /** @brief Library side invoke About function */
     bool
-      invokeAbout(OfxImageEffectHandle handle, const char* plugname)
+      invokeAbout(OfxImageEffectHandle handle, const char* /*plugname*/)
     {
       // fetch our effect pointer 
       ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
@@ -2374,7 +2409,7 @@ namespace OFX {
 
     /** @brief Library side invoke Help function */
     bool
-      invokeHelp(OfxImageEffectHandle handle, const char* plugname)
+      invokeHelp(OfxImageEffectHandle handle, const char* /*plugname*/)
     {
       // fetch our effect pointer 
       ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
@@ -2382,6 +2417,11 @@ namespace OFX {
       // and call the plug-in client code
       return effectInstance->invokeHelp();
     }
+#endif
+#ifdef OFX_EXTENSIONS_NUKE
+    // TODO: getClipComponents(handle, inArgs, outargs);
+    // TODO: framesViewsNeededAction(handle, inArgs, outargs, plugname); (see framesNeededAction())
+    // TODO: getTransform(handle, inArgs, outargs);
 #endif
 
     /** @brief The main entry point for the plugin
@@ -2655,6 +2695,30 @@ namespace OFX {
           if(invokeAbout(handle, plugname))
             stat = kOfxStatOK;
         }
+#endif
+#ifdef OFX_EXTENSIONS_NUKE
+        // TODO
+#if 0
+        else if(action == kFnOfxImageEffectActionGetClipComponents) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
+
+          // call the clip components function
+          getClipComponents(handle, inArgs, outargs);
+        }
+        else if(action == kFnOfxImageEffectActionGetFrameViewsNeeded) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
+
+          // call the frames views needed action, return OK if it does something
+          if(framesViewsNeededAction(handle, inArgs, outArgs, plugname))
+            stat = kOfxStatOK;
+        }
+        else if(action == kFnOfxImageEffectActionGetTransform) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
+
+          // call the get transform function
+          getTransform(handle, inArgs, outargs);
+        }
+#endif
 #endif
         else if(actionRaw) {
           OFX::Log::error(true, "Unknown action '%s'.", actionRaw);

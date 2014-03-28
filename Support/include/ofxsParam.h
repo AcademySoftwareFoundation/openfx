@@ -60,8 +60,8 @@ each represent the actions that can be carried out on those particular OFX objec
 
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
-  CLASS &operator=(const CLASS &v1) {assert(false); return *this;}	\
-  CLASS(const CLASS &v) {assert(false); } 
+  CLASS &operator=(const CLASS &) {assert(false); return *this;}	\
+  CLASS(const CLASS &) {assert(false); } 
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries.
  */
@@ -343,14 +343,6 @@ namespace OFX {
 
         /** @brief if the string param is a file path, say that we are picking an existing file, rather than posibly specifying a new one, defaults to true */
         void setFilePathExists(bool v);
-
-#ifdef OFX_EXTENSIONS_NATRON
-        /**
-         * @brief if the string param is a file path, say that this param is the one that we use to select image files we're going
-         * to read/write.
-         **/
-        void setFilePathSupportsImageSequences(bool v);
-#endif
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -548,7 +540,7 @@ namespace OFX {
         /** @brief set the default value, default is 0 */
         void setDefault(double x, double y, double z);
 
-        /** @brief set the hard min/max range, default is INT_MIN, INT_MAX */
+        /** @brief set the hard min/max range, default is -DBL_MAX, DBL_MAX */
         void setRange(double minX, double minY, double minZ,
                       double maxX, double maxY, double maxZ);
 
@@ -571,8 +563,21 @@ namespace OFX {
         // so it can make one
         friend class ParamSetDescriptor;
     public :
+        /** @brief set the dimension labels */
+        void setDimensionLabels(const std::string &r,
+                                const std::string &g,
+                                const std::string &b);
+
         /** @brief set the default value */
         void setDefault(double r, double g, double b);
+
+        /** @brief set the hard min/max range, default is 0., 1. */
+        void setRange(double minR, double minG, double minB,
+                      double maxR, double maxG, double maxB);
+
+        /** @brief set the display min and max, default is to be the same as the range param */
+        void setDisplayRange(double minR, double minG, double minB,
+                            double maxR, double maxG, double maxB);
 #ifdef OFX_EXTENSIONS_VEGAS
         /** @brief set the default UI color space of the RGB param, defaults to eColorSpaceHSV */
         void setDefaultColorSpace(ColorSpaceEnum v);
@@ -593,8 +598,22 @@ namespace OFX {
         // so it can make one
         friend class ParamSetDescriptor;
     public :
+        /** @brief set the dimension labels */
+        void setDimensionLabels(const std::string &r,
+                                const std::string &g,
+                                const std::string &b,
+                                const std::string &a);
+
         /** @brief set the default value */
         void setDefault(double r, double g, double b, double a);
+
+        /** @brief set the hard min/max range, default is 0., 1. */
+        void setRange(double minR, double minG, double minB, double minA,
+                      double maxR, double maxG, double maxB, double maxA);
+
+        /** @brief set the display min and max, default is to be the same as the range param */
+        void setDisplayRange(double minR, double minG, double minB, double minA,
+                            double maxR, double maxG, double maxB, double maxA);
 #ifdef OFX_EXTENSIONS_VEGAS
         /** @brief set the default UI color space of the RGB param, defaults to eColorSpaceHSV */
         void setDefaultColorSpace(ColorSpaceEnum v);
@@ -894,16 +913,16 @@ namespace OFX {
     class Param {
     protected :
         // don't ever use these!
-        Param &operator=(const Param &v1) {assert(false); return *this;} 
+        Param &operator=(const Param &/*v1*/) {assert(false); return *this;}
         Param(const Param &v) : _paramSet(v._paramSet) {assert(false); } 
         Param(void) {assert(false);}
     
     protected :
+        const ParamSet      *_paramSet; // who do I belong to
         std::string    _paramName;
         ParamTypeEnum  _paramType;
         PropertySet    _paramProps;
         OfxParamHandle _paramHandle;
-        const ParamSet      *_paramSet; // who do I belong to
 
         /** @brief hidden constructor */
         Param(const ParamSet *paramSet, const std::string &name, ParamTypeEnum type, OfxParamHandle handle);
@@ -1735,7 +1754,7 @@ namespace OFX {
         Param* getParameter( const std::string& name );
             
     private:
-        OfxImageEffectHandle _imageEffectHandle;
+        //OfxImageEffectHandle _imageEffectHandle;
     };
 #endif
 
@@ -1795,7 +1814,7 @@ namespace OFX {
         // the following function should be specialized for each param type T
         // (see example below with T = CameraParam)
         template<class T> void
-        fetchAttribute(OfxImageEffectHandle pluginHandle, const std::string& name, T * &paramPtr) const
+        fetchAttribute(OfxImageEffectHandle /*pluginHandle*/, const std::string& /*name*/, T * &/*paramPtr*/) const
         {
             assert(false);
         }

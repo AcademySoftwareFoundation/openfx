@@ -184,7 +184,7 @@ NoisePlugin::getClipPreferences(OFX::ClipPreferencesSetter &clipPreferences)
 
 /** @brief The get RoD action.  We flag an infinite rod */
 bool 
-NoisePlugin::getRegionOfDefinition(const OFX::RegionOfDefinitionArguments &args, OfxRectD &rod)
+NoisePlugin::getRegionOfDefinition(const OFX::RegionOfDefinitionArguments &/*args*/, OfxRectD &rod)
 {
   // we can generate noise anywhere on the image plan, so set our RoD to be infinite
   rod.x1 = rod.y1 = -std::numeric_limits<double>::infinity(); // kOfxFlagInfiniteMin;
@@ -279,7 +279,7 @@ void NoiseExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.setRenderTwiceAlways(false);
 }        
 
-void NoiseExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context) 
+void NoiseExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum /*context*/)
 {
   // there has to be an input clip, even for generators
   ClipDescriptor* srcClip = desc.defineClip( kOfxImageEffectSimpleSourceClipName );
@@ -307,7 +307,7 @@ void NoiseExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &de
   page->addChild(*param);
 }
 
-ImageEffect* NoiseExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum context)
+ImageEffect* NoiseExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum /*context*/)
 {
   return new NoisePlugin(handle);
 }

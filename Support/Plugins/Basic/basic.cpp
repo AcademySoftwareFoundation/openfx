@@ -67,7 +67,7 @@ protected :
   StateEnum _state;
 
 public :
-  BasicInteract(OfxInteractHandle handle, OFX::ImageEffect* effect) 
+  BasicInteract(OfxInteractHandle handle, OFX::ImageEffect* /*effect*/)
     : OFX::OverlayInteract(handle)
     , _state(eInActive)
   {
@@ -475,14 +475,14 @@ BasicPlugin::setEnabledness(void)
 
 // we have changed a param
 void
-BasicPlugin::changedParam(const OFX::InstanceChangedArgs &args, const std::string &paramName)
+BasicPlugin::changedParam(const OFX::InstanceChangedArgs &/*args*/, const std::string &paramName)
 {
   if(paramName == "scaleComponents")  setEnabledness(); 
 }
 
 // we have changed a param
 void
-BasicPlugin::changedClip(const OFX::InstanceChangedArgs &args, const std::string &clipName)
+BasicPlugin::changedClip(const OFX::InstanceChangedArgs &/*args*/, const std::string &clipName)
 {
   if(clipName == kOfxImageEffectSimpleSourceClipName)  setEnabledness();
 }
@@ -745,7 +745,7 @@ void BasicExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor& de
   page->addChild(*param);
 }
 
-ImageEffect *BasicExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum context)
+ImageEffect *BasicExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum /*context*/)
 {
   return new BasicPlugin(handle);
 }

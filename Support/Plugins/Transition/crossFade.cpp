@@ -248,7 +248,7 @@ void CrossFadeExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 
 }
 
-void CrossFadeExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context)
+void CrossFadeExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum /*context*/)
 {
   // we are a transition, so define the sourceFrom input clip
   ClipDescriptor *fromClip = desc.defineClip(kOfxImageEffectTransitionSourceFromClipName);
@@ -277,7 +277,7 @@ void CrossFadeExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor
   (void)param;
 }
 
-ImageEffect* CrossFadeExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum context)
+ImageEffect* CrossFadeExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum /*context*/)
 {
   return new CrossFadePlugin(handle);
 }

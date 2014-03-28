@@ -69,8 +69,8 @@ public :
       , dstClip_(0)
       , srcClip_(0)
       , sourceTime_(0)
-      , duration_(0)
       , speed_(0)
+      , duration_(0)
     {
         dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
         srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
@@ -90,6 +90,9 @@ public :
 
     /* Override the render */
     virtual void render(const OFX::RenderArguments &args);
+
+    /** Override the get frames needed action */
+    virtual void getFramesNeeded(const OFX::FramesNeededArguments &args, OFX::FramesNeededSetter &frames);
 
     /* override the time domain action, only for the general context */
     virtual bool getTimeDomain(OfxRangeD &range);
@@ -120,6 +123,39 @@ checkComponents(const OFX::Image &src,
         throw int(1); // HACK!! need to throw an sensible exception here!        
 }
 
+static void framesNeeded(double sourceTime, OFX::FieldEnum fieldToRender, double *fromTimep, double *toTimep, double *blendp)
+{
+    // figure the two images we are blending between
+    double fromTime, toTime;
+    double blend;
+
+    if (fieldToRender == OFX::eFieldNone) {
+        // unfielded, easy peasy
+        fromTime = floor(sourceTime);
+        toTime = fromTime + 1;
+        blend = sourceTime - fromTime;
+    }
+    else {
+        // Fielded clips, pook. We are rendering field doubled images,
+        // and so need to blend between fields, not frames.
+        double frac = sourceTime - floor(sourceTime);
+        if(frac < 0.5) {
+            // need to go between the first and second fields of this frame
+            fromTime = floor(sourceTime); // this will get the first field
+            toTime   = fromTime + 0.5;    // this will get the second field of the same frame
+            blend    = frac * 2.0;        // and the blend is between those two
+        }
+        else { // frac > 0.5
+            fromTime = floor(sourceTime) + 0.5; // this will get the second field of this frame
+            toTime   = floor(sourceTime) + 1.0; // this will get the first field of the next frame
+            blend    = (frac - 0.5) * 2.0;
+        }
+    }
+    *fromTimep = fromTime;
+    *toTimep = toTime;
+    *blendp = blend;
+}
+
 /* set up and run a processor */
 void
 RetimerPlugin::setupAndProcess(OFX::ImageBlenderBase &processor, const OFX::RenderArguments &args)
@@ -144,29 +180,7 @@ RetimerPlugin::setupAndProcess(OFX::ImageBlenderBase &processor, const OFX::Rend
     // figure the two images we are blending between
     double fromTime, toTime;
     double blend;
-
-    if(args.fieldToRender == OFX::eFieldNone) {
-        // unfielded, easy peasy
-        fromTime = floor(sourceTime);
-        toTime = fromTime + 1;
-        blend = sourceTime - fromTime;
-    }
-    else {
-        // Fielded clips, pook. We are rendering field doubled images,
-        // and so need to blend between fields, not frames.
-        double frac = sourceTime - floor(sourceTime);
-        if(frac < 0.5) {
-            // need to go between the first and second fields of this frame
-            fromTime = floor(sourceTime); // this will get the first field
-            toTime   = fromTime + 0.5;    // this will get the second field of the same frame
-            blend    = frac * 2.0;        // and the blend is between those two
-        }
-        else { // frac > 0.5
-            fromTime = floor(sourceTime) + 0.5; // this will get the second field of this frame
-            toTime   = floor(sourceTime) + 1.0; // this will get the first field of the next frame
-            blend    = (frac - 0.5) * 2.0;
-        }
-    }
+    framesNeeded(sourceTime, args.fieldToRender, &fromTime, &toTime, &blend);
 
     // fetch the two source images
     std::auto_ptr<OFX::Image> fromImg(srcClip_->fetchImage(fromTime));
@@ -189,6 +203,21 @@ RetimerPlugin::setupAndProcess(OFX::ImageBlenderBase &processor, const OFX::Rend
 
     // Call the base class process member, this will call the derived templated process code
     processor.process();
+}
+
+void
+RetimerPlugin::getFramesNeeded(const OFX::FramesNeededArguments &args,
+                OFX::FramesNeededSetter &frames)
+{
+    // figure the two images we are blending between
+    double fromTime, toTime;
+    double blend;
+    // whatever the rendered field is, the frames are the same
+    framesNeeded(args.time, OFX::eFieldNone, &fromTime, &toTime, &blend);
+    OfxRangeD range;
+    range.min = fromTime;
+    range.max = toTime;
+    frames.setFramesNeeded(*srcClip_, range);
 }
 
 /* override the time domain action, only for the general context */
@@ -388,7 +417,7 @@ void RetimerExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &
 }
 
 /** @brief The create instance function, the plugin must return an object derived from the \ref OFX::ImageEffect class */
-ImageEffect* RetimerExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum context)
+ImageEffect* RetimerExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum /*context*/)
 {
   return new RetimerPlugin(handle);
 }

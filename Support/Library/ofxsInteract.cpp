@@ -199,7 +199,7 @@ namespace OFX {
 
   /** @brief the function called to draw in the interact */
   bool 
-    Interact::draw(const DrawArgs &args)
+    Interact::draw(const DrawArgs &/*args*/)
   {
     return false;
   }
@@ -210,7 +210,7 @@ namespace OFX {
   any other interact that may share the viewer.
   */
   bool 
-    Interact::penMotion(const PenArgs &args)
+    Interact::penMotion(const PenArgs &/*args*/)
   {
     return false;
   }
@@ -221,7 +221,7 @@ namespace OFX {
   any other interact that may share the viewer.
   */
   bool 
-    Interact::penDown(const PenArgs &args)
+    Interact::penDown(const PenArgs &/*args*/)
   {
     return false;
   }
@@ -232,7 +232,7 @@ namespace OFX {
   any other interact that may share the viewer.
   */
   bool 
-    Interact::penUp(const PenArgs &args)
+    Interact::penUp(const PenArgs &/*args*/)
   {
     return false;
   }
@@ -243,7 +243,7 @@ namespace OFX {
   any other interact that may share the viewer.
   */
   bool 
-    Interact::keyDown(const KeyArgs &args)
+    Interact::keyDown(const KeyArgs &/*args*/)
   {
     return false;
   }
@@ -254,7 +254,7 @@ namespace OFX {
   any other interact that may share the viewer.
   */
   bool 
-    Interact::keyUp(const KeyArgs &args)
+    Interact::keyUp(const KeyArgs &/*args*/)
   {
     return false;
   }
@@ -265,20 +265,20 @@ namespace OFX {
   any other interact that may share the viewer.
   */
   bool 
-    Interact::keyRepeat(const KeyArgs &args)
+    Interact::keyRepeat(const KeyArgs &/*args*/)
   {
     return false;
   }
 
   /** @brief Called when the interact is given input focus */
   void 
-    Interact::gainFocus(const FocusArgs &args)
+    Interact::gainFocus(const FocusArgs &/*args*/)
   {
   }
 
   /** @brief Called when the interact is loses input focus */
   void 
-    Interact::loseFocus(const FocusArgs &args)
+    Interact::loseFocus(const FocusArgs &/*args*/)
   {
   }
 
@@ -404,7 +404,7 @@ namespace OFX {
       interactMainEntry(const std::string     &action,
       OfxInteractHandle      handle,
       PropertySet              inArgs,
-      PropertySet              outArgs)
+      PropertySet              /*outArgs*/)
     {
       OfxStatus stat = kOfxStatReplyDefault;
 

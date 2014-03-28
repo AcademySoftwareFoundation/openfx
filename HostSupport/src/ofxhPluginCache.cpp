@@ -313,6 +313,10 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
         std::string bundlename = dir + DIRSEP + name;
         std::string binpath = dir + DIRSEP + name + DIRSEP "Contents" DIRSEP + ARCHSTR + DIRSEP + barename;
           
+        // don't insert binpath yet, do it later because of Mac OS X Universal stuff
+        //foundBinFiles.insert(binpath);
+
+#if defined(__APPLE__) && (defined(__x86_64) || defined(__x86_64__))
         /* From the OpenFX specification:
            
            MacOS-x86-64 - for Apple Macintosh OS X, specifically on
@@ -322,12 +326,12 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
            universal binary.
         */
           
-        bool foundUniversal = false;
         std::string binpath_universal = dir + DIRSEP + name + DIRSEP "Contents" DIRSEP + "MacOS" + DIRSEP + barename;
-#if defined(__x86_64) || defined(__x86_64__)
-        foundUniversal = _knownBinFiles.find(binpath_universal) != _knownBinFiles.end();
+        if (_knownBinFiles.find(binpath_universal) != _knownBinFiles.end()) {
+          binpath = binpath_universal;
+        }
 #endif
-        if (!foundUniversal && _knownBinFiles.find(binpath) == _knownBinFiles.end()) {
+        if (_knownBinFiles.find(binpath) == _knownBinFiles.end()) {
 #ifdef CACHE_DEBUG
           printf("found non-cached binary %s\n", binpath.c_str());
 #endif
@@ -338,12 +342,14 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
           PluginBinary *pb = 0;
 #if defined(__x86_64) || defined(__x86_64__)
           pb = new PluginBinary(binpath, bundlename, this);
+#  if defined(__APPLE__)
           if (pb->isInvalid()) {
-            //fallback to "MacOS"
+            // fallback to "MacOS"
             delete pb;
             binpath = binpath_universal;
             pb = new PluginBinary(binpath, bundlename, this);
           }
+#  endif
 #else
           pb = new PluginBinary(binpath, bundlename, this);
 #endif
@@ -360,13 +366,9 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
 #ifdef CACHE_DEBUG
           printf("found cached binary %s\n", binpath.c_str());
 #endif
-          if(foundUniversal) {
-            foundBinFiles.insert(binpath_universal);
-          } else {
-            foundBinFiles.insert(binpath);
-          }
         }
-
+        // insert final path (universal or not) in the list of found files
+        foundBinFiles.insert(binpath);
       } else {
         if (isdir && (recurse && name[0] != '@' && name != "." && name != "..")) {
           scanDirectory(foundBinFiles, dir + DIRSEP + name, recurse);
