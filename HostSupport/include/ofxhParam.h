@@ -50,7 +50,7 @@ namespace OFX {
     namespace Param {
 
       /// fetch the param suite
-      void *GetSuite(int version);
+      const void *GetSuite(int version);
 
       /// is this a standard type
       bool isStandardType(const std::string &type);

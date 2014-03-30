@@ -53,7 +53,7 @@ namespace OFX {
       //
       // descriptor
       //
-      static Property::PropSpec interactDescriptorStuffs[] = {
+      static const Property::PropSpec interactDescriptorStuffs[] = {
         { kOfxInteractPropHasAlpha , Property::eInt, 1, true, "0" },
         { kOfxInteractPropBitDepth , Property::eInt, 1, true, "0" },
         Property::propSpecEnd
@@ -105,7 +105,7 @@ namespace OFX {
 
 
       ////////////////////////////////////////////////////////////////////////////////
-      static Property::PropSpec interactInstanceStuffs[] = {
+      static const Property::PropSpec interactInstanceStuffs[] = {
         { kOfxPropEffectInstance, Property::ePointer, 1, true, NULL },
         { kOfxPropInstanceData, Property::ePointer, 1, false, NULL },
         { kOfxInteractPropPixelScale, Property::eDouble, 2, true, "1.0f" },
@@ -118,7 +118,7 @@ namespace OFX {
         Property::propSpecEnd
       };
 
-      static Property::PropSpec interactArgsStuffs[] = {
+      static const Property::PropSpec interactArgsStuffs[] = {
         { kOfxPropEffectInstance, Property::ePointer, 1, false, NULL },
         { kOfxPropTime, Property::eDouble, 1, false, "0.0" },
         { kOfxImageEffectPropRenderScale, Property::eDouble, 2, false, "0.0" },
@@ -418,14 +418,14 @@ namespace OFX {
       }
       
       /// the interact suite
-      static OfxInteractSuiteV1 gSuite = {
+      static const OfxInteractSuiteV1 gSuite = {
         interactSwapBuffers,
         interactRedraw,
         interactGetPropertySet
       };
 
       /// function to get the sutie
-      void *GetSuite(int version) {
+      const void *GetSuite(int version) {
         if(version == 1)
           return (void *) &gSuite;
         return NULL;

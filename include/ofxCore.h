@@ -84,7 +84,7 @@ typedef struct OfxHost {
          - NULL if the API is unknown (either the api or the version requested),
 	 - pointer to the relevant API if it was found
   */
-  void *(*fetchSuite)(OfxPropertySetHandle host, const char *suiteName, int suiteVersion);
+  const void *(*fetchSuite)(OfxPropertySetHandle host, const char *suiteName, int suiteVersion);
 } OfxHost;
 
 

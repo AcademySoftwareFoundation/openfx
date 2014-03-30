@@ -49,7 +49,7 @@ namespace OFX {
 
       /// properties common to the desciptor and instance
       /// the desc and set them, the instance cannot
-      static Property::PropSpec clipDescriptorStuffs[] = {
+      static const Property::PropSpec clipDescriptorStuffs[] = {
         { kOfxPropType, Property::eString, 1, true, kOfxTypeClip },
         { kOfxPropName, Property::eString, 1, true, "SET ME ON CONSTRUCTION" },
         { kOfxPropLabel, Property::eString, 1, false, "" } ,
@@ -191,7 +191,7 @@ namespace OFX {
       
       /// extra properties for the instance, these are fetched from the host
       /// via a get hook and some virtuals
-      static Property::PropSpec clipInstanceStuffs[] = { 
+      static const Property::PropSpec clipInstanceStuffs[] = {
         { kOfxImageEffectPropPixelDepth, Property::eString, 1, true, kOfxBitDepthNone },
         { kOfxImageEffectPropComponents, Property::eString, 1, true, kOfxImageComponentNone },
         { kOfxImageClipPropUnmappedPixelDepth, Property::eString, 1, true, kOfxBitDepthNone },
@@ -226,7 +226,7 @@ namespace OFX {
         _properties.addProperties(clipInstanceStuffs);
         int i = 0;
         while(clipInstanceStuffs[i].name) {
-          Property::PropSpec& spec = clipInstanceStuffs[i];
+          const Property::PropSpec& spec = clipInstanceStuffs[i];
 
           switch (spec.type) {
           case Property::eDouble:
@@ -457,7 +457,7 @@ namespace OFX {
       // Image
       //
 
-      static Property::PropSpec imageStuffs[] = {
+      static const Property::PropSpec imageStuffs[] = {
         { kOfxPropType, Property::eString, 1, false, kOfxTypeImage },
         { kOfxImageEffectPropPixelDepth, Property::eString, 1, true, kOfxBitDepthNone  },
         { kOfxImageEffectPropComponents, Property::eString, 1, true, kOfxImageComponentNone },

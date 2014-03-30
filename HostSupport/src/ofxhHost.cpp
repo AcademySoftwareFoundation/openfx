@@ -65,7 +65,7 @@ namespace OFX {
         return kOfxStatOK;
       }
       
-      static struct OfxMemorySuiteV1 gMallocSuite = {
+      static const struct OfxMemorySuiteV1 gMallocSuite = {
         memoryAlloc,
         memoryFree
       };
@@ -80,7 +80,7 @@ namespace OFX {
     /// our own internal property for storing away our private pointer to our host descriptor
 #define kOfxHostSupportHostPointer "sf.openfx.net.OfxHostSupportHostPointer"
 
-    static Property::PropSpec hostStuffs[] = {
+    static const Property::PropSpec hostStuffs[] = {
       { kOfxPropType, Property::eString, 1, false, "Host" },
       { kOfxPropName, Property::eString, 1, false, "UNKNOWN" },
       { kOfxPropLabel, Property::eString, 1, false, "UNKNOWN" },
@@ -88,7 +88,7 @@ namespace OFX {
       Property::propSpecEnd
     };    
 
-    static void *fetchSuite(OfxPropertySetHandle hostProps, const char *suiteName, int suiteVersion)
+    static const void *fetchSuite(OfxPropertySetHandle hostProps, const char *suiteName, int suiteVersion)
     {      
       Property::Set* properties = reinterpret_cast<Property::Set*>(hostProps);
       
@@ -130,7 +130,7 @@ namespace OFX {
       }
     }
 
-    void *Host::fetchSuite(const char *suiteName, int suiteVersion)
+    const void *Host::fetchSuite(const char *suiteName, int suiteVersion)
     {
       if (strcmp(suiteName, kOfxPropertySuite)==0  && suiteVersion == 1) {
         return Property::GetSuite(suiteVersion);

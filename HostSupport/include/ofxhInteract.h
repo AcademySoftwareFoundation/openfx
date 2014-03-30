@@ -38,7 +38,7 @@ namespace OFX {
     namespace Interact {
       
       /// fetch a versioned suite for our interact
-      void *GetSuite(int version);
+      const void *GetSuite(int version);
       
       class Base {
       public:

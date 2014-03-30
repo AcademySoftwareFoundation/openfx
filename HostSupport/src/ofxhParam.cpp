@@ -196,7 +196,7 @@ namespace OFX {
                paramType == kOfxParamTypeInteger3D;
       }
 
-      static TypeMap typeMap[] = {
+      static const TypeMap typeMap[] = {
         { kOfxParamTypeInteger,   Property::eInt,    1 },
         { kOfxParamTypeDouble,    Property::eDouble, 1 },
         { kOfxParamTypeBoolean,   Property::eInt,    1 },
@@ -221,7 +221,7 @@ namespace OFX {
       /// is this a standard type
       bool isStandardType(const std::string &type)
       {
-        TypeMap *tm = typeMap;
+        const TypeMap *tm = typeMap;
         while (tm->paramType) {
           if (tm->paramType == type) 
             return true;
@@ -232,7 +232,7 @@ namespace OFX {
   
       bool findType(const std::string paramType, Property::TypeEnum &propType, int &propDim) 
       {
-        TypeMap *tm = typeMap;
+        const TypeMap *tm = typeMap;
         while (tm->paramType) {
           if (tm->paramType == paramType) {
             propType = tm->propType;
@@ -282,13 +282,13 @@ namespace OFX {
         findType(type, propType, propDim);
 
 
-        static Property::PropSpec allString[] = {
+        static const Property::PropSpec allString[] = {
           { kOfxParamPropStringMode,  Property::eString,    1,    false,    kOfxParamStringIsSingleLine },
           { kOfxParamPropStringFilePathExists, Property::eInt,    1,    false,    "1" },
           Property::propSpecEnd
         };
 
-        static Property::PropSpec allChoice[] = {
+        static const Property::PropSpec allChoice[] = {
           { kOfxParamPropChoiceOption,    Property::eString,    0,    false,    "" },
 #ifdef OFX_EXTENSIONS_TUTTLE
           { kOfxParamPropChoiceLabelOption, Property::eString,  0,    false,    "" },
@@ -296,12 +296,12 @@ namespace OFX {
           Property::propSpecEnd
         };
 
-        static Property::PropSpec allCustom[] = {
+        static const Property::PropSpec allCustom[] = {
           { kOfxParamPropCustomInterpCallbackV1,    Property::ePointer,    1,    false,    0 },
           Property::propSpecEnd
         };
 
-        static Property::PropSpec allPage[] = {
+        static const Property::PropSpec allPage[] = {
           { kOfxParamPropPageChild,    Property::eString,    0,    false,    "" },
           Property::propSpecEnd
         };
@@ -368,7 +368,7 @@ namespace OFX {
       /// add standard properties to a params that can take an interact
       void Descriptor::addInteractParamProps(const std::string &/*type*/)
       {
-        static Property::PropSpec allButGroupPageProps[] = {
+        static const Property::PropSpec allButGroupPageProps[] = {
           { kOfxParamPropInteractV1,          Property::ePointer, 1, false, 0 },
           { kOfxParamPropInteractSize,        Property::eDouble,  2, false, "0" },
           { kOfxParamPropInteractSizeAspect,  Property::eDouble,  1, false, "1" },
@@ -384,7 +384,7 @@ namespace OFX {
       /// add standard properties to a value holding param
       void Descriptor::addValueParamProps(const std::string &/*type*/, Property::TypeEnum valueType, int dim)
       {
-        static Property::PropSpec invariantProps[] = {
+        static const Property::PropSpec invariantProps[] = {
           { kOfxParamPropAnimates,    Property::eInt, 1,       false, "1" },
           { kOfxParamPropIsAnimating, Property::eInt, 1,       false, "0" },
           { kOfxParamPropIsAutoKeying,Property::eInt, 1,       false, "0" },
@@ -437,7 +437,7 @@ namespace OFX {
 
         /// if any double or a colour
         if (valueType == Property::eDouble) {
-          static Property::PropSpec allDouble[] = {
+          static const Property::PropSpec allDouble[] = {
             { kOfxParamPropIncrement,  Property::eDouble,    1,    false,    "1" },
             { kOfxParamPropDigits,     Property::eInt,       1,    false,    "2" },
             Property::propSpecEnd
@@ -447,14 +447,14 @@ namespace OFX {
 
         /// if a double param type
         if(isDoubleParam(type)) {
-          static Property::PropSpec allDouble[] = {
+          static const Property::PropSpec allDouble[] = {
             { kOfxParamPropDoubleType, Property::eString,    1,    false,    kOfxParamDoubleTypePlain },
             Property::propSpecEnd
           };
           _properties.addProperties(allDouble);
           
           if(dim == 1) {
-            static Property::PropSpec allDouble1D[] = {
+            static const Property::PropSpec allDouble1D[] = {
               { kOfxParamPropShowTimeMarker, Property::eInt,   1,    false,    "0" },    
               Property::propSpecEnd
             };
@@ -469,7 +469,7 @@ namespace OFX {
                                     || dim == 0
 #endif
                                     )) {
-          Property::PropSpec all2D3D[] = {
+          static const Property::PropSpec all2D3D[] = {
             { kOfxParamPropDimensionLabel,  Property::eString, dim, false, "" },
             Property::propSpecEnd
           };  
@@ -484,7 +484,7 @@ namespace OFX {
 
         /// if a multi dimensional param
         if (isColourParam(type)) {
-          Property::PropSpec allColor[] = {
+          static const Property::PropSpec allColor[] = {
             { kOfxParamPropDimensionLabel,  Property::eString, dim, false, "" },
             Property::propSpecEnd
           };  
@@ -2283,7 +2283,7 @@ namespace OFX {
         return stat;
       }
       
-      static OfxParameterSuiteV1 gParamSuiteV1 = {
+      static const OfxParameterSuiteV1 gParamSuiteV1 = {
         paramDefine,
         paramGetHandle,
         paramSetGetPropertySet,
@@ -2305,7 +2305,7 @@ namespace OFX {
       };
 
 
-      void *GetSuite(int version) {
+      const void *GetSuite(int version) {
         if(version ==1)
           return &gParamSuiteV1;
         return NULL;

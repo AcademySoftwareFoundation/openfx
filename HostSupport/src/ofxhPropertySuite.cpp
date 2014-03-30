@@ -1039,7 +1039,7 @@ namespace OFX {
       };     
       
       /// return the OFX function suite that manages properties
-      void *GetSuite(int version)
+      const void *GetSuite(int version)
       {
         if(version == 1)
           return (void *)(&gSuite);

@@ -68,7 +68,7 @@ namespace OFX {
     namespace ImageEffect {
       
       /// properties common on an effect and a descriptor
-      static Property::PropSpec effectDescriptorStuff[] = {
+      static const Property::PropSpec effectDescriptorStuff[] = {
         /* name                                 type                   dim. r/o default value */
         { kOfxPropType,                         Property::eString,     1, true,  kOfxTypeImageEffect },
         { kOfxPropLabel,                        Property::eString,     1, false, "" },
@@ -337,7 +337,7 @@ namespace OFX {
       // Instance
       //
 
-      static Property::PropSpec effectInstanceStuff[] = {
+      static const Property::PropSpec effectInstanceStuff[] = {
         /* name                                 type                   dim.   r/o    default value */
         { kOfxPropType,                         Property::eString,     1, true,  kOfxTypeImageEffect },
         { kOfxImageEffectPropContext,           Property::eString,     1, true, "" },
@@ -392,7 +392,7 @@ namespace OFX {
              strcmp(effectInstanceStuff[i].name,kOfxPropIsInteractive) ||
              strcmp(effectInstanceStuff[i].name,kOfxImageEffectInstancePropSequentialRender) )
             {
-              Property::PropSpec& spec = effectInstanceStuff[i];
+              const Property::PropSpec& spec = effectInstanceStuff[i];
 
               switch (spec.type) {
               case Property::eDouble:
@@ -1238,7 +1238,7 @@ namespace OFX {
         }
         else {
           /// set up the in args 
-          static Property::PropSpec inStuff[] = {
+          static const Property::PropSpec inStuff[] = {
             { kOfxPropTime, Property::eDouble, 1, true, "0" },
             { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
             { kOfxImageEffectPropRegionOfInterest , Property::eDouble, 4, true, 0 },
@@ -1464,7 +1464,7 @@ namespace OFX {
                                            OfxPointD   renderScale,
                                            std::string &clip)
       {
-        static Property::PropSpec inStuff[] = {
+        static const Property::PropSpec inStuff[] = {
           { kOfxPropTime, Property::eDouble, 1, true, "0" },
           { kOfxImageEffectPropFieldToRender, Property::eString, 1, true, "" }, 
           { kOfxImageEffectPropRenderWindow, Property::eInt, 4, true, "0" },
@@ -1475,7 +1475,7 @@ namespace OFX {
           Property::propSpecEnd
         };
 
-        static Property::PropSpec outStuff[] = {
+        static const Property::PropSpec outStuff[] = {
           { kOfxPropTime, Property::eDouble, 1, false, "0.0" },
           { kOfxPropName, Property::eString, 1, false, "" },
           Property::propSpecEnd
@@ -1661,7 +1661,7 @@ namespace OFX {
         /// reset all the clip prefs stuff to their defaults
         setDefaultClipPreferences();
 
-        static Property::PropSpec clipPrefsStuffs []= 
+        static const Property::PropSpec clipPrefsStuffs []=
           {
             { kOfxImageEffectPropFrameRate,          Property::eDouble,  1, false,  "1" },
             { kOfxImageEffectPropPreMultiplication,  Property::eString,  1, false,  "" },
@@ -2240,7 +2240,7 @@ namespace OFX {
         }
       }
 
-      static struct OfxImageEffectSuiteV1 gImageEffectSuite = {
+      static const struct OfxImageEffectSuiteV1 gImageEffectSuite = {
         getPropertySet,
         getParamSet,
         clipDefine,
@@ -2257,7 +2257,7 @@ namespace OFX {
       };
 
 #ifdef OFX_EXTENSIONS_VEGAS
-      static struct OfxVegasStereoscopicImageEffectSuiteV1 gVegasStereoscopicImageEffectSuite = {
+      static const struct OfxVegasStereoscopicImageEffectSuiteV1 gVegasStereoscopicImageEffectSuite = {
         clipGetStereoscopicImage
       };
 #endif
@@ -2329,7 +2329,7 @@ namespace OFX {
       }
 
       /// message suite for an image effect plugin (backward-compatible with OfxMessageSuiteV1)
-      static struct OfxMessageSuiteV2 gMessageSuite = {
+      static const struct OfxMessageSuiteV2 gMessageSuite = {
         message,
         setPersistentMessage,
         clearPersistentMessage
@@ -2544,7 +2544,7 @@ namespace OFX {
       }
 #endif // !OFX_SUPPORTS_MULTITHREAD
        
-      static struct OfxMultiThreadSuiteV1 gMultiThreadSuite = {
+      static const struct OfxMultiThreadSuiteV1 gMultiThreadSuite = {
         multiThread,
         multiThreadNumCPUs,
         multiThreadIndex,
@@ -2561,7 +2561,7 @@ namespace OFX {
       /// The image effect host
 
       /// properties for the image effect host
-      static Property::PropSpec hostStuffs[] = {
+      static const Property::PropSpec hostStuffs[] = {
         { kOfxImageEffectHostPropIsBackground, Property::eInt, 1, true, "0" },
         { kOfxImageEffectPropSupportsOverlays, Property::eInt, 1, true, "1" },
         { kOfxImageEffectPropSupportsMultiResolution, Property::eInt, 1, true, "1" },
@@ -2622,7 +2622,7 @@ namespace OFX {
       }
 
       /// our suite fetcher
-      void *Host::fetchSuite(const char *suiteName, int suiteVersion)
+      const void *Host::fetchSuite(const char *suiteName, int suiteVersion)
       {
         if (strcmp(suiteName, kOfxImageEffectSuite)==0) {
           if(suiteVersion==1)

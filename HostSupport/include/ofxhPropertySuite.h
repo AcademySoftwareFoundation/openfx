@@ -566,7 +566,7 @@ namespace OFX {
 
       
       /// return the OFX function suite that manages properties
-      void *GetSuite(int version);
+      const void *GetSuite(int version);
     }
   }
 }

@@ -67,7 +67,7 @@ namespace OFX {
         Host();
 
         /// fetch a suite
-        virtual void *fetchSuite(const char *suiteName, int suiteVersion);
+        virtual const void *fetchSuite(const char *suiteName, int suiteVersion);
 
         /// Create a new instance of an image effect plug-in.
         ///

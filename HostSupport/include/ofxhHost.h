@@ -70,7 +70,7 @@ namespace OFX {
       /// The base class returns the following suites
       ///    PropertySuite
       ///    MemorySuite
-      virtual void *fetchSuite(const char *suiteName, int suiteVersion);
+      virtual const void *fetchSuite(const char *suiteName, int suiteVersion);
       
       /// get the C API handle that is passed across the API to represent this host
       OfxHost *getHandle();
