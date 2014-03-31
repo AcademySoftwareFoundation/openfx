@@ -55,10 +55,10 @@ static OfxMessageSuiteV1     *gMessageSuite;
 
 ////////////////////////////////////////////////////////////////////////////////
 // fetch a suite
-static void *
+static const void *
 fetchSuite(const char *suiteName, int suiteVersion, bool optional = false)
 {
-  void *suite = gHost->fetchSuite(gHost->host, suiteName, suiteVersion);
+  const void *suite = gHost->fetchSuite(gHost->host, suiteName, suiteVersion);
   if(optional)
     OFX::logWarning(suite == 0, "Could not fetch the optional suite '%s' version %d;", suiteName, suiteVersion);
   else
