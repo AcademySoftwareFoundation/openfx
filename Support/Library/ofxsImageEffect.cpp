@@ -2871,9 +2871,9 @@ namespace OFX {
   }; // namespace Private
 
   /** @brief Fetch's a suite from the host and logs errors */
-  void * fetchSuite(const char *suiteName, int suiteVersion, bool optional)
+  const void * fetchSuite(const char *suiteName, int suiteVersion, bool optional)
   {
-    void *suite = Private::gHost->fetchSuite(Private::gHost->host, suiteName, suiteVersion);
+    const void *suite = Private::gHost->fetchSuite(Private::gHost->host, suiteName, suiteVersion);
     if(suite==0)
     {
       if(optional)
