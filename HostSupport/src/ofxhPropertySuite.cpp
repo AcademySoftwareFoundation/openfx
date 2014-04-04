@@ -810,7 +810,7 @@ namespace OFX {
                                                 int count,
                                                 typename T::APIType *values) {          
 #       ifdef OFX_DEBUG_PROPERTIES
-        std::cout << "OFX: propSetN - " << properties << ' ' << property << "[0.." << count << "] = ";
+        std::cout << "OFX: propSetN - " << properties << ' ' << property << "[0.." << count-1 << "] = ";
         for (int i = 0; i < count; ++i) {
             if (i != 0) {
                 std::cout << ',';
@@ -899,7 +899,7 @@ namespace OFX {
                                             int count,
                                             typename T::APITypeConstless *values) {
 #       ifdef OFX_DEBUG_PROPERTIES
-        std::cout << "OFX: propGetN - " << properties << ' ' << property << "[0.." << count << "] = ...";
+        std::cout << "OFX: propGetN - " << properties << ' ' << property << "[0.." << count-1 << "] = ...";
 #       endif
         try {
           Set *thisSet = reinterpret_cast<Set*>(properties);

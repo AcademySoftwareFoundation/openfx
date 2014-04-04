@@ -156,21 +156,33 @@ namespace OFX {
 
     /** @brief Enumerates the differing types of double params */
     enum DoubleTypeEnum {
-        eDoubleTypePlain,
-        eDoubleTypeAngle,
-        eDoubleTypeScale,
-        eDoubleTypeTime,
-        eDoubleTypeAbsoluteTime,
-        eDoubleTypeNormalisedX,
-        eDoubleTypeNormalisedY,
-        eDoubleTypeNormalisedXAbsolute,
-        eDoubleTypeNormalisedYAbsolute,
-        eDoubleTypeNormalisedXY,
-        eDoubleTypeNormalisedXYAbsolute,    
+        eDoubleTypePlain, //!< parameter has no special interpretation
+        eDoubleTypeAngle, //!< parameter is to be interpretted as an angle
+        eDoubleTypeScale, //!< parameter is to be interpretted as a scale factor
+        eDoubleTypeTime, //!< parameter represents a time value (1D only)
+        eDoubleTypeAbsoluteTime, //!< parameter represents an absolute time value (1D only),
+        eDoubleTypeX, //!< a size in the X dimension dimension (1D only), new for 1.2
+        eDoubleTypeXAbsolute, //!< a position in the X dimension (1D only), new for 1.2
+        eDoubleTypeY, //!< a size in the Y dimension dimension (1D only), new for 1.2
+        eDoubleTypeYAbsolute, //!< a position in the X dimension (1D only), new for 1.2
+        eDoubleTypeXY, //!< a size in the X and Y dimension (2D only), new for 1.2
+        eDoubleTypeXYAbsolute, //!< a position in the X and Y dimension (2D only), new for 1.2
+        eDoubleTypeNormalisedX, //!< normalised size with respect to the project's X dimension (1D only), deprecated for 1.2
+        eDoubleTypeNormalisedY, //!< normalised absolute position on the X axis (1D only), deprecated for 1.2
+        eDoubleTypeNormalisedXAbsolute, //!< normalised size wrt to the project's Y dimension (1D only), deprecated for 1.2
+        eDoubleTypeNormalisedYAbsolute, //!< normalised absolute position on the Y axis (1D only), deprecated for 1.2
+        eDoubleTypeNormalisedXY, //!< normalised to the project's X and Y size (2D only), deprecated for 1.2
+        eDoubleTypeNormalisedXYAbsolute, //!< normalised to the projects X and Y size, and is an absolute position on the image plane, deprecated for 1.2
 #ifdef OFX_EXTENSIONS_VEGAS
         eDoubleTypePolar,
         eDoubleTypeChrominance 
 #endif
+    };
+
+    /** @brief Enumerates the differing types of coordinate system for default values */
+    enum DefaultCoordinateSystemEnum {
+        eCoordinatesCanonical, //!< canonical coordinate system
+        eCoordinatesNormalised, //!< normalized coordinate system
     };
 
 #ifdef OFX_EXTENSIONS_NUKE
@@ -445,6 +457,9 @@ namespace OFX {
     public :
         /** @brief set the type of the double param, defaults to eDoubleTypePlain */
         void setDoubleType(DoubleTypeEnum v);
+
+        /** @brief set the type of coordinate system for default values */
+        void setDefaultCoordinateSystem(DefaultCoordinateSystemEnum v);
 
         /** @brief set the sensitivity of any gui slider */
         void setIncrement(double v);
@@ -1227,6 +1242,9 @@ namespace OFX {
 
         /** @brief get the type of the double param */
         void getDoubleType(DoubleTypeEnum &v);
+
+        /** @brief get the type of coordinate system for default values */
+        void getDefaultCoordinateSystem(DefaultCoordinateSystemEnum &v);
     };
 
     ////////////////////////////////////////////////////////////////////////////////

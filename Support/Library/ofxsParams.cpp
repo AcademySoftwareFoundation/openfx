@@ -456,6 +456,24 @@ namespace OFX {
     case eDoubleTypeAbsoluteTime :
       _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeAbsoluteTime);
       break;
+    case eDoubleTypeX :
+      _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeX);
+      break;
+    case eDoubleTypeXAbsolute :
+      _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeXAbsolute);
+      break;
+    case eDoubleTypeY :
+      _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeY);
+      break;
+    case eDoubleTypeYAbsolute :
+      _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeYAbsolute);
+      break;
+    case eDoubleTypeXY :
+      _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeXY);
+      break;
+    case eDoubleTypeXYAbsolute :
+      _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeXYAbsolute);
+      break;
     case eDoubleTypeNormalisedX :
       _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeNormalisedX);
       break;
@@ -482,6 +500,20 @@ namespace OFX {
       _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeChrominance);
       break;
 #endif
+    }
+  }
+
+  /** @brief set the type of coordinate system for default values */
+  void BaseDoubleParamDescriptor::setDefaultCoordinateSystem(DefaultCoordinateSystemEnum v)
+  {
+    switch(v) 
+    {
+    case eCoordinatesCanonical :
+      _paramProps.propSetString(kOfxParamPropDefaultCoordinateSystem, kOfxParamCoordinatesCanonical);
+      break;
+    case eCoordinatesNormalised :
+      _paramProps.propSetString(kOfxParamPropDefaultCoordinateSystem, kOfxParamCoordinatesNormalised);
+      break;
     }
   }
 
@@ -1820,19 +1852,19 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropDigits, v);
   }
 
-  /** @brief set the sensitivity of any gui slider */
+  /** @brief get the sensitivity of any gui slider */
   void BaseDoubleParam::getIncrement(double &v)
   {
     v = _paramProps.propGetDouble(kOfxParamPropIncrement);
   }
 
-  /** @brief set the number of digits printed after a decimal point in any gui */
+  /** @brief get the number of digits printed after a decimal point in any gui */
   void BaseDoubleParam::getDigits(int &v)
   {
     v = _paramProps.propGetInt(kOfxParamPropDigits);
   }
 
-  /** @brief set the number of digits printed after a decimal point in any gui */
+  /** @brief get the type of the double param, defaults to eDoubleTypePlain */
   void BaseDoubleParam::getDoubleType(DoubleTypeEnum &v)
   {
     std::string str = _paramProps.propGetString(kOfxParamPropDoubleType);
@@ -1847,6 +1879,18 @@ namespace OFX {
       v = eDoubleTypeTime;
     else if(str == kOfxParamDoubleTypeAbsoluteTime)
       v = eDoubleTypeAbsoluteTime;
+    else if(str == kOfxParamDoubleTypeX)
+      v = eDoubleTypeX;
+    else if(str == kOfxParamDoubleTypeXAbsolute)
+      v = eDoubleTypeXAbsolute;
+    else if(str == kOfxParamDoubleTypeY)
+      v = eDoubleTypeY;
+    else if(str == kOfxParamDoubleTypeYAbsolute)
+      v = eDoubleTypeYAbsolute;
+    else if(str == kOfxParamDoubleTypeXY)
+      v = eDoubleTypeXY;
+    else if(str == kOfxParamDoubleTypeXYAbsolute)
+      v = eDoubleTypeXYAbsolute;
     else if(str == kOfxParamDoubleTypeNormalisedX)
       v = eDoubleTypeNormalisedX;
     else if(str == kOfxParamDoubleTypeNormalisedY)
@@ -1861,6 +1905,17 @@ namespace OFX {
       v = eDoubleTypeNormalisedXYAbsolute;
     else
       v = eDoubleTypePlain;
+  }
+
+  /** @brief get the type of coordinate system for default values */
+  void BaseDoubleParam::getDefaultCoordinateSystem(DefaultCoordinateSystemEnum &v)
+  {
+    std::string str = _paramProps.propGetString(kOfxParamPropDefaultCoordinateSystem);
+
+    if(str == kOfxParamCoordinatesNormalised)
+      v = eCoordinatesNormalised;
+    else
+      v = eCoordinatesCanonical;
   }
 
   ////////////////////////////////////////////////////////////////////////////////
