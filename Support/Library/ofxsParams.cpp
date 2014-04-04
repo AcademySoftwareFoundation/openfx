@@ -506,14 +506,18 @@ namespace OFX {
   /** @brief set the type of coordinate system for default values */
   void BaseDoubleParamDescriptor::setDefaultCoordinateSystem(DefaultCoordinateSystemEnum v)
   {
-    switch(v) 
-    {
-    case eCoordinatesCanonical :
-      _paramProps.propSetString(kOfxParamPropDefaultCoordinateSystem, kOfxParamCoordinatesCanonical);
-      break;
-    case eCoordinatesNormalised :
-      _paramProps.propSetString(kOfxParamPropDefaultCoordinateSystem, kOfxParamCoordinatesNormalised);
-      break;
+    try {
+      // this property was introduced with OpenFX 1.2
+      switch(v)
+      {
+      case eCoordinatesCanonical :
+        _paramProps.propSetString(kOfxParamPropDefaultCoordinateSystem, kOfxParamCoordinatesCanonical);
+        break;
+      case eCoordinatesNormalised :
+        _paramProps.propSetString(kOfxParamPropDefaultCoordinateSystem, kOfxParamCoordinatesNormalised);
+        break;
+      }
+    } catch (std::exception&) {
     }
   }
 
