@@ -127,6 +127,10 @@ namespace OFX {
         return _properties.getStringProperty(kOfxParamPropDoubleType, 0);
       }
 
+      const std::string &Base::getDefaultCoordinateSystem() const {
+        return _properties.getStringProperty(kOfxParamPropDefaultCoordinateSystem, 0);
+      }
+
       const std::string &Base::getHint() const {
         return _properties.getStringProperty(kOfxParamPropHint, 0);
       }
@@ -449,6 +453,7 @@ namespace OFX {
         if(isDoubleParam(type)) {
           static const Property::PropSpec allDouble[] = {
             { kOfxParamPropDoubleType, Property::eString,    1,    false,    kOfxParamDoubleTypePlain },
+            { kOfxParamPropDefaultCoordinateSystem, Property::eString,    1,    false,    kOfxParamCoordinatesCanonical },
             Property::propSpecEnd
           };
           _properties.addProperties(allDouble);

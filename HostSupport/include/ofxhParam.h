@@ -97,6 +97,8 @@ namespace OFX {
 
         const std::string &getDoubleType() const;
 
+        const std::string &getDefaultCoordinateSystem() const;
+
         const std::string &getCacheInvalidation() const;
 
         const std::string &getHint() const;
