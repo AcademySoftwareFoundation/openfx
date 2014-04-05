@@ -808,7 +808,7 @@ namespace OFX {
       template<class T> static OfxStatus propSetN(OfxPropertySetHandle properties,
                                                 const char *property,
                                                 int count,
-                                                typename T::APIType *values) {          
+                                                const typename T::APIType *values) {
 #       ifdef OFX_DEBUG_PROPERTIES
         std::cout << "OFX: propSetN - " << properties << ' ' << property << "[0.." << count-1 << "] = ";
         for (int i = 0; i < count; ++i) {
