@@ -125,7 +125,7 @@ typedef struct OfxPropertySuiteV1 {
         - ::kOfxStatErrBadIndex
         - ::kOfxStatErrValue
  */
-  OfxStatus (*propSetPointerN)(OfxPropertySetHandle properties, const char *property, int count, void **value);
+  OfxStatus (*propSetPointerN)(OfxPropertySetHandle properties, const char *property, int count, void *const*value);
 
   /** @brief Set multiple values of a string property
 
@@ -141,7 +141,7 @@ typedef struct OfxPropertySuiteV1 {
         - ::kOfxStatErrBadIndex
         - ::kOfxStatErrValue
   */
-  OfxStatus (*propSetStringN) (OfxPropertySetHandle properties, const char *property, int count, const char **value);
+  OfxStatus (*propSetStringN) (OfxPropertySetHandle properties, const char *property, int count, const char *const*value);
 
   /** @brief Set multiple values of  a double property
 
@@ -158,7 +158,7 @@ typedef struct OfxPropertySuiteV1 {
         - ::kOfxStatErrValue
 
   */
-  OfxStatus (*propSetDoubleN) (OfxPropertySetHandle properties, const char *property, int count, double *value);
+  OfxStatus (*propSetDoubleN) (OfxPropertySetHandle properties, const char *property, int count, const double *value);
 
   /** @brief Set multiple values of an int property 
 
@@ -175,7 +175,7 @@ typedef struct OfxPropertySuiteV1 {
         - ::kOfxStatErrValue
 
  */
-  OfxStatus (*propSetIntN)    (OfxPropertySetHandle properties, const char *property, int count, int *value);
+  OfxStatus (*propSetIntN)    (OfxPropertySetHandle properties, const char *property, int count, const int *value);
   
   /** @brief Get a single value from a pointer property
 
