@@ -819,7 +819,7 @@ namespace OFX {
   struct TransformArguments {
     double    time;
     OfxPointD renderScale;
-    FieldEnum fieldToRender = eFieldBoth;
+    FieldEnum fieldToRender;
     int       renderView;
   };
 #endif
