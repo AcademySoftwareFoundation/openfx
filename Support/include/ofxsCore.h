@@ -320,6 +320,12 @@ namespace OFX {
       OFX::Exception::PropertyValueIllegalToHost, 
       OFX::Exception::Suite);
 
+    // set multiple values
+    void propSetDoubleN(const char* property, const double *value, int count, bool throwOnFailure = true) throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost, 
+      OFX::Exception::PropertyValueIllegalToHost, 
+      OFX::Exception::Suite);
+
     void propSetPointer(const char* property, void *value, bool throwOnFailure = true) throw(std::bad_alloc, 
       OFX::Exception::PropertyUnknownToHost, 
       OFX::Exception::PropertyValueIllegalToHost, 

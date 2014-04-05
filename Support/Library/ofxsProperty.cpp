@@ -183,6 +183,22 @@ namespace OFX {
     if(_gPropLogging > 0) Log::print("Set int property %s[%d] to be %d.",  property, idx, value);
   }
 
+  /** @brief, Set a multiple dimension double property */
+  void PropertySet::propSetDoubleN(const char* property, const double* values, int count, bool throwOnFailure) throw(std::bad_alloc,
+    OFX::Exception::PropertyUnknownToHost, 
+    OFX::Exception::PropertyValueIllegalToHost,
+    OFX::Exception::Suite)
+  {
+    assert(_propHandle != 0);
+    OfxStatus stat = gPropSuite->propSetDoubleN(_propHandle, property, count, values);
+    OFX::Log::error(stat != kOfxStatOK, "Failed on setting double property %s[0..%d], host returned status %s;",
+      property, count-1, mapStatusToString(stat));
+    if(throwOnFailure)
+      throwPropertyException(stat, property); 
+
+    if(_gPropLogging > 0) Log::print("Set double property %s[0..%d].",  property, count-1);
+  }
+
   /** @brief Get single pointer property */
   void*  PropertySet::propGetPointer(const char* property, int idx, bool throwOnFailure) const throw(std::bad_alloc, 
     OFX::Exception::PropertyUnknownToHost, 
