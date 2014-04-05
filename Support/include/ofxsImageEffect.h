@@ -486,6 +486,11 @@ namespace OFX {
     void setPresetThumbnailHint(VegasPresetThumbnailEnum thumbnailHint);
 #endif
 
+#ifdef OFX_EXTENSIONS_NUKE
+      /** @brief indicate that a plugin or host can handle transform effects */
+      void setCanTransform(bool v);
+#endif
+
     /** @brief Create a clip, only callable from describe in context 
 
     The returned clip \em must not be deleted by the client code. This is all managed by the ImageEffectDescriptor itself.
@@ -1048,9 +1053,6 @@ namespace OFX {
     The returned camera param \em must not be deleted by the client code. This is all managed by the ImageEffect itself.
     */
     CameraParam* fetchCameraParam(const std::string& name) const;
-
-    /** @brief indicate that a plugin or host can handle transform effects */
-    void setCanTransform(bool v);
 #endif
 
     /** @brief does the host want us to abort rendering? */

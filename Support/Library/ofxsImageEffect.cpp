@@ -672,6 +672,17 @@ namespace OFX {
   }
 #endif
 
+#ifdef OFX_EXTENSIONS_NUKE
+  /** @brief indicate that a plugin or host can handle transform effects */
+  void ImageEffectDescriptor::setCanTransform(bool v)
+  {
+    // the header says this property is on the effect instance, but on Nuke it only exists on the effect descriptor
+    if (gHostDescription.canTransform) {
+      _effectProps.propSetInt(kFnOfxImageEffectCanTransform, int(v));
+    }
+  }
+#endif
+
   /** @brief If the slave param changes the clip preferences need to be re-evaluated */
   void ImageEffectDescriptor::addClipPreferencesSlaveParam(ParamDescriptor &p)
   {
@@ -1273,12 +1284,6 @@ namespace OFX {
     CameraParam *paramPtr;
     fetchAttribute(_effectHandle, name, paramPtr);
     return paramPtr;
-  }
-
-  /** @brief indicate that a plugin or host can handle transform effects */
-  void ImageEffect::setCanTransform(bool v)
-  {
-    _effectProps.propSetInt(kFnOfxImageEffectCanTransform, int(v));
   }
 #endif
 
