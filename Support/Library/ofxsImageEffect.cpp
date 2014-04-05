@@ -1274,6 +1274,12 @@ namespace OFX {
     fetchAttribute(_effectHandle, name, paramPtr);
     return paramPtr;
   }
+
+  /** @brief indicate that a plugin or host can handle transform effects */
+  void ImageEffect::setCanTransform(bool v)
+  {
+    _effectProps.propSetInt(kFnOfxImageEffectCanTransform, int(v));
+  }
 #endif
 
   /** @brief does the host want us to abort rendering? */
@@ -1435,6 +1441,18 @@ namespace OFX {
   bool ImageEffect::invokeHelp()
   {
     // by default, do nothing
+    return false;
+  }
+#endif
+
+#ifdef OFX_EXTENSIONS_NUKE
+  // TODO: getClipComponents(handle, inArgs, outargs);
+  // TODO: framesViewsNeededAction(handle, inArgs, outargs, plugname); (see framesNeededAction())
+
+  /** @brief recover a transform matrix from an effect */
+  bool ImageEffect::getTransform(const TransformArguments &/*args*/, Clip * &/*transformClip*/, double /*transformMatrix*/[9])
+  {
+    // by default, do the default
     return false;
   }
 #endif
@@ -1774,6 +1792,7 @@ namespace OFX {
         gHostDescription.supportsParametricParameter = gParametricParameterSuite != 0;
 #ifdef OFX_EXTENSIONS_NUKE
         gHostDescription.supportsCameraParameter    = gCameraParameterSuite != 0;
+        gHostDescription.canTransform               = hostProps.propGetInt(kFnOfxImageEffectCanTransform) != 0;
 #endif
         gHostDescription.maxParameters              = hostProps.propGetInt(kOfxParamHostPropMaxParameters);
         gHostDescription.maxPages                   = hostProps.propGetInt(kOfxParamHostPropMaxPages);
@@ -1894,6 +1913,8 @@ namespace OFX {
         gParametricParameterSuite = 0;
 #ifdef OFX_EXTENSIONS_NUKE
         gCameraParameterSuite = 0;
+        gImageEffectPlaneSuiteV1 = 0;
+        gImageEffectPlaneSuiteV2 = 0;
 #endif
 #ifdef OFX_EXTENSIONS_VEGAS
 #if defined(WIN32) || defined(WIN64)
@@ -2421,7 +2442,45 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
     // TODO: getClipComponents(handle, inArgs, outargs);
     // TODO: framesViewsNeededAction(handle, inArgs, outargs, plugname); (see framesNeededAction())
-    // TODO: getTransform(handle, inArgs, outargs);
+
+    /** @brief Action called in place of a render to recover a transform matrix from an effect. */
+    bool
+      getTransform(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs)
+    {
+      ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
+      TransformArguments args;
+
+      // get the arguments 
+      args.time = inArgs.propGetDouble(kOfxPropTime);
+
+      args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
+      args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+
+      args.renderView = inArgs.propGetInt(kFnOfxImageEffectPropView, 0, false);
+
+      std::string str = inArgs.propGetString(kOfxImageEffectPropFieldToRender);
+      try {
+        args.fieldToRender = eFieldBoth;
+        args.fieldToRender = mapStrToFieldEnum(str);
+      } catch (std::invalid_argument) {
+        // dud field?
+        OFX::Log::error(true, "Unknown field to render '%s'", str.c_str());
+
+        // HACK need to throw something to cause a failure
+      }
+
+      // and call the plugin client getTransform code
+      Clip *transformClip = 0;
+      double transformMatrix[9];
+      bool v = effectInstance->getTransform(args, transformClip, transformMatrix);
+
+      if(v && transformClip) {
+        outArgs.propSetString(kOfxPropName, transformClip->name());
+        outArgs.propSetDoubleN(kFnOfxPropMatrix2D, transformMatrix, 9);
+        return true; // the transfrom and clip name were set and can be used to modify the named image appropriately
+      }
+      return false; // don't attempt to use the transform matrix, but render the image as per normal
+    }
 #endif
 
     /** @brief The main entry point for the plugin
@@ -2712,13 +2771,14 @@ namespace OFX {
           if(framesViewsNeededAction(handle, inArgs, outArgs, plugname))
             stat = kOfxStatOK;
         }
+#endif
         else if(action == kFnOfxImageEffectActionGetTransform) {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
           // call the get transform function
-          getTransform(handle, inArgs, outargs);
+          if(getTransform(handle, inArgs, outArgs))
+            stat = kOfxStatOK;
         }
-#endif
 #endif
         else if(actionRaw) {
           OFX::Log::error(true, "Unknown action '%s'.", actionRaw);
