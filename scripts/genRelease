@@ -37,6 +37,10 @@ cd ..
 # Build the ProgrammingGuide and ProgrammingReference
 cd Documentation
 make || die "building Programming Guide and Reference"
+
+# Copy style assets to Ref and Guide directories
+cp ../include/ofxStyle.css Reference/
+cp ../include/ofxStyle.css Guide/
 cd ..
 
 (tar cf - doc | gzip > openfx-doc-$LABEL.tar.gz)  || die "Tarring docs"
