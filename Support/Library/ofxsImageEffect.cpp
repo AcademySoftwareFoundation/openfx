@@ -1797,7 +1797,7 @@ namespace OFX {
         gHostDescription.supportsParametricParameter = gParametricParameterSuite != 0;
 #ifdef OFX_EXTENSIONS_NUKE
         gHostDescription.supportsCameraParameter    = gCameraParameterSuite != 0;
-        gHostDescription.canTransform               = hostProps.propGetInt(kFnOfxImageEffectCanTransform) != 0;
+        gHostDescription.canTransform               = hostProps.propGetInt(kFnOfxImageEffectCanTransform, false) != 0;
 #endif
         gHostDescription.maxParameters              = hostProps.propGetInt(kOfxParamHostPropMaxParameters);
         gHostDescription.maxPages                   = hostProps.propGetInt(kOfxParamHostPropMaxPages);
