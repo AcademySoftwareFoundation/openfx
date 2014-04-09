@@ -79,17 +79,25 @@ namespace OFX {
         {
             // slice the y range into the number of threads it has
             unsigned int dy = _renderWindow.y2 - _renderWindow.y1;
-  
-            unsigned int y1 = _renderWindow.y1 + threadId * dy/nThreads;
+            unsigned int h = dy/nThreads;
+            if (h == 0) {
+                // there are more threads than lines to process
+                h = 1;
+            }
+            if (threadId * h >= dy) {
+                // empty render subwindow
+                return;
+            }
+            unsigned int y1 = _renderWindow.y1 + threadId * h;
 
-            unsigned int step = (threadId + 1) * dy/nThreads;
+            unsigned int step = (threadId + 1) * h;
             unsigned int y2 = _renderWindow.y1 + (step < dy ? step : dy);
 
             OfxRectI win = _renderWindow;
             win.y1 = y1; win.y2 = y2;
 
             // and render that thread on each
-            multiThreadProcessImages(win);  
+            multiThreadProcessImages(win);
         }
         
         /** @brief called before any MP is done */
