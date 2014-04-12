@@ -525,6 +525,8 @@ namespace OFX {
       PropertyDescription(kOfxImageEffectPropRenderScale,   OFX::eDouble, 2, eDescFinished),
       PropertyDescription(kOfxImageEffectPropRenderWindow,  OFX::eInt,    4, eDescFinished),
       PropertyDescription(kOfxImageEffectPropFieldToRender, OFX::eString, 1, eDescFinished),
+      PropertyDescription(kOfxImageEffectPropSequentialRenderStatus,  OFX::eInt,    1, eDescFinished),
+      PropertyDescription(kOfxImageEffectPropInteractiveRenderStatus, OFX::eInt,    1, eDescFinished),
     };
 
     /** @brief kOfxImageEffectActionRender property set */
@@ -539,6 +541,8 @@ namespace OFX {
       PropertyDescription(kOfxImageEffectPropFrameStep,   OFX::eDouble, 1, eDescFinished),
       PropertyDescription(kOfxImageEffectPropRenderScale, OFX::eDouble, 2, eDescFinished),
       PropertyDescription(kOfxPropIsInteractive,          OFX::eInt, 1, eDescFinished),
+      PropertyDescription(kOfxImageEffectPropSequentialRenderStatus,  OFX::eInt,    1, eDescFinished),
+      PropertyDescription(kOfxImageEffectPropInteractiveRenderStatus, OFX::eInt,    1, eDescFinished),
     };
 
     /** @brief kOfxImageEffectActionBeginSequenceRender property set */
@@ -549,8 +553,12 @@ namespace OFX {
     /** @brief kOfxImageEffectActionEndSequenceRender action's inargs properties */
     static PropertyDescription gEndSequenceRenderActionInArgProps[ ] =
     {
+      PropertyDescription(kOfxImageEffectPropFrameRange,  OFX::eDouble, 2, eDescFinished),
+      PropertyDescription(kOfxImageEffectPropFrameStep,   OFX::eDouble, 1, eDescFinished),
       PropertyDescription(kOfxImageEffectPropRenderScale, OFX::eDouble, 2, eDescFinished),
       PropertyDescription(kOfxPropIsInteractive,          OFX::eInt, 1, eDescFinished),
+      PropertyDescription(kOfxImageEffectPropSequentialRenderStatus,  OFX::eInt,    1, eDescFinished),
+      PropertyDescription(kOfxImageEffectPropInteractiveRenderStatus, OFX::eInt,    1, eDescFinished),
     };
 
     /** @brief kOfxImageEffectActionEndSequenceRender property set */
