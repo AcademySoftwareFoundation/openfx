@@ -1,0 +1,7 @@
+CXXFLAGS = -I../../include
+OPTIMIZER = -g
+
+opengl.ofx : opengl.o
+	$(CXX) -bundle opengl.o -o opengl.ofx -framework OpenGL
+	mkdir -p opengl.ofx.bundle/Contents/MacOS/
+	cp opengl.ofx opengl.ofx.bundle/Contents/MacOS/

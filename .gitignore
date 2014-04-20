@@ -1,3 +1,10 @@
 # Ignore the documentation folder
 /Documentation
 /doc
+Support/PropTester/Darwin-64-debug/PropTester.ofx.bundle/Contents/Info.plist
+Support/*/*/Darwin-*-debug
+Examples/*/*.bundle
+*.o
+*.ofx
+*.a
+*~
