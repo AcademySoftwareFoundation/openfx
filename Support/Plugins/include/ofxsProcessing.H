@@ -41,7 +41,7 @@ England
 
 #include "ofxsImageEffect.h"
 #include "ofxsMultiThread.h"
-
+#include <cmath>
 /** @file This file contains a useful base class that can be used to process images 
 
 The code below is not so much a skin on the base OFX classes, but code used in implementing 
@@ -79,7 +79,7 @@ namespace OFX {
         {
             // slice the y range into the number of threads it has
             unsigned int dy = _renderWindow.y2 - _renderWindow.y1;
-            unsigned int h = dy/nThreads;
+            unsigned int h = std::ceil(dy/(double)nThreads);
             if (h == 0) {
                 // there are more threads than lines to process
                 h = 1;
