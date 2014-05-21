@@ -836,7 +836,7 @@ namespace OFX {
     if(x < _bounds.x1 || x >= _bounds.x2 || y < _bounds.y1 || y >= _bounds.y2 || _pixelBytes == 0)
       return 0;
 
-    char *pix = (char *) (((char *) _pixelData) + (y - _bounds.y1) * _rowBytes);
+    char *pix = (char *) (((char *) _pixelData) + (size_t)(y - _bounds.y1) * _rowBytes);
     pix += (x - _bounds.x1) * _pixelBytes;
     return (void *) pix;   
   }
