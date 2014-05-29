@@ -1531,6 +1531,23 @@ namespace OFX {
     OfxStatus stat = OFX::Private::gParamSuite->paramDeleteAllKeys(_paramHandle);
     throwSuiteStatusException(stat); 
   }
+    
+  /** @brief Copies the other param with an offset applied on keyframes*/
+  void ValueParam::copy(const ValueParam& other,OfxTime offset)
+  {
+      if(!OFX::Private::gParamSuite->paramCopy) throwHostMissingSuiteException("paramCopy");
+      OfxStatus stat = OFX::Private::gParamSuite->paramCopy(_paramHandle,other._paramHandle,offset,NULL);
+      throwSuiteStatusException(stat);
+  }
+    
+  /** @brief Copies the other param only keyframes in the range.*/
+  void ValueParam::copy(const ValueParam& other,OfxTime offset,OfxRangeD range)
+  {
+      if(!OFX::Private::gParamSuite->paramCopy) throwHostMissingSuiteException("paramCopy");
+      OfxStatus stat = OFX::Private::gParamSuite->paramCopy(_paramHandle,other._paramHandle,offset,&range);
+      throwSuiteStatusException(stat);
+  }
+
 
 #ifdef OFX_EXTENSIONS_VEGAS
   /** @brief gets the interpolation type of a key at the given time */
