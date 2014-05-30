@@ -1038,12 +1038,9 @@ namespace OFX {
 
         /** @brief delete all the keys */
         void deleteAllKeys(void);
-        
-        /** @brief Copies the other param with an offset applied on keyframes*/
-        void copy(const ValueParam& other,OfxTime offset);
-        
-        /** @brief Copies the other param only keyframes in the range.*/
-        void copy(const ValueParam& other,OfxTime offset,OfxRangeD range);
+
+        /** @brief copy parameter from another, including any animation etc... */
+        void copyFrom(const ValueParam& from, OfxTime dstOffset, const OfxRangeD *frameRange);
 
 #ifdef OFX_EXTENSIONS_VEGAS
         /** @brief gets the interpolation type of a key at the given time */

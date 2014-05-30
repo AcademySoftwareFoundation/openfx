@@ -1206,7 +1206,7 @@ changes a keyframe.  The keyframe indices will not change within a single action
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
   */
-  OfxStatus (*paramCopy)(OfxParamHandle  paramTo, OfxParamHandle  paramFrom, OfxTime dstOffset, OfxRangeD *frameRange);
+  OfxStatus (*paramCopy)(OfxParamHandle  paramTo, OfxParamHandle  paramFrom, OfxTime dstOffset, const OfxRangeD *frameRange);
 
 
   /** @brief Used to group any parameter changes for undo/redo purposes
