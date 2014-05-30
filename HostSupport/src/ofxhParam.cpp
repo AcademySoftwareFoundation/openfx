@@ -658,13 +658,8 @@ namespace OFX {
         }
       }
 
-      // copy one parameter to another
-      OfxStatus Instance::copy(const Instance &/*instance*/, OfxTime /*offset*/) {
-        return kOfxStatErrMissingHostFeature; 
-      }
-
-      // copy one parameter to another, with a range
-      OfxStatus Instance::copy(const Instance &/*instance*/, OfxTime /*offset*/, OfxRangeD /*range*/) {
+      // copy one parameter to another, with a range (NULL means to copy all animation)
+      OfxStatus Instance::copyFrom(const Instance &/*instance*/, OfxTime /*offset*/, const OfxRangeD* /*range*/) {
         return kOfxStatErrMissingHostFeature; 
       }
 
@@ -2222,7 +2217,7 @@ namespace OFX {
       
       static OfxStatus paramCopy(OfxParamHandle  paramTo,
                                  OfxParamHandle  paramFrom, 
-                                 OfxTime dstOffset, OfxRangeD *frameRange) 
+                                 OfxTime dstOffset, const OfxRangeD *frameRange)
       {
 #       ifdef OFX_DEBUG_PARAMETERS
         std::cout << "OFX: paramCopy - " << paramTo << " ...";
@@ -2238,12 +2233,7 @@ namespace OFX {
           return kOfxStatErrBadHandle;
         }
 
-        OfxStatus stat;
-        if(!frameRange) {
-          stat = paramInstanceTo->copy(*paramInstanceFrom,dstOffset);
-        } else {
-          stat = paramInstanceTo->copy(*paramInstanceFrom,dstOffset,*frameRange);
-        }
+        OfxStatus stat = paramInstanceTo->copyFrom(*paramInstanceFrom,dstOffset,frameRange);
 #       ifdef OFX_DEBUG_PARAMETERS
         std::cout << ' ' << StatStr(stat) << std::endl;
 #       endif
