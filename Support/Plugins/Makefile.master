@@ -36,8 +36,8 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
     ifeq ($(BITS), 64)
       BITSFLAG = -m64
       ARCH = Linux-x86-64
-      LINKFLAGS := $(LINKFLAGS) -m64
     endif
+    LINKFLAGS := $(LINKFLAGS) $(BITSFLAG)
   else
     ifeq ($(BITS), Universal)
       # Universal 32/64 is useful only on OSX 10.5 and 10.6. Default to 10.6. (it can be changed with "make MACOSX=10.5")
