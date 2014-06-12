@@ -1,4 +1,4 @@
-BITS := 32
+BITS := 64
 OS := $(shell uname -s)
 DEBUGFLAG ?= -g
 DEBUGNAME = debug

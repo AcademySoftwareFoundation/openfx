@@ -187,8 +187,8 @@ bool
 NoisePlugin::getRegionOfDefinition(const OFX::RegionOfDefinitionArguments &/*args*/, OfxRectD &rod)
 {
   // we can generate noise anywhere on the image plan, so set our RoD to be infinite
-  rod.x1 = rod.y1 = -std::numeric_limits<double>::infinity(); // kOfxFlagInfiniteMin;
-  rod.x2 = rod.y2 = std::numeric_limits<double>::infinity(); // kOfxFlagInfiniteMax;
+  rod.x1 = rod.y1 = kOfxFlagInfiniteMin;
+  rod.x2 = rod.y2 = kOfxFlagInfiniteMax;
   return true;
 }
 
