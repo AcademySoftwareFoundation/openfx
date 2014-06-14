@@ -392,6 +392,14 @@ namespace OFX {
         }
       }
 
+      /// prepend a file to the plugin path
+      void prependFileToPath(const std::string &f, bool recurse=true) {
+        _pluginPath.push_front(f);
+        if (!recurse) {
+          _nonrecursePath.insert(f);
+        }
+      }
+
       /// specify which subdirectory of /usr/OFX or equivilant
       /// (as well as 'Plugins') to look in for plugins.
       void setPluginHostPath(const std::string &hostId);
