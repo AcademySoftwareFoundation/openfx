@@ -441,6 +441,7 @@ namespace OFX {
     void addSupportedExtension(const std::string& extension);
     void addSupportedExtensions(const std::vector<std::string>& extensions);
     void addSupportedExtensions(const char* extensions[]); // NULL-terminated array of char*
+    void setPluginEvaluation(double evaluation);
 #endif
 
     /** @brief Is the plugin single instance only ? defaults to false */

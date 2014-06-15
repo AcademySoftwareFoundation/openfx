@@ -99,6 +99,7 @@ namespace OFX {
 #endif
 #ifdef OFX_EXTENSIONS_TUTTLE
         { kTuttleOfxImageEffectPropSupportedExtensions, Property::eString,     0, false, "" },
+        { kTuttleOfxImageEffectPropEvaluation, Property::eDouble, 1, false, "-1" },
 #endif
 #ifdef OFX_EXTENSIONS_VEGAS
         { kOfxProbPluginVegasPresetThumbnail,   Property::eString,     0, false, "" },

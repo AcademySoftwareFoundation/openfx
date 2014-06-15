@@ -356,6 +356,9 @@ namespace OFX {
       PropertyDescription(kOfxImageEffectPluginPropFieldRenderTwiceAlways, OFX::eInt, 1, eDescDefault, 1, eDescFinished),
       PropertyDescription(kOfxImageEffectPropSupportsMultipleClipDepths,   OFX::eInt, 1, eDescDefault, 0, eDescFinished),
       PropertyDescription(kOfxImageEffectPropSupportsMultipleClipPARs,     OFX::eInt, 1, eDescDefault, 0, eDescFinished),
+#ifdef OFX_EXTENSIONS_TUTTLE
+      PropertyDescription(kTuttleOfxImageEffectPropEvaluation,             OFX::eDouble, 1, eDescDefault, -1, eDescFinished),
+#endif
 
       // Pointer props with defaults that can be checked against
       PropertyDescription(kOfxImageEffectPluginPropOverlayInteractV1,      OFX::ePointer, 1, eDescDefault, (void *)(0), eDescFinished),
