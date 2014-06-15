@@ -768,8 +768,6 @@ namespace OFX {
 
         void setRange( const double min, const double max );
 
-        void setLabel( const std::string& label );
-
         void setDimensionLabel( const std::string& label, const int id );
 
         void setUIColour( const int id, const OfxRGBColourD& color );
