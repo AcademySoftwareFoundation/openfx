@@ -225,9 +225,6 @@
 		1E009D6A17F44D70003071CC /* ofxProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxProgress.h; path = ../../include/ofxProgress.h; sourceTree = "<group>"; };
 		1E009D6B17F44D70003071CC /* ofxProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxProperty.h; path = ../../include/ofxProperty.h; sourceTree = "<group>"; };
 		1E009D6C17F44D70003071CC /* ofxTimeLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxTimeLine.h; path = ../../include/ofxTimeLine.h; sourceTree = "<group>"; };
-		1E378A82194DCF4200800F5F /* ofxGraphAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxGraphAPI.h; sourceTree = "<group>"; };
-		1E378A83194DCF4200800F5F /* ofxMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMetadata.h; sourceTree = "<group>"; };
-		1E378A85194DCF4200800F5F /* ofxParamAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxParamAPI.h; sourceTree = "<group>"; };
 		1E378A86194DCF4200800F5F /* ofxReadWrite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxReadWrite.h; sourceTree = "<group>"; };
 		1E3E3CA417995BEE005F2132 /* basic.ofx.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = basic.ofx.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E3E3CB217995CC9005F2132 /* basic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = basic.cpp; path = Basic/basic.cpp; sourceTree = "<group>"; };
@@ -363,9 +360,6 @@
 		1E378A81194DCEF500800F5F /* tuttle */ = {
 			isa = PBXGroup;
 			children = (
-				1E378A82194DCF4200800F5F /* ofxGraphAPI.h */,
-				1E378A83194DCF4200800F5F /* ofxMetadata.h */,
-				1E378A85194DCF4200800F5F /* ofxParamAPI.h */,
 				1E378A86194DCF4200800F5F /* ofxReadWrite.h */,
 			);
 			name = tuttle;
