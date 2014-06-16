@@ -298,6 +298,7 @@ namespace OFX {
     bool supportsMultipleClipPARs;
     bool supportsSetableFrameRate;
     bool supportsSetableFielding;
+    int sequentialRender;
     bool supportsStringAnimation;
     bool supportsCustomInteract;
     bool supportsChoiceAnimation;
