@@ -2026,6 +2026,9 @@ namespace OFX {
       args.renderWindow.x2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 2);
       args.renderWindow.y2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 3);
 
+      args.sequentialRenderStatus = inArgs.propGetInt(kOfxImageEffectPropSequentialRenderStatus) != 0;
+      args.interactiveRenderStatus = inArgs.propGetInt(kOfxImageEffectPropInteractiveRenderStatus) != 0;
+
 #ifdef OFX_EXTENSIONS_VEGAS
       args.viewsToRender = inArgs.propGetInt(kOfxImageEffectPropViewsToRender, 0, false);
       args.renderView = inArgs.propGetInt(kOfxImageEffectPropRenderView, 0, false);
@@ -2087,6 +2090,8 @@ namespace OFX {
       args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
 
       args.isInteractive = inArgs.propGetInt(kOfxPropIsInteractive) != 0;
+      args.sequentialRenderStatus = inArgs.propGetInt(kOfxImageEffectPropSequentialRenderStatus) != 0;
+      args.interactiveRenderStatus = inArgs.propGetInt(kOfxImageEffectPropInteractiveRenderStatus) != 0;
 
       // and call the plugin client render code
       effectInstance->beginSequenceRender(args);
@@ -2104,6 +2109,8 @@ namespace OFX {
       args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
 
       args.isInteractive = inArgs.propGetInt(kOfxPropIsInteractive) != 0;
+      args.sequentialRenderStatus = inArgs.propGetInt(kOfxImageEffectPropSequentialRenderStatus) != 0;
+      args.interactiveRenderStatus = inArgs.propGetInt(kOfxImageEffectPropInteractiveRenderStatus) != 0;
 
       // and call the plugin client render code
       effectInstance->endSequenceRender(args);

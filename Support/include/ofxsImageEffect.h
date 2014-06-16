@@ -769,6 +769,8 @@ namespace OFX {
     int         renderView;         /// default is 0, for s3d left eye: 0, right eye: 1
     VegasRenderQualityEnum renderQuality;
 #endif
+    bool      sequentialRenderStatus;
+    bool      interactiveRenderStatus;
   };
 
   /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::render */
@@ -777,12 +779,16 @@ namespace OFX {
     double    frameStep;
     bool      isInteractive;
     OfxPointD renderScale;
+    bool      sequentialRenderStatus;
+    bool      interactiveRenderStatus;
   };
 
   /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::beginSequenceRender */
   struct EndSequenceRenderArguments {
     bool      isInteractive;
     OfxPointD renderScale;
+    bool      sequentialRenderStatus;
+    bool      interactiveRenderStatus;
   };
 
   /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::getRegionOfDefinition */
