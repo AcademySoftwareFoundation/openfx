@@ -2591,11 +2591,16 @@ namespace OFX {
         { kOfxParamHostPropSupportsChoiceAnimation, Property::eInt, 1, true, "0"  },
         { kOfxParamHostPropSupportsBooleanAnimation, Property::eInt, 1, true, "0" },
         { kOfxParamHostPropSupportsCustomAnimation, Property::eInt, 1, true, "0" },
+#ifdef OFX_SUPPORTS_PARAMETRIC
+        { kOfxParamHostPropSupportsParametricAnimation, Property::eInt, 1, true, "0"},
+#endif
         { kOfxParamHostPropMaxParameters, Property::eInt, 1, true, "-1" },
         { kOfxParamHostPropMaxPages, Property::eInt, 1, true, "0" },
         { kOfxParamHostPropPageRowColumnCount, Property::eInt, 2, true, "0" },
+        { kOfxImageEffectInstancePropSequentialRender, Property::eInt, 1, true, "0" },
 #ifdef OFX_EXTENSIONS_NUKE
         { kFnOfxImageEffectPropMultiPlanar,   Property::eInt, 1, false, "0" },
+        { kFnOfxImageEffectCanTransform,      Property::eInt, 1, true, "0" },
 #endif
         Property::propSpecEnd
       };    
