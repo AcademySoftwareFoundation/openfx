@@ -271,6 +271,7 @@
 		1E3E3DA717996464005F2132 /* pluginLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pluginLoader.cpp; path = OSXStaticLoader/pluginLoader.cpp; sourceTree = "<group>"; };
 		1E3E3DA91799646E005F2132 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = DEVELOPER_DIR; };
 		1E551F5A179950EC00A4135C /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		1E985639194F2BC300D20D5D /* ofxNatron.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxNatron.h; path = ../../include/ofxNatron.h; sourceTree = "<group>"; };
 		1E9FC1CE180BF74400EFE0F9 /* camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
 		1E9FC1CF180BF74400EFE0F9 /* fnPublicOfxExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fnPublicOfxExtensions.h; sourceTree = "<group>"; };
 		1EA6849218C51E42006EE43D /* fnOfxExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fnOfxExtensions.h; sourceTree = "<group>"; };
@@ -418,6 +419,7 @@
 				1E009D6317F44D70003071CC /* ofxMemory.h */,
 				1E009D6417F44D70003071CC /* ofxMessage.h */,
 				1E009D6517F44D70003071CC /* ofxMultiThread.h */,
+				1E985639194F2BC300D20D5D /* ofxNatron.h */,
 				1E009D6617F44D70003071CC /* ofxOpenGLRender.h */,
 				1E009D6717F44D70003071CC /* ofxParam.h */,
 				1E009D6817F44D70003071CC /* ofxParametricParam.h */,
