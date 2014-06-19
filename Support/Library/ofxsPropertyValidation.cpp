@@ -528,8 +528,9 @@ namespace OFX {
       PropertyDescription(kOfxImageEffectPropRenderScale,   OFX::eDouble, 2, eDescFinished),
       PropertyDescription(kOfxImageEffectPropRenderWindow,  OFX::eInt,    4, eDescFinished),
       PropertyDescription(kOfxImageEffectPropFieldToRender, OFX::eString, 1, eDescFinished),
-      PropertyDescription(kOfxImageEffectPropSequentialRenderStatus,  OFX::eInt,    1, eDescFinished),
-      PropertyDescription(kOfxImageEffectPropInteractiveRenderStatus, OFX::eInt,    1, eDescFinished),
+      // The following appeared in OFX 1.2, and are thus not mandatory
+      //PropertyDescription(kOfxImageEffectPropSequentialRenderStatus,  OFX::eInt,    1, eDescFinished),
+      //PropertyDescription(kOfxImageEffectPropInteractiveRenderStatus, OFX::eInt,    1, eDescFinished),
     };
 
     /** @brief kOfxImageEffectActionRender property set */
@@ -544,8 +545,9 @@ namespace OFX {
       PropertyDescription(kOfxImageEffectPropFrameStep,   OFX::eDouble, 1, eDescFinished),
       PropertyDescription(kOfxImageEffectPropRenderScale, OFX::eDouble, 2, eDescFinished),
       PropertyDescription(kOfxPropIsInteractive,          OFX::eInt, 1, eDescFinished),
-      PropertyDescription(kOfxImageEffectPropSequentialRenderStatus,  OFX::eInt,    1, eDescFinished),
-      PropertyDescription(kOfxImageEffectPropInteractiveRenderStatus, OFX::eInt,    1, eDescFinished),
+      // The following appeared in OFX 1.2, and are thus not mandatory
+      //PropertyDescription(kOfxImageEffectPropSequentialRenderStatus,  OFX::eInt,    1, eDescFinished),
+      //PropertyDescription(kOfxImageEffectPropInteractiveRenderStatus, OFX::eInt,    1, eDescFinished),
     };
 
     /** @brief kOfxImageEffectActionBeginSequenceRender property set */
@@ -560,8 +562,9 @@ namespace OFX {
       PropertyDescription(kOfxImageEffectPropFrameStep,   OFX::eDouble, 1, eDescFinished),
       PropertyDescription(kOfxImageEffectPropRenderScale, OFX::eDouble, 2, eDescFinished),
       PropertyDescription(kOfxPropIsInteractive,          OFX::eInt, 1, eDescFinished),
-      PropertyDescription(kOfxImageEffectPropSequentialRenderStatus,  OFX::eInt,    1, eDescFinished),
-      PropertyDescription(kOfxImageEffectPropInteractiveRenderStatus, OFX::eInt,    1, eDescFinished),
+      // The following appeared in OFX 1.2, and are thus not mandatory
+      //PropertyDescription(kOfxImageEffectPropSequentialRenderStatus,  OFX::eInt,    1, eDescFinished),
+      //PropertyDescription(kOfxImageEffectPropInteractiveRenderStatus, OFX::eInt,    1, eDescFinished),
     };
 
     /** @brief kOfxImageEffectActionEndSequenceRender property set */

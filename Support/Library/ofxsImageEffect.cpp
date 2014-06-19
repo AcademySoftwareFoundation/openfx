@@ -2026,8 +2026,10 @@ namespace OFX {
       args.renderWindow.x2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 2);
       args.renderWindow.y2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 3);
 
-      args.sequentialRenderStatus = inArgs.propGetInt(kOfxImageEffectPropSequentialRenderStatus, false) != 0; // appeared in OFX 1.2
-      args.interactiveRenderStatus = inArgs.propGetInt(kOfxImageEffectPropInteractiveRenderStatus, false) != 0; // appeared in OFX 1.2
+      // Don't throw an exception if the following inArgs are not present:
+      // They appeared in OFX 1.2, and they are not in the IsIdentity args
+      args.sequentialRenderStatus = inArgs.propGetInt(kOfxImageEffectPropSequentialRenderStatus, false) != 0;
+      args.interactiveRenderStatus = inArgs.propGetInt(kOfxImageEffectPropInteractiveRenderStatus, false) != 0;
 
 #ifdef OFX_EXTENSIONS_VEGAS
       args.viewsToRender = inArgs.propGetInt(kOfxImageEffectPropViewsToRender, 0, false);
