@@ -351,6 +351,7 @@ namespace OFX {
         { kOfxImageEffectInstancePropEffectDuration, Property::eDouble, 1, true,  "0" },
         { kOfxImageEffectPropFrameRate ,        Property::eDouble,     1, true,  "0" },
         { kOfxPropIsInteractive,                Property::eInt,        1, true, "0" },
+        { kOfxImageEffectPropInAnalysis,        Property::eInt,        1, false, "0" },
 #ifdef OFX_EXTENSIONS_NUKE
         //{ ".verbosityProp",                Property::eInt,        2, true, "0" }, // Unknown Nuke property
 #endif
