@@ -283,7 +283,7 @@ namespace OFX {
         /// on the effect instance. Outside a render call, the optionalBounds should
         /// be 'appropriate' for the.
         /// If bounds is not null, fetch the indicated section of the canonical image plane.
-        virtual ImageEffect::Image* getStereoscopicImage(OfxTime time, int view, OfxRectD *optionalBounds) = 0;
+        virtual ImageEffect::Image* getStereoscopicImage(OfxTime time, int view, const OfxRectD *optionalBounds) = 0;
 
 
         /// override this to set the view to be returned by getImage()
