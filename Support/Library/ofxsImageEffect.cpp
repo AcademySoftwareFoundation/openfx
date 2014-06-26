@@ -1077,7 +1077,7 @@ namespace OFX {
   }
 
   /** @brief fetch an image, with a specific region in cannonical coordinates */
-  Image *Clip::fetchImage(double t, OfxRectD bounds)
+  Image *Clip::fetchImage(double t, const OfxRectD &bounds)
   {
     OfxPropertySetHandle imageHandle;
     OfxStatus stat = OFX::Private::gEffectSuite->clipGetImage(_clipHandle, t, &bounds, &imageHandle);

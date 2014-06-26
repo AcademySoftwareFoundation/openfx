@@ -1131,7 +1131,7 @@ If clipGetImage is called twice with the same parameters, then two separate imag
   */
   OfxStatus (*clipGetImage)(OfxImageClipHandle clip,
 			    OfxTime       time,
-			    OfxRectD     *region,
+			    const OfxRectD     *region,
 			    OfxPropertySetHandle   *imageHandle);
   
   /** @brief Releases the image handle previously returned by clipGetImage

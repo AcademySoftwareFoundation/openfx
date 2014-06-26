@@ -720,7 +720,7 @@ namespace OFX {
 
     If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
     */
-    Image *fetchImage(double t, OfxRectD bounds);
+    Image *fetchImage(double t, const OfxRectD &bounds);
 
     /** @brief fetch an image, with a specific region in cannonical coordinates
 
@@ -728,7 +728,7 @@ namespace OFX {
 
     If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
     */
-    Image *fetchImage(double t, OfxRectD *bounds)
+    Image *fetchImage(double t, const OfxRectD *bounds)
     {
       if(bounds) 
         return fetchImage(t, *bounds);
