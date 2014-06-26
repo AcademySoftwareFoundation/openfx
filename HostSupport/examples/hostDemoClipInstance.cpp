@@ -366,7 +366,7 @@ namespace MyHost {
   /// on the effect instance. Outside a render call, the optionalBounds should
   /// be 'appropriate' for the.
   /// If bounds is not null, fetch the indicated section of the canonical image plane.
-  OFX::Host::ImageEffect::Image* MyClipInstance::getImage(OfxTime time, OfxRectD *optionalBounds)
+  OFX::Host::ImageEffect::Image* MyClipInstance::getImage(OfxTime time, const OfxRectD *optionalBounds)
   {
     if(_name == "Output") {
       if(!_outputImage) {

@@ -1993,7 +1993,7 @@ namespace OFX {
       
       static OfxStatus clipGetImage(OfxImageClipHandle h1, 
                                     OfxTime time, 
-                                    OfxRectD *h2, 
+                                    const OfxRectD *h2,
                                     OfxPropertySetHandle *h3)
       {
         try {

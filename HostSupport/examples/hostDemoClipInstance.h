@@ -136,7 +136,7 @@ namespace MyHost {
     /// on the effect instance. Outside a render call, the optionalBounds should
     /// be 'appropriate' for the.
     /// If bounds is not null, fetch the indicated section of the canonical image plane.
-    virtual OFX::Host::ImageEffect::Image* getImage(OfxTime time, OfxRectD *optionalBounds);
+    virtual OFX::Host::ImageEffect::Image* getImage(OfxTime time, const OfxRectD *optionalBounds);
 
 #ifdef OFX_EXTENSIONS_VEGAS
     /// override this to fill in the image at the given time from a specific view
