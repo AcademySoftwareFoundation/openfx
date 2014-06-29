@@ -149,9 +149,7 @@ namespace OFX {
         eStringTypeFilePath,
         eStringTypeDirectoryPath,
         eStringTypeLabel,
-#ifdef OFX_EXTENSIONS_VEGAS
         eStringTypeRichTextFormat
-#endif
     };
 
     /** @brief Enumerates the differing types of double params */

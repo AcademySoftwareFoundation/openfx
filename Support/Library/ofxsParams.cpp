@@ -935,11 +935,9 @@ namespace OFX {
     case eStringTypeLabel :
       _paramProps.propSetString(kOfxParamPropStringMode,  kOfxParamStringIsLabel);
       break;
-#ifdef OFX_EXTENSIONS_VEGAS
     case eStringTypeRichTextFormat :
       _paramProps.propSetString(kOfxParamPropStringMode,  kOfxParamStringIsRichTextFormat);
       break;
-#endif
     }
   }
 

@@ -17,9 +17,6 @@
 /** @brief string property on a Vegas host for the appropriate app data directory (for logs and caches) */
 #define kOfxPropVegasHostAppDataDirectory "OfxPropVegasHostAppDataDirectory"
 
-/** @brief String value on the OfxParamPropStringMode property of a string parameter (Vegas extension) */
-#define kOfxParamStringIsRichTextFormat "OfxParamStringIsRichTextFormat"
-
 /** @brief Double value on the OfxParamPropDoubleType property of a double 2d parameter (Vegas extension) */
 #define kOfxParamDoubleTypePolar "OfxParamDoubleTypePolar"
 

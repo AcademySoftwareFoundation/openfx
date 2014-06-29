@@ -788,6 +788,7 @@ It is an error not to set this property in a custom parameter during a plugin's 
         - ::kOfxParamStringIsFilePath
         - ::kOfxParamStringIsDirectoryPath
         - ::kOfxParamStringIsLabel
+        - ::kOfxParamStringIsRichTextFormat
 
 */
 #define kOfxParamPropStringMode "OfxParamPropStringMode"
