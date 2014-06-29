@@ -174,6 +174,7 @@ namespace OFX {
         ///  kOfxBitDepthNone (implying a clip is unconnected, not valid for an image)
         ///  kOfxBitDepthByte
         ///  kOfxBitDepthShort
+        ///  kOfxBitDepthHalf
         ///  kOfxBitDepthFloat
         const std::string &getPixelDepth() const
         {
@@ -206,6 +207,7 @@ namespace OFX {
         ///    - kOfxBitDepthNone (implying a clip is unconnected image)
         ///    - kOfxBitDepthByte
         ///    - kOfxBitDepthShort
+        ///    - kOfxBitDepthHalf
         ///    - kOfxBitDepthFloat
         virtual const std::string &getUnmappedBitDepth() const = 0;
 

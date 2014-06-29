@@ -492,6 +492,7 @@ On a clip, it indicates that the clip needs temporal access to images.
        - kOfxBitDepthNone (implying a clip is unconnected, not valid for an image)
        - kOfxBitDepthByte
        - kOfxBitDepthShort
+       - kOfxBitDepthHalf
        - kOfxBitDepthFloat
 
 Note that for a clip, this is the value set by the clip preferences action, not the raw 'actual' value of the clip.
@@ -546,6 +547,7 @@ errors the frame rate should then be set to 0.
        - kOfxBitDepthNone (implying a clip is unconnected image)
        - kOfxBitDepthByte
        - kOfxBitDepthShort
+       - kOfxBitDepthHalf
        - kOfxBitDepthFloat
 
 This is the actual value of the component depth, before any mapping by clip preferences.
@@ -596,6 +598,7 @@ See the documentation on clip preferences for more details on how this is used w
        - kOfxBitDepthNone (implying a clip is unconnected, not valid for an image)
        - kOfxBitDepthByte
        - kOfxBitDepthShort
+       - kOfxBitDepthHalf
        - kOfxBitDepthFloat
 
 The default for a plugin is to have none set, the plugin \em must define at least one in its describe action.

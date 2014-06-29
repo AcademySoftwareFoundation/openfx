@@ -1795,6 +1795,7 @@ namespace OFX {
         static const std::string none(kOfxBitDepthNone);
         static const std::string bytes(kOfxBitDepthByte);
         static const std::string shorts(kOfxBitDepthShort);
+        static const std::string halfs(kOfxBitDepthHalf);
         static const std::string floats(kOfxBitDepthFloat);
 
         if(depth == none)
@@ -1804,6 +1805,15 @@ namespace OFX {
           return depth;
         
         if(depth == floats) {
+          if(isPixelDepthSupported(shorts))
+            return shorts;
+          if(isPixelDepthSupported(bytes))
+            return bytes;
+        }
+          
+        if(depth == halfs) {
+          if(isPixelDepthSupported(floats))
+            return floats;
           if(isPixelDepthSupported(shorts))
             return shorts;
           if(isPixelDepthSupported(bytes))
