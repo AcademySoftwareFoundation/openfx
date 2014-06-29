@@ -176,6 +176,9 @@ namespace OFX {
     else if(str == kOfxBitDepthShort) {
       return eBitDepthUShort;
     }
+    else if(str == kOfxBitDepthHalf) {
+      return eBitDepthHalf;
+    }
     else if(str == kOfxBitDepthFloat) {
       return eBitDepthFloat;
     }
@@ -523,6 +526,9 @@ namespace OFX {
     case eBitDepthUShort :
       _effectProps.propSetString(kOfxImageEffectPropSupportedPixelDepths, kOfxBitDepthShort  , n);
       break;
+    case eBitDepthHalf :
+      _effectProps.propSetString(kOfxImageEffectPropSupportedPixelDepths, kOfxBitDepthHalf  , n);
+      break;
     case eBitDepthFloat :
       _effectProps.propSetString(kOfxImageEffectPropSupportedPixelDepths, kOfxBitDepthFloat  , n);
       break;
@@ -781,6 +787,7 @@ namespace OFX {
     case eBitDepthNone   : _pixelBytes *= 0; break;
     case eBitDepthUByte  : _pixelBytes *= 1; break;
     case eBitDepthUShort : _pixelBytes *= 2; break;
+    case eBitDepthHalf   : _pixelBytes *= 2; break;
     case eBitDepthFloat  : _pixelBytes *= 4; break;
 #ifdef OFX_EXTENSIONS_VEGAS
     case eBitDepthUByteBGRA  : _pixelBytes *= 1; break;
@@ -1644,7 +1651,10 @@ namespace OFX {
     case eBitDepthUShort : 
       outArgs_.propSetString(propName.c_str(), kOfxBitDepthShort); 
       break;
-    case eBitDepthFloat : 
+    case eBitDepthHalf :
+      outArgs_.propSetString(propName.c_str(), kOfxBitDepthHalf);
+      break;
+    case eBitDepthFloat :
       outArgs_.propSetString(propName.c_str(), kOfxBitDepthFloat); 
       break;
 #ifdef OFX_EXTENSIONS_VEGAS

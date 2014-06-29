@@ -120,6 +120,7 @@ namespace OFX {
   enum BitDepthEnum {eBitDepthNone, /**< @brief bit depth that indicates no data is present */
     eBitDepthUByte,
     eBitDepthUShort,
+    eBitDepthHalf,
     eBitDepthFloat,
     eBitDepthCustom, ///< some non standard bit depth
 #ifdef OFX_EXTENSIONS_VEGAS
