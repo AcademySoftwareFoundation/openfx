@@ -41,6 +41,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhParam.h"
 #include "ofxhMemory.h"
 #include "ofxhInteract.h"
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+#include "ofxOpenGLRender.h"
+#endif
 
 #if defined(WIN32) || defined(WIN64)
 #define __PRETTY_FUNCTION__ __FUNCSIG__
@@ -544,6 +547,12 @@ namespace OFX {
         virtual OfxStatus beginInstanceEditAction();
         virtual OfxStatus endInstanceEditAction();
 
+#     ifdef OFX_SUPPORTS_OPENGLRENDER
+        // attach/detach OpenGL context
+        virtual OfxStatus contextAttachedAction();
+        virtual OfxStatus contextDetachedAction();
+#     endif
+          
         // render action
         virtual OfxStatus beginRenderAction(OfxTime  startFrame,
                                             OfxTime  endFrame,
