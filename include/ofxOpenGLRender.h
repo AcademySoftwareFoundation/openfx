@@ -267,8 +267,8 @@ returns
 
   OfxStatus (*clipLoadTexture)(OfxImageClipHandle clip,
                                OfxTime       time,
-			       const char   *format,
-                               OfxRectD     *region,
+			                   const char   *format,
+                               const OfxRectD     *region,
                                OfxPropertySetHandle   *textureHandle);
 
   /** @brief Releases the texture handle previously returned by
@@ -374,7 +374,7 @@ A plugin can return...
     the plugin should to post a message if possible and the host should not
     attempt to run the plugin in OpenGL render mode.
 */
-#define kOfxActionOpenGLContextDetached "kOfxActionOpenGLContextDetached"
+#define kOfxActionOpenGLContextDetached "OfxActionOpenGLContextDetached"
 
 
 /** @page ofxOpenGLRender OpenGL Acceleration of Rendering
