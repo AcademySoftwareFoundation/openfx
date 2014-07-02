@@ -474,8 +474,8 @@ namespace OFX {
     static PropertySetDescription gClipInstancePropSet("Clip Instance", gClipInstanceProps, sizeof(gClipInstanceProps)/sizeof(PropertyDescription),
       NULLPTR);
 
-    /** @brief List of properties to validate an image instance */
-    static PropertyDescription gImageInstanceProps[ ] =
+    /** @brief List of properties to validate an image or texture instance */
+    static PropertyDescription gImageBaseInstanceProps[ ] =
     {
       // this is the only property with a checkable default
       PropertyDescription(kOfxPropType,                         OFX::eString, 1, eDescDefault, kOfxTypeImage, eDescFinished),
@@ -501,7 +501,19 @@ namespace OFX {
     };
 
     /** @brief the property set for an image instance */
-    static PropertySetDescription gImageInstancePropSet("Image Instance", 
+    static PropertySetDescription gImageBaseInstancePropSet("Image or Texture Instance",
+      gImageBaseInstanceProps, sizeof(gImageBaseInstanceProps)/sizeof(PropertyDescription),
+      NULLPTR);
+
+    /** @brief List of properties to validate an image or texture instance */
+    static PropertyDescription gImageInstanceProps[ ] =
+    {
+      // pointer props
+      PropertyDescription(kOfxImagePropData,                    OFX::ePointer, 1, eDescFinished),
+    };
+
+    /** @brief the property set for an image instance */
+    static PropertySetDescription gImageInstancePropSet("Image Instance",
       gImageInstanceProps, sizeof(gImageInstanceProps)/sizeof(PropertyDescription),
       NULLPTR);
 
@@ -1105,7 +1117,18 @@ namespace OFX {
 #endif
     }
 
-    /** @brief validates a clip descriptor */
+    /** @brief validates an image or texture instance */
+    void
+      validateImageBaseProperties(PropertySet props)
+    {
+#ifdef kOfxsDisableValidation
+    (void)props;
+#else
+      gImageBaseInstancePropSet.validate(props);
+#endif
+    }
+
+    /** @brief validates an image instance */
     void
       validateImageProperties(PropertySet props)
     {
@@ -1115,6 +1138,19 @@ namespace OFX {
       gImageInstancePropSet.validate(props);
 #endif
     }
+
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    /** @brief validates an OpenGL texture instance */
+    void
+      validateTextureProperties(PropertySet props)
+    {
+#ifdef kOfxsDisableValidation
+    (void)props;
+#else
+      gTextureInstancePropSet.validate(props);
+#endif
+    }
+#endif
 
     /** @brief Validates action in/out arguments */
     void

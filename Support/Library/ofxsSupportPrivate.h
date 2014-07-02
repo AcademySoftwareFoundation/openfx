@@ -254,9 +254,19 @@ namespace OFX {
     void
       validateClipInstanceProperties(PropertySet props);
 
-    /** @brief validates a clip descriptor */
+    /** @brief validates an image or texture instance */
+    void
+      validateImageBaseProperties(PropertySet props);
+
+    /** @brief validates an image instance */
     void
       validateImageProperties(PropertySet props);
+
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    /** @brief validates an OpenGL texture descriptor */
+    void
+      validateTextureProperties(PropertySet props);
+#endif
 
     /** @brief Validates action in/out arguments */
     void
