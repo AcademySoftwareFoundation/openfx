@@ -42,6 +42,9 @@ namespace OFX {
       // forward declarations
       class Image;
       class Instance;
+#   ifdef OFX_SUPPORTS_OPENGLRENDER
+      class Texture;
+#   endif
 
       /// Base to both descriptor and instance it 
       /// is used to basically fetch common properties 
@@ -277,7 +280,16 @@ namespace OFX {
         /// If bounds is not null, fetch the indicated section of the canonical image plane.
         virtual ImageEffect::Image* getImage(OfxTime time, const OfxRectD *optionalBounds) = 0;
 
-#ifdef OFX_EXTENSIONS_VEGAS
+#     ifdef OFX_SUPPORTS_OPENGLRENDER
+        /// override this to fill in the OpenGL texture at the given time.
+        /// The bounds of the image on the image plane should be 
+        /// 'appropriate', typically the value returned in getRegionsOfInterest
+        /// on the effect instance. Outside a render call, the optionalBounds should
+        /// be 'appropriate' for the.
+        /// If bounds is not null, fetch the indicated section of the canonical image plane.
+        virtual ImageEffect::Texture* loadTexture(OfxTime time, const char *format, const OfxRectD *optionalBounds) = 0;
+#     endif
+#     ifdef OFX_EXTENSIONS_VEGAS
         /// override this to fill in the image at the given time from a specific view
         /// (using the standard callback gets you the current view being rendered, @see getImage).
         /// The bounds of the image on the image plane should be 
@@ -294,7 +306,7 @@ namespace OFX {
         /// The view number has to be stored in the Clip, so this is typically not thread-safe,
         /// except if thread-local storage is used.
         virtual void setView(int view) = 0;
-#endif
+#     endif
 
         /// override this to return the rod on the clip
         virtual OfxRectD getRegionOfDefinition(OfxTime time) const = 0;
@@ -306,12 +318,86 @@ namespace OFX {
 
       
       /// instance of an image inside an image effect
-      class Image : public Property::Set {
+      class ImageBase : public Property::Set {
       protected :
         /// called during ctors to get bits from the clip props into ours
         void getClipBits(ClipInstance& instance);
         int _referenceCount; ///< reference count on this image
 
+      public:
+        // default constructor
+        virtual ~ImageBase();
+        
+        /// basic ctor, makes empty property set but sets not value
+        ImageBase();
+
+        /// construct from a clip instance, but leave the
+        /// filling it to the calling code via the propery set
+        explicit ImageBase(ClipInstance& instance);
+
+        // Render Scale (renderScaleX,renderScaleY) -
+        //
+        // The proxy render scale currently being applied.
+        // ------
+        // Bounds (bx1,by1,bx2,by2) -
+        //
+        // The bounds of an image's pixels. The bounds, in PixelCoordinates, are of the 
+        // addressable pixels in an image's data pointer. The order of the values is 
+        // x1, y1, x2, y2. X values are x1 &lt;= X &lt; x2 Y values are y1 &lt;= Y &lt; y2 
+        // ------
+        // ROD (rodx1,rody1,rodx2,rody2) -
+        //
+        // The full region of definition. The ROD, in PixelCoordinates, are of the 
+        // addressable pixels in an image's data pointer. The order of the values is 
+        // x1, y1, x2, y2. X values are x1 &lt;= X &lt; x2 Y values are y1 &lt;= Y &lt; y2 
+        // ------
+        // Row Bytes -
+        //
+        // The number of bytes in a row of an image.
+        // ------
+        // Field -
+        //
+        // kOfxImageFieldNone - the image is an unfielded frame
+        // kOfxImageFieldBoth - the image is fielded and contains both interlaced fields
+        // kOfxImageFieldLower - the image is fielded and contains a single field, being the lower field (rows 0,2,4...)
+        // kOfxImageFieldUpper - the image is fielded and contains a single field, being the upper field (rows 1,3,5...)        
+        // ------
+        // Unique Identifier -
+        //
+        // Uniquely labels an image. This is host set and allows a plug-in to differentiate between images. This is 
+        // especially useful if a plugin caches analysed information about the image (for example motion vectors). The 
+        // plugin can label the cached information with this identifier. If a user connects a different clip to the 
+        // analysed input, or the image has changed in some way then the plugin can detect this via an identifier change
+        // and re-evaluate the cached information. 
+
+        // construction based on clip instance
+        ImageBase(ClipInstance& instance,     // construct from clip instance taking pixel depth, components, pre mult and aspect ratio
+              double renderScaleX, 
+              double renderScaleY,
+              const OfxRectI &bounds,
+              const OfxRectI &rod,
+              int rowBytes,
+              std::string field,
+              std::string uniqueIdentifier);
+
+        // OfxImageClipHandle getHandle();
+        OfxPropertySetHandle getPropHandle() const { return Property::Set::getHandle(); }
+
+        /// get the bounds of the pixels in memory
+        OfxRectI getBounds() const;
+
+        /// get the full region of this image
+        OfxRectI getROD() const;
+
+        /// release the reference count, which, if zero, deletes this
+        void releaseReference();
+
+        /// add a reference to this image
+        void addReference() {_referenceCount++;}
+      };
+
+      /// instance of an image inside an image effect
+      class Image : public ImageBase {
       public:
         // default constructor
         virtual ~Image();
@@ -321,7 +407,7 @@ namespace OFX {
 
         /// construct from a clip instance, but leave the
         /// filling it to the calling code via the propery set
-        explicit Image(ClipInstance& instance); 
+        explicit Image(ClipInstance& instance);
 
         // Render Scale (renderScaleX,renderScaleY) -
         //
@@ -372,23 +458,78 @@ namespace OFX {
               int rowBytes,
               std::string field,
               std::string uniqueIdentifier);
-
-        // OfxImageClipHandle getHandle();
-        OfxPropertySetHandle getPropHandle() const { return Property::Set::getHandle(); }
-
-        /// get the bounds of the pixels in memory
-        OfxRectI getBounds() const;
-
-        /// get the full region of this image
-        OfxRectI getROD() const;
-
-        /// release the reference count, which, if zero, deletes this
-        void releaseReference();
-
-        /// add a reference to this image
-        void addReference() {_referenceCount++;}
       };
 
+#   ifdef OFX_SUPPORTS_OPENGLRENDER
+      /// instance of an OpenGL texture inside an image effect
+      class Texture : public ImageBase {
+      public:
+        // default constructor
+        virtual ~Texture();
+        
+        /// basic ctor, makes empty property set but sets not value
+        Texture();
+
+        /// construct from a clip instance, but leave the
+        /// filling it to the calling code via the propery set
+        explicit Texture(ClipInstance& instance);
+
+        // Render Scale (renderScaleX,renderScaleY) -
+        //
+        // The proxy render scale currently being applied.
+        // ------
+        // Index -
+        //
+        // The texture id (cast to GLuint).
+        // ------
+        // Target -
+        //
+        // The texture target (cast to GLenum).
+        // ------
+        // Bounds (bx1,by1,bx2,by2) -
+        //
+        // The bounds of an image's pixels. The bounds, in PixelCoordinates, are of the 
+        // addressable pixels in an image's data pointer. The order of the values is 
+        // x1, y1, x2, y2. X values are x1 &lt;= X &lt; x2 Y values are y1 &lt;= Y &lt; y2 
+        // ------
+        // ROD (rodx1,rody1,rodx2,rody2) -
+        //
+        // The full region of definition. The ROD, in PixelCoordinates, are of the 
+        // addressable pixels in an image's data pointer. The order of the values is 
+        // x1, y1, x2, y2. X values are x1 &lt;= X &lt; x2 Y values are y1 &lt;= Y &lt; y2 
+        // ------
+        // Row Bytes -
+        //
+        // The number of bytes in a row of an image.
+        // ------
+        // Field -
+        //
+        // kOfxImageFieldNone - the image is an unfielded frame
+        // kOfxImageFieldBoth - the image is fielded and contains both interlaced fields
+        // kOfxImageFieldLower - the image is fielded and contains a single field, being the lower field (rows 0,2,4...)
+        // kOfxImageFieldUpper - the image is fielded and contains a single field, being the upper field (rows 1,3,5...)        
+        // ------
+        // Unique Identifier -
+        //
+        // Uniquely labels an image. This is host set and allows a plug-in to differentiate between images. This is 
+        // especially useful if a plugin caches analysed information about the image (for example motion vectors). The 
+        // plugin can label the cached information with this identifier. If a user connects a different clip to the 
+        // analysed input, or the image has changed in some way then the plugin can detect this via an identifier change
+        // and re-evaluate the cached information. 
+
+        // construction based on clip instance
+        Texture(ClipInstance& instance,     // construct from clip instance taking pixel depth, components, pre mult and aspect ratio
+                double renderScaleX,
+                double renderScaleY,
+                int index,
+                int target,
+                const OfxRectI &bounds,
+                const OfxRectI &rod,
+                int rowBytes,
+                std::string field,
+                std::string uniqueIdentifier);
+      };
+#   endif
     } // Memory
 
   } // Host

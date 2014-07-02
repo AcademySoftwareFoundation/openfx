@@ -40,6 +40,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef OFX_EXTENSIONS_VEGAS
 #include "ofxSonyVegas.h"
 #endif
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+#include "ofxOpenGLRender.h"
+#endif
 
 namespace OFX {
 
@@ -457,14 +460,13 @@ namespace OFX {
       // Image
       //
 
-      static const Property::PropSpec imageStuffs[] = {
+      static const Property::PropSpec imageBaseStuffs[] = {
         { kOfxPropType, Property::eString, 1, false, kOfxTypeImage },
         { kOfxImageEffectPropPixelDepth, Property::eString, 1, true, kOfxBitDepthNone  },
         { kOfxImageEffectPropComponents, Property::eString, 1, true, kOfxImageComponentNone },
         { kOfxImageEffectPropPreMultiplication, Property::eString, 1, true, kOfxImageOpaque  },
         { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "1.0" },
         { kOfxImagePropPixelAspectRatio, Property::eDouble, 1, true, "1.0"  },
-        { kOfxImagePropData, Property::ePointer, 1, true, NULL },
         { kOfxImagePropBounds, Property::eInt, 4, true, "0" },
         { kOfxImagePropRegionOfDefinition, Property::eInt, 4, true, "0", },
         { kOfxImagePropRowBytes, Property::eInt, 1, true, "0", },
@@ -473,14 +475,14 @@ namespace OFX {
         Property::propSpecEnd
       };
 
-      Image::Image()
-        : Property::Set(imageStuffs) 
+      ImageBase::ImageBase()
+        : Property::Set(imageBaseStuffs)
         , _referenceCount(1)
       {
       }
 
       /// called during ctor to get bits from the clip props into ours
-      void Image::getClipBits(ClipInstance& instance)
+      void ImageBase::getClipBits(ClipInstance& instance)
       {
         Property::Set& clipProperties = instance.getProps();
         
@@ -503,24 +505,23 @@ namespace OFX {
       }
 
       /// make an image from a clip instance
-      Image::Image(ClipInstance& instance)
-        : Property::Set(imageStuffs) 
+      ImageBase::ImageBase(ClipInstance& instance)
+        : Property::Set(imageBaseStuffs)
         , _referenceCount(1)
       {
         getClipBits(instance);
       }      
 
       // construction based on clip instance
-      Image::Image(ClipInstance& instance,
+      ImageBase::ImageBase(ClipInstance& instance,
                    double renderScaleX, 
                    double renderScaleY,
-                   void* data,
                    const OfxRectI &bounds,
                    const OfxRectI &rod,
                    int rowBytes,
                    std::string field,
                    std::string uniqueIdentifier) 
-        : Property::Set(imageStuffs)
+        : Property::Set(imageBaseStuffs)
         , _referenceCount(1)
       {
         getClipBits(instance);
@@ -528,7 +529,6 @@ namespace OFX {
         // set other data
         setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleX, 0);    
         setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleY, 1);        
-        setPointerProperty(kOfxImagePropData,data);
         setIntProperty(kOfxImagePropBounds,bounds.x1, 0);
         setIntProperty(kOfxImagePropBounds,bounds.y1, 1);
         setIntProperty(kOfxImagePropBounds,bounds.x2, 2);
@@ -544,32 +544,117 @@ namespace OFX {
         setStringProperty(kOfxImagePropUniqueIdentifier,uniqueIdentifier);
       }
 
-      OfxRectI Image::getBounds() const
+      OfxRectI ImageBase::getBounds() const
       {
         OfxRectI bounds;
         getIntPropertyN(kOfxImagePropBounds, &bounds.x1, 4);
         return bounds;
       }
 
-      OfxRectI Image::getROD() const
+      OfxRectI ImageBase::getROD() const
       {
         OfxRectI rod;
         getIntPropertyN(kOfxImagePropRegionOfDefinition, &rod.x1, 4);
         return rod;
       }
 
-      Image::~Image() {
+      ImageBase::~ImageBase() {
         //assert(_referenceCount <= 0);
       }
 
       // release the reference 
-      void Image::releaseReference()
+      void ImageBase::releaseReference()
       {
         _referenceCount -= 1;
         if(_referenceCount <= 0)
           delete this;
       }
 
+
+      static const Property::PropSpec imageStuffs[] = {
+        { kOfxImagePropData, Property::ePointer, 1, true, NULL },
+        Property::propSpecEnd
+      };
+
+      Image::Image()
+        : ImageBase()
+      {
+        addProperties(imageStuffs);
+      }
+
+      /// make an image from a clip instance
+      Image::Image(ClipInstance& instance)
+        : ImageBase(instance)
+      {
+        addProperties(imageStuffs);
+      }
+
+      // construction based on clip instance
+      Image::Image(ClipInstance& instance,
+                   double renderScaleX, 
+                   double renderScaleY,
+                   void* data,
+                   const OfxRectI &bounds,
+                   const OfxRectI &rod,
+                   int rowBytes,
+                   std::string field,
+                   std::string uniqueIdentifier) 
+        : ImageBase(instance, renderScaleX, renderScaleY, bounds, rod, rowBytes, field, uniqueIdentifier)
+      {
+        addProperties(imageStuffs);
+
+        // set other data
+        setPointerProperty(kOfxImagePropData,data);
+      }
+
+      Image::~Image() {
+        //assert(_referenceCount <= 0);
+      }
+#   ifdef OFX_SUPPORTS_OPENGLRENDER
+      static const Property::PropSpec textureStuffs[] = {
+        { kOfxImageEffectPropOpenGLTextureIndex, Property::eInt, 1, true, "-1" },
+        { kOfxImageEffectPropOpenGLTextureTarget, Property::eInt, 1, true, "-1" },
+        Property::propSpecEnd
+      };
+
+      Texture::Texture()
+        : ImageBase()
+      {
+        addProperties(textureStuffs);
+      }
+
+      /// make an image from a clip instance
+      Texture::Texture(ClipInstance& instance)
+        : ImageBase(instance)
+      {
+        addProperties(textureStuffs);
+      }
+
+      // construction based on clip instance
+      Texture::Texture(ClipInstance& instance,
+                   double renderScaleX, 
+                   double renderScaleY,
+                   int index,
+                   int target,
+                   const OfxRectI &bounds,
+                   const OfxRectI &rod,
+                   int rowBytes,
+                   std::string field,
+                   std::string uniqueIdentifier) 
+        : ImageBase(instance, renderScaleX, renderScaleY, bounds, rod, rowBytes, field, uniqueIdentifier)
+      {
+        addProperties(textureStuffs);
+
+        // set other data
+        setIntProperty(kOfxImageEffectPropOpenGLTextureIndex, index);
+        setIntProperty(kOfxImageEffectPropOpenGLTextureTarget, target);
+      }
+
+
+      Texture::Texture() {
+        //assert(_referenceCount <= 0);
+      }
+#   endif
     } // Clip
 
   } // Host

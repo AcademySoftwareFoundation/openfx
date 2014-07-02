@@ -57,6 +57,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef OFX_SUPPORTS_PARAMETRIC
 #include "ofxhParametricParam.h"
 #endif
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+#include "ofxOpenGLRender.h"
+#endif
 
 #include <string.h>
 #include <stdarg.h>
@@ -352,12 +355,12 @@ namespace OFX {
         { kOfxImageEffectPropFrameRate ,        Property::eDouble,     1, true,  "0" },
         { kOfxPropIsInteractive,                Property::eInt,        1, true, "0" },
         { kOfxImageEffectPropInAnalysis,        Property::eInt,        1, false, "0" },
-#ifdef OFX_EXTENSIONS_NUKE
+#     ifdef OFX_EXTENSIONS_NUKE
         //{ ".verbosityProp",                Property::eInt,        2, true, "0" }, // Unknown Nuke property
-#endif
-#ifdef OFX_EXTENSIONS_VEGAS
+#     endif
+#     ifdef OFX_EXTENSIONS_VEGAS
         { kOfxImageEffectPropVegasContext,      Property::eString,     1, true, "" },
-#endif
+#     endif
         Property::propSpecEnd
       };
 
@@ -764,9 +767,9 @@ namespace OFX {
           { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
           { kOfxPropTime, Property::eDouble, 1, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
-#ifdef OFX_EXTENSIONS_NUKE
+#       ifdef OFX_EXTENSIONS_NUKE
           { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
-#endif
+#       endif
           Property::propSpecEnd
         };
 
@@ -877,7 +880,7 @@ namespace OFX {
         return st;
       }
 
-#ifdef OFX_SUPPORTS_OPENGLRENDER
+#   ifdef OFX_SUPPORTS_OPENGLRENDER
       // attach/detach OpenGL context
       OfxStatus Instance::contextAttachedAction(){
 #       ifdef OFX_DEBUG_ACTIONS
@@ -900,7 +903,7 @@ namespace OFX {
 #       endif
         return st;
       }
-#endif
+#   endif
 
       OfxStatus Instance::beginRenderAction(OfxTime  startFrame,
                                             OfxTime  endFrame,
@@ -909,10 +912,10 @@ namespace OFX {
                                             OfxPointD   renderScale,
                                             bool     sequentialRender,
                                             bool     interactiveRender
-#ifdef OFX_EXTENSIONS_NUKE
+#                                         ifdef OFX_EXTENSIONS_NUKE
                                             ,
                                             int view
-#endif
+#                                         endif
                                             )
       {
         Property::PropSpec stuff[] = {
@@ -922,9 +925,9 @@ namespace OFX {
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
           { kOfxImageEffectPropSequentialRenderStatus, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropInteractiveRenderStatus, Property::eInt, 1, true, "0" },
-#ifdef OFX_EXTENSIONS_NUKE
+#       ifdef OFX_EXTENSIONS_NUKE
           { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
-#endif
+#       endif
           Property::propSpecEnd
         };
 
@@ -2291,24 +2294,18 @@ namespace OFX {
         imageMemoryUnlock
       };
 
-#ifdef OFX_EXTENSIONS_VEGAS
+#   ifdef OFX_EXTENSIONS_VEGAS
       static const struct OfxVegasStereoscopicImageEffectSuiteV1 gVegasStereoscopicImageEffectSuite = {
         clipGetStereoscopicImage
       };
-#endif
+#   endif
 
-#ifdef OFX_SUPPORTS_OPENGLRENDER
+#   ifdef OFX_SUPPORTS_OPENGLRENDER
       ////////////////////////////////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////////////
       /// The OpenGL render suite functions
-#error "TODO"
-      // current status:
-      // the Texture class still has to be written.
-      // A good way to do it is to make an ImageBase class
-      // which has everything from Image except kOfxImagePropData.
-      // Texture and Image would derive from ImageBase.
-      // See how it is done in the Support library.
+
       static OfxStatus clipLoadTexture(OfxImageClipHandle h1,
                                        OfxTime time,
                                        const char   *format,
@@ -2374,7 +2371,7 @@ namespace OFX {
         clipFreeTexture,
         flushResources
       };
-#endif
+#   endif
 
       /// message suite function for an image effect
       static OfxStatus message(void *handle, const char *type, const char *id, const char *format, ...)
@@ -2780,8 +2777,16 @@ namespace OFX {
           else 
             return NULL;
         }
-#ifdef OFX_EXTENSIONS_VEGAS
-#if 0
+#     ifdef OFX_SUPPORTS_OPENGLRENDER
+        else if (strcmp(suiteName, kOfxOpenGLRenderSuite)==0) {
+          if(suiteVersion == 1)
+            return (void*)&gOpenGLRenderSuite;
+          else 
+            return NULL;
+        }
+#     endif
+#     ifdef OFX_EXTENSIONS_VEGAS
+#      if 0
         else if (strcmp(suiteName, kOfxVegasProgressSuite)==0) {
             if(suiteVersion == 1)
                 return (void*)&gVegasProgressSuiteV1;
@@ -2796,19 +2801,19 @@ namespace OFX {
             else
                 return NULL;
         }
-#endif
+#      endif
         else if (strcmp(suiteName, kOfxVegasStereoscopicImageEffectSuite)==0) {
             if(suiteVersion == 1)
                 return (void*)&gVegasStereoscopicImageEffectSuite;
             else
                 return NULL;
         }
-#endif
-#ifdef OFX_SUPPORTS_PARAMETRIC
+#     endif
+#     ifdef OFX_SUPPORTS_PARAMETRIC
         else if (strcmp(suiteName, kOfxParametricParameterSuite)==0) {
           return ParametricParam::GetSuite(suiteVersion);
         }
-#endif
+#     endif
         else  /// otherwise just grab the base class one, which is props and memory
           return OFX::Host::Host::fetchSuite(suiteName, suiteVersion);
       }
