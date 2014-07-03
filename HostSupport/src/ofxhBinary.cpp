@@ -36,6 +36,8 @@ Binary::Binary(const std::string &binaryPath): _binaryPath(binaryPath), _invalid
   struct stat sb;
   if (stat(binaryPath.c_str(), &sb) != 0) {
     _invalid = true;
+    _time = 0;
+    _size = 0;
   } 
   else {
     _time = sb.st_mtime;

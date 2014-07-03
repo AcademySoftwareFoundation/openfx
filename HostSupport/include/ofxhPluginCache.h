@@ -230,6 +230,9 @@ namespace OFX {
         , _fileSize(size)
         , _binaryChanged(false)
       {
+        if (isInvalid()) {
+          return;
+        }
         if (_fileModificationTime != _binary.getTime() || _fileSize != _binary.getSize()) {
           _binaryChanged = true;
         }

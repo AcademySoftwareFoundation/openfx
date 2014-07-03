@@ -105,6 +105,9 @@ using namespace OFX::Host;
 
 /// try to open the plugin bundle object and query it for plugins
 void PluginBinary::loadPluginInfo(PluginCache *cache) {      
+  if (isInvalid()) {
+    return;
+  }
   _fileModificationTime = _binary.getTime();
   _fileSize = _binary.getSize();
   _binaryChanged = false;
