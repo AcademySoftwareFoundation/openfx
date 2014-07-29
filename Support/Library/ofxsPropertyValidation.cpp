@@ -771,6 +771,7 @@ namespace OFX {
     static PropertyDescription gCustomParamProps[ ] =
     {
       PropertyDescription(kOfxParamPropDefault,                OFX::eString,  1, eDescFinished),
+      PropertyDescription(kOfxParamPropAnimates,               OFX::eInt,     1, eDescDefault, 0, eDescFinished),
       PropertyDescription(kOfxParamPropCustomInterpCallbackV1, OFX::ePointer, 1, eDescDefault, NULLPTR, eDescFinished),
     };
 
@@ -822,7 +823,7 @@ namespace OFX {
       PropertyDescription(kOfxParamPropMax,                  OFX::eInt, 1, eDescFinished),
       PropertyDescription(kOfxParamPropDisplayMin,           OFX::eInt, 1, eDescFinished),
       PropertyDescription(kOfxParamPropDisplayMax,           OFX::eInt, 1, eDescFinished),
-      PropertyDescription(kOfxParamPropAnimates,             OFX::eInt, 1, eDescDefault, 0, eDescFinished),
+      PropertyDescription(kOfxParamPropAnimates,             OFX::eInt, 1, eDescDefault, 1, eDescFinished),
     };
 
     /** @brief properties for a 2D integer param */
@@ -833,7 +834,7 @@ namespace OFX {
       PropertyDescription(kOfxParamPropMax,                  OFX::eInt, 2, eDescFinished),
       PropertyDescription(kOfxParamPropDisplayMin,           OFX::eInt, 2, eDescFinished),
       PropertyDescription(kOfxParamPropDisplayMax,           OFX::eInt, 2, eDescFinished),
-      PropertyDescription(kOfxParamPropAnimates,             OFX::eInt, 1, eDescDefault, 0, eDescFinished),
+      PropertyDescription(kOfxParamPropAnimates,             OFX::eInt, 1, eDescDefault, 1, eDescFinished),
       PropertyDescription(kOfxParamPropDimensionLabel,       OFX::eString, 2, eDescDefault, "x", "y", eDescFinished),
     };
 
@@ -845,7 +846,7 @@ namespace OFX {
       PropertyDescription(kOfxParamPropMax,                  OFX::eInt, 3, eDescFinished),
       PropertyDescription(kOfxParamPropDisplayMin,           OFX::eInt, 3, eDescFinished),
       PropertyDescription(kOfxParamPropDisplayMax,           OFX::eInt, 3, eDescFinished),
-      PropertyDescription(kOfxParamPropAnimates,             OFX::eInt, 1, eDescDefault, 0, eDescFinished),
+      PropertyDescription(kOfxParamPropAnimates,             OFX::eInt, 1, eDescDefault, 1, eDescFinished),
       PropertyDescription(kOfxParamPropDimensionLabel,       OFX::eString, 3, eDescDefault, "x", "y", "z", eDescFinished),
     };
 
