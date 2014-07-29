@@ -386,10 +386,9 @@ namespace OFX {
       }
 
       /// add standard properties to a value holding param
-      void Descriptor::addValueParamProps(const std::string &/*type*/, Property::TypeEnum valueType, int dim)
+      void Descriptor::addValueParamProps(const std::string &type, Property::TypeEnum valueType, int dim)
       {
         static const Property::PropSpec invariantProps[] = {
-          { kOfxParamPropAnimates,    Property::eInt, 1,       false, "1" },
           { kOfxParamPropIsAnimating, Property::eInt, 1,       false, "0" },
           { kOfxParamPropIsAutoKeying,Property::eInt, 1,       false, "0" },
           { kOfxParamPropPersistant,  Property::eInt, 1,       false, "1" },
@@ -400,8 +399,23 @@ namespace OFX {
           Property::propSpecEnd
         };
 
+          ///The following may animate, depending on the host.
+          ///Properties exist on the host to check this. If the host does support animation on them, then they do _not_ animate by default.
+          ///They are...
+          /// kOfxParamTypeCustom
+          /// kOfxParamTypeString
+          /// kOfxParamTypeBoolean
+          /// kOfxParamTypeChoice
+          ///If host doesn't support animation on them, then setting kOfxParamPropIsAnimating to 0 or 1 doesn't matter
+          ///so just set the kOfxParamPropIsAnimating property to 0 for all those "extra animating" params
+        bool turnOffSetAnimates = type == kOfxParamTypeCustom ||
+                                  type == kOfxParamTypeString ||
+                                  type == kOfxParamTypeBoolean ||
+                                  type == kOfxParamTypeChoice;
+          
         Property::PropSpec variantProps[] = {
           { kOfxParamPropDefault,     valueType,               dim, false, valueType == Property::eString ? "" : "0" },
+          { kOfxParamPropAnimates,    Property::eInt,turnOffSetAnimates ? 0 :  1,       false, turnOffSetAnimates ? "0" : "1" },
           Property::propSpecEnd
         };
 
