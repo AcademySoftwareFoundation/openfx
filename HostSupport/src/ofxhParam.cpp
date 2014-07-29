@@ -409,7 +409,7 @@ namespace OFX {
         /// - kOfxParamTypeChoice
         /// If host doesn't support animation on them, then setting kOfxParamPropIsAnimating to 0 or 1 doesn't matter
         /// so just set the kOfxParamPropIsAnimating property to 0 for all those "extra animating" params.
-        bool animates = type != kOfxParamTypeCustom && type != kOfxParamTypeString && type == kOfxParamTypeBoolean && type == kOfxParamTypeChoice;
+        bool animates = type != kOfxParamTypeCustom && type != kOfxParamTypeString && type != kOfxParamTypeBoolean && type != kOfxParamTypeChoice;
           
         Property::PropSpec variantProps[] = {
           { kOfxParamPropAnimates,    Property::eInt, 1,       false, animates ? "1" : "0" },
