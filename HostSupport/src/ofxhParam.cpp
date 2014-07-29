@@ -399,23 +399,21 @@ namespace OFX {
           Property::propSpecEnd
         };
 
-          ///The following may animate, depending on the host.
-          ///Properties exist on the host to check this. If the host does support animation on them, then they do _not_ animate by default.
-          ///They are...
-          /// kOfxParamTypeCustom
-          /// kOfxParamTypeString
-          /// kOfxParamTypeBoolean
-          /// kOfxParamTypeChoice
-          ///If host doesn't support animation on them, then setting kOfxParamPropIsAnimating to 0 or 1 doesn't matter
-          ///so just set the kOfxParamPropIsAnimating property to 0 for all those "extra animating" params
-        bool turnOffSetAnimates = type == kOfxParamTypeCustom ||
-                                  type == kOfxParamTypeString ||
-                                  type == kOfxParamTypeBoolean ||
-                                  type == kOfxParamTypeChoice;
+        /// http://openfx.sourceforge.net/Documentation/1.3/ofxProgrammingReference.html#ParametersAnimation
+        /// The following may animate, depending on the host.
+        /// Properties exist on the host to check this. If the host does support animation on them, then they do _not_ animate by default.
+        /// They are...
+        /// - kOfxParamTypeCustom
+        /// - kOfxParamTypeString
+        /// - kOfxParamTypeBoolean
+        /// - kOfxParamTypeChoice
+        /// If host doesn't support animation on them, then setting kOfxParamPropIsAnimating to 0 or 1 doesn't matter
+        /// so just set the kOfxParamPropIsAnimating property to 0 for all those "extra animating" params.
+        bool animates = type != kOfxParamTypeCustom && type != kOfxParamTypeString && type == kOfxParamTypeBoolean && type == kOfxParamTypeChoice;
           
         Property::PropSpec variantProps[] = {
+          { kOfxParamPropAnimates,    Property::eInt, 1,       false, animates ? "1" : "0" },
           { kOfxParamPropDefault,     valueType,               dim, false, valueType == Property::eString ? "" : "0" },
-          { kOfxParamPropAnimates,    Property::eInt,turnOffSetAnimates ? 0 :  1,       false, turnOffSetAnimates ? "0" : "1" },
           Property::propSpecEnd
         };
 
