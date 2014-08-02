@@ -660,8 +660,8 @@ namespace OFX {
         const std::list<Instance*> &getParamList() const;
 
         // get the param
-        Instance* getParam(std::string name) {
-          std::map<std::string,Instance*>::iterator it = _params.find(name);
+        Instance* getParam(std::string name) const {
+          std::map<std::string,Instance*>::const_iterator it = _params.find(name);
           if(it!=_params.end())
             return it->second;
           else
