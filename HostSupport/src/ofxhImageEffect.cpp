@@ -1111,7 +1111,7 @@ namespace OFX {
 
       /// calculate the default rod for this effect instance
       OfxRectD Instance::calcDefaultRegionOfDefinition(OfxTime  time,
-                                                       OfxPointD   /*renderScale*/)
+                                                       OfxPointD   /*renderScale*/) const
       {
         OfxRectD rod;
 
@@ -1148,7 +1148,7 @@ namespace OFX {
         else if(_context == kOfxImageEffectContextGeneral) {
           // general context is the union of all the non optional clips
           bool gotOne = false;
-          for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
+          for(std::map<std::string, ClipInstance*>::const_iterator it=_clips.begin();
               it!=_clips.end();
               ++it) {
             ClipInstance *clip = it->second;
