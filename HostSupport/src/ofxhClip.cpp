@@ -499,9 +499,6 @@ namespace OFX {
 
         // get and set the clip instance pixel aspect ratio
         setDoubleProperty(kOfxImagePropPixelAspectRatio, clipProperties.getDoubleProperty(kOfxImagePropPixelAspectRatio));
-        
-        // get and set the clip instance pixel aspect ratio
-        setDoubleProperty(kOfxImagePropPixelAspectRatio, clipProperties.getDoubleProperty(kOfxImagePropPixelAspectRatio));
       }
 
       /// make an image from a clip instance
