@@ -376,7 +376,7 @@ namespace OFX {
           { kOfxParamPropInteractV1,          Property::ePointer, 1, false, 0 },
           { kOfxParamPropInteractSize,        Property::eDouble,  2, false, "0" },
           { kOfxParamPropInteractSizeAspect,  Property::eDouble,  1, false, "1" },
-          { kOfxParamPropInteractMinimumSize, Property::eDouble,  2, false, "10" },
+          { kOfxParamPropInteractMinimumSize, Property::eInt,     2, false, "10" },
           { kOfxParamPropInteractPreferedSize,Property::eInt,     2, false, "10" },
           Property::propSpecEnd
         };

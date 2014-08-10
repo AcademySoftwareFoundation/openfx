@@ -385,7 +385,7 @@ namespace OFX {
 
       // Pointer props with defaults that can be checked against
       PropertyDescription(kOfxPropInstanceData,                        OFX::ePointer, 1, eDescDefault, (void *)(0), eDescFinished),
-      PropertyDescription(kOfxImageEffectPropPluginHandle,             OFX::ePointer, eDescFinished),
+      PropertyDescription(kOfxImageEffectPropPluginHandle,             OFX::ePointer, 1, eDescFinished),
 
       // string props that have no defaults that can be checked against
       PropertyDescription(kOfxImageEffectPropContext,                  OFX::eString,  1, eDescFinished),
