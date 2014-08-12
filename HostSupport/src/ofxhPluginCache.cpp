@@ -53,7 +53,7 @@
 #include "ofxhHost.h"
 #include "ofxhXml.h"
 
-#if defined (__linux__)
+#if defined (__linux__) || defined (__FreeBSD__)
 
 #define DIRLIST_SEP_CHARS ":;"
 #define DIRSEP "/"
@@ -62,10 +62,18 @@
 static const char *getArchStr() 
 {
   if(sizeof(void *) == 4) {
+    #if defined(__linux__)
     return  "Linux-x86";
+    #else
+    return  "FreeBSD-x86";
+    #endif
   }
   else {
+    #if defined(__linux__)
     return  "Linux-x86-64";
+    #else
+    return  "FreeBSD-x86-64";
+    #endif
   }
 }
 
@@ -252,7 +260,7 @@ PluginCache::PluginCache() : _xmlCurrentBinary(0), _xmlCurrentPlugin(0) {
   _pluginPath.push_back(getStdOFXPluginPath());
   _pluginPath.push_back("C:\\Program Files\\Common Files\\OFX\\Plugins");
 #endif
-#if defined(__linux__)
+#if defined(__linux__) || defined(__FreeBSD__)
   _pluginPath.push_back("/usr/OFX/Plugins");
 #endif
 #if defined(__APPLE__)
@@ -265,7 +273,7 @@ void PluginCache::setPluginHostPath(const std::string &hostId) {
   _pluginPath.push_back(getStdOFXPluginPath(hostId));
   _pluginPath.push_back("C:\\Program Files\\Common Files\\OFX\\" + hostId);
 #endif
-#if defined(__linux__)
+#if defined(__linux__) || defined(__FreeBSD__)
   _pluginPath.push_back("/usr/OFX/" + hostId);
 #endif
 #if defined(__APPLE__)

@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(WIN32) || defined(WIN64)
 #define I386
-#elif defined(__linux__)
+#elif defined(__linux__) || defined(__FreeBSD__)
 #define UNIX
 #ifdef __i386__
 #define I386
