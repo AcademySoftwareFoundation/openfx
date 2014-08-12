@@ -62,18 +62,18 @@
 static const char *getArchStr() 
 {
   if(sizeof(void *) == 4) {
-    #if defined(__linux__)
+#if defined(__linux__)
     return  "Linux-x86";
-    #else
+#else
     return  "FreeBSD-x86";
-    #endif
+#endif
   }
   else {
-    #if defined(__linux__)
+#if defined(__linux__)
     return  "Linux-x86-64";
-    #else
+#else
     return  "FreeBSD-x86-64";
-    #endif
+#endif
   }
 }
 

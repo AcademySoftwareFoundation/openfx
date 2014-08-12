@@ -24,7 +24,18 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
       ARCH = Linux-x86-64
     endif
     LINKFLAGS := $(LINKFLAGS) $(BITSFLAG)
-  else
+  endif
+  ifeq ($(OS),FreeBSD)
+    LINKFLAGS = -L/usr/local/lib -shared -Xlinker --version-script=$(PATHTOROOT)/include/linuxSymbols -lGL -Wl,-rpath,'$$ORIGIN'/../../Libraries
+    ARCH= FreeBSD-x86
+    BITSFLAG = -m32
+    ifeq ($(BITS), 64)
+      BITSFLAG = -m64
+      ARCH = FreeBSD-x86-64
+    endif
+    LINKFLAGS := $(LINKFLAGS) $(BITSFLAG)
+  endif
+  ifeq ($(OS),Darwin)
     ifeq ($(BITS), Universal)
       # Universal 32/64 is useful only on OSX 10.5 and 10.6. Default to 10.6. (it can be changed with "make MACOSX=10.5")
       MACOSX := 10.6
