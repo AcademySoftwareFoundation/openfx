@@ -468,7 +468,7 @@ namespace OFX {
         FocusArgs args(inArgs);
         interact->gainFocus(args);
       }
-      else if(action ==   kOfxInteractActionGainFocus) {
+      else if(action ==   kOfxInteractActionLoseFocus) {
         // make the draw args
         FocusArgs args(inArgs);
         interact->loseFocus(args);
