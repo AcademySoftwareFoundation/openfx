@@ -672,7 +672,6 @@ namespace OFX {
     static PropertyDescription gGetClipPreferencesOutArgProps[ ] =
     {
       PropertyDescription(kOfxImageEffectPropFrameRate,         OFX::eDouble, 1, eDescFinished),
-      PropertyDescription(kOfxImagePropPixelAspectRatio,        OFX::eDouble, 1, eDescFinished),
       PropertyDescription(kOfxImageClipPropFieldOrder,          OFX::eString, 1, eDescFinished),
       PropertyDescription(kOfxImageClipPropContinuousSamples,   OFX::eInt, 1, eDescDefault, 0, eDescFinished),
       PropertyDescription(kOfxImageEffectFrameVarying,          OFX::eInt, 1, eDescDefault, 0, eDescFinished),
@@ -897,7 +896,7 @@ namespace OFX {
     /** @brief properties for a group param */
     static PropertyDescription gGroupParamProps[ ] =
     {
-      PropertyDescription(kOfxParamPropGroupOpen,           OFX::eInt, 2, eDescFinished),
+      PropertyDescription(kOfxParamPropGroupOpen,           OFX::eInt, 1, eDescFinished),
     };
 
     /** @brief properties for a page param */
