@@ -344,7 +344,7 @@ namespace OFX {
 
       static const Property::PropSpec effectInstanceStuff[] = {
         /* name                                 type                   dim.   r/o    default value */
-        { kOfxPropType,                         Property::eString,     1, true,  kOfxTypeImageEffect },
+        { kOfxPropType,                         Property::eString,     1, true,  kOfxTypeImageEffectInstance },
         { kOfxImageEffectPropContext,           Property::eString,     1, true, "" },
         { kOfxPropInstanceData,                 Property::ePointer,    1, false, NULL },
         { kOfxImageEffectPropPluginHandle,      Property::ePointer,    1, false, NULL },
