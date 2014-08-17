@@ -201,7 +201,7 @@ public :
   }
   void setEnabledness();
   virtual void render(const OFX::RenderArguments &args);
-  virtual bool isIdentity(const OFX::RenderArguments &args, OFX::Clip * &identityClip, double &identityTime);
+  virtual bool isIdentity(const OFX::IsIdentityArguments &args, OFX::Clip * &identityClip, double &identityTime);
   virtual void changedParam(const OFX::InstanceChangedArgs &args, const std::string &paramName);
   virtual void changedClip(const OFX::InstanceChangedArgs &args, const std::string &clipName);
   virtual bool getRegionOfDefinition(const OFX::RegionOfDefinitionArguments &args, OfxRectD &rod);
@@ -314,7 +314,7 @@ void GammaPlugin::render(const OFX::RenderArguments &args)
   } 
 }
 
-bool GammaPlugin:: isIdentity(const OFX::RenderArguments &args, OFX::Clip * &identityClip, double &identityTime)
+bool GammaPlugin:: isIdentity(const OFX::IsIdentityArguments &args, OFX::Clip * &identityClip, double &identityTime)
 {
   double scale = scale_->getValueAtTime(args.time);
   double rScale = 1, gScale = 1, bScale = 1, aScale = 1;

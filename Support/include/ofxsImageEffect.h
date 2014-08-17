@@ -806,7 +806,7 @@ namespace OFX {
   };
 
   ////////////////////////////////////////////////////////////////////////////////
-  /** @brief POD struct to pass rendering arguments into @ref ImageEffect::render and @ref OFX::ImageEffect::isIdentity */
+  /** @brief POD struct to pass rendering arguments into @ref ImageEffect::render */
   struct RenderArguments {
     double    time;
     OfxPointD renderScale;
@@ -819,6 +819,14 @@ namespace OFX {
 #endif
     bool      sequentialRenderStatus;
     bool      interactiveRenderStatus;
+  };
+
+  /** @brief POD struct to pass rendering arguments into @ref OFX::ImageEffect::isIdentity */
+  struct IsIdentityArguments {
+    double    time;
+    OfxPointD renderScale;
+    OfxRectI  renderWindow;
+    FieldEnum fieldToRender;
   };
 
   /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::render */
@@ -1151,7 +1159,7 @@ namespace OFX {
     function should return true and set the \em identityClip pointer to point to the clip that is the identity
     and \em identityTime to be the time at which to access the clip for the identity operation.
     */
-    virtual bool isIdentity(const RenderArguments &args, Clip * &identityClip, double &identityTime);
+    virtual bool isIdentity(const IsIdentityArguments &args, Clip * &identityClip, double &identityTime);
 
     /** @brief The get RoD action. 
 

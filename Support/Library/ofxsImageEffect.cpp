@@ -1465,7 +1465,7 @@ namespace OFX {
 
   /** @brief client is identity function, returns the clip and time for the identity function 
   */
-  bool ImageEffect::isIdentity(const RenderArguments &/*args*/, Clip * &/*identityClip*/, double &/*identityTime*/)
+  bool ImageEffect::isIdentity(const IsIdentityArguments &/*args*/, Clip * &/*identityClip*/, double &/*identityTime*/)
   {
     return false; // by default, we are not an identity operation
   }
@@ -2268,15 +2268,42 @@ namespace OFX {
       effectInstance->endSequenceRender(args);
     }
 
+
+    /** @brief Fetches the arguments used in a isIdentity action 'inargs' property set into a POD struct */
+    static void
+      getIsIdentityActionArguments(IsIdentityArguments &args,  OFX::PropertySet inArgs)
+    {
+      args.time = inArgs.propGetDouble(kOfxPropTime);
+
+      args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
+      args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+
+      args.renderWindow.x1 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 0);
+      args.renderWindow.y1 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 1);
+      args.renderWindow.x2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 2);
+      args.renderWindow.y2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 3);
+
+      std::string str = inArgs.propGetString(kOfxImageEffectPropFieldToRender);
+      try {
+        args.fieldToRender = mapStrToFieldEnum(str);
+      }
+      catch (std::invalid_argument) {
+        // dud field?
+        OFX::Log::error(true, "Unknown field to render '%s'", str.c_str());
+
+        // HACK need to throw something to cause a failure
+      }
+    }
+
     /** @brief Library side render begin sequence render action, fetches relevant properties and calls the client code */
     bool
       isIdentityAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs)
     {
       ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
-      RenderArguments args;
+      IsIdentityArguments args;
 
       // get the arguments 
-      getRenderActionArguments(args, inArgs);
+      getIsIdentityActionArguments(args, inArgs);
 
       // and call the plugin client isIdentity code
       Clip *identityClip = 0;

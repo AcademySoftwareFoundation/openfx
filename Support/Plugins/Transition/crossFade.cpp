@@ -72,7 +72,7 @@ public :
   virtual void render(const OFX::RenderArguments &args);
 
   /* override is identity */
-  virtual bool isIdentity(const OFX::RenderArguments &args, OFX::Clip * &identityClip, double &identityTime);
+  virtual bool isIdentity(const OFX::IsIdentityArguments &args, OFX::Clip * &identityClip, double &identityTime);
 
   /* set up and run a processor */
   void
@@ -194,7 +194,7 @@ default :
 
 // overridden is identity
 bool
-CrossFadePlugin::isIdentity(const OFX::RenderArguments &args, OFX::Clip * &identityClip, double &identityTime)
+CrossFadePlugin::isIdentity(const OFX::IsIdentityArguments &args, OFX::Clip * &identityClip, double &identityTime)
 {
   // get the transition value
   float blend = (float)transition_->getValueAtTime(args.time);

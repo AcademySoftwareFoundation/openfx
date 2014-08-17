@@ -264,7 +264,7 @@ public :
   virtual void render(const OFX::RenderArguments &args);
 
   /* override is identity */
-  virtual bool isIdentity(const OFX::RenderArguments &args, OFX::Clip * &identityClip, double &identityTime);
+  virtual bool isIdentity(const OFX::IsIdentityArguments &args, OFX::Clip * &identityClip, double &identityTime);
 
   /* override changedParam */
   virtual void changedParam(const OFX::InstanceChangedArgs &args, const std::string &paramName);
@@ -435,7 +435,7 @@ default :
 
 // overridden is identity
 bool
-BasicPlugin:: isIdentity(const OFX::RenderArguments &args, OFX::Clip * &identityClip, double &identityTime)
+BasicPlugin:: isIdentity(const OFX::IsIdentityArguments &args, OFX::Clip * &identityClip, double &identityTime)
 {
   // get the scale parameters
   double scale = scale_->getValueAtTime(args.time);
