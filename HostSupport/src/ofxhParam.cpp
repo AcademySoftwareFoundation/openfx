@@ -492,10 +492,10 @@ namespace OFX {
           };  
 
           _properties.addProperties(all2D3D);
-          _properties.setStringProperty(kOfxParamPropDimensionLabel, "X", 0);
-          _properties.setStringProperty(kOfxParamPropDimensionLabel, "Y", 1);
+          _properties.setStringProperty(kOfxParamPropDimensionLabel, "x", 0);
+          _properties.setStringProperty(kOfxParamPropDimensionLabel, "y", 1);
           if (dim == 3) {
-            _properties.setStringProperty(kOfxParamPropDimensionLabel, "Z", 2);
+            _properties.setStringProperty(kOfxParamPropDimensionLabel, "z", 2);
           }
         }
 
@@ -507,11 +507,11 @@ namespace OFX {
           };  
 
           _properties.addProperties(allColor);
-          _properties.setStringProperty(kOfxParamPropDimensionLabel, "R", 0);
-          _properties.setStringProperty(kOfxParamPropDimensionLabel, "G", 1);
-          _properties.setStringProperty(kOfxParamPropDimensionLabel, "B", 2);
+          _properties.setStringProperty(kOfxParamPropDimensionLabel, "r", 0);
+          _properties.setStringProperty(kOfxParamPropDimensionLabel, "g", 1);
+          _properties.setStringProperty(kOfxParamPropDimensionLabel, "b", 2);
           if (dim == 4) {
-            _properties.setStringProperty(kOfxParamPropDimensionLabel, "A", 3);
+            _properties.setStringProperty(kOfxParamPropDimensionLabel, "a", 3);
           }
         }
       }
