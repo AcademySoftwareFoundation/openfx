@@ -728,7 +728,6 @@ namespace OFX {
       PropertyDescription(kOfxPropLongLabel,              OFX::eString, 1, eDescFinished),
       PropertyDescription(kOfxParamPropType,              OFX::eString, 1, eDescFinished),
       PropertyDescription(kOfxParamPropSecret,            OFX::eInt,    1, eDescDefault, 0, eDescFinished),
-      PropertyDescription(kOfxParamPropCanUndo,           OFX::eInt,    1, eDescDefault, 1, eDescFinished),
       PropertyDescription(kOfxParamPropHint,              OFX::eString, 1, eDescFinished),
       PropertyDescription(kOfxParamPropScriptName,        OFX::eString, 1, eDescFinished),
       PropertyDescription(kOfxParamPropParent,            OFX::eString, 1, eDescFinished),
@@ -756,6 +755,7 @@ namespace OFX {
       PropertyDescription(kOfxParamPropEvaluateOnChange,          OFX::eInt,    1, eDescDefault, 1, eDescFinished),
       PropertyDescription(kOfxParamPropPluginMayWrite,            OFX::eInt,    1, eDescDefault, 0, eDescFinished),
       PropertyDescription(kOfxParamPropCacheInvalidation,         OFX::eString, 1, eDescDefault, kOfxParamInvalidateValueChange, eDescFinished),
+      PropertyDescription(kOfxParamPropCanUndo,                   OFX::eInt,    1, eDescDefault, 1, eDescFinished),
     };
 
     /** @brief values for a string param */
