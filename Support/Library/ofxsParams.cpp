@@ -994,7 +994,7 @@ namespace OFX {
 
   /** @brief hidden constructor */
   PageParamDescriptor::PageParamDescriptor(const std::string &name, OfxPropertySetHandle props)
-    : ParamDescriptor(name, eGroupParam, props)
+    : ParamDescriptor(name, ePageParam, props)
   {
   }
 
