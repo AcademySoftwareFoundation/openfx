@@ -71,6 +71,9 @@ of the direct OFX objects and any library side only functions.
 #define mDeclareProtectedAssignAndCC(CLASS) \
   CLASS &operator=(const CLASS &) {assert(false); return *this;}	\
   CLASS(const CLASS &) {assert(false); } 
+#define mDeclareProtectedAssignAndCCBase(CLASS,BASE) \
+  CLASS &operator=(const CLASS &) {assert(false); return *this;}	\
+  CLASS(const CLASS &c) : BASE(c) {assert(false); }
 
 namespace OFX
 {
@@ -389,7 +392,7 @@ namespace OFX {
   class ImageEffectDescriptor : public ParamSetDescriptor
   {
   protected :
-    mDeclareProtectedAssignAndCC(ImageEffectDescriptor);
+    mDeclareProtectedAssignAndCCBase(ImageEffectDescriptor,ParamSetDescriptor);
     ImageEffectDescriptor(void) {assert(false);}
 
   protected :
@@ -1028,7 +1031,7 @@ namespace OFX {
   class ImageEffect : public ParamSet
   {
   protected :
-    mDeclareProtectedAssignAndCC(ImageEffect);
+    mDeclareProtectedAssignAndCCBase(ImageEffect,ParamSet);
 
   private :
     /** @brief to get access to the effect handle without exposing it generally via a function */
@@ -1286,5 +1289,6 @@ namespace OFX {
 
 // undeclare the protected assign and CC macro
 #undef mDeclareProtectedAssignAndCC
+#undef mDeclareProtectedAssignAndCCBase
 
 #endif

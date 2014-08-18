@@ -62,6 +62,9 @@ each represent the actions that can be carried out on those particular OFX objec
 #define mDeclareProtectedAssignAndCC(CLASS) \
   CLASS &operator=(const CLASS &) {assert(false); return *this;}	\
   CLASS(const CLASS &) {assert(false); } 
+#define mDeclareProtectedAssignAndCCBase(CLASS,BASE) \
+  CLASS &operator=(const CLASS &) {assert(false); return *this;}	\
+  CLASS(const CLASS &c) : BASE(c) {assert(false); }
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries.
  */
@@ -300,7 +303,7 @@ namespace OFX {
     /** @brief Wraps up a value holding param */
     class ValueParamDescriptor : public ParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(ValueParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(ValueParamDescriptor,ParamDescriptor);
         ValueParamDescriptor(void) {assert(false);}
 
     protected :
@@ -335,7 +338,7 @@ namespace OFX {
     /** @brief Wraps up a string param */
     class StringParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(StringParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(StringParamDescriptor,ValueParamDescriptor);
         StringParamDescriptor(void) {assert(false);}
 
     protected :
@@ -359,7 +362,7 @@ namespace OFX {
     /** @brief Wraps up an integer param */
     class IntParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(IntParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(IntParamDescriptor,ValueParamDescriptor);
         IntParamDescriptor(void) {assert(false);}
 
     protected :
@@ -383,7 +386,7 @@ namespace OFX {
     /** @brief Wraps up an 2d integer param */
     class Int2DParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(Int2DParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(Int2DParamDescriptor,ValueParamDescriptor);
         Int2DParamDescriptor(void) {assert(false);}
 
     protected :
@@ -413,7 +416,7 @@ namespace OFX {
     /** @brief Wraps up an 3d integer param */
     class Int3DParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(Int3DParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(Int3DParamDescriptor,ValueParamDescriptor);
         Int3DParamDescriptor(void) {assert(false);}
 
     protected :
@@ -444,7 +447,7 @@ namespace OFX {
     /** @brief Common base to all double param types */
     class BaseDoubleParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(BaseDoubleParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(BaseDoubleParamDescriptor,ValueParamDescriptor);
         BaseDoubleParamDescriptor(void) {assert(false);}
 
     protected :
@@ -470,7 +473,7 @@ namespace OFX {
     /** @brief Wraps up a double param */
     class DoubleParamDescriptor : public BaseDoubleParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(DoubleParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(DoubleParamDescriptor,BaseDoubleParamDescriptor);
         DoubleParamDescriptor(void) {assert(false);}
 
     protected :
@@ -497,7 +500,7 @@ namespace OFX {
     /** @brief Wraps up a 2D double param */
     class Double2DParamDescriptor : public BaseDoubleParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(Double2DParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(Double2DParamDescriptor,BaseDoubleParamDescriptor);
         Double2DParamDescriptor(void) {assert(false);}
 
     protected :
@@ -535,7 +538,7 @@ namespace OFX {
     /** @brief Wraps up a 3D double param */
     class Double3DParamDescriptor : public BaseDoubleParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(Double3DParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(Double3DParamDescriptor,BaseDoubleParamDescriptor);
         Double3DParamDescriptor(void) {assert(false);}
 
     protected :
@@ -566,7 +569,7 @@ namespace OFX {
     /** @brief Wraps up an RGB colour param */
     class RGBParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(RGBParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(RGBParamDescriptor,ValueParamDescriptor);
         RGBParamDescriptor(void) {assert(false);}
 
     protected :
@@ -601,7 +604,7 @@ namespace OFX {
     /** @brief Wraps up an RGBA colour param */
     class RGBAParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(RGBAParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(RGBAParamDescriptor,ValueParamDescriptor);
         RGBAParamDescriptor(void) {assert(false);}
 
     protected :
@@ -637,7 +640,7 @@ namespace OFX {
     /** @brief Wraps up a boolean param */
     class BooleanParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(BooleanParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(BooleanParamDescriptor,ValueParamDescriptor);
         BooleanParamDescriptor(void) {assert(false);}
 
     protected :
@@ -655,7 +658,7 @@ namespace OFX {
     /** @brief Wraps up a choice param */
     class ChoiceParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(ChoiceParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(ChoiceParamDescriptor,ValueParamDescriptor);
         ChoiceParamDescriptor(void) {assert(false);}
 
     protected :
@@ -682,7 +685,7 @@ namespace OFX {
     /** @brief Wraps up a group param, not much to it really */
     class GroupParamDescriptor : public ParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(GroupParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(GroupParamDescriptor,ParamDescriptor);
         GroupParamDescriptor(void) {assert(false);}
 
     protected :
@@ -704,7 +707,7 @@ namespace OFX {
     /** @brief Wraps up a page param, not much to it really */
     class PageParamDescriptor : public ParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(PageParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(PageParamDescriptor,ParamDescriptor);
         PageParamDescriptor(void) {assert(false);}
 
     protected :
@@ -729,7 +732,7 @@ namespace OFX {
     /** @brief Wraps up a push button param, not much to it at all */
     class PushButtonParamDescriptor : public ParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(PushButtonParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(PushButtonParamDescriptor,ParamDescriptor);
         PushButtonParamDescriptor(void) {assert(false);}
 
     protected :
@@ -746,7 +749,7 @@ namespace OFX {
     class ParametricParamDescriptor : public ParamDescriptor
     {
     protected:
-        mDeclareProtectedAssignAndCC(ParametricParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(ParametricParamDescriptor,ParamDescriptor);
         ParametricParamDescriptor(void) {assert(false);}
 
     protected:
@@ -784,7 +787,7 @@ namespace OFX {
     /** @brief Wraps up a custom param, haven't added animation support yet */
     class CustomParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(CustomParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(CustomParamDescriptor,ValueParamDescriptor);
         CustomParamDescriptor(void) {assert(false);}
 
     protected :
@@ -990,7 +993,7 @@ namespace OFX {
     /** @brief Wraps up a value holding param */
     class ValueParam : public Param {
     protected :
-        mDeclareProtectedAssignAndCC(ValueParam);
+        mDeclareProtectedAssignAndCCBase(ValueParam,Param);
         ValueParam(void) {assert(false);}
     protected :
         /** @brief hidden constructor */
@@ -1051,7 +1054,7 @@ namespace OFX {
     /** @brief Wraps up an integer param */
     class IntParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(IntParam);
+        mDeclareProtectedAssignAndCCBase(IntParam,ValueParam);
         IntParam(void) {assert(false);}
 
     protected :
@@ -1104,7 +1107,7 @@ namespace OFX {
     /** @brief Wraps up an integer param */
     class Int2DParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(Int2DParam);
+        mDeclareProtectedAssignAndCCBase(Int2DParam,ValueParam);
         Int2DParam(void) {assert(false);}
 
     protected :
@@ -1170,7 +1173,7 @@ namespace OFX {
     /** @brief Wraps up an integer param */
     class Int3DParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(Int3DParam);
+        mDeclareProtectedAssignAndCCBase(Int3DParam,ValueParam);
         Int3DParam(void) {assert(false);}
 
     protected :
@@ -1218,7 +1221,7 @@ namespace OFX {
     /** @brief Common base to all double param types */
     class BaseDoubleParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(BaseDoubleParam);
+        mDeclareProtectedAssignAndCCBase(BaseDoubleParam,ValueParam);
         BaseDoubleParam(void) {assert(false);}
 
     protected :
@@ -1250,7 +1253,7 @@ namespace OFX {
     /** @brief Wraps up an doubleeger param */
     class DoubleParam : public BaseDoubleParam {
     protected :
-        mDeclareProtectedAssignAndCC(DoubleParam);
+        mDeclareProtectedAssignAndCCBase(DoubleParam,BaseDoubleParam);
         DoubleParam(void) {assert(false);}
 
     protected :
@@ -1318,7 +1321,7 @@ namespace OFX {
     /** @brief Wraps up an doubleeger param */
     class Double2DParam : public BaseDoubleParam {
     protected :
-        mDeclareProtectedAssignAndCC(Double2DParam);
+        mDeclareProtectedAssignAndCCBase(Double2DParam,BaseDoubleParam);
         Double2DParam(void) {assert(false);}
 
     protected :
@@ -1378,7 +1381,7 @@ namespace OFX {
     /** @brief Wraps up an doubleeger param */
     class Double3DParam : public BaseDoubleParam {
     protected :
-        mDeclareProtectedAssignAndCC(Double3DParam);
+        mDeclareProtectedAssignAndCCBase(Double3DParam,BaseDoubleParam);
         Double3DParam(void) {assert(false);}
 
     protected :
@@ -1438,7 +1441,7 @@ namespace OFX {
     /** @brief Wraps up an RGB param */
     class RGBParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(RGBParam);
+        mDeclareProtectedAssignAndCCBase(RGBParam,ValueParam);
         RGBParam(void) {assert(false);}
 
     protected :
@@ -1471,7 +1474,7 @@ namespace OFX {
     /** @brief Wraps up an RGB param */
     class RGBAParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(RGBAParam);
+        mDeclareProtectedAssignAndCCBase(RGBAParam,ValueParam);
         RGBAParam(void) {assert(false);}
 
     protected :
@@ -1503,7 +1506,7 @@ namespace OFX {
     /** @brief Wraps up a string param */
     class StringParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(StringParam);
+        mDeclareProtectedAssignAndCCBase(StringParam,ValueParam);
         StringParam(void) {assert(false);}
 
     protected :
@@ -1536,7 +1539,7 @@ namespace OFX {
     /** @brief Wraps up a choice param */
     class ChoiceParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(ChoiceParam);
+        mDeclareProtectedAssignAndCCBase(ChoiceParam,ValueParam);
         ChoiceParam(void) {assert(false);}
 
     protected :
@@ -1584,7 +1587,7 @@ namespace OFX {
     /** @brief Wraps up a boolean param */
     class BooleanParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(BooleanParam);
+        mDeclareProtectedAssignAndCCBase(BooleanParam,ValueParam);
         BooleanParam(void) {assert(false);}
 
     protected :
@@ -1626,7 +1629,7 @@ namespace OFX {
     /** @brief Wraps up a group param */
     class GroupParam : public Param {
     protected :
-        mDeclareProtectedAssignAndCC(GroupParam);
+        mDeclareProtectedAssignAndCCBase(GroupParam,Param);
         GroupParam(void) {assert(false);}
 
     protected :
@@ -1644,7 +1647,7 @@ namespace OFX {
     /** @brief Wraps up a group param */
     class PageParam : public Param {
     protected :
-        mDeclareProtectedAssignAndCC(PageParam);
+        mDeclareProtectedAssignAndCCBase(PageParam,Param);
         PageParam(void) {assert(false);}
 
     protected :
@@ -1660,7 +1663,7 @@ namespace OFX {
     /** @brief Wraps up a custom param, not animation support yet */
     class CustomParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(CustomParam);
+        mDeclareProtectedAssignAndCCBase(CustomParam,ValueParam);
         CustomParam(void) {assert(false);}
 
     protected :
@@ -1696,7 +1699,7 @@ namespace OFX {
     /** @brief Wraps up a push button param, not much to it at all */
     class PushButtonParam : public Param {
     protected :
-        mDeclareProtectedAssignAndCC(PushButtonParam);
+        mDeclareProtectedAssignAndCCBase(PushButtonParam,Param);
         PushButtonParam(void) {assert(false);}
 
     protected :
@@ -1712,7 +1715,7 @@ namespace OFX {
     /** @brief Wraps up a parametric param */
     class ParametricParam : public Param {
     private:
-        mDeclareProtectedAssignAndCC(ParametricParam);
+        mDeclareProtectedAssignAndCCBase(ParametricParam,Param);
         ParametricParam(void) {assert( false);}
 
     protected:
@@ -1757,7 +1760,7 @@ namespace OFX {
     /** @brief Wraps up a camera param */
     class CameraParam : public Param {
     private:
-        mDeclareProtectedAssignAndCC(CameraParam);
+        mDeclareProtectedAssignAndCCBase(CameraParam,Param);
         CameraParam(void) {assert(false);}
 
     protected:
@@ -1939,5 +1942,6 @@ namespace OFX {
 
 // undeclare the protected assign and CC macro
 #undef mDeclareProtectedAssignAndCC
+#undef mDeclareProtectedAssignAndCCBase
 
 #endif

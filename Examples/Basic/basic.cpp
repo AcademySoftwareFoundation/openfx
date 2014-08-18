@@ -282,7 +282,7 @@ getSpatialRoI( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxP
 // This is actually redundant as this is the default behaviour, but for illustrative
 // purposes.
 OfxStatus 
-getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle outArgs)
 {
   MyInstanceData *myData = getMyInstanceData(effect);
 
@@ -301,7 +301,7 @@ getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  
 
 // Set our clip preferences 
 static OfxStatus 
-getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle outArgs)
 {
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
@@ -375,7 +375,7 @@ isIdentity( OfxImageEffectHandle  effect,
 static OfxStatus
 instanceChanged( OfxImageEffectHandle  effect,
 		 OfxPropertySetHandle inArgs,
-		 OfxPropertySetHandle outArgs)
+		 OfxPropertySetHandle /*outArgs*/)
 {
   // see why it changed
   char *changeReason;
@@ -643,7 +643,7 @@ public :
 // the process code  that the host sees
 static OfxStatus render( OfxImageEffectHandle  instance,
                          OfxPropertySetHandle inArgs,
-                         OfxPropertySetHandle outArgs)
+                         OfxPropertySetHandle /*outArgs*/)
 {
   // get the render window and the time from the inArgs
   OfxTime time;

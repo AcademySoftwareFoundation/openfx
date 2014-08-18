@@ -69,7 +69,7 @@ class NoImageEx {};
 // the process code  that the host sees
 static OfxStatus render(OfxImageEffectHandle  instance,
                         OfxPropertySetHandle inArgs,
-                        OfxPropertySetHandle outArgs)
+                        OfxPropertySetHandle /*outArgs*/)
 {
   // get the render window and the time from the inArgs
   OfxTime time;
@@ -170,7 +170,7 @@ static OfxStatus render(OfxImageEffectHandle  instance,
 
 //  describe the plugin in context
 static OfxStatus
-describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
+describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs*/)
 {
   OfxPropertySetHandle props;
   // define the single output clip in both contexts

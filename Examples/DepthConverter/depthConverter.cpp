@@ -132,15 +132,15 @@ destroyInstance(OfxImageEffectHandle effect)
 // are the settings of the effect performing an identity operation
 static OfxStatus
 isIdentity(OfxImageEffectHandle  effect,
-	   OfxPropertySetHandle inArgs,
+	   OfxPropertySetHandle /*inArgs*/,
 	   OfxPropertySetHandle outArgs)
 {
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
   
   // get the render window and the time from the inArgs
-  OfxTime time;
-  OfxRectI renderWindow;
+  //OfxTime time;
+  //OfxRectI renderWindow;
   
   // get the src depth
   int srcDepth = ofxuGetClipPixelDepth(myData->sourceClip);
@@ -252,7 +252,7 @@ Processor::process(void)
 }
 
 void 
-Processor::doProcessing(OfxRectI window)
+Processor::doProcessing(OfxRectI /*window*/)
 {
 }
 
@@ -311,7 +311,7 @@ class ProcessPix : public Processor {
 // the process code  that the host sees
 static OfxStatus render(OfxImageEffectHandle effect,
                         OfxPropertySetHandle inArgs,
-                        OfxPropertySetHandle outArgs)
+                        OfxPropertySetHandle /*outArgs*/)
 {
   // get the render window and the time from the inArgs
   OfxTime time;
@@ -397,7 +397,7 @@ static OfxStatus render(OfxImageEffectHandle effect,
 // Set our clip preferences 
 static OfxStatus 
 getClipPreferences(OfxImageEffectHandle effect,
-		   OfxPropertySetHandle inArgs,
+		   OfxPropertySetHandle /*inArgs*/,
 		   OfxPropertySetHandle outArgs)
 {
   // retrieve any instance data associated with this effect
@@ -428,7 +428,7 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
   // get the context from the inArgs handle
   char *context;
   gPropHost->propGetString(inArgs, kOfxImageEffectPropContext, 0, &context);
-  bool isGeneratorContext = strcmp(context, kOfxImageEffectContextGenerator) == 0;
+  //bool isGeneratorContext = strcmp(context, kOfxImageEffectContextGenerator) == 0;
 
   OfxPropertySetHandle clipProps;
   // define the single output clip in both contexts
@@ -452,7 +452,7 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
   OfxParamSetHandle paramSet;
   gEffectHost->getParamSet(effect, &paramSet);
 
-  OfxParamHandle param;
+  //OfxParamHandle param;
   OfxPropertySetHandle paramProps;
 
   // single choice parameter

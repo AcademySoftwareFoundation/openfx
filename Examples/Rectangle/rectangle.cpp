@@ -357,10 +357,10 @@ public :
     , dstV(dst)
     , srcRect(sRect)
     , dstRect(dRect)
+    , window(win)
     , srcBytesPerLine(sBytesPerLine)
     , dstBytesPerLine(dBytesPerLine)
-    , window(win)
-  {}  
+  {}
 
   static void multiThreadProcessing(unsigned int threadId, unsigned int nThreads, void *arg);
   virtual void doProcessing(OfxRectI window) = 0;
@@ -604,7 +604,7 @@ class ProcessAlpha : public Processor {
 // the process code  that the host sees
 static OfxStatus render(OfxImageEffectHandle effect,
                         OfxPropertySetHandle inArgs,
-                        OfxPropertySetHandle outArgs)
+                        OfxPropertySetHandle /*outArgs*/)
 {
   // get the render window and the time from the inArgs
   OfxTime time;
@@ -750,7 +750,7 @@ static OfxStatus render(OfxImageEffectHandle effect,
 
 // Set our clip preferences 
 static OfxStatus 
-getClipPreferences(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs)
+getClipPreferences(OfxImageEffectHandle effect, OfxPropertySetHandle /*inArgs*/, OfxPropertySetHandle outArgs)
 {
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);

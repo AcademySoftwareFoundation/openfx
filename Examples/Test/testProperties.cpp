@@ -77,8 +77,8 @@ protected :
   
 public :
   PropertySet(OfxPropertySetHandle h = 0) 
-    : _propHandle(h)
-    , _propLogMessages(0)
+    : _propLogMessages(0)
+    , _propHandle(h)
   {}
   
   virtual ~PropertySet();
@@ -790,11 +790,11 @@ public :
   int supportsMultipleClipPARs;
   int supportsSetableFrameRate;
   int supportsSetableFielding;
+  int supportsCustomAnimation;
   int supportsStringAnimation;
   int supportsCustomInteract;
   int supportsChoiceAnimation;
   int supportsBooleanAnimation;
-  int supportsCustomAnimation;
   int maxParameters;
   int maxPages;
   int pageRowCount;
@@ -952,28 +952,28 @@ unLoadAction(void)
 
 //  instance construction
 static OfxStatus
-createInstance( OfxImageEffectHandle effect)
+createInstance( OfxImageEffectHandle /*effect*/)
 {
   return kOfxStatOK;
 }
 
 // instance destruction
 static OfxStatus
-destroyInstance( OfxImageEffectHandle  effect)
+destroyInstance( OfxImageEffectHandle  /*effect*/)
 {
   return kOfxStatOK;
 }
 
 // tells the host what region we are capable of filling
 OfxStatus 
-getSpatialRoD( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+getSpatialRoD( OfxImageEffectHandle  /*effect*/,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle /*outArgs*/)
 {
   return kOfxStatOK;
 }
 
 // tells the host how much of the input we need to fill the given window
 OfxStatus 
-getSpatialRoI( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+getSpatialRoI( OfxImageEffectHandle  /*effect*/,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle /*outArgs*/)
 {
   return kOfxStatOK;
 }
@@ -982,7 +982,7 @@ getSpatialRoI( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxP
 // This is actually redundant as this is the default behaviour, but for illustrative
 // purposes.
 OfxStatus 
-getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+getTemporalDomain( OfxImageEffectHandle  /*effect*/,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle /*outArgs*/)
 {
   return kOfxStatOK;
 }
@@ -990,16 +990,16 @@ getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  
 
 // Set our clip preferences 
 static OfxStatus 
-getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+getClipPreferences( OfxImageEffectHandle  /*effect*/,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle /*outArgs*/)
 {
   return kOfxStatOK;
 }
 
 // are the settings of the effect performing an identity operation
 static OfxStatus
-isIdentity( OfxImageEffectHandle effect,
-            OfxPropertySetHandle inArgs,
-            OfxPropertySetHandle outArgs)
+isIdentity( OfxImageEffectHandle /*effect*/,
+            OfxPropertySetHandle /*inArgs*/,
+            OfxPropertySetHandle /*outArgs*/)
 {
   // In this case do the default, which in this case is to render 
   return kOfxStatReplyDefault;
@@ -1008,25 +1008,25 @@ isIdentity( OfxImageEffectHandle effect,
 ////////////////////////////////////////////////////////////////////////////////
 // function called when the instance has been changed by anything
 static OfxStatus
-instanceChanged( OfxImageEffectHandle  effect,
-                 OfxPropertySetHandle inArgs,
-                 OfxPropertySetHandle outArgs)
+instanceChanged( OfxImageEffectHandle  /*effect*/,
+                 OfxPropertySetHandle /*inArgs*/,
+                 OfxPropertySetHandle /*outArgs*/)
 {
   // don't trap any others
   return kOfxStatReplyDefault;
 }
 
 // the process code  that the host sees
-static OfxStatus render(OfxImageEffectHandle  instance,
-                        OfxPropertySetHandle inArgs,
-                        OfxPropertySetHandle outArgs)
+static OfxStatus render(OfxImageEffectHandle  /*instance*/,
+                        OfxPropertySetHandle /*inArgs*/,
+                        OfxPropertySetHandle /*outArgs*/)
 {  
   return kOfxStatOK;
 }
 
 //  describe the plugin in context
 static OfxStatus
-describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
+describeInContext( OfxImageEffectHandle  /*effect*/,  OfxPropertySetHandle /*inArgs*/)
 {
   if (!OFX::logOpenFile()) {
     std::cout << "Error: OFX Test Properties plugin cannot open log file " << OFX::logGetFileName() << std::endl;
@@ -1159,9 +1159,11 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgsH
     }
     else if(OFX::strEquals(action, kOfxActionCreateInstance)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, true, true);
+      stat = createInstance(effectHandle);
     }
     else if(OFX::strEquals(action, kOfxActionDestroyInstance)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, true, true);
+      stat = destroyInstance(effectHandle);
     }
     else if(OFX::strEquals(action, kOfxActionInstanceChanged)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, false, true);
@@ -1171,6 +1173,7 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgsH
     }
     else if(OFX::strEquals(action, kOfxActionEndInstanceChanged)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, false, true);
+      stat = instanceChanged(effectHandle, inArgsHandle, outArgsHandle);
     }
     else if(OFX::strEquals(action, kOfxActionBeginInstanceEdit)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, true, true);
@@ -1192,12 +1195,15 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgsH
     }
     else if(OFX::strEquals(action, kOfxImageEffectActionGetClipPreferences)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, false, false);
+      stat = getClipPreferences(effectHandle, inArgsHandle, outArgsHandle);
     }
     else if(OFX::strEquals(action, kOfxImageEffectActionIsIdentity)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, false, false);
+      stat = isIdentity(effectHandle, inArgsHandle, outArgsHandle);
     }
     else if(OFX::strEquals(action, kOfxImageEffectActionRender)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, false, true);
+      stat = render(effectHandle, inArgsHandle, outArgsHandle);
     }
     else if(OFX::strEquals(action, kOfxImageEffectActionBeginSequenceRender)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, false, true);
@@ -1207,6 +1213,7 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgsH
     }
     else if(OFX::strEquals(action, kOfxImageEffectActionDescribeInContext)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, false, true);
+      stat = describeInContext(effectHandle, inArgsHandle);
     }
     else {
       OFX::logError(true, "Unknown action '%s';", action);

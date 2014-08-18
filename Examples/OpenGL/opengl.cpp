@@ -64,6 +64,7 @@ OfxImageEffectOpenGLRenderSuiteV1 *gOpenGLSuite = 0;
 int gHostSupportsMultipleBitDepths = false;
 int gHostSupportsOpenGL = false;
 
+/*
 #define CHECK_STATUS(args) check_status_fun args
 
 static void
@@ -74,6 +75,7 @@ check_status_fun(int status, int expected, const char *name)
 	    name, expected, status);
   }
 }
+*/
 
 #define DPRINT(args) print_dbg args
 void print_dbg(const char *fmt, ...)
@@ -225,7 +227,7 @@ getSpatialRoI( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxP
 // This is actually redundant as this is the default behaviour, but for illustrative
 // purposes.
 OfxStatus
-getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle outArgs)
 {
   MyInstanceData *myData = getMyInstanceData(effect);
 
@@ -244,7 +246,7 @@ getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  
 
 // Set our clip preferences
 static OfxStatus
-getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle outArgs)
 {
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
@@ -268,9 +270,9 @@ getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs, 
 
 // are the settings of the effect performing an identity operation
 static OfxStatus
-isIdentity( OfxImageEffectHandle  effect,
-	    OfxPropertySetHandle inArgs,
-	    OfxPropertySetHandle outArgs)
+isIdentity( OfxImageEffectHandle  /*effect*/,
+	    OfxPropertySetHandle /*inArgs*/,
+	    OfxPropertySetHandle /*outArgs*/)
 {
   // In this case do the default, which in this case is to render
   return kOfxStatReplyDefault;
@@ -279,9 +281,9 @@ isIdentity( OfxImageEffectHandle  effect,
 ////////////////////////////////////////////////////////////////////////////////
 // function called when the instance has been changed by anything
 static OfxStatus
-instanceChanged( OfxImageEffectHandle  effect,
-		 OfxPropertySetHandle inArgs,
-		 OfxPropertySetHandle outArgs)
+instanceChanged( OfxImageEffectHandle  /*effect*/,
+		 OfxPropertySetHandle /*inArgs*/,
+		 OfxPropertySetHandle /*outArgs*/)
 {
   // don't trap any others
   return kOfxStatReplyDefault;
@@ -291,12 +293,14 @@ instanceChanged( OfxImageEffectHandle  effect,
 // rendering routines
 
 // Is image handle a GPU texture?
+/*
 static bool image_is_texture(OfxPropertySetHandle image)
 {
   int tmp;
   return (gOpenGLSuite != NULL) &&
     (gPropHost->propGetInt(image, kOfxImageEffectPropOpenGLTextureIndex, 0, &tmp) == kOfxStatOK);
 }
+*/
 
 // Render to texture: see http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-14-render-to-texture/
 
@@ -304,7 +308,7 @@ static bool image_is_texture(OfxPropertySetHandle image)
 // the process code  that the host sees
 static OfxStatus render( OfxImageEffectHandle  instance,
                          OfxPropertySetHandle inArgs,
-                         OfxPropertySetHandle outArgs)
+                         OfxPropertySetHandle /*outArgs*/)
 {
   // get the render window and the time from the inArgs
   OfxTime time;

@@ -72,8 +72,8 @@ OfxInteractSuiteV1    *gInteractHost = 0;
 
 // we are always identity as we are just a hack example plugin
 static OfxStatus
-isIdentity(OfxImageEffectHandle  pluginInstance,
-	   OfxPropertySetHandle inArgs,
+isIdentity(OfxImageEffectHandle  /*pluginInstance*/,
+	   OfxPropertySetHandle /*inArgs*/,
 	   OfxPropertySetHandle outArgs)
 {
   // set the property in the out args indicating which is the identity clip
@@ -82,9 +82,9 @@ isIdentity(OfxImageEffectHandle  pluginInstance,
 }
 
 // the process code  that the host sees
-static OfxStatus render(OfxImageEffectHandle  instance,
-			OfxPropertySetHandle inArgs,
-			OfxPropertySetHandle outArgs)
+static OfxStatus render(OfxImageEffectHandle  /*instance*/,
+			OfxPropertySetHandle /*inArgs*/,
+			OfxPropertySetHandle /*outArgs*/)
 {
   // do nothing as this should never be called as isIdentity should always be trapped
   return kOfxStatOK;
@@ -113,7 +113,7 @@ getInteractData(OfxInteractHandle interactInstance)
 
 // creation of an interact instance
 static OfxStatus 
-interactDescribe(OfxInteractHandle interactDescriptor)
+interactDescribe(OfxInteractHandle /*interactDescriptor*/)
 {
 
   // and we are good
@@ -150,7 +150,7 @@ interactCreateInstance(OfxImageEffectHandle pluginInstance,
 
 // destruction of an interact instance
 static OfxStatus 
-interactDestroyInstance(OfxImageEffectHandle  pluginInstance,
+interactDestroyInstance(OfxImageEffectHandle  /*pluginInstance*/,
 			OfxInteractHandle interactInstance)
 {
   MyInteractData *data = getInteractData(interactInstance);
@@ -280,9 +280,9 @@ interactPenDown(OfxImageEffectHandle  pluginInstance,
 }
 
 static OfxStatus
-interactPenUp(OfxImageEffectHandle  pluginInstance, 
+interactPenUp(OfxImageEffectHandle  /*pluginInstance*/,
 		OfxInteractHandle interactInstance,
-		OfxPropertySetHandle inArgs)
+		OfxPropertySetHandle /*inArgs*/)
 {
   // get my data handle
   MyInteractData *data = getInteractData(interactInstance);
@@ -298,7 +298,7 @@ interactPenUp(OfxImageEffectHandle  pluginInstance,
 ////////////////////////////////////////////////////////////////////////////////
 // the entry point for the overlay
 static OfxStatus
-overlayMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs)
+overlayMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle /*outArgs*/)
 {
   OfxInteractHandle interact = (OfxInteractHandle ) handle;
   
@@ -374,7 +374,7 @@ describe(OfxImageEffectHandle effect)
 }
 
 static OfxStatus
-describeInContext(OfxImageEffectHandle  effect, OfxPropertySetHandle inArgs)
+describeInContext(OfxImageEffectHandle  effect, OfxPropertySetHandle /*inArgs*/)
 {
   // define the single source clip
   OfxPropertySetHandle props;
@@ -420,6 +420,9 @@ pluginMain(const char *action, const void *handle, OfxPropertySetHandle inArgs, 
   }
   else if(strcmp(action, kOfxImageEffectActionIsIdentity) == 0) {
     return isIdentity(effect, inArgs, outArgs);
+  }    
+  else if(strcmp(action, kOfxImageEffectActionRender) == 0) {
+    return render(effect, inArgs, outArgs);
   }    
   } catch (std::bad_alloc) {
     // catch memory
