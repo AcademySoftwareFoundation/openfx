@@ -3,7 +3,7 @@ ifeq ($(CONFIG), debug)
   DEBUGNAME = debug
 endif
 ifeq ($(CONFIG), release)
-  DEBUGFLAG = -O3 -DNDEBUG -Wall -Wextra
+  DEBUGFLAG = -O3 -DNDEBUG
   DEBUGNAME = release
 endif
 
