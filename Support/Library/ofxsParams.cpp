@@ -2850,7 +2850,7 @@ namespace OFX {
   /** @brief hidden constructor */
   CameraParam::CameraParam(OfxImageEffectHandle imageEffectHandle, const ParamSet* paramSet, const std::string &name, NukeOfxCameraHandle handle)
       : Param(paramSet, name, eCameraParam, (OfxParamHandle)handle)
-      //, _imageEffectHandle(imageEffectHandle)
+      , _imageEffectHandle(imageEffectHandle)
   {
     // fetch all parameters
     // NukeOfxCameraHandle *camera;

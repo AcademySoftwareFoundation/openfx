@@ -1774,7 +1774,7 @@ namespace OFX {
         Param* getParameter( const std::string& name );
             
     private:
-        //OfxImageEffectHandle _imageEffectHandle;
+        OfxImageEffectHandle _imageEffectHandle;
     };
 #endif
 
