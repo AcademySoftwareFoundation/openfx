@@ -1,7 +1,19 @@
-BITS := 64
+ifeq ($(CONFIG), debug)
+  DEBUGFLAG = -g -DDEBUG -Wall -Wextra
+  DEBUGNAME = debug
+endif
+ifeq ($(CONFIG), release)
+  DEBUGFLAG = -O3 -DNDEBUG -Wall -Wextra
+  DEBUGNAME = release
+endif
+
+BITS := 32
+ifeq ($(shell getconf LONG_BIT),64)
+  BITS := 64
+endif
 OS := $(shell uname -s)
 DEBUGFLAG ?= -g
-DEBUGNAME = debug
+DEBUGNAME ?= debug
 ifeq ($(DEBUGFLAG),-O3)
   DEBUGNAME = release
 endif
