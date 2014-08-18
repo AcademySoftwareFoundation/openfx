@@ -157,7 +157,6 @@
       <listitem><link linkend="kOfxPropLongLabel">kOfxPropLongLabel</link> read/write in the descriptor and instance</listitem>
       <listitem><link linkend="kOfxParamPropType">kOfxParamPropType</link>read only in the descriptor and instance, the value is set on construction</listitem>
       <listitem><link linkend="kOfxParamPropSecret">kOfxParamPropSecret</link> read/write in the descriptor and instance</listitem>
-      <listitem><link linkend="kOfxParamPropCanUndo">kOfxParamPropCanUndo</link> read/write in the descriptor, read only on an instance </listitem>
       <listitem><link linkend="kOfxParamPropHint">kOfxParamPropHint</link> read/write in the descriptor and instance</listitem>
       <listitem><link linkend="kOfxParamPropScriptName">kOfxParamPropScriptName</link> read/write in the descriptor, read only on an instance</listitem>
       <listitem><link linkend="kOfxParamPropParent">kOfxParamPropParent</link> read/write in the descriptor, read only on an instance</listitem>
