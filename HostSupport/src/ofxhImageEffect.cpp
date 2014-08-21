@@ -2163,6 +2163,10 @@ namespace OFX {
 
         if(clipInstance) {
           *bounds = clipInstance->getRegionOfDefinition(time);
+          if (bounds->x2 <= bounds->x1 || bounds->y2 <= bounds->y1) {
+            // the RoD is empty
+            return kOfxStatFailed;
+          }
           return kOfxStatOK;
         }
          
