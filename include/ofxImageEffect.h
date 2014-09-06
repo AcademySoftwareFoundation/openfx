@@ -1003,7 +1003,7 @@ This will be in \ref PixelCoordinates
 #define kOfxImageEffectTransitionSourceToClipName "SourceTo"
 
 /** @brief the name of the mandated 'Transition' param for the transition context */
-#define kOfxImageEffectTransitionSourceToClipName "Transition"
+#define kOfxImageEffectTransitionParamName "Transition"
 
 /** @brief the name of the mandated 'SourceTime' param for the retime context */
 #define kOfxImageEffectRetimerParamName "SourceTime"
