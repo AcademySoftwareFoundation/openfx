@@ -1002,6 +1002,9 @@ This will be in \ref PixelCoordinates
 /** @brief String that is the name of the 'from' clip in the OFX transition context */
 #define kOfxImageEffectTransitionSourceToClipName "SourceTo"
 
+/** @brief the name of the mandated 'Transition' param for the transition context */
+#define kOfxImageEffectTransitionSourceToClipName "Transition"
+
 /** @brief the name of the mandated 'SourceTime' param for the retime context */
 #define kOfxImageEffectRetimerParamName "SourceTime"
 
