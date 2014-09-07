@@ -288,7 +288,7 @@ namespace OFX
   {
     void getPluginIDs(OFX::PluginFactoryArray &ids)
     {
-      static CrossFadeExamplePluginFactory p("net.sf.openfx:crossFade", 1, 0);
+      static CrossFadeExamplePluginFactory p("net.sf.openfx.crossFade", 1, 0);
       ids.push_back(&p);
     }
   }

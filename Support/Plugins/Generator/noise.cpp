@@ -318,7 +318,7 @@ namespace OFX
   {
     void getPluginIDs(OFX::PluginFactoryArray &ids)
     {
-      static NoiseExamplePluginFactory p("net.sf.openfx:noisePlugin", 1, 0);
+      static NoiseExamplePluginFactory p("net.sf.openfx.noisePlugin", 1, 0);
       ids.push_back(&p);
     }
   };

@@ -308,7 +308,7 @@ namespace OFX
   {
     void getPluginIDs(OFX::PluginFactoryArray &ids)
     {
-      static RetimerExamplePluginFactory p("net.sf.openfx:retimer", 1, 0);
+      static RetimerExamplePluginFactory p("net.sf.openfx.retimer", 1, 0);
       ids.push_back(&p);
     }
   };

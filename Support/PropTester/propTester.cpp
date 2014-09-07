@@ -261,7 +261,7 @@ using namespace OFX;
 class PropTesterPluginFactory : public OFX::PluginFactoryHelper<PropTesterPluginFactory>
 {
 public:
-  PropTesterPluginFactory():OFX::PluginFactoryHelper<PropTesterPluginFactory>("net.sf.openfx:propertyTester", 1, 0){}
+  PropTesterPluginFactory():OFX::PluginFactoryHelper<PropTesterPluginFactory>("net.sf.openfx.propertyTester", 1, 0){}
   virtual void describe(OFX::ImageEffectDescriptor &desc);
   virtual void describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context);
   virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context);

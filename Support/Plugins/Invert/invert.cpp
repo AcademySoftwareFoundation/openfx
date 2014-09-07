@@ -285,7 +285,7 @@ namespace OFX
   {  
     void getPluginIDs(OFX::PluginFactoryArray &ids)
     {
-      static InvertExamplePluginFactory p("net.sf.openfx:invertPlugin", 1, 0);
+      static InvertExamplePluginFactory p("net.sf.openfx.invertPlugin", 1, 0);
       ids.push_back(&p);
     }
   }

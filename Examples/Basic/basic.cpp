@@ -1022,7 +1022,7 @@ static OfxPlugin basicPlugin =
 {       
   kOfxImageEffectPluginApi,
   1,
-  "uk.co.thefoundry:BasicGainPlugin",
+  "uk.co.thefoundry.BasicGainPlugin",
   1,
   0,
   setHostFunc,

@@ -458,7 +458,7 @@ static OfxPlugin basicPlugin =
 {       
   kOfxImageEffectPluginApi,
   1,
-  "uk.co.thefoundry:BasicOverlayPlugin",
+  "uk.co.thefoundry.BasicOverlayPlugin",
   1,
   0,
   setHostFunc,

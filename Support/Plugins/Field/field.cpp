@@ -314,7 +314,7 @@ namespace OFX
   {  
     void getPluginIDs(OFX::PluginFactoryArray &ids)
     {
-      static FieldExamplePluginFactory p("net.sf.openfx:fieldPlugin", 1, 0);
+      static FieldExamplePluginFactory p("net.sf.openfx.fieldPlugin", 1, 0);
       ids.push_back(&p);
     }
   }

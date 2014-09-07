@@ -283,7 +283,7 @@ static OfxPlugin basicPlugin =
 {       
   kOfxImageEffectPluginApi,
   1,
-  "uk.co.thefoundry:OfxInvertExample",
+  "uk.co.thefoundry.OfxInvertExample",
   1,
   0,
   setHostFunc,
