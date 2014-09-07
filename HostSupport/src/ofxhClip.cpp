@@ -543,14 +543,14 @@ namespace OFX {
 
       OfxRectI ImageBase::getBounds() const
       {
-        OfxRectI bounds;
+        OfxRectI bounds = {0, 0, 0, 0};
         getIntPropertyN(kOfxImagePropBounds, &bounds.x1, 4);
         return bounds;
       }
 
       OfxRectI ImageBase::getROD() const
       {
-        OfxRectI rod;
+        OfxRectI rod = {0, 0, 0, 0};
         getIntPropertyN(kOfxImagePropRegionOfDefinition, &rod.x1, 4);
         return rod;
       }

@@ -94,7 +94,7 @@ namespace OFX {
         return _versionMinor;
       }
 
-      PluginDesc() {
+      PluginDesc() : _apiVersion(-1) {
       }
 
       virtual ~PluginDesc() {}

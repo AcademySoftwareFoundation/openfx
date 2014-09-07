@@ -243,7 +243,6 @@ namespace OFX {
         std::map<std::string, ClipDescriptor*>  _clips;        ///< clips descriptors by name
         std::vector<ClipDescriptor*>            _clipsByOrder; ///< clip descriptors in order of declaration
         mutable Interact::Descriptor            _overlayDescriptor; ///< descriptor to use for overlays, it has delayed description
-        int _built;
 
       public:
         /// used to construct the global description

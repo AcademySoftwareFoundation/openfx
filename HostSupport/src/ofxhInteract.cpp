@@ -407,10 +407,17 @@ namespace OFX {
       {
         try {
         Interact::Base *interact = reinterpret_cast<Interact::Base*>(handle);
+        if (!property) {
+          return kOfxStatErrBadHandle;
+        }
+
         if (interact) {
           *property = interact->getPropHandle();
+
           return kOfxStatOK;
         }
+        *property = NULL;
+
         return kOfxStatErrBadHandle;
         } catch (...) {
           return kOfxStatFailed;
