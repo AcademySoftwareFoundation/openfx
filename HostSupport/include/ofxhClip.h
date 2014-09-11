@@ -179,16 +179,14 @@ namespace OFX {
         ///  kOfxBitDepthShort
         ///  kOfxBitDepthHalf
         ///  kOfxBitDepthFloat
-        /// Warning: this version is non MT-safe, override to provide a MT-safe version if needed.
-        virtual const std::string &getPixelDepth() const
+        const std::string &getPixelDepth() const
         {
           return _pixelDepth;
         }
 
         /// set the current pixel depth
-        /// called by clip preferences action
-        /// Warning: this version is non MT-safe, override to provide a MT-safe version if needed.
-        virtual void setPixelDepth(const std::string &s)
+        /// called by clip preferences action 
+        void setPixelDepth(const std::string &s)
         {
           _pixelDepth =  s;
         }
@@ -200,12 +198,10 @@ namespace OFX {
         /// kOfxImageComponentRGB
         /// kOfxImageComponentAlpha
         /// and any custom ones you may think of
-        /// Warning: this version is non MT-safe, override to provide a MT-safe version if needed.
-        virtual const std::string &getComponents() const;
+        const std::string &getComponents() const;
 
         /// set the current set of components
-        /// called by clip preferences action
-        /// Warning: this version is non MT-safe, override to provide a MT-safe version if needed.
+        /// called by clip preferences action 
         virtual void setComponents(const std::string &s);
 
         /// Get the Raw Unmapped Pixel Depth from the host for chromatic planes
@@ -237,9 +233,6 @@ namespace OFX {
         //
         //  The pixel aspect ratio of a clip or image.
         virtual double getAspectRatio() const = 0;
-        
-        // Set the pixel aspect ratio on the clip
-        virtual void setAspectRatio(double par) = 0;
 
         // Frame Rate -
         //

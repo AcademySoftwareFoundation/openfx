@@ -303,7 +303,7 @@ namespace OFX {
         Descriptor                                   *_descriptor;
         std::map<std::string, ClipInstance*>          _clips;
         bool                                          _interactive;
-        bool                                          _created;///< set to true once the createInstanceAction has been called.
+        bool                                          _created;
 
         bool                                          _clipPrefsDirty; ///< do we need to re-run the clip prefs action
         bool                                          _continuousSamples; ///< set by clip prefs
@@ -344,32 +344,15 @@ namespace OFX {
         virtual const std::string &getDefaultOutputFielding() const = 0;
 
         /// get output fielding as set in the clip preferences action.
-        ///Warning: Non MT-safe, override to provide a MT-safe implementation.
-        virtual const std::string &getOutputFielding() const {return _outputFielding; }
-          
-        ///Warning: Non MT-safe, override to provide a MT-safe implementation.
-        virtual void setOutputFielding(const std::string& outputFielding) {
-            _outputFielding = outputFielding;
-        }
+        const std::string &getOutputFielding() const {return _outputFielding; }
 
         /// get output fielding as set in the clip preferences action.
-        ///Warning: Non MT-safe, override to provide a MT-safe implementation.
-        virtual const std::string &getOutputPreMultiplication() const {return _outputPreMultiplication; }
-        
-        ///Warning: Non MT-safe, override to provide a MT-safe implementation.
-        virtual void setOutputPremultiplication(const std::string& premult) {
-            _outputPreMultiplication = premult;
-        }
+        const std::string &getOutputPreMultiplication() const {return _outputPreMultiplication; }
 
         /// get the output frame rate, as set in the clip prefences action.
-        ///Warning: Non MT-safe, override to provide a MT-safe implementation.
-        virtual double getOutputFrameRate() const {return _outputFrameRate;}
+        double getOutputFrameRate() const {return _outputFrameRate;}
 
-        ///Warning: Non MT-safe, override to provide a MT-safe implementation.
-        virtual void setOutputFrameRate(double frameRate) {
-            _outputFrameRate = frameRate;
-        }
-          
+
         /// called after construction to populate the various members
         /// ideally should be called in the ctor, but it relies on 
         /// virtuals so has to be delayed until after the effect is
@@ -393,23 +376,11 @@ namespace OFX {
 
         /// can this this instance render images at arbitrary times, not just frame boundaries
         /// set by getClipPreferenceAction()
-        ///Warning: Non MT-safe, override to provide a MT-safe implementation.
-        virtual bool continuousSamples() const {return _continuousSamples;}
+        bool continuousSamples() const {return _continuousSamples;}
 
-        ///Warning: Non MT-safe, override to provide a MT-safe implementation.
-        virtual void setContinousSamples(bool continous) {
-            _continuousSamples = continous;
-        }
-          
         /// does this instance generate a different picture on a frame change, even if the
         /// params and input images are exactly the same. eg: random noise generator
-        ///Warning: Non MT-safe, override to provide a MT-safe implementation.
-        virtual bool isFrameVarying() const {return _frameVarying;}
-        
-        ///Warning: Non MT-safe, override to provide a MT-safe implementation.
-        virtual void setFrameVarying(bool varying) {
-            _frameVarying = varying;
-        }
+        bool isFrameVarying() const {return _frameVarying;}
 
         /// pure virtuals that must  be overriden
         virtual ClipInstance* getClip(const std::string& name) const;

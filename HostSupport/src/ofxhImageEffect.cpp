@@ -1640,11 +1640,11 @@ namespace OFX {
         }
 
         /// set some stuff up
-        setOutputFrameRate(frameRate);
-        setOutputFielding(getDefaultOutputFielding());
-        setOutputPremultiplication(premult);
-        setContinousSamples(false);
-        setFrameVarying(false);
+        _outputFrameRate           = frameRate;
+        _outputFielding            = getDefaultOutputFielding();
+        _outputPreMultiplication   = premult;
+        _continuousSamples         = false;
+        _frameVarying              = false;
 
         /// now find the best depth that the plugin supports
         deepestBitDepth = bestSupportedDepth(deepestBitDepth);
@@ -1787,14 +1787,14 @@ namespace OFX {
 
             clip->setPixelDepth(outArgs.getStringProperty(depthParamName));
             clip->setComponents(outArgs.getStringProperty(componentParamName));
-            clip->setAspectRatio(outArgs.getDoubleProperty(parParamName));
+            //clip->setPixelAspect(outArgs.getDoubleProperty(parParamName));
           }
 
-        setOutputFrameRate(outArgs.getDoubleProperty(kOfxImageEffectPropFrameRate));
-        setOutputFielding(outArgs.getStringProperty(kOfxImageClipPropFieldOrder));
-        setOutputPremultiplication(outArgs.getStringProperty(kOfxImageEffectPropPreMultiplication));
-        setContinousSamples(outArgs.getIntProperty(kOfxImageClipPropContinuousSamples) != 0);
-        setFrameVarying(outArgs.getIntProperty(kOfxImageEffectFrameVarying) != 0);
+        _outputFrameRate           = outArgs.getDoubleProperty(kOfxImageEffectPropFrameRate);
+        _outputFielding            = outArgs.getStringProperty(kOfxImageClipPropFieldOrder);
+        _outputPreMultiplication   = outArgs.getStringProperty(kOfxImageEffectPropPreMultiplication);
+        _continuousSamples = outArgs.getIntProperty(kOfxImageClipPropContinuousSamples) != 0;
+        _frameVarying      = outArgs.getIntProperty(kOfxImageEffectFrameVarying) != 0;
 #       ifdef OFX_DEBUG_ACTIONS
           std::cout << _outputFrameRate<<","<<_outputFielding<<","<<_outputPreMultiplication<<","<<_continuousSamples<<","<<_frameVarying<<std::endl;
 #       endif
