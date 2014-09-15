@@ -81,6 +81,7 @@ $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle: $(OBJECTPATH)/$(PLUGINNAME).ofx
 	mkdir -p  $@/Contents/$(ARCH)
 	cp  $^  $@/Contents/$(ARCH)
 	cp  Info.plist  $@/Contents/
+	if [ -n "$(RESOURCES)" ]; then mkdir -p $@/Contents/Resources; cp $(RESOURCES)  $@/Contents/Resources; fi
 	if [ $(DEBUGNAME) = "release" -a $(ARCH) = "MacOS" ]; then bash $(PATHTOROOT)/include/osxDeploy.sh $@ $(PLUGINNAME).ofx; fi
 
 clean :
