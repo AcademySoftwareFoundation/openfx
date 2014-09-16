@@ -607,7 +607,7 @@ See the documentation on clip preferences for more details on how this is used w
        - kOfxBitDepthHalf
        - kOfxBitDepthFloat
 
-The default for a plugin is to have none set, the plugin \em must define at least one in its describe action.
+The default for a plugin is to have none set, the plugin \e must define at least one in its describe action.
 */
 #define kOfxImageEffectPropSupportedPixelDepths "OfxImageEffectPropSupportedPixelDepths"
 
@@ -623,7 +623,7 @@ The default for a plugin is to have none set, the plugin \em must define at leas
 
 This list of strings indicate what component types are supported by a host or are expected as input to a clip.
 
-The default for a clip descriptor is to have none set, the plugin \em must define at least one in its define function
+The default for a clip descriptor is to have none set, the plugin \e must define at least one in its define function
 */
 #define kOfxImageEffectPropSupportedComponents "OfxImageEffectPropSupportedComponents"
 
@@ -727,7 +727,7 @@ of the output clip, this property allows a plugin to get to the original value.
 
 An instance may have a clip may not be connected to an object that can produce image data. Use this to find out.
 
-Any clip that is not optional will \em always be connected during a render action. However, during interface actions, even non optional clips may be unconnected.
+Any clip that is not optional will \e always be connected during a render action. However, during interface actions, even non optional clips may be unconnected.
  */
 #define kOfxImageClipPropConnected "OfxImageClipPropConnected"
 
@@ -1077,7 +1077,7 @@ typedef struct OfxImageEffectSuiteV1 {
 
   The propertySet will have the same value as would be returned by OfxImageEffectSuiteV1::clipGetPropertySet
 
-      This return a clip handle for the given instance, note that this will \em not be the same as the
+      This return a clip handle for the given instance, note that this will \e not be the same as the
       clip handle returned by clipDefine and will be distanct to clip handles in any other instance
       of the plugin.
 
@@ -1122,7 +1122,7 @@ typedef struct OfxImageEffectSuiteV1 {
 
   An image is fetched from a clip at the indicated time for the given region and returned in the imageHandle.
 
- If the \e region parameter is not set to NULL, then it will be clipped to the clip's Region of Definition for the given time. The returned image will be \em at \em least as big as this region. If the region parameter is not set, then the region fetched will be at least the Region of Interest the effect has previously specified, clipped the clip's Region of Definition.
+ If the \e region parameter is not set to NULL, then it will be clipped to the clip's Region of Definition for the given time. The returned image will be \e at \em least as big as this region. If the region parameter is not set, then the region fetched will be at least the Region of Interest the effect has previously specified, clipped the clip's Region of Definition.
 
 If clipGetImage is called twice with the same parameters, then two separate image handles will be returned, each of which must be release. The underlying implementation could share image data pointers and use reference counting to maintain them.
 

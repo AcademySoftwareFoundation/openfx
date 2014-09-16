@@ -161,7 +161,7 @@ with multiple values in it.
 The major complication with these parameters is how to allow a plug-in to set values, and 
 defaults. The default default value of a parametric curve is to be an identity lookup. If
 a plugin wishes to set a different default value for a curve, it can use the suite to set
-key/value pairs on the \em descriptor of the param. When a new instance is made, it will
+key/value pairs on the \e descriptor of the param. When a new instance is made, it will
 have these curve values as a default.
 */
 typedef struct OfxParametricParameterSuiteV1 {

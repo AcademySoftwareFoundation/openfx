@@ -72,7 +72,7 @@ typedef struct OfxHost {
 
   /** @brief The function which the plug-in uses to fetch suites from the host.
 
-      \arg \e host          - the host the suite is being fetched from this \em must be the \e host member of the OfxHost struct containing fetchSuite.
+      \arg \e host          - the host the suite is being fetched from this \e must be the \e host member of the OfxHost struct containing fetchSuite.
       \arg \e suiteName     - ASCII string labelling the host supplied API
       \arg \e suiteVersion  - version of that suite to fetch
 
@@ -144,7 +144,7 @@ typedef struct OfxPlugin {
 
       Mandatory function. 
 
-      The very first function called in a plug-in. The plug-in \em must \em not call any OFX functions within this, it must only set its local copy of the host pointer.
+      The very first function called in a plug-in. The plug-in \e must \e not call any OFX functions within this, it must only set its local copy of the host pointer.
 
       \pre
         - nothing else has been called
