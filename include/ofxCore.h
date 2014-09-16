@@ -404,7 +404,7 @@ This is a longer version of the label, typically 32 character glyphs or so. Host
 /** @brief Indicates why a plug-in changed.
 
     - Type - ASCII C string X 1
-    - Property Set - the inArgs parameter on the ::kOfxActionInstanceChanged action.
+    - Property Set - inArgs parameter on the ::kOfxActionInstanceChanged action.
     - Valid Values - this can be...
        - ::kOfxChangeUserEdited - the user directly edited the instance somehow and caused a change to something, this includes undo/redos and resets
        - ::kOfxChangePluginEdited - the plug-in itself has changed the value of the object in some action

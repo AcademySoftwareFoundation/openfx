@@ -838,7 +838,7 @@ This property is on the \e inArgs property and \e outArgs property of a ::OfxCus
 /** @brief Used by interpolating custom parameters to indicate the time a key occurs at.
 
    - Type - double X 2
-   - Property Set - the inArgs parameter of a ::OfxCustomParamInterpFuncV1 (read only)
+   - Property Set - inArgs parameter of a ::OfxCustomParamInterpFuncV1 (read only)
 
 The two values indicate the absolute times the surrounding keyframes occur at. The keyframes are encoded in a ::kOfxParamPropCustomValue property.
 
@@ -848,7 +848,7 @@ The two values indicate the absolute times the surrounding keyframes occur at. T
 /** @brief Property used by ::OfxCustomParamInterpFuncV1 to indicate the amount of interpolation to perform
 
    - Type - double X 1
-   - Property Set - the inArgs parameter of a ::OfxCustomParamInterpFuncV1 (read only)
+   - Property Set - inArgs parameter of a ::OfxCustomParamInterpFuncV1 (read only)
    - Valid Values - from 0 to 1
 
 This property indicates how far between the two ::kOfxParamPropCustomValue keys to interpolate.

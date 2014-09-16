@@ -357,7 +357,7 @@
     </para>
   </section>
   
-  <section id="kOfxActionPurgeCaches"><title >The Generic Purge Caches Action></title>
+  <section id="kOfxActionPurgeCaches"><title >The Generic Purge Caches Action</title>
     <blockquote><programlisting>
 	#include "ofxCore.h"
 	#define kOfxActionPurgeCaches                 "OfxActionPurgeCaches"</programlisting></blockquote>
