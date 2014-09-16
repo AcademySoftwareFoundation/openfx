@@ -1612,8 +1612,8 @@ namespace OFX {
             ++it) {
           ClipInstance *clip = it->second;
 
-          if(!clip->isOutput()) {
-              hasInputs = true;
+          if(!clip->isOutput() && !clip->isOptional()) {
+            hasInputs = true;
             frameRate = Maximum(frameRate, clip->getFrameRate());
 
             std::string rawComp  = clip->getUnmappedComponents(); 
