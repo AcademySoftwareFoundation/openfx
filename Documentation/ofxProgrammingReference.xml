@@ -1444,6 +1444,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	  <listitem><link linkend="kOfxActionBeginInstanceChanged"><code>kOfxActionBeginInstanceChanged</code></link></listitem>
 	  <listitem><link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link></listitem>
 	  <listitem><link linkend="kOfxActionEndInstanceChanged"><code>kOfxActionEndInstanceChanged</code></link></listitem>
+	  <listitem><link linkend="kOfxActionSyncPrivateData"><code>kOfxActionSyncPrivateData</code></link></listitem>
 	</itemizedlist>
       </para>
       
