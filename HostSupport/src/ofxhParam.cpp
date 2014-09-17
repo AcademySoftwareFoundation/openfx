@@ -481,7 +481,7 @@ namespace OFX {
         }
 
         /// if a multi dimensional param
-        if (isDoubleParam(type) && (dim == 2 || dim == 3
+        if ((isDoubleParam(type) || isIntParam(type)) && (dim == 2 || dim == 3
 #ifdef OFX_SUPPORTS_PARAMETRIC
                                     || dim == 0
 #endif
