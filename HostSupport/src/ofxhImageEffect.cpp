@@ -2261,8 +2261,7 @@ namespace OFX {
           memory = effectInstance->imageMemoryAlloc(nBytes);
         }
         else {
-          memory = new Memory::Instance;
-          memory->alloc(nBytes);
+          memory = gImageEffectHost->imageMemoryAlloc(nBytes);
         }
 
         if (memory) {
@@ -2801,6 +2800,23 @@ namespace OFX {
       bool Host::pluginSupported(ImageEffectPlugin */*plugin*/, std::string &/*reason*/) const
       {
         return true;
+      }
+
+      // override this to use your own memory instance - must inherrit from memory::instance
+      Memory::Instance* Host::newMemoryInstance(size_t /*nBytes*/) {
+        return 0;
+      }
+
+      // return an memory::instance calls makeMemoryInstance that can be overriden
+      Memory::Instance* Host::imageMemoryAlloc(size_t nBytes){
+        Memory::Instance* instance = newMemoryInstance(nBytes);
+        if(instance)
+          return instance;
+        else{
+          Memory::Instance* instance = new Memory::Instance;
+          instance->alloc(nBytes);
+          return instance;
+        }
       }
 
       /// our suite fetcher

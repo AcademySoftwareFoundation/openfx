@@ -53,6 +53,10 @@ namespace OFX {
     // forward declare    
     class Plugin;
 
+    namespace Memory {
+      class Instance;
+    }
+
     namespace ImageEffect {
 
       // forward declare
@@ -144,6 +148,12 @@ namespace OFX {
         /// @see OfxImageEffectOpenGLRenderSuiteV1.flushResources()
         virtual OfxStatus flushOpenGLResources() const = 0;
 #     endif
+
+        /// override this to use your own memory instance - must inherrit from memory::instance
+        virtual Memory::Instance* newMemoryInstance(size_t nBytes);
+
+        // return an memory::instance calls makeMemoryInstance that can be overriden
+        Memory::Instance* imageMemoryAlloc(size_t nBytes);
       };
 
       /// our global host object, set when the plugin cache is created
