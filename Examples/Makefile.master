@@ -49,16 +49,31 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
   endif
   ifeq ($(OS),Darwin)
     ifeq ($(BITS), Universal)
-      # Universal 32/64 is useful only on OSX 10.5 and 10.6. Default to 10.6. (it can be changed with "make MACOSX=10.5")
+      # Universal 32/64 is useful only on OSX 10.4 (i386/ppc), 10.5 (i386/ppc) and 10.6 (i386/x86_64).
+      # OSX 10.6 (Snow Leopard) or later, build for i386/x86_64
       MACOSX := 10.6
-      BITSFLAG = -isysroot /Developer/SDKs/MacOSX$(MACOSX).sdk -arch i386 -arch x86_64 -mmacosx-version-min=$(MACOSX)
+      MACOSXSDK := 10.6
+      ARCHFLAGS=-arch i386 -arch x86_64
+      ifeq ($(shell uname -r | sed 's/^\(.*\)\..*\..*/\1/'), 8)
+        # OSX 10.4 (Tiger)
+        MACOSX := 10.4
+        MACOSXSDK := 10.4u
+        ARCHFLAGS=-arch i386 -arch ppc
+      endif
+      ifeq ($(shell uname -r | sed 's/^\(.*\)\..*\..*/\1/'), 9)
+        # OSX 10.5 (Leopard)
+        MACOSX := 10.5
+        MACOSXSDK := 10.5
+        ARCHFLAGS=-arch i386 -arch ppc
+      endif
+      BITSFLAG = -isysroot /Developer/SDKs/MacOSX$(MACOSXSDK).sdk $(ARCHFLAGS) -mmacosx-version-min=$(MACOSX)
     endif
     LINKFLAGS = $(BITSFLAG) -bundle -all_load -exported_symbols_list $(PATHTOROOT)/include/osxSymbols -framework OpenGL -Wl,-rpath,@loader_path/../Frameworks -Wl,-rpath,@loader_path/../Libraries
     ARCH = MacOS
   endif
-	
+
   CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include $(BITSFLAG) -fPIC
-	
+
 $(OBJECTPATH)/$(PLUGINNAME).ofx: $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS))
 	mkdir -p $(OBJECTPATH)/
 	g++ $^ $(LINKFLAGS) -o $@
