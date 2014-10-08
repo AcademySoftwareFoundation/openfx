@@ -1,0 +1,641 @@
+= The OFX Programming Guide for Image Effects
+Author:Bruno Nicoletti
+2014-10-17
+:toc:
+:data-uri:
+:source-highlighter: coderay
+
+== Preface
+
+=== Foreword
+OFX is an open API for writing visual effects plug-ins for a wide
+variety of applications, such as video editing systems and compositing
+systems. FIXME
+
+=== Intended Audience
+Do you write visual effects or image processing software? Do you
+have an application which deals with moving images and hosts plug-ins or
+would like to host plug-ins? Then OFX is for you.
+
+This book assumes you can program in the `C` language and are
+familiar with the concepts involved in writing visual effects software.
+You need to understand concepts like pixels, clips, pixel aspect ratios
+and so on. If you don't, I suggest you read further or attempt to soldier
+on bravely and see how far you go before you get lost.
+
+=== What is OFX?
+
+OFX is actually several things. At the lowest level OFX is a
+generic `C` based plug-in architecture that can be used to define any
+kind of plug-in API. You could use this low level architecture to
+implement any API, however it was originally designed to host our visual
+effects image processing API. The basic architecture could be re-used to
+create other higher level APIs such as a sound effects API, a 3D API and
+more.
+
+This book describes the basic OFX plug-in architecture and the
+visual effects plug-in API built on top of it. The visual effects API is
+very broad and intended to allow visual effects plug-ins to work on a
+wide range of host applications, including compositing hosts,
+rotoscopers, encoding applications, colour grading hosts, editing hosts
+and more I haven't thought of yet. While all these type of applications
+process images, they often have very different work flows and present
+effects to a user in incompatible ways. OFX is an attempt to deal with
+all of these in a clear and consistent manner.
+
+
+== OFX Coding Fundamentals
+An OFX plugin is a compiled dynamic library that an application can load on demand to add extra features to itself. A
+standardised API is used by a host and a plugin to communicate and do what is needed.
+
+OFX has an underlying plugin mechanism that could be used to 
+create a wide variety of plugin APIs, but currently only one has been layered on top of the base plugin 
+machinery, which is the OFX Image Effect API.
+
+The OFX API is specified using the `C` programming language purely by a set of header files, there are no libraries a plugin 
+need to link against to make a plugin or host work.footnote:[Though there exist optional host and plugin support libraries that can be used to help you in your coding.]
+
+=== Key Concepts and Terminology
+OFX has several key concepts and quite specific terminology, which definitely need defining. 
+
+  * a `**host**` is an application than can load OFX plugins and provides an environment for plugins 
+ to work in,
+  * a `**plugin**` provides extra a set of extra features to a host application,
+  * a `**binary**` is a dynamic library footnote:[which will be operating system specific] that contains one or more plugins,
+  * a `**suite**` is `C struct` containing a set of function pointers, which are named and versioned, 
+Suites are the way a host allows a plugin to call functions within it and not have to link against anything,
+  * a `**property**` is a named object of restricted set of `C` types, which is accessed via a property suite,
+  * a `**property set**` is a collection of properties,
+  * an `**action**` is a call into a plugin to do something,
+  * an `**API**` is a collection of suites, actions and properties that are used to do something useful, like process images. APIs are
+named and versioned.
+
+== Basic Plugin Machinery
+The basic plugin machinery establishes communications between a plugin and a host application. It very flexible and
+many different kinds of plugin APIs can be layered on it. It relatively easily allows for backwards compatibility by strong versioning and genericity. 
+
+An example plugin will be used to illustrate how all this machinery works, and its source can be found in the source code 
+file `GuideExamples/Machinery/machinery.cpp`.  FIXME LINKY
+This plugin is a 'no-op' image effect and does absolutely nothing to images, it is there purely to show you the basics of 
+how a host and plugin work together. I'll embed snippets of the plugin, but with some comments and debug code stripped for
+clarity.
+
+=== The Two Bootstrapper Functions
+To tell the host what it has inside it, a plugin binary needs to expose two functions to bootstrap the whole host/plugin communications process. These are...
+
+  * `int OfxGetNumberOfPlugins(void)`  - a function that returns the number of plugins within that binary,
+  * `OfxPlugin *OfxGetPlugin(int nth)` - a function that returns a `struct` that provides the information required by a host to bootstrap the plugin.
+
+The host should load the binary using the appropriate operating system calls, then search it for these two exposed symbols. It should then iterate over the number 
+of advertised plugins and decide what to do with the plugins it finds. 
+
+It should go without saying that a host should not hang onto the pointer returned by `OfxGetPlugin` after it unloads a binary, as the data will not be valid. 
+It should also copy any strings out of the struct if it wants to keep them.
+
+From our example, we have the following...
+
+[source, c++]
+.machinery.cpp
+----
+// how many plugins do we have in this binary?
+int OfxGetNumberOfPlugins(void)
+{       
+  return 1;
+}
+
+// return the OfxPlugin struct for the nth plugin
+OfxPlugin * OfxGetPlugin(int nth)
+{
+  if(nth == 0)
+    return &effectPluginStruct; 
+  return 0;
+}
+----
+
+=== The OfxPluginStruct
+The `**OfxPluginStruct**` returned by `**OfxGetPlugin**` provides information about the implementation of a particular plugin. The definition found in the OFX
+headers is...
+
+[source, c++]
+.ofxCore.h
+----
+typedef struct OfxPlugin {
+  const char         *pluginApi;
+  int                 apiVersion;
+  const char         *pluginIdentifier; 
+  unsigned int        pluginVersionMajor;
+  unsigned int        pluginVersionMinor;
+  void               (*setHost)(OfxHost *host);
+  OfxPluginEntryPoint *mainEntry;
+} OfxPlugin;
+----
+
+The fields in the struct give the host enough information to uniquely identify the plugin, what it does, and what version it is. These are...
+
+  * `**pluginAPI**` - the name of the API that this plugin satisfies, image effect plugins should set this to `kOfxImageEffectPluginApi`,
+  * `**apiVersion**` - the version of that API the plug-in was written to,
+  * `**pluginIdentifier**` - the unique name of the plug-in. Used only to disambiguate the plug-in from all other plug-ins, not necessarily for human eyes,
+  * `**pluginVersionMajor**` -  the major version of the plug-in, typically incremented when compatibility breaks,
+  * `**pluginVersionMinor**` -  the minor version of the plug-in, typically incremented when bugs and so on are fixed,
+  * `**setHost**` - a function used to set the OfxHost struct in the plugin,
+  * `**mainEntry**` - the function a host will use to send action requests to the plugin.
+  
+Our example plugin's `OfxPlugin` struct looks like...
+  
+[source, c++]
+.machinery.cpp
+----
+static OfxPlugin effectPluginStruct = 
+{       
+  kOfxImageEffectPluginApi,                  
+  1,                                        
+  "org.openeffects:MachineryExamplePlugin", 
+  1,                                        
+  0,                                        
+  SetHostFunc,                              
+  MainEntryPoint                            
+}; 
+----
+
+Using this information a host application can grab a plugin struct then figure out if it supports the API at the given version. 
+
+Plugin versioning allows a plugin (as identified by the `**pluginIdentifier**` field) to be updated and redistributed 
+multiple times, with the host knowing which is the most appropriate version to use.  It even allows old and new versions of the same
+plugin to be used simultaneously within a host application. FIXME LINK TO VERSIONING GUFF
+
+The `**setHost**` function is used by the host to give the plugin an `**OfxHost**` struct (see below), which is the bit 
+that gives the plugin access to functions within the host application.
+
+Finally the `**mainEntry**` is the function called by the host to get the plugin to carry out actions. Via the property system
+it behaves as a generic function call, allowing arbitrary numbers of parameters to be passed to the plugin.
+
+=== Suites
+A suite is simply a struct with a set of function pointers. Each suite is defined by a C struct 
+definition in an OFX header file, as well a C literal string that names the
+suite. A host will pass a set of suites to a plugin, each suite having the set of function pointers
+filled appropriately.
+
+For example, look in the file ofxMemory.h for the suite used to perform memory allocation...
+
+[source, c++]
+.ofxMemory.h
+----
+#define kOfxMemorySuite "OfxMemorySuite"
+
+typedef struct OfxMemorySuiteV1 {
+  OfxStatus (*memoryAlloc)(void *handle, 
+                           size_t nBytes,
+                           void **allocatedData);
+  
+  OfxStatus (*memoryFree)(void *allocatedData);
+} OfxMemorySuiteV1;
+----
+
+Notice also, the version number built into the name of the memory suite. If we ever needed to change
+the memory suite for some reason, `OfxMemorySuiteV2` would be defined, with a new set of function
+pointers. The new suite could then live along side the old suite to provide backwards compatibility.
+
+Plugins have to ask for suites from the host by name with a specific version, how we do that
+is covered next.
+
+=== The OfxHost and Fetching Suites
+An instance of an `**OfxHost**` C struct is the thing that allows a plugin to get suites and provides information
+about a host application, it looks like...
+
+[source, c++]
+.ofxCore.h
+----
+typedef struct OfxHost {
+  OfxPropertySetHandle host;
+  void *(*fetchSuite)(OfxPropertySetHandle host, const char *suiteName, int suiteVersion);
+} OfxHost;
+----
+
+A plugin gets given one of these by the host application via the `**OfxPlugin::setHost**` function it previously passed to the host.
+
+There are two members to an `**OfxHost**`, the first is a property set (more on properties in a moment) which describes what the host
+does and how it behaves. 
+
+The second member is a function used to fetch suites from the host application. Going back to our example plugin, we have the following bits
+of code. For the moment ignore how and when the LoadAction is called, but notice what it does...
+
+[[LoadActionExample]]
+[source, c++]
+.machinery.cpp
+----
+//  The anonymous namespace is used to hide symbols from export.
+namespace {
+  OfxHost               *gHost;
+  OfxPropertySuiteV1    *gPropertySuite = 0;
+  OfxImageEffectSuiteV1 *gImageEffectSuite = 0;
+
+  ////////////////////////////////////////////////////////////////////////////////
+  /// call back passed to the host in the OfxPlugin struct to set our host pointer
+  void SetHostFunc(OfxHost *hostStruct)
+  {
+    gHost = hostStruct;
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  /// the first action called
+  OfxStatus LoadAction(void)
+  {
+    gPropertySuite    = (OfxPropertySuiteV1 *) gHost->fetchSuite(gHost->host, 
+                                                                 kOfxPropertySuite, 
+                                                                 1);
+    gImageEffectSuite = (OfxImageEffectSuiteV1 *) gHost->fetchSuite(gHost->host, 
+                                                                    kOfxImageEffectSuite, 
+                                                                    1);
+
+    return kOfxStatOK;
+  }
+
+}
+----
+
+Notice that it is fetching two suites by name from the host. Firstly the all important kOfxPropertySuite
+and then the kOfxImageEffectSuite. It squirrels these away for later use in two global pointers. The 
+plugin can then use the functions in the suites as and when needed.
+
+=== Properties
+The main way plugins and hosts communicate is via the properties mechanism. A property is a named
+object inside a property set, which is a bit like a python dictionary. You use the property suite,
+defined in the header ofxProperty.h to access them.
+
+Properties can be of the following fundamental types...
+   
+   * `**int**`
+   * `**double**`
+   * `**char pass:[*]**`
+   * `**void pass:[*] **`
+
+So for in our example we have....
+
+[source, c++]
+.machinery.cpp
+----
+    OfxPropertySetHandle effectProps;
+    gImageEffectSuite->getPropertySet(effect, &effectProps);
+
+    gPropertySuite->propSetString(effectProps, kOfxPropLabel, 0, "OFX Machinery Example");
+----
+
+Here the plugin is using the effect suite to get the property set on the effect.
+It is then setting the string propery `**kOfxPropLabel**` to be "OFX Machinery Example". 
+There are corresponding calls for the other data types, and equivalent set calls. All pretty straight forwards. 
+
+Notice the `**0**` passed as the third argument, which is an index. Properties can be multidimensional, for example
+the current pen position in a graphics viewport is a 2D integer property. You can get and set individual elements in a
+multidimensional property
+or you could use calls like `**OfxPropertySuiteV1::propSetIntN**` to set all values at once.
+Of course there exists 'N' calls for all types, as well as corresponding setting calls.
+
+The various OFX header files are littered with C macros that define the properties used by the API, what type they
+are, what property set they are on and whether you can read and/or write them. The OFX reference guide had all the 
+properties listed by name and object they are on, as well as what they are for.
+
+By passing information via property sets, rather than fixed C structs, you gain a flexibility that allows for simple 
+incremental additions to the API without breaking backwards compatibility and builds. It does come at a cost (being
+continual string lookup), but the flexibility it gives is worth it.
+
+=== Actions, Telling a Plugin What To Do
+Actions are how a host tells a plugin what to do. The `**mainEntry**` function pointer in the `**OfxPlugin**` structure
+is the what accepts actions to do whatever is being requested.
+
+The function must conform to the following typedef...
+
+[source, c++]
+.ofxCore.h
+----
+typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, 
+                                         const void *handle, 
+                                         OfxPropertySetHandle inArgs, 
+                                         OfxPropertySetHandle outArgs);
+----
+
+Where...
+
+  * `action` is a C string that specifies what is to be done by the plugin, e.g. "OfxImageEffectActionRender" tells an image effect plugin to
+render a frame,
+  * `handle` is the thing that is being operated on, and needs to be downcast appropriately, what this is will depend on the action,
+  * `inArgs` is a well defined property set that are the arguments to the action,
+  * `outArgs` is a well defined property set where a plugin can return values as needed.
+
+The entry point will return an `OfxStatus` to tell the host what happened. A plugin is not obliged to trap all actions, just a certain subset,
+and if it doesn't need to trap the action, it can just return the status `**kOfxStatReplyDefault**` to have the host carry out the well defined
+default for that action.
+
+So looking at our example we can see its main entry point....
+
+[source, c++]
+.machinery.cpp
+----
+  OfxStatus MainEntryPoint(const char *action, 
+                           const void *handle, 
+                           OfxPropertySetHandle inArgs,  
+                           OfxPropertySetHandle outArgs)
+  {
+    // cast to appropriate type
+    OfxImageEffectHandle effect = (OfxImageEffectHandle) handle;
+
+    OfxStatus returnStatus = kOfxStatReplyDefault;
+
+    if(strcmp(action, kOfxActionLoad) == 0) {
+      returnStatus = LoadAction();
+    }
+    else if(strcmp(action, kOfxActionUnload) == 0) {
+      returnStatus = UnloadAction();
+    }
+    else if(strcmp(action, kOfxActionDescribe) == 0) {
+      returnStatus = DescribeAction(effect);
+    }
+    else if(strcmp(action, kOfxImageEffectActionDescribeInContext) == 0) {
+      returnStatus = DescribeInContextAction(effect, inArgs);
+    }
+    else if(strcmp(action, kOfxActionCreateInstance) == 0) {
+      returnStatus = CreateInstanceAction(effect);
+    } 
+    else if(strcmp(action, kOfxActionDestroyInstance) == 0) {
+      returnStatus = DestroyInstanceAction(effect);
+    } 
+    else if(strcmp(action, kOfxImageEffectActionIsIdentity) == 0) {
+      returnStatus = IsIdentityAction(effect, inArgs, outArgs);
+    }
+    
+    return returnStatus;
+  }
+----
+
+You can see the plugin is trapping seven actions and is saying to do the default for the rest of the actions.
+
+Infact only four actions need to be trapped for an image effect plugin footnote:[kOfxLoadAction, kOfxActionDescribe, kOfxImageEffectActionDescribeInContext and one of kOfxImageEffectActionIsIdentity or kOfxImageEffectActionRender], but our machinery plugin is trapping moew for illustrative purposes.
+
+What is on the property sets, and what the handle should be down cast to depends on the action being called. Some actions have no arguments (eg: the kOfxLoadAcrtion), while others have in and out arguments, e.g. the kOfxImageEffectActionIsIdentity. 
+
+Actions give us a very flexible and expandable generic function calling mechanism. This means it is trivial to expand the API via adding extra 
+properties or actions to the API without impacting existing plugins or applications.
+
+NOTE: For the main entry point on image effect plugins, the handle passed in will either be NULL or an `**OfxImageEffectHandle**`, which is just a blind pointer to host specific data that represents the plugin.
+
+=== Basic Actions For Image Effect Plugins
+There are a set of actions called on a plugin that signal to the plugin what is going on and to get it to tell the host what the plugin does. These need 
+to be called in a specific sequence to make it all work properly. 
+
+==== The Load and Unload Actions
+The kOfxActionLoad is the very first action passed to a plugin. It will be called after the `setHost` callback has been used to pass the OfxHostStruct to the plugin. It is the point at which a plugin gets to create global structures that it will later be used across all instances. From our <<LoadActionExample, load action snippet>> above, you can see that the plugin is fetching two suites and caching the pointers away for later use.
+
+At some point the host application will want to unload the binary that the plugin is contained in, either when the host quits or the plugin is
+ no longer needed by the host application. The plugin needs to notify the plugin of this, as it may need to perform some clean up. 
+The kOfxActionUnload action is sent to the plugin by the host to warn the plugin of it's imminent demise. After this action is called the host can no
+longer issue any actions to that plugin unless another kOfxActionLoad action is called. In our example plugin, the unload does nothing.
+
+NOTE: Hosts __must__ always pair kOfxActionLoad with a kOfxActionUnload, otherwise all sorts of badness can happen, including memory leaks, 
+failing license checks and more.
+
+==== Describing Plugins To A Host
+Once a plugin has had kOfxActionLoad called on it, it will be asked to describe itself. This is done with the kOfxActionDescribe action.
+From our example plugin, here is the function called by our main entry point in response to the describe action.
+
+[source, c++]
+.machinery.cpp
+----
+  OfxStatus DescribeAction(OfxImageEffectHandle  effect)
+  {
+    // get the property set handle for the plugin
+    OfxPropertySetHandle effectProps;
+    gImageEffectSuite->getPropertySet(effect, &effectProps);
+
+    // set some labels and the group it belongs to
+    gPropertySuite->propSetString(effectProps, 
+                                  kOfxPropLabel, 
+                                  0,
+                                  "OFX Machinery Example");
+    gPropertySuite->propSetString(effectProps,
+                                  kOfxImageEffectPluginPropGrouping, 
+                                  0, 
+                                  "OFX Example");
+
+    // define the image effects contexts we can be used in, in this case a simple filter
+    gPropertySuite->propSetString(effectProps,
+                                  kOfxImageEffectPropSupportedContexts, 
+                                  0,
+                                  kOfxImageEffectContextFilter);
+  
+    return kOfxStatOK;
+  }
+----
+
+You will see that it fetches a property set (via the image effect suite) and sets various properties on it. Specifically the label used 
+in any user interface and the group of plugins it belongs to. The final thing it sets is the single context it can be used in. 
+
+Contexts are specific to image effect plugins, and they are there because a plugin can be used in many different ways.
+We call each way an image effect plugin can be used a context. In our example we are saying our
+plugin can behave as a filter only. A filter is simply an effect with one and only one input clip and one mandated output clip. This is typical
+of systems such as editors which can drop effects directly onto a clip in a timeline. For more complex systems, e.g. a node graph compositor, 
+you might want to allow the same plugin to have more input clips and a richer parameter set, which we call the general context. A plugin can work
+one or more contexts, not all of which need be supported by a host.
+
+Because it can be used in different contexts, and will need to be described differently in each, an image effect plugin has a two tier description process. 
+First kOfxActionDescribe is called to 
+set attributes common to all the contexts the plugin can be used in, then the kOfxImageEffectActionDescribeInContext action is called, once for each 
+context that the host wants to use the effect in.
+
+Again from our example plugin, here is how it responds to the describe in context action...
+
+[source, c++]
+.machinery.cpp
+----
+  OfxStatus
+  DescribeInContextAction( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
+  {
+    // get the context from the inArgs handle
+    char *context;
+    gPropertySuite->propGetString(inArgs, 
+                                  kOfxImageEffectPropContext, 
+                                  0, 
+                                  &context);
+
+    ERROR_IF(strcmp(context, kOfxImageEffectContextFilter) != 0, 
+             "DescribeInContextAction called on unsupported contex %s", context);
+
+    OfxPropertySetHandle props;
+    // define the mandated single output clip
+    gImageEffectSuite->clipDefine(effect, "Output", &props);
+
+    // set the component types we can handle on out output
+    gPropertySuite->propSetString(props,
+                                  kOfxImageEffectPropSupportedComponents, 
+                                  0, kOfxImageComponentRGBA);
+    gPropertySuite->propSetString(props, 
+                                  kOfxImageEffectPropSupportedComponents, 
+                                  1,
+                                  kOfxImageComponentAlpha);
+
+    // define the mandated single source clip 
+    gImageEffectSuite->clipDefine(effect, "Source", &props);
+
+    // set the component types we can handle on our main input
+    gPropertySuite->propSetString(props, 
+                                  kOfxImageEffectPropSupportedComponents, 
+                                  0,
+                                  kOfxImageComponentRGBA);
+    gPropertySuite->propSetString(props, 
+                                  kOfxImageEffectPropSupportedComponents, 
+                                  1, 
+                                  kOfxImageComponentAlpha);
+
+    return kOfxStatOK;
+  }
+
+----
+In this case I've left the error check cluttering up the snippet so you can see how the `inArgs` property set is used to
+specify which context is currently being described. Our example then goes on define two image clips, the first used for
+output, and the second used for input. The API docs specify that a filter effect needs to specify both of these with
+exactly those names. Not also how the effect is setting a multidimensional property associated with each clip to
+specify what pixel types it supports on those clips.
+
+For more complex effects, these actions are the point where you specify parameters that the effect wants to use, and get to
+tweak a whole range of settings to say how the plugin behaves.
+
+==== Creating Instances
+So far a host knows what our plugin looks like and how it should behave, but it isn't using it to process pixels yet. At some point
+a user will click on a button in a UI and to say they want to use the plugin. To do that a host creates an __instance__ of the plugin.
+An instance represents a unique copy of the plugin and contains all the state needed for that. For example, a blur plugin may
+be instantiated many times in a compositing graph, each instance will have parameters set to a different value, and be connected to different
+input and output clips.
+
+A plugin developer may need to attach data to each plugin instance, typically to tie the plugin into their own image processing infrastructure. 
+They get the chance to do that via the kOfxActionCreateInstance action. The host will call that action just after they have created and initialised
+their host-side data structures that represent the plugin. Our example plugin doesn't actually do anything on create instance, but it could choose
+to attached it's own data structures to the instance via the `kOfxPropInstanceData` property.
+
+A plugin will also want to destroy any of its own data structures when an instance is destroyed. It gets to do that in the kOfxActionDestroyInstance
+action. 
+
+Our example plugin exercises both of those action just to illustrate what is going it. It simply places a string into the instance data property which 
+it later fetches and destroys. In real plugins, this is typically a hook to deeper plugin side data structures.
+
+[source, c++]
+.machinery.cpp
+----
+  OfxStatus CreateInstanceAction( OfxImageEffectHandle effect)
+  {
+    OfxPropertySetHandle effectProps;
+    gImageEffectSuite->getPropertySet(effect, &effectProps);
+
+    // attach some instance data to the effect handle, it can be anything
+    char *myString = strdup("This is random instance data that could actually be anything you want.");
+
+    // set my private instance data
+    gPropertySuite->propSetPointer(effectProps,
+                                   kOfxPropInstanceData,
+                                   0, 
+                                   (void *) myString);
+
+    return kOfxStatOK;
+  }
+
+  // instance destruction
+  OfxStatus DestroyInstanceAction( OfxImageEffectHandle  effect)
+  {
+    OfxPropertySetHandle effectProps;
+    gImageEffectSuite->getPropertySet(effect, &effectProps);
+
+    // get my private instance data
+    char *myString = NULL;
+    gPropertySuite->propGetPointer(effectProps, 
+                                   kOfxPropInstanceData, 
+                                   0, 
+                                   (void **) &myString);
+    ERROR_ABORT_IF(myString == NULL, "Instance data should not be null!");
+    free(myString);
+
+    return kOfxStatOK;
+  }
+----
+
+NOTE: kOfxActionDestroyInstance should always be called when an instance is destroyed, and furthermore all instances need to 
+have had kOfxActionDestroyInstance called on them before kOfxActionUnload can be called. 
+
+==== Life Cycle of a Plugin
+
+Now we've outlined the basic actions and functions in a plugin, we should clearly specify the calling sequence. Failure to call them in the right
+sequence will lead to all sorts of undefined behaviour.
+
+Assuming the host has done nothing apart from load the dynamic library that contains plugins and has found the two <<The Two Boostrapper Functions, boostrapping symbols>> in the plugin, the host
+should then...
+
+   - call `OfxGetNumberOfPlugins` to discover the number of plugins
+   - call `OfxGetPlugin` for each of the N plugins in the binary and decide if it can use them or not (by looking at APIs and versions)
+
+At this point the code in the binary should have done nothing apart from run those two functions. The host is free to unload the binary at this point without
+further interaction with the plugin.
+
+If the host decides it wants to use one of the plugins in the binary it must then...
+
+   * call the `setHost` function given to it __for that plugin__ and pass back an OfxHost struct which allows plugins to fetch suites appropriate for
+the API
+   * call the `kOfxActionLoad`
+     ** call `kOfxActionDescribe`
+     ** call `kOfxImageEffectActionDescribeInContext` for each context
+
+If the host wants to actually use a plugin, it creates whatever host side data structures are needed then...
+
+     ** calls kOfxActionCreateInstance
+
+When a host wants to get rid of an instance, before it destroys any of it's own data structures it...
+     ** calls kOfxActionDestroyInstance 
+
+When the host wants to be done with the plugin, and before it dynamically unloads the binary it...
+   * calls `kOfxActionUnload`, all instances _must_ have been destroyed before this call.
+
+Once the final kOfxActionUnload has been called, even if it doesn't dynamically unload the binary, the host can no longer call the main entry point on that specific plugin until it once more calls kOfxActionLoad.
+
+=== Packaging A Plugin
+Plugins are packaged up inside a dynamic library that sits inside a directory structure which conforms to Apple's ".bundle" format. 
+The directory structure allows you to ship plugins that target multiple OS's as one, as well as giving a location to store any resource
+that the plugin may want to ship alongside the binary.
+
+==== Dynamic Library Format
+Plugins are contained within a dynamic library, the exact form depends on the operating system being used. 
+
+  * Microsoft Windows, as ".dll" dynamically linked libraries, 
+  * Apple OSX, as Mach-O binary bundles, footnote:[a binary bundle is distinct to a bundle directory structure, when linking a binary bundle on OSX, use the -bundle compiler switch]
+  * LINUX, as ELF dynamic shared objects. 
+
+The filename of all the dynamic libraries must end with the suffix ".ofx".
+
+==== Bundle Directory Structure
+Each plug-in binary is contained in an Apple Mac OS X bundle 
+directory hierarchy, which looks something like.....
+  
+  * NAME.ofx.bundle
+    ** Contents
+      *** ARCHITECTURE_A
+        **** NAME.ofx
+      *** ARCHITECTURE_B
+        **** NAME.ofx
+      *** ...
+      *** ARCHITECTURE_N
+        **** NAME.ofx
+		  *** Resources
+		    **** NAME.xml
+		    **** PLUGIN_A.[png|svg]
+		    **** PLUGIN_B.png|svg]
+        **** ...
+		    **** PLUGIN_N.png|svg]
+
+Where...
+
+  * NAME is the file name you want the installed plug-in to be identified by,
+  * PLUGIN.png - is a Portable Network Graphics image to use as an icon for the plug-in in the binary which has a matching pluginIdentifier field in the OfxPlugin struct,
+  * PLUGIN.svg - is a Scalable Vector Graphics image to use as an icon for the plug-in in the binary which has a matching pluginIdentifier field in the OfxPlugin struct
+  * ARCHITECTURE is the specific operating system architecture the plug-in was built for, these are currently...
+    ** MacOS - for Apple Macintosh OS X (compiled 32 bit)
+    ** Win32 - for Microsoft Windows (compiled 32 bit)
+    ** Linux-x86 - for Linux on intel x86 CPUs (compiled 32 bit)
+    ** Linux-x86-64 - for Linux on intel x86 CPUs running AMD's 64 bit extensions
+Note that not all the above architectures need be supported, only at least one.
+
+This structure is necessary on OS X, but it also gives a nice skeleton to hang all other operating systems from in a single install, as well as a clean place to put resources.
+
