@@ -192,7 +192,7 @@ namespace {
     gImageEffectSuite->getPropertySet(effect, &effectProps);
 
     // attach some instance data to the effect handle, it can be anything
-    char *myString = strdup("This is random instance data that could actually be anything you want.");
+    char *myString = strdup("This is random instance data that could be anything you want.");
 
     // set my private instance data
     gPropertySuite->propSetPointer(effectProps, kOfxPropInstanceData, 0, (void *) myString);
