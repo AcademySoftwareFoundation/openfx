@@ -557,7 +557,47 @@ it later fetches and destroys. In real plugins, this is typically a hook to deep
 NOTE: kOfxActionDestroyInstance should always be called when an instance is destroyed, and furthermore all instances need to 
 have had kOfxActionDestroyInstance called on them before kOfxActionUnload can be called. 
 
-==== Life Cycle of a Plugin
+==== What About The Image Processing?
+This plugin is pretty much a 'hello world' OFX example, it doesn't actually process any images. Normally a host application would call
+the `**kOfxImageEffectActionRender**` action when it wants the plugin to render a frame. Our simple plugin gets around processing any images
+by trapping the `**kOfxImageEffectActionIsIdentity**` action. This action lets the plugin tell the host application that it currently does
+nothing to its inputs, for example a blur effect with the blur size of zero. In such a case the host can simply ignore the plugin and use
+its source images directly. And here is the code that does that...
+
+[source, c++]
+.machinery.cpp
+----
+  OfxStatus IsIdentityAction( OfxImageEffectHandle effect,
+                              OfxPropertySetHandle inArgs,
+                              OfxPropertySetHandle outArgs)
+  {
+    // we set the name of the input clip to pull data from
+    gPropertySuite->propSetString(outArgs, kOfxPropName, 0, "Source");
+    return kOfxStatOK;
+  }
+----
+
+The plugin is telling the host to pass through an unprocessed image from an input clip, and because plugins can have more than one input
+it needs to tell the host which clip to use. It does that by setting the `kOfxPropName` property on the outargs. It also returns 
+`**kOfxStatOK**` to indicate that it has trapped the action and that the plugin is currently doing nothing.
+
+Remember we said that each action has a well defined set of in and out arguments? In the case of the is identity action these are...
+
+.inArgs
+  * kOfxPropTime - the time at which to test for identity
+  * kOfxImageEffectPropFieldToRender - the field to test for identity
+  * kOfxImageEffectPropRenderWindow - the window to test for identity under
+  * kOfxImageEffectPropRenderScale - the scale factor being applied to the images being renderred
+
+.outArgs
+  * kOfxPropName this to the name of the clip that should be used if the effect is an identity transform, defaults to the empty string
+  * kOfxPropTime the time to use from the indicated source clip as an identity image (allowing time slips to happen), defaults to the value in kOfxPropTime in inArgs
+
+A proper plugin would examine the inargs, its parameters and see if it is doing anything to its inputs. If it does need to process images
+it would return `**kOfxStatReplyDefault**` rather than `**kOfxStatOK**`.
+
+
+=== Life Cycle of a Plugin
 
 Now we've outlined the basic actions and functions in a plugin, we should clearly specify the calling sequence. Failure to call them in the right
 sequence will lead to all sorts of undefined behaviour.
@@ -631,8 +671,9 @@ Where...
   * PLUGIN.png - is a Portable Network Graphics image to use as an icon for the plug-in in the binary which has a matching pluginIdentifier field in the OfxPlugin struct,
   * PLUGIN.svg - is a Scalable Vector Graphics image to use as an icon for the plug-in in the binary which has a matching pluginIdentifier field in the OfxPlugin struct
   * ARCHITECTURE is the specific operating system architecture the plug-in was built for, these are currently...
-    ** MacOS - for Apple Macintosh OS X (compiled 32 bit)
+    ** MacOS - for Apple Macintosh OS X (compiled 32 or 64 bit)
     ** Win32 - for Microsoft Windows (compiled 32 bit)
+    ** Win64 - for Microsoft Windows (compiled 64 bit)
     ** Linux-x86 - for Linux on intel x86 CPUs (compiled 32 bit)
     ** Linux-x86-64 - for Linux on intel x86 CPUs running AMD's 64 bit extensions
 Note that not all the above architectures need be supported, only at least one.

@@ -31,12 +31,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   Author : Bruno Nicoletti (2014)
   
   This plugin will take you through the basics of creating an OFX plugin. It
+  exercises the basic 'bootstrapping' machinery of the API to allow a host
+  application to instantiate the plugin.
+
+  The plugin itself does no image processing, it is a 'no-op' effect.
+
+  The accompanying guide will explain what is happening in more detail.
+
+  Finally, the plugin can be used to validate whether a host application
+  drives the OFX machinery correctly, and will print to stderr any issues
+  it finds during the whole plugin life cycle.
 */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+// the one OFX header we need, it includes the others necessary
 #include "ofxImageEffect.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -48,7 +59,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   fprintf(stderr, "\n");                                                \
 }
 
-// macro to write a simple message
+// macro to write a simple message, only works if 'VERBOSE' is #defined
 #ifdef VERBOSE
 #  define MESSAGE(MSG, ...) DUMP("", MSG, ##__VA_ARGS__)
 #else
@@ -62,14 +73,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ERROR_ABORT_IF(CONDITION, MSG, ...)     \
 {                                               \
   if(CONDITION) {                               \
-    DUMP("FATAL ERROR : ", MSG, ##__VA_ARGS__);         \
+    DUMP("FATAL ERROR : ", MSG, ##__VA_ARGS__); \
+    abort();                                    \
   }                                             \
 }
 
 // anonymous namespace to hide our symbols in
 namespace {
   ////////////////////////////////////////////////////////////////////////////////
-  /// set of pointers provided by the host
+  // set of suite pointers provided by the host
   OfxHost               *gHost;
   OfxPropertySuiteV1    *gPropertySuite = 0;
   OfxImageEffectSuiteV1 *gImageEffectSuite = 0;
@@ -77,7 +89,7 @@ namespace {
 
   ////////////////////////////////////////////////////////////////////////////////
   // House keeper to make sure we are loaded and unloaded symetrically
-  int  gNumTimesLoaded = 0;
+  bool gInLoadedState = false;
   bool gDescribeCalled = false;
   bool gDescribeInContextCalled = false;
   int  gNumInstancesLiving = 0;
@@ -86,7 +98,8 @@ namespace {
   // The first _action_ called after the binary is loaded (three boot strapper functions will be howeever)
   OfxStatus LoadAction(void)
   {
-    ERROR_IF(gHost == NULL, "The OfxHost pointer has not been set, it should have been set in 'setHostFunc' before any action is called.");
+    ERROR_ABORT_IF(gHost == NULL, "The OfxHost pointer has not been set, it should have been set in 'setHostFunc' before any action is called.");
+    ERROR_ABORT_IF(gInLoadedState == true, "kOfxActionLoad called more than once without an intervening kOfxUnloadAction.");
 
     /// now fetch a suite out of the host via it's fetch suite function.
     gPropertySuite = (OfxPropertySuiteV1 *) gHost->fetchSuite(gHost->host, kOfxPropertySuite, 1);
@@ -95,7 +108,7 @@ namespace {
     gImageEffectSuite = (OfxImageEffectSuiteV1 *) gHost->fetchSuite(gHost->host, kOfxImageEffectSuite, 1);
 
     // increment count, ideally this should not be called more than once. Should that be a condition? FIXME
-    ++gNumTimesLoaded;
+    gInLoadedState = true;
 
     return kOfxStatOK;
   }
@@ -104,10 +117,12 @@ namespace {
   // last action called before a plugin binary is unloaded. 
   OfxStatus UnloadAction(void)
   {
-    // decrement count
-    --gNumTimesLoaded;
-
-    ERROR_IF(gNumInstancesLiving != 0, "kOfxActionUnload called while there exists %d instances of the plugin that have not been destroyed", gNumInstancesLiving );
+    // make sure no instances have been left alive
+    ERROR_IF(gNumInstancesLiving != 0, "kOfxActionUnload called while there are still %d instances of the plugin extant.", gNumInstancesLiving);
+    
+    // check that we had a load called first
+    ERROR_IF(gInLoadedState != true, "kOfxActionUnload callewd without preceding kOfxAcrtionLoad.");
+    gInLoadedState = false;
 
     return kOfxStatOK;
   }
@@ -117,7 +132,7 @@ namespace {
   OfxStatus DescribeAction(OfxImageEffectHandle  effect)
   {
     // check stuff
-    ERROR_ABORT_IF(gNumTimesLoaded != 1, "kOfxActionLoad has not been called");
+    ERROR_ABORT_IF(gInLoadedState != true, "kOfxActionLoad has not been called");
     gDescribeCalled = true;
 
     // get the property set handle for the plugin
@@ -139,7 +154,7 @@ namespace {
   DescribeInContextAction( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
   {
     // check state
-    ERROR_ABORT_IF(gDescribeCalled != true, "DescribeInContextAction called before DescribeAction");
+    ERROR_ABORT_IF(gDescribeCalled == false, "DescribeInContextAction called before DescribeAction");
     gDescribeInContextCalled = true;
 
     // get the context from the inArgs handle
@@ -201,7 +216,6 @@ namespace {
 
     return kOfxStatOK;
   }
-
 
   // are the settings of the effect making it redundant and so not do anything to the image data
   OfxStatus IsIdentityAction( OfxImageEffectHandle  effect,
@@ -271,19 +285,20 @@ namespace {
 
   ////////////////////////////////////////////////////////////////////////////////
   // Class that will be used to check that the plugin is correctly unloaded.
-  struct CheckNumTimesLoadedIsZero {
-    CheckNumTimesLoadedIsZero()
+  struct CheckNotStillLoaded {
+    CheckNotStillLoaded()
     {
     }
 
-    ~CheckNumTimesLoadedIsZero()
+    ~CheckNotStillLoaded()
     {
-      ERROR_IF(gNumTimesLoaded != 0, "kOfxActionUnload called more times than kOfxActionLoad when plugin was unloaded.");
+      ERROR_IF(gInLoadedState == true, "kOfxActionUnload has not been called before a plugin binary was dynamically unloaded.");
     }
   };
 
-  // The destructor of CheckNumTimesLoadedIsZero will be called automatically when the plugin binary is unloaded.
-  CheckNumTimesLoadedIsZero gNumTimesLoadedChecker;
+  // The destructor of CheckNumTimesLoadedIsZero will be called automatically when the plugin dso is unloaded.
+  // we use that to check that kOfxActionUnload has been called.
+  CheckNotStillLoaded gCheckNotStillLoaded;
 
 } // end of anonymous namespace
 
