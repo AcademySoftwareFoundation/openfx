@@ -38,7 +38,7 @@ England
 
 */
 
-
+#include <cassert>
 #include "ofxsImageEffect.h"
 #include "ofxsMultiThread.h"
 
@@ -114,8 +114,21 @@ namespace OFX {
         virtual void process(void)
         {
             // is it OK ?
-            if(!_dstImg || (_renderWindow.x2 - _renderWindow.x1 == 0 && _renderWindow.y2 - _renderWindow.y1))
+            assert(_dstImg);
+            if (!_dstImg) {
                 return;
+            }
+            const OfxRectI& dstBounds = _dstImg->getBounds();
+            // is the renderWindow woithin dstBounds ?
+            assert(dstBounds.x1 <= _renderWindow.x1 && _renderWindow.x2 <= dstBounds.x2 &&
+                   dstBounds.y1 <= _renderWindow.y1 && _renderWindow.y2 <= dstBounds.y2);
+            // exit gracefully in case of error
+            if (!(dstBounds.x1 <= _renderWindow.x1 && _renderWindow.x2 <= dstBounds.x2 &&
+                  dstBounds.y1 <= _renderWindow.y1 && _renderWindow.y2 <= dstBounds.y2) ||
+                (_renderWindow.x1 >= _renderWindow.x2) ||
+                (_renderWindow.y1 >= _renderWindow.y2)) {
+                return;
+            }
 
             // call the pre MP pass
             preProcess();
