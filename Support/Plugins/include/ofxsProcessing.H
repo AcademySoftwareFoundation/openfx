@@ -116,7 +116,7 @@ namespace OFX {
             // If _dstImg was set, check that the _renderWindow is lying into dstBounds
             if (_dstImg) {
                 const OfxRectI& dstBounds = _dstImg->getBounds();
-                // is the renderWindow woithin dstBounds ?
+                // is the renderWindow within dstBounds ?
                 assert(dstBounds.x1 <= _renderWindow.x1 && _renderWindow.x2 <= dstBounds.x2 &&
                        dstBounds.y1 <= _renderWindow.y1 && _renderWindow.y2 <= dstBounds.y2);
                 // exit gracefully in case of error
@@ -127,7 +127,7 @@ namespace OFX {
                     return;
                 }
             }
-            
+
             // call the pre MP pass
             preProcess();
 
