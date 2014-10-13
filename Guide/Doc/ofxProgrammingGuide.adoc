@@ -48,5 +48,5 @@ plugins, each of which will have it's own guide describing what
 is going one.
 
 .examples
-  * link:ofxMachineryExample.html[The basic machinery of an OFX plugin]
+  * link:ofxBasicsExample.html[The basic machinery of an OFX plugin.]
 

@@ -8,12 +8,12 @@ endif
 
 CXXFLAGS = $(INCDIR) $(OPTIMISER)
 
-machinery.ofx : machinery.o
+basics.ofx : basics.o
 	$(CXX) $(OS_LDFLAGS) $< -o $@
 	mkdir -p $@.bundle/Contents/MacOS/
 	cp $@ $@.bundle/Contents/MacOS/
 
 clean :
-	rm -rf machinery.ofx.bundle
-	rm -rf machinery.ofx
-	rm -rf machinery.o
+	rm -rf basics.ofx.bundle
+	rm -rf basics.ofx
+	rm -rf basics.o

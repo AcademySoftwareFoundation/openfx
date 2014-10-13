@@ -140,7 +140,7 @@ namespace {
     gImageEffectSuite->getPropertySet(effect, &effectProps);
 
     // set some labels and the group it belongs to
-    gPropertySuite->propSetString(effectProps, kOfxPropLabel, 0, "OFX Machinery Example");
+    gPropertySuite->propSetString(effectProps, kOfxPropLabel, 0, "OFX Basics Example");
     gPropertySuite->propSetString(effectProps, kOfxImageEffectPluginPropGrouping, 0, "OFX Example");
 
     // define the image effects contexts we can be used in, in this case a simple filter
@@ -308,13 +308,13 @@ namespace {
 // of plugin communications
 static OfxPlugin effectPluginStruct = 
 {       
-  kOfxImageEffectPluginApi,                   // The API this plugin satisfies.
-  1,                                          // The version of the API it satisifes.
-  "org.openeffects:MachineryExamplePlugin",   // The unique ID of this plugin.
-  1,                                          // The major version number of this plugin.
-  0,                                          // The minor version number of this plugin.
-  SetHostFunc,                                // Function used to pass back to the plugin the OFXHost struct.
-  MainEntryPoint                                  // The main entry point to the plugin where all actions are passed to.
+  kOfxImageEffectPluginApi,                // The API this plugin satisfies.
+  1,                                       // The version of the API it satisifes.
+  "org.openeffects:BasicsExamplePlugin",   // The unique ID of this plugin.
+  1,                                       // The major version number of this plugin.
+  0,                                       // The minor version number of this plugin.
+  SetHostFunc,                             // Function used to pass back to the plugin the OFXHost struct.
+  MainEntryPoint                           // The main entry point to the plugin where all actions are passed to.
 }; 
    
 ////////////////////////////////////////////////////////////////////////////////

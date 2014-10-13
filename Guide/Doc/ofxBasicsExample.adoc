@@ -5,11 +5,10 @@ Author:Bruno Nicoletti
 :data-uri:
 :source-highlighter: coderay
 
-This is a guide to the basic machinery for writing an OFX plugin and some of the fundamentals of the API. 
-The basic plugin machinery establishes communications between a plugin and a host application.
+This is a guide to the basic machinery an OFX plugin uses to communicate with a host application, and goes into the fundamentals of the API. 
 
 An example plugin will be used to illustrate how all the machinery works, and its source can be found in the pass:[C++] 
-file `GuideExamples/Machinery/machinery.cpp`.  FIXME LINKY
+file `GuideExamples/Basics/basics.cpp`. 
 This plugin is a 'no-op' image effect and does absolutely nothing to images, it is there purely to show you the basics of 
 how a host and plugin work together. I'll embed snippets of the plugin, but with some comments and debug code stripped for
 clarity.
@@ -54,7 +53,7 @@ It should also copy any strings out of the struct if it wants to keep them.
 From our example, we have the following...
 
 [source, c++]
-.machinery.cpp
+.basics.cpp
 ----
 // how many plugins do we have in this binary?
 int OfxGetNumberOfPlugins(void)
@@ -102,13 +101,13 @@ The fields in the struct give the host enough information to uniquely identify t
 Our example plugin's `OfxPlugin` struct looks like...
   
 [source, c++]
-.machinery.cpp
+.basics.cpp
 ----
 static OfxPlugin effectPluginStruct = 
 {       
   kOfxImageEffectPluginApi,                  
   1,                                        
-  "org.openeffects:MachineryExamplePlugin", 
+  "org.openeffects:BasicsExamplePlugin", 
   1,                                        
   0,                                        
   SetHostFunc,                              
@@ -120,7 +119,8 @@ Using this information a host application can grab a plugin struct then figure o
 
 Plugin versioning allows a plugin (as identified by the `**pluginIdentifier**` field) to be updated and redistributed 
 multiple times, with the host knowing which is the most appropriate version to use.  It even allows old and new versions of the same
-plugin to be used simultaneously within a host application. FIXME LINK TO VERSIONING GUFF
+plugin to be used simultaneously within a host application. There are more details on how to use the version numbers in the
+OFX Programming Reference.
 
 The `**setHost**` function is used by the host to give the plugin an `**OfxHost**` struct (see below), which is the bit 
 that gives the plugin access to functions within the host application.
@@ -180,7 +180,7 @@ of code. For the moment ignore how and when the LoadAction is called, but notice
 
 [[LoadActionExample]]
 [source, c++]
-.machinery.cpp
+.basics.cpp
 ----
 //  The anonymous namespace is used to hide symbols from export.
 namespace {
@@ -231,16 +231,16 @@ Properties can be of the following fundamental types...
 So for in our example we have....
 
 [source, c++]
-.machinery.cpp
+.basics.cpp
 ----
     OfxPropertySetHandle effectProps;
     gImageEffectSuite->getPropertySet(effect, &effectProps);
 
-    gPropertySuite->propSetString(effectProps, kOfxPropLabel, 0, "OFX Machinery Example");
+    gPropertySuite->propSetString(effectProps, kOfxPropLabel, 0, "OFX Basics Example");
 ----
 
 Here the plugin is using the effect suite to get the property set on the effect.
-It is then setting the string propery `**kOfxPropLabel**` to be "OFX Machinery Example". 
+It is then setting the string property `**kOfxPropLabel**` to be "OFX Basics Example". 
 There are corresponding calls for the other data types, and equivalent set calls. All pretty straight forwards. 
 
 Notice the `**0**` passed as the third argument, which is an index. Properties can be multidimensional, for example
@@ -255,7 +255,7 @@ properties listed by name and object they are on, as well as what they are for.
 
 By passing information via property sets, rather than fixed C structs, you gain a flexibility that allows for simple 
 incremental additions to the API without breaking backwards compatibility and builds. It does come at a cost (being
-continual string lookup), but the flexibility it gives is worth it.
+continual string look-up), but the flexibility it gives is worth it.
 
 == Actions, Telling a Plugin What To Do
 Actions are how a host tells a plugin what to do. The `**mainEntry**` function pointer in the `**OfxPlugin**` structure
@@ -287,7 +287,7 @@ default for that action.
 So looking at our example we can see its main entry point....
 
 [source, c++]
-.machinery.cpp
+.basics.cpp
 ----
   OfxStatus MainEntryPoint(const char *action, 
                            const void *handle, 
@@ -327,9 +327,9 @@ So looking at our example we can see its main entry point....
 
 You can see the plugin is trapping seven actions and is saying to do the default for the rest of the actions.
 
-Infact only four actions need to be trapped for an image effect plugin footnote:[kOfxLoadAction, kOfxActionDescribe, kOfxImageEffectActionDescribeInContext and one of kOfxImageEffectActionIsIdentity or kOfxImageEffectActionRender], but our machinery plugin is trapping moew for illustrative purposes.
+In fact only four actions need to be trapped for an image effect plugin footnote:[kOfxLoadAction, kOfxActionDescribe, kOfxImageEffectActionDescribeInContext and one of kOfxImageEffectActionIsIdentity or kOfxImageEffectActionRender], but our machinery plugin is trapping more for illustrative purposes.
 
-What is on the property sets, and what the handle should be down cast to depends on the action being called. Some actions have no arguments (eg: the kOfxLoadAcrtion), while others have in and out arguments, e.g. the kOfxImageEffectActionIsIdentity. 
+What is on the property sets, and what the handle should be down cast to depends on the action being called. Some actions have no arguments (eg: the kOfxLoadAction), while others have in and out arguments, e.g. the kOfxImageEffectActionIsIdentity. 
 
 Actions give us a very flexible and expandable generic function calling mechanism. This means it is trivial to expand the API via adding extra 
 properties or actions to the API without impacting existing plugins or applications.
@@ -356,7 +356,7 @@ Once a plugin has had kOfxActionLoad called on it, it will be asked to describe 
 From our example plugin, here is the function called by our main entry point in response to the describe action.
 
 [source, c++]
-.machinery.cpp
+.basics.cpp
 ----
   OfxStatus DescribeAction(OfxImageEffectHandle  effect)
   {
@@ -368,7 +368,7 @@ From our example plugin, here is the function called by our main entry point in 
     gPropertySuite->propSetString(effectProps, 
                                   kOfxPropLabel, 
                                   0,
-                                  "OFX Machinery Example");
+                                  "OFX Basics Example");
     gPropertySuite->propSetString(effectProps,
                                   kOfxImageEffectPluginPropGrouping, 
                                   0, 
@@ -390,7 +390,7 @@ in any user interface and the group of plugins it belongs to. The final thing it
 Contexts are specific to image effect plugins, and they are there because a plugin can be used in many different ways.
 We call each way an image effect plugin can be used a context. In our example we are saying our
 plugin can behave as a filter only. A filter is simply an effect with one and only one input clip and one mandated output clip. This is typical
-of systems such as editors which can drop effects directly onto a clip in a timeline. For more complex systems, e.g. a node graph compositor, 
+of systems such as editors which can drop effects directly onto a clip in a time-line. For more complex systems, e.g. a node graph compositor, 
 you might want to allow the same plugin to have more input clips and a richer parameter set, which we call the general context. A plugin can work
 one or more contexts, not all of which need be supported by a host.
 
@@ -402,7 +402,7 @@ context that the host wants to use the effect in.
 Again from our example plugin, here is how it responds to the describe in context action...
 
 [source, c++]
-.machinery.cpp
+.basics.cpp
 ----
   OfxStatus
   DescribeInContextAction( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
@@ -475,7 +475,7 @@ Our example plugin exercises both of those action just to illustrate what is goi
 it later fetches and destroys. In real plugins, this is typically a hook to deeper plugin side data structures.
 
 [source, c++]
-.machinery.cpp
+.basics.cpp
 ----
   OfxStatus CreateInstanceAction( OfxImageEffectHandle effect)
   {
@@ -524,7 +524,7 @@ nothing to its inputs, for example a blur effect with the blur size of zero. In 
 its source images directly. And here is the code that does that...
 
 [source, c++]
-.machinery.cpp
+.basics.cpp
 ----
   OfxStatus IsIdentityAction( OfxImageEffectHandle effect,
                               OfxPropertySetHandle inArgs,
@@ -546,13 +546,13 @@ Remember we said that each action has a well defined set of in and out arguments
   * kOfxPropTime - the time at which to test for identity
   * kOfxImageEffectPropFieldToRender - the field to test for identity
   * kOfxImageEffectPropRenderWindow - the window to test for identity under
-  * kOfxImageEffectPropRenderScale - the scale factor being applied to the images being renderred
+  * kOfxImageEffectPropRenderScale - the scale factor being applied to the images being rendered
 
 .outArgs
   * kOfxPropName this to the name of the clip that should be used if the effect is an identity transform, defaults to the empty string
   * kOfxPropTime the time to use from the indicated source clip as an identity image (allowing time slips to happen), defaults to the value in kOfxPropTime in inArgs
 
-A proper plugin would examine the inargs, its parameters and see if it is doing anything to its inputs. If it does need to process images
+A proper plugin would examine the inArgs, its parameters and see if it is doing anything to its inputs. If it does need to process images
 it would return `**kOfxStatReplyDefault**` rather than `**kOfxStatOK**`.
 
 
@@ -590,54 +590,6 @@ When the host wants to be done with the plugin, and before it dynamically unload
 
 Once the final kOfxActionUnload has been called, even if it doesn't dynamically unload the binary, the host can no longer call the main entry point on that specific plugin until it once more calls kOfxActionLoad.
 
-== Packaging A Plugin
-Plugins are packaged up inside a dynamic library that sits inside a directory structure which conforms to Apple's ".bundle" format. 
-The directory structure allows you to ship plugins that target multiple OS's as one, as well as giving a location to store any resource
-that the plugin may want to ship alongside the binary.
-
-The makefile for our example plugin will place it in the correct directory structure for distribution.
-
-=== Dynamic Library Format
-Plugins are contained within a dynamic library, the exact form depends on the operating system being used. 
-
-  * Microsoft Windows, as ".dll" dynamically linked libraries, 
-  * Apple OSX, as Mach-O binary bundles, footnote:[a binary bundle is distinct to a bundle directory structure, when linking a binary bundle on OSX, use the -bundle compiler switch]
-  * LINUX, as ELF dynamic shared objects. 
-
-The filename of all the dynamic libraries must end with the suffix ".ofx".
-
-=== Bundle Directory Structure
-Each plug-in binary is contained in an Apple Mac OS X bundle 
-directory hierarchy, which looks something like.....
-  
-  * NAME.ofx.bundle
-    ** Contents
-      *** ARCHITECTURE_A
-        **** NAME.ofx
-      *** ARCHITECTURE_B
-        **** NAME.ofx
-      *** ...
-      *** ARCHITECTURE_N
-        **** NAME.ofx
-		  *** Resources
-		    **** NAME.xml
-		    **** PLUGIN_A.[png|svg]
-		    **** PLUGIN_B.png|svg]
-        **** ...
-		    **** PLUGIN_N.png|svg]
-
-Where...
-
-  * NAME is the file name you want the installed plug-in to be identified by,
-  * PLUGIN.png - is a Portable Network Graphics image to use as an icon for the plug-in in the binary which has a matching pluginIdentifier field in the OfxPlugin struct,
-  * PLUGIN.svg - is a Scalable Vector Graphics image to use as an icon for the plug-in in the binary which has a matching pluginIdentifier field in the OfxPlugin struct
-  * ARCHITECTURE is the specific operating system architecture the plug-in was built for, these are currently...
-    ** MacOS - for Apple Macintosh OS X (compiled 32 or 64 bit)
-    ** Win32 - for Microsoft Windows (compiled 32 bit)
-    ** Win64 - for Microsoft Windows (compiled 64 bit)
-    ** Linux-x86 - for Linux on intel x86 CPUs (compiled 32 bit)
-    ** Linux-x86-64 - for Linux on intel x86 CPUs running AMD's 64 bit extensions
-Note that not all the above architectures need be supported, only at least one.
-
-This structure is necessary on OS X, but it also gives a nice skeleton to hang all other operating systems from in a single install, as well as a clean place to put resources.
-
+=== Packaging A Plugin
+The compile code for a plugin is contained in a dynamic library. Plugins are distributed as a directory structure that allows you to add icons and other resources you
+may need. There is more detailed information in the OFX Programming Reference Guide.
