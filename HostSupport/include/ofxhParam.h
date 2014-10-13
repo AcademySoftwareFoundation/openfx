@@ -219,6 +219,9 @@ namespace OFX {
         /// callback which should update label
         virtual void setLabel();
 
+        /// callback which should set range
+        virtual void setRange();
+
         /// callback which should set display range
         virtual void setDisplayRange();
 

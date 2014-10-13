@@ -23,8 +23,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		1E0832EC19A1EC4F00A819A5 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 1E0832E919A1EC4F00A819A5 /* Makefile */; };
-		1E08330619A1ECA600A819A5 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 1E0832F719A1ECA600A819A5 /* Makefile */; };
 		1E31EC3117F5CA44004AB554 /* ofxOpenGLRender.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E31EC2E17F5CA44004AB554 /* ofxOpenGLRender.h */; };
 		1E31EC3217F5CA44004AB554 /* ofxParametricParam.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E31EC2F17F5CA44004AB554 /* ofxParametricParam.h */; };
 		1E31EC3317F5CA44004AB554 /* ofxSonyVegas.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E31EC3017F5CA44004AB554 /* ofxSonyVegas.h */; };
@@ -677,9 +675,7 @@
 				1E3CB86317992EDF0032B538 /* ofxhParam.cpp in Sources */,
 				1E3CB86417992EDF0032B538 /* ofxhPluginAPICache.cpp in Sources */,
 				1E3CB86517992EDF0032B538 /* ofxhPluginCache.cpp in Sources */,
-				1E0832EC19A1EC4F00A819A5 /* Makefile in Sources */,
 				1E3CB86617992EDF0032B538 /* ofxhPropertySuite.cpp in Sources */,
-				1E08330619A1ECA600A819A5 /* Makefile in Sources */,
 				1E3CB86717992EDF0032B538 /* ofxhUtilities.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
