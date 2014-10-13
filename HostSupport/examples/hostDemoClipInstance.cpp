@@ -62,7 +62,7 @@ namespace MyHost {
   const int       kPalSizeXPixels = 720;
   const int       kPalSizeYPixels = 576;
   const OfxRectI  kPalRegionPixels = {0, 0, kPalSizeXPixels, kPalSizeYPixels};
-  const OfxRectD  kPalRegionCanon = {0,0, kPalSizeXPixels * kPalPixelAspect ,kPalSizeYPixels};
+  //const OfxRectD  kPalRegionCanon = {0,0, kPalSizeXPixels * kPalPixelAspect ,kPalSizeYPixels};
 
   // 5x3 bitmaps for digits 0..9 and period
   const char digits[11][5][3] = {
