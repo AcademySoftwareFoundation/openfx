@@ -45,8 +45,10 @@ all of these in a clear and consistent manner.
 
 I'll illustrate the API and how it works with a variety of example
 plugins, each of which will have it's own guide describing what 
-is going one.
+is going one. You should work through them one by one as each will
+build on the one before.
 
 .examples
   * link:ofxBasicsExample.html[The basic machinery of an OFX plugin.]
+  * link:ofxInvertExample.html[How to access images.]
 

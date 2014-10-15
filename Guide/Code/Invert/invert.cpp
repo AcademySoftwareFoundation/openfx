@@ -105,16 +105,34 @@ namespace {
     gImageEffectSuite->getPropertySet(effect, &effectProps);
 
     // set some labels and the group it belongs to
-    gPropertySuite->propSetString(effectProps, kOfxPropLabel, 0, "OFX Invert Example");
-    gPropertySuite->propSetString(effectProps, kOfxImageEffectPluginPropGrouping, 0, "OFX Example");
-
-    // set the bit depths the plugin can handle
-    gPropertySuite->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 0, kOfxBitDepthFloat);
-    gPropertySuite->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 1, kOfxBitDepthShort);
-    gPropertySuite->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 2, kOfxBitDepthByte);
+    gPropertySuite->propSetString(effectProps, 
+                                  kOfxPropLabel,
+                                  0,
+                                  "OFX Invert Example");
+    gPropertySuite->propSetString(effectProps,
+                                  kOfxImageEffectPluginPropGrouping,
+                                  0,
+                                  "OFX Example");
 
     // define the image effects contexts we can be used in, in this case a simple filter
-    gPropertySuite->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 0, kOfxImageEffectContextFilter);
+    gPropertySuite->propSetString(effectProps,
+                                  kOfxImageEffectPropSupportedContexts,
+                                  0,
+                                  kOfxImageEffectContextFilter);
+
+    // set the bit depths the plugin can handle
+    gPropertySuite->propSetString(effectProps,
+                                  kOfxImageEffectPropSupportedPixelDepths,
+                                  0,
+                                  kOfxBitDepthFloat);
+    gPropertySuite->propSetString(effectProps,
+                                  kOfxImageEffectPropSupportedPixelDepths,
+                                  1,
+                                  kOfxBitDepthShort);
+    gPropertySuite->propSetString(effectProps,
+                                  kOfxImageEffectPropSupportedPixelDepths,
+                                  2,
+                                  kOfxBitDepthByte);
   
     return kOfxStatOK;
   }
@@ -129,51 +147,81 @@ namespace {
     gImageEffectSuite->clipDefine(effect, "Output", &props);
 
     // set the component types we can handle on out output
-    gPropertySuite->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
-    gPropertySuite->propSetString(props, kOfxImageEffectPropSupportedComponents, 2, kOfxImageComponentAlpha);
+    gPropertySuite->propSetString(props,
+                                  kOfxImageEffectPropSupportedComponents,
+                                  0,
+                                  kOfxImageComponentRGBA);
+    gPropertySuite->propSetString(props,
+                                  kOfxImageEffectPropSupportedComponents,
+                                  1,
+                                  kOfxImageComponentAlpha);
+    gPropertySuite->propSetString(props,
+                                  kOfxImageEffectPropSupportedComponents,
+                                  2,
+                                  kOfxImageComponentRGB);
 
     // define the mandated single source clip
     gImageEffectSuite->clipDefine(effect, "Source", &props);
 
     // set the component types we can handle on our main input
-    gPropertySuite->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
-    gPropertySuite->propSetString(props, kOfxImageEffectPropSupportedComponents, 2, kOfxImageComponentAlpha);
+    gPropertySuite->propSetString(props,
+                                  kOfxImageEffectPropSupportedComponents,
+                                  0,
+                                  kOfxImageComponentRGBA);
+    gPropertySuite->propSetString(props,
+                                  kOfxImageEffectPropSupportedComponents,
+                                  1,
+                                  kOfxImageComponentAlpha);
+    gPropertySuite->propSetString(props,
+                                  kOfxImageEffectPropSupportedComponents,
+                                  2,
+                                  kOfxImageComponentRGB);
 
     return kOfxStatOK;
   }
 
 
+  // Look up a pixel in the image. returns null if the pixel was not
+  // in the bounds of the image
   template <class T> 
-  // look up a pixel in the image, does bounds checking to see if it is in the image rectangle
-  static inline T *
-  pixelAddress(void *baseAddress, OfxRectI rect, int x, int y, int bytesPerLine, int nComps)
+  static inline T * pixelAddress(int x, int y, 
+                                 void *baseAddress, 
+                                 OfxRectI bounds, 
+                                 int rowBytes, 
+                                 int nCompsPerPixel)
   {  
-    // inside the bounds of this imaghe?
-    if(x < rect.x1 || x >= rect.x2 || y < rect.y1 || y > rect.y2)
-      return 0;
-      
-    // find the start of our row
-    T *pix = (T *) (((char *) baseAddress) + (y - rect.y1) * bytesPerLine);
+    // Inside the bounds of this image?
+    if(x < bounds.x1 || x >= bounds.x2 || y < bounds.y1 || y >= bounds.y2)
+      return NULL;
 
-    // now offset to the right column
-    pix += (x - rect.x1) * nComps;
-    return pix;
+    // turn image plane coordinates into offsets from the bottom left
+    int yOffset = y - bounds.y1;
+    int xOffset = x - bounds.x1;
+
+    // Find the start of our row, using byte arithmetic
+    void *rowStartAsVoid = reinterpret_cast<char *>(baseAddress) + yOffset * rowBytes;
+
+    // turn the row start into a pointer to our data type
+    T *rowStart = reinterpret_cast<T *>(rowStartAsVoid);
+
+    // finally find the position of the first component of column
+    return rowStart + (xOffset * nCompsPerPixel);
   }
 
   // pseudo constructor we use to do our processing
   template <class T, int MAX> 
-  void renderIt(OfxImageEffectHandle instance,
+  void PixelProcessing(OfxImageEffectHandle instance,
                 OfxPropertySetHandle sourceImg,
                 OfxPropertySetHandle outputImg,
                 OfxRectI renderWindow,
                 int nComps)
   {
     // fetch output image info from the property handle
-    int dstRowBytes, dstBitDepth;
-    OfxRectI dstRect;
+    int dstRowBytes;
+    OfxRectI dstBounds;
     void *dstPtr = NULL;
     gPropertySuite->propGetInt(outputImg, kOfxImagePropRowBytes, 0, &dstRowBytes);
-    gPropertySuite->propGetIntN(outputImg, kOfxImagePropBounds, 4, &dstRect.x1);
+    gPropertySuite->propGetIntN(outputImg, kOfxImagePropBounds, 4, &dstBounds.x1);
     gPropertySuite->propGetPointer(outputImg, kOfxImagePropData, 0, &dstPtr);
 
     if(dstPtr == NULL) {
@@ -181,11 +229,11 @@ namespace {
     }
 
     // fetch input image info from the property handle
-    int srcRowBytes, srcBitDepth;
-    OfxRectI srcRect;
+    int srcRowBytes;
+    OfxRectI srcBounds;
     void *srcPtr = NULL;
     gPropertySuite->propGetInt(sourceImg, kOfxImagePropRowBytes, 0, &srcRowBytes);
-    gPropertySuite->propGetIntN(sourceImg, kOfxImagePropBounds, 4, &srcRect.x1);
+    gPropertySuite->propGetIntN(sourceImg, kOfxImagePropBounds, 4, &srcBounds.x1);
     gPropertySuite->propGetPointer(sourceImg, kOfxImagePropData, 0, &srcPtr);
 
     if(srcPtr == NULL) {
@@ -197,12 +245,12 @@ namespace {
       if(gImageEffectSuite->abort(instance)) break;
 
       // get the row start for the output image
-      T *dstPix = pixelAddress<T>(dstPtr, dstRect, renderWindow.x1, y, dstRowBytes, nComps);
+      T *dstPix = pixelAddress<T>(renderWindow.x1, y, dstPtr, dstBounds, dstRowBytes, nComps);
 
       for(int x = renderWindow.x1; x < renderWindow.x2; x++) {
         
         // get the source pixel
-        T *srcPix = pixelAddress<T>(srcPtr, srcRect, x, y, srcRowBytes, nComps);
+        T *srcPix = pixelAddress<T>(x, y, srcPtr, srcBounds, srcRowBytes, nComps);
 
         if(srcPix) {
           // we have one, iterate each component in the pixels
@@ -226,14 +274,14 @@ namespace {
 
 
   ////////////////////////////////////////////////////////////////////////////////
-  // are the settings of the effect making it redundant and so not do anything to the image data
+  // Render an output image
   OfxStatus RenderAction( OfxImageEffectHandle instance,
                           OfxPropertySetHandle inArgs,
                           OfxPropertySetHandle outArgs)
   {
     // get the render window and the time from the inArgs
     OfxTime time;
-    OfxRectI renderWindow, srcRect, dstRect;
+    OfxRectI renderWindow;
     OfxStatus status = kOfxStatOK;
   
     gPropertySuite->propGetDouble(inArgs, kOfxPropTime, 0, &time);
@@ -241,8 +289,13 @@ namespace {
 
     // fetch output clip
     OfxImageClipHandle outputClip;
-    gImageEffectSuite->clipGetHandle(instance, "Output", &outputClip, 0);
+    gImageEffectSuite->clipGetHandle(instance, "Output", &outputClip, NULL);
     
+    // fetch main input clip
+    OfxImageClipHandle sourceClip;
+    gImageEffectSuite->clipGetHandle(instance, "Source", &sourceClip, NULL);
+
+    // the property sets holding our images
     OfxPropertySetHandle outputImg = NULL, sourceImg = NULL;
     try {
       // fetch image to render into from that clip
@@ -250,11 +303,7 @@ namespace {
       if(gImageEffectSuite->clipGetImage(outputClip, time, NULL, &outputImg) != kOfxStatOK) {
         throw " no output image!";
       }
-            
-      // fetch main input clip
-      OfxImageClipHandle sourceClip;
-      gImageEffectSuite->clipGetHandle(instance, "Source", &sourceClip, 0);
-      
+                  
       // fetch image at render time from that clip
       if (gImageEffectSuite->clipGetImage(sourceClip, time, NULL, &sourceImg) != kOfxStatOK) {
         throw " no source image!";
@@ -285,13 +334,13 @@ namespace {
       std::string dataType = cstr;
 
       if(dataType == kOfxBitDepthByte) {
-        renderIt<unsigned char, 255>(instance, sourceImg, outputImg, renderWindow, nComps);
+        PixelProcessing<unsigned char, 255>(instance, sourceImg, outputImg, renderWindow, nComps);
       }
       else if(dataType == kOfxBitDepthShort) {
-        renderIt<unsigned short, 65535>(instance, sourceImg, outputImg, renderWindow, nComps);
+        PixelProcessing<unsigned short, 65535>(instance, sourceImg, outputImg, renderWindow, nComps);
       }
       else if (dataType == kOfxBitDepthFloat) {
-        renderIt<float, 1>(instance, sourceImg, outputImg, renderWindow, nComps);
+        PixelProcessing<float, 1>(instance, sourceImg, outputImg, renderWindow, nComps);
       }
       else {
         throw " bad data type!";
@@ -349,12 +398,11 @@ namespace {
       returnStatus = DescribeAction(effect);
     }
     else if(strcmp(action, kOfxImageEffectActionDescribeInContext) == 0) {
-      // the second action called to describe what the plugin does
+      // the second action called to describe what the plugin does in a specific context
       returnStatus = DescribeInContextAction(effect, inArgs);
     }
     else if(strcmp(action, kOfxImageEffectActionRender) == 0) {
-      // The action called by the host to see if the plugin is currently 
-      // a "no-op". In this example we are always a no-op.
+      // action called to render a frame
       returnStatus = RenderAction(effect, inArgs, outArgs);
     }
     

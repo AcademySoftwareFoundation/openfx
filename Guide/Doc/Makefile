@@ -23,10 +23,10 @@ XSLARGS = --stringparam  funcsynopsis.style "ansi" \
 %.html : %.adoc
 	$(ASCIIDOCTOR) -a theme=volnitsky -b html5 $< -o $@
 
-all : ofxProgrammingGuide.html ofxBasicsExample.html
+all : ofxProgrammingGuide.html ofxBasicsExample.html ofxInvertExample.html
 
 # programming guide, all in one
-GUIDE_SRCS = ofxProgrammingGuide.adoc ofxBasicsExample.adoc
+GUIDE_SRCS = ofxProgrammingGuide.adoc ofxBasicsExample.adoc ofxInvertExample.adoc
 
 ofxProgrammingGuide.html : $(GUIDE_SRCS)
 

@@ -257,6 +257,10 @@ By passing information via property sets, rather than fixed C structs, you gain 
 incremental additions to the API without breaking backwards compatibility and builds. It does come at a cost (being
 continual string look-up), but the flexibility it gives is worth it.
 
+NOTE: Plugins have to be very careful with scope of the pointer returned when you fetch a string property. The pointer will 
+be guaranteed to be valid _only_ until the next call to an OFX suite function or the action finishes, or until the action ends. If you want to use the 
+string out of those scope you _must_ copy it.
+
 == Actions, Telling a Plugin What To Do
 Actions are how a host tells a plugin what to do. The `**mainEntry**` function pointer in the `**OfxPlugin**` structure
 is the what accepts actions to do whatever is being requested.
