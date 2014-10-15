@@ -539,5 +539,110 @@ check that before we return a failed error state from our action.
 
 Finally we release the images we have fetched and return the error status. 
 
-NOTE: Images cannot be held onto outside the scope of the action they were fetched in. It is polite
+NOTE: Images should not be held onto outside the scope of the action they were fetched in, the data
+will not be guaranteed to be valid. It is polite
 to release them as soon as possible, especially if you are fetching multiple images on input. 
+
+
+Now for our pixel pushing code.footnote:[This is purely illustrative as to how the API works, it is
+in no way fast code, I would be ashamed to put code like this into a serious piece of image processing.]
+
+[source, c++]
+.invert.cpp:  Rendering snippet 7
+----
+  // iterate over our pixels and process them
+  template <class T, int MAX> 
+  void PixelProcessing(OfxImageEffectHandle instance,
+                       OfxPropertySetHandle sourceImg,
+                       OfxPropertySetHandle outputImg,
+                       OfxRectI renderWindow,
+                       int nComps)
+  {
+    // fetch output image info from the property handle
+    int dstRowBytes;
+    OfxRectI dstBounds;
+    void *dstPtr = NULL;
+    gPropertySuite->propGetInt(outputImg, kOfxImagePropRowBytes, 0, &dstRowBytes);
+    gPropertySuite->propGetIntN(outputImg, kOfxImagePropBounds, 4, &dstBounds.x1);
+    gPropertySuite->propGetPointer(outputImg, kOfxImagePropData, 0, &dstPtr);
+
+    if(dstPtr == NULL) {
+      throw "Bad destination pointer";
+    }
+
+    // fetch input image info from the property handle
+    int srcRowBytes;
+    OfxRectI srcBounds;
+    void *srcPtr = NULL;
+    gPropertySuite->propGetInt(sourceImg, kOfxImagePropRowBytes, 0, &srcRowBytes);
+    gPropertySuite->propGetIntN(sourceImg, kOfxImagePropBounds, 4, &srcBounds.x1);
+    gPropertySuite->propGetPointer(sourceImg, kOfxImagePropData, 0, &srcPtr);
+
+    if(srcPtr == NULL) {
+      throw "Bad source pointer";
+    }
+
+----
+
+We've shown bits of this before. Here we have a templated function that we
+use to process our pixels. It is templated on the data type that the components
+in each pixel will be, as well as a nominal 'max' value to use in our invert
+computation.
+
+The first thing it does is to pull out the bounds, rowbytes and destination pointer of
+our two images. We can now iterate over the render window and set pixels in the output
+image.
+
+[source, c++]
+.invert.cpp:  Rendering snippet 8
+----
+    // and do some inverting
+    for(int y = renderWindow.y1; y < renderWindow.y2; y++) {
+      if(gImageEffectSuite->abort(instance)) break;
+
+      // get the row start for the output image
+      T *dstPix = pixelAddress<T>(renderWindow.x1, y, dstPtr, dstBounds, dstRowBytes, nComps);
+
+      for(int x = renderWindow.x1; x < renderWindow.x2; x++) {
+        
+        // get the source pixel
+        T *srcPix = pixelAddress<T>(x, y, srcPtr, srcBounds, srcRowBytes, nComps);
+
+        if(srcPix) {
+          // we have one, iterate each component in the pixels
+          for(int i = 0; i < nComps; ++i) {
+            if(i != 3) { // We don't invert alpha.
+              *dstPix = MAX - *srcPix; // invert
+            }
+            ++dstPix; ++srcPix;
+          }
+        }
+        else {
+          // we don't have a pixel in the source image, set output to black
+          for(int i = 0; i < nComps; ++i) {
+            *dstPix = 0;
+            ++dstPix;
+          }          
+        }
+      }
+    }
+  }
+----
+
+The first thing we do at each row we are processing is to check that the host hasn't told our plugin
+to abort processing. (Ideally you can do this a bit less often than every line).
+
+The next thing we do is to use the `**pixelAddress**` function to find the address of the first component
+of the first pixel in the current, and we put it in `**dstPix**`. Because we have a guarantee that the bounds of the output image are at
+least as big as the render window, we can simply increment `**dstPix**` across the row as we iterate over the image.
+
+Now we iterate across the row. We attempt to fetch the source pixel at our x,y location in the image plane. If we get it
+we iterate over the number of component, setting the output to be the invert footnote:[complement really] of the input.
+If we don't get it, we set the output pixel to all zero.
+
+NOTE: You notice that we are continually calculating the address of `**srcPix**` at each pixel location and not incrementing
+the pointer as we could with `**dstPix**`. The reason for this is that there is no guarantee as to where an input
+image lies on the image plane. It need not be congruent with the output or render window, nor the same size. 
+
+We could obviously write this more efficiently that I have, where we do simply increment `**srcPic**`, but again for
+illustartive purposes I haven't.

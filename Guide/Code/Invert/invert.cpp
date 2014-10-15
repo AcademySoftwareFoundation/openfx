@@ -208,13 +208,13 @@ namespace {
     return rowStart + (xOffset * nCompsPerPixel);
   }
 
-  // pseudo constructor we use to do our processing
+  // iterate over our pixels and process them
   template <class T, int MAX> 
   void PixelProcessing(OfxImageEffectHandle instance,
-                OfxPropertySetHandle sourceImg,
-                OfxPropertySetHandle outputImg,
-                OfxRectI renderWindow,
-                int nComps)
+                       OfxPropertySetHandle sourceImg,
+                       OfxPropertySetHandle outputImg,
+                       OfxRectI renderWindow,
+                       int nComps)
   {
     // fetch output image info from the property handle
     int dstRowBytes;
