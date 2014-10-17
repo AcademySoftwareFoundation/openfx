@@ -49,6 +49,6 @@ is going one. You should work through them one by one as each will
 build on the one before.
 
 .examples
-  * link:ofxBasicsExample.html[The basic machinery of an OFX plugin.]
-  * link:ofxInvertExample.html[How to access images.]
+  * link:ofxExample1_Basics.html[The basic machinery of an OFX plugin.]
+  * link:ofxExample2_Invert.html[How to access images.]
 

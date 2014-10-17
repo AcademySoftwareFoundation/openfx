@@ -23,12 +23,16 @@ XSLARGS = --stringparam  funcsynopsis.style "ansi" \
 %.html : %.adoc
 	$(ASCIIDOCTOR) -a theme=volnitsky -b html5 $< -o $@
 
-all : ofxProgrammingGuide.html ofxBasicsExample.html ofxInvertExample.html
-
 # programming guide, all in one
-GUIDE_SRCS = ofxProgrammingGuide.adoc ofxBasicsExample.adoc ofxInvertExample.adoc
+GUIDE_SRCS = ofxProgrammingGuide.adoc ofxExample1_Basics.adoc ofxExample2_Invert.adoc
 
-ofxProgrammingGuide.html : $(GUIDE_SRCS)
+GUIDE_HTML = $(GUIDE_SRCS:.adoc=.html)
+
+.PHONYL: all html
+all : html
+
+
+html : $(GUIDE_HTML)
 
 # fetch the style sheet for docbook xslt
 .PHONY: docbook-xsl
@@ -37,5 +41,6 @@ docbook-xsl :
 	unzip -q -o docbook-xsl-download.zip; \
 	rm -f docbook-xsl-download.zip
 
+.PHONY: clean
 clean :
 	rm -rf *.html Guide docbook-xsl

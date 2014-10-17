@@ -157,7 +157,7 @@ pointers. The new suite could then live along side the old suite to provide back
 Plugins have to ask for suites from the host by name with a specific version, how we do that
 is covered next.
 
-== The OfxHost and Fetching Suites
+=== The OfxHost and Fetching Suites
 An instance of an `**OfxHost**` C struct is the thing that allows a plugin to get suites and provides information
 about a host application, it looks like...
 
@@ -261,7 +261,7 @@ NOTE: Plugins have to be very careful with scope of the pointer returned when yo
 be guaranteed to be valid _only_ until the next call to an OFX suite function or the action finishes, or until the action ends. If you want to use the 
 string out of those scope you _must_ copy it.
 
-== Actions, Telling a Plugin What To Do
+== Actions
 Actions are how a host tells a plugin what to do. The `**mainEntry**` function pointer in the `**OfxPlugin**` structure
 is the what accepts actions to do whatever is being requested.
 
@@ -597,3 +597,14 @@ Once the final kOfxActionUnload has been called, even if it doesn't dynamically 
 === Packaging A Plugin
 The compile code for a plugin is contained in a dynamic library. Plugins are distributed as a directory structure that allows you to add icons and other resources you
 may need. There is more detailed information in the OFX Programming Reference Guide.
+
+== Summary
+This example has shown you the basics of the OFX plugin machinery, the main things it illustrated was...
+
+  - the <<The Two Bootstrapper Functions, two bootstrapper functions>> exposed by a plugin that start the plugin discovery process,
+  - the main entry point of a plugin is given <<Actions, actions>> by the host application to do things,
+  - the plugin gets <<Suites, suites>> from the host to gain access to functions in the host,
+  - <<Properties,property sets>> are the main way of passing data back and forth across the API,
+  - image effect plugins are <<Describing Plugins To A Host, described>> in a two step process,
+  - <<Creating Instances, instances are created>> when a host wants to use a plugin to do something,
+  - actions must be called in a <<Life Cycle of a Plugin, certain order>> for the API to work cleanly.
