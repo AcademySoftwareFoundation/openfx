@@ -81,7 +81,6 @@ namespace {
   OfxPropertySuiteV1    *gPropertySuite = 0;
   OfxImageEffectSuiteV1 *gImageEffectSuite = 0;
 
-
   ////////////////////////////////////////////////////////////////////////////////
   // The first _action_ called after the binary is loaded (three boot strapper functions will be howeever)
   OfxStatus LoadAction(void)
@@ -98,11 +97,11 @@ namespace {
 
   ////////////////////////////////////////////////////////////////////////////////
   // the plugin's basic description routine
-  OfxStatus DescribeAction(OfxImageEffectHandle  effect)
+  OfxStatus DescribeAction(OfxImageEffectHandle descriptor)
   {
     // get the property set handle for the plugin
     OfxPropertySetHandle effectProps;
-    gImageEffectSuite->getPropertySet(effect, &effectProps);
+    gImageEffectSuite->getPropertySet(descriptor, &effectProps);
 
     // set some labels and the group it belongs to
     gPropertySuite->propSetString(effectProps, 
@@ -140,11 +139,12 @@ namespace {
   ////////////////////////////////////////////////////////////////////////////////
   //  describe the plugin in context
   OfxStatus
-  DescribeInContextAction( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
+  DescribeInContextAction(OfxImageEffectHandle descriptor,
+                          OfxPropertySetHandle inArgs)
   {
     OfxPropertySetHandle props;
     // define the mandated single output clip
-    gImageEffectSuite->clipDefine(effect, "Output", &props);
+    gImageEffectSuite->clipDefine(descriptor, "Output", &props);
 
     // set the component types we can handle on out output
     gPropertySuite->propSetString(props,
@@ -161,7 +161,7 @@ namespace {
                                   kOfxImageComponentRGB);
 
     // define the mandated single source clip
-    gImageEffectSuite->clipDefine(effect, "Source", &props);
+    gImageEffectSuite->clipDefine(descriptor, "Source", &props);
 
     // set the component types we can handle on our main input
     gPropertySuite->propSetString(props,

@@ -5,15 +5,22 @@ ifeq ($(OSTYPE), darwin)
   OS_LDFLAGS = -bundle
 endif
 
+NAME = basics
 
 CXXFLAGS = $(INCDIR) $(OPTIMISER)
 
-basics.ofx : basics.o
+.PHONY: clean install
+
+$(NAME).ofx : $(NAME).o
 	$(CXX) $(OS_LDFLAGS) $< -o $@
 	mkdir -p $@.bundle/Contents/MacOS/
 	cp $@ $@.bundle/Contents/MacOS/
 
+install :
+	mkdir -p ../built_plugins
+	cp -r $(NAME).ofx.bundle ../built_plugins
+
 clean :
-	rm -rf basics.ofx.bundle
-	rm -rf basics.ofx
-	rm -rf basics.o
+	rm -rf $(NAME).ofx.bundle
+	rm -rf $(NAME).ofx
+	rm -rf $(NAME).o

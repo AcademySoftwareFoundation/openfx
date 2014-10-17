@@ -70,17 +70,17 @@ We have the standard two step description process for this plugin.
 ----
   ////////////////////////////////////////////////////////////////////////////////
   // the plugin's basic description routine
-  OfxStatus DescribeAction(OfxImageEffectHandle  effect)
+  OfxStatus DescribeAction(OfxImageEffectHandle descriptor)
   {
     // get the property set handle for the plugin
     OfxPropertySetHandle effectProps;
-    gImageEffectSuite->getPropertySet(effect, &effectProps);
+    gImageEffectSuite->getPropertySet(descriptor, &effectProps);
 
     // set some labels and the group it belongs to
     gPropertySuite->propSetString(effectProps, 
                                   kOfxPropLabel,
                                   0,
-                                  g"OFX Invert Example");
+                                  "OFX Invert Example");
     gPropertySuite->propSetString(effectProps,
                                   kOfxImageEffectPluginPropGrouping,
                                   0,
@@ -144,11 +144,12 @@ actions.
   ////////////////////////////////////////////////////////////////////////////////
   //  describe the plugin in context
   OfxStatus
-  DescribeInContextAction( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
+  DescribeInContextAction(OfxImageEffectHandle descriptor, 
+                          OfxPropertySetHandle inArgs)
   {
     OfxPropertySetHandle props;
     // define the mandated single output clip
-    gImageEffectSuite->clipDefine(effect, "Output", &props);
+    gImageEffectSuite->clipDefine(descriptor, "Output", &props);
 
     // set the component types we can handle on out output
     gPropertySuite->propSetString(props,
@@ -165,7 +166,7 @@ actions.
                                   kOfxImageComponentRGB);
 
     // define the mandated single source clip
-    gImageEffectSuite->clipDefine(effect, "Source", &props);
+    gImageEffectSuite->clipDefine(descriptor, "Source", &props);
 
     // set the component types we can handle on our main input
     gPropertySuite->propSetString(props,
@@ -613,6 +614,9 @@ image.
           for(int i = 0; i < nComps; ++i) {
             if(i != 3) { // We don't invert alpha.
               *dstPix = MAX - *srcPix; // invert
+            }
+            else {
+              *dstPix = *srcPix;
             }
             ++dstPix; ++srcPix;
           }

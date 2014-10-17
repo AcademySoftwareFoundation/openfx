@@ -129,7 +129,7 @@ namespace {
 
   ////////////////////////////////////////////////////////////////////////////////
   // the plugin's basic description routine
-  OfxStatus DescribeAction(OfxImageEffectHandle  effect)
+  OfxStatus DescribeAction(OfxImageEffectHandle descriptor)
   {
     // check stuff
     ERROR_ABORT_IF(gInLoadedState != true, "kOfxActionLoad has not been called");
@@ -137,7 +137,7 @@ namespace {
 
     // get the property set handle for the plugin
     OfxPropertySetHandle effectProps;
-    gImageEffectSuite->getPropertySet(effect, &effectProps);
+    gImageEffectSuite->getPropertySet(descriptor, &effectProps);
 
     // set some labels and the group it belongs to
     gPropertySuite->propSetString(effectProps, kOfxPropLabel, 0, "OFX Basics Example");
@@ -151,7 +151,7 @@ namespace {
 
   //  describe the plugin in context
   OfxStatus
-  DescribeInContextAction( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
+  DescribeInContextAction(OfxImageEffectHandle descriptor,  OfxPropertySetHandle inArgs)
   {
     // check state
     ERROR_ABORT_IF(gDescribeCalled == false, "DescribeInContextAction called before DescribeAction");
@@ -165,14 +165,14 @@ namespace {
 
     OfxPropertySetHandle props;
     // define the mandated single output clip
-    gImageEffectSuite->clipDefine(effect, "Output", &props);
+    gImageEffectSuite->clipDefine(descriptor, "Output", &props);
 
     // set the component types we can handle on out output
     gPropertySuite->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
     gPropertySuite->propSetString(props, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
 
     // define the mandated single source clip
-    gImageEffectSuite->clipDefine(effect, "Source", &props);
+    gImageEffectSuite->clipDefine(descriptor, "Source", &props);
 
     // set the component types we can handle on our main input
     gPropertySuite->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
@@ -182,14 +182,14 @@ namespace {
   }
 
   //  instance construction
-  OfxStatus CreateInstanceAction( OfxImageEffectHandle effect)
+  OfxStatus CreateInstanceAction(OfxImageEffectHandle instance)
   {
     // check stuff
     ERROR_ABORT_IF(gDescribeInContextCalled == false, "CreateInstanceAction called before DescribeInContext.");
     ++gNumInstancesLiving;
 
     OfxPropertySetHandle effectProps;
-    gImageEffectSuite->getPropertySet(effect, &effectProps);
+    gImageEffectSuite->getPropertySet(instance, &effectProps);
 
     // attach some instance data to the effect handle, it can be anything
     char *myString = strdup("This is random instance data that could be anything you want.");
@@ -201,12 +201,12 @@ namespace {
   }
 
   // instance destruction
-  OfxStatus DestroyInstanceAction( OfxImageEffectHandle  effect)
+  OfxStatus DestroyInstanceAction(OfxImageEffectHandle instance)
   {
     --gNumInstancesLiving;
 
     OfxPropertySetHandle effectProps;
-    gImageEffectSuite->getPropertySet(effect, &effectProps);
+    gImageEffectSuite->getPropertySet(instance, &effectProps);
 
     // get my private instance data
     char *myString = NULL;
@@ -218,9 +218,9 @@ namespace {
   }
 
   // are the settings of the effect making it redundant and so not do anything to the image data
-  OfxStatus IsIdentityAction( OfxImageEffectHandle  effect,
-                              OfxPropertySetHandle inArgs,
-                              OfxPropertySetHandle outArgs)
+  OfxStatus IsIdentityAction(OfxImageEffectHandle instance,
+                             OfxPropertySetHandle inArgs,
+                             OfxPropertySetHandle outArgs)
   {
     // we set the name of the input clip to pull data from
     gPropertySuite->propSetString(outArgs, kOfxPropName, 0, "Source");

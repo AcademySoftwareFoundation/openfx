@@ -362,11 +362,11 @@ From our example plugin, here is the function called by our main entry point in 
 [source, c++]
 .basics.cpp
 ----
-  OfxStatus DescribeAction(OfxImageEffectHandle  effect)
+  OfxStatus DescribeAction(OfxImageEffectHandle descriptor)
   {
     // get the property set handle for the plugin
     OfxPropertySetHandle effectProps;
-    gImageEffectSuite->getPropertySet(effect, &effectProps);
+    gImageEffectSuite->getPropertySet(descriptor, &effectProps);
 
     // set some labels and the group it belongs to
     gPropertySuite->propSetString(effectProps, 
@@ -409,47 +409,35 @@ Again from our example plugin, here is how it responds to the describe in contex
 .basics.cpp
 ----
   OfxStatus
-  DescribeInContextAction( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
+  DescribeInContextAction(OfxImageEffectHandle descriptor, OfxPropertySetHandle inArgs)
   {
+    // check state
+    ERROR_ABORT_IF(gDescribeCalled == false, "DescribeInContextAction called before DescribeAction");
+    gDescribeInContextCalled = true;
+
     // get the context from the inArgs handle
     char *context;
-    gPropertySuite->propGetString(inArgs, 
-                                  kOfxImageEffectPropContext, 
-                                  0, 
-                                  &context);
+    gPropertySuite->propGetString(inArgs, kOfxImageEffectPropContext, 0, &context);
 
-    ERROR_IF(strcmp(context, kOfxImageEffectContextFilter) != 0, 
-             "DescribeInContextAction called on unsupported contex %s", context);
+    ERROR_IF(strcmp(context, kOfxImageEffectContextFilter) != 0, "DescribeInContextAction called on unsupported contex %s", context);
 
     OfxPropertySetHandle props;
     // define the mandated single output clip
-    gImageEffectSuite->clipDefine(effect, "Output", &props);
+    gImageEffectSuite->clipDefine(descriptor, "Output", &props);
 
     // set the component types we can handle on out output
-    gPropertySuite->propSetString(props,
-                                  kOfxImageEffectPropSupportedComponents, 
-                                  0, kOfxImageComponentRGBA);
-    gPropertySuite->propSetString(props, 
-                                  kOfxImageEffectPropSupportedComponents, 
-                                  1,
-                                  kOfxImageComponentAlpha);
+    gPropertySuite->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
+    gPropertySuite->propSetString(props, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
 
-    // define the mandated single source clip 
-    gImageEffectSuite->clipDefine(effect, "Source", &props);
+    // define the mandated single source clip
+    gImageEffectSuite->clipDefine(descriptor, "Source", &props);
 
     // set the component types we can handle on our main input
-    gPropertySuite->propSetString(props, 
-                                  kOfxImageEffectPropSupportedComponents, 
-                                  0,
-                                  kOfxImageComponentRGBA);
-    gPropertySuite->propSetString(props, 
-                                  kOfxImageEffectPropSupportedComponents, 
-                                  1, 
-                                  kOfxImageComponentAlpha);
+    gPropertySuite->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
+    gPropertySuite->propSetString(props, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
 
     return kOfxStatOK;
   }
-
 ----
 In this case I've left the error check cluttering up the snippet so you can see how the `inArgs` property set is used to
 specify which context is currently being described. Our example then goes on define two image clips, the first used for
@@ -481,10 +469,10 @@ it later fetches and destroys. In real plugins, this is typically a hook to deep
 [source, c++]
 .basics.cpp
 ----
-  OfxStatus CreateInstanceAction( OfxImageEffectHandle effect)
+  OfxStatus CreateInstanceAction(OfxImageEffectHandle instance)
   {
     OfxPropertySetHandle effectProps;
-    gImageEffectSuite->getPropertySet(effect, &effectProps);
+    gImageEffectSuite->getPropertySet(instance, &effectProps);
 
     // attach some instance data to the effect handle, it can be anything
     char *myString = strdup("This is random instance data that could be anything you want.");
@@ -499,10 +487,10 @@ it later fetches and destroys. In real plugins, this is typically a hook to deep
   }
 
   // instance destruction
-  OfxStatus DestroyInstanceAction( OfxImageEffectHandle  effect)
+  OfxStatus DestroyInstanceAction(OfxImageEffectHandle instance)
   {
     OfxPropertySetHandle effectProps;
-    gImageEffectSuite->getPropertySet(effect, &effectProps);
+    gImageEffectSuite->getPropertySet(instance, &effectProps);
 
     // get my private instance data
     char *myString = NULL;
@@ -530,7 +518,7 @@ its source images directly. And here is the code that does that...
 [source, c++]
 .basics.cpp
 ----
-  OfxStatus IsIdentityAction( OfxImageEffectHandle effect,
+  OfxStatus IsIdentityAction( OfxImageEffectHandle instance,
                               OfxPropertySetHandle inArgs,
                               OfxPropertySetHandle outArgs)
   {
