@@ -30,8 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*
   Author : Bruno Nicoletti (2014)
   
-  This plugin will take you through the basics of grabbing and processing
-  images with an OFX plugin by grabbing and input image and inverting it.
+  This plugin will take you through the basics of defining and using
+  parameters as well as how to use instance data.
 
   The accompanying guide will explain what is happening in more detail.
 */
@@ -39,6 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+
 #include <string>
 #include <iostream>
 
@@ -55,6 +57,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 // macro to write a simple message, only works if 'VERBOSE' is #defined
+//#define VERBOSE
 #ifdef VERBOSE
 #  define MESSAGE(MSG, ...) DUMP("", MSG, ##__VA_ARGS__)
 #else
@@ -73,42 +76,88 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   }                                             \
 }
 
+// name of our two params
+#define GAIN_PARAM_NAME "gain"
+#define APPLY_TO_ALPHA_PARAM_NAME "applyToAlpha"
+
 // anonymous namespace to hide our symbols in
 namespace {
   ////////////////////////////////////////////////////////////////////////////////
   // set of suite pointers provided by the host
   OfxHost               *gHost;
-  OfxPropertySuiteV1    *gPropertySuite = 0;
+  OfxPropertySuiteV1    *gPropertySuite    = 0;
   OfxImageEffectSuiteV1 *gImageEffectSuite = 0;
+  OfxParameterSuiteV1   *gParameterSuite   = 0;
 
+  ////////////////////////////////////////////////////////////////////////////////
+  // our instance data, where we are caching away clip and param handles
+  struct MyInstanceData {
+    // handles to the clips we deal with
+    OfxImageClipHandle sourceClip;
+    OfxImageClipHandle outputClip;
+    
+    // handles to a our parameters
+    OfxParamHandle gainParam;
+    OfxParamHandle applyToAlphaParam;
+  };
+  
+  // get my instance data from a property set handle
+  MyInstanceData *FetchInstanceData(OfxPropertySetHandle effectProps)
+  {
+    MyInstanceData *myData = 0;
+    gPropertySuite->propGetPointer(effectProps,  
+                                   kOfxPropInstanceData, 
+                                   0, 
+                                   (void **) &myData);
+    return myData;
+  }
+
+  // get my instance data
+  MyInstanceData *FetchInstanceData(OfxImageEffectHandle effect)
+  {
+    // get the property handle for the plugin
+    OfxPropertySetHandle effectProps;
+    gImageEffectSuite->getPropertySet(effect, &effectProps);
+
+    // and get the instance data out of that
+    return FetchInstanceData(effectProps);
+  }
+
+
+  template <class SUITE>
+  void FetchSuite(SUITE *& suite, const char *suiteName, int suiteVersion)
+  {
+    suite = (SUITE *) gHost->fetchSuite(gHost->host, suiteName, suiteVersion);
+    if(!suite) {
+      ERROR_ABORT_IF(suite == NULL, "Failed to fetch the " kOfxImageEffectSuite " verison %d from the host.", suiteVersion);
+    }
+  }
 
   ////////////////////////////////////////////////////////////////////////////////
   // The first _action_ called after the binary is loaded (three boot strapper functions will be howeever)
   OfxStatus LoadAction(void)
   {
-    /// now fetch a suite out of the host via it's fetch suite function.
-    gPropertySuite = (OfxPropertySuiteV1 *) gHost->fetchSuite(gHost->host, kOfxPropertySuite, 1);
-    ERROR_ABORT_IF(gPropertySuite == 0, "Failed to fetch the " kOfxPropertySuite " verison 1 from the host.");
-
-    gImageEffectSuite = (OfxImageEffectSuiteV1 *) gHost->fetchSuite(gHost->host, kOfxImageEffectSuite, 1);
-    ERROR_ABORT_IF(gImageEffectSuite == 0, "Failed to fetch the " kOfxImageEffectSuite " verison 1 from the host.");
+    // fetch our three suites
+    FetchSuite(gPropertySuite,    kOfxPropertySuite,    1);
+    FetchSuite(gImageEffectSuite, kOfxImageEffectSuite, 1);
+    FetchSuite(gParameterSuite,   kOfxParameterSuite,   1);
 
     return kOfxStatOK;
   }
 
   ////////////////////////////////////////////////////////////////////////////////
   // the plugin's basic description routine
-  OfxStatus DescribeAction(OfxImageEffectHandle  effect)
+  OfxStatus DescribeAction(OfxImageEffectHandle descriptor)
   {
     // get the property set handle for the plugin
     OfxPropertySetHandle effectProps;
-    gImageEffectSuite->getPropertySet(effect, &effectProps);
+    gImageEffectSuite->getPropertySet(descriptor, &effectProps);
 
     // set some labels and the group it belongs to
     gPropertySuite->propSetString(effectProps, 
                                   kOfxPropLabel,
                                   0,
-                                  "OFX Invert Example");
+                                  "OFX Gain Example");
     gPropertySuite->propSetString(effectProps,
                                   kOfxImageEffectPluginPropGrouping,
                                   0,
@@ -140,11 +189,12 @@ namespace {
   ////////////////////////////////////////////////////////////////////////////////
   //  describe the plugin in context
   OfxStatus
-  DescribeInContextAction( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
+  DescribeInContextAction(OfxImageEffectHandle descriptor,
+                          OfxPropertySetHandle inArgs)
   {
     OfxPropertySetHandle props;
     // define the mandated single output clip
-    gImageEffectSuite->clipDefine(effect, "Output", &props);
+    gImageEffectSuite->clipDefine(descriptor, "Output", &props);
 
     // set the component types we can handle on out output
     gPropertySuite->propSetString(props,
@@ -161,7 +211,7 @@ namespace {
                                   kOfxImageComponentRGB);
 
     // define the mandated single source clip
-    gImageEffectSuite->clipDefine(effect, "Source", &props);
+    gImageEffectSuite->clipDefine(descriptor, "Source", &props);
 
     // set the component types we can handle on our main input
     gPropertySuite->propSetString(props,
@@ -176,11 +226,79 @@ namespace {
                                   kOfxImageEffectPropSupportedComponents,
                                   2,
                                   kOfxImageComponentRGB);
+    
+    ////////////////////////////////////////////////////////////////////////////////
+    // now define the our gain parameter
+
+    // first get the handle to the parameter set 
+    OfxParamSetHandle paramSet;
+    gImageEffectSuite->getParamSet(descriptor, &paramSet);
+
+    OfxParamHandle param;
+    OfxPropertySetHandle paramProps;
+
+    // now define a 'gain' parameter and set its properties
+    gParameterSuite->paramDefine(paramSet, kOfxParamTypeDouble, GAIN_PARAM_NAME, &paramProps);
+    gPropertySuite->propSetString(paramProps, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeScale);
+    gPropertySuite->propSetDouble(paramProps, kOfxParamPropDefault, 0, 1.0);
+    gPropertySuite->propSetDouble(paramProps, kOfxParamPropMin, 0, 0.0);
+    gPropertySuite->propSetDouble(paramProps, kOfxParamPropDisplayMin, 0, 0.0);
+    gPropertySuite->propSetDouble(paramProps, kOfxParamPropDisplayMax, 0, 10.0);
+    gPropertySuite->propSetString(paramProps, kOfxPropLabel, 0, "Gain");
+    gPropertySuite->propSetString(paramProps, kOfxParamPropHint, 0, "How much to multiply the image by.");
+    
+    // and define the 'applyToAlpha' parameters and set its properties
+    gParameterSuite->paramDefine(paramSet, kOfxParamTypeBoolean, APPLY_TO_ALPHA_PARAM_NAME, &paramProps);
+    gPropertySuite->propSetInt(paramProps, kOfxParamPropDefault, 0, 0);
+    gPropertySuite->propSetString(paramProps, kOfxParamPropHint, 0, "Whether to apply the gain value to alpha as well.");
+    gPropertySuite->propSetString(paramProps, kOfxPropLabel, 0, "Apply To Alpha");
 
     return kOfxStatOK;
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  /// instance construction
+  OfxStatus CreateInstanceAction( OfxImageEffectHandle instance)
+  {
+    OfxPropertySetHandle effectProps;
+    gImageEffectSuite->getPropertySet(instance, &effectProps);
 
+    // To avoid continual lookup, put our handles into our instance
+    // data, those handles are guaranteed to be valid for the duration
+    // of the instance.
+    MyInstanceData *myData = new MyInstanceData;
+
+    // Set my private instance data
+    gPropertySuite->propSetPointer(effectProps, kOfxPropInstanceData, 0, (void *) myData);
+    
+    // Cache the source and output clip handles
+    gImageEffectSuite->clipGetHandle(instance, "Source", &myData->sourceClip, 0);
+    gImageEffectSuite->clipGetHandle(instance, "Output", &myData->outputClip, 0);
+  
+    // Cache away the param handles
+    OfxParamSetHandle paramSet;
+    gImageEffectSuite->getParamSet(instance, &paramSet);
+    gParameterSuite->paramGetHandle(paramSet, GAIN_PARAM_NAME, &myData->gainParam, 0);
+    gParameterSuite->paramGetHandle(paramSet, APPLY_TO_ALPHA_PARAM_NAME, &myData->applyToAlphaParam, 0);
+
+    return kOfxStatOK;
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // instance destruction
+  OfxStatus DestroyInstanceAction( OfxImageEffectHandle instance)
+  {
+    OfxPropertySetHandle effectProps;
+    gImageEffectSuite->getPropertySet(instance, &effectProps);
+
+    // get my instance data
+    MyInstanceData *myData = FetchInstanceData(effectProps);
+    delete myData;
+
+    return kOfxStatOK;
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
   // Look up a pixel in the image. returns null if the pixel was not
   // in the bounds of the image
   template <class T> 
@@ -208,9 +326,12 @@ namespace {
     return rowStart + (xOffset * nCompsPerPixel);
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
   // iterate over our pixels and process them
   template <class T, int MAX> 
-  void PixelProcessing(OfxImageEffectHandle instance,
+  void PixelProcessing(double gain,
+                       bool applyToAlpha, 
+                       OfxImageEffectHandle instance,
                        OfxPropertySetHandle sourceImg,
                        OfxPropertySetHandle outputImg,
                        OfxRectI renderWindow,
@@ -240,7 +361,7 @@ namespace {
       throw "Bad source pointer";
     }
 
-    // and do some inverting
+    // and do some processing
     for(int y = renderWindow.y1; y < renderWindow.y2; y++) {
       if(gImageEffectSuite->abort(instance)) break;
 
@@ -255,17 +376,26 @@ namespace {
         if(srcPix) {
           // we have one, iterate each component in the pixels
           for(int i = 0; i < nComps; ++i) {
-            if(i != 3) { // We don't invert alpha.
-              *dstPix = MAX - *srcPix; // invert
+            if(i != 3 || applyToAlpha) { // We only apply to alpha if we have the param set to do so
+
+              // multiply our source component by our gain value
+              double value = *srcPix * gain;
+
+              // if it has gone out of legal bounds, clamp it
+              if(MAX != 1) {  // we let floating point pixels over and underflow
+                value = value < 0 ? 0 : (value > MAX ? MAX : value);
+              }
+              *dstPix = T(value);
             }
             else {
               *dstPix = *srcPix;
             }
+            // increment to next component
             ++dstPix; ++srcPix;
           }
         }
         else {
-          // we don't have a pixel in the source image, set output to black
+          // we don't have a pixel in the source image, set output to zero
           for(int i = 0; i < nComps; ++i) {
             *dstPix = 0;
             ++dstPix;
@@ -289,26 +419,28 @@ namespace {
   
     gPropertySuite->propGetDouble(inArgs, kOfxPropTime, 0, &time);
     gPropertySuite->propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &renderWindow.x1);
-
-    // fetch output clip
-    OfxImageClipHandle outputClip;
-    gImageEffectSuite->clipGetHandle(instance, "Output", &outputClip, NULL);
     
-    // fetch main input clip
-    OfxImageClipHandle sourceClip;
-    gImageEffectSuite->clipGetHandle(instance, "Source", &sourceClip, NULL);
+    // get our instance data which has out clip and param handles
+    MyInstanceData *myData = FetchInstanceData(instance);
+
+    // get our param values
+    double gain = 1.0;
+    int applyToAlpha = 0;
+    gParameterSuite->paramGetValueAtTime(myData->gainParam, time, &gain);
+    gParameterSuite->paramGetValueAtTime(myData->applyToAlphaParam, time, &applyToAlpha);
+    
 
     // the property sets holding our images
     OfxPropertySetHandle outputImg = NULL, sourceImg = NULL;
     try {
       // fetch image to render into from that clip
       OfxPropertySetHandle outputImg;
-      if(gImageEffectSuite->clipGetImage(outputClip, time, NULL, &outputImg) != kOfxStatOK) {
+      if(gImageEffectSuite->clipGetImage(myData->outputClip, time, NULL, &outputImg) != kOfxStatOK) {
         throw " no output image!";
       }
                   
       // fetch image at render time from that clip
-      if (gImageEffectSuite->clipGetImage(sourceClip, time, NULL, &sourceImg) != kOfxStatOK) {
+      if (gImageEffectSuite->clipGetImage(myData->sourceClip, time, NULL, &sourceImg) != kOfxStatOK) {
         throw " no source image!";
       }
       
@@ -337,13 +469,16 @@ namespace {
       std::string dataType = cstr;
 
       if(dataType == kOfxBitDepthByte) {
-        PixelProcessing<unsigned char, 255>(instance, sourceImg, outputImg, renderWindow, nComps);
+        PixelProcessing<unsigned char, 255>(gain, applyToAlpha != 0, 
+                                            instance, sourceImg, outputImg, renderWindow, nComps);
       }
       else if(dataType == kOfxBitDepthShort) {
-        PixelProcessing<unsigned short, 65535>(instance, sourceImg, outputImg, renderWindow, nComps);
+        PixelProcessing<unsigned short, 65535>(gain, applyToAlpha != 0, 
+                                               instance, sourceImg, outputImg, renderWindow, nComps);
       }
       else if (dataType == kOfxBitDepthFloat) {
-        PixelProcessing<float, 1>(instance, sourceImg, outputImg, renderWindow, nComps);
+        PixelProcessing<float, 1>(gain, applyToAlpha != 0, 
+                                  instance, sourceImg, outputImg, renderWindow, nComps);
       }
       else {
         throw " bad data type!";
@@ -370,6 +505,31 @@ namespace {
   
     // all was well
     return status;
+  }
+
+  // are the settings of the effect making it redundant and so not do anything to the image data
+  OfxStatus IsIdentityAction( OfxImageEffectHandle instance,
+                              OfxPropertySetHandle inArgs,
+                              OfxPropertySetHandle outArgs)
+  {
+    MyInstanceData *myData = FetchInstanceData(instance);
+
+    double time;
+    gPropertySuite->propGetDouble(inArgs, kOfxPropTime, 0, &time);
+    
+    double gain = 1.0;
+    gParameterSuite->paramGetValueAtTime(myData->gainParam, time, &gain);
+
+    // if the gain value is 1.0 (or nearly so) say we aren't doing anything
+    if(fabs(gain - 1.0) < 0.000000001) {
+      // we set the name of the input clip to pull default images from
+      gPropertySuite->propSetString(outArgs, kOfxPropName, 0, "Source");
+      // and say we trapped the action and we are at the identity
+      return kOfxStatOK;
+    }
+
+    // say we aren't at the identity
+    return kOfxStatReplyDefault;
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -404,6 +564,18 @@ namespace {
       // the second action called to describe what the plugin does in a specific context
       returnStatus = DescribeInContextAction(effect, inArgs);
     }
+    else if(strcmp(action, kOfxActionCreateInstance) == 0) {
+      // the action called when an instance of a plugin is created
+      returnStatus = CreateInstanceAction(effect);
+    } 
+    else if(strcmp(action, kOfxActionDestroyInstance) == 0) {
+      // the action called when an instance of a plugin is destroyed
+      returnStatus = DestroyInstanceAction(effect);
+    } 
+    else if(strcmp(action, kOfxImageEffectActionIsIdentity) == 0) {
+      // Check to see if our param settings cause nothing to happen
+      returnStatus = IsIdentityAction(effect, inArgs, outArgs);
+    }
     else if(strcmp(action, kOfxImageEffectActionRender) == 0) {
       // action called to render a frame
       returnStatus = RenderAction(effect, inArgs, outArgs);
@@ -424,7 +596,7 @@ static OfxPlugin effectPluginStruct =
 {       
   kOfxImageEffectPluginApi,                // The API this plugin satisfies.
   1,                                       // The version of the API it satisifes.
-  "org.openeffects:InvertExamplePlugin",   // The unique ID of this plugin.
+  "org.openeffects:GainExamplePlugin",     // The unique ID of this plugin.
   1,                                       // The major version number of this plugin.
   0,                                       // The minor version number of this plugin.
   SetHostFunc,                             // Function used to pass back to the plugin the OFXHost struct.
