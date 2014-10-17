@@ -101,6 +101,7 @@ namespace {
     OfxParamHandle applyToAlphaParam;
   };
   
+  ////////////////////////////////////////////////////////////////////////////////
   // get my instance data from a property set handle
   MyInstanceData *FetchInstanceData(OfxPropertySetHandle effectProps)
   {
@@ -112,6 +113,7 @@ namespace {
     return myData;
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
   // get my instance data
   MyInstanceData *FetchInstanceData(OfxImageEffectHandle effect)
   {
@@ -123,7 +125,8 @@ namespace {
     return FetchInstanceData(effectProps);
   }
 
-
+  ////////////////////////////////////////////////////////////////////////////////
+  // get the named suite and put it in the given pointer, with error checking
   template <class SUITE>
   void FetchSuite(SUITE *& suite, const char *suiteName, int suiteVersion)
   {
@@ -227,7 +230,6 @@ namespace {
                                   2,
                                   kOfxImageComponentRGB);
     
-    ////////////////////////////////////////////////////////////////////////////////
     // now define the our gain parameter
 
     // first get the handle to the parameter set 

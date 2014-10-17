@@ -1,0 +1,154 @@
+= OFX Programming Guide : Parameters
+Author:Bruno Nicoletti
+2014-10-17
+:toc:
+:data-uri:
+:source-highlighter: coderay
+
+This guide will take you through the basics of creating and using parameters in OFX.  An example plugin will be used to illustrate 
+how it all works and its source can be found in the pass:[C++] 
+file `GuideExamples/Gain/gain.cpp`. 
+This plugin takes an image and multiplies the components by a parameter's value.
+Ideally you should have read the guide to the link:ofxExample2_invert.html[basic image processing] before you read this guide.
+
+== Parameters
+Host applications need parameters to make their own effects work. Such as the size of a blur effect, colours to apply to text, 
+a point for the centre of a lens flare and so on. The host app will use
+some widget set to present a user interface for the parameter, have ways to do undo/redo, saving/loading, manage animation
+etc...
+
+The OFX parameters suite is the bridge from a plugin to the host's native parameter set so plugin devs don't have to do all
+that for themselves and also get any other advantages a host's parameters give (e.g. scripting). 
+We get a plugin to tell the host what parameters it wants during description, and when an instance is created, the host will make whatever
+native data structures it needs to manage those params. The plugin can then grab values from the various parameters to
+do what it needs to do, it can even write back to parameters under certain conditions.
+
+Our simple gain example will make two parameters, a `**double**` param which is the gain amount and a `**bool**` param
+which controls whether to apply the gain amount to the alpha of an RGBA image. There are more parameter types, and quite
+a few properties you can set on a param to control how it should behave in a host application. The current parameter types available are...
+
+  - double - 1, 2 or 3D double precision floating point parameters, footnote:[the API manages floating point params as doubles, the host could be
+using 32 bit floats, or fixed precision for that matter, so long as the values are passed back and forth as doubles, all will be fine]
+  - integers - 1, 2 or 3D,
+  - colour parameters,
+  - boolean parameters,
+  - 'choice' parameters (where the user gets to choise 1-of-N options),
+  - string parameters,
+  - parametric parameters (which can be used for lookup tables and so on),
+  - custom parameters (where you manage all the parameter state and UI yourself).
+
+There are several UI elements that are described with psuedo parameters, these are...
+
+  - push buttons - to have the plugin do something when the user tells it (eg: analyse and image and set some params),
+  - group params - to organise params in a scrolling type UI,
+  - page params - for hosts that have a paged parameter layout as opposed to a scrolling UI.
+
+NOTE: The state of a plugin instance is uniquely defined by the value of its parameters and input clips. You are asking for trouble if you
+try and store important data in separate files and so on. The host won't be able to properly know when things have changed so as to trigger
+re-renders. This is a fundamental aspect of the API. If it isn't in a param, it is going to cause problems with the host if you rely on it.
+
+== Actions
+This example doesn't trap any actions you haven't already seen in the other examples, it just does a little bit more in them.
+Seeing as you should be familiar with how the main entry point works, I won't bother with the code listing from now on. However
+I will list the actions it traps and what it will do in them...
+
+  - kOfxActionLoad - to grab suites from the host,
+  - kOfxActionDescribe and kOfxImageEffectActionDescribeInContext - to describe the plugin to the host, including parameters,
+  - kOfxActionCreateInstance and kOfxActionDestroyInstance - to create and destroy instance data, where we cache handles to clips and parameters,
+  - kOfxImageEffectActionIsIdentity - to check if the parameter values are at their defaults and so the plugin can be ignore by the host,
+  - kOfxImageEffectActionRender - to actually process pixels.
+
+Now seeing as we are going to be playing with parameters, our plugin will need a new suite, the parameters suite, and our load action now looks like...
+
+[source, c++]
+.gain.cpp New Load Action
+----
+  OfxPropertySuiteV1    *gPropertySuite    = 0;
+  OfxImageEffectSuiteV1 *gImageEffectSuite = 0;
+  OfxParameterSuiteV1   *gParameterSuite   = 0;
+
+  ////////////////////////////////////////////////////////////////////////////////  
+  // get the named suite and put it in the given pointer, with error checking
+  template <class SUITE>
+  void FetchSuite(SUITE *& suite, const char *suiteName, int suiteVersion)
+  {
+    suite = (SUITE *) gHost->fetchSuite(gHost->host, suiteName, suiteVersion);
+    if(!suite) {
+      ERROR_ABORT_IF(suite == NULL
+                     , "Failed to fetch the " kOfxImageEffectSuite " verison %d from the host."
+                     , suiteVersion);
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // The first _action_ called after the binary is loaded 
+  OfxStatus LoadAction(void)
+  {
+    // fetch our three suites
+    FetchSuite(gPropertySuite,    kOfxPropertySuite,    1);
+    FetchSuite(gImageEffectSuite, kOfxImageEffectSuite, 1);
+    FetchSuite(gParameterSuite,   kOfxParameterSuite,   1);
+
+    return kOfxStatOK;
+  }
+----
+
+You can see I've written a `**FetchSuite**` function, as I got bored of writing the same code over and over. We are now fetching the a
+suite of type `**OfxParameterSuiteV1**` which is defined in the header file **ofxParam.h**. This is the suite we use to manipulate
+parameters.
+
+
+== Describing Our Plugin
+
+We have the standard two step description process for this plugin. The Describe action is almost exactly the same as in our previous 
+examples, some names have been changed is all. However, the describe in context action has a few more things going on.
+
+[source, c++]
+.gain.cpp Describing Parameter
+----
+  OfxStatus
+  DescribeInContextAction(OfxImageEffectHandle descriptor,
+                          OfxPropertySetHandle inArgs)
+  {
+    ...
+    BIG SNIP OF EXACTLY THE SAME CODE IN THE LAST EXAMPLE
+    ...
+
+    // first get the handle to the parameter set 
+    OfxParamSetHandle paramSet;
+    gImageEffectSuite->getParamSet(descriptor, &paramSet);
+
+    OfxParamHandle param;
+    OfxPropertySetHandle paramProps;
+
+    // now define a 'gain' parameter and set its properties
+    gParameterSuite->paramDefine(paramSet, kOfxParamTypeDouble, GAIN_PARAM_NAME, &paramProps);
+    gPropertySuite->propSetString(paramProps, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeScale);
+    gPropertySuite->propSetDouble(paramProps, kOfxParamPropDefault, 0, 1.0);
+    gPropertySuite->propSetDouble(paramProps, kOfxParamPropMin, 0, 0.0);
+    gPropertySuite->propSetDouble(paramProps, kOfxParamPropDisplayMin, 0, 0.0);
+    gPropertySuite->propSetDouble(paramProps, kOfxParamPropDisplayMax, 0, 10.0);
+    gPropertySuite->propSetString(paramProps, kOfxPropLabel, 0, "Gain");
+    gPropertySuite->propSetString(paramProps, kOfxParamPropHint, 0, "How much to multiply the image by.");
+    
+    // and define the 'applyToAlpha' parameters and set its properties
+    gParameterSuite->paramDefine(paramSet, kOfxParamTypeBoolean, APPLY_TO_ALPHA_PARAM_NAME, &paramProps);
+    gPropertySuite->propSetInt(paramProps, kOfxParamPropDefault, 0, 0);
+    gPropertySuite->propSetString(paramProps, kOfxParamPropHint, 0, "Whether to apply the gain value to alpha as well.");
+    gPropertySuite->propSetString(paramProps, kOfxPropLabel, 0, "Apply To Alpha");
+
+    return kOfxStatOK;
+  }
+----
+I've chopped out the code to describe clips, it is exactly the same as in the last example. What's new is the parameter
+description. 
+
+
+
+== Summary
+This plugin has shown you the basics of working with OFX images, the main things it illustrated were...
+
+   - what are <<Clips, clips>> and how we get images from clips,
+   - how <<Images In OFX, images>> are laid out in memory and how to access pixels,
+   - the basics of the <<The Render Action, render action>>.
+   
