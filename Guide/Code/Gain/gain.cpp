@@ -132,7 +132,10 @@ namespace {
   {
     suite = (SUITE *) gHost->fetchSuite(gHost->host, suiteName, suiteVersion);
     if(!suite) {
-      ERROR_ABORT_IF(suite == NULL, "Failed to fetch the " kOfxImageEffectSuite " verison %d from the host.", suiteVersion);
+      ERROR_ABORT_IF(suite == NULL, 
+                     "Failed to fetch %s verison %d from the host.", 
+                     suiteName, 
+                     suiteVersion);
     }
   }
 
@@ -230,30 +233,64 @@ namespace {
                                   2,
                                   kOfxImageComponentRGB);
     
-    // now define the our gain parameter
-
     // first get the handle to the parameter set 
     OfxParamSetHandle paramSet;
     gImageEffectSuite->getParamSet(descriptor, &paramSet);
 
-    OfxParamHandle param;
+    // properties on our parameter
     OfxPropertySetHandle paramProps;
 
     // now define a 'gain' parameter and set its properties
-    gParameterSuite->paramDefine(paramSet, kOfxParamTypeDouble, GAIN_PARAM_NAME, &paramProps);
-    gPropertySuite->propSetString(paramProps, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeScale);
-    gPropertySuite->propSetDouble(paramProps, kOfxParamPropDefault, 0, 1.0);
-    gPropertySuite->propSetDouble(paramProps, kOfxParamPropMin, 0, 0.0);
-    gPropertySuite->propSetDouble(paramProps, kOfxParamPropDisplayMin, 0, 0.0);
-    gPropertySuite->propSetDouble(paramProps, kOfxParamPropDisplayMax, 0, 10.0);
-    gPropertySuite->propSetString(paramProps, kOfxPropLabel, 0, "Gain");
-    gPropertySuite->propSetString(paramProps, kOfxParamPropHint, 0, "How much to multiply the image by.");
+    gParameterSuite->paramDefine(paramSet, 
+                                 kOfxParamTypeDouble, 
+                                 GAIN_PARAM_NAME, 
+                                 &paramProps);
+    gPropertySuite->propSetString(paramProps,
+                                  kOfxParamPropDoubleType, 
+                                  0,
+                                  kOfxParamDoubleTypeScale);
+    gPropertySuite->propSetDouble(paramProps, 
+                                  kOfxParamPropDefault,
+                                  0,
+                                  1.0);
+    gPropertySuite->propSetDouble(paramProps,
+                                  kOfxParamPropMin,
+                                  0,
+                                  0.0);
+    gPropertySuite->propSetDouble(paramProps,
+                                  kOfxParamPropDisplayMin,
+                                  0,
+                                  0.0);
+    gPropertySuite->propSetDouble(paramProps,
+                                  kOfxParamPropDisplayMax,
+                                  0,
+                                  10.0);
+    gPropertySuite->propSetString(paramProps,
+                                  kOfxPropLabel,
+                                  0,
+                                  "Gain");
+    gPropertySuite->propSetString(paramProps,
+                                  kOfxParamPropHint,
+                                  0,
+                                  "How much to multiply the image by.");
     
     // and define the 'applyToAlpha' parameters and set its properties
-    gParameterSuite->paramDefine(paramSet, kOfxParamTypeBoolean, APPLY_TO_ALPHA_PARAM_NAME, &paramProps);
-    gPropertySuite->propSetInt(paramProps, kOfxParamPropDefault, 0, 0);
-    gPropertySuite->propSetString(paramProps, kOfxParamPropHint, 0, "Whether to apply the gain value to alpha as well.");
-    gPropertySuite->propSetString(paramProps, kOfxPropLabel, 0, "Apply To Alpha");
+    gParameterSuite->paramDefine(paramSet,
+                                 kOfxParamTypeBoolean,
+                                 APPLY_TO_ALPHA_PARAM_NAME,
+                                 &paramProps);
+    gPropertySuite->propSetInt(paramProps,
+                               kOfxParamPropDefault,
+                               0,
+                               0);
+    gPropertySuite->propSetString(paramProps,
+                                  kOfxParamPropHint,
+                                  0,
+                                  "Whether to apply the gain value to alpha as well.");
+    gPropertySuite->propSetString(paramProps,
+                                  kOfxPropLabel,
+                                  0,
+                                  "Apply To Alpha");
 
     return kOfxStatOK;
   }
@@ -280,8 +317,14 @@ namespace {
     // Cache away the param handles
     OfxParamSetHandle paramSet;
     gImageEffectSuite->getParamSet(instance, &paramSet);
-    gParameterSuite->paramGetHandle(paramSet, GAIN_PARAM_NAME, &myData->gainParam, 0);
-    gParameterSuite->paramGetHandle(paramSet, APPLY_TO_ALPHA_PARAM_NAME, &myData->applyToAlphaParam, 0);
+    gParameterSuite->paramGetHandle(paramSet,
+                                    GAIN_PARAM_NAME,
+                                    &myData->gainParam,
+                                    0);
+    gParameterSuite->paramGetHandle(paramSet, 
+                                    APPLY_TO_ALPHA_PARAM_NAME, 
+                                    &myData->applyToAlphaParam,
+                                    0);
 
     return kOfxStatOK;
   }
@@ -290,11 +333,8 @@ namespace {
   // instance destruction
   OfxStatus DestroyInstanceAction( OfxImageEffectHandle instance)
   {
-    OfxPropertySetHandle effectProps;
-    gImageEffectSuite->getPropertySet(instance, &effectProps);
-
     // get my instance data
-    MyInstanceData *myData = FetchInstanceData(effectProps);
+    MyInstanceData *myData = FetchInstanceData(instance);
     delete myData;
 
     return kOfxStatOK;
@@ -368,18 +408,25 @@ namespace {
       if(gImageEffectSuite->abort(instance)) break;
 
       // get the row start for the output image
-      T *dstPix = pixelAddress<T>(renderWindow.x1, y, dstPtr, dstBounds, dstRowBytes, nComps);
+      T *dstPix = pixelAddress<T>(renderWindow.x1, y, 
+                                  dstPtr, 
+                                  dstBounds, 
+                                  dstRowBytes, 
+                                  nComps);
 
       for(int x = renderWindow.x1; x < renderWindow.x2; x++) {
         
         // get the source pixel
-        T *srcPix = pixelAddress<T>(x, y, srcPtr, srcBounds, srcRowBytes, nComps);
+        T *srcPix = pixelAddress<T>(x, y, 
+                                    srcPtr, 
+                                    srcBounds,
+                                    srcRowBytes,
+                                    nComps);
 
         if(srcPix) {
           // we have one, iterate each component in the pixels
           for(int i = 0; i < nComps; ++i) {
-            if(i != 3 || applyToAlpha) { // We only apply to alpha if we have the param set to do so
-
+            if(i != 3 || applyToAlpha) { 
               // multiply our source component by our gain value
               double value = *srcPix * gain;
 
