@@ -1,4 +1,4 @@
-SUBDIRS = Basics Invert Gain
+SUBDIRS = Example1 Example2 Example3 Example4
 
 .PHONY : default clean
 

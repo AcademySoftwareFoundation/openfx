@@ -89,6 +89,149 @@ namespace {
   OfxParameterSuiteV1   *gParameterSuite   = 0;
 
   ////////////////////////////////////////////////////////////////////////////////
+  // class to manage OFX images
+  class Image {
+  public    :
+    // construct from a property set
+    Image(OfxPropertySetHandle propSet);
+
+    // construct from a property set
+    Image(OfxImageClipHandle clip, double frame);
+
+    // destructor
+    ~Image();
+    
+    // get it all cast to the right type
+    template <class T>
+    T *pixelAddress(int x, int y)
+    {
+      return reinterpret_cast<T *>(rawAddress(x, y));
+    }
+
+    // are we empty?
+    operator bool() 
+    {
+      return propSet_ != NULL && dataPtr_ != NULL;
+    }
+
+    // bytes per component
+    int bytesPerComponent() const { return bytesPerComponent_; }
+
+    // bytes per component
+    int nComponents() const { return nComponents_; }
+
+  protected :
+    void construct();
+
+    // Look up a pixel address in the image. returns null if the pixel was not
+    // in the bounds of the image
+    void *rawAddress(int x, int y);
+
+    OfxPropertySetHandle propSet_;
+    int rowBytes_;
+    OfxRectI bounds_;
+    char *dataPtr_;
+    int nComponents_;
+    int bytesPerComponent_;
+    int bytesPerPixel_;
+  };
+
+  // construct from a property set
+  Image::Image(OfxPropertySetHandle propSet)
+    : propSet_(propSet)
+  {
+    construct();
+  }
+
+  // construct by fetching from a clip
+  Image::Image(OfxImageClipHandle clip, double time)
+    : propSet_(NULL)
+  {
+    if (gImageEffectSuite->clipGetImage(clip, time, NULL, &propSet_) == kOfxStatOK) {
+      construct();
+    }
+    else {
+      propSet_ = NULL;
+    }
+  }
+
+  // assemble it all togther
+  void Image::construct()
+  {
+    if(propSet_) {
+      gPropertySuite->propGetInt(propSet_, kOfxImagePropRowBytes, 0, &rowBytes_);
+      gPropertySuite->propGetIntN(propSet_, kOfxImagePropBounds, 4, &bounds_.x1);
+      gPropertySuite->propGetPointer(propSet_, kOfxImagePropData, 0, (void **) &dataPtr_);
+        
+      // how many components per pixel?
+      char *cstr;
+      gPropertySuite->propGetString(propSet_, kOfxImageEffectPropComponents, 0, &cstr);
+
+      if(strcmp(cstr, kOfxImageComponentRGBA) == 0) {
+        nComponents_ = 4;
+      }
+      else if(strcmp(cstr, kOfxImageComponentRGB) == 0) {
+        nComponents_ = 3;
+      }
+      else if(strcmp(cstr, kOfxImageComponentAlpha) == 0) {
+        nComponents_ = 1;
+      }
+      else {
+        throw " bad pixel type!";
+      }
+
+      // what is the data type
+      gPropertySuite->propGetString(propSet_, kOfxImageEffectPropPixelDepth, 0, &cstr);
+      if(strcmp(cstr, kOfxBitDepthByte) == 0) {
+        bytesPerComponent_ = 1;
+      }
+      else if(strcmp(cstr, kOfxBitDepthShort) == 0) {
+        bytesPerComponent_ = 2;
+      }
+      else if(strcmp(cstr, kOfxBitDepthFloat) == 0) {
+        bytesPerComponent_ = 4;
+      }
+      else {
+        throw " bad pixel type!";
+      }
+
+      bytesPerPixel_ = bytesPerComponent_ * nComponents_;
+    }
+    else {
+      rowBytes_ = 0;
+      bounds_.x1 = bounds_.x2 = bounds_.y1 = bounds_.y2 = 0;
+      dataPtr_ = NULL;
+      nComponents_ = 0;
+      bytesPerComponent_ = 0;
+    }
+  }
+
+  // destructor
+  Image::~Image()
+  {
+    if(propSet_)
+      gImageEffectSuite->clipReleaseImage(propSet_);
+  }
+
+  // get the address of a location in the image as a void *
+  void *Image::rawAddress(int x, int y)
+  {  
+    // Inside the bounds of this image?
+    if(x < bounds_.x1 || x >= bounds_.x2 || y < bounds_.y1 || y >= bounds_.y2)
+      return NULL;
+
+    // turn image plane coordinates into offsets from the bottom left
+    int yOffset = y - bounds_.y1;
+    int xOffset = x - bounds_.x1;
+
+    // Find the start of our row, using byte arithmetic
+    char *rowStart = (dataPtr_) + yOffset * rowBytes_;
+
+    // finally find the position of the first component of column
+    return rowStart + (xOffset * bytesPerPixel_);
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
   // our instance data, where we are caching away clip and param handles
   struct MyInstanceData {
     // are we in the general context
@@ -347,34 +490,6 @@ namespace {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  // Look up a pixel in the image. returns null if the pixel was not
-  // in the bounds of the image
-  template <class T> 
-  static inline T * pixelAddress(int x, int y, 
-                                 void *baseAddress, 
-                                 OfxRectI bounds, 
-                                 int rowBytes, 
-                                 int nCompsPerPixel)
-  {  
-    // Inside the bounds of this image?
-    if(x < bounds.x1 || x >= bounds.x2 || y < bounds.y1 || y >= bounds.y2)
-      return NULL;
-
-    // turn image plane coordinates into offsets from the bottom left
-    int yOffset = y - bounds.y1;
-    int xOffset = x - bounds.x1;
-
-    // Find the start of our row, using byte arithmetic
-    void *rowStartAsVoid = reinterpret_cast<char *>(baseAddress) + yOffset * rowBytes;
-
-    // turn the row start into a pointer to our data type
-    T *rowStart = reinterpret_cast<T *>(rowStartAsVoid);
-
-    // finally find the position of the first component of column
-    return rowStart + (xOffset * nCompsPerPixel);
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
   // clamp to 0 and MAX inclusive
   template <class T, int MAX>
   static inline T Clamp(float value)
@@ -384,8 +499,8 @@ namespace {
 
   ////////////////////////////////////////////////////////////////////////////////
   // clamp to 0 and MAX inclusive
-  template <class T>
-  static inline T Blend(T v1, T v2, float blend)
+  template <class T1, class T2>
+  static inline T1 Blend(T1 v1, T2 v2, float blend)
   {
     return v1 + (v2-v1) * blend;
   }
@@ -393,77 +508,32 @@ namespace {
   ////////////////////////////////////////////////////////////////////////////////
   // iterate over our pixels and process them
   template <class T, int MAX> 
-  void PixelProcessing(double saturation,
+  void PixelProcessing(double saturation,                       
                        OfxImageEffectHandle instance,
-                       OfxPropertySetHandle sourceImg,
-                       OfxPropertySetHandle maskImg, // will be NULL if not connected or not a general effect
-                       OfxPropertySetHandle outputImg,
-                       OfxRectI renderWindow,
-                       int nComps)
+                       Image &src,
+                       Image &mask,
+                       Image &output,
+                       OfxRectI renderWindow)
   {
-    // fetch output image info from the property handle
-    int dstRowBytes;
-    OfxRectI dstBounds;
-    void *dstPtr = NULL;
-    gPropertySuite->propGetInt(outputImg, kOfxImagePropRowBytes, 0, &dstRowBytes);
-    gPropertySuite->propGetIntN(outputImg, kOfxImagePropBounds, 4, &dstBounds.x1);
-    gPropertySuite->propGetPointer(outputImg, kOfxImagePropData, 0, &dstPtr);
+    int nComps = output.nComponents();
 
-    if(dstPtr == NULL) {
-      throw "Bad destination pointer";
-    }
-
-    // fetch input image info from the property handle
-    int srcRowBytes;
-    OfxRectI srcBounds;
-    void *srcPtr = NULL;
-    gPropertySuite->propGetInt(sourceImg, kOfxImagePropRowBytes, 0, &srcRowBytes);
-    gPropertySuite->propGetIntN(sourceImg, kOfxImagePropBounds, 4, &srcBounds.x1);
-    gPropertySuite->propGetPointer(sourceImg, kOfxImagePropData, 0, &srcPtr);
-
-    if(srcPtr == NULL) {
-      throw "Bad source pointer";
-    }
-
-    // do we have a mask image?
-    int maskRowBytes;
-    OfxRectI maskBounds;
-    void *maskPtr = NULL;
-    if(maskImg) {
-      gPropertySuite->propGetInt(maskImg, kOfxImagePropRowBytes, 0, &maskRowBytes);
-      gPropertySuite->propGetIntN(maskImg, kOfxImagePropBounds, 4, &maskBounds.x1);
-      gPropertySuite->propGetPointer(maskImg, kOfxImagePropData, 0, &maskPtr);
-    }
-    
     // and do some processing
     for(int y = renderWindow.y1; y < renderWindow.y2; y++) {
       if(gImageEffectSuite->abort(instance)) break;
 
       // get the row start for the output image
-      T *dstPix = pixelAddress<T>(renderWindow.x1, y, 
-                                  dstPtr, 
-                                  dstBounds, 
-                                  dstRowBytes, 
-                                  nComps);
+      T *dstPix = output.pixelAddress<T>(renderWindow.x1, y);
 
       for(int x = renderWindow.x1; x < renderWindow.x2; x++) {
         
         // get the source pixel
-        T *srcPix = pixelAddress<T>(x, y, 
-                                    srcPtr, 
-                                    srcBounds,
-                                    srcRowBytes,
-                                    nComps);
+        T *srcPix = src.pixelAddress<T>(x, y);
 
         // get the amount to mask by, no mask image means we do the full effect everywhere
         float maskAmount = 1.0f;
-        if (maskPtr) {
+        if (mask) {
           // get our mask pixel address
-          T *maskPix = pixelAddress<T>(x, y, 
-                                       maskPtr, 
-                                       maskBounds,
-                                       maskRowBytes,
-                                       1); //< note the one, as we have only one component here
+          T *maskPix = mask.pixelAddress<T>(x, y);
           if(maskPix) {
             maskAmount = float(*maskPix)/float(MAX);
           }
@@ -481,12 +551,17 @@ namespace {
             }          
           }
           else {
-            // we have a mask!
-            float average = (srcPix[0] + srcPix[1] + srcPix[2])/3.0f; // find the average of the RG and B
-            
-            dstPix[0] = Blend(srcPix[0], Clamp<T, MAX>( (srcPix[0] - average) * saturation + average), maskAmount);
-            dstPix[1] = Blend(srcPix[1], Clamp<T, MAX>( (srcPix[1] - average) * saturation + average), maskAmount);
-            dstPix[2] = Blend(srcPix[2], Clamp<T, MAX>( (srcPix[2] - average) * saturation + average), maskAmount);
+            // we have a non zero mask or no mask at all
+            float average = (srcPix[0] + srcPix[1] + srcPix[2])/3.0f; // find the average of the R, G and B
+
+            for(int c = 0; c < 3; ++c) {
+              float value = (srcPix[c] - average) * saturation + average;
+              if(MAX != 1) {
+                value = Clamp<T, MAX>(value);
+              }
+              dstPix[c] = Blend(srcPix[c], value, maskAmount);
+            }
+
             if(nComps == 4) { // if we have an alpha, just copy it
               dstPix[3] = srcPix[3];
             }
@@ -515,17 +590,8 @@ namespace {
     OfxRectI renderWindow;
     OfxStatus status = kOfxStatOK;
   
-
     gPropertySuite->propGetDouble(inArgs, kOfxPropTime, 0, &time);
     gPropertySuite->propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &renderWindow.x1);
-
-
-    std::cout << "START At " << time 
-              << "  Rendering window " 
-              << renderWindow.x1 << " <-> " << renderWindow.x2 
-              << "   " 
-              << renderWindow.y1 << " <-> " << renderWindow.y2
-              << std::endl;
     
     // get our instance data which has out clip and param handles
     MyInstanceData *myData = FetchInstanceData(instance);
@@ -538,58 +604,38 @@ namespace {
     OfxPropertySetHandle outputImg = NULL, sourceImg = NULL, maskImg = NULL;
     try {
       // fetch image to render into from that clip
-      OfxPropertySetHandle outputImg;
-      if(gImageEffectSuite->clipGetImage(myData->outputClip, time, NULL, &outputImg) != kOfxStatOK) {
+      Image outputImg(myData->outputClip, time);
+      if(!outputImg) {
         throw " no output image!";
       }
-                  
-      // fetch image at render time from that clip
-      if (gImageEffectSuite->clipGetImage(myData->sourceClip, time, NULL, &sourceImg) != kOfxStatOK) {
+
+      // fetch image to render into from that clip
+      Image sourceImg(myData->sourceClip, time);
+      if(!sourceImg) {
         throw " no source image!";
       }
       
-      // fetch maske image at render time from that clip
+      // fetch mask image at render time from that clip
+      OfxPropertySetHandle maskImgProps;
       if(myData->isGeneralContext) {
-        if (gImageEffectSuite->clipGetImage(myData->maskClip, time, NULL, &maskImg) != kOfxStatOK) {
-          maskImg = NULL;
+        if (gImageEffectSuite->clipGetImage(myData->maskClip, time, NULL, &maskImgProps) != kOfxStatOK) {
+          maskImgProps = NULL;
         }
       }
+      Image maskImg(maskImgProps);
       
-      // figure out the data types
-      char *cstr;
-      gPropertySuite->propGetString(outputImg, kOfxImageEffectPropComponents, 0, &cstr);
-      std::string components = cstr;
-
-      // how many components per pixel?
-      int nComps = 0;
-      if(components == kOfxImageComponentRGBA) {
-        nComps = 4;
-      }
-      else if(components == kOfxImageComponentRGB) {
-        nComps = 3;
-      }
-      else if(components == kOfxImageComponentAlpha) {
-        nComps = 1;
-      }
-      else {
-        throw " bad pixel type!";
-      }
-
       // now do our render depending on the data type
-      gPropertySuite->propGetString(outputImg, kOfxImageEffectPropPixelDepth, 0, &cstr);
-      std::string dataType = cstr;
-
-      if(dataType == kOfxBitDepthByte) {
+      if(outputImg.bytesPerComponent() == 1) {
         PixelProcessing<unsigned char, 255>(saturation,
-                                            instance, sourceImg, maskImg, outputImg, renderWindow, nComps);
+                                            instance, sourceImg, maskImg, outputImg, renderWindow);
       }
-      else if(dataType == kOfxBitDepthShort) {
+      else if(outputImg.bytesPerComponent() == 2) {
         PixelProcessing<unsigned short, 65535>(saturation,
-                                               instance, sourceImg, maskImg, outputImg, renderWindow, nComps);
+                                               instance, sourceImg, maskImg, outputImg, renderWindow);
       }
-      else if (dataType == kOfxBitDepthFloat) {
+      else if(outputImg.bytesPerComponent() == 4) {
         PixelProcessing<float, 1>(saturation, 
-                                  instance, sourceImg, maskImg, outputImg, renderWindow, nComps);
+                                  instance, sourceImg, maskImg, outputImg, renderWindow);
       }
       else {
         throw " bad data type!";
@@ -608,11 +654,6 @@ namespace {
       ERROR_IF(!isAborting, " Rendering failed because %s", errStr);
     }
 
-    if(sourceImg)
-      gImageEffectSuite->clipReleaseImage(sourceImg);
-    if(outputImg)
-      gImageEffectSuite->clipReleaseImage(outputImg);
-  
     std::cout << "STOP with status " << status 
               << std::endl;
     // all was well
@@ -668,44 +709,7 @@ namespace {
     gPropertySuite->propSetDoubleN(outArgs, kOfxImageEffectPropRegionOfDefinition, 4, &rod.x1);
 
     return kOfxStatOK;
-  }                                       
-  /*
-  // Set our clip preferences 
-  OfxStatus 
-  GetClipPreferences(OfxImageEffectHandle instance, 
-                     OfxPropertySetHandle inArgs,
-                     OfxPropertySetHandle outArgs)
-  {
-    // retrieve any instance data associated with this effect
-    MyInstanceData *myData = FetchInstanceData(instance);
-  
-    // get the component type and bit depth of our main input
-    int  bitDepth;
-    bool isRGBA;
-    ofxuClipGetFormat(myData->sourceClip, bitDepth, isRGBA, true); // get the unmapped clip component
-
-    // get the strings used to label the various bit depths
-    const char *bitDepthStr = bitDepth == 8 ? kOfxBitDepthByte : (bitDepth == 16 ? kOfxBitDepthShort : kOfxBitDepthFloat);
-    const char *componentStr = isRGBA ? kOfxImageComponentRGBA : kOfxImageComponentAlpha;
-
-    // set out output to be the same same as the input, component and bitdepth
-    gPropHost->propSetString(outArgs, "OfxImageClipPropComponents_Output", 0, componentStr);
-    if(gHostSupportsMultipleBitDepths)
-      gPropHost->propSetString(outArgs, "OfxImageClipPropDepth_Output", 0, bitDepthStr);
-
-    // if a general effect, we may have a mask input, check that for types
-    if(myData->isGeneralEffect) {
-      if(ofxuIsClipConnected(effect, "Mask")) {
-        // set the mask input to be a single channel image of the same bitdepth as the source
-        gPropHost->propSetString(outArgs, "OfxImageClipPropComponents_Mask", 0, kOfxImageComponentAlpha);
-        if(gHostSupportsMultipleBitDepths) 
-          gPropHost->propSetString(outArgs, "OfxImageClipPropDepth_Mask", 0, bitDepthStr);
-      }
-    }
-
-    return kOfxStatOK;
-  }
-  */
+  }  
 
   ////////////////////////////////////////////////////////////////////////////////
   // The main entry point function, the host calls this to get the plugin to do things.
@@ -745,11 +749,6 @@ namespace {
       // action called to render a frame
       returnStatus = RenderAction(effect, inArgs, outArgs);
     }
-    /*
-    else if(strcmp(action, kOfxImageEffectActionGetClipPreferences) == 0) {
-      returnStatus =  GetClipPreferencesAction(effect, inArgs, outArgs);
-    } 
-    */ 
     else if(strcmp(action, kOfxImageEffectActionGetRegionOfDefinition) == 0) {
       returnStatus = GetRegionOfDefinitionAction(effect, inArgs, outArgs);
     }  
