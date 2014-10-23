@@ -566,7 +566,8 @@ namespace {
                 
         if(srcPix) {
           if(maskAmount == 0) {
-            // we have a mask input, but the mask is zero here, so no effect happens, copy source to output
+            // we have a mask input, but the mask is zero here, 
+            // so no effect happens, copy source to output
             for(int i = 0; i < nComps; ++i) {
               *dstPix = *srcPix;
               ++dstPix; ++srcPix;
@@ -574,13 +575,17 @@ namespace {
           }
           else {
             // we have a non zero mask or no mask at all
-            float average = (srcPix[0] + srcPix[1] + srcPix[2])/3.0f; // find the average of the R, G and B
 
+            // find the average of the R, G and B
+            float average = (srcPix[0] + srcPix[1] + srcPix[2])/3.0f;
+
+            // scale each component around that average
             for(int c = 0; c < 3; ++c) {
               float value = (srcPix[c] - average) * saturation + average;
               if(MAX != 1) {
                 value = Clamp<T, MAX>(value);
               }
+              // use the mask to control how much original we should have
               dstPix[c] = Blend(srcPix[c], value, maskAmount);
             }
 
@@ -612,8 +617,14 @@ namespace {
     OfxRectI renderWindow;
     OfxStatus status = kOfxStatOK;
   
-    gPropertySuite->propGetDouble(inArgs, kOfxPropTime, 0, &time);
-    gPropertySuite->propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &renderWindow.x1);
+    gPropertySuite->propGetDouble(inArgs,
+                                  kOfxPropTime,
+                                  0,
+                                  &time);
+    gPropertySuite->propGetIntN(inArgs, 
+                                kOfxImageEffectPropRenderWindow,
+                                4,
+                                &renderWindow.x1);
     
     // get our instance data which has out clip and param handles
     MyInstanceData *myData = FetchInstanceData(instance);
@@ -645,15 +656,27 @@ namespace {
       // now do our render depending on the data type
       if(outputImg.bytesPerComponent() == 1) {
         PixelProcessing<unsigned char, 255>(saturation,
-                                            instance, sourceImg, maskImg, outputImg, renderWindow);
+                                            instance,
+                                            sourceImg,
+                                            maskImg,
+                                            outputImg,
+                                            renderWindow);
       }
       else if(outputImg.bytesPerComponent() == 2) {
         PixelProcessing<unsigned short, 65535>(saturation,
-                                               instance, sourceImg, maskImg, outputImg, renderWindow);
+                                               instance,
+                                               sourceImg,
+                                               maskImg,
+                                               outputImg,
+                                               renderWindow);
       }
       else if(outputImg.bytesPerComponent() == 4) {
         PixelProcessing<float, 1>(saturation, 
-                                  instance, sourceImg, maskImg, outputImg, renderWindow);
+                                  instance,
+                                  sourceImg,
+                                  maskImg,
+                                  outputImg,
+                                  renderWindow);
       }
       else {
         throw " bad data type!";
@@ -700,32 +723,6 @@ namespace {
     // say we aren't at the identity
     return kOfxStatReplyDefault;
   }
-         
-  ////////////////////////////////////////////////////////////////////////////////
-  // The default region of definition for an effect is the union of all the 
-  // RoDs of all the input clips. In our case, we don't want the mask's RoD to
-  // affect our output, so we have to implement this to set the output's RoD to
-  // be the same as the source clip, at all times.
-  OfxStatus 
-  GetRegionOfDefinitionAction(OfxImageEffectHandle effect,
-                              OfxPropertySetHandle inArgs,
-                              OfxPropertySetHandle outArgs)
-  {
-    // retrieve any instance data associated with this effect
-    MyInstanceData *myData = FetchInstanceData(effect);
-
-    OfxTime time;
-    gPropertySuite->propGetDouble(inArgs, kOfxPropTime, 0, &time);
-  
-    // fetch the source clip's RoD.
-    OfxRectD rod;
-    gImageEffectSuite->clipGetRegionOfDefinition(myData->sourceClip, time, &rod);
-
-    // and set it on the outArgs as the return value
-    gPropertySuite->propSetDoubleN(outArgs, kOfxImageEffectPropRegionOfDefinition, 4, &rod.x1);
-
-    return kOfxStatOK;
-  }  
 
   ////////////////////////////////////////////////////////////////////////////////
   // The main entry point function, the host calls this to get the plugin to do things.
@@ -765,9 +762,6 @@ namespace {
       // action called to render a frame
       returnStatus = RenderAction(effect, inArgs, outArgs);
     }
-    else if(strcmp(action, kOfxImageEffectActionGetRegionOfDefinition) == 0) {
-      returnStatus = GetRegionOfDefinitionAction(effect, inArgs, outArgs);
-    }  
     
     MESSAGE(": END action is : %s \n", action );
     /// other actions to take the default value
