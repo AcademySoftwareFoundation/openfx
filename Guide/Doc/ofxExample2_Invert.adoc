@@ -72,10 +72,6 @@ We have the standard two step description process for this plugin.
   // the plugin's basic description routine
   OfxStatus DescribeAction(OfxImageEffectHandle descriptor)
   {
-    // get the property set handle for the plugin
-    OfxPropertySetHandle effectProps;
-    gImageEffectSuite->getPropertySet(descriptor, &effectProps);
-
     // set some labels and the group it belongs to
     gPropertySuite->propSetString(effectProps, 
                                   kOfxPropLabel,
@@ -106,6 +102,22 @@ We have the standard two step description process for this plugin.
                                   2,
                                   kOfxBitDepthByte);
   
+    // get the property set handle for the plugin
+    OfxPropertySetHandle effectProps;
+    gImageEffectSuite->getPropertySet(descriptor, &effectProps);
+
+    // say that a single instance of this plugin can be rendered in multiple threads
+    gPropertySuite->propSetString(effectProps,
+                                  kOfxImageEffectPluginRenderThreadSafety,
+                                  0,
+                                  kOfxImageEffectRenderFullySafe);
+
+    // say that the host should manage SMP threading over a single frame 
+    gPropertySuite->propSetInt(effectProps,
+                               kOfxImageEffectPluginPropHostFrameThreading,
+                               0,
+                               1);
+
     return kOfxStatOK;
   }
 ----
@@ -131,15 +143,23 @@ values are...
 
 |===
 
-
-
 NOTE: The **OfxImageEffectHandle** passed to the describe calls should not be cached away, It only represents
 some object used while describing the effect. It is _not_ the effect itself and when instances are created
-the handle will almost certainly refer to a different object entirely. In general, never hang onto any effect handles between
-actions.
+the handle will refer to a different object entirely. In general, never hang onto any effect handles in any
+global state.
+
+Finally our plugin is setting some flags to do with multithreaded rendering. The first flag, **kOfxImageEffectPluginRenderThreadSafety** 
+is used to indicate how plugins and instances should be used when rendering in multiple threads. We are setting it
+to **kOfxImageEffectRenderFullySafe**, which means that the host can have any number of instances rendering and each instance could
+have possibly have simultaneous renders called on it. (eg: at separate frames). The other options are listed in the programming reference.
+
+The second call sets the **kOfxImageEffectPluginPropHostFrameThreading**, which says that the host should
+manage any symmetric multiprocessing when rendering the effect. Typically done by calling render on different tiles
+of the output image. If not set, it is up to the plugin to launch the appropriate number of threads and divide the
+processing appropriately across them.
 
 [source, c++]
-.invert.cpp Describing The Plugin As A Filter
+.invert.cpp 
 ----
   ////////////////////////////////////////////////////////////////////////////////
   //  describe the plugin in context
@@ -202,6 +222,7 @@ of three types, which are listed below.
 
 |===
 
+NOTE: The OpenGL rendering extension has significantly different set of capabilities for this.
 
 ==  Clips
 I hear you ask "What are these clips of which you speak Mr Nicoletti?", well they are a sequence of images that
@@ -234,7 +255,7 @@ image::Pics/imagePlane.jpg[ role = "thumb", align=center, title=An image on the 
 The figure above shows our image spanning the  plane from coordinates X1 to X2 in the X dimension and Y1 to Y2 in the Y dimension. We
 call these four numbers the image's **bounds**, and is the region an image is guaranteed to have addressable data for.
 
-NOTE: Y goes **up** in OFX land, not down as is common in desktop publishing. This is VFX guys!
+NOTE: Y goes **up** in OFX land, not down as is common in desktop publishing. 
 
 NOTE: That the image bound is open on the right, so iteration is `for (int x = x1; x < x2; ++x)`. This means the number of pixels in the X dimension is given
 by X2-X1, similarly for the Y dimension.
@@ -302,7 +323,7 @@ a pixel whose coordinates are on the image plane.
 You will notice it is a templated function, where `**T**` will be instantiated with the appropriate
 component type by other code. `**T**` will be one of `**unsigned char**`, `**unsigned short**` or `**float**`.
 
-In order the funtion...
+In order the function...
 
    - checks if the pixel coordinate is within
 the bounds of the image. If it is not then we have no addressable pixel data at the point,
@@ -515,7 +536,7 @@ nominal maximum value of the data type as a template argument.
       bool isAborting = gImageEffectSuite->abort(instance);
 
       // if we were interrupted, the failed fetch is fine, just return kOfxStatOK
-      // otherwise, something wierd happened
+      // otherwise, something weird happened
       if(!isAborting) {
         status = kOfxStatFailed;
       }      
@@ -532,7 +553,7 @@ nominal maximum value of the data type as a template argument.
     return status;
   }
 ----
-This last but is basically clean up. We have the `**catch**` for our try/catch block. The first thing it
+This last bit is basically clean up. We have the `**catch**` for our try/catch block. The first thing it
 does is ask the host application is the effect being told to stop by calling the `**abort**` function
 on the effect suite. We might have ended up in the catch block because the an image could not be fetched,
 if that was a side effect of the host interrupting processing, it is _not_ counted as an error. So we
@@ -640,15 +661,15 @@ The next thing we do is to use the `**pixelAddress**` function to find the addre
 of the first pixel in the current, and we put it in `**dstPix**`. Because we have a guarantee that the bounds of the output image are at
 least as big as the render window, we can simply increment `**dstPix**` across the row as we iterate over the image.
 
-Now we iterate across the row. We attempt to fetch the adress of the source pixel at our x,y location in the image plane. If we get it
+Now we iterate across the row. We attempt to fetch the address of the source pixel at our x,y location in the image plane. If we get it
 we iterate over the number of component, setting the output to be the invert footnote:[complement really] of the input.
 If we don't get it, we set the output pixel to all zero.
 
 NOTE: You notice that we are continually calculating the address of `**srcPix**` at each pixel location and not incrementing
-the pointer as we could with `**dstPix**`. The reason for this is that there is no guarantee as to where an input
-image lies on the image plane. It need not be congruent with any other input, the output or the render window
+the pointer as we could with `**dstPix**`. The reason for this is that, at the default settings, there is no guarantee as to 
+the bounds of the input image. It need not be congruent with any other input, the output or the render window.
 
-I could obviously write this more efficiently than I have and avoid the contuinual lookup of the source pixel position, but for
+I could obviously write this much more efficiently and avoid the continual address calculation. However for
 illustrative purposes I haven't done that.
 
 == Summary

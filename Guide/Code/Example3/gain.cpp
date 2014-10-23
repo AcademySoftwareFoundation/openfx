@@ -188,6 +188,19 @@ namespace {
                                   kOfxImageEffectPropSupportedPixelDepths,
                                   2,
                                   kOfxBitDepthByte);
+
+    // say that a single instance of this plugin can be rendered in multiple threads
+    gPropertySuite->propSetString(effectProps,
+                                  kOfxImageEffectPluginRenderThreadSafety,
+                                  0,
+                                  kOfxImageEffectRenderFullySafe);
+
+    // say that the host should manage SMP threading over a single frame 
+    gPropertySuite->propSetInt(effectProps,
+                               kOfxImageEffectPluginPropHostFrameThreading,
+                               0,
+                               1);
+
   
     return kOfxStatOK;
   }

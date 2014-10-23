@@ -1,0 +1,84 @@
+= OFX Programming Guide : Multi-Input Effects
+Author:Bruno Nicoletti
+2014-10-17
+:toc:
+:data-uri:
+:source-highlighter: coderay
+
+This guide will take you through the basics of creating effects that can be used in two separate contexts
+one of which is the 'general' effect.
+Its source can be found in the pass:[C++] 
+file `GuideExamples/Example3/saturation.cpp`. 
+This plugin takes an RGB or RGBA image and increases or descreases the saturation by a parameter. It can
+be used in two contexts, firstly as a simple filter, secondly as a general effect, where it has an optional
+second input clip which is used to control where the effect is applied. 
+
+== I've Gone And Tidied It Up A Bit
+First off, you may have noticed I've gone and created an `**Image**` class.
+
+[source, c++]
+.saturation.cpp
+----
+  ////////////////////////////////////////////////////////////////////////////////
+  // class to manage OFX images
+  class Image {
+  public    :
+    // construct from a property set that represents the image
+    Image(OfxPropertySetHandle propSet);
+
+    // construct from a clip by fetching an image at the given frame
+    Image(OfxImageClipHandle clip, double frame);
+
+    // destructor
+    ~Image();
+    
+    // get a pixel address, cast to the right type
+    template <class T>
+    T *pixelAddress(int x, int y)
+    {
+      return reinterpret_cast<T *>(rawAddress(x, y));
+    }
+
+    // Is this image empty?
+    operator bool() 
+    {
+      return propSet_ != NULL && dataPtr_ != NULL;
+    }
+
+    // bytes per component, 1, 2 or 4 for byte, short and float images
+    int bytesPerComponent() const { return bytesPerComponent_; }
+
+    // number of components
+    int nComponents() const { return nComponents_; }
+
+  protected :
+    void construct();
+
+    // Look up a pixel address in the image. returns null if the pixel was not
+    // in the bounds of the image
+    void *rawAddress(int x, int y);
+
+    OfxPropertySetHandle propSet_;
+    int rowBytes_;
+    OfxRectI bounds_;
+    char *dataPtr_;
+    int nComponents_;
+    int bytesPerComponent_;
+    int bytesPerPixel_;
+  };
+----
+        
+It takes an OfxPropertySetHandle and pulls all the bits it needs out of that into a class. It uses
+all the same pixel access logic as in example 2.
+Ideally I should put this in a library which our example links to, but I'm keeping all 
+the code for each example in one source file for
+illustrative purposes. Feel free to steal this and use it in your own code :footnote[provided
+you stick to the conditions listed at the top of source file].
+
+== Describing Our Plugin
+
+== Summary
+This plugin has shown you the basics of working with OFX parameters, the main things it illustrated were...
+
+
+   

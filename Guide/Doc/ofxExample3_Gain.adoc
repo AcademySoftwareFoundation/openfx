@@ -39,7 +39,7 @@ using 32 bit floats, or fixed precision for that matter, so long as the values a
   - parametric parameters (which can be used for lookup tables and so on),
   - custom parameters (where you manage all the parameter state and UI yourself).
 
-There are several UI elements that are described with psuedo parameters, these are...
+There are several UI elements that are described with pseudo parameters, these are...
 
   - push buttons - to have the plugin do something when the user tells it (eg: analyse and image and set some params),
   - group params - to organise params in a scrolling type UI,

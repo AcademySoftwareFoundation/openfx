@@ -28,15 +28,16 @@ OFX has several key concepts and quite specific terminology, which definitely ne
 
   * a `**host**` is an application than can load OFX plugins and provides an environment for plugins 
  to work in,
-  * a `**plugin**` provides extra a set of extra features to a host application,
+  * a `**plugin**` provides a set of extra features to a host application,
   * a `**binary**` is a dynamic library footnote:[which will be operating system specific] that contains one or more plugins,
   * a `**suite**` is `C struct` containing a set of function pointers, which are named and versioned, 
 Suites are the way a host allows a plugin to call functions within it and not have to link against anything,
-  * a `**property**` is a named object of restricted set of `C` types, which is accessed via a property suite,
+  * a `**property**` is a named object of a restricted set of `C` types, which is accessed via a property suite,
   * a `**property set**` is a collection of properties,
   * an `**action**` is a call into a plugin to do something,
   * an `**API**` is a collection of suites, actions and properties that are used to do something useful, like process images. APIs are
 named and versioned.
+
 
 == The Two Bootstrapper Functions
 To tell the host what it has inside it, a plugin binary needs to expose two functions to bootstrap the whole host/plugin communications process. These are...
@@ -117,6 +118,10 @@ static OfxPlugin effectPluginStruct =
 
 Using this information a host application can grab a plugin struct then figure out if it supports the API at the given version. 
 
+The `**pluginIdentifier**` is not meant to be the presented to the user, it is a purely a unique id for that plugin, _and any related
+versions_ of that plugin. Use this for serialisation etc... to identify the plugin. The domainname:pluginname nomenclature is suggested 
+best practice for a unique id. For a user visible name, use the `**kOfxPropVersionLabel**` property
+
 Plugin versioning allows a plugin (as identified by the `**pluginIdentifier**` field) to be updated and redistributed 
 multiple times, with the host knowing which is the most appropriate version to use.  It even allows old and new versions of the same
 plugin to be used simultaneously within a host application. There are more details on how to use the version numbers in the
@@ -170,7 +175,7 @@ typedef struct OfxHost {
 } OfxHost;
 ----
 
-A plugin gets given one of these by the host application via the `**OfxPlugin::setHost**` function it previously passed to the host.
+A plugin is given one of these by the host application via the `**OfxPlugin::setHost**` function it previously passed to the host.
 
 There are two members to an `**OfxHost**`, the first is a property set (more on properties in a moment) which describes what the host
 does and how it behaves. 
@@ -258,7 +263,7 @@ incremental additions to the API without breaking backwards compatibility and bu
 continual string look-up), but the flexibility it gives is worth it.
 
 NOTE: Plugins have to be very careful with scope of the pointer returned when you fetch a string property. The pointer will 
-be guaranteed to be valid _only_ until the next call to an OFX suite function or the action finishes, or until the action ends. If you want to use the 
+be guaranteed to be valid _only_ until the next call to an OFX suite function or until the action ends. If you want to use the 
 string out of those scope you _must_ copy it.
 
 == Actions
@@ -333,7 +338,7 @@ You can see the plugin is trapping seven actions and is saying to do the default
 
 In fact only four actions need to be trapped for an image effect plugin footnote:[kOfxLoadAction, kOfxActionDescribe, kOfxImageEffectActionDescribeInContext and one of kOfxImageEffectActionIsIdentity or kOfxImageEffectActionRender], but our machinery plugin is trapping more for illustrative purposes.
 
-What is on the property sets, and what the handle should be down cast to depends on the action being called. Some actions have no arguments (eg: the kOfxLoadAction), while others have in and out arguments, e.g. the kOfxImageEffectActionIsIdentity. 
+What is on the property sets, and what the handle is depends on the action being called. Some actions have no arguments (eg: the kOfxLoadAction), while others have in and out arguments, e.g. the kOfxImageEffectActionIsIdentity. 
 
 Actions give us a very flexible and expandable generic function calling mechanism. This means it is trivial to expand the API via adding extra 
 properties or actions to the API without impacting existing plugins or applications.
@@ -348,12 +353,15 @@ to be called in a specific sequence to make it all work properly.
 The kOfxActionLoad is the very first action passed to a plugin. It will be called after the `setHost` callback has been used to pass the OfxHostStruct to the plugin. It is the point at which a plugin gets to create global structures that it will later be used across all instances. From our <<LoadActionExample, load action snippet>> above, you can see that the plugin is fetching two suites and caching the pointers away for later use.
 
 At some point the host application will want to unload the binary that the plugin is contained in, either when the host quits or the plugin is
- no longer needed by the host application. The plugin needs to notify the plugin of this, as it may need to perform some clean up. 
+ no longer needed by the host application. The host needs to notify the plugin of this, as it may need to perform some clean up. 
 The kOfxActionUnload action is sent to the plugin by the host to warn the plugin of it's imminent demise. After this action is called the host can no
 longer issue any actions to that plugin unless another kOfxActionLoad action is called. In our example plugin, the unload does nothing.
 
-NOTE: Hosts __must__ always pair kOfxActionLoad with a kOfxActionUnload, otherwise all sorts of badness can happen, including memory leaks, 
-failing license checks and more.
+NOTE: Hosts should always pair the kOfxActionLoad with a kOfxActionUnload, otherwise all sorts of badness can happen, including memory leaks, 
+failing license checks and more. There is one excpetion to this, which is if a plugin encounters an error during the load action and returns 
+an error state. In this case only, the plugin _must_ clean up
+before it returns, and , the balancing unload action is _not_ called. In all other circumstances where an error is
+returned by a plugin from any other action, the unload action will eventually be called.
 
 === Describing Plugins To A Host
 Once a plugin has had kOfxActionLoad called on it, it will be asked to describe itself. This is done with the kOfxActionDescribe action.
@@ -389,9 +397,10 @@ From our example plugin, here is the function called by our main entry point in 
 ----
 
 You will see that it fetches a property set (via the image effect suite) and sets various properties on it. Specifically the label used 
-in any user interface and the group of plugins it belongs to. The final thing it sets is the single context it can be used in. 
+in any user interface to name the plugin, and the group of plugins it belongs to. The grouping name allows a developer to ask the 
+host to arrange all plugins with that group name into a single menu/container in the user interface.
 
-Contexts are specific to image effect plugins, and they are there because a plugin can be used in many different ways.
+The final thing it sets is the single context it can be used in. Contexts are specific to image effect plugins, and they are there because a plugin can be used in many different ways.
 We call each way an image effect plugin can be used a context. In our example we are saying our
 plugin can behave as a filter only. A filter is simply an effect with one and only one input clip and one mandated output clip. This is typical
 of systems such as editors which can drop effects directly onto a clip in a time-line. For more complex systems, e.g. a node graph compositor, 
@@ -405,6 +414,8 @@ context that the host wants to use the effect in.
 
 Again from our example plugin, here is how it responds to the describe in context action...
 
+NOTE: A plugin developer might package multiple plugins in a single binary and another multiple plugins into multiple binaries yet
+both expect them to show up in the same plugin group footnote:[as specified by **kOfxImageEffectPluginPropGrouping**] in the user interface.
 [source, c++]
 .basics.cpp
 ----
@@ -458,13 +469,15 @@ input and output clips.
 A plugin developer may need to attach data to each plugin instance, typically to tie the plugin into their own image processing infrastructure. 
 They get the chance to do that via the kOfxActionCreateInstance action. The host will call that action just after they have created and initialised
 their host-side data structures that represent the plugin. Our example plugin doesn't actually do anything on create instance, but it could choose
-to attached it's own data structures to the instance via the `kOfxPropInstanceData` property.
+to attached it's own data structures to the instance via the `kOfxPropInstanceData` property. 
 
 A plugin will also want to destroy any of its own data structures when an instance is destroyed. It gets to do that in the kOfxActionDestroyInstance
 action. 
 
 Our example plugin exercises both of those action just to illustrate what is going it. It simply places a string into the instance data property which 
 it later fetches and destroys. In real plugins, this is typically a hook to deeper plugin side data structures.
+
+NOTE: Because a host might have asynchronous UI handling and multiple render threads on the same instance, it is suggested that a plugin that wants to write to the instance data after instance creation do so in a safe manner (e.g. by semaphore lock).
 
 [source, c++]
 .basics.cpp
@@ -583,7 +596,7 @@ When the host wants to be done with the plugin, and before it dynamically unload
 Once the final kOfxActionUnload has been called, even if it doesn't dynamically unload the binary, the host can no longer call the main entry point on that specific plugin until it once more calls kOfxActionLoad.
 
 === Packaging A Plugin
-The compile code for a plugin is contained in a dynamic library. Plugins are distributed as a directory structure that allows you to add icons and other resources you
+The compiled code for a plugin is contained in a dynamic library. Plugins are distributed as a directory structure that allows you to add icons and other resources you
 may need. There is more detailed information in the OFX Programming Reference Guide.
 
 == Summary

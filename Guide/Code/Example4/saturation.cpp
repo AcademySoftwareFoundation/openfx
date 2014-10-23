@@ -92,32 +92,29 @@ namespace {
   // class to manage OFX images
   class Image {
   public    :
-    // construct from a property set
+    // construct from a property set that represents the image
     Image(OfxPropertySetHandle propSet);
 
-    // construct from a property set
+    // construct from a clip by fetching an image at the given frame
     Image(OfxImageClipHandle clip, double frame);
 
     // destructor
     ~Image();
     
-    // get it all cast to the right type
+    // get a pixel address, cast to the right type
     template <class T>
     T *pixelAddress(int x, int y)
     {
       return reinterpret_cast<T *>(rawAddress(x, y));
     }
 
-    // are we empty?
-    operator bool() 
-    {
-      return propSet_ != NULL && dataPtr_ != NULL;
-    }
+    // Is this image empty?
+    operator bool();
 
-    // bytes per component
+    // bytes per component, 1, 2 or 4 for byte, short and float images
     int bytesPerComponent() const { return bytesPerComponent_; }
 
-    // bytes per component
+    // number of components
     int nComponents() const { return nComponents_; }
 
   protected :
@@ -147,7 +144,7 @@ namespace {
   Image::Image(OfxImageClipHandle clip, double time)
     : propSet_(NULL)
   {
-    if (gImageEffectSuite->clipGetImage(clip, time, NULL, &propSet_) == kOfxStatOK) {
+    if (clip && (gImageEffectSuite->clipGetImage(clip, time, NULL, &propSet_) == kOfxStatOK)) {
       construct();
     }
     else {
@@ -231,6 +228,12 @@ namespace {
     return rowStart + (xOffset * bytesPerPixel_);
   }
 
+  // are we empty?
+  Image:: operator bool() 
+  {
+    return propSet_ != NULL && dataPtr_ != NULL;
+  }
+
   ////////////////////////////////////////////////////////////////////////////////
   // our instance data, where we are caching away clip and param handles
   struct MyInstanceData {
@@ -244,6 +247,14 @@ namespace {
     
     // handles to a our parameters
     OfxParamHandle saturationParam;
+
+    MyInstanceData() 
+      : isGeneralContext(false)
+      , sourceClip(NULL)
+      , maskClip(NULL)
+      , outputClip(NULL)
+      , saturationParam(NULL)
+    {}
   };
   
   ////////////////////////////////////////////////////////////////////////////////
@@ -340,6 +351,17 @@ namespace {
                                   2,
                                   kOfxBitDepthByte);
   
+    // say that a single instance of this plugin can be rendered in multiple threads
+    gPropertySuite->propSetString(effectProps,
+                                  kOfxImageEffectPluginRenderThreadSafety,
+                                  0,
+                                  kOfxImageEffectRenderFullySafe);
+
+    // say that the host should manage SMP threading over a single frame 
+    gPropertySuite->propSetInt(effectProps,
+                               kOfxImageEffectPluginPropHostFrameThreading,
+                               0,
+                               1);
     return kOfxStatOK;
   }
 
@@ -615,14 +637,10 @@ namespace {
         throw " no source image!";
       }
       
-      // fetch mask image at render time from that clip
-      OfxPropertySetHandle maskImgProps;
-      if(myData->isGeneralContext) {
-        if (gImageEffectSuite->clipGetImage(myData->maskClip, time, NULL, &maskImgProps) != kOfxStatOK) {
-          maskImgProps = NULL;
-        }
-      }
-      Image maskImg(maskImgProps);
+      // fetch mask image at render time from that clip, it may not be there
+      // as we might in the filter context or it might not be attached as it
+      // is optional, so don't worry if we don't have one.
+      Image maskImg(myData->maskClip, time); 
       
       // now do our render depending on the data type
       if(outputImg.bytesPerComponent() == 1) {
@@ -654,8 +672,6 @@ namespace {
       ERROR_IF(!isAborting, " Rendering failed because %s", errStr);
     }
 
-    std::cout << "STOP with status " << status 
-              << std::endl;
     // all was well
     return status;
   }
@@ -691,7 +707,7 @@ namespace {
   // affect our output, so we have to implement this to set the output's RoD to
   // be the same as the source clip, at all times.
   OfxStatus 
-  GetRegionOfDefinitionAction(OfxImageEffectHandle  effect,
+  GetRegionOfDefinitionAction(OfxImageEffectHandle effect,
                               OfxPropertySetHandle inArgs,
                               OfxPropertySetHandle outArgs)
   {

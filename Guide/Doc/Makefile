@@ -28,7 +28,8 @@ GUIDE_SRCS = \
 	ofxProgrammingGuide.adoc \
   ofxExample1_Basics.adoc \
 	ofxExample2_Invert.adoc \
-	ofxExample3_Gain.adoc
+	ofxExample3_Gain.adoc \
+	ofxExample4_Saturation.adoc
 
 GUIDE_HTML = $(GUIDE_SRCS:.adoc=.html)
 

@@ -41,6 +41,19 @@ process images, they often have very different work flows and present
 effects to a user in incompatible ways. OFX is an attempt to deal with
 all of these in a clear and consistent manner.
 
+The API is by design feature rich, not
+all aspects of the API map to all hosts.
+This is to allow different host developers to
+implement OFX support in a manner that best fits their applications' capabilities. 
+
+Hosts are encouraged to extend OFX by providing extra proprietary suites, actions, properties and settings 
+to extend the capabilities of the API. It would be nice that a broadly useful
+proprietary extension be put forward for incorporation into the open standard.
+
+That said although there is no validation process in terms of what is an OFX host, 
+a small minimal set of expectations is assumed, which we will cover in the following
+guides.
+
 == The Examples
 
 I'll illustrate the API and how it works with a variety of example
