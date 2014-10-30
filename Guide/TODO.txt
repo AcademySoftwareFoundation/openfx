@@ -1,0 +1,46 @@
+The following examples should be added to the guide.
+
+
+Circle Drawing Plugin
+=====================
+
+Draws a circle ontop of an existing image. Controlled by three parameters, position (2D double), radius (double) and colour (RGBA).
+
+This will illustrate...
+   - the coordinate systems in OFX
+   - dealing with non-square pixels and render scales
+   - dealing with interlacing
+
+
+Custom Parameter
+================
+Rewrite the circle drawing plugin so that it has no double parameters, but only a single custom parameter, controlled cvia the UI.
+
+This will illustrate...
+    - using custom parameters.
+    - openGL overlays
+
+
+3x3 2D Filter
+=============
+Does a variety of simple 2D filtering operations using a 3x3 window.
+
+This will illustrate...
+   - the get region of interest action
+
+
+Analysis Plugin
+===============
+The plugin will find the minumum and maximum value of a given frame in response to a push button, and store the values
+into two parameters. During renders it will rescale pixel values so that 'min' is 0 and 'max' is the whitepoint.
+
+This will illustrate...
+    - writing to parameters in response to a button press outside of render.
+
+
+Basic OpenGL Example
+==============
+Behaviour to be determined.
+
+This will illustrate the basics of rendering in OpenGL
+   

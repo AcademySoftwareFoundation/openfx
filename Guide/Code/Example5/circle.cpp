@@ -76,8 +76,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   }                                             \
 }
 
-// name of our two params
-#define SATURATION_PARAM_NAME "saturation"
+// name of our params
+#define RADIUS_PARAM_NAME "radius"
+#define CENTRE_PARAM_NAME "centre"
+#define COLOUR_PARAM_NAME "colour"
+#define GROW_ROD_PARAM_NAME "growRoD"
 
 // anonymous namespace to hide our symbols in
 namespace {
@@ -87,6 +90,8 @@ namespace {
   OfxPropertySuiteV1    *gPropertySuite    = 0;
   OfxImageEffectSuiteV1 *gImageEffectSuite = 0;
   OfxParameterSuiteV1   *gParameterSuite   = 0;
+
+  int gAPIVersion[2] = {1, 0};
 
   ////////////////////////////////////////////////////////////////////////////////
   // class to manage OFX images
@@ -117,6 +122,9 @@ namespace {
     // number of components
     int nComponents() const { return nComponents_; }
 
+    // number of components
+    double pixelAspectRatio() const { return pixelAspectRatio_; }
+
   protected :
     void construct();
 
@@ -131,6 +139,7 @@ namespace {
     int nComponents_;
     int bytesPerComponent_;
     int bytesPerPixel_;
+    double pixelAspectRatio_;
   };
 
   // construct from a property set
@@ -159,6 +168,7 @@ namespace {
       gPropertySuite->propGetInt(propSet_, kOfxImagePropRowBytes, 0, &rowBytes_);
       gPropertySuite->propGetIntN(propSet_, kOfxImagePropBounds, 4, &bounds_.x1);
       gPropertySuite->propGetPointer(propSet_, kOfxImagePropData, 0, (void **) &dataPtr_);
+      gPropertySuite->propGetDouble(propSet_, kOfxImagePropPixelAspectRatio, 0, &pixelAspectRatio_);
         
       // how many components per pixel?
       char *cstr;
@@ -242,18 +252,22 @@ namespace {
 
     // handles to the clips we deal with
     OfxImageClipHandle sourceClip;
-    OfxImageClipHandle maskClip;
     OfxImageClipHandle outputClip;
     
     // handles to a our parameters
-    OfxParamHandle saturationParam;
+    OfxParamHandle centreParam;
+    OfxParamHandle radiusParam;
+    OfxParamHandle colourParam;
+    OfxParamHandle growRoD;
 
     MyInstanceData() 
       : isGeneralContext(false)
       , sourceClip(NULL)
-      , maskClip(NULL)
       , outputClip(NULL)
-      , saturationParam(NULL)
+      , centreParam(NULL)
+      , radiusParam(NULL)
+      , colourParam(NULL)
+      , growRoD(NULL)
     {}
   };
   
@@ -304,6 +318,25 @@ namespace {
     FetchSuite(gImageEffectSuite, kOfxImageEffectSuite, 1);
     FetchSuite(gParameterSuite,   kOfxParameterSuite,   1);
 
+    int verSize = 0;
+    if(gPropertySuite->propGetDimension(gHost->host, kOfxPropAPIVersion, &verSize) == kOfxStatOK) {
+      verSize = verSize > 2 ? 2 : verSize;
+      gPropertySuite->propGetIntN(gHost->host, 
+                                  kOfxPropAPIVersion,
+                                  2,
+                                  gAPIVersion);
+    }
+
+    if(gAPIVersion[0] > 1) {
+      // we support the 1 series of APIs
+      return kOfxStatFailed;
+    }
+
+    if(gAPIVersion[1] < 2) {
+      // we want to support 1.2 or above
+      return kOfxStatFailed;
+    }
+
     return kOfxStatOK;
   }
 
@@ -319,7 +352,7 @@ namespace {
     gPropertySuite->propSetString(effectProps, 
                                   kOfxPropLabel,
                                   0,
-                                  "OFX Saturation Example");
+                                  "OFX Circle Example");
     gPropertySuite->propSetString(effectProps,
                                   kOfxImageEffectPluginPropGrouping,
                                   0,
@@ -331,11 +364,6 @@ namespace {
                                   kOfxImageEffectPropSupportedContexts,
                                   0,
                                   kOfxImageEffectContextFilter);
-
-    gPropertySuite->propSetString(effectProps,
-                                  kOfxImageEffectPropSupportedContexts,
-                                  1,
-                                  kOfxImageEffectContextGeneral);
 
     // set the bit depths the plugin can handle
     gPropertySuite->propSetString(effectProps,
@@ -375,89 +403,147 @@ namespace {
     char *context;
     gPropertySuite->propGetString(inArgs, kOfxImageEffectPropContext, 0, &context);
 
+    // what components do we support
+    static const char *supportedComponents[] = {kOfxImageComponentRGBA, kOfxImageComponentRGB, kOfxImageComponentAlpha};
+    
     OfxPropertySetHandle props;
     // define the mandated single output clip
     gImageEffectSuite->clipDefine(descriptor, "Output", &props);
 
     // set the component types we can handle on out output
-    gPropertySuite->propSetString(props,
-                                  kOfxImageEffectPropSupportedComponents,
-                                  0,
-                                  kOfxImageComponentRGBA);
-    gPropertySuite->propSetString(props,
-                                  kOfxImageEffectPropSupportedComponents,
-                                  1,
-                                  kOfxImageComponentRGB);
+    gPropertySuite->propSetStringN(props,
+                                   kOfxImageEffectPropSupportedComponents,
+                                   3,
+                                   supportedComponents);
 
     // define the mandated single source clip
     gImageEffectSuite->clipDefine(descriptor, "Source", &props);
 
     // set the component types we can handle on our main input
-    gPropertySuite->propSetString(props,
-                                  kOfxImageEffectPropSupportedComponents,
-                                  0,
-                                  kOfxImageComponentRGBA);
-    gPropertySuite->propSetString(props,
-                                  kOfxImageEffectPropSupportedComponents,
-                                  1,
-                                  kOfxImageComponentRGB);
+    gPropertySuite->propSetStringN(props,
+                                   kOfxImageEffectPropSupportedComponents,
+                                   3,
+                                   supportedComponents);
     
-    if(strcmp(context, kOfxImageEffectContextGeneral) == 0) {
-      gImageEffectSuite->clipDefine(descriptor, "Mask", &props);
-
-      // set the component types we can handle on our main input
-      gPropertySuite->propSetString(props,
-                                    kOfxImageEffectPropSupportedComponents,
-                                    0,
-                                    kOfxImageComponentAlpha);
-      gPropertySuite->propSetInt(props,
-                                 kOfxImageClipPropOptional,
-                                 0,
-                                 1);
-      gPropertySuite->propSetInt(props,
-                                 kOfxImageClipPropIsMask,
-                                 0,
-                                 1);
-    }
-
-
     // first get the handle to the parameter set 
     OfxParamSetHandle paramSet;
     gImageEffectSuite->getParamSet(descriptor, &paramSet);
 
     // properties on our parameter
-    OfxPropertySetHandle paramProps;
-
-    // now define a 'saturation' parameter and set its properties
+    OfxPropertySetHandle radiusParamProps;
+    OfxPropertySetHandle centreParamProps;
+    OfxPropertySetHandle colourParamProps;
+    OfxPropertySetHandle growRoDParamProps;
+    
+    // set the properties on the radius param
     gParameterSuite->paramDefine(paramSet, 
                                  kOfxParamTypeDouble, 
-                                 SATURATION_PARAM_NAME, 
-                                 &paramProps);
-    gPropertySuite->propSetString(paramProps,
+                                 RADIUS_PARAM_NAME,
+                                 &radiusParamProps);
+
+    gPropertySuite->propSetString(radiusParamProps,
                                   kOfxParamPropDoubleType, 
                                   0,
-                                  kOfxParamDoubleTypeScale);
-    gPropertySuite->propSetDouble(paramProps, 
+                                  kOfxParamDoubleTypeX);
+
+    gPropertySuite->propSetString(radiusParamProps,
+                                  kOfxParamPropDefaultCoordinateSystem, 
+                                  0,
+                                  kOfxParamCoordinatesNormalised);
+
+    gPropertySuite->propSetDouble(radiusParamProps, 
                                   kOfxParamPropDefault,
                                   0,
-                                  1.0);
-    gPropertySuite->propSetDouble(paramProps,
+                                  0.25);
+    gPropertySuite->propSetDouble(radiusParamProps,
+                                  kOfxParamPropMin,
+                                  0,
+                                  0);
+    gPropertySuite->propSetDouble(radiusParamProps,
                                   kOfxParamPropDisplayMin,
                                   0,
-                                  -2.0);
-    gPropertySuite->propSetDouble(paramProps,
+                                  0.0);
+    gPropertySuite->propSetDouble(radiusParamProps,
                                   kOfxParamPropDisplayMax,
                                   0,
                                   2.0);
-    gPropertySuite->propSetString(paramProps,
+    gPropertySuite->propSetString(radiusParamProps,
                                   kOfxPropLabel,
                                   0,
-                                  "Saturation");
-    gPropertySuite->propSetString(paramProps,
+                                  "Radius");
+    gPropertySuite->propSetString(radiusParamProps,
                                   kOfxParamPropHint,
                                   0,
-                                  "How saturated the image should be.");
+                                  "The radius of the circle.");
+
+    // set the properties on the centre param
+    static double centreDefault[] = {0.5, 0.5};
+
+    gParameterSuite->paramDefine(paramSet, 
+                                 kOfxParamTypeDouble2D, 
+                                 CENTRE_PARAM_NAME,
+                                 &centreParamProps);
     
+    gPropertySuite->propSetString(centreParamProps,
+                                  kOfxParamPropDoubleType, 
+                                  0,
+                                  kOfxParamDoubleTypeXYAbsolute);
+    gPropertySuite->propSetString(centreParamProps,
+                                  kOfxParamPropDefaultCoordinateSystem, 
+                                  0,
+                                  kOfxParamCoordinatesNormalised);
+    gPropertySuite->propSetDoubleN(centreParamProps, 
+                                   kOfxParamPropDefault,
+                                   2,
+                                   centreDefault);
+    gPropertySuite->propSetString(centreParamProps,
+                                  kOfxPropLabel,
+                                  0,
+                                  "Centre");
+    gPropertySuite->propSetString(centreParamProps,
+                                  kOfxParamPropHint,
+                                  0,
+                                  "The centre of the circle.");
+
+
+    // set the properties on the colour param
+    static double colourDefault[] = {1.0, 1.0, 1.0, 0.5};
+
+    gParameterSuite->paramDefine(paramSet, 
+                                 kOfxParamTypeRGBA, 
+                                 COLOUR_PARAM_NAME,
+                                 &colourParamProps);
+    gPropertySuite->propSetDoubleN(colourParamProps, 
+                                   kOfxParamPropDefault,
+                                   4,
+                                   colourDefault);
+    gPropertySuite->propSetString(colourParamProps,
+                                  kOfxPropLabel,
+                                  0,
+                                  "Colour");
+    gPropertySuite->propSetString(centreParamProps,
+                                  kOfxParamPropHint,
+                                  0,
+                                  "The colour of the circle.");
+
+    // and define the 'grow RoD' parameter and set its properties
+    gParameterSuite->paramDefine(paramSet,
+                                 kOfxParamTypeBoolean,
+                                 GROW_ROD_PARAM_NAME,
+                                 &growRoDParamProps);
+    gPropertySuite->propSetInt(growRoDParamProps,
+                               kOfxParamPropDefault,
+                               0,
+                               0);
+    gPropertySuite->propSetString(growRoDParamProps,
+                                  kOfxParamPropHint,
+                                  0,
+                                  "Whether to grow the output's Region of Definition to include the circle.");
+    gPropertySuite->propSetString(growRoDParamProps,
+                                  kOfxPropLabel,
+                                  0,
+                                  "Grow RoD");
+
     return kOfxStatOK;
   }
 
@@ -484,17 +570,25 @@ namespace {
     // Cache the source and output clip handles
     gImageEffectSuite->clipGetHandle(instance, "Source", &myData->sourceClip, 0);
     gImageEffectSuite->clipGetHandle(instance, "Output", &myData->outputClip, 0);
-
-    if(myData->isGeneralContext) {
-      gImageEffectSuite->clipGetHandle(instance, "Mask", &myData->maskClip, 0);
-    }
   
     // Cache away the param handles
     OfxParamSetHandle paramSet;
     gImageEffectSuite->getParamSet(instance, &paramSet);
     gParameterSuite->paramGetHandle(paramSet,
-                                    SATURATION_PARAM_NAME,
-                                    &myData->saturationParam,
+                                    RADIUS_PARAM_NAME,
+                                    &myData->radiusParam,
+                                    0);
+    gParameterSuite->paramGetHandle(paramSet,
+                                    CENTRE_PARAM_NAME,
+                                    &myData->centreParam,
+                                    0);
+    gParameterSuite->paramGetHandle(paramSet,
+                                    COLOUR_PARAM_NAME,
+                                    &myData->colourParam,
+                                    0);
+    gParameterSuite->paramGetHandle(paramSet,
+                                    GROW_ROD_PARAM_NAME,
+                                    &myData->growRoD,
                                     0);
 
     return kOfxStatOK;
@@ -530,78 +624,60 @@ namespace {
   ////////////////////////////////////////////////////////////////////////////////
   // iterate over our pixels and process them
   template <class T, int MAX> 
-  void PixelProcessing(double saturation,                       
-                       OfxImageEffectHandle instance,
+  void PixelProcessing(OfxImageEffectHandle instance,
                        Image &src,
-                       Image &mask,
                        Image &output,
+                       double centre[2],
+                       double radius,
+                       double colour[4],
+                       double renderScale[2],
                        OfxRectI renderWindow)
   {
-    int nComps = output.nComponents();
+    float r2 = float(radius * radius);
+    float PAR = output.pixelAspectRatio();
 
     // and do some processing
     for(int y = renderWindow.y1; y < renderWindow.y2; y++) {
-      if(gImageEffectSuite->abort(instance)) break;
+      if( y % 50 == 0 && gImageEffectSuite->abort(instance)) break;
+      
+
+      float yCanonical = (y + 0.5f)/renderScale[1];
+      float dy = yCanonical - centre[1];
 
       // get the row start for the output image
       T *dstPix = output.pixelAddress<T>(renderWindow.x1, y);
 
       for(int x = renderWindow.x1; x < renderWindow.x2; x++) {
-        
-        // get the source pixel
-        T *srcPix = src.pixelAddress<T>(x, y);
+        float xCanonical = (x + 0.5) * PAR/renderScale[0];
+        float dx = xCanonical - centre[0];
+        float d = dx * dx + dy * dy;
 
-        // get the amount to mask by, no mask image means we do the full effect everywhere
-        float maskAmount = 1.0f;
-        if (mask) {
-          // get our mask pixel address
-          T *maskPix = mask.pixelAddress<T>(x, y);
-          if(maskPix) {
-            maskAmount = float(*maskPix)/float(MAX);
+        float t;
+
+        if(d < r2) {
+          d = sqrtf(d);
+          if(d < radius - 1) {
+            t = 1.0f;
           }
           else {
-            maskAmount = 0;
-          }
-        }
-                
-        if(srcPix) {
-          if(maskAmount == 0) {
-            // we have a mask input, but the mask is zero here, 
-            // so no effect happens, copy source to output
-            for(int i = 0; i < nComps; ++i) {
-              *dstPix = *srcPix;
-              ++dstPix; ++srcPix;
-            }          
-          }
-          else {
-            // we have a non zero mask or no mask at all
-
-            // find the average of the R, G and B
-            float average = (srcPix[0] + srcPix[1] + srcPix[2])/3.0f;
-
-            // scale each component around that average
-            for(int c = 0; c < 3; ++c) {
-              float value = (srcPix[c] - average) * saturation + average;
-              if(MAX != 1) {
-                value = Clamp<T, MAX>(value);
-              }
-              // use the mask to control how much original we should have
-              dstPix[c] = Blend(srcPix[c], value, maskAmount);
-            }
-
-            if(nComps == 4) { // if we have an alpha, just copy it
-              dstPix[3] = srcPix[3];
-            }
-            dstPix += nComps;
+            t = radius - d;
           }
         }
         else {
-          // we don't have a pixel in the source image, set output to zero
-          for(int i = 0; i < nComps; ++i) {
-            *dstPix = 0;
-            ++dstPix;
-          }          
+          t = 0;
         }
+
+        // get the source pixel
+        static const T blackPix[] = {0, 0, 0, 0};
+        const T *srcPix = src.pixelAddress<T>(x, y);
+        srcPix = srcPix ? srcPix : blackPix;
+
+        // scale each component around that average
+        for(int c = 0; c < output.nComponents(); ++c) {
+          // use the mask to control how much original we should have
+          dstPix[c] = Blend(srcPix[c], Clamp<T, MAX>(colour[c] * MAX), t * colour[c]);
+        }
+        dstPix += output.nComponents();
       }
     }
   }
@@ -615,6 +691,7 @@ namespace {
     // get the render window and the time from the inArgs
     OfxTime time;
     OfxRectI renderWindow;
+    double renderScale[2];
     OfxStatus status = kOfxStatOK;
   
     gPropertySuite->propGetDouble(inArgs,
@@ -625,16 +702,24 @@ namespace {
                                 kOfxImageEffectPropRenderWindow,
                                 4,
                                 &renderWindow.x1);
+    gPropertySuite->propGetDoubleN(inArgs, 
+                                   kOfxImageEffectPropRenderScale,
+                                   2,
+                                   renderScale);
     
     // get our instance data which has out clip and param handles
     MyInstanceData *myData = FetchInstanceData(instance);
 
     // get our param values
-    double saturation = 1.0;
-    gParameterSuite->paramGetValueAtTime(myData->saturationParam, time, &saturation);
-    
+    double radius = 0.0;
+    gParameterSuite->paramGetValueAtTime(myData->radiusParam, time, &radius);
+    double centre[2];
+    gParameterSuite->paramGetValueAtTime(myData->centreParam, time, &centre[0], &centre[1]);
+    double colour[4];
+    gParameterSuite->paramGetValueAtTime(myData->colourParam, time, &colour[0], &colour[1], &colour[2], &colour[3]);
+        
     // the property sets holding our images
-    OfxPropertySetHandle outputImg = NULL, sourceImg = NULL, maskImg = NULL;
+    OfxPropertySetHandle outputImg = NULL, sourceImg = NULL;
     try {
       // fetch image to render into from that clip
       Image outputImg(myData->outputClip, time);
@@ -648,34 +733,35 @@ namespace {
         throw " no source image!";
       }
       
-      // fetch mask image at render time from that clip, it may not be there
-      // as we might in the filter context or it might not be attached as it
-      // is optional, so don't worry if we don't have one.
-      Image maskImg(myData->maskClip, time); 
-      
       // now do our render depending on the data type
       if(outputImg.bytesPerComponent() == 1) {
-        PixelProcessing<unsigned char, 255>(saturation,
-                                            instance,
+        PixelProcessing<unsigned char, 255>(instance,
                                             sourceImg,
-                                            maskImg,
                                             outputImg,
+                                            centre,
+                                            radius,
+                                            colour,
+                                            renderScale,
                                             renderWindow);
       }
       else if(outputImg.bytesPerComponent() == 2) {
-        PixelProcessing<unsigned short, 65535>(saturation,
-                                               instance,
+        PixelProcessing<unsigned short, 65535>(instance,
                                                sourceImg,
-                                               maskImg,
                                                outputImg,
+                                               centre,
+                                               radius,
+                                               colour,
+                                               renderScale,
                                                renderWindow);
       }
       else if(outputImg.bytesPerComponent() == 4) {
-        PixelProcessing<float, 1>(saturation, 
-                                  instance,
+        PixelProcessing<float, 1>(instance,
                                   sourceImg,
-                                  maskImg,
                                   outputImg,
+                                  centre,
+                                  radius,
+                                  colour,
+                                  renderScale,
                                   renderWindow);
       }
       else {
@@ -694,9 +780,49 @@ namespace {
       }      
       ERROR_IF(!isAborting, " Rendering failed because %s", errStr);
     }
-
     // all was well
     return status;
+  }
+
+  // tells the host what region we are capable of filling
+  OfxStatus 
+  GetRegionOfDefinitionAction( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+  {
+    // retrieve any instance data associated with this effect
+    MyInstanceData *myData = FetchInstanceData(effect);
+
+    OfxTime time;
+    gPropertySuite->propGetDouble(inArgs, kOfxPropTime, 0, &time);
+  
+    int growingRoD;
+    gParameterSuite->paramGetValueAtTime(myData->growRoD, time, &growingRoD);
+
+    // are we growing the RoD to include the circle?
+    if(growingRoD) {
+      double radius = 0.0;
+      gParameterSuite->paramGetValueAtTime(myData->radiusParam, time, &radius);
+
+      double centre[2];
+      gParameterSuite->paramGetValueAtTime(myData->centreParam, time, &centre[0], &centre[1]);
+      
+      // get the source rod
+      OfxRectD rod;
+      gImageEffectSuite->clipGetRegionOfDefinition(myData->sourceClip, time, &rod);
+      
+      if(rod.x1 > centre[0] - radius) rod.x1 = centre[0] - radius;
+      if(rod.y1 > centre[1] - radius) rod.y1 = centre[1] - radius;
+
+      if(rod.x2 < centre[0] + radius) rod.x2 = centre[0] + radius;
+      if(rod.y2 < centre[1] + radius) rod.y2 = centre[1] + radius;
+
+      // set the rod in the out args
+      gPropertySuite->propSetDoubleN(outArgs, kOfxImageEffectPropRegionOfDefinition, 4, &rod.x1);
+
+      // and say we trapped the action and we are at the identity
+      return kOfxStatOK;
+    }
+
+    return kOfxStatReplyDefault;
   }
 
   // are the settings of the effect making it redundant and so not do anything to the image data
@@ -706,16 +832,40 @@ namespace {
   {
     MyInstanceData *myData = FetchInstanceData(instance);
 
+    bool isIdentity = false;
+
     double time;
     gPropertySuite->propGetDouble(inArgs, kOfxPropTime, 0, &time);
     
-    double saturation = 1.0;
-    gParameterSuite->paramGetValueAtTime(myData->saturationParam, time, &saturation);
+    double radius = 0.0;
+    gParameterSuite->paramGetValueAtTime(myData->radiusParam, time, &radius);
+    int growingRoD;
+    gParameterSuite->paramGetValueAtTime(myData->growRoD, time, &growingRoD);
 
-    // if the saturation value is 1.0 (or nearly so) say we aren't doing anything
-    if(fabs(saturation - 1.0) < 0.000000001) {
+    // if the radius is zero then we don't draw anything and it has no effect
+    isIdentity = radius < 0.0001;
+
+    // if we are drawing out side of the RoD and we aren't growing to include it, we have no effect
+    if(not isIdentity and not growingRoD) {
+      OfxRectD bounds;
+      double centre[2];
+      gParameterSuite->paramGetValueAtTime(myData->centreParam, time, &centre[0], &centre[1]);
+
+      gImageEffectSuite->clipGetRegionOfDefinition(myData->sourceClip, time, &bounds);
+
+      isIdentity = (centre[0] + radius < bounds.x1 or
+                    centre[0] - radius > bounds.x2 or
+                    centre[1] + radius < bounds.y1 or
+                    centre[1] - radius > bounds.y2);
+    }
+
+
+    if(isIdentity) {
       // we set the name of the input clip to pull default images from
       gPropertySuite->propSetString(outArgs, kOfxPropName, 0, "Source");
+
+      std::cout << "is identity\n";
+
       // and say we trapped the action and we are at the identity
       return kOfxStatOK;
     }
@@ -762,6 +912,10 @@ namespace {
       // action called to render a frame
       returnStatus = RenderAction(effect, inArgs, outArgs);
     }
+    else if(strcmp(action, kOfxImageEffectActionGetRegionOfDefinition) == 0) {
+      returnStatus = GetRegionOfDefinitionAction(effect, inArgs, outArgs);
+    }  
+    
     
     MESSAGE(": END action is : %s \n", action );
     /// other actions to take the default value
