@@ -1,0 +1,44 @@
+= OFX Programming Guide : Spatial Effects
+Author:Bruno Nicoletti
+2014-10-17
+:toc:
+:data-uri:
+:source-highlighter: coderay
+
+This guide will introduce the spatial coordinate system used by OFX and will illustrate that with a 
+simple circle drawing plugin.
+Its source can be found in the pass:[C++] 
+file `GuideExamples/Example5/circle.cpp`. 
+This plugin takes a clip and draws a circle over it. The colour, size and position of the circle
+are controlled by several parameters.
+
+== Spatial Coordinate Systems
+
+There are two important co-ordinate systems within OFX, the **canonical** coordinate system and the
+**pixel** coordinate system. 
+
+The pixel coordinate system relates to addressable pixel data in memory, and is typically represented
+with integers. For example the **bounds** of our image data are in pixel coordinates. 
+
+The canonical coordinate system is on an idealised plane, where all pixels are square and we have
+no scales applied to any data. Canonical coordinates are typically represnted by doubles. 
+
+PARs, renderscales, how to map between then. Pictures of it all.
+
+== Description
+Spatial params
+
+== Get Region Of Definition Action
+
+== Rendering
+maping from cannonical to pixel
+
+
+== Summary
+This plugin has shown you...
+  - the two main OFX spatial coordinate systems and how to map between them,
+  - setting the region of definition for an effect,
+  - 
+
+
+   
