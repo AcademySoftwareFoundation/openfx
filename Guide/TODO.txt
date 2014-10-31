@@ -1,24 +1,35 @@
 The following examples should be added to the guide.
 
-
-Circle Drawing Plugin
-=====================
-
-Draws a circle ontop of an existing image. Controlled by three parameters, position (2D double), radius (double) and colour (RGBA).
+OpenGL Overlay Example
+======================
+A trival example along the lines of the circle drawing example.
 
 This will illustrate...
-   - the coordinate systems in OFX
-   - dealing with non-square pixels and render scales
-   - dealing with interlacing
+    - openGL overlays
+
+
+Temporal Difference Example
+===========================
+Compute the absolute difference between images at two different times.
+
+This will illustrate...
+    - fetching images at separate times
+    - the get frames needed action
+
+Transition Example
+===========================
+A simple straight frame blend transition
+
+This will illustrate...
+   - the transition context
 
 
 Custom Parameter
 ================
-Rewrite the circle drawing plugin so that it has no double parameters, but only a single custom parameter, controlled cvia the UI.
+Something like the circle drawing plugin so that it has no double parameters, but only a single custom parameter, controlled via the overlay UI.
 
 This will illustrate...
     - using custom parameters.
-    - openGL overlays
 
 
 3x3 2D Filter

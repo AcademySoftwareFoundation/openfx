@@ -91,7 +91,11 @@ namespace {
   OfxImageEffectSuiteV1 *gImageEffectSuite = 0;
   OfxParameterSuiteV1   *gParameterSuite   = 0;
 
+  // version of the API the host is running
   int gAPIVersion[2] = {1, 0};
+
+  // does the host support multi resolution images
+  int gHostSupportsMultiRes = false;
 
   ////////////////////////////////////////////////////////////////////////////////
   // class to manage OFX images
@@ -111,6 +115,19 @@ namespace {
     T *pixelAddress(int x, int y)
     {
       return reinterpret_cast<T *>(rawAddress(x, y));
+    }
+
+    // get a pixel address, if it doesn't exist
+    // return a default black pixel
+    template <class T>
+    const T *pixelAddressWithFallback(int x, int y) 
+    {
+      const T *pix = pixelAddress<T>(x, y);
+      if(!pix) {
+        static const T blackPix[4] = {0,0,0,0};
+        pix = blackPix;
+      }
+      return pix;
     }
 
     // Is this image empty?
@@ -327,15 +344,16 @@ namespace {
                                   gAPIVersion);
     }
 
-    if(gAPIVersion[0] > 1) {
-      // we support the 1 series of APIs
+    // we only support 1.2 and above
+    if(gAPIVersion[0] == 1 && gAPIVersion[1] < 2) {
       return kOfxStatFailed;
     }
-
-    if(gAPIVersion[1] < 2) {
-      // we want to support 1.2 or above
-      return kOfxStatFailed;
-    }
+    
+    /// does the host support multi-resolution images
+    gPropertySuite->propGetInt(gHost->host, 
+                               kOfxImageEffectPropSupportsMultiResolution,
+                               0,
+                               &gHostSupportsMultiRes);
 
     return kOfxStatOK;
   }
@@ -431,9 +449,6 @@ namespace {
 
     // properties on our parameter
     OfxPropertySetHandle radiusParamProps;
-    OfxPropertySetHandle centreParamProps;
-    OfxPropertySetHandle colourParamProps;
-    OfxPropertySetHandle growRoDParamProps;
     
     // set the properties on the radius param
     gParameterSuite->paramDefine(paramSet, 
@@ -477,6 +492,7 @@ namespace {
                                   "The radius of the circle.");
 
     // set the properties on the centre param
+    OfxPropertySetHandle centreParamProps;
     static double centreDefault[] = {0.5, 0.5};
 
     gParameterSuite->paramDefine(paramSet, 
@@ -507,6 +523,7 @@ namespace {
 
 
     // set the properties on the colour param
+    OfxPropertySetHandle colourParamProps;
     static double colourDefault[] = {1.0, 1.0, 1.0, 0.5};
 
     gParameterSuite->paramDefine(paramSet, 
@@ -527,22 +544,25 @@ namespace {
                                   "The colour of the circle.");
 
     // and define the 'grow RoD' parameter and set its properties
-    gParameterSuite->paramDefine(paramSet,
-                                 kOfxParamTypeBoolean,
-                                 GROW_ROD_PARAM_NAME,
-                                 &growRoDParamProps);
-    gPropertySuite->propSetInt(growRoDParamProps,
-                               kOfxParamPropDefault,
-                               0,
-                               0);
-    gPropertySuite->propSetString(growRoDParamProps,
-                                  kOfxParamPropHint,
-                                  0,
-                                  "Whether to grow the output's Region of Definition to include the circle.");
-    gPropertySuite->propSetString(growRoDParamProps,
-                                  kOfxPropLabel,
-                                  0,
-                                  "Grow RoD");
+    if(gHostSupportsMultiRes) {
+      OfxPropertySetHandle growRoDParamProps;
+      gParameterSuite->paramDefine(paramSet,
+                                   kOfxParamTypeBoolean,
+                                   GROW_ROD_PARAM_NAME,
+                                   &growRoDParamProps);
+      gPropertySuite->propSetInt(growRoDParamProps,
+                                 kOfxParamPropDefault,
+                                 0,
+                                 0);
+      gPropertySuite->propSetString(growRoDParamProps,
+                                    kOfxParamPropHint,
+                                    0,
+                                    "Whether to grow the output's Region of Definition to include the circle.");
+      gPropertySuite->propSetString(growRoDParamProps,
+                                    kOfxPropLabel,
+                                    0,
+                                    "Grow RoD");
+    }
 
     return kOfxStatOK;
   }
@@ -586,10 +606,13 @@ namespace {
                                     COLOUR_PARAM_NAME,
                                     &myData->colourParam,
                                     0);
-    gParameterSuite->paramGetHandle(paramSet,
-                                    GROW_ROD_PARAM_NAME,
-                                    &myData->growRoD,
-                                    0);
+    
+    if(gHostSupportsMultiRes) {
+      gParameterSuite->paramGetHandle(paramSet,
+                                      GROW_ROD_PARAM_NAME,
+                                      &myData->growRoD,
+                                      0);
+    }
 
     return kOfxStatOK;
   }
@@ -610,7 +633,10 @@ namespace {
   template <class T, int MAX>
   static inline T Clamp(float value)
   {
-    return value < 0 ? T(0) : (value > MAX ? T(MAX) : T(value));
+    if(MAX == 1) 
+      return value; // don't clamp floating point values
+    else
+      return value < 0 ? T(0) : (value > MAX ? T(MAX) : T(value));
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -633,49 +659,61 @@ namespace {
                        double renderScale[2],
                        OfxRectI renderWindow)
   {
-    float r2 = float(radius * radius);
+    // pixel aspect of our output
     float PAR = output.pixelAspectRatio();
 
-    // and do some processing
+    T colourQuantised[4];
+    for(int c = 0; c < 4; ++c) {
+      colourQuantised[c] = Clamp<T, MAX>(colour[c] * MAX);
+    }
+
+    // now do some processing
     for(int y = renderWindow.y1; y < renderWindow.y2; y++) {
       if( y % 50 == 0 && gImageEffectSuite->abort(instance)) break;
       
-
+      // get our y coord in canonical space
       float yCanonical = (y + 0.5f)/renderScale[1];
+
+      // how far are we from the centre in y, canonical
       float dy = yCanonical - centre[1];
 
       // get the row start for the output image
       T *dstPix = output.pixelAddress<T>(renderWindow.x1, y);
 
       for(int x = renderWindow.x1; x < renderWindow.x2; x++) {
+        // get our x pixel coord in canonical space,
         float xCanonical = (x + 0.5) * PAR/renderScale[0];
+
+        // how far are we from the centre in x, canonical
         float dx = xCanonical - centre[0];
-        float d = dx * dx + dy * dy;
 
-        float t;
+        // distance to the centre of our circle, canonical
+        float d = sqrtf(dx * dx + dy * dy);
 
-        if(d < r2) {
-          d = sqrtf(d);
-          if(d < radius - 1) {
-            t = 1.0f;
-          }
-          else {
-            t = radius - d;
+        // this will hold the antialiased value 
+        float alpha = colour[3];
+
+        // Is the square of the distance to the centre 
+        // less than the square of the radius?
+        if(d < radius) {
+          if(d > radius - 1) {
+            // we are within 1 pixel of the edge, modulate
+            // our alpha with an anti-aliasing value 
+            alpha *= radius - d;
           }
         }
         else {
-          t = 0;
+          // outside, so alpha is 0
+          alpha = 0;
         }
 
         // get the source pixel
-        static const T blackPix[] = {0, 0, 0, 0};
-        const T *srcPix = src.pixelAddress<T>(x, y);
-        srcPix = srcPix ? srcPix : blackPix;
+        const T *srcPix = src.pixelAddressWithFallback<T>(x, y);
 
         // scale each component around that average
         for(int c = 0; c < output.nComponents(); ++c) {
           // use the mask to control how much original we should have
-          dstPix[c] = Blend(srcPix[c], Clamp<T, MAX>(colour[c] * MAX), t * colour[c]);
+          dstPix[c] = Blend(srcPix[c], colourQuantised[c], alpha);
         }
         dstPix += output.nComponents();
       }
@@ -786,7 +824,9 @@ namespace {
 
   // tells the host what region we are capable of filling
   OfxStatus 
-  GetRegionOfDefinitionAction( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+  GetRegionOfDefinitionAction( OfxImageEffectHandle  effect, 
+                               OfxPropertySetHandle inArgs,  
+                               OfxPropertySetHandle outArgs)
   {
     // retrieve any instance data associated with this effect
     MyInstanceData *myData = FetchInstanceData(effect);
@@ -795,15 +835,22 @@ namespace {
     gPropertySuite->propGetDouble(inArgs, kOfxPropTime, 0, &time);
   
     int growingRoD;
-    gParameterSuite->paramGetValueAtTime(myData->growRoD, time, &growingRoD);
+    gParameterSuite->paramGetValueAtTime(myData->growRoD, time, 
+                                         &growingRoD);
 
     // are we growing the RoD to include the circle?
-    if(growingRoD) {
+    if(not growingRoD) {
+      return kOfxStatReplyDefault;
+    }
+    else {
       double radius = 0.0;
-      gParameterSuite->paramGetValueAtTime(myData->radiusParam, time, &radius);
+      gParameterSuite->paramGetValueAtTime(myData->radiusParam, time, 
+                                           &radius);
 
       double centre[2];
-      gParameterSuite->paramGetValueAtTime(myData->centreParam, time, &centre[0], &centre[1]);
+      gParameterSuite->paramGetValueAtTime(myData->centreParam, time,
+                                           &centre[0],
+                                           &centre[1]);
       
       // get the source rod
       OfxRectD rod;
@@ -821,8 +868,6 @@ namespace {
       // and say we trapped the action and we are at the identity
       return kOfxStatOK;
     }
-
-    return kOfxStatReplyDefault;
   }
 
   // are the settings of the effect making it redundant and so not do anything to the image data
@@ -839,11 +884,14 @@ namespace {
     
     double radius = 0.0;
     gParameterSuite->paramGetValueAtTime(myData->radiusParam, time, &radius);
-    int growingRoD;
-    gParameterSuite->paramGetValueAtTime(myData->growRoD, time, &growingRoD);
-
+    
     // if the radius is zero then we don't draw anything and it has no effect
     isIdentity = radius < 0.0001;
+
+    int growingRoD = 0;
+    if(gHostSupportsMultiRes) {
+      gParameterSuite->paramGetValueAtTime(myData->growRoD, time, &growingRoD);
+    }
 
     // if we are drawing out side of the RoD and we aren't growing to include it, we have no effect
     if(not isIdentity and not growingRoD) {
@@ -863,8 +911,6 @@ namespace {
     if(isIdentity) {
       // we set the name of the input clip to pull default images from
       gPropertySuite->propSetString(outArgs, kOfxPropName, 0, "Source");
-
-      std::cout << "is identity\n";
 
       // and say we trapped the action and we are at the identity
       return kOfxStatOK;
@@ -912,7 +958,7 @@ namespace {
       // action called to render a frame
       returnStatus = RenderAction(effect, inArgs, outArgs);
     }
-    else if(strcmp(action, kOfxImageEffectActionGetRegionOfDefinition) == 0) {
+    else if(gHostSupportsMultiRes && strcmp(action, kOfxImageEffectActionGetRegionOfDefinition) == 0) {
       returnStatus = GetRegionOfDefinitionAction(effect, inArgs, outArgs);
     }  
     

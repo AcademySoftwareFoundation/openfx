@@ -516,7 +516,10 @@ namespace {
   template <class T, int MAX>
   static inline T Clamp(float value)
   {
-    return value < 0 ? T(0) : (value > MAX ? T(MAX) : T(value));
+    if(MAX == 1) 
+      return value; // don't clamp floating point values
+    else
+      return value < 0 ? T(0) : (value > MAX ? T(MAX) : T(value));
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -582,9 +585,7 @@ namespace {
             // scale each component around that average
             for(int c = 0; c < 3; ++c) {
               float value = (srcPix[c] - average) * saturation + average;
-              if(MAX != 1) {
-                value = Clamp<T, MAX>(value);
-              }
+              value = Clamp<T, MAX>(value);
               // use the mask to control how much original we should have
               dstPix[c] = Blend(srcPix[c], value, maskAmount);
             }

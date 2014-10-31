@@ -55,13 +55,28 @@ a small minimal set of expectations is assumed, which we will cover in the follo
 guides.
 
 == The Examples
-
 I'll illustrate the API and how it works with a variety of example
 plugins, each of which will have it's own guide describing what 
 is going one. You should work through them one by one as each will
 build on the one before.
 
+For completeness and clarity of explanation, each plugin is entirely self contained and
+has no dependancy on anything other than standard C and C++ libraries
+and the OFX headers.
+
 .examples
   * link:ofxExample1_Basics.html[The basic machinery of an OFX plugin.]
   * link:ofxExample2_Invert.html[How to access images.]
+  * link:ofxExample3_Gain.html[How to define parameters.]
+  * link:ofxExample4_Saturation.html[How to write multi context effects.]
+  * link:ofxExample5_Circle.html[Coordinate systems and defining regions of definition.]
 
+== Wrapping the API
+There are both host and plugin side API C++ wrappers available, which are intended to make
+implementations much easier than going through the lower level C API. As you work through
+the examples you'll see that I actually start wrapping up various entities within the API
+into C++ classes. 
+
+== License
+Please feel free to use any of the code you find here, provided you adhere to
+the BSD style license you'll find at the top of each header file.
