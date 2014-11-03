@@ -254,7 +254,7 @@ namespace {
 
     // and do some inverting
     for(int y = renderWindow.y1; y < renderWindow.y2; y++) {
-      if(gImageEffectSuite->abort(instance)) break;
+      if(y % 20 == 0 && gImageEffectSuite->abort(instance)) break;
 
       // get the row start for the output image
       T *dstPix = pixelAddress<T>(renderWindow.x1, y, dstPtr, dstBounds, dstRowBytes, nComps);
