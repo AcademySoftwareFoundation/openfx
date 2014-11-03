@@ -7,7 +7,12 @@ STYLESHEETDIR = docbook-xsl-1.77.1/xhtml/
 # stylesheet to use
 STYLESHEET = docbook.xsl 
 
+UNAME := $(shell uname)
+ifeq ($(UNAME), Darwin)
 ASCIIDOCTOR = /usr/bin/asciidoctor
+else ifeq ($(UNAME), Linux)
+ASCIIDOCTOR = /usr/local/bin/asciidoctor
+endif
 
 #  args for xsltproc
 XSLARGS = --stringparam  funcsynopsis.style "ansi" \
