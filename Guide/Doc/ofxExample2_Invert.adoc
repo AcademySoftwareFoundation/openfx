@@ -620,7 +620,7 @@ image.
 ----
     // and do some inverting
     for(int y = renderWindow.y1; y < renderWindow.y2; y++) {
-      if(gImageEffectSuite->abort(instance)) break;
+      if(y % 20 == 0 && gImageEffectSuite->abort(instance)) break;
 
       // get the row start for the output image
       T *dstPix = pixelAddress<T>(renderWindow.x1, y, dstPtr, dstBounds, dstRowBytes, nComps);
@@ -655,7 +655,8 @@ image.
 ----
 
 The first thing we do at each row we are processing is to check that the host hasn't told our plugin
-to abort processing. (Ideally you can do this a bit less often than every line).
+to abort processing. (Ideally you can do this a bit less often than every line). We only to this every
+20th row, as the overhead on the host side to check for an abort might be quite high.
 
 The next thing we do is to use the `**pixelAddress**` function to find the address of the first component
 of the first pixel in the current, and we put it in `**dstPix**`. Because we have a guarantee that the bounds of the output image are at

@@ -415,7 +415,7 @@ PixelProcessing function. Which is below...
 
     // now do some processing
     for(int y = renderWindow.y1; y < renderWindow.y2; y++) {
-      if( y % 50 == 0 && gImageEffectSuite->abort(instance)) break;
+      if(y % 20 == 0 && gImageEffectSuite->abort(instance)) break;
       
       // get our y coord in canonical space
       float yCanonical = (y + 0.5f)/renderScale[1];
