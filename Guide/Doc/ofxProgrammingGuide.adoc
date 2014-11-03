@@ -8,7 +8,8 @@ Author:Bruno Nicoletti
 == Foreword
 OFX is an open API for writing visual effects plug-ins for a wide
 variety of applications, such as video editing systems and compositing
-systems. FIXME BVLAH BLAH BLAH
+systems. This guide demonstrates by example the low level C 
+APIs that defines OFX. 
 
 == Intended Audience
 Do you write visual effects or image processing software? Do you
@@ -72,10 +73,14 @@ and the OFX headers.
   * link:ofxExample5_Circle.html[Coordinate systems and defining regions of definition.]
 
 == Wrapping the API
-There are both host and plugin side API C++ wrappers available, which are intended to make
-implementations much easier than going through the lower level C API. As you work through
+This API can be somewhat awkward to use directly, and it is expected
+that most plugin or host developers will wrap the API in higher level
+C or C++ structures. 
+
+There are open source host and plugin side API C++ wrappers available from the <<https://github.com/ofxa/openfx, openfx.org 
+git repository>. As you work through
 the examples you'll see that I actually start wrapping up various entities within the API
-into C++ classes. 
+into C++ classes as it can get unwieldy otherwise.
 
 == License
 Please feel free to use any of the code you find here, provided you adhere to
