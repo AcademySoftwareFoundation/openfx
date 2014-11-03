@@ -45,6 +45,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // the one OFX header we need, it includes the others necessary
 #include "ofxImageEffect.h"
 
+#if defined __APPLE__ || defined linux
+#  define EXPORT __attribute__((visibility("default")))
+#else
+#  error Not building on your operating system quite yet
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 // macro to write a labelled message to stderr with 
 #define DUMP(LABEL, MSG, ...)                                           \
@@ -449,7 +455,7 @@ static OfxPlugin effectPluginStruct =
 // this binary.
 //
 // This will be the first function called by the host.
-int OfxGetNumberOfPlugins(void)
+EXPORT int OfxGetNumberOfPlugins(void)
 {       
   return 1;
 }
@@ -460,7 +466,7 @@ int OfxGetNumberOfPlugins(void)
 // this binary.
 //
 // This will be called multiple times by the host, once for each plugin present.
-OfxPlugin * OfxGetPlugin(int nth)
+EXPORT OfxPlugin * OfxGetPlugin(int nth)
 {
   if(nth == 0)
     return &effectPluginStruct;

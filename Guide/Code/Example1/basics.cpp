@@ -50,12 +50,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // the one OFX header we need, it includes the others necessary
 #include "ofxImageEffect.h"
 
-#ifdef __APPLE__
-#define EXPORT __attribute__((visibility("default")))
-#else 
-#ifdef linux
+#if defined __APPLE__ || defined linux
+#  define EXPORT __attribute__((visibility("default")))
 #else
-#endif
+#  error Not building on your operating system quite yet
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////

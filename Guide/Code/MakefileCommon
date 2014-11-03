@@ -9,11 +9,11 @@ UNAME := $(shell uname)
 ifeq ($(UNAME), Darwin)
   OS_CXXFLAGS = -fvisibility=hidden
   OS_LDFLAGS = -bundle -fvisibility=hidden
-	OS_BUNDLE_DIR = MacOS
+  OS_BUNDLE_DIR = MacOS
 else ifeq ($(UNAME), Linux)
-  OS_CXXFLAGS = -fPIC
-  OS_LDFLAGS = -shared
-	OS_BUNDLE_DIR = Linux-x86-64
+  OS_CXXFLAGS = -fPIC -fvisibility=hidden
+  OS_LDFLAGS = -shared -fvisibility=hidden
+  OS_BUNDLE_DIR = Linux-x86-64
 endif
 
 # set up C++ flags
