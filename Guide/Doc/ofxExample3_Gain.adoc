@@ -7,7 +7,7 @@ Author:Bruno Nicoletti
 
 This guide will take you through the basics of creating and using parameters in OFX.  An example plugin will be used to illustrate 
 how it all works and its source can be found in the pass:[C++] 
-file `GuideExamples/Gain/gain.cpp`. 
+file `Guide/Code/Example3/gain.cpp`. 
 This plugin takes an image and multiplies the pixel by the value held in a user visible parameter.
 Ideally you should have read the guide to the link:ofxExample2_invert.html[basic image processing] before you read this guide.
 

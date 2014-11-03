@@ -7,9 +7,9 @@ Author:Bruno Nicoletti
 
 This guide will take you through the fundamentals of processing images in OFX.  An example plugin will be used to illustrate 
 how it all works and its source can be found in the pass:[C++] 
-file `GuideExamples/Invert/invert.cpp`. 
+file `Guide/Code/Example2/invert.cpp`. 
 This plugin takes an image and inverts it (or rather calculates the complement of each component). 
-Ideally you should have read the guide to the link:ofxBasicsExample.html[basic plugin machinery] before you read this guide.
+Ideally you should have read the guide to the link:ofxExample1_Basics.html[basic machinery of an OFX plugin] before you read this guide.
 
 == Action Stations!
 The invert example is pretty much the most minimal OFX plugin you can write that processes images. It leaves many things at 

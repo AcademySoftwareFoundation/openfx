@@ -8,7 +8,7 @@ Author:Bruno Nicoletti
 This guide will introduce the spatial coordinate system used by OFX and will illustrate that with a 
 simple circle drawing plugin.
 Its source can be found in the pass:[C++] 
-file `GuideExamples/Example5/circle.cpp`. 
+file `Guide/Code/Example5/circle.cpp`. 
 This plugin takes a clip and draws a circle over it. The colour, size and position of the circle
 are controlled by several parameters.
 

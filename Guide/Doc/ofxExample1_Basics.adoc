@@ -8,7 +8,7 @@ Author:Bruno Nicoletti
 This is a guide to the basic machinery an OFX plugin uses to communicate with a host application, and goes into the fundamentals of the API. 
 
 An example plugin will be used to illustrate how all the machinery works, and its source can be found in the pass:[C++] 
-file `GuideExamples/Basics/basics.cpp`. 
+file `Guide/Code/Example1/basics.cpp`. 
 This plugin is a 'no-op' image effect and does absolutely nothing to images, it is there purely to show you the basics of 
 how a host and plugin work together. I'll embed snippets of the plugin, but with some comments and debug code stripped for
 clarity.
@@ -33,12 +33,12 @@ OFX has several key concepts and quite specific terminology, which definitely ne
   * a `**suite**` is `C struct` containing a set of function pointers, which are named and versioned, 
 Suites are the way a host allows a plugin to call functions within it and not have to link against anything,
   * a `**property**` is a named object of a restricted set of `C` types, which is accessed via a property suite,
-  * a `**property set**` is a collection of properties,
+  * a `**property set**` is a collection of properties, 
   * an `**action**` is a call into a plugin to do something,
   * an `**API**` is a collection of suites, actions and properties that are used to do something useful, like process images. APIs are
 named and versioned.
 
-
+[[anchor-bootstrapper_functions]]
 == The Two Bootstrapper Functions
 To tell the host what it has inside it, a plugin binary needs to expose two functions to bootstrap the whole host/plugin communications process. These are...
 
@@ -566,7 +566,7 @@ it would return `**kOfxStatReplyDefault**` rather than `**kOfxStatOK**`.
 Now we've outlined the basic actions and functions in a plugin, we should clearly specify the calling sequence. Failure to call them in the right
 sequence will lead to all sorts of undefined behaviour.
 
-Assuming the host has done nothing apart from load the dynamic library that contains plugins and has found the two <<The Two Boostrapper Functions, boostrapping symbols>> in the plugin, the host
+Assuming the host has done nothing apart from load the dynamic library that contains plugins and has found the two <<anchor-bootstrapper_functions, boostrapping symbols>> in the plugin, the host
 should then...
 
    - call `OfxGetNumberOfPlugins` to discover the number of plugins
@@ -602,7 +602,7 @@ may need. There is more detailed information in the OFX Programming Reference Gu
 == Summary
 This example has shown you the basics of the OFX plugin machinery, the main things it illustrated was...
 
-  - the <<The Two Bootstrapper Functions, two bootstrapper functions>> exposed by a plugin that start the plugin discovery process,
+  - the <<anchor-bootstrapper_functions, two bootstrapper functions>> exposed by a plugin that start the plugin discovery process,
   - the main entry point of a plugin is given <<Actions, actions>> by the host application to do things,
   - the plugin gets <<Suites, suites>> from the host to gain access to functions in the host,
   - <<Properties,property sets>> are the main way of passing data back and forth across the API,

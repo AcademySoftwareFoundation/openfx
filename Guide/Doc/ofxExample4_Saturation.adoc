@@ -8,7 +8,7 @@ Author:Bruno Nicoletti
 This guide will take you through the basics of creating effects that can be used in more than
 one context, as well as how to make a multi-input effect.
 Its source can be found in the pass:[C++] 
-file `GuideExamples/Example3/saturation.cpp`. 
+file `Guide/Code/Example4/saturation.cpp`. 
 This plugin takes an RGB or RGBA image and increases or descreases the saturation by a parameter. It can
 be used in two contexts, firstly as a simple filter, secondly as a general effect, where it has an optional
 second input clip which is used to control where the effect is applied. 
@@ -480,7 +480,6 @@ Ideally I should put this in a library which our example links to, but I'm keepi
 the code for each example in one source file for
 illustrative purposes. Feel free to steal this and use it in your own code footnote:[provided
 you stick to the conditions listed at the top of source file].
-
 
 == Summary
 This plugin has shown you
