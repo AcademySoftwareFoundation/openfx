@@ -1156,7 +1156,7 @@ namespace OFX {
               it!=_clips.end();
               ++it) {
             ClipInstance *clip = it->second;
-            if(!clip->isOutput() && !clip->isOptional()) {
+            if(!clip->isOutput() && (!clip->isOptional() || clip->getName() == kOfxImageEffectSimpleSourceClipName)) {
               if(!gotOne)
                 rod = clip->getRegionOfDefinition(time);
               else
