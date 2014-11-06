@@ -625,7 +625,8 @@
 	<listitem>generator context  - defaults to the project window,</listitem>
 	<listitem>filter and paint contexts   - defaults to the RoD of the 'Source' input clip at the given time,</listitem>
 	<listitem>transition context - defaults to the union of the RoDs of the 'SourceFrom' and 'SourceTo' input clips at the given time,</listitem>
-	<listitem>general context    - defaults to the union of the RoDs of all the effect non optional input clips 
+	<listitem>general context    - defaults to the union of the RoDs of all the non optional input clips 
+	  and the 'Source' input clip (if it exists and it is connected)
 	  at the given time, if none exist, then it is the project window</listitem>
 	<listitem>retimer context    - defaults to the union of the RoD of the 'Source' input clip at the frame directly preceding the
 	  value of the 'SourceTime' double parameter and the frame directly after it</listitem>
