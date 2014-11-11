@@ -1,5 +1,5 @@
 # where are our OFX headers
-INCDIR = -I../../../include
+OFX_INC_DIR = -I../../../include
 
 # by default we don't optimise
 OPTIMISE = -g
@@ -17,7 +17,7 @@ else ifeq ($(UNAME), Linux)
 endif
 
 # set up C++ flags
-CXXFLAGS = $(INCDIR) $(OPTIMISE) $(OS_CXXFLAGS)
+CXXFLAGS = $(OFX_INC_DIR) $(OPTIMISE) $(OS_CXXFLAGS)
 
 .PHONY: clean install
 
