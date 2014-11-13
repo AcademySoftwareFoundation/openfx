@@ -120,7 +120,9 @@ void PluginBinary::loadPluginInfo(PluginCache *cache) {
   _fileSize = _binary.getSize();
   _binaryChanged = false;
   
-  _binary.load();
+  //Increase the ref count here and don't unload at the end of the function
+  //to make sure a plug-in is only ever once dlOpen'ed/dlClose'd
+  _binary.ref();
   
   int (*getNo)(void) = (int(*)()) _binary.findSymbol("OfxGetNumberOfPlugins");
   OfxPlugin* (*getPlug)(int) = (OfxPlugin*(*)(int)) _binary.findSymbol("OfxGetPlugin");
@@ -144,7 +146,7 @@ void PluginBinary::loadPluginInfo(PluginCache *cache) {
     }
   }
   
-  _binary.unload();
+  //_binary.unload();
 }
 
 PluginBinary::~PluginBinary() {
