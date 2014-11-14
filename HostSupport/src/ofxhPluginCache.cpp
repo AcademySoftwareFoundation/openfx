@@ -120,7 +120,7 @@ void PluginBinary::loadPluginInfo(PluginCache *cache) {
   _fileSize = _binary.getSize();
   _binaryChanged = false;
   
-  // Take a reference to lead the binary only once per session. It will
+  // Take a reference to load the binary only once per session. It will
   // eventually be unloaded in the destructor (see below).
   // This avoid lots of useless calls to dlopen()/dlclose().
   if (!_binary.isLoaded()) {
