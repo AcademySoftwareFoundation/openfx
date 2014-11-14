@@ -120,10 +120,13 @@ void PluginBinary::loadPluginInfo(PluginCache *cache) {
   _fileSize = _binary.getSize();
   _binaryChanged = false;
   
-  //Increase the ref count here and don't unload at the end of the function
-  //to make sure a plug-in is only ever once dlOpen'ed/dlClose'd
-  _binary.ref();
-  
+  // Take a reference to lead the binary only once per session. It will
+  // eventually be unloaded in the destructor (see below).
+  // This avoid lots of useless calls to dlopen()/dlclose().
+  if (!_binary.isLoaded()) {
+    _binary.ref();
+  }
+
   int (*getNo)(void) = (int(*)()) _binary.findSymbol("OfxGetNumberOfPlugins");
   OfxPlugin* (*getPlug)(int) = (OfxPlugin*(*)(int)) _binary.findSymbol("OfxGetPlugin");
   
@@ -145,8 +148,6 @@ void PluginBinary::loadPluginInfo(PluginCache *cache) {
       _plugins.push_back(api->newPlugin(this, i, plug));
     }
   }
-  
-  //_binary.unload();
 }
 
 PluginBinary::~PluginBinary() {
@@ -155,6 +156,12 @@ PluginBinary::~PluginBinary() {
     delete *i;
     i++;
   }
+  // release the last reference to the binary, which should unload it
+  // if this reference was taken by loadPluginInfo().
+  if (_binary.isLoaded()) {
+    _binary.unref();
+  }
+  assert(!_binary.isLoaded());
 }
 
 PluginHandle::PluginHandle(Plugin *p, OFX::Host::Host *host)
