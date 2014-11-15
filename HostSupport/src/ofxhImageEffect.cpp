@@ -1113,6 +1113,59 @@ namespace OFX {
         return st;
       }
 
+#ifdef OFX_EXTENSIONS_NUKE
+      OfxStatus Instance::getTransformAction(OfxTime time,
+                                             const std::string& field,
+                                             OfxPointD renderScale,
+                                             int view,
+                                             std::string& clip,
+                                             double transform[9])
+      {
+        static const Property::PropSpec inStuff[] = {
+          { kOfxPropTime, Property::eDouble, 1, true, "0" },
+          { kOfxImageEffectPropFieldToRender, Property::eString, 1, true, "" }, 
+          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
+          Property::propSpecEnd
+        };
+
+        static const Property::PropSpec outStuff[] = {
+          { kOfxPropName, Property::eString, 1, false, "" },
+          { kFnOfxPropMatrix2D, Property::eDouble, 9, false, "0.0" },
+          Property::propSpecEnd
+        };
+
+        Property::Set inArgs(inStuff);
+        Property::Set outArgs(outStuff);
+
+        inArgs.setStringProperty(kOfxImageEffectPropFieldToRender,field);
+        inArgs.setDoubleProperty(kOfxPropTime,time);
+        inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
+        inArgs.setIntProperty(kFnOfxImageEffectPropView,view);
+        for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
+            it!=_clips.end();
+            ++it) {
+            it->second->setView(view);
+        }
+
+#       ifdef OFX_DEBUG_ACTIONS
+          std::cout << "OFX: "<<(void*)this<<"->"<<kFnOfxImageEffectActionGetTransform<<"("<<time<<","<<field<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<view<<")"<<std::endl;
+#       endif
+
+        OfxStatus st = mainEntry(kFnOfxImageEffectActionGetTransform,this->getHandle(), &inArgs, 0);
+#       ifdef OFX_DEBUG_ACTIONS
+          std::cout << "OFX: "<<(void*)this<<"->"<<kFnOfxImageEffectActionGetTransform<<"("<<time<<","<<field<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<view<<")->"<<StatStr(st)<<std::endl;
+#       endif
+
+        if(stat == kOfxStatOK) {
+          clip = outArgs.getStringProperty(kOfxPropName);
+          outArgs.getDoublePropertyN(kFnOfxPropMatrix2D, transform, 9);
+        }
+
+        return st;
+      }
+#endif // OFX_EXTENSIONS_NUKE
+
       /// calculate the default rod for this effect instance
       OfxRectD Instance::calcDefaultRegionOfDefinition(OfxTime  time,
                                                        OfxPointD   /*renderScale*/) const

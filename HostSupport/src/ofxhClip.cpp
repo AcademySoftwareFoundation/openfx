@@ -40,6 +40,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef OFX_EXTENSIONS_VEGAS
 #include "ofxSonyVegas.h"
 #endif
+#ifdef OFX_EXTENSIONS_NUKE
+#include "fnOfxExtensions.h"
+#endif
 #ifdef OFX_SUPPORTS_OPENGLRENDER
 #include "ofxOpenGLRender.h"
 #endif
@@ -63,7 +66,10 @@ namespace OFX {
         { kOfxImageClipPropOptional, Property::eInt, 1, false, "0" },
         { kOfxImageClipPropIsMask,   Property::eInt, 1, false, "0" },
         { kOfxImageClipPropFieldExtraction, Property::eString, 1, false, kOfxImageFieldDoubled },
-        { kOfxImageEffectPropSupportsTiles,   Property::eInt, 1, false, "1" },  
+        { kOfxImageEffectPropSupportsTiles,   Property::eInt, 1, false, "1" },
+#ifdef OFX_EXTENSIONS_NUKE
+        { kFnOfxImageEffectCanTransform,   Property::eInt, 1, false, "0" }, // can a kFnOfxPropMatrix2D be attached to images on this clip
+#endif
         Property::propSpecEnd,
       };
       
@@ -472,6 +478,9 @@ namespace OFX {
         { kOfxImagePropRowBytes, Property::eInt, 1, true, "0", },
         { kOfxImagePropField, Property::eString, 1, true, "", },
         { kOfxImagePropUniqueIdentifier, Property::eString, 1, true, "" },
+#ifdef OFX_EXTENSIONS_NUKE
+        { kFnOfxPropMatrix2D, Property::eDouble, 9, true, "0" }, // If the clip descriptor has kFnOfxImageEffectCanTransform set to 1, this property contains a 3x3 matrix corresponding to a transform in pixel coordinate space, going from the source image to the destination, defaults to the identity matrix. A matrix filled with zeroes is considered as the identity matrix (i.e. no transform)
+#endif
         Property::propSpecEnd
       };
 

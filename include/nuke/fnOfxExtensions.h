@@ -380,11 +380,12 @@ If clipGetImagePlane is called twice with the same parameters, then two separate
 /** @brief Property to indicate that a plugin or host can handle transform effects
 
 - Type - int X 1
-- Property Set - host descriptor (read only), plugin instance (read/write)
+- Property Set - host descriptor (read only), plugin instance (read/write), clip descriptor (read/write)
 - Default - 0
 - Valid Values - This must be one of
    - 0 if the host or plugin cannot make use of the kOfxImageEffectGetTransformAction
-   - 1 if the host or plugin can use the kOfxImageEffectGetTransformAction
+   - 1 if the host or plugin can use the kOfxImageEffectGetTransformAction, or the clip
+       can return images with a transform attached (@see kFnOfxPropMatrix2D)
 
 This is a property on the descriptor.
 */
@@ -439,7 +440,7 @@ This is a property on the descriptor.
            - kOfxPropName - this to the name of the input clip that would be transformed by the effect during render
              defaults to "Source".
            - kFnOfxPropMatrix4x4 - a 4x4 matrix representing the transform. This is in pixel coordinate space, 
-             going from the source imaage to the destination, defaults to the identity matrix.
+             going from the source image to the destination, defaults to the identity matrix.
 
 @returns
 - ::kOfxStatDefault - don't attempt to use the transform matrix, but render the image as per normal,
@@ -453,7 +454,7 @@ This is a property on the descriptor.
 this was originally a 4 by 4 matrix but as Phil said, we cant guess the depth z therefore we can't produce a correct 3D matrix, the host has to do it
 
 - Type - double X 9
-- Property Set - varies, but on the out args of kFnOfxImageEffectActionGetTransform
+- Property Set - varies, but on the out args of kFnOfxImageEffectActionGetTransform, or on an image instance (read only)
 - Default - the identity matrix
 - Valid Values - any matrix value 
 

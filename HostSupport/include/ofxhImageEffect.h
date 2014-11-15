@@ -607,6 +607,15 @@ namespace OFX {
 #                                       endif
                                           );
 
+#ifdef OFX_EXTENSIONS_NUKE
+        virtual OfxStatus getTransformAction(OfxTime time,
+                                             const std::string& field,
+                                             OfxPointD renderScale,
+                                             int view,
+                                             std::string& clip,
+                                             double transform[9]);
+#endif
+
         /// Call the region of definition action the plugin at the given time
         /// and with the given render scales. The value is returned in rod.
         /// Note that if the plugin does not trap the action the default
