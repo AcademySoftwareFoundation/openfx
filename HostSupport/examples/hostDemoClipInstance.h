@@ -147,7 +147,7 @@ namespace MyHost {
     /// on the effect instance. Outside a render call, the optionalBounds should
     /// be 'appropriate' for the.
     /// If bounds is not null, fetch the indicated section of the canonical image plane.
-    virtual OFX::Host::ImageEffect::Image* getStereoscopicImage(OfxTime time, int view, OfxRectD *optionalBounds);
+    virtual OFX::Host::ImageEffect::Image* getStereoscopicImage(OfxTime time, int view, const OfxRectD *optionalBounds);
 
     /// set the default view returned by getImage()
     virtual void setView(int view);

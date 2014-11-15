@@ -171,7 +171,11 @@ int main(int argc, char **argv)
       int numFramesToRender = OFXHOSTDEMOCLIPLENGTH;
 
       // say we are about to render a bunch of frames 
-      stat = instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale, true, false);
+      stat = instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale, true, false
+#                                        ifdef OFX_EXTENSIONS_NUKE
+                                         , 0 /* view*/
+#                                        endif
+                                         );
       assert(stat == kOfxStatOK || stat == kOfxStatReplyDefault);
 
       // get the output clip
@@ -196,7 +200,7 @@ int main(int argc, char **argv)
 #ifdef OFX_EXTENSIONS_VEGAS
         // render a stereoscopic frame
         { // left view
-          stat = instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale,
+          stat = instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, false, false,
                                         0 /*view*/, 2 /*nViews*/);
           assert(stat == kOfxStatOK);
 
@@ -209,7 +213,7 @@ int main(int argc, char **argv)
           exportToPPM(ss.str(), outputImage);
         }
         {  // right view
-          instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale,
+          instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, false, false,
                                  1 /*view*/, 2 /*nViews*/);
           assert(stat == kOfxStatOK);
 
@@ -235,7 +239,11 @@ int main(int argc, char **argv)
 #endif
       }
 
-      instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale, true, false);
+      instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale, true, false
+#                               ifdef OFX_EXTENSIONS_NUKE
+                                , 0 /* view*/
+#                               endif
+                                );
     }
   }
   OFX::Host::PluginCache::clearPluginCache();
