@@ -11,7 +11,7 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name The Open Effects Association Ltd, nor the names of its 
+    * Neither the name The Open Effects Association Ltd, nor the names of its
       contributors may be used to endorse or promote products derived from this
       software without specific prior written permission.
 
@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*
   Author : Bruno Nicoletti (2014)
-  
+
   This plugin will take you through the basics of grabbing and processing
   images with an OFX plugin by grabbing and input image and inverting it.
 
@@ -52,7 +52,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-// macro to write a labelled message to stderr with 
+// macro to write a labelled message to stderr with
 #define DUMP(LABEL, MSG, ...)                                           \
 {                                                                       \
   fprintf(stderr, "%s%s:%d in %s ", LABEL, __FILE__, __LINE__, __PRETTY_FUNCTION__); \
@@ -110,7 +110,7 @@ namespace {
     gImageEffectSuite->getPropertySet(descriptor, &effectProps);
 
     // set some labels and the group it belongs to
-    gPropertySuite->propSetString(effectProps, 
+    gPropertySuite->propSetString(effectProps,
                                   kOfxPropLabel,
                                   0,
                                   "OFX Invert Example");
@@ -138,14 +138,14 @@ namespace {
                                   kOfxImageEffectPropSupportedPixelDepths,
                                   2,
                                   kOfxBitDepthByte);
-  
+
     // say that a single instance of this plugin can be rendered in multiple threads
     gPropertySuite->propSetString(effectProps,
                                   kOfxImageEffectPluginRenderThreadSafety,
                                   0,
                                   kOfxImageEffectRenderFullySafe);
 
-    // say that the host should manage SMP threading over a single frame 
+    // say that the host should manage SMP threading over a single frame
     gPropertySuite->propSetInt(effectProps,
                                kOfxImageEffectPluginPropHostFrameThreading,
                                0,
@@ -201,13 +201,13 @@ namespace {
 
   // Look up a pixel in the image. returns null if the pixel was not
   // in the bounds of the image
-  template <class T> 
-  static inline T * pixelAddress(int x, int y, 
-                                 void *baseAddress, 
-                                 OfxRectI bounds, 
-                                 int rowBytes, 
+  template <class T>
+  static inline T * pixelAddress(int x, int y,
+                                 void *baseAddress,
+                                 OfxRectI bounds,
+                                 int rowBytes,
                                  int nCompsPerPixel)
-  {  
+  {
     // Inside the bounds of this image?
     if(x < bounds.x1 || x >= bounds.x2 || y < bounds.y1 || y >= bounds.y2)
       return NULL;
@@ -227,7 +227,7 @@ namespace {
   }
 
   // iterate over our pixels and process them
-  template <class T, int MAX> 
+  template <class T, int MAX>
   void PixelProcessing(OfxImageEffectHandle instance,
                        OfxPropertySetHandle sourceImg,
                        OfxPropertySetHandle outputImg,
@@ -266,7 +266,7 @@ namespace {
       T *dstPix = pixelAddress<T>(renderWindow.x1, y, dstPtr, dstBounds, dstRowBytes, nComps);
 
       for(int x = renderWindow.x1; x < renderWindow.x2; x++) {
-        
+
         // get the source pixel
         T *srcPix = pixelAddress<T>(x, y, srcPtr, srcBounds, srcRowBytes, nComps);
 
@@ -287,7 +287,7 @@ namespace {
           for(int i = 0; i < nComps; ++i) {
             *dstPix = 0;
             ++dstPix;
-          }          
+          }
         }
       }
     }
@@ -304,14 +304,14 @@ namespace {
     OfxTime time;
     OfxRectI renderWindow;
     OfxStatus status = kOfxStatOK;
-  
+
     gPropertySuite->propGetDouble(inArgs, kOfxPropTime, 0, &time);
     gPropertySuite->propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &renderWindow.x1);
 
     // fetch output clip
     OfxImageClipHandle outputClip;
     gImageEffectSuite->clipGetHandle(instance, "Output", &outputClip, NULL);
-    
+
     // fetch main input clip
     OfxImageClipHandle sourceClip;
     gImageEffectSuite->clipGetHandle(instance, "Source", &sourceClip, NULL);
@@ -324,12 +324,12 @@ namespace {
       if(gImageEffectSuite->clipGetImage(outputClip, time, NULL, &outputImg) != kOfxStatOK) {
         throw " no output image!";
       }
-                  
+
       // fetch image at render time from that clip
       if (gImageEffectSuite->clipGetImage(sourceClip, time, NULL, &sourceImg) != kOfxStatOK) {
         throw " no source image!";
       }
-      
+
       // figure out the data types
       char *cstr;
       gPropertySuite->propGetString(outputImg, kOfxImageEffectPropComponents, 0, &cstr);
@@ -367,7 +367,7 @@ namespace {
         throw " bad data type!";
         throw 1;
       }
-      
+
     }
     catch(const char *errStr ) {
       bool isAborting = gImageEffectSuite->abort(instance);
@@ -376,7 +376,7 @@ namespace {
       // otherwise, something wierd happened
       if(!isAborting) {
         status = kOfxStatFailed;
-      }      
+      }
       ERROR_IF(!isAborting, " Rendering failed because %s", errStr);
 
     }
@@ -385,7 +385,7 @@ namespace {
       gImageEffectSuite->clipReleaseImage(sourceImg);
     if(outputImg)
       gImageEffectSuite->clipReleaseImage(outputImg);
-  
+
     // all was well
     return status;
   }
@@ -393,7 +393,7 @@ namespace {
   ////////////////////////////////////////////////////////////////////////////////
   // Call back passed to the host in the OfxPlugin struct to set our host pointer
   //
-  // This must be called AFTER both OfxGetNumberOfPlugins and OfxGetPlugin, but 
+  // This must be called AFTER both OfxGetNumberOfPlugins and OfxGetPlugin, but
   // before the pluginMain entry point is ever touched.
   void SetHostFunc(OfxHost *hostStruct)
   {
@@ -426,7 +426,7 @@ namespace {
       // action called to render a frame
       returnStatus = RenderAction(effect, inArgs, outArgs);
     }
-    
+
     MESSAGE(": END action is : %s \n", action );
     /// other actions to take the default value
     return returnStatus;
@@ -438,8 +438,8 @@ namespace {
 ////////////////////////////////////////////////////////////////////////////////
 // The plugin struct passed back to the host application to initiate bootstrapping\
 // of plugin communications
-static OfxPlugin effectPluginStruct = 
-{       
+static OfxPlugin effectPluginStruct =
+{
   kOfxImageEffectPluginApi,                // The API this plugin satisfies.
   1,                                       // The version of the API it satisifes.
   "org.openeffects:InvertExamplePlugin",   // The unique ID of this plugin.
@@ -447,8 +447,8 @@ static OfxPlugin effectPluginStruct =
   0,                                       // The minor version number of this plugin.
   SetHostFunc,                             // Function used to pass back to the plugin the OFXHost struct.
   MainEntryPoint                           // The main entry point to the plugin where all actions are passed to.
-}; 
-   
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 // The first of the two functions that a host application will look for
 // after loading the binary, this function returns the number of plugins within
@@ -456,7 +456,7 @@ static OfxPlugin effectPluginStruct =
 //
 // This will be the first function called by the host.
 EXPORT int OfxGetNumberOfPlugins(void)
-{       
+{
   return 1;
 }
 

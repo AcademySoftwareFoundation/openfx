@@ -11,7 +11,7 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name The Open Effects Association Ltd, nor the names of its 
+    * Neither the name The Open Effects Association Ltd, nor the names of its
       contributors may be used to endorse or promote products derived from this
       software without specific prior written permission.
 
@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*
   Author : Bruno Nicoletti (2014)
-  
+
   This plugin will take you through the basics of creating an OFX plugin. It
   exercises the basic 'bootstrapping' machinery of the API to allow a host
   application to instantiate the plugin.
@@ -57,7 +57,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-// macro to write a labelled message to stderr with 
+// macro to write a labelled message to stderr with
 #define DUMP(LABEL, MSG, ...)                                           \
 {                                                                       \
   fprintf(stderr, "%s%s:%d in %s ", LABEL, __FILE__, __LINE__, __PRETTY_FUNCTION__); \
@@ -120,12 +120,12 @@ namespace {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  // last action called before a plugin binary is unloaded. 
+  // last action called before a plugin binary is unloaded.
   OfxStatus UnloadAction(void)
   {
     // make sure no instances have been left alive
     ERROR_IF(gNumInstancesLiving != 0, "kOfxActionUnload called while there are still %d instances of the plugin extant.", gNumInstancesLiving);
-    
+
     // check that we had a load called first
     ERROR_IF(gInLoadedState != true, "kOfxActionUnload callewd without preceding kOfxAcrtionLoad.");
     gInLoadedState = false;
@@ -151,7 +151,7 @@ namespace {
 
     // define the image effects contexts we can be used in, in this case a simple filter
     gPropertySuite->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 0, kOfxImageEffectContextFilter);
-  
+
     return kOfxStatOK;
   }
 
@@ -236,7 +236,7 @@ namespace {
   ////////////////////////////////////////////////////////////////////////////////
   // Call back passed to the host in the OfxPlugin struct to set our host pointer
   //
-  // This must be called AFTER both OfxGetNumberOfPlugins and OfxGetPlugin, but 
+  // This must be called AFTER both OfxGetNumberOfPlugins and OfxGetPlugin, but
   // before the pluginMain entry point is ever touched.
   void SetHostFunc(OfxHost *hostStruct)
   {
@@ -273,17 +273,17 @@ namespace {
     else if(strcmp(action, kOfxActionCreateInstance) == 0) {
       // the action called when an instance of a plugin is created
       returnStatus = CreateInstanceAction(effect);
-    } 
+    }
     else if(strcmp(action, kOfxActionDestroyInstance) == 0) {
       // the action called when an instance of a plugin is destroyed
       returnStatus = DestroyInstanceAction(effect);
-    } 
+    }
     else if(strcmp(action, kOfxImageEffectActionIsIdentity) == 0) {
-      // The action called by the host to see if the plugin is currently 
+      // The action called by the host to see if the plugin is currently
       // a "no-op". In this example we are always a no-op.
       returnStatus = IsIdentityAction(effect, inArgs, outArgs);
     }
-    
+
     MESSAGE(": END action is : %s \n", action );
     /// other actions to take the default value
     return returnStatus;
@@ -312,8 +312,8 @@ namespace {
 ////////////////////////////////////////////////////////////////////////////////
 // The plugin struct passed back to the host application to initiate bootstrapping\
 // of plugin communications
-static OfxPlugin effectPluginStruct = 
-{       
+static OfxPlugin effectPluginStruct =
+{
   kOfxImageEffectPluginApi,                // The API this plugin satisfies.
   1,                                       // The version of the API it satisifes.
   "org.openeffects:BasicsExamplePlugin",   // The unique ID of this plugin.
@@ -321,8 +321,8 @@ static OfxPlugin effectPluginStruct =
   0,                                       // The minor version number of this plugin.
   SetHostFunc,                             // Function used to pass back to the plugin the OFXHost struct.
   MainEntryPoint                           // The main entry point to the plugin where all actions are passed to.
-}; 
-   
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 // The first of the two functions that a host application will look for
 // after loading the binary, this function returns the number of plugins within
@@ -330,7 +330,7 @@ static OfxPlugin effectPluginStruct =
 //
 // This will be the first function called by the host.
 EXPORT int OfxGetNumberOfPlugins(void)
-{       
+{
   return 1;
 }
 

@@ -28,7 +28,7 @@ $(NAME).ofx : $(NAME).o
 	cp $@ $@.bundle/Contents/$(OS_BUNDLE_DIR)/
 
 # install it
-install : $(NAME).ofx 
+install : $(NAME).ofx
 	mkdir -p ../built_plugins
 	cp -r $(NAME).ofx.bundle ../built_plugins
 

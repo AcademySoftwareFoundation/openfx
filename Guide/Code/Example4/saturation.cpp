@@ -11,7 +11,7 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name The Open Effects Association Ltd, nor the names of its 
+    * Neither the name The Open Effects Association Ltd, nor the names of its
       contributors may be used to endorse or promote products derived from this
       software without specific prior written permission.
 
@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*
   Author : Bruno Nicoletti (2014)
-  
+
   This plugin will take you through the basics of defining and using
   parameters as well as how to use instance data.
 
@@ -54,7 +54,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-// macro to write a labelled message to stderr with 
+// macro to write a labelled message to stderr with
 #define DUMP(LABEL, MSG, ...)                                           \
 {                                                                       \
   fprintf(stderr, "%s%s:%d ", LABEL, __FILE__, __LINE__); \
@@ -106,7 +106,7 @@ namespace {
 
     // destructor
     ~Image();
-    
+
     // get a pixel address, cast to the right type
     template <class T>
     T *pixelAddress(int x, int y)
@@ -165,7 +165,7 @@ namespace {
       gPropertySuite->propGetInt(propSet_, kOfxImagePropRowBytes, 0, &rowBytes_);
       gPropertySuite->propGetIntN(propSet_, kOfxImagePropBounds, 4, &bounds_.x1);
       gPropertySuite->propGetPointer(propSet_, kOfxImagePropData, 0, (void **) &dataPtr_);
-        
+
       // how many components per pixel?
       char *cstr;
       gPropertySuite->propGetString(propSet_, kOfxImageEffectPropComponents, 0, &cstr);
@@ -218,7 +218,7 @@ namespace {
 
   // get the address of a location in the image as a void *
   void *Image::rawAddress(int x, int y)
-  {  
+  {
     // Inside the bounds of this image?
     if(x < bounds_.x1 || x >= bounds_.x2 || y < bounds_.y1 || y >= bounds_.y2)
       return NULL;
@@ -235,7 +235,7 @@ namespace {
   }
 
   // are we empty?
-  Image:: operator bool() 
+  Image:: operator bool()
   {
     return propSet_ != NULL && dataPtr_ != NULL;
   }
@@ -244,17 +244,17 @@ namespace {
   // our instance data, where we are caching away clip and param handles
   struct MyInstanceData {
     // are we in the general context
-    bool isGeneralContext;    
+    bool isGeneralContext;
 
     // handles to the clips we deal with
     OfxImageClipHandle sourceClip;
     OfxImageClipHandle maskClip;
     OfxImageClipHandle outputClip;
-    
+
     // handles to a our parameters
     OfxParamHandle saturationParam;
 
-    MyInstanceData() 
+    MyInstanceData()
       : isGeneralContext(false)
       , sourceClip(NULL)
       , maskClip(NULL)
@@ -262,15 +262,15 @@ namespace {
       , saturationParam(NULL)
     {}
   };
-  
+
   ////////////////////////////////////////////////////////////////////////////////
   // get my instance data from a property set handle
   MyInstanceData *FetchInstanceData(OfxPropertySetHandle effectProps)
   {
     MyInstanceData *myData = 0;
-    gPropertySuite->propGetPointer(effectProps,  
-                                   kOfxPropInstanceData, 
-                                   0, 
+    gPropertySuite->propGetPointer(effectProps,
+                                   kOfxPropInstanceData,
+                                   0,
                                    (void **) &myData);
     return myData;
   }
@@ -294,9 +294,9 @@ namespace {
   {
     suite = (SUITE *) gHost->fetchSuite(gHost->host, suiteName, suiteVersion);
     if(!suite) {
-      ERROR_ABORT_IF(suite == NULL, 
-                     "Failed to fetch %s verison %d from the host.", 
-                     suiteName, 
+      ERROR_ABORT_IF(suite == NULL,
+                     "Failed to fetch %s verison %d from the host.",
+                     suiteName,
                      suiteVersion);
     }
   }
@@ -322,7 +322,7 @@ namespace {
     gImageEffectSuite->getPropertySet(descriptor, &effectProps);
 
     // set some labels and the group it belongs to
-    gPropertySuite->propSetString(effectProps, 
+    gPropertySuite->propSetString(effectProps,
                                   kOfxPropLabel,
                                   0,
                                   "OFX Saturation Example");
@@ -356,14 +356,14 @@ namespace {
                                   kOfxImageEffectPropSupportedPixelDepths,
                                   2,
                                   kOfxBitDepthByte);
-  
+
     // say that a single instance of this plugin can be rendered in multiple threads
     gPropertySuite->propSetString(effectProps,
                                   kOfxImageEffectPluginRenderThreadSafety,
                                   0,
                                   kOfxImageEffectRenderFullySafe);
 
-    // say that the host should manage SMP threading over a single frame 
+    // say that the host should manage SMP threading over a single frame
     gPropertySuite->propSetInt(effectProps,
                                kOfxImageEffectPluginPropHostFrameThreading,
                                0,
@@ -377,7 +377,7 @@ namespace {
   DescribeInContextAction(OfxImageEffectHandle descriptor,
                           OfxPropertySetHandle inArgs)
   {
-    // get the context we are being described for 
+    // get the context we are being described for
     char *context;
     gPropertySuite->propGetString(inArgs, kOfxImageEffectPropContext, 0, &context);
 
@@ -407,7 +407,7 @@ namespace {
                                   kOfxImageEffectPropSupportedComponents,
                                   1,
                                   kOfxImageComponentRGB);
-    
+
     if(strcmp(context, kOfxImageEffectContextGeneral) == 0) {
       gImageEffectSuite->clipDefine(descriptor, "Mask", &props);
 
@@ -427,7 +427,7 @@ namespace {
     }
 
 
-    // first get the handle to the parameter set 
+    // first get the handle to the parameter set
     OfxParamSetHandle paramSet;
     gImageEffectSuite->getParamSet(descriptor, &paramSet);
 
@@ -435,15 +435,15 @@ namespace {
     OfxPropertySetHandle paramProps;
 
     // now define a 'saturation' parameter and set its properties
-    gParameterSuite->paramDefine(paramSet, 
-                                 kOfxParamTypeDouble, 
-                                 SATURATION_PARAM_NAME, 
+    gParameterSuite->paramDefine(paramSet,
+                                 kOfxParamTypeDouble,
+                                 SATURATION_PARAM_NAME,
                                  &paramProps);
     gPropertySuite->propSetString(paramProps,
-                                  kOfxParamPropDoubleType, 
+                                  kOfxParamPropDoubleType,
                                   0,
                                   kOfxParamDoubleTypeScale);
-    gPropertySuite->propSetDouble(paramProps, 
+    gPropertySuite->propSetDouble(paramProps,
                                   kOfxParamPropDefault,
                                   0,
                                   1.0);
@@ -463,7 +463,7 @@ namespace {
                                   kOfxParamPropHint,
                                   0,
                                   "How saturated the image should be.");
-    
+
     return kOfxStatOK;
   }
 
@@ -481,7 +481,7 @@ namespace {
 
     // Set my private instance data
     gPropertySuite->propSetPointer(effectProps, kOfxPropInstanceData, 0, (void *) myData);
-    
+
     // is this instance made for the general context?
     char *context = 0;
     gPropertySuite->propGetString(effectProps, kOfxImageEffectPropContext, 0,  &context);
@@ -494,7 +494,7 @@ namespace {
     if(myData->isGeneralContext) {
       gImageEffectSuite->clipGetHandle(instance, "Mask", &myData->maskClip, 0);
     }
-  
+
     // Cache away the param handles
     OfxParamSetHandle paramSet;
     gImageEffectSuite->getParamSet(instance, &paramSet);
@@ -522,7 +522,7 @@ namespace {
   template <class T, int MAX>
   static inline T Clamp(float value)
   {
-    if(MAX == 1) 
+    if(MAX == 1)
       return value; // don't clamp floating point values
     else
       return value < 0 ? T(0) : (value > MAX ? T(MAX) : T(value));
@@ -538,8 +538,8 @@ namespace {
 
   ////////////////////////////////////////////////////////////////////////////////
   // iterate over our pixels and process them
-  template <class T, int MAX> 
-  void PixelProcessing(double saturation,                       
+  template <class T, int MAX>
+  void PixelProcessing(double saturation,
                        OfxImageEffectHandle instance,
                        Image &src,
                        Image &mask,
@@ -556,7 +556,7 @@ namespace {
       T *dstPix = output.pixelAddress<T>(renderWindow.x1, y);
 
       for(int x = renderWindow.x1; x < renderWindow.x2; x++) {
-        
+
         // get the source pixel
         T *srcPix = src.pixelAddress<T>(x, y);
 
@@ -572,15 +572,15 @@ namespace {
             maskAmount = 0;
           }
         }
-                
+
         if(srcPix) {
           if(maskAmount == 0) {
-            // we have a mask input, but the mask is zero here, 
+            // we have a mask input, but the mask is zero here,
             // so no effect happens, copy source to output
             for(int i = 0; i < nComps; ++i) {
               *dstPix = *srcPix;
               ++dstPix; ++srcPix;
-            }          
+            }
           }
           else {
             // we have a non zero mask or no mask at all
@@ -607,7 +607,7 @@ namespace {
           for(int i = 0; i < nComps; ++i) {
             *dstPix = 0;
             ++dstPix;
-          }          
+          }
         }
       }
     }
@@ -623,23 +623,23 @@ namespace {
     OfxTime time;
     OfxRectI renderWindow;
     OfxStatus status = kOfxStatOK;
-  
+
     gPropertySuite->propGetDouble(inArgs,
                                   kOfxPropTime,
                                   0,
                                   &time);
-    gPropertySuite->propGetIntN(inArgs, 
+    gPropertySuite->propGetIntN(inArgs,
                                 kOfxImageEffectPropRenderWindow,
                                 4,
                                 &renderWindow.x1);
-    
+
     // get our instance data which has out clip and param handles
     MyInstanceData *myData = FetchInstanceData(instance);
 
     // get our param values
     double saturation = 1.0;
     gParameterSuite->paramGetValueAtTime(myData->saturationParam, time, &saturation);
-    
+
     // the property sets holding our images
     OfxPropertySetHandle outputImg = NULL, sourceImg = NULL, maskImg = NULL;
     try {
@@ -654,12 +654,12 @@ namespace {
       if(!sourceImg) {
         throw " no source image!";
       }
-      
+
       // fetch mask image at render time from that clip, it may not be there
       // as we might in the filter context or it might not be attached as it
       // is optional, so don't worry if we don't have one.
-      Image maskImg(myData->maskClip, time); 
-      
+      Image maskImg(myData->maskClip, time);
+
       // now do our render depending on the data type
       if(outputImg.bytesPerComponent() == 1) {
         PixelProcessing<unsigned char, 255>(saturation,
@@ -678,7 +678,7 @@ namespace {
                                                renderWindow);
       }
       else if(outputImg.bytesPerComponent() == 4) {
-        PixelProcessing<float, 1>(saturation, 
+        PixelProcessing<float, 1>(saturation,
                                   instance,
                                   sourceImg,
                                   maskImg,
@@ -689,7 +689,7 @@ namespace {
         throw " bad data type!";
         throw 1;
       }
-      
+
     }
     catch(const char *errStr ) {
       bool isAborting = gImageEffectSuite->abort(instance);
@@ -698,7 +698,7 @@ namespace {
       // otherwise, something wierd happened
       if(!isAborting) {
         status = kOfxStatFailed;
-      }      
+      }
       ERROR_IF(!isAborting, " Rendering failed because %s", errStr);
     }
 
@@ -715,7 +715,7 @@ namespace {
 
     double time;
     gPropertySuite->propGetDouble(inArgs, kOfxPropTime, 0, &time);
-    
+
     double saturation = 1.0;
     gParameterSuite->paramGetValueAtTime(myData->saturationParam, time, &saturation);
 
@@ -756,11 +756,11 @@ namespace {
     else if(strcmp(action, kOfxActionCreateInstance) == 0) {
       // the action called when an instance of a plugin is created
       returnStatus = CreateInstanceAction(effect);
-    } 
+    }
     else if(strcmp(action, kOfxActionDestroyInstance) == 0) {
       // the action called when an instance of a plugin is destroyed
       returnStatus = DestroyInstanceAction(effect);
-    } 
+    }
     else if(strcmp(action, kOfxImageEffectActionIsIdentity) == 0) {
       // Check to see if our param settings cause nothing to happen
       returnStatus = IsIdentityAction(effect, inArgs, outArgs);
@@ -769,7 +769,7 @@ namespace {
       // action called to render a frame
       returnStatus = RenderAction(effect, inArgs, outArgs);
     }
-    
+
     MESSAGE(": END action is : %s \n", action );
     /// other actions to take the default value
     return returnStatus;
@@ -778,7 +778,7 @@ namespace {
   ////////////////////////////////////////////////////////////////////////////////
   // Call back passed to the host in the OfxPlugin struct to set our host pointer
   //
-  // This must be called AFTER both OfxGetNumberOfPlugins and OfxGetPlugin, but 
+  // This must be called AFTER both OfxGetNumberOfPlugins and OfxGetPlugin, but
   // before the pluginMain entry point is ever touched.
   void SetHostFunc(OfxHost *hostStruct)
   {
@@ -791,8 +791,8 @@ namespace {
 ////////////////////////////////////////////////////////////////////////////////
 // The plugin struct passed back to the host application to initiate bootstrapping\
 // of plugin communications
-static OfxPlugin effectPluginStruct = 
-{       
+static OfxPlugin effectPluginStruct =
+{
   kOfxImageEffectPluginApi,                  // The API this plugin satisfies.
   1,                                         // The version of the API it satisifes.
   "org.openeffects:SaturationExamplePlugin", // The unique ID of this plugin.
@@ -800,8 +800,8 @@ static OfxPlugin effectPluginStruct =
   0,                                         // The minor version number of this plugin.
   SetHostFunc,                               // Function used to pass back to the plugin the OFXHost struct.
   MainEntryPoint                             // The main entry point to the plugin where all actions are passed to.
-}; 
-   
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 // The first of the two functions that a host application will look for
 // after loading the binary, this function returns the number of plugins within
@@ -809,7 +809,7 @@ static OfxPlugin effectPluginStruct =
 //
 // This will be the first function called by the host.
 EXPORT int OfxGetNumberOfPlugins(void)
-{       
+{
   return 1;
 }
 

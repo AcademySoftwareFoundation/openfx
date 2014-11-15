@@ -4,7 +4,7 @@ OPTIMISE = -g
 
 .PHONY : default clean
 
-default : 
+default :
 	@ echo making sub projects... $(SUBDIRS)
 	for i in $(SUBDIRS) ; do $(MAKE) -C $$i install; done
 
