@@ -9,9 +9,12 @@ There are two sub-directories...
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 BUILDING THE PLUGINS
 
+For Windows instructions, see below.
+
+
 To build the example plugins you will need,
    - a C++ compiler
-   - gmake
+   - gmake (or nmake on Windows)
    - the ofx header files.
 
 
@@ -20,7 +23,7 @@ Within Code there is a subdirectory per plugin.
 
 The assumption is that you have checked out all the OFX
 source code in one lump and so the
-OFX header files will be in a standard relative path to 
+OFX header files will be in a standard relative path to
 the plugin sources. If this is not the case you will
 need to modify the file...
 
@@ -45,6 +48,28 @@ a directory called 'built_plugins'.
 You can build individual plugins by changing into the
 relevant subdirectory and simply issuing a 'make' command.
 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BUILDING ON WINDOWS
+
+NMakefiles are included for use with Windows' nmake utility.
+This should build on any Visual Studio version (at least 2008 or newer).
+
+Open a Visual Studio command-line window of the appropriate bitness
+that you want (32 for a 32-bit OFX host, 64 for a 64-bit host).  From
+the Start menu, go to Microsoft Visual Studio XXXX -> Visual Studio
+Tools -> Visual Studio XXX Command Prompt (choose the appropriate
+bitness here).
+
+In that window, cd to the openfx/Guide/Code dir, and type:
+
+  nmake /F nmakefile install
+
+This will build and install the plugins into the standard OFX plugins
+dir (c:\Program Files\Common Files\OFX\Plugins).
+
+To clean up:
+
+  nmake /F nmakefile clean
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 BUILDING THE DOCUMENTATION
@@ -58,7 +83,7 @@ The documentation is written in asciidoctor markdown, which can be used to
 generate HTML, docbook XML and more. You will need to download and install
 asciidoctor to build the doc. Visit...
 
-    http://asciidoctor.org/ 
+    http://asciidoctor.org/
 
 for installation instructions.
 
@@ -75,4 +100,3 @@ guides in html format.
 
 
 Last Edit 11/11/14
-
