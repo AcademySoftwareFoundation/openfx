@@ -989,7 +989,7 @@ namespace OFX {
 #endif
                                        )
       {
-        Property::PropSpec stuff[] = {
+        static const Property::PropSpec inStuff[] = {
           { kOfxPropTime, Property::eDouble, 1, true, "0" },
           { kOfxImageEffectPropFieldToRender, Property::eString, 1, true, "" }, 
           { kOfxImageEffectPropRenderWindow, Property::eInt, 4, true, "0" },
@@ -1007,7 +1007,7 @@ namespace OFX {
           Property::propSpecEnd
         };
 
-        Property::Set inArgs(stuff);
+        Property::Set inArgs(inStuff);
         
         inArgs.setStringProperty(kOfxImageEffectPropFieldToRender,field);
         inArgs.setDoubleProperty(kOfxPropTime,time);
@@ -1068,7 +1068,7 @@ namespace OFX {
 #endif
                                           )
       {
-        Property::PropSpec stuff[] = {
+        static const Property::PropSpec inStuff[] = {
           { kOfxImageEffectPropFrameRange, Property::eDouble, 2, true, "0" },
           { kOfxImageEffectPropFrameStep, Property::eDouble, 1, true, "0" }, 
           { kOfxPropIsInteractive, Property::eInt, 1, true, "0" },
@@ -1081,7 +1081,7 @@ namespace OFX {
           Property::propSpecEnd
         };
 
-        Property::Set inArgs(stuff);
+        Property::Set inArgs(inStuff);
 
         inArgs.setDoubleProperty(kOfxImageEffectPropFrameStep,step);
 
@@ -1193,7 +1193,7 @@ namespace OFX {
                                                       OfxPointD   renderScale,
                                                       OfxRectD &rod)
       {
-        Property::PropSpec inStuff[] = {
+        static const Property::PropSpec inStuff[] = {
           { kOfxPropTime, Property::eDouble, 1, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
 #ifdef OFX_EXTENSIONS_NUKE
@@ -1202,7 +1202,7 @@ namespace OFX {
           Property::propSpecEnd
         };
 
-        Property::PropSpec outStuff[] = {
+        static const Property::PropSpec outStuff[] = {
           { kOfxImageEffectPropRegionOfDefinition , Property::eDouble, 4, false, "0" },
           Property::propSpecEnd
         };
@@ -1382,7 +1382,7 @@ namespace OFX {
         Property::Set outArgs;
       
         if(temporalAccess()) {
-          Property::PropSpec inStuff[] = {
+          static const Property::PropSpec inStuff[] = {
             { kOfxPropTime, Property::eDouble, 1, true, "0" },          
 #ifdef OFX_EXTENSIONS_NUKE
             { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
@@ -1879,7 +1879,7 @@ namespace OFX {
 
       OfxStatus Instance::getTimeDomainAction(OfxRangeD& range)
       {
-        Property::PropSpec outStuff[] = {
+        static const Property::PropSpec outStuff[] = {
           { kOfxImageEffectPropFrameRange , Property::eDouble, 2, false, "0.0" },
           Property::propSpecEnd
         };
