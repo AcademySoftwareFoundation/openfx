@@ -1,0 +1,20 @@
+SUBDIRS = Example1 Example2 Example3 Example4 Example5
+
+default :
+	@ echo making sub projects... $(SUBDIRS)
+	FOR %%D IN ( $(SUBDIRS) ) \
+        DO  \
+	@cd "%%D" & $(MAKE) /F NMakefile /NOLOGO /$(MAKEFLAGS) & cd ..
+
+install :
+	@ echo making sub projects... $(SUBDIRS)
+	FOR %%D IN ( $(SUBDIRS) ) \
+        DO  \
+	@cd "%%D" & $(MAKE) /F NMakefile /NOLOGO /$(MAKEFLAGS) install & cd ..
+
+clean :
+	@ echo making sub projects... $(SUBDIRS)
+	FOR %%D IN ( $(SUBDIRS) ) \
+        DO  \
+	@cd "%%D" & $(MAKE) /F NMakefile /NOLOGO /$(MAKEFLAGS) clean & cd ..
+	-rd /s /q built_plugins

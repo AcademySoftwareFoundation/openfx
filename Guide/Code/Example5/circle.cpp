@@ -49,18 +49,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined __APPLE__ || defined linux
 #  define EXPORT __attribute__((visibility("default")))
+#elif defined _WIN32
+#  define EXPORT OfxExport
 #else
 #  error Not building on your operating system quite yet
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // macro to write a labelled message to stderr with
-#define DUMP(LABEL, MSG, ...)                                           \
-{                                                                       \
-  fprintf(stderr, "%s%s:%d ", LABEL, __FILE__, __LINE__); \
-  fprintf(stderr, MSG, ##__VA_ARGS__);                                  \
-  fprintf(stderr, "\n");                                                \
-}
+#ifdef _WIN32
+  #define DUMP(LABEL, MSG, ...)                                           \
+  {                                                                       \
+    fprintf(stderr, "%s%s:%d in %s ", LABEL, __FILE__, __LINE__, __FUNCTION__); \
+    fprintf(stderr, MSG, ##__VA_ARGS__);                                  \
+    fprintf(stderr, "\n");                                                \
+  }
+#else
+  #define DUMP(LABEL, MSG, ...)                                           \
+  {                                                                       \
+    fprintf(stderr, "%s%s:%d in %s ", LABEL, __FILE__, __LINE__, __PRETTY_FUNCTION__); \
+    fprintf(stderr, MSG, ##__VA_ARGS__);                                  \
+    fprintf(stderr, "\n");                                                \
+  }
+#endif
 
 // macro to write a simple message, only works if 'VERBOSE' is #defined
 //#define VERBOSE
@@ -845,7 +856,7 @@ namespace {
                                          &growingRoD);
 
     // are we growing the RoD to include the circle?
-    if(not growingRoD) {
+    if (!growingRoD) {
       return kOfxStatReplyDefault;
     }
     else {
@@ -900,16 +911,16 @@ namespace {
     }
 
     // if we are drawing out side of the RoD and we aren't growing to include it, we have no effect
-    if(not isIdentity and not growingRoD) {
+    if(!isIdentity && !growingRoD) {
       OfxRectD bounds;
       double centre[2];
       gParameterSuite->paramGetValueAtTime(myData->centreParam, time, &centre[0], &centre[1]);
 
       gImageEffectSuite->clipGetRegionOfDefinition(myData->sourceClip, time, &bounds);
 
-      isIdentity = (centre[0] + radius < bounds.x1 or
-                    centre[0] - radius > bounds.x2 or
-                    centre[1] + radius < bounds.y1 or
+      isIdentity = (centre[0] + radius < bounds.x1 ||
+                    centre[0] - radius > bounds.x2 ||
+                    centre[1] + radius < bounds.y1 ||
                     centre[1] - radius > bounds.y2);
     }
 
