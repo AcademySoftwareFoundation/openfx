@@ -384,7 +384,12 @@ namespace OFX {
     void setSupportsTiles(bool v);
 
     /** @brief say whether this clip is a 'mask', so the host can know to replace with a roto or similar, defaults to false */
-    void setIsMask(bool v);    
+    void setIsMask(bool v);
+
+#ifdef OFX_EXTENSIONS_NUKE
+    /** @brief say whether this clip may contain images with a transform attached */
+    void setCanTransform(bool v);
+#endif
   };
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -553,6 +558,10 @@ namespace OFX {
     FieldEnum _field;                        /**< @brief which field this represents */
     std::string _uniqueID;                   /**< @brief the unique ID of this image */
     OfxPointD _renderScale;                  /**< @brief any scaling factor applied to the image */
+#ifdef OFX_EXTENSIONS_NUKE
+    double _transform[9];                    /**< @brief a 2D transform to apply to the image */
+    bool _transformIsIdentity;
+#endif
 
   public :
     /** @brief ctor */
@@ -578,16 +587,16 @@ namespace OFX {
     PreMultiplicationEnum getPreMultiplication(void) const { return _preMultiplication;}
 
     /** @brief get the scale factor that has been applied to this image */
-    OfxPointD getRenderScale(void) const { return _renderScale;}
+    const OfxPointD& getRenderScale(void) const { return _renderScale;}
 
     /** @brief get the scale factor that has been applied to this image */
     double getPixelAspectRatio(void) const { return _pixelAspectRatio;}
 
     /** @brief get the region of definition (in pixel coordinates) of this image */
-    OfxRectI getRegionOfDefinition(void) const { return _regionOfDefinition;}
+    const OfxRectI& getRegionOfDefinition(void) const { return _regionOfDefinition;}
 
     /** @brief get the bounds on the image data (in pixel coordinates) of this image */
-    OfxRectI getBounds(void) const { return _bounds;}
+    const OfxRectI& getBounds(void) const { return _bounds;}
 
     /** @brief get the row bytes, may be negative */
     int getRowBytes(void) const { return _rowBytes;}
@@ -596,7 +605,15 @@ namespace OFX {
     FieldEnum getField(void) const { return _field;}
 
     /** @brief the unique ID of this image */
-    std::string getUniqueIdentifier(void) const { return _uniqueID;}
+    const std::string& getUniqueIdentifier(void) const { return _uniqueID;}
+
+#ifdef OFX_EXTENSIONS_NUKE
+    /** @brief the 2D transform attached to this image. */
+    void getTransform(double t[9]) const { for (int i = 0; i < 9; ++i) { t[i] = _transform[i]; } }
+
+    /** @brief is the transform identity? */
+    bool getTransformIsIdentity() const { return _transformIsIdentity; }
+#endif
   };
 
   ////////////////////////////////////////////////////////////////////////////////

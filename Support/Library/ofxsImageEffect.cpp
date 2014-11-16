@@ -48,6 +48,7 @@ England
 #ifdef OFX_SUPPORTS_OPENGLRENDER
 #include "ofxOpenGLRender.h"
 #endif
+#include "ofxsCore.h"
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {
@@ -436,6 +437,14 @@ namespace OFX {
     _clipProps.propSetInt(kOfxImageClipPropIsMask, int(v));
   }
 
+#ifdef OFX_EXTENSIONS_NUKE
+  /** @brief say whether this clip may contain images with a transform attached */
+  void ClipDescriptor::setCanTransform(bool v)
+  {
+    _clipProps.propSetInt(kFnOfxImageEffectCanTransform, int(v), false);
+  }
+#endif
+
   ////////////////////////////////////////////////////////////////////////////////
   // image effect descriptor
 
@@ -749,7 +758,7 @@ namespace OFX {
   {
     // the header says this property is on the effect instance, but on Nuke it only exists on the effect descriptor
     if (gHostDescription.canTransform) {
-      _effectProps.propSetInt(kFnOfxImageEffectCanTransform, int(v));
+      _effectProps.propSetInt(kFnOfxImageEffectCanTransform, int(v), false);
     }
   }
 #endif
@@ -889,6 +898,22 @@ namespace OFX {
 
     _renderScale.x = _imageProps.propGetDouble(kOfxImageEffectPropRenderScale, 0);
     _renderScale.y = _imageProps.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+#ifdef OFX_EXTENSIONS_NUKE
+    std::fill(_transform, _transform + 9, 0.);
+    try {
+      for (int i = 0; i < 9; ++i) {
+        _transform[i] = _imageProps.propGetDouble(kFnOfxPropMatrix2D, i);
+      }
+      // check if the transform is identity (a zero matrix is considered identity)
+      _transformIsIdentity = (_transform[1] == 0. && _transform[2] == 0. &&
+                              _transform[3] == 0. && _transform[5] == 0. &&
+                              _transform[6] == 0. && _transform[7] == 0. &&
+                              _transform[0] == _transform[2] && _transform[0] == _transform[8]);
+    } catch (OFX::Exception::PropertyUnknownToHost) {
+      // Host does not support transforms, just ignore
+      _transformIsIdentity = true;
+    }
+#endif
   }
 
   ImageBase::~ImageBase()
