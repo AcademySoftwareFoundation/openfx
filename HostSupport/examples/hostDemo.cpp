@@ -197,11 +197,15 @@ int main(int argc, char **argv)
         stat = instance->getRegionOfInterestAction(frame, renderScale, regionOfInterest, rois);
         assert(stat == kOfxStatOK || stat == kOfxStatReplyDefault);
 
-#ifdef OFX_EXTENSIONS_VEGAS
+#if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
         // render a stereoscopic frame
         { // left view
           stat = instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, false, false,
-                                        0 /*view*/, 2 /*nViews*/);
+                                        0 /*view*/
+#ifdef OFX_EXTENSIONS_VEGAS
+                                        , 2 /*nViews*/
+#endif
+                                        );
           assert(stat == kOfxStatOK);
 
           // get the output image buffer
@@ -214,7 +218,11 @@ int main(int argc, char **argv)
         }
         {  // right view
           instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, false, false,
-                                 1 /*view*/, 2 /*nViews*/);
+                                 1 /*view*/
+#ifdef OFX_EXTENSIONS_VEGAS
+                                 , 2 /*nViews*/
+#endif
+                                 );
           assert(stat == kOfxStatOK);
 
           // get the output image buffer

@@ -298,8 +298,9 @@ namespace OFX {
         /// be 'appropriate' for the.
         /// If bounds is not null, fetch the indicated section of the canonical image plane.
         virtual ImageEffect::Image* getStereoscopicImage(OfxTime time, int view, const OfxRectD *optionalBounds) = 0;
+#endif
 
-
+#if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
         /// override this to set the view to be returned by getImage()
         /// This is called by Instance::renderAction() for each clip, before calling
         /// kOfxImageEffectActionRender on the Instance.

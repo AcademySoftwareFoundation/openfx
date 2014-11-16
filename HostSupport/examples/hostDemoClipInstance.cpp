@@ -439,8 +439,10 @@ namespace MyHost {
       return image;
     }
   }
+#endif
 
-    /// set the default view returned by getImage()
+#if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
+  /// set the default view returned by getImage()
   void MyClipInstance::setView(int view) {
     if (view != _view) {
       if (_outputImage) {

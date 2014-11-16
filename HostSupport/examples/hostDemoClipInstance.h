@@ -53,8 +53,8 @@ namespace MyHost {
     MyEffectInstance *_effect;
     std::string       _name;
     MyImage          *_outputImage; ///< only set for output clips
-#ifdef OFX_EXTENSIONS_VEGAS
-    int               _view; ///< view used by the last renderAction 
+#if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
+    int               _view; ///< view used by the last renderAction
 #endif
 
   public:
@@ -148,7 +148,9 @@ namespace MyHost {
     /// be 'appropriate' for the.
     /// If bounds is not null, fetch the indicated section of the canonical image plane.
     virtual OFX::Host::ImageEffect::Image* getStereoscopicImage(OfxTime time, int view, const OfxRectD *optionalBounds);
+#endif
 
+#if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
     /// set the default view returned by getImage()
     virtual void setView(int view);
 #endif
