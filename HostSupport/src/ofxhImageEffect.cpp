@@ -265,6 +265,13 @@ namespace OFX {
         return _properties.findStringPropValueIndex(kOfxImageEffectPropClipPreferencesSlaveParam, s) != -1;
       }
 
+#ifdef OFX_EXTENSIONS_NUKE
+      /// does this effect handle transform effects
+      bool Base::canTransform() const
+      {
+        return _properties.getIntProperty(kFnOfxImageEffectCanTransform) != 0;
+      }
+#endif
 
 
       ////////////////////////////////////////////////////////////////////////////////

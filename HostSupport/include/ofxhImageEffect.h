@@ -234,6 +234,11 @@ namespace OFX {
         
         /// does changing the named param re-tigger a clip preferences action
         bool isClipPreferencesSlaveParam(const std::string &s) const;
+
+#ifdef OFX_EXTENSIONS_NUKE
+        /// does this effect handle transform effects
+        bool canTransform() const;
+#endif
       };
 
       /// an image effect plugin descriptor
