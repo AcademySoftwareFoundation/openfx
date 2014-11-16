@@ -1159,12 +1159,12 @@ namespace OFX {
           std::cout << "OFX: "<<(void*)this<<"->"<<kFnOfxImageEffectActionGetTransform<<"("<<time<<","<<field<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<view<<")"<<std::endl;
 #       endif
 
-        OfxStatus st = mainEntry(kFnOfxImageEffectActionGetTransform,this->getHandle(), &inArgs, 0);
+        OfxStatus st = mainEntry(kFnOfxImageEffectActionGetTransform,this->getHandle(), &inArgs, &outArgs);
 #       ifdef OFX_DEBUG_ACTIONS
           std::cout << "OFX: "<<(void*)this<<"->"<<kFnOfxImageEffectActionGetTransform<<"("<<time<<","<<field<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<view<<")->"<<StatStr(st)<<std::endl;
 #       endif
 
-        if(stat == kOfxStatOK) {
+        if(st == kOfxStatOK) {
           clip = outArgs.getStringProperty(kOfxPropName);
           outArgs.getDoublePropertyN(kFnOfxPropMatrix2D, transform, 9);
         }
