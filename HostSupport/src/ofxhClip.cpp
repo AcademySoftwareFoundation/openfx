@@ -168,6 +168,14 @@ namespace OFX {
         return _properties.getIntProperty(kOfxImageEffectPropSupportsTiles) != 0;
       }
 
+#ifdef OFX_EXTENSIONS_NUKE
+      /// can a kFnOfxPropMatrix2D be attached to images on this clip
+      bool ClipBase::canTransform() const
+      {
+        return _properties.getIntProperty(kFnOfxImageEffectCanTransform) != 0;
+      }
+#endif
+
       const Property::Set& ClipBase::getProps() const
       {
         return _properties;

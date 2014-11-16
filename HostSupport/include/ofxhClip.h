@@ -98,6 +98,11 @@ namespace OFX {
         /// is the clip a nominal 'mask' clip
         bool supportsTiles() const;
 
+#ifdef OFX_EXTENSIONS_NUKE
+        /// can a kFnOfxPropMatrix2D be attached to images on this clip
+        bool canTransform() const;
+#endif
+
         /// get property set, const version
         const Property::Set &getProps() const;
 
