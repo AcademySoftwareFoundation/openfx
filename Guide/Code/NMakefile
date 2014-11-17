@@ -15,17 +15,17 @@ default :
 	@ echo making sub projects... $(SUBDIRS)
 	FOR %%D IN ( $(SUBDIRS) ) \
         DO  \
-	@cd "%%D" & $(MAKE) /F NMakefile /NOLOGO /$(MAKEFLAGS) & cd ..
+	@cd "%%D" & $(MAKE) /F NMakefile /NOLOGO /$(MAKEFLAGS) ABI=$(ABI) & cd ..
 
 install :
 	@ echo making sub projects... $(SUBDIRS)
 	FOR %%D IN ( $(SUBDIRS) ) \
         DO  \
-	@cd "%%D" & $(MAKE) /F NMakefile /NOLOGO /$(MAKEFLAGS) install & cd ..
+	@cd "%%D" & $(MAKE) /F NMakefile /NOLOGO /$(MAKEFLAGS) install ABI=$(ABI) & cd ..
 
 clean :
 	@ echo making sub projects... $(SUBDIRS)
 	FOR %%D IN ( $(SUBDIRS) ) \
         DO  \
-	@cd "%%D" & $(MAKE) /F NMakefile /NOLOGO /$(MAKEFLAGS) clean & cd ..
+	@cd "%%D" & $(MAKE) /F NMakefile /NOLOGO /$(MAKEFLAGS) clean ABI=$(ABI) & cd ..
 	-rd /s /q built_plugins
