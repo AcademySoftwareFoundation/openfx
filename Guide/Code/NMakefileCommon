@@ -6,11 +6,6 @@ DEBUG=1
 # uncomment this to get verbose messages from the plugins
 VERBOSE=/DVERBOSE
 
-BITNESS=32
-!IF "$(PLATFORM)" == "X64"  # MSVS tools set this in 64-bit mode
-BITNESS=64
-!ENDIF
-
 !IF "$(DEBUG)" == "1"
 OPTIMISE = /Zi /Od /LDd
 LD_OPTIMISE = /DEBUG
@@ -21,7 +16,7 @@ LD_OPTIMISE =
 
 OS_CXXFLAGS = /nologo /Oy- /EHsc /Fd$(NAME).pdb
 OS_LDFLAGS = /NOLOGO /DLL /MANIFEST $(LD_OPTIMISE)
-OS_BUNDLE_DIR = Win$(BITNESS)
+OS_BUNDLE_DIR = Win$(ABI)	# 32 or 64
 
 # set up flags
 CXXDEFINES=/DWIN32 # OFX includes need this, Windows only auto-defines _WIN32
