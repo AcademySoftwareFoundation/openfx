@@ -1793,6 +1793,28 @@ namespace OFX {
 
           Property::PropSpec specPAR = {parParamName.c_str(),         Property::eDouble, 1, false,          "1"};
           outArgs.createProperty(specPAR);
+          // If the clip is output we should propagate the pixel aspect ratio of the inputs unless it does support multiple clip PARs,
+          // in which case the plug-in should set the output clip's aspect ratio in the ::kOfxImageEffectActionGetClipPreferences action. See \ref ImageEffectClipPreferences.
+          if (!clip->isOutput() || supportsMultipleClipPARs()) {
+            outArgs.setDoubleProperty(parParamName, clip->getAspectRatio());
+          } else {
+            double inputPar = 1.;
+            bool inputParSet = false;
+
+            for (std::map<std::string, ClipInstance*>::iterator it2 = _clips.begin(); it2 != _clips.end(); ++it2) {
+              if (!it2->second->isOutput() && it2->second->getConnected()) {
+                if (!inputParSet) {
+                  inputPar = it2->second->getAspectRatio();
+                } else {
+                  if (inputPar != it2->second->getAspectRatio()) {
+                    // We have several inputs with different aspect ratio, which should be forbidden by the host.
+                    throw Property::Exception(kOfxStatErrValue);
+                  }
+                }
+              }
+            }
+            outArgs.setDoubleProperty(parParamName, inputPar);
+          }
         }
       }
 
