@@ -41,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxSonyVegas.h"
 #endif
 #ifdef OFX_EXTENSIONS_NUKE
-#include "fnOfxExtensions.h"
+#include <nuke/fnOfxExtensions.h>
 #endif
 #ifdef OFX_SUPPORTS_OPENGLRENDER
 #include "ofxOpenGLRender.h"
