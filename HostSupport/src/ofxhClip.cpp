@@ -200,7 +200,7 @@ namespace OFX {
 
       ////////////////////////////////////////////////////////////////////////////////
       /// descriptor
-      ClipDescriptor::ClipDescriptor(std::string name) 
+      ClipDescriptor::ClipDescriptor(const std::string &name)
         : ClipBase()
       {
         _properties.setStringProperty(kOfxPropName,name);
@@ -395,7 +395,7 @@ namespace OFX {
       {
       }
 
-      OfxStatus ClipInstance::instanceChangedAction(std::string why,
+      OfxStatus ClipInstance::instanceChangedAction(const std::string &why,
                                                 OfxTime     time,
                                                 OfxPointD   renderScale)
       {

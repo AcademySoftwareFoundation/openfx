@@ -195,7 +195,7 @@ namespace OFX {
         /// make a parameter, with the given type and name
         explicit Instance(Descriptor& descriptor, Param::SetInstance* instance = 0);
 
-        //        OfxStatus instanceChangedAction(std::string why,
+        //        OfxStatus instanceChangedAction(const std::string &why,
         //                                        OfxTime     time,
         //                                        double      renderScaleX,
         //                                        double      renderScaleY);
@@ -663,7 +663,7 @@ namespace OFX {
         const std::list<Instance*> &getParamList() const;
 
         // get the param
-        Instance* getParam(std::string name) const {
+        Instance* getParam(const std::string &name) const {
           std::map<std::string,Instance*>::const_iterator it = _params.find(name);
           if(it!=_params.end())
             return it->second;

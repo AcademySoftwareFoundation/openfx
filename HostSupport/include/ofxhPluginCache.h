@@ -323,12 +323,12 @@ namespace OFX {
       int maxVersion;
       APICache::PluginAPICacheI *handler;
 
-      PluginCacheSupportedApi(std::string _api, int _minVersion, int _maxVersion, APICache::PluginAPICacheI *_handler) :
+      PluginCacheSupportedApi(const std::string &_api, int _minVersion, int _maxVersion, APICache::PluginAPICacheI *_handler) :
         api(_api), minVersion(_minVersion), maxVersion(_maxVersion), handler(_handler)
       {
       }
       
-      bool matches(std::string _api, int _version) const
+      bool matches(const std::string &_api, int _version) const
       {
         if (_api == api && _version >= minVersion && _version <= maxVersion) {
           return true;

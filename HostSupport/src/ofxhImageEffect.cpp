@@ -1243,6 +1243,10 @@ namespace OFX {
             }
           }
         }
+        else {
+          // unknown context
+          throw Property::Exception(kOfxStatErrMissingHostFeature);
+        }
 
         return rod;
       }

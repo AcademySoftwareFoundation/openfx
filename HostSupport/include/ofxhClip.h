@@ -124,7 +124,7 @@ namespace OFX {
       class ClipDescriptor : public ClipBase {
       public:
         /// constructor
-        ClipDescriptor(std::string name);
+        ClipDescriptor(const std::string &name);
         
         /// is the clip an output clip
         bool isOutput() const {return  getName() == kOfxImageEffectOutputClipName; }
@@ -171,7 +171,7 @@ namespace OFX {
         virtual int  getDimension(const std::string &name) const OFX_EXCEPTION_SPEC;
 
         // instance changed action
-        OfxStatus instanceChangedAction(std::string why,
+        OfxStatus instanceChangedAction(const std::string &why,
                                         OfxTime     time,
                                         OfxPointD   renderScale);
 
