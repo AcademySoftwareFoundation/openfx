@@ -73,7 +73,6 @@ namespace OFX
 #elif defined (WINDOWS)
     HINSTANCE _dlHandle;
 #endif
-    bool _exists;
     time_t _time;
     size_t _size;
     int _users;
