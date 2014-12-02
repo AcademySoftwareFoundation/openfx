@@ -1198,6 +1198,8 @@ namespace OFX {
           ClipInstance *clip = getClip(kOfxImageEffectSimpleSourceClipName);
           if(clip) {
             rod = clip->getRegionOfDefinition(time);
+          } else {
+            throw Property::Exception(kOfxStatFailed);
           }
         }
         else if(_context == kOfxImageEffectContextTransition) {
@@ -1207,6 +1209,8 @@ namespace OFX {
           if(clipFrom && clipTo) {
             rod = clipFrom->getRegionOfDefinition(time);
             rod = Union(rod, clipTo->getRegionOfDefinition(time));
+          } else {
+            throw Property::Exception(kOfxStatFailed);
           }
         }
         else if(_context == kOfxImageEffectContextGeneral) {
@@ -1241,6 +1245,8 @@ namespace OFX {
               rod = clip->getRegionOfDefinition(floor(time));
               rod = Union(rod, clip->getRegionOfDefinition(floor(time) + 1));
             }
+          } else {
+            throw Property::Exception(kOfxStatFailed);
           }
         }
         else {
@@ -1809,15 +1815,16 @@ namespace OFX {
               if (!it2->second->isOutput() && it2->second->getConnected()) {
                 if (!inputParSet) {
                   inputPar = it2->second->getAspectRatio();
-                } else {
-                  if (inputPar != it2->second->getAspectRatio()) {
-                    // We have several inputs with different aspect ratio, which should be forbidden by the host.
-                    throw Property::Exception(kOfxStatErrValue);
-                  }
+                  inputParSet = true;
+                } else if (inputPar != it2->second->getAspectRatio()) {
+                  // We have several inputs with different aspect ratio, which should be forbidden by the host.
+                  throw Property::Exception(kOfxStatErrValue);
                 }
               }
             }
-            outArgs.setDoubleProperty(parParamName, inputPar);
+            if (inputParSet) {
+              outArgs.setDoubleProperty(parParamName, inputPar);
+            }
           }
         }
       }

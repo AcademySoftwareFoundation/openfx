@@ -537,11 +537,16 @@ namespace OFX {
 
       void PluginCache::saveXML(Plugin *ip, std::ostream &os) const {
         ImageEffectPlugin *p = dynamic_cast<ImageEffectPlugin*>(ip);
-        p->saveXML(os);
+        if (p) {
+          p->saveXML(os);
+        }
       }
 
       void PluginCache::confirmPlugin(Plugin *p) {
         ImageEffectPlugin *plugin = dynamic_cast<ImageEffectPlugin*>(p);
+        if (!plugin) {
+          return;
+        }
         _plugins.push_back(plugin);
 
         if (_pluginsByID.find(plugin->getIdentifier()) != _pluginsByID.end()) {

@@ -443,27 +443,35 @@ namespace OFX {
       }
 
       String *Set::fetchStringProperty(const std::string &name, bool followChain) const {
-        String *p = NULL;
-        fetchTypedProperty(name, p, followChain);
-        return p;
+        String *p;
+        if (fetchTypedProperty(name, p, followChain)) {
+          return p;
+        }
+        return NULL;
       }
 
       Int *Set::fetchIntProperty(const std::string &name, bool followChain) const {
-        Int *p = NULL;
-        fetchTypedProperty(name, p, followChain);
-        return p;
+        Int *p;
+        if (fetchTypedProperty(name, p, followChain)) {
+          return p;
+        }
+        return NULL;
       }
 
       Pointer *Set::fetchPointerProperty(const std::string &name,  bool followChain) const {
-        Pointer *p = NULL;
-        fetchTypedProperty(name, p, followChain);
-        return p;
+        Pointer *p;
+        if (fetchTypedProperty(name, p, followChain)) {
+          return p;
+        }
+        return NULL;
       }
 
       Double *Set::fetchDoubleProperty(const std::string &name, bool followChain) const {
-        Double *p = NULL;
-        fetchTypedProperty(name, p, followChain);
-        return p;
+        Double *p;
+        if (fetchTypedProperty(name, p, followChain)) {
+          return p;
+        }
+        return NULL;
       }
 
       /// add one new property
