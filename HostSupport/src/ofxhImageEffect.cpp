@@ -1244,6 +1244,8 @@ namespace OFX {
             if(param) {
               rod = clip->getRegionOfDefinition(floor(time));
               rod = Union(rod, clip->getRegionOfDefinition(floor(time) + 1));
+            } else {
+                throw Property::Exception(kOfxStatFailed);
             }
           } else {
             throw Property::Exception(kOfxStatFailed);
