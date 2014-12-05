@@ -1969,7 +1969,7 @@ namespace OFX {
         gHostDescription.supportsCustomAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsCustomAnimation) != 0;
         gHostDescription.supportsParametricParameter = gParametricParameterSuite != 0;
 #ifdef OFX_SUPPORTS_OPENGLRENDER
-        gHostDescription.supportsOpenGLRender = hostProps.propGetString(kOfxImageEffectPropOpenGLRenderSupported, 0) == "true" && gOpenGLRenderSuite != 0;
+        gHostDescription.supportsOpenGLRender = gOpenGLRenderSuite != 0 && hostProps.propGetString(kOfxImageEffectPropOpenGLRenderSupported, 0, false) == "true";
 #endif
 #ifdef OFX_EXTENSIONS_NUKE
         gHostDescription.supportsCameraParameter    = gCameraParameterSuite != 0;
