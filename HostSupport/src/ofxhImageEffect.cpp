@@ -1677,7 +1677,7 @@ namespace OFX {
         bool hasInputs = false;
         std::string deepestBitDepth = kOfxBitDepthNone;
         std::string mostComponents  = kOfxImageComponentNone;       
-        double frameRate = 0; 
+        double frameRate = getFrameRate(); //< default to the project frame rate
         std::string premult = kOfxImageOpaque;
         for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
             it!=_clips.end();
