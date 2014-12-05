@@ -1784,7 +1784,6 @@ namespace OFX {
 
         outArgs.setStringProperty(kOfxImageClipPropFieldOrder, _outputFielding);
         outArgs.setStringProperty(kOfxImageEffectPropPreMultiplication, _outputPreMultiplication);
-        outArgs.setDoubleProperty(kOfxImageEffectPropFrameRate, _outputFrameRate);
 
         /// now add the clip gubbins to the out args
         for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
@@ -1829,6 +1828,25 @@ namespace OFX {
             }
           }
         }
+          
+        //Set the output frame rate according to what input clips have. Several inputs with different frame rates should be
+        //forbidden by the host.
+        bool outputFrameRateSet = false;
+        double outputFrameRate = _outputFrameRate;
+        for (std::map<std::string, ClipInstance*>::iterator it2 = _clips.begin(); it2 != _clips.end(); ++it2) {
+            if (!it2->second->isOutput() && it2->second->getConnected()) {
+                if (!outputFrameRateSet) {
+                    outputFrameRate = it2->second->getFrameRate();
+                    outputFrameRateSet = true;
+                } else if (outputFrameRate != it2->second->getFrameRate()) {
+                    // We have several inputs with different frame rates
+                    throw Property::Exception(kOfxStatErrValue);
+                }
+            }
+        }
+          
+        outArgs.setDoubleProperty(kOfxImageEffectPropFrameRate, outputFrameRate);
+
       }
 
       /// the idea here is the clip prefs live as active props on the effect
