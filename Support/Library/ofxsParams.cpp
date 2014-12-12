@@ -1017,6 +1017,8 @@ namespace OFX {
   /** @brief hidden constructor */
   ParametricParamDescriptor::ParametricParamDescriptor(const std::string &name, OfxPropertySetHandle props)
     : ParamDescriptor(name, eParametricParam, props)
+    , _ofxParamHandle(0)
+    , _paramSet(0)
   {
   }
 

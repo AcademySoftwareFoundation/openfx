@@ -58,7 +58,7 @@ namespace OFX {
   //Put it all into a map, so we know when to delete what!
   struct OfxPlugInfo
   {
-    OfxPlugInfo(){}
+    OfxPlugInfo():_factory(0), _plug(0){}
     OfxPlugInfo(OFX::PluginFactory* f, OfxPlugin* p):_factory(f), _plug(p){}
     OFX::PluginFactory* _factory;
     OfxPlugin* _plug;
@@ -981,6 +981,9 @@ namespace OFX {
     , _clipProps(props)
     , _clipHandle(handle)
     , _effect(effect)
+#ifdef OFX_EXTENSIONS_VEGAS
+    , _pixelOrder(ePixelOrderRGBA)
+#endif
   {
     OFX::Validation::validateClipInstanceProperties(_clipProps);
   }
@@ -1721,6 +1724,10 @@ namespace OFX {
   ////////////////////////////////////////////////////////////////////////////////
   // Class used to uplift previous vegas keyframe data of the effect. */ 
   SonyVegasUpliftArguments::SonyVegasUpliftArguments(PropertySet args)
+    : guidUplift()
+    , keyframeCount(0)
+    , commonData(0)
+    , commonDataSize(0)
   {
       _argProps = args;
   }
@@ -2123,7 +2130,9 @@ namespace OFX {
         OFX::OfxPlugInfoMap::iterator it = OFX::plugInfoMap.find(id);
         OfxPlugin* plug = it->second._plug;
         OFX::OfxPluginArray::iterator it2 = std::find(ofxPlugs.begin(), ofxPlugs.end(), plug);
-        (*it2) = 0;
+        if (it2 != ofxPlugs.end()) {
+          (*it2) = 0;
+        }
         delete plug;
       }
     }
