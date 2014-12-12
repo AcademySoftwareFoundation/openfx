@@ -34,7 +34,7 @@ matrix:
 before_install:
   - date -u
   - uname -a
-  - export J='-j3'
+#  - export J='-j3'
 
 install:
   - git submodule update --init --recursive
