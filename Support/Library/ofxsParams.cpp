@@ -372,8 +372,8 @@ namespace OFX {
 
   void Int2DParamDescriptor::setDimensionLabels(const std::string& x, const std::string& y)
   {
-    _paramProps.propSetString(kOfxParamPropDimensionLabel, x, 0);
-    _paramProps.propSetString(kOfxParamPropDimensionLabel, y, 1);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, x, 0, false);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, y, 1, false);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -422,9 +422,9 @@ namespace OFX {
 
   void Int3DParamDescriptor::setDimensionLabels(const std::string& x, const std::string& y, const std::string& z)
   {
-    _paramProps.propSetString(kOfxParamPropDimensionLabel, x, 0);
-    _paramProps.propSetString(kOfxParamPropDimensionLabel, y, 1);
-    _paramProps.propSetString(kOfxParamPropDimensionLabel, z, 2);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, x, 0, false);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, y, 1, false);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, z, 2, false);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
