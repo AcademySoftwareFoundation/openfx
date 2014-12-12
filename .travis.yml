@@ -45,10 +45,7 @@ script:
       echo "Don't build on coverty_scan branch.";
       exit 0;
     fi
-  - make $J -C HostSupport
-  - make $J -C Examples CONFIG=debug
-  - make $J -C Support/Plugins CONFIG=debug
-  - make $J -C Support/PropTester CONFIG=debug
+  - make $J CONFIG=debug
 
 addons:
   coverity_scan:
@@ -65,6 +62,6 @@ addons:
     #build_command_prepend: ./configure
     # This command will be added as an argument to "cov-build" to compile
     # the project for analysis
-    build_command: "make $J -C HostSupport; make $J -C Examples CONFIG=debug; make $J -C Support/Plugins CONFIG=debug; make $J -C Support/PropTester CONFIG=debug"
+    build_command: "make $J CONFIG=debug"
     # Pattern to match selecting branches that will run analysis
     branch_pattern: coverity_scan
