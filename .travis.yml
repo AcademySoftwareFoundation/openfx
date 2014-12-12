@@ -1,3 +1,15 @@
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "M1+7Zx4c8zTEIwUbAh8p9f8ZZ0jI9E9EAgCRgun6dO4G8wjfF/F44YLTZTqC2qMPKd4yPIm/p43y5qXxFNWFhTRsobeg6wVhoOOOCAB4AmndT212xh6aXu+U3lqT3z7gl8kDhxTS2liEzl0L22a9ljREsuMOIzU8lPFWvLdvm6k="
+   # Coverity run condition (avoid matrix multiple runs), need customized
+   # build script. Need an update if new matrix cases.
+   - coverity_scan_run_condition='"$CC" = gcc -a "$TRAVIS_OS_NAME" != osx'
+   # Coverity script test mode (if true no uploading, avoid reaching the quota)
+   # usual processing: false.
+   - coverity_scan_script_test_mode=false
+
 os:
   - linux
   - osx
@@ -19,8 +31,40 @@ matrix:
 #env:
 #  - MAKEFLAGS="-j 2"
 
+before_install:
+  - date -u
+  - uname -a
+  - export J='-j3'
+
+install:
+  - git submodule update --init --recursive
+
 script:
-  - make $MAKEFLAGS -C HostSupport
-  - make $MAKEFLAGS -C Examples CONFIG=debug
-  - make $MAKEFLAGS -C Support/Plugins CONFIG=debug
-  - make $MAKEFLAGS -C Support/PropTester CONFIG=debug
+  - if [[ ${COVERITY_SCAN_BRANCH} == 1 ]];
+    then
+      echo "Don't build on coverty_scan branch.";
+      exit 0;
+    fi
+  - make $J -C HostSupport
+  - make $J -C Examples CONFIG=debug
+  - make $J -C Support/Plugins CONFIG=debug
+  - make $J -C Support/PropTester CONFIG=debug
+
+addons:
+  coverity_scan:
+    # customized build script URL
+    # TRAVIS_REPO_SLUG: owner_name/repo_name of repository currently being built
+    # TRAVIS_BRANCH: name of the branch currently being built
+    build_script_url: https://raw.githubusercontent.com/$TRAVIS_REPO_SLUG/$TRAVIS_BRANCH/.travis-coverity-scan-build.sh
+    # project metadata
+    project:
+      name: $TRAVIS_REPO_SLUG
+    # Where email notification of build analysis results will be sent
+    notification_email: frederic.devernay@m4x.org
+    # Commands to prepare for build_command
+    #build_command_prepend: ./configure
+    # This command will be added as an argument to "cov-build" to compile
+    # the project for analysis
+    build_command: "make $J -C HostSupport; make $J -C Examples CONFIG=debug; make $J -C Support/Plugins CONFIG=debug; make $J -C Support/PropTester CONFIG=debug"
+    # Pattern to match selecting branches that will run analysis
+    branch_pattern: coverity_scan
