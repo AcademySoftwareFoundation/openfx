@@ -268,6 +268,7 @@ namespace OFX {
           { kOfxPropLabel,      Property::eString, 1, false, cname },
           { kOfxPropShortLabel, Property::eString, 1, false, cname },
           { kOfxPropLongLabel,  Property::eString, 1, false, cname },
+          { kOfxPropIcon,       Property::eString, 2, false, "" },
 #ifdef OFX_EXTENSIONS_NUKE
           { kOfxParamPropLayoutHint,  Property::eInt, 1, false, "0" },
           { kOfxParamPropLayoutPadWidth,  Property::eInt, 1, false, "0" },

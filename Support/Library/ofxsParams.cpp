@@ -234,6 +234,12 @@ namespace OFX {
     _paramProps.propSetString(kOfxParamPropParent, v.getName());
   }
 
+  /** @brief set the icon file name (SVG or PNG) */
+  void 
+    ParamDescriptor::setIcon(const std::string &v, bool pngFormat)
+  {
+    _paramProps.propSetString(kOfxPropIcon, v, (int)pngFormat);
+  }
 
   ////////////////////////////////////////////////////////////////////////////////
   // the base class for all params that can hold a value
@@ -1399,6 +1405,13 @@ namespace OFX {
     std::string v  = _paramProps.propGetString(kOfxParamPropParent);
     if(v == "") return NULL;
     return _paramSet->fetchGroupParam(v);
+  }
+
+  /** @brief get the icon file name (SVG or PNG) */
+  std::string Param::getIcon(bool pngFormat) const
+  {
+    std::string v  = _paramProps.propGetString(kOfxPropIcon, (int)pngFormat, false);
+    return v;
   }
 
   ////////////////////////////////////////////////////////////////////////////////

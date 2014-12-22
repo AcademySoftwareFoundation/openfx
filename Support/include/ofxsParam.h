@@ -280,7 +280,10 @@ namespace OFX {
 
         /** @brief set the group param that is the parent of this one, default is to be ungrouped at the root level */
         void setParent(const GroupParamDescriptor &v);
-    
+
+        /** @brief set the icon file name (SVG or PNG) */
+        void setIcon(const std::string &v, bool pngFormat);
+
         /** @brief whether the param is enabled, defaults to true */
         void setEnabled(bool v);
 
@@ -987,6 +990,9 @@ namespace OFX {
 
         /** @brief get the group param that is the parent of this one */
         GroupParam *getParent(void) const;
+
+        /** @brief get the icon file name (SVG or PNG) */
+        std::string getIcon(bool pngFormat) const;
     };
   
     ////////////////////////////////////////////////////////////////////////////////
