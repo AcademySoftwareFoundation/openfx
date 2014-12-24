@@ -1,10 +1,7 @@
-.git* text export-ignore
-
-# Set default behaviour, in case users don't have core.autocrlf set.
+# Set the default behavior, in case people don't have core.autocrlf set.
 * text=auto
-#* whitespace=!indent,trail,space
 
-# Explicitly declare text files we want to always be normalized and converted 
+# Explicitly declare text files you want to always be normalized and converted
 # to native line endings on checkout.
 *.py text whitespace=tab-in-indent,trail,space
 *.cpp text whitespace=tab-in-indent,trail,space
@@ -17,7 +14,6 @@
 *.H text whitespace=tab-in-indent,trail,space
 *.java text whitespace=tab-in-indent,trail,space
 *.md text
-
 *.pro text whitespace=tab-in-indent,trail,space
 *.cmake text whitespace=tab-in-indent,trail,space
 *.cmakein text whitespace=tab-in-indent,trail,space
@@ -25,22 +21,23 @@
 CMakeLists.txt text whitespace=tab-in-indent,trail,space
 
 # Declare files that will always have CRLF line endings on checkout.
-*.bat text eol=crlf
-*.bat.in text eol=crlf
-*.cmd text eof=crlf
+# VS 20xx files
+*.sln text eol=crlf
+*.vcproj text eol=crlf
+*.vcxproj text eol=crlf
+*.vcxproj.filters text eol=crlf
+# VC6 files
+*.dsw text eol=crlf
 *.dsp text eol=crlf
 *.dsptemplate text eol=crlf
-*.dsw text eol=crlf
-*.sln text eol=crlf
-*.vcproj text eol=crlf merge=union
-*.cproject text eol=crlf merge=union
-
-*.sh            eol=lf
+# Other 'windows-specific' files
+*.bat text eol=crlf
+*.bat.in text eol=crlf
 
 # Denote all files that are truly binary and should not be modified.
 *.png binary
-*.jepg binary
 *.jpg binary
+*.jpeg binary
 *.exr binary
 *.ico binary
 
@@ -57,4 +54,3 @@ CMakeLists.txt text whitespace=tab-in-indent,trail,space
 
 *.xml -text
 *.yml -text
-
