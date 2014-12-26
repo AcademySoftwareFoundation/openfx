@@ -78,11 +78,13 @@ namespace OFX {
     return kOfxParamTypeInteger;
   }
 
+  static
   bool isEqual(const char* t1, const char* t2)
   {
     return strcmp(t1, t2)==0;
   }
 
+  static
   ParamTypeEnum mapParamTypeStringToEnum(const char * v)
   {
     if(isEqual(kOfxParamTypeString,v)) 

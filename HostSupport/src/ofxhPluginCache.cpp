@@ -197,6 +197,7 @@ const TCHAR *getStdOFXPluginPath(const std::string &hostId = "Plugins")
 }
 #endif
 
+static
 std::string OFXGetEnv(const char* e)
 {
 #ifdef WINDOWS

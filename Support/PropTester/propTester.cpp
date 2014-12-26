@@ -307,6 +307,7 @@ void PropTesterPluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 }
 
 /** @brief describe a string param with the given name and type */
+static
 void describeStringParam(OFX::ImageEffectDescriptor &desc, const std::string &name, StringTypeEnum strType, PageParamDescriptor *page)
 {
   StringParamDescriptor *param = desc.defineStringParam(name);
@@ -319,6 +320,7 @@ void describeStringParam(OFX::ImageEffectDescriptor &desc, const std::string &na
 }
 
 /** @brief describe a double param */
+static
 void describeDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &name, DoubleTypeEnum doubleType,
                          double min, double max, PageParamDescriptor *page)
 {
@@ -334,6 +336,7 @@ void describeDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &na
 }
 
 /** @brief describe a double param */
+static
 void describe2DDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &name, DoubleTypeEnum doubleType,
                            double min, double max, PageParamDescriptor *page)
 {
@@ -349,6 +352,7 @@ void describe2DDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &
 }
 
 /** @brief describe a double param */
+static
 void describe3DDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &name, DoubleTypeEnum doubleType,
                            double min, double max, PageParamDescriptor *page)
 {

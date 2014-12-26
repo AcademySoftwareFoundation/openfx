@@ -664,7 +664,8 @@ void BasicExamplePluginFactory::describe(OFX::ImageEffectDescriptor& desc)
 }
 
 // make a double scale param
-DoubleParamDescriptor *defineScaleParam(OFX::ImageEffectDescriptor &desc, 
+static
+DoubleParamDescriptor *defineScaleParam(OFX::ImageEffectDescriptor &desc,
                                         const std::string &name, const std::string &label, const std::string &hint,
                                         GroupParamDescriptor *parent)
 {

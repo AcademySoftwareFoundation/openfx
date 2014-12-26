@@ -2408,7 +2408,8 @@ namespace OFX {
           return kOfxStatErrBadHandle;
         }
       }
-      
+
+      static
       OfxStatus imageMemoryLock(OfxImageMemoryHandle memoryHandle,
                                 void **returnedPtr){
         try {
@@ -2600,7 +2601,7 @@ namespace OFX {
         }
       }
 
-      OfxStatus clearPersistentMessage(void *handle)
+      static OfxStatus clearPersistentMessage(void *handle)
       {
         try {
           ImageEffect::Instance *effectInstance = reinterpret_cast<ImageEffect::Instance*>(handle);

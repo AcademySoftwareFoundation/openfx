@@ -482,7 +482,8 @@ void GammaExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.setOverlayInteractDescriptor( new GammaOverlayDescriptor );
 }
 
-DoubleParamDescriptor *defineScaleParam(OFX::ImageEffectDescriptor &desc, 
+static
+DoubleParamDescriptor *defineScaleParam(OFX::ImageEffectDescriptor &desc,
                                         const std::string &name, const std::string &label, const std::string &hint,
                                         GroupParamDescriptor *parent, double def = 1.0)
 {

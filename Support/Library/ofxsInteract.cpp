@@ -377,7 +377,8 @@ namespace OFX {
 
   namespace Private {
     /** @brief fetches our pointer out of the props on the handle */
-    Interact *retrieveInteractPointer(OfxInteractHandle handle) 
+    static
+    Interact *retrieveInteractPointer(OfxInteractHandle handle)
     {
       Interact *instance;
 
@@ -401,6 +402,7 @@ namespace OFX {
     }
 
     /** @brief The common entry point used by all interacts */
+    static
     OfxStatus
       interactMainEntry(const std::string     &action,
       OfxInteractHandle      handle,

@@ -52,6 +52,10 @@ namespace OFX {
       /// fetch the param suite
       const void *GetSuite(int version);
 
+      bool isColourParam(const std::string &paramType);
+
+      bool isIntParam(const std::string &paramType);
+
       /// is this a standard type
       bool isStandardType(const std::string &type);
       

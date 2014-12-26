@@ -1948,6 +1948,7 @@ namespace OFX {
   namespace Private {
 
     /** @brief Creates the global host description and sets its properties */
+    static
     void
       fetchHostDescription(OfxHost *host)
     {
@@ -2082,6 +2083,7 @@ namespace OFX {
     }
 
     /** @brief Library side unload action, this fetches all the suite pointers */
+    static
     void unloadAction(const char* id)
     {
       gLoadCount--;
@@ -2163,6 +2165,7 @@ namespace OFX {
     }
 
     /** @brief Checks the handles passed into the plugin's main entry point */
+    static
     void
       checkMainHandles(const std::string &action,  const void *handle, 
       OfxPropertySetHandle inArgsHandle,  OfxPropertySetHandle outArgsHandle,
@@ -2243,6 +2246,7 @@ namespace OFX {
     }
 
     /** @brief Library side render action, fetches relevant properties and calls the client code */
+    static
     void
       renderAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
     {
@@ -2257,6 +2261,7 @@ namespace OFX {
     }
 
     /** @brief Library side render begin sequence render action, fetches relevant properties and calls the client code */
+    static
     void
       beginSequenceRenderAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
     {
@@ -2283,6 +2288,7 @@ namespace OFX {
     }
 
     /** @brief Library side render begin sequence render action, fetches relevant properties and calls the client code */
+    static
     void
       endSequenceRenderAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
     {
@@ -2331,6 +2337,7 @@ namespace OFX {
     }
 
     /** @brief Library side render begin sequence render action, fetches relevant properties and calls the client code */
+    static
     bool
       isIdentityAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs)
     {
@@ -2354,6 +2361,7 @@ namespace OFX {
     }
 
     /** @brief Library side get region of definition function */
+    static
     bool
       regionOfDefinitionAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs)
     {
@@ -2380,6 +2388,7 @@ namespace OFX {
     }
 
     /** @brief Library side get regions of interest function */
+    static
     bool
       regionsOfInterestAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs, const char* plugname)
     {
@@ -2448,6 +2457,7 @@ namespace OFX {
     }
 
     /** @brief Library side frames needed action */
+    static
     bool
       framesNeededAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs, const char* plugname)
     {
@@ -2525,6 +2535,7 @@ namespace OFX {
     }
 
     /** @brief Library side get regions of interest function */
+    static
     bool
       getTimeDomainAction(OfxImageEffectHandle handle, OFX::PropertySet &outArgs)
     {
@@ -2554,6 +2565,7 @@ namespace OFX {
     }
 
     /** @brief Library side get regions of interest function */
+    static
     bool
       clipPreferencesAction(OfxImageEffectHandle handle, OFX::PropertySet &outArgs, const char* plugname)
     {
@@ -2574,6 +2586,7 @@ namespace OFX {
     }
 
     /** @brief Library side begin instance changed action */
+    static
     void
       beginInstanceChangedAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
     {
@@ -2587,6 +2600,7 @@ namespace OFX {
     }
 
     /** @brief Library side instance changed action */
+    static
     void
       instanceChangedAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
     {
@@ -2619,6 +2633,7 @@ namespace OFX {
     }
 
     /** @brief Library side end instance changed action */
+    static
     void
       endInstanceChangedAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
     {
@@ -2633,6 +2648,7 @@ namespace OFX {
 
 #ifdef OFX_EXTENSIONS_VEGAS
     /** @brief Library side uplift vegas keyframe action */
+    static
     void
       upliftVegasKeyframeAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
     {
@@ -2651,6 +2667,7 @@ namespace OFX {
     }
 
     /** @brief Library side invoke About function */
+    static
     bool
       invokeAbout(OfxImageEffectHandle handle, const char* /*plugname*/)
     {
@@ -2662,6 +2679,7 @@ namespace OFX {
     }
 
     /** @brief Library side invoke Help function */
+    static
     bool
       invokeHelp(OfxImageEffectHandle handle, const char* /*plugname*/)
     {
@@ -2677,6 +2695,7 @@ namespace OFX {
     // TODO: framesViewsNeededAction(handle, inArgs, outargs, plugname); (see framesNeededAction())
 
     /** @brief Action called in place of a render to recover a transform matrix from an effect. */
+    static
     bool
       getTransform(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs)
     {
@@ -3218,15 +3237,7 @@ namespace OFX {
 
 }; // namespace OFX
 
-namespace OFX
-{
-  namespace Plugin
-  {
-    void getPluginIDs(OFX::PluginFactoryArray& ids);
-  }
-}
-
-
+static
 OFX::OfxPlugInfo generatePlugInfo(OFX::PluginFactory* factory, std::string& newID)
 {
   newID = factory->getUID();
@@ -3243,6 +3254,7 @@ OFX::OfxPlugInfo generatePlugInfo(OFX::PluginFactory* factory, std::string& newI
 
 bool gHasInit = false;
 
+static
 void init()
 {
   if(gHasInit)
@@ -3272,7 +3284,7 @@ OfxExport int OfxGetNumberOfPlugins(void)
 
 /** @brief, mandated function returning the nth plugin 
 
-We call the plugin side defined OFX::Plugin::getPluginID function to find out what to set.
+We call the plugin side defined OFX::Plugin::getPluginIDs function to find out what to set.
 */
 
 OfxExport OfxPlugin* OfxGetPlugin(int nth)

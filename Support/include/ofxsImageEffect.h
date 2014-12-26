@@ -1294,7 +1294,7 @@ namespace OFX {
   */  
   namespace Plugin {
     /** @brief Plugin side function used to identify the plugin to the support library */
-    void getPluginID(OFX::PluginFactoryArray &id);
+    void getPluginIDs(OFX::PluginFactoryArray &id);
 
     /// If the client has defined its own exception type, allow it to catch it in the main function
 #ifdef OFX_CLIENT_EXCEPTION_TYPE

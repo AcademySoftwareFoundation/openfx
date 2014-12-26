@@ -40,6 +40,7 @@ using namespace OFX::Private;
 
 namespace OFX {
 
+  static
   void throwPropertyException(OfxStatus stat,
     const std::string &propName) throw(std::bad_alloc,
     OFX::Exception::PropertyUnknownToHost,
