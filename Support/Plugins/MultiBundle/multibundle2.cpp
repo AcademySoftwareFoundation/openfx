@@ -45,7 +45,7 @@ England
 #include <GL/gl.h>
 #endif
 
-#include <stdio.h>
+#include <cassert>
 #include "ofxsImageEffect.h"
 #include "ofxsMultiThread.h"
 #include "../include/ofxsProcessing.H"
@@ -299,9 +299,12 @@ bool DotExampleInteract::draw(const OFX::DrawArgs &args)
 
   float dx = (float)(kBoxSize.x * args.pixelScale.x);
   float dy = (float)(kBoxSize.y * args.pixelScale.y);
-  double xpos, ypos;
+  double xpos = 0., ypos = 0.;
   DotExamplePlugin* plug = dynamic_cast<DotExamplePlugin*>(_effect);
-  plug->getPositionInCanonical(xpos, ypos, args);
+  assert(plug);
+  if (plug) {
+    plug->getPositionInCanonical(xpos, ypos, args);
+  }
   glPushMatrix();
   glColor3f(col.r, col.g, col.b);
   glTranslated(xpos, ypos, 0);
@@ -335,9 +338,11 @@ bool DotExampleInteract::penMotion(const OFX::PenArgs &args)
   case ePoised   : 
     {
       StateEnum newState;
-      double xpos, ypos;
+      double xpos = 0., ypos = 0.;
       DotExamplePlugin* plug = dynamic_cast<DotExamplePlugin*>(_effect);
-      plug->getPositionInCanonical(xpos, ypos, args);
+      if (plug) {
+        plug->getPositionInCanonical(xpos, ypos, args);
+      }
       penPos.x -= xpos;
       penPos.y -= ypos;
       if(Absolute(penPos.x) < dx && Absolute(penPos.y) < dy) 
