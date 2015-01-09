@@ -1735,7 +1735,9 @@ namespace OFX {
 
           if(isChromaticComponent(rawComp)) {
                 
-            if(clip->isOutput()) {
+            if(clip->isOutput() || clip->isOptional()) {
+              // "Optional input clips can always have their component types remapped"
+              // http://openfx.sourceforge.net/Documentation/1.3/ofxProgrammingReference.html#id482755
               depth = deepestBitDepth;
               comp = clip->findSupportedComp(mostComponents);
                   
