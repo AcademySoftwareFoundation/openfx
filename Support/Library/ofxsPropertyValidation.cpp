@@ -357,7 +357,7 @@ namespace OFX {
       PropertyDescription(kOfxImageEffectPropSupportsMultipleClipDepths,   OFX::eInt, 1, eDescDefault, 0, eDescFinished),
       PropertyDescription(kOfxImageEffectPropSupportsMultipleClipPARs,     OFX::eInt, 1, eDescDefault, 0, eDescFinished),
 #ifdef OFX_EXTENSIONS_TUTTLE
-      PropertyDescription(kTuttleOfxImageEffectPropEvaluation,             OFX::eDouble, 1, eDescDefault, -1., eDescFinished),
+      //PropertyDescription(kTuttleOfxImageEffectPropEvaluation,             OFX::eDouble, 1, eDescDefault, -1., eDescFinished),
 #endif
 
       // Pointer props with defaults that can be checked against
@@ -742,7 +742,7 @@ namespace OFX {
       PropertyDescription(kOfxParamPropInteractV1,           OFX::ePointer,1, eDescDefault, (void *)(0), eDescFinished),
       PropertyDescription(kOfxParamPropInteractSize,         OFX::eDouble, 2, eDescFinished),
       PropertyDescription(kOfxParamPropInteractSizeAspect,   OFX::eDouble, 1, eDescDefault, 1.0, eDescFinished),
-      PropertyDescription(kOfxParamPropInteractMinimumSize,  OFX::eInt,    2, eDescDefault, 10, 10, eDescFinished),
+      PropertyDescription(kOfxParamPropInteractMinimumSize,  OFX::eDouble, 2, eDescDefault, 10, 10, eDescFinished),
       PropertyDescription(kOfxParamPropInteractPreferedSize, OFX::eInt,    2, eDescDefault, 10, 10, eDescFinished),
     };
 
