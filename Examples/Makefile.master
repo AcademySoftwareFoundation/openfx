@@ -68,7 +68,7 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
       endif
       BITSFLAG = -isysroot /Developer/SDKs/MacOSX$(MACOSXSDK).sdk $(ARCHFLAGS) -mmacosx-version-min=$(MACOSX)
     endif
-    LINKFLAGS = $(BITSFLAG) -bundle -all_load -exported_symbols_list $(PATHTOROOT)/include/osxSymbols -framework OpenGL -Wl,-rpath,@loader_path/../Frameworks -Wl,-rpath,@loader_path/../Libraries
+    LINKFLAGS = $(BITSFLAG) -bundle -exported_symbols_list $(PATHTOROOT)/include/osxSymbols -framework OpenGL -Wl,-rpath,@loader_path/../Frameworks -Wl,-rpath,@loader_path/../Libraries
     ARCH = MacOS
   endif
 
