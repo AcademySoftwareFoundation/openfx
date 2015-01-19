@@ -94,7 +94,7 @@ namespace OFX {
     OFX::Exception::Suite)
   {
     assert(_propHandle != 0);
-    int dimension;
+    int dimension = 0;
     OfxStatus stat = gPropSuite->propGetDimension(_propHandle, property, &dimension);
     Log::error(stat != kOfxStatOK, "Failed on fetching dimension for property %s, host returned status %s.", property, mapStatusToString(stat));
     if(throwOnFailure)
