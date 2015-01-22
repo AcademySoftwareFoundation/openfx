@@ -73,6 +73,41 @@ namespace OFX {
   ImageEffectHostDescription gHostDescription;
   bool gHostDescriptionHasInit = false;
 
+  bool ImageEffectHostDescription::supportsPixelComponent(const PixelComponentEnum component) const
+  {
+    return std::find(_supportedComponents.begin(), _supportedComponents.end(), component) != _supportedComponents.end();
+  }
+  bool ImageEffectHostDescription::supportsBitDepth( const BitDepthEnum bitDepth) const
+  {
+    return std::find(_supportedPixelDepths.begin(), _supportedPixelDepths.end(), bitDepth) != _supportedPixelDepths.end();
+  }
+  bool ImageEffectHostDescription::supportsContext(const ContextEnum context) const
+  {
+    return std::find(_supportedContexts.begin(), _supportedContexts.end(), context) != _supportedContexts.end();
+  }
+	
+  /** @return default pixel depth supported by host application. */
+  BitDepthEnum ImageEffectHostDescription::getDefaultPixelDepth() const
+  {
+    if(!_supportedPixelDepths.empty()) {
+      return _supportedPixelDepths[0];
+    } else {
+      OFX::Log::warning(true, "The host doesn't define supported pixel depth. (size: %d)", (int)_supportedPixelDepths.size());
+      return eBitDepthFloat;
+    }
+  }
+	
+  /** @return default pixel component supported by host application. */
+  PixelComponentEnum ImageEffectHostDescription::getDefaultPixelComponent() const
+  {
+    if(! _supportedComponents.empty()) {
+      return _supportedComponents[0];
+    } else {
+      OFX::Log::warning(true, "The host doesn't define supported pixel component. (size: %d)", _supportedComponents.size());
+      return ePixelComponentRGBA;
+    }
+  }
+
   ImageEffectHostDescription* getImageEffectHostDescription()
   {
     if(gHostDescriptionHasInit)
@@ -209,7 +244,6 @@ namespace OFX {
     }
   }
 
-#ifdef OFX_SUPPORTS_OPENGLRENDER
     /** @brief turns a bit depth string into and enum */
     static std::string mapBitDepthEnumToStr(BitDepthEnum bitDepth)
     {
@@ -236,7 +270,6 @@ namespace OFX {
         return std::string();
         }
     }
-#endif
 
   /** @brief turns a pixel component string into and enum */
   static PixelComponentEnum mapStrToPixelComponentEnum(const std::string &str) throw(std::invalid_argument)

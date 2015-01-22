@@ -329,6 +329,17 @@ namespace OFX {
     bool supportsProgressSuite;
     bool supportsTimeLineSuite;
     bool supportsMessageSuiteV2;
+
+  public:
+    bool supportsPixelComponent(const PixelComponentEnum component) const;
+    bool supportsBitDepth( const BitDepthEnum bitDepth) const;
+    bool supportsContext(const ContextEnum context) const;
+	
+    /** @return default pixel depth supported by host application. */
+    BitDepthEnum getDefaultPixelDepth() const;
+	
+    /** @return default pixel component supported by host application. */
+    PixelComponentEnum getDefaultPixelComponent() const;
   };
 
 
