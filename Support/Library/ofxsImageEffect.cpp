@@ -2944,10 +2944,6 @@ namespace OFX {
           // call the instance changed action
           if(getTimeDomainAction(handle, outArgs))
             stat = kOfxStatOK;
-
-          // fetch our pointer out of the props on the handle
-          ImageEffect *instance = retrieveImageEffectPointer(handle);
-          (void)instance;
         }
         else if(action == kOfxActionBeginInstanceChanged) {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
