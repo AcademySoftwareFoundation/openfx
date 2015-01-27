@@ -1469,6 +1469,8 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	  <listitem><link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link></listitem>
 	  <listitem><link linkend="kOfxActionEndInstanceChanged"><code>kOfxActionEndInstanceChanged</code></link></listitem>
 	  <listitem><link linkend="kOfxImageEffectActionGetClipPreferences"><code>kOfxImageEffectActionGetClipPreferences</code></link></listitem>
+	  <listitem><link linkend="kOfxImageEffectActionGetRegionOfDefinition"><code>kOfxImageEffectActionGetRegionOfDefinition</code></link> (as a result of calling <link linkend="OfxImageEffectSuiteV1_clipGetImage"><code>OfxImageEffectSuiteV1::clipGetImage</code></link> from <link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link>)</listitem>
+	  <listitem><link linkend="kOfxImageEffectActionGetRegionsOfInterest"><code>kOfxImageEffectActionGetRegionsOfInterest</code></link> (as a result of calling <link linkend="OfxImageEffectSuiteV1_clipGetImage"><code>OfxImageEffectSuiteV1::clipGetImage</code></link> from <link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link>)</listitem>
 	</itemizedlist>
       </para>
 	
