@@ -81,9 +81,12 @@ namespace OFX {
 #define kOfxHostSupportHostPointer "sf.openfx.net.OfxHostSupportHostPointer"
 
     static const Property::PropSpec hostStuffs[] = {
+      { kOfxPropAPIVersion, Property::eInt, 0, false, "" },
       { kOfxPropType, Property::eString, 1, false, "Host" },
       { kOfxPropName, Property::eString, 1, false, "UNKNOWN" },
       { kOfxPropLabel, Property::eString, 1, false, "UNKNOWN" },
+      { kOfxPropVersion, Property::eInt, 0, false, "0" },
+      { kOfxPropVersionLabel, Property::eString, 1, false, "" },
       { kOfxHostSupportHostPointer,    Property::ePointer,    0,    false,    NULL },
       Property::propSpecEnd
     };    

@@ -57,8 +57,13 @@ namespace MyHost
   Host::Host()
   {
     // set host properties... TODO
+    _properties.setIntProperty(kOfxPropAPIVersion, 1, 0);
+    _properties.setIntProperty(kOfxPropAPIVersion, 3, 0);
     _properties.setStringProperty(kOfxPropName, "OFXDemoHost");
     _properties.setStringProperty(kOfxPropLabel, "OFX Demo Host");
+    _properties.setIntProperty(kOfxPropVersion, 1, 0);
+    _properties.setIntProperty(kOfxPropVersion, 0, 1);
+    _properties.setStringProperty(kOfxPropVersionLabel, "1.0");
     _properties.setIntProperty(kOfxImageEffectHostPropIsBackground, 0);
     _properties.setIntProperty(kOfxImageEffectPropSupportsOverlays, 0);
     _properties.setIntProperty(kOfxImageEffectPropSupportsMultiResolution, 0);

@@ -77,6 +77,8 @@ namespace OFX {
         { kOfxPropLabel,                        Property::eString,     1, false, "" },
         { kOfxPropShortLabel,                   Property::eString,     1, false, "" },
         { kOfxPropLongLabel,                    Property::eString,     1, false, "" },
+        { kOfxPropVersion,                      Property::eInt,        0, false, "0" },
+        { kOfxPropVersionLabel,                 Property::eString,     1, false, "" },
         { kOfxPropPluginDescription,            Property::eString,     1, false, "" },
         { kOfxImageEffectPropSupportedContexts, Property::eString,     0, false, "" },
         { kOfxImageEffectPluginPropGrouping,    Property::eString,     1, false, "" },
