@@ -135,6 +135,22 @@ namespace OFX {
     return v;
   }
 
+  /** @brief The suggested colour to draw a widget in an interact */
+  OfxRGBColourD
+    Interact::getSuggestedColour(void) const
+  {
+    OfxRGBColourD suggestedColour;
+    try {
+      suggestedColour.r = _interactProperties.propGetDouble(kOfxInteractPropSuggestedColour, 0);
+      suggestedColour.g = _interactProperties.propGetDouble(kOfxInteractPropSuggestedColour, 1);
+      suggestedColour.b = _interactProperties.propGetDouble(kOfxInteractPropSuggestedColour, 2);
+    } catch (OFX::Exception::PropertyUnknownToHost) {
+      // property was introduced in OFX 1.2, default is 1.0
+      suggestedColour.r = suggestedColour.g = suggestedColour.b = 1.;
+    }
+    return suggestedColour;
+  }
+
   /** @brief Request a redraw */
   void 
     Interact::requestRedraw(void) const
@@ -314,6 +330,8 @@ namespace OFX {
   DrawArgs::DrawArgs(const PropertySet &props)
     : InteractArgs(props)
   {
+    viewportSize.x = props.propGetDouble(kOfxInteractPropViewportSize, 0, false);
+    viewportSize.y = props.propGetDouble(kOfxInteractPropViewportSize, 1, false);
     backGroundColour = getBackgroundColour(props);
     pixelScale       = getPixelScale(props);
   }
@@ -322,10 +340,20 @@ namespace OFX {
   PenArgs::PenArgs(const PropertySet &props)
     : InteractArgs(props)
   {
+    viewportSize.x = props.propGetDouble(kOfxInteractPropViewportSize, 0, false);
+    viewportSize.y = props.propGetDouble(kOfxInteractPropViewportSize, 1, false);
     pixelScale    = getPixelScale(props);
+    backGroundColour = getBackgroundColour(props);
     penPosition.x = props.propGetDouble(kOfxInteractPropPenPosition, 0);
     penPosition.y = props.propGetDouble(kOfxInteractPropPenPosition, 1);
-    penPressure   = props.propGetDouble(kOfxInteractPropPenPressure);        
+    try {
+      penViewportPosition.x = props.propGetDouble(kOfxInteractPropPenViewportPosition, 0);
+      penViewportPosition.y = props.propGetDouble(kOfxInteractPropPenViewportPosition, 1);
+    } catch (OFX::Exception::PropertyUnknownToHost) {
+      // Introduced in OFX 1.2. Return (-1,-1) if not available
+      penViewportPosition.x = penViewportPosition.y = -1.;
+    }
+    penPressure   = props.propGetDouble(kOfxInteractPropPenPressure);
   }
 
   /** @brief ctor */
@@ -342,6 +370,8 @@ namespace OFX {
   FocusArgs::FocusArgs(const PropertySet &props)
     : InteractArgs(props)
   {
+    viewportSize.x = props.propGetDouble(kOfxInteractPropViewportSize, 0, false);
+    viewportSize.y = props.propGetDouble(kOfxInteractPropViewportSize, 1, false);
     pixelScale       = getPixelScale(props);
     backGroundColour = getBackgroundColour(props);
   }
