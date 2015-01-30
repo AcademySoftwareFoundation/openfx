@@ -143,7 +143,7 @@ namespace OFX {
     OfxStatus stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxInteractPropSuggestedColour, 0, &c.r);
 #ifdef OFX_EXTENSIONS_NUKE
     if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
-      stat = gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxPropOverlayColour, 0, &c.r);
+      stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxPropOverlayColour, 0, &c.r);
     }
 #endif
     if (stat != kOfxStatOK) {
@@ -152,7 +152,7 @@ namespace OFX {
     stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxInteractPropSuggestedColour, 1, &c.g);
 #ifdef OFX_EXTENSIONS_NUKE
     if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
-      stat = gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxPropOverlayColour, 1, &c.g);
+      stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxPropOverlayColour, 1, &c.g);
     }
 #endif
     if (stat != kOfxStatOK) {
@@ -161,7 +161,7 @@ namespace OFX {
     stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxInteractPropSuggestedColour, 2, &c.b);
 #ifdef OFX_EXTENSIONS_NUKE
     if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
-      stat = gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxPropOverlayColour, 2, &c.b);
+      stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxPropOverlayColour, 2, &c.b);
     }
 #endif
     if (stat != kOfxStatOK) {
