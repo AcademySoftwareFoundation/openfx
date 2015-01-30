@@ -291,7 +291,7 @@ namespace OFX {
     void propSetHandle(OfxPropertySetHandle h) { _propHandle = h;}
 
     /** @brief return the handle for this property set */
-    OfxPropertySetHandle propSetHandle(void) {return _propHandle;}
+    OfxPropertySetHandle propSetHandle(void) const {return _propHandle;}
 
     int  propGetDimension(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc, 
       OFX::Exception::PropertyUnknownToHost, 

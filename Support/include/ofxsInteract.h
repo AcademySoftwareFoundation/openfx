@@ -137,8 +137,8 @@ namespace OFX {
     /** @brief Returns the size of a real screen pixel under the interact's cannonical projection */
     OfxPointD getPixelScale(void) const;
 
-    /** @brief The suggested colour to draw a widget in an interact */
-    OfxRGBColourD getSuggestedColour(void) const;
+    /** @brief The suggested colour to draw a widget in an interact. Returns false if there is no suggestion. */
+    bool getSuggestedColour(OfxRGBColourD &c) const;
 
     /** @brief the background colour */
     OfxRGBColourD getBackgroundColour(void) const;

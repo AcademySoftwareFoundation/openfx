@@ -136,19 +136,38 @@ namespace OFX {
   }
 
   /** @brief The suggested colour to draw a widget in an interact */
-  OfxRGBColourD
-    Interact::getSuggestedColour(void) const
+  bool
+    Interact::getSuggestedColour(OfxRGBColourD &c) const
   {
-    OfxRGBColourD suggestedColour;
-    try {
-      suggestedColour.r = _interactProperties.propGetDouble(kOfxInteractPropSuggestedColour, 0);
-      suggestedColour.g = _interactProperties.propGetDouble(kOfxInteractPropSuggestedColour, 1);
-      suggestedColour.b = _interactProperties.propGetDouble(kOfxInteractPropSuggestedColour, 2);
-    } catch (OFX::Exception::PropertyUnknownToHost) {
-      // property was introduced in OFX 1.2, default is 1.0
-      suggestedColour.r = suggestedColour.g = suggestedColour.b = 1.;
+    // OFX 1.2/1.3 specs say that the host should return kOfxStatReplyDefault if there is no suggested color
+    OfxStatus stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxInteractPropSuggestedColour, 0, &c.r);
+#ifdef OFX_EXTENSIONS_NUKE
+    if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
+      stat = gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxPropOverlayColour, 0, &c.r);
     }
-    return suggestedColour;
+#endif
+    if (stat != kOfxStatOK) {
+      return false; // host gave no suggestion (replied kOfxStatReplyDefault or property is unknown to host)
+    }
+    stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxInteractPropSuggestedColour, 1, &c.g);
+#ifdef OFX_EXTENSIONS_NUKE
+    if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
+      stat = gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxPropOverlayColour, 1, &c.g);
+    }
+#endif
+    if (stat != kOfxStatOK) {
+      return false; // host gave no suggestion (replied kOfxStatReplyDefault or property is unknown to host)
+    }
+    stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxInteractPropSuggestedColour, 2, &c.b);
+#ifdef OFX_EXTENSIONS_NUKE
+    if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
+      stat = gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxPropOverlayColour, 2, &c.b);
+    }
+#endif
+    if (stat != kOfxStatOK) {
+      return false; // host gave no suggestion (replied kOfxStatReplyDefault or property is unknown to host)
+    }
+    return true;
   }
 
   /** @brief Request a redraw */

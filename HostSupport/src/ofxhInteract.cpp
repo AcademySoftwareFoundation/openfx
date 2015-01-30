@@ -112,6 +112,7 @@ namespace OFX {
         { kOfxInteractPropBackgroundColour , Property::eDouble, 3, true, "0.0f" },
         { kOfxInteractPropViewportSize, Property::eDouble, 2, true, "100.0f" },
         { kOfxInteractPropSlaveToParam , Property::eString, 0, false, ""},
+        { kOfxInteractPropSuggestedColour , Property::eDouble, 3, true, "1.0f" },
 #ifdef OFX_EXTENSIONS_NUKE
         { kOfxPropOverlayColour , Property::eDouble, 3, true, "1.0f" },
 #endif
@@ -149,6 +150,10 @@ namespace OFX {
         _properties.setGetHook(kOfxInteractPropPixelScale, this);
         _properties.setGetHook(kOfxInteractPropBackgroundColour,this);
         _properties.setGetHook(kOfxInteractPropViewportSize,this);
+        _properties.setGetHook(kOfxInteractPropSuggestedColour,this);
+#ifdef OFX_EXTENSIONS_NUKE
+        _properties.setGetHook(kOfxPropOverlayColour,this);
+#endif
 
         _argProperties.setGetHook(kOfxInteractPropPixelScale, this);
         _argProperties.setGetHook(kOfxInteractPropBackgroundColour,this);
@@ -180,6 +185,13 @@ namespace OFX {
         else if(name == kOfxInteractPropBackgroundColour){
           return 3;
         }
+        else if(name == kOfxInteractPropSuggestedColour
+#ifdef OFX_EXTENSIONS_NUKE
+                || name == kOfxPropOverlayColour
+#endif
+                ){
+          return 3;
+        }
         else if(name == kOfxInteractPropViewportSize){
           return 2;
         }
@@ -207,6 +219,17 @@ namespace OFX {
           getBackgroundColour(first[0],first[1],first[2]);
           return first[index];
         }
+        else if(name == kOfxInteractPropSuggestedColour
+#ifdef OFX_EXTENSIONS_NUKE
+                || name == kOfxPropOverlayColour
+#endif
+                ){
+          if(index>=3) throw Property::Exception(kOfxStatErrBadIndex);
+          double first[3];
+          bool stat = getSuggestedColour(first[0],first[1],first[2]);
+          if (!stat) throw Property::Exception(kOfxStatReplyDefault);
+          return first[index];
+        }
         else if(name == kOfxInteractPropViewportSize){
           if(index>=2) throw Property::Exception(kOfxStatErrBadIndex);
           double first[2];
@@ -226,6 +249,15 @@ namespace OFX {
         else if(name == kOfxInteractPropBackgroundColour){
           if(n>3) throw Property::Exception(kOfxStatErrBadIndex);
           getBackgroundColour(first[0],first[1],first[2]);
+        }
+        else if(name == kOfxInteractPropSuggestedColour
+#ifdef OFX_EXTENSIONS_NUKE
+                || name == kOfxPropOverlayColour
+#endif
+                ){
+          if(n>3) throw Property::Exception(kOfxStatErrBadIndex);
+          bool stat = getSuggestedColour(first[0],first[1],first[2]);
+          if (!stat) throw Property::Exception(kOfxStatReplyDefault);
         }
         else if(name == kOfxInteractPropViewportSize){
           if(n>2) throw Property::Exception(kOfxStatErrBadIndex);
