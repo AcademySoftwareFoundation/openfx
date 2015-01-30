@@ -18,7 +18,7 @@ namespace OFX {
           : OFX::ImageProcessor(instance)
           , _fromImg(0)
           , _toImg(0)
-          , _blend(0.5)
+          , _blend(0.5f)
         {        
         }
 
