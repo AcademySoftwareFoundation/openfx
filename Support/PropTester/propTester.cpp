@@ -69,16 +69,16 @@ public:
     OfxPointI size = getInteractSize();
     glBegin (GL_POLYGON);
     
-    glColor3f (0.0, 0.0, 0.0);
-    glVertex2f (-0.5, -0.5);
+    glColor3f (0.0f, 0.0f, 0.0f);
+    glVertex2f (-0.5f, -0.5f);
 
-    glColor3f (1.0, 0.0, 0.0);
+    glColor3f (1.0f, 0.0f, 0.0f);
     glVertex2f (-0.5f, size.y-0.5f);
 
-    glColor3f (0.0, 1.0, 0.0);
+    glColor3f (0.0f, 1.0f, 0.0f);
     glVertex2f (size.x - 0.5f, size.y - 0.5f);
     
-    glColor3f (0.0, 0.0, 1.0);
+    glColor3f (0.0f, 0.0f, 1.0f);
     glVertex2f (size.x - 0.5f, -0.5f);
     
     glEnd();

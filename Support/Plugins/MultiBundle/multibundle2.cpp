@@ -84,7 +84,7 @@ inline T Absolute(T a)
 class DotGeneratorBase : public OFX::ImageProcessor 
 {  
 public :
-  DotGeneratorBase(OFX::ImageEffect &instance) : OFX::ImageProcessor(instance), _radius(0.0f), _positionx(0.0), _positiony(0.0)
+  DotGeneratorBase(OFX::ImageEffect &instance) : OFX::ImageProcessor(instance), _radius(0.0f), _positionx(0.0f), _positiony(0.0f)
   {
     _colour[0] = _colour[1] = _colour[2] = _colour[3] = 0;
   }
