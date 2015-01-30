@@ -74,7 +74,7 @@ namespace OFX
     HINSTANCE _dlHandle;
 #endif
     time_t _time;
-    size_t _size;
+    off_t _size;
     int _users;
   public :
 
@@ -97,7 +97,7 @@ namespace OFX
     time_t getTime() const { return _time; }
 
     /// Current size of the file.
-    size_t getSize() const { return _size; }
+    off_t getSize() const { return _size; }
 
     /// Path to the file.
     const std::string &getBinaryPath() const { return _binaryPath; }
