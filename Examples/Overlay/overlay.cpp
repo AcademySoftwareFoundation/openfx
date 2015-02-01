@@ -333,6 +333,7 @@ overlayMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs
     }
     return kOfxStatReplyDefault;
   }
+  return kOfxStatReplyDefault;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

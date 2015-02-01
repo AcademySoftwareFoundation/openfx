@@ -1,9 +1,13 @@
-
+# Ignore the documentation folder
+/Documentation
+/doc
+Support/PropTester/Darwin-64-debug/PropTester.ofx.bundle/Contents/Info.plist
+Support/*/*/Darwin-*-debug
+Examples/*/*.bundle
 *.o
-
 *.ofx
-
 *.a
+*~
 
 build
 
@@ -23,33 +27,19 @@ DerivedData
 Documentation/docbook-xsl-*
 Documentation/Guide
 Documentation/Reference
-
 Documentation/ofxImageEffectSuiteReference.xml
-
 Documentation/ofxInteractSuiteReference.xml
-
 Documentation/ofxMemorySuiteReference.xml
-
 Documentation/ofxMessageSuiteV1Reference.xml
-
 Documentation/ofxMessageSuiteV2Reference.xml
-
 Documentation/ofxOpenGLRenderSuiteReference.xml
-
 Documentation/ofxParametersSuiteReference.xml
-
 Documentation/ofxParametricParamReference.xml
-
 Documentation/ofxProgrammingGuide.html
-
 Documentation/ofxProgrammingReference.html
-
 Documentation/ofxProgressSuiteReference.xml
-
 Documentation/ofxPropertiesReference.xml
-
 Documentation/ofxPropertySuiteReference.xml
-
 Documentation/ofxThreadingSuiteReference.xml
-
 Documentation/ofxTimeLineSuiteReference.xml
+

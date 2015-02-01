@@ -620,10 +620,10 @@ static OfxStatus render(OfxImageEffectHandle effect,
   // property handles and members of each image
   // in reality, we would put this in a struct as the C++ support layer does
   OfxPropertySetHandle sourceImg = NULL, outputImg = NULL;
-  int srcRowBytes, srcBitDepth, dstRowBytes, dstBitDepth;
+  int srcRowBytes = 0, srcBitDepth, dstRowBytes, dstBitDepth;
   bool srcIsAlpha, dstIsAlpha;
-  OfxRectI dstRect, srcRect;
-  void *src, *dst;
+  OfxRectI dstRect, srcRect = {0};
+  void *src = NULL, *dst;
   
   // by default we are premultiplied
   bool unpremultiplied = false;

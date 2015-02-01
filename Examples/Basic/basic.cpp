@@ -659,9 +659,9 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   // property handles and members of each image
   // in reality, we would put this in a struct as the C++ support layer does
   OfxPropertySetHandle sourceImg = NULL, outputImg = NULL, maskImg = NULL;
-  int srcRowBytes, srcBitDepth, dstRowBytes, dstBitDepth, maskRowBytes, maskBitDepth;
-  bool srcIsAlpha, dstIsAlpha, maskIsAlpha;
-  OfxRectI dstRect, srcRect, maskRect;
+  int srcRowBytes, srcBitDepth, dstRowBytes, dstBitDepth, maskRowBytes = 0, maskBitDepth;
+  bool srcIsAlpha, dstIsAlpha, maskIsAlpha = false;
+  OfxRectI dstRect, srcRect, maskRect = {0};
   void *src, *dst, *mask = NULL;
 
   try {
@@ -693,7 +693,7 @@ static OfxStatus render( OfxImageEffectHandle  instance,
     }
 
     // are we compenent scaling
-    bool scaleComponents;
+    int scaleComponents;
     gParamHost->paramGetValueAtTime(myData->perComponentScaleParam, time, &scaleComponents);
 
     // get the scale parameters

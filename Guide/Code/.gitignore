@@ -1,0 +1,10 @@
+*.o
+*.obj
+*.ilk
+*.lib
+*.pdb
+*.exp
+*.manifest
+*.orig
+*.rej
+*~

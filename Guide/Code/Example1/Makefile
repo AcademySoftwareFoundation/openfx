@@ -1,0 +1,3 @@
+NAME = basics
+
+include ../MakefileCommon
