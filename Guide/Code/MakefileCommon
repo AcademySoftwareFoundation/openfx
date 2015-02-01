@@ -10,10 +10,16 @@ ifeq ($(UNAME), Darwin)
   OS_CXXFLAGS = -fvisibility=hidden
   OS_LDFLAGS = -bundle -fvisibility=hidden
   OS_BUNDLE_DIR = MacOS
-else ifeq ($(UNAME), Linux)
+endif
+ifeq ($(UNAME), Linux)
   OS_CXXFLAGS = -fPIC -fvisibility=hidden
   OS_LDFLAGS = -shared -fvisibility=hidden
   OS_BUNDLE_DIR = Linux-x86-64
+endif
+ifeq ($(UNAME), FreeBSD)
+  OS_CXXFLAGS = -fPIC -fvisibility=hidden
+  OS_LDFLAGS = -shared -fvisibility=hidden
+  OS_BUNDLE_DIR = FreeBSD-x86-64
 endif
 
 # set up C++ flags

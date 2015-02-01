@@ -42,7 +42,7 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
 
   ifeq ($(OS),Linux)
     # use $ORIGIN to link to bundled libraries first, see http://itee.uq.edu.au/~daniel/using_origin/
-    LINKFLAGS = -shared -Xlinker --version-script=$(PATHTOROOT)/include/linuxSymbols -lGL -Wl,-rpath,'$$ORIGIN'/../../Libraries
+    LINKFLAGS = -shared -fvisibility=hidden -Xlinker --version-script=$(PATHTOROOT)/include/linuxSymbols -lGL -Wl,-rpath,'$$ORIGIN'/../../Libraries
     ARCH = Linux-x86
     BITSFLAG = -m32
     ifeq ($(BITS), 64)

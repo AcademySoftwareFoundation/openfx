@@ -50,6 +50,14 @@ England
 #endif
 #include "ofxsCore.h"
 
+#if defined __APPLE__ || defined linux || defined __FreeBSD__
+#  define EXPORT __attribute__((visibility("default")))
+#elif defined _WIN32
+#  define EXPORT OfxExport
+#else
+#  error Not building on your operating system quite yet
+#endif
+
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {
 
@@ -3308,7 +3316,7 @@ void init()
 }
 
 /** @brief, mandated function returning the number of plugins, which is always 1 */
-OfxExport int OfxGetNumberOfPlugins(void)
+EXPORT int OfxGetNumberOfPlugins(void)
 {
   init();
   return (int)OFX::plugIDs.size();
@@ -3319,7 +3327,7 @@ OfxExport int OfxGetNumberOfPlugins(void)
 We call the plugin side defined OFX::Plugin::getPluginIDs function to find out what to set.
 */
 
-OfxExport OfxPlugin* OfxGetPlugin(int nth)
+EXPORT OfxPlugin* OfxGetPlugin(int nth)
 {
   init();
   int numPlugs = (int)OFX::plugInfoMap.size();
