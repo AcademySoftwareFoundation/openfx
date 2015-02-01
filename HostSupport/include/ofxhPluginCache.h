@@ -217,14 +217,14 @@ namespace OFX {
       std::string _bundlePath;        ///< path to the .bundle directory
       std::vector<Plugin *> _plugins; ///< my plugins
       time_t _fileModificationTime;   ///< used as a time stamp to check modification times, used for caching
-      size_t _fileSize;               ///< file size last time we check, used for caching
+      off_t _fileSize;                ///< file size last time we check, used for caching
       bool _binaryChanged;            ///< whether the timestamp/filesize in this cache is different from that in the actual binary
       
     public :
 
       /// create one from the cache.  this will invoke the Binary() constructor which
       /// will stat() the file.
-      explicit PluginBinary(const std::string &file, const std::string &bundlePath, time_t mtime, size_t size)
+      explicit PluginBinary(const std::string &file, const std::string &bundlePath, time_t mtime, off_t size)
         : _binary(file)
         , _filePath(file)
         , _bundlePath(bundlePath)
@@ -260,7 +260,7 @@ namespace OFX {
       	return _fileModificationTime;
       }
     
-      size_t getFileSize() {
+      off_t getFileSize() {
       	return _fileSize;
       }
 
