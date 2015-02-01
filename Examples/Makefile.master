@@ -38,7 +38,7 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
     LINKFLAGS := $(LINKFLAGS) $(BITSFLAG)
   endif
   ifeq ($(OS),FreeBSD)
-    LINKFLAGS = -L/usr/local/lib -shared -Xlinker --version-script=$(PATHTOROOT)/include/linuxSymbols -lGL -Wl,-rpath,'$$ORIGIN'/../../Libraries
+    LINKFLAGS = -L/usr/local/lib -shared -fvisibility=hidden -Xlinker --version-script=$(PATHTOROOT)/include/linuxSymbols -lGL -Wl,-rpath,'$$ORIGIN'/../../Libraries
     ARCH= FreeBSD-x86
     BITSFLAG = -m32
     ifeq ($(BITS), 64)
@@ -68,11 +68,11 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
       endif
       BITSFLAG = -isysroot /Developer/SDKs/MacOSX$(MACOSXSDK).sdk $(ARCHFLAGS) -mmacosx-version-min=$(MACOSX)
     endif
-    LINKFLAGS = $(BITSFLAG) -bundle -exported_symbols_list $(PATHTOROOT)/include/osxSymbols -framework OpenGL -Wl,-rpath,@loader_path/../Frameworks -Wl,-rpath,@loader_path/../Libraries
+    LINKFLAGS = $(BITSFLAG) -bundle -fvisibility=hidden -exported_symbols_list $(PATHTOROOT)/include/osxSymbols -framework OpenGL -Wl,-rpath,@loader_path/../Frameworks -Wl,-rpath,@loader_path/../Libraries
     ARCH = MacOS
   endif
 
-  CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include $(BITSFLAG) -fPIC
+  CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include $(BITSFLAG) -fPIC -fvisibility=hiddenq
 
 $(OBJECTPATH)/$(PLUGINNAME).ofx: $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS))
 	mkdir -p $(OBJECTPATH)/
