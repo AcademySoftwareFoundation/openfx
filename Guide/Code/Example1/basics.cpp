@@ -235,8 +235,8 @@ namespace {
   }
 
   // are the settings of the effect making it redundant and so not do anything to the image data
-  OfxStatus IsIdentityAction(OfxImageEffectHandle instance,
-                             OfxPropertySetHandle inArgs,
+  OfxStatus IsIdentityAction(OfxImageEffectHandle /*instance*/,
+                             OfxPropertySetHandle /*inArgs*/,
                              OfxPropertySetHandle outArgs)
   {
     // we set the name of the input clip to pull data from

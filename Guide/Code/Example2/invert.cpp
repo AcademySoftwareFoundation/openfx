@@ -169,7 +169,7 @@ namespace {
   //  describe the plugin in context
   OfxStatus
   DescribeInContextAction(OfxImageEffectHandle descriptor,
-                          OfxPropertySetHandle inArgs)
+                          OfxPropertySetHandle /*inArgs*/)
   {
     OfxPropertySetHandle props;
     // define the mandated single output clip
@@ -309,7 +309,7 @@ namespace {
   // Render an output image
   OfxStatus RenderAction( OfxImageEffectHandle instance,
                           OfxPropertySetHandle inArgs,
-                          OfxPropertySetHandle outArgs)
+                          OfxPropertySetHandle /*outArgs*/)
   {
     // get the render window and the time from the inArgs
     OfxTime time;
@@ -376,7 +376,6 @@ namespace {
       }
       else {
         throw " bad data type!";
-        throw 1;
       }
 
     }

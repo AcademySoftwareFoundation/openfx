@@ -192,6 +192,13 @@ namespace {
     }
     else {
       propSet_ = NULL;
+      rowBytes_ = 0;
+      bounds_.x1 = bounds_.x2 = bounds_.y1 = bounds_.y2 = 0;
+      dataPtr_ = NULL;
+      nComponents_ = 0;
+      bytesPerComponent_ = 0;
+      bytesPerPixel_ = 0;
+      pixelAspectRatio_ = 1.;
     }
   }
 
@@ -244,6 +251,8 @@ namespace {
       dataPtr_ = NULL;
       nComponents_ = 0;
       bytesPerComponent_ = 0;
+      bytesPerPixel_ = 0;
+      pixelAspectRatio_ = 1.;
     }
   }
 
@@ -741,7 +750,7 @@ namespace {
   // Render an output image
   OfxStatus RenderAction( OfxImageEffectHandle instance,
                           OfxPropertySetHandle inArgs,
-                          OfxPropertySetHandle outArgs)
+                          OfxPropertySetHandle /*outArgs*/)
   {
     // get the render window and the time from the inArgs
     OfxTime time;
@@ -773,8 +782,6 @@ namespace {
     double colour[4];
     gParameterSuite->paramGetValueAtTime(myData->colourParam, time, &colour[0], &colour[1], &colour[2], &colour[3]);
 
-    // the property sets holding our images
-    OfxPropertySetHandle outputImg = NULL, sourceImg = NULL;
     try {
       // fetch image to render into from that clip
       Image outputImg(myData->outputClip, time);
@@ -821,7 +828,6 @@ namespace {
       }
       else {
         throw " bad data type!";
-        throw 1;
       }
 
     }
