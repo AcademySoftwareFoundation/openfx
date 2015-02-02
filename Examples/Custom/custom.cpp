@@ -370,7 +370,10 @@ interactPenDown(OfxImageEffectHandle pluginInstance,
 
   // get the point param's value
   double x, y;
-  getCustomParam(pluginInstance, x, y);
+  OfxStatus stat = getCustomParam(pluginInstance, x, y);
+  if (stat != kOfxStatOK) {
+    return stat;
+  }
 
   // scale it up to the project size as it is a normalised spatial parameter
   x = projOffset.x + x * projSize.x;

@@ -345,23 +345,46 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   // get the output image texture
   status = gOpenGLSuite->clipLoadTexture(myData->outputClip, time, NULL, NULL, &outputImg);
   DPRINT(("openGL: clipLoadTexture (output) returns status %d\n", status));
-
+  if (status != kOfxStatOK) {
+    return status;
+  }
   status = gPropHost->propGetInt(outputImg, kOfxImageEffectPropOpenGLTextureIndex,
 				 0, &output_texture_index);
+  if (status != kOfxStatOK) {
+    return status;
+  }
   status = gPropHost->propGetInt(outputImg, kOfxImageEffectPropOpenGLTextureTarget,
 				 0, &output_texture_target);
+  if (status != kOfxStatOK) {
+    return status;
+  }
   status = gPropHost->propGetString(outputImg, kOfxImageEffectPropPixelDepth, 0, &tmps);
+  if (status != kOfxStatOK) {
+    return status;
+  }
   DPRINT(("openGL: output texture index %d, target %d, depth %s\n",
 	  output_texture_index, output_texture_target, tmps));
 
   status = gOpenGLSuite->clipLoadTexture(myData->sourceClip, time, NULL, NULL, &sourceImg);
   DPRINT(("openGL: clipLoadTexture (source) returns status %d\n", status));
+  if (status != kOfxStatOK) {
+    return status;
+  }
 
   status = gPropHost->propGetInt(sourceImg, kOfxImageEffectPropOpenGLTextureIndex,
 				 0, &source_texture_index);
+  if (status != kOfxStatOK) {
+    return status;
+  }
   status = gPropHost->propGetInt(sourceImg, kOfxImageEffectPropOpenGLTextureTarget,
 				 0, &source_texture_target);
+  if (status != kOfxStatOK) {
+    return status;
+  }
   status = gPropHost->propGetString(sourceImg, kOfxImageEffectPropPixelDepth, 0, &tmps);
+  if (status != kOfxStatOK) {
+    return status;
+  }
   DPRINT(("openGL: source texture index %d, target %d, depth %d\n",
 	  source_texture_index, source_texture_target, tmps));
   // XXX: check status for errors

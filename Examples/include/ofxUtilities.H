@@ -278,6 +278,12 @@ inline OfxPropertySetHandle ofxuGetImage(OfxImageClipHandle &clip,
       gEffectHost->clipReleaseImage(imageProps);
       imageProps = NULL;
     }
+  } else {
+    rowBytes  = 0;
+    bitDepth  = 0;
+    isAlpha   = false;
+    rect.x1 = rect.x2 = rect.y1 = rect.y2 = 0;
+    data      =  NULL;
   }
   return imageProps;
 }
