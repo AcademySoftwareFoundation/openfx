@@ -219,7 +219,7 @@ namespace OFX {
   }
 
   /** @brief turns a bit depth string into and enum */
-  static BitDepthEnum mapStrToBitDepthEnum(const std::string &str) throw(std::invalid_argument)
+  BitDepthEnum mapStrToBitDepthEnum(const std::string &str) throw(std::invalid_argument)
   {
     if(str == kOfxBitDepthByte) {
       return eBitDepthUByte;
@@ -283,7 +283,7 @@ namespace OFX {
 #endif
 
   /** @brief turns a pixel component string into and enum */
-  static PixelComponentEnum mapStrToPixelComponentEnum(const std::string &str) throw(std::invalid_argument)
+  PixelComponentEnum mapStrToPixelComponentEnum(const std::string &str) throw(std::invalid_argument)
   {
     if(str == kOfxImageComponentRGBA) {
       return ePixelComponentRGBA;

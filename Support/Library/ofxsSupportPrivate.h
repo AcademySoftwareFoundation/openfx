@@ -73,6 +73,10 @@ namespace OFX {
 
   InstanceChangeReason mapToInstanceChangedReason(const std::string &s) throw(std::invalid_argument);
 
+  BitDepthEnum mapStrToBitDepthEnum(const std::string &str) throw(std::invalid_argument);
+
+  PixelComponentEnum mapStrToPixelComponentEnum(const std::string &str) throw(std::invalid_argument);
+
   namespace Private {
     /** @brief Pointer to the host */
     extern OfxHost *gHost;
