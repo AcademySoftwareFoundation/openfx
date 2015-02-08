@@ -944,7 +944,10 @@ namespace OFX {
     _renderScale.y = _imageProps.propGetDouble(kOfxImageEffectPropRenderScale, 1);
 #ifdef OFX_EXTENSIONS_NUKE
     std::fill(_transform, _transform + 9, 0.);
-    try {
+    if (_imageProps.propGetDimension(kFnOfxPropMatrix2D, false) == 0) {
+      // Host does not support transforms, just ignore
+      _transformIsIdentity = true;
+    } else {
       for (int i = 0; i < 9; ++i) {
         _transform[i] = _imageProps.propGetDouble(kFnOfxPropMatrix2D, i);
       }
@@ -953,9 +956,6 @@ namespace OFX {
                               _transform[3] == 0. && _transform[5] == 0. &&
                               _transform[6] == 0. && _transform[7] == 0. &&
                               _transform[0] == _transform[2] && _transform[0] == _transform[8]);
-    } catch (OFX::Exception::PropertyUnknownToHost) {
-      // Host does not support transforms, just ignore
-      _transformIsIdentity = true;
     }
 #endif
   }
