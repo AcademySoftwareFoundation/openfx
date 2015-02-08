@@ -593,7 +593,7 @@
 	</listitem>
 	<listitem><code>outArgs</code>  has the following property which the plug-in may set...
 	  <itemizedlist>
-	    <listitem><link linkend="kOfxImageEffectPropRegionOfDefinition"><code>kOfxImageEffectPropRegionOfDefinitiong</code></link>, the calculated region of definition, initially set by the host to the default RoD (see below), in Canonical Coordinates.</listitem>
+	    <listitem><link linkend="kOfxImageEffectPropRegionOfDefinition"><code>kOfxImageEffectPropRegionOfDefinition</code></link>, the calculated region of definition, initially set by the host to the default RoD (see below), in Canonical Coordinates.</listitem>
 	  </itemizedlist>
 	</listitem>
       </itemizedlist>
