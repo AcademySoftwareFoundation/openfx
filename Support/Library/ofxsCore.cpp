@@ -33,7 +33,7 @@ England
 
 
 */
-#include "./ofxsSupportPrivate.h"
+#include "ofxsSupportPrivate.h"
 #ifdef DEBUG
 #include <iostream>
 #endif

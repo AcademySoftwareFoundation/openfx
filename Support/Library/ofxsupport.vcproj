@@ -685,7 +685,7 @@
 				>
 			</File>
 			<File
-				RelativePath="ofxsSupportPrivate.H"
+				RelativePath="ofxsSupportPrivate.h"
 				>
 			</File>
 		</Filter>

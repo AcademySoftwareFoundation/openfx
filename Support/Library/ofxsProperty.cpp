@@ -34,7 +34,7 @@ England
 
 */
 
-#include "./ofxsSupportPrivate.h"
+#include "ofxsSupportPrivate.h"
 
 using namespace OFX::Private;
 

@@ -37,7 +37,7 @@ England
 /** @brief This file contains code that skins the ofx param suite */
 
 #include <cstring>
-#include "./ofxsSupportPrivate.h"
+#include "ofxsSupportPrivate.h"
 #include "ofxParametricParam.h"
 #ifdef OFX_EXTENSIONS_NUKE
 #include "nuke/camera.h"

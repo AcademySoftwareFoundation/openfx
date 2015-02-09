@@ -176,7 +176,7 @@ namespace OFX {
     throw std::invalid_argument(s);
   }
 
-  const char* mapToMessageTypeEnum(OFX::Message::MessageTypeEnum type)
+  const char* mapMessageTypeEnumToStr(OFX::Message::MessageTypeEnum type)
   {
     if(type == OFX::Message::eMessageFatal)
       return kOfxMessageFatal;
@@ -1424,7 +1424,7 @@ namespace OFX {
   {   
     if(!OFX::Private::gMessageSuite){ throwHostMissingSuiteException("message"); }
     if(!OFX::Private::gMessageSuite->message){ throwHostMissingSuiteException("message"); }
-    OfxStatus stat = OFX::Private::gMessageSuite->message(_effectHandle, mapToMessageTypeEnum(type), id.c_str(), msg.c_str());
+    OfxStatus stat = OFX::Private::gMessageSuite->message(_effectHandle, mapMessageTypeEnumToStr(type), id.c_str(), msg.c_str());
     return mapToMessageReplyEnum(stat);
   }
 
@@ -1432,7 +1432,7 @@ namespace OFX {
   {   
     if(!OFX::Private::gMessageSuiteV2){ throwHostMissingSuiteException("setPersistentMessage"); }
     if(!OFX::Private::gMessageSuiteV2->setPersistentMessage){ throwHostMissingSuiteException("setPersistentMessage"); }
-    OfxStatus stat = OFX::Private::gMessageSuiteV2->setPersistentMessage(_effectHandle, mapToMessageTypeEnum(type), id.c_str(), msg.c_str());
+    OfxStatus stat = OFX::Private::gMessageSuiteV2->setPersistentMessage(_effectHandle, mapMessageTypeEnumToStr(type), id.c_str(), msg.c_str());
     return mapToMessageReplyEnum(stat);
   }
 

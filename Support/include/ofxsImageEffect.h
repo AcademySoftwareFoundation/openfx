@@ -209,6 +209,32 @@ namespace OFX {
     };
 #endif
 
+
+  /** @brief turns a field string into and enum */
+  FieldEnum mapStrToFieldEnum(const std::string &str)  throw(std::invalid_argument);
+
+#ifdef OFX_EXTENSIONS_VEGAS
+  /** @brief map a std::string to a RenderQuality */
+  VegasRenderQualityEnum mapToVegasRenderQualityEnum(const std::string &s) throw(std::invalid_argument);
+
+  /** @brief map a std::string to a context */
+  VegasContextEnum mapToVegasContextEnum(const std::string &s) throw(std::invalid_argument);
+#endif
+
+  ////////////////////////////////////////////////////////////////////////////////
+  /** @brief map a std::string to a context enum */
+  ContextEnum mapToContextEnum(const std::string &s) throw(std::invalid_argument);
+
+  const char* mapMessageTypeEnumToStr(OFX::Message::MessageTypeEnum type);
+
+  OFX::Message::MessageReplyEnum mapToMessageReplyEnum(OfxStatus stat);
+
+  InstanceChangeReason mapToInstanceChangedReason(const std::string &s) throw(std::invalid_argument);
+
+  BitDepthEnum mapStrToBitDepthEnum(const std::string &str) throw(std::invalid_argument);
+
+  PixelComponentEnum mapStrToPixelComponentEnum(const std::string &str) throw(std::invalid_argument);
+
   class PluginFactory
   {
   public:
