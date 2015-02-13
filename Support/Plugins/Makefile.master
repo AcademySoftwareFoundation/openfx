@@ -86,11 +86,11 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
     ARCH = MacOS
   endif
 
-  CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include -I$(PATHTOROOT)/Plugins/include $(BITSFLAG) -fPIC -fvisibility=hidden
+  CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include -I$(PATHTOROOT)/Plugins/include $(BITSFLAG) -fPIC -fvisibility=hidden $(CXXFLAGS_ADD)
 
 $(OBJECTPATH)/$(PLUGINNAME).ofx: $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS)) $(SUPPORTOBJECTS)
 	mkdir -p $(OBJECTPATH)/
-	$(CXX) $^ $(LINKFLAGS) -o $@
+	$(CXX) $^ $(LINKFLAGS) $(LDFLAGS_ADD) -o $@
 
 $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle: $(OBJECTPATH)/$(PLUGINNAME).ofx
 	mkdir -p  $@/Contents/$(ARCH)
