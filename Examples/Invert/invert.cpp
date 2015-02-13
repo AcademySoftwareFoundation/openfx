@@ -47,6 +47,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxMultiThread.h"
 #include "ofxPixels.h"
 
+#if defined __APPLE__ || defined linux || defined __FreeBSD__
+#  define EXPORT __attribute__((visibility("default")))
+#elif defined _WIN32
+#  define EXPORT OfxExport
+#else
+#  error Not building on your operating system quite yet
+#endif
+
 // pointers to various bits of the host
 OfxHost               *gHost;
 OfxImageEffectSuiteV1 *gEffectHost = 0;
@@ -291,7 +299,7 @@ static OfxPlugin basicPlugin =
 };
    
 // the two mandated functions
-OfxPlugin *
+EXPORT OfxPlugin *
 OfxGetPlugin(int nth)
 {
   if(nth == 0)
@@ -299,7 +307,7 @@ OfxGetPlugin(int nth)
   return 0;
 }
  
-int
+EXPORT int
 OfxGetNumberOfPlugins(void)
 {       
   return 1;

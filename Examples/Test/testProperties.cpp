@@ -44,6 +44,14 @@ run it through a c beautifier or emacs auto formating, automagic indenting will 
 
 #include "ofxLog.H"
 
+#if defined __APPLE__ || defined linux || defined __FreeBSD__
+#  define EXPORT __attribute__((visibility("default")))
+#elif defined _WIN32
+#  define EXPORT OfxExport
+#else
+#  error Not building on your operating system quite yet
+#endif
+
 static OfxHost               *gHost;
 static OfxImageEffectSuiteV1 *gEffectSuite;
 static OfxPropertySuiteV1    *gPropSuite;
@@ -1266,7 +1274,7 @@ static OfxPlugin basicPlugin =
   };
 
 // the two mandated functions
-OfxPlugin *
+EXPORT OfxPlugin *
 OfxGetPlugin(int nth)
 {
   OFX::logPrint("OfxGetPlugin - start();\n{");
@@ -1278,7 +1286,7 @@ OfxGetPlugin(int nth)
   return 0;
 }
 
-int
+EXPORT int
 OfxGetNumberOfPlugins(void)
 {       
   OFX::logPrint("OfxGetNumberOfPlugins - start();\n{");
