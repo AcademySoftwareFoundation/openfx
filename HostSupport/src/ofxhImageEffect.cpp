@@ -1446,10 +1446,247 @@ namespace OFX {
   
         return stat;
       }
+        
+#ifdef OFX_EXTENSIONS_NUKE
+      OfxStatus Instance::getClipComponentsAction(OfxTime time,
+                                                  int view,
+                                                  ComponentsMap& clipComponents,
+                                                  ClipInstance*& passThroughClip,
+                                                  OfxTime& passThroughTime,
+                                                  int& passThroughView)
+      {
+          OfxStatus stat = kOfxStatReplyDefault;
+          
+          
+          Property::PropSpec inStuff[] = {
+              { kOfxPropTime, Property::eDouble, 1, true, "0" },
+              { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
+              Property::propSpecEnd
+          };
+          Property::Set inArgs(inStuff);
+          inArgs.setDoubleProperty(kOfxPropTime,time);
+          
+          
+          Property::PropSpec outStuff[] = {
+              { kFnOfxImageEffectPropPassThroughClip, Property::eString, 1, false, "" },
+              { kFnOfxImageEffectPropPassThroughTime, Property::eDouble, 1, false, "0" },
+              { kFnOfxImageEffectPropPassThroughView, Property::eInt, 1, false, "0" },
+              Property::propSpecEnd
+          };
+          Property::Set outArgs(outStuff);
+          
+          outArgs.setDoubleProperty(kFnOfxImageEffectPropPassThroughTime,time);
+          outArgs.setIntProperty(kFnOfxImageEffectPropPassThroughView, view);
+          
+          for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
+              it!=_clips.end();
+              ++it) {
+              
+              Property::PropSpec s;
+              std::string name = kFnOfxImageEffectActionGetClipComponentsPropString + it->first;
+              
+              s.name = name.c_str();
+              s.type = Property::eString;
+              s.dimension = 0;
+              s.readonly = false;
+              s.defaultValue = "";
+              outArgs.createProperty(s);
+          }
+          
+#         ifdef OFX_DEBUG_ACTIONS
+          std::cout << "OFX: "<<(void*)this<<"->"<<kFnOfxImageEffectActionGetClipComponents<<"("<<time<<"," <<  view << ")"<<std::endl;
+#         endif
+          
+          stat = mainEntry(kFnOfxImageEffectActionGetClipComponents,
+                           this->getHandle(),
+                           &inArgs,
+                           &outArgs);
+          
+#         ifdef OFX_DEBUG_ACTIONS
+          std::cout << "OFX: "<<(void*)this<<"->"<<kFnOfxImageEffectActionGetClipComponents<<"("<<time<<"," <<  view << ")->"<<StatStr(stat);
+          if (stat == kOfxStatOK) {
+              std::cout << ": ";
+              for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
+                  it!=_clips.end();
+                  ++it) {
+                  ClipInstance *clip = it->second;
+                  
+                  std::string name = kFnOfxImageEffectActionGetClipComponentsPropString + it->first;
+                  std::cout << it->first << "->[";
+                  
+                  int nRanges = outArgs.getDimension(name);
+                  for(int r=0;r<nRanges;++r){
+                      std::string component = outArgs.getStringProperty(name,r);
+                      std::cout <<"("<< component <<")";
+                      if (r < nRanges-1) {
+                          std::cout << ",";
+                      }
+                  }
+                  std::cout << "]";
+                  
+              }
+          }
+          std::cout << std::endl;
+#         endif
+          
+          if (stat == kOfxStatOK) {
+              
+              std::string passthroughClipName = outArgs.getStringProperty(kFnOfxImageEffectPropPassThroughClip);
+              
+              for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
+                  it!=_clips.end();
+                  ++it) {
+                  ClipInstance *clip = it->second;
+                  std::string name = kFnOfxImageEffectActionGetClipComponentsPropString + it->first;
+                  int nRanges = outArgs.getDimension(name);
+                  std::list<std::string> components;
+                  for (int r = 0 ; r < nRanges; ++r) {
+                      std::string component = outArgs.getStringProperty(name,r);
+                      components.push_back(component);
+                  }
+                  clipComponents.insert(std::make_pair(clip, components));
+                  
+                  if (it->first == passthroughClipName) {
+                      passThroughClip = it->second;
+                  }
+              }
+              
+              passThroughTime = outArgs.getDoubleProperty(kFnOfxImageEffectPropPassThroughTime);
+              passThroughView = outArgs.getIntProperty(kFnOfxImageEffectPropPassThroughView);
+          }
+          return stat;
+      }
+        
+      OfxStatus Instance::getFrameViewsNeeded(OfxTime time,
+                                              int view,
+                                              ViewsRangeMap& rangeMap)
+      {
+          OfxStatus stat = kOfxStatReplyDefault;
+          Property::Set outArgs;
+          
+          
+          Property::PropSpec inStuff[] = {
+              { kOfxPropTime, Property::eDouble, 1, true, "0" },
+              { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
+              Property::propSpecEnd
+          };
+          Property::Set inArgs(inStuff);
+          inArgs.setDoubleProperty(kOfxPropTime,time);
+          inArgs.setIntProperty(kFnOfxImageEffectPropView,view);
+          
+          for (std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
+               it!=_clips.end();
+               ++it) {
+              if (!it->second->isOutput()) {
+                  Property::PropSpec s;
+                  std::string name = "OfxImageClipPropFrameRangeView_" + it->first;
+                  
+                  s.name = name.c_str();
+                  s.type = Property::eDouble;
+                  s.dimension = 0;
+                  s.readonly = false;
+                  s.defaultValue = "";
+                  outArgs.createProperty(s);
+                  outArgs.setDoubleProperty(name, time, 0);
+                  outArgs.setDoubleProperty(name, time, 1);
+                  outArgs.setDoubleProperty(name, view, 2);
+              }
+          }
+          
+#         ifdef OFX_DEBUG_ACTIONS
+          std::cout << "OFX: "<<(void*)this<<"->"<<kFnOfxImageEffectActionGetFrameViewsNeeded<<"("<<time<<"," <<  view << ")"<<std::endl;
+#         endif
+          
+          stat = mainEntry(kFnOfxImageEffectActionGetFrameViewsNeeded,
+                           this->getHandle(),
+                           &inArgs,
+                           &outArgs);
+          
+#         ifdef OFX_DEBUG_ACTIONS
+          std::cout << "OFX: "<<(void*)this<<"->"<<kFnOfxImageEffectActionGetFrameViewsNeeded<<"("<<time<<"," <<  view << ")->"<<StatStr(stat);
+          if (stat == kOfxStatOK) {
+              std::cout << ": ";
+              for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
+                  it!=_clips.end();
+                  ++it) {
+                  ClipInstance *clip = it->second;
+                  
+                  std::string name = "OfxImageClipPropFrameRangeView_" + it->first;
+                  std::cout << it->first << "->[";
+                  
+                  int nRanges = outArgs.getDimension(name);
+                  for(int r=0;r<nRanges;){
+                      double min = outArgs.getDoubleProperty(name,r);
+                      double max = outArgs.getDoubleProperty(name,r+1);
+                      int view = (int)outArgs.getDoubleProperty(name, r+2);
+                      r += 3;
+                      std::cout <<"("<< min <<"," <<max<<","<<view <<")";
+                      if (r < nRanges-1) {
+                          std::cout << ",";
+                      }
+                  }
+                  std::cout << "]";
+                  
+              }
+          }
+          std::cout << std::endl;
+#         endif
+          
+          OfxRangeD defaultRange;
+          defaultRange.min =
+          defaultRange.max = time;
+          int defaultView = view;
+          
+          std::vector<OfxRangeD> defaultRangeV;
+          defaultRangeV.push_back(defaultRange);
+          std::map<int,std::vector<OfxRangeD> > defaultFrameViewMap;
+          defaultFrameViewMap.insert(std::make_pair(defaultView, defaultRangeV));
+          
+          for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
+              it!=_clips.end();
+              ++it) {
+              
+              if (it->second->isOutput()) {
+                  continue;
+              }
+              
+              ClipInstance *clip = it->second;
+              if (stat != kOfxStatOK) {
+                  rangeMap.insert(std::make_pair(clip, defaultFrameViewMap));
+              } else {
+                  
+                  std::map<int,std::vector<OfxRangeD> > frameViewMap;
+                  
+                  std::string name = "OfxImageClipPropFrameRangeView_" + it->first;
+                  int nRanges = outArgs.getDimension(name);
+                  for (int r = 0 ; r < nRanges; ){
+                      OfxRangeD range;
+                      range.min = outArgs.getDoubleProperty(name,r);
+                      range.max = outArgs.getDoubleProperty(name,r+1);
+                      int view = (int)outArgs.getDoubleProperty(name, r+2);
+                      r += 3;
+                      
+                      
+                      std::map<int,std::vector<OfxRangeD> >::iterator foundView = frameViewMap.find(view);
+                      if (foundView != frameViewMap.end()) {
+                          foundView->second.push_back(range);
+                      } else {
+                          std::vector<OfxRangeD> rangeV;
+                          rangeV.push_back(range);
+                          frameViewMap.insert(std::make_pair(view, rangeV));
+                      }
+                      
+                  }
+                  rangeMap.insert(std::make_pair(clip, frameViewMap));
+              }
+          }
+          return stat;
+      }
+#endif
 
       ////////////////////////////////////////////////////////////////////////////////
       /// see how many frames are needed from each clip to render the indicated frame
-      OfxStatus Instance::getFrameNeededAction(OfxTime time, 
+      OfxStatus Instance::getFrameNeededAction(OfxTime time,
                                                RangeMap &rangeMap)
       {
         OfxStatus stat = kOfxStatReplyDefault;
