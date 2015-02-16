@@ -1478,10 +1478,24 @@ namespace OFX {
           outArgs.setDoubleProperty(kFnOfxImageEffectPropPassThroughTime,time);
           outArgs.setIntProperty(kFnOfxImageEffectPropPassThroughView, view);
           
+          bool passThroughSet = false;
+          ClipInstance* firstNonOptional = 0;
+          
           for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
               it!=_clips.end();
               ++it) {
               
+              if (it->first == kOfxImageEffectSimpleSourceClipName) {
+                  outArgs.setStringProperty(kFnOfxImageEffectPropPassThroughClip, it->first);
+                  passThroughSet = true;
+              } else if (it->first == "A" && !it->second->isOptional()) {
+                  outArgs.setStringProperty(kFnOfxImageEffectPropPassThroughClip, it->first);
+                  passThroughSet = true;
+              }
+              
+              if (!passThroughSet && !it->second->isOptional()) {
+                  firstNonOptional = it->second;
+              }
               Property::PropSpec s;
               std::string name = kFnOfxImageEffectActionGetClipComponentsPropString + it->first;
               
@@ -1491,6 +1505,9 @@ namespace OFX {
               s.readonly = false;
               s.defaultValue = "";
               outArgs.createProperty(s);
+          }
+          if (firstNonOptional && !passThroughSet) {
+              outArgs.setStringProperty(kFnOfxImageEffectPropPassThroughClip, firstNonOptional->getName());
           }
           
 #         ifdef OFX_DEBUG_ACTIONS
