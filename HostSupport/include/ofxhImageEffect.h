@@ -238,6 +238,15 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
         /// does this effect handle transform effects
         bool canTransform() const;
+      
+        /// Indicates that a host or plugin can fetch more than a type of image from a clip
+        bool isMultiPlanar() const;
+          
+        /// Indicates to the host that the plugin is view aware, in which case it will have to use the view calls
+        bool isViewAware() const;
+          
+        /// Indicates to the host that a view aware plugin produces the same image independent of the view being rendered
+        bool isViewInvariant() const;
 #endif
       };
 

@@ -225,6 +225,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_VEGAS
         { kOfxImagePropPixelOrder, Property::eInt, 1, true, kOfxImagePixelOrderRGBA },
 #endif
+#ifdef OFX_EXTENSIONS_NUKE
+        { kFnOfxImageEffectPropComponentsPresent, Property::eString, 0, true, kOfxImageComponentNone},
+#endif
         Property::propSpecEnd,
       };
 
@@ -386,6 +389,12 @@ namespace OFX {
         else if(name==kOfxImageClipPropFieldOrder){
           return getFieldOrder();
         }
+#ifdef OFX_EXTENSIONS_NUKE
+        else if (name==kFnOfxImageEffectPropComponentsPresent) {
+            //TODO
+          throw Property::Exception(kOfxStatErrValue);
+        }
+#endif
         else
           throw Property::Exception(kOfxStatErrValue);
       }

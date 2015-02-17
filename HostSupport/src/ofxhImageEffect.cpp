@@ -273,6 +273,21 @@ namespace OFX {
       {
         return _properties.getIntProperty(kFnOfxImageEffectCanTransform) != 0;
       }
+        
+      bool Base::isMultiPlanar() const
+      {
+        return _properties.getIntProperty(kFnOfxImageEffectPropMultiPlanar) != 0;
+      }
+        
+      bool Base::isViewAware() const
+      {
+        return _properties.getIntProperty(kFnOfxImageEffectPropViewAware) != 0;
+      }
+        
+      bool Base::isViewInvariant() const
+      {
+        return _properties.getIntProperty(kFnOfxImageEffectPropViewInvariance) != 0;
+      }
 #endif
 
 
