@@ -453,6 +453,10 @@ namespace OFX {
     std::map<std::string, std::string> _clipPARPropNames;
     std::map<std::string, std::string> _clipROIPropNames;
     std::map<std::string, std::string> _clipFrameRangePropNames;
+#ifdef OFX_EXTENSIONS_NUKE
+    std::map<std::string, std::string> _clipPlanesPropNames;
+    std::map<std::string, std::string> _clipFrameViewsPropNames;
+#endif
 
     std::auto_ptr<EffectOverlayDescriptor> _overlayDescriptor;
 #ifdef OFX_EXTENSIONS_VEGAS
@@ -562,7 +566,11 @@ namespace OFX {
     const std::map<std::string, std::string>& getClipPARPropNames() const { return _clipPARPropNames; }
     const std::map<std::string, std::string>& getClipROIPropNames() const { return _clipROIPropNames; }
     const std::map<std::string, std::string>& getClipFrameRangePropNames() const { return _clipFrameRangePropNames; }
-
+#ifdef OFX_EXTENSIONS_NUKE
+    const std::map<std::string, std::string>& getClipPlanesPropNames() const { return _clipPlanesPropNames; }
+    const std::map<std::string, std::string>& getClipFrameViewsPropNames() const { return _clipFrameViewsPropNames; }
+#endif
+      
     /** @brief override this to create an interact for the effect */
     virtual void setOverlayInteractDescriptor(EffectOverlayDescriptor* desc);
 
@@ -975,6 +983,7 @@ namespace OFX {
     virtual void setFramesNeeded(const Clip &clip, const OfxRangeD &range) = 0;
   };
     
+#ifdef OFX_EXTENSIONS_NUKE
   struct ClipComponentsArguments {
     double time;
     int view;
@@ -983,18 +992,56 @@ namespace OFX {
   class ClipComponentsSetter {
       
       OFX::PropertySet _outArgs;
-      std::string passThroughClipName;
-      int passThroughView;
-      double passThroughTime;
-      std::map<std::string, std::list<std::string> > clipComponents;
-      
+      bool _doneSomething;
+      typedef std::map<std::string, std::string> StringStringMap;
+      const StringStringMap& _clipPlanesPropNames;
+      const std::string& extractValueForName(const StringStringMap& m, const std::string& name);
       
   public:
       
-      ClipComponentsSetter(OFX::PropertySet props);
+      ClipComponentsSetter(OFX::PropertySet props,
+                           const StringStringMap& clipPlanesPropNames)
+      : _outArgs(props)
+      , _doneSomething(false)
+      , _clipPlanesPropNames(clipPlanesPropNames)
+      {
+          
+      }
+      
+      bool didSomething(void) const {return _doneSomething;}
+      
+      void addClipComponents(Clip& clip, PixelComponentEnum comps);
+      
+      void setPassThroughClip(const Clip& clip,double time,int view);
 
   };
-
+    
+  struct FrameViewsNeededArguments {
+      double time;
+      int view;
+  };
+    
+  class FrameViewsNeededSetter {
+      OFX::PropertySet _outArgs;
+      bool _doneSomething;
+      typedef std::map<std::string, std::string> StringStringMap;
+      const StringStringMap& _clipFrameViewsPropnames;
+      const std::string& extractValueForName(const StringStringMap& m, const std::string& name);
+  public:
+      
+      FrameViewsNeededSetter(OFX::PropertySet props,
+                             const StringStringMap& clipFrameViewsPropNames)
+      : _outArgs(props)
+      , _doneSomething(false)
+      , _clipFrameViewsPropnames(clipFrameViewsPropNames)
+      {}
+      
+      bool didSomething(void) const {return _doneSomething;}
+      
+      void addFrameViewsNeeded(const Clip& clip,const OfxRangeD &range, int view);
+      
+  };
+#endif
   /** @brief Class used to set the clip preferences of the effect.
   */ 
   class ClipPreferencesSetter {
@@ -1265,6 +1312,14 @@ namespace OFX {
 
     /** @brief get the clip preferences */
     virtual void getClipPreferences(ClipPreferencesSetter &clipPreferences);
+      
+#ifdef OFX_EXTENSIONS_NUKE
+    /** @brief get the needed input components and produced output components*/
+    virtual void getClipComponents(const ClipComponentsArguments& args, ClipComponentsSetter& clipComponents);
+    
+    /** @brief get the frame/views needed for input clips*/
+    virtual void getFrameViewsNeeded(const FrameViewsNeededArguments& args, FrameViewsNeededSetter& frameViews);
+#endif
 
     /** @brief the effect is about to be actively edited by a user, called when the first user interface is opened on an instance */
     virtual void beginEdit(void);

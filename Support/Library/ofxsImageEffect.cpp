@@ -857,6 +857,10 @@ namespace OFX {
     _clipPARPropNames[name] = std::string("OfxImageClipPropPAR_") + name;
     _clipROIPropNames[name] = std::string("OfxImageClipPropRoI_") + name;
     _clipFrameRangePropNames[name] = std::string("OfxImageClipPropFrameRange_") + name;
+#ifdef OFX_EXTENSIONS_NUKE
+    _clipPlanesPropNames[name] = std::string(kFnOfxImageEffectActionGetClipComponentsPropString) + name;
+    _clipFrameViewsPropNames[name] = std::string("OfxImageClipPropFrameRangeView_") + name;
+#endif
     return clip;
   }
 
@@ -1590,7 +1594,7 @@ namespace OFX {
   {
     // fa niente
   }
-
+    
   /** @brief the effect is about to be actively edited by a user, called when the first user interface is opened on an instance */
   void ImageEffect::beginEdit(void)
   {
@@ -1667,9 +1671,16 @@ namespace OFX {
 #endif
 
 #ifdef OFX_EXTENSIONS_NUKE
-  // TODO: getClipComponents(handle, inArgs, outargs);
-  // TODO: framesViewsNeededAction(handle, inArgs, outargs, plugname); (see framesNeededAction())
-
+  void ImageEffect::getClipComponents(const ClipComponentsArguments& /*args*/, ClipComponentsSetter& /*clipComponents*/)
+  {
+        // pass
+  }
+    
+  void ImageEffect::getFrameViewsNeeded(const FrameViewsNeededArguments & /*args*/, FrameViewsNeededSetter & /*frameViews*/)
+  {
+        // pass
+  }
+    
   /** @brief recover a transform matrix from an effect */
   bool ImageEffect::getTransform(const TransformArguments &/*args*/, Clip * &/*transformClip*/, double /*transformMatrix*/[9])
   {
@@ -1794,6 +1805,80 @@ namespace OFX {
   VegasInterpolationEnum SonyVegasUpliftArguments::getKeyframeInterpolation (int keyframeIndex) const
   {
       return mapToInterpolationEnum(_argProps.propGetString(kOfxPropVegasUpliftKeyframeInterpolation, keyframeIndex));
+  }
+#endif
+    
+#ifdef OFX_EXTENSIONS_NUKE
+  const std::string& ClipComponentsSetter::extractValueForName(const StringStringMap& m, const std::string& name)
+  {
+      StringStringMap::const_iterator it = m.find(name);
+      if(it==m.end())
+          throw(Exception::PropertyUnknownToHost(name.c_str()));
+      return it->second;
+  }
+    
+  void ClipComponentsSetter::addClipComponents(Clip& clip, PixelComponentEnum comps)
+  {
+      _doneSomething = true;
+      const std::string& propName = extractValueForName(_clipPlanesPropNames, clip.name());
+      std::string compName;
+      switch(comps)
+      {
+        case ePixelComponentNone :
+            compName = kOfxImageComponentNone;
+            break;
+        case ePixelComponentRGBA :
+            compName = kOfxImageComponentRGBA;
+            break;
+        case ePixelComponentRGB :
+            compName = kOfxImageComponentRGB;
+            break;
+        case ePixelComponentAlpha :
+            compName = kOfxImageComponentAlpha;
+            break;
+#ifdef OFX_EXTENSIONS_NUKE
+        case ePixelComponentMotionVectors :
+            compName = kFnOfxImageComponentMotionVectors;
+            break;
+        case ePixelComponentStereoDisparity :
+            compName = kFnOfxImageComponentStereoDisparity;
+            break;
+#endif
+        case ePixelComponentCustom :
+            break;
+      }
+      if (!propName.empty()) {
+          int dim = _outArgs.propGetDimension(propName.c_str());
+          _outArgs.propSetString(propName.c_str(), compName, dim);
+      }
+  }
+    
+  void ClipComponentsSetter::setPassThroughClip(const Clip& clip,double time,int view)
+  {
+      _doneSomething = true;
+      _outArgs.propSetString(kFnOfxImageEffectPropPassThroughClip, clip.name(), 0);
+      _outArgs.propSetDouble(kFnOfxImageEffectPropPassThroughTime, time, 0);
+      _outArgs.propSetInt(kFnOfxImageEffectPropPassThroughView, view, 0);
+  }
+
+    
+  const std::string& FrameViewsNeededSetter::extractValueForName(const StringStringMap& m, const std::string& name)
+  {
+        StringStringMap::const_iterator it = m.find(name);
+        if(it==m.end())
+            throw(Exception::PropertyUnknownToHost(name.c_str()));
+        return it->second;
+  }
+    
+
+  void FrameViewsNeededSetter::addFrameViewsNeeded(const Clip& clip,const OfxRangeD &range, int view)
+  {
+      _doneSomething = true;
+      const std::string& propName = extractValueForName(_clipFrameViewsPropnames, clip.name());
+      int dim = _outArgs.propGetDimension(propName.c_str());
+      _outArgs.propSetDouble(propName.c_str(), range.min, dim);
+      _outArgs.propSetDouble(propName.c_str(), range.max, dim + 1);
+      _outArgs.propSetDouble(propName.c_str(), view, dim + 2);
   }
 #endif
 
@@ -2735,9 +2820,37 @@ namespace OFX {
     }
 #endif
 #ifdef OFX_EXTENSIONS_NUKE
-    // TODO: getClipComponents(handle, inArgs, outargs);
-    // TODO: framesViewsNeededAction(handle, inArgs, outargs, plugname); (see framesNeededAction())
 
+    static
+    bool
+    getFrameViewsNeededAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs, const char* plugname)
+    {
+        ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
+        FrameViewsNeededArguments args;
+        args.time = inArgs.propGetDouble(kOfxPropTime);
+        args.view = inArgs.propGetInt(kFnOfxImageEffectPropView);
+        
+        ImageEffectDescriptor* desc = gEffectDescriptors[plugname][effectInstance->getContext()];
+        FrameViewsNeededSetter setter(outArgs,desc->getClipFrameViewsPropNames());
+        effectInstance->getFrameViewsNeeded(args,setter);
+        return setter.didSomething();
+    }
+      
+    static
+    bool
+    getClipComponentsAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs, const char* plugname)
+    {
+          ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
+          ClipComponentsArguments args;
+          args.time = inArgs.propGetDouble(kOfxPropTime);
+          args.view = inArgs.propGetInt(kFnOfxImageEffectPropView);
+          
+          ImageEffectDescriptor* desc = gEffectDescriptors[plugname][effectInstance->getContext()];
+          ClipComponentsSetter setter(outArgs,desc->getClipPlanesPropNames());
+          effectInstance->getClipComponents(args,setter);
+          return setter.didSomething();
+    }
+      
     /** @brief Action called in place of a render to recover a transform matrix from an effect. */
     static
     bool
@@ -3068,22 +3181,25 @@ namespace OFX {
         }
 #endif
 #ifdef OFX_EXTENSIONS_NUKE
-        // TODO
-#if 0
+
         else if(action == kFnOfxImageEffectActionGetClipComponents) {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
-          // call the clip components function
-          getClipComponents(handle, inArgs, outargs);
+          // call the clip components function, return OK if it does something
+          // the spec is not clear as to whether it is allowed to do nothing but
+          // this action should always be implemented for multi-planes effects.
+          if (getClipComponentsAction(handle, inArgs, outArgs, plugname)) {
+              stat = kOfxStatOK;
+          }
         }
         else if(action == kFnOfxImageEffectActionGetFrameViewsNeeded) {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
           // call the frames views needed action, return OK if it does something
-          if(framesViewsNeededAction(handle, inArgs, outArgs, plugname))
-            stat = kOfxStatOK;
+          if (getFrameViewsNeededAction(handle, inArgs, outArgs, plugname)) {
+              stat = kOfxStatOK;
+          }
         }
-#endif
         else if(action == kFnOfxImageEffectActionGetTransform) {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
