@@ -302,6 +302,13 @@ namespace OFX {
       /// a map used to specify needed frame ranges on set of clips
       typedef std::map<ClipInstance *, std::vector<OfxRangeD> > RangeMap;
 
+#ifdef OFX_EXTENSIONS_NUKE
+      /// a map used to indicate needed frame/views ranges for all input clips
+      typedef std::map<ClipInstance*, std::map<int, std::vector<OfxRangeD> > > ViewsRangeMap;
+        
+      /// a map used to specify clip components on clips
+      typedef std::map<ClipInstance*,std::list<std::string> > ComponentsMap;
+#endif
       /// an image effect plugin instance.
       ///
       /// Client code needs to filling the pure virtuals in this.
@@ -639,6 +646,25 @@ namespace OFX {
                                                     OfxPointD   renderScale,
                                                     const OfxRectD &roi,
                                                     std::map<ClipInstance *, OfxRectD> &rois);
+          
+#ifdef OFX_EXTENSIONS_NUKE
+          /// Call the clipComponents action on the plug-in for the given frame and view.
+          /// Enquires which components are needed on input and produced on output
+          /// For each clip a list of all components. For input clips the components needed, for output clips the components produced)
+          /// The passThroughClip will be set to an input clip to use as pass-through for all non rendered planes
+          /// The passThroughTime is the time at which to pass-through, must have been registered by getFramesNeeded
+          /// The passThroughView is the time at which to pass-through, must have been registered by getFrameViewsNeeded
+        virtual OfxStatus getClipComponentsAction(OfxTime time,
+                                                  int view,
+                                                  ComponentsMap& clipComponents,
+                                                  ClipInstance*& passThroughClip,
+                                                  OfxTime& passThroughTime,
+                                                  int& passThroughView);
+          /// get frames/views needed for the given frame/view
+        virtual OfxStatus getFrameViewsNeeded(OfxTime time,
+                                              int view,
+                                              ViewsRangeMap& rangeMap);
+#endif
 
         // get frames needed to render the given frame
         virtual OfxStatus getFrameNeededAction(OfxTime time, 
@@ -708,6 +734,15 @@ namespace OFX {
         /// find the most chromatic components out of the two. Override this if you define
         /// more chromatic components
         virtual const std::string &findMostChromaticComponents(const std::string &a, const std::string &b) const;
+          
+#ifdef OFX_EXTENSIONS_NUKE
+        /// Returns the number of views
+        virtual OfxStatus getViewCount(int *nViews) const = 0;
+          
+        /// Returns the view textual representation
+        /// The string is owned by the host and must be valid throughout the calling action
+        virtual OfxStatus getViewName(int viewIndex,char** name) const = 0;
+#endif
       };
 
       ////////////////////////////////////////////////////////////////////////////////

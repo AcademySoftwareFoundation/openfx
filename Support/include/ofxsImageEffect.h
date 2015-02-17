@@ -453,6 +453,10 @@ namespace OFX {
     std::map<std::string, std::string> _clipPARPropNames;
     std::map<std::string, std::string> _clipROIPropNames;
     std::map<std::string, std::string> _clipFrameRangePropNames;
+#ifdef OFX_EXTENSIONS_NUKE
+    std::map<std::string, std::string> _clipPlanesPropNames;
+    std::map<std::string, std::string> _clipFrameViewsPropNames;
+#endif
 
     std::auto_ptr<EffectOverlayDescriptor> _overlayDescriptor;
 #ifdef OFX_EXTENSIONS_VEGAS
@@ -562,7 +566,11 @@ namespace OFX {
     const std::map<std::string, std::string>& getClipPARPropNames() const { return _clipPARPropNames; }
     const std::map<std::string, std::string>& getClipROIPropNames() const { return _clipROIPropNames; }
     const std::map<std::string, std::string>& getClipFrameRangePropNames() const { return _clipFrameRangePropNames; }
-
+#ifdef OFX_EXTENSIONS_NUKE
+    const std::map<std::string, std::string>& getClipPlanesPropNames() const { return _clipPlanesPropNames; }
+    const std::map<std::string, std::string>& getClipFrameViewsPropNames() const { return _clipFrameViewsPropNames; }
+#endif
+      
     /** @brief override this to create an interact for the effect */
     virtual void setOverlayInteractDescriptor(EffectOverlayDescriptor* desc);
 
@@ -792,6 +800,29 @@ namespace OFX {
     /** @brief get the RoD for this clip in the cannonical coordinate system */
     OfxRectD getRegionOfDefinition(double t);
 
+#ifdef OFX_EXTENSIONS_NUKE
+    
+    /** @brief get the RoD for this clip in the cannonical coordinate system for the given view */
+    OfxRectD getRegionOfDefinition(double t,int view);
+      
+    /** @brief fetch an image for the given plane and view
+       
+    When finished with, the client code must delete the image.
+    
+    If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
+    */
+    Image* fetchImagePlane(double t,int view,const char* plane);
+      
+    /** @brief fetch an image plane, with a specific region in cannonical coordinates
+       
+    When finished with, the client code must delete the image.
+    
+    If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
+    */
+    Image* fetchImagePlane(double t,int view,const char* plane, const OfxRectD& bounds);
+      
+#endif
+      
 #ifdef OFX_EXTENSIONS_VEGAS
     /** @brief get the pixel order of this image */
     PixelOrderEnum getPixelOrder(void) const;
@@ -974,7 +1005,66 @@ namespace OFX {
     /** @brief function to set the frames needed on a clip, the range is min <= time <= max */
     virtual void setFramesNeeded(const Clip &clip, const OfxRangeD &range) = 0;
   };
+    
+#ifdef OFX_EXTENSIONS_NUKE
+  struct ClipComponentsArguments {
+    double time;
+    int view;
+  };
+    
+  class ClipComponentsSetter {
+      
+      OFX::PropertySet _outArgs;
+      bool _doneSomething;
+      typedef std::map<std::string, std::string> StringStringMap;
+      const StringStringMap& _clipPlanesPropNames;
+      const std::string& extractValueForName(const StringStringMap& m, const std::string& name);
+      
+  public:
+      
+      ClipComponentsSetter(OFX::PropertySet props,
+                           const StringStringMap& clipPlanesPropNames)
+      : _outArgs(props)
+      , _doneSomething(false)
+      , _clipPlanesPropNames(clipPlanesPropNames)
+      {
+          
+      }
+      
+      bool didSomething(void) const {return _doneSomething;}
+      
+      void addClipComponents(Clip& clip, PixelComponentEnum comps);
+      
+      void setPassThroughClip(const Clip& clip,double time,int view);
 
+  };
+    
+  struct FrameViewsNeededArguments {
+      double time;
+      int view;
+  };
+    
+  class FrameViewsNeededSetter {
+      OFX::PropertySet _outArgs;
+      bool _doneSomething;
+      typedef std::map<std::string, std::string> StringStringMap;
+      const StringStringMap& _clipFrameViewsPropnames;
+      const std::string& extractValueForName(const StringStringMap& m, const std::string& name);
+  public:
+      
+      FrameViewsNeededSetter(OFX::PropertySet props,
+                             const StringStringMap& clipFrameViewsPropNames)
+      : _outArgs(props)
+      , _doneSomething(false)
+      , _clipFrameViewsPropnames(clipFrameViewsPropNames)
+      {}
+      
+      bool didSomething(void) const {return _doneSomething;}
+      
+      void addFrameViewsNeeded(const Clip& clip,const OfxRangeD &range, int view);
+      
+  };
+#endif
   /** @brief Class used to set the clip preferences of the effect.
   */ 
   class ClipPreferencesSetter {
@@ -1245,7 +1335,7 @@ namespace OFX {
 
     /** @brief get the clip preferences */
     virtual void getClipPreferences(ClipPreferencesSetter &clipPreferences);
-
+      
     /** @brief the effect is about to be actively edited by a user, called when the first user interface is opened on an instance */
     virtual void beginEdit(void);
 
@@ -1276,11 +1366,20 @@ namespace OFX {
 #endif
 
 #ifdef OFX_EXTENSIONS_NUKE
-    // TODO: getClipComponents(handle, inArgs, outargs);
-    // TODO: framesViewsNeededAction(handle, inArgs, outargs, plugname); (see framesNeededAction())
+    /** @brief get the needed input components and produced output components*/
+    virtual void getClipComponents(const ClipComponentsArguments& args, ClipComponentsSetter& clipComponents);
+      
+    /** @brief get the frame/views needed for input clips*/
+    virtual void getFrameViewsNeeded(const FrameViewsNeededArguments& args, FrameViewsNeededSetter& frameViews);
 
     /** @brief recover a transform matrix from an effect */
     virtual bool getTransform(const TransformArguments &args, Clip * &transformClip, double transformMatrix[9]);
+      
+    /** @brief Returns the textual representation of a view*/
+    std::string getViewName(int viewIndex) const;
+    
+    /** @brief Returns the number of views*/
+    int getViewCount() const;
 #endif
 
     /** @brief called when a custom param needs to be interpolated */
