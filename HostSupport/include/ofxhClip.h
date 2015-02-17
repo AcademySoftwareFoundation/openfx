@@ -284,6 +284,27 @@ namespace OFX {
         /// be 'appropriate' for the.
         /// If bounds is not null, fetch the indicated section of the canonical image plane.
         virtual ImageEffect::Image* getImage(OfxTime time, const OfxRectD *optionalBounds) = 0;
+                             
+#     ifdef OFX_EXTENSIONS_NUKE
+                             
+        /// override this to fill in the given image plane at the given time.
+        /// The bounds of the image on the image plane should be
+        /// 'appropriate', typically the value returned in getRegionsOfInterest
+        /// on the effect instance.
+        /// Outside a render call, the optionalBounds should
+        /// be 'appropriate' for the image.
+        /// If bounds is not null, fetch the indicated section of the canonical image plane.
+        ///
+        /// This function implements both V1 of the image plane suite and V2. In the V1 the parameter view was not present and
+        /// will be passed -1, indicating that you should on your own retrieve the correct index of the view at which the render called was issues
+        /// by using thread local storage. In V2 the view index will be correctly set with a value >= 0.
+        ///
+        virtual ImageEffect::Image* getImagePlane(OfxTime time, int view, const std::string& plane,const OfxRectD *optionalBounds) = 0;
+                    
+        /// override this to return the rod on the clip for the given view
+        virtual OfxRectD getRegionOfDefinition(OfxTime time, int view) const = 0;
+                             
+#     endif
 
 #     ifdef OFX_SUPPORTS_OPENGLRENDER
         /// override this to fill in the OpenGL texture at the given time.

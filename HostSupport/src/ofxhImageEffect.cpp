@@ -2731,6 +2731,162 @@ namespace OFX {
       };
 #   endif
 
+#   ifdef OFX_EXTENSIONS_NUKE
+        
+    static OfxStatus clipGetImagePlane(OfxImageClipHandle clip,
+                                           OfxTime       time,
+                                           int           view,
+                                           const char   *plane,
+                                           OfxRectD     *region,
+                                           OfxPropertySetHandle   *imageHandle)
+    {
+        try {
+            if (!imageHandle) {
+                return kOfxStatErrBadHandle;
+            }
+            
+            ClipInstance *clipInstance = reinterpret_cast<ClipInstance*>(clip);
+            if (!clipInstance || !clipInstance->verifyMagic()) {
+                *imageHandle = NULL;
+                return kOfxStatErrBadHandle;
+            }
+            
+            Image* image = clipInstance->getImagePlane(time, view, plane, region);
+            if(!image) {
+                *imageHandle = NULL;
+                
+                return kOfxStatFailed;
+            }
+            
+            *imageHandle = image->getPropHandle();
+            
+            return kOfxStatOK;
+            
+            
+        } catch (...) {
+            *imageHandle = NULL;
+            return kOfxStatErrBadHandle;
+        }
+
+    }
+        
+    static OfxStatus clipGetImagePlane(OfxImageClipHandle clip,
+                                       OfxTime       time,
+                                       const char   *plane,
+                                       OfxRectD     *region,
+                                       OfxPropertySetHandle   *imageHandle)
+    {
+        return clipGetImagePlane(clip, time, -1, plane, region, imageHandle);
+    }
+        
+    
+        
+        /// get the rod on the given clip at the given time for the given view
+    static OfxStatus clipGetRegionOfDefinition(OfxImageClipHandle clip,
+                                               OfxTime            time,
+                                               int                view,
+                                               OfxRectD           *bounds)
+    {
+        try {
+            if (!bounds) {
+                return kOfxStatErrBadHandle;
+            }
+            
+            ClipInstance *clipInstance = reinterpret_cast<ClipInstance*>(clip);
+            
+            if (!clipInstance || !clipInstance->verifyMagic()) {
+                bounds->x1 = bounds->y1 = bounds->x2 = bounds->y2 = 0.;
+                
+                return kOfxStatErrBadHandle;
+            }
+            
+            *bounds = clipInstance->getRegionOfDefinition(time,view);
+            if (bounds->x2 < bounds->x1 || bounds->y2 < bounds->y1) {
+                // the RoD is invalid (empty is OK)
+                
+                return kOfxStatFailed;
+            }
+            
+            return kOfxStatOK;
+        } catch (...) {
+            return kOfxStatErrBadHandle;
+        }
+    
+    }
+        
+        /// get the textual representation of the view
+    static OfxStatus getViewName(OfxImageEffectHandle effect,
+                                 int                  view,
+                                 char               **viewName)
+    {
+          try {
+              if (!viewName) {
+                  return kOfxStatErrBadHandle;
+              }
+              
+              ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(effect);
+              
+              if (!effectBase || !effectBase->verifyMagic()) {
+                  *viewName = 0;
+                  return kOfxStatErrBadHandle;
+              }
+              
+              ImageEffect::Instance *effectInstance = dynamic_cast<ImageEffect::Instance*>(effectBase);
+              if (!effectInstance) {
+                  *viewName = 0;
+                  return kOfxStatErrBadHandle;
+              }
+              
+              effectInstance->getViewName(view, viewName);
+              return kOfxStatOK;
+          } catch (...) {
+              *viewName = 0;
+              return kOfxStatErrBadHandle;
+          }
+    }
+        
+        /// get the number of views
+    static OfxStatus getViewCount(OfxImageEffectHandle effect,
+                                  int                 *nViews)
+    {
+        try {
+            if (!nViews) {
+                return kOfxStatErrBadHandle;
+            }
+            
+            ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(effect);
+            
+            if (!effectBase || !effectBase->verifyMagic()) {
+                *nViews = 0;
+                return kOfxStatErrBadHandle;
+            }
+            
+            ImageEffect::Instance *effectInstance = dynamic_cast<ImageEffect::Instance*>(effectBase);
+            if (!effectInstance) {
+                *nViews = 0;
+                return kOfxStatErrBadHandle;
+            }
+            
+            effectInstance->getViewCount(nViews);
+            return kOfxStatOK;
+        } catch (...) {
+            *nViews = 0;
+            return kOfxStatErrBadHandle;
+        }
+    }
+        
+    static const struct FnOfxImageEffectPlaneSuiteV1 gPlaneSuiteV1 = {
+        clipGetImagePlane
+    };
+        
+    static const struct FnOfxImageEffectPlaneSuiteV2 gPlaneSuiteV2 = {
+        clipGetImagePlane,
+        clipGetRegionOfDefinition,
+        getViewName,
+        getViewCount
+    };
+#   endif
+        
 #   ifdef OFX_SUPPORTS_OPENGLRENDER
       ////////////////////////////////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////////////
@@ -3266,6 +3422,14 @@ namespace OFX {
 #     ifdef OFX_SUPPORTS_PARAMETRIC
         else if (strcmp(suiteName, kOfxParametricParameterSuite)==0) {
           return ParametricParam::GetSuite(suiteVersion);
+        }
+#     endif
+#     ifdef OFX_EXTENSIONS_NUKE
+        else if (strcmp(suiteName,kFnOfxImageEffectPlaneSuite) == 0 && suiteVersion == 1) {
+            return (void*)&gPlaneSuiteV1;
+        }
+        else if (strcmp(suiteName,kFnOfxImageEffectPlaneSuite) == 0 && suiteVersion == 2) {
+            return (void*)&gPlaneSuiteV2;
         }
 #     endif
         else  /// otherwise just grab the base class one, which is props and memory

@@ -734,6 +734,15 @@ namespace OFX {
         /// find the most chromatic components out of the two. Override this if you define
         /// more chromatic components
         virtual const std::string &findMostChromaticComponents(const std::string &a, const std::string &b) const;
+          
+#ifdef OFX_EXTENSIONS_NUKE
+        /// Returns the number of views
+        virtual OfxStatus getViewCount(int *nViews) const = 0;
+          
+        /// Returns the view textual representation
+        /// The string is owned by the host and must be valid throughout the calling action
+        virtual OfxStatus getViewName(int viewIndex,char** name) const = 0;
+#endif
       };
 
       ////////////////////////////////////////////////////////////////////////////////
