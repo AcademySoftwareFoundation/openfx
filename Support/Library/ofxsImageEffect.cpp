@@ -1265,6 +1265,47 @@ namespace OFX {
 
     return new Image(imageHandle);
   }
+    
+#ifdef OFX_EXTENSIONS_NUKE
+  OfxRectD Clip::getRegionOfDefinition(double t,int view)
+  {
+      OfxRectD bounds;
+      OfxStatus stat = OFX::Private::gImageEffectPlaneSuiteV2->clipGetRegionOfDefinition(_clipHandle, t, view,  &bounds);
+      if(stat == kOfxStatFailed) {
+          bounds.x1 = bounds.x2 = bounds.y1 = bounds.y2 = 0;
+      }
+      throwSuiteStatusException(stat);
+      return bounds;
+
+  }
+
+  Image* Clip::fetchImagePlane(double t,int view,const char* plane)
+  {
+      OfxPropertySetHandle imageHandle;
+      OfxStatus stat = OFX::Private::gImageEffectPlaneSuiteV2->clipGetImagePlane(_clipHandle, t, view, plane, NULL, &imageHandle);
+      if(stat == kOfxStatFailed) {
+          return NULL; // not an error, fetched images out of range/region, assume black and transparent
+      }
+      else
+          throwSuiteStatusException(stat);
+      
+      return new Image(imageHandle);
+  }
+    
+  Image* Clip::fetchImagePlane(double t,int view,const char* plane, const OfxRectD& bounds)
+  {
+      OfxPropertySetHandle imageHandle;
+      OfxRectD boundsCopy = bounds;
+      OfxStatus stat = OFX::Private::gImageEffectPlaneSuiteV2->clipGetImagePlane(_clipHandle, t, view, plane, &boundsCopy, &imageHandle);
+      if(stat == kOfxStatFailed) {
+          return NULL; // not an error, fetched images out of range/region, assume black and transparent
+      }
+      else
+          throwSuiteStatusException(stat);
+      
+      return new Image(imageHandle);
+  }
+#endif
 
 #ifdef OFX_EXTENSIONS_VEGAS
   /** @brief fetch an image */
@@ -1687,6 +1728,30 @@ namespace OFX {
     // by default, do the default
     return false;
   }
+    
+    
+  std::string ImageEffect::getViewName(int viewIndex) const
+  {
+      char* viewName;
+      OfxStatus stat = OFX::Private::gImageEffectPlaneSuiteV2->getViewName(_effectHandle, viewIndex, &viewName);
+      if(stat == kOfxStatFailed) {
+          return std::string();
+      }
+      throwSuiteStatusException(stat);
+      return std::string(viewName);
+  }
+    
+  int ImageEffect::getViewCount() const
+  {
+      int viewCount;
+      OfxStatus stat = OFX::Private::gImageEffectPlaneSuiteV2->getViewCount(_effectHandle, &viewCount);
+      if(stat == kOfxStatFailed) {
+          return 0;
+      }
+      throwSuiteStatusException(stat);
+      return viewCount;
+  }
+
 #endif
 
   /** @brief called when a custom param needs to be interpolated */

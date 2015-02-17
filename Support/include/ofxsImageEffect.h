@@ -800,6 +800,29 @@ namespace OFX {
     /** @brief get the RoD for this clip in the cannonical coordinate system */
     OfxRectD getRegionOfDefinition(double t);
 
+#ifdef OFX_EXTENSIONS_NUKE
+    
+    /** @brief get the RoD for this clip in the cannonical coordinate system for the given view */
+    OfxRectD getRegionOfDefinition(double t,int view);
+      
+    /** @brief fetch an image for the given plane and view
+       
+    When finished with, the client code must delete the image.
+    
+    If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
+    */
+    Image* fetchImagePlane(double t,int view,const char* plane);
+      
+    /** @brief fetch an image plane, with a specific region in cannonical coordinates
+       
+    When finished with, the client code must delete the image.
+    
+    If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
+    */
+    Image* fetchImagePlane(double t,int view,const char* plane, const OfxRectD& bounds);
+      
+#endif
+      
 #ifdef OFX_EXTENSIONS_VEGAS
     /** @brief get the pixel order of this image */
     PixelOrderEnum getPixelOrder(void) const;
@@ -1313,14 +1336,6 @@ namespace OFX {
     /** @brief get the clip preferences */
     virtual void getClipPreferences(ClipPreferencesSetter &clipPreferences);
       
-#ifdef OFX_EXTENSIONS_NUKE
-    /** @brief get the needed input components and produced output components*/
-    virtual void getClipComponents(const ClipComponentsArguments& args, ClipComponentsSetter& clipComponents);
-    
-    /** @brief get the frame/views needed for input clips*/
-    virtual void getFrameViewsNeeded(const FrameViewsNeededArguments& args, FrameViewsNeededSetter& frameViews);
-#endif
-
     /** @brief the effect is about to be actively edited by a user, called when the first user interface is opened on an instance */
     virtual void beginEdit(void);
 
@@ -1351,11 +1366,20 @@ namespace OFX {
 #endif
 
 #ifdef OFX_EXTENSIONS_NUKE
-    // TODO: getClipComponents(handle, inArgs, outargs);
-    // TODO: framesViewsNeededAction(handle, inArgs, outargs, plugname); (see framesNeededAction())
+    /** @brief get the needed input components and produced output components*/
+    virtual void getClipComponents(const ClipComponentsArguments& args, ClipComponentsSetter& clipComponents);
+      
+    /** @brief get the frame/views needed for input clips*/
+    virtual void getFrameViewsNeeded(const FrameViewsNeededArguments& args, FrameViewsNeededSetter& frameViews);
 
     /** @brief recover a transform matrix from an effect */
     virtual bool getTransform(const TransformArguments &args, Clip * &transformClip, double transformMatrix[9]);
+      
+    /** @brief Returns the textual representation of a view*/
+    std::string getViewName(int viewIndex) const;
+    
+    /** @brief Returns the number of views*/
+    int getViewCount() const;
 #endif
 
     /** @brief called when a custom param needs to be interpolated */
