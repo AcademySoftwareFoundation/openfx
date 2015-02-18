@@ -542,7 +542,7 @@ namespace OFX {
   /** @brief Set the plugin description, defaults to "" */
   void ImageEffectDescriptor::setPluginDescription(const std::string &description)
   {
-    _effectProps.propSetString(kOfxPropPluginDescription, description, false); // may not exist (e.g. in Resolve)
+    _effectProps.propSetString(kOfxPropPluginDescription, description, false); // introduced in OFX 1.2
   }
 
   /** @brief Add a context to those supported */
