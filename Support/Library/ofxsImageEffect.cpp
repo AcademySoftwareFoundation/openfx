@@ -3282,28 +3282,28 @@ namespace OFX {
       }
 
       // catch suite exceptions
-      catch (OFX::Exception::Suite &ex)
+      catch (const OFX::Exception::Suite &ex)
       {
 #      ifdef DEBUG
-        std::cout << "Caught OFX::Exception::Suite" << std::endl;
+        std::cout << "Caught OFX::Exception::Suite: " << ex.what() << std::endl;
 #      endif
         stat = ex.status();
       }
 
       // catch host inadequate exceptions
-      catch (OFX::Exception::HostInadequate)
+      catch (const OFX::Exception::HostInadequate &e)
       {
 #      ifdef DEBUG
-        std::cout << "Caught OFX::Exception::HostInadequate" << std::endl;
+        std::cout << "Caught OFX::Exception::HostInadequate: " << e.what() << std::endl;
 #      endif
         stat = kOfxStatErrMissingHostFeature;
       }
 
       // catch exception due to a property being unknown to the host, implies something wrong with host if not caught further down
-      catch (OFX::Exception::PropertyUnknownToHost)
+      catch (const OFX::Exception::PropertyUnknownToHost &e)
       {
 #      ifdef DEBUG
-        std::cout << "Caught OFX::Exception::PropertyUnknownToHost" << std::endl;
+        std::cout << "Caught OFX::Exception::PropertyUnknownToHost: " << e.what() << std::endl;
 #      endif
         stat = kOfxStatErrMissingHostFeature;
       }
