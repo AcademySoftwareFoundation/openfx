@@ -165,8 +165,8 @@ namespace OFX {
       OfxStatus _status;
     public :
       Suite(OfxStatus s) : _status(s) {}
-      OfxStatus status(void) {return _status;}
-      operator OfxStatus() {return _status;}
+      OfxStatus status(void) const {return _status;}
+      operator OfxStatus() const {return _status;}
 
       /** @brief reimplemented from std::exception */
       virtual const char * what () const throw () {return mapStatusToString(_status);}
