@@ -1635,7 +1635,7 @@ namespace OFX {
   {
     // fa niente
   }
-    
+
   /** @brief the effect is about to be actively edited by a user, called when the first user interface is opened on an instance */
   void ImageEffect::beginEdit(void)
   {

@@ -1718,7 +1718,7 @@ namespace OFX {
 
       ////////////////////////////////////////////////////////////////////////////////
       /// see how many frames are needed from each clip to render the indicated frame
-      OfxStatus Instance::getFrameNeededAction(OfxTime time,
+      OfxStatus Instance::getFrameNeededAction(OfxTime time, 
                                                RangeMap &rangeMap)
       {
         OfxStatus stat = kOfxStatReplyDefault;
