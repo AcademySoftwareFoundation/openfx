@@ -388,9 +388,15 @@ namespace OFX {
   }
 
   /** @brief set the label properties */
-  void ClipDescriptor::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
+  void ClipDescriptor::setLabel(const std::string &label)
   {
     _clipProps.propSetString(kOfxPropLabel, label);
+  }
+
+  /** @brief set the label properties */
+  void ClipDescriptor::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
+  {
+    setLabel(label);
     _clipProps.propSetString(kOfxPropShortLabel, shortLabel, false);
     _clipProps.propSetString(kOfxPropLongLabel, longLabel, false);
   }
@@ -526,11 +532,36 @@ namespace OFX {
   }
 
   /** @brief, set the label properties in a plugin */
-  void ImageEffectDescriptor::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
+  void ImageEffectDescriptor::setLabel(const std::string &label)
   {
     _effectProps.propSetString(kOfxPropLabel, label);
+  }
+
+  /** @brief, set the label properties in a plugin */
+  void ImageEffectDescriptor::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
+  {
+    setLabel(label);
     _effectProps.propSetString(kOfxPropShortLabel, shortLabel, false);
     _effectProps.propSetString(kOfxPropLongLabel, longLabel, false);
+  }
+
+
+  /** @brief, set the version properties in a plugin */
+  void ImageEffectDescriptor::setVersion(int major, int minor, int micro, int build, const std::string &versionLabel)
+  {
+    _effectProps.propSetInt(kOfxPropVersion, major, 0, false); // introduced in OFX 1.2
+    if (minor || micro || build) {
+      _effectProps.propSetInt(kOfxPropVersion, minor, 1, false); // introduced in OFX 1.2
+      if (micro || build) {
+        _effectProps.propSetInt(kOfxPropVersion, micro, 2, false); // introduced in OFX 1.2
+        if (build) {
+          _effectProps.propSetInt(kOfxPropVersion, build, 3, false); // introduced in OFX 1.2
+        }
+      }
+    }
+    if (!versionLabel.empty()) {
+      _effectProps.propSetString(kOfxPropVersionLabel, versionLabel, false);
+    }
   }
 
   /** @brief Set the plugin grouping */
@@ -1036,10 +1067,16 @@ namespace OFX {
     OFX::Validation::validateClipInstanceProperties(_clipProps);
   }
 
+  /** @brief fetch the label */
+  void Clip::getLabel(std::string &label) const
+  {
+    label      = _clipProps.propGetString(kOfxPropLabel);
+  }
+
   /** @brief fetch the labels */
   void Clip::getLabels(std::string &label, std::string &shortLabel, std::string &longLabel) const
   {
-    label      = _clipProps.propGetString(kOfxPropLabel);
+    getLabel(label);
     shortLabel = _clipProps.propGetString(kOfxPropShortLabel, false);
     longLabel  = _clipProps.propGetString(kOfxPropLongLabel, false);
   }
@@ -1463,6 +1500,12 @@ namespace OFX {
   bool ImageEffect::getSequentialRender(void) const
   {
     return _effectProps.propGetInt(kOfxImageEffectInstancePropSequentialRender) != 0;
+  }
+
+  /** @brief notify host that the internal data structures need syncing back to parameters for persistance and so on.  This is reset by the host after calling SyncPrivateData. */
+  void ImageEffect::setParamSetNeedsSyncing()
+  {
+    _effectProps.propSetInt(kOfxPropParamSetNeedsSyncing, 1, false); // introduced in OFX 1.2
   }
 
   OFX::Message::MessageReplyEnum ImageEffect::sendMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg)
@@ -2153,7 +2196,18 @@ namespace OFX {
         PropertySet hostProps(host->host);
 
         // and get some properties
+        gHostDescription.APIVersionMajor            = hostProps.propGetInt(kOfxPropAPIVersion, 0, false); // OFX 1.2
+        if (gHostDescription.APIVersionMajor == 0) {
+          // assume OFX 1.0
+          gHostDescription.APIVersionMajor = 1;
+        }
+        gHostDescription.APIVersionMinor            = hostProps.propGetInt(kOfxPropAPIVersion, 1, false); // OFX 1.2
         gHostDescription.hostName                   = hostProps.propGetString(kOfxPropName);
+        gHostDescription.hostLabel                  = hostProps.propGetString(kOfxPropLabel);
+        gHostDescription.versionMajor               = hostProps.propGetInt(kOfxPropVersion, 0, false); // OFX 1.2
+        gHostDescription.versionMinor               = hostProps.propGetInt(kOfxPropVersion, 1, false); // OFX 1.2
+        gHostDescription.versionMicro               = hostProps.propGetInt(kOfxPropVersion, 2, false); // OFX 1.2
+        gHostDescription.versionLabel               = hostProps.propGetString(kOfxPropVersionLabel, false); // OFX 1.2
         gHostDescription.hostIsBackground           = hostProps.propGetInt(kOfxImageEffectHostPropIsBackground) != 0;
         gHostDescription.supportsOverlays           = hostProps.propGetInt(kOfxImageEffectPropSupportsOverlays) != 0;
         gHostDescription.supportsMultiResolution    = hostProps.propGetInt(kOfxImageEffectPropSupportsMultiResolution) != 0;
@@ -2189,7 +2243,7 @@ namespace OFX {
         for(int i=0; i<numContexts; ++i)
           gHostDescription._supportedContexts.push_back(mapToContextEnum(hostProps.propGetString(kOfxImageEffectPropSupportedContexts, i)));
 
-	int numPixelDepths = hostProps.propGetDimension(kOfxImageEffectPropSupportedPixelDepths);
+        int numPixelDepths = hostProps.propGetDimension(kOfxImageEffectPropSupportedPixelDepths);
         for(int i=0; i<numPixelDepths; ++i)
           gHostDescription._supportedPixelDepths.push_back(mapStrToBitDepthEnum(hostProps.propGetString(kOfxImageEffectPropSupportedPixelDepths, i)));
       }

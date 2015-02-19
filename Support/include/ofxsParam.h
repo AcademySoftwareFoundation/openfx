@@ -261,7 +261,10 @@ namespace OFX {
       }
 
 
-        /** @brief set the label properties in a plugin */
+        /** @brief set the label property in a param */
+        void setLabel(const std::string &label);
+
+        /** @brief set the label properties in a param */
         void setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel);
 
         /** @brief set the param hint */
@@ -952,7 +955,10 @@ namespace OFX {
         /** @brief get name */
         const std::string &getName(void) const;
     
-        /** @brief, set the label properties in a plugin */
+        /** @brief, set the label property in a param */
+        void setLabel(const std::string &label);
+
+        /** @brief, set the label properties in a param */
         void setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel);
 
         /** @brief return the derived type of this parameter */
@@ -970,9 +976,12 @@ namespace OFX {
         /** @brief set the param data ptr */
         void setDataPtr(void* ptr);
 
+        /** @brief fetch the label */
+        void getLabel(std::string &label) const;
+
         /** @brief fetch the labels */
         void getLabels(std::string &label, std::string &shortLabel, std::string &longLabel) const;
-    
+
         /** @brief get whether the param is secret */
         bool getIsSecret(void) const;
 

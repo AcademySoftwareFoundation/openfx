@@ -175,11 +175,18 @@ namespace OFX {
   {
   }
 
+  /** @brief set the label property */
+  void 
+    ParamDescriptor::setLabel(const std::string &label)
+  {
+    _paramProps.propSetString(kOfxPropLabel, label);
+  }
+
   /** @brief set the label properties */
   void 
     ParamDescriptor::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
   {
-    _paramProps.propSetString(kOfxPropLabel, label);
+    setLabel(label);
     _paramProps.propSetString(kOfxPropShortLabel, shortLabel, false);
     _paramProps.propSetString(kOfxPropLongLabel, longLabel, false);
   }
@@ -1327,10 +1334,16 @@ namespace OFX {
     return _paramName;
   }
 
-  /** @brief, set the label properties in a plugin */
-  void Param::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
+  /** @brief, set the label properties in a param */
+  void Param::setLabel(const std::string &label)
   {
     _paramProps.propSetString(kOfxPropLabel, label);
+  }
+
+  /** @brief, set the label properties in a param */
+  void Param::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
+  {
+    setLabel(label);
     _paramProps.propSetString(kOfxPropShortLabel, shortLabel, false);
     _paramProps.propSetString(kOfxPropLongLabel, longLabel, false);
   }
@@ -1359,10 +1372,16 @@ namespace OFX {
     _paramProps.propSetPointer(kOfxParamPropDataPtr, ptr);
   }
 
+  /** @brief fetch the label */
+  void Param::getLabel(std::string &label) const
+  {
+    label      = _paramProps.propGetString(kOfxPropLabel);
+  }
+
   /** @brief fetch the labels */
   void Param::getLabels(std::string &label, std::string &shortLabel, std::string &longLabel) const
   {
-    label      = _paramProps.propGetString(kOfxPropLabel);
+    getLabel(label);
     shortLabel = _paramProps.propGetString(kOfxPropShortLabel, false);
     longLabel  = _paramProps.propGetString(kOfxPropLongLabel, false);
   }

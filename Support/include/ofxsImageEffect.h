@@ -318,7 +318,14 @@ namespace OFX {
   /** @brief A class that lists all the properties of a host */
   struct ImageEffectHostDescription {
   public :
+    int APIVersionMajor;
+    int APIVersionMinor;
     std::string hostName;
+    std::string hostLabel;
+    int versionMajor;
+    int versionMinor;
+    int versionMicro;
+    std::string versionLabel;
     bool hostIsBackground;
     bool supportsOverlays;
     bool supportsMultiResolution;
@@ -399,6 +406,9 @@ namespace OFX {
 
 
     /** @brief set the label properties */
+    void setLabel(const std::string &label);
+
+    /** @brief set the label properties */
     void setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel);
 
     /** @brief set how fielded images are extracted from the clip defaults to eFieldExtractDoubled */
@@ -476,7 +486,13 @@ namespace OFX {
     PropertySet &getPropertySet() {return _effectProps;}
 
     /** @brief, set the label properties in a plugin */
+    void setLabel(const std::string &label);
+
+    /** @brief, set the label properties in a plugin */
     void setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel);
+
+    /** @brief, set the version properties in a plugin */
+    void setVersion(int major, int minor, int micro, int build, const std::string &versionLabel);
 
     /** @brief Set the plugin grouping, defaults to "" */
     void setPluginGrouping(const std::string &group);
@@ -748,6 +764,9 @@ namespace OFX {
 
     /** @brief get the name */
     const std::string &name(void) const {return _clipName;}
+
+    /** @brief fetch the label */
+    void getLabel(std::string &label) const;
 
     /** @brief fetch the labels */
     void getLabels(std::string &label, std::string &shortLabel, std::string &longLabel) const;
@@ -1246,6 +1265,9 @@ namespace OFX {
 
     /** @brief Have we informed the host we want to be seqentially renderred ? */
     bool getSequentialRender(void) const;
+
+    /** @brief notify host that the internal data structures need syncing back to parameters for persistance and so on.  This is reset by the host after calling SyncPrivateData. */
+    void setParamSetNeedsSyncing();
 
     OFX::Message::MessageReplyEnum sendMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg);
 
