@@ -265,6 +265,7 @@ namespace OFX {
     }
     FactoryMainEntryHelper(const std::string& id, unsigned int maj, unsigned int min): _id(id), _maj(maj), _min(min)
     {
+      assert(_uid.empty()); // constructor should only be called once
       _uid = id + toString(maj) + toString(min);
     }
     const std::string& getHelperUID() const { return _uid; }
