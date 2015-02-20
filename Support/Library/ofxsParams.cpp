@@ -251,7 +251,7 @@ namespace OFX {
   }
     
   bool
-  ParamDescriptor::getHostHasNativeOverlayHandle()
+  ParamDescriptor::getHostHasNativeOverlayHandle() const
   {
       // Do not throw on failure, some hosts do not implement it
       int ret = _paramProps.propGetInt(kOfxParamPropHasHostOverlayHandle, 0, false);
@@ -1449,6 +1449,13 @@ namespace OFX {
   {
     std::string v  = _paramProps.propGetString(kOfxPropIcon, (int)pngFormat, false);
     return v;
+  }
+    
+  bool Param::getHostHasNativeOverlayHandle() const
+  {
+      // Do not throw on failure, some hosts do not implement it
+      int ret = _paramProps.propGetInt(kOfxParamPropHasHostOverlayHandle, 0, false);
+      return ret == 1;
   }
 
   ////////////////////////////////////////////////////////////////////////////////

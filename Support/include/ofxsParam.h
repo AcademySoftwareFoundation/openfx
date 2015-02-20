@@ -294,7 +294,7 @@ namespace OFX {
         void setLayoutHint( const ELayoutHint layoutHint );
 #endif
         
-        bool getHostHasNativeOverlayHandle();
+        bool getHostHasNativeOverlayHandle() const;
         
         void setUseHostNativeOverlayHandle(bool use);
     };
@@ -1006,6 +1006,9 @@ namespace OFX {
 
         /** @brief get the icon file name (SVG or PNG) */
         std::string getIcon(bool pngFormat) const;
+        
+        bool getHostHasNativeOverlayHandle() const;
+        
     };
   
     ////////////////////////////////////////////////////////////////////////////////
