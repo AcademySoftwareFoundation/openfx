@@ -249,6 +249,22 @@ namespace OFX {
   {
     _paramProps.propSetString(kOfxPropIcon, v, (int)pngFormat, false); // introduced in OFX 1.2
   }
+    
+  bool
+  ParamDescriptor::getHostHasNativeOverlayHandle()
+  {
+      // Do not throw on failure, some hosts do not implement it
+      int ret = _paramProps.propGetInt(kOfxParamPropHasHostOverlayHandle, 0, false);
+      return ret == 1;
+  }
+    
+  void
+  ParamDescriptor::setUseHostNativeOverlayHandle(bool use)
+  {
+      // Do not throw on failure, some hosts do not implement it
+     int useOverlay = use ? 1 : 0;
+     _paramProps.propSetInt(kOfxParamPropUseHostOverlayHandle, useOverlay, 0, false);
+  }
 
   ////////////////////////////////////////////////////////////////////////////////
   // the base class for all params that can hold a value

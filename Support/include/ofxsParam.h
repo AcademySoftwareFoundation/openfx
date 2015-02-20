@@ -293,6 +293,10 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
         void setLayoutHint( const ELayoutHint layoutHint );
 #endif
+        
+        bool getHostHasNativeOverlayHandle();
+        
+        void setUseHostNativeOverlayHandle(bool use);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
