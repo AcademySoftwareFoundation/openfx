@@ -1945,7 +1945,7 @@ namespace OFX {
 
         /// OK find the deepest chromatic component on our input clips and the one with the
         /// most components
-        bool hasInputs = false;
+        bool hasSetCompsAndDepth = false;
         std::string deepestBitDepth = kOfxBitDepthNone;
         std::string mostComponents  = kOfxImageComponentNone;       
         double frameRate = getFrameRate(); //< default to the project frame rate
@@ -1955,8 +1955,8 @@ namespace OFX {
             ++it) {
           ClipInstance *clip = it->second;
 
-          if(!clip->isOutput() && !clip->isOptional()) {
-            hasInputs = true;
+          if (!clip->isOutput()) {
+             
             frameRate = Maximum(frameRate, clip->getFrameRate());
 
             std::string rawComp  = clip->getUnmappedComponents(); 
@@ -1965,19 +1965,23 @@ namespace OFX {
             const std::string &rawDepth = clip->getUnmappedBitDepth();
             const std::string &rawPreMult = clip->getPremult();            
               
-            if(isChromaticComponent(rawComp)) {
-              if(rawPreMult == kOfxImagePreMultiplied)
+            if (isChromaticComponent(rawComp)) {
+              if (rawPreMult == kOfxImagePreMultiplied)
                 premult = kOfxImagePreMultiplied;
-              else if(rawPreMult == kOfxImageUnPreMultiplied && premult != kOfxImagePreMultiplied)
+              else if (rawPreMult == kOfxImageUnPreMultiplied && premult != kOfxImagePreMultiplied)
                 premult = kOfxImageUnPreMultiplied;                
                 
-              deepestBitDepth = FindDeepestBitDepth(deepestBitDepth, rawDepth);
-              mostComponents  = findMostChromaticComponents(mostComponents, rawComp);
+                
+              if (!clip->isOptional()) {
+                  hasSetCompsAndDepth = true;
+                  deepestBitDepth = FindDeepestBitDepth(deepestBitDepth, rawDepth);
+                  mostComponents  = findMostChromaticComponents(mostComponents, rawComp);
+              }
             }
           }
         }
         // default to a reasonable value if there is no input
-        if (!hasInputs) {
+        if (!hasSetCompsAndDepth) {
           mostComponents = kOfxImageComponentRGBA;
           deepestBitDepth = kOfxBitDepthFloat;
         }
