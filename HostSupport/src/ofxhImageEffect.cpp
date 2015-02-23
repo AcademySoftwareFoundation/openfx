@@ -2091,7 +2091,7 @@ namespace OFX {
           if (!clip->isOutput() || supportsMultipleClipPARs()) {
             outArgs.setDoubleProperty(parParamName, clip->getAspectRatio());
           } else {
-            double inputPar = 1.;
+            double inputPar = getProjectPixelAspectRatio();
             bool inputParSet = false;
 
             for (std::map<std::string, ClipInstance*>::iterator it2 = _clips.begin(); it2 != _clips.end(); ++it2) {
