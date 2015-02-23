@@ -2068,6 +2068,7 @@ namespace OFX {
         outArgs.setStringProperty(kOfxImageEffectPropPreMultiplication, _outputPreMultiplication);
 
         /// now add the clip gubbins to the out args
+        double projectPAR = getProjectPixelAspectRatio();
         for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
             it!=_clips.end();
             ++it) {
@@ -2086,12 +2087,12 @@ namespace OFX {
 
           Property::PropSpec specPAR = {parParamName.c_str(),         Property::eDouble, 1, false,          "1"};
           outArgs.createProperty(specPAR);
-          // If the clip is output we should propagate the pixel aspect ratio of the inputs unless it does support multiple clip PARs,
-          // in which case the plug-in should set the output clip's aspect ratio in the ::kOfxImageEffectActionGetClipPreferences action. See \ref ImageEffectClipPreferences.
-          if (!clip->isOutput() || supportsMultipleClipPARs()) {
-            outArgs.setDoubleProperty(parParamName, clip->getAspectRatio());
+          // If the clip is output we should propagate the pixel aspect ratio of the inputs
+          if (!clip->isOutput()) {
+            double inputPar = clip->getConnected() ? clip->getAspectRatio() : projectPAR;
+            outArgs.setDoubleProperty(parParamName, inputPar);
           } else {
-            double inputPar = getProjectPixelAspectRatio();
+            double inputPar = projectPAR;
             bool inputParSet = false;
 
             for (std::map<std::string, ClipInstance*>::iterator it2 = _clips.begin(); it2 != _clips.end(); ++it2) {
@@ -2105,9 +2106,7 @@ namespace OFX {
                 }
               }
             }
-            if (inputParSet) {
-              outArgs.setDoubleProperty(parParamName, inputPar);
-            }
+            outArgs.setDoubleProperty(parParamName, inputPar);
           }
         }
           
