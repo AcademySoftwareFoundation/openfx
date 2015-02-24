@@ -5,16 +5,16 @@ Author:Bruno Nicoletti
 :data-uri:
 :source-highlighter: coderay
 
-This guide will take you through the fundamentals of processing images in OFX.  An example plugin will be used to illustrate 
-how it all works and its source can be found in the pass:[C++] 
-file `Guide/Code/Example2/invert.cpp`. 
-This plugin takes an image and inverts it (or rather calculates the complement of each component). 
-Ideally you should have read the guide to the link:ofxExample1_Basics.html[basic machinery of an OFX plugin] before you read this guide.
+This guide will take you through the fundamentals of processing images in OFX.  An example plugin will be used to illustrate
+how it all works and its source can be found in the pass:[C++]
+file `Guide/Code/Example2/invert.cpp`.
+This plugin takes an image and inverts it (or rather calculates the complement of each component).
+Ideally you should have read the guide to the link:ofxExample1_Basics.adoc[basic machinery of an OFX plugin] before you read this guide.
 
 == Action Stations!
-The invert example is pretty much the most minimal OFX plugin you can write that processes images. It leaves many things at 
+The invert example is pretty much the most minimal OFX plugin you can write that processes images. It leaves many things at
 their default settings which means it doesn't have to trap more than four actions in total footnote:[I won't bother going into the boot strapping boiler
-plate, if you are interested you can look at the source directly.] and set very few switches. 
+plate, if you are interested you can look at the source directly.] and set very few switches.
 
 From the source, here is the main entry routine that traps those actions...
 
@@ -23,9 +23,9 @@ From the source, here is the main entry routine that traps those actions...
 ----
   ////////////////////////////////////////////////////////////////////////////////
   // The main entry point function, the host calls this to get the plugin to do things.
-  OfxStatus MainEntryPoint(const char *action, 
-                           const void *handle, 
-                           OfxPropertySetHandle inArgs,  
+  OfxStatus MainEntryPoint(const char *action,
+                           const void *handle,
+                           OfxPropertySetHandle inArgs,
                            OfxPropertySetHandle outArgs)
   {
     // cast to appropriate type
@@ -49,7 +49,7 @@ From the source, here is the main entry routine that traps those actions...
       // action called to render a frame
       returnStatus = RenderAction(effect, inArgs, outArgs);
     }
-    
+
     /// other actions to take the default value
     return returnStatus;
   }
@@ -73,7 +73,7 @@ We have the standard two step description process for this plugin.
   OfxStatus DescribeAction(OfxImageEffectHandle descriptor)
   {
     // set some labels and the group it belongs to
-    gPropertySuite->propSetString(effectProps, 
+    gPropertySuite->propSetString(effectProps,
                                   kOfxPropLabel,
                                   0,
                                   "OFX Invert Example");
@@ -101,7 +101,7 @@ We have the standard two step description process for this plugin.
                                   kOfxImageEffectPropSupportedPixelDepths,
                                   2,
                                   kOfxBitDepthByte);
-  
+
     // get the property set handle for the plugin
     OfxPropertySetHandle effectProps;
     gImageEffectSuite->getPropertySet(descriptor, &effectProps);
@@ -112,7 +112,7 @@ We have the standard two step description process for this plugin.
                                   0,
                                   kOfxImageEffectRenderFullySafe);
 
-    // say that the host should manage SMP threading over a single frame 
+    // say that the host should manage SMP threading over a single frame
     gPropertySuite->propSetInt(effectProps,
                                kOfxImageEffectPluginPropHostFrameThreading,
                                0,
@@ -148,7 +148,7 @@ some object used while describing the effect. It is _not_ the effect itself and 
 the handle will refer to a different object entirely. In general, never hang onto any effect handles in any
 global state.
 
-Finally our plugin is setting some flags to do with multithreaded rendering. The first flag, **kOfxImageEffectPluginRenderThreadSafety** 
+Finally our plugin is setting some flags to do with multithreaded rendering. The first flag, **kOfxImageEffectPluginRenderThreadSafety**
 is used to indicate how plugins and instances should be used when rendering in multiple threads. We are setting it
 to **kOfxImageEffectRenderFullySafe**, which means that the host can have any number of instances rendering and each instance could
 have possibly have simultaneous renders called on it. (eg: at separate frames). The other options are listed in the programming reference.
@@ -159,12 +159,12 @@ of the output image. If not set, it is up to the plugin to launch the appropriat
 processing appropriately across them.
 
 [source, c++]
-.invert.cpp 
+.invert.cpp
 ----
   ////////////////////////////////////////////////////////////////////////////////
   //  describe the plugin in context
   OfxStatus
-  DescribeInContextAction(OfxImageEffectHandle descriptor, 
+  DescribeInContextAction(OfxImageEffectHandle descriptor,
                           OfxPropertySetHandle inArgs)
   {
     OfxPropertySetHandle props;
@@ -208,8 +208,8 @@ processing appropriately across them.
 
 Here we are describing the plugin when it is being used as a filter.  In this case we are describing two clips, the mandated "Source"
 and "Output" clips. Each clip has a variety of properties on them, in this case we are only setting what pixel components
-we accept on those inputs. The components supported (unlike the data type) is a per clip thinumgy. Pixels in OFX can currently only be 
-of three types, which are listed below. 
+we accept on those inputs. The components supported (unlike the data type) is a per clip thinumgy. Pixels in OFX can currently only be
+of three types, which are listed below.
 
 [width="65"]
 |===
@@ -227,13 +227,13 @@ NOTE: The OpenGL rendering extension has significantly different set of capabili
 ==  Clips
 I hear you ask "What are these clips of which you speak Mr Nicoletti?", well they are a sequence of images that
 vary over time. They are represented in the API by
-an `**OfxImageClipHandle**` and have a name plus an associated property set. 
+an `**OfxImageClipHandle**` and have a name plus an associated property set.
 
 Depending on the context, you will have to describe some mandated number of clips with specific names. For example
 the filter effect has two and only two clips you must describe "Source" and "Output", a **transition** effect has
-three and only three clips "SourceFrom", "SourceTo" and "Output" while a **general** effect has to have one clip called 
+three and only three clips "SourceFrom", "SourceTo" and "Output" while a **general** effect has to have one clip called
 "Output" but as many other input clips as we want. There are `**#defines**` for these in the various OFX header files.
-The Programming Reference has more information on other contexts, and we will use more in later examples. 
+The Programming Reference has more information on other contexts, and we will use more in later examples.
 
 There are many properties on a clip, and during description you get to set a whole raft of them as to how
 you want them to behave. We are relying on the defaults in this example that allow us to avoid issues like
@@ -246,7 +246,7 @@ images you will be writing to, the other clips are always sources and you should
 == Images In OFX
 Before I start talking over the rendering in the example plugin, I should tell you about images in OFX.
 
-=== Images and the Image Plane 
+=== Images and the Image Plane
 Images are contiguous rectangular regions of a nominally infinite 2D image plane for which the host
 has data samples, in the form of **http://alvyray.com/Memos/CG/Microsoft/6_pixel.pdf[pixels]**.
 
@@ -255,31 +255,31 @@ image::Pics/imagePlane.jpg[ role = "thumb", align=center, title=An image on the 
 The figure above shows our image spanning the  plane from coordinates X1 to X2 in the X dimension and Y1 to Y2 in the Y dimension. We
 call these four numbers the image's **bounds**, and is the region an image is guaranteed to have addressable data for.
 
-NOTE: Y goes **up** in OFX land, not down as is common in desktop publishing. 
+NOTE: Y goes **up** in OFX land, not down as is common in desktop publishing.
 
 NOTE: That the image bound is open on the right, so iteration is `for (int x = x1; x < x2; ++x)`. This means the number of pixels in the X dimension is given
 by X2-X1, similarly for the Y dimension.
 
-=== Image Data 
-Images are made up of chunk of memory which is interpreted to be a 2D array of pixels. Each pixel in an image has exactly the same number of **components**, each component being of exactly the same **data type**. OFX currently has pixels with one (A), three (RGB) or four components (RGBA), which can be bytes, shorts, or a 32 bit floats. 
+=== Image Data
+Images are made up of chunk of memory which is interpreted to be a 2D array of pixels. Each pixel in an image has exactly the same number of **components**, each component being of exactly the same **data type**. OFX currently has pixels with one (A), three (RGB) or four components (RGBA), which can be bytes, shorts, or a 32 bit floats.
 
 image::Pics/dataLayout.jpg[ role = "thumb", align=center, title=Image Data Layout]
 
-The figure above shows a small (3x4) image containing RGBA pixels. OFX returns a `void *` data pointer to the first component of the bottom left pixel in the image, 
+The figure above shows a small (3x4) image containing RGBA pixels. OFX returns a `void *` data pointer to the first component of the bottom left pixel in the image,
 which will be at (X1, Y1) on the image plane.
 Memory addresses increase left to right across the row of an OFX image, with all components and pixels hard packed and contiguous within that row.
 
 Rows may or may not be contiguous in memory, so in our example the address of component **R** at row 1 column 0, may or may not come directly after component **A**
-at (2, 0). To manage this we use "row bytes", which are the byte offset between rows, (**not** pixel or component offsets). By breaking this offset out, hosts 
+at (2, 0). To manage this we use "row bytes", which are the byte offset between rows, (**not** pixel or component offsets). By breaking this offset out, hosts
 can more easily map their pixel data into OFX images without having to copy. For example a host that natively runs with Y down and packs images with the top row first
 in memory
 would use negative row bytes and have the data pointer point to it's last row (which is the bottom row).
 
 === Pixel Address Calculation
 
-So, given a coordinate on the image plane how do you calculate the address of a pixel in the image? Well you 
+So, given a coordinate on the image plane how do you calculate the address of a pixel in the image? Well you
 use the following information...
-   
+
    - a `**void * **` pointer to the bottom left corner of the image,
    - four integers that define the **bounds** of the image for which there is data,
    - the data type of each component,
@@ -295,13 +295,13 @@ a pixel whose coordinates are on the image plane.
 ----
   // Look up a pixel in the image. returns null if the pixel was not
   // in the bounds of the image
-  template <class T> 
-  static inline T * pixelAddress(int x, int y, 
-                                 void *baseAddress, 
-                                 OfxRectI bounds, 
-                                 int rowBytes, 
+  template <class T>
+  static inline T * pixelAddress(int x, int y,
+                                 void *baseAddress,
+                                 OfxRectI bounds,
+                                 int rowBytes,
                                  int nCompsPerPixel)
-  {  
+  {
     // Inside the bounds of this image?
     if(x < bounds.x1 || x >= bounds.x2 || y < bounds.y1 || y >= bounds.y2)
       return NULL;
@@ -331,11 +331,11 @@ so the function gives up and return NULL as an indication of that,
    - as we have `**x**` and `**y**` as coordinates on the _image plane_, it then
 turn the coordinates into offsets from the bottom left of the image with a simple subtraction,
    - it then finds the start of the row we are interested in by scaling our local y offset by `**rowBytes**`
-to figure the offset from our base address data pointer, _in bytes_. It adds that to the base address and 
+to figure the offset from our base address data pointer, _in bytes_. It adds that to the base address and
 now has the start of our row.
    - it turns the raw address at the start of the row into a pointer of our data type,
    - finally it offsets to the correct column by skippying over 'xLocal' number of pixels, each of each which
-contain `**nComponents**`. 
+contain `**nComponents**`.
 
 === Images Are Property Sets
 Images are property sets, you access all the data needed via the standard OFX property mechanism. This has allowed us
@@ -346,7 +346,7 @@ Anyway, here is code from our example using the property mechanism to get the re
 [source, c++]
 .invert.cpp,  Images As Property Sets
 ----
- template <class T, int MAX> 
+ template <class T, int MAX>
   void PixelProcessing(OfxImageEffectHandle instance,
                        OfxPropertySetHandle sourceImg,
                        OfxPropertySetHandle outputImg,
@@ -365,7 +365,7 @@ Anyway, here is code from our example using the property mechanism to get the re
 ...
   }
 
-      
+
   OfxStatus RenderAction( OfxImageEffectHandle instance,
                           OfxPropertySetHandle inArgs,
                           OfxPropertySetHandle outArgs)
@@ -408,24 +408,24 @@ than have one big listing.
     OfxTime time;
     OfxRectI renderWindow;
     OfxStatus status = kOfxStatOK;
-  
+
     gPropertySuite->propGetDouble(inArgs, kOfxPropTime, 0, &time);
     gPropertySuite->propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &renderWindow.x1);
 ----
 
 This first listing shows how the **inArgs** are being used to say what exactly to render. The property
-`**kOfxPropTime**` on **inArgs** is the frame of the output clip to render. The property 
+`**kOfxPropTime**` on **inArgs** is the frame of the output clip to render. The property
 `**kOfxImageEffectPropRenderWindow**` is the region that should be written to.
 
 The output image (which will be fetched later on) will have a **bounds** that are at least as big as the
-render window. The bounds of the output image could infact be larger. This could happen if a host is 
+render window. The bounds of the output image could infact be larger. This could happen if a host is
 simultaneously calling the render action in separate threads to perform symmetric multi-processing, each thread would
 be given a different render window to fill in of the larger output image.
 
 NOTE: A plugin can have multiple actions being simultaneously in separate threads, especially the render action. Do
 not rely on any local state if you can help it. You can control how threading works in the describe actions.
 
-NOTE: To allow a plugin to be called in an SMP manner, or have multiple instances simultaneously rendering, the API 
+NOTE: To allow a plugin to be called in an SMP manner, or have multiple instances simultaneously rendering, the API
 has been designed so that the plugin does not rely on any implicit state, such as time, everything is explicit.
 
 
@@ -435,7 +435,7 @@ has been designed so that the plugin does not rely on any implicit state, such a
     // fetch output clip
     OfxImageClipHandle outputClip;
     gImageEffectSuite->clipGetHandle(instance, "Output", &outputClip, NULL);
-    
+
     // fetch main input clip
     OfxImageClipHandle sourceClip;
     gImageEffectSuite->clipGetHandle(instance, "Source", &sourceClip, NULL);
@@ -457,12 +457,12 @@ handle if the effect needed to enquire about the clips properties.]
       if(gImageEffectSuite->clipGetImage(outputClip, time, NULL, &outputImg) != kOfxStatOK) {
         throw " no output image!";
       }
-                  
+
       // fetch image at render time from that clip
       if (gImageEffectSuite->clipGetImage(sourceClip, time, NULL, &sourceImg) != kOfxStatOK) {
         throw " no source image!";
       }
-      
+
 ----
 
 We now (inside a try/catch block) fetch two images from the clips, again using the image effect suite.
@@ -523,10 +523,10 @@ is why we aren't checking for the source for its pixel information.
         throw 1;
       }
 ----
-Now we are enquiring as to what C type the components our image will be. Again throwing if 
+Now we are enquiring as to what C type the components our image will be. Again throwing if
 something has gone wrong. We use the data type to correctly instantiate our templated function which
 will do the grunt work of iterating over pixels. Note also that it is passing the
-nominal maximum value of the data type as a template argument. 
+nominal maximum value of the data type as a template argument.
 
 [source, c++]
 .invert.cpp:  Rendering snippet 6
@@ -539,7 +539,7 @@ nominal maximum value of the data type as a template argument.
       // otherwise, something weird happened
       if(!isAborting) {
         status = kOfxStatFailed;
-      }      
+      }
       ERROR_IF(!isAborting, " Rendering failed because %s", errStr);
 
     }
@@ -548,7 +548,7 @@ nominal maximum value of the data type as a template argument.
       gImageEffectSuite->clipReleaseImage(sourceImg);
     if(outputImg)
       gImageEffectSuite->clipReleaseImage(outputImg);
-  
+
     // all was well
     return status;
   }
@@ -557,13 +557,13 @@ This last bit is basically clean up. We have the `**catch**` for our try/catch b
 does is ask the host application is the effect being told to stop by calling the `**abort**` function
 on the effect suite. We might have ended up in the catch block because the an image could not be fetched,
 if that was a side effect of the host interrupting processing, it is _not_ counted as an error. So we
-check that before we return a failed error state from our action. 
+check that before we return a failed error state from our action.
 
-Finally we release the images we have fetched and return the error status. 
+Finally we release the images we have fetched and return the error status.
 
 NOTE: Images should not be held onto outside the scope of the action they were fetched in, the data
 will not be guaranteed to be valid. It is polite
-to release them as soon as possible, especially if you are fetching multiple images on input. 
+to release them as soon as possible, especially if you are fetching multiple images on input.
 
 
 Now for our pixel pushing code.footnote:[This is purely illustrative as to how the API works, it is
@@ -573,7 +573,7 @@ in no way fast code, I would be ashamed to put code like this into a serious pie
 .invert.cpp:  Rendering snippet 7
 ----
   // iterate over our pixels and process them
-  template <class T, int MAX> 
+  template <class T, int MAX>
   void PixelProcessing(OfxImageEffectHandle instance,
                        OfxPropertySetHandle sourceImg,
                        OfxPropertySetHandle outputImg,
@@ -626,7 +626,7 @@ image.
       T *dstPix = pixelAddress<T>(renderWindow.x1, y, dstPtr, dstBounds, dstRowBytes, nComps);
 
       for(int x = renderWindow.x1; x < renderWindow.x2; x++) {
-        
+
         // get the source pixel
         T *srcPix = pixelAddress<T>(x, y, srcPtr, srcBounds, srcRowBytes, nComps);
 
@@ -647,7 +647,7 @@ image.
           for(int i = 0; i < nComps; ++i) {
             *dstPix = 0;
             ++dstPix;
-          }          
+          }
         }
       }
     }
@@ -667,7 +667,7 @@ we iterate over the number of component, setting the output to be the invert foo
 If we don't get it, we set the output pixel to all zero.
 
 NOTE: You notice that we are continually calculating the address of `**srcPix**` at each pixel location and not incrementing
-the pointer as we could with `**dstPix**`. The reason for this is that, at the default settings, there is no guarantee as to 
+the pointer as we could with `**dstPix**`. The reason for this is that, at the default settings, there is no guarantee as to
 the bounds of the input image. It need not be congruent with any other input, the output or the render window.
 
 I could obviously write this much more efficiently and avoid the continual address calculation. However for
@@ -679,4 +679,3 @@ This plugin has shown you the basics of working with OFX images, the main things
    - what are <<Clips, clips>> and how we get images from clips,
    - how <<Images In OFX, images>> are laid out in memory and how to access pixels,
    - the basics of the <<The Render Action, render action>>.
-   
