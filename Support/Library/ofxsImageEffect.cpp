@@ -1040,15 +1040,26 @@ namespace OFX {
 
   No attempt made to be uber efficient here.
   */
-  void *Image::getPixelAddress(int x, int y) const
+  void *Image::getPixelAddress(int x, int y)
   {
     // are we in the image bounds
     if(x < _bounds.x1 || x >= _bounds.x2 || y < _bounds.y1 || y >= _bounds.y2 || _pixelBytes == 0)
       return 0;
 
-    char *pix = (char *) (((char *) _pixelData) + (size_t)(y - _bounds.y1) * _rowBytes);
+    char *pix = ((char *) _pixelData) + (size_t)(y - _bounds.y1) * _rowBytes;
     pix += (x - _bounds.x1) * _pixelBytes;
     return (void *) pix;   
+  }
+
+  const void *Image::getPixelAddress(int x, int y) const
+  {
+    // are we in the image bounds
+    if(x < _bounds.x1 || x >= _bounds.x2 || y < _bounds.y1 || y >= _bounds.y2 || _pixelBytes == 0)
+      return 0;
+
+    const char *pix = ((const char *) _pixelData) + (size_t)(y - _bounds.y1) * _rowBytes;
+    pix += (x - _bounds.x1) * _pixelBytes;
+    return (const void *) pix;
   }
 
   ////////////////////////////////////////////////////////////////////////////////
