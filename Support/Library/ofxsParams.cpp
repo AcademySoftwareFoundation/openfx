@@ -253,17 +253,14 @@ namespace OFX {
   bool
   ParamDescriptor::getHostHasNativeOverlayHandle() const
   {
-      // Do not throw on failure, some hosts do not implement it
-      int ret = _paramProps.propGetInt(kOfxParamPropHasHostOverlayHandle, 0, false);
-      return ret == 1;
+    bool v = _paramProps.propGetInt(kOfxParamPropHasHostOverlayHandle, 0, false) != 0; // OFX 1.2
+    return v;
   }
     
   void
   ParamDescriptor::setUseHostNativeOverlayHandle(bool use)
   {
-      // Do not throw on failure, some hosts do not implement it
-     int useOverlay = use ? 1 : 0;
-     _paramProps.propSetInt(kOfxParamPropUseHostOverlayHandle, useOverlay, 0, false);
+    _paramProps.propSetInt(kOfxParamPropUseHostOverlayHandle, use, 0, false); // OFX 1.2
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -1447,15 +1444,14 @@ namespace OFX {
   /** @brief get the icon file name (SVG or PNG) */
   std::string Param::getIcon(bool pngFormat) const
   {
-    std::string v  = _paramProps.propGetString(kOfxPropIcon, (int)pngFormat, false);
+    std::string v  = _paramProps.propGetString(kOfxPropIcon, (int)pngFormat, false); // OFX 1.2
     return v;
   }
     
   bool Param::getHostHasNativeOverlayHandle() const
   {
-      // Do not throw on failure, some hosts do not implement it
-      int ret = _paramProps.propGetInt(kOfxParamPropHasHostOverlayHandle, 0, false);
-      return ret == 1;
+    bool v = _paramProps.propGetInt(kOfxParamPropHasHostOverlayHandle, 0, false) != 0; // OFX 1.2
+    return v;
   }
 
   ////////////////////////////////////////////////////////////////////////////////

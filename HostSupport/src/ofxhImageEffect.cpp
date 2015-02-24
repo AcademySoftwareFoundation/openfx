@@ -1955,8 +1955,7 @@ namespace OFX {
             ++it) {
           ClipInstance *clip = it->second;
 
-          if (!clip->isOutput()) {
-              
+          if(!clip->isOutput()) {
             bool connected = clip->getConnected();
              
             if (connected) {
@@ -1969,18 +1968,18 @@ namespace OFX {
             const std::string &rawDepth = clip->getUnmappedBitDepth();
             const std::string &rawPreMult = clip->getPremult();            
               
-            if (isChromaticComponent(rawComp)) {
-              if (connected) {
-                if (rawPreMult == kOfxImagePreMultiplied)
+            if(isChromaticComponent(rawComp)) {
+              if(connected) {
+                if(rawPreMult == kOfxImagePreMultiplied)
                   premult = kOfxImagePreMultiplied;
-                else if (rawPreMult == kOfxImageUnPreMultiplied && premult != kOfxImagePreMultiplied)
+                else if(rawPreMult == kOfxImageUnPreMultiplied && premult != kOfxImagePreMultiplied)
                   premult = kOfxImageUnPreMultiplied;
               }
                 
-              if (!clip->isOptional()) {
-                  hasSetCompsAndDepth = true;
-                  deepestBitDepth = FindDeepestBitDepth(deepestBitDepth, rawDepth);
-                  mostComponents  = findMostChromaticComponents(mostComponents, rawComp);
+              if(!clip->isOptional()) {
+                hasSetCompsAndDepth = true;
+                deepestBitDepth = FindDeepestBitDepth(deepestBitDepth, rawDepth);
+                mostComponents  = findMostChromaticComponents(mostComponents, rawComp);
               }
             }
           }
