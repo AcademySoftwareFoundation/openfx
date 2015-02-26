@@ -1529,6 +1529,11 @@ namespace OFX {
               s.readonly = false;
               s.defaultValue = "";
               outArgs.createProperty(s);
+              
+              // For the output clip, default to the regular components on the clip, as returned by getClipPreferences()
+              if (it->second->isOutput()) {
+                  outArgs.setStringProperty(name, it->second->getComponents(), 0);
+              }
           }
           if (firstNonOptional && !passThroughSet) {
               outArgs.setStringProperty(kFnOfxImageEffectPropPassThroughClip, firstNonOptional->getName());
