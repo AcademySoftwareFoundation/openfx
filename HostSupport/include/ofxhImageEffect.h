@@ -241,6 +241,10 @@ namespace OFX {
       
         /// Indicates that a host or plugin can fetch more than a type of image from a clip
         bool isMultiPlanar() const;
+        
+        /// If true, the plug-in is asking to pass-through all non rendered planes in output, otherwise they should be blocked and non
+        /// accessible from below
+        bool isPassThroughForNonRenderedPlanes() const;
           
         /// Indicates to the host that the plugin is view aware, in which case it will have to use the view calls
         bool isViewAware() const;

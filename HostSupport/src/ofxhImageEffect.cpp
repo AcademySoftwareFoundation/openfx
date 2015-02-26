@@ -98,6 +98,7 @@ namespace OFX {
         { kOfxPluginPropFilePath, Property::eString, 1, true, ""},
 #ifdef OFX_EXTENSIONS_NUKE
         { kFnOfxImageEffectPropMultiPlanar,   Property::eInt, 1, false, "0" },
+        { kFnOfxImageEffectPropPassThroughComponents,   Property::eInt, 1, false, "0" },
         { kFnOfxImageEffectPropViewAware,   Property::eInt, 1, false, "0" },
         { kFnOfxImageEffectPropViewInvariance,   Property::eInt, 1, false, "0" },
         { kFnOfxImageEffectCanTransform,   Property::eInt, 1, false, "0" },
@@ -277,6 +278,14 @@ namespace OFX {
       bool Base::isMultiPlanar() const
       {
         return _properties.getIntProperty(kFnOfxImageEffectPropMultiPlanar) != 0;
+      }
+        
+      bool Base::isPassThroughForNonRenderedPlanes() const
+      {
+          if (!isMultiPlanar()) {
+              return false;
+          }
+          return _properties.getIntProperty(kFnOfxImageEffectPropPassThroughComponents) != 0;
       }
         
       bool Base::isViewAware() const
