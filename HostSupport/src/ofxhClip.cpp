@@ -287,6 +287,7 @@ namespace OFX {
       {
         _components = s;
       }
+        
 
       // get the virutals for viewport size, pixel scale, background colour
       void ClipInstance::getDoublePropertyN(const std::string &name, double *values, int n) const OFX_EXCEPTION_SPEC
@@ -391,8 +392,12 @@ namespace OFX {
         }
 #ifdef OFX_EXTENSIONS_NUKE
         else if (name==kFnOfxImageEffectPropComponentsPresent) {
-            //TODO
-          throw Property::Exception(kOfxStatErrValue);
+            std::vector<std::string> componentsPresents = getComponentsPresent();
+            if (n >= 0 && n < (int)componentsPresents.size()) {
+                return componentsPresents[n];
+            } else {
+                throw Property::Exception(kOfxStatErrBadIndex);
+            }
         }
 #endif
         else

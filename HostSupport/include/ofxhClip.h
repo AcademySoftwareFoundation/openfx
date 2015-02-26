@@ -208,6 +208,19 @@ namespace OFX {
         /// set the current set of components
         /// called by clip preferences action 
         virtual void setComponents(const std::string &s);
+                             
+#ifdef OFX_EXTENSIONS_NUKE
+        /// Returns the components present on the effect. Much like getComponents() it can also
+        /// return components from other planes.
+        /// Returns a vector since the function getStringPropertyN does not exist. Only getStringProperty
+        /// with an index exists.
+        virtual std::vector<std::string> getComponentsPresent() const {
+            std::vector<std::string> comps;
+            comps.push_back(_components);
+            return comps;
+        }
+                            
+#endif
 
         /// Get the Raw Unmapped Pixel Depth from the host for chromatic planes
         ///
