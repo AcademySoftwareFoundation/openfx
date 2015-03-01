@@ -21,4 +21,19 @@
  */
 #define kOfxParamStringSublabelName "OfxParamStringSublabelName"
 
+
+/** @brief string property to indicate the presence of custom components on a clip in or out.
+  The string should be formed as such:
+  "OfxImageComponentsPlane_" + planeName + "_OfxImageComponentsName_" + componentsName + "_OfxImageComponentsCount_" + componentsCount
+ 
+  e.g: "OfxImageComponentsPlane_" + "Position" + "_OfxImageComponentsName_" + "XYZ" + "_OfxImageComponentsCount_" + "3"
+ 
+  This indicates to the host in which plane should the given components appear and how many pixel channels it contains.
+  It can be used at any place where kOfxImageComponentAlpha, kOfxImageComponentRGB, kOfxImageComponentRGBA, kOfxImageComponentNone (etc...) is
+  given.
+ */
+#define kNatronOfxImageComponentsPlane  "OfxImageComponentsPlane_"
+#define kNatronOfxImageComponentsName   "_OfxImageComponentsName_"
+#define kNatronOfxImageComponentsCount  "_OfxImageComponentsCount_"
+
 #endif // #ifndef _ofxNatron_h_

@@ -89,6 +89,7 @@
 		1E3CB8CF179935430032B538 /* xmltok.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB8C1179935430032B538 /* xmltok.c */; };
 		1E3CB8D01799364A0032B538 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E3CB8AF179934420032B538 /* libexpat.a */; };
 		1E3CB8D1179936810032B538 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E3CB8AF179934420032B538 /* libexpat.a */; };
+		ACF5B53E1AA3651200B4BC6A /* ofxNatron.h in Headers */ = {isa = PBXBuildFile; fileRef = ACF5B53D1AA3651200B4BC6A /* ofxNatron.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -239,6 +240,7 @@
 		1EC2BF3618C4E30400AA53D5 /* fnPublicOfxExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fnPublicOfxExtensions.h; sourceTree = "<group>"; };
 		1EC2BF3718C4E39000AA53D5 /* fnOfxExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fnOfxExtensions.h; sourceTree = "<group>"; };
 		1EEF23C7188E98E4009A07EE /* ofxReadWrite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxReadWrite.h; sourceTree = "<group>"; };
+		ACF5B53D1AA3651200B4BC6A /* ofxNatron.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxNatron.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -341,6 +343,7 @@
 		1E3CB83817992E620032B538 /* External Headers */ = {
 			isa = PBXGroup;
 			children = (
+				ACF5B53D1AA3651200B4BC6A /* ofxNatron.h */,
 				1EC2BF3418C4E2EB00AA53D5 /* nuke */,
 				1EEF23C6188E98BD009A07EE /* tuttle */,
 				1E3CB8A9179932800032B538 /* ofxPixels.h */,
@@ -498,6 +501,7 @@
 				1E3CB82A17992E520032B538 /* ofxhClip.h in Headers */,
 				1E3CB82B17992E520032B538 /* ofxhHost.h in Headers */,
 				1E3CB82C17992E520032B538 /* ofxhImageEffect.h in Headers */,
+				ACF5B53E1AA3651200B4BC6A /* ofxNatron.h in Headers */,
 				1E31EC3217F5CA44004AB554 /* ofxParametricParam.h in Headers */,
 				1E3CB82D17992E520032B538 /* ofxhImageEffectAPI.h in Headers */,
 				1E3CB82E17992E520032B538 /* ofxhInteract.h in Headers */,
