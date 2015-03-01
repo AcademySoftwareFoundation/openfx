@@ -699,7 +699,7 @@
       This action lets the host ask the effect what frames are needed from each input clip to process a given frame. For example a temporal based degrainer may need several frames around the frame to render to do its work.
     </para>
     <para>
-      This action need only ever be called if the plugin has set the <link linkend="kOfxImageEffectPropTemporalClipAccess"><code>kOfxImageEffectPropTemporalClipAccessg</code></link> property on the plugin descriptor to be true. Otherwise the host assumes that the only frame needed from the inputs is the current one and this acion is not called.
+      This action need only ever be called if the plugin has set the <link linkend="kOfxImageEffectPropTemporalClipAccess"><code>kOfxImageEffectPropTemporalClipAccess</code></link> property on the plugin descriptor to be true. Otherwise the host assumes that the only frame needed from the inputs is the current one and this action is not called.
     </para>
     <para>
       Note that each clip can have it's required frame range specified, and that you can specify discontinuous sets of ranges for each clip, for example...
