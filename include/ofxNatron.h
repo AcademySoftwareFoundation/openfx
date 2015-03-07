@@ -19,20 +19,20 @@
     - kOfxParamPropEvaluateOnChange=0.
     You should set its default value during the kOfxImageEffectActionDescribeInContext action.
  */
-#define kOfxParamStringSublabelName "OfxParamStringSublabelName"
+#define kNatronOfxParamStringSublabelName "NatronOfxParamStringSublabelName"
 
 
 /** @brief string property to indicate the presence of custom components on a clip in or out.
   The string should be formed as such:
-  "OfxImageComponentsPlane_" + planeName + "_OfxImageChannelName_" + channel1Name + "_OfxImageChannelName_" + channel2Name + "_OfxImageChannelName_" + channel3Name
+  kNatronOfxImageComponentsPlane + planeName + kNatronOfxImageComponentsPlaneChannel + channel1Name + kNatronOfxImageComponentsPlaneChannel + channel2Name + kNatronOfxImageComponentsPlaneChannel + channel3Name
  
-  e.g: "OfxImageComponentsPlane_" + "Position" + "_OfxImageChannelName_" + "X" + "_OfxImageChannelName_" + "Y" + "_OfxImageChannelName_" + "Z"
+  e.g: kNatronOfxImageComponentsPlane + "Position" + kNatronOfxImageComponentsPlaneChannel + "X" + kNatronOfxImageComponentsPlaneChannel + "Y" + kNatronOfxImageComponentsPlaneChannel + "Z"
  
   This indicates to the host in which plane should the given components appear and how many pixel channels it contains.
   It can be used at any place where kOfxImageComponentAlpha, kOfxImageComponentRGB, kOfxImageComponentRGBA, kOfxImageComponentNone (etc...) is
   given.
  */
-#define kNatronOfxImageComponentsPlane  "OfxImageComponentsPlane_"
-#define kNatronOfxImageChannelName   "_OfxImageChannelName_"
+#define kNatronOfxImageComponentsPlane  "NatronOfxImageComponentsPlane_"
+#define kNatronOfxImageComponentsPlaneChannel   "_Channel_"
 
 #endif // #ifndef _ofxNatron_h_
