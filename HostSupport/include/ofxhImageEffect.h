@@ -647,6 +647,9 @@ namespace OFX {
         /// RoD is calculated and returned. 
         virtual OfxStatus getRegionOfDefinitionAction(OfxTime  time,
                                                       OfxPointD   renderScale,
+#ifdef OFX_EXTENSIONS_NUKE
+                                                      int view,
+#endif
                                                       OfxRectD &rod);
         
         /// call the get region of interest action on the plugin for the 
@@ -657,6 +660,9 @@ namespace OFX {
         /// as well
         virtual OfxStatus getRegionOfInterestAction(OfxTime  time,
                                                     OfxPointD   renderScale,
+#ifdef OFX_EXTENSIONS_NUKE
+                                                    int view,
+#endif
                                                     const OfxRectD &roi,
                                                     std::map<ClipInstance *, OfxRectD> &rois);
           
@@ -688,6 +694,9 @@ namespace OFX {
                                            const std::string &  field,
                                            const OfxRectI  &renderRoI,
                                            OfxPointD   renderScale,
+#ifdef OFX_EXTENSIONS_NUKE
+                                           int view,
+#endif
                                            std::string &clip);
 
         // time domain
