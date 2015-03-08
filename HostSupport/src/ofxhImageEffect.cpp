@@ -1020,6 +1020,10 @@ namespace OFX {
                                        ,
                                        int nViews
 #endif
+#ifdef OFX_EXTENSIONS_NUKE
+                                        ,
+                                        const std::list<std::string>& planes
+#endif
                                        )
       {
         static const Property::PropSpec inStuff[] = {
@@ -1036,6 +1040,7 @@ namespace OFX {
 #endif
 #ifdef OFX_EXTENSIONS_NUKE
           { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
+          { kFnOfxImageEffectPropComponentsPresent, Property::eString, 0, true, "" },
 #endif
           Property::propSpecEnd
         };
@@ -1054,6 +1059,10 @@ namespace OFX {
 #endif
 #ifdef OFX_EXTENSIONS_NUKE
         inArgs.setIntProperty(kFnOfxImageEffectPropView,view);
+        int k = 0;
+        for (std::list<std::string>::const_iterator it = planes.begin(); it != planes.end(); ++it,++k) {
+            inArgs.setStringProperty(kFnOfxImageEffectPropComponentsPresent,*it,k);
+        }
 #endif
 #if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
         for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
