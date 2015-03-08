@@ -283,7 +283,7 @@ namespace OFX {
       bool Base::isPassThroughForNonRenderedPlanes() const
       {
           if (!isMultiPlanar()) {
-              return false;
+              return true;
           }
           return _properties.getIntProperty(kFnOfxImageEffectPropPassThroughComponents) != 0;
       }
