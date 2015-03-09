@@ -949,6 +949,7 @@ namespace OFX {
 #endif
 #if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
     int         renderView;         /// default is 0, for s3d left eye: 0, right eye: 1
+#endif
 #ifdef OFX_EXTENSIONS_VEGAS
     VegasRenderQualityEnum renderQuality;
 #endif
