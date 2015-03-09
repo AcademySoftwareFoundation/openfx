@@ -939,6 +939,10 @@ namespace OFX {
 #endif
     bool      sequentialRenderStatus;
     bool      interactiveRenderStatus;
+#ifdef OFX_EXTENSIONS_NUKE
+    int view;
+    std::list<std::string> planes;
+#endif
   };
 
   /** @brief POD struct to pass rendering arguments into @ref OFX::ImageEffect::isIdentity */
@@ -947,6 +951,9 @@ namespace OFX {
     OfxPointD renderScale;
     OfxRectI  renderWindow;
     FieldEnum fieldToRender;
+#ifdef OFX_EXTENSIONS_NUKE
+    int view;
+#endif
   };
 
   /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::render */
@@ -957,6 +964,9 @@ namespace OFX {
     OfxPointD renderScale;
     bool      sequentialRenderStatus;
     bool      interactiveRenderStatus;
+#ifdef OFX_EXTENSIONS_NUKE
+    int view;
+#endif
   };
 
   /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::beginSequenceRender */
@@ -965,12 +975,18 @@ namespace OFX {
     OfxPointD renderScale;
     bool      sequentialRenderStatus;
     bool      interactiveRenderStatus;
+#ifdef OFX_EXTENSIONS_NUKE
+    int view;
+#endif
   };
 
   /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::getRegionOfDefinition */
   struct RegionOfDefinitionArguments {
     double    time;
     OfxPointD renderScale;
+#ifdef OFX_EXTENSIONS_NUKE
+    int view;
+#endif
   };
 
   /** @brief POD struct to pass arguments into @ref OFX::ImageEffect::getRegionsOfInterest */
@@ -978,6 +994,9 @@ namespace OFX {
     double    time;
     OfxPointD renderScale;
     OfxRectD  regionOfInterest;
+#ifdef OFX_EXTENSIONS_NUKE
+    int view;
+#endif
   };
 
 #ifdef OFX_EXTENSIONS_VEGAS
