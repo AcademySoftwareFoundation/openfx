@@ -2505,7 +2505,7 @@ namespace OFX {
 #endif
         
 #ifdef OFX_EXTENSIONS_NUKE
-        args.view = inArgs.propGetInt(kFnOfxImageEffectPropView, 0, false);
+        args.renderView = inArgs.propGetInt(kFnOfxImageEffectPropView, 0, false);
         int numPlanes = inArgs.propGetDimension(kFnOfxImageEffectPropComponentsPresent, false);
         for (int i = 0; i < numPlanes; ++i) {
             args.planes.push_back(inArgs.propGetString(kFnOfxImageEffectPropComponentsPresent, i, false));

@@ -946,13 +946,15 @@ namespace OFX {
     FieldEnum fieldToRender;
 #ifdef OFX_EXTENSIONS_VEGAS
     int         viewsToRender;      /// default is 1, for stereoscopic 3d: 2
+#endif
+#if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
     int         renderView;         /// default is 0, for s3d left eye: 0, right eye: 1
+#ifdef OFX_EXTENSIONS_VEGAS
     VegasRenderQualityEnum renderQuality;
 #endif
     bool      sequentialRenderStatus;
     bool      interactiveRenderStatus;
 #ifdef OFX_EXTENSIONS_NUKE
-    int view;
     std::list<std::string> planes;
 #endif
   };
