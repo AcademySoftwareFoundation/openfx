@@ -62,6 +62,8 @@ of the direct OFX objects and any library side only functions.
 #include "ofxParametricParam.h"
 #ifdef OFX_EXTENSIONS_NUKE
 #include "nuke/camera.h"
+#include "nuke/fnOfxExtensions.h"
+#include "nuke/fnPublicOfxExtensions.h"
 #endif
 #ifdef OFX_EXTENSIONS_TUTTLE
 #include "tuttle/ofxReadWrite.h"
