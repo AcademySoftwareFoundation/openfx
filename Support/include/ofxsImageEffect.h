@@ -351,6 +351,7 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
     bool supportsCameraParameter;
     bool canTransform;
+    bool isMultiPlanar;
 #endif
     int maxParameters;
     int maxPages;
@@ -569,6 +570,15 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
       /** @brief indicate that a plugin or host can handle transform effects */
       void setCanTransform(bool v);
+      
+      /** @brief Indicates that a host or plugin can fetch more than a type of image from a clip*/
+      void setIsMultiPlanar(bool v);
+      
+      /** @brief Indicates to the host that the plugin is view aware, in which case it will have to use the view calls*/
+      void setIsViewAware(bool v);
+      
+      /** @brief Indicates to the host that a view aware plugin produces the same image independent of the view being rendered*/
+      void setIsViewInvariant(bool v);
 #endif
 
     /** @brief Create a clip, only callable from describe in context 

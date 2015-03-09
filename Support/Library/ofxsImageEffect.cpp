@@ -836,6 +836,30 @@ namespace OFX {
       _effectProps.propSetInt(kFnOfxImageEffectCanTransform, int(v), false);
     }
   }
+    
+  /** @brief Indicates that a host or plugin can fetch more than a type of image from a clip*/
+  void ImageEffectDescriptor::setIsMultiPlanar(bool v)
+  {
+    if (gHostDescription.isMultiPlanar) {
+      _effectProps.propSetInt(kFnOfxImageEffectPropMultiPlanar, int(v), false);
+    }
+  }
+    
+  /** @brief Indicates to the host that the plugin is view aware, in which case it will have to use the view calls*/
+  void ImageEffectDescriptor::setIsViewAware(bool v)
+  {
+    if (OFX::Private::gImageEffectPlaneSuiteV2) {
+      _effectProps.propSetInt(kFnOfxImageEffectPropViewAware, int(v), false);
+    }
+  }
+    
+  /** @brief Indicates to the host that a view aware plugin produces the same image independent of the view being rendered*/
+  void ImageEffectDescriptor::setIsViewInvariant(bool v)
+  {
+    if (OFX::Private::gImageEffectPlaneSuiteV2) {
+      _effectProps.propSetInt(kFnOfxImageEffectPropViewInvariance, int(v), false);
+    }
+  }
 #endif
 
   /** @brief If the slave param changes the clip preferences need to be re-evaluated */
@@ -2241,6 +2265,7 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
         gHostDescription.supportsCameraParameter    = gCameraParameterSuite != 0;
         gHostDescription.canTransform               = hostProps.propGetInt(kFnOfxImageEffectCanTransform, false) != 0;
+        gHostDescription.isMultiPlanar              = hostProps.propGetInt(kFnOfxImageEffectPropMultiPlanar, false) != 0;
 #endif
         gHostDescription.maxParameters              = hostProps.propGetInt(kOfxParamHostPropMaxParameters);
         gHostDescription.maxPages                   = hostProps.propGetInt(kOfxParamHostPropMaxPages);
