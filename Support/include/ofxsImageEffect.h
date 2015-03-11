@@ -1101,6 +1101,9 @@ namespace OFX {
       
       void addClipComponents(Clip& clip, PixelComponentEnum comps);
       
+      //Pass the raw-string, used by the ofxNatron.h extension
+      void addClipComponents(Clip& clip, const std::string& comps);
+      
       void setPassThroughClip(const Clip& clip,double time,int view);
 
   };
