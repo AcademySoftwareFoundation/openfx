@@ -1996,6 +1996,16 @@ namespace OFX {
       }
   }
     
+  void ClipComponentsSetter::addClipComponents(Clip& clip, const std::string& comps)
+  {
+     _doneSomething = true;
+     const std::string& propName = extractValueForName(_clipPlanesPropNames, clip.name());
+     if (!propName.empty()) {
+        int dim = _outArgs.propGetDimension(propName.c_str());
+        _outArgs.propSetString(propName.c_str(), comps, dim);
+     }
+  }
+    
   void ClipComponentsSetter::setPassThroughClip(const Clip& clip,double time,int view)
   {
       _doneSomething = true;
