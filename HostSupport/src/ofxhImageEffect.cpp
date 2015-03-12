@@ -42,6 +42,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nuke/fnOfxExtensions.h"
 #endif
 
+#include "ofxNatron.h"
+
 // ofx host
 #include "ofxhBinary.h"
 #include "ofxhPropertySuite.h"
@@ -3367,6 +3369,9 @@ namespace OFX {
         { kFnOfxImageEffectPropMultiPlanar,   Property::eInt, 1, false, "0" },
         { kFnOfxImageEffectCanTransform,      Property::eInt, 1, true, "0" },
 #endif
+          
+        { kNatronOfxHostIsNatron,      Property::eInt, 1, true, "0" },
+        { kNatronOfxParamHostPropSupportsDynamicChoices,      Property::eInt, 1, true, "0" },
         Property::propSpecEnd
       };    
 
