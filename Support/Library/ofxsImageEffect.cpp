@@ -920,7 +920,7 @@ namespace OFX {
     return clip;
   }
 
-  static void ofxCustomCompToNatronComp(const std::string& comp,std::string* layerName,std::vector<std::string>* channelNames)
+  void ImageBase::ofxCustomCompToNatronComp(const std::string& comp,std::string* layerName,std::vector<std::string>* channelNames)
   {
       std::string compsName;
       static std::string foundPlaneStr(kNatronOfxImageComponentsPlane);
