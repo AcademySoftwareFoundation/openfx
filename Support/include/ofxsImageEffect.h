@@ -366,7 +366,10 @@ namespace OFX {
     bool supportsProgressSuite;
     bool supportsTimeLineSuite;
     bool supportsMessageSuiteV2;
-
+      
+    bool isNatron;
+    bool supportsDynamicChoices;
+      
   public:
     bool supportsPixelComponent(const PixelComponentEnum component) const;
     bool supportsBitDepth( const BitDepthEnum bitDepth) const;
