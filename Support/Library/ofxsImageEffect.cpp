@@ -1443,7 +1443,10 @@ namespace OFX {
     int dim = _clipProps.propGetDimension(kFnOfxImageEffectPropComponentsPresent, false);
     std::list<std::string> ret;
     for (int i = 0; i < dim ; ++i) {
-        _clipProps.propGetString(kFnOfxImageEffectPropComponentsPresent, i, false);
+      std::string comp = _clipProps.propGetString(kFnOfxImageEffectPropComponentsPresent, i, false);
+      if (!comp.empty()) {
+        ret.push_back(comp);
+      }
     }
     return ret;
   }
