@@ -381,6 +381,16 @@ namespace OFX {
       // get the virutals for viewport size, pixel scale, background colour
       const std::string &ClipInstance::getStringProperty(const std::string &name, int n) const OFX_EXCEPTION_SPEC
       {
+#ifdef OFX_EXTENSIONS_NUKE
+        if (name==kFnOfxImageEffectPropComponentsPresent) {
+            const std::vector<std::string>& componentsPresents = getComponentsPresent();
+            if (n >= 0 && n < (int)componentsPresents.size()) {
+                return componentsPresents[n];
+            } else {
+                throw Property::Exception(kOfxStatErrBadIndex);
+            }
+        }
+#endif
         if(n!=0) throw Property::Exception(kOfxStatErrValue);
         if(name==kOfxImageEffectPropPixelDepth){
           return getPixelDepth();
@@ -400,16 +410,6 @@ namespace OFX {
         else if(name==kOfxImageClipPropFieldOrder){
           return getFieldOrder();
         }
-#ifdef OFX_EXTENSIONS_NUKE
-        else if (name==kFnOfxImageEffectPropComponentsPresent) {
-            const std::vector<std::string>& componentsPresents = getComponentsPresent();
-            if (n >= 0 && n < (int)componentsPresents.size()) {
-                return componentsPresents[n];
-            } else {
-                throw Property::Exception(kOfxStatErrBadIndex);
-            }
-        }
-#endif
         else
           throw Property::Exception(kOfxStatErrValue);
       }
