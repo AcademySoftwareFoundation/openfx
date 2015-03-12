@@ -3369,9 +3369,10 @@ namespace OFX {
         { kFnOfxImageEffectPropMultiPlanar,   Property::eInt, 1, false, "0" },
         { kFnOfxImageEffectCanTransform,      Property::eInt, 1, true, "0" },
 #endif
-          
-        { kNatronOfxHostIsNatron,      Property::eInt, 1, true, "0" },
-        { kNatronOfxParamHostPropSupportsDynamicChoices,      Property::eInt, 1, true, "0" },
+#ifdef OFX_EXTENSIONS_NATRON
+        { kNatronOfxHostIsNatron, Property::eInt, 1, true, "0" },
+        { kNatronOfxParamHostPropSupportsDynamicChoices, Property::eInt, 1, true, "0" },
+#endif
         Property::propSpecEnd
       };    
 
