@@ -879,6 +879,9 @@ namespace OFX {
     */
     Image* fetchImagePlane(double t,int view,const char* plane, const OfxRectD& bounds);
       
+    /** @brief Property set indicating the components present on something*/
+    std::list<std::string> getComponentsPresent() const;
+      
 #endif
       
 #ifdef OFX_EXTENSIONS_VEGAS

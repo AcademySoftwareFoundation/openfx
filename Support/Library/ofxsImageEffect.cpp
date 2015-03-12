@@ -1437,6 +1437,16 @@ namespace OFX {
       
       return new Image(imageHandle);
   }
+    
+  std::list<std::string> Clip::getComponentsPresent() const
+  {
+    int dim = _clipProps.propGetDimension(kFnOfxImageEffectPropComponentsPresent, false);
+    std::list<std::string> ret;
+    for (int i = 0; i < dim ; ++i) {
+        _clipProps.propGetString(kFnOfxImageEffectPropComponentsPresent, i, false);
+    }
+    return ret;
+  }
 #endif
 
 #ifdef OFX_EXTENSIONS_VEGAS
