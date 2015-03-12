@@ -574,6 +574,9 @@ namespace OFX {
       /** @brief Indicates that a host or plugin can fetch more than a type of image from a clip*/
       void setIsMultiPlanar(bool v);
       
+      /** @brief Plugin indicates to the host that it should pass through any planes not modified by the plugin*/
+      void setIsPassThroughForNotProcessedPlanes(bool v);
+      
       /** @brief Indicates to the host that the plugin is view aware, in which case it will have to use the view calls*/
       void setIsViewAware(bool v);
       

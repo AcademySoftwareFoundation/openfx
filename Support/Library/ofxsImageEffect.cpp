@@ -846,6 +846,13 @@ namespace OFX {
     }
   }
     
+  void ImageEffectDescriptor::setIsPassThroughForNotProcessedPlanes(bool v)
+  {
+    if (gHostDescription.isMultiPlanar) {
+        _effectProps.propSetInt(kFnOfxImageEffectPropPassThroughComponents, int(v), false);
+    }
+  }
+    
   /** @brief Indicates to the host that the plugin is view aware, in which case it will have to use the view calls*/
   void ImageEffectDescriptor::setIsViewAware(bool v)
   {
