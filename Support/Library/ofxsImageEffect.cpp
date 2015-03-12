@@ -970,10 +970,9 @@ namespace OFX {
     std::string str  = _imageProps.propGetString(kOfxImageEffectPropComponents);
     //Try to match str against ofxNatron extension
     std::string layer;
-    std::vector<std::string> channels;
     bool gotNatronComponents = false;
     try {
-        ofxCustomCompToNatronComp(str, &layer, &channels);
+        ofxCustomCompToNatronComp(str, &layer, &_channels);
         gotNatronComponents = true;
     } catch (const std::exception& /*e*/) {
         //it is not components of the Natron extension
