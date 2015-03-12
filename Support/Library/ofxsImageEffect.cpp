@@ -45,6 +45,7 @@ England
 #ifdef OFX_EXTENSIONS_NUKE
 #include "nuke/fnOfxExtensions.h"
 #endif
+#include "ofxNatron.h"
 #ifdef OFX_SUPPORTS_OPENGLRENDER
 #include "ofxOpenGLRender.h"
 #endif
@@ -919,6 +920,42 @@ namespace OFX {
     return clip;
   }
 
+  static void ofxCustomCompToNatronComp(const std::string& comp,std::string* layerName,std::vector<std::string>* channelNames)
+  {
+      std::string compsName;
+      static std::string foundPlaneStr(kNatronOfxImageComponentsPlane);
+      static std::string foundChannelStr(kNatronOfxImageComponentsPlaneChannel);
+      
+      std::size_t foundPlane = comp.find(foundPlaneStr);
+      if (foundPlane == std::string::npos) {
+          throw std::runtime_error("Unsupported components type: " + comp);
+      }
+      
+      std::size_t foundChannel = comp.find(foundChannelStr,foundPlane + foundPlaneStr.size());
+      if (foundChannel == std::string::npos) {
+          throw std::runtime_error("Unsupported components type: " + comp);
+      }
+      
+      
+      for (std::size_t i = foundPlane + foundPlaneStr.size(); i < foundChannel; ++i) {
+          layerName->push_back(comp[i]);
+      }
+      
+      while (foundChannel != std::string::npos) {
+          
+          std::size_t nextChannel = comp.find(foundChannelStr,foundChannel + foundChannelStr.size());
+          
+          std::size_t end = nextChannel == std::string::npos ? comp.size() : nextChannel;
+          
+          std::string chan;
+          for (std::size_t i = foundChannel + foundChannelStr.size(); i < end; ++i) {
+              chan.push_back(comp[i]);
+          }
+          channelNames->push_back(chan);
+          foundChannel = nextChannel;
+      }
+  }
+    
   ////////////////////////////////////////////////////////////////////////////////
   // wraps up an image  
   ImageBase::ImageBase(OfxPropertySetHandle props)
@@ -931,6 +968,45 @@ namespace OFX {
     _pixelAspectRatio = _imageProps.propGetDouble(kOfxImagePropPixelAspectRatio);;
 
     std::string str  = _imageProps.propGetString(kOfxImageEffectPropComponents);
+    //Try to match str against ofxNatron extension
+    std::string layer;
+    std::vector<std::string> channels;
+    bool gotNatronComponents = false;
+    try {
+        ofxCustomCompToNatronComp(str, &layer, &channels);
+        gotNatronComponents = true;
+    } catch (const std::exception& /*e*/) {
+        //it is not components of the Natron extension
+    }
+      
+    if (!gotNatronComponents) {
+        _pixelComponents = mapStrToPixelComponentEnum(str);
+    } else {
+        _pixelComponents = OFX::ePixelComponentCustom;
+    }
+      
+    str = _imageProps.propGetString(kOfxImageEffectPropPixelDepth);
+    _pixelDepth = mapStrToBitDepthEnum(str);
+      
+    // compute bytes per pixel
+    _pixelBytes = 0;
+    if (gotNatronComponents) {
+        _pixelBytes = (int)channels.size();
+    } else {
+        switch(_pixelComponents)
+        {
+            case ePixelComponentNone : _pixelBytes = 0; break;
+            case ePixelComponentRGBA  : _pixelBytes = 4; break;
+            case ePixelComponentRGB  : _pixelBytes = 3; break;
+            case ePixelComponentAlpha : _pixelBytes = 1; break;
+#ifdef OFX_EXTENSIONS_NUKE
+            case ePixelComponentMotionVectors  : _pixelBytes = 2; break;
+            case ePixelComponentStereoDisparity : _pixelBytes = 2; break;
+#endif
+            case ePixelComponentCustom : _pixelBytes = 0; break;
+        }
+    }
+    
     _pixelComponents = mapStrToPixelComponentEnum(str);
 
     str = _imageProps.propGetString(kOfxImageEffectPropPixelDepth);
