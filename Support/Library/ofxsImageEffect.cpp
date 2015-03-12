@@ -38,6 +38,7 @@ England
 
 #include "ofxsSupportPrivate.h"
 #include <algorithm> // for find
+#include <cstring> // for strlen
 #ifdef DEBUG
 #include <iostream>
 #endif
@@ -1042,26 +1043,28 @@ namespace OFX {
 #if defined(OFX_EXTENSIONS_NATRON) && defined(OFX_EXTENSIONS_NUKE)
   bool ImageBase::ofxCustomCompToNatronComp(const std::string& comp, std::string* layerName, std::vector<std::string>* channelNames)
   {
+    const std::size_t foundPlaneLen = std::strlen(kNatronOfxImageComponentsPlane);
     std::size_t foundPlane = comp.find(kNatronOfxImageComponentsPlane);
     if (foundPlane == std::string::npos) {
       return false;
     }
 
-    std::size_t foundChannel = comp.find(kNatronOfxImageComponentsPlaneChannel, foundPlane + foundPlaneStr.size());
+    std::size_t foundChannel = comp.find(kNatronOfxImageComponentsPlaneChannel, foundPlane + foundPlaneLen);
     if (foundChannel == std::string::npos) {
       return false;
     }
 
-    for (std::size_t i = foundPlane + foundPlaneStr.size(); i < foundChannel; ++i) {
+    for (std::size_t i = foundPlane + foundPlaneLen; i < foundChannel; ++i) {
       layerName->push_back(comp[i]);
     }
 
+    const std::size_t foundChannelLen = std::strlen(kNatronOfxImageComponentsPlaneChannel);
     while (foundChannel != std::string::npos) {
-      std::size_t nextChannel = comp.find(kNatronOfxImageComponentsPlaneChannel, foundChannel + foundChannelStr.size());
+      std::size_t nextChannel = comp.find(kNatronOfxImageComponentsPlaneChannel, foundChannel + foundChannelLen);
       std::size_t end = nextChannel == std::string::npos ? comp.size() : nextChannel;
 
       std::string chan;
-      for (std::size_t i = foundChannel + foundChannelStr.size(); i < end; ++i) {
+      for (std::size_t i = foundChannel + foundChannelLen; i < end; ++i) {
         chan.push_back(comp[i]);
       }
       channelNames->push_back(chan);
