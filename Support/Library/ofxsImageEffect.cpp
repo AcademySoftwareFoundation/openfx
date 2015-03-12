@@ -968,6 +968,8 @@ namespace OFX {
     _pixelAspectRatio = _imageProps.propGetDouble(kOfxImagePropPixelAspectRatio);;
 
     std::string str  = _imageProps.propGetString(kOfxImageEffectPropComponents);
+      
+#ifdef OFX_EXTENSIONS_NUKE
     //Try to match str against ofxNatron extension
     std::string layer;
     bool gotNatronComponents = false;
@@ -990,8 +992,11 @@ namespace OFX {
     // compute bytes per pixel
     _pixelBytes = 0;
     if (gotNatronComponents) {
-        _pixelBytes = (int)channels.size();
+        _pixelBytes = (int)_channels.size();
     } else {
+#else
+    _pixelDepth = mapStrToBitDepthEnum(str);
+#endif
         switch(_pixelComponents)
         {
             case ePixelComponentNone : _pixelBytes = 0; break;
@@ -1004,7 +1009,9 @@ namespace OFX {
 #endif
             case ePixelComponentCustom : _pixelBytes = 0; break;
         }
+#ifdef OFX_EXTENSIONS_NUKE
     }
+#endif
     
     _pixelComponents = mapStrToPixelComponentEnum(str);
 
