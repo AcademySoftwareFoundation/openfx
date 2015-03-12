@@ -1104,7 +1104,8 @@ namespace OFX {
       //Pass the raw-string, used by the ofxNatron.h extension
       void addClipComponents(Clip& clip, const std::string& comps);
       
-      void setPassThroughClip(const Clip& clip,double time,int view);
+      //Pass NULL into clip for non pass-through
+      void setPassThroughClip(const Clip* clip,double time,int view);
 
   };
     

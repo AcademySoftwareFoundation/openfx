@@ -2006,10 +2006,14 @@ namespace OFX {
      }
   }
     
-  void ClipComponentsSetter::setPassThroughClip(const Clip& clip,double time,int view)
+  void ClipComponentsSetter::setPassThroughClip(const Clip* clip,double time,int view)
   {
       _doneSomething = true;
-      _outArgs.propSetString(kFnOfxImageEffectPropPassThroughClip, clip.name(), 0);
+      if (clip) {
+        _outArgs.propSetString(kFnOfxImageEffectPropPassThroughClip, clip->name(), 0);
+      } else {
+        _outArgs.propSetString(kFnOfxImageEffectPropPassThroughClip, "", 0);
+      }
       _outArgs.propSetDouble(kFnOfxImageEffectPropPassThroughTime, time, 0);
       _outArgs.propSetInt(kFnOfxImageEffectPropPassThroughView, view, 0);
   }
