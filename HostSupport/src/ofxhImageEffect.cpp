@@ -1250,7 +1250,11 @@ namespace OFX {
             throw Property::Exception(kOfxStatFailed);
           }
         }
-        else if(_context == kOfxImageEffectContextGeneral) {
+        else if(_context == kOfxImageEffectContextGeneral
+#ifdef OFX_EXTENSIONS_NATRON
+            || _context == kNatronOfxImageEffectContextTracker
+#endif
+                ) {
           // general context is the union of all the non optional clips
           bool gotOne = false;
           for(std::map<std::string, ClipInstance*>::const_iterator it=_clips.begin();
