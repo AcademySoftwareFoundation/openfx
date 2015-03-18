@@ -174,6 +174,9 @@ namespace OFX {
     if(s == kOfxImageEffectContextReader) return eContextReader;
     if(s == kOfxImageEffectContextWriter) return eContextWriter;
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+    if(s == kNatronOfxImageEffectContextTracker) return eContextTracker;
+#endif
     OFX::Log::error(true, "Unknown image effect context '%s'", s.c_str());
     throw std::invalid_argument(s);
   }
