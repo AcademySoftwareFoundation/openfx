@@ -38,6 +38,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nuke/fnPublicOfxExtensions.h"
 #endif
 
+#ifdef OFX_EXTENSIONS_NATRON
+#include "ofxNatron.h"
+#endif
+
 // ofx host
 #include "ofxhBinary.h"
 #include "ofxhPropertySuite.h"
@@ -274,6 +278,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
           { kOfxParamPropLayoutHint,  Property::eInt, 1, false, "0" },
           { kOfxParamPropLayoutPadWidth,  Property::eInt, 1, false, "0" },
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+          { kNatronOfxParamPropIsInstanceSpecific, Property::eInt, 1, false, "0"},
 #endif
           Property::propSpecEnd
         };

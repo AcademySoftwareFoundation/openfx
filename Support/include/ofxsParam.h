@@ -58,6 +58,10 @@ each represent the actions that can be carried out on those particular OFX objec
 #include "nuke/fnPublicOfxExtensions.h"
 #endif
 
+#ifdef OFX_EXTENSIONS_NATRON
+#include "ofxNatron.h"
+#endif
+
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
   CLASS &operator=(const CLASS &) {assert(false); return *this;}	\
@@ -292,6 +296,13 @@ namespace OFX {
 
 #ifdef OFX_EXTENSIONS_NUKE
         void setLayoutHint( const ELayoutHint layoutHint );
+#endif
+        
+#ifdef OFX_EXTENSIONS_NATRON
+        /** @brief When set to true, the parameter is specific to an effect instance of the plug-in and should have a
+         unique representation for each instance. See descripton of kNatronOfxImageEffectContextTracker for more details
+         on multiple instances and difference between shared and specific parameters.*/
+        void setInstanceSpecific(bool isSpecific);
 #endif
         
         bool getHostHasNativeOverlayHandle() const;

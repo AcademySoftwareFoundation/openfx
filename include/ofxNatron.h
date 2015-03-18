@@ -69,4 +69,49 @@ Valid values:
 #define kNatronOfxImageComponentsPlane  "NatronOfxImageComponentsPlane_"
 #define kNatronOfxImageComponentsPlaneChannel   "_Channel_"
 
+/** @brief Used to define the tracker effect context. 
+ In this context the effect instance will be exactly 1 track and will define 4 buttons parameters:
+ kNatronParamTrackingPrevious, kNatronParamTrackingNext, kNatronParamTrackingBackward, kNatronParamTrackingForward
+ The instance changed action on these 4 parameters can be called on a thread different than the main-thread, allowing multiple instance changed action
+ to be called on the same parameter concurrently but with a different 'time' parameter. It is up to the Host application to schedule correctly the 
+ multi-threading of the tracks. 
+ 
+ In this context, typically the host would provide a general interface under which multiple instances of the plug-in in this context would co-exist. 
+ This could be a table in which each instance would have a separate row on its own.
+ Such instances would probably have shared parameters, such as parameters of the tracking algorithm. On the other hand the instances have "specific" parameters
+ that could not be shared among instances, e.g: the resulting position of a point tracking would be unique for each separate track instance.
+ The host could propose in its user interface to display instance-specific parameters in each row of the table, but could display the shared parameter as a global
+ parameter for all instances. To flag that a parameter is instance-specific, a new property on the parameter descriptor has been introduced:
+ */
+#define kNatronOfxImageEffectContextTracker "NatronOfxImageEffectContextTracker"
+
+/** @brief Button param that must be present on a plug-in in the kNatronOfxImageEffectContextTracker context. When the instance changed action
+ is called on this parameter, it should apply the analysis on the frame preceding the current frame on the timeline.*/
+#define kNatronParamTrackingPrevious "trackPrevious"
+
+/** @brief Button param that must be present on a plug-in in the kNatronOfxImageEffectContextTracker context. When the instance changed action
+ is called on this parameter, it should apply the analysis on the frame following the current frame on the timeline.*/
+#define kNatronParamTrackingNext "trackNext"
+
+/** @brief Button param that must be present on a plug-in in the kNatronOfxImageEffectContextTracker context. When the instance changed action
+ is called on this parameter, it should apply the analysis on all the frames from the preceding frame until the left
+ bound of the timeline..*/
+#define kNatronParamTrackingBackward "trackBackward"
+
+/** @brief Button param that must be present on a plug-in in the kNatronOfxImageEffectContextTracker context. When the instance changed action
+ is called on this parameter, it should apply the analysis on all the frames from the following frame until the right
+ bound of the timeline..*/
+#define kNatronParamTrackingForward "trackForward"
+
+/** @brief int  property to indicate whether a parameter is instance-specific or not.
+ - Type - int x 1
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write only)
+ - Default - 0
+ - Valid Values - 0 or 1
+ When set to 1, the parameter is specific to an effect instance of the plug-in and should have a
+ unique representation for each instance. See descripton of kNatronOfxImageEffectContextTracker for more details
+ on multiple instances and difference between shared and specific parameters.
+ */
+#define kNatronOfxParamPropIsInstanceSpecific "NatronOfxParamPropIsInstanceSpecific"
+
 #endif // #ifndef _ofxNatron_h_

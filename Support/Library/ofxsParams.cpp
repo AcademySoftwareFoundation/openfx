@@ -235,6 +235,17 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropLayoutHint, static_cast<int>(layoutHint), false);
   }
 #endif
+    
+#ifdef OFX_EXTENSIONS_NATRON
+    /** @brief When set to true, the parameter is specific to an effect instance of the plug-in and should have a
+     unique representation for each instance. See descripton of kNatronOfxImageEffectContextTracker for more details
+     on multiple instances and difference between shared and specific parameters.*/
+  void
+    ParamDescriptor::setInstanceSpecific(bool isSpecific)
+  {
+    _paramProps.propSetInt(kNatronOfxParamPropIsInstanceSpecific, (int)isSpecific, false);
+  }
+#endif
 
   /** @brief set the group param that is the parent of this one, default is to be ungrouped at the root level */
   void 
