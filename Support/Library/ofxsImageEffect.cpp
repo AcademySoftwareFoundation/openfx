@@ -612,6 +612,11 @@ namespace OFX {
       _effectProps.propSetString(kOfxImageEffectPropSupportedContexts, kOfxImageEffectContextWriter, n);
       break;
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+    case eContextTracker:
+      _effectProps.propSetString(kOfxImageEffectPropSupportedContexts, kNatronOfxImageEffectContextTracker, n);
+      break;
+#endif
     }
   }
 
