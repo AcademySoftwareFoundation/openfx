@@ -1398,43 +1398,86 @@ namespace OFX {
   }
     
 #ifdef OFX_EXTENSIONS_NUKE
-  OfxRectD Clip::getRegionOfDefinition(double t,int view)
+  OfxRectD Clip::getRegionOfDefinition(double t, int view)
   {
-      OfxRectD bounds;
-      OfxStatus stat = OFX::Private::gImageEffectPlaneSuiteV2->clipGetRegionOfDefinition(_clipHandle, t, view,  &bounds);
-      if(stat == kOfxStatFailed) {
-          bounds.x1 = bounds.x2 = bounds.y1 = bounds.y2 = 0;
-      }
-      throwSuiteStatusException(stat);
-      return bounds;
-
+    if (!OFX::Private::gImageEffectPlaneSuiteV2) {
+      return getRegionOfDefinition(t);
+    }
+    OfxRectD bounds;
+    OfxStatus stat = OFX::Private::gImageEffectPlaneSuiteV2->clipGetRegionOfDefinition(_clipHandle, t, view,  &bounds);
+    if(stat == kOfxStatFailed) {
+      bounds.x1 = bounds.x2 = bounds.y1 = bounds.y2 = 0;
+    }
+    throwSuiteStatusException(stat);
+    return bounds;
   }
 
-  Image* Clip::fetchImagePlane(double t,int view,const char* plane)
+  Image* Clip::fetchImagePlane(double t, int view, const char* plane)
   {
-      OfxPropertySetHandle imageHandle;
-      OfxStatus stat = OFX::Private::gImageEffectPlaneSuiteV2->clipGetImagePlane(_clipHandle, t, view, plane, NULL, &imageHandle);
-      if(stat == kOfxStatFailed) {
-          return NULL; // not an error, fetched images out of range/region, assume black and transparent
-      }
-      else
-          throwSuiteStatusException(stat);
+    if (!OFX::Private::gImageEffectPlaneSuiteV2) {
+      throwHostMissingSuiteException("clipGetImagePlane");
+    }
+    OfxPropertySetHandle imageHandle;
+    OfxStatus stat = OFX::Private::gImageEffectPlaneSuiteV2->clipGetImagePlane(_clipHandle, t, view, plane, NULL, &imageHandle);
+    if(stat == kOfxStatFailed) {
+      return NULL; // not an error, fetched images out of range/region, assume black and transparent
+    }
+    else
+      throwSuiteStatusException(stat);
       
-      return new Image(imageHandle);
+    return new Image(imageHandle);
   }
     
-  Image* Clip::fetchImagePlane(double t,int view,const char* plane, const OfxRectD& bounds)
+  Image* Clip::fetchImagePlane(double t, const char* plane)
   {
-      OfxPropertySetHandle imageHandle;
-      OfxRectD boundsCopy = bounds;
-      OfxStatus stat = OFX::Private::gImageEffectPlaneSuiteV2->clipGetImagePlane(_clipHandle, t, view, plane, &boundsCopy, &imageHandle);
-      if(stat == kOfxStatFailed) {
-          return NULL; // not an error, fetched images out of range/region, assume black and transparent
-      }
-      else
-          throwSuiteStatusException(stat);
+    if (!OFX::Private::gImageEffectPlaneSuiteV1) {
+      throwHostMissingSuiteException("clipGetImagePlane");
+    }
+    OfxPropertySetHandle imageHandle;
+    OfxStatus stat = OFX::Private::gImageEffectPlaneSuiteV1->clipGetImagePlane(_clipHandle, t, plane, NULL, &imageHandle);
+    if(stat == kOfxStatFailed) {
+      return NULL; // not an error, fetched images out of range/region, assume black and transparent
+    }
+    else
+      throwSuiteStatusException(stat);
       
-      return new Image(imageHandle);
+    return new Image(imageHandle);
+  }
+    
+  Image* Clip::fetchImagePlane(double t, int view, const char* plane, const OfxRectD& bounds)
+  {
+    if (!OFX::Private::gImageEffectPlaneSuiteV2) {
+      throwHostMissingSuiteException("clipGetImagePlane");
+    }
+    OfxPropertySetHandle imageHandle;
+    OfxRectD boundsCopy = bounds;
+
+    OfxStatus stat = OFX::Private::gImageEffectPlaneSuiteV2->clipGetImagePlane(_clipHandle, t, view, plane, &boundsCopy, &imageHandle);
+    if(stat == kOfxStatFailed) {
+      return NULL; // not an error, fetched images out of range/region, assume black and transparent
+    }
+    else
+      throwSuiteStatusException(stat);
+
+    return new Image(imageHandle);
+  }
+    
+  Image* Clip::fetchImagePlane(double t, const char* plane, const OfxRectD& bounds)
+  {
+    if (!OFX::Private::gImageEffectPlaneSuiteV1) {
+      throwHostMissingSuiteException("clipGetImagePlane");
+    }
+    OfxPropertySetHandle imageHandle;
+    OfxRectD boundsCopy = bounds;
+
+    OfxStatus stat = OFX::Private::gImageEffectPlaneSuiteV1->clipGetImagePlane(_clipHandle, t, plane, &boundsCopy, &imageHandle);
+    if(stat == kOfxStatFailed) {
+      return NULL; // not an error, fetched images out of range/region, assume black and transparent
+    }
+    else
+      throwSuiteStatusException(stat);
+
+    return new Image(imageHandle);
   }
     
   std::list<std::string> Clip::getComponentsPresent() const

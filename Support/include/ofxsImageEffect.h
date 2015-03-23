@@ -869,7 +869,7 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
     
     /** @brief get the RoD for this clip in the cannonical coordinate system for the given view */
-    OfxRectD getRegionOfDefinition(double t,int view);
+    OfxRectD getRegionOfDefinition(double t, int view);
       
     /** @brief fetch an image for the given plane and view
        
@@ -877,7 +877,7 @@ namespace OFX {
     
     If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
     */
-    Image* fetchImagePlane(double t,int view,const char* plane);
+    Image* fetchImagePlane(double t, int view, const char* plane);
       
     /** @brief fetch an image plane, with a specific region in cannonical coordinates
        
@@ -885,8 +885,24 @@ namespace OFX {
     
     If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
     */
-    Image* fetchImagePlane(double t,int view,const char* plane, const OfxRectD& bounds);
+    Image* fetchImagePlane(double t, int view, const char* plane, const OfxRectD& bounds);
       
+    /** @brief fetch an image for the given plane and view
+       
+    When finished with, the client code must delete the image.
+    
+    If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
+    */
+    Image* fetchImagePlane(double t, const char* plane);
+      
+    /** @brief fetch an image plane, with a specific region in cannonical coordinates
+       
+    When finished with, the client code must delete the image.
+    
+    If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
+    */
+    Image* fetchImagePlane(double t, const char* plane, const OfxRectD& bounds);
+
     /** @brief Property set indicating the components present on something*/
     std::list<std::string> getComponentsPresent() const;
       
