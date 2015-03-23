@@ -70,18 +70,26 @@ Valid values:
 #define kNatronOfxImageComponentsPlaneChannel   "_Channel_"
 
 /** @brief Used to define the tracker effect context. 
- In this context the effect instance will be exactly 1 track and will define 4 buttons parameters:
- kNatronParamTrackingPrevious, kNatronParamTrackingNext, kNatronParamTrackingBackward, kNatronParamTrackingForward
- The instance changed action on these 4 parameters can be called on a thread different than the main-thread, allowing multiple instance changed action
+ In this context the effect instance will be exactly 1 track. 
+ It  will define 4 buttons parameters, namely:
+- kNatronParamTrackingPrevious
+- kNatronParamTrackingNext
+- kNatronParamTrackingBackward
+- kNatronParamTrackingForward
+ and 1 string parameter containing the name of the track:
+ - kNatronOfxParamStringSublabelName
+ 
+ The instance changed action on the 4 push-buttons parameters can be called on a thread different than the main-thread, allowing multiple instance changed action
  to be called on the same parameter concurrently but with a different 'time' parameter. It is up to the Host application to schedule correctly the 
- multi-threading of the tracks. 
+ multi-threading of the tracks.
  
  In this context, typically the host would provide a general interface under which multiple instances of the plug-in in this context would co-exist. 
+ The name parameter is here to identity the track.
  This could be a table in which each instance would have a separate row on its own.
  Such instances would probably have shared parameters, such as parameters of the tracking algorithm. On the other hand the instances have "specific" parameters
  that could not be shared among instances, e.g: the resulting position of a point tracking would be unique for each separate track instance.
  The host could propose in its user interface to display instance-specific parameters in each row of the table, but could display the shared parameter as a global
- parameter for all instances. To flag that a parameter is instance-specific, a new property on the parameter descriptor has been introduced:
+ parameter for all instances. To flag that a parameter is instance-specific, a new property on the parameter descriptor has been introduced, kNatronOfxImageEffectContextTracker. This property should be set to 1 for the kNatronOfxParamStringSublabelName parameter.
  */
 #define kNatronOfxImageEffectContextTracker "NatronOfxImageEffectContextTracker"
 
