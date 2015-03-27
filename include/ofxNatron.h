@@ -69,6 +69,11 @@ Valid values:
 #define kNatronOfxImageComponentsPlane  "NatronOfxImageComponentsPlane_"
 #define kNatronOfxImageComponentsPlaneChannel   "_Channel_"
 
+
+/** @brief String to label images with 2 components. If the plug-in supports this then the host can attempt to send to the plug-in
+ planes with 2 components.*/
+#define kNatronOfxImageComponentXY "NatronOfxImageComponentXY"
+
 /** @brief Used to define the tracker effect context. 
  In this context the effect instance will be exactly 1 track. 
  It  will define 4 buttons parameters, namely:

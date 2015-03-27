@@ -151,6 +151,9 @@ namespace OFX {
     ePixelComponentMotionVectors,
     ePixelComponentStereoDisparity,
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+    ePixelComponentsXY, ///< used to indicate support for 2 component planes
+#endif
     ePixelComponentCustom ///< some non standard pixel type
   };
     

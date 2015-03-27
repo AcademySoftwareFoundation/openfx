@@ -43,6 +43,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef OFX_EXTENSIONS_NUKE
 #include <nuke/fnOfxExtensions.h>
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+#include "ofxNatron.h"
+#endif
 #ifdef OFX_SUPPORTS_OPENGLRENDER
 #include "ofxOpenGLRender.h"
 #endif
@@ -460,12 +463,26 @@ namespace OFX {
         static const std::string rgba(kOfxImageComponentRGBA);
         static const std::string rgb(kOfxImageComponentRGB);
         static const std::string alpha(kOfxImageComponentAlpha);
-
+#ifdef OFX_EXTENSIONS_NATRON
+        static const std::string xy(kNatronOfxImageComponentXY);
+#endif
         /// is it there
         if(isSupportedComponent(s))
           return s;
+          
+#ifdef OFX_EXTENSIONS_NATRON
+        if (s == xy) {
+          if (isSupportedComponent(rgb)) {
+            return rgb;
+          } else if (isSupportedComponent(rgba)) {
+            return rgba;
+          } else if (isSupportedComponent(alpha)) {
+            return alpha;
+          }
+        }
+#endif
 
-        /// were we fed some custom non chromatic component by getUnmappedComponents? Return it. 
+        /// were we fed some custom non chromatic component by getUnmappedComponents? Return it.
         /// we should never be here mind, so a bit weird
         if(!_effectInstance->isChromaticComponent(s))
           return s;
