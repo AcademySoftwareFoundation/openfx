@@ -855,7 +855,7 @@ namespace OFX {
     }
   }
     
-  void ImageEffectDescriptor::setIsPassThroughForNotProcessedPlanes(bool v)
+  void ImageEffectDescriptor::setPassThroughForNotProcessedPlanes(PassThroughLevelEnum v)
   {
     if (gHostDescription.isMultiPlanar) {
         _effectProps.propSetInt(kFnOfxImageEffectPropPassThroughComponents, int(v), false);
