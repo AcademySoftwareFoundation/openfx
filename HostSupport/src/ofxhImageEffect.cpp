@@ -284,16 +284,18 @@ namespace OFX {
         
       Base::OfxPassThroughLevelEnum Base::getPassThroughForNonRenderedPlanes() const
       {
+          
+          int p =  _properties.getIntProperty(kFnOfxImageEffectPropPassThroughComponents);
+          if (p == 2) {
+              return Base::ePassThroughLevelEnumRenderAllRequestedPlanes;
+          }
           if (!isMultiPlanar()) {
               return Base::ePassThroughLevelEnumPassThroughAllNonRenderedPlanes;
           }
-          int p =  _properties.getIntProperty(kFnOfxImageEffectPropPassThroughComponents);
           if (p == 0) {
               return Base::ePassThroughLevelEnumBlockAllNonRenderedPlanes;
           } else if (p == 1) {
               return Base::ePassThroughLevelEnumPassThroughAllNonRenderedPlanes;
-          } else if (p == 2) {
-              return Base::ePassThroughLevelEnumRenderAllRequestedPlanes;
           } else {
               return Base::ePassThroughLevelEnumPassThroughAllNonRenderedPlanes;
           }
