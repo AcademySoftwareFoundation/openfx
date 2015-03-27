@@ -667,7 +667,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
     double _transform[9];                    /**< @brief a 2D transform to apply to the image */
     bool _transformIsIdentity;
-    std::vector<std::string> _channels;       /**< @brief Natron multi-plane extension used when _pixelComponents == ePixelComponentsCustom*/
+#endif
+#if defined(OFX_EXTENSIONS_NATRON) && defined(OFX_EXTENSIONS_NUKE)
+    std::vector<std::string> _pixelComponentCustomNames; /**< @brief Natron multi-plane extension used when _pixelComponents == ePixelComponentsCustom*/
 #endif
 
   public :
@@ -689,9 +691,12 @@ namespace OFX {
 
     /** @brief get the components in the image */
     PixelComponentEnum getPixelComponents(void) const { return _pixelComponents;}
-      
+
+    /** @brief get the number of components in the image */
+    int getPixelComponentCount(void) const;
+
 #ifdef OFX_EXTENSIONS_NUKE
-    const std::vector<std::string>& getChannels() const { return _channels; }
+    const std::vector<std::string>& getPixelComponentNames() const { return _pixelComponentCustomNames; }
 #endif
 
     /** @brief get the string representing the pixel components */
