@@ -153,6 +153,24 @@ namespace OFX {
 #endif
     ePixelComponentCustom ///< some non standard pixel type
   };
+    
+#ifdef OFX_EXTENSIONS_NUKE
+  enum PassThroughLevelEnum {
+    //all planes not specified in output by the getClipComponents action will not be visible by effects down-stream
+    ePassThroughLevelBlockAllNonRenderedPlanes = 0,
+      
+    //all planes not specified in output by the getClipComponents action will be pass-through from the input pass-through clip
+    ePassThroughLevelPassThroughNonRenderedPlanes = 1,
+      
+    //all planes requested by the host are rendered, regardless of the getClipComponents action.
+    //In this mode, the render action will be called once
+    //for every plane (instead of a single time with all planes in parameter) and the plug-in is expected to use the regular
+    //image effect suite, i.e: clipGetImage. The pixel components property of the image returned by clipGetImage is expected to
+    //match what is returned by the pixel components property of the clip. This value is useful for instance for Transform effects:
+    //all planes will be transformed with minimalist changes to the plug-in code.
+    ePassThroughLevelRenderAllRequestedPlanes = 2
+  };
+#endif
 
   /** @brief Enumerates the ways a fielded image can be extracted from a clip */
   enum FieldExtractionEnum {eFieldExtractBoth,   /**< @brief extract both fields */
@@ -586,7 +604,7 @@ namespace OFX {
       void setIsMultiPlanar(bool v);
       
       /** @brief Plugin indicates to the host that it should pass through any planes not modified by the plugin*/
-      void setIsPassThroughForNotProcessedPlanes(bool v);
+      void setPassThroughForNotProcessedPlanes(PassThroughLevelEnum v);
       
       /** @brief Indicates to the host that the plugin is view aware, in which case it will have to use the view calls*/
       void setIsViewAware(bool v);
