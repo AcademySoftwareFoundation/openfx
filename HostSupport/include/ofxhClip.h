@@ -203,7 +203,7 @@ namespace OFX {
         /// kOfxImageComponentRGB
         /// kOfxImageComponentAlpha
         /// and any custom ones you may think of
-        const std::string &getComponents() const;
+        virtual const std::string &getComponents() const;
 
         /// set the current set of components
         /// called by clip preferences action 
