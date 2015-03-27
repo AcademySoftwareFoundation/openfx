@@ -114,6 +114,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       - 0 - plugin is asking the host to block all planes not processed on output
       - 1 - plugin is asking the host to pass through all planes not processed from the clip specified 
             by the kFnOfxImageEffectActionGetClipComponents action
+      - 2 - plugin is asking the host to pass to render all planes requested, regardless of the clip
+ specified by the kFnOfxImageEffectActionGetClipComponents action. In this mode, the render action will be called once
+ for every plane (instead of a single time with all planes in parameter) and the plug-in is expected to use the regular
+ image effect suite, i.e: clipGetImage. The pixel components property of the image returned by clipGetImage is expected to
+ match what is returned by the pixel components property of the clip. This value is useful for instance for Transform effects:
+ all planes will be transformed with minimalist changes to the plug-in code.
 
 The plugin must have flagged kFnOfxImageEffectPropMultiPlanar as true, if so tghe 
 */
