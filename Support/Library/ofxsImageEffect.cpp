@@ -1053,14 +1053,14 @@ namespace OFX {
       case ePixelComponentStereoDisparity:
         return 2;
 #endif
-#ifdef OFX_EXTENSIONS_NATRON
-      case ePixelComponentsXY:
-        return 2;
-#endif
       case ePixelComponentRGB:
         return 3;
       case ePixelComponentRGBA:
         return 4;
+#ifdef OFX_EXTENSIONS_NATRON
+      case ePixelComponentXY:
+        return 2;
+#endif
       case ePixelComponentCustom:
       default:
 #ifdef OFX_EXTENSIONS_NUKE
