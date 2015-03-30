@@ -955,15 +955,17 @@ namespace OFX {
     std::string str  = _imageProps.propGetString(kOfxImageEffectPropComponents);
     _pixelComponents = mapStrToPixelComponentEnum(str);
 
+#if defined(OFX_EXTENSIONS_NATRON) && defined(OFX_EXTENSIONS_NUKE)
+    if (_pixelComponents == OFX::ePixelComponentCustom) {
+        // Try to match str against ofxNatron extension
+        ofxCustomCompToNatronComp(str, NULL, &_pixelComponentCustomNames);
+    }
+#endif
+      
     str = _imageProps.propGetString(kOfxImageEffectPropPixelDepth);
     _pixelDepth = mapStrToBitDepthEnum(str);
 
-#if defined(OFX_EXTENSIONS_NATRON) && defined(OFX_EXTENSIONS_NUKE)
-    if (_pixelComponents == OFX::ePixelComponentCustom) {
-      // Try to match str against ofxNatron extension
-      ofxCustomCompToNatronComp(str, NULL, &_pixelComponentCustomNames);
-    }
-#endif
+
     // compute bytes per pixel
     _pixelBytes = getPixelComponentCount();
 
