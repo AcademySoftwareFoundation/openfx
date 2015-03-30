@@ -265,6 +265,11 @@ namespace OFX {
 
   PixelComponentEnum mapStrToPixelComponentEnum(const std::string &str) throw(std::invalid_argument);
 
+#if defined(OFX_EXTENSIONS_NATRON)
+  /** @brief extract layer name (first element) and channel names (other elements) from the kOfxImageEffectPropComponents property value, @see getPixelComponentsProperty() */
+  std::vector<std::string> mapPixelComponentCustomToLayerChannels(const std::string& comp);
+#endif
+
   class PluginFactory
   {
   public:
@@ -657,6 +662,7 @@ namespace OFX {
     //friend class Clip;
 
     PixelComponentEnum _pixelComponents;     /**< @brief get the components in the image */
+    int       _pixelComponentCount;
     int       _rowBytes;                     /**< @brief the number of bytes per scanline */
     int       _pixelBytes;                   /**< @brief the number of bytes per pixel */
     BitDepthEnum _pixelDepth;                 /**< @brief get the pixel depth */
@@ -671,9 +677,6 @@ namespace OFX {
     double _transform[9];                    /**< @brief a 2D transform to apply to the image */
     bool _transformIsIdentity;
 #endif
-#if defined(OFX_EXTENSIONS_NATRON) && defined(OFX_EXTENSIONS_NUKE)
-    std::vector<std::string> _pixelComponentCustomNames; /**< @brief Natron multi-plane extension used when _pixelComponents == ePixelComponentsCustom*/
-#endif
 
   public :
     /** @brief ctor */
@@ -682,9 +685,6 @@ namespace OFX {
     /** @brief dtor */
     virtual ~ImageBase();
       
-#if defined(OFX_EXTENSIONS_NATRON) && defined(OFX_EXTENSIONS_NUKE)
-    static bool ofxCustomCompToNatronComp(const std::string& comp, std::string* layerName, std::vector<std::string>* channelNames);
-#endif
     const PropertySet &getPropertySet() const {return _imageProps;}
 
     PropertySet &getPropertySet() {return _imageProps;}
@@ -696,11 +696,7 @@ namespace OFX {
     PixelComponentEnum getPixelComponents(void) const { return _pixelComponents;}
 
     /** @brief get the number of components in the image */
-    int getPixelComponentCount(void) const;
-
-#ifdef OFX_EXTENSIONS_NUKE
-    const std::vector<std::string>& getPixelComponentNames() const { return _pixelComponentCustomNames; }
-#endif
+    int getPixelComponentCount(void) const { return _pixelComponentCount; }
 
     /** @brief get the string representing the pixel components */
     std::string getPixelComponentsProperty(void) const { return _imageProps.propGetString(kOfxImageEffectPropComponents);}
@@ -849,6 +845,9 @@ namespace OFX {
 
     /** @brief what is the components images will be given to us as */
     PixelComponentEnum getPixelComponents(void) const;
+
+    /** @brief get the number of components in the image */
+    int getPixelComponentCount(void) const;
 
     /** @brief get the string representing the pixel components */
     std::string getPixelComponentsProperty(void) const { return _clipProps.propGetString(kOfxImageEffectPropComponents);}

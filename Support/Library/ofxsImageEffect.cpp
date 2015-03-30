@@ -380,6 +380,37 @@ namespace OFX {
   }
 #endif
 
+#if defined(OFX_EXTENSIONS_NATRON)
+  /** @brief extract layer name (first element) and channel names (other elements) from the kOfxImageEffectPropComponents property value, @see getPixelComponentsProperty() */
+  std::vector<std::string> mapPixelComponentCustomToLayerChannels(const std::string& comp)
+  {
+    std::vector<std::string> retval;
+
+    const std::size_t foundPlaneLen = std::strlen(kNatronOfxImageComponentsPlane);
+    std::size_t foundPlane = comp.find(kNatronOfxImageComponentsPlane);
+    if (foundPlane == std::string::npos) {
+      return retval;
+    }
+
+    std::size_t foundChannel = comp.find(kNatronOfxImageComponentsPlaneChannel, foundPlane + foundPlaneLen);
+    if (foundChannel == std::string::npos) {
+      return retval;
+    }
+
+    retval.push_back(comp.substr(foundPlane + foundPlaneLen, foundChannel - (foundPlane + foundPlaneLen)));
+
+    const std::size_t foundChannelLen = std::strlen(kNatronOfxImageComponentsPlaneChannel);
+    while (foundChannel != std::string::npos) {
+      std::size_t nextChannel = comp.find(kNatronOfxImageComponentsPlaneChannel, foundChannel + foundChannelLen);
+      std::string chan = comp.substr(foundChannel + foundChannelLen, nextChannel - (foundChannel + foundChannelLen));
+      retval.push_back(chan);
+      foundChannel = nextChannel;
+    }
+
+    return retval;
+  }
+#endif
+
 
   ////////////////////////////////////////////////////////////////////////////////
   // clip descriptor
@@ -955,17 +986,46 @@ namespace OFX {
     std::string str  = _imageProps.propGetString(kOfxImageEffectPropComponents);
     _pixelComponents = mapStrToPixelComponentEnum(str);
 
+    switch (_pixelComponents) {
+      case ePixelComponentAlpha:
+        _pixelComponentCount = 1;
+        break;
+      case ePixelComponentNone:
+        _pixelComponentCount = 0;
+        break;
+#ifdef OFX_EXTENSIONS_NUKE
+      case ePixelComponentMotionVectors:
+      case ePixelComponentStereoDisparity:
+        _pixelComponentCount = 2;
+        break;
+#endif
+      case ePixelComponentRGB:
+        _pixelComponentCount = 3;
+        break;
+      case ePixelComponentRGBA:
+        _pixelComponentCount = 4;
+        break;
+#ifdef OFX_EXTENSIONS_NATRON
+      case ePixelComponentXY:
+        _pixelComponentCount = 2;
+        break;
+#endif
+      case ePixelComponentCustom:
+      default:
+#ifdef OFX_EXTENSIONS_NATRON
+        // first element in the vector is the layer name (if any)
+        _pixelComponentCount = std::max((int)mapPixelComponentCustomToLayerChannels(str).size() - 1, 0);
+#else
+        _pixelComponentCount = 0;
+#endif
+        break;
+    }
+
+    // compute bytes per pixel
+    _pixelBytes = _pixelComponentCount;
+
     str = _imageProps.propGetString(kOfxImageEffectPropPixelDepth);
     _pixelDepth = mapStrToBitDepthEnum(str);
-
-#if defined(OFX_EXTENSIONS_NATRON) && defined(OFX_EXTENSIONS_NUKE)
-    if (_pixelComponents == OFX::ePixelComponentCustom) {
-      // Try to match str against ofxNatron extension
-      ofxCustomCompToNatronComp(str, NULL, &_pixelComponentCustomNames);
-    }
-#endif
-    // compute bytes per pixel
-    _pixelBytes = getPixelComponentCount();
 
     switch(_pixelDepth) 
     {
@@ -1038,68 +1098,6 @@ namespace OFX {
   ImageBase::~ImageBase()
   {
   }
-
-  int ImageBase::getPixelComponentCount(void) const
-  {
-    switch (_pixelComponents) {
-      case ePixelComponentAlpha:
-        return 1;
-      case ePixelComponentNone:
-        return 0;
-#ifdef OFX_EXTENSIONS_NUKE
-      case ePixelComponentMotionVectors:
-      case ePixelComponentStereoDisparity:
-        return 2;
-#endif
-      case ePixelComponentRGB:
-        return 3;
-      case ePixelComponentRGBA:
-        return 4;
-#ifdef OFX_EXTENSIONS_NATRON
-      case ePixelComponentXY:
-        return 2;
-#endif
-      case ePixelComponentCustom:
-      default:
-#ifdef OFX_EXTENSIONS_NUKE
-        return (int)_pixelComponentCustomNames.size();
-#else
-        return 0;
-#endif
-    }
-  }
-
-#if defined(OFX_EXTENSIONS_NATRON) && defined(OFX_EXTENSIONS_NUKE)
-  bool ImageBase::ofxCustomCompToNatronComp(const std::string& comp, std::string* layerName, std::vector<std::string>* channelNames)
-  {
-    const std::size_t foundPlaneLen = std::strlen(kNatronOfxImageComponentsPlane);
-    std::size_t foundPlane = comp.find(kNatronOfxImageComponentsPlane);
-    if (foundPlane == std::string::npos) {
-      return false;
-    }
-
-    std::size_t foundChannel = comp.find(kNatronOfxImageComponentsPlaneChannel, foundPlane + foundPlaneLen);
-    if (foundChannel == std::string::npos) {
-      return false;
-    }
-
-    if (layerName) {
-      *layerName = comp.substr(foundPlane + foundPlaneLen, foundChannel - (foundPlane + foundPlaneLen));
-    }
-
-    if (channelNames) {
-      channelNames->clear();
-      const std::size_t foundChannelLen = std::strlen(kNatronOfxImageComponentsPlaneChannel);
-      while (foundChannel != std::string::npos) {
-        std::size_t nextChannel = comp.find(kNatronOfxImageComponentsPlaneChannel, foundChannel + foundChannelLen);
-        std::string chan = comp.substr(foundChannel + foundChannelLen, nextChannel - (foundChannel + foundChannelLen));
-        channelNames->push_back(chan);
-        foundChannel = nextChannel;
-      }
-    }
-    return true;
-  }
-#endif
 
   ////////////////////////////////////////////////////////////////////////////////
   // wraps up an image  
@@ -1230,6 +1228,52 @@ namespace OFX {
       e = ePixelComponentNone;
     }
     return e;
+  }
+
+  /** @brief get the number of components in the image */
+  int Clip::getPixelComponentCount(void) const
+  {
+    std::string str = _clipProps.propGetString(kOfxImageEffectPropComponents);
+    PixelComponentEnum e;
+    try {
+      e = mapStrToPixelComponentEnum(str);
+      if(e == ePixelComponentNone && isConnected()) {
+        OFX::Log::error(true, "Clip %s is connected and has no pixel component type!", _clipName.c_str());
+      }
+    }
+    // gone wrong ?
+    catch(std::invalid_argument) {
+      OFX::Log::error(true, "Unknown  pixel component type '%s' reported on clip '%s'", str.c_str(), _clipName.c_str());
+      e = ePixelComponentNone;
+    }
+
+    switch (e) {
+      case ePixelComponentAlpha:
+        return 1;
+      case ePixelComponentNone:
+        return 0;
+#ifdef OFX_EXTENSIONS_NUKE
+      case ePixelComponentMotionVectors:
+      case ePixelComponentStereoDisparity:
+        return 2;
+#endif
+      case ePixelComponentRGB:
+        return 3;
+      case ePixelComponentRGBA:
+        return 4;
+#ifdef OFX_EXTENSIONS_NATRON
+      case ePixelComponentXY:
+        return 2;
+#endif
+      case ePixelComponentCustom:
+      default:
+#ifdef OFX_EXTENSIONS_NATRON
+        // first element in the vector is the layer name (if any)
+        return std::max((int)mapPixelComponentCustomToLayerChannels(str).size() - 1, 0);
+#else
+        return 0;
+#endif
+    }
   }
 
   /** @brief what is the actual pixel depth of the clip */
