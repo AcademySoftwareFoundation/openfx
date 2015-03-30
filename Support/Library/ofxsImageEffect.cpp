@@ -1021,11 +1021,11 @@ namespace OFX {
         break;
     }
 
-    // compute bytes per pixel
-    _pixelBytes = _pixelComponentCount;
-
     str = _imageProps.propGetString(kOfxImageEffectPropPixelDepth);
     _pixelDepth = mapStrToBitDepthEnum(str);
+
+    // compute bytes per pixel
+    _pixelBytes = _pixelComponentCount;
 
     switch(_pixelDepth) 
     {
