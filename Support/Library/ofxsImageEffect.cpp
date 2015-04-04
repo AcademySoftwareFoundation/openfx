@@ -310,6 +310,11 @@ namespace OFX {
         return ePixelComponentStereoDisparity;
     }
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+    else if (str == kNatronOfxImageComponentXY) {
+        return ePixelComponentXY;
+    }
+#endif
     else {
       return ePixelComponentCustom;
     }
