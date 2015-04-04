@@ -938,7 +938,12 @@ namespace OFX {
   {
     _paramProps.propReset(kOfxParamPropChoiceOption);
   }
-
+#ifdef OFX_EXTENSIONS_NATRON
+  void ChoiceParamDescriptor::setUserCanAddNewChoice(bool can)
+  {
+    _paramProps.propSetInt(kNatronOfxParamPropCanMakeNewPlane, (int)can, 0,false);
+  }
+#endif
   ////////////////////////////////////////////////////////////////////////////////
   // string param descriptor
 

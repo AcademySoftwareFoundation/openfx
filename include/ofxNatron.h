@@ -74,6 +74,17 @@ Valid values:
  planes with 2 components.*/
 #define kNatronOfxImageComponentXY "NatronOfxImageComponentXY"
 
+/** @brief int x1 property on a choice parameter descriptor (read/write) and choice parameter instance (read-only) to indicate whether
+ the user can add a new choice on its own via the GUI. This property only focus on planes selectors where the user should be able to create
+ a new plane on its own.
+ Valid values:
+ - 0: Indicates that the parameter does not support/want that the user can have a new choice
+ - 1: Indicates that the parameter wants to have the choice "New" so that the user can create a plane on its own
+ Default value:
+ - 0
+ */
+#define kNatronOfxParamPropCanMakeNewPlane "kNatronOfxParamPropCanMakeNewPlane"
+
 /** @brief Used to define the tracker effect context. 
  In this context the effect instance will be exactly 1 track. 
  It  will define 4 buttons parameters, namely:

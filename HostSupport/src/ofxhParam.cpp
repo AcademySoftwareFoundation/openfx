@@ -307,6 +307,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_TUTTLE
           { kOfxParamPropChoiceLabelOption, Property::eString,  0,    false,    "" },
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+          { kNatronOfxParamPropCanMakeNewPlane, Property::eInt, 1,    false,    "0"},
+#endif
           Property::propSpecEnd
         };
 

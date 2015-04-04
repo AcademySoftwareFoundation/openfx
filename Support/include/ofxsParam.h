@@ -700,6 +700,14 @@ namespace OFX {
     
         /** @brief clear all the options so as to add some new ones in */
         void resetOptions(void);
+        
+#ifdef OFX_EXTENSIONS_NATRON
+        /** @brief Indicate whether the user can add a new choice on its own via the GUI.
+         This property only focus on planes selectors where the user should be able to create
+         a new plane on its own.
+         */
+        void setUserCanAddNewChoice(bool can);
+#endif
     };
 
     ////////////////////////////////////////////////////////////////////////////////
