@@ -279,10 +279,12 @@ namespace OFX {
   OFX::Exception::Suite)
   {
     assert(_propHandle != 0);
-      
-    int dimension = propGetDimension(property,throwOnFailure);
-    std::vector<char*> rawValue(dimension);
     std::list<std::string> ret;
+    int dimension = propGetDimension(property,throwOnFailure);
+    if (dimension <= 0) {
+      return ret;
+    }
+    std::vector<char*> rawValue(dimension);
     OfxStatus stat = gPropSuite->propGetStringN(_propHandle, property, dimension, rawValue.data());
     OFX::Log::error(stat != kOfxStatOK, "Failed on getting string property %s, host returned status %s;",
                       property, mapStatusToString(stat));
