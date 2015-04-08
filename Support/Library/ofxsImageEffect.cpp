@@ -1550,14 +1550,7 @@ namespace OFX {
     
   std::list<std::string> Clip::getComponentsPresent() const
   {
-    int dim = _clipProps.propGetDimension(kFnOfxImageEffectPropComponentsPresent, false);
-    std::list<std::string> ret;
-    for (int i = 0; i < dim ; ++i) {
-      std::string comp = _clipProps.propGetString(kFnOfxImageEffectPropComponentsPresent, i, false);
-      if (!comp.empty()) {
-        ret.push_back(comp);
-      }
-    }
+    std::list<std::string> ret = _clipProps.propGetNString(kFnOfxImageEffectPropComponentsPresent, false);
     return ret;
   }
 #endif

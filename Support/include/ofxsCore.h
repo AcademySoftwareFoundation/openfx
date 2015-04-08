@@ -100,6 +100,7 @@ of the direct OFX objects and any library side only functions.
 
 #include <assert.h>
 #include <vector>
+#include <list>
 #include <string>
 #include <map>
 #include <exception>
@@ -409,6 +410,12 @@ namespace OFX {
     {
       return propGetInt(property, 0, throwOnFailure); 
     }
+      
+    std::list<std::string> propGetNString(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc,
+    OFX::Exception::PropertyUnknownToHost,
+    OFX::Exception::PropertyValueIllegalToHost,
+    OFX::Exception::Suite);
+
   };
 
   // forward decl of the image effect
