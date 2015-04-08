@@ -91,6 +91,13 @@ namespace OFX {
       {
         getPointerPropertyN(name, values, count);
       }
+        
+      /// this does some magic so that it calls get string/int/double/pointer appropriately
+      template<> void GetHook::getPropertyN<StringValue>(const std::string &name, const char **values, int count) const OFX_EXCEPTION_SPEC
+      {
+        getStringPropertyN(name, values, count);
+      }
+
 
       /// override this to get a single value at the given index.
       const std::string &GetHook::getStringProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
@@ -99,6 +106,14 @@ namespace OFX {
         std::cout << "OFX: Calling un-overriden GetHook::getStringProperty!!!! " << std::endl;
 #       endif
         return StringValue::kEmpty;
+      }
+       
+       /// override this function to optimize multiple-string properties fetching
+      void GetHook::getStringPropertyN(const std::string &name, const char** values, int count) const OFX_EXCEPTION_SPEC
+      {
+        for (int i = 0; i < count; ++i) {
+          values[i] = getStringProperty(name, i).c_str();
+        }
       }
       
       /// override this to fetch a single value at the given index.
@@ -257,19 +272,6 @@ namespace OFX {
       void PropertyTemplate<T>::getValueN(typename T::APIType *values, int count) const OFX_EXCEPTION_SPEC {
         if (_getHook) {
           _getHook->getPropertyN<T>(_name, values, count);
-        } 
-        else {
-          getValueNRaw(values, count);
-        }
-      }
-
-      // get multiple values
-      template<> 
-      void PropertyTemplate<StringValue>::getValueN(StringValue::APIType *values, int count) const OFX_EXCEPTION_SPEC {
-        if (_getHook) {
-          for(int i = 0; i < count; ++i) {
-            values[i] = castToAPIType(_getHook->getStringProperty(_name, i));
-          }
         } 
         else {
           getValueNRaw(values, count);

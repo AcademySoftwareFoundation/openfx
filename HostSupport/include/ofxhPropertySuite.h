@@ -143,8 +143,6 @@ namespace OFX {
 
       /// Sits on a property and can override the local property value when a value is being fetched
       /// only one of these can be in any property (as the thing has only a single value).
-      /// We deliberately don't have a getStringPropertyN as it is somewhat more painfull and never
-      /// used in practice.
       class GetHook {
       public :
         /// dtor
@@ -161,7 +159,10 @@ namespace OFX {
         template<class T> void getPropertyN(const std::string &name, typename T::APIType *values, int count) const OFX_EXCEPTION_SPEC;
 
         /// override this to fetch a single value at the given index.
-        virtual const std::string &getStringProperty(const std::string &name, int index = 0) const OFX_EXCEPTION_SPEC;
+        virtual const std::string& getStringProperty(const std::string &name, int index = 0) const OFX_EXCEPTION_SPEC;
+          
+        /// override this to fetch a multiple values in a multi-dimension property
+        virtual void getStringPropertyN(const std::string &name, const char** values, int count) const OFX_EXCEPTION_SPEC;
 
         /// override this to fetch a single value at the given index.
         virtual int getIntProperty(const std::string &name, int index = 0) const OFX_EXCEPTION_SPEC;

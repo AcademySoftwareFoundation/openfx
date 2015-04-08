@@ -416,6 +416,45 @@ namespace OFX {
         else
           throw Property::Exception(kOfxStatErrValue);
       }
+       
+      // fetch  multiple values in a multi-dimension property
+      void ClipInstance::getStringPropertyN(const std::string &name, const char** values, int count) const OFX_EXCEPTION_SPEC
+      {
+          if (count == 0) {
+              return;
+          }
+#ifdef OFX_EXTENSIONS_NUKE
+          if (name==kFnOfxImageEffectPropComponentsPresent) {
+              const std::vector<std::string>& componentsPresents = getComponentsPresent();
+              int minCount = (int)componentsPresents.size() < count ? (int)componentsPresents.size() : count;
+              for (int i = 0; i < minCount; ++i) {
+                  values[i] = componentsPresents[i].c_str();
+              }
+              return;
+          }
+#endif
+          if(count!=1) throw Property::Exception(kOfxStatErrValue);
+          if(name==kOfxImageEffectPropPixelDepth){
+              values[0] = getPixelDepth().c_str();
+          }
+          else if(name==kOfxImageEffectPropComponents){
+              values[0] = getComponents().c_str();
+          }
+          else if(name==kOfxImageClipPropUnmappedComponents){
+              values[0] = getUnmappedComponents().c_str();
+          }
+          else if(name==kOfxImageClipPropUnmappedPixelDepth){
+              values[0] = getUnmappedBitDepth().c_str();
+          }
+          else if(name==kOfxImageEffectPropPreMultiplication){
+              values[0] = getPremult().c_str();
+          }
+          else if(name==kOfxImageClipPropFieldOrder){
+              values[0] = getFieldOrder().c_str();
+          }
+          else
+              throw Property::Exception(kOfxStatErrValue);
+      }
 
       // notify override properties
       void ClipInstance::notify(const std::string &/*name*/, bool /*isSingle*/, int /*indexOrN*/)  OFX_EXCEPTION_SPEC

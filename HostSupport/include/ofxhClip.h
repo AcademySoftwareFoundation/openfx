@@ -166,6 +166,9 @@ namespace OFX {
 
         // get the virtuals for viewport size, pixel scale, background colour
         virtual const std::string &getStringProperty(const std::string &name, int index) const  OFX_EXCEPTION_SPEC;
+                             
+        // fetch  multiple values in a multi-dimension property
+        virtual void getStringPropertyN(const std::string &name, const char** values, int count) const OFX_EXCEPTION_SPEC;
 
         // get hook virtuals
         virtual int  getDimension(const std::string &name) const OFX_EXCEPTION_SPEC;
