@@ -938,10 +938,12 @@ namespace OFX {
   {
     _paramProps.propReset(kOfxParamPropChoiceOption);
   }
+
 #ifdef OFX_EXTENSIONS_NATRON
-  void ChoiceParamDescriptor::setUserCanAddNewChoice(bool can)
+  /** @brief may the host add new options? */
+  void ChoiceParamDescriptor::setHostCanAddOptions(bool can)
   {
-    _paramProps.propSetInt(kNatronOfxParamPropCanMakeNewPlane, (int)can, 0,false);
+    _paramProps.propSetInt(kNatronOfxParamPropChoiceHostCanAddOptions, (int)can, 0,false);
   }
 #endif
   ////////////////////////////////////////////////////////////////////////////////

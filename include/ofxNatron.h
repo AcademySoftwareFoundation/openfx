@@ -75,15 +75,24 @@ Valid values:
 #define kNatronOfxImageComponentXY "NatronOfxImageComponentXY"
 
 /** @brief int x1 property on a choice parameter descriptor (read/write) and choice parameter instance (read-only) to indicate whether
- the user can add a new choice on its own via the GUI. This property only focus on planes selectors where the user should be able to create
- a new plane on its own.
+ the host can add a new choice on its own (probably via a GUI specific to this parameter).
+ The plugin may then retrieve the option name whenever a choice value is out of its initial range.
+
+ This property primarily targets image plane choices, where the host should be able to create a new plane and add it to the menu.
+ 
  Valid values:
- - 0: Indicates that the parameter does not support/want that the user can have a new choice
- - 1: Indicates that the parameter wants to have the choice "New" so that the user can create a plane on its own
+ - 0: Indicates that the parameter does not support/want that the host adds new options
+ - 1: Indicates that the parameter wants to have the choice "New" so that the host can create a new option
  Default value:
  - 0
  */
-#define kNatronOfxParamPropCanMakeNewPlane "kNatronOfxParamPropCanMakeNewPlane"
+#define kNatronOfxParamPropChoiceHostCanAddOptions "NatronOfxParamPropChoiceHostCanAddOptions"
+
+/** @brief The standard parameter for setting output channels of a plugin (used by Shuffle).
+ 
+ This parameter may have the property kNatronOfxParamPropChoiceHostCanAddOptions set.
+ */
+#define kNatronOfxParamOutputChannels "outputChannels"
 
 /** @brief Used to define the tracker effect context. 
  In this context the effect instance will be exactly 1 track. 

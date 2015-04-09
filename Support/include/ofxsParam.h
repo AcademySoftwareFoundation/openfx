@@ -702,11 +702,12 @@ namespace OFX {
         void resetOptions(void);
         
 #ifdef OFX_EXTENSIONS_NATRON
-        /** @brief Indicate whether the user can add a new choice on its own via the GUI.
-         This property only focus on planes selectors where the user should be able to create
-         a new plane on its own.
+        /** @brief Indicate whether the host can add a new choice on its own (probably via a GUI specific to this parameter).
+         The plugin may then retrieve the option name whenever a choice value is out of its initial range.
+
+         This property primarily targets image plane choices, where the host should be able to create a new plane and add it to the menu.
          */
-        void setUserCanAddNewChoice(bool can);
+        void setHostCanAddOptions(bool can);
 #endif
     };
 
