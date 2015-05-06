@@ -2122,6 +2122,23 @@ namespace OFX {
 
         /// now add the clip gubbins to the out args
         double projectPAR = getProjectPixelAspectRatio();
+        bool multipleClipsPAR = supportsMultipleClipPARs();
+        /// get the PAR of inputs, if it has different PARs and the effect does not support multiple clips PAR, throw an exception
+        double inputPar;
+        bool inputParSet = false;
+        for (std::map<std::string, ClipInstance*>::iterator it2 = _clips.begin(); it2 != _clips.end(); ++it2) {
+          if (!it2->second->isOutput() && it2->second->getConnected()) {
+              if (!inputParSet) {
+                  inputPar = it2->second->getAspectRatio();
+                  inputParSet = true;
+              } else if (!multipleClipsPAR && inputPar != it2->second->getAspectRatio()) {
+                  // We have several inputs with different aspect ratio, which should be forbidden by the host.
+                  throw Property::Exception(kOfxStatErrValue);
+              }
+            }
+        }
+  
+          
         for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
             it!=_clips.end();
             ++it) {
@@ -2140,25 +2157,19 @@ namespace OFX {
 
           Property::PropSpec specPAR = {parParamName.c_str(),         Property::eDouble, 1, false,          "1"};
           outArgs.createProperty(specPAR);
-          // If the clip is output we should propagate the pixel aspect ratio of the inputs
           if (!clip->isOutput()) {
-            double inputPar = clip->getConnected() ? clip->getAspectRatio() : projectPAR;
-            outArgs.setDoubleProperty(parParamName, inputPar);
-          } else {
-            double inputPar = projectPAR;
-            bool inputParSet = false;
-
-            for (std::map<std::string, ClipInstance*>::iterator it2 = _clips.begin(); it2 != _clips.end(); ++it2) {
-              if (!it2->second->isOutput() && it2->second->getConnected()) {
-                if (!inputParSet) {
-                  inputPar = it2->second->getAspectRatio();
-                  inputParSet = true;
-                } else if (inputPar != it2->second->getAspectRatio()) {
-                  // We have several inputs with different aspect ratio, which should be forbidden by the host.
-                  throw Property::Exception(kOfxStatErrValue);
-                }
-              }
+            // If the clip is input, use the same par for all inputs unless the plug-in supports multiple clips PAR
+            double par;
+            if (!multipleClipsPAR && inputParSet) {
+                par = inputPar;
+            } else if (multipleClipsPAR) {
+                par = clip->getAspectRatio();
+            } else {
+                par = projectPAR;
             }
+            outArgs.setDoubleProperty(parParamName, par);
+          } else {
+            // If the clip is output we should propagate the pixel aspect ratio of the inputs
             outArgs.setDoubleProperty(parParamName, inputPar);
           }
         }
