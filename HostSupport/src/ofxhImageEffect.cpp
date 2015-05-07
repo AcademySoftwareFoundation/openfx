@@ -2170,7 +2170,7 @@ namespace OFX {
             outArgs.setDoubleProperty(parParamName, par);
           } else {
             // If the clip is output we should propagate the pixel aspect ratio of the inputs
-            outArgs.setDoubleProperty(parParamName, inputPar);
+            outArgs.setDoubleProperty(parParamName, inputParSet ? inputPar : projectPAR);
           }
         }
           
