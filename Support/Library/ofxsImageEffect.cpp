@@ -2481,6 +2481,7 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NATRON
         gHostDescription.isNatron                   = hostProps.propGetInt(kNatronOfxHostIsNatron, false) != 0;
         gHostDescription.supportsDynamicChoices     = hostProps.propGetInt(kNatronOfxParamHostPropSupportsDynamicChoices, false) != 0;
+        gHostDescription.supportsCascadingChoices   = hostProps.propGetInt(kNatronOfxParamPropChoiceCascading, false) != 0;
 #endif
 
         int numComponents = hostProps.propGetDimension(kOfxImageEffectPropSupportedComponents);

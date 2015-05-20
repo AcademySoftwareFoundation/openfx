@@ -702,6 +702,9 @@ namespace OFX {
         void resetOptions(void);
         
 #ifdef OFX_EXTENSIONS_NATRON
+        /** @brief whether the menu should be cascading, and each option contains a slash-separated path to the item, defaults to false. */
+        void setCascading(const bool v);
+
         /** @brief Indicate whether the host can add a new choice on its own (probably via a GUI specific to this parameter).
          The plugin may then retrieve the option name whenever a choice value is out of its initial range.
 
@@ -1611,6 +1614,14 @@ namespace OFX {
 
         /** @brief clear all the options so as to add some new ones in */
         void resetOptions(void);
+
+#ifdef OFX_EXTENSIONS_NATRON
+        /** @brief whether the menu should be cascading, and each option contains a slash-separated path to the item, defaults to false. */
+        bool getIsCascading(void);
+
+        /** @brief Indicate whether the host can add a new choice on its own (probably via a GUI specific to this parameter). */
+        bool getHostCanAddOptions();
+#endif
 
         /** @brief get value */
         void getValue(int &v);

@@ -940,6 +940,12 @@ namespace OFX {
   }
 
 #ifdef OFX_EXTENSIONS_NATRON
+  /** @brief whether the menu should be cascading, and each option contains a slash-separated path to the item, defaults to false. */
+  void ChoiceParamDescriptor::setCascading(const bool v)
+  {
+    _paramProps.propSetInt(kNatronOfxParamPropChoiceCascading, v, false);
+  }
+
   /** @brief may the host add new options? */
   void ChoiceParamDescriptor::setHostCanAddOptions(bool can)
   {
@@ -2652,6 +2658,26 @@ namespace OFX {
   {
     _paramProps.propReset(kOfxParamPropChoiceOption);
   }
+
+#ifdef OFX_EXTENSIONS_NATRON
+    /** @brief whether the menu should be cascading, and each option contains a slash-separated path to the item, defaults to false. */
+    bool ChoiceParam::getIsCascading()
+    {
+        bool v = _paramProps.propGetInt(kNatronOfxParamPropChoiceCascading, false) != 0;
+        return v;
+    }
+
+    /** @brief Indicate whether the host can add a new choice on its own (probably via a GUI specific to this parameter).
+     The plugin may then retrieve the option name whenever a choice value is out of its initial range.
+
+     This property primarily targets image plane choices, where the host should be able to create a new plane and add it to the menu.
+     */
+    bool ChoiceParam::getHostCanAddOptions()
+    {
+        bool v = _paramProps.propGetInt(kNatronOfxParamPropChoiceHostCanAddOptions, false) != 0;
+        return v;
+    }
+#endif
 
   ////////////////////////////////////////////////////////////////////////////////
   // Wraps up a custom param */

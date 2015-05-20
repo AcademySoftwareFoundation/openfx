@@ -402,6 +402,7 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NATRON
     bool isNatron;
     bool supportsDynamicChoices;
+    bool supportsCascadingChoices;
 #endif
 
   public:
