@@ -74,6 +74,18 @@ Valid values:
  planes with 2 components.*/
 #define kNatronOfxImageComponentXY "NatronOfxImageComponentXY"
 
+/** @brief Whether the menu should be hierarchical/cascading, and each option contains a slash-separated path to the item.
+
+    - Type - int X 1
+    - Property Set - plugin parameter descriptor (read/write) and instance (read only), and on the image effect host descriptor (read only)
+    - Default - 0
+    - Valid Values - 0 or 1
+
+This is a property on parameters of type ::kOfxParamTypeChoice, and tells the choice whether menu should be hierarchical/cascading, and each option contains a slash-separated path to the item.
+
+*/
+#define kNatronOfxParamPropChoiceCascading "NatronOfxParamPropChoiceCascading"
+
 /** @brief int x1 property on a choice parameter descriptor (read/write) and choice parameter instance (read-only) to indicate whether
  the host can add a new choice on its own (probably via a GUI specific to this parameter).
  The plugin may then retrieve the option name whenever a choice value is out of its initial range.

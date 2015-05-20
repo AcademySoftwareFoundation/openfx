@@ -3395,6 +3395,7 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NATRON
         { kNatronOfxHostIsNatron, Property::eInt, 1, true, "0" },
         { kNatronOfxParamHostPropSupportsDynamicChoices, Property::eInt, 1, true, "0" },
+        { kNatronOfxParamPropChoiceCascading, Property::eInt, 1, true, "0" },
 #endif
         Property::propSpecEnd
       };    
