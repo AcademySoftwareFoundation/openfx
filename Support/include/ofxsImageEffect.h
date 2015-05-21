@@ -403,6 +403,7 @@ namespace OFX {
     bool isNatron;
     bool supportsDynamicChoices;
     bool supportsCascadingChoices;
+    bool supportsChannelSelector;
 #endif
 
   public:
@@ -650,7 +651,11 @@ namespace OFX {
     virtual void setHWNDInteractDescriptor(HWNDInteractDescriptor* desc);
 #endif // #if defined(WIN32) || defined(WIN64)
 #endif
-  };  
+#ifdef OFX_EXTENSIONS_NATRON
+  /** @brief indicate if the host may add a channel selector */
+  void setChannelSelector(PixelComponentEnum v);
+#endif
+  };
 
   ////////////////////////////////////////////////////////////////////////////////
   /** @brief Wraps up an image */

@@ -984,6 +984,37 @@ namespace OFX {
     return clip;
   }
 
+#ifdef OFX_EXTENSIONS_NATRON
+  /** @brief indicate if the host may add a channel selector */
+  void ImageEffectDescriptor::setChannelSelector(PixelComponentEnum v)
+  {
+    // the header says this property is on the effect instance, but on Nuke it only exists on the effect descriptor
+    if (gHostDescription.supportsChannelSelector) {
+      switch(v)
+      {
+      case ePixelComponentNone :
+        _effectProps.propSetString(kNatronOfxImageEffectPropChannelSelector, kOfxImageComponentNone, false);
+        break;
+
+      case ePixelComponentRGBA :
+        _effectProps.propSetString(kNatronOfxImageEffectPropChannelSelector, kOfxImageComponentNone, false);
+        break;
+
+      case ePixelComponentRGB :
+        _effectProps.propSetString(kNatronOfxImageEffectPropChannelSelector, kOfxImageComponentNone, false);
+        break;
+
+      case ePixelComponentAlpha :
+        _effectProps.propSetString(kNatronOfxImageEffectPropChannelSelector, kOfxImageComponentNone, false);
+        break;
+
+      default :
+        break;
+      }
+    }
+  }
+#endif
+
   ////////////////////////////////////////////////////////////////////////////////
   // wraps up an image  
   ImageBase::ImageBase(OfxPropertySetHandle props)
@@ -2482,6 +2513,7 @@ namespace OFX {
         gHostDescription.isNatron                   = hostProps.propGetInt(kNatronOfxHostIsNatron, false) != 0;
         gHostDescription.supportsDynamicChoices     = hostProps.propGetInt(kNatronOfxParamHostPropSupportsDynamicChoices, false) != 0;
         gHostDescription.supportsCascadingChoices   = hostProps.propGetInt(kNatronOfxParamPropChoiceCascading, false) != 0;
+        gHostDescription.supportsChannelSelector    = hostProps.propGetString(kNatronOfxImageEffectPropChannelSelector, false) == kOfxImageComponentRGBA;
 #endif
 
         int numComponents = hostProps.propGetDimension(kOfxImageEffectPropSupportedComponents);

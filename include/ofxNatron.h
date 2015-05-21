@@ -106,6 +106,24 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
  */
 #define kNatronOfxParamOutputChannels "outputChannels"
 
+/** @brief Indicates if the host may add a channel selector, and which components should be selected by default.
+
+ - Type - string X 1
+ - Property Set - image effect descriptor (read/write), host descriptor (read only)
+ - Valid Values - This must be one of
+ - kOfxImageComponentNone (channel selector is disabled)
+ - kOfxImageComponentRGBA (enabled, with RGBA selected by default)
+ - kOfxImageComponentRGB (enabled, with RGB selected by default)
+ - kOfxImageComponentAlpha (enabled, with Alpha selected by default)
+
+ This string indicates if the host may add a channel selector, and which components should be selected by default.
+
+ If the property is not present the the host descriptor, or its value is not kOfxImageComponentRGBA, then the host does not have a channel selector, and the plugin may propose its own solution (e.g. a checkbox for each channel).
+ 
+ The default for an image effect descriptor is kOfxImageComponentRGBA.
+ */
+#define kNatronOfxImageEffectPropChannelSelector "NatronOfxImageEffectPropChannelSelector"
+
 /** @brief Used to define the tracker effect context. 
  In this context the effect instance will be exactly 1 track. 
  It  will define 4 buttons parameters, namely:
