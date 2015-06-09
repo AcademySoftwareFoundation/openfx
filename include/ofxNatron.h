@@ -130,16 +130,16 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
  the plug-in or not. These are generic names to let a chance to the host to recnognize them and give 
  them an appropriate user interface.
  **/
-#define kNatronOfxParamProcessR      "r"
+#define kNatronOfxParamProcessR      "NatronOfxParamProcessR"
 #define kNatronOfxParamProcessRLabel "R"
 #define kNatronOfxParamProcessRHint  "Process red component"
-#define kNatronOfxParamProcessG      "g"
+#define kNatronOfxParamProcessG      "NatronOfxParamProcessG"
 #define kNatronOfxParamProcessGLabel "G"
 #define kNatronOfxParamProcessGHint  "Process green component"
-#define kNatronOfxParamProcessB      "b"
+#define kNatronOfxParamProcessB      "NatronOfxParamProcessB"
 #define kNatronOfxParamProcessBLabel "B"
 #define kNatronOfxParamProcessBHint  "Process blue component"
-#define kNatronOfxParamProcessA      "a"
+#define kNatronOfxParamProcessA      "NatronOfxParamProcessA"
 #define kNatronOfxParamProcessALabel "A"
 #define kNatronOfxParamProcessAHint  "Process alpha component"
 
