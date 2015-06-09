@@ -125,23 +125,21 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 #define kNatronOfxImageEffectPropChannelSelector "NatronOfxImageEffectPropChannelSelector"
 
 
-/**
- Defines 4 parameters which controls whether each channel (respectively Red,Green,Blue,Alpha) are processed by 
- the plug-in or not. These are generic names to let a chance to the host to recnognize them and give 
- them an appropriate user interface.
+/** @brief Generic parameter name for a channel selector. If the plugin doesn't define these, and
+    kNatronOfxImageEffectPropChannelSelector is not set by the plugin, the host may add its own channel selector.
  **/
 #define kNatronOfxParamProcessR      "NatronOfxParamProcessR"
 #define kNatronOfxParamProcessRLabel "R"
-#define kNatronOfxParamProcessRHint  "Process red component"
+#define kNatronOfxParamProcessRHint  "Process red component."
 #define kNatronOfxParamProcessG      "NatronOfxParamProcessG"
 #define kNatronOfxParamProcessGLabel "G"
-#define kNatronOfxParamProcessGHint  "Process green component"
+#define kNatronOfxParamProcessGHint  "Process green component."
 #define kNatronOfxParamProcessB      "NatronOfxParamProcessB"
 #define kNatronOfxParamProcessBLabel "B"
-#define kNatronOfxParamProcessBHint  "Process blue component"
+#define kNatronOfxParamProcessBHint  "Process blue component."
 #define kNatronOfxParamProcessA      "NatronOfxParamProcessA"
 #define kNatronOfxParamProcessALabel "A"
-#define kNatronOfxParamProcessAHint  "Process alpha component"
+#define kNatronOfxParamProcessAHint  "Process alpha component."
 
 /** @brief Used to define the tracker effect context. 
  In this context the effect instance will be exactly 1 track. 
