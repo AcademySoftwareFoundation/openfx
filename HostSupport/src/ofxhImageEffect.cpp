@@ -116,6 +116,9 @@ namespace OFX {
         { kOfxImageEffectPropHelpFile,          Property::eString,     1, false, "" },
         { kOfxImageEffectPropHelpContextID,     Property::eInt,        1, false, "0" },
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+        { kNatronOfxImageEffectPropChannelSelector, Property::eString, 1, true, kOfxImageComponentRGBA },
+#endif
         Property::propSpecEnd
       };
 
