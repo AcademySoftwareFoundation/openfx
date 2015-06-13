@@ -125,6 +125,31 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 #define kNatronOfxImageEffectPropChannelSelector "NatronOfxImageEffectPropChannelSelector"
 
 
+/** @brief Indicates if the host may add a mask that will be handled automatically.
+ 
+ - Type - int X 1
+ - Property Set - image effect descriptor (read/write), host descriptor (read only)
+ - Valid Values - 0 or 1
+ - Default value: 0
+ 
+ When set to 1, the plug-in should be able to call clipGetHandle on the clip created by the host.
+ */
+
+#define kNatronOfxImageEffectPropHostMasking "kNatronOfxImageEffectPropHostMasking"
+
+/** @brief Indicates if the host may add a "Mix" double parameter that will dissolve
+  between the source image at 0 and the full effect at 1.
+ 
+ - Type - int X 1
+ - Property Set - image effect descriptor (read/write), host descriptor (read only)
+ - Valid Values - 0 or 1
+ - Default value: 0
+ 
+ When set to 1, the plug-in should be able to call clipGetHandle on the clip created by the host.
+ */
+#define kNatronOfxImageEffectPropHostMixing "kNatronOfxImageEffectPropHostMasking"
+
+
 /** @brief Generic parameter name for a channel selector. If the plugin doesn't define these, and
     kNatronOfxImageEffectPropChannelSelector is not set by the plugin, the host may add its own channel selector.
  **/

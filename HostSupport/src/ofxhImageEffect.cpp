@@ -118,6 +118,8 @@ namespace OFX {
 #endif
 #ifdef OFX_EXTENSIONS_NATRON
         { kNatronOfxImageEffectPropChannelSelector, Property::eString, 1, true, kOfxImageComponentRGBA },
+        { kNatronOfxImageEffectPropHostMasking, Property::eInt, 1, true, "0" },
+        { kNatronOfxImageEffectPropHostMixing, Property::eInt, 1, true, "0" },
 #endif
         Property::propSpecEnd
       };
@@ -283,6 +285,16 @@ namespace OFX {
       bool Base::isMultiPlanar() const
       {
         return _properties.getIntProperty(kFnOfxImageEffectPropMultiPlanar) != 0;
+      }
+        
+      bool Base::isHostMaskingEnabled() const
+      {
+        return _properties.getIntProperty(kNatronOfxImageEffectPropHostMasking) != 0;
+      }
+        
+      bool Base::isHostMixingEnabled() const
+      {
+        return _properties.getIntProperty(kNatronOfxImageEffectPropHostMixing) != 0;
       }
         
       Base::OfxPassThroughLevelEnum Base::getPassThroughForNonRenderedPlanes() const
@@ -3400,6 +3412,8 @@ namespace OFX {
         { kNatronOfxParamHostPropSupportsDynamicChoices, Property::eInt, 1, true, "0" },
         { kNatronOfxParamPropChoiceCascading, Property::eInt, 1, true, "0" },
         { kNatronOfxImageEffectPropChannelSelector, Property::eString, 1, true, kOfxImageComponentNone },
+        { kNatronOfxImageEffectPropHostMasking, Property::eInt, 1, true, "0" },
+        { kNatronOfxImageEffectPropHostMixing, Property::eInt, 1, true, "0" },
 #endif
         Property::propSpecEnd
       };    
