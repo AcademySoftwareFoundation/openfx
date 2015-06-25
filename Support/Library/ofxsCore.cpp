@@ -36,6 +36,9 @@ England
 #include "ofxsSupportPrivate.h"
 #ifdef DEBUG
 #include <iostream>
+#ifdef __APPLE__
+#include <execinfo.h>
+#endif
 #endif
 
 #include "ofxsMemory.h"
@@ -58,6 +61,15 @@ namespace OFX {
     default :
 #    ifdef DEBUG
       std::cout << "Threw suite exception!" << std::endl;
+#     if defined(__APPLE__) || defined(linux)
+      void* callstack[128];
+      int i, frames = backtrace(callstack, 128);
+      char** strs = backtrace_symbols(callstack, frames);
+      for (i = 0; i < frames; ++i) {
+          std::cout << strs[i] << std::endl;
+      }
+      free(strs);
+#     endif
 #    endif
       throw OFX::Exception::Suite(stat);
     }
@@ -67,6 +79,15 @@ namespace OFX {
   {
 #  ifdef DEBUG
     std::cout << "Threw suite exception! Host missing '" << name << "' suite." << std::endl;
+#   if defined(__APPLE__) || defined(linux)
+    void* callstack[128];
+    int i, frames = backtrace(callstack, 128);
+    char** strs = backtrace_symbols(callstack, frames);
+    for (i = 0; i < frames; ++i) {
+        std::cout << strs[i] << std::endl;
+    }
+    free(strs);
+#   endif
 #  endif
     throw OFX::Exception::Suite(kOfxStatErrUnsupported);
   }
