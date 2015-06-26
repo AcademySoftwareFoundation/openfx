@@ -384,6 +384,7 @@ namespace OFX {
     bool supportsBooleanAnimation;
     bool supportsCustomAnimation;
     bool supportsParametricParameter;
+    bool supportsParametricAnimation;
 #ifdef OFX_SUPPORTS_OPENGLRENDER
     bool supportsOpenGLRender;
 #endif
