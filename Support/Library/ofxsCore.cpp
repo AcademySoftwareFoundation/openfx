@@ -36,7 +36,7 @@ England
 #include "ofxsSupportPrivate.h"
 #ifdef DEBUG
 #include <iostream>
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(linux)
 #include <execinfo.h>
 #endif
 #endif
