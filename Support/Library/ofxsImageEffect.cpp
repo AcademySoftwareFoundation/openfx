@@ -295,11 +295,10 @@ namespace OFX {
     }
   }
 
-#ifdef OFX_SUPPORTS_OPENGLRENDER
-    /** @brief turns a bit depth string into and enum */
-    const char* mapBitDepthEnumToStr(BitDepthEnum bitDepth) throw(std::invalid_argument)
-    {
-      switch (bitDepth) {
+  /** @brief turns a bit depth string into and enum */
+  const char* mapBitDepthEnumToStr(BitDepthEnum bitDepth) throw(std::invalid_argument)
+  {
+    switch (bitDepth) {
       case eBitDepthUByte:
         return kOfxBitDepthByte;
       case eBitDepthUShort:
@@ -323,9 +322,8 @@ namespace OFX {
       default:
         OFX::Log::error(true, "Unknown bit depth enum '%d'", (int)bitDepth);
         throw std::invalid_argument("unknown BitDepthEnum");
-      }
     }
-#endif
+  }
 
   /** @brief turns a pixel component string into and enum */
   PixelComponentEnum mapStrToPixelComponentEnum(const std::string &str) throw(std::invalid_argument)
