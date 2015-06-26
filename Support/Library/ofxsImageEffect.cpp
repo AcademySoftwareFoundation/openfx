@@ -188,6 +188,37 @@ namespace OFX {
     throw std::invalid_argument(s);
   }
 
+  const char* mapContextEnumToStr(ContextEnum context) throw(std::invalid_argument)
+  {
+    switch (context) {
+      case eContextGenerator:
+        return kOfxImageEffectContextGenerator;
+      case eContextFilter:
+        return kOfxImageEffectContextFilter;
+      case eContextTransition:
+        return kOfxImageEffectContextTransition;
+      case eContextPaint:
+        return kOfxImageEffectContextPaint;
+      case eContextGeneral:
+        return kOfxImageEffectContextGeneral;
+      case eContextRetimer:
+        return kOfxImageEffectContextRetimer;
+#ifdef OFX_EXTENSIONS_TUTTLE
+      case eContextReader:
+        return kOfxImageEffectContextReader;
+      case eContextWriter:
+        return kOfxImageEffectContextWriter;
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+      case eContextTracker:
+        return kNatronOfxImageEffectContextTracker;
+#endif
+      default:
+        OFX::Log::error(true, "Unknown context enum '%d'", (int)context);
+        throw std::invalid_argument("unknown ContextEnum");
+    }
+  }
+
   const char* mapMessageTypeEnumToStr(OFX::Message::MessageTypeEnum type)
   {
     if(type == OFX::Message::eMessageFatal)
@@ -266,7 +297,7 @@ namespace OFX {
 
 #ifdef OFX_SUPPORTS_OPENGLRENDER
     /** @brief turns a bit depth string into and enum */
-    static std::string mapBitDepthEnumToStr(BitDepthEnum bitDepth)
+    const char* mapBitDepthEnumToStr(BitDepthEnum bitDepth) throw(std::invalid_argument)
     {
       switch (bitDepth) {
       case eBitDepthUByte:
@@ -288,9 +319,11 @@ namespace OFX {
       case eBitDepthNone:
         return kOfxBitDepthNone;
       case eBitDepthCustom:
-        return std::string();
-        }
-      return std::string();
+        return "OfxBitDepthCustom";
+      default:
+        OFX::Log::error(true, "Unknown bit depth enum '%d'", (int)bitDepth);
+        throw std::invalid_argument("unknown BitDepthEnum");
+      }
     }
 #endif
 
@@ -324,6 +357,34 @@ namespace OFX {
 #endif
     else {
       return ePixelComponentCustom;
+    }
+  }
+
+  /** @brief turns a pixel component string into and enum */
+  const char* mapPixelComponentEnumToStr(PixelComponentEnum pixelComponent) throw(std::invalid_argument)
+  {
+    switch (pixelComponent) {
+      case ePixelComponentRGBA:
+        return kOfxImageComponentRGBA;
+      case ePixelComponentRGB:
+        return kOfxImageComponentRGB;
+      case ePixelComponentAlpha:
+        return kOfxImageComponentAlpha;
+#ifdef OFX_EXTENSIONS_NUKE
+      case ePixelComponentMotionVectors:
+        return kFnOfxImageComponentMotionVectors;
+      case ePixelComponentStereoDisparity:
+        return kFnOfxImageComponentStereoDisparity;
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+      case ePixelComponentXY:
+        return kNatronOfxImageComponentXY;
+#endif
+      case ePixelComponentCustom:
+        return "OfxImageComponentCustom";
+      default:
+        OFX::Log::error(true, "Unknown pixel component enum '%d'", (int)pixelComponent);
+        throw std::invalid_argument("unknown PixelComponentEnum");
     }
   }
 

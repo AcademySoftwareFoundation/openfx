@@ -255,6 +255,8 @@ namespace OFX {
   /** @brief map a std::string to a context enum */
   ContextEnum mapToContextEnum(const std::string &s) throw(std::invalid_argument);
 
+  const char* mapContextEnumToStr(ContextEnum context) throw(std::invalid_argument);
+
   const char* mapMessageTypeEnumToStr(OFX::Message::MessageTypeEnum type);
 
   OFX::Message::MessageReplyEnum mapToMessageReplyEnum(OfxStatus stat);
@@ -263,7 +265,11 @@ namespace OFX {
 
   BitDepthEnum mapStrToBitDepthEnum(const std::string &str) throw(std::invalid_argument);
 
+  const char* mapBitDepthEnumToStr(BitDepthEnum bitDepth) throw(std::invalid_argument);
+
   PixelComponentEnum mapStrToPixelComponentEnum(const std::string &str) throw(std::invalid_argument);
+
+  const char* mapPixelComponentEnumToStr(PixelComponentEnum pixelComponent) throw(std::invalid_argument);
 
 #if defined(OFX_EXTENSIONS_NATRON)
   /** @brief extract layer name (first element) and channel names (other elements) from the kOfxImageEffectPropComponents property value, @see getPixelComponentsProperty() */
