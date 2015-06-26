@@ -38,6 +38,7 @@ England
 #include <iostream>
 #if defined(__APPLE__) || defined(linux)
 #include <execinfo.h>
+#include <stdlib.h>
 #endif
 #endif
 
