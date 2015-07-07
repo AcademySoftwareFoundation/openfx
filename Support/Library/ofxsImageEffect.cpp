@@ -2232,11 +2232,21 @@ namespace OFX {
           throw(Exception::PropertyUnknownToHost(name.c_str()));
       return it->second;
   }
-    
+  
+  bool ClipComponentsSetter::setOutProperties()
+  {
+      for (std::map<std::string,std::vector<std::string> >::iterator it = _clipComponents.begin(); it!=_clipComponents.end(); ++it) {
+          const std::string& propName = extractValueForName(_clipPlanesPropNames, it->first);
+          for (std::size_t i = 0; i < it->second.size(); ++i) {
+              _outArgs.propSetString(propName.c_str(), it->second[i], (int)i, true);
+          }
+      }
+      return _doneSomething;
+  }
+ 
   void ClipComponentsSetter::addClipComponents(Clip& clip, PixelComponentEnum comps)
   {
       _doneSomething = true;
-      const std::string& propName = extractValueForName(_clipPlanesPropNames, clip.name());
       std::string compName;
       switch(comps)
       {
@@ -2268,20 +2278,14 @@ namespace OFX {
         case ePixelComponentCustom :
             break;
       }
-      if (!propName.empty()) {
-          int dim = _outArgs.propGetDimension(propName.c_str());
-          _outArgs.propSetString(propName.c_str(), compName, dim);
-      }
+      _clipComponents[clip.name()].push_back(compName);
+      
   }
     
   void ClipComponentsSetter::addClipComponents(Clip& clip, const std::string& comps)
   {
      _doneSomething = true;
-     const std::string& propName = extractValueForName(_clipPlanesPropNames, clip.name());
-     if (!propName.empty()) {
-        int dim = _outArgs.propGetDimension(propName.c_str());
-        _outArgs.propSetString(propName.c_str(), comps, dim);
-     }
+     _clipComponents[clip.name()].push_back(comps);
   }
     
   void ClipComponentsSetter::setPassThroughClip(const Clip* clip,double time,int view)
@@ -2304,16 +2308,29 @@ namespace OFX {
             throw(Exception::PropertyUnknownToHost(name.c_str()));
         return it->second;
   }
-    
+
+  bool FrameViewsNeededSetter::setOutProperties()
+  {
+      for (std::map<std::string, std::map<int, std::vector<OfxRangeD> > >::iterator it = _frameViews.begin(); it!=_frameViews.end(); ++it) {
+          int dimIndex = 0;
+          const std::string& propName = extractValueForName(_clipFrameViewsPropnames, it->first);
+          for (std::map<int, std::vector<OfxRangeD> >::iterator it2 = it->second.begin(); it2!=it->second.end(); ++it2) {
+              for (std::vector<OfxRangeD>::iterator it3 = it2->second.begin(); it3 != it2->second.end(); ++it3, dimIndex += 3) {
+                  _outArgs.propSetDouble(propName.c_str(), it3->min, dimIndex);
+                  _outArgs.propSetDouble(propName.c_str(), it3->max, dimIndex + 1);
+                  _outArgs.propSetDouble(propName.c_str(), it2->first, dimIndex + 2);
+              }
+          }
+      }
+      return _doneSomething;
+  }
 
   void FrameViewsNeededSetter::addFrameViewsNeeded(const Clip& clip,const OfxRangeD &range, int view)
   {
       _doneSomething = true;
-      const std::string& propName = extractValueForName(_clipFrameViewsPropnames, clip.name());
-      int dim = _outArgs.propGetDimension(propName.c_str());
-      _outArgs.propSetDouble(propName.c_str(), range.min, dim);
-      _outArgs.propSetDouble(propName.c_str(), range.max, dim + 1);
-      _outArgs.propSetDouble(propName.c_str(), view, dim + 2);
+      std::map<int, std::vector<OfxRangeD> >& frameViews = _frameViews[clip.name()];
+      std::vector<OfxRangeD>& ranges = frameViews[view];
+      ranges.push_back(range);      
   }
 #endif
 
@@ -3322,7 +3339,7 @@ namespace OFX {
         ImageEffectDescriptor* desc = gEffectDescriptors[plugname][effectInstance->getContext()];
         FrameViewsNeededSetter setter(outArgs,desc->getClipFrameViewsPropNames());
         effectInstance->getFrameViewsNeeded(args,setter);
-        return setter.didSomething();
+        return setter.setOutProperties();
     }
       
     static
@@ -3337,7 +3354,7 @@ namespace OFX {
           ImageEffectDescriptor* desc = gEffectDescriptors[plugname][effectInstance->getContext()];
           ClipComponentsSetter setter(outArgs,desc->getClipPlanesPropNames());
           effectInstance->getClipComponents(args,setter);
-          return setter.didSomething();
+          return setter.setOutProperties();
     }
       
     /** @brief Action called in place of a render to recover a transform matrix from an effect. */
