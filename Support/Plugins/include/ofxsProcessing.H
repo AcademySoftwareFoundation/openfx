@@ -39,6 +39,8 @@ England
 */
 
 #include <cassert>
+#include <algorithm>
+
 #include "ofxsImageEffect.h"
 #include "ofxsMultiThread.h"
 
