@@ -262,7 +262,7 @@ namespace OFX {
         bool isViewAware() const;
           
         /// Indicates to the host that a view aware plugin produces the same image independent of the view being rendered
-        bool isViewInvariant() const;
+        int getViewInvariance() const;
 #endif
       };
 

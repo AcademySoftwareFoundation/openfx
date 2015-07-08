@@ -321,9 +321,9 @@ namespace OFX {
         return _properties.getIntProperty(kFnOfxImageEffectPropViewAware) != 0;
       }
         
-      bool Base::isViewInvariant() const
+      int Base::getViewInvariance() const
       {
-        return _properties.getIntProperty(kFnOfxImageEffectPropViewInvariance) != 0;
+        return _properties.getIntProperty(kFnOfxImageEffectPropViewInvariance);
       }
 #endif
 
