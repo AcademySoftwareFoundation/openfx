@@ -1498,7 +1498,11 @@ namespace OFX {
 #endif
                getContext() == kOfxImageEffectContextGenerator) {
                 if (it->second->isOutput() || it->second->getConnected()) { // needed to be able to fetch the RoD
-                  OfxRectD rod = it->second->getRegionOfDefinition(time);
+                  OfxRectD rod = it->second->getRegionOfDefinition(time
+#ifdef OFX_EXTENSIONS_NUKE
+                                                                   , view
+#endif
+                                                                   );
                   if(it->second->supportsTiles()) {
                     std::string name = "OfxImageClipPropRoI_"+it->first;
                     OfxRectD thisRoi;
