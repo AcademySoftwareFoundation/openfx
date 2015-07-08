@@ -978,7 +978,7 @@ namespace OFX {
   }
     
   /** @brief Indicates to the host that a view aware plugin produces the same image independent of the view being rendered*/
-  void ImageEffectDescriptor::setIsViewInvariant(bool v)
+  void ImageEffectDescriptor::setIsViewInvariant(ViewInvarianceLevelEnum v)
   {
     if (OFX::Private::gImageEffectPlaneSuiteV2) {
       _effectProps.propSetInt(kFnOfxImageEffectPropViewInvariance, int(v), false);

@@ -173,6 +173,18 @@ namespace OFX {
     //all planes will be transformed with minimalist changes to the plug-in code.
     ePassThroughLevelRenderAllRequestedPlanes = 2
   };
+    
+  enum ViewInvarianceLevelEnum {
+      
+    // All views produced are different from each other
+    eViewInvarianceAllViewsVariant = 0,
+      
+    // All views are similar except for pass-through planes
+    eViewInvarianceOnlyPassThroughPlanesVariant,
+      
+    // Result is similar across all views
+    eViewInvarianceAllViewsInvariant,
+  };
 #endif
 
   /** @brief Enumerates the ways a fielded image can be extracted from a clip */
@@ -627,7 +639,7 @@ namespace OFX {
       void setIsViewAware(bool v);
       
       /** @brief Indicates to the host that a view aware plugin produces the same image independent of the view being rendered*/
-      void setIsViewInvariant(bool v);
+      void setIsViewInvariant(ViewInvarianceLevelEnum v);
 #endif
 
     /** @brief Create a clip, only callable from describe in context 
