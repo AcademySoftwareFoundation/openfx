@@ -1498,11 +1498,7 @@ namespace OFX {
 #endif
                getContext() == kOfxImageEffectContextGenerator) {
                 if (it->second->isOutput() || it->second->getConnected()) { // needed to be able to fetch the RoD
-                  OfxRectD rod = it->second->getRegionOfDefinition(time
-#ifdef OFX_EXTENSIONS_NUKE
-                                                                   , view
-#endif
-                                                                   );
+                  
                   if(it->second->supportsTiles()) {
                     std::string name = "OfxImageClipPropRoI_"+it->first;
                     OfxRectD thisRoi;
@@ -1511,12 +1507,21 @@ namespace OFX {
                     thisRoi.x2 = outArgs.getDoubleProperty(name,2);
                     thisRoi.y2 = outArgs.getDoubleProperty(name,3);
                   
-                    /// and clamp it to the clip's rod
-                    thisRoi = Clamp(thisRoi, rod);
+                    // and DON'T clamp it to the clip's rod
+                    // We cannot clip it against the RoD because the RoI may be used for frames
+                    // at different a time or view than the current time and view passed to this action
+                    // which would result in a wrong clipping. Unfortunately only the implementation of
+                    // the host can do the correct clipping.
+                    //thisRoi = Clamp(thisRoi, rod);
                     rois[it->second] = thisRoi;
                   }
                   else {
                     /// not supporting tiles on this input, so set it to the rod
+                    OfxRectD rod = it->second->getRegionOfDefinition(time
+#ifdef OFX_EXTENSIONS_NUKE
+                                                                    , view
+#endif
+                                                                       );
                     rois[it->second] = rod;
                   }
                 }
