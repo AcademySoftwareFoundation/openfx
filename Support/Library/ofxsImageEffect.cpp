@@ -3339,7 +3339,10 @@ namespace OFX {
         ImageEffectDescriptor* desc = gEffectDescriptors[plugname][effectInstance->getContext()];
         FrameViewsNeededSetter setter(outArgs,desc->getClipFrameViewsPropNames());
         effectInstance->getFrameViewsNeeded(args,setter);
-        return setter.setOutProperties();
+        if (setter.setOutProperties()) {
+            return true;
+        }
+        return false;
     }
       
     static
@@ -3354,7 +3357,10 @@ namespace OFX {
           ImageEffectDescriptor* desc = gEffectDescriptors[plugname][effectInstance->getContext()];
           ClipComponentsSetter setter(outArgs,desc->getClipPlanesPropNames());
           effectInstance->getClipComponents(args,setter);
-          return setter.setOutProperties();
+          if (setter.setOutProperties()) {
+              return true;
+          }
+          return false;
     }
       
     /** @brief Action called in place of a render to recover a transform matrix from an effect. */
