@@ -4,7 +4,7 @@
 /*
 Software License :
 
-Copyright (c) 2003-2009, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2003-2015, The Open Effects Association Ltd. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -80,8 +80,10 @@ typedef struct OfxImageMemoryStruct *OfxImageMemoryHandle;
 /** @brief String to label images with YUVA components
 
 Note, this has been deprecated.
- */
 #define kOfxImageComponentYUVA "OfxImageComponentYUVA"
+removed in v1.4
+ */
+
 
 /** @brief Use to define the generator image effect context. See \ref ::kOfxImageEffectPropContext
  */
@@ -351,6 +353,24 @@ This property is set to indicate whether the effect is currently being rendered 
 */
 #define kOfxImageEffectPropSequentialRenderStatus "OfxImageEffectPropSequentialRenderStatus"
 
+#define kOfxHostNativeOriginBottomLeft   "kOfxImageEffectHostPropNativeOriginBottomLeft"  
+#define kOfxHostNativeOriginTopLeft      "kOfxImageEffectHostPropNativeOriginTopLeft"  
+#define kOfxHostNativeOriginCenter       "kOfxImageEffectHostPropNativeOriginCenter"  
+/** @brief Property that indicates the host native UI space - this is only a UI hint, has no impact on pixel processing
+
+   - Type - UTF8 string X 1
+   - Property Set - read only property (host)
+    - Valid Values - 
+     "kOfxImageEffectHostPropNativeOriginBottomLeft"  - 0,0 bottom left
+     "kOfxImageEffectHostPropNativeOriginTopLeft" - 0,0 top left
+	 "kOfxImageEffectHostPropNativeOriginCenter"  - 0,0 center (screen space)
+
+This property is set to kOfxHostNativeOriginBottomLeft pre V1.4 and was to be discovered by plug-ins. This is useful for drawing overlay for points... so everything matches the rest of the app (for example expression linking to other tools, or simply match the reported location of the host viewer).
+
+*/
+#define kOfxImageEffectHostPropNativeOrigin  "OfxImageEffectHostPropNativeOrigin"
+
+
 /** @brief Property that indicates if a plugin is being rendered in response to user interaction.
 
    - Type - int X 1
@@ -422,6 +442,8 @@ Multiple resolution images mean...
 Tiled images mean that input or output images can contain pixel data that is only a subset of their full RoD.
 
 If a clip or plugin does not support tiled images, then the host should supply full RoD images to the effect whenever it fetches one.
+
+V1.4:  It is now possible to change OfxImageEffectPropSupportsTiles in Instance Changed 
 */
 #define kOfxImageEffectPropSupportsTiles "OfxImageEffectPropSupportsTiles"
 
@@ -432,9 +454,11 @@ If a clip or plugin does not support tiled images, then the host should supply f
    - Default - to 0
    - Valid Values - This must be one of 0 or 1
 
-This feature is likely to be deprecated in future releases.
-*/
+This feature has been deprecated - officially commented out v1.4.
 #define kOfxImageEffectPropInAnalysis "OfxImageEffectPropInAnalysis"
+
+*/
+
 
 /** @brief Indicates support for random temporal access to images in a clip.
 
@@ -730,6 +754,20 @@ or input image changes. For example a generater that creates random noise pixel 
 This should be applied to any spatial parameters to position them correctly. Not that the 'x' value does not include any pixel aspect ratios.
 */
 #define kOfxImageEffectPropRenderScale "OfxImageEffectPropRenderScale"
+
+/** @brief Indicates whether an effect can take quality shortcuts to improve speed.
+
+   - Type - int X 1
+   - Property Set - render calls, host (read-only)
+   - Default - 0  - 0: Best Quality (1: Draft)
+   - Valid Values - This must be one of 0 or 1
+
+This property indicates that the host provides the plug-in the option to render in Draft/Preview mode. This is useful for applications that must support fast scrubbing. These allow a plug-in to take short-cuts for improved performance when the situation allows and it makes sense, for example to generate thumbnails with effects applied. 
+For example switch to a cheaper interpolation type or rendering mode. A plugin should expect frames rendered in this manner that will not be stucked in host cache unless the cache is only used in the same draft situations.
+If an host does not support that property a value of 0 is assumed.
+Also note that some hosts do implement kOfxImageEffectPropRenderScale - these two properties can be used independently. 
+ */
+#define kOfxImageEffectPropRenderQualityDraft "OfxImageEffectPropRenderQualityDraft"
 
 /** @brief The extent of the current project in canonical coordinates.
 

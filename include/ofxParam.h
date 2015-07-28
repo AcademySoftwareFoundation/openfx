@@ -320,8 +320,10 @@ an expression in the host.
     - Valid Values - 0 or 1
 
 This is used to tell the host whether the plug-in is going to attempt to set the value of the parameter.
-*/
 #define kOfxParamPropPluginMayWrite "OfxParamPropPluginMayWrite"
+v1.4: removed
+*/
+
 
 /** @brief Flags whether the value of a parameter should persist.
 

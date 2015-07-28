@@ -5,7 +5,7 @@
 /*
 Software License :
 
-Copyright (c) 2010, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2010-15, The Open Effects Association Ltd. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -61,7 +61,7 @@ rendering
 
    - Type - C string X 1
    - Property Set - plugin descriptor (read/write), host descriptor (read
-only)
+only) - plugin instance change (read/write)
    - Default - "false" for a plugin
    - Valid Values - This must be one of
      - "false"  - in which case the host or plugin does not support OpenGL
@@ -71,6 +71,9 @@ only)
                   is capable of CPU based rendering in the absence of a GPU
      - "needed" - only for plug-ins, this means that an effect has to have
                   OpenGL support, without which it cannot work.
+
+V1.4: It is now expected from host reporting v1.4 that the plugin can during instance change switch from true to false and false to true.
+
 */
 #define kOfxImageEffectPropOpenGLRenderSupported "OfxImageEffectPropOpenGLRenderSupported"
 
