@@ -14,7 +14,7 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name The Open Effects Association Ltd, nor the names of its 
+    * Neither the name The Open Effects Association Ltd, nor the names of its
       contributors may be used to endorse or promote products derived from this
       software without specific prior written permission.
 
@@ -82,24 +82,32 @@ typedef struct OfxRGBColourD {
 }OfxRGBColourD;
 
 
-/** @brief Defines an 8 bit per component YUVA pixel 
+/** @brief Defines an 8 bit per component YUVA pixel
+@deprecated Deprecated in 1.3, removed in 1.4
+*/
+#ifdef DOXYGEN
 typedef struct OfxYUVAColourB {
   unsigned char y, u, v, a;
 }OfxYUVAColourB;
-Deprecated in 1.3, removed in 1.4
+#endif
+
+/** @brief Defines an 16 bit per component YUVA pixel
+@deprecated Deprecated in 1.3, removed in 1.4
 */
-/** @brief Defines an 16 bit per component YUVA pixel 
+#ifdef DOXYGEN
 typedef struct OfxYUVAColourS {
   unsigned short y, u, v, a;
 }OfxYUVAColourS;
-Deprecated in 1.3, removed in 1.4
-*/
+#endif
 /** @brief Defines an floating point component YUVA pixel
+@deprecated Deprecated in 1.3, removed in 1.4
+ */
+#ifdef DOXYGEN
 typedef struct OfxYUVAColourF {
   float y, u, v, a;
 }OfxYUVAColourF;
-Deprecated in 1.3, removed in 1.4
- */
+#endif
+
 #ifdef __cplusplus
 }
 #endif

@@ -14,7 +14,7 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name The Open Effects Association Ltd, nor the names of its 
+    * Neither the name The Open Effects Association Ltd, nor the names of its
       contributors may be used to endorse or promote products derived from this
       software without specific prior written permission.
 
@@ -46,8 +46,8 @@ extern "C" {
 /** @brief string value on the ::kOfxPropType property for all parameter instances */
 #define kOfxTypeParameterInstance "OfxTypeParameterInstance"
 
-/** @brief Blind declaration of an OFX param 
-    
+/** @brief Blind declaration of an OFX param
+
 */
 typedef struct OfxParamStruct *OfxParamHandle;
 
@@ -58,7 +58,7 @@ typedef struct OfxParamSetStruct *OfxParamSetHandle;
 
 
 /**
-   \defgroup ParamTypeDefines Parameter Type definitions 
+   \defgroup ParamTypeDefines Parameter Type definitions
 
 These strings are used to identify the type of the parameter when it is defined, they are also on the ::kOfxParamPropType in any parameter instance.
 */
@@ -101,13 +101,13 @@ These strings are used to identify the type of the parameter when it is defined,
 */
 /*@{*/
 /**
-   \defgroup ParamPropDefines Parameter Property Definitions 
+   \defgroup ParamPropDefines Parameter Property Definitions
 
 These are the list of properties used by the parameters suite.
 */
 /*@{*/
 
-/** @brief Indicates if the host supports animation of custom parameters 
+/** @brief Indicates if the host supports animation of custom parameters
 
     - Type - int X 1
     - Property Set - host descriptor (read only)
@@ -115,9 +115,9 @@ These are the list of properties used by the parameters suite.
 */
 #define kOfxParamHostPropSupportsCustomAnimation "OfxParamHostPropSupportsCustomAnimation"
 
-/** @brief Indicates if the host supports animation of string params 
+/** @brief Indicates if the host supports animation of string params
 
-    - Type - int X 1 
+    - Type - int X 1
     - Property Set - host descriptor (read only)
     - Valid Values - 0 or 1
 */
@@ -131,7 +131,7 @@ These are the list of properties used by the parameters suite.
 */
 #define kOfxParamHostPropSupportsBooleanAnimation "OfxParamHostPropSupportsBooleanAnimation"
 
-/** @brief Indicates if the host supports animation of choice params 
+/** @brief Indicates if the host supports animation of choice params
 
     - Type - int X 1
     - Property Set - host descriptor (read only)
@@ -162,7 +162,7 @@ If set to -1 it implies unlimited number of parameters.
     - Property Set - host descriptor (read only)
 
     If there is no limit to the number of pages on a host, set this to -1.
-    
+
 Hosts that do not support paged parameter layout should set this to zero.
 */
 #define kOfxParamHostPropMaxPages "OfxParamHostPropMaxPages"
@@ -204,7 +204,7 @@ If set, the parameter's normal interface is replaced completely by the interact 
 #define kOfxParamPropInteractV1 "OfxParamPropInteractV1"
 
 /** @brief The size of a parameter instance's custom interface in screen pixels.
-  
+
   - Type - double x 2
   - Property Set - plugin parameter instance (read only)
 
@@ -279,7 +279,7 @@ A plug-in uses this property to indicate if a parameter is able to animate.
     - Type - int X 1
     - Property Set - param set instance (read/write)
     - Default - 0
-    - Valid Values - 
+    - Valid Values -
         - 0 - no need to sync
         - 1 - paramset is not synced
 
@@ -299,7 +299,7 @@ operation on the instance.
    modify the property).
 */
 #define kOfxPropParamSetNeedsSyncing "OfxPropParamSetNeedsSyncing"
- 
+
 /** @brief Flags whether a parameter is currently animating.
 
     - Type - int x 1
@@ -320,9 +320,11 @@ an expression in the host.
     - Valid Values - 0 or 1
 
 This is used to tell the host whether the plug-in is going to attempt to set the value of the parameter.
-#define kOfxParamPropPluginMayWrite "OfxParamPropPluginMayWrite"
-v1.4: removed
+@deprecated v1.4: removed
 */
+#ifdef DOXYGEN // define for doc only
+#define kOfxParamPropPluginMayWrite "OfxParamPropPluginMayWrite"
+#endif
 
 
 /** @brief Flags whether the value of a parameter should persist.
@@ -431,7 +433,7 @@ The exact type and dimension is dependant on the type of the parameter. These ar
  */
 #define kOfxParamPropDefault "OfxParamPropDefault"
 
-/** @brief Describes how the double parameter should be interpreted by a host. 
+/** @brief Describes how the double parameter should be interpreted by a host.
 
    - Type - C string X 1
    - Default - ::kOfxParamDoubleTypePlain
@@ -489,7 +491,7 @@ Deprecated in favour of ::OfxParamDoubleTypeY
  */
 #define kOfxParamDoubleTypeNormalisedY  "OfxParamDoubleTypeNormalisedY"
 
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating an absolute position normalised to the X dimension. See \ref ::kOfxParamPropDoubleType. 
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating an absolute position normalised to the X dimension. See \ref ::kOfxParamPropDoubleType.
 
 Deprecated in favour of ::OfxParamDoubleTypeXAbsolute
 */
@@ -501,15 +503,15 @@ Deprecated in favour of ::OfxParamDoubleTypeYAbsolute
  */
 #define kOfxParamDoubleTypeNormalisedYAbsolute  "OfxParamDoubleTypeNormalisedYAbsolute"
 
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to the X and Y dimension for 2D params. See \ref ::kOfxParamPropDoubleType. 
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to the X and Y dimension for 2D params. See \ref ::kOfxParamPropDoubleType.
 
 Deprecated in favour of ::OfxParamDoubleTypeXY
 */
 #define kOfxParamDoubleTypeNormalisedXY  "OfxParamDoubleTypeNormalisedXY"
 
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to the X and Y dimension for a 2D param that can be interpretted as an absolute spatial position. See \ref ::kOfxParamPropDoubleType. 
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to the X and Y dimension for a 2D param that can be interpretted as an absolute spatial position. See \ref ::kOfxParamPropDoubleType.
 
-Deprecated in favour of ::kOfxParamDoubleTypeXYAbsolute 
+Deprecated in favour of ::kOfxParamDoubleTypeXYAbsolute
 */
 #define kOfxParamDoubleTypeNormalisedXYAbsolute  "OfxParamDoubleTypeNormalisedXYAbsolute"
 
@@ -538,12 +540,12 @@ Deprecated in favour of ::kOfxParamDoubleTypeXYAbsolute
    - Type - C string X 1
    - Default - kOfxParamCoordinatesCanonical
    - Property Set - Non normalised spatial double parameters, ie: any double param who's ::kOfxParamPropDoubleType is set to one of...
-      - kOfxParamDoubleTypeX 
-      - kOfxParamDoubleTypeXAbsolute 
-      - kOfxParamDoubleTypeY 
-      - kOfxParamDoubleTypeYAbsolute 
-      - kOfxParamDoubleTypeXY 
-      - kOfxParamDoubleTypeXYAbsolute 
+      - kOfxParamDoubleTypeX
+      - kOfxParamDoubleTypeXAbsolute
+      - kOfxParamDoubleTypeY
+      - kOfxParamDoubleTypeYAbsolute
+      - kOfxParamDoubleTypeXY
+      - kOfxParamDoubleTypeXYAbsolute
    - Valid Values - This must be one of
       - kOfxParamCoordinatesCanonical - the default is in canonical coords
       - kOfxParamCoordinatesNormalised - the default is in normalised coordinates
@@ -561,7 +563,7 @@ This allows a spatial param to specify what its default is, so by saying normali
 /** @brief A flag to indicate if there is a host overlay UI handle for the given parameter.
 
     - Type - int x 1
-    - Property Set - plugin parameter descriptor (read only) 
+    - Property Set - plugin parameter descriptor (read only)
     - Valid Values - 0 or 1
 
 If set to 1, then the host is flagging that there is some sort of native user overlay interface handle available for the given parameter.
@@ -587,7 +589,7 @@ If set to 1, then a plugin is flaging to the host that the host should use a nat
     - Default - 0
     - Valid Values - 0 or 1
 
-If a double parameter is has ::kOfxParamPropDoubleType set to ::kOfxParamDoubleTypeAbsoluteTime, then this indicates whether 
+If a double parameter is has ::kOfxParamPropDoubleType set to ::kOfxParamDoubleTypeAbsoluteTime, then this indicates whether
 any marker should be made visible on the host's time line.
 
 */
@@ -630,7 +632,7 @@ By default parameters are added in order of declaration to the 'root' hierarchy.
 */
 #define kOfxParamPropParent "OfxParamPropParent"
 
-/** @brief Whether the initial state of a group is open or closed in a hierarchical layout. 
+/** @brief Whether the initial state of a group is open or closed in a hierarchical layout.
 
     - Type - int X 1
     - Property Set - plugin parameter descriptor (read/write) and instance (read only)
@@ -669,7 +671,7 @@ This data pointer is unique to each parameter instance, so two instances of the 
     - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
     - Default - the property is empty with no options set.
 
-This property contains the set of options that will be presented to a user from a choice parameter. See @ref ParametersChoice for more details. 
+This property contains the set of options that will be presented to a user from a choice parameter. See @ref ParametersChoice for more details.
 */
 #define kOfxParamPropChoiceOption "OfxParamPropChoiceOption"
 
@@ -793,11 +795,11 @@ If set to 0, it implies the user can specify a new file name, not just a pre-exi
  */
 #define kOfxParamPropStringFilePathExists    "OfxParamPropStringFilePathExists"
 
-/** @brief Used to set a string parameter to be single line, 
+/** @brief Used to set a string parameter to be single line,
     value to be passed to a kOfxParamPropStringMode property */
 #define kOfxParamStringIsSingleLine    "OfxParamStringIsSingleLine"
 
-/** @brief Used to set a string parameter to be multiple line, 
+/** @brief Used to set a string parameter to be multiple line,
     value to be passed to a kOfxParamPropStringMode property */
 #define kOfxParamStringIsMultiLine     "OfxParamStringIsMultiLine"
 
@@ -809,7 +811,7 @@ If set to 0, it implies the user can specify a new file name, not just a pre-exi
     value to be passed to a kOfxParamPropStringMode property */
 #define kOfxParamStringIsDirectoryPath "OfxParamStringIsDirectoryPath"
 
-/** @brief Use to set a string parameter to be a simple label, 
+/** @brief Use to set a string parameter to be a simple label,
     value to be passed to a kOfxParamPropStringMode property  */
 #define kOfxParamStringIsLabel         "OfxParamStringIsLabel"
 
@@ -862,7 +864,7 @@ This property indicates how far between the two ::kOfxParamPropCustomValue keys 
 
 This function allows custom parameters to animate by performing interpolation between keys.
 
-The plugin needs to parse the two strings encoding keyframes on either side of the time 
+The plugin needs to parse the two strings encoding keyframes on either side of the time
 we need a value for. It should then interpolate a new value for it, encode it into a string and set
 the ::kOfxParamPropCustomValue property with this on the outArgs handle.
 
@@ -873,7 +875,7 @@ typedef OfxStatus (OfxCustomParamInterpFuncV1)(OfxParamSetHandle instance,
 					       OfxPropertySetHandle outArgs);
 
 
-/** @brief The OFX suite used to define and manipulate user visible parameters 
+/** @brief The OFX suite used to define and manipulate user visible parameters
  */
 typedef struct OfxParameterSuiteV1 {
   /** @brief Defines a new parameter of the given type in a describe action
@@ -1002,7 +1004,7 @@ typedef struct OfxParameterSuiteV1 {
   \arg time       at what point in time to look up the parameter
   \arg ...        one or more pointers to variables of the relevant type to hold the parameter's derivative
 
-  This gets the derivative of the parameter at the indicated time. 
+  This gets the derivative of the parameter at the indicated time.
 
   The varargs needs to be pointer to C variables
   of the relevant type for this parameter. See OfxParameterSuiteV1::paramGetValue for notes on
@@ -1068,7 +1070,7 @@ typedef struct OfxParameterSuiteV1 {
   \arg ...        one or more variables of the relevant type to hold the parameter's value
 
   This sets a keyframe in the parameter at the indicated time to have the indicated value.
-  The varargs ... argument needs to be values of the relevant type for this parameter. See the note on 
+  The varargs ... argument needs to be values of the relevant type for this parameter. See the note on
   OfxParameterSuiteV1::paramSetValue for more detail
 
   This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
@@ -1215,7 +1217,7 @@ changes a keyframe.  The keyframe indices will not change within a single action
   - ::kOfxStatErrBadHandle  - if the instance handle was invalid
 
   */
-  OfxStatus (*paramEditBegin)(OfxParamSetHandle paramSet, const char *name); 
+  OfxStatus (*paramEditBegin)(OfxParamSetHandle paramSet, const char *name);
 
   /** @brief Used to group any parameter changes for undo/redo purposes
 
@@ -1241,7 +1243,7 @@ changes a keyframe.  The keyframe indices will not change within a single action
 
 
 /** @file ofxParam.h
- 
+
   This header contains the suite definition to manipulate host side parameters.
 
   For more details go see @ref ParametersPage
