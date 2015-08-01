@@ -407,7 +407,9 @@ namespace OFX {
           { kOfxParamPropIsAutoKeying,Property::eInt, 1,       false, "0" },
           { kOfxParamPropPersistant,  Property::eInt, 1,       false, "1" },
           { kOfxParamPropEvaluateOnChange, Property::eInt, 1,  false, "1" },
-          //{ kOfxParamPropPluginMayWrite,    Property::eInt,    1,    false,    "0" }, // removed in OFX 1.4
+#       ifdef kOfxParamPropPluginMayWrite
+          { kOfxParamPropPluginMayWrite,    Property::eInt,    1,    false,    "0" }, // removed in OFX 1.4
+#       endif
           { kOfxParamPropCanUndo,    Property::eInt,    1,    false,    "1" },
           { kOfxParamPropCacheInvalidation,    Property::eString,    1,    false,    kOfxParamInvalidateValueChange },
           Property::propSpecEnd
