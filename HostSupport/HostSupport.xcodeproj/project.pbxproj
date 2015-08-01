@@ -89,6 +89,7 @@
 		1E3CB8CF179935430032B538 /* xmltok.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB8C1179935430032B538 /* xmltok.c */; };
 		1E3CB8D01799364A0032B538 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E3CB8AF179934420032B538 /* libexpat.a */; };
 		1E3CB8D1179936810032B538 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E3CB8AF179934420032B538 /* libexpat.a */; };
+		1EF4C7091B6D3C4700D6746A /* ofxDialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EF4C7081B6D3C4700D6746A /* ofxDialog.h */; };
 		ACF5B53E1AA3651200B4BC6A /* ofxNatron.h in Headers */ = {isa = PBXBuildFile; fileRef = ACF5B53D1AA3651200B4BC6A /* ofxNatron.h */; };
 /* End PBXBuildFile section */
 
@@ -240,6 +241,7 @@
 		1EC2BF3618C4E30400AA53D5 /* fnPublicOfxExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fnPublicOfxExtensions.h; sourceTree = "<group>"; };
 		1EC2BF3718C4E39000AA53D5 /* fnOfxExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fnOfxExtensions.h; sourceTree = "<group>"; };
 		1EEF23C7188E98E4009A07EE /* ofxReadWrite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxReadWrite.h; sourceTree = "<group>"; };
+		1EF4C7081B6D3C4700D6746A /* ofxDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxDialog.h; sourceTree = "<group>"; };
 		ACF5B53D1AA3651200B4BC6A /* ofxNatron.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxNatron.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -346,8 +348,8 @@
 				ACF5B53D1AA3651200B4BC6A /* ofxNatron.h */,
 				1EC2BF3418C4E2EB00AA53D5 /* nuke */,
 				1EEF23C6188E98BD009A07EE /* tuttle */,
-				1E3CB8A9179932800032B538 /* ofxPixels.h */,
 				1E3CB83917992E990032B538 /* ofxCore.h */,
+				1EF4C7081B6D3C4700D6746A /* ofxDialog.h */,
 				1E3CB83A17992E990032B538 /* ofxImageEffect.h */,
 				1E3CB83B17992E990032B538 /* ofxInteract.h */,
 				1E3CB83C17992E990032B538 /* ofxKeySyms.h */,
@@ -357,6 +359,7 @@
 				1E31EC2E17F5CA44004AB554 /* ofxOpenGLRender.h */,
 				1E3CB84017992E990032B538 /* ofxParam.h */,
 				1E31EC2F17F5CA44004AB554 /* ofxParametricParam.h */,
+				1E3CB8A9179932800032B538 /* ofxPixels.h */,
 				1E3CB84117992E990032B538 /* ofxProgress.h */,
 				1E3CB84217992E990032B538 /* ofxProperty.h */,
 				1E31EC3017F5CA44004AB554 /* ofxSonyVegas.h */,
@@ -527,6 +530,7 @@
 				1E3CB84D17992E990032B538 /* ofxProperty.h in Headers */,
 				1E31EC3117F5CA44004AB554 /* ofxOpenGLRender.h in Headers */,
 				1E3CB84E17992E990032B538 /* ofxTimeLine.h in Headers */,
+				1EF4C7091B6D3C4700D6746A /* ofxDialog.h in Headers */,
 				1E3CB8AA179932800032B538 /* ofxPixels.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
