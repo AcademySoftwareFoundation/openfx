@@ -375,7 +375,7 @@ namespace OFX {
       OFX::Exception::PropertyValueIllegalToHost, 
       OFX::Exception::Suite);
 
-    /// get a string property with index 0
+    /// get a pointer property with index 0
     void* propGetPointer(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc, 
       OFX::Exception::PropertyUnknownToHost, 
       OFX::Exception::PropertyValueIllegalToHost, 

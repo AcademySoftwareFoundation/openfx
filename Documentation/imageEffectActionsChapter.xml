@@ -804,6 +804,7 @@
 	    <listitem><link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link> - the scale factor being applied to the images being renderred</listitem>
 	    <listitem><link linkend="kOfxImageEffectPropSequentialRenderStatus"><code>kOfxImageEffectPropSequentialRenderStatus</code></link> - whether the effect is currently being rendered in strict frame order on a single instance</listitem>
 	    <listitem><link linkend="kOfxImageEffectPropInteractiveRenderStatus"><code>kOfxImageEffectPropInteractiveRenderStatus</code></link> - if the render is in response to a user modifying the effect in an interactive session</listitem>
+	    <listitem><link linkend="kOfxImageEffectPropRenderQualityDraft"><code>kOfxImageEffectPropRenderQualityDraft</code></link> - if the render should be done in draft mode (e.g. for faster scrubbing)</listitem>
 	  </itemizedlist>
 	</listitem>
 	<listitem><code>outArgs</code> is redundant and should be set to NULL.</listitem>

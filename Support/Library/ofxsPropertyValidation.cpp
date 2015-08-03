@@ -543,6 +543,8 @@ namespace OFX {
       // The following appeared in OFX 1.2, and are thus not mandatory
       //PropertyDescription(kOfxImageEffectPropSequentialRenderStatus,  OFX::eInt,    1, eDescFinished),
       //PropertyDescription(kOfxImageEffectPropInteractiveRenderStatus, OFX::eInt,    1, eDescFinished),
+      // The following appeared in OFX 1.4,  and is thus not mandatory
+      //PropertyDescription(kOfxImageEffectPropRenderQualityDraft, OFX::eInt,    1, eDescFinished),
     };
 
     /** @brief kOfxImageEffectActionRender property set */

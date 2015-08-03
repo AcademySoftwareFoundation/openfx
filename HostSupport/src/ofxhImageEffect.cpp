@@ -1041,7 +1041,8 @@ namespace OFX {
                                        const OfxRectI    &renderRoI,
                                        OfxPointD   renderScale,
                                        bool     sequentialRender,
-                                       bool     interactiveRender
+                                       bool     interactiveRender,
+                                       bool     draftRender
 #if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
                                        ,
                                        int view
@@ -1063,6 +1064,7 @@ namespace OFX {
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
           { kOfxImageEffectPropSequentialRenderStatus, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropInteractiveRenderStatus, Property::eInt, 1, true, "0" },
+          { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" },
 #ifdef OFX_EXTENSIONS_VEGAS
           { kOfxImageEffectPropRenderView, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropViewsToRender, Property::eInt, 1, true, "1" },
@@ -1083,6 +1085,7 @@ namespace OFX {
         inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
         inArgs.setIntProperty(kOfxImageEffectPropSequentialRenderStatus,sequentialRender);
         inArgs.setIntProperty(kOfxImageEffectPropInteractiveRenderStatus,interactiveRender);
+        inArgs.setIntProperty(kOfxImageEffectPropRenderQualityDraft,draftRender);
 #ifdef OFX_EXTENSIONS_VEGAS
         inArgs.setIntProperty(kOfxImageEffectPropRenderView,view);
         inArgs.setIntProperty(kOfxImageEffectPropViewsToRender,nViews);
@@ -3407,6 +3410,7 @@ namespace OFX {
         { kOfxParamHostPropSupportsChoiceAnimation, Property::eInt, 1, true, "0"  },
         { kOfxParamHostPropSupportsBooleanAnimation, Property::eInt, 1, true, "0" },
         { kOfxParamHostPropSupportsCustomAnimation, Property::eInt, 1, true, "0" },
+        { kOfxPropHostOSHandle, Property::ePointer, 1, true, NULL },
 #ifdef OFX_SUPPORTS_PARAMETRIC
         { kOfxParamHostPropSupportsParametricAnimation, Property::eInt, 1, true, "0"},
 #endif
@@ -3414,6 +3418,7 @@ namespace OFX {
         { kOfxParamHostPropMaxPages, Property::eInt, 1, true, "0" },
         { kOfxParamHostPropPageRowColumnCount, Property::eInt, 2, true, "0" },
         { kOfxImageEffectInstancePropSequentialRender, Property::eInt, 1, true, "0" },
+        { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" }, // OFX 1.4
 #ifdef OFX_EXTENSIONS_NUKE
         { kFnOfxImageEffectPropMultiPlanar,   Property::eInt, 1, false, "0" },
         { kFnOfxImageEffectCanTransform,      Property::eInt, 1, true, "0" },

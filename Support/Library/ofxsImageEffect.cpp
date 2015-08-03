@@ -2572,8 +2572,10 @@ namespace OFX {
         gHostDescription.supportsChoiceAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsChoiceAnimation) != 0;
         gHostDescription.supportsBooleanAnimation   = hostProps.propGetInt(kOfxParamHostPropSupportsBooleanAnimation) != 0;
         gHostDescription.supportsCustomAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsCustomAnimation) != 0;
+        gHostDescription.osHandle                   = hostProps.propGetPointer(kOfxPropHostOSHandle, false);
         gHostDescription.supportsParametricParameter = gParametricParameterSuite != 0;
         gHostDescription.supportsParametricAnimation = hostProps.propGetInt(kOfxParamHostPropSupportsParametricAnimation, false) != 0;
+        gHostDescription.supportsRenderQualityDraft = hostProps.propGetInt(kOfxImageEffectPropRenderQualityDraft, false) != 0; // appeared in OFX 1.4
 #ifdef OFX_SUPPORTS_OPENGLRENDER
         gHostDescription.supportsOpenGLRender = gOpenGLRenderSuite != 0 && hostProps.propGetString(kOfxImageEffectPropOpenGLRenderSupported, 0, false) == "true";
 #endif
@@ -2821,6 +2823,9 @@ namespace OFX {
       // They appeared in OFX 1.2, and they are not in the IsIdentity args
       args.sequentialRenderStatus = inArgs.propGetInt(kOfxImageEffectPropSequentialRenderStatus, false) != 0;
       args.interactiveRenderStatus = inArgs.propGetInt(kOfxImageEffectPropInteractiveRenderStatus, false) != 0;
+
+      // kOfxImageEffectPropRenderQualityDraft appeared in OFX 1.4
+      args.renderQualityDraft = inArgs.propGetInt(kOfxImageEffectPropRenderQualityDraft, false) != 0;
 
 #ifdef OFX_EXTENSIONS_VEGAS
       args.viewsToRender = inArgs.propGetInt(kOfxImageEffectPropViewsToRender, 0, false);
