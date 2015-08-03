@@ -165,6 +165,15 @@ namespace MyHost {
     
     /// get the first and last times available on the effect's timeline
     virtual void timeLineGetBounds(double &t1, double &t2);    
+
+#ifdef OFX_EXTENSIONS_NUKE
+    /// Returns the number of views
+    virtual OfxStatus getViewCount(int *nViews) const;
+          
+    /// Returns the view textual representation
+    /// The string is owned by the host and must be valid throughout the calling action
+    virtual OfxStatus getViewName(int viewIndex,char** const name) const;
+#endif
   };
 
 }

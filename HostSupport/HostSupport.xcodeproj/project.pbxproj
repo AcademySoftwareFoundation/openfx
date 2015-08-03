@@ -13,9 +13,9 @@
 			buildPhases = (
 			);
 			dependencies = (
+				1E3CB8A2179931EB0032B538 /* PBXTargetDependency */,
 				1E3CB8A4179931F00032B538 /* PBXTargetDependency */,
 				1E3CB8A6179931F00032B538 /* PBXTargetDependency */,
-				1E3CB8A2179931EB0032B538 /* PBXTargetDependency */,
 			);
 			name = HostSupport;
 			productName = HostSupport;
@@ -114,6 +114,34 @@
 			proxyType = 1;
 			remoteGlobalIDString = 1E3CB87F179931470032B538;
 			remoteInfo = cacheDemo;
+		};
+		1E7731871B6F787A009DFE2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E742FE217992CF9007D295B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E742FE917992CF9007D295B;
+			remoteInfo = ofxHost;
+		};
+		1E7731891B6F7882009DFE2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E742FE217992CF9007D295B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E3CB8AE179934420032B538;
+			remoteInfo = expat;
+		};
+		1E77318B1B6F7886009DFE2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E742FE217992CF9007D295B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E742FE917992CF9007D295B;
+			remoteInfo = ofxHost;
+		};
+		1E77318D1B6F7888009DFE2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E742FE217992CF9007D295B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E3CB8AE179934420032B538;
+			remoteInfo = expat;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -549,6 +577,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				1E77318A1B6F7882009DFE2B /* PBXTargetDependency */,
+				1E7731881B6F787A009DFE2B /* PBXTargetDependency */,
 			);
 			name = hostDemo;
 			productName = hostDemo;
@@ -566,6 +596,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				1E77318E1B6F7888009DFE2B /* PBXTargetDependency */,
+				1E77318C1B6F7886009DFE2B /* PBXTargetDependency */,
 			);
 			name = cacheDemo;
 			productName = cacheDemo;
@@ -706,6 +738,26 @@
 			target = 1E3CB87F179931470032B538 /* cacheDemo */;
 			targetProxy = 1E3CB8A5179931F00032B538 /* PBXContainerItemProxy */;
 		};
+		1E7731881B6F787A009DFE2B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E742FE917992CF9007D295B /* ofxHost */;
+			targetProxy = 1E7731871B6F787A009DFE2B /* PBXContainerItemProxy */;
+		};
+		1E77318A1B6F7882009DFE2B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E3CB8AE179934420032B538 /* expat */;
+			targetProxy = 1E7731891B6F7882009DFE2B /* PBXContainerItemProxy */;
+		};
+		1E77318C1B6F7886009DFE2B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E742FE917992CF9007D295B /* ofxHost */;
+			targetProxy = 1E77318B1B6F7886009DFE2B /* PBXContainerItemProxy */;
+		};
+		1E77318E1B6F7888009DFE2B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E3CB8AE179934420032B538 /* expat */;
+			targetProxy = 1E77318D1B6F7888009DFE2B /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -803,6 +855,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
+					OFX_EXTENSIONS_VEGAS,
+					OFX_EXTENSIONS_NATRON,
+					OFX_EXTENSIONS_NUKE,
+					OFX_EXTENSIONS_TUTTLE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -846,12 +902,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				EXECUTABLE_PREFIX = lib;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-					OFX_EXTENSIONS_NUKE,
-					OFX_EXTENSIONS_NATRON,
-				);
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				PRODUCT_NAME = ofxHost;
 				WARNING_CFLAGS = (

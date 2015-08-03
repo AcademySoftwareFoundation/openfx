@@ -46,6 +46,8 @@ script:
       exit 0;
     fi
   - make $J CONFIG=debug
+  - make clean CONFIG=debug
+  - make $J -C HostSupport DEBUG=true OPTIMIZE="-g -Wall -DOFX_EXTENSIONS_VEGAS -DOFX_EXTENSIONS_NUKE -DOFX_EXTENSIONS_NATRON -DOFX_EXTENSIONS_TUTTLE"
 
 addons:
   coverity_scan:

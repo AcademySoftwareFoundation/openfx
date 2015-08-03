@@ -171,7 +171,7 @@ int main(int argc, char **argv)
       int numFramesToRender = OFXHOSTDEMOCLIPLENGTH;
 
       // say we are about to render a bunch of frames 
-      stat = instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale, true, false
+      stat = instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale, /*sequential=*/true, /*interactive=*/false
 #                                        ifdef OFX_EXTENSIONS_NUKE
                                          , 0 /* view*/
 #                                        endif
@@ -194,16 +194,23 @@ int main(int argc, char **argv)
         //
         // In our example we are doing full frame fetches regardless.
         std::map<OFX::Host::ImageEffect::ClipInstance *, OfxRectD> rois;
-        stat = instance->getRegionOfInterestAction(frame, renderScale, regionOfInterest, rois);
+        stat = instance->getRegionOfInterestAction(frame, renderScale,
+#ifdef OFX_EXTENSIONS_NUKE
+                                                   /*view=*/0,
+#endif
+                                                   regionOfInterest, rois);
         assert(stat == kOfxStatOK || stat == kOfxStatReplyDefault);
 
 #if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
         // render a stereoscopic frame
         { // left view
-          stat = instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, false, false,
+          stat = instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, /*sequential=*/true, /*interactive=*/false, /*draft=*/false,
                                         0 /*view*/
 #ifdef OFX_EXTENSIONS_VEGAS
                                         , 2 /*nViews*/
+#endif
+#ifdef OFX_EXTENSIONS_NUKE
+                                        , std::list<std::string>() /*planes*/
 #endif
                                         );
           assert(stat == kOfxStatOK);
@@ -217,10 +224,13 @@ int main(int argc, char **argv)
           exportToPPM(ss.str(), outputImage);
         }
         {  // right view
-          instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, false, false,
+          instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, /*sequential=*/true, /*interactive=*/false, /*draft=*/false,
                                  1 /*view*/
 #ifdef OFX_EXTENSIONS_VEGAS
                                  , 2 /*nViews*/
+#endif
+#ifdef OFX_EXTENSIONS_NUKE
+                                 , std::list<std::string>() /*planes*/
 #endif
                                  );
           assert(stat == kOfxStatOK);
@@ -235,7 +245,7 @@ int main(int argc, char **argv)
         }
 #else
         // render a frame
-        stat = instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, true, false);
+        stat = instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, /*sequential=*/true, /*interactive=*/false, /*draft=*/false);
         assert(stat == kOfxStatOK);
 
         // get the output image buffer
@@ -247,7 +257,7 @@ int main(int argc, char **argv)
 #endif
       }
 
-      instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale, true, false
+      instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale, /*sequential=*/true, /*interactive=*/false
 #                               ifdef OFX_EXTENSIONS_NUKE
                                 , 0 /* view*/
 #                               endif
