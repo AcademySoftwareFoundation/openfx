@@ -2083,7 +2083,7 @@ namespace OFX {
     
   std::string ImageEffect::getViewName(int viewIndex) const
   {
-      char* viewName;
+      const char* viewName;
       OfxStatus stat = OFX::Private::gImageEffectPlaneSuiteV2->getViewName(_effectHandle, viewIndex, &viewName);
       if(stat == kOfxStatFailed) {
           return std::string();

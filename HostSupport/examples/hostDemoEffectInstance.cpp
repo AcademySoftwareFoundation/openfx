@@ -244,7 +244,7 @@ namespace MyHost {
           
   /// Returns the view textual representation
   /// The string is owned by the host and must be valid throughout the calling action
-  OfxStatus MyEffectInstance::getViewName(int viewIndex, char** const name) const {
+  OfxStatus MyEffectInstance::getViewName(int viewIndex, const char** name) const {
     *name = "main";
     return kOfxStatOK;
   }

@@ -367,7 +367,7 @@ If clipGetImagePlane is called twice with the same parameters, then two separate
   /// get the textual representation of the view
   OfxStatus (*getViewName)(OfxImageEffectHandle effect,
                            int                  view,
-                           char               **viewName);
+                           const char         **viewName);
  
   /// get the number of views
   OfxStatus (*getViewCount)(OfxImageEffectHandle effect,
