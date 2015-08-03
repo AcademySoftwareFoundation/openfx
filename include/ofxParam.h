@@ -321,7 +321,7 @@ an expression in the host.
 
 This is used to tell the host whether the plug-in is going to attempt to set the value of the parameter.
 
-v1.4: deprecated - to be removed in 1.5
+@deprecated - v1.4: deprecated - to be removed in 1.5
 */
 
 #define kOfxParamPropPluginMayWrite "OfxParamPropPluginMayWrite"

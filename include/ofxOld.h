@@ -34,8 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
 /** @brief String to label images with YUVA components
 --ofxImageEffects.h
-Note, this has been deprecated in v1.3
-removed in v1.4
+@deprecated - removed in v1.4. Note, this has been deprecated in v1.3
+
  */
 #define kOfxImageComponentYUVA "OfxImageComponentYUVA"
 
@@ -46,7 +46,7 @@ removed in v1.4
    - Default - to 0
    - Valid Values - This must be one of 0 or 1
 
-This feature has been deprecated - officially commented out v1.4.
+@deprecated - This feature has been deprecated - officially commented out v1.4.
 */
 #define kOfxImageEffectPropInAnalysis "OfxImageEffectPropInAnalysis"
 
@@ -63,7 +63,7 @@ typedef struct OfxYUVAColourB {
 
 /** @brief Defines an 16 bit per component YUVA pixel 
 -- ofxPixels.h
-Deprecated in 1.3, removed in 1.4
+@deprecated -  Deprecated in 1.3, removed in 1.4
 */
 
 typedef struct OfxYUVAColourS {
@@ -72,7 +72,7 @@ typedef struct OfxYUVAColourS {
 
 /** @brief Defines an floating point component YUVA pixel
 -- ofxPixels.h
-Deprecated in 1.3, removed in 1.4
+@deprecated -  Deprecated in 1.3, removed in 1.4
  */
 typedef struct OfxYUVAColourF {
   float y, u, v, a;
@@ -84,14 +84,14 @@ typedef struct OfxYUVAColourF {
     - Type - int X 2 
     - Property Set - read only property on the interact instance and in argument to all the interact actions.
 
-V1.3: This property is the redundant and its use will be deprecated in future releases.
+@deprecated - V1.3: This property is the redundant and its use will be deprecated in future releases.
 V1.4: Removed
  */
 #define kOfxInteractPropViewportSize "OfxInteractPropViewport"
 
 /** @brief value for the ::kOfxParamPropDoubleType property, indicating a size normalised to the X dimension. See \ref ::kOfxParamPropDoubleType.
 -- ofxParam.h
-V1.3: Deprecated in favour of ::OfxParamDoubleTypeX
+@deprecated - V1.3: Deprecated in favour of ::OfxParamDoubleTypeX
 V1.4: Removed
  */
 #define kOfxParamDoubleTypeNormalisedX  "OfxParamDoubleTypeNormalisedX"
