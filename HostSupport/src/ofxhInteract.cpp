@@ -110,7 +110,7 @@ namespace OFX {
         { kOfxPropInstanceData, Property::ePointer, 1, false, NULL },
         { kOfxInteractPropPixelScale, Property::eDouble, 2, true, "1.0f" },
         { kOfxInteractPropBackgroundColour , Property::eDouble, 3, true, "0.0f" },
-#ifdef kOfxInteractPropViewportSize // removed in 1.4
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         { kOfxInteractPropViewportSize, Property::eDouble, 2, true, "100.0f" },
 #endif
         { kOfxInteractPropSlaveToParam , Property::eString, 0, false, ""},
@@ -151,7 +151,7 @@ namespace OFX {
         _properties.setChainedSet(&desc.getProperties()); /// chain it into the descriptor props
         _properties.setGetHook(kOfxInteractPropPixelScale, this);
         _properties.setGetHook(kOfxInteractPropBackgroundColour,this);
-#ifdef kOfxInteractPropViewportSize // removed in 1.4
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         _properties.setGetHook(kOfxInteractPropViewportSize,this);
 #endif
         _properties.setGetHook(kOfxInteractPropSuggestedColour,this);
@@ -161,7 +161,7 @@ namespace OFX {
 
         _argProperties.setGetHook(kOfxInteractPropPixelScale, this);
         _argProperties.setGetHook(kOfxInteractPropBackgroundColour,this);
-#ifdef kOfxInteractPropViewportSize // removed in 1.4
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         _argProperties.setGetHook(kOfxInteractPropViewportSize,this);
 #endif
       }
@@ -198,7 +198,7 @@ namespace OFX {
                 ){
           return 3;
         }
-#ifdef kOfxInteractPropViewportSize // removed in 1.4
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         else if(name == kOfxInteractPropViewportSize){
           return 2;
         }
@@ -238,7 +238,7 @@ namespace OFX {
           if (!stat) throw Property::Exception(kOfxStatReplyDefault);
           return first[index];
         }
-#ifdef kOfxInteractPropViewportSize // removed in 1.4
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         else if(name == kOfxInteractPropViewportSize){
           if(index>=2) throw Property::Exception(kOfxStatErrBadIndex);
           double first[2];
@@ -269,7 +269,7 @@ namespace OFX {
           bool stat = getSuggestedColour(first[0],first[1],first[2]);
           if (!stat) throw Property::Exception(kOfxStatReplyDefault);
         }
-#ifdef kOfxInteractPropViewportSize // removed in 1.4
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         else if(name == kOfxInteractPropViewportSize){
           if(n>2) throw Property::Exception(kOfxStatErrBadIndex);
           getViewportSize(first[0],first[1]);
