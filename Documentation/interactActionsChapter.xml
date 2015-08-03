@@ -157,7 +157,6 @@
 	<listitem><code>inArgs</code> has the following properties on an image effect plugin,
 	  <itemizedlist>
 	    <listitem> <link linkend="kOfxPropEffectInstance"><code>kOfxPropEffectInstance</code></link> - a handle to the effect for which the interact has been,</listitem>
-	    <listitem> <link linkend="kOfxInteractPropViewportSize"><code>kOfxInteractPropViewportSize</code></link> - the openGL viewport size for the instance</listitem>
 	    <listitem> <link linkend="kOfxInteractPropPixelScale"><code>kOfxInteractPropPixelScale</code></link> - the scale factor to convert cannonical pixels to screen pixels</listitem>
 	    <listitem> <link linkend="kOfxInteractPropBackgroundColour"><code>kOfxInteractPropBackgroundColour</code></link> - the background colour of the application behind the current view</listitem>
 	    <listitem> <link linkend="kOfxPropTime"><code>kOfxPropTime</code></link>         - the effect time at which changed occured</listitem>
@@ -209,7 +208,6 @@
 	<listitem><code>inArgs</code> has the following properties on an image effect plugin,
 	  <itemizedlist>
 	    <listitem> <link linkend="kOfxPropEffectInstance"><code>kOfxPropEffectInstance</code></link> - a handle to the effect for which the interact has been,</listitem>
-	    <listitem> <link linkend="kOfxInteractPropViewportSize"><code>kOfxInteractPropViewportSize</code></link> - the openGL viewport size for the instance</listitem>
 	    <listitem> <link linkend="kOfxInteractPropPixelScale"><code>kOfxInteractPropPixelScale</code></link> - the scale factor to convert cannonical pixels to screen pixels</listitem>
 	    <listitem> <link linkend="kOfxInteractPropBackgroundColour"><code>kOfxInteractPropBackgroundColour</code></link> - the background colour of the application behind the current view</listitem>
 	    <listitem> <link linkend="kOfxPropTime"><code>kOfxPropTime</code></link>         - the effect time at which changed occured</listitem>
@@ -268,7 +266,6 @@
 	<listitem><code>inArgs</code> has the following properties on an image effect plugin,
 	  <itemizedlist>
 	    <listitem> <link linkend="kOfxPropEffectInstance"><code>kOfxPropEffectInstance</code></link> - a handle to the effect for which the interact has been,</listitem>
-	    <listitem> <link linkend="kOfxInteractPropViewportSize"><code>kOfxInteractPropViewportSize</code></link> - the openGL viewport size for the instance</listitem>
 	    <listitem> <link linkend="kOfxInteractPropPixelScale"><code>kOfxInteractPropPixelScale</code></link> - the scale factor to convert cannonical pixels to screen pixels</listitem>
 	    <listitem> <link linkend="kOfxInteractPropBackgroundColour"><code>kOfxInteractPropBackgroundColour</code></link> - the background colour of the application behind the current view</listitem>
 	    <listitem> <link linkend="kOfxPropTime"><code>kOfxPropTime</code></link>         - the effect time at which changed occured</listitem>
@@ -326,7 +323,6 @@
 	<listitem><code>inArgs</code> has the following properties on an image effect plugin,
 	  <itemizedlist>
 	    <listitem> <link linkend="kOfxPropEffectInstance"><code>kOfxPropEffectInstance</code></link> - a handle to the effect for which the interact has been,</listitem>
-	    <listitem> <link linkend="kOfxInteractPropViewportSize"><code>kOfxInteractPropViewportSize</code></link> - the openGL viewport size for the instance</listitem>
 	    <listitem> <link linkend="kOfxInteractPropPixelScale"><code>kOfxInteractPropPixelScale</code></link> - the scale factor to convert cannonical pixels to screen pixels</listitem>
 	    <listitem> <link linkend="kOfxInteractPropBackgroundColour"><code>kOfxInteractPropBackgroundColour</code></link> - the background colour of the application behind the current view</listitem>
 	    <listitem> <link linkend="kOfxPropTime"><code>kOfxPropTime</code></link>         - the effect time at which changed occured</listitem>
@@ -552,7 +548,6 @@
 	<listitem><code>inArgs</code> has the following properties on an image effect plugin,
 	  <itemizedlist>
 	    <listitem> <link linkend="kOfxPropEffectInstance"><code>kOfxPropEffectInstance</code></link> - a handle to the effect for which the interact is being used on,</listitem>
-	    <listitem> <link linkend="kOfxInteractPropViewportSize"><code>kOfxInteractPropViewportSize</code></link> - the openGL viewport size for the instance,</listitem>
 	    <listitem> <link linkend="kOfxInteractPropPixelScale"><code>kOfxInteractPropPixelScale</code></link> - the scale factor to convert cannonical pixels to screen pixels,</listitem>
 	    <listitem> <link linkend="kOfxInteractPropBackgroundColour"><code>kOfxInteractPropBackgroundColour</code></link> - the background colour of the application behind the current view</listitem>
 	    <listitem> <link linkend="kOfxPropTime"><code>kOfxPropTime</code></link>         - the effect time at which changed occured</listitem>
@@ -598,7 +593,6 @@
 	<listitem><code>inArgs</code> has the following properties on an image effect plugin,
 	  <itemizedlist>
 	    <listitem> <link linkend="kOfxPropEffectInstance"><code>kOfxPropEffectInstance</code></link> - a handle to the effect for which the interact is being used on,</listitem>
-	    <listitem> <link linkend="kOfxInteractPropViewportSize"><code>kOfxInteractPropViewportSize</code></link> - the openGL viewport size for the instance,</listitem>
 	    <listitem> <link linkend="kOfxInteractPropPixelScale"><code>kOfxInteractPropPixelScale</code></link> - the scale factor to convert cannonical pixels to screen pixels,</listitem>
 	    <listitem> <link linkend="kOfxInteractPropBackgroundColour"><code>kOfxInteractPropBackgroundColour</code></link> - the background colour of the application behind the current view</listitem>
 	    <listitem> <link linkend="kOfxPropTime"><code>kOfxPropTime</code></link>         - the effect time at which changed occured</listitem>
