@@ -296,7 +296,6 @@
     <listitem><link linkend="kOfxPropInstanceData">kOfxPropInstanceData</link> read/write only</listitem>
     <listitem><link linkend="kOfxInteractPropPixelScale">kOfxInteractPropPixelScale</link> read only</listitem>
     <listitem><link linkend="kOfxInteractPropBackgroundColour">kOfxInteractPropBackgroundColour</link> read only</listitem>
-    <listitem><link linkend="kOfxInteractPropViewportSize">kOfxInteractPropViewportSize</link> read only</listitem>
     <listitem><link linkend="kOfxInteractPropHasAlpha">kOfxInteractPropHasAlpha</link> read only</listitem>
     <listitem><link linkend="kOfxInteractPropBitDepth">kOfxInteractPropBitDepth</link> read only</listitem>
     <listitem><link linkend="kOfxInteractPropSlaveToParam">kOfxInteractPropSlaveToParam</link> read/write</listitem>

@@ -70,7 +70,9 @@ namespace OFX {
   struct DrawArgs : public InteractArgs {
     DrawArgs(const PropertySet &props);
 
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
     OfxPointD       viewportSize;      /**< @brief The openGL viewport size for the instance */
+#endif
     OfxPointD       pixelScale;        /**< @brief The current effect time to draw at */
     OfxRGBColourD   backGroundColour;  /**< @brief The current background colour, ignore the A */
   };
@@ -79,7 +81,9 @@ namespace OFX {
   struct PenArgs : public InteractArgs {
     PenArgs(const PropertySet &props);
 
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
     OfxPointD       viewportSize;      /**< @brief The openGL viewport size for the instance */
+#endif
     OfxPointD       pixelScale;        /**< @brief The current effect time to draw at */
     OfxRGBColourD   backGroundColour;  /**< @brief The current background colour, ignore the A */
     OfxPointD       penPosition;       /**< @brief The current pen position */

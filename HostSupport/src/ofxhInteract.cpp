@@ -110,7 +110,9 @@ namespace OFX {
         { kOfxPropInstanceData, Property::ePointer, 1, false, NULL },
         { kOfxInteractPropPixelScale, Property::eDouble, 2, true, "1.0f" },
         { kOfxInteractPropBackgroundColour , Property::eDouble, 3, true, "0.0f" },
+#ifdef kOfxInteractPropViewportSize // removed in 1.4
         { kOfxInteractPropViewportSize, Property::eDouble, 2, true, "100.0f" },
+#endif
         { kOfxInteractPropSlaveToParam , Property::eString, 0, false, ""},
         { kOfxInteractPropSuggestedColour , Property::eDouble, 3, true, "1.0f" },
 #ifdef OFX_EXTENSIONS_NUKE
@@ -124,12 +126,12 @@ namespace OFX {
         { kOfxPropTime, Property::eDouble, 1, false, "0.0" },
         { kOfxImageEffectPropRenderScale, Property::eDouble, 2, false, "0.0" },
         { kOfxInteractPropBackgroundColour , Property::eDouble, 3, false, "0.0f" },
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         { kOfxInteractPropViewportSize, Property::eDouble, 2, false, "0.0f" },
+#endif
         { kOfxInteractPropPixelScale, Property::eDouble, 2, false, "1.0f" },
         { kOfxInteractPropPenPosition, Property::eDouble, 2, false, "0.0" },
-#ifdef kOfxInteractPropPenViewportPosition
-        { kOfxInteractPropPenViewportPosition, Property::eInt, 2, false, "0" },
-#endif
+        { kOfxInteractPropPenViewportPosition, Property::eInt, 2, false, "0" }, // new in OFX 1.2
         { kOfxInteractPropPenPressure, Property::eDouble, 1, false, "0.0" },
         { kOfxPropKeyString, Property::eString, 1, false, "" },
         { kOfxPropKeySym, Property::eInt, 1, false, "0" },
@@ -149,7 +151,9 @@ namespace OFX {
         _properties.setChainedSet(&desc.getProperties()); /// chain it into the descriptor props
         _properties.setGetHook(kOfxInteractPropPixelScale, this);
         _properties.setGetHook(kOfxInteractPropBackgroundColour,this);
+#ifdef kOfxInteractPropViewportSize // removed in 1.4
         _properties.setGetHook(kOfxInteractPropViewportSize,this);
+#endif
         _properties.setGetHook(kOfxInteractPropSuggestedColour,this);
 #ifdef OFX_EXTENSIONS_NUKE
         _properties.setGetHook(kOfxPropOverlayColour,this);
@@ -157,7 +161,9 @@ namespace OFX {
 
         _argProperties.setGetHook(kOfxInteractPropPixelScale, this);
         _argProperties.setGetHook(kOfxInteractPropBackgroundColour,this);
+#ifdef kOfxInteractPropViewportSize // removed in 1.4
         _argProperties.setGetHook(kOfxInteractPropViewportSize,this);
+#endif
       }
 
       Instance::~Instance()
@@ -192,9 +198,11 @@ namespace OFX {
                 ){
           return 3;
         }
+#ifdef kOfxInteractPropViewportSize // removed in 1.4
         else if(name == kOfxInteractPropViewportSize){
           return 2;
         }
+#endif
         else
           throw Property::Exception(kOfxStatErrValue);
       }
@@ -230,12 +238,14 @@ namespace OFX {
           if (!stat) throw Property::Exception(kOfxStatReplyDefault);
           return first[index];
         }
+#ifdef kOfxInteractPropViewportSize // removed in 1.4
         else if(name == kOfxInteractPropViewportSize){
           if(index>=2) throw Property::Exception(kOfxStatErrBadIndex);
           double first[2];
           getViewportSize(first[0],first[1]);
           return first[index];
         }
+#endif
         else
           throw Property::Exception(kOfxStatErrUnknown);
       }
@@ -259,10 +269,12 @@ namespace OFX {
           bool stat = getSuggestedColour(first[0],first[1],first[2]);
           if (!stat) throw Property::Exception(kOfxStatReplyDefault);
         }
+#ifdef kOfxInteractPropViewportSize // removed in 1.4
         else if(name == kOfxInteractPropViewportSize){
           if(n>2) throw Property::Exception(kOfxStatErrBadIndex);
           getViewportSize(first[0],first[1]);
         }
+#endif
         else
           throw Property::Exception(kOfxStatErrUnknown);
       }
@@ -295,9 +307,7 @@ namespace OFX {
                                     double  pressure)
       {
         _argProperties.setDoublePropertyN(kOfxInteractPropPenPosition, &penPos.x, 2);
-#ifdef kOfxInteractPropPenViewportPosition
-        _argProperties.setIntPropertyN(kOfxInteractPropPenViewportPosition, &penPosViewport.x, 2);
-#endif
+        _argProperties.setIntPropertyN(kOfxInteractPropPenViewportPosition, &penPosViewport.x, 2); // new in OFX 1.2
         _argProperties.setDoubleProperty(kOfxInteractPropPenPressure, pressure);
       }
 

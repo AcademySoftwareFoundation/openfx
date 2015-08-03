@@ -349,8 +349,10 @@ namespace OFX {
   DrawArgs::DrawArgs(const PropertySet &props)
     : InteractArgs(props)
   {
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
     viewportSize.x = props.propGetDouble(kOfxInteractPropViewportSize, 0, false);
     viewportSize.y = props.propGetDouble(kOfxInteractPropViewportSize, 1, false);
+#endif
     backGroundColour = getBackgroundColour(props);
     pixelScale       = getPixelScale(props);
   }
@@ -359,8 +361,10 @@ namespace OFX {
   PenArgs::PenArgs(const PropertySet &props)
     : InteractArgs(props)
   {
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
     viewportSize.x = props.propGetDouble(kOfxInteractPropViewportSize, 0, false);
     viewportSize.y = props.propGetDouble(kOfxInteractPropViewportSize, 1, false);
+#endif
     pixelScale    = getPixelScale(props);
     backGroundColour = getBackgroundColour(props);
     penPosition.x = props.propGetDouble(kOfxInteractPropPenPosition, 0);
@@ -389,8 +393,10 @@ namespace OFX {
   FocusArgs::FocusArgs(const PropertySet &props)
     : InteractArgs(props)
   {
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
     viewportSize.x = props.propGetDouble(kOfxInteractPropViewportSize, 0, false);
     viewportSize.y = props.propGetDouble(kOfxInteractPropViewportSize, 1, false);
+#endif
     pixelScale       = getPixelScale(props);
     backGroundColour = getBackgroundColour(props);
   }

@@ -141,9 +141,11 @@ namespace OFX {
         virtual OfxStatus callEntry(const char *action,
                                     Property::Set *inArgs);
         
+#ifdef kOfxInteractPropViewportSize // removed in 1.4
         /// hooks to kOfxInteractPropViewportSize in the property set
         /// this is actually redundant and is to be deprecated
         virtual void getViewportSize(double &width, double &height) const = 0;
+#endif
 
         // hooks to live kOfxInteractPropPixelScale in the property set
         virtual void getPixelScale(double& xScale, double& yScale) const = 0;
