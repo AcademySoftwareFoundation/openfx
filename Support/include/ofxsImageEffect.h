@@ -251,6 +251,11 @@ namespace OFX {
     };
 #endif
 
+  enum NativeOriginEnum {
+    eNativeOriginBottomLeft,
+    eNativeOriginTopLeft,
+    eNativeOriginCenter
+  };
 
   /** @brief turns a field string into and enum */
   FieldEnum mapStrToFieldEnum(const std::string &str)  throw(std::invalid_argument);
@@ -399,6 +404,7 @@ namespace OFX {
     bool supportsParametricParameter;
     bool supportsParametricAnimation;
     bool supportsRenderQualityDraft;
+    NativeOriginEnum nativeOrigin;
 #ifdef OFX_SUPPORTS_OPENGLRENDER
     bool supportsOpenGLRender;
 #endif

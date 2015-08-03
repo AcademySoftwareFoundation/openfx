@@ -29,6 +29,7 @@
     <listitem><link linkend="kOfxParamHostPropSupportsParametricAnimation">kOfxParamHostPropSupportsParametricAnimation</link> - (read only) does the host support animation of parametric parameters</listitem>
     <listitem><link linkend="kOfxImageEffectInstancePropSequentialRender">kOfxImageEffectInstancePropSequentialRender</link> - (read only) does the host support sequential rendering</listitem>
     <listitem><link linkend="kOfxImageEffectPropRenderQualityDraft">kOfxImageEffectPropRenderQualityDraft</link> - (read only) does the host support draft quality rendering</listitem>
+    <listitem><link linkend="kOfxImageEffectHostPropNativeOrigin">kOfxImageEffectHostPropNativeOrigin</link> - (read only) native origin of the host</listitem>
   </itemizedlist>
 </section>
 

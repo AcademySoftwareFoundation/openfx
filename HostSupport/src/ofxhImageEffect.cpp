@@ -3419,6 +3419,7 @@ namespace OFX {
         { kOfxParamHostPropPageRowColumnCount, Property::eInt, 2, true, "0" },
         { kOfxImageEffectInstancePropSequentialRender, Property::eInt, 1, true, "0" },
         { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" }, // OFX 1.4
+        { kOfxImageEffectHostPropNativeOrigin, Property::eString, 0, true, kOfxHostNativeOriginBottomLeft }, // OFX 1.4
 #ifdef OFX_EXTENSIONS_NUKE
         { kFnOfxImageEffectPropMultiPlanar,   Property::eInt, 1, false, "0" },
         { kFnOfxImageEffectCanTransform,      Property::eInt, 1, true, "0" },

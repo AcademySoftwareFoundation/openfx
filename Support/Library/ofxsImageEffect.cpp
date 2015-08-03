@@ -67,6 +67,19 @@ England
 #  error Not building on your operating system quite yet
 #endif
 
+// string utility functions
+static bool ends_with(std::string const & value, std::string const & ending)
+{
+  if (ending.size() > value.size()) return false;
+  return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+}
+
+static bool starts_with(std::string const & value, std::string const & beginning)
+{
+  if (beginning.size() > value.size()) return false;
+  return std::equal(beginning.begin(), beginning.end(), value.begin());
+}
+
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {
 
@@ -2576,6 +2589,32 @@ namespace OFX {
         gHostDescription.supportsParametricParameter = gParametricParameterSuite != 0;
         gHostDescription.supportsParametricAnimation = hostProps.propGetInt(kOfxParamHostPropSupportsParametricAnimation, false) != 0;
         gHostDescription.supportsRenderQualityDraft = hostProps.propGetInt(kOfxImageEffectPropRenderQualityDraft, false) != 0; // appeared in OFX 1.4
+        {
+            std::string originStr = hostProps.propGetString(kOfxImageEffectHostPropNativeOrigin, false); // appeared in OFX 1.4
+          if (originStr.empty()) {
+            // from http://openeffects.org/standard_changes/host-origin-hints :
+            // "All this hint does is tell plugin that the host world is different
+            // than OFX. Historically the first two hosts that exhibited this issue
+            // could be Fusion (upper left is 0,0 natively) and Toxic (Center is 0,0)."
+            if (gHostDescription.hostName == "com.eyeonline.Fusion" ||
+                ends_with(gHostDescription.hostName, "Fusion")) {
+              // if host is Fusion, set to TopLeft
+              gHostDescription.nativeOrigin = eNativeOriginTopLeft;
+            } else if (starts_with(gHostDescription.hostName, "Autodesk Toxik") ||
+                       ends_with(gHostDescription.hostName, "Toxik")) {
+              // if host is Toxic, set to Center
+              gHostDescription.nativeOrigin = eNativeOriginCenter;
+            } else {
+              gHostDescription.nativeOrigin = eNativeOriginBottomLeft;
+            }
+          } else if (originStr == kOfxHostNativeOriginBottomLeft) {
+            gHostDescription.nativeOrigin = eNativeOriginBottomLeft;
+          } else if (originStr == kOfxHostNativeOriginTopLeft) {
+            gHostDescription.nativeOrigin = eNativeOriginTopLeft;
+          } else if (originStr == kOfxHostNativeOriginCenter) {
+            gHostDescription.nativeOrigin = eNativeOriginCenter;
+          }
+        }
 #ifdef OFX_SUPPORTS_OPENGLRENDER
         gHostDescription.supportsOpenGLRender = gOpenGLRenderSuite != 0 && hostProps.propGetString(kOfxImageEffectPropOpenGLRenderSupported, 0, false) == "true";
 #endif
