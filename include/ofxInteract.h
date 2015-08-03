@@ -6,7 +6,7 @@
 /*
 Software License :
 
-Copyright (c) 2007-2009, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2007-2015, The Open Effects Association Ltd. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -81,14 +81,7 @@ The interact can be slaved to multiple parameters (setting index 0, then index 1
  */
 #define kOfxInteractPropPixelScale "OfxInteractPropPixelScale"
 
-/** @brief The size of an interact's openGL viewport
 
-    - Type - int X 2 
-    - Property Set - read only property on the interact instance and in argument to all the interact actions.
-
-This property is the redundant and its use will be deprecated in future releases.
- */
-#define kOfxInteractPropViewportSize "OfxInteractPropViewport"
 
 /** @brief The background colour of the application behind an interact instance
 

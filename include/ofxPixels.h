@@ -81,25 +81,6 @@ typedef struct OfxRGBColourD {
   double r, g, b, a;
 }OfxRGBColourD;
 
-
-/** @brief Defines an 8 bit per component YUVA pixel 
-typedef struct OfxYUVAColourB {
-  unsigned char y, u, v, a;
-}OfxYUVAColourB;
-Deprecated in 1.3, removed in 1.4
-*/
-/** @brief Defines an 16 bit per component YUVA pixel 
-typedef struct OfxYUVAColourS {
-  unsigned short y, u, v, a;
-}OfxYUVAColourS;
-Deprecated in 1.3, removed in 1.4
-*/
-/** @brief Defines an floating point component YUVA pixel
-typedef struct OfxYUVAColourF {
-  float y, u, v, a;
-}OfxYUVAColourF;
-Deprecated in 1.3, removed in 1.4
- */
 #ifdef __cplusplus
 }
 #endif
