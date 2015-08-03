@@ -2840,6 +2840,7 @@ namespace OFX {
         }
 #endif
 
+      args.fieldToRender = eFieldNone;
       std::string str = inArgs.propGetString(kOfxImageEffectPropFieldToRender);
       try {
         args.fieldToRender = mapStrToFieldEnum(str);
@@ -2852,15 +2853,17 @@ namespace OFX {
       }
 
 #ifdef OFX_EXTENSIONS_VEGAS
-      std::string strQuality = inArgs.propGetString(kOfxImageEffectPropRenderQuality, /*throwOnFailure*/false);
-      try {
-        args.renderQuality = mapToVegasRenderQualityEnum(strQuality);
-      }
-      catch (std::invalid_argument) {
-        // dud field?
-        OFX::Log::error(true, "Unknown render quality '%s'", str.c_str());
-
-        // HACK need to throw something to cause a failure
+      if (args.renderQualityDraft) { // OFX 1.4 property wins over Vegas extension
+        args.renderQuality = eVegasRenderQualityDraft;
+      } else {
+        args.renderQuality = eVegasRenderQualityBest;
+        std::string strQuality = inArgs.propGetString(kOfxImageEffectPropRenderQuality, /*throwOnFailure*/false);
+        try {
+          args.renderQuality = mapToVegasRenderQualityEnum(strQuality);
+        } catch (std::invalid_argument) {
+          // dud field?
+          OFX::Log::error(true, "Unknown render quality '%s'", str.c_str());
+        }
       }
 #endif
     }
