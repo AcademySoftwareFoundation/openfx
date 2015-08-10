@@ -460,8 +460,8 @@ namespace OFX {
           
           // don't set hooks for context or isinteractive
 
-          if(strcmp(effectInstanceStuff[i].name,kOfxImageEffectPropContext) ||
-             strcmp(effectInstanceStuff[i].name,kOfxPropIsInteractive) ||
+          if(strcmp(effectInstanceStuff[i].name,kOfxImageEffectPropContext) &&
+             strcmp(effectInstanceStuff[i].name,kOfxPropIsInteractive) &&
              strcmp(effectInstanceStuff[i].name,kOfxImageEffectInstancePropSequentialRender) )
             {
               const Property::PropSpec& spec = effectInstanceStuff[i];
