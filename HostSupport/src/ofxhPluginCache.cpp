@@ -539,7 +539,7 @@ void PluginCache::elementBeginCallback(void */*userData*/, const XML_Char *name,
   }
   
   if (ename == "binary") {
-    const char *binAtts[] = {"path", "bundlepath", "mtime", "size", NULL};
+    const char *binAtts[] = {"path", "bundle_path", "mtime", "size", NULL};
     
     if (!mapHasAll(attmap, binAtts)) {
       // no path: bad XML
