@@ -39,18 +39,42 @@ namespace OFX {
       for (size_t i=0;i<s.size();i++) {
         // The are exactly five characters which must be escaped
         // http://www.w3.org/TR/xml/#syntax
-        if (s[i] == '\"') {
-          ns += "&quot;";
-        } else if (s[i] == '&') {
-            ns += "&amp;";
-        } else if (s[i] == '<') {
+        switch (s[i]) {
+          case '<':
             ns += "&lt;";
-        } else if (s[i] == '>') {
+            break;
+          case '>':
             ns += "&gt;";
-        } else if (s[i] == '\'') {
+            break;
+          case '&':
+            ns += "&amp;";
+            break;
+          case '"':
+            ns += "&quot;";
+            break;
+          case '\'':
             ns += "&apos;";
-        } else {
-          ns += s[i];
+            break;
+          default: {
+            unsigned char c = (unsigned char)(s[i]);
+            // Escape even the whitespace characters '\n' '\r' '\t', although they are valid
+            // XML, because they would be converted to space when re-read.
+            // See http://www.w3.org/TR/xml/#AVNormalize
+            if ((0x01 <= c && c <= 0x1f) || (0x7F <= c && c <= 0x9F)) {
+              // these characters must be escaped in XML 1.1
+              // http://www.w3.org/TR/xml/#sec-references
+              ns += "&#x";
+              if (c > 0xf) {
+                int d = c / 0x10;
+                ns += d < 10 ? ('0' + d) : ('A' + d - 10);
+              }
+              int d = c & 0xf;
+              ns += d < 10 ? ('0' + d) : ('A' + d - 10);
+              ns += ';';
+            } else {
+              ns += s[i];
+            }
+          } break;
         }
       }
       return ns;
