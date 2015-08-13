@@ -147,7 +147,7 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
  
  When set to 1, the plug-in should be able to call clipGetHandle on the clip created by the host.
  */
-#define kNatronOfxImageEffectPropHostMixing "kNatronOfxImageEffectPropHostMasking"
+#define kNatronOfxImageEffectPropHostMixing "kNatronOfxImageEffectPropHostMixing"
 
 
 /** @brief Generic parameter name for a channel selector. If the plugin doesn't define these, and
