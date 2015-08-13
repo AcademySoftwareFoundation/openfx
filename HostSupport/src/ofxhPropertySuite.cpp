@@ -481,7 +481,7 @@ namespace OFX {
       {
         if (_props.find(spec.name) != _props.end()) {
 #         ifdef OFX_DEBUG_PROPERTIES
-          std::cout << "OFX: Tried to add a duplicate property to a Property::Set" << spec.name << std::endl;
+          std::cout << "OFX: Tried to add a duplicate property to a Property::Set: " << spec.name << std::endl;
 #         endif
           return;
         }
