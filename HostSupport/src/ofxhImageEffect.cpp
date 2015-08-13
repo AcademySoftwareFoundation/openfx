@@ -98,6 +98,9 @@ namespace OFX {
         { kOfxImageEffectPropClipPreferencesSlaveParam, Property::eString, 0, false, "" },
         { kOfxImageEffectInstancePropSequentialRender, Property::eInt, 1, false, "0" },
         { kOfxPluginPropFilePath, Property::eString, 1, true, ""},
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+        { kOfxImageEffectPropOpenGLRenderSupported, Property::eString, 1, false, "false"}, // OFX 1.3
+#endif
 #ifdef OFX_EXTENSIONS_NUKE
         { kFnOfxImageEffectPropMultiPlanar,   Property::eInt, 1, false, "0" },
         { kFnOfxImageEffectPropPassThroughComponents,   Property::eInt, 1, false, "0" },
@@ -420,6 +423,10 @@ namespace OFX {
 #     ifdef kOfxImageEffectPropInAnalysis
         { kOfxImageEffectPropInAnalysis,        Property::eInt,        1, false, "0" }, // removed in OFX 1.4
 #     endif
+        { kOfxImageEffectPropSupportsTiles,     Property::eInt,        1, false, "1" }, // OFX 1.4
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+        { kOfxImageEffectPropOpenGLRenderSupported, Property::eString, 1, false, "false"}, // OFX 1.4
+#endif
 #     ifdef OFX_EXTENSIONS_NUKE
         //{ ".verbosityProp",                Property::eInt,        2, true, "0" }, // Unknown Nuke property
 #     endif
@@ -3417,7 +3424,10 @@ namespace OFX {
         { kOfxParamHostPropMaxParameters, Property::eInt, 1, true, "-1" },
         { kOfxParamHostPropMaxPages, Property::eInt, 1, true, "0" },
         { kOfxParamHostPropPageRowColumnCount, Property::eInt, 2, true, "0" },
-        { kOfxImageEffectInstancePropSequentialRender, Property::eInt, 1, true, "0" },
+        { kOfxImageEffectInstancePropSequentialRender, Property::eInt, 1, true, "0" }, // OFX 1.2
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+        { kOfxImageEffectPropOpenGLRenderSupported, Property::eString, 1, true, "false"}, // OFX 1.3
+#endif
         { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" }, // OFX 1.4
         { kOfxImageEffectHostPropNativeOrigin, Property::eString, 0, true, kOfxHostNativeOriginBottomLeft }, // OFX 1.4
 #ifdef OFX_EXTENSIONS_NUKE
