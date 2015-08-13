@@ -23,6 +23,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		1E1A06991B7D0D0C00ED08EF /* ofxOld.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E1A06981B7D0D0C00ED08EF /* ofxOld.h */; };
 		1E31EC3117F5CA44004AB554 /* ofxOpenGLRender.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E31EC2E17F5CA44004AB554 /* ofxOpenGLRender.h */; };
 		1E31EC3217F5CA44004AB554 /* ofxParametricParam.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E31EC2F17F5CA44004AB554 /* ofxParametricParam.h */; };
 		1E31EC3317F5CA44004AB554 /* ofxSonyVegas.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E31EC3017F5CA44004AB554 /* ofxSonyVegas.h */; };
@@ -195,6 +196,7 @@
 		1E08330119A1ECA600A819A5 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		1E08330319A1ECA600A819A5 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html.documentation; path = index.html; sourceTree = "<group>"; };
 		1E08330519A1ECA600A819A5 /* statusCodesChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = statusCodesChapter.xml; sourceTree = "<group>"; };
+		1E1A06981B7D0D0C00ED08EF /* ofxOld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxOld.h; sourceTree = "<group>"; };
 		1E31EC2E17F5CA44004AB554 /* ofxOpenGLRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxOpenGLRender.h; sourceTree = "<group>"; };
 		1E31EC2F17F5CA44004AB554 /* ofxParametricParam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxParametricParam.h; sourceTree = "<group>"; };
 		1E31EC3017F5CA44004AB554 /* ofxSonyVegas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxSonyVegas.h; sourceTree = "<group>"; };
@@ -384,6 +386,7 @@
 				1E3CB83D17992E990032B538 /* ofxMemory.h */,
 				1E3CB83E17992E990032B538 /* ofxMessage.h */,
 				1E3CB83F17992E990032B538 /* ofxMultiThread.h */,
+				1E1A06981B7D0D0C00ED08EF /* ofxOld.h */,
 				1E31EC2E17F5CA44004AB554 /* ofxOpenGLRender.h */,
 				1E3CB84017992E990032B538 /* ofxParam.h */,
 				1E31EC2F17F5CA44004AB554 /* ofxParametricParam.h */,
@@ -539,6 +542,7 @@
 				1E3CB82F17992E520032B538 /* ofxhMemory.h in Headers */,
 				1E3CB83017992E520032B538 /* ofxhParam.h in Headers */,
 				1E3CB83117992E520032B538 /* ofxhPluginAPICache.h in Headers */,
+				1E1A06991B7D0D0C00ED08EF /* ofxOld.h in Headers */,
 				1E3CB83217992E520032B538 /* ofxhPluginCache.h in Headers */,
 				1E3CB83317992E520032B538 /* ofxhProgress.h in Headers */,
 				1E3CB83417992E520032B538 /* ofxhPropertySuite.h in Headers */,

@@ -62,6 +62,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef OFX_SUPPORTS_OPENGLRENDER
 #include "ofxOpenGLRender.h"
 #endif
+#include "ofxOld.h" // old plugins may rely on deprecated properties being present
 
 #include <string.h>
 #include <stdarg.h>

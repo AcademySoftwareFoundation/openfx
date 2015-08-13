@@ -47,6 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhPropertySuite.h"
 #include "ofxhParam.h"
 #include "ofxhImageEffect.h"
+#include "ofxOld.h" // old plugins may rely on deprecated properties being present
 
 
 #include <assert.h>

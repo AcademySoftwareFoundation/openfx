@@ -43,6 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhMemory.h"
 #include "ofxhImageEffect.h"
 #include "ofxhInteract.h"
+#include "ofxOld.h" // old plugins may rely on deprecated properties being present
 
 namespace OFX {
 

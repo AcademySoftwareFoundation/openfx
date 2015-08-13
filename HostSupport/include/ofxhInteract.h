@@ -31,6 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef OFX_INTERACT_H
 #define OFX_INTERACT_H
 
+#include "ofxOld.h" // old plugins may rely on deprecated properties being present
+
 namespace OFX {
 
   namespace Host {
