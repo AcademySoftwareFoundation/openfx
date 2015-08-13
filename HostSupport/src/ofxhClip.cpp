@@ -745,7 +745,7 @@ namespace OFX {
       }
 
 
-      Texture::Texture() {
+      Texture::~Texture() {
         //assert(_referenceCount <= 0);
       }
 #   endif
