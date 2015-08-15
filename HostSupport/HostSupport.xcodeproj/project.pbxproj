@@ -457,7 +457,7 @@
 				1E3CB8C1179935430032B538 /* xmltok.c */,
 			);
 			name = "Expat Sources";
-			path = "expat-2.0.1/lib";
+			path = "expat-2.1.0/lib";
 			sourceTree = "<group>";
 		};
 		1E742FE117992CF9007D295B = {
@@ -863,6 +863,20 @@
 					OFX_EXTENSIONS_NATRON,
 					OFX_EXTENSIONS_NUKE,
 					OFX_EXTENSIONS_TUTTLE,
+					OFX_DEBUG_ACTIONS,
+					OFX_DEBUG_PARAMETERS,
+					OFX_DEBUG_PROPERTIES,
+					OFX_SUPPORTS_OPENGLRENDER,
+				);
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
+					"DEBUG=1",
+					"$(inherited)",
+					OFX_EXTENSIONS_VEGAS,
+					OFX_EXTENSIONS_NATRON,
+					OFX_EXTENSIONS_NUKE,
+					OFX_EXTENSIONS_TUTTLE,
+					OFX_DEBUG_ACTIONS,
+					OFX_DEBUG_PARAMETERS,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
