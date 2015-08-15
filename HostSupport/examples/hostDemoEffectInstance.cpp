@@ -240,6 +240,7 @@ namespace MyHost {
   /// Returns the number of views
   OfxStatus MyEffectInstance::getViewCount(int *nViews) const {
     *nViews = 1;
+    return kOfxStatOK;
   }
           
   /// Returns the view textual representation
