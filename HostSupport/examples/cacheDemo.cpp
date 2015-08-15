@@ -126,6 +126,11 @@ public :
   {
     return kOfxStatOK;
   }
+
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+  /// @see OfxImageEffectOpenGLRenderSuiteV1.flushResources()
+  virtual OfxStatus flushOpenGLResources() const { return kOfxStatFailed; };
+#endif
 };
 
 int main(int argc, char **argv) 

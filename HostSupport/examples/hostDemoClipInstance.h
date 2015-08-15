@@ -139,6 +139,16 @@ namespace MyHost {
     /// If bounds is not null, fetch the indicated section of the canonical image plane.
     virtual OFX::Host::ImageEffect::Image* getImage(OfxTime time, const OfxRectD *optionalBounds);
 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    /// override this to fill in the OpenGL texture at the given time.
+    /// The bounds of the image on the image plane should be
+    /// 'appropriate', typically the value returned in getRegionsOfInterest
+    /// on the effect instance. Outside a render call, the optionalBounds should
+    /// be 'appropriate' for the.
+    /// If bounds is not null, fetch the indicated section of the canonical image plane.
+    virtual OFX::Host::ImageEffect::Texture* loadTexture(OfxTime time, const char *format, const OfxRectD *optionalBounds) { return NULL; };
+#endif
+
 #ifdef OFX_EXTENSIONS_NUKE
     /// override this to fill in the given image plane at the given time.
     /// The bounds of the image on the image plane should be
