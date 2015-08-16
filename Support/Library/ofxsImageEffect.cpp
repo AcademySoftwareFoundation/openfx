@@ -798,6 +798,34 @@ namespace OFX {
     }
   }
 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+  /** @brief Add a pixel depth to those supported */
+  void ImageEffectDescriptor::addSupportedOpenGLBitDepth(BitDepthEnum v)
+  {
+    int n = _effectProps.propGetDimension(kOfxOpenGLPropPixelDepth);
+    switch(v) 
+    {
+    case eBitDepthNone :
+      _effectProps.propSetString(kOfxOpenGLPropPixelDepth, kOfxBitDepthNone  , n);
+      break;
+    case eBitDepthUByte :
+      _effectProps.propSetString(kOfxOpenGLPropPixelDepth, kOfxBitDepthByte  , n);
+      break;
+    case eBitDepthUShort :
+      _effectProps.propSetString(kOfxOpenGLPropPixelDepth, kOfxBitDepthShort  , n);
+      break;
+    case eBitDepthHalf :
+      _effectProps.propSetString(kOfxOpenGLPropPixelDepth, kOfxBitDepthHalf  , n);
+      break;
+    case eBitDepthFloat :
+      _effectProps.propSetString(kOfxOpenGLPropPixelDepth, kOfxBitDepthFloat  , n);
+      break;
+    default:
+      break;
+    }
+  }
+#endif
+
 #ifdef OFX_EXTENSIONS_TUTTLE
   /** @brief Add a file extension to those supported */
   void ImageEffectDescriptor::addSupportedExtension(const std::string& extension)
@@ -1691,7 +1719,7 @@ namespace OFX {
       throwHostMissingSuiteException("loadTexture");
     }
     OfxPropertySetHandle hTex;
-    OfxStatus stat = Private::gOpenGLRenderSuite->clipLoadTexture(_clipHandle, t, mapBitDepthEnumToStr(format).c_str(), region, &hTex);
+    OfxStatus stat = Private::gOpenGLRenderSuite->clipLoadTexture(_clipHandle, t, mapBitDepthEnumToStr(format), region, &hTex);
     if (stat != kOfxStatOK) {
       throwSuiteStatusException(stat);
     }
@@ -2888,8 +2916,14 @@ namespace OFX {
       args.renderWindow.x2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 2);
       args.renderWindow.y2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 3);
 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+      // Don't throw an exception if the following inArgs are not present.
+      // OpenGL rendering appeared in OFX 1.3
+      args.openGLEnabled = inArgs.propGetInt(kOfxImageEffectPropOpenGLEnabled, false) != 0;
+#endif
+
       // Don't throw an exception if the following inArgs are not present:
-      // They appeared in OFX 1.2, and they are not in the IsIdentity args
+      // They appeared in OFX 1.2.
       args.sequentialRenderStatus = inArgs.propGetInt(kOfxImageEffectPropSequentialRenderStatus, false) != 0;
       args.interactiveRenderStatus = inArgs.propGetInt(kOfxImageEffectPropInteractiveRenderStatus, false) != 0;
 
@@ -2969,6 +3003,11 @@ namespace OFX {
       args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
       args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+      // Don't throw an exception if the following inArgs are not present.
+      // OpenGL rendering appeared in OFX 1.3
+      args.openGLEnabled = inArgs.propGetInt(kOfxImageEffectPropOpenGLEnabled, false) != 0;
+#endif
       args.isInteractive = inArgs.propGetInt(kOfxPropIsInteractive) != 0;
       // Don't throw an exception if the following inArgs are not present:
       // They appeared in OFX 1.2
@@ -2995,6 +3034,11 @@ namespace OFX {
       args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
       args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+      // Don't throw an exception if the following inArgs are not present.
+      // OpenGL rendering appeared in OFX 1.3
+      args.openGLEnabled = inArgs.propGetInt(kOfxImageEffectPropOpenGLEnabled, false) != 0;
+#endif
       args.isInteractive = inArgs.propGetInt(kOfxPropIsInteractive) != 0;
       // Don't throw an exception if the following inArgs are not present:
       // They appeared in OFX 1.2

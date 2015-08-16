@@ -42,6 +42,9 @@ This file contains headers for classes that are used to validate property sets a
 
 #include "ofxsSupportPrivate.h"
 #include <stdarg.h>
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+#include "ofxOpenGLRender.h"
+#endif
 
 /** @brief Null pointer definition */
 #define NULLPTR ((void *)(0))
@@ -517,6 +520,20 @@ namespace OFX {
       gImageInstanceProps, sizeof(gImageInstanceProps)/sizeof(PropertyDescription),
       NULLPTR);
 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    /** @brief List of properties to validate an image or texture instance */
+    static PropertyDescription gTextureInstanceProps[ ] =
+    {
+      // pointer props
+      PropertyDescription(kOfxImageEffectPropOpenGLTextureIndex, OFX::eInt, 1, eDescFinished),
+      PropertyDescription(kOfxImageEffectPropOpenGLTextureTarget, OFX::eInt, 1, eDescFinished),
+    };
+
+    /** @brief the property set for an image instance */
+    static PropertySetDescription gTextureInstancePropSet("Texture Instance",
+      gTextureInstanceProps, sizeof(gTextureInstanceProps)/sizeof(PropertyDescription),
+      NULLPTR);
+#endif
 
     ////////////////////////////////////////////////////////////////////////////////
     // Action in/out args properties 
