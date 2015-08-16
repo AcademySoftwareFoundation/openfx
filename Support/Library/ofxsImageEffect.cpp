@@ -1719,7 +1719,7 @@ namespace OFX {
       throwHostMissingSuiteException("loadTexture");
     }
     OfxPropertySetHandle hTex;
-    OfxStatus stat = Private::gOpenGLRenderSuite->clipLoadTexture(_clipHandle, t, mapBitDepthEnumToStr(format), region, &hTex);
+    OfxStatus stat = Private::gOpenGLRenderSuite->clipLoadTexture(_clipHandle, t, format == eBitDepthNone ? NULL : mapBitDepthEnumToStr(format), region, &hTex);
     if (stat != kOfxStatOK) {
       throwSuiteStatusException(stat);
     }

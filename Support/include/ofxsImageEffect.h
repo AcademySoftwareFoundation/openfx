@@ -826,10 +826,10 @@ namespace OFX {
     virtual ~Texture();
 
     /** @brief get OpenGL texture id (cast to GLuint) */
-    inline int getIndex() {return _index;}
+    inline int getIndex() const {return _index;}
       
     /** @brief get OpenGL texture target (cast to GLenum) */
-    inline int getTarget() {return _target;}
+    inline int getTarget() const {return _target;}
   };
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -1018,7 +1018,7 @@ namespace OFX {
     }
 
 #ifdef OFX_SUPPORTS_OPENGLRENDER
-    Texture *loadTexture(double t, BitDepthEnum format, const OfxRectD *region);
+    Texture *loadTexture(double t, BitDepthEnum format = eBitDepthNone, const OfxRectD *region = NULL);
 #endif
   };
 

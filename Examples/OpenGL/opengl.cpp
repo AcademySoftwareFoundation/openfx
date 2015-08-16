@@ -393,7 +393,7 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   if (status != kOfxStatOK) {
     return status;
   }
-  DPRINT(("openGL: source texture index %d, target %d, depth %d\n",
+  DPRINT(("openGL: source texture index %d, target %d, depth %s\n",
 	  source_texture_index, source_texture_target, tmps));
   // XXX: check status for errors
 
