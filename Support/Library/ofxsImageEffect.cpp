@@ -1251,6 +1251,7 @@ namespace OFX {
     OFX::Validation::validateImageProperties(props);
 
     // and fetch all the properties
+    // should throw if it is not an image
     _pixelData = _imageProps.propGetPointer(kOfxImagePropData);
   }
 
@@ -1266,9 +1267,10 @@ namespace OFX {
     : ImageBase(props)
   {
     OFX::Validation::validateTextureProperties(props);
-  
-    _index = _imageProps.propGetInt(kOfxImageEffectPropOpenGLTextureIndex, 0);
-    _target = _imageProps.propGetInt(kOfxImageEffectPropOpenGLTextureTarget, 0);
+
+    // should throw if it is not a texture
+    _index = _imageProps.propGetInt(kOfxImageEffectPropOpenGLTextureIndex);
+    _target = _imageProps.propGetInt(kOfxImageEffectPropOpenGLTextureTarget);
   }
 
   Texture::~Texture()
