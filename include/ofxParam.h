@@ -4,7 +4,7 @@
 /*
 Software License :
 
-Copyright (c) 2003-2009, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2003-2015, The Open Effects Association Ltd. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -320,10 +320,11 @@ an expression in the host.
     - Valid Values - 0 or 1
 
 This is used to tell the host whether the plug-in is going to attempt to set the value of the parameter.
-#define kOfxParamPropPluginMayWrite "OfxParamPropPluginMayWrite"
-v1.4: removed
+
+@deprecated - v1.4: deprecated - to be removed in 1.5
 */
 
+#define kOfxParamPropPluginMayWrite "OfxParamPropPluginMayWrite"
 
 /** @brief Flags whether the value of a parameter should persist.
 
@@ -477,11 +478,7 @@ as to the interface of the parameter.
 /** @brief value for the ::kOfxParamDoubleTypeAngle property, indicating the parameter is to be interpreted as an absolute time from the start of the effect. See \ref ::kOfxParamPropDoubleType. */
 #define kOfxParamDoubleTypeAbsoluteTime "OfxParamDoubleTypeAbsoluteTime"
 
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating a size normalised to the X dimension. See \ref ::kOfxParamPropDoubleType.
 
-Deprecated in favour of ::OfxParamDoubleTypeX
- */
-#define kOfxParamDoubleTypeNormalisedX  "OfxParamDoubleTypeNormalisedX"
 
 /** @brief value for the ::kOfxParamPropDoubleType property, indicating a size normalised to the Y dimension. See \ref ::kOfxParamPropDoubleType.
 
@@ -1071,8 +1068,8 @@ typedef struct OfxParameterSuiteV1 {
   The varargs ... argument needs to be values of the relevant type for this parameter. See the note on 
   OfxParameterSuiteV1::paramSetValue for more detail
 
-  This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
-
+  V1.3: This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
+  V1.4: This function can be called the ::kOfxActionInstanceChanged action 
 @returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
@@ -1101,7 +1098,8 @@ changes a keyframe.  The keyframe indices will not change within a single action
   \arg paramHandle parameter handle to interogate
   \arg numberOfKeys  pointer to integer where the return value is placed
 
-  This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
+  V1.3: This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
+  V1.4: This function can be called the ::kOfxActionInstanceChanged action 
 
   Returns the number of keyframes in the parameter.
 
@@ -1166,7 +1164,8 @@ changes a keyframe.  The keyframe indices will not change within a single action
   \arg paramHandle parameter handle to delete the keys from
   \arg name      parameter to delete the keyframes frome is
 
-  This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
+  V1.3: This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
+  V1.4: This function can be called the ::kOfxActionInstanceChanged action 
 
 @returns
   - ::kOfxStatOK       - all was OK
@@ -1187,7 +1186,8 @@ changes a keyframe.  The keyframe indices will not change within a single action
 
   To choose all animation in \e paramFrom set \e frameRange to [0, 0]
 
-  This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
+   V1.3: This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
+  V1.4: This function can be called the ::kOfxActionInstanceChanged action 
 
   \pre
   - Both parameters must be of the same type.
