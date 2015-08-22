@@ -101,7 +101,7 @@ void *Binary::findSymbol(const std::string &symbol) {
 #if defined(UNIX)
     return dlsym(_dlHandle, symbol.c_str());
 #elif defined (WINDOWS)
-    return GetProcAddress(_dlHandle, symbol.c_str());
+    return (void*)GetProcAddress(_dlHandle, symbol.c_str());
 #endif
   } else {
     return 0;

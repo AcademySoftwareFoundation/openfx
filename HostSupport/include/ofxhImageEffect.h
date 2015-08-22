@@ -42,7 +42,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhMemory.h"
 #include "ofxhInteract.h"
 
-#if defined(WIN32) || defined(WIN64)
+#ifdef _MSC_VER
+//Use visual studio extension
 #define __PRETTY_FUNCTION__ __FUNCSIG__
 #endif
 

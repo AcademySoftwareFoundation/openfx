@@ -200,7 +200,7 @@ const TCHAR *getStdOFXPluginPath(const std::string &hostId = "Plugins")
 static
 std::string OFXGetEnv(const char* e)
 {
-#ifdef WINDOWS
+#if defined(WINDOWS) && !defined(__MINGW32__)
   size_t requiredSize;
   getenv_s(&requiredSize, 0, 0, e);
   std::vector<char> buffer(requiredSize);
