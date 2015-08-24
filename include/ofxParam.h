@@ -967,6 +967,8 @@ typedef struct OfxParameterSuiteV1 {
   ofxHost->paramGetValue(myColourParam, &myR, &myG, &myB);
   @endverbatim
 
+  \note A paramGetValue request should only be used in the ::kOfxActionInstanceChanged action (for the GUI) and never for the render actions (which should always use paramGetValueAtTime).
+
 @returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
