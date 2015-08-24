@@ -967,7 +967,7 @@ typedef struct OfxParameterSuiteV1 {
   ofxHost->paramGetValue(myColourParam, &myR, &myG, &myB);
   @endverbatim
 
-  \note A paramGetValue request should only be used in the ::kOfxActionInstanceChanged action (for the GUI) and never for the render actions (which should always use paramGetValueAtTime).
+  \note A paramGetValue request should only be used in the ::kOfxActionInstanceChanged action and never for the render actions (which should always use paramGetValueAtTime).
 
 @returns
   - ::kOfxStatOK       - all was OK
@@ -1053,6 +1053,8 @@ typedef struct OfxParameterSuiteV1 {
   ofxHost->paramSetValue(instance, "myColourParam", double(pix.r), double(pix.g), double(pix.b));
   @endverbatim
 
+  \note paramSetValue should only be called from within the ::kOfxActionInstanceChanged action.
+
 @returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
@@ -1069,6 +1071,8 @@ typedef struct OfxParameterSuiteV1 {
   This sets a keyframe in the parameter at the indicated time to have the indicated value.
   The varargs ... argument needs to be values of the relevant type for this parameter. See the note on 
   OfxParameterSuiteV1::paramSetValue for more detail
+
+  \note paramSetValueAtTime should only be called from within the ::kOfxActionInstanceChanged action.
 
   V1.3: This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
   V1.4: This function can be called the ::kOfxActionInstanceChanged action 
@@ -1210,6 +1214,8 @@ changes a keyframe.  The keyframe indices will not change within a single action
   or some analysis of imagery etc.. this is used to indicate the start of a set of a parameter
   changes that should be considered part of a single undo/redo block.
 
+  \note paramEditBegin should only be called from within the ::kOfxActionInstanceChanged action.
+
   See also OfxParameterSuiteV1::paramEditEnd
 
   \return
@@ -1226,6 +1232,8 @@ changes a keyframe.  The keyframe indices will not change within a single action
   If a plugin calls paramSetValue/paramSetValueAtTime on one or more parameters, either from custom GUI interaction
   or some analysis of imagery etc.. this is used to indicate the end of a set of parameter
   changes that should be considerred part of a single undo/redo block
+
+  \note paramEditEnd should only be called from within the ::kOfxActionInstanceChanged action.
 
   See also OfxParameterSuiteV1::paramEditBegin
 
