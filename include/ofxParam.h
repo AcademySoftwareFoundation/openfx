@@ -482,7 +482,7 @@ as to the interface of the parameter.
 
 Deprecated in favour of ::OfxParamDoubleTypeX
  */
-#define kOfxParamDoubleTypeNormalisedY  "OfxParamDoubleTypeNormalisedX"
+#define kOfxParamDoubleTypeNormalisedX  "OfxParamDoubleTypeNormalisedX"
 
 /** @brief value for the ::kOfxParamPropDoubleType property, indicating a size normalised to the Y dimension. See \ref ::kOfxParamPropDoubleType.
 
