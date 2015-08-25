@@ -478,7 +478,11 @@ as to the interface of the parameter.
 /** @brief value for the ::kOfxParamDoubleTypeAngle property, indicating the parameter is to be interpreted as an absolute time from the start of the effect. See \ref ::kOfxParamPropDoubleType. */
 #define kOfxParamDoubleTypeAbsoluteTime "OfxParamDoubleTypeAbsoluteTime"
 
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating a size normalised to the X dimension. See \ref ::kOfxParamPropDoubleType.
 
+Deprecated in favour of ::OfxParamDoubleTypeX
+ */
+#define kOfxParamDoubleTypeNormalisedY  "OfxParamDoubleTypeNormalisedX"
 
 /** @brief value for the ::kOfxParamPropDoubleType property, indicating a size normalised to the Y dimension. See \ref ::kOfxParamPropDoubleType.
 
