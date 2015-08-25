@@ -77,14 +77,6 @@ typedef struct OfxImageMemoryStruct *OfxImageMemoryHandle;
 /** @brief String to label images with only Alpha components */
 #define kOfxImageComponentAlpha "OfxImageComponentAlpha"
 
-/** @brief String to label images with YUVA components
-
-Note, this has been deprecated.
-#define kOfxImageComponentYUVA "OfxImageComponentYUVA"
-removed in v1.4
- */
-
-
 /** @brief Use to define the generator image effect context. See \ref ::kOfxImageEffectPropContext
  */
 #define kOfxImageEffectContextGenerator "OfxImageEffectContextGenerator"
@@ -459,7 +451,7 @@ Multiple resolution images mean...
 /** @brief Indicates whether a clip, plugin or host supports tiled images
 
    - Type - int X 1
-   - Property Set - host descriptor (read only), plugin descriptor (read/write), clip descriptor (read/write)
+   - Property Set - host descriptor (read only), plugin descriptor (read/write), clip descriptor (read/write), instance (read/write)
    - Default - to 1 for a plugin and clip
    - Valid Values - This must be one of 0 or 1
 
@@ -467,21 +459,9 @@ Tiled images mean that input or output images can contain pixel data that is onl
 
 If a clip or plugin does not support tiled images, then the host should supply full RoD images to the effect whenever it fetches one.
 
-V1.4:  It is now possible to change OfxImageEffectPropSupportsTiles in Instance Changed 
+V1.4:  It is now possible (defined) to change OfxImageEffectPropSupportsTiles in Instance Changed 
 */
 #define kOfxImageEffectPropSupportsTiles "OfxImageEffectPropSupportsTiles"
-
-/** @brief Indicates whether an effect is performing an analysis pass.
-
-   - Type - int X 1
-   - Property Set -  plugin instance (read/write)
-   - Default - to 0
-   - Valid Values - This must be one of 0 or 1
-
-This feature has been deprecated - officially commented out v1.4.
-#define kOfxImageEffectPropInAnalysis "OfxImageEffectPropInAnalysis"
-
-*/
 
 
 /** @brief Indicates support for random temporal access to images in a clip.

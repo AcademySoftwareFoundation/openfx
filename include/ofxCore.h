@@ -4,7 +4,7 @@
 /*
 Software License :
 
-Copyright (c) 2003-2009, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2003-2015, The Open Effects Association Ltd. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:

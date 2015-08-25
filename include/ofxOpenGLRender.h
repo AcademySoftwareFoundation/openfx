@@ -127,6 +127,8 @@ the current action
 use OpenGL, so the effect SHOULD access all its images through the
 OpenGL suite.
 
+v1.4:  kOfxImageEffectPropOpenGLEnabled should probably be checked in Instance Changed prior to try to read image via clipLoadTexture
+
 */
 #define kOfxImageEffectPropOpenGLEnabled "OfxImageEffectPropOpenGLEnabled"
 
@@ -140,6 +142,11 @@ texture by the host
 
 	This value should be cast to a GLuint and used as the texture index when
         performing OpenGL texture operations.
+
+   The property set of the following actions should contain this property:
+      - ::kOfxImageEffectActionRender
+      - ::kOfxImageEffectActionBeginSequenceRender
+      - ::kOfxImageEffectActionEndSequenceRender
 */
 #define kOfxImageEffectPropOpenGLTextureIndex "OfxImageEffectPropOpenGLTextureIndex"
 
@@ -152,6 +159,11 @@ texture by the host
         OfxImageEffectOpenGLRenderSuiteV1::clipLoadTexture (read only)
 	This value should be cast to a GLenum and used as the texture target
 	when performing OpenGL texture operations.
+
+   The property set of the following actions should contain this property:
+      - ::kOfxImageEffectActionRender
+      - ::kOfxImageEffectActionBeginSequenceRender
+      - ::kOfxImageEffectActionEndSequenceRender
 */
 #define kOfxImageEffectPropOpenGLTextureTarget "OfxImageEffectPropOpenGLTextureTarget"
 
@@ -200,14 +212,14 @@ typedef struct OfxImageEffectOpenGLRenderSuiteV1
   the host must bind the resulting texture as the current color buffer
   (render target). This may also be done prior to calling the
   ::kOfxImageEffectActionRender action.
-  If the \e region parameter is set to non-NULL, then it will be clipped to
+  If the \em region parameter is set to non-NULL, then it will be clipped to
   the clip's Region of Definition for the given time.
-  The returned image will be \e at \e least as big as this region.
+  The returned image will be \em at \em least as big as this region.
   If the region parameter is not set or is NULL, then the region fetched will be at
   least the Region of Interest the effect has previously specified, clipped to
   the clip's Region of Definition.
   Information about the texture, including the texture index, is returned in
-  the \e textureHandle argument.
+  the \em textureHandle argument.
   The properties on this handle will be...
     - ::kOfxImageEffectPropOpenGLTextureIndex
     - ::kOfxImageEffectPropOpenGLTextureTarget
@@ -260,8 +272,8 @@ returns
 
   OfxStatus (*clipLoadTexture)(OfxImageClipHandle clip,
                                OfxTime       time,
-			                   const char   *format,
-                               const OfxRectD     *region,
+			       const char   *format,
+                               OfxRectD     *region,
                                OfxPropertySetHandle   *textureHandle);
 
   /** @brief Releases the texture handle previously returned by
@@ -367,7 +379,7 @@ A plugin can return...
     the plugin should to post a message if possible and the host should not
     attempt to run the plugin in OpenGL render mode.
 */
-#define kOfxActionOpenGLContextDetached "OfxActionOpenGLContextDetached"
+#define kOfxActionOpenGLContextDetached "kOfxActionOpenGLContextDetached"
 
 
 /** @page ofxOpenGLRender OpenGL Acceleration of Rendering

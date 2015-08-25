@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef _ofxOld_h_
 #define _ofxOld_h_
 
@@ -5,6 +6,12 @@
 Software License :
 
 Copyright (c) 2003-2015, The Open Effects Association Ltd. All rights reserved.
+=======
+/*
+Software License :
+
+Copyright (c) 2014-2015, The Open Effects Association Ltd. All rights reserved.
+>>>>>>> ofxa/master
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -28,55 +35,75 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 */
 
+#ifndef _ofxOLD_h_
+#define _ofxOLD_h_
 
-/** @brief Flags whether the plugin will attempt to set the value of a parameter in some callback or analysis pass
-
-    - Type - int x 1
-    - Property Set - plugin parameter descriptor (read/write) and instance (read only)
-    - Default - 0
-    - Valid Values - 0 or 1
-
-This is used to tell the host whether the plug-in is going to attempt to set the value of the parameter.
-*/
-#define kOfxParamPropPluginMayWrite "OfxParamPropPluginMayWrite"
-/*
-v1.4: removed
-*/
-
+ 
 /** @brief String to label images with YUVA components
+--ofxImageEffects.h
+@deprecated - removed in v1.4. Note, this has been deprecated in v1.3
 
-Note, this has been deprecated.
-*/
-#define kOfxImageComponentYUVA "OfxImageComponentYUVA"
-/*
-removed in v1.4
  */
+#define kOfxImageComponentYUVA "OfxImageComponentYUVA"
 
 /** @brief Indicates whether an effect is performing an analysis pass.
-
+--ofxImageEffects.h
    - Type - int X 1
    - Property Set -  plugin instance (read/write)
    - Default - to 0
    - Valid Values - This must be one of 0 or 1
 
-This feature has been deprecated - officially commented out v1.4.
+@deprecated - This feature has been deprecated - officially commented out v1.4.
 */
 #define kOfxImageEffectPropInAnalysis "OfxImageEffectPropInAnalysis"
 
-/** @brief The size of an interact's openGL viewport
 
+/** @brief Defines an 8 bit per component YUVA pixel 
+-- ofxPixels.h
+Deprecated in 1.3, removed in 1.4
+*/
+
+typedef struct OfxYUVAColourB {
+  unsigned char y, u, v, a;
+}OfxYUVAColourB;
+
+
+/** @brief Defines an 16 bit per component YUVA pixel 
+-- ofxPixels.h
+@deprecated -  Deprecated in 1.3, removed in 1.4
+*/
+
+typedef struct OfxYUVAColourS {
+  unsigned short y, u, v, a;
+}OfxYUVAColourS;
+
+/** @brief Defines an floating point component YUVA pixel
+-- ofxPixels.h
+@deprecated -  Deprecated in 1.3, removed in 1.4
+ */
+typedef struct OfxYUVAColourF {
+  float y, u, v, a;
+}OfxYUVAColourF;
+
+
+/** @brief The size of an interact's openGL viewport
+-- ofxInteract.h
     - Type - int X 2 
     - Property Set - read only property on the interact instance and in argument to all the interact actions.
 
-This property is the redundant and its use will be deprecated in future releases.
-Note, this has been deprecated.
-*/
-#define kOfxInteractPropViewportSize "OfxInteractPropViewport"
-/*
-removed in v1.4
+@deprecated - V1.3: This property is the redundant and its use will be deprecated in future releases.
+V1.4: Removed
  */
+#define kOfxInteractPropViewportSize "OfxInteractPropViewport"
+
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating a size normalised to the X dimension. See \ref ::kOfxParamPropDoubleType.
+-- ofxParam.h
+@deprecated - V1.3: Deprecated in favour of ::OfxParamDoubleTypeX
+V1.4: Removed
+ */
+#define kOfxParamDoubleTypeNormalisedX  "OfxParamDoubleTypeNormalisedX"
 
 #endif
-
