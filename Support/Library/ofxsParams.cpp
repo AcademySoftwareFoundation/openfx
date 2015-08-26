@@ -513,6 +513,7 @@ namespace OFX {
     case eDoubleTypeXYAbsolute :
       _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeXYAbsolute);
       break;
+#ifdef kOfxParamDoubleTypeNormalisedX
     case eDoubleTypeNormalisedX :
       _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeNormalisedX);
       break;
@@ -531,6 +532,7 @@ namespace OFX {
     case eDoubleTypeNormalisedXYAbsolute :
       _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeNormalisedXYAbsolute);
       break;
+#endif
 #ifdef OFX_EXTENSIONS_VEGAS
     case eDoubleTypePolar :
       _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypePolar);
@@ -1975,6 +1977,7 @@ namespace OFX {
       v = eDoubleTypeXY;
     else if(str == kOfxParamDoubleTypeXYAbsolute)
       v = eDoubleTypeXYAbsolute;
+#ifdef kOfxParamDoubleTypeNormalisedX
     else if(str == kOfxParamDoubleTypeNormalisedX)
       v = eDoubleTypeNormalisedX;
     else if(str == kOfxParamDoubleTypeNormalisedY)
@@ -1987,6 +1990,7 @@ namespace OFX {
       v = eDoubleTypeNormalisedXY;
     else if(str == kOfxParamDoubleTypeNormalisedXYAbsolute)
       v = eDoubleTypeNormalisedXYAbsolute;
+#endif
     else
       v = eDoubleTypePlain;
   }

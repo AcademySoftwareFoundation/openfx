@@ -507,10 +507,10 @@ void PropTesterPluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   describeDoubleParam(desc, "scale", eDoubleTypeScale, -1, 1, page2);
   describeDoubleParam(desc, "time", eDoubleTypeTime, -100, 100, page2);
   describeDoubleParam(desc, "absoluteTime", eDoubleTypeAbsoluteTime, 0, 1000, page2);
-  describeDoubleParam(desc, "X_Value", eDoubleTypeNormalisedX, -1, 1, page2);
-  describeDoubleParam(desc, "Y_Value", eDoubleTypeNormalisedY, -1, 1, page2);
-  describeDoubleParam(desc, "X_Position", eDoubleTypeNormalisedXAbsolute, -1, 1, page2);
-  describeDoubleParam(desc, "Y_Position", eDoubleTypeNormalisedYAbsolute, -1, 1, page2);
+  describeDoubleParam(desc, "X_Value", eDoubleTypeX, -1, 1, page2);
+  describeDoubleParam(desc, "Y_Value", eDoubleTypeY, -1, 1, page2);
+  describeDoubleParam(desc, "X_Position", eDoubleTypeXAbsolute, -1, 1, page2);
+  describeDoubleParam(desc, "Y_Position", eDoubleTypeYAbsolute, -1, 1, page2);
 
   page2->addChild(PageParamDescriptor::gSkipColumn);
 
@@ -518,8 +518,8 @@ void PropTesterPluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   describe2DDoubleParam(desc, "double2D", eDoubleTypePlain, -100, 100, page2);
   describe2DDoubleParam(desc, "angle2D", eDoubleTypeAngle, -100, 100, page2);
   describe2DDoubleParam(desc, "scale2D", eDoubleTypeScale, -1, 1, page2);
-  describe2DDoubleParam(desc, "XY_Value", eDoubleTypeNormalisedXY, -1, 1, page2);
-  describe2DDoubleParam(desc, "XY_Position", eDoubleTypeNormalisedXYAbsolute, -1, 1, page2);
+  describe2DDoubleParam(desc, "XY_Value", eDoubleTypeXY, -1, 1, page2);
+  describe2DDoubleParam(desc, "XY_Position", eDoubleTypeXYAbsolute, -1, 1, page2);
 
   page2->addChild(PageParamDescriptor::gSkipColumn);
 

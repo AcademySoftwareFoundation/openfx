@@ -172,12 +172,14 @@ namespace OFX {
         eDoubleTypeYAbsolute, //!< a position in the X dimension (1D only), new for 1.2
         eDoubleTypeXY, //!< a size in the X and Y dimension (2D only), new for 1.2
         eDoubleTypeXYAbsolute, //!< a position in the X and Y dimension (2D only), new for 1.2
+#ifdef kOfxParamDoubleTypeNormalisedX
         eDoubleTypeNormalisedX, //!< normalised size with respect to the project's X dimension (1D only), deprecated for 1.2
         eDoubleTypeNormalisedY, //!< normalised absolute position on the X axis (1D only), deprecated for 1.2
         eDoubleTypeNormalisedXAbsolute, //!< normalised size wrt to the project's Y dimension (1D only), deprecated for 1.2
         eDoubleTypeNormalisedYAbsolute, //!< normalised absolute position on the Y axis (1D only), deprecated for 1.2
         eDoubleTypeNormalisedXY, //!< normalised to the project's X and Y size (2D only), deprecated for 1.2
         eDoubleTypeNormalisedXYAbsolute, //!< normalised to the projects X and Y size, and is an absolute position on the image plane, deprecated for 1.2
+#endif
 #ifdef OFX_EXTENSIONS_VEGAS
         eDoubleTypePolar,
         eDoubleTypeChrominance 

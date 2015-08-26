@@ -190,10 +190,6 @@ interactDraw(OfxImageEffectHandle  pluginInstance,
   double x, y;
   gParamHost->paramGetValue(data->pointParam, &x, &y);
 
-  // scale it up to the project size as it is normalised
-  x = projOffset.x + x * projSize.x;
-  y = projOffset.y + y * projSize.y;
-
   // make the xhair a constant size on screen by scaling by the pixel scale
   float dx = kXHairSize * pixelScale[0];
   float dy = kXHairSize * pixelScale[1];
@@ -268,10 +264,6 @@ interactPenDown(OfxImageEffectHandle  pluginInstance,
   // get the point param's value
   double x, y;
   gParamHost->paramGetValue(data->pointParam, &x, &y);
-
-  // scale it up to the project size as it is a normalised spatial parameter
-  x = projOffset.x + x * projSize.x;
-  y = projOffset.y + y * projSize.y;
 
   // get the size of a pixel on screen
   double pixelScale[2];
@@ -402,7 +394,8 @@ describeInContext(OfxImageEffectHandle  effect, OfxPropertySetHandle /*inArgs*/)
 
   // define the 2D point we are going to draw an overlay for
   gParamHost->paramDefine(paramSet, kOfxParamTypeDouble2D, kPointParam, &props);
-  gPropHost->propSetString(props, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeNormalisedXYAbsolute);
+  gPropHost->propSetString(props, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeXYAbsolute);
+  gPropHost->propSetString(props, kOfxParamPropDefaultCoordinateSystem, 0, kOfxParamCoordinatesNormalised);
   gPropHost->propSetDouble(props, kOfxParamPropDefault, 0, 0.5);
   gPropHost->propSetDouble(props, kOfxParamPropDefault, 1, 0.5);
   gPropHost->propSetString(props, kOfxParamPropHint, 0, "Point attached to overlay crosshair");

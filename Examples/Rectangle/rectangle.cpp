@@ -177,17 +177,6 @@ getCannonicalRect(OfxImageEffectHandle effect, double time, OfxRectD &rect)
   gParamHost->paramGetValueAtTime(myData->corner1Param, time, &c1.x, &c1.y);
   gParamHost->paramGetValueAtTime(myData->corner2Param, time, &c2.x, &c2.y);
   
-  // get the project size and offset
-  OfxPointD projSize, projOffset;
-  ofxuGetProjectSetup(effect, projSize, projOffset);
-
-  // move the params into project space
-  c1.x = c1.x * projSize.x + projOffset.x;
-  c1.y = c1.y * projSize.y + projOffset.y;
-
-  c2.x = c2.x * projSize.x + projOffset.x;
-  c2.y = c2.y * projSize.y + projOffset.y;
-
   // and min/max 'em into the rect
   rect.x1 = Minimum(c1.x, c2.x);
   rect.y1 = Minimum(c1.y, c2.y);
@@ -820,16 +809,18 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
   OfxPropertySetHandle paramProps;
 
   gParamHost->paramDefine(paramSet, kOfxParamTypeDouble2D, "corner1", &paramProps);
+  gPropHost->propSetString(paramProps, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeXYAbsolute);
+  gPropHost->propSetString(paramProps, kOfxParamPropDefaultCoordinateSystem, 0, kOfxParamCoordinatesNormalised);
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 0, 0.4);
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 1, 0.4);
-  gPropHost->propSetString(paramProps, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeNormalisedXYAbsolute);
   gPropHost->propSetString(paramProps, kOfxParamPropHint, 0, "A corner of the rectangle to draw");
   gPropHost->propSetString(paramProps, kOfxPropLabel, 0, "Corner 1");
   
   gParamHost->paramDefine(paramSet, kOfxParamTypeDouble2D, "corner2", &paramProps);
+  gPropHost->propSetString(paramProps, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeXYAbsolute);
+  gPropHost->propSetString(paramProps, kOfxParamPropDefaultCoordinateSystem, 0, kOfxParamCoordinatesNormalised);
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 0, 0.6);
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 1, 0.6);
-  gPropHost->propSetString(paramProps, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeNormalisedXYAbsolute);
   gPropHost->propSetString(paramProps, kOfxParamPropHint, 0, "A corner of the rectangle to draw");
   gPropHost->propSetString(paramProps, kOfxPropLabel, 0, "Corner 2");
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 0, 0);

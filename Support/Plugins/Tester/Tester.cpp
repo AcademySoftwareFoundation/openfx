@@ -86,13 +86,8 @@ public :
   virtual bool penUp(const OFX::PenArgs &args);
   OfxPointD getCanonicalPosition(double time) const
   {
-    OfxPointD offset = _effect->getProjectOffset();
-    OfxPointD size = _effect->getProjectSize();
-    double x,y;
-    _position->getValueAtTime(time, x, y);
     OfxPointD retVal;
-    retVal.x = x * size.x + offset.x;
-    retVal.y = y * size.y + offset.y;
+    _position->getValueAtTime(time, retVal.x, retVal.y);
     return retVal; 
   }
   void setCanonicalPosition(double x, double y, double time)
@@ -546,7 +541,8 @@ void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescript
 
   Double2DParamDescriptor* widgetPos = desc.defineDouble2DParam("widgetPos");
   widgetPos->setLabels("Widget Position", "Widget Position", "Widget Position");
-  widgetPos->setDoubleType(OFX::eDoubleTypeNormalisedXYAbsolute);
+  widgetPos->setDoubleType(OFX::eDoubleTypeXYAbsolute);
+  widgetPos->setDefaultCoordinateSystem(eCoordinatesNormalised);
   widgetPos->setDimensionLabels("X Position", "Y Position");
   widgetPos->setDefault(0.5, 0.5);
 }

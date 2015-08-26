@@ -166,11 +166,7 @@ public:
 template<class ARGS>
 void DotExamplePlugin::getPositionInCanonical(double& x, double& y, const ARGS& args)
 {
-  OfxPointD size = getProjectSize();
-  OfxPointD off = getProjectOffset();
   position_->getValueAtTime(args.time, x, y);
-  x = x*size.x + off.x;
-  y = y*size.y + off.y;
 }
 
 template<class ARGS>
@@ -188,8 +184,7 @@ void DotExamplePlugin::setupAndProcess(DotGeneratorBase &processor, const OFX::R
   //OFX::BitDepthEnum         dstBitDepth    = dst->getPixelDepth();
   //OFX::PixelComponentEnum   dstComponents  = dst->getPixelComponents();
   double rad = radius_->getValueAtTime(args.time);
-  OfxPointD size = getProjectSize();
-  processor.setRadius((float)(rad * size.x));
+  processor.setRadius((float)(rad));
   double r, g, b, a;
   colour_->getValueAtTime(args.time, r, g, b, a);
   processor.setColour(r,g,b,a);
@@ -442,12 +437,13 @@ void DotExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   param->setLabels("Radius", "Radius", "Radius");
   param->setScriptName("radius");
   param->setHint("The radius of the dot produced.");
+  param->setDoubleType(eDoubleTypeX);
+  param->setDefaultCoordinateSystem(eCoordinatesNormalised);
   param->setDefault(0.02);
   //param->setRange(0, 1);
   param->setIncrement(1);
   param->setDisplayRange(0, 1);
   param->setAnimates(true);
-  param->setDoubleType(eDoubleTypeNormalisedX);
 
   RGBAParamDescriptor *param2 = desc.defineRGBAParam("colour");
   param2->setAnimates(true);
@@ -458,10 +454,11 @@ void DotExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
 
   Double2DParamDescriptor* param3 = desc.defineDouble2DParam("position");
   param3->setLabels("Dot Position", "Dot Position", "Dot Position");
+  param->setDoubleType(eDoubleTypeXY);
+  param->setDefaultCoordinateSystem(eCoordinatesNormalised);
   param3->setAnimates(true);
   param3->setDimensionLabels("X", "Y");
   param3->setDefault(0.5, 0.5);
-  param3->setDoubleType(eDoubleTypeNormalisedXY);
 
   PageParamDescriptor *page = desc.definePageParam("Controls");
   page->addChild(*param);

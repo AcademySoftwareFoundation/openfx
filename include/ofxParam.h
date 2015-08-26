@@ -444,13 +444,6 @@ The exact type and dimension is dependant on the type of the parameter. These ar
       - ::kOfxParamDoubleTypeTime  - parameter represents a time value (1D only),
       - ::kOfxParamDoubleTypeAbsoluteTime  - parameter represents an absolute time value (1D only),
 
-      - ::kOfxParamDoubleTypeNormalisedX - normalised size wrt to the project's X dimension (1D only),
-      - ::kOfxParamDoubleTypeNormalisedXAbsolute - normalised absolute position on the X axis (1D only)
-      - ::kOfxParamDoubleTypeNormalisedY - normalised size wrt to the project's Y dimension(1D only),
-      - ::kOfxParamDoubleTypeNormalisedYAbsolute - normalised absolute position on the Y axis (1D only)
-      - ::kOfxParamDoubleTypeNormalisedXY - normalised to the project's X and Y size (2D only),
-      - ::kOfxParamDoubleTypeNormalisedXYAbsolute - normalised to the projects X and Y size, and is an absolute position on the image plane,
-
       - ::kOfxParamDoubleTypeX - size wrt to the project's X dimension (1D only), in canonical coordinates,
       - ::kOfxParamDoubleTypeXAbsolute - absolute position on the X axis (1D only), in canonical coordinates,
       - ::kOfxParamDoubleTypeY - size wrt to the project's Y dimension(1D only), in canonical coordinates,
@@ -477,43 +470,6 @@ as to the interface of the parameter.
 
 /** @brief value for the ::kOfxParamDoubleTypeAngle property, indicating the parameter is to be interpreted as an absolute time from the start of the effect. See \ref ::kOfxParamPropDoubleType. */
 #define kOfxParamDoubleTypeAbsoluteTime "OfxParamDoubleTypeAbsoluteTime"
-
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating a size normalised to the X dimension. See \ref ::kOfxParamPropDoubleType.
-
-Deprecated in favour of ::OfxParamDoubleTypeX
- */
-#define kOfxParamDoubleTypeNormalisedX  "OfxParamDoubleTypeNormalisedX"
-
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating a size normalised to the Y dimension. See \ref ::kOfxParamPropDoubleType.
-
-Deprecated in favour of ::OfxParamDoubleTypeY
- */
-#define kOfxParamDoubleTypeNormalisedY  "OfxParamDoubleTypeNormalisedY"
-
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating an absolute position normalised to the X dimension. See \ref ::kOfxParamPropDoubleType. 
-
-Deprecated in favour of ::OfxParamDoubleTypeXAbsolute
-*/
-#define kOfxParamDoubleTypeNormalisedXAbsolute  "OfxParamDoubleTypeNormalisedXAbsolute"
-
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating an absolute position  normalised to the Y dimension. See \ref ::kOfxParamPropDoubleType.
-
-Deprecated in favour of ::OfxParamDoubleTypeYAbsolute
- */
-#define kOfxParamDoubleTypeNormalisedYAbsolute  "OfxParamDoubleTypeNormalisedYAbsolute"
-
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to the X and Y dimension for 2D params. See \ref ::kOfxParamPropDoubleType. 
-
-Deprecated in favour of ::OfxParamDoubleTypeXY
-*/
-#define kOfxParamDoubleTypeNormalisedXY  "OfxParamDoubleTypeNormalisedXY"
-
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to the X and Y dimension for a 2D param that can be interpretted as an absolute spatial position. See \ref ::kOfxParamPropDoubleType. 
-
-Deprecated in favour of ::kOfxParamDoubleTypeXYAbsolute 
-*/
-#define kOfxParamDoubleTypeNormalisedXYAbsolute  "OfxParamDoubleTypeNormalisedXYAbsolute"
-
 
 
 /** @brief value for the ::kOfxParamPropDoubleType property, indicating a size in canonical coords in the X dimension. See \ref ::kOfxParamPropDoubleType. */
