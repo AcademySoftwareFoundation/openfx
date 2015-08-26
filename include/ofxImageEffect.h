@@ -757,6 +757,16 @@ or input image changes. For example a generater that creates random noise pixel 
         - ::kOfxImageEffectActionIsIdentity
         - ::kOfxImageEffectActionGetRegionOfDefinition
         - ::kOfxImageEffectActionGetRegionsOfInterest
+        - ::kOfxActionInstanceChanged
+        - ::kOfxInteractActionDraw
+        - ::kOfxInteractActionPenMotion
+        - ::kOfxInteractActionPenDown
+        - ::kOfxInteractActionPenUp
+        - ::kOfxInteractActionKeyDown
+        - ::kOfxInteractActionKeyUp
+        - ::kOfxInteractActionKeyRepeat
+        - ::kOfxInteractActionGainFocus
+        - ::kOfxInteractActionLoseFocus
 
 This should be applied to any spatial parameters to position them correctly. Not that the 'x' value does not include any pixel aspect ratios.
 */
