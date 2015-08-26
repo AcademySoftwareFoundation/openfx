@@ -1,4 +1,4 @@
-#! /bin/sh 
+#! /bin/sh
 
 die()
 {
@@ -8,25 +8,36 @@ die()
 
 if [ $# -lt 1 ] ; then
   echo 'USAGE : genRelease LABEL'
-  echo '   LABEL is the label for the release'
+  echo '   LABEL is the label for the release, e.g. 1.4'
   exit 1
 fi
 
+allow_dirty_git=0
+if [ $1 = "--dirty" ] ; then
+    allow_dirty_git=1; shift
+fi
 
 LABEL=$1; shift
 
+echo "CHECK VERSION NUMBER in include/ofx.doxy; fix and rerun if needed."
+grep PROJECT_NUMBER include/ofx.doxy
+
 set -v
 
-if [ `git ls-files --modified | wc -l` -ne 0 ]; then
-  die "You have modified files; commit to git first before building release!"
+if [ $allow_dirty_git -eq 0 ]; then
+  if [ `git ls-files --modified | wc -l` -ne 0 ]; then
+    die "You have modified files; commit to git first before building release!"
+  fi
+  git clean -f	   # start clean; remove everything not managed by git
+else
+  echo Allowing dirty git working dir... do not build release like this.
 fi
 
-git clean -f	   # start clean; remove everything not managed by git
-
+rm -r doc
 cd include
 rm -r doc
 
-# Build the doxygen docs)
+# Build the doxygen docs
 doxygen ofx.doxy  || die "building doxygen docs"
 
 rm -rf ../doc/html
