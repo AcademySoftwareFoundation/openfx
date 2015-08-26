@@ -745,10 +745,10 @@ void render8Bits(double currentFrame, otherStuff...)
        following actions passed to the plug-in's <link linkEnd="mainEntryPoint">main entry</link> function...
       <itemizedlist>
 	      <listitem>The <link linkEnd="kOfxActionCreateInstance">Create Instance Action</link></listitem>
-	      <listitem>The <link linkend="kOfxActionBeginInstanceChanged">The Begin Instance Changed Action</link></listitem>
-	      <listitem>The <link linkend="kOfxActionInstanceChanged">The Instance Changed Action</link></listitem>
-	      <listitem>The <link linkend="kOfxActionEndInstanceChanged">The End Instance Changed Action</link></listitem>
-	      <listitem>The <link linkend="kOfxActionSyncPrivateData">The Sync Private Data Action</link></listitem>
+	      <listitem>The <link linkend="kOfxActionBeginInstanceChanged">Begin Instance Changed Action</link></listitem>
+	      <listitem>The <link linkend="kOfxActionInstanceChanged">Instance Changed Action</link></listitem>
+	      <listitem>The <link linkend="kOfxActionEndInstanceChanged">End Instance Changed Action</link></listitem>
+	      <listitem>The <link linkend="kOfxActionSyncPrivateData">Sync Private Data Action</link></listitem>
       </itemizedlist>
     </para>
         
