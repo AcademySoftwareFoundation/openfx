@@ -29,7 +29,7 @@
     <title>Installation Directory Hierarchy</title>
     
     <para>Each plug-in binary is distributed as a Mac OS X package style
-      directory hierarchy. Note that the there are two distinct meanings of
+      directory hierarchy. Note that there are two distinct meanings of
       'bundle', one referring to a binary file format, the other to a
       directory hierarchy used to distribute software. We are distributing
       binaries in a bundle package, and in the case of OSX, the binary is a
