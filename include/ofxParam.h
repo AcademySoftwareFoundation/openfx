@@ -225,7 +225,7 @@ If set to anything other than 0.0, the custom interface for this parameter will 
 
 /** @brief The minimum size of a parameter's custom interface, in screen pixels.
 
-    - Type - double x 2
+    - Type - int x 2
     - Property Set - plugin parameter descriptor (read/write) and instance (read only)
     - Default - 10,10
     - Valid Values - greater than (0, 0)

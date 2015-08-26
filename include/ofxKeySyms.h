@@ -47,7 +47,7 @@ This property represents a raw key press, it does not represent the 'character v
 This property is associated with a ::kOfxPropKeyString property, which encodes the UTF8
 value for the keypress/button press. Some keys (for example arrow keys) have no UTF8 equivalant.
 
-Some keys, especially on non-english language systems, may have a UTF8 value, but \e not a keysym values, in these
+Some keys, especially on non-english language systems, may have a UTF8 value, but \em not a keysym values, in these
 cases, the keysym will have a value of kOfxKey_Unknown, but the ::kOfxPropKeyString property will still be set with
 the UTF8 value.
 
@@ -65,7 +65,7 @@ This property represents the UTF8 encode value of a single key press by a user i
 This property is associated with a ::kOfxPropKeySym which represents an integer value for the key press. Some keys (for example arrow keys) have no UTF8 equivalant, 
 in which case this is set to the empty string "", and the associate ::kOfxPropKeySym is set to the equivilant raw key press.
 
-Some keys, especially on non-english language systems, may have a UTF8 value, but \e not a keysym values, in these
+Some keys, especially on non-english language systems, may have a UTF8 value, but \em not a keysym values, in these
 cases, the keysym will have a value of kOfxKey_Unknown, but the ::kOfxPropKeyString property will still be set with
 the UTF8 value.
 */
