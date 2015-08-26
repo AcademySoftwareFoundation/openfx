@@ -272,8 +272,8 @@ returns
 
   OfxStatus (*clipLoadTexture)(OfxImageClipHandle clip,
                                OfxTime       time,
-			       const char   *format,
-                               OfxRectD     *region,
+                               const char   *format,
+                               const OfxRectD     *region,
                                OfxPropertySetHandle   *textureHandle);
 
   /** @brief Releases the texture handle previously returned by

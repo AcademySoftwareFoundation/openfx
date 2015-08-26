@@ -135,7 +135,7 @@ typedef struct OfxMultiThreadSuiteV1 {
   @returns
   - kOfxStatOK - mutex is now valid and ready to go
   */
-  OfxStatus (*mutexCreate)(const OfxMutexHandle *mutex, int lockCount);
+  OfxStatus (*mutexCreate)(OfxMutexHandle *mutex, int lockCount);
 
   /** @brief Destroy a mutex
       

@@ -478,6 +478,7 @@ On a clip, it indicates that the clip needs temporal access to images.
        - kOfxBitDepthNone (implying a clip is unconnected, not valid for an image)
        - kOfxBitDepthByte
        - kOfxBitDepthShort
+       - kOfxBitDepthHalf
        - kOfxBitDepthFloat
 
 Note that for a clip, this is the value set by the clip preferences action, not the raw 'actual' value of the clip.
@@ -532,6 +533,7 @@ errors the frame rate should then be set to 0.
        - kOfxBitDepthNone (implying a clip is unconnected image)
        - kOfxBitDepthByte
        - kOfxBitDepthShort
+       - kOfxBitDepthHalf
        - kOfxBitDepthFloat
 
 This is the actual value of the component depth, before any mapping by clip preferences.
@@ -582,6 +584,7 @@ See the documentation on clip preferences for more details on how this is used w
        - kOfxBitDepthNone (implying a clip is unconnected, not valid for an image)
        - kOfxBitDepthByte
        - kOfxBitDepthShort
+       - kOfxBitDepthHalf
        - kOfxBitDepthFloat
 
 The default for a plugin is to have none set, the plugin \em must define at least one in its describe action.
@@ -1003,6 +1006,9 @@ This will be in \ref PixelCoordinates
 /** @brief String that is the name of the 'from' clip in the OFX transition context */
 #define kOfxImageEffectTransitionSourceToClipName "SourceTo"
 
+/** @brief the name of the mandated 'Transition' param for the transition context */
+#define kOfxImageEffectTransitionParamName "Transition"
+
 /** @brief the name of the mandated 'SourceTime' param for the retime context */
 #define kOfxImageEffectRetimerParamName "SourceTime"
 
@@ -1141,7 +1147,7 @@ If clipGetImage is called twice with the same parameters, then two separate imag
   */
   OfxStatus (*clipGetImage)(OfxImageClipHandle clip,
 			    OfxTime       time,
-			    OfxRectD     *region,
+			    const OfxRectD     *region,
 			    OfxPropertySetHandle   *imageHandle);
   
   /** @brief Releases the image handle previously returned by clipGetImage
