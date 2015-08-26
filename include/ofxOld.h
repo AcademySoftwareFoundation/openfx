@@ -96,4 +96,42 @@ V1.4: Removed
  */
 #define kOfxParamDoubleTypeNormalisedX  "OfxParamDoubleTypeNormalisedX"
 
+
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating a size normalised to the Y dimension. See \ref ::kOfxParamPropDoubleType.
+-- ofxParam.h
+@deprecated - V1.3: Deprecated in favour of ::OfxParamDoubleTypeY
+V1.4: Removed
+ */
+#define kOfxParamDoubleTypeNormalisedY  "OfxParamDoubleTypeNormalisedY"
+
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating an absolute position normalised to the X dimension. See \ref ::kOfxParamPropDoubleType. 
+-- ofxParam.h
+@deprecated - V1.3: Deprecated in favour of ::OfxParamDoubleTypeXAbsolute
+V1.4: Removed
+ */
+#define kOfxParamDoubleTypeNormalisedXAbsolute  "OfxParamDoubleTypeNormalisedXAbsolute"
+
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating an absolute position  normalised to the Y dimension. See \ref ::kOfxParamPropDoubleType.
+-- ofxParam.h
+@deprecated - V1.3: Deprecated in favour of ::OfxParamDoubleTypeYAbsolute
+V1.4: Removed
+ */
+#define kOfxParamDoubleTypeNormalisedYAbsolute  "OfxParamDoubleTypeNormalisedYAbsolute"
+
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to the X and Y dimension for 2D params. See \ref ::kOfxParamPropDoubleType. 
+-- ofxParam.h
+@deprecated - V1.3: Deprecated in favour of ::OfxParamDoubleTypeXY
+V1.4: Removed
+ */
+#define kOfxParamDoubleTypeNormalisedXY  "OfxParamDoubleTypeNormalisedXY"
+
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to the X and Y dimension for a 2D param that can be interpretted as an absolute spatial position. See \ref ::kOfxParamPropDoubleType. 
+-- ofxParam.h
+@deprecated - V1.3: Deprecated in favour of ::kOfxParamDoubleTypeXYAbsolute 
+V1.4: Removed
+ */
+#define kOfxParamDoubleTypeNormalisedXYAbsolute  "OfxParamDoubleTypeNormalisedXYAbsolute"
+
+
+
 #endif
