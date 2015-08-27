@@ -48,6 +48,11 @@ namespace OFX {
         return s2;
       return s1;
     }
+    else if(s1 == kOfxBitDepthHalf) {
+      if(s2 == kOfxBitDepthFloat)
+        return s2;
+      return s1;
+    }
     else if(s1 == kOfxBitDepthFloat) {
       return s1;
     }
