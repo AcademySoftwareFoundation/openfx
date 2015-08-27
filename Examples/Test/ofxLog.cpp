@@ -1,5 +1,4 @@
 #include <string>
-#include <assert.h>
 #include <stdio.h>
 #include <stdarg.h>
 
@@ -16,13 +15,19 @@ namespace OFX {
     gLogFileName = value;
   }
   
+  /** @brief Gets the name of the log file. */
+  const std::string &
+  logGetFileName()
+  {
+    return gLogFileName;
+  }
+
   /** @brief Opens the log file, returns whether this was sucessful or not. */
   bool
   logOpenFile(void)
   {
     if(!gLogFP) {
       gLogFP = fopen(gLogFileName.c_str(), "w");
-      assert(gLogFP != 0);
     }
     return gLogFP != 0;
   }

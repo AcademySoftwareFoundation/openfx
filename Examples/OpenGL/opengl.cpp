@@ -31,14 +31,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*
    Direct GPU processing using OpenGL
  */
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
+#include <cstdio>
+#include <cstring>
+#include <cstdarg>
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif
+#include <stdexcept>
+#include <new>
 
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
@@ -46,6 +48,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxOpenGLRender.h"
 
 #include "../include/ofxUtilities.H" // example support utils
+
+#if defined __APPLE__ || defined linux || defined __FreeBSD__
+#  define EXPORT __attribute__((visibility("default")))
+#elif defined _WIN32
+#  define EXPORT OfxExport
+#else
+#  error Not building on your operating system quite yet
+#endif
 
 // pointers64 to various bits of the host
 OfxHost               *gHost;
@@ -62,6 +72,7 @@ OfxImageEffectOpenGLRenderSuiteV1 *gOpenGLSuite = 0;
 int gHostSupportsMultipleBitDepths = false;
 int gHostSupportsOpenGL = false;
 
+/*
 #define CHECK_STATUS(args) check_status_fun args
 
 static void
@@ -72,6 +83,7 @@ check_status_fun(int status, int expected, const char *name)
 	    name, expected, status);
   }
 }
+*/
 
 #define DPRINT(args) print_dbg args
 void print_dbg(const char *fmt, ...)
@@ -159,8 +171,8 @@ createInstance( OfxImageEffectHandle effect)
   gParamHost->paramGetHandle(paramSet, "source_scale", &myData->sourceScaleParam, 0);
 
   // cache away our clip handles
-  gEffectHost->clipGetHandle(effect, "Source", &myData->sourceClip, 0);
-  gEffectHost->clipGetHandle(effect, "Output", &myData->outputClip, 0);
+  gEffectHost->clipGetHandle(effect, kOfxImageEffectSimpleSourceClipName, &myData->sourceClip, 0);
+  gEffectHost->clipGetHandle(effect, kOfxImageEffectOutputClipName, &myData->outputClip, 0);
 
   // set my private instance data
   gPropHost->propSetPointer(effectProps, kOfxPropInstanceData, 0, (void *) myData);
@@ -214,6 +226,7 @@ getSpatialRoI( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxP
 
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
+  (void)myData;
 
   return kOfxStatOK;
 }
@@ -222,7 +235,7 @@ getSpatialRoI( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxP
 // This is actually redundant as this is the default behaviour, but for illustrative
 // purposes.
 OfxStatus
-getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle outArgs)
 {
   MyInstanceData *myData = getMyInstanceData(effect);
 
@@ -241,7 +254,7 @@ getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  
 
 // Set our clip preferences
 static OfxStatus
-getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle outArgs)
 {
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
@@ -265,9 +278,9 @@ getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs, 
 
 // are the settings of the effect performing an identity operation
 static OfxStatus
-isIdentity( OfxImageEffectHandle  effect,
-	    OfxPropertySetHandle inArgs,
-	    OfxPropertySetHandle outArgs)
+isIdentity( OfxImageEffectHandle  /*effect*/,
+	    OfxPropertySetHandle /*inArgs*/,
+	    OfxPropertySetHandle /*outArgs*/)
 {
   // In this case do the default, which in this case is to render
   return kOfxStatReplyDefault;
@@ -276,9 +289,9 @@ isIdentity( OfxImageEffectHandle  effect,
 ////////////////////////////////////////////////////////////////////////////////
 // function called when the instance has been changed by anything
 static OfxStatus
-instanceChanged( OfxImageEffectHandle  effect,
-		 OfxPropertySetHandle inArgs,
-		 OfxPropertySetHandle outArgs)
+instanceChanged( OfxImageEffectHandle  /*effect*/,
+		 OfxPropertySetHandle /*inArgs*/,
+		 OfxPropertySetHandle /*outArgs*/)
 {
   // don't trap any others
   return kOfxStatReplyDefault;
@@ -288,12 +301,14 @@ instanceChanged( OfxImageEffectHandle  effect,
 // rendering routines
 
 // Is image handle a GPU texture?
+/*
 static bool image_is_texture(OfxPropertySetHandle image)
 {
   int tmp;
   return (gOpenGLSuite != NULL) &&
     (gPropHost->propGetInt(image, kOfxImageEffectPropOpenGLTextureIndex, 0, &tmp) == kOfxStatOK);
 }
+*/
 
 // Render to texture: see http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-14-render-to-texture/
 
@@ -301,7 +316,7 @@ static bool image_is_texture(OfxPropertySetHandle image)
 // the process code  that the host sees
 static OfxStatus render( OfxImageEffectHandle  instance,
                          OfxPropertySetHandle inArgs,
-                         OfxPropertySetHandle outArgs)
+                         OfxPropertySetHandle /*outArgs*/)
 {
   // get the render window and the time from the inArgs
   OfxTime time;
@@ -316,14 +331,9 @@ static OfxStatus render( OfxImageEffectHandle  instance,
 
   // property handles and members of each image
   OfxPropertySetHandle sourceImg = NULL, outputImg = NULL;
-  int srcRowBytes, srcBitDepth, dstRowBytes, dstBitDepth;
-  bool srcIsAlpha, dstIsAlpha;
-  OfxRectI dstRect, srcRect;
-  void *src, *dst = NULL;
   int gl_enabled = 0;
   int source_texture_index = -1, source_texture_target = -1;
   int output_texture_index = -1, output_texture_target = -1;
-  void *source_ptr, *output;
   char *tmps;
 
   DPRINT(("render: openGLSuite %s\n", gOpenGLSuite ? "found" : "not found"));
@@ -341,28 +351,49 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   }
 
   // get the output image texture
-  OfxPropertySetHandle output_texture = NULL;
   status = gOpenGLSuite->clipLoadTexture(myData->outputClip, time, NULL, NULL, &outputImg);
   DPRINT(("openGL: clipLoadTexture (output) returns status %d\n", status));
-
+  if (status != kOfxStatOK) {
+    return status;
+  }
   status = gPropHost->propGetInt(outputImg, kOfxImageEffectPropOpenGLTextureIndex,
 				 0, &output_texture_index);
+  if (status != kOfxStatOK) {
+    return status;
+  }
   status = gPropHost->propGetInt(outputImg, kOfxImageEffectPropOpenGLTextureTarget,
 				 0, &output_texture_target);
+  if (status != kOfxStatOK) {
+    return status;
+  }
   status = gPropHost->propGetString(outputImg, kOfxImageEffectPropPixelDepth, 0, &tmps);
+  if (status != kOfxStatOK) {
+    return status;
+  }
   DPRINT(("openGL: output texture index %d, target %d, depth %s\n",
 	  output_texture_index, output_texture_target, tmps));
 
-  OfxPropertySetHandle source_texture = NULL;
   status = gOpenGLSuite->clipLoadTexture(myData->sourceClip, time, NULL, NULL, &sourceImg);
   DPRINT(("openGL: clipLoadTexture (source) returns status %d\n", status));
+  if (status != kOfxStatOK) {
+    return status;
+  }
 
   status = gPropHost->propGetInt(sourceImg, kOfxImageEffectPropOpenGLTextureIndex,
 				 0, &source_texture_index);
+  if (status != kOfxStatOK) {
+    return status;
+  }
   status = gPropHost->propGetInt(sourceImg, kOfxImageEffectPropOpenGLTextureTarget,
 				 0, &source_texture_target);
+  if (status != kOfxStatOK) {
+    return status;
+  }
   status = gPropHost->propGetString(sourceImg, kOfxImageEffectPropPixelDepth, 0, &tmps);
-  DPRINT(("openGL: source texture index %d, target %d, depth %d\n",
+  if (status != kOfxStatOK) {
+    return status;
+  }
+  DPRINT(("openGL: source texture index %d, target %d, depth %s\n",
 	  source_texture_index, source_texture_target, tmps));
   // XXX: check status for errors
 
@@ -446,13 +477,12 @@ static OfxStatus render( OfxImageEffectHandle  instance,
 // convience function to define parameters
 static void
 defineParam( OfxParamSetHandle effectParams,
-	     char *name,
-	     char *label,
-	     char *scriptName,
-	     char *hint,
-	     char *parent)
+	     const char *name,
+	     const char *label,
+	     const char *scriptName,
+	     const char *hint,
+	     const char *parent)
 {
-  OfxParamHandle param;
   OfxPropertySetHandle props;
   gParamHost->paramDefine(effectParams, kOfxParamTypeDouble, name, &props);
 
@@ -477,18 +507,18 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
   // get the context from the inArgs handle
   char *context;
   gPropHost->propGetString(inArgs, kOfxImageEffectPropContext, 0, &context);
-  bool isGeneralContext = strcmp(context, kOfxImageEffectContextGeneral) == 0;
+  //bool isGeneralContext = strcmp(context, kOfxImageEffectContextGeneral) == 0;
 
   OfxPropertySetHandle props;
   // define the single output clip in both contexts
-  gEffectHost->clipDefine(effect, "Output", &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectOutputClipName, &props);
 
   // set the component types we can handle on out output
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
 
   // define the single source clip in both contexts
-  gEffectHost->clipDefine(effect, "Source", &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectSimpleSourceClipName, &props);
 
   // set the component types we can handle on our main input
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
@@ -507,7 +537,6 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
 	      "Scales the source image", 0);
 
   // make a page of controls and add my parameters to it
-  OfxParamHandle page;
   gParamHost->paramDefine(paramSet, kOfxParamTypePage, "Main", &props);
   gPropHost->propSetString(props, kOfxParamPropPageChild, 0, "scale");
   gPropHost->propSetString(props, kOfxParamPropPageChild, 1, "source_scale");
@@ -548,7 +577,7 @@ describe(OfxImageEffectHandle  effect)
 
   // set some labels and the group it belongs to
   gPropHost->propSetString(effectProps, kOfxPropLabel, 0, "OFX OpenGL Example");
-  gPropHost->propSetString(effectProps, kOfxImageEffectPluginPropGrouping, 0, "OFX OpenGL Example");
+  gPropHost->propSetString(effectProps, kOfxImageEffectPluginPropGrouping, 0, "OFX Example");
 
   // define the contexts we can be used in
   gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 0, kOfxImageEffectContextFilter);
@@ -558,7 +587,7 @@ describe(OfxImageEffectHandle  effect)
   gPropHost->propSetString(effectProps, kOfxImageEffectPropOpenGLRenderSupported, 0, "true");
 
   {
-    char *s = "<undefined>";
+    char *s = NULL;
     stat = gPropHost->propGetString(gHost->host, kOfxImageEffectPropOpenGLRenderSupported, 0, &s);
     DPRINT(("Host has OpenGL render support: %s (stat=%d)\n", s, stat));
     gHostSupportsOpenGL = stat == 0 && !strcmp(s, "true");
@@ -577,6 +606,7 @@ describe(OfxImageEffectHandle  effect)
 static OfxStatus
 pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
 {
+  try {
   // cast to appropriate type
   OfxImageEffectHandle effect = (OfxImageEffectHandle) handle;
 
@@ -619,7 +649,22 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,
   else if(strcmp(action, kOfxImageEffectActionGetTimeDomain) == 0) {
     return getTemporalDomain(effect, inArgs, outArgs);
   }
-
+  } catch (std::bad_alloc) {
+    // catch memory
+    //std::cout << "OFX Plugin Memory error." << std::endl;
+    return kOfxStatErrMemory;
+  } catch ( const std::exception& e ) {
+    // standard exceptions
+    //std::cout << "OFX Plugin error: " << e.what() << std::endl;
+    return kOfxStatErrUnknown;
+  } catch (int err) {
+    // ho hum, gone wrong somehow
+    return err;
+  } catch ( ... ) {
+    // everything else
+    //std::cout << "OFX Plugin error" << std::endl;
+    return kOfxStatErrUnknown;
+  }
 
   // other actions to take the default value
   return kOfxStatReplyDefault;
@@ -646,7 +691,7 @@ static OfxPlugin basicPlugin =
 };
 
 // the two mandated functions
-OfxPlugin *
+EXPORT OfxPlugin *
 OfxGetPlugin(int nth)
 {
   if(nth == 0)
@@ -654,7 +699,7 @@ OfxGetPlugin(int nth)
   return 0;
 }
 
-int
+EXPORT int
 OfxGetNumberOfPlugins(void)
 {
   return 1;

@@ -39,11 +39,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     - basic property usage
     - basic image access and rendering
  */
-#include <string.h>
+#include <cstring>
+#include <stdexcept>
+#include <new>
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
 #include "ofxPixels.h"
+
+#if defined __APPLE__ || defined linux || defined __FreeBSD__
+#  define EXPORT __attribute__((visibility("default")))
+#elif defined _WIN32
+#  define EXPORT OfxExport
+#else
+#  error Not building on your operating system quite yet
+#endif
 
 // pointers to various bits of the host
 OfxHost               *gHost;
@@ -67,7 +77,7 @@ class NoImageEx {};
 // the process code  that the host sees
 static OfxStatus render(OfxImageEffectHandle  instance,
                         OfxPropertySetHandle inArgs,
-                        OfxPropertySetHandle outArgs)
+                        OfxPropertySetHandle /*outArgs*/)
 {
   // get the render window and the time from the inArgs
   OfxTime time;
@@ -79,7 +89,7 @@ static OfxStatus render(OfxImageEffectHandle  instance,
 
   // fetch output clip
   OfxImageClipHandle outputClip;
-  gEffectHost->clipGetHandle(instance, "Output", &outputClip, 0);
+  gEffectHost->clipGetHandle(instance, kOfxImageEffectOutputClipName, &outputClip, 0);
     
 
   OfxPropertySetHandle outputImg = NULL, sourceImg = NULL;
@@ -91,7 +101,7 @@ static OfxStatus render(OfxImageEffectHandle  instance,
     }
       
     // fetch output image info from that handle
-    int dstRowBytes, dstBitDepth;
+    int dstRowBytes;
     OfxRectI dstRect;
     void *dstPtr;
     gPropHost->propGetInt(outputImg, kOfxImagePropRowBytes, 0, &dstRowBytes);
@@ -101,7 +111,7 @@ static OfxStatus render(OfxImageEffectHandle  instance,
       
     // fetch main input clip
     OfxImageClipHandle sourceClip;
-    gEffectHost->clipGetHandle(instance, "Source", &sourceClip, 0);
+    gEffectHost->clipGetHandle(instance, kOfxImageEffectSimpleSourceClipName, &sourceClip, 0);
       
     // fetch image at render time from that clip
     if (gEffectHost->clipGetImage(sourceClip, time, NULL, &sourceImg) != kOfxStatOK) {
@@ -109,7 +119,7 @@ static OfxStatus render(OfxImageEffectHandle  instance,
     }
       
     // fetch image info out of that handle
-    int srcRowBytes, srcBitDepth;
+    int srcRowBytes;
     OfxRectI srcRect;
     void *srcPtr;
     gPropHost->propGetInt(sourceImg, kOfxImagePropRowBytes, 0, &srcRowBytes);
@@ -168,17 +178,17 @@ static OfxStatus render(OfxImageEffectHandle  instance,
 
 //  describe the plugin in context
 static OfxStatus
-describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
+describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs*/)
 {
   OfxPropertySetHandle props;
   // define the single output clip in both contexts
-  gEffectHost->clipDefine(effect, "Output", &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectOutputClipName, &props);
 
   // set the component types we can handle on out output
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
 
   // define the single source clip in both contexts
-  gEffectHost->clipDefine(effect, "Source", &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectSimpleSourceClipName, &props);
 
   // set the component types we can handle on our main input
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
@@ -231,6 +241,7 @@ onLoad(void)
 static OfxStatus
 pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
 {
+  try {
   // cast to appropriate type
   OfxImageEffectHandle effect = (OfxImageEffectHandle) handle;
 
@@ -246,6 +257,22 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,
   else if(strcmp(action, kOfxImageEffectActionRender) == 0) {
     return render(effect, inArgs, outArgs);
   }    
+  } catch (std::bad_alloc) {
+    // catch memory
+    //std::cout << "OFX Plugin Memory error." << std::endl;
+    return kOfxStatErrMemory;
+  } catch ( const std::exception& e ) {
+    // standard exceptions
+    //std::cout << "OFX Plugin error: " << e.what() << std::endl;
+    return kOfxStatErrUnknown;
+  } catch (int err) {
+    // ho hum, gone wrong somehow
+    return err;
+  } catch ( ... ) {
+    // everything else
+    //std::cout << "OFX Plugin error" << std::endl;
+    return kOfxStatErrUnknown;
+  }
     
   // other actions to take the default value
   return kOfxStatReplyDefault;
@@ -264,7 +291,7 @@ static OfxPlugin basicPlugin =
 {       
   kOfxImageEffectPluginApi,
   1,
-  "uk.co.thefoundry:OfxInvertExample",
+  "uk.co.thefoundry.OfxInvertExample",
   1,
   0,
   setHostFunc,
@@ -272,7 +299,7 @@ static OfxPlugin basicPlugin =
 };
    
 // the two mandated functions
-OfxPlugin *
+EXPORT OfxPlugin *
 OfxGetPlugin(int nth)
 {
   if(nth == 0)
@@ -280,7 +307,7 @@ OfxGetPlugin(int nth)
   return 0;
 }
  
-int
+EXPORT int
 OfxGetNumberOfPlugins(void)
 {       
   return 1;

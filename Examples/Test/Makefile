@@ -1,5 +1,6 @@
-CXXFLAGS = -I../../include
-OPTIMIZER = -g
+PLUGINOBJECTS = testProperties.o ofxLog.o
+PLUGINNAME = testProperties
+PATHTOROOT = ../
 
-testProperties.bundle : testProperties.o ofxLog.o
-	$(CXX) -shared testProperties.o ofxLog.o -o testProperties.dso
+include ../Makefile.master
+

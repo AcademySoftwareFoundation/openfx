@@ -42,18 +42,28 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <windows.h>
 #endif
  
-#include <string.h>
+#include <cstring>
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif
-#include <math.h>
+#include <cmath>
+#include <stdexcept>
+#include <new>
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
 
 #include "../include/ofxUtilities.H" // example support utils
+
+#if defined __APPLE__ || defined linux || defined __FreeBSD__
+#  define EXPORT __attribute__((visibility("default")))
+#elif defined _WIN32
+#  define EXPORT OfxExport
+#else
+#  error Not building on your operating system quite yet
+#endif
 
 #define kPointParam "point"
 
@@ -70,19 +80,19 @@ OfxInteractSuiteV1    *gInteractHost = 0;
 
 // we are always identity as we are just a hack example plugin
 static OfxStatus
-isIdentity(OfxImageEffectHandle  pluginInstance,
-	   OfxPropertySetHandle inArgs,
+isIdentity(OfxImageEffectHandle  /*pluginInstance*/,
+	   OfxPropertySetHandle /*inArgs*/,
 	   OfxPropertySetHandle outArgs)
 {
   // set the property in the out args indicating which is the identity clip
-  gPropHost->propSetString(outArgs, kOfxPropName, 0, "Source");
+  gPropHost->propSetString(outArgs, kOfxPropName, 0, kOfxImageEffectSimpleSourceClipName);
   return kOfxStatOK;
 }
 
 // the process code  that the host sees
-static OfxStatus render(OfxImageEffectHandle  instance,
-			OfxPropertySetHandle inArgs,
-			OfxPropertySetHandle outArgs)
+static OfxStatus render(OfxImageEffectHandle  /*instance*/,
+			OfxPropertySetHandle /*inArgs*/,
+			OfxPropertySetHandle /*outArgs*/)
 {
   // do nothing as this should never be called as isIdentity should always be trapped
   return kOfxStatOK;
@@ -111,7 +121,7 @@ getInteractData(OfxInteractHandle interactInstance)
 
 // creation of an interact instance
 static OfxStatus 
-interactDescribe(OfxInteractHandle interactDescriptor)
+interactDescribe(OfxInteractHandle /*interactDescriptor*/)
 {
 
   // and we are good
@@ -148,7 +158,7 @@ interactCreateInstance(OfxImageEffectHandle pluginInstance,
 
 // destruction of an interact instance
 static OfxStatus 
-interactDestroyInstance(OfxImageEffectHandle  pluginInstance,
+interactDestroyInstance(OfxImageEffectHandle  /*pluginInstance*/,
 			OfxInteractHandle interactInstance)
 {
   MyInteractData *data = getInteractData(interactInstance);
@@ -179,10 +189,6 @@ interactDraw(OfxImageEffectHandle  pluginInstance,
   // get my param's value
   double x, y;
   gParamHost->paramGetValue(data->pointParam, &x, &y);
-
-  // scale it up to the project size as it is normalised
-  x = projOffset.x + x * projSize.x;
-  y = projOffset.y + y * projSize.y;
 
   // make the xhair a constant size on screen by scaling by the pixel scale
   float dx = kXHairSize * pixelScale[0];
@@ -259,10 +265,6 @@ interactPenDown(OfxImageEffectHandle  pluginInstance,
   double x, y;
   gParamHost->paramGetValue(data->pointParam, &x, &y);
 
-  // scale it up to the project size as it is a normalised spatial parameter
-  x = projOffset.x + x * projSize.x;
-  y = projOffset.y + y * projSize.y;
-
   // get the size of a pixel on screen
   double pixelScale[2];
   ofxuGetInteractPixelScale(inArgs, pixelScale);
@@ -278,9 +280,9 @@ interactPenDown(OfxImageEffectHandle  pluginInstance,
 }
 
 static OfxStatus
-interactPenUp(OfxImageEffectHandle  pluginInstance, 
+interactPenUp(OfxImageEffectHandle  /*pluginInstance*/,
 		OfxInteractHandle interactInstance,
-		OfxPropertySetHandle inArgs)
+		OfxPropertySetHandle /*inArgs*/)
 {
   // get my data handle
   MyInteractData *data = getInteractData(interactInstance);
@@ -296,7 +298,7 @@ interactPenUp(OfxImageEffectHandle  pluginInstance,
 ////////////////////////////////////////////////////////////////////////////////
 // the entry point for the overlay
 static OfxStatus
-overlayMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs)
+overlayMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle /*outArgs*/)
 {
   OfxInteractHandle interact = (OfxInteractHandle ) handle;
   
@@ -329,6 +331,7 @@ overlayMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs
     else if(strcmp(action, kOfxInteractActionPenUp) == 0) {
       return interactPenUp(pluginInstance, interact, inArgs);
     }
+    return kOfxStatReplyDefault;
   }
   return kOfxStatReplyDefault;
 }
@@ -372,16 +375,16 @@ describe(OfxImageEffectHandle effect)
 }
 
 static OfxStatus
-describeInContext(OfxImageEffectHandle  effect, OfxPropertySetHandle inArgs)
+describeInContext(OfxImageEffectHandle  effect, OfxPropertySetHandle /*inArgs*/)
 {
   // define the single source clip
   OfxPropertySetHandle props;
-  gEffectHost->clipDefine(effect, "Source", &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectSimpleSourceClipName, &props);
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
 
   // define the output clip
-  gEffectHost->clipDefine(effect, "Output", &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectOutputClipName, &props);
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
   
@@ -391,7 +394,8 @@ describeInContext(OfxImageEffectHandle  effect, OfxPropertySetHandle inArgs)
 
   // define the 2D point we are going to draw an overlay for
   gParamHost->paramDefine(paramSet, kOfxParamTypeDouble2D, kPointParam, &props);
-  gPropHost->propSetString(props, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeNormalisedXYAbsolute);
+  gPropHost->propSetString(props, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeXYAbsolute);
+  gPropHost->propSetString(props, kOfxParamPropDefaultCoordinateSystem, 0, kOfxParamCoordinatesNormalised);
   gPropHost->propSetDouble(props, kOfxParamPropDefault, 0, 0.5);
   gPropHost->propSetDouble(props, kOfxParamPropDefault, 1, 0.5);
   gPropHost->propSetString(props, kOfxParamPropHint, 0, "Point attached to overlay crosshair");
@@ -406,6 +410,7 @@ describeInContext(OfxImageEffectHandle  effect, OfxPropertySetHandle inArgs)
 static OfxStatus
 pluginMain(const char *action, const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs)
 {
+  try {
   // cast to appropriate type
   OfxImageEffectHandle effect = (OfxImageEffectHandle ) handle;
 
@@ -418,6 +423,25 @@ pluginMain(const char *action, const void *handle, OfxPropertySetHandle inArgs, 
   else if(strcmp(action, kOfxImageEffectActionIsIdentity) == 0) {
     return isIdentity(effect, inArgs, outArgs);
   }    
+  else if(strcmp(action, kOfxImageEffectActionRender) == 0) {
+    return render(effect, inArgs, outArgs);
+  }    
+  } catch (std::bad_alloc) {
+    // catch memory
+    //std::cout << "OFX Plugin Memory error." << std::endl;
+    return kOfxStatErrMemory;
+  } catch ( const std::exception& e ) {
+    // standard exceptions
+    //std::cout << "OFX Plugin error: " << e.what() << std::endl;
+    return kOfxStatErrUnknown;
+  } catch (int err) {
+    // ho hum, gone wrong somehow
+    return err;
+  } catch ( ... ) {
+    // everything else
+    //std::cout << "OFX Plugin error" << std::endl;
+    return kOfxStatErrUnknown;
+  }
     
   // other actions to take the default value
   return kOfxStatReplyDefault;
@@ -436,7 +460,7 @@ static OfxPlugin basicPlugin =
 {       
   kOfxImageEffectPluginApi,
   1,
-  "uk.co.thefoundry:BasicOverlayPlugin",
+  "uk.co.thefoundry.BasicOverlayPlugin",
   1,
   0,
   setHostFunc,
@@ -444,7 +468,7 @@ static OfxPlugin basicPlugin =
 };
    
 // the two mandated functions
-OfxPlugin *
+EXPORT OfxPlugin *
 OfxGetPlugin(int nth)
 {
   if(nth == 0)
@@ -452,7 +476,7 @@ OfxGetPlugin(int nth)
   return 0;
 }
  
-int
+EXPORT int
 OfxGetNumberOfPlugins(void)
 {       
   return 1;

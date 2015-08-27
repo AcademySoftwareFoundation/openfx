@@ -37,12 +37,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   The main features are
     - how to map pixel depths
  */
-#include <string.h>
+#include <cstring>
+#include <stdexcept>
+#include <new>
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
 
 #include "../include/ofxUtilities.H" // example support utils
+
+#if defined __APPLE__ || defined linux || defined __FreeBSD__
+#  define EXPORT __attribute__((visibility("default")))
+#elif defined _WIN32
+#  define EXPORT OfxExport
+#else
+#  error Not building on your operating system quite yet
+#endif
 
 // Message id for the message posted when we don't have enough bits
 #define kMessageNotEnoughBits "MessageIDNotEnoughBits"
@@ -130,15 +140,15 @@ destroyInstance(OfxImageEffectHandle effect)
 // are the settings of the effect performing an identity operation
 static OfxStatus
 isIdentity(OfxImageEffectHandle  effect,
-	   OfxPropertySetHandle inArgs,
+	   OfxPropertySetHandle /*inArgs*/,
 	   OfxPropertySetHandle outArgs)
 {
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
   
   // get the render window and the time from the inArgs
-  OfxTime time;
-  OfxRectI renderWindow;
+  //OfxTime time;
+  //OfxRectI renderWindow;
   
   // get the src depth
   int srcDepth = ofxuGetClipPixelDepth(myData->sourceClip);
@@ -250,7 +260,7 @@ Processor::process(void)
 }
 
 void 
-Processor::doProcessing(OfxRectI window)
+Processor::doProcessing(OfxRectI /*window*/)
 {
 }
 
@@ -309,7 +319,7 @@ class ProcessPix : public Processor {
 // the process code  that the host sees
 static OfxStatus render(OfxImageEffectHandle effect,
                         OfxPropertySetHandle inArgs,
-                        OfxPropertySetHandle outArgs)
+                        OfxPropertySetHandle /*outArgs*/)
 {
   // get the render window and the time from the inArgs
   OfxTime time;
@@ -395,7 +405,7 @@ static OfxStatus render(OfxImageEffectHandle effect,
 // Set our clip preferences 
 static OfxStatus 
 getClipPreferences(OfxImageEffectHandle effect,
-		   OfxPropertySetHandle inArgs,
+		   OfxPropertySetHandle /*inArgs*/,
 		   OfxPropertySetHandle outArgs)
 {
   // retrieve any instance data associated with this effect
@@ -426,7 +436,7 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
   // get the context from the inArgs handle
   char *context;
   gPropHost->propGetString(inArgs, kOfxImageEffectPropContext, 0, &context);
-  bool isGeneratorContext = strcmp(context, kOfxImageEffectContextGenerator) == 0;
+  //bool isGeneratorContext = strcmp(context, kOfxImageEffectContextGenerator) == 0;
 
   OfxPropertySetHandle clipProps;
   // define the single output clip in both contexts
@@ -450,7 +460,7 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
   OfxParamSetHandle paramSet;
   gEffectHost->getParamSet(effect, &paramSet);
 
-  OfxParamHandle param;
+  //OfxParamHandle param;
   OfxPropertySetHandle paramProps;
 
   // single choice parameter
@@ -497,11 +507,13 @@ describe(OfxImageEffectHandle  effect)
   // we cant do any work, so refuse to load and explain why.
   if(!hostSupportsMultipleDepths || nHostDepths == 1) {
     // post a message
-    gMessageSuite->message(effect, kOfxMessageError, kMessageNotEnoughBits, 
-			   "OFX GeneratorExample : cannot run on this application because the it does not allow effects to change the bit depth of images.");
+    // - disabled, because posting a message within describe() crashes Nuke 6
+    //gMessageSuite->message(effect, kOfxMessageError, kMessageNotEnoughBits,
+	//		   "OFX GeneratorExample : cannot run on this application because the it does not allow effects to change the bit depth of images.");
 
     // and refuse to load
-    return kOfxStatErrMissingHostFeature;
+    // - disabled, because Nuke 6 still loads it - it's better to load it even if it's non-functional
+    //return kOfxStatErrMissingHostFeature;
   }
 
   // get the property handle for the plugin
@@ -554,6 +566,7 @@ describe(OfxImageEffectHandle  effect)
 static OfxStatus
 pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs)
 {
+  try {
   // cast to appropriate type
   OfxImageEffectHandle effect = (OfxImageEffectHandle ) handle;
 
@@ -578,6 +591,22 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,
   else if(strcmp(action, kOfxImageEffectActionGetClipPreferences) == 0) {
     return getClipPreferences(effect, inArgs, outArgs);
   }  
+  } catch (std::bad_alloc) {
+    // catch memory
+    //std::cout << "OFX Plugin Memory error." << std::endl;
+    return kOfxStatErrMemory;
+  } catch ( const std::exception& e ) {
+    // standard exceptions
+    //std::cout << "OFX Plugin error: " << e.what() << std::endl;
+    return kOfxStatErrUnknown;
+  } catch (int err) {
+    // ho hum, gone wrong somehow
+    return err;
+  } catch ( ... ) {
+    // everything else
+    //std::cout << "OFX Plugin error" << std::endl;
+    return kOfxStatErrUnknown;
+  }
     
   // other actions to take the default value
   return kOfxStatReplyDefault;
@@ -596,7 +625,7 @@ static OfxPlugin basicPlugin =
 {       
   kOfxImageEffectPluginApi,
   1,
-  "uk.co.thefoundry:DepthConverterExample",
+  "uk.co.thefoundry.DepthConverterExample",
   1,
   0,
   setHostFunc,
@@ -604,7 +633,7 @@ static OfxPlugin basicPlugin =
 };
    
 // the two mandated functions
-OfxPlugin *
+EXPORT OfxPlugin *
 OfxGetPlugin(int nth)
 {
   if(nth == 0)
@@ -612,7 +641,7 @@ OfxGetPlugin(int nth)
   return 0;
 }
  
-int
+EXPORT int
 OfxGetNumberOfPlugins(void)
 {       
   return 1;
