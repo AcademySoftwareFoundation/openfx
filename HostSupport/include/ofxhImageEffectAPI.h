@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <map>
 #include <set>
+#include <memory>
 
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
