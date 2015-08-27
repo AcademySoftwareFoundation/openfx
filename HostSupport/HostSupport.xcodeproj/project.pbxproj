@@ -1,0 +1,965 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		1E3CB89D179931E50032B538 /* HostSupport */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 1E3CB89E179931E50032B538 /* Build configuration list for PBXAggregateTarget "HostSupport" */;
+			buildPhases = (
+			);
+			dependencies = (
+				1E3CB8A2179931EB0032B538 /* PBXTargetDependency */,
+				1E3CB8A4179931F00032B538 /* PBXTargetDependency */,
+				1E3CB8A6179931F00032B538 /* PBXTargetDependency */,
+			);
+			name = HostSupport;
+			productName = HostSupport;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		1E1A06991B7D0D0C00ED08EF /* ofxOld.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E1A06981B7D0D0C00ED08EF /* ofxOld.h */; };
+		1E31EC3117F5CA44004AB554 /* ofxOpenGLRender.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E31EC2E17F5CA44004AB554 /* ofxOpenGLRender.h */; };
+		1E31EC3217F5CA44004AB554 /* ofxParametricParam.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E31EC2F17F5CA44004AB554 /* ofxParametricParam.h */; };
+		1E3CB82917992E520032B538 /* ofxhBinary.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB81A17992E520032B538 /* ofxhBinary.h */; };
+		1E3CB82A17992E520032B538 /* ofxhClip.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB81B17992E520032B538 /* ofxhClip.h */; };
+		1E3CB82B17992E520032B538 /* ofxhHost.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB81C17992E520032B538 /* ofxhHost.h */; };
+		1E3CB82C17992E520032B538 /* ofxhImageEffect.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB81D17992E520032B538 /* ofxhImageEffect.h */; };
+		1E3CB82D17992E520032B538 /* ofxhImageEffectAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB81E17992E520032B538 /* ofxhImageEffectAPI.h */; };
+		1E3CB82E17992E520032B538 /* ofxhInteract.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB81F17992E520032B538 /* ofxhInteract.h */; };
+		1E3CB82F17992E520032B538 /* ofxhMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB82017992E520032B538 /* ofxhMemory.h */; };
+		1E3CB83017992E520032B538 /* ofxhParam.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB82117992E520032B538 /* ofxhParam.h */; };
+		1E3CB83117992E520032B538 /* ofxhPluginAPICache.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB82217992E520032B538 /* ofxhPluginAPICache.h */; };
+		1E3CB83217992E520032B538 /* ofxhPluginCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB82317992E520032B538 /* ofxhPluginCache.h */; };
+		1E3CB83317992E520032B538 /* ofxhProgress.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB82417992E520032B538 /* ofxhProgress.h */; };
+		1E3CB83417992E520032B538 /* ofxhPropertySuite.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB82517992E520032B538 /* ofxhPropertySuite.h */; };
+		1E3CB83517992E520032B538 /* ofxhTimeLine.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB82617992E520032B538 /* ofxhTimeLine.h */; };
+		1E3CB83617992E520032B538 /* ofxhUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB82717992E520032B538 /* ofxhUtilities.h */; };
+		1E3CB83717992E520032B538 /* ofxhXml.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB82817992E520032B538 /* ofxhXml.h */; };
+		1E3CB84417992E990032B538 /* ofxCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB83917992E990032B538 /* ofxCore.h */; };
+		1E3CB84517992E990032B538 /* ofxImageEffect.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB83A17992E990032B538 /* ofxImageEffect.h */; };
+		1E3CB84617992E990032B538 /* ofxInteract.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB83B17992E990032B538 /* ofxInteract.h */; };
+		1E3CB84717992E990032B538 /* ofxKeySyms.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB83C17992E990032B538 /* ofxKeySyms.h */; };
+		1E3CB84817992E990032B538 /* ofxMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB83D17992E990032B538 /* ofxMemory.h */; };
+		1E3CB84917992E990032B538 /* ofxMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB83E17992E990032B538 /* ofxMessage.h */; };
+		1E3CB84A17992E990032B538 /* ofxMultiThread.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB83F17992E990032B538 /* ofxMultiThread.h */; };
+		1E3CB84B17992E990032B538 /* ofxParam.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB84017992E990032B538 /* ofxParam.h */; };
+		1E3CB84C17992E990032B538 /* ofxProgress.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB84117992E990032B538 /* ofxProgress.h */; };
+		1E3CB84D17992E990032B538 /* ofxProperty.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB84217992E990032B538 /* ofxProperty.h */; };
+		1E3CB84E17992E990032B538 /* ofxTimeLine.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB84317992E990032B538 /* ofxTimeLine.h */; };
+		1E3CB85C17992EDF0032B538 /* ofxhBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB85017992EDF0032B538 /* ofxhBinary.cpp */; };
+		1E3CB85D17992EDF0032B538 /* ofxhClip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB85117992EDF0032B538 /* ofxhClip.cpp */; };
+		1E3CB85E17992EDF0032B538 /* ofxhHost.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB85217992EDF0032B538 /* ofxhHost.cpp */; };
+		1E3CB85F17992EDF0032B538 /* ofxhImageEffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB85317992EDF0032B538 /* ofxhImageEffect.cpp */; };
+		1E3CB86017992EDF0032B538 /* ofxhImageEffectAPI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB85417992EDF0032B538 /* ofxhImageEffectAPI.cpp */; };
+		1E3CB86117992EDF0032B538 /* ofxhInteract.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB85517992EDF0032B538 /* ofxhInteract.cpp */; };
+		1E3CB86217992EDF0032B538 /* ofxhMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB85617992EDF0032B538 /* ofxhMemory.cpp */; };
+		1E3CB86317992EDF0032B538 /* ofxhParam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB85717992EDF0032B538 /* ofxhParam.cpp */; };
+		1E3CB86417992EDF0032B538 /* ofxhPluginAPICache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB85817992EDF0032B538 /* ofxhPluginAPICache.cpp */; };
+		1E3CB86517992EDF0032B538 /* ofxhPluginCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB85917992EDF0032B538 /* ofxhPluginCache.cpp */; };
+		1E3CB86617992EDF0032B538 /* ofxhPropertySuite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB85A17992EDF0032B538 /* ofxhPropertySuite.cpp */; };
+		1E3CB86717992EDF0032B538 /* ofxhUtilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB85B17992EDF0032B538 /* ofxhUtilities.cpp */; };
+		1E3CB88A1799316F0032B538 /* cacheDemo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB8891799316F0032B538 /* cacheDemo.cpp */; };
+		1E3CB894179931810032B538 /* hostDemo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB88B179931810032B538 /* hostDemo.cpp */; };
+		1E3CB895179931810032B538 /* hostDemoClipInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB88C179931810032B538 /* hostDemoClipInstance.cpp */; };
+		1E3CB896179931810032B538 /* hostDemoEffectInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB88E179931810032B538 /* hostDemoEffectInstance.cpp */; };
+		1E3CB897179931810032B538 /* hostDemoHostDescriptor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB890179931810032B538 /* hostDemoHostDescriptor.cpp */; };
+		1E3CB898179931810032B538 /* hostDemoParamInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB892179931810032B538 /* hostDemoParamInstance.cpp */; };
+		1E3CB8A7179932380032B538 /* libofxHost.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E742FEA17992CF9007D295B /* libofxHost.a */; };
+		1E3CB8A81799323C0032B538 /* libofxHost.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E742FEA17992CF9007D295B /* libofxHost.a */; };
+		1E3CB8AA179932800032B538 /* ofxPixels.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB8A9179932800032B538 /* ofxPixels.h */; };
+		1E3CB8C2179935430032B538 /* ascii.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB8B4179935430032B538 /* ascii.h */; };
+		1E3CB8C3179935430032B538 /* asciitab.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB8B5179935430032B538 /* asciitab.h */; };
+		1E3CB8C4179935430032B538 /* expat_external.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB8B6179935430032B538 /* expat_external.h */; };
+		1E3CB8C5179935430032B538 /* iasciitab.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB8B7179935430032B538 /* iasciitab.h */; };
+		1E3CB8C6179935430032B538 /* internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB8B8179935430032B538 /* internal.h */; };
+		1E3CB8C7179935430032B538 /* latin1tab.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB8B9179935430032B538 /* latin1tab.h */; };
+		1E3CB8C8179935430032B538 /* nametab.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB8BA179935430032B538 /* nametab.h */; };
+		1E3CB8C9179935430032B538 /* utf8tab.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB8BB179935430032B538 /* utf8tab.h */; };
+		1E3CB8CA179935430032B538 /* xmlparse.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB8BC179935430032B538 /* xmlparse.c */; };
+		1E3CB8CB179935430032B538 /* xmlrole.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB8BD179935430032B538 /* xmlrole.c */; };
+		1E3CB8CC179935430032B538 /* xmltok_impl.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB8BE179935430032B538 /* xmltok_impl.c */; };
+		1E3CB8CD179935430032B538 /* xmltok_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3CB8BF179935430032B538 /* xmltok_impl.h */; };
+		1E3CB8CE179935430032B538 /* xmltok_ns.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB8C0179935430032B538 /* xmltok_ns.c */; };
+		1E3CB8CF179935430032B538 /* xmltok.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E3CB8C1179935430032B538 /* xmltok.c */; };
+		1E3CB8D01799364A0032B538 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E3CB8AF179934420032B538 /* libexpat.a */; };
+		1E3CB8D1179936810032B538 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E3CB8AF179934420032B538 /* libexpat.a */; };
+		1EF4C7091B6D3C4700D6746A /* ofxDialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EF4C7081B6D3C4700D6746A /* ofxDialog.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1E3CB8A1179931EB0032B538 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E742FE217992CF9007D295B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E742FE917992CF9007D295B;
+			remoteInfo = ofxHost;
+		};
+		1E3CB8A3179931F00032B538 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E742FE217992CF9007D295B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E3CB8721799312D0032B538;
+			remoteInfo = hostDemo;
+		};
+		1E3CB8A5179931F00032B538 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E742FE217992CF9007D295B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E3CB87F179931470032B538;
+			remoteInfo = cacheDemo;
+		};
+		1E7731871B6F787A009DFE2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E742FE217992CF9007D295B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E742FE917992CF9007D295B;
+			remoteInfo = ofxHost;
+		};
+		1E7731891B6F7882009DFE2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E742FE217992CF9007D295B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E3CB8AE179934420032B538;
+			remoteInfo = expat;
+		};
+		1E77318B1B6F7886009DFE2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E742FE217992CF9007D295B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E742FE917992CF9007D295B;
+			remoteInfo = ofxHost;
+		};
+		1E77318D1B6F7888009DFE2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1E742FE217992CF9007D295B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E3CB8AE179934420032B538;
+			remoteInfo = expat;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		1E3CB8711799312D0032B538 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		1E3CB87E179931470032B538 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		1E0832E619A1EC4F00A819A5 /* BUILDING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BUILDING; sourceTree = "<group>"; };
+		1E0832E719A1EC4F00A819A5 /* HostSupport.sln */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = HostSupport.sln; sourceTree = "<group>"; };
+		1E0832E819A1EC4F00A819A5 /* HostSupport.vcproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = HostSupport.vcproj; sourceTree = "<group>"; };
+		1E0832E919A1EC4F00A819A5 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		1E0832EA19A1EC4F00A819A5 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		1E0832EB19A1EC4F00A819A5 /* TTD */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TTD; sourceTree = "<group>"; };
+		1E0832EE19A1ECA600A819A5 /* apiChanges_1_2_Chapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = apiChanges_1_2_Chapter.xml; sourceTree = "<group>"; };
+		1E0832EF19A1ECA600A819A5 /* clipPreferencesChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = clipPreferencesChapter.xml; sourceTree = "<group>"; };
+		1E0832F019A1ECA600A819A5 /* extractPropertyDefinitions.perl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = extractPropertyDefinitions.perl; sourceTree = "<group>"; };
+		1E0832F119A1ECA600A819A5 /* formating.pm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = formating.pm; sourceTree = "<group>"; };
+		1E0832F219A1ECA600A819A5 /* getSuiteReference.perl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = getSuiteReference.perl; sourceTree = "<group>"; };
+		1E0832F319A1ECA600A819A5 /* header.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = header.xml; sourceTree = "<group>"; };
+		1E0832F419A1ECA600A819A5 /* imageEffectActionsChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = imageEffectActionsChapter.xml; sourceTree = "<group>"; };
+		1E0832F519A1ECA600A819A5 /* imageEffectsAPIChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = imageEffectsAPIChapter.xml; sourceTree = "<group>"; };
+		1E0832F619A1ECA600A819A5 /* interactActionsChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = interactActionsChapter.xml; sourceTree = "<group>"; };
+		1E0832F719A1ECA600A819A5 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		1E0832F819A1ECA600A819A5 /* ofxHostStruct.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxHostStruct.xml; sourceTree = "<group>"; };
+		1E0832F919A1ECA600A819A5 /* ofxLoadingSequence.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxLoadingSequence.xml; sourceTree = "<group>"; };
+		1E0832FA19A1ECA600A819A5 /* ofxPackaging.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxPackaging.xml; sourceTree = "<group>"; };
+		1E0832FB19A1ECA600A819A5 /* ofxParameterChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxParameterChapter.xml; sourceTree = "<group>"; };
+		1E0832FC19A1ECA600A819A5 /* ofxPluginStruct.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxPluginStruct.xml; sourceTree = "<group>"; };
+		1E0832FD19A1ECA600A819A5 /* ofxProgrammingGuide.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxProgrammingGuide.xml; sourceTree = "<group>"; };
+		1E0832FE19A1ECA600A819A5 /* ofxProgrammingReference.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxProgrammingReference.xml; sourceTree = "<group>"; };
+		1E0832FF19A1ECA600A819A5 /* ofxPropertiesByObject.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxPropertiesByObject.xml; sourceTree = "<group>"; };
+		1E08330019A1ECA600A819A5 /* ofxStyle.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = ofxStyle.css; sourceTree = "<group>"; };
+		1E08330119A1ECA600A819A5 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		1E08330319A1ECA600A819A5 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html.documentation; path = index.html; sourceTree = "<group>"; };
+		1E08330519A1ECA600A819A5 /* statusCodesChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = statusCodesChapter.xml; sourceTree = "<group>"; };
+		1E1A06981B7D0D0C00ED08EF /* ofxOld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxOld.h; sourceTree = "<group>"; };
+		1E31EC2E17F5CA44004AB554 /* ofxOpenGLRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxOpenGLRender.h; sourceTree = "<group>"; };
+		1E31EC2F17F5CA44004AB554 /* ofxParametricParam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxParametricParam.h; sourceTree = "<group>"; };
+		1E3CB81A17992E520032B538 /* ofxhBinary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhBinary.h; sourceTree = "<group>"; };
+		1E3CB81B17992E520032B538 /* ofxhClip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhClip.h; sourceTree = "<group>"; };
+		1E3CB81C17992E520032B538 /* ofxhHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhHost.h; sourceTree = "<group>"; };
+		1E3CB81D17992E520032B538 /* ofxhImageEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhImageEffect.h; sourceTree = "<group>"; };
+		1E3CB81E17992E520032B538 /* ofxhImageEffectAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhImageEffectAPI.h; sourceTree = "<group>"; };
+		1E3CB81F17992E520032B538 /* ofxhInteract.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhInteract.h; sourceTree = "<group>"; };
+		1E3CB82017992E520032B538 /* ofxhMemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhMemory.h; sourceTree = "<group>"; };
+		1E3CB82117992E520032B538 /* ofxhParam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhParam.h; sourceTree = "<group>"; };
+		1E3CB82217992E520032B538 /* ofxhPluginAPICache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhPluginAPICache.h; sourceTree = "<group>"; };
+		1E3CB82317992E520032B538 /* ofxhPluginCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhPluginCache.h; sourceTree = "<group>"; };
+		1E3CB82417992E520032B538 /* ofxhProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhProgress.h; sourceTree = "<group>"; };
+		1E3CB82517992E520032B538 /* ofxhPropertySuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhPropertySuite.h; sourceTree = "<group>"; };
+		1E3CB82617992E520032B538 /* ofxhTimeLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhTimeLine.h; sourceTree = "<group>"; };
+		1E3CB82717992E520032B538 /* ofxhUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhUtilities.h; sourceTree = "<group>"; };
+		1E3CB82817992E520032B538 /* ofxhXml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxhXml.h; sourceTree = "<group>"; };
+		1E3CB83917992E990032B538 /* ofxCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxCore.h; sourceTree = "<group>"; };
+		1E3CB83A17992E990032B538 /* ofxImageEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxImageEffect.h; sourceTree = "<group>"; };
+		1E3CB83B17992E990032B538 /* ofxInteract.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxInteract.h; sourceTree = "<group>"; };
+		1E3CB83C17992E990032B538 /* ofxKeySyms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxKeySyms.h; sourceTree = "<group>"; };
+		1E3CB83D17992E990032B538 /* ofxMemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMemory.h; sourceTree = "<group>"; };
+		1E3CB83E17992E990032B538 /* ofxMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMessage.h; sourceTree = "<group>"; };
+		1E3CB83F17992E990032B538 /* ofxMultiThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMultiThread.h; sourceTree = "<group>"; };
+		1E3CB84017992E990032B538 /* ofxParam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxParam.h; sourceTree = "<group>"; };
+		1E3CB84117992E990032B538 /* ofxProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxProgress.h; sourceTree = "<group>"; };
+		1E3CB84217992E990032B538 /* ofxProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxProperty.h; sourceTree = "<group>"; };
+		1E3CB84317992E990032B538 /* ofxTimeLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxTimeLine.h; sourceTree = "<group>"; };
+		1E3CB85017992EDF0032B538 /* ofxhBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxhBinary.cpp; sourceTree = "<group>"; };
+		1E3CB85117992EDF0032B538 /* ofxhClip.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxhClip.cpp; sourceTree = "<group>"; };
+		1E3CB85217992EDF0032B538 /* ofxhHost.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxhHost.cpp; sourceTree = "<group>"; };
+		1E3CB85317992EDF0032B538 /* ofxhImageEffect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxhImageEffect.cpp; sourceTree = "<group>"; };
+		1E3CB85417992EDF0032B538 /* ofxhImageEffectAPI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxhImageEffectAPI.cpp; sourceTree = "<group>"; };
+		1E3CB85517992EDF0032B538 /* ofxhInteract.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxhInteract.cpp; sourceTree = "<group>"; };
+		1E3CB85617992EDF0032B538 /* ofxhMemory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxhMemory.cpp; sourceTree = "<group>"; };
+		1E3CB85717992EDF0032B538 /* ofxhParam.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxhParam.cpp; sourceTree = "<group>"; };
+		1E3CB85817992EDF0032B538 /* ofxhPluginAPICache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxhPluginAPICache.cpp; sourceTree = "<group>"; };
+		1E3CB85917992EDF0032B538 /* ofxhPluginCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxhPluginCache.cpp; sourceTree = "<group>"; };
+		1E3CB85A17992EDF0032B538 /* ofxhPropertySuite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxhPropertySuite.cpp; sourceTree = "<group>"; };
+		1E3CB85B17992EDF0032B538 /* ofxhUtilities.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxhUtilities.cpp; sourceTree = "<group>"; };
+		1E3CB8731799312D0032B538 /* hostDemo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hostDemo; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E3CB880179931470032B538 /* cacheDemo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cacheDemo; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E3CB8891799316F0032B538 /* cacheDemo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cacheDemo.cpp; sourceTree = "<group>"; };
+		1E3CB88B179931810032B538 /* hostDemo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hostDemo.cpp; sourceTree = "<group>"; };
+		1E3CB88C179931810032B538 /* hostDemoClipInstance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hostDemoClipInstance.cpp; sourceTree = "<group>"; };
+		1E3CB88D179931810032B538 /* hostDemoClipInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hostDemoClipInstance.h; sourceTree = "<group>"; };
+		1E3CB88E179931810032B538 /* hostDemoEffectInstance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hostDemoEffectInstance.cpp; sourceTree = "<group>"; };
+		1E3CB88F179931810032B538 /* hostDemoEffectInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hostDemoEffectInstance.h; sourceTree = "<group>"; };
+		1E3CB890179931810032B538 /* hostDemoHostDescriptor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hostDemoHostDescriptor.cpp; sourceTree = "<group>"; };
+		1E3CB891179931810032B538 /* hostDemoHostDescriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hostDemoHostDescriptor.h; sourceTree = "<group>"; };
+		1E3CB892179931810032B538 /* hostDemoParamInstance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hostDemoParamInstance.cpp; sourceTree = "<group>"; };
+		1E3CB893179931810032B538 /* hostDemoParamInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hostDemoParamInstance.h; sourceTree = "<group>"; };
+		1E3CB8A9179932800032B538 /* ofxPixels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxPixels.h; sourceTree = "<group>"; };
+		1E3CB8AF179934420032B538 /* libexpat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libexpat.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E3CB8B4179935430032B538 /* ascii.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ascii.h; sourceTree = "<group>"; };
+		1E3CB8B5179935430032B538 /* asciitab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asciitab.h; sourceTree = "<group>"; };
+		1E3CB8B6179935430032B538 /* expat_external.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = expat_external.h; sourceTree = "<group>"; };
+		1E3CB8B7179935430032B538 /* iasciitab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iasciitab.h; sourceTree = "<group>"; };
+		1E3CB8B8179935430032B538 /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = internal.h; sourceTree = "<group>"; };
+		1E3CB8B9179935430032B538 /* latin1tab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = latin1tab.h; sourceTree = "<group>"; };
+		1E3CB8BA179935430032B538 /* nametab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nametab.h; sourceTree = "<group>"; };
+		1E3CB8BB179935430032B538 /* utf8tab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utf8tab.h; sourceTree = "<group>"; };
+		1E3CB8BC179935430032B538 /* xmlparse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xmlparse.c; sourceTree = "<group>"; };
+		1E3CB8BD179935430032B538 /* xmlrole.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xmlrole.c; sourceTree = "<group>"; };
+		1E3CB8BE179935430032B538 /* xmltok_impl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xmltok_impl.c; sourceTree = "<group>"; };
+		1E3CB8BF179935430032B538 /* xmltok_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xmltok_impl.h; sourceTree = "<group>"; };
+		1E3CB8C0179935430032B538 /* xmltok_ns.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xmltok_ns.c; sourceTree = "<group>"; };
+		1E3CB8C1179935430032B538 /* xmltok.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xmltok.c; sourceTree = "<group>"; };
+		1E742FEA17992CF9007D295B /* libofxHost.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libofxHost.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		1EF4C7081B6D3C4700D6746A /* ofxDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxDialog.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1E3CB8701799312D0032B538 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E3CB8D1179936810032B538 /* libexpat.a in Frameworks */,
+				1E3CB8A81799323C0032B538 /* libofxHost.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E3CB87D179931470032B538 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E3CB8D01799364A0032B538 /* libexpat.a in Frameworks */,
+				1E3CB8A7179932380032B538 /* libofxHost.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E3CB8AC179934420032B538 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E742FE717992CF9007D295B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1E0832ED19A1EC7700A819A5 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				1E08330119A1ECA600A819A5 /* README.txt */,
+				1E0832F719A1ECA600A819A5 /* Makefile */,
+				1E08330019A1ECA600A819A5 /* ofxStyle.css */,
+				1E0832EE19A1ECA600A819A5 /* apiChanges_1_2_Chapter.xml */,
+				1E0832EF19A1ECA600A819A5 /* clipPreferencesChapter.xml */,
+				1E0832F019A1ECA600A819A5 /* extractPropertyDefinitions.perl */,
+				1E0832F119A1ECA600A819A5 /* formating.pm */,
+				1E0832F219A1ECA600A819A5 /* getSuiteReference.perl */,
+				1E0832F319A1ECA600A819A5 /* header.xml */,
+				1E0832F419A1ECA600A819A5 /* imageEffectActionsChapter.xml */,
+				1E0832F519A1ECA600A819A5 /* imageEffectsAPIChapter.xml */,
+				1E0832F619A1ECA600A819A5 /* interactActionsChapter.xml */,
+				1E0832F819A1ECA600A819A5 /* ofxHostStruct.xml */,
+				1E0832F919A1ECA600A819A5 /* ofxLoadingSequence.xml */,
+				1E0832FA19A1ECA600A819A5 /* ofxPackaging.xml */,
+				1E0832FB19A1ECA600A819A5 /* ofxParameterChapter.xml */,
+				1E0832FC19A1ECA600A819A5 /* ofxPluginStruct.xml */,
+				1E0832FD19A1ECA600A819A5 /* ofxProgrammingGuide.xml */,
+				1E0832FE19A1ECA600A819A5 /* ofxProgrammingReference.xml */,
+				1E0832FF19A1ECA600A819A5 /* ofxPropertiesByObject.xml */,
+				1E08330519A1ECA600A819A5 /* statusCodesChapter.xml */,
+				1E08330219A1ECA600A819A5 /* sourceforge */,
+			);
+			name = Documentation;
+			path = ../Documentation;
+			sourceTree = "<group>";
+		};
+		1E08330219A1ECA600A819A5 /* sourceforge */ = {
+			isa = PBXGroup;
+			children = (
+				1E08330319A1ECA600A819A5 /* index.html */,
+			);
+			path = sourceforge;
+			sourceTree = "<group>";
+		};
+		1E3CB81917992E2B0032B538 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				1E3CB81A17992E520032B538 /* ofxhBinary.h */,
+				1E3CB81B17992E520032B538 /* ofxhClip.h */,
+				1E3CB81C17992E520032B538 /* ofxhHost.h */,
+				1E3CB81D17992E520032B538 /* ofxhImageEffect.h */,
+				1E3CB81E17992E520032B538 /* ofxhImageEffectAPI.h */,
+				1E3CB81F17992E520032B538 /* ofxhInteract.h */,
+				1E3CB82017992E520032B538 /* ofxhMemory.h */,
+				1E3CB82117992E520032B538 /* ofxhParam.h */,
+				1E3CB82217992E520032B538 /* ofxhPluginAPICache.h */,
+				1E3CB82317992E520032B538 /* ofxhPluginCache.h */,
+				1E3CB82417992E520032B538 /* ofxhProgress.h */,
+				1E3CB82517992E520032B538 /* ofxhPropertySuite.h */,
+				1E3CB82617992E520032B538 /* ofxhTimeLine.h */,
+				1E3CB82717992E520032B538 /* ofxhUtilities.h */,
+				1E3CB82817992E520032B538 /* ofxhXml.h */,
+			);
+			name = Headers;
+			path = include;
+			sourceTree = "<group>";
+		};
+		1E3CB83817992E620032B538 /* External Headers */ = {
+			isa = PBXGroup;
+			children = (
+				1E3CB83917992E990032B538 /* ofxCore.h */,
+				1EF4C7081B6D3C4700D6746A /* ofxDialog.h */,
+				1E3CB83A17992E990032B538 /* ofxImageEffect.h */,
+				1E3CB83B17992E990032B538 /* ofxInteract.h */,
+				1E3CB83C17992E990032B538 /* ofxKeySyms.h */,
+				1E3CB83D17992E990032B538 /* ofxMemory.h */,
+				1E3CB83E17992E990032B538 /* ofxMessage.h */,
+				1E3CB83F17992E990032B538 /* ofxMultiThread.h */,
+				1E1A06981B7D0D0C00ED08EF /* ofxOld.h */,
+				1E31EC2E17F5CA44004AB554 /* ofxOpenGLRender.h */,
+				1E3CB84017992E990032B538 /* ofxParam.h */,
+				1E31EC2F17F5CA44004AB554 /* ofxParametricParam.h */,
+				1E3CB8A9179932800032B538 /* ofxPixels.h */,
+				1E3CB84117992E990032B538 /* ofxProgress.h */,
+				1E3CB84217992E990032B538 /* ofxProperty.h */,
+				1E3CB84317992E990032B538 /* ofxTimeLine.h */,
+			);
+			name = "External Headers";
+			path = ../include;
+			sourceTree = "<group>";
+		};
+		1E3CB84F17992EAB0032B538 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				1E3CB85017992EDF0032B538 /* ofxhBinary.cpp */,
+				1E3CB85117992EDF0032B538 /* ofxhClip.cpp */,
+				1E3CB85217992EDF0032B538 /* ofxhHost.cpp */,
+				1E3CB85317992EDF0032B538 /* ofxhImageEffect.cpp */,
+				1E3CB85417992EDF0032B538 /* ofxhImageEffectAPI.cpp */,
+				1E3CB85517992EDF0032B538 /* ofxhInteract.cpp */,
+				1E3CB85617992EDF0032B538 /* ofxhMemory.cpp */,
+				1E3CB85717992EDF0032B538 /* ofxhParam.cpp */,
+				1E3CB85817992EDF0032B538 /* ofxhPluginAPICache.cpp */,
+				1E3CB85917992EDF0032B538 /* ofxhPluginCache.cpp */,
+				1E3CB85A17992EDF0032B538 /* ofxhPropertySuite.cpp */,
+				1E3CB85B17992EDF0032B538 /* ofxhUtilities.cpp */,
+			);
+			name = Sources;
+			path = src;
+			sourceTree = "<group>";
+		};
+		1E3CB86C179930D30032B538 /* Examples */ = {
+			isa = PBXGroup;
+			children = (
+				1E3CB88B179931810032B538 /* hostDemo.cpp */,
+				1E3CB88C179931810032B538 /* hostDemoClipInstance.cpp */,
+				1E3CB88D179931810032B538 /* hostDemoClipInstance.h */,
+				1E3CB88E179931810032B538 /* hostDemoEffectInstance.cpp */,
+				1E3CB88F179931810032B538 /* hostDemoEffectInstance.h */,
+				1E3CB890179931810032B538 /* hostDemoHostDescriptor.cpp */,
+				1E3CB891179931810032B538 /* hostDemoHostDescriptor.h */,
+				1E3CB892179931810032B538 /* hostDemoParamInstance.cpp */,
+				1E3CB893179931810032B538 /* hostDemoParamInstance.h */,
+				1E3CB8891799316F0032B538 /* cacheDemo.cpp */,
+			);
+			name = Examples;
+			path = examples;
+			sourceTree = "<group>";
+		};
+		1E3CB8B3179934C00032B538 /* Expat Sources */ = {
+			isa = PBXGroup;
+			children = (
+				1E3CB8B4179935430032B538 /* ascii.h */,
+				1E3CB8B5179935430032B538 /* asciitab.h */,
+				1E3CB8B6179935430032B538 /* expat_external.h */,
+				1E3CB8B7179935430032B538 /* iasciitab.h */,
+				1E3CB8B8179935430032B538 /* internal.h */,
+				1E3CB8B9179935430032B538 /* latin1tab.h */,
+				1E3CB8BA179935430032B538 /* nametab.h */,
+				1E3CB8BB179935430032B538 /* utf8tab.h */,
+				1E3CB8BC179935430032B538 /* xmlparse.c */,
+				1E3CB8BD179935430032B538 /* xmlrole.c */,
+				1E3CB8BE179935430032B538 /* xmltok_impl.c */,
+				1E3CB8BF179935430032B538 /* xmltok_impl.h */,
+				1E3CB8C0179935430032B538 /* xmltok_ns.c */,
+				1E3CB8C1179935430032B538 /* xmltok.c */,
+			);
+			name = "Expat Sources";
+			path = "expat-2.1.0/lib";
+			sourceTree = "<group>";
+		};
+		1E742FE117992CF9007D295B = {
+			isa = PBXGroup;
+			children = (
+				1E0832ED19A1EC7700A819A5 /* Documentation */,
+				1E0832E619A1EC4F00A819A5 /* BUILDING */,
+				1E0832E719A1EC4F00A819A5 /* HostSupport.sln */,
+				1E0832E819A1EC4F00A819A5 /* HostSupport.vcproj */,
+				1E0832E919A1EC4F00A819A5 /* Makefile */,
+				1E0832EA19A1EC4F00A819A5 /* README */,
+				1E0832EB19A1EC4F00A819A5 /* TTD */,
+				1E3CB86C179930D30032B538 /* Examples */,
+				1E3CB84F17992EAB0032B538 /* Sources */,
+				1E3CB83817992E620032B538 /* External Headers */,
+				1E3CB8B3179934C00032B538 /* Expat Sources */,
+				1E3CB81917992E2B0032B538 /* Headers */,
+				1E742FEB17992CF9007D295B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1E742FEB17992CF9007D295B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1E742FEA17992CF9007D295B /* libofxHost.a */,
+				1E3CB8731799312D0032B538 /* hostDemo */,
+				1E3CB880179931470032B538 /* cacheDemo */,
+				1E3CB8AF179934420032B538 /* libexpat.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		1E3CB8AD179934420032B538 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E3CB8C2179935430032B538 /* ascii.h in Headers */,
+				1E3CB8C3179935430032B538 /* asciitab.h in Headers */,
+				1E3CB8C4179935430032B538 /* expat_external.h in Headers */,
+				1E3CB8C5179935430032B538 /* iasciitab.h in Headers */,
+				1E3CB8C6179935430032B538 /* internal.h in Headers */,
+				1E3CB8C7179935430032B538 /* latin1tab.h in Headers */,
+				1E3CB8C8179935430032B538 /* nametab.h in Headers */,
+				1E3CB8C9179935430032B538 /* utf8tab.h in Headers */,
+				1E3CB8CD179935430032B538 /* xmltok_impl.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E742FE817992CF9007D295B /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E3CB82917992E520032B538 /* ofxhBinary.h in Headers */,
+				1E3CB82A17992E520032B538 /* ofxhClip.h in Headers */,
+				1E3CB82B17992E520032B538 /* ofxhHost.h in Headers */,
+				1E3CB82C17992E520032B538 /* ofxhImageEffect.h in Headers */,
+				1E31EC3217F5CA44004AB554 /* ofxParametricParam.h in Headers */,
+				1E3CB82D17992E520032B538 /* ofxhImageEffectAPI.h in Headers */,
+				1E3CB82E17992E520032B538 /* ofxhInteract.h in Headers */,
+				1E3CB82F17992E520032B538 /* ofxhMemory.h in Headers */,
+				1E3CB83017992E520032B538 /* ofxhParam.h in Headers */,
+				1E3CB83117992E520032B538 /* ofxhPluginAPICache.h in Headers */,
+				1E1A06991B7D0D0C00ED08EF /* ofxOld.h in Headers */,
+				1E3CB83217992E520032B538 /* ofxhPluginCache.h in Headers */,
+				1E3CB83317992E520032B538 /* ofxhProgress.h in Headers */,
+				1E3CB83417992E520032B538 /* ofxhPropertySuite.h in Headers */,
+				1E3CB83517992E520032B538 /* ofxhTimeLine.h in Headers */,
+				1E3CB83617992E520032B538 /* ofxhUtilities.h in Headers */,
+				1E3CB83717992E520032B538 /* ofxhXml.h in Headers */,
+				1E3CB84417992E990032B538 /* ofxCore.h in Headers */,
+				1E3CB84517992E990032B538 /* ofxImageEffect.h in Headers */,
+				1E3CB84617992E990032B538 /* ofxInteract.h in Headers */,
+				1E3CB84717992E990032B538 /* ofxKeySyms.h in Headers */,
+				1E3CB84817992E990032B538 /* ofxMemory.h in Headers */,
+				1E3CB84917992E990032B538 /* ofxMessage.h in Headers */,
+				1E3CB84A17992E990032B538 /* ofxMultiThread.h in Headers */,
+				1E3CB84B17992E990032B538 /* ofxParam.h in Headers */,
+				1E3CB84C17992E990032B538 /* ofxProgress.h in Headers */,
+				1E3CB84D17992E990032B538 /* ofxProperty.h in Headers */,
+				1E31EC3117F5CA44004AB554 /* ofxOpenGLRender.h in Headers */,
+				1E3CB84E17992E990032B538 /* ofxTimeLine.h in Headers */,
+				1EF4C7091B6D3C4700D6746A /* ofxDialog.h in Headers */,
+				1E3CB8AA179932800032B538 /* ofxPixels.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		1E3CB8721799312D0032B538 /* hostDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E3CB8791799312D0032B538 /* Build configuration list for PBXNativeTarget "hostDemo" */;
+			buildPhases = (
+				1E3CB86F1799312D0032B538 /* Sources */,
+				1E3CB8701799312D0032B538 /* Frameworks */,
+				1E3CB8711799312D0032B538 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1E77318A1B6F7882009DFE2B /* PBXTargetDependency */,
+				1E7731881B6F787A009DFE2B /* PBXTargetDependency */,
+			);
+			name = hostDemo;
+			productName = hostDemo;
+			productReference = 1E3CB8731799312D0032B538 /* hostDemo */;
+			productType = "com.apple.product-type.tool";
+		};
+		1E3CB87F179931470032B538 /* cacheDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E3CB886179931470032B538 /* Build configuration list for PBXNativeTarget "cacheDemo" */;
+			buildPhases = (
+				1E3CB87C179931470032B538 /* Sources */,
+				1E3CB87D179931470032B538 /* Frameworks */,
+				1E3CB87E179931470032B538 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1E77318E1B6F7888009DFE2B /* PBXTargetDependency */,
+				1E77318C1B6F7886009DFE2B /* PBXTargetDependency */,
+			);
+			name = cacheDemo;
+			productName = cacheDemo;
+			productReference = 1E3CB880179931470032B538 /* cacheDemo */;
+			productType = "com.apple.product-type.tool";
+		};
+		1E3CB8AE179934420032B538 /* expat */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E3CB8B0179934420032B538 /* Build configuration list for PBXNativeTarget "expat" */;
+			buildPhases = (
+				1E3CB8AB179934420032B538 /* Sources */,
+				1E3CB8AC179934420032B538 /* Frameworks */,
+				1E3CB8AD179934420032B538 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = expat;
+			productName = expart;
+			productReference = 1E3CB8AF179934420032B538 /* libexpat.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		1E742FE917992CF9007D295B /* ofxHost */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E742FEE17992CF9007D295B /* Build configuration list for PBXNativeTarget "ofxHost" */;
+			buildPhases = (
+				1E742FE617992CF9007D295B /* Sources */,
+				1E742FE717992CF9007D295B /* Frameworks */,
+				1E742FE817992CF9007D295B /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ofxHost;
+			productName = HostSupport;
+			productReference = 1E742FEA17992CF9007D295B /* libofxHost.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1E742FE217992CF9007D295B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = OpenFX;
+			};
+			buildConfigurationList = 1E742FE517992CF9007D295B /* Build configuration list for PBXProject "HostSupport" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 1E742FE117992CF9007D295B;
+			productRefGroup = 1E742FEB17992CF9007D295B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1E742FE917992CF9007D295B /* ofxHost */,
+				1E3CB8AE179934420032B538 /* expat */,
+				1E3CB8721799312D0032B538 /* hostDemo */,
+				1E3CB87F179931470032B538 /* cacheDemo */,
+				1E3CB89D179931E50032B538 /* HostSupport */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1E3CB86F1799312D0032B538 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E3CB894179931810032B538 /* hostDemo.cpp in Sources */,
+				1E3CB895179931810032B538 /* hostDemoClipInstance.cpp in Sources */,
+				1E3CB896179931810032B538 /* hostDemoEffectInstance.cpp in Sources */,
+				1E3CB897179931810032B538 /* hostDemoHostDescriptor.cpp in Sources */,
+				1E3CB898179931810032B538 /* hostDemoParamInstance.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E3CB87C179931470032B538 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E3CB88A1799316F0032B538 /* cacheDemo.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E3CB8AB179934420032B538 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E3CB8CA179935430032B538 /* xmlparse.c in Sources */,
+				1E3CB8CB179935430032B538 /* xmlrole.c in Sources */,
+				1E3CB8CC179935430032B538 /* xmltok_impl.c in Sources */,
+				1E3CB8CE179935430032B538 /* xmltok_ns.c in Sources */,
+				1E3CB8CF179935430032B538 /* xmltok.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E742FE617992CF9007D295B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E3CB85C17992EDF0032B538 /* ofxhBinary.cpp in Sources */,
+				1E3CB85D17992EDF0032B538 /* ofxhClip.cpp in Sources */,
+				1E3CB85E17992EDF0032B538 /* ofxhHost.cpp in Sources */,
+				1E3CB85F17992EDF0032B538 /* ofxhImageEffect.cpp in Sources */,
+				1E3CB86017992EDF0032B538 /* ofxhImageEffectAPI.cpp in Sources */,
+				1E3CB86117992EDF0032B538 /* ofxhInteract.cpp in Sources */,
+				1E3CB86217992EDF0032B538 /* ofxhMemory.cpp in Sources */,
+				1E3CB86317992EDF0032B538 /* ofxhParam.cpp in Sources */,
+				1E3CB86417992EDF0032B538 /* ofxhPluginAPICache.cpp in Sources */,
+				1E3CB86517992EDF0032B538 /* ofxhPluginCache.cpp in Sources */,
+				1E3CB86617992EDF0032B538 /* ofxhPropertySuite.cpp in Sources */,
+				1E3CB86717992EDF0032B538 /* ofxhUtilities.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1E3CB8A2179931EB0032B538 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E742FE917992CF9007D295B /* ofxHost */;
+			targetProxy = 1E3CB8A1179931EB0032B538 /* PBXContainerItemProxy */;
+		};
+		1E3CB8A4179931F00032B538 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E3CB8721799312D0032B538 /* hostDemo */;
+			targetProxy = 1E3CB8A3179931F00032B538 /* PBXContainerItemProxy */;
+		};
+		1E3CB8A6179931F00032B538 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E3CB87F179931470032B538 /* cacheDemo */;
+			targetProxy = 1E3CB8A5179931F00032B538 /* PBXContainerItemProxy */;
+		};
+		1E7731881B6F787A009DFE2B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E742FE917992CF9007D295B /* ofxHost */;
+			targetProxy = 1E7731871B6F787A009DFE2B /* PBXContainerItemProxy */;
+		};
+		1E77318A1B6F7882009DFE2B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E3CB8AE179934420032B538 /* expat */;
+			targetProxy = 1E7731891B6F7882009DFE2B /* PBXContainerItemProxy */;
+		};
+		1E77318C1B6F7886009DFE2B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E742FE917992CF9007D295B /* ofxHost */;
+			targetProxy = 1E77318B1B6F7886009DFE2B /* PBXContainerItemProxy */;
+		};
+		1E77318E1B6F7888009DFE2B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1E3CB8AE179934420032B538 /* expat */;
+			targetProxy = 1E77318D1B6F7888009DFE2B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1E3CB87A1799312D0032B538 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		1E3CB87B1799312D0032B538 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		1E3CB887179931470032B538 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		1E3CB888179931470032B538 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		1E3CB89F179931E50032B538 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		1E3CB8A0179931E50032B538 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		1E3CB8B1179934420032B538 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				EXECUTABLE_PREFIX = lib;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"HAVE_MEMMOVE=1",
+					"HAVE_BCOPY=1",
+					"$(inherited)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		1E3CB8B2179934420032B538 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				EXECUTABLE_PREFIX = lib;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"HAVE_MEMMOVE=1",
+					"HAVE_BCOPY=1",
+					"$(inherited)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		1E742FEC17992CF9007D295B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					OFX_DEBUG_ACTIONS,
+					OFX_DEBUG_PARAMETERS,
+					OFX_DEBUG_PROPERTIES,
+					OFX_SUPPORTS_OPENGLRENDER,
+				);
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
+					"DEBUG=1",
+					"$(inherited)",
+					OFX_DEBUG_ACTIONS,
+					OFX_DEBUG_PARAMETERS,
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					../include,
+				);
+				ONLY_ACTIVE_ARCH = YES;
+			};
+			name = Debug;
+		};
+		1E742FED17992CF9007D295B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					../include,
+				);
+			};
+			name = Release;
+		};
+		1E742FEF17992CF9007D295B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				PRODUCT_NAME = ofxHost;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+				);
+			};
+			name = Debug;
+		};
+		1E742FF017992CF9007D295B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				PRODUCT_NAME = ofxHost;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+				);
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1E3CB8791799312D0032B538 /* Build configuration list for PBXNativeTarget "hostDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E3CB87A1799312D0032B538 /* Debug */,
+				1E3CB87B1799312D0032B538 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1E3CB886179931470032B538 /* Build configuration list for PBXNativeTarget "cacheDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E3CB887179931470032B538 /* Debug */,
+				1E3CB888179931470032B538 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1E3CB89E179931E50032B538 /* Build configuration list for PBXAggregateTarget "HostSupport" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E3CB89F179931E50032B538 /* Debug */,
+				1E3CB8A0179931E50032B538 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1E3CB8B0179934420032B538 /* Build configuration list for PBXNativeTarget "expat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E3CB8B1179934420032B538 /* Debug */,
+				1E3CB8B2179934420032B538 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1E742FE517992CF9007D295B /* Build configuration list for PBXProject "HostSupport" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E742FEC17992CF9007D295B /* Debug */,
+				1E742FED17992CF9007D295B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1E742FEE17992CF9007D295B /* Build configuration list for PBXNativeTarget "ofxHost" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E742FEF17992CF9007D295B /* Debug */,
+				1E742FF017992CF9007D295B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1E742FE217992CF9007D295B /* Project object */;
+}
