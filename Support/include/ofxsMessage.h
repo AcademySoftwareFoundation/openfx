@@ -18,6 +18,7 @@ namespace OFX
       eMessageFatal,
       eMessageError,
       eMessageMessage,
+      eMessageWarning,
       eMessageLog,
       eMessageQuestion
     };
