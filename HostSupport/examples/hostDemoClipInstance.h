@@ -43,7 +43,7 @@ namespace MyHost {
   protected :
     OfxRGBAColourB   *_data; // where we are keeping our image data
   public :
-    explicit MyImage(MyClipInstance &clip, OfxTime t);
+    explicit MyImage(MyClipInstance &clip, OfxTime t, int view = 0);
     OfxRGBAColourB* pixel(int x, int y) const;
     ~MyImage();
   };
@@ -66,6 +66,7 @@ namespace MyHost {
     ///    - kOfxBitDepthNone (implying a clip is unconnected image)
     ///    - kOfxBitDepthByte
     ///    - kOfxBitDepthShort
+    ///    - kOfxBitDepthHalf
     ///    - kOfxBitDepthFloat
     const std::string &getUnmappedBitDepth() const;
     
@@ -133,7 +134,17 @@ namespace MyHost {
     /// on the effect instance. Outside a render call, the optionalBounds should
     /// be 'appropriate' for the.
     /// If bounds is not null, fetch the indicated section of the canonical image plane.
-    virtual OFX::Host::ImageEffect::Image* getImage(OfxTime time, OfxRectD *optionalBounds);
+    virtual OFX::Host::ImageEffect::Image* getImage(OfxTime time, const OfxRectD *optionalBounds);
+
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    /// override this to fill in the OpenGL texture at the given time.
+    /// The bounds of the image on the image plane should be
+    /// 'appropriate', typically the value returned in getRegionsOfInterest
+    /// on the effect instance. Outside a render call, the optionalBounds should
+    /// be 'appropriate' for the.
+    /// If bounds is not null, fetch the indicated section of the canonical image plane.
+    virtual OFX::Host::ImageEffect::Texture* loadTexture(OfxTime time, const char *format, const OfxRectD *optionalBounds) { return NULL; };
+#endif
 
     /// override this to return the rod on the clip
     virtual OfxRectD getRegionOfDefinition(OfxTime time) const;
