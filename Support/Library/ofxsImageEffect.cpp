@@ -38,8 +38,43 @@ England
 
 #include "ofxsSupportPrivate.h"
 #include <algorithm> // for find
+#include <cstring> // for strlen
+#ifdef DEBUG
 #include <iostream>
-#include <sstream>
+#endif
+#include <stdexcept>
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+#include "ofxOpenGLRender.h"
+#endif
+#include "ofxsCore.h"
+
+#if defined __APPLE__ || defined linux || defined __FreeBSD__
+# if __GNUC__ >= 4
+#  define EXPORT __attribute__((visibility("default")))
+#  define LOCAL  __attribute__((visibility("hidden")))
+# else
+#  define EXPORT
+#  define LOCAL
+# endif
+#elif defined _WIN32
+#  define EXPORT OfxExport
+#  define LOCAL
+#else
+#  error Not building on your operating system quite yet
+#endif
+
+// string utility functions
+static bool ends_with(std::string const & value, std::string const & ending)
+{
+  if (ending.size() > value.size()) return false;
+  return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+}
+
+static bool starts_with(std::string const & value, std::string const & beginning)
+{
+  if (beginning.size() > value.size()) return false;
+  return std::equal(beginning.begin(), beginning.end(), value.begin());
+}
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {
@@ -49,7 +84,7 @@ namespace OFX {
   //Put it all into a map, so we know when to delete what!
   struct OfxPlugInfo
   {
-    OfxPlugInfo(){}
+    OfxPlugInfo():_factory(0), _plug(0){}
     OfxPlugInfo(OFX::PluginFactory* f, OfxPlugin* p):_factory(f), _plug(p){}
     OFX::PluginFactory* _factory;
     OfxPlugin* _plug;
@@ -63,6 +98,41 @@ namespace OFX {
   /** @brief the global host description */
   ImageEffectHostDescription gHostDescription;
   bool gHostDescriptionHasInit = false;
+
+  bool ImageEffectHostDescription::supportsPixelComponent(const PixelComponentEnum component) const
+  {
+    return std::find(_supportedComponents.begin(), _supportedComponents.end(), component) != _supportedComponents.end();
+  }
+  bool ImageEffectHostDescription::supportsBitDepth( const BitDepthEnum bitDepth) const
+  {
+    return std::find(_supportedPixelDepths.begin(), _supportedPixelDepths.end(), bitDepth) != _supportedPixelDepths.end();
+  }
+  bool ImageEffectHostDescription::supportsContext(const ContextEnum context) const
+  {
+    return std::find(_supportedContexts.begin(), _supportedContexts.end(), context) != _supportedContexts.end();
+  }
+	
+  /** @return default pixel depth supported by host application. */
+  BitDepthEnum ImageEffectHostDescription::getDefaultPixelDepth() const
+  {
+    if(!_supportedPixelDepths.empty()) {
+      return _supportedPixelDepths[0];
+    } else {
+      OFX::Log::warning(true, "The host doesn't define supported pixel depth. (size: %d)", (int)_supportedPixelDepths.size());
+      return eBitDepthFloat;
+    }
+  }
+	
+  /** @return default pixel component supported by host application. */
+  PixelComponentEnum ImageEffectHostDescription::getDefaultPixelComponent() const
+  {
+    if(! _supportedComponents.empty()) {
+      return _supportedComponents[0];
+    } else {
+      OFX::Log::warning(true, "The host doesn't define supported pixel component. (size: %d)", _supportedComponents.size());
+      return ePixelComponentRGBA;
+    }
+  }
 
   ImageEffectHostDescription* getImageEffectHostDescription()
   {
@@ -81,9 +151,13 @@ namespace OFX {
     OfxMemorySuiteV1      *gMemorySuite = 0;
     OfxMultiThreadSuiteV1 *gThreadSuite = 0;
     OfxMessageSuiteV1     *gMessageSuite = 0;
+    OfxMessageSuiteV2     *gMessageSuiteV2 = 0;
     OfxProgressSuiteV1     *gProgressSuite = 0;
     OfxTimeLineSuiteV1     *gTimeLineSuite = 0;
-
+    OfxParametricParameterSuiteV1 *gParametricParameterSuite = 0;
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    OfxImageEffectOpenGLRenderSuiteV1 *gOpenGLRenderSuite = 0;
+#endif
 
     // @brief the set of descriptors, one per context used by kOfxActionDescribeInContext,
     //'eContextNone' is the one used by the kOfxActionDescribe
@@ -103,7 +177,28 @@ namespace OFX {
     throw std::invalid_argument(s);
   }
 
-  const char* mapToMessageTypeEnum(OFX::Message::MessageTypeEnum type)
+  const char* mapContextEnumToStr(ContextEnum context) throw(std::invalid_argument)
+  {
+    switch (context) {
+      case eContextGenerator:
+        return kOfxImageEffectContextGenerator;
+      case eContextFilter:
+        return kOfxImageEffectContextFilter;
+      case eContextTransition:
+        return kOfxImageEffectContextTransition;
+      case eContextPaint:
+        return kOfxImageEffectContextPaint;
+      case eContextGeneral:
+        return kOfxImageEffectContextGeneral;
+      case eContextRetimer:
+        return kOfxImageEffectContextRetimer;
+      default:
+        OFX::Log::error(true, "Unknown context enum '%d'", (int)context);
+        throw std::invalid_argument("unknown ContextEnum");
+    }
+  }
+
+  const char* mapMessageTypeEnumToStr(OFX::Message::MessageTypeEnum type)
   {
     if(type == OFX::Message::eMessageFatal)
       return kOfxMessageFatal;
@@ -111,6 +206,8 @@ namespace OFX {
       return kOfxMessageError;
     else if(type == OFX::Message::eMessageMessage)
       return kOfxMessageMessage;
+    else if(type == OFX::Message::eMessageWarning)
+      return kOfxMessageWarning;
     else if(type == OFX::Message::eMessageLog)
       return kOfxMessageLog;
     else if(type == OFX::Message::eMessageQuestion)
@@ -144,13 +241,16 @@ namespace OFX {
   }
 
   /** @brief turns a bit depth string into and enum */
-  static BitDepthEnum mapStrToBitDepthEnum(const std::string &str) throw(std::invalid_argument)
+  BitDepthEnum mapStrToBitDepthEnum(const std::string &str) throw(std::invalid_argument)
   {
     if(str == kOfxBitDepthByte) {
       return eBitDepthUByte;
     }
     else if(str == kOfxBitDepthShort) {
       return eBitDepthUShort;
+    }
+    else if(str == kOfxBitDepthHalf) {
+      return eBitDepthHalf;
     }
     else if(str == kOfxBitDepthFloat) {
       return eBitDepthFloat;
@@ -163,11 +263,36 @@ namespace OFX {
     }
   }
 
+  /** @brief turns a bit depth string into and enum */
+  const char* mapBitDepthEnumToStr(BitDepthEnum bitDepth) throw(std::invalid_argument)
+  {
+    switch (bitDepth) {
+      case eBitDepthUByte:
+        return kOfxBitDepthByte;
+      case eBitDepthUShort:
+        return kOfxBitDepthShort;
+      case eBitDepthHalf:
+        return kOfxBitDepthHalf;
+      case eBitDepthFloat:
+        return kOfxBitDepthFloat;
+      case eBitDepthNone:
+        return kOfxBitDepthNone;
+      case eBitDepthCustom:
+        return "OfxBitDepthCustom";
+      default:
+        OFX::Log::error(true, "Unknown bit depth enum '%d'", (int)bitDepth);
+        throw std::invalid_argument("unknown BitDepthEnum");
+    }
+  }
+
   /** @brief turns a pixel component string into and enum */
-  static PixelComponentEnum mapStrToPixelComponentEnum(const std::string &str) throw(std::invalid_argument)
+  PixelComponentEnum mapStrToPixelComponentEnum(const std::string &str) throw(std::invalid_argument)
   {
     if(str == kOfxImageComponentRGBA) {
       return ePixelComponentRGBA;
+    }
+    else if(str == kOfxImageComponentRGB) {
+      return ePixelComponentRGB;
     }
     else if(str == kOfxImageComponentAlpha) {
       return ePixelComponentAlpha;
@@ -177,6 +302,24 @@ namespace OFX {
     }
     else {
       return ePixelComponentCustom;
+    }
+  }
+
+  /** @brief turns a pixel component string into and enum */
+  const char* mapPixelComponentEnumToStr(PixelComponentEnum pixelComponent) throw(std::invalid_argument)
+  {
+    switch (pixelComponent) {
+      case ePixelComponentRGBA:
+        return kOfxImageComponentRGBA;
+      case ePixelComponentRGB:
+        return kOfxImageComponentRGB;
+      case ePixelComponentAlpha:
+        return kOfxImageComponentAlpha;
+      case ePixelComponentCustom:
+        return "OfxImageComponentCustom";
+      default:
+        OFX::Log::error(true, "Unknown pixel component enum '%d'", (int)pixelComponent);
+        throw std::invalid_argument("unknown PixelComponentEnum");
     }
   }
 
@@ -230,9 +373,15 @@ namespace OFX {
   }
 
   /** @brief set the label properties */
-  void ClipDescriptor::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
+  void ClipDescriptor::setLabel(const std::string &label)
   {
     _clipProps.propSetString(kOfxPropLabel, label);
+  }
+
+  /** @brief set the label properties */
+  void ClipDescriptor::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
+  {
+    setLabel(label);
     _clipProps.propSetString(kOfxPropShortLabel, shortLabel, false);
     _clipProps.propSetString(kOfxPropLongLabel, longLabel, false);
   }
@@ -262,12 +411,22 @@ namespace OFX {
     int n = _clipProps.propGetDimension(kOfxImageEffectPropSupportedComponents);
     switch(v) 
     {
+    case ePixelComponentNone :
+      _clipProps.propSetString(kOfxImageEffectPropSupportedComponents, kOfxImageComponentNone, n);
+      break;
+
     case ePixelComponentRGBA :
       _clipProps.propSetString(kOfxImageEffectPropSupportedComponents, kOfxImageComponentRGBA, n);
       break;
 
+    case ePixelComponentRGB :
+      _clipProps.propSetString(kOfxImageEffectPropSupportedComponents, kOfxImageComponentRGB, n);
+      break;
+
     case ePixelComponentAlpha :
       _clipProps.propSetString(kOfxImageEffectPropSupportedComponents, kOfxImageComponentAlpha, n);
+      break;
+    case ePixelComponentCustom :
       break;
     }
   }
@@ -341,11 +500,36 @@ namespace OFX {
   }
 
   /** @brief, set the label properties in a plugin */
-  void ImageEffectDescriptor::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
+  void ImageEffectDescriptor::setLabel(const std::string &label)
   {
     _effectProps.propSetString(kOfxPropLabel, label);
+  }
+
+  /** @brief, set the label properties in a plugin */
+  void ImageEffectDescriptor::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
+  {
+    setLabel(label);
     _effectProps.propSetString(kOfxPropShortLabel, shortLabel, false);
     _effectProps.propSetString(kOfxPropLongLabel, longLabel, false);
+  }
+
+
+  /** @brief, set the version properties in a plugin */
+  void ImageEffectDescriptor::setVersion(int major, int minor, int micro, int build, const std::string &versionLabel)
+  {
+    _effectProps.propSetInt(kOfxPropVersion, major, 0, false); // introduced in OFX 1.2
+    if (minor || micro || build) {
+      _effectProps.propSetInt(kOfxPropVersion, minor, 1, false); // introduced in OFX 1.2
+      if (micro || build) {
+        _effectProps.propSetInt(kOfxPropVersion, micro, 2, false); // introduced in OFX 1.2
+        if (build) {
+          _effectProps.propSetInt(kOfxPropVersion, build, 3, false); // introduced in OFX 1.2
+        }
+      }
+    }
+    if (!versionLabel.empty()) {
+      _effectProps.propSetString(kOfxPropVersionLabel, versionLabel, false);
+    }
   }
 
   /** @brief Set the plugin grouping */
@@ -354,12 +538,20 @@ namespace OFX {
     _effectProps.propSetString(kOfxImageEffectPluginPropGrouping, group);
   }
 
+  /** @brief Set the plugin description, defaults to "" */
+  void ImageEffectDescriptor::setPluginDescription(const std::string &description)
+  {
+    _effectProps.propSetString(kOfxPropPluginDescription, description, false); // introduced in OFX 1.2
+  }
+
   /** @brief Add a context to those supported */
   void ImageEffectDescriptor::addSupportedContext(ContextEnum v)
   {
     int n = _effectProps.propGetDimension(kOfxImageEffectPropSupportedContexts);
     switch (v) 
     {
+    case eContextNone :
+      break;
     case eContextGenerator :
       _effectProps.propSetString(kOfxImageEffectPropSupportedContexts, kOfxImageEffectContextGenerator, n);
       break;
@@ -394,17 +586,53 @@ namespace OFX {
     int n = _effectProps.propGetDimension(kOfxImageEffectPropSupportedPixelDepths);
     switch(v) 
     {
+    case eBitDepthNone :
+      _effectProps.propSetString(kOfxImageEffectPropSupportedPixelDepths, kOfxBitDepthNone  , n);
+      break;
     case eBitDepthUByte :
       _effectProps.propSetString(kOfxImageEffectPropSupportedPixelDepths, kOfxBitDepthByte  , n);
       break;
     case eBitDepthUShort :
       _effectProps.propSetString(kOfxImageEffectPropSupportedPixelDepths, kOfxBitDepthShort  , n);
       break;
+    case eBitDepthHalf :
+      _effectProps.propSetString(kOfxImageEffectPropSupportedPixelDepths, kOfxBitDepthHalf  , n);
+      break;
     case eBitDepthFloat :
       _effectProps.propSetString(kOfxImageEffectPropSupportedPixelDepths, kOfxBitDepthFloat  , n);
       break;
+    case eBitDepthCustom :
+      break;
     }
   }
+
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+  /** @brief Add a pixel depth to those supported */
+  void ImageEffectDescriptor::addSupportedOpenGLBitDepth(BitDepthEnum v)
+  {
+    int n = _effectProps.propGetDimension(kOfxOpenGLPropPixelDepth);
+    switch(v) 
+    {
+    case eBitDepthNone :
+      _effectProps.propSetString(kOfxOpenGLPropPixelDepth, kOfxBitDepthNone  , n);
+      break;
+    case eBitDepthUByte :
+      _effectProps.propSetString(kOfxOpenGLPropPixelDepth, kOfxBitDepthByte  , n);
+      break;
+    case eBitDepthUShort :
+      _effectProps.propSetString(kOfxOpenGLPropPixelDepth, kOfxBitDepthShort  , n);
+      break;
+    case eBitDepthHalf :
+      _effectProps.propSetString(kOfxOpenGLPropPixelDepth, kOfxBitDepthHalf  , n);
+      break;
+    case eBitDepthFloat :
+      _effectProps.propSetString(kOfxOpenGLPropPixelDepth, kOfxBitDepthFloat  , n);
+      break;
+    default:
+      break;
+    }
+  }
+#endif
 
   /** @brief Is the plugin single instance only ? */
   void ImageEffectDescriptor::setSingleInstance(bool v)
@@ -471,6 +699,30 @@ namespace OFX {
     }
   }
 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+  /** @brief Does the plugin support OpenGL accelerated rendering (but is also capable of CPU rendering) ? */
+  void ImageEffectDescriptor::setSupportsOpenGLRender(bool v) {
+    if (gHostDescription.supportsOpenGLRender) {
+      _effectProps.propSetString(kOfxImageEffectPropOpenGLRenderSupported, (v ? "true" : "false"));
+    }
+  }
+
+  /** @brief Does the plugin require OpenGL accelerated rendering ? */
+  void ImageEffectDescriptor::setNeedsOpenGLRender(bool v) {
+    if (gHostDescription.supportsOpenGLRender) {
+      _effectProps.propSetString(kOfxImageEffectPropOpenGLRenderSupported, (v ? "needed" : "false"));
+    }
+  }
+
+  void ImageEffectDescriptor::addOpenGLBitDepth(BitDepthEnum v) {
+    int n = _effectProps.propGetDimension(kOfxImageEffectPropSupportedPixelDepths);
+    std::string value = mapBitDepthEnumToStr(v);
+    if (!value.empty()) {
+      _effectProps.propSetString(kOfxOpenGLPropPixelDepth, value, n);
+    }
+  }
+#endif
+
   /** @brief If the slave param changes the clip preferences need to be re-evaluated */
   void ImageEffectDescriptor::addClipPreferencesSlaveParam(ParamDescriptor &p)
   {
@@ -490,6 +742,7 @@ namespace OFX {
     // no, so make it
     OfxPropertySetHandle propSet;
     OfxStatus stat = OFX::Private::gEffectSuite->clipDefine(_effectHandle, name.c_str(), &propSet);
+    (void)stat;
 
     ClipDescriptor *clip = new ClipDescriptor(name, propSet);
 
@@ -504,37 +757,51 @@ namespace OFX {
 
   ////////////////////////////////////////////////////////////////////////////////
   // wraps up an image  
-  Image::Image(OfxPropertySetHandle props)
+  ImageBase::ImageBase(OfxPropertySetHandle props)
     : _imageProps(props)
   {
-    OFX::Validation::validateImageProperties(props);
+    OFX::Validation::validateImageBaseProperties(props);
 
     // and fetch all the properties
-    _pixelData = _imageProps.propGetPointer(kOfxImagePropData);
-
     _rowBytes         = _imageProps.propGetInt(kOfxImagePropRowBytes);
     _pixelAspectRatio = _imageProps.propGetDouble(kOfxImagePropPixelAspectRatio);;
-
+      
     std::string str  = _imageProps.propGetString(kOfxImageEffectPropComponents);
     _pixelComponents = mapStrToPixelComponentEnum(str);
+
+    switch (_pixelComponents) {
+      case ePixelComponentAlpha:
+        _pixelComponentCount = 1;
+        break;
+      case ePixelComponentNone:
+        _pixelComponentCount = 0;
+        break;
+      case ePixelComponentRGB:
+        _pixelComponentCount = 3;
+        break;
+      case ePixelComponentRGBA:
+        _pixelComponentCount = 4;
+        break;
+      case ePixelComponentCustom:
+      default:
+        _pixelComponentCount = 0;
+        break;
+    }
 
     str = _imageProps.propGetString(kOfxImageEffectPropPixelDepth);
     _pixelDepth = mapStrToBitDepthEnum(str);
 
     // compute bytes per pixel
-    _pixelBytes = 0;
-    switch(_pixelComponents) 
-    {
-    case ePixelComponentRGBA  : _pixelBytes = 4; break;
-    case ePixelComponentAlpha : _pixelBytes = 1; break;
-    case ePixelComponentCustom : _pixelBytes = 0; break;
-    }
+    _pixelBytes = _pixelComponentCount;
 
     switch(_pixelDepth) 
     {
+    case eBitDepthNone   : _pixelBytes *= 0; break;
     case eBitDepthUByte  : _pixelBytes *= 1; break;
     case eBitDepthUShort : _pixelBytes *= 2; break;
+    case eBitDepthHalf   : _pixelBytes *= 2; break;
     case eBitDepthFloat  : _pixelBytes *= 4; break;
+    case eBitDepthCustom : _pixelBytes *= 0; break;
     }
 
     str = _imageProps.propGetString(kOfxImageEffectPropPreMultiplication);
@@ -574,10 +841,48 @@ namespace OFX {
     _renderScale.y = _imageProps.propGetDouble(kOfxImageEffectPropRenderScale, 1);
   }
 
+  ImageBase::~ImageBase()
+  {
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // wraps up an image  
+  Image::Image(OfxPropertySetHandle props)
+    : ImageBase(props)
+  {
+    OFX::Validation::validateImageProperties(props);
+
+    // and fetch all the properties
+    // should throw if it is not an image
+    _pixelData = _imageProps.propGetPointer(kOfxImagePropData);
+  }
+
   Image::~Image()
   {
     OFX::Private::gEffectSuite->clipReleaseImage(_imageProps.propSetHandle());
   }
+
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+  ////////////////////////////////////////////////////////////////////////////////
+  // wraps up an OpenGL texture
+  Texture::Texture(OfxPropertySetHandle props)
+    : ImageBase(props)
+  {
+    OFX::Validation::validateTextureProperties(props);
+
+    // should throw if it is not a texture
+    _index = _imageProps.propGetInt(kOfxImageEffectPropOpenGLTextureIndex);
+    _target = _imageProps.propGetInt(kOfxImageEffectPropOpenGLTextureTarget);
+  }
+
+  Texture::~Texture()
+  {
+    OfxStatus stat = OFX::Private::gOpenGLRenderSuite->clipFreeTexture(_imageProps.propSetHandle());
+    if (stat != kOfxStatOK) {
+      throwSuiteStatusException(stat);
+    }
+  }
+#endif
 
   /** @brief return a pixel pointer
 
@@ -586,12 +891,23 @@ namespace OFX {
   void *Image::getPixelAddress(int x, int y)
   {
     // are we in the image bounds
-    if(x < _bounds.x1 || x >= _bounds.x2 || y < _bounds.y1 || y > _bounds.y2 || _pixelBytes == 0)
+    if(x < _bounds.x1 || x >= _bounds.x2 || y < _bounds.y1 || y >= _bounds.y2 || _pixelBytes == 0)
       return 0;
 
-    char *pix = (char *) (((char *) _pixelData) + (y - _bounds.y1) * _rowBytes);
+    char *pix = ((char *) _pixelData) + (size_t)(y - _bounds.y1) * _rowBytes;
     pix += (x - _bounds.x1) * _pixelBytes;
     return (void *) pix;   
+  }
+
+  const void *Image::getPixelAddress(int x, int y) const
+  {
+    // are we in the image bounds
+    if(x < _bounds.x1 || x >= _bounds.x2 || y < _bounds.y1 || y >= _bounds.y2 || _pixelBytes == 0)
+      return 0;
+
+    const char *pix = ((const char *) _pixelData) + (size_t)(y - _bounds.y1) * _rowBytes;
+    pix += (x - _bounds.x1) * _pixelBytes;
+    return (const void *) pix;
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -607,10 +923,16 @@ namespace OFX {
     OFX::Validation::validateClipInstanceProperties(_clipProps);
   }
 
+  /** @brief fetch the label */
+  void Clip::getLabel(std::string &label) const
+  {
+    label      = _clipProps.propGetString(kOfxPropLabel);
+  }
+
   /** @brief fetch the labels */
   void Clip::getLabels(std::string &label, std::string &shortLabel, std::string &longLabel) const
   {
-    label      = _clipProps.propGetString(kOfxPropLabel);
+    getLabel(label);
     shortLabel = _clipProps.propGetString(kOfxPropShortLabel, false);
     longLabel  = _clipProps.propGetString(kOfxPropLongLabel, false);
   }
@@ -651,6 +973,38 @@ namespace OFX {
       e = ePixelComponentNone;
     }
     return e;
+  }
+
+  /** @brief get the number of components in the image */
+  int Clip::getPixelComponentCount(void) const
+  {
+    std::string str = _clipProps.propGetString(kOfxImageEffectPropComponents);
+    PixelComponentEnum e;
+    try {
+      e = mapStrToPixelComponentEnum(str);
+      if(e == ePixelComponentNone && isConnected()) {
+        OFX::Log::error(true, "Clip %s is connected and has no pixel component type!", _clipName.c_str());
+      }
+    }
+    // gone wrong ?
+    catch(std::invalid_argument) {
+      OFX::Log::error(true, "Unknown  pixel component type '%s' reported on clip '%s'", str.c_str(), _clipName.c_str());
+      e = ePixelComponentNone;
+    }
+
+    switch (e) {
+      case ePixelComponentAlpha:
+        return 1;
+      case ePixelComponentNone:
+        return 0;
+      case ePixelComponentRGB:
+        return 3;
+      case ePixelComponentRGBA:
+        return 4;
+      case ePixelComponentCustom:
+      default:
+        return 0;
+    }
   }
 
   /** @brief what is the actual pixel depth of the clip */
@@ -740,7 +1094,11 @@ namespace OFX {
   /** @brief get the scale factor that has been applied to this clip */
   double Clip::getPixelAspectRatio(void) const
   {
-    return _clipProps.propGetDouble(kOfxImagePropPixelAspectRatio);
+    try {
+      return _clipProps.propGetDouble(kOfxImagePropPixelAspectRatio);
+    } catch(...) {
+      return 1.0;  // This error could happen in Eyeon Fusion.
+    }
   }
 
   /** @brief get the frame rate, in frames per second on this clip, after any clip preferences have been applied */
@@ -800,7 +1158,7 @@ namespace OFX {
   }
 
   /** @brief fetch an image, with a specific region in cannonical coordinates */
-  Image *Clip::fetchImage(double t, OfxRectD bounds)
+  Image *Clip::fetchImage(double t, const OfxRectD &bounds)
   {
     OfxPropertySetHandle imageHandle;
     OfxStatus stat = OFX::Private::gEffectSuite->clipGetImage(_clipHandle, t, &bounds, &imageHandle);
@@ -813,6 +1171,20 @@ namespace OFX {
     return new Image(imageHandle);
   }
 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+  Texture *Clip::loadTexture(double t, BitDepthEnum format, const OfxRectD *region)
+  {
+    if (!gHostDescription.supportsOpenGLRender) {
+      throwHostMissingSuiteException("loadTexture");
+    }
+    OfxPropertySetHandle hTex;
+    OfxStatus stat = Private::gOpenGLRenderSuite->clipLoadTexture(_clipHandle, t, format == eBitDepthNone ? NULL : mapBitDepthEnumToStr(format), region, &hTex);
+    if (stat != kOfxStatOK) {
+      throwSuiteStatusException(stat);
+    }
+    return new Texture(hTex);
+  }
+#endif
   ////////////////////////////////////////////////////////////////////////////////
   /// image effect 
 
@@ -929,10 +1301,62 @@ namespace OFX {
     return _effectProps.propGetInt(kOfxImageEffectInstancePropSequentialRender) != 0;
   }
 
+  /** @brief Does the plugin support image tiling ? Can only be called from changedParam or changedClip. */
+  void ImageEffect::setSupportsTiles(bool v)
+  {
+    _effectProps.propSetInt(kOfxImageEffectPropSupportsTiles, int(v), false); // read/write from OFX 1.4
+  }
+
+  /** @brief Have we informed the host we support image tiling ? */
+  bool ImageEffect::getSupportsTiles(void) const
+  {
+    return _effectProps.propGetInt(kOfxImageEffectPropSupportsTiles) != 0;
+  }
+
+
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+  /** @brief Does the plugin support OpenGL accelerated rendering (but is also capable of CPU rendering) ? Can only be called from changedParam or changedClip. */
+  void ImageEffect::setSupportsOpenGLRender(bool v) {
+    if (gHostDescription.supportsOpenGLRender) {
+      _effectProps.propSetString(kOfxImageEffectPropOpenGLRenderSupported, (v ? "true" : "false"), false); // read/write from OFX 1.4
+    }
+  }
+
+  /** @brief Does the plugin require OpenGL accelerated rendering ? Can only be called from changedParam or changedClip. */
+  void ImageEffect::setNeedsOpenGLRender(bool v) {
+    if (gHostDescription.supportsOpenGLRender) {
+      _effectProps.propSetString(kOfxImageEffectPropOpenGLRenderSupported, (v ? "needed" : "false"), false); // read/write from OFX 1.4
+    }
+  }
+#endif
+
+  /** @brief notify host that the internal data structures need syncing back to parameters for persistance and so on.  This is reset by the host after calling SyncPrivateData. */
+  void ImageEffect::setParamSetNeedsSyncing()
+  {
+    _effectProps.propSetInt(kOfxPropParamSetNeedsSyncing, 1, false); // introduced in OFX 1.2
+  }
+
   OFX::Message::MessageReplyEnum ImageEffect::sendMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg)
   {   
+    if(!OFX::Private::gMessageSuite){ throwHostMissingSuiteException("message"); }
     if(!OFX::Private::gMessageSuite->message){ throwHostMissingSuiteException("message"); }
-    OfxStatus stat = OFX::Private::gMessageSuite->message(_effectHandle, mapToMessageTypeEnum(type), id.c_str(), msg.c_str());
+    OfxStatus stat = OFX::Private::gMessageSuite->message(_effectHandle, mapMessageTypeEnumToStr(type), id.c_str(), msg.c_str());
+    return mapToMessageReplyEnum(stat);
+  }
+
+  OFX::Message::MessageReplyEnum ImageEffect::setPersistentMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg)
+  {   
+    if(!OFX::Private::gMessageSuiteV2){ throwHostMissingSuiteException("setPersistentMessage"); }
+    if(!OFX::Private::gMessageSuiteV2->setPersistentMessage){ throwHostMissingSuiteException("setPersistentMessage"); }
+    OfxStatus stat = OFX::Private::gMessageSuiteV2->setPersistentMessage(_effectHandle, mapMessageTypeEnumToStr(type), id.c_str(), msg.c_str());
+    return mapToMessageReplyEnum(stat);
+  }
+
+  OFX::Message::MessageReplyEnum ImageEffect::clearPersistentMessage()
+  {   
+    if(!OFX::Private::gMessageSuiteV2){ throwHostMissingSuiteException("clearPersistentMessage"); }
+    if(!OFX::Private::gMessageSuiteV2->clearPersistentMessage){ throwHostMissingSuiteException("clearPersistentMessage"); }
+    OfxStatus stat = OFX::Private::gMessageSuiteV2->clearPersistentMessage(_effectHandle);
     return mapToMessageReplyEnum(stat);
   }
 
@@ -960,7 +1384,6 @@ namespace OFX {
     // return it
     return newClip;
   }
-
 
   /** @brief does the host want us to abort rendering? */
   bool ImageEffect::abort(void) const
@@ -1005,43 +1428,53 @@ namespace OFX {
     }
   }
 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    bool ImageEffect::flushOpenGLResources(void)
+    {
+      if (!gHostDescription.supportsOpenGLRender) {
+        return false;
+      }
+      return Private::gOpenGLRenderSuite->flushResources() == kOfxStatOK;
+    }
+#endif
+
   ////////////////////////////////////////////////////////////////////////////////
   // below are the default members for the base image effect
 
 
   /** @brief client is identity function, returns the clip and time for the identity function 
   */
-  bool ImageEffect::isIdentity(const RenderArguments &args, Clip * &identityClip, double &identityTime)
+  bool ImageEffect::isIdentity(const IsIdentityArguments &/*args*/, Clip * &/*identityClip*/, double &/*identityTime*/)
   {
     return false; // by default, we are not an identity operation
   }
 
   /** @brief The get RoD action */
-  bool ImageEffect::getRegionOfDefinition(const RegionOfDefinitionArguments &args, OfxRectD &rod)
+  bool ImageEffect::getRegionOfDefinition(const RegionOfDefinitionArguments &/*args*/, OfxRectD &/*rod*/)
   {
     return false; // by default, we are not setting the RoD
   }
 
   /** @brief the get RoI action */
-  void ImageEffect::getRegionsOfInterest(const RegionsOfInterestArguments &args, RegionOfInterestSetter &rois)
+  void ImageEffect::getRegionsOfInterest(const RegionsOfInterestArguments &/*args*/, RegionOfInterestSetter &/*rois*/)
   {
     // fa niente
   }
 
   /** @brief the get frames needed action */
-  void ImageEffect::getFramesNeeded(const FramesNeededArguments &args, FramesNeededSetter &frames)
+  void ImageEffect::getFramesNeeded(const FramesNeededArguments &/*args*/, FramesNeededSetter &/*frames*/)
   {
     // fa niente
   }
 
   /** @brief client begin sequence render function */
-  void ImageEffect::beginSequenceRender(const BeginSequenceRenderArguments &args)
+  void ImageEffect::beginSequenceRender(const BeginSequenceRenderArguments &/*args*/)
   {
     // fa niente
   }
 
   /** @brief client end sequence render function, this is one of the few that must be set */
-  void ImageEffect::endSequenceRender(const EndSequenceRenderArguments &args)
+  void ImageEffect::endSequenceRender(const EndSequenceRenderArguments &/*args*/)
   {
     // fa niente
   }
@@ -1059,7 +1492,7 @@ namespace OFX {
   }
 
   /** @brief get the clip preferences */
-  void ImageEffect::getClipPreferences(ClipPreferencesSetter &clipPreferences)
+  void ImageEffect::getClipPreferences(ClipPreferencesSetter &/*clipPreferences*/)
   {
     // fa niente
   }
@@ -1077,30 +1510,50 @@ namespace OFX {
   }
 
   /** @brief the effect is about to have some values changed */
-  void ImageEffect::beginChanged(InstanceChangeReason reason)
+  void ImageEffect::beginChanged(InstanceChangeReason /*reason*/)
   {
   }
 
   /** @brief called when a param has just had its value changed */
-  void ImageEffect::changedParam(const InstanceChangedArgs &args, const std::string &paramName)
+  void ImageEffect::changedParam(const InstanceChangedArgs &/*args*/, const std::string &/*paramName*/)
   {
   }
 
   /** @brief called when a clip has just been changed in some way (a rewire maybe) */
-  void ImageEffect::changedClip(const InstanceChangedArgs &args, const std::string &clipName)
+  void ImageEffect::changedClip(const InstanceChangedArgs &/*args*/, const std::string &/*clipName*/)
   {
   }
 
   /** @brief the effect has just had some values changed */
-  void ImageEffect::endChanged(InstanceChangeReason reason)
+  void ImageEffect::endChanged(InstanceChangeReason /*reason*/)
   {
   }
 
   /** @brief get the time domain */
-  bool ImageEffect::getTimeDomain(OfxRangeD &range)
+  bool ImageEffect::getTimeDomain(OfxRangeD &/*range*/)
   {
     // by default, do the default
     return false;
+  }
+
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+  /** @brief OpenGL context attached */
+  void ImageEffect::contextAttached(void)
+  {
+    // fa niente
+  }
+
+  /** @brief OpenGL context detached */
+  void ImageEffect::contextDetached(void)
+  {
+    // fa niente
+  }
+#endif
+
+  /** @brief called when a custom param needs to be interpolated */
+  std::string ImageEffect::interpolateCustomParam(const InterpolateCustomArgs &args, const std::string &/*paramName*/)
+  {
+      return args.value1;
   }
 
   /// Start doing progress. 
@@ -1157,6 +1610,7 @@ namespace OFX {
   {
     if(OFX::Private::gTimeLineSuite) {
       OFX::Private::gTimeLineSuite->getTimeBounds((void *) _effectHandle, &t1, &t2);
+      return;
     }
     t1 = t2 = 0;
   }
@@ -1180,11 +1634,19 @@ namespace OFX {
 
     switch(comps) 
     {
+    case ePixelComponentNone :
+      outArgs_.propSetString(propName.c_str(), kOfxImageComponentNone);
+      break;
     case ePixelComponentRGBA : 
       outArgs_.propSetString(propName.c_str(), kOfxImageComponentRGBA); 
       break;
+    case ePixelComponentRGB :
+      outArgs_.propSetString(propName.c_str(), kOfxImageComponentRGB);
+      break;
     case ePixelComponentAlpha : 
       outArgs_.propSetString(propName.c_str(), kOfxImageComponentAlpha); 
+      break;
+    case ePixelComponentCustom :
       break;
     }
   }
@@ -1197,14 +1659,22 @@ namespace OFX {
 
     switch(bitDepth) 
     {
+    case eBitDepthNone :
+      outArgs_.propSetString(propName.c_str(), kOfxBitDepthNone);
+      break;
     case eBitDepthUByte : 
       outArgs_.propSetString(propName.c_str(), kOfxBitDepthByte); 
       break;
     case eBitDepthUShort : 
       outArgs_.propSetString(propName.c_str(), kOfxBitDepthShort); 
       break;
-    case eBitDepthFloat : 
+    case eBitDepthHalf :
+      outArgs_.propSetString(propName.c_str(), kOfxBitDepthHalf);
+      break;
+    case eBitDepthFloat :
       outArgs_.propSetString(propName.c_str(), kOfxBitDepthFloat); 
+      break;
+    case eBitDepthCustom :
       break;
     }
   }
@@ -1265,6 +1735,9 @@ namespace OFX {
     case eFieldNone : outArgs_.propSetString(kOfxImageClipPropFieldOrder, kOfxImageFieldNone, 0, false); break;
     case eFieldLower : outArgs_.propSetString(kOfxImageClipPropFieldOrder, kOfxImageFieldLower, 0, false); break;
     case eFieldUpper : outArgs_.propSetString(kOfxImageClipPropFieldOrder, kOfxImageFieldUpper, 0, false); break;
+    case eFieldBoth : outArgs_.propSetString(kOfxImageClipPropFieldOrder, kOfxImageFieldBoth, 0, false); break;
+    case eFieldSingle : outArgs_.propSetString(kOfxImageClipPropFieldOrder, kOfxImageFieldSingle, 0, false); break;
+    case eFieldDoubled : outArgs_.propSetString(kOfxImageClipPropFieldOrder, kOfxImageFieldDoubled, 0, false); break;
     }
   }
 
@@ -1291,6 +1764,7 @@ namespace OFX {
   {
     OfxStatus stat = OFX::Private::gEffectSuite->imageMemoryFree(_handle);
     // ignore status code for exception purposes
+    (void)stat;
   }
 
   /** @brief lock the memory and return a pointer to it */
@@ -1308,6 +1782,7 @@ namespace OFX {
   void ImageMemory::unlock(void)
   {
     OfxStatus stat = OFX::Private::gEffectSuite->imageMemoryUnlock(_handle);
+    (void)stat;
   }
 
 
@@ -1316,6 +1791,7 @@ namespace OFX {
   namespace Private {
 
     /** @brief Creates the global host description and sets its properties */
+    static
     void
       fetchHostDescription(OfxHost *host)
     {
@@ -1326,7 +1802,18 @@ namespace OFX {
         PropertySet hostProps(host->host);
 
         // and get some properties
+        gHostDescription.APIVersionMajor            = hostProps.propGetInt(kOfxPropAPIVersion, 0, false); // OFX 1.2
+        if (gHostDescription.APIVersionMajor == 0) {
+          // assume OFX 1.0
+          gHostDescription.APIVersionMajor = 1;
+        }
+        gHostDescription.APIVersionMinor            = hostProps.propGetInt(kOfxPropAPIVersion, 1, false); // OFX 1.2
         gHostDescription.hostName                   = hostProps.propGetString(kOfxPropName);
+        gHostDescription.hostLabel                  = hostProps.propGetString(kOfxPropLabel);
+        gHostDescription.versionMajor               = hostProps.propGetInt(kOfxPropVersion, 0, false); // OFX 1.2
+        gHostDescription.versionMinor               = hostProps.propGetInt(kOfxPropVersion, 1, false); // OFX 1.2
+        gHostDescription.versionMicro               = hostProps.propGetInt(kOfxPropVersion, 2, false); // OFX 1.2
+        gHostDescription.versionLabel               = hostProps.propGetString(kOfxPropVersionLabel, false); // OFX 1.2
         gHostDescription.hostIsBackground           = hostProps.propGetInt(kOfxImageEffectHostPropIsBackground) != 0;
         gHostDescription.supportsOverlays           = hostProps.propGetInt(kOfxImageEffectPropSupportsOverlays) != 0;
         gHostDescription.supportsMultiResolution    = hostProps.propGetInt(kOfxImageEffectPropSupportsMultiResolution) != 0;
@@ -1336,15 +1823,50 @@ namespace OFX {
         gHostDescription.supportsMultipleClipPARs   = hostProps.propGetInt(kOfxImageEffectPropSupportsMultipleClipPARs) != 0;
         gHostDescription.supportsSetableFrameRate   = hostProps.propGetInt(kOfxImageEffectPropSetableFrameRate) != 0;
         gHostDescription.supportsSetableFielding    = hostProps.propGetInt(kOfxImageEffectPropSetableFielding) != 0;
+        gHostDescription.sequentialRender           = hostProps.propGetInt(kOfxImageEffectInstancePropSequentialRender, false); // appeared in OFX 1.2
         gHostDescription.supportsStringAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsStringAnimation) != 0;
         gHostDescription.supportsCustomInteract     = hostProps.propGetInt(kOfxParamHostPropSupportsCustomInteract) != 0;
         gHostDescription.supportsChoiceAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsChoiceAnimation) != 0;
         gHostDescription.supportsBooleanAnimation   = hostProps.propGetInt(kOfxParamHostPropSupportsBooleanAnimation) != 0;
         gHostDescription.supportsCustomAnimation    = hostProps.propGetInt(kOfxParamHostPropSupportsCustomAnimation) != 0;
+        gHostDescription.osHandle                   = hostProps.propGetPointer(kOfxPropHostOSHandle, false);
+        gHostDescription.supportsParametricParameter = gParametricParameterSuite != 0;
+        gHostDescription.supportsParametricAnimation = hostProps.propGetInt(kOfxParamHostPropSupportsParametricAnimation, false) != 0;
+        gHostDescription.supportsRenderQualityDraft = hostProps.propGetInt(kOfxImageEffectPropRenderQualityDraft, false) != 0; // appeared in OFX 1.4
+        {
+            std::string originStr = hostProps.propGetString(kOfxImageEffectHostPropNativeOrigin, false); // appeared in OFX 1.4
+          if (originStr.empty()) {
+            // from http://openeffects.org/standard_changes/host-origin-hints :
+            // "All this hint does is tell plugin that the host world is different
+            // than OFX. Historically the first two hosts that exhibited this issue
+            // could be Fusion (upper left is 0,0 natively) and Toxic (Center is 0,0)."
+            if (gHostDescription.hostName == "com.eyeonline.Fusion" ||
+                ends_with(gHostDescription.hostName, "Fusion")) {
+              // if host is Fusion, set to TopLeft
+              gHostDescription.nativeOrigin = eNativeOriginTopLeft;
+            } else if (starts_with(gHostDescription.hostName, "Autodesk Toxik") ||
+                       ends_with(gHostDescription.hostName, "Toxik")) {
+              // if host is Toxic, set to Center
+              gHostDescription.nativeOrigin = eNativeOriginCenter;
+            } else {
+              gHostDescription.nativeOrigin = eNativeOriginBottomLeft;
+            }
+          } else if (originStr == kOfxHostNativeOriginBottomLeft) {
+            gHostDescription.nativeOrigin = eNativeOriginBottomLeft;
+          } else if (originStr == kOfxHostNativeOriginTopLeft) {
+            gHostDescription.nativeOrigin = eNativeOriginTopLeft;
+          } else if (originStr == kOfxHostNativeOriginCenter) {
+            gHostDescription.nativeOrigin = eNativeOriginCenter;
+          }
+        }
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+        gHostDescription.supportsOpenGLRender = gOpenGLRenderSuite != 0 && hostProps.propGetString(kOfxImageEffectPropOpenGLRenderSupported, 0, false) == "true";
+#endif
         gHostDescription.maxParameters              = hostProps.propGetInt(kOfxParamHostPropMaxParameters);
         gHostDescription.maxPages                   = hostProps.propGetInt(kOfxParamHostPropMaxPages);
         gHostDescription.pageRowCount               = hostProps.propGetInt(kOfxParamHostPropPageRowColumnCount, 0);
         gHostDescription.pageColumnCount            = hostProps.propGetInt(kOfxParamHostPropPageRowColumnCount, 1);
+
         int numComponents = hostProps.propGetDimension(kOfxImageEffectPropSupportedComponents);
         for(int i=0; i<numComponents; ++i)
           gHostDescription._supportedComponents.push_back(mapStrToPixelComponentEnum(hostProps.propGetString(kOfxImageEffectPropSupportedComponents, i)));
@@ -1353,10 +1875,11 @@ namespace OFX {
         for(int i=0; i<numContexts; ++i)
           gHostDescription._supportedContexts.push_back(mapToContextEnum(hostProps.propGetString(kOfxImageEffectPropSupportedContexts, i)));
 
-	int numPixelDepths = hostProps.propGetDimension(kOfxImageEffectPropSupportedPixelDepths);
+        int numPixelDepths = hostProps.propGetDimension(kOfxImageEffectPropSupportedPixelDepths);
         for(int i=0; i<numPixelDepths; ++i)
           gHostDescription._supportedPixelDepths.push_back(mapStrToBitDepthEnum(hostProps.propGetString(kOfxImageEffectPropSupportedPixelDepths, i)));
       }
+        
     }
 
     /** @brief fetch the effect property set from the ImageEffectHandle */
@@ -1378,7 +1901,7 @@ namespace OFX {
     {
       gLoadCount++;  
 
-      OfxStatus status = kOfxStatOK;
+      //OfxStatus status = kOfxStatOK;
 
       // fetch the suites
       OFX::Log::error(gHost == 0, "Host pointer has not been set.");
@@ -1391,13 +1914,19 @@ namespace OFX {
         gMemorySuite    = (OfxMemorySuiteV1 *)      fetchSuite(kOfxMemorySuite, 1);
         gThreadSuite    = (OfxMultiThreadSuiteV1 *) fetchSuite(kOfxMultiThreadSuite, 1);
         gMessageSuite   = (OfxMessageSuiteV1 *)     fetchSuite(kOfxMessageSuite, 1);
+        gMessageSuiteV2 = (OfxMessageSuiteV2 *)     fetchSuite(kOfxMessageSuite, 2, true);
         gProgressSuite   = (OfxProgressSuiteV1 *)     fetchSuite(kOfxProgressSuite, 1, true);
         gTimeLineSuite   = (OfxTimeLineSuiteV1 *)     fetchSuite(kOfxTimeLineSuite, 1, true);
+        gParametricParameterSuite = (OfxParametricParameterSuiteV1*) fetchSuite(kOfxParametricParameterSuite, 1, true);
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+        gOpenGLRenderSuite = (OfxImageEffectOpenGLRenderSuiteV1*) fetchSuite(kOfxOpenGLRenderSuite, 1, true);
+#endif
 
         // OK check and fetch host information
         fetchHostDescription(gHost);
 
         /// and set some dendent flags
+        OFX::gHostDescription.supportsMessageSuiteV2 = gMessageSuiteV2 != NULL;
         OFX::gHostDescription.supportsProgressSuite = gProgressSuite != NULL;
         OFX::gHostDescription.supportsTimeLineSuite = gTimeLineSuite != NULL;
 
@@ -1415,9 +1944,14 @@ namespace OFX {
     }
 
     /** @brief Library side unload action, this fetches all the suite pointers */
+    static
     void unloadAction(const char* id)
     {
       gLoadCount--;
+      if (gLoadCount<0) {
+        OFX::Log::warning(true, "OFX Plugin '%s' is already unloaded.", id);
+        return;
+      }
 
       if(gLoadCount==0)
       {
@@ -1428,7 +1962,9 @@ namespace OFX {
         gMemorySuite = 0;
         gThreadSuite = 0;
         gMessageSuite = 0;
+        gMessageSuiteV2 = 0;
         gInteractSuite = 0;
+        gParametricParameterSuite = 0;
       }
 
       {
@@ -1445,7 +1981,9 @@ namespace OFX {
         OFX::OfxPlugInfoMap::iterator it = OFX::plugInfoMap.find(id);
         OfxPlugin* plug = it->second._plug;
         OFX::OfxPluginArray::iterator it2 = std::find(ofxPlugs.begin(), ofxPlugs.end(), plug);
-        (*it2) = 0;
+        if (it2 != ofxPlugs.end()) {
+          (*it2) = 0;
+        }
         delete plug;
       }
     }
@@ -1476,6 +2014,7 @@ namespace OFX {
     }
 
     /** @brief Checks the handles passed into the plugin's main entry point */
+    static
     void
       checkMainHandles(const std::string &action,  const void *handle, 
       OfxPropertySetHandle inArgsHandle,  OfxPropertySetHandle outArgsHandle,
@@ -1520,6 +2059,21 @@ namespace OFX {
       args.renderWindow.x2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 2);
       args.renderWindow.y2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 3);
 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+      // Don't throw an exception if the following inArgs are not present.
+      // OpenGL rendering appeared in OFX 1.3
+      args.openGLEnabled = inArgs.propGetInt(kOfxImageEffectPropOpenGLEnabled, false) != 0;
+#endif
+
+      // Don't throw an exception if the following inArgs are not present:
+      // They appeared in OFX 1.2.
+      args.sequentialRenderStatus = inArgs.propGetInt(kOfxImageEffectPropSequentialRenderStatus, false) != 0;
+      args.interactiveRenderStatus = inArgs.propGetInt(kOfxImageEffectPropInteractiveRenderStatus, false) != 0;
+
+      // kOfxImageEffectPropRenderQualityDraft appeared in OFX 1.4
+      args.renderQualityDraft = inArgs.propGetInt(kOfxImageEffectPropRenderQualityDraft, false) != 0;
+
+      args.fieldToRender = eFieldNone;
       std::string str = inArgs.propGetString(kOfxImageEffectPropFieldToRender);
       try {
         args.fieldToRender = mapStrToFieldEnum(str);
@@ -1533,6 +2087,7 @@ namespace OFX {
     }
 
     /** @brief Library side render action, fetches relevant properties and calls the client code */
+    static
     void
       renderAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
     {
@@ -1547,6 +2102,7 @@ namespace OFX {
     }
 
     /** @brief Library side render begin sequence render action, fetches relevant properties and calls the client code */
+    static
     void
       beginSequenceRenderAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
     {
@@ -1562,13 +2118,23 @@ namespace OFX {
       args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
       args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+      // Don't throw an exception if the following inArgs are not present.
+      // OpenGL rendering appeared in OFX 1.3
+      args.openGLEnabled = inArgs.propGetInt(kOfxImageEffectPropOpenGLEnabled, false) != 0;
+#endif
       args.isInteractive = inArgs.propGetInt(kOfxPropIsInteractive) != 0;
-
+      // Don't throw an exception if the following inArgs are not present:
+      // They appeared in OFX 1.2
+      args.sequentialRenderStatus = inArgs.propGetInt(kOfxImageEffectPropSequentialRenderStatus, false) != 0;
+      args.interactiveRenderStatus = inArgs.propGetInt(kOfxImageEffectPropInteractiveRenderStatus, false) != 0;
+        
       // and call the plugin client render code
       effectInstance->beginSequenceRender(args);
     }
 
     /** @brief Library side render begin sequence render action, fetches relevant properties and calls the client code */
+    static
     void
       endSequenceRenderAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
     {
@@ -1579,21 +2145,58 @@ namespace OFX {
       args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
       args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+      // Don't throw an exception if the following inArgs are not present.
+      // OpenGL rendering appeared in OFX 1.3
+      args.openGLEnabled = inArgs.propGetInt(kOfxImageEffectPropOpenGLEnabled, false) != 0;
+#endif
       args.isInteractive = inArgs.propGetInt(kOfxPropIsInteractive) != 0;
+      // Don't throw an exception if the following inArgs are not present:
+      // They appeared in OFX 1.2
+      args.sequentialRenderStatus = inArgs.propGetInt(kOfxImageEffectPropSequentialRenderStatus, false) != 0;
+      args.interactiveRenderStatus = inArgs.propGetInt(kOfxImageEffectPropInteractiveRenderStatus, false) != 0;
 
       // and call the plugin client render code
       effectInstance->endSequenceRender(args);
     }
 
+
+    /** @brief Fetches the arguments used in a isIdentity action 'inargs' property set into a POD struct */
+    static void
+      getIsIdentityActionArguments(IsIdentityArguments &args,  OFX::PropertySet inArgs)
+    {
+      args.time = inArgs.propGetDouble(kOfxPropTime);
+
+      args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
+      args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+
+      args.renderWindow.x1 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 0);
+      args.renderWindow.y1 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 1);
+      args.renderWindow.x2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 2);
+      args.renderWindow.y2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 3);
+
+      std::string str = inArgs.propGetString(kOfxImageEffectPropFieldToRender);
+      try {
+        args.fieldToRender = mapStrToFieldEnum(str);
+      }
+      catch (std::invalid_argument) {
+        // dud field?
+        OFX::Log::error(true, "Unknown field to render '%s'", str.c_str());
+
+        // HACK need to throw something to cause a failure
+      }
+    }
+
     /** @brief Library side render begin sequence render action, fetches relevant properties and calls the client code */
+    static
     bool
       isIdentityAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs)
     {
       ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
-      RenderArguments args;
+      IsIdentityArguments args;
 
       // get the arguments 
-      getRenderActionArguments(args, inArgs);
+      getIsIdentityActionArguments(args, inArgs);
 
       // and call the plugin client isIdentity code
       Clip *identityClip = 0;
@@ -1609,6 +2212,7 @@ namespace OFX {
     }
 
     /** @brief Library side get region of definition function */
+    static
     bool
       regionOfDefinitionAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs)
     {
@@ -1635,15 +2239,15 @@ namespace OFX {
     }
 
     /** @brief Library side get regions of interest function */
+    static
     bool
       regionsOfInterestAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs, const char* plugname)
     {
       /** @brief local class to set the roi of a clip */
-      class ActualROISetter : public OFX::RegionOfInterestSetter {
-        bool doneSomething_;
+      class LOCAL ActualROISetter : public OFX::RegionOfInterestSetter {
         OFX::PropertySet &outArgs_;
+        bool doneSomething_;
         const std::map<std::string, std::string>& clipROIPropNames_;
-        const char* _plugname;
       public :
         /** @brief ctor */
         ActualROISetter(OFX::PropertySet &args, const std::map<std::string, std::string>& clipROIPropNames) 
@@ -1690,7 +2294,7 @@ namespace OFX {
       args.regionOfInterest.y2 = inArgs.propGetDouble(kOfxImageEffectPropRegionOfInterest, 3);
 
       args.time = inArgs.propGetDouble(kOfxPropTime);
-
+        
       // make a roi setter object
       ActualROISetter setRoIs(outArgs, gEffectDescriptors[plugname][effectInstance->getContext()]->getClipROIPropNames());
 
@@ -1704,11 +2308,12 @@ namespace OFX {
     }
 
     /** @brief Library side frames needed action */
+    static
     bool
       framesNeededAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs, const char* plugname)
     {
       /** @brief local class to set the frames needed from a clip */
-      class ActualSetter : public OFX::FramesNeededSetter {
+      class LOCAL ActualSetter : public OFX::FramesNeededSetter {
         OFX::PropertySet &outArgs_;                                  /**< @brief property set to set values in */
         std::map<std::string, std::vector<OfxRangeD> > frameRanges_;  /**< @brief map holding a bunch of frame ranges, one for each clip */
         const std::map<std::string, std::string>& _clipFrameRangePropNames;
@@ -1733,7 +2338,7 @@ namespace OFX {
           std::map<std::string, std::vector<OfxRangeD> >::iterator i;
 
           for(i = frameRanges_.begin(); i != frameRanges_.end(); ++i) {
-            if(i->first != "Output") {
+            if(i->first != kOfxImageEffectOutputClipName) {
               didSomething = true;
 
               // Make the property name we are setting
@@ -1781,6 +2386,7 @@ namespace OFX {
     }
 
     /** @brief Library side get regions of interest function */
+    static
     bool
       getTimeDomainAction(OfxImageEffectHandle handle, OFX::PropertySet &outArgs)
     {
@@ -1804,6 +2410,7 @@ namespace OFX {
     }
 
     /** @brief Library side get regions of interest function */
+    static
     bool
       clipPreferencesAction(OfxImageEffectHandle handle, OFX::PropertySet &outArgs, const char* plugname)
     {
@@ -1824,6 +2431,7 @@ namespace OFX {
     }
 
     /** @brief Library side begin instance changed action */
+    static
     void
       beginInstanceChangedAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
     {
@@ -1837,6 +2445,7 @@ namespace OFX {
     }
 
     /** @brief Library side instance changed action */
+    static
     void
       instanceChangedAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
     {
@@ -1869,6 +2478,7 @@ namespace OFX {
     }
 
     /** @brief Library side end instance changed action */
+    static
     void
       endInstanceChangedAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
     {
@@ -1880,6 +2490,7 @@ namespace OFX {
       // and call the plugin client code
       effectInstance->endChanged(reason);
     }
+
 
     /** @brief The main entry point for the plugin
     */
@@ -1969,7 +2580,7 @@ namespace OFX {
           // validate the host
           OFX::Validation::validatePluginDescriptorProperties(fetchEffectProps(handle));
 
-          // call plugin descibe in context
+          // call plugin describe in context
           factory->describeInContext(*desc, context);
 
           // add it to our map
@@ -1990,6 +2601,7 @@ namespace OFX {
 
           // make the image effect instance for this context
           ImageEffect *instance = factory->createInstance(handle, context);
+          (void)instance;
 
           // validate the plugin handle's properties
           OFX::Validation::validatePluginInstanceProperties(fetchEffectProps(handle));
@@ -2089,10 +2701,6 @@ namespace OFX {
           // call the instance changed action
           if(getTimeDomainAction(handle, outArgs))
             stat = kOfxStatOK;
-
-          // fetch our pointer out of the props on the handle
-          ImageEffect *instance = retrieveImageEffectPointer(handle);
-
         }
         else if(action == kOfxActionBeginInstanceChanged) {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
@@ -2130,6 +2738,26 @@ namespace OFX {
           // call the end edit function
           instance->endEdit();
         }
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+        else if(action == kOfxActionOpenGLContextAttached) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
+
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+
+          // call the context attached function
+          instance->contextAttached();
+        }
+        else if(action == kOfxActionOpenGLContextDetached) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
+
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+
+          // call the context detached function
+          instance->contextDetached();
+        }
+#endif
         else if(actionRaw) {
           OFX::Log::error(true, "Unknown action '%s'.", actionRaw);
         }
@@ -2139,23 +2767,127 @@ namespace OFX {
       }
 
       // catch suite exceptions
+      catch (const OFX::Exception::Suite &ex)
+      {
+#      ifdef DEBUG
+        std::cout << "Caught OFX::Exception::Suite: " << ex.what() << std::endl;
+#      endif
+        stat = ex.status();
+      }
+
+      // catch host inadequate exceptions
+      catch (const OFX::Exception::HostInadequate &e)
+      {
+#      ifdef DEBUG
+        std::cout << "Caught OFX::Exception::HostInadequate: " << e.what() << std::endl;
+#      endif
+        stat = kOfxStatErrMissingHostFeature;
+      }
+
+      // catch exception due to a property being unknown to the host, implies something wrong with host if not caught further down
+      catch (const OFX::Exception::PropertyUnknownToHost &e)
+      {
+#      ifdef DEBUG
+        std::cout << "Caught OFX::Exception::PropertyUnknownToHost: " << e.what() << std::endl;
+#      endif
+        stat = kOfxStatErrMissingHostFeature;
+      }
+
+      // catch memory
+      catch (std::bad_alloc)
+      {
+        stat = kOfxStatErrMemory;
+      }
+
+      // catch a custom client exception, if defined
+#ifdef OFX_CLIENT_EXCEPTION_TYPE
+      catch (OFX_CLIENT_EXCEPTION_TYPE &ex)
+      {
+        stat = OFX_CLIENT_EXCEPTION_HANDLER(ex, plugname);
+      }
+#endif
+      // Catch anything else, unknown
+      catch (const std::exception &e)
+      {
+#      ifdef DEBUG
+        std::cout << "Caught exception: " << e.what() << std::endl;
+#      endif
+        stat = kOfxStatFailed;
+      }
+      catch (...)
+      {
+#      ifdef DEBUG
+        std::cout << "Caught Unknown exception" << std::endl;
+#      endif
+        stat = kOfxStatFailed;
+      }
+
+      OFX::Log::outdent();
+      OFX::Log::print("STOP mainEntry (%s)\n", actionRaw);
+      return stat;
+    }      
+
+
+    OfxStatus customParamInterpolationV1Entry(
+      const void*            handleRaw,
+      OfxPropertySetHandle   inArgsRaw,
+      OfxPropertySetHandle   outArgsRaw)
+    {
+      OFX::Log::print("********************************************************************************");
+      OFX::Log::print("START customParamInterpolationV1Entry");
+      OFX::Log::indent();
+      OfxStatus stat = kOfxStatReplyDefault;
+      try {
+        // Cast the raw handle to be an image effect handle, because that is what it is
+        OfxImageEffectHandle handle = (OfxImageEffectHandle) handleRaw;
+
+        // Turn the arguments into wrapper objects to make our lives easier
+        OFX::PropertySet inArgs(inArgsRaw);
+        OFX::PropertySet outArgs(outArgsRaw);
+
+        ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
+
+        InterpolateCustomArgs interpArgs;
+
+        interpArgs.time     = inArgs.propGetDouble(kOfxPropTime);
+        interpArgs.value1   = inArgs.propGetString(kOfxParamPropCustomValue, 0);
+        interpArgs.value2   = inArgs.propGetString(kOfxParamPropCustomValue, 1);
+        interpArgs.keytime1 = inArgs.propGetDouble(kOfxParamPropInterpolationTime, 0);
+        interpArgs.keytime2 = inArgs.propGetDouble(kOfxParamPropInterpolationTime, 1);
+        interpArgs.amount   = inArgs.propGetDouble(kOfxParamPropInterpolationAmount);
+
+        std::string paramName = inArgs.propGetString(kOfxPropName);
+
+        // and call the plugin client code
+        std::string output = effectInstance->interpolateCustomParam(interpArgs, paramName);
+
+        outArgs.propSetString(kOfxParamPropCustomValue, output);
+      }
+
+      // catch suite exceptions
       catch (OFX::Exception::Suite &ex)
       {
+#      ifdef DEBUG
         std::cout << "Caught OFX::Exception::Suite" << std::endl;
+#      endif
         stat = ex.status();
       }
 
       // catch host inadequate exceptions
       catch (OFX::Exception::HostInadequate)
       {
+#      ifdef DEBUG
         std::cout << "Caught OFX::Exception::HostInadequate" << std::endl;
+#      endif
         stat = kOfxStatErrMissingHostFeature;
       }
 
       // catch exception due to a property being unknown to the host, implies something wrong with host if not caught further down
       catch (OFX::Exception::PropertyUnknownToHost)
       {
+#      ifdef DEBUG
         std::cout << "Caught OFX::Exception::PropertyUnknownToHost" << std::endl;
+#      endif
         stat = kOfxStatErrMissingHostFeature;
       }
 
@@ -2175,15 +2907,16 @@ namespace OFX {
       // Catch anything else, unknown
       catch (...)
       {
+#      ifdef DEBUG
         std::cout << "Caught Unknown exception" << std::endl;
+#      endif
         stat = kOfxStatFailed;
       }
 
       OFX::Log::outdent();
-      OFX::Log::print("STOP mainEntry (%s)\n", actionRaw);
+      OFX::Log::print("STOP customParamInterpolationV1Entry\n");
       return stat;
-    }      
-
+    }
 
     /** @brief The plugin function that gets passed the host structure. */
     void setHost(OfxHost *host)
@@ -2194,9 +2927,9 @@ namespace OFX {
   }; // namespace Private
 
   /** @brief Fetch's a suite from the host and logs errors */
-  void * fetchSuite(char *suiteName, int suiteVersion, bool optional)
+  const void * fetchSuite(const char *suiteName, int suiteVersion, bool optional)
   {
-    void *suite = Private::gHost->fetchSuite(Private::gHost->host, suiteName, suiteVersion);
+    const void *suite = Private::gHost->fetchSuite(Private::gHost->host, suiteName, suiteVersion);
     if(suite==0)
     {
       if(optional)
@@ -2210,15 +2943,7 @@ namespace OFX {
 
 }; // namespace OFX
 
-namespace OFX
-{
-  namespace Plugin
-  {
-    void getPluginIDs(OFX::PluginFactoryArray& ids);
-  }
-}
-
-
+static
 OFX::OfxPlugInfo generatePlugInfo(OFX::PluginFactory* factory, std::string& newID)
 {
   newID = factory->getUID();
@@ -2235,6 +2960,7 @@ OFX::OfxPlugInfo generatePlugInfo(OFX::PluginFactory* factory, std::string& newI
 
 bool gHasInit = false;
 
+static
 void init()
 {
   if(gHasInit)
@@ -2256,7 +2982,7 @@ void init()
 }
 
 /** @brief, mandated function returning the number of plugins, which is always 1 */
-OfxExport int OfxGetNumberOfPlugins(void)
+EXPORT int OfxGetNumberOfPlugins(void)
 {
   init();
   return (int)OFX::plugIDs.size();
@@ -2264,10 +2990,10 @@ OfxExport int OfxGetNumberOfPlugins(void)
 
 /** @brief, mandated function returning the nth plugin 
 
-We call the plugin side defined OFX::Plugin::getPluginID function to find out what to set.
+We call the plugin side defined OFX::Plugin::getPluginIDs function to find out what to set.
 */
 
-OfxExport OfxPlugin* OfxGetPlugin(int nth)
+EXPORT OfxPlugin* OfxGetPlugin(int nth)
 {
   init();
   int numPlugs = (int)OFX::plugInfoMap.size();

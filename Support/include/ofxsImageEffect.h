@@ -45,16 +45,21 @@ of the direct OFX objects and any library side only functions.
 #include <map>
 #include <string>
 #include <sstream>
+#include <memory>
 #include "ofxsParam.h"
 #include "ofxsInteract.h"
 #include "ofxsMessage.h"
 #include "ofxProgress.h"
 #include "ofxTimeLine.h"
+#include "ofxParametricParam.h"
 
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
-  CLASS &operator=(const CLASS &v1) {assert(false); return *this;}	\
-  CLASS(const CLASS &v) {assert(false); } 
+  CLASS &operator=(const CLASS &) {assert(false); return *this;}	\
+  CLASS(const CLASS &) {assert(false); } 
+#define mDeclareProtectedAssignAndCCBase(CLASS,BASE) \
+  CLASS &operator=(const CLASS &) {assert(false); return *this;}	\
+  CLASS(const CLASS &c) : BASE(c) {assert(false); }
 
 namespace OFX
 {
@@ -65,6 +70,11 @@ namespace OFX
       OfxPropertySetHandle   inArgsRaw,
       OfxPropertySetHandle   outArgsRaw,
       const char* plugname);
+
+    OfxStatus customParamInterpolationV1Entry(
+      const void*            handleRaw,
+      OfxPropertySetHandle   inArgsRaw,
+      OfxPropertySetHandle   outArgsRaw);
   }
 }
 
@@ -88,23 +98,26 @@ namespace OFX {
     eContextTransition,
     eContextPaint,
     eContextGeneral,
-    eContextRetimer};
+    eContextRetimer,
+  };
 
   /** @brief Enumerates the pixel depths supported */
   enum BitDepthEnum {eBitDepthNone, /**< @brief bit depth that indicates no data is present */
     eBitDepthUByte,
     eBitDepthUShort,
+    eBitDepthHalf,
     eBitDepthFloat,
-    eBitDepthCustom ///< some non standard bit depth
+    eBitDepthCustom, ///< some non standard bit depth
   };
 
   /** @brief Enumerates the component types supported */
   enum PixelComponentEnum {ePixelComponentNone,
     ePixelComponentRGBA,
+    ePixelComponentRGB,
     ePixelComponentAlpha,
     ePixelComponentCustom ///< some non standard pixel type
   };
-
+    
   /** @brief Enumerates the ways a fielded image can be extracted from a clip */
   enum FieldExtractionEnum {eFieldExtractBoth,   /**< @brief extract both fields */
     eFieldExtractSingle, /**< @brief extracts a single field, so you have a half height image */
@@ -121,7 +134,9 @@ namespace OFX {
   enum FieldEnum {eFieldNone,   /**< @brief unfielded image */
     eFieldBoth,   /**< @brief fielded image with both fields present */
     eFieldLower,  /**< @brief only the spatially lower field is present */
-    eFieldUpper   /**< @brief only the spatially upper field is present  */
+    eFieldUpper,  /**< @brief only the spatially upper field is present  */
+    eFieldSingle, /**< @brief image that consists of a single field, and so is half height  */
+    eFieldDoubled /**< @brief image that consists of a single field, but each scan line is double, and so is full height  */
   };
 
   enum PreMultiplicationEnum { eImageOpaque,          /**< @brief the image is opaque and so has no premultiplication state */
@@ -129,6 +144,34 @@ namespace OFX {
     eImageUnPreMultiplied, /**< @brief the image is unpremultiplied */
   };
 
+  enum NativeOriginEnum {
+    eNativeOriginBottomLeft,
+    eNativeOriginTopLeft,
+    eNativeOriginCenter
+  };
+
+  /** @brief turns a field string into and enum */
+  FieldEnum mapStrToFieldEnum(const std::string &str)  throw(std::invalid_argument);
+
+  ////////////////////////////////////////////////////////////////////////////////
+  /** @brief map a std::string to a context enum */
+  ContextEnum mapToContextEnum(const std::string &s) throw(std::invalid_argument);
+
+  const char* mapContextEnumToStr(ContextEnum context) throw(std::invalid_argument);
+
+  const char* mapMessageTypeEnumToStr(OFX::Message::MessageTypeEnum type);
+
+  OFX::Message::MessageReplyEnum mapToMessageReplyEnum(OfxStatus stat);
+
+  InstanceChangeReason mapToInstanceChangedReason(const std::string &s) throw(std::invalid_argument);
+
+  BitDepthEnum mapStrToBitDepthEnum(const std::string &str) throw(std::invalid_argument);
+
+  const char* mapBitDepthEnumToStr(BitDepthEnum bitDepth) throw(std::invalid_argument);
+
+  PixelComponentEnum mapStrToPixelComponentEnum(const std::string &str) throw(std::invalid_argument);
+
+  const char* mapPixelComponentEnumToStr(PixelComponentEnum pixelComponent) throw(std::invalid_argument);
 
   class PluginFactory
   {
@@ -160,6 +203,7 @@ namespace OFX {
     }
     FactoryMainEntryHelper(const std::string& id, unsigned int maj, unsigned int min): _id(id), _maj(maj), _min(min)
     {
+      assert(_uid.empty()); // constructor should only be called once
       _uid = id + toString(maj) + toString(min);
     }
     const std::string& getHelperUID() const { return _uid; }
@@ -167,6 +211,7 @@ namespace OFX {
     { 
       return OFX::Private::mainEntryStr(action, handle, in, out, _uid.c_str());
     }
+
     static std::string _uid;
     std::string _id;
     unsigned int _maj;
@@ -206,13 +251,20 @@ namespace OFX {
   All the standard suites are fetched by the support code, you should use this
   to fetch any extra non-standard suites.
   */
-  void * fetchSuite(char *suiteName, int suiteVersion, bool optional = false);
+  const void * fetchSuite(const char *suiteName, int suiteVersion, bool optional = false);
 
   ////////////////////////////////////////////////////////////////////////////////
   /** @brief A class that lists all the properties of a host */
   struct ImageEffectHostDescription {
   public :
+    int APIVersionMajor;
+    int APIVersionMinor;
     std::string hostName;
+    std::string hostLabel;
+    int versionMajor;
+    int versionMinor;
+    int versionMicro;
+    std::string versionLabel;
     bool hostIsBackground;
     bool supportsOverlays;
     bool supportsMultiResolution;
@@ -222,11 +274,20 @@ namespace OFX {
     bool supportsMultipleClipPARs;
     bool supportsSetableFrameRate;
     bool supportsSetableFielding;
+    int sequentialRender;
     bool supportsStringAnimation;
     bool supportsCustomInteract;
     bool supportsChoiceAnimation;
     bool supportsBooleanAnimation;
     bool supportsCustomAnimation;
+    void* osHandle;
+    bool supportsParametricParameter;
+    bool supportsParametricAnimation;
+    bool supportsRenderQualityDraft;
+    NativeOriginEnum nativeOrigin;
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    bool supportsOpenGLRender;
+#endif
     int maxParameters;
     int maxPages;
     int pageRowCount;
@@ -239,6 +300,18 @@ namespace OFX {
     PixelDepthArray _supportedPixelDepths;
     bool supportsProgressSuite;
     bool supportsTimeLineSuite;
+    bool supportsMessageSuiteV2;
+
+  public:
+    bool supportsPixelComponent(const PixelComponentEnum component) const;
+    bool supportsBitDepth( const BitDepthEnum bitDepth) const;
+    bool supportsContext(const ContextEnum context) const;
+	
+    /** @return default pixel depth supported by host application. */
+    BitDepthEnum getDefaultPixelDepth() const;
+	
+    /** @return default pixel component supported by host application. */
+    PixelComponentEnum getDefaultPixelComponent() const;
   };
 
 
@@ -272,6 +345,9 @@ namespace OFX {
 
 
     /** @brief set the label properties */
+    void setLabel(const std::string &label);
+
+    /** @brief set the label properties */
     void setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel);
 
     /** @brief set how fielded images are extracted from the clip defaults to eFieldExtractDoubled */
@@ -294,7 +370,7 @@ namespace OFX {
     void setSupportsTiles(bool v);
 
     /** @brief say whether this clip is a 'mask', so the host can know to replace with a roto or similar, defaults to false */
-    void setIsMask(bool v);    
+    void setIsMask(bool v);
   };
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -302,7 +378,7 @@ namespace OFX {
   class ImageEffectDescriptor : public ParamSetDescriptor
   {
   protected :
-    mDeclareProtectedAssignAndCC(ImageEffectDescriptor);
+    mDeclareProtectedAssignAndCCBase(ImageEffectDescriptor,ParamSetDescriptor);
     ImageEffectDescriptor(void) {assert(false);}
 
   protected :
@@ -335,16 +411,28 @@ namespace OFX {
     PropertySet &getPropertySet() {return _effectProps;}
 
     /** @brief, set the label properties in a plugin */
+    void setLabel(const std::string &label);
+
+    /** @brief, set the label properties in a plugin */
     void setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel);
+
+    /** @brief, set the version properties in a plugin */
+    void setVersion(int major, int minor, int micro, int build, const std::string &versionLabel);
 
     /** @brief Set the plugin grouping, defaults to "" */
     void setPluginGrouping(const std::string &group);
+
+    /** @brief Set the plugin description, defaults to "" */
+    void setPluginDescription(const std::string &description);
 
     /** @brief Add a context to those supported, defaults to none, must be called at least once */
     void addSupportedContext(ContextEnum v);
 
     /** @brief Add a pixel depth to those supported, defaults to none, must be called at least once */
     void addSupportedBitDepth(BitDepthEnum v);
+
+    /** @brief Add a pixel depth to those supported for OpenGL rendering, defaults to all */
+    void addSupportedOpenGLBitDepth(BitDepthEnum v);
 
     /** @brief Is the plugin single instance only ? defaults to false */
     void setSingleInstance(bool v);
@@ -376,6 +464,15 @@ namespace OFX {
     /** @brief If the slave  param changes the clip preferences need to be re-evaluated */
     void addClipPreferencesSlaveParam(ParamDescriptor &p);
 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    /** @brief Does the plugin support OpenGL accelerated rendering (but is also capable of CPU rendering) ? */
+    void setSupportsOpenGLRender(bool v);
+
+    /** @brief Does the plugin require OpenGL accelerated rendering ? */
+    void setNeedsOpenGLRender(bool v);
+    void addOpenGLBitDepth(BitDepthEnum bitDepth);
+#endif
+
     /** @brief Create a clip, only callable from describe in context 
 
     The returned clip \em must not be deleted by the client code. This is all managed by the ImageEffectDescriptor itself.
@@ -393,20 +490,20 @@ namespace OFX {
 
     /** @brief override this to create an interact for the effect */
     virtual void setOverlayInteractDescriptor(EffectOverlayDescriptor* desc);
-  };  
+  };
 
   ////////////////////////////////////////////////////////////////////////////////
   /** @brief Wraps up an image */
-  class Image {
+  class ImageBase {
   protected :
     /** @brief the handle that holds this image */
     PropertySet _imageProps;
 
     /** @brief friend so we get access to ctor */
-    friend class Clip;
+    //friend class Clip;
 
-    void     *_pixelData;                    /**< @brief the base address of the image */
     PixelComponentEnum _pixelComponents;     /**< @brief get the components in the image */
+    int       _pixelComponentCount;
     int       _rowBytes;                     /**< @brief the number of bytes per scanline */
     int       _pixelBytes;                   /**< @brief the number of bytes per pixel */
     BitDepthEnum _pixelDepth;                 /**< @brief get the pixel depth */
@@ -420,11 +517,11 @@ namespace OFX {
 
   public :
     /** @brief ctor */
-    Image(OfxPropertySetHandle props);
+    ImageBase(OfxPropertySetHandle props);
 
     /** @brief dtor */
-    virtual ~Image();
-
+    virtual ~ImageBase();
+      
     const PropertySet &getPropertySet() const {return _imageProps;}
 
     PropertySet &getPropertySet() {return _imageProps;}
@@ -435,6 +532,9 @@ namespace OFX {
     /** @brief get the components in the image */
     PixelComponentEnum getPixelComponents(void) const { return _pixelComponents;}
 
+    /** @brief get the number of components in the image */
+    int getPixelComponentCount(void) const { return _pixelComponentCount; }
+
     /** @brief get the string representing the pixel components */
     std::string getPixelComponentsProperty(void) const { return _imageProps.propGetString(kOfxImageEffectPropComponents);}
 
@@ -442,19 +542,16 @@ namespace OFX {
     PreMultiplicationEnum getPreMultiplication(void) const { return _preMultiplication;}
 
     /** @brief get the scale factor that has been applied to this image */
-    OfxPointD getRenderScale(void) const { return _renderScale;}
+    const OfxPointD& getRenderScale(void) const { return _renderScale;}
 
     /** @brief get the scale factor that has been applied to this image */
     double getPixelAspectRatio(void) const { return _pixelAspectRatio;}
 
-    /** @brief get the pixel data for this image */
-    void *getPixelData(void) const { return _pixelData;}
-
     /** @brief get the region of definition (in pixel coordinates) of this image */
-    OfxRectI getRegionOfDefinition(void) const { return _regionOfDefinition;}
+    const OfxRectI& getRegionOfDefinition(void) const { return _regionOfDefinition;}
 
     /** @brief get the bounds on the image data (in pixel coordinates) of this image */
-    OfxRectI getBounds(void) const { return _bounds;}
+    const OfxRectI& getBounds(void) const { return _bounds;}
 
     /** @brief get the row bytes, may be negative */
     int getRowBytes(void) const { return _rowBytes;}
@@ -463,7 +560,27 @@ namespace OFX {
     FieldEnum getField(void) const { return _field;}
 
     /** @brief the unique ID of this image */
-    std::string getUniqueIdentifier(void) const { return _uniqueID;}
+    const std::string& getUniqueIdentifier(void) const { return _uniqueID;}
+  };
+
+  ////////////////////////////////////////////////////////////////////////////////
+  /** @brief Wraps up an image */
+  class Image : public ImageBase {
+  protected :
+    void     *_pixelData;                    /**< @brief the base address of the image */
+
+  public :
+    /** @brief ctor */
+    Image(OfxPropertySetHandle props);
+
+    /** @brief dtor */
+    virtual ~Image();
+
+    /** @brief get the pixel data for this image */
+    void *getPixelData(void) { return _pixelData;}
+
+    /** @brief get the pixel data for this image */
+    const void *getPixelData(void) const { return _pixelData;}
 
     /** @brief return a pixel pointer, returns NULL if (x,y) is outside the image bounds
 
@@ -473,6 +590,36 @@ namespace OFX {
     can't know the pixel size to do the work.
     */
     void *getPixelAddress(int x, int y);
+
+    /** @brief return a pixel pointer, returns NULL if (x,y) is outside the image bounds
+
+    x and y are in pixel coordinates
+
+    If the components are custom, then this will return NULL as the support code
+    can't know the pixel size to do the work.
+    */
+    const void *getPixelAddress(int x, int y) const;
+  };
+
+  ////////////////////////////////////////////////////////////////////////////////
+  /** @brief Wraps up an OpenGL texture */
+  class Texture : public ImageBase {
+  protected :
+    int _index;
+    int _target;
+
+  public :
+    /** @brief ctor */
+    Texture(OfxPropertySetHandle props);
+
+    /** @brief dtor */
+    virtual ~Texture();
+
+    /** @brief get OpenGL texture id (cast to GLuint) */
+    inline int getIndex() const {return _index;}
+      
+    /** @brief get OpenGL texture target (cast to GLenum) */
+    inline int getTarget() const {return _target;}
   };
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -512,6 +659,9 @@ namespace OFX {
     /** @brief get the name */
     const std::string &name(void) const {return _clipName;}
 
+    /** @brief fetch the label */
+    void getLabel(std::string &label) const;
+
     /** @brief fetch the labels */
     void getLabels(std::string &label, std::string &shortLabel, std::string &longLabel) const;
 
@@ -520,6 +670,9 @@ namespace OFX {
 
     /** @brief what is the components images will be given to us as */
     PixelComponentEnum getPixelComponents(void) const;
+
+    /** @brief get the number of components in the image */
+    int getPixelComponentCount(void) const;
 
     /** @brief get the string representing the pixel components */
     std::string getPixelComponentsProperty(void) const { return _clipProps.propGetString(kOfxImageEffectPropComponents);}
@@ -577,7 +730,7 @@ namespace OFX {
 
     If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
     */
-    Image *fetchImage(double t, OfxRectD bounds);
+    Image *fetchImage(double t, const OfxRectD &bounds);
 
     /** @brief fetch an image, with a specific region in cannonical coordinates
 
@@ -585,13 +738,17 @@ namespace OFX {
 
     If the same image is fetched twice, it must be deleted in each case, they will not be the same pointer.
     */
-    Image *fetchImage(double t, OfxRectD *bounds)
+    Image *fetchImage(double t, const OfxRectD *bounds)
     {
       if(bounds) 
         return fetchImage(t, *bounds);
       else
         return fetchImage(t);
     }
+
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    Texture *loadTexture(double t, BitDepthEnum format = eBitDepthNone, const OfxRectD *region = NULL);
+#endif
   };
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -615,8 +772,22 @@ namespace OFX {
   };
 
   ////////////////////////////////////////////////////////////////////////////////
-  /** @brief POD struct to pass rendering arguments into @ref ImageEffect::render and @ref OFX::ImageEffect::isIdentity */
+  /** @brief POD struct to pass rendering arguments into @ref ImageEffect::render */
   struct RenderArguments {
+    double    time;
+    OfxPointD renderScale;
+    OfxRectI  renderWindow;
+    FieldEnum fieldToRender;
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    bool      openGLEnabled;
+#endif
+    bool      sequentialRenderStatus;
+    bool      interactiveRenderStatus;
+    bool      renderQualityDraft;
+  };
+
+  /** @brief POD struct to pass rendering arguments into @ref OFX::ImageEffect::isIdentity */
+  struct IsIdentityArguments {
     double    time;
     OfxPointD renderScale;
     OfxRectI  renderWindow;
@@ -629,12 +800,22 @@ namespace OFX {
     double    frameStep;
     bool      isInteractive;
     OfxPointD renderScale;
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    bool      openGLEnabled;
+#endif
+    bool      sequentialRenderStatus;
+    bool      interactiveRenderStatus;
   };
 
   /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::beginSequenceRender */
   struct EndSequenceRenderArguments {
     bool      isInteractive;
     OfxPointD renderScale;
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    bool      openGLEnabled;
+#endif
+    bool      sequentialRenderStatus;
+    bool      interactiveRenderStatus;
   };
 
   /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::getRegionOfDefinition */
@@ -674,7 +855,7 @@ namespace OFX {
     /** @brief function to set the frames needed on a clip, the range is min <= time <= max */
     virtual void setFramesNeeded(const Clip &clip, const OfxRangeD &range) = 0;
   };
-
+    
   /** @brief Class used to set the clip preferences of the effect.
   */ 
   class ClipPreferencesSetter {
@@ -768,12 +949,24 @@ namespace OFX {
     OfxPointD            renderScale; /**< the renderscale on the instance */
   };
 
+  /** @brief struct to pass arguments into @ref OFX::ImageEffect::interpolateCustomParam.
+  It is non-POD (it contains std::string), but it is passed as const ref, so that does
+  not matter */
+  struct InterpolateCustomArgs {
+    double      time;
+    std::string value1;
+    std::string value2;
+    double      keytime1;
+    double      keytime2;
+    double      amount;
+  };
+
   ////////////////////////////////////////////////////////////////////////////////
   /** @brief Wraps up an effect instance, plugin implementations need to inherit from this */
   class ImageEffect : public ParamSet
   {
   protected :
-    mDeclareProtectedAssignAndCC(ImageEffect);
+    mDeclareProtectedAssignAndCCBase(ImageEffect,ParamSet);
 
   private :
     /** @brief to get access to the effect handle without exposing it generally via a function */
@@ -840,7 +1033,27 @@ namespace OFX {
     /** @brief Have we informed the host we want to be seqentially renderred ? */
     bool getSequentialRender(void) const;
 
+    /** @brief Does the plugin support image tiling ? Can only be called from changedParam or changedClip. */
+    void setSupportsTiles(bool v);
+
+    /** @brief Have we informed the host we support image tiling ? */
+    bool getSupportsTiles(void) const;
+
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    /** @brief Does the plugin support OpenGL accelerated rendering (but is also capable of CPU rendering) ? Can only be called from changedParam or changedClip. */
+    void setSupportsOpenGLRender(bool v);
+
+    /** @brief Does the plugin require OpenGL accelerated rendering ? Can only be called from changedParam or changedClip. */
+    void setNeedsOpenGLRender(bool v);
+#endif
+
+    /** @brief notify host that the internal data structures need syncing back to parameters for persistance and so on.  This is reset by the host after calling SyncPrivateData. */
+    void setParamSetNeedsSyncing();
+
     OFX::Message::MessageReplyEnum sendMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg);
+
+      OFX::Message::MessageReplyEnum setPersistentMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg);
+      OFX::Message::MessageReplyEnum clearPersistentMessage();
 
     /** @brief Fetch the named clip from this instance
 
@@ -859,6 +1072,10 @@ namespace OFX {
 
     /** @brief force all overlays on this interact to be redrawn */
     void redrawOverlays(void);
+
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    bool flushOpenGLResources(void);
+#endif
 
     ////////////////////////////////////////////////////////////////////////////////
     // these are actions that need to be overridden by a plugin that implements an effect host
@@ -884,7 +1101,7 @@ namespace OFX {
     function should return true and set the \em identityClip pointer to point to the clip that is the identity
     and \em identityTime to be the time at which to access the clip for the identity operation.
     */
-    virtual bool isIdentity(const RenderArguments &args, Clip * &identityClip, double &identityTime);
+    virtual bool isIdentity(const IsIdentityArguments &args, Clip * &identityClip, double &identityTime);
 
     /** @brief The get RoD action. 
 
@@ -913,7 +1130,7 @@ namespace OFX {
 
     /** @brief get the clip preferences */
     virtual void getClipPreferences(ClipPreferencesSetter &clipPreferences);
-
+      
     /** @brief the effect is about to be actively edited by a user, called when the first user interface is opened on an instance */
     virtual void beginEdit(void);
 
@@ -932,13 +1149,24 @@ namespace OFX {
     /** @brief the effect has just had some values changed */
     virtual void endChanged(InstanceChangeReason reason);
 
+    /** @brief called when a custom param needs to be interpolated */
+    virtual std::string interpolateCustomParam(const InterpolateCustomArgs &args, const std::string &paramName);
+
     /** @brief what is the time domain of this effect, valid only in the general context
 
     return true is range was set, otherwise the default (the union of the time domain of all input clips) is used
     */
     virtual bool getTimeDomain(OfxRangeD &range);
 
-    /// Start doing progress. 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    /** @brief OpenGL context attached */
+    virtual void contextAttached(void);
+
+    /** @brief OpenGL context detached */
+    virtual void contextDetached(void);
+#endif
+
+    /// Start doing progress.
     void progressStart(const std::string &message);
 
     /// finish yer progress
@@ -965,7 +1193,7 @@ namespace OFX {
   */  
   namespace Plugin {
     /** @brief Plugin side function used to identify the plugin to the support library */
-    void getPluginID(OFX::PluginFactoryArray &id);
+    void getPluginIDs(OFX::PluginFactoryArray &id);
 
     /// If the client has defined its own exception type, allow it to catch it in the main function
 #ifdef OFX_CLIENT_EXCEPTION_TYPE
@@ -977,5 +1205,6 @@ namespace OFX {
 
 // undeclare the protected assign and CC macro
 #undef mDeclareProtectedAssignAndCC
+#undef mDeclareProtectedAssignAndCCBase
 
 #endif
