@@ -135,6 +135,26 @@ namespace OFX {
     return v;
   }
 
+  /** @brief The suggested colour to draw a widget in an interact */
+  bool
+    Interact::getSuggestedColour(OfxRGBColourD &c) const
+  {
+    // OFX 1.2/1.3 specs say that the host should return kOfxStatReplyDefault if there is no suggested color
+    OfxStatus stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxInteractPropSuggestedColour, 0, &c.r);
+    if (stat != kOfxStatOK) {
+      return false; // host gave no suggestion (replied kOfxStatReplyDefault or property is unknown to host)
+    }
+    stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxInteractPropSuggestedColour, 1, &c.g);
+    if (stat != kOfxStatOK) {
+      return false; // host gave no suggestion (replied kOfxStatReplyDefault or property is unknown to host)
+    }
+    stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxInteractPropSuggestedColour, 2, &c.b);
+    if (stat != kOfxStatOK) {
+      return false; // host gave no suggestion (replied kOfxStatReplyDefault or property is unknown to host)
+    }
+    return true;
+  }
+
   /** @brief Request a redraw */
   void 
     Interact::requestRedraw(void) const
@@ -199,7 +219,7 @@ namespace OFX {
 
   /** @brief the function called to draw in the interact */
   bool 
-    Interact::draw(const DrawArgs &args)
+    Interact::draw(const DrawArgs &/*args*/)
   {
     return false;
   }
@@ -210,7 +230,7 @@ namespace OFX {
   any other interact that may share the viewer.
   */
   bool 
-    Interact::penMotion(const PenArgs &args)
+    Interact::penMotion(const PenArgs &/*args*/)
   {
     return false;
   }
@@ -221,7 +241,7 @@ namespace OFX {
   any other interact that may share the viewer.
   */
   bool 
-    Interact::penDown(const PenArgs &args)
+    Interact::penDown(const PenArgs &/*args*/)
   {
     return false;
   }
@@ -232,7 +252,7 @@ namespace OFX {
   any other interact that may share the viewer.
   */
   bool 
-    Interact::penUp(const PenArgs &args)
+    Interact::penUp(const PenArgs &/*args*/)
   {
     return false;
   }
@@ -243,7 +263,7 @@ namespace OFX {
   any other interact that may share the viewer.
   */
   bool 
-    Interact::keyDown(const KeyArgs &args)
+    Interact::keyDown(const KeyArgs &/*args*/)
   {
     return false;
   }
@@ -254,7 +274,7 @@ namespace OFX {
   any other interact that may share the viewer.
   */
   bool 
-    Interact::keyUp(const KeyArgs &args)
+    Interact::keyUp(const KeyArgs &/*args*/)
   {
     return false;
   }
@@ -265,20 +285,20 @@ namespace OFX {
   any other interact that may share the viewer.
   */
   bool 
-    Interact::keyRepeat(const KeyArgs &args)
+    Interact::keyRepeat(const KeyArgs &/*args*/)
   {
     return false;
   }
 
   /** @brief Called when the interact is given input focus */
   void 
-    Interact::gainFocus(const FocusArgs &args)
+    Interact::gainFocus(const FocusArgs &/*args*/)
   {
   }
 
   /** @brief Called when the interact is loses input focus */
   void 
-    Interact::loseFocus(const FocusArgs &args)
+    Interact::loseFocus(const FocusArgs &/*args*/)
   {
   }
 
@@ -314,6 +334,10 @@ namespace OFX {
   DrawArgs::DrawArgs(const PropertySet &props)
     : InteractArgs(props)
   {
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
+    viewportSize.x = props.propGetDouble(kOfxInteractPropViewportSize, 0, false);
+    viewportSize.y = props.propGetDouble(kOfxInteractPropViewportSize, 1, false);
+#endif
     backGroundColour = getBackgroundColour(props);
     pixelScale       = getPixelScale(props);
   }
@@ -322,10 +346,22 @@ namespace OFX {
   PenArgs::PenArgs(const PropertySet &props)
     : InteractArgs(props)
   {
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
+    viewportSize.x = props.propGetDouble(kOfxInteractPropViewportSize, 0, false);
+    viewportSize.y = props.propGetDouble(kOfxInteractPropViewportSize, 1, false);
+#endif
     pixelScale    = getPixelScale(props);
+    backGroundColour = getBackgroundColour(props);
     penPosition.x = props.propGetDouble(kOfxInteractPropPenPosition, 0);
     penPosition.y = props.propGetDouble(kOfxInteractPropPenPosition, 1);
-    penPressure   = props.propGetDouble(kOfxInteractPropPenPressure);        
+    try {
+      penViewportPosition.x = props.propGetInt(kOfxInteractPropPenViewportPosition, 0);
+      penViewportPosition.y = props.propGetInt(kOfxInteractPropPenViewportPosition, 1);
+    } catch (OFX::Exception::PropertyUnknownToHost) {
+      // Introduced in OFX 1.2. Return (-1,-1) if not available
+      penViewportPosition.x = penViewportPosition.y = -1.;
+    }
+    penPressure   = props.propGetDouble(kOfxInteractPropPenPressure);
   }
 
   /** @brief ctor */
@@ -335,12 +371,17 @@ namespace OFX {
     time          = props.propGetDouble(kOfxPropTime);
     renderScale   = getRenderScale(props);
     keyString     = props.propGetString(kOfxPropKeyString);
+    keySymbol     = props.propGetInt(kOfxPropKeySym);
   }
 
   /** @brief ctor */
   FocusArgs::FocusArgs(const PropertySet &props)
     : InteractArgs(props)
   {
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
+    viewportSize.x = props.propGetDouble(kOfxInteractPropViewportSize, 0, false);
+    viewportSize.y = props.propGetDouble(kOfxInteractPropViewportSize, 1, false);
+#endif
     pixelScale       = getPixelScale(props);
     backGroundColour = getBackgroundColour(props);
   }
@@ -376,7 +417,8 @@ namespace OFX {
 
   namespace Private {
     /** @brief fetches our pointer out of the props on the handle */
-    Interact *retrieveInteractPointer(OfxInteractHandle handle) 
+    static
+    Interact *retrieveInteractPointer(OfxInteractHandle handle)
     {
       Interact *instance;
 
@@ -400,11 +442,12 @@ namespace OFX {
     }
 
     /** @brief The common entry point used by all interacts */
+    static
     OfxStatus
       interactMainEntry(const std::string     &action,
       OfxInteractHandle      handle,
       PropertySet              inArgs,
-      PropertySet              outArgs)
+      PropertySet              /*outArgs*/)
     {
       OfxStatus stat = kOfxStatReplyDefault;
 
@@ -467,7 +510,7 @@ namespace OFX {
         FocusArgs args(inArgs);
         interact->gainFocus(args);
       }
-      else if(action ==   kOfxInteractActionGainFocus) {
+      else if(action ==   kOfxInteractActionLoseFocus) {
         // make the draw args
         FocusArgs args(inArgs);
         interact->loseFocus(args);
@@ -513,6 +556,7 @@ namespace OFX {
           // fetch the image effect we are being made for out of the interact's property handle
           ImageEffect *effect = retrieveEffectFromInteractHandle(handle);
           OFX::Interact* interact = desc.createInstance(handle, effect);
+          (void)interact;
           // and all was well
           stat = kOfxStatOK;
         }
