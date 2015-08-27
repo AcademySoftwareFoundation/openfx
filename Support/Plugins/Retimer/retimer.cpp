@@ -69,16 +69,16 @@ public :
       , dstClip_(0)
       , srcClip_(0)
       , sourceTime_(0)
-      , duration_(0)
       , speed_(0)
+      , duration_(0)
     {
-        dstClip_ = fetchClip("Output");
-        srcClip_ = fetchClip("Source");
+        dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
+        srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
 
         // What parameters we instantiate depend on the context
         if(getContext() == OFX::eContextRetimer)
             // fetch the mandated parameter which the host uses to pass us the frame to retime to
-            sourceTime_   = fetchDoubleParam("SourceTime");
+            sourceTime_   = fetchDoubleParam(kOfxImageEffectRetimerParamName);
         else // context == OFX::eContextFilter || context == OFX::eContextGeneral
             // filter context means we are in charge of how to retime, and our example is using a speed curve to do that
             speed_   = fetchDoubleParam("Speed");
@@ -90,6 +90,9 @@ public :
 
     /* Override the render */
     virtual void render(const OFX::RenderArguments &args);
+
+    /** Override the get frames needed action */
+    virtual void getFramesNeeded(const OFX::FramesNeededArguments &args, OFX::FramesNeededSetter &frames);
 
     /* override the time domain action, only for the general context */
     virtual bool getTimeDomain(OfxRangeD &range);
@@ -120,32 +123,13 @@ checkComponents(const OFX::Image &src,
         throw int(1); // HACK!! need to throw an sensible exception here!        
 }
 
-/* set up and run a processor */
-void
-RetimerPlugin::setupAndProcess(OFX::ImageBlenderBase &processor, const OFX::RenderArguments &args)
+static void framesNeeded(double sourceTime, OFX::FieldEnum fieldToRender, double *fromTimep, double *toTimep, double *blendp)
 {
-    // get a dst image
-    std::auto_ptr<OFX::Image>  dst(dstClip_->fetchImage(args.time));
-    OFX::BitDepthEnum          dstBitDepth    = dst->getPixelDepth();
-    OFX::PixelComponentEnum    dstComponents  = dst->getPixelComponents();
-  
-    // figure the frame we should be retiming from
-    double sourceTime;
-    
-    if(getContext() == OFX::eContextRetimer) {
-        // the host is specifying it, so fetch it from the "sourceTime" pseudo-param
-        sourceTime = sourceTime_->getValueAtTime(args.time);
-    }
-    else {
-        // we have our own param, which is a speed, so we integrate it to get the time we want
-        sourceTime = speed_->integrate(0, args.time);
-    }
-
     // figure the two images we are blending between
     double fromTime, toTime;
     double blend;
 
-    if(args.fieldToRender == OFX::eFieldNone) {
+    if (fieldToRender == OFX::eFieldNone) {
         // unfielded, easy peasy
         fromTime = floor(sourceTime);
         toTime = fromTime + 1;
@@ -167,6 +151,36 @@ RetimerPlugin::setupAndProcess(OFX::ImageBlenderBase &processor, const OFX::Rend
             blend    = (frac - 0.5) * 2.0;
         }
     }
+    *fromTimep = fromTime;
+    *toTimep = toTime;
+    *blendp = blend;
+}
+
+/* set up and run a processor */
+void
+RetimerPlugin::setupAndProcess(OFX::ImageBlenderBase &processor, const OFX::RenderArguments &args)
+{
+    // get a dst image
+    std::auto_ptr<OFX::Image>  dst(dstClip_->fetchImage(args.time));
+    OFX::BitDepthEnum          dstBitDepth    = dst->getPixelDepth();
+    OFX::PixelComponentEnum    dstComponents  = dst->getPixelComponents();
+  
+    // figure the frame we should be retiming from
+    double sourceTime;
+    
+    if(getContext() == OFX::eContextRetimer) {
+        // the host is specifying it, so fetch it from the kOfxImageEffectRetimerParamName pseudo-param
+        sourceTime = sourceTime_->getValueAtTime(args.time);
+    }
+    else {
+        // we have our own param, which is a speed, so we integrate it to get the time we want
+        sourceTime = speed_->integrate(0, args.time);
+    }
+
+    // figure the two images we are blending between
+    double fromTime, toTime;
+    double blend;
+    framesNeeded(sourceTime, args.fieldToRender, &fromTime, &toTime, &blend);
 
     // fetch the two source images
     std::auto_ptr<OFX::Image> fromImg(srcClip_->fetchImage(fromTime));
@@ -189,6 +203,21 @@ RetimerPlugin::setupAndProcess(OFX::ImageBlenderBase &processor, const OFX::Rend
 
     // Call the base class process member, this will call the derived templated process code
     processor.process();
+}
+
+void
+RetimerPlugin::getFramesNeeded(const OFX::FramesNeededArguments &args,
+                OFX::FramesNeededSetter &frames)
+{
+    // figure the two images we are blending between
+    double fromTime, toTime;
+    double blend;
+    // whatever the rendered field is, the frames are the same
+    framesNeeded(args.time, OFX::eFieldNone, &fromTime, &toTime, &blend);
+    OfxRangeD range;
+    range.min = fromTime;
+    range.max = toTime;
+    frames.setFramesNeeded(*srcClip_, range);
 }
 
 /* override the time domain action, only for the general context */
@@ -241,6 +270,8 @@ RetimerPlugin::render(const OFX::RenderArguments &args)
             setupAndProcess(fred, args);
         }
         break;
+        default :
+            OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
         }
     }
     else {
@@ -262,6 +293,8 @@ RetimerPlugin::render(const OFX::RenderArguments &args)
             setupAndProcess(fred, args);
         }                          
         break;
+        default :
+            OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
         }
     } // switch
 }
@@ -275,7 +308,7 @@ namespace OFX
   {
     void getPluginIDs(OFX::PluginFactoryArray &ids)
     {
-      static RetimerExamplePluginFactory p("net.sf.openfx:retimer", 1, 0);
+      static RetimerExamplePluginFactory p("net.sf.openfx.retimer", 1, 0);
       ids.push_back(&p);
     }
   };
@@ -320,26 +353,27 @@ void RetimerExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 void RetimerExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context) 
 {
   // we are a transition, so define the sourceTo input clip
-  ClipDescriptor *toClip = desc.defineClip("Source");
-  toClip->addSupportedComponent(ePixelComponentRGBA);
-  toClip->addSupportedComponent(ePixelComponentAlpha);
-  toClip->setTemporalClipAccess(true); // say we will be doing random time access on this clip
-  toClip->setSupportsTiles(true);
-  toClip->setFieldExtraction(eFieldExtractDoubled); // which is the default anyway
+  ClipDescriptor *srcClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
+  srcClip->addSupportedComponent(ePixelComponentRGBA);
+  srcClip->addSupportedComponent(ePixelComponentAlpha);
+  srcClip->setTemporalClipAccess(true); // say we will be doing random time access on this clip
+  srcClip->setSupportsTiles(true);
+  srcClip->setFieldExtraction(eFieldExtractDoubled); // which is the default anyway
 
   // create the mandated output clip
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
-  toClip->setFieldExtraction(eFieldExtractDoubled); // which is the default anyway
+  dstClip->setFieldExtraction(eFieldExtractDoubled); // which is the default anyway
   dstClip->setSupportsTiles(true);
 
   // what param we have is dependant on the host
   if(context == OFX::eContextRetimer) {
-    // Define the mandated "SourceTime" param, note that we don't do anything with this other than.
+    // Define the mandated kOfxImageEffectRetimerParamName param, note that we don't do anything with this other than.
     // describe it. It is not a true param but how the host indicates to the plug-in which frame
     // it wants you to retime to. It appears on no plug-in side UI, it is purely the host's to manage.
-    DoubleParamDescriptor *param = desc.defineDoubleParam("SourceTime");
+    DoubleParamDescriptor *param = desc.defineDoubleParam(kOfxImageEffectRetimerParamName);
+    (void)param;
   }
   else {
     // We are a general or filter context, define a speed param and a page of controls to put that in
@@ -360,7 +394,7 @@ void RetimerExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &
     // add our speed param into it
     page->addChild(*param);
 
-    // If we are a general context, we can changed the duration of the effect, so have a param to do that
+    // If we are a general context, we can change the duration of the effect, so have a param to do that
     // We need a separate param as it is impossible to derive this from a speed param and the input clip
     // duration (the speed may be animating or wired to an expression).
     if(context == OFX::eContextGeneral) {
@@ -383,7 +417,7 @@ void RetimerExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &
 }
 
 /** @brief The create instance function, the plugin must return an object derived from the \ref OFX::ImageEffect class */
-ImageEffect* RetimerExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum context)
+ImageEffect* RetimerExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum /*context*/)
 {
   return new RetimerPlugin(handle);
 }
