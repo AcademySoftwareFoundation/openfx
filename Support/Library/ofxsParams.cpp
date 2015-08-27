@@ -36,7 +36,9 @@ England
 
 /** @brief This file contains code that skins the ofx param suite */
 
-#include "./ofxsSupportPrivate.h"
+#include <cstring>
+#include "ofxsSupportPrivate.h"
+#include "ofxParametricParam.h"
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {  
@@ -67,16 +69,19 @@ namespace OFX {
     case eGroupParam : return kOfxParamTypeGroup ;
     case ePageParam : return kOfxParamTypePage ;
     case ePushButtonParam : return kOfxParamTypePushButton ;
+    case eParametricParam : return kOfxParamTypeParametric ;
     default: assert(false);
     }
     return kOfxParamTypeInteger;
   }
 
+  static
   bool isEqual(const char* t1, const char* t2)
   {
     return strcmp(t1, t2)==0;
   }
 
+  static
   ParamTypeEnum mapParamTypeStringToEnum(const char * v)
   {
     if(isEqual(kOfxParamTypeString,v)) 
@@ -109,6 +114,8 @@ namespace OFX {
       return ePageParam ;
     else if(isEqual(kOfxParamTypePushButton,v))
       return ePushButtonParam ;
+    else if(isEqual(kOfxParamTypeParametric,v))
+      return eParametricParam ;
     else
       assert(false);
     return ePushButtonParam ;
@@ -132,11 +139,18 @@ namespace OFX {
   {
   }
 
+  /** @brief set the label property */
+  void 
+    ParamDescriptor::setLabel(const std::string &label)
+  {
+    _paramProps.propSetString(kOfxPropLabel, label);
+  }
+
   /** @brief set the label properties */
   void 
     ParamDescriptor::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
   {
-    _paramProps.propSetString(kOfxPropLabel, label);
+    setLabel(label);
     _paramProps.propSetString(kOfxPropShortLabel, shortLabel, false);
     _paramProps.propSetString(kOfxPropLongLabel, longLabel, false);
   }
@@ -162,7 +176,7 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropSecret, v);
   }
 
-  /** @brief set the secretness of the param, defaults to false */
+  /** @brief set the if the param is enabled, defaults to true */
   void 
     ParamDescriptor::setEnabled(bool v)
   {
@@ -176,6 +190,25 @@ namespace OFX {
     _paramProps.propSetString(kOfxParamPropParent, v.getName());
   }
 
+  /** @brief set the icon file name (SVG or PNG) */
+  void 
+    ParamDescriptor::setIcon(const std::string &v, bool pngFormat)
+  {
+    _paramProps.propSetString(kOfxPropIcon, v, (int)pngFormat, false); // introduced in OFX 1.2
+  }
+    
+  bool
+  ParamDescriptor::getHostHasNativeOverlayHandle() const
+  {
+    bool v = _paramProps.propGetInt(kOfxParamPropHasHostOverlayHandle, 0, false) != 0; // OFX 1.2
+    return v;
+  }
+    
+  void
+  ParamDescriptor::setUseHostNativeOverlayHandle(bool use)
+  {
+    _paramProps.propSetInt(kOfxParamPropUseHostOverlayHandle, use, 0, false); // OFX 1.2
+  }
 
   ////////////////////////////////////////////////////////////////////////////////
   // the base class for all params that can hold a value
@@ -314,8 +347,8 @@ namespace OFX {
 
   void Int2DParamDescriptor::setDimensionLabels(const std::string& x, const std::string& y)
   {
-    _paramProps.propSetString(kOfxParamPropDimensionLabel, x, 0);
-    _paramProps.propSetString(kOfxParamPropDimensionLabel, y, 1);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, x, 0, false);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, y, 1, false);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -364,9 +397,9 @@ namespace OFX {
 
   void Int3DParamDescriptor::setDimensionLabels(const std::string& x, const std::string& y, const std::string& z)
   {
-    _paramProps.propSetString(kOfxParamPropDimensionLabel, x, 0);
-    _paramProps.propSetString(kOfxParamPropDimensionLabel, y, 1);
-    _paramProps.propSetString(kOfxParamPropDimensionLabel, z, 2);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, x, 0, false);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, y, 1, false);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, z, 2, false);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -398,6 +431,25 @@ namespace OFX {
     case eDoubleTypeAbsoluteTime :
       _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeAbsoluteTime);
       break;
+    case eDoubleTypeX :
+      _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeX);
+      break;
+    case eDoubleTypeXAbsolute :
+      _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeXAbsolute);
+      break;
+    case eDoubleTypeY :
+      _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeY);
+      break;
+    case eDoubleTypeYAbsolute :
+      _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeYAbsolute);
+      break;
+    case eDoubleTypeXY :
+      _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeXY);
+      break;
+    case eDoubleTypeXYAbsolute :
+      _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeXYAbsolute);
+      break;
+#ifdef kOfxParamDoubleTypeNormalisedX
     case eDoubleTypeNormalisedX :
       _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeNormalisedX);
       break;
@@ -416,6 +468,25 @@ namespace OFX {
     case eDoubleTypeNormalisedXYAbsolute :
       _paramProps.propSetString(kOfxParamPropDoubleType, kOfxParamDoubleTypeNormalisedXYAbsolute);
       break;
+#endif
+    }
+  }
+
+  /** @brief set the type of coordinate system for default values */
+  void BaseDoubleParamDescriptor::setDefaultCoordinateSystem(DefaultCoordinateSystemEnum v)
+  {
+    try {
+      // this property was introduced with OpenFX 1.2
+      switch(v)
+      {
+      case eCoordinatesCanonical :
+        _paramProps.propSetString(kOfxParamPropDefaultCoordinateSystem, kOfxParamCoordinatesCanonical);
+        break;
+      case eCoordinatesNormalised :
+        _paramProps.propSetString(kOfxParamPropDefaultCoordinateSystem, kOfxParamCoordinatesNormalised);
+        break;
+      }
+    } catch (std::exception&) {
     }
   }
 
@@ -508,6 +579,12 @@ namespace OFX {
     _paramProps.propSetString(kOfxParamPropDimensionLabel, y, 1);
   }
 
+  /** @brief set kOfxParamPropUseHostOverlayHandle */
+  void Double2DParamDescriptor::setUseHostOverlayHandle(bool v)
+  {
+    _paramProps.propSetInt(kOfxParamPropUseHostOverlayHandle, v);
+  }
+
   ////////////////////////////////////////////////////////////////////////////////
   // 3D double param descriptor
 
@@ -526,7 +603,7 @@ namespace OFX {
     _paramProps.propSetDouble(kOfxParamPropDefault, z, 2);
   }
 
-  /** @brief set the hard min/max range, default is DOUBLE_MIN, DOUBLE_MAX */
+  /** @brief set the hard min/max range, default is -DBL_MAX, DBL_MAX */
   void 
     Double3DParamDescriptor::setRange(double xmin, double ymin, double zmin,
     double xmax, double ymax, double zmax)
@@ -576,6 +653,39 @@ namespace OFX {
     _paramProps.propSetDouble(kOfxParamPropDefault, b, 2);
   }
 
+  /** @brief set the hard min/max range, default is 0., 1. */
+  void 
+    RGBParamDescriptor::setRange(double rmin, double gmin, double bmin,
+    double rmax, double gmax, double bmax)
+  {
+    _paramProps.propSetDouble(kOfxParamPropMin, rmin, 0);
+    _paramProps.propSetDouble(kOfxParamPropMin, gmin, 1);
+    _paramProps.propSetDouble(kOfxParamPropMin, bmin, 2);
+    _paramProps.propSetDouble(kOfxParamPropMax, rmax, 0);
+    _paramProps.propSetDouble(kOfxParamPropMax, gmax, 1);
+    _paramProps.propSetDouble(kOfxParamPropMax, bmax, 2);
+  }
+
+  /** @brief set the display min and max, default is to be the same as the range param */
+  void 
+    RGBParamDescriptor::setDisplayRange(double rmin, double gmin, double bmin,
+    double rmax, double gmax, double bmax)
+  {
+    _paramProps.propSetDouble(kOfxParamPropDisplayMin, rmin, 0);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMin, gmin, 1);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMin, bmin, 2);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMax, rmax, 0);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMax, gmax, 1);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMax, bmax, 2);
+  }
+
+  void RGBParamDescriptor::setDimensionLabels(const std::string& r, const std::string& g, const std::string& b)
+  {
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, r, 0);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, g, 1);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, b, 2);
+  }
+
   ////////////////////////////////////////////////////////////////////////////////
   // RGBA param descriptor
 
@@ -592,6 +702,45 @@ namespace OFX {
     _paramProps.propSetDouble(kOfxParamPropDefault, g, 1);
     _paramProps.propSetDouble(kOfxParamPropDefault, b, 2);
     _paramProps.propSetDouble(kOfxParamPropDefault, a, 3);
+  }
+
+
+  /** @brief set the hard min/max range, default is 0., 1. */
+  void 
+    RGBAParamDescriptor::setRange(double rmin, double gmin, double bmin, double amin,
+    double rmax, double gmax, double bmax, double amax)
+  {
+    _paramProps.propSetDouble(kOfxParamPropMin, rmin, 0);
+    _paramProps.propSetDouble(kOfxParamPropMin, gmin, 1);
+    _paramProps.propSetDouble(kOfxParamPropMin, bmin, 2);
+    _paramProps.propSetDouble(kOfxParamPropMin, amin, 3);
+    _paramProps.propSetDouble(kOfxParamPropMax, rmax, 0);
+    _paramProps.propSetDouble(kOfxParamPropMax, gmax, 1);
+    _paramProps.propSetDouble(kOfxParamPropMax, bmax, 2);
+    _paramProps.propSetDouble(kOfxParamPropMax, amax, 3);
+  }
+
+  /** @brief set the display min and max, default is to be the same as the range param */
+  void 
+    RGBAParamDescriptor::setDisplayRange(double rmin, double gmin, double bmin, double amin,
+    double rmax, double gmax, double bmax, double amax)
+  {
+    _paramProps.propSetDouble(kOfxParamPropDisplayMin, rmin, 0);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMin, gmin, 1);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMin, bmin, 2);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMin, amin, 3);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMax, rmax, 0);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMax, gmax, 1);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMax, bmax, 2);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMax, amax, 3);
+  }
+
+  void RGBAParamDescriptor::setDimensionLabels(const std::string& r, const std::string& g, const std::string& b, const std::string& a)
+  {
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, r, 0);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, g, 1);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, b, 2);
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, a, 3);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -632,10 +781,25 @@ namespace OFX {
   }
 
   /** @brief set the default value */
-  void ChoiceParamDescriptor::appendOption(const std::string &v)
+  void ChoiceParamDescriptor::appendOption(const std::string &v, const std::string& label)
   {
     int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
     _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
+    if(!label.empty()) {
+      {
+        // If the kOfxParamPropChoiceLabelOption doesn't exist, we put that information into the Hint.
+        // It's better than nothing...
+        std::string hint = _paramProps.propGetString(kOfxParamPropHint);
+        if(!hint.empty()) {
+          hint += "\n";
+          if( nCurrentValues == 0 ) {
+            hint += "\n";
+          }
+        }
+        hint += v + ": " + label;
+        _paramProps.propSetString(kOfxParamPropHint, hint);
+      }
+    }
   }
 
   /** @brief set the default value */
@@ -679,6 +843,9 @@ namespace OFX {
     case eStringTypeLabel :
       _paramProps.propSetString(kOfxParamPropStringMode,  kOfxParamStringIsLabel);
       break;
+    case eStringTypeRichTextFormat :
+      _paramProps.propSetString(kOfxParamPropStringMode,  kOfxParamStringIsRichTextFormat);
+      break;
     }
   }
 
@@ -703,6 +870,11 @@ namespace OFX {
     _paramProps.propSetString(kOfxParamPropDefault, v);
   }
 
+  void CustomParamDescriptor::setCustomInterpolation(bool v)
+  {
+    _paramProps.propSetPointer(kOfxParamPropCustomInterpCallbackV1, v ? (void*)OFX::Private::customParamInterpolationV1Entry : NULL);
+  }
+
   ////////////////////////////////////////////////////////////////////////////////
   // group param descriptor
 
@@ -712,12 +884,18 @@ namespace OFX {
   {
   }
 
+  /** @brief whether the initial state of a group is open or closed in a hierarchical layout, defaults to true */
+  void GroupParamDescriptor::setOpen(const bool v)
+  {
+    _paramProps.propSetInt(kOfxParamPropGroupOpen, v, false); // introduced in OFX 1.2
+  }
+
   ////////////////////////////////////////////////////////////////////////////////
   // page param descriptor
 
   /** @brief hidden constructor */
   PageParamDescriptor::PageParamDescriptor(const std::string &name, OfxPropertySetHandle props)
-    : ParamDescriptor(name, eGroupParam, props)
+    : ParamDescriptor(name, ePageParam, props)
   {
   }
 
@@ -737,6 +915,71 @@ namespace OFX {
   {
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  // parametric param descriptor
+
+  /** @brief hidden constructor */
+  ParametricParamDescriptor::ParametricParamDescriptor(const std::string &name, OfxPropertySetHandle props)
+    : ParamDescriptor(name, eParametricParam, props)
+    , _ofxParamHandle(0)
+    , _paramSet(0)
+  {
+  }
+
+  void ParametricParamDescriptor::setParamSet(ParamSetDescriptor& paramSet)
+  {
+    _paramSet = &paramSet;
+    OFX::Private::gParamSuite->paramGetHandle(_paramSet->getParamSetHandle(), getName().c_str(), &_ofxParamHandle, 0);
+  }
+
+  void ParametricParamDescriptor::setRange(const double min, const double max)
+  {
+    _paramProps.propSetDouble(kOfxParamPropParametricRange, min, 0);
+    _paramProps.propSetDouble(kOfxParamPropParametricRange, max, 1);
+  }
+
+  void ParametricParamDescriptor::setDimension(const int dimension)
+  {
+    _paramProps.propSetInt(kOfxParamPropParametricDimension, dimension);
+  }
+
+  void ParametricParamDescriptor::setDimensionLabel(const std::string& label, const int id)
+  {
+    _paramProps.propSetString(kOfxParamPropDimensionLabel, label, id);
+  }
+
+  void ParametricParamDescriptor::setUIColour(const int id, const OfxRGBColourD& color)
+  {
+    _paramProps.propSetDouble(kOfxParamPropParametricUIColour, color.r, id*3 + 0);
+    _paramProps.propSetDouble(kOfxParamPropParametricUIColour, color.g, id*3 + 1);
+    _paramProps.propSetDouble(kOfxParamPropParametricUIColour, color.b, id*3 + 2);
+  }
+
+  void ParametricParamDescriptor::addControlPoint(const int id, const OfxTime time, const double x, const double y, const bool addKey)
+  {
+    OFX::Private::gParametricParameterSuite->parametricParamAddControlPoint(_ofxParamHandle, id, time, x, y, addKey);
+  }
+
+  void ParametricParamDescriptor::setIdentity(const int id)
+  {
+    addControlPoint(id, 0, 0, 0, false);
+    addControlPoint(id, 0, 1, 1, false);
+  }
+    
+  void ParametricParamDescriptor::setIdentity()
+  {
+    const int nbCurves = _paramProps.propGetInt(kOfxParamPropParametricDimension);
+    for(int i = 0; i < nbCurves; ++i) {
+      setIdentity(i);
+    }
+  }
+    
+  void ParametricParamDescriptor::setInteractDescriptor(ParamInteractDescriptor* desc)
+  {
+    _interact.reset(desc);
+    _paramProps.propSetPointer(kOfxParamPropParametricInteractBackground, (void*)desc->getMainEntry());
+    desc->setParamName(getName());
+  }
 
   ////////////////////////////////////////////////////////////////////////////////
   // Descriptor for a set of parameters
@@ -928,6 +1171,17 @@ namespace OFX {
     return param;
   }
 
+  /** @brief Define a parametric param */
+  ParametricParamDescriptor* ParamSetDescriptor::defineParametricParam(const std::string &name)
+  {
+    ParametricParamDescriptor* param = NULL;
+    if (defineParamDescriptor(name, eParametricParam, param)) {
+      // Parametric parameters need the ParamSet !
+      param->setParamSet(*this);
+    }
+    return param;
+  }
+
   /** @brief Define a custom param */
   CustomParamDescriptor *ParamSetDescriptor::defineCustomParam(const std::string &name)
   {
@@ -966,10 +1220,16 @@ namespace OFX {
     return _paramName;
   }
 
-  /** @brief, set the label properties in a plugin */
-  void Param::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
+  /** @brief, set the label properties in a param */
+  void Param::setLabel(const std::string &label)
   {
     _paramProps.propSetString(kOfxPropLabel, label);
+  }
+
+  /** @brief, set the label properties in a param */
+  void Param::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
+  {
+    setLabel(label);
     _paramProps.propSetString(kOfxPropShortLabel, shortLabel, false);
     _paramProps.propSetString(kOfxPropLongLabel, longLabel, false);
   }
@@ -992,10 +1252,22 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropEnabled, v);
   }
 
+  /** @brief set the private data pointer */
+  void Param::setDataPtr(void* ptr)
+  {
+    _paramProps.propSetPointer(kOfxParamPropDataPtr, ptr);
+  }
+
+  /** @brief fetch the label */
+  void Param::getLabel(std::string &label) const
+  {
+    label      = _paramProps.propGetString(kOfxPropLabel);
+  }
+
   /** @brief fetch the labels */
   void Param::getLabels(std::string &label, std::string &shortLabel, std::string &longLabel) const
   {
-    label      = _paramProps.propGetString(kOfxPropLabel);
+    getLabel(label);
     shortLabel = _paramProps.propGetString(kOfxPropShortLabel, false);
     longLabel  = _paramProps.propGetString(kOfxPropLongLabel, false);
   }
@@ -1012,6 +1284,12 @@ namespace OFX {
   {
     bool v = _paramProps.propGetInt(kOfxParamPropEnabled) != 0;
     return v;
+  }
+
+  /** @brief get the private data pointer */
+  void* Param::getDataPtr(void) const
+  {
+    return   _paramProps.propGetPointer(kOfxParamPropDataPtr);
   }
 
   /** @brief get the param hint */
@@ -1034,6 +1312,19 @@ namespace OFX {
     std::string v  = _paramProps.propGetString(kOfxParamPropParent);
     if(v == "") return NULL;
     return _paramSet->fetchGroupParam(v);
+  }
+
+  /** @brief get the icon file name (SVG or PNG) */
+  std::string Param::getIcon(bool pngFormat) const
+  {
+    std::string v  = _paramProps.propGetString(kOfxPropIcon, (int)pngFormat, false); // OFX 1.2
+    return v;
+  }
+    
+  bool Param::getHostHasNativeOverlayHandle() const
+  {
+    bool v = _paramProps.propGetInt(kOfxParamPropHasHostOverlayHandle, 0, false) != 0; // OFX 1.2
+    return v;
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -1064,14 +1355,14 @@ namespace OFX {
     return _paramProps.propGetInt(kOfxParamPropIsAnimating) != 0;
   }
 
-  /** @brief is the param animating */
+  /** @brief is the param auto keing */
   bool 
     ValueParam::getIsAutoKeying(void) const
   {
     return _paramProps.propGetInt(kOfxParamPropIsAutoKeying) != 0;
   }
 
-  /** @brief is the param animating */
+  /** @brief is the param persistant */
   bool 
     ValueParam::getIsPersistant(void) const
   {
@@ -1162,6 +1453,14 @@ namespace OFX {
     throwSuiteStatusException(stat); 
   }
 
+  /** @brief copy parameter from another, including any animation etc... */
+  void ValueParam::copyFrom(const ValueParam& from, OfxTime dstOffset, const OfxRangeD *frameRange)
+  {
+    if(!OFX::Private::gParamSuite->paramCopy) throwHostMissingSuiteException("paramCopy");
+    OfxStatus stat = OFX::Private::gParamSuite->paramCopy(_paramHandle, from._paramHandle, dstOffset, frameRange);
+    throwSuiteStatusException(stat);
+  }
+
   ////////////////////////////////////////////////////////////////////////////////
   // Wraps up an integer param */
 
@@ -1191,7 +1490,7 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropDisplayMax, max);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void IntParam::getDefault(int &v)
   {    
     v = _paramProps.propGetInt(kOfxParamPropDefault);
@@ -1365,7 +1664,7 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropMin, zmin, 2);
     _paramProps.propSetInt(kOfxParamPropMax, xmax, 0);
     _paramProps.propSetInt(kOfxParamPropMax, ymax, 1);
-    _paramProps.propSetInt(kOfxParamPropMin, zmax, 2);
+    _paramProps.propSetInt(kOfxParamPropMax, zmax, 2);
   }
 
   /** @brief set the display min and max, default is to be the same as the range param */
@@ -1381,7 +1680,7 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropDisplayMax, zmax, 2);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void Int3DParam::getDefault(int &x, int &y, int &z)
   {    
     x = _paramProps.propGetInt(kOfxParamPropDefault, 0);
@@ -1466,19 +1765,19 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropDigits, v);
   }
 
-  /** @brief set the sensitivity of any gui slider */
+  /** @brief get the sensitivity of any gui slider */
   void BaseDoubleParam::getIncrement(double &v)
   {
     v = _paramProps.propGetDouble(kOfxParamPropIncrement);
   }
 
-  /** @brief set the number of digits printed after a decimal point in any gui */
+  /** @brief get the number of digits printed after a decimal point in any gui */
   void BaseDoubleParam::getDigits(int &v)
   {
     v = _paramProps.propGetInt(kOfxParamPropDigits);
   }
 
-  /** @brief set the number of digits printed after a decimal point in any gui */
+  /** @brief get the type of the double param, defaults to eDoubleTypePlain */
   void BaseDoubleParam::getDoubleType(DoubleTypeEnum &v)
   {
     std::string str = _paramProps.propGetString(kOfxParamPropDoubleType);
@@ -1493,6 +1792,19 @@ namespace OFX {
       v = eDoubleTypeTime;
     else if(str == kOfxParamDoubleTypeAbsoluteTime)
       v = eDoubleTypeAbsoluteTime;
+    else if(str == kOfxParamDoubleTypeX)
+      v = eDoubleTypeX;
+    else if(str == kOfxParamDoubleTypeXAbsolute)
+      v = eDoubleTypeXAbsolute;
+    else if(str == kOfxParamDoubleTypeY)
+      v = eDoubleTypeY;
+    else if(str == kOfxParamDoubleTypeYAbsolute)
+      v = eDoubleTypeYAbsolute;
+    else if(str == kOfxParamDoubleTypeXY)
+      v = eDoubleTypeXY;
+    else if(str == kOfxParamDoubleTypeXYAbsolute)
+      v = eDoubleTypeXYAbsolute;
+#ifdef kOfxParamDoubleTypeNormalisedX
     else if(str == kOfxParamDoubleTypeNormalisedX)
       v = eDoubleTypeNormalisedX;
     else if(str == kOfxParamDoubleTypeNormalisedY)
@@ -1505,8 +1817,20 @@ namespace OFX {
       v = eDoubleTypeNormalisedXY;
     else if(str == kOfxParamDoubleTypeNormalisedXYAbsolute)
       v = eDoubleTypeNormalisedXYAbsolute;
+#endif
     else
       v = eDoubleTypePlain;
+  }
+
+  /** @brief get the type of coordinate system for default values */
+  void BaseDoubleParam::getDefaultCoordinateSystem(DefaultCoordinateSystemEnum &v)
+  {
+    std::string str = _paramProps.propGetString(kOfxParamPropDefaultCoordinateSystem);
+
+    if(str == kOfxParamCoordinatesNormalised)
+      v = eCoordinatesNormalised;
+    else
+      v = eCoordinatesCanonical;
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -1538,7 +1862,7 @@ namespace OFX {
     _paramProps.propSetDouble(kOfxParamPropDisplayMax, max);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void DoubleParam::getDefault(double &v)
   {    
     v = _paramProps.propGetDouble(kOfxParamPropDefault);
@@ -1641,7 +1965,7 @@ namespace OFX {
     _paramProps.propSetDouble(kOfxParamPropDisplayMax, ymax, 1);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void Double2DParam::getDefault(double &x, double &y)
   {    
     x = _paramProps.propGetDouble(kOfxParamPropDefault, 0);
@@ -1744,7 +2068,7 @@ namespace OFX {
     _paramProps.propSetDouble(kOfxParamPropMin, zmin, 2);
     _paramProps.propSetDouble(kOfxParamPropMax, xmax, 0);
     _paramProps.propSetDouble(kOfxParamPropMax, ymax, 1);
-    _paramProps.propSetDouble(kOfxParamPropMin, zmax, 2);
+    _paramProps.propSetDouble(kOfxParamPropMax, zmax, 2);
   }
 
   /** @brief set the display min and max, default is to be the same as the range param */
@@ -1760,7 +2084,7 @@ namespace OFX {
     _paramProps.propSetDouble(kOfxParamPropDisplayMax, zmax, 2);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void Double3DParam::getDefault(double &x, double &y, double &z)
   {    
     x = _paramProps.propGetDouble(kOfxParamPropDefault, 0);
@@ -1856,7 +2180,7 @@ namespace OFX {
   }
 
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void RGBParam::getDefault(double &r, double &g, double &b)
   {    
     r = _paramProps.propGetDouble(kOfxParamPropDefault, 0);
@@ -1911,7 +2235,7 @@ namespace OFX {
   }
 
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void RGBAParam::getDefault(double &r, double &g, double &b, double &a)
   {    
     r = _paramProps.propGetDouble(kOfxParamPropDefault, 0);
@@ -1964,7 +2288,7 @@ namespace OFX {
     _paramProps.propSetString(kOfxParamPropDefault, v);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void StringParam::getDefault(std::string &v)
   {    
     v = _paramProps.propGetString(kOfxParamPropDefault);
@@ -2002,7 +2326,7 @@ namespace OFX {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, v.c_str());
     throwSuiteStatusException(stat);
   }
-
+    
   ////////////////////////////////////////////////////////////////////////////////
   // Wraps up a Boolean integer param */
 
@@ -2018,7 +2342,7 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropDefault, v);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void BooleanParam::getDefault(bool &v)
   {    
     v = _paramProps.propGetInt(kOfxParamPropDefault) != 0;
@@ -2075,7 +2399,7 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropDefault, v);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void ChoiceParam::getDefault(int &v)
   {    
     v = _paramProps.propGetInt(kOfxParamPropDefault);
@@ -2117,14 +2441,41 @@ namespace OFX {
     return nCurrentValues;
   }
 
-  /** @brief set the default value */
-  void ChoiceParam::appendOption(const std::string &v)
+  /** @brief get the option value */
+  void ChoiceParam::getOption(int ix, std::string &v)
+  {    
+    v = _paramProps.propGetString(kOfxParamPropChoiceOption, ix);
+  }
+
+  /** @brief add another option */
+  void ChoiceParam::appendOption(const std::string &v, const std::string& label)
   {
     int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
     _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
+    if(!label.empty()) {
+      {
+        // If the kOfxParamPropChoiceLabelOption doesn't exist, we put that information into the Hint.
+        // It's better than nothing...
+        std::string hint = _paramProps.propGetString(kOfxParamPropHint);
+        if(!hint.empty()) {
+          hint += "\n";
+          if( nCurrentValues == 0 ) {
+            hint += "\n";
+          }
+        }
+        hint += v + ": " + label;
+        _paramProps.propSetString(kOfxParamPropHint, hint);
+      }
+    }
   }
 
-  /** @brief set the default value */
+  /** @brief set the string of a specific option */
+  void ChoiceParam::setOption(int item, const std::string &str)
+  {
+    _paramProps.propSetString(kOfxParamPropChoiceOption, str, item);
+  }
+
+  /** @brief set to the default value */
   void ChoiceParam::resetOptions(void)
   {
     _paramProps.propReset(kOfxParamPropChoiceOption);
@@ -2145,7 +2496,7 @@ namespace OFX {
     _paramProps.propSetString(kOfxParamPropDefault, v);
   }
 
-  /** @brief het the default value */
+  /** @brief get the default value */
   void CustomParam::getDefault(std::string &v)
   {    
     v = _paramProps.propGetString(kOfxParamPropDefault);
@@ -2176,6 +2527,13 @@ namespace OFX {
     throwSuiteStatusException(stat);
   }
 
+  /** @brief set value */
+  void CustomParam::setValue(const char* str)
+  {
+    OfxStatus stat = OFX::Private::gParamSuite->paramSetValue(_paramHandle, str);
+    throwSuiteStatusException(stat);
+  }
+
   /** @brief set the value at a time, implicitly adds a keyframe */
   void CustomParam::setValueAtTime(double t, const std::string &v)
   {
@@ -2190,6 +2548,13 @@ namespace OFX {
   GroupParam::GroupParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
     : Param(paramSet, name, eGroupParam, handle)
   {
+  }
+
+  /** @brief whether the initial state of a group is open or closed in a hierarchical layout, defaults to true */
+  bool GroupParam::getIsOpen()
+  {
+    bool v = _paramProps.propGetInt(kOfxParamPropGroupOpen) != 0;
+    return v;
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -2208,6 +2573,176 @@ namespace OFX {
   PushButtonParam::PushButtonParam(const ParamSet *paramSet, const std::string &name, OfxParamHandle handle)
     : Param(paramSet, name, ePushButtonParam, handle)
   {
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Wraps up a Parametric param
+
+  /** @brief hidden constructor */
+  ParametricParam::ParametricParam(const ParamSet* paramSet, const std::string &name, OfxParamHandle handle)
+      : Param(paramSet, name, eParametricParam, handle)
+  {}
+
+  /** @brief Evaluates a parametric parameter
+
+      \arg curveIndex            which dimension to evaluate
+      \arg time                  the time to evaluate to the parametric param at
+      \arg parametricPosition    the position to evaluate the parametric param at
+
+      @returns the double value is returned
+  */
+  double ParametricParam::getValue(const int curveIndex,
+                                    const OfxTime time,
+                                    const double parametricPosition)
+  {
+    double returnValue = 0.0;
+    OfxStatus stat = OFX::Private::gParametricParameterSuite->parametricParamGetValue(_paramHandle,
+                                                                                       curveIndex,
+                                                                                       time,
+                                                                                       parametricPosition,
+                                                                                       &returnValue);
+    throwSuiteStatusException(stat);
+    return returnValue;
+  }
+
+  /** @brief Returns the number of control points in the parametric param.
+
+      \arg curveIndex            which dimension to check
+      \arg time                  the time to check
+
+      @returns the integer value is returned
+  */
+  int ParametricParam::getNControlPoints(const int curveIndex,
+                                          const OfxTime time)
+  {
+    int returnValue = 0;
+    OfxStatus stat = OFX::Private::gParametricParameterSuite->parametricParamGetNControlPoints(_paramHandle,
+                                                                                                curveIndex,
+                                                                                                time,
+                                                                                                &returnValue);
+    throwSuiteStatusException(stat);
+    return returnValue;
+  }
+
+  /** @brief Returns the key/value pair of the nth control point.
+
+      \arg curveIndex            which dimension to check
+      \arg time                  the time to check
+      \arg nthCtl                the nth control point to get the value of
+
+      @returns a pair with key and value
+  */
+  std::pair<double, double> ParametricParam::getNthControlPoint(const int curveIndex,
+                                                                const OfxTime time,
+                                                                const int nthCtl)
+  {
+    std::pair<double, double> returnValue;
+    OfxStatus stat = OFX::Private::gParametricParameterSuite->parametricParamGetNthControlPoint(_paramHandle,
+                                                                                                 curveIndex,
+                                                                                                 time,
+                                                                                                 nthCtl,
+                                                                                                 &returnValue.first,
+                                                                                                 &returnValue.second);
+    throwSuiteStatusException(stat);
+    return returnValue;
+  }
+
+  /** @brief Modifies an existing control point on a curve
+
+      \arg curveIndex            which dimension to set
+      \arg time                  the time to set the value at
+      \arg nthCtl                the control point to modify
+      \arg key                   key of the control point
+      \arg value                 value of the control point
+      \arg addAnimationKey       if the param is an animatable, setting this to true will
+      force an animation keyframe to be set as well as a curve key,
+      otherwise if false, a key will only be added if the curve is already
+      animating.
+
+      @returns
+      - ::kOfxStatOK            - all was fine
+      - ::kOfxStatErrBadHandle  - if the paramter handle was invalid
+      - ::kOfxStatErrUnknown    - if the type is unknown
+
+      This modifies an existing control point. Note that by changing key, the order of the
+      control point may be modified (as you may move it before or after anther point). So be
+      careful when iterating over a curves control points and you change a key.
+  */
+  void ParametricParam::setNthControlPoints(const int curveIndex,
+                                             const OfxTime time,
+                                             const int nthCtl,
+                                             const double key,
+                                             const double value,
+                                             const bool addAnimationKey)
+  {
+    OfxStatus stat = OFX::Private::gParametricParameterSuite->parametricParamSetNthControlPoint(_paramHandle,
+                                                                                                 curveIndex,
+                                                                                                 time,
+                                                                                                 nthCtl,
+                                                                                                 key,
+                                                                                                 value,
+                                                                                                 addAnimationKey);
+    throwSuiteStatusException(stat);
+  }
+
+  void ParametricParam::setNthControlPoints(const int curveIndex,
+                                             const OfxTime time,
+                                             const int nthCtl,
+                                             const std::pair<double, double> ctrlPoint,
+                                             const bool addAnimationKey)
+  {
+    setNthControlPoints(curveIndex,
+                         time,
+                         nthCtl,
+                         ctrlPoint.first,
+                         ctrlPoint.second,
+                         addAnimationKey);
+  }
+
+  /** @brief Adds a control point to the curve.
+
+      \arg curveIndex            which dimension to set
+      \arg time                  the time to set the value at
+      \arg key                   key of the control point
+      \arg value                 value of the control point
+      \arg addAnimationKey       if the param is an animatable, setting this to true will
+      force an animation keyframe to be set as well as a curve key,
+      otherwise if false, a key will only be added if the curve is already
+      animating.
+
+      This will add a new control point to the given dimension of a parametric parameter. If a key exists
+      sufficiently close to 'key', then it will be set to the indicated control point.
+  */
+  void ParametricParam::addControlPoint(const int curveIndex,
+                                         const OfxTime time,
+                                         const double key,
+                                         const double value,
+                                         const bool addAnimationKey)
+  {
+    OfxStatus stat = OFX::Private::gParametricParameterSuite->parametricParamAddControlPoint(_paramHandle, curveIndex, time, key, value, addAnimationKey);
+    throwSuiteStatusException(stat);
+  }
+
+  /** @brief Deletes the nth control point from a parametric param.
+
+      \arg curveIndex            which dimension to delete
+      \arg nthCtl                the control point to delete
+  */
+  void ParametricParam::deleteControlPoint(const int curveIndex,
+                                            const int nthCtl)
+  {
+    OfxStatus stat = OFX::Private::gParametricParameterSuite->parametricParamDeleteControlPoint(_paramHandle, curveIndex, nthCtl);
+    throwSuiteStatusException(stat);
+  }
+
+  /** @brief Delete all curve control points on the given param.
+
+      \arg curveIndex            which dimension to clear
+  */
+  void ParametricParam::deleteControlPoint(const int curveIndex)
+  {
+    OfxStatus stat = OFX::Private::gParametricParameterSuite->parametricParamDeleteAllControlPoints(_paramHandle, curveIndex);
+    throwSuiteStatusException(stat);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -2393,6 +2928,12 @@ namespace OFX {
         fetchParam(name, t, ptr);
         return ptr;
       }
+    case eParametricParam : 
+      {
+        ParametricParam* ptr = 0;
+        fetchParam(name, t, ptr);
+        return ptr;
+      }
     default:
       assert(false);
     }
@@ -2533,16 +3074,26 @@ namespace OFX {
     return param;
   }
 
+  /** @brief Fetch a parametric param */
+  ParametricParam *ParamSet::fetchParametricParam(const std::string &name) const
+  {
+    ParametricParam *param = NULL;
+    fetchParam(name, eParametricParam, param);
+    return param;
+  }
+
   /// open an undoblock
   void ParamSet::beginEditBlock(const std::string &name)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramEditBegin(_paramSetHandle, name.c_str());
+    (void)stat;
   }
 
   /// close an undoblock
   void ParamSet::endEditBlock()
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramEditEnd(_paramSetHandle);
+    (void)stat;
   }
 
 };

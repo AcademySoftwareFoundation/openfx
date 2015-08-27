@@ -50,12 +50,16 @@ each represent the actions that can be carried out on those particular OFX objec
 
  */
 
+#include <memory>
 #include "ofxsCore.h"
 
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
-  CLASS &operator=(const CLASS &v1) {assert(false); return *this;}	\
-  CLASS(const CLASS &v) {assert(false); } 
+  CLASS &operator=(const CLASS &) {assert(false); return *this;}	\
+  CLASS(const CLASS &) {assert(false); } 
+#define mDeclareProtectedAssignAndCCBase(CLASS,BASE) \
+  CLASS &operator=(const CLASS &) {assert(false); return *this;}	\
+  CLASS(const CLASS &c) : BASE(c) {assert(false); }
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries.
  */
@@ -119,7 +123,9 @@ namespace OFX {
                         eCustomParam,
                         eGroupParam,
                         ePageParam,
-                        ePushButtonParam};
+                        ePushButtonParam,
+                        eParametricParam,
+                        };
 
     /** @brief Enumerates the different types of cache invalidation */
     enum CacheInvalidationEnum {eCacheInvalidateValueChange,
@@ -137,22 +143,37 @@ namespace OFX {
         eStringTypeMultiLine,
         eStringTypeFilePath,
         eStringTypeDirectoryPath,
-        eStringTypeLabel
+        eStringTypeLabel,
+        eStringTypeRichTextFormat
     };
 
     /** @brief Enumerates the differing types of double params */
     enum DoubleTypeEnum {
-        eDoubleTypePlain,
-        eDoubleTypeAngle,
-        eDoubleTypeScale,
-        eDoubleTypeTime,
-        eDoubleTypeAbsoluteTime,
-        eDoubleTypeNormalisedX,
-        eDoubleTypeNormalisedY,
-        eDoubleTypeNormalisedXAbsolute,
-        eDoubleTypeNormalisedYAbsolute,
-        eDoubleTypeNormalisedXY,
-        eDoubleTypeNormalisedXYAbsolute    
+        eDoubleTypePlain, //!< parameter has no special interpretation
+        eDoubleTypeAngle, //!< parameter is to be interpretted as an angle
+        eDoubleTypeScale, //!< parameter is to be interpretted as a scale factor
+        eDoubleTypeTime, //!< parameter represents a time value (1D only)
+        eDoubleTypeAbsoluteTime, //!< parameter represents an absolute time value (1D only),
+        eDoubleTypeX, //!< a size in the X dimension dimension (1D only), new for 1.2
+        eDoubleTypeXAbsolute, //!< a position in the X dimension (1D only), new for 1.2
+        eDoubleTypeY, //!< a size in the Y dimension dimension (1D only), new for 1.2
+        eDoubleTypeYAbsolute, //!< a position in the X dimension (1D only), new for 1.2
+        eDoubleTypeXY, //!< a size in the X and Y dimension (2D only), new for 1.2
+        eDoubleTypeXYAbsolute, //!< a position in the X and Y dimension (2D only), new for 1.2
+#ifdef kOfxParamDoubleTypeNormalisedX
+        eDoubleTypeNormalisedX, //!< normalised size with respect to the project's X dimension (1D only), deprecated for 1.2
+        eDoubleTypeNormalisedY, //!< normalised absolute position on the X axis (1D only), deprecated for 1.2
+        eDoubleTypeNormalisedXAbsolute, //!< normalised size wrt to the project's Y dimension (1D only), deprecated for 1.2
+        eDoubleTypeNormalisedYAbsolute, //!< normalised absolute position on the Y axis (1D only), deprecated for 1.2
+        eDoubleTypeNormalisedXY, //!< normalised to the project's X and Y size (2D only), deprecated for 1.2
+        eDoubleTypeNormalisedXYAbsolute, //!< normalised to the projects X and Y size, and is an absolute position on the image plane, deprecated for 1.2
+#endif
+    };
+
+    /** @brief Enumerates the differing types of coordinate system for default values */
+    enum DefaultCoordinateSystemEnum {
+        eCoordinatesCanonical, //!< canonical coordinate system
+        eCoordinatesNormalised, //!< normalized coordinate system
     };
 
     /** @brief turns a ParamTypeEnum into the char * that raw OFX uses */
@@ -191,7 +212,10 @@ namespace OFX {
       }
 
 
-        /** @brief set the label properties in a plugin */
+        /** @brief set the label property in a param */
+        void setLabel(const std::string &label);
+
+        /** @brief set the label properties in a param */
         void setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel);
 
         /** @brief set the param hint */
@@ -205,9 +229,16 @@ namespace OFX {
 
         /** @brief set the group param that is the parent of this one, default is to be ungrouped at the root level */
         void setParent(const GroupParamDescriptor &v);
-    
+
+        /** @brief set the icon file name (SVG or PNG) */
+        void setIcon(const std::string &v, bool pngFormat);
+
         /** @brief whether the param is enabled, defaults to true */
         void setEnabled(bool v);
+
+        bool getHostHasNativeOverlayHandle() const;
+        
+        void setUseHostNativeOverlayHandle(bool use);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -224,7 +255,7 @@ namespace OFX {
     /** @brief Wraps up a value holding param */
     class ValueParamDescriptor : public ParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(ValueParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(ValueParamDescriptor,ParamDescriptor);
         ValueParamDescriptor(void) {assert(false);}
 
     protected :
@@ -259,7 +290,7 @@ namespace OFX {
     /** @brief Wraps up a string param */
     class StringParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(StringParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(StringParamDescriptor,ValueParamDescriptor);
         StringParamDescriptor(void) {assert(false);}
 
     protected :
@@ -276,14 +307,14 @@ namespace OFX {
         void setStringType(StringTypeEnum v);
 
         /** @brief if the string param is a file path, say that we are picking an existing file, rather than posibly specifying a new one, defaults to true */
-        void setFilePathExists(bool v);    
+        void setFilePathExists(bool v);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up an integer param */
     class IntParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(IntParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(IntParamDescriptor,ValueParamDescriptor);
         IntParamDescriptor(void) {assert(false);}
 
     protected :
@@ -307,7 +338,7 @@ namespace OFX {
     /** @brief Wraps up an 2d integer param */
     class Int2DParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(Int2DParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(Int2DParamDescriptor,ValueParamDescriptor);
         Int2DParamDescriptor(void) {assert(false);}
 
     protected :
@@ -337,7 +368,7 @@ namespace OFX {
     /** @brief Wraps up an 3d integer param */
     class Int3DParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(Int3DParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(Int3DParamDescriptor,ValueParamDescriptor);
         Int3DParamDescriptor(void) {assert(false);}
 
     protected :
@@ -368,7 +399,7 @@ namespace OFX {
     /** @brief Common base to all double param types */
     class BaseDoubleParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(BaseDoubleParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(BaseDoubleParamDescriptor,ValueParamDescriptor);
         BaseDoubleParamDescriptor(void) {assert(false);}
 
     protected :
@@ -379,6 +410,9 @@ namespace OFX {
     public :
         /** @brief set the type of the double param, defaults to eDoubleTypePlain */
         void setDoubleType(DoubleTypeEnum v);
+
+        /** @brief set the type of coordinate system for default values */
+        void setDefaultCoordinateSystem(DefaultCoordinateSystemEnum v);
 
         /** @brief set the sensitivity of any gui slider */
         void setIncrement(double v);
@@ -391,7 +425,7 @@ namespace OFX {
     /** @brief Wraps up a double param */
     class DoubleParamDescriptor : public BaseDoubleParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(DoubleParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(DoubleParamDescriptor,BaseDoubleParamDescriptor);
         DoubleParamDescriptor(void) {assert(false);}
 
     protected :
@@ -418,7 +452,7 @@ namespace OFX {
     /** @brief Wraps up a 2D double param */
     class Double2DParamDescriptor : public BaseDoubleParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(Double2DParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(Double2DParamDescriptor,BaseDoubleParamDescriptor);
         Double2DParamDescriptor(void) {assert(false);}
 
     protected :
@@ -431,6 +465,9 @@ namespace OFX {
         /** @brief set the dimension labels */
         void setDimensionLabels(const std::string &x,
                                 const std::string &y);
+
+        /** @brief set kOfxParamPropUseHostOverlayHandle */
+        void setUseHostOverlayHandle(bool v);
 
         /** @brief set the default value, default is 0 */
         void setDefault(double x, double y);
@@ -448,7 +485,7 @@ namespace OFX {
     /** @brief Wraps up a 3D double param */
     class Double3DParamDescriptor : public BaseDoubleParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(Double3DParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(Double3DParamDescriptor,BaseDoubleParamDescriptor);
         Double3DParamDescriptor(void) {assert(false);}
 
     protected :
@@ -466,7 +503,7 @@ namespace OFX {
         /** @brief set the default value, default is 0 */
         void setDefault(double x, double y, double z);
 
-        /** @brief set the hard min/max range, default is INT_MIN, INT_MAX */
+        /** @brief set the hard min/max range, default is -DBL_MAX, DBL_MAX */
         void setRange(double minX, double minY, double minZ,
                       double maxX, double maxY, double maxZ);
 
@@ -479,7 +516,7 @@ namespace OFX {
     /** @brief Wraps up an RGB colour param */
     class RGBParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(RGBParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(RGBParamDescriptor,ValueParamDescriptor);
         RGBParamDescriptor(void) {assert(false);}
 
     protected :
@@ -489,15 +526,28 @@ namespace OFX {
         // so it can make one
         friend class ParamSetDescriptor;
     public :
+        /** @brief set the dimension labels */
+        void setDimensionLabels(const std::string &r,
+                                const std::string &g,
+                                const std::string &b);
+
         /** @brief set the default value */
         void setDefault(double r, double g, double b);
+
+        /** @brief set the hard min/max range, default is 0., 1. */
+        void setRange(double minR, double minG, double minB,
+                      double maxR, double maxG, double maxB);
+
+        /** @brief set the display min and max, default is to be the same as the range param */
+        void setDisplayRange(double minR, double minG, double minB,
+                            double maxR, double maxG, double maxB);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up an RGBA colour param */
     class RGBAParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(RGBAParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(RGBAParamDescriptor,ValueParamDescriptor);
         RGBAParamDescriptor(void) {assert(false);}
 
     protected :
@@ -507,15 +557,29 @@ namespace OFX {
         // so it can make one
         friend class ParamSetDescriptor;
     public :
+        /** @brief set the dimension labels */
+        void setDimensionLabels(const std::string &r,
+                                const std::string &g,
+                                const std::string &b,
+                                const std::string &a);
+
         /** @brief set the default value */
         void setDefault(double r, double g, double b, double a);
+
+        /** @brief set the hard min/max range, default is 0., 1. */
+        void setRange(double minR, double minG, double minB, double minA,
+                      double maxR, double maxG, double maxB, double maxA);
+
+        /** @brief set the display min and max, default is to be the same as the range param */
+        void setDisplayRange(double minR, double minG, double minB, double minA,
+                            double maxR, double maxG, double maxB, double maxA);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up a boolean param */
     class BooleanParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(BooleanParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(BooleanParamDescriptor,ValueParamDescriptor);
         BooleanParamDescriptor(void) {assert(false);}
 
     protected :
@@ -533,7 +597,7 @@ namespace OFX {
     /** @brief Wraps up a choice param */
     class ChoiceParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(ChoiceParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(ChoiceParamDescriptor,ValueParamDescriptor);
         ChoiceParamDescriptor(void) {assert(false);}
 
     protected :
@@ -547,7 +611,7 @@ namespace OFX {
         void setDefault(int v);
 
         /** @brief append an option, default is to have not there */
-        void appendOption(const std::string &v);
+        void appendOption(const std::string &v, const std::string& label = "");
     
         /** @brief how many options do we have */
         int getNOptions(void);
@@ -560,7 +624,7 @@ namespace OFX {
     /** @brief Wraps up a group param, not much to it really */
     class GroupParamDescriptor : public ParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(GroupParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(GroupParamDescriptor,ParamDescriptor);
         GroupParamDescriptor(void) {assert(false);}
 
     protected :
@@ -570,13 +634,15 @@ namespace OFX {
         // so it can make one
         friend class ParamSetDescriptor;
     public :
+        /** @brief whether the initial state of a group is open or closed in a hierarchical layout, defaults to false */
+        void setOpen(const bool v);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up a page param, not much to it really */
     class PageParamDescriptor : public ParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(PageParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(PageParamDescriptor,ParamDescriptor);
         PageParamDescriptor(void) {assert(false);}
 
     protected :
@@ -601,7 +667,7 @@ namespace OFX {
     /** @brief Wraps up a push button param, not much to it at all */
     class PushButtonParamDescriptor : public ParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(PushButtonParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(PushButtonParamDescriptor,ParamDescriptor);
         PushButtonParamDescriptor(void) {assert(false);}
 
     protected :
@@ -614,10 +680,49 @@ namespace OFX {
     };
 
     ////////////////////////////////////////////////////////////////////////////////
+    /** @brief Wraps up a push button param, not much to it at all */
+    class ParametricParamDescriptor : public ParamDescriptor
+    {
+    protected:
+        mDeclareProtectedAssignAndCCBase(ParametricParamDescriptor,ParamDescriptor);
+        ParametricParamDescriptor(void) {assert(false);}
+
+    protected:
+        /** @brief hidden constructor */
+        ParametricParamDescriptor(const std::string& name, OfxPropertySetHandle props);
+
+        OfxParamHandle _ofxParamHandle;
+        ParamSetDescriptor* _paramSet;
+        std::auto_ptr<ParamInteractDescriptor> _interact;
+
+        // so it can make one
+        friend class ParamSetDescriptor;
+        void setParamSet( ParamSetDescriptor& paramSet );
+
+    public:
+        void setDimension( const int dimension );
+
+        void setRange( const double min, const double max );
+
+        void setDimensionLabel( const std::string& label, const int id );
+
+        void setUIColour( const int id, const OfxRGBColourD& color );
+
+        void addControlPoint( const int id, const OfxTime time, const double x, const double y, const bool addKey );
+        
+        void setIdentity( const int id );
+        
+        void setIdentity();
+        
+        void setInteractDescriptor( ParamInteractDescriptor* desc );
+        
+    };
+
+    ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up a custom param, haven't added animation support yet */
     class CustomParamDescriptor : public ValueParamDescriptor {
     protected :
-        mDeclareProtectedAssignAndCC(CustomParamDescriptor);
+        mDeclareProtectedAssignAndCCBase(CustomParamDescriptor,ValueParamDescriptor);
         CustomParamDescriptor(void) {assert(false);}
 
     protected :
@@ -629,6 +734,8 @@ namespace OFX {
     public :
         /** @brief set the default value of the param */
         void setDefault(const std::string &v);    
+
+        void setCustomInterpolation(bool v);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -689,6 +796,11 @@ namespace OFX {
         ParamDescriptor *findPreviouslyDefinedParam(const std::string &name);
 
     public :
+        OfxParamSetHandle getParamSetHandle()
+        {
+            return _paramSetHandle;
+        }
+
         virtual ~ParamSetDescriptor();
         /** @brief tries to fetch a ParamDescriptor, returns 0 if it isn't there*/
         ParamDescriptor* getParamDescriptor(const std::string& name) const;
@@ -738,6 +850,9 @@ namespace OFX {
         /** @brief Define a push button param */
         PushButtonParamDescriptor *definePushButtonParam(const std::string &name);
 
+        /** @brief Define a parametric param */
+        ParametricParamDescriptor* defineParametricParam(const std::string &name);
+
         /** @brief Define a custom param */
         CustomParamDescriptor *defineCustomParam(const std::string &name);
     };
@@ -747,16 +862,16 @@ namespace OFX {
     class Param {
     protected :
         // don't ever use these!
-        Param &operator=(const Param &v1) {assert(false); return *this;} 
+        Param &operator=(const Param &/*v1*/) {assert(false); return *this;}
         Param(const Param &v) : _paramSet(v._paramSet) {assert(false); } 
         Param(void) {assert(false);}
     
     protected :
+        const ParamSet      *_paramSet; // who do I belong to
         std::string    _paramName;
         ParamTypeEnum  _paramType;
         PropertySet    _paramProps;
         OfxParamHandle _paramHandle;
-        const ParamSet      *_paramSet; // who do I belong to
 
         /** @brief hidden constructor */
         Param(const ParamSet *paramSet, const std::string &name, ParamTypeEnum type, OfxParamHandle handle);
@@ -769,7 +884,10 @@ namespace OFX {
         /** @brief get name */
         const std::string &getName(void) const;
     
-        /** @brief, set the label properties in a plugin */
+        /** @brief, set the label property in a param */
+        void setLabel(const std::string &label);
+
+        /** @brief, set the label properties in a param */
         void setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel);
 
         /** @brief return the derived type of this parameter */
@@ -784,15 +902,24 @@ namespace OFX {
         /** @brief whether the param is enabled */
         void setEnabled(bool v);
 
+        /** @brief set the param data ptr */
+        void setDataPtr(void* ptr);
+
+        /** @brief fetch the label */
+        void getLabel(std::string &label) const;
+
         /** @brief fetch the labels */
         void getLabels(std::string &label, std::string &shortLabel, std::string &longLabel) const;
-    
+
         /** @brief get whether the param is secret */
         bool getIsSecret(void) const;
 
         /** @brief whether the param is enabled */
         bool getIsEnable(void) const;
     
+        /** @brief get the param data ptr */
+        void* getDataPtr(void) const;
+
         /** @brief get the param hint */
         std::string getHint(void) const;
 
@@ -801,13 +928,19 @@ namespace OFX {
 
         /** @brief get the group param that is the parent of this one */
         GroupParam *getParent(void) const;
+
+        /** @brief get the icon file name (SVG or PNG) */
+        std::string getIcon(bool pngFormat) const;
+        
+        bool getHostHasNativeOverlayHandle() const;
+        
     };
   
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up a value holding param */
     class ValueParam : public Param {
     protected :
-        mDeclareProtectedAssignAndCC(ValueParam);
+        mDeclareProtectedAssignAndCCBase(ValueParam,Param);
         ValueParam(void) {assert(false);}
     protected :
         /** @brief hidden constructor */
@@ -851,13 +984,16 @@ namespace OFX {
 
         /** @brief delete all the keys */
         void deleteAllKeys(void);
+
+        /** @brief copy parameter from another, including any animation etc... */
+        void copyFrom(const ValueParam& from, OfxTime dstOffset, const OfxRangeD *frameRange);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up an integer param */
     class IntParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(IntParam);
+        mDeclareProtectedAssignAndCCBase(IntParam,ValueParam);
         IntParam(void) {assert(false);}
 
     protected :
@@ -875,10 +1011,10 @@ namespace OFX {
         /** @brief set the display min and max, default is to be the same as the range param */
         void setDisplayRange(int min, int max);
 
-        /** @brief het the default value */
+        /** @brief get the default value */
         void getDefault(int &v);
 
-        /** @brief het the default value */
+        /** @brief get the default value */
         int getDefault(void) {int v; getDefault(v); return v;}
 
         /** @brief set the hard min/max range, default is INT_MIN, INT_MAX */
@@ -910,7 +1046,7 @@ namespace OFX {
     /** @brief Wraps up an integer param */
     class Int2DParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(Int2DParam);
+        mDeclareProtectedAssignAndCCBase(Int2DParam,ValueParam);
         Int2DParam(void) {assert(false);}
 
     protected :
@@ -933,7 +1069,7 @@ namespace OFX {
         void setDisplayRange(int minX, int minY,
                             int maxX, int maxY);
 
-        /** @brief het the default value */
+        /** @brief get the default value */
         void getDefault(int &x, int &y);
 
         /** @brief get the default value */
@@ -976,7 +1112,7 @@ namespace OFX {
     /** @brief Wraps up an integer param */
     class Int3DParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(Int3DParam);
+        mDeclareProtectedAssignAndCCBase(Int3DParam,ValueParam);
         Int3DParam(void) {assert(false);}
 
     protected :
@@ -996,7 +1132,7 @@ namespace OFX {
         void setDisplayRange(int minX, int minY, int minZ,
                             int maxX, int maxY, int maxZ);
 
-        /** @brief het the default value */
+        /** @brief get the default value */
         void getDefault(int &x, int &y, int &z);
 
         /** @brief set the hard min/max range, default is INT_MIN, INT_MAX */
@@ -1024,7 +1160,7 @@ namespace OFX {
     /** @brief Common base to all double param types */
     class BaseDoubleParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(BaseDoubleParam);
+        mDeclareProtectedAssignAndCCBase(BaseDoubleParam,ValueParam);
         BaseDoubleParam(void) {assert(false);}
 
     protected :
@@ -1047,13 +1183,16 @@ namespace OFX {
 
         /** @brief get the type of the double param */
         void getDoubleType(DoubleTypeEnum &v);
+
+        /** @brief get the type of coordinate system for default values */
+        void getDefaultCoordinateSystem(DefaultCoordinateSystemEnum &v);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up an doubleeger param */
     class DoubleParam : public BaseDoubleParam {
     protected :
-        mDeclareProtectedAssignAndCC(DoubleParam);
+        mDeclareProtectedAssignAndCCBase(DoubleParam,BaseDoubleParam);
         DoubleParam(void) {assert(false);}
 
     protected :
@@ -1074,10 +1213,10 @@ namespace OFX {
         /** @brief set the display min and max, default is to be the same as the range param */
         void setDisplayRange(double min, double max);
 
-        /** @brief het the default value */
+        /** @brief get the default value */
         void getDefault(double &v);
 
-        /** @brief het the default value */
+        /** @brief get the default value */
         double getDefault(void) {double v; getDefault(v); return v;}
 
         /** @brief set the hard min/max range, default is DOUBLE_MIN, DOUBLE_MAX */
@@ -1121,7 +1260,7 @@ namespace OFX {
     /** @brief Wraps up an doubleeger param */
     class Double2DParam : public BaseDoubleParam {
     protected :
-        mDeclareProtectedAssignAndCC(Double2DParam);
+        mDeclareProtectedAssignAndCCBase(Double2DParam,BaseDoubleParam);
         Double2DParam(void) {assert(false);}
 
     protected :
@@ -1141,7 +1280,7 @@ namespace OFX {
         void setDisplayRange(double minX, double minY,
                             double maxX, double maxY);
 
-        /** @brief het the default value */
+        /** @brief get the default value */
         void getDefault(double &x, double &y);
 
         /** @brief set the hard min/max range, default is DOUBLE_MIN, DOUBLE_MAX */
@@ -1181,7 +1320,7 @@ namespace OFX {
     /** @brief Wraps up an doubleeger param */
     class Double3DParam : public BaseDoubleParam {
     protected :
-        mDeclareProtectedAssignAndCC(Double3DParam);
+        mDeclareProtectedAssignAndCCBase(Double3DParam,BaseDoubleParam);
         Double3DParam(void) {assert(false);}
 
     protected :
@@ -1201,7 +1340,7 @@ namespace OFX {
         void setDisplayRange(double minX, double minY, double minZ,
                             double maxX, double maxY, double maxZ);
 
-        /** @brief het the default value */
+        /** @brief get the default value */
         void getDefault(double &x, double &y, double &z);
 
         /** @brief set the hard min/max range, default is DOUBLE_MIN, DOUBLE_MAX */
@@ -1241,7 +1380,7 @@ namespace OFX {
     /** @brief Wraps up an RGB param */
     class RGBParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(RGBParam);
+        mDeclareProtectedAssignAndCCBase(RGBParam,ValueParam);
         RGBParam(void) {assert(false);}
 
     protected :
@@ -1274,7 +1413,7 @@ namespace OFX {
     /** @brief Wraps up an RGB param */
     class RGBAParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(RGBAParam);
+        mDeclareProtectedAssignAndCCBase(RGBAParam,ValueParam);
         RGBAParam(void) {assert(false);}
 
     protected :
@@ -1306,7 +1445,7 @@ namespace OFX {
     /** @brief Wraps up a string param */
     class StringParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(StringParam);
+        mDeclareProtectedAssignAndCCBase(StringParam,ValueParam);
         StringParam(void) {assert(false);}
 
     protected :
@@ -1339,7 +1478,7 @@ namespace OFX {
     /** @brief Wraps up a choice param */
     class ChoiceParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(ChoiceParam);
+        mDeclareProtectedAssignAndCCBase(ChoiceParam,ValueParam);
         ChoiceParam(void) {assert(false);}
 
     protected :
@@ -1359,8 +1498,14 @@ namespace OFX {
         int getNOptions(void);
 
         /** @brief append an option, default is to have not there */
-        void appendOption(const std::string &v);
+        void appendOption(const std::string &v, const std::string& label = "");
     
+        /** @brief set an option */
+        void setOption(int item, const std::string &str);
+    
+        /** @brief get the option value */
+        void getOption(int ix, std::string &v);
+
         /** @brief clear all the options so as to add some new ones in */
         void resetOptions(void);
 
@@ -1381,7 +1526,7 @@ namespace OFX {
     /** @brief Wraps up a boolean param */
     class BooleanParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(BooleanParam);
+        mDeclareProtectedAssignAndCCBase(BooleanParam,ValueParam);
         BooleanParam(void) {assert(false);}
 
     protected :
@@ -1423,7 +1568,7 @@ namespace OFX {
     /** @brief Wraps up a group param */
     class GroupParam : public Param {
     protected :
-        mDeclareProtectedAssignAndCC(GroupParam);
+        mDeclareProtectedAssignAndCCBase(GroupParam,Param);
         GroupParam(void) {assert(false);}
 
     protected :
@@ -1433,13 +1578,15 @@ namespace OFX {
         // so it can make one
         friend class ParamSet;
     public :
+        /** @brief whether the initial state of a group is open or closed in a hierarchical layout, defaults to true */
+        bool getIsOpen();
     };
 
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up a group param */
     class PageParam : public Param {
     protected :
-        mDeclareProtectedAssignAndCC(PageParam);
+        mDeclareProtectedAssignAndCCBase(PageParam,Param);
         PageParam(void) {assert(false);}
 
     protected :
@@ -1455,7 +1602,7 @@ namespace OFX {
     /** @brief Wraps up a custom param, not animation support yet */
     class CustomParam : public ValueParam {
     protected :
-        mDeclareProtectedAssignAndCC(CustomParam);
+        mDeclareProtectedAssignAndCCBase(CustomParam,ValueParam);
         CustomParam(void) {assert(false);}
 
     protected :
@@ -1480,6 +1627,9 @@ namespace OFX {
         /** @brief set value */
         void setValue(const std::string &v);
 
+        /** @brief set value */
+        void setValue(const char* str);
+
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, const std::string &v);
     };
@@ -1488,7 +1638,7 @@ namespace OFX {
     /** @brief Wraps up a push button param, not much to it at all */
     class PushButtonParam : public Param {
     protected :
-        mDeclareProtectedAssignAndCC(PushButtonParam);
+        mDeclareProtectedAssignAndCCBase(PushButtonParam,Param);
         PushButtonParam(void) {assert(false);}
 
     protected :
@@ -1498,6 +1648,50 @@ namespace OFX {
         // so it can make one
         friend class ParamSet;
     public :
+    };
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /** @brief Wraps up a parametric param */
+    class ParametricParam : public Param {
+    private:
+        mDeclareProtectedAssignAndCCBase(ParametricParam,Param);
+        ParametricParam(void) {assert( false);}
+
+    protected:
+        /** @brief hidden constructor */
+        ParametricParam(const ParamSet* paramSet, const std::string& name, OfxParamHandle handle);
+
+        // so it can make one
+        friend class ParamSet;
+
+    public:
+        double getValue(const int curveIndex,
+                        const OfxTime time,
+                        const double parametricPosition);
+        int getNControlPoints(const int curveIndex,
+                              const OfxTime time);
+        std::pair<double, double> getNthControlPoint(const int curveIndex,
+                                                     const OfxTime time,
+                                                     const int nthCtl);
+        void setNthControlPoints(const int curveIndex,
+                                 const OfxTime time,
+                                 const int nthCtl,
+                                 const double key,
+                                 const double value,
+                                 const bool addAnimationKey);
+        void setNthControlPoints(const int curveIndex,
+                                 const OfxTime time,
+                                 const int nthCtl,
+                                 const std::pair<double, double> ctrlPoint,
+                                 const bool addAnimationKey);
+        void addControlPoint(const int curveIndex,
+                             const OfxTime time,
+                             const double key,
+                             const double value,
+                             const bool addAnimationKey);
+        void deleteControlPoint(const int curveIndex,
+                                const int nthCtl);
+        void deleteControlPoint(const int curveIndex);
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -1521,7 +1715,6 @@ namespace OFX {
 
         /** @brief calls the raw OFX routine to define a param */
         void fetchRawParam(const std::string &name, ParamTypeEnum paramType, OfxParamHandle &handle) const;
-
 
         /** @brief Fetch a param of the given name and type */
         template <class T> void
@@ -1548,6 +1741,15 @@ namespace OFX {
                 // add it to our map of described ones
                 _fetchedParams[name] = paramPtr;
             }
+        }
+
+    protected:
+        // the following function should be specialized for each param type T
+        // (see example below with T = CameraParam)
+        template<class T> void
+        fetchAttribute(OfxImageEffectHandle /*pluginHandle*/, const std::string& /*name*/, T * &/*paramPtr*/) const
+        {
+            assert(false);
         }
 
     protected :
@@ -1614,11 +1816,14 @@ namespace OFX {
 
         /** @brief Fetch a custom param */
         CustomParam *fetchCustomParam(const std::string &name) const;
-    };
 
+        /** @brief Fetch a parametric param */
+        ParametricParam* fetchParametricParam(const std::string &name) const;
+    };
 };
 
 // undeclare the protected assign and CC macro
 #undef mDeclareProtectedAssignAndCC
+#undef mDeclareProtectedAssignAndCCBase
 
 #endif
