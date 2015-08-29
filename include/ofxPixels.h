@@ -78,7 +78,7 @@ typedef struct OfxRGBColourF {
 
 /** @brief Defines a double precision floating point component RGB pixel */
 typedef struct OfxRGBColourD {
-  double r, g, b, a;
+  double r, g, b;
 }OfxRGBColourD;
 
 #ifdef __cplusplus
