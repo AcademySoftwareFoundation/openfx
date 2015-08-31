@@ -123,8 +123,10 @@ typedef struct OfxProgressSuiteV2 {
 
       \arg \e effectInstance - the instance of the plugin this progress bar is
                                associated with. It cannot be NULL.
-      \arg \e label          - a text label to display in any message portion of the
+      \arg \e message        - a text label to display in any message portion of the
                                progress object's user interface. A UTF8 string.
+      \arg \e messageid      - ID of the message; this can be looked up for
+                               internationalization.  New in V2 of this suite.
 
       \returns
       - ::kOfxStatOK - the handle is now valid for use
