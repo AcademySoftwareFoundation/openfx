@@ -81,7 +81,10 @@ namespace OFX {
     extern OfxMessageSuiteV2     *gMessageSuiteV2;
 
     /** @brief Pointer to the optional progress suite */
-    extern OfxProgressSuiteV1     *gProgressSuite;
+    extern OfxProgressSuiteV1     *gProgressSuiteV1;
+
+    /** @brief Pointer to the optional progress suite */
+    extern OfxProgressSuiteV2     *gProgressSuiteV2;
 
     /** @brief Pointer to the optional timeline suite */
     extern OfxTimeLineSuiteV1     *gTimeLineSuite;

@@ -1610,11 +1610,7 @@ namespace OFX {
 #endif
 
     /// Start doing progress.
-    void progressStart(const std::string &message);
-
-#ifdef OFX_EXTENSIONS_VEGAS
-    void progressStart(const std::string &id, const std::string &message);
-#endif
+    void progressStart(const std::string &message, const std::string &messageid = "");
 
     /// finish yer progress
     void progressEnd();

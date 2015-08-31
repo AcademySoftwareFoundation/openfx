@@ -44,7 +44,7 @@ namespace OFX {
         virtual ~ProgressI() {}
 
         /// Start doing progress. 
-        virtual void progressStart(const std::string &message) = 0;
+        virtual void progressStart(const std::string &message, const std::string &messageid) = 0;
 
         /// finish yer progress
         virtual void progressEnd() = 0;

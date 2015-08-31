@@ -200,7 +200,7 @@ namespace MyHost {
   }
 
   /// Start doing progress. 
-  void  MyEffectInstance::progressStart(const std::string &message)
+  void  MyEffectInstance::progressStart(const std::string &message, const std::string &messageid)
   {
   }
   
