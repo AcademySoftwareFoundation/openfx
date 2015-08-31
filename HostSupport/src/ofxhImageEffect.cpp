@@ -2442,13 +2442,26 @@ namespace OFX {
       // Progress suite functions
 
       /// begin progressing
-      static OfxStatus ProgressStart(void *effectInstance,
-                              const char *label)
+      static OfxStatus ProgressStartV1(void *effectInstance,
+                                       const char *label)
       {
         if (!effectInstance)
           return kOfxStatErrBadHandle;
         Instance *me = reinterpret_cast<Instance *>(effectInstance);
-        me->progressStart(label);
+        me->progressStart(label, "");
+        return kOfxStatOK;
+      }
+      
+
+      /// begin progressing
+      static OfxStatus ProgressStart(void *effectInstance,
+                                     const char *message,
+                                     const char *messageid)
+      {
+        if (!effectInstance)
+          return kOfxStatErrBadHandle;
+        Instance *me = reinterpret_cast<Instance *>(effectInstance);
+        me->progressStart(message, messageid);
         return kOfxStatOK;
       }
       
@@ -2473,7 +2486,13 @@ namespace OFX {
       }
 
       /// our progress suite
-      struct OfxProgressSuiteV1 gProgressSuite = {
+      struct OfxProgressSuiteV1 gProgressSuiteV1 = {
+        ProgressStartV1,
+        ProgressUpdate,
+        ProgressEnd
+      };
+
+      struct OfxProgressSuiteV2 gProgressSuiteV2 = {
         ProgressStart,
         ProgressUpdate,
         ProgressEnd
@@ -2761,7 +2780,9 @@ namespace OFX {
         }
         else if (strcmp(suiteName, kOfxProgressSuite)==0) {
           if(suiteVersion==1) 
-            return (void*)&gProgressSuite;
+            return (void*)&gProgressSuiteV1;
+          else if(suiteVersion==2)
+            return (void*)&gProgressSuiteV2;
           else
             return 0;
         }

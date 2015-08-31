@@ -152,8 +152,9 @@ namespace OFX {
     OfxMultiThreadSuiteV1 *gThreadSuite = 0;
     OfxMessageSuiteV1     *gMessageSuite = 0;
     OfxMessageSuiteV2     *gMessageSuiteV2 = 0;
-    OfxProgressSuiteV1     *gProgressSuite = 0;
-    OfxTimeLineSuiteV1     *gTimeLineSuite = 0;
+    OfxProgressSuiteV1    *gProgressSuiteV1 = 0;
+    OfxProgressSuiteV2    *gProgressSuiteV2 = 0;
+    OfxTimeLineSuiteV1    *gTimeLineSuite = 0;
     OfxParametricParameterSuiteV1 *gParametricParameterSuite = 0;
 #ifdef OFX_SUPPORTS_OPENGLRENDER
     OfxImageEffectOpenGLRenderSuiteV1 *gOpenGLRenderSuite = 0;
@@ -1557,19 +1558,27 @@ namespace OFX {
   }
 
   /// Start doing progress. 
-  void ImageEffect::progressStart(const std::string &message)
+  void ImageEffect::progressStart(const std::string &message, const std::string &messageid)
   {
-    if(OFX::Private::gProgressSuite) {
-      OfxStatus stat = OFX::Private::gProgressSuite->progressStart((void *) _effectHandle, message.c_str());
+    if(OFX::Private::gProgressSuiteV2) {
+      OfxStatus stat = OFX::Private::gProgressSuiteV2->progressStart((void *) _effectHandle, message.c_str(), messageid.c_str());
+      _progressStartSuccess = ( stat == kOfxStatOK );
+    } else if(OFX::Private::gProgressSuiteV1) {
+      OfxStatus stat = OFX::Private::gProgressSuiteV1->progressStart((void *) _effectHandle, message.c_str());
       _progressStartSuccess = ( stat == kOfxStatOK );
     }
+
   }
 
   /// finish yer progress
   void ImageEffect::progressEnd()
   {
-    if(OFX::Private::gProgressSuite && _progressStartSuccess) {
-      OFX::Private::gProgressSuite->progressEnd((void *) _effectHandle);
+    if(_progressStartSuccess) {
+      if(OFX::Private::gProgressSuiteV2) {
+        OFX::Private::gProgressSuiteV2->progressEnd((void *) _effectHandle);
+      } else if(OFX::Private::gProgressSuiteV1) {
+        OFX::Private::gProgressSuiteV1->progressEnd((void *) _effectHandle);
+      }
     }
   }
 
@@ -1577,10 +1586,16 @@ namespace OFX {
   /// false if you should abandon processing, true to continue
   bool ImageEffect::progressUpdate(double t)
   {
-    if(OFX::Private::gProgressSuite && _progressStartSuccess) {
-      OfxStatus stat = OFX::Private::gProgressSuite->progressUpdate((void *) _effectHandle, t);
-      if(stat == kOfxStatReplyNo)
-        return false;
+    if(_progressStartSuccess) {
+      if(OFX::Private::gProgressSuiteV2) {
+        OfxStatus stat = OFX::Private::gProgressSuiteV2->progressUpdate((void *) _effectHandle, t);
+        if(stat == kOfxStatReplyNo)
+          return false;
+      } else if(OFX::Private::gProgressSuiteV1) {
+        OfxStatus stat = OFX::Private::gProgressSuiteV1->progressUpdate((void *) _effectHandle, t);
+        if(stat == kOfxStatReplyNo)
+          return false;
+      }
     }
     return true;
   }
@@ -1915,7 +1930,8 @@ namespace OFX {
         gThreadSuite    = (OfxMultiThreadSuiteV1 *) fetchSuite(kOfxMultiThreadSuite, 1);
         gMessageSuite   = (OfxMessageSuiteV1 *)     fetchSuite(kOfxMessageSuite, 1);
         gMessageSuiteV2 = (OfxMessageSuiteV2 *)     fetchSuite(kOfxMessageSuite, 2, true);
-        gProgressSuite   = (OfxProgressSuiteV1 *)     fetchSuite(kOfxProgressSuite, 1, true);
+        gProgressSuiteV1 = (OfxProgressSuiteV1 *)     fetchSuite(kOfxProgressSuite, 1, true);
+        gProgressSuiteV2 = (OfxProgressSuiteV2 *)     fetchSuite(kOfxProgressSuite, 2, true);
         gTimeLineSuite   = (OfxTimeLineSuiteV1 *)     fetchSuite(kOfxTimeLineSuite, 1, true);
         gParametricParameterSuite = (OfxParametricParameterSuiteV1*) fetchSuite(kOfxParametricParameterSuite, 1, true);
 #ifdef OFX_SUPPORTS_OPENGLRENDER
@@ -1927,7 +1943,7 @@ namespace OFX {
 
         /// and set some dendent flags
         OFX::gHostDescription.supportsMessageSuiteV2 = gMessageSuiteV2 != NULL;
-        OFX::gHostDescription.supportsProgressSuite = gProgressSuite != NULL;
+        OFX::gHostDescription.supportsProgressSuite = (gProgressSuiteV1 != NULL || gProgressSuiteV2 != NULL);
         OFX::gHostDescription.supportsTimeLineSuite = gTimeLineSuite != NULL;
 
         // fetch the interact suite if the host supports interaction

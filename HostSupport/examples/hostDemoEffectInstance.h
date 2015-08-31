@@ -140,7 +140,7 @@ namespace MyHost {
     // overridden for Progress::ProgressI
     
     /// Start doing progress. 
-    virtual void progressStart(const std::string &message);
+    virtual void progressStart(const std::string &message, const std::string &messageid);
     
     /// finish yer progress
     virtual void progressEnd();
