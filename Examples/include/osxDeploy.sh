@@ -1,18 +1,46 @@
 #!/bin/bash
 
+# Software License :
+#
+# Copyright (c) 2003-2015, The Open Effects Association Ltd. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+#     * Redistributions of source code must retain the above copyright notice,
+#       this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above copyright notice,
+#       this list of conditions and the following disclaimer in the documentation
+#       and/or other materials provided with the distribution.
+#     * Neither the name The Open Effects Association Ltd, nor the names of its 
+#       contributors may be used to endorse or promote products derived from this
+#       software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+# ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
 # Package all local libraries into an application or plugin bundle on OSX
-
+#
 # Author: Frederic Devernay <frederic.devernay@m4x.org>
-
+#
 # This script copies the .so, .la and .xml files needed to redistribute a mac application 
 # This file is strongly inspired from the osx-app.sh script from the Inkscape source code
-
+#
 # In the XCode project, the "Runtime search paths" of your binaries should be set to
 # "@loader_path/../Frameworks @loader_path/../Libraries" so that it finds libraries
 # and frameworks at runtime.
 # If using a Makefile, you should add the following flags at link time:
 # -Wl,-rpath,@loader_path/../Frameworks -Wl,-rpath,@loader_path/../Libraries
-
+#
 # References:
 # http://www.mikeash.com/pyblog/friday-qa-2009-11-06-linking-and-install-names.html
 # http://www.dribin.org/dave/blog/archives/2009/11/15/rpath/
