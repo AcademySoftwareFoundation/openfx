@@ -47,13 +47,6 @@ England
 */
 namespace OFX {
 
-  /** @brief turns a field string into and enum */
-  FieldEnum mapStrToFieldEnum(const std::string &str)  throw(std::invalid_argument);
-
-  ////////////////////////////////////////////////////////////////////////////////
-  /** @brief map a std::string to a context enum */
-  ContextEnum mapToContextEnum(const std::string &s) throw(std::invalid_argument);
-
   namespace Private {
     /** @brief Pointer to the host */
     extern OfxHost *gHost;
@@ -76,14 +69,20 @@ namespace OFX {
     /** @brief Pointer to the threading suite */
     extern OfxMultiThreadSuiteV1 *gThreadSuite;
 
-    /** @brief Pointer to the message  suite */
+    /** @brief Pointer to the message suite */
     extern OfxMessageSuiteV1     *gMessageSuite;
+
+    /** @brief Pointer to the optional message suite V2 */
+    extern OfxMessageSuiteV2     *gMessageSuiteV2;
 
     /** @brief Pointer to the optional progress suite */
     extern OfxProgressSuiteV1     *gProgressSuite;
 
-    /** @brief Pointer to the optional progress suite */
+    /** @brief Pointer to the optional timeline suite */
     extern OfxTimeLineSuiteV1     *gTimeLineSuite;
+
+    /** @brief Pointer to the parametric parameter suite */
+    extern OfxParametricParameterSuiteV1* gParametricParameterSuite;
 
     /** @brief Support lib function called on an ofx load action */
     void loadAction(void);
@@ -121,12 +120,12 @@ namespace OFX {
       double vDouble;
       void  *vPointer;
 
-      ValueHolder(void) {}
-      ValueHolder(char  *s) : vString(s) {}
-      ValueHolder(const std::string &s) : vString(s) {}
-      ValueHolder(int    i) : vInt(i) {}
-      ValueHolder(double d) : vDouble(d) {}
-      ValueHolder(void  *p) : vPointer(p) {}
+      ValueHolder(void) : vString(), vInt(0), vDouble(0.), vPointer(0) {}
+      ValueHolder(char  *s) : vString(s), vInt(0), vDouble(0.), vPointer(0) {}
+      ValueHolder(const std::string &s) : vString(s), vInt(0), vDouble(0.), vPointer(0) {}
+      ValueHolder(int    i) : vString(), vInt(i), vDouble(0.), vPointer(0) {}
+      ValueHolder(double d) : vString(), vInt(0), vDouble(d), vPointer(0) {}
+      ValueHolder(void  *p) : vString(), vInt(0), vDouble(0.), vPointer(p) {}
 
       ValueHolder &operator = (char *v)  {vString = v; return *this;}
       ValueHolder &operator = (std::string v)  {vString = v; return *this;}
@@ -152,7 +151,7 @@ namespace OFX {
     {
     public :
       /** @brief name of the property */
-      std::string _name;
+      const std::string _name;
 
       /** @brief Was it validated */
       bool _exists;
@@ -168,7 +167,7 @@ namespace OFX {
 
     public :
       /** @brief var args constructor that is use to describe properties */
-      PropertyDescription(char *name, OFX::PropertyTypeEnum ilk, int dimension, ...);
+      PropertyDescription(const char *name, OFX::PropertyTypeEnum ilk, int dimension, ...);
 
       /** @brief Die! Die! Die! */
       virtual ~PropertyDescription(void) {}
@@ -181,7 +180,7 @@ namespace OFX {
     class PropertySetDescription {
     protected :
       /** @brief name of the property set */
-      std::string           _setName;
+      const std::string           _setName;
 
       /** @brief the descriptions of each property */
       std::vector<PropertyDescription *> _descriptions;
@@ -195,7 +194,7 @@ namespace OFX {
       The varargs zero terminated are made from pairs of PropertyDescription * and ints indicating the number of properties pointed to.
       These are to come from static arrays and need not be deleted
       */
-      PropertySetDescription(char *setName, ...);// [PropertyDescription *v, int nSetToThese]
+      PropertySetDescription(const char *setName, ...);// [PropertyDescription *v, int nSetToThese]
 
       /** @brief destructor */
       virtual ~PropertySetDescription();
@@ -228,9 +227,19 @@ namespace OFX {
     void
       validateClipInstanceProperties(PropertySet props);
 
-    /** @brief validates a clip descriptor */
+    /** @brief validates an image or texture instance */
+    void
+      validateImageBaseProperties(PropertySet props);
+
+    /** @brief validates an image instance */
     void
       validateImageProperties(PropertySet props);
+
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    /** @brief validates an OpenGL texture descriptor */
+    void
+      validateTextureProperties(PropertySet props);
+#endif
 
     /** @brief Validates action in/out arguments */
     void

@@ -40,7 +40,7 @@ England
 #endif
 
 #ifdef __APPLE__
-#include <AGL/gl.h>
+#include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif
@@ -86,13 +86,8 @@ public :
   virtual bool penUp(const OFX::PenArgs &args);
   OfxPointD getCanonicalPosition(double time) const
   {
-    OfxPointD offset = _effect->getProjectOffset();
-    OfxPointD size = _effect->getProjectSize();
-    double x,y;
-    _position->getValueAtTime(time, x, y);
     OfxPointD retVal;
-    retVal.x = x * size.x + offset.x;
-    retVal.y = y * size.y + offset.y;
+    _position->getValueAtTime(time, retVal.x, retVal.y);
     return retVal; 
   }
   void setCanonicalPosition(double x, double y, double time)
@@ -286,8 +281,8 @@ protected :
 public :
   GenericTestPlugin(OfxImageEffectHandle handle) : ImageEffect(handle), dstClip_(0), srcClip_(0)
   {
-    dstClip_ = fetchClip("Output");
-    srcClip_ = fetchClip("Source");
+    dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
+    srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
   }
 
   virtual void render(const OFX::RenderArguments &args);
@@ -335,6 +330,8 @@ public :
             Analyser<float, 4, 1> analyse(srcClip_, dbl);
             break;
           }
+        default :
+          OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
         }
       }
       else 
@@ -356,6 +353,8 @@ public :
             Analyser<float, 1, 1> analyse(srcClip_, dbl);
             break;
           }
+        default :
+          OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
         }
       }
     }
@@ -416,6 +415,8 @@ void GenericTestPlugin::render(const OFX::RenderArguments &args)
         setupAndProcess(fred, args);
       }
       break;
+    default :
+      OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   }
   else {
@@ -430,7 +431,7 @@ void GenericTestPlugin::render(const OFX::RenderArguments &args)
 
     case OFX::eBitDepthUShort : 
       {
-        ImageGenericTester<unsigned short, 1, 65536> fred(*this);
+        ImageGenericTester<unsigned short, 1, 65535> fred(*this);
         setupAndProcess(fred, args);
       }                          
       break;
@@ -441,6 +442,8 @@ void GenericTestPlugin::render(const OFX::RenderArguments &args)
         setupAndProcess(fred, args);
       }                          
       break;
+    default :
+      OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   } 
 }
@@ -470,16 +473,16 @@ void GenericTestExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.setOverlayInteractDescriptor( new PositionOverlayDescriptor);
 }
 
-void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context)
+void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum /*context*/)
 {
-  ClipDescriptor *srcClip = desc.defineClip("Source");
+  ClipDescriptor *srcClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
   srcClip->addSupportedComponent(ePixelComponentRGBA);
   srcClip->addSupportedComponent(ePixelComponentAlpha);
   srcClip->setTemporalClipAccess(false);
   srcClip->setSupportsTiles(true);
   srcClip->setIsMask(false);
 
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
   dstClip->setSupportsTiles(true);
@@ -495,8 +498,8 @@ void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescript
 
   ChoiceParamDescriptor* param2 = desc.defineChoiceParam("enableTest");
   param2->setLabels("Enabler", "Enabler", "Enabler");
-  param2->appendOption("Enable parameter");
-  param2->appendOption("Disable parameter");
+  param2->appendOption("Enable parameter", "Enable parameter");
+  param2->appendOption("Disable parameter", "Disable parameter");
 
   DoubleParamDescriptor *param3 = desc.defineDoubleParam("enableDbl");
   param3->setLabels("Enabled by Enabler", "Enabled by Enabler", "Enabled by Enabler");
@@ -505,13 +508,18 @@ void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescript
   BooleanParamDescriptor* bparam = desc.defineBooleanParam("Insignificant");
   bparam->setLabels("Insignificant", "Insignificant", "Insignificant");
   bparam->setHint("Shouldn't cause a re-render.");
-  bparam->setIsPersistant(false);
+  bparam->setEvaluateOnChange(false);
 
   BooleanParamDescriptor* bparam2 = desc.defineBooleanParam("secretTest");
   bparam2->setLabels("SECRET!", "SECRET!", "SECRET!");
   bparam2->setIsSecret(true);
   bparam2->setHint("Shouldn't be shown in the user interface.");
 
+  BooleanParamDescriptor* bparam3 = desc.defineBooleanParam("nonPersistant");
+  bparam3->setLabels("Non-persistant", "Non-persistant", "Non-persistant");
+  bparam3->setHint("Shouldn't be saved in the plugin description.");
+  bparam3->setIsPersistant(false);
+    
   DoubleParamDescriptor *param5 = desc.defineDoubleParam("animateDbl");
   param5->setLabels("No Animation", "No Animation", "No Animation");
   param5->setAnimates(false);
@@ -533,12 +541,13 @@ void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescript
 
   Double2DParamDescriptor* widgetPos = desc.defineDouble2DParam("widgetPos");
   widgetPos->setLabels("Widget Position", "Widget Position", "Widget Position");
-  widgetPos->setDoubleType(OFX::eDoubleTypeNormalisedXYAbsolute);
+  widgetPos->setDoubleType(OFX::eDoubleTypeXYAbsolute);
+  widgetPos->setDefaultCoordinateSystem(eCoordinatesNormalised);
   widgetPos->setDimensionLabels("X Position", "Y Position");
   widgetPos->setDefault(0.5, 0.5);
 }
 
-OFX::ImageEffect* GenericTestExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context)
+OFX::ImageEffect* GenericTestExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum /*context*/)
 {
   return new GenericTestPlugin(handle);
 }
@@ -549,7 +558,7 @@ namespace OFX
   {  
     void getPluginIDs(OFX::PluginFactoryArray &ids)
     {
-      static GenericTestExamplePluginFactory p("net.sf.openfx:GenericTestPlugin", 1, 0);
+      static GenericTestExamplePluginFactory p("net.sf.openfx.GenericTestPlugin", 1, 0);
       ids.push_back(&p);
     }
   }

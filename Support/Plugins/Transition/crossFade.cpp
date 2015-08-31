@@ -62,9 +62,9 @@ public :
     , toClip_(0)
     , transition_(0)
   {
-    dstClip_ = fetchClip("Output");
-    fromClip_ = fetchClip("SourceFrom");
-    toClip_   = fetchClip("SourceTo");
+    dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
+    fromClip_ = fetchClip(kOfxImageEffectTransitionSourceFromClipName);
+    toClip_   = fetchClip(kOfxImageEffectTransitionSourceToClipName);
     transition_   = fetchDoubleParam("Transition");
   }
 
@@ -72,7 +72,7 @@ public :
   virtual void render(const OFX::RenderArguments &args);
 
   /* override is identity */
-  virtual bool isIdentity(const OFX::RenderArguments &args, OFX::Clip * &identityClip, double &identityTime);
+  virtual bool isIdentity(const OFX::IsIdentityArguments &args, OFX::Clip * &identityClip, double &identityTime);
 
   /* set up and run a processor */
   void
@@ -163,6 +163,8 @@ case OFX::eBitDepthFloat : {
   setupAndProcess(fred, args);
                            }
                            break;
+default :
+  OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   }
   else {
@@ -184,13 +186,15 @@ case OFX::eBitDepthFloat : {
   setupAndProcess(fred, args);
                            }                          
                            break;
+default :
+  OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   } // switch
 }
 
 // overridden is identity
 bool
-CrossFadePlugin::isIdentity(const OFX::RenderArguments &args, OFX::Clip * &identityClip, double &identityTime)
+CrossFadePlugin::isIdentity(const OFX::IsIdentityArguments &args, OFX::Clip * &identityClip, double &identityTime)
 {
   // get the transition value
   float blend = (float)transition_->getValueAtTime(args.time);
@@ -226,6 +230,7 @@ void CrossFadeExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 
   // Say we are a transition context
   desc.addSupportedContext(eContextTransition);
+  desc.addSupportedContext(eContextGeneral);
 
   // Add supported pixel depths
   desc.addSupportedBitDepth(eBitDepthUByte);
@@ -243,24 +248,24 @@ void CrossFadeExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 
 }
 
-void CrossFadeExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context)
+void CrossFadeExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum /*context*/)
 {
   // we are a transition, so define the sourceFrom input clip
-  ClipDescriptor *fromClip = desc.defineClip("SourceFrom");
+  ClipDescriptor *fromClip = desc.defineClip(kOfxImageEffectTransitionSourceFromClipName);
   fromClip->addSupportedComponent(ePixelComponentRGBA);
   fromClip->addSupportedComponent(ePixelComponentAlpha);
   fromClip->setTemporalClipAccess(false);
   fromClip->setSupportsTiles(true);
 
   // we are a transition, so define the sourceTo input clip
-  ClipDescriptor *toClip = desc.defineClip("SourceTo");
+  ClipDescriptor *toClip = desc.defineClip(kOfxImageEffectTransitionSourceToClipName);
   toClip->addSupportedComponent(ePixelComponentRGBA);
   toClip->addSupportedComponent(ePixelComponentAlpha);
   toClip->setTemporalClipAccess(false);
   toClip->setSupportsTiles(true);
 
   // create the mandated output clip
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
   dstClip->setSupportsTiles(true);
@@ -269,10 +274,10 @@ void CrossFadeExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor
   // describe it. It is not a true param but how the host indicates to the plug-in how far through
   // the transition it is. It appears on no plug-in side UI, it is purely the hosts to manage.
   DoubleParamDescriptor *param = desc.defineDoubleParam("Transition");
-
+  (void)param;
 }
 
-ImageEffect* CrossFadeExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum context)
+ImageEffect* CrossFadeExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum /*context*/)
 {
   return new CrossFadePlugin(handle);
 }
@@ -283,7 +288,7 @@ namespace OFX
   {
     void getPluginIDs(OFX::PluginFactoryArray &ids)
     {
-      static CrossFadeExamplePluginFactory p("net.sf.openfx:crossFade", 1, 0);
+      static CrossFadeExamplePluginFactory p("net.sf.openfx.crossFade", 1, 0);
       ids.push_back(&p);
     }
   }

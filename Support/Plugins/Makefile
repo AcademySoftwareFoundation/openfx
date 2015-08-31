@@ -1,8 +1,15 @@
-SUBDIRS = Basic Generator Retimer Transition Invert
+SUBDIRS = Basic Field Generator Invert MultiBundle Retimer Tester Transition
 
-default : 
-	@ echo making sub projects... $(SUBDIRS)
-	for i in $(SUBDIRS) ; do cd $$i; make ; cd ..; done
+all: subdirs
+
+.PHONY: subdirs clean $(SUBDIRS)
+
+subdirs: $(SUBDIRS)
+
+$(SUBDIRS):
+	$(MAKE) -C $@
 
 clean :
-	for i in $(SUBDIRS) ; do cd $$i; make clean; cd ..; done
+	for i in $(SUBDIRS) ; do \
+	  $(MAKE) -C $$i clean; \
+	done
