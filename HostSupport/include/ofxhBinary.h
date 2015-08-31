@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(WIN32) || defined(WIN64)
 #define I386
-#elif defined(__linux__)
+#elif defined(__linux__) || defined(__FreeBSD__)
 #define UNIX
 #ifdef __i386__
 #define I386
@@ -73,9 +73,8 @@ namespace OFX
 #elif defined (WINDOWS)
     HINSTANCE _dlHandle;
 #endif
-    bool _exists;
     time_t _time;
-    size_t _size;
+    off_t _size;
     int _users;
   public :
 
@@ -98,7 +97,7 @@ namespace OFX
     time_t getTime() const { return _time; }
 
     /// Current size of the file.
-    size_t getSize() const { return _size; }
+    off_t getSize() const { return _size; }
 
     /// Path to the file.
     const std::string &getBinaryPath() const { return _binaryPath; }

@@ -34,6 +34,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <map>
 #include <list>
+#include <cstdarg>
+
+//ofx
+#include "ofxParam.h"
+
+//ofxh
+#include "ofxhPropertySuite.h"
+
 
 namespace OFX {
 
@@ -42,7 +50,11 @@ namespace OFX {
     namespace Param {
 
       /// fetch the param suite
-      void *GetSuite(int version);
+      const void *GetSuite(int version);
+
+      bool isColourParam(const std::string &paramType);
+
+      bool isIntParam(const std::string &paramType);
 
       /// is this a standard type
       bool isStandardType(const std::string &type);
@@ -89,6 +101,8 @@ namespace OFX {
 
         const std::string &getDoubleType() const;
 
+        const std::string &getDefaultCoordinateSystem() const;
+
         const std::string &getCacheInvalidation() const;
 
         const std::string &getHint() const;
@@ -98,6 +112,8 @@ namespace OFX {
         bool getCanUndo() const;
 
         bool getSecret() const;
+
+        bool getIsPersistant() const;
 
         bool getEvaluateOnChange() const;
 
@@ -172,7 +188,7 @@ namespace OFX {
       class SetInstance;
 
       /// the description of a plugin parameter
-      class Instance : public Base, private Property::NotifyHook {
+      class Instance : public Base, protected Property::NotifyHook {
         Instance();  
       protected:
         SetInstance*  _paramSetInstance;
@@ -183,7 +199,7 @@ namespace OFX {
         /// make a parameter, with the given type and name
         explicit Instance(Descriptor& descriptor, Param::SetInstance* instance = 0);
 
-        //        OfxStatus instanceChangedAction(std::string why,
+        //        OfxStatus instanceChangedAction(const std::string &why,
         //                                        OfxTime     time,
         //                                        double      renderScaleX,
         //                                        double      renderScaleY);
@@ -195,11 +211,8 @@ namespace OFX {
         void setParentInstance(Instance* instance);
         Instance* getParentInstance();
 
-        // copy one parameter to another
-        virtual OfxStatus copy(const Instance &instance, OfxTime offset);
-
-        // copy one parameter to another, with a range
-        virtual OfxStatus copy(const Instance &instance, OfxTime offset, OfxRangeD range);
+        // copy one parameter to another, with a range (NULL means to copy all animation)
+        virtual OfxStatus copyFrom(const Instance &instance, OfxTime offset, const OfxRangeD* range);
 
         // callback which should set enabled state as appropriate
         virtual void setEnabled();
@@ -210,8 +223,14 @@ namespace OFX {
         /// callback which should update label
         virtual void setLabel();
 
-        /// callback which should set 
+        /// callback which should set range
+        virtual void setRange();
+
+        /// callback which should set display range
         virtual void setDisplayRange();
+
+        /// callback which should set evaluate on change
+        virtual void setEvaluateOnChange();
 
         // va list calls below turn the var args (oh what a mistake)
         // suite functions into virtual function calls on instances
@@ -306,7 +325,10 @@ namespace OFX {
 
       class ChoiceInstance : public Instance, public KeyframeParam {
       public:
-        ChoiceInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
+        ChoiceInstance(Descriptor& descriptor, Param::SetInstance* instance = 0);
+
+        // callback which should set option as appropriate
+        virtual void setOption(int num);
 
         // Deriving implementatation needs to overide these 
         virtual OfxStatus get(int&) = 0;
@@ -325,6 +347,9 @@ namespace OFX {
 
         /// implementation of var args function
         virtual OfxStatus setV(OfxTime time, va_list arg);
+
+        /// overridden from Instance
+        virtual void notify(const std::string &name, bool single, int num) OFX_EXCEPTION_SPEC;
       };
 
       class DoubleInstance : public Instance, public KeyframeParam {
@@ -589,9 +614,13 @@ namespace OFX {
         virtual OfxStatus set(OfxTime time, const char*) = 0;
 
         /// implementation of var args function
+        /// Be careful: the char* is only valid until next API call
+        /// see http://openfx.sourceforge.net/Documentation/1.3/ofxProgrammingReference.html#ArchitectureStrings
         virtual OfxStatus getV(va_list arg);
 
         /// implementation of var args function
+        /// Be careful: the char* is only valid until next API call
+        /// see http://openfx.sourceforge.net/Documentation/1.3/ofxProgrammingReference.html#ArchitectureStrings
         virtual OfxStatus getV(OfxTime time, va_list arg);
 
         /// implementation of var args function
@@ -638,8 +667,8 @@ namespace OFX {
         const std::list<Instance*> &getParamList() const;
 
         // get the param
-        Instance* getParam(std::string name) {
-          std::map<std::string,Instance*>::iterator it = _params.find(name);
+        Instance* getParam(const std::string &name) const {
+          std::map<std::string,Instance*>::const_iterator it = _params.find(name);
           if(it!=_params.end())
             return it->second;
           else

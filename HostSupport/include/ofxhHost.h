@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <map>
 #include <string>
+#include <cstdarg>
 
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
@@ -69,23 +70,36 @@ namespace OFX {
       /// The base class returns the following suites
       ///    PropertySuite
       ///    MemorySuite
-      virtual void *fetchSuite(const char *suiteName, int suiteVersion);
+      virtual const void *fetchSuite(const char *suiteName, int suiteVersion);
       
       /// get the C API handle that is passed across the API to represent this host
       OfxHost *getHandle();
 
       /// override this to handle do post-construction initialisation on a Param::Descriptor
-      virtual void initDescriptor(Param::Descriptor *) { }
+      virtual void initParamDescriptor(Param::Descriptor *) { }
 
       /// is my magic number valid?
       bool verifyMagic() { return true; }
+
+      /// message (called when an exception occurs, calls vmessage)
+      OfxStatus message(const char* type,
+                        const char* id,
+                        const char* format,
+                        ...);
 
       /// vmessage
       virtual OfxStatus vmessage(const char* type,
                                  const char* id,
                                  const char* format,
                                  va_list args) = 0;
-      
+
+      /// setPersistentMessage
+      virtual OfxStatus setPersistentMessage(const char* type,
+                                             const char* id,
+                                             const char* format,
+                                             va_list args) = 0;
+      /// clearPersistentMessage
+      virtual OfxStatus clearPersistentMessage() = 0;
     };
     
   }

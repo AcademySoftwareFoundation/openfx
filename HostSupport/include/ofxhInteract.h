@@ -31,6 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef OFX_INTERACT_H
 #define OFX_INTERACT_H
 
+#include "ofxOld.h" // old plugins may rely on deprecated properties being present
+
 namespace OFX {
 
   namespace Host {
@@ -38,7 +40,7 @@ namespace OFX {
     namespace Interact {
       
       /// fetch a versioned suite for our interact
-      void *GetSuite(int version);
+      const void *GetSuite(int version);
       
       class Base {
       public:
@@ -141,15 +143,21 @@ namespace OFX {
         virtual OfxStatus callEntry(const char *action,
                                     Property::Set *inArgs);
         
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         /// hooks to kOfxInteractPropViewportSize in the property set
         /// this is actually redundant and is to be deprecated
         virtual void getViewportSize(double &width, double &height) const = 0;
+#endif
 
         // hooks to live kOfxInteractPropPixelScale in the property set
         virtual void getPixelScale(double& xScale, double& yScale) const = 0;
 
         // hooks to kOfxInteractPropBackgroundColour in the property set
         virtual void getBackgroundColour(double &r, double &g, double &b) const = 0;
+
+        // hooks to kOfxInteractPropSuggestedColour and kOfxPropOverlayColour in the property set
+        // return false if there is no color suggestion by the host.
+        virtual bool getSuggestedColour(double &r, double &g, double &b) const = 0;
 
         /// implement
         virtual OfxStatus swapBuffers() = 0;

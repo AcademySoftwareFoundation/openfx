@@ -31,8 +31,43 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include <string>
+#include <list>
 #include <vector>
 #include "ofxCore.h"
+
+// macro that intercepts any exception that passes through a plugin's entry point, and transforms it into a message on the host using Host::vmessage()
+#define CatchAllSetStatus(stat,host,plugin,msg)                         \
+  catch ( const std::bad_alloc& ba ) {                                  \
+    (stat) = kOfxStatErrMemory;                                         \
+    if (host) {                                                         \
+      try {                                                             \
+        (host)->message(kOfxMessageError, "",                           \
+                        "%s: Memory allocation error occured in plugin %s (%s)", \
+                        (msg), (plugin)->pluginIdentifier, ba.what());  \
+      } catch (...) {                                                   \
+      }                                                                 \
+    }                                                                   \
+  } catch ( const std::exception &e ) {                                 \
+    (stat) = kOfxStatFailed;                                            \
+    if (host) {                                                         \
+      try {                                                             \
+        (host)->message(kOfxMessageError, "",                           \
+                        "%s: Exception occured in plugin %s (%s)",      \
+                        (msg), (plugin)->pluginIdentifier, e.what());   \
+      } catch (...) {                                                   \
+      }                                                                 \
+    }                                                                   \
+  } catch ( ... ) {                                                     \
+    (stat) = kOfxStatFailed;                                            \
+    if (host) {                                                         \
+      try {                                                             \
+        (host)->message(kOfxMessageError, "",                           \
+                        "%s:Exception occured in plugin %s",            \
+                        (msg), (plugin)->pluginIdentifier);             \
+      } catch (...) {                                                   \
+      }                                                                 \
+    }                                                                   \
+  }
 
 namespace OFX {
 
@@ -101,7 +136,42 @@ namespace OFX {
     return r;
   }
 
-  
+    inline const char* StatStr(OfxStatus stat) {
+        switch(stat) {
+            case kOfxStatOK:
+                return "kOfxStatOK";
+            case kOfxStatFailed:
+                return "kOfxStatFailed";
+            case kOfxStatErrFatal:
+                return "kOfxStatErrFatal";
+            case kOfxStatErrUnknown:
+                return "kOfxStatErrUnknown";
+            case kOfxStatErrMissingHostFeature:
+                return "kOfxStatErrMissingHostFeature";
+            case kOfxStatErrUnsupported:
+                return "kOfxStatErrUnsupported";
+            case kOfxStatErrExists:
+                return "kOfxStatErrExists";
+            case kOfxStatErrFormat:
+                return "kOfxStatErrFormat";
+            case kOfxStatErrMemory:
+                return "kOfxStatErrMemory";
+            case kOfxStatErrBadHandle:
+                return "kOfxStatErrBadHandle";
+            case kOfxStatErrBadIndex:
+                return "kOfxStatErrBadIndex";
+            case kOfxStatErrValue:
+                return "kOfxStatErrValue";
+            case kOfxStatReplyYes:
+                return "kOfxStatReplyYes";
+            case kOfxStatReplyNo:
+                return "kOfxStatReplyNo";
+            case kOfxStatReplyDefault:
+                return "kOfxStatReplyDefault";
+            default:
+                return "(unknown error code)";
+        }
+    }
 }
 #endif
 

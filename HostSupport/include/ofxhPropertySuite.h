@@ -83,7 +83,7 @@ namespace OFX {
         }
 
         /// get the status
-        OfxStatus getStatus()
+        OfxStatus getStatus() const
         {
           return _stat;
         }
@@ -143,8 +143,6 @@ namespace OFX {
 
       /// Sits on a property and can override the local property value when a value is being fetched
       /// only one of these can be in any property (as the thing has only a single value).
-      /// We deliberately don't have a getStringPropertyN as it is somewhat more painfull and never
-      /// used in practice.
       class GetHook {
       public :
         /// dtor
@@ -161,7 +159,10 @@ namespace OFX {
         template<class T> void getPropertyN(const std::string &name, typename T::APIType *values, int count) const OFX_EXCEPTION_SPEC;
 
         /// override this to fetch a single value at the given index.
-        virtual const std::string &getStringProperty(const std::string &name, int index = 0) const OFX_EXCEPTION_SPEC;
+        virtual const std::string& getStringProperty(const std::string &name, int index = 0) const OFX_EXCEPTION_SPEC;
+          
+        /// override this to fetch a multiple values in a multi-dimension property
+        virtual void getStringPropertyN(const std::string &name, const char** values, int count) const OFX_EXCEPTION_SPEC;
 
         /// override this to fetch a single value at the given index.
         virtual int getIntProperty(const std::string &name, int index = 0) const OFX_EXCEPTION_SPEC;
@@ -385,7 +386,8 @@ namespace OFX {
         bool readonly;             ///< is the property plug-in read only
         const char *defaultValue;  ///< Default value as a string. Pointers are ignored and always null.
       };
-      
+      static const PropSpec propSpecEnd = {0, eNone, 0, false, 0};
+
       /// A std::map of properties by name
       typedef std::map<std::string, Property *> PropertyMap;
 
@@ -560,12 +562,12 @@ namespace OFX {
         }
 
         /// is this a nice property set, or a dodgy pointer passed back to us
-        bool verifyMagic() { return this != NULL && _magic == kMagic; }
+        bool verifyMagic() { return _magic == kMagic; }
       };
 
       
       /// return the OFX function suite that manages properties
-      void *GetSuite(int version);
+      const void *GetSuite(int version);
     }
   }
 }

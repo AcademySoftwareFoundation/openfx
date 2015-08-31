@@ -49,7 +49,7 @@ namespace OFX {
     ////////////////////////////////////////////////////////////////////////////////
     /// simple memory suite 
     namespace Memory {
-      static OfxStatus memoryAlloc(void *handle, size_t bytes, void **data)
+      static OfxStatus memoryAlloc(void */*handle*/, size_t bytes, void **data)
       {
         *data = malloc(bytes);
         if (*data) {
@@ -65,7 +65,7 @@ namespace OFX {
         return kOfxStatOK;
       }
       
-      static struct OfxMemorySuiteV1 gMallocSuite = {
+      static const struct OfxMemorySuiteV1 gMallocSuite = {
         memoryAlloc,
         memoryFree
       };
@@ -80,15 +80,18 @@ namespace OFX {
     /// our own internal property for storing away our private pointer to our host descriptor
 #define kOfxHostSupportHostPointer "sf.openfx.net.OfxHostSupportHostPointer"
 
-    static Property::PropSpec hostStuffs[] = {
+    static const Property::PropSpec hostStuffs[] = {
+      { kOfxPropAPIVersion, Property::eInt, 0, false, "" },
       { kOfxPropType, Property::eString, 1, false, "Host" },
       { kOfxPropName, Property::eString, 1, false, "UNKNOWN" },
       { kOfxPropLabel, Property::eString, 1, false, "UNKNOWN" },
+      { kOfxPropVersion, Property::eInt, 0, false, "0" },
+      { kOfxPropVersionLabel, Property::eString, 1, false, "" },
       { kOfxHostSupportHostPointer,    Property::ePointer,    0,    false,    NULL },
-      { 0 },
+      Property::propSpecEnd
     };    
 
-    static void *fetchSuite(OfxPropertySetHandle hostProps, const char *suiteName, int suiteVersion)
+    static const void *fetchSuite(OfxPropertySetHandle hostProps, const char *suiteName, int suiteVersion)
     {      
       Property::Set* properties = reinterpret_cast<Property::Set*>(hostProps);
       
@@ -114,7 +117,23 @@ namespace OFX {
       return &_host;
     }
 
-    void *Host::fetchSuite(const char *suiteName, int suiteVersion)
+    OfxStatus Host::message(const char* type,
+                            const char* id,
+                            const char* format,
+                            ...) {
+      try {
+        OfxStatus stat;
+        va_list args;
+        va_start(args,format);
+        stat = vmessage(type,id,format,args);
+        va_end(args);
+        return stat;
+      } catch (...) {
+        return kOfxStatFailed;
+      }
+    }
+
+    const void *Host::fetchSuite(const char *suiteName, int suiteVersion)
     {
       if (strcmp(suiteName, kOfxPropertySuite)==0  && suiteVersion == 1) {
         return Property::GetSuite(suiteVersion);
