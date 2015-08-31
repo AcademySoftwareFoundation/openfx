@@ -46,7 +46,9 @@ England
 #ifdef OFX_EXTENSIONS_NUKE
 #include "nuke/fnOfxExtensions.h"
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
 #include "ofxNatron.h"
+#endif
 #ifdef OFX_SUPPORTS_OPENGLRENDER
 #include "ofxOpenGLRender.h"
 #endif
@@ -1155,13 +1157,14 @@ namespace OFX {
         break;
 #endif
       case ePixelComponentCustom:
-      default:
 #ifdef OFX_EXTENSIONS_NATRON
         // first element in the vector is the layer name (if any)
         _pixelComponentCount = std::max((int)mapPixelComponentCustomToLayerChannels(str).size() - 1, 0);
 #else
         _pixelComponentCount = 0;
 #endif
+      default:
+        _pixelComponentCount = 0;
         break;
     }
 
@@ -1412,13 +1415,14 @@ namespace OFX {
         return 2;
 #endif
       case ePixelComponentCustom:
-      default:
 #ifdef OFX_EXTENSIONS_NATRON
         // first element in the vector is the layer name (if any)
         return std::max((int)mapPixelComponentCustomToLayerChannels(str).size() - 1, 0);
 #else
         return 0;
 #endif
+      default:
+        return 0;
     }
   }
 

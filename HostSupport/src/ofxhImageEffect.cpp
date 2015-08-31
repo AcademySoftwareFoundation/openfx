@@ -41,8 +41,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef OFX_EXTENSIONS_NUKE
 #include "nuke/fnOfxExtensions.h"
 #endif
-
+#ifdef OFX_EXTENSIONS_NATRON
 #include "ofxNatron.h"
+#endif
 
 // ofx host
 #include "ofxhBinary.h"
@@ -330,7 +331,6 @@ namespace OFX {
         return _properties.getIntProperty(kFnOfxImageEffectPropViewInvariance);
       }
 #endif
-
 
       ////////////////////////////////////////////////////////////////////////////////
       // descriptor
@@ -3518,7 +3518,7 @@ namespace OFX {
         else if (strcmp(suiteName, kOfxMultiThreadSuite)==0) {
           if(suiteVersion == 1)
             return (void*)&gMultiThreadSuite;
-          else 
+          else
             return NULL;
         }
 #     ifdef OFX_SUPPORTS_OPENGLRENDER

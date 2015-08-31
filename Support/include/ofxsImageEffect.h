@@ -68,7 +68,6 @@ of the direct OFX objects and any library side only functions.
 #ifdef OFX_EXTENSIONS_TUTTLE
 #include "tuttle/ofxReadWrite.h"
 #endif
-
 #ifdef OFX_EXTENSIONS_NATRON
 #include "ofxNatron.h"
 #endif
@@ -656,7 +655,7 @@ namespace OFX {
       void setIsViewInvariant(ViewInvarianceLevelEnum v);
 #endif
 
-    /** @brief Create a clip, only callable from describe in context 
+    /** @brief Create a clip, only callable from describe in context
 
     The returned clip \em must not be deleted by the client code. This is all managed by the ImageEffectDescriptor itself.
     */
@@ -1258,6 +1257,7 @@ namespace OFX {
       
   };
 #endif
+
   /** @brief Class used to set the clip preferences of the effect.
   */ 
   class ClipPreferencesSetter {

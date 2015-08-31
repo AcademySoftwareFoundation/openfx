@@ -33,11 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef OFX_SUPPORTS_PARAMETRIC
 #include "ofxParametricParam.h"
 #endif
-
 #ifdef OFX_EXTENSIONS_NUKE
 #include "nuke/fnPublicOfxExtensions.h"
 #endif
-
 #ifdef OFX_EXTENSIONS_NATRON
 #include "ofxNatron.h"
 #endif

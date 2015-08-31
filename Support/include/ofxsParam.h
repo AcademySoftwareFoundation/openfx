@@ -57,7 +57,6 @@ each represent the actions that can be carried out on those particular OFX objec
 #include "nuke/camera.h"
 #include "nuke/fnPublicOfxExtensions.h"
 #endif
-
 #ifdef OFX_EXTENSIONS_NATRON
 #include "ofxNatron.h"
 #endif
@@ -1607,7 +1606,7 @@ namespace OFX {
 
         /** @brief append an option, default is to have not there */
         void appendOption(const std::string &v, const std::string& label = "");
-    
+
         /** @brief set an option */
         void setOption(int item, const std::string &str);
     
