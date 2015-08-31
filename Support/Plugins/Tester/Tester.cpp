@@ -92,9 +92,7 @@ public :
   }
   void setCanonicalPosition(double x, double y, double time)
   {
-    OfxPointD offset = _effect->getProjectOffset();
-    OfxPointD size = _effect->getProjectSize();
-    _position->setValueAtTime(time, (x - offset.x) / size.x, (y - offset.y) / size.y);
+    _position->setValueAtTime(time, x, y);
   }
 };
 

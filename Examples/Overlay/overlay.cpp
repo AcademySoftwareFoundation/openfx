@@ -178,10 +178,6 @@ interactDraw(OfxImageEffectHandle  pluginInstance,
   // get my private interact data
   MyInteractData *data = getInteractData(interactInstance);
 
-  // get the project size
-  OfxPointD projSize, projOffset;
-  ofxuGetProjectSetup(pluginInstance, projSize, projOffset);
-
   // get the size of a pixel in the current projection
   double pixelScale[2];
   ofxuGetInteractPixelScale(drawArgs, pixelScale);
@@ -232,15 +228,9 @@ interactPenMotion(OfxImageEffectHandle  pluginInstance,
 
   // Have we grabbed on a pen down already?
   if(data->selected) {
-    // get the project size as we are normalising to this
-    OfxPointD projSize, projOffset;
-    ofxuGetProjectSetup(pluginInstance, projSize, projOffset);
-
-    // get the pen position and normalise that
+    // get the pen position
     OfxPointD penPos;
     gPropHost->propGetDoubleN(inArgs, kOfxInteractPropPenPosition, 2, &penPos.x);
-    penPos.x = (penPos.x - projOffset.x)/projSize.x;
-    penPos.y = (penPos.y - projOffset.y)/projSize.y;
 
     // set the value of the 'point' param
     gParamHost->paramSetValue(data->pointParam, penPos.x, penPos.y);
@@ -256,10 +246,6 @@ interactPenDown(OfxImageEffectHandle  pluginInstance,
 {
   // get my data handle
   MyInteractData *data = getInteractData(interactInstance);
-
-  // get the project size as we are normalising to this
-  OfxPointD projSize, projOffset;
-  ofxuGetProjectSetup(pluginInstance, projSize, projOffset);
 
   // get the point param's value
   double x, y;

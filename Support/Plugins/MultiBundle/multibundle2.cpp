@@ -204,12 +204,10 @@ bool DotExamplePlugin::getRegionOfDefinition(const OFX::RegionOfDefinitionArgume
   double r = radius_->getValueAtTime(args.time);
   double x, y;
   position_->getValueAtTime(args.time, x, y);
-  OfxPointD size = getProjectSize();
-  OfxPointD offset = getProjectOffset();
-  rod.x1 = x * size.x - r + offset.x;
-  rod.y1 = y * size.y - r  + offset.y;
-  rod.x2 = x * size.x + r  + offset.x;
-  rod.y2 = y * size.y + r  + offset.y;
+  rod.x1 = x - r;
+  rod.y1 = y - r;
+  rod.x2 = x + r;
+  rod.y2 = y + r;
   return true;
 }
 
@@ -358,11 +356,7 @@ bool DotExampleInteract::penMotion(const OFX::PenArgs &args)
   case ePicked   : 
     {
       
-    OfxPointD size = _effect->getProjectSize();
-    OfxPointD off = _effect->getProjectOffset();
-    double x = (args.penPosition.x - off.x)/size.x;
-    double y = (args.penPosition.y - off.y)/size.y;
-    position_->setValueAtTime(args.time, x, y);
+    position_->setValueAtTime(args.time, args.penPosition.x, args.penPosition.y);
       _effect->redrawOverlays();
     }
     break;
