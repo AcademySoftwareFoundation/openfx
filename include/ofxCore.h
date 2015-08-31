@@ -521,7 +521,9 @@ typedef struct OfxRectD {
 /** @brief String used to label unsigned 16 bit integer samples */
 #define kOfxBitDepthShort "OfxBitDepthShort"
 
-/** @brief String used to label the OpenGL half float (16 bit floating point) sample format */
+/** @brief String used to label OpenGL half-float (16 bit floating point) samples
+ *  \version Added in Version 1.4.
+ */
 #define kOfxBitDepthHalf "OfxBitDepthHalf"
 
 /** @brief String used to label signed 32 bit floating point samples */
