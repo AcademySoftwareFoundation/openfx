@@ -206,11 +206,10 @@ bool DotExamplePlugin::getRegionOfDefinition(const OFX::RegionOfDefinitionArgume
   position_->getValueAtTime(args.time, x, y);
   OfxPointD size = getProjectSize();
   OfxPointD offset = getProjectOffset();
-  float scaledR = (float)(r * size.x);
-  rod.x1 = x * size.x - scaledR + offset.x;
-  rod.y1 = y * size.y - scaledR  + offset.y;
-  rod.x2 = x * size.x + scaledR  + offset.x;
-  rod.y2 = y * size.y + scaledR  + offset.y;
+  rod.x1 = x * size.x - r + offset.x;
+  rod.y1 = y * size.y - r  + offset.y;
+  rod.x2 = x * size.x + r  + offset.x;
+  rod.y2 = y * size.y + r  + offset.y;
   return true;
 }
 
