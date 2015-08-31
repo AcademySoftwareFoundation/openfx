@@ -403,7 +403,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	    </listitem>
 
 	  <listitem>
-	    <link linkend="kOfxActionPurgeCaches">The Generic Purge Caches Action></link> called to have the plug-in delete any temporary private data caches it may have,
+	    <link linkend="kOfxActionPurgeCaches">The Generic Purge Caches Action</link> called to have the plug-in delete any temporary private data caches it may have,
 	    </listitem>
 
 	  <listitem>
@@ -1444,6 +1444,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	  <listitem><link linkend="kOfxActionBeginInstanceChanged"><code>kOfxActionBeginInstanceChanged</code></link></listitem>
 	  <listitem><link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link></listitem>
 	  <listitem><link linkend="kOfxActionEndInstanceChanged"><code>kOfxActionEndInstanceChanged</code></link></listitem>
+	  <listitem><link linkend="kOfxActionSyncPrivateData"><code>kOfxActionSyncPrivateData</code></link></listitem>
 	</itemizedlist>
       </para>
       
@@ -1468,6 +1469,8 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
 	  <listitem><link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link></listitem>
 	  <listitem><link linkend="kOfxActionEndInstanceChanged"><code>kOfxActionEndInstanceChanged</code></link></listitem>
 	  <listitem><link linkend="kOfxImageEffectActionGetClipPreferences"><code>kOfxImageEffectActionGetClipPreferences</code></link></listitem>
+	  <listitem><link linkend="kOfxImageEffectActionGetRegionOfDefinition"><code>kOfxImageEffectActionGetRegionOfDefinition</code></link> (as a result of calling <link linkend="OfxImageEffectSuiteV1_clipGetImage"><code>OfxImageEffectSuiteV1::clipGetImage</code></link> from <link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link>)</listitem>
+	  <listitem><link linkend="kOfxImageEffectActionGetRegionsOfInterest"><code>kOfxImageEffectActionGetRegionsOfInterest</code></link> (as a result of calling <link linkend="OfxImageEffectSuiteV1_clipGetImage"><code>OfxImageEffectSuiteV1::clipGetImage</code></link> from <link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link>)</listitem>
 	</itemizedlist>
       </para>
 	
@@ -2212,6 +2215,11 @@ Other plugins are able to render correctly when called in an arbitrary frame ord
 	  If eventually rendering the sequence, the host <emphasis>must</emphasis> ignore all frames rendered out of order and not cache them 
 	  for use in the final result.
 	</para>
+
+  <para> A host may set the in args property <link linkend="kOfxImageEffectPropRenderQualityDraft"><code>kOfxImageEffectPropRenderQualityDraft</code></link> in <link linkend="kOfxImageEffectActionRender">the sequence render action</link> to asj for a render in Draft/Preview mode. This is useful for applications that must support fast scrubbing. These allow a plug-in to take short-cuts for improved performance when the situation allows and it makes sense, for example to generate thumbnails with effects applied.
+For example switch to a cheaper interpolation type or rendering mode. A plugin should expect frames rendered in this manner that will not be stucked in host cache unless the cache is only used in the same draft situations.
+  </para>
+
       </section>
     </section>
 

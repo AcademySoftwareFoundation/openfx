@@ -33,7 +33,7 @@ A plugin gets to assert its clip preferences in several situations. Firstly when
     &note;
     <para>
       <itemizedlist>
-	<listitem>these properties \em cannot animate over the duration of an effect,</listitem>
+	<listitem>these properties <emphasis>cannot</emphasis> animate over the duration of an effect,</listitem>
 	<listitem>that the ability to set input and output clip preferences is restricted by the context of an effect,</listitem>
 	<listitem>optional input clips do not have any context specific restrictions on plugin set preferences.</listitem>
       </itemizedlist>
@@ -124,7 +124,7 @@ If the plugin sets this to 0, then the host will transparently map all of an eff
 In the above two cases, the common pixel aspect ratio chosen will be the smallest on all the inputs, as this preserves image data.
       </para>
       <para>
-If \em both the plugin and host set this to 1, then the plugin can, during <link linkend="kOfxImageEffectActionGetClipPreferences"><code>kOfxImageEffectActionGetClipPreferences</code></link>, specify how the host is to map each clip, including the output clip. 
+If <emphasis>both</emphasis> the plugin and host set this to 1, then the plugin can, during <link linkend="kOfxImageEffectActionGetClipPreferences"><code>kOfxImageEffectActionGetClipPreferences</code></link>, specify how the host is to map each clip, including the output clip.
 	</para>
     </section>
     <section><title>Specifying Fielding</title>
