@@ -37,6 +37,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhPropertySuite.h"
 #include "ofxhClip.h"
 #include "ofxhImageEffect.h"
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+#include "ofxOpenGLRender.h"
+#endif
 
 namespace OFX {
 
@@ -46,7 +49,7 @@ namespace OFX {
 
       /// properties common to the desciptor and instance
       /// the desc and set them, the instance cannot
-      static Property::PropSpec clipDescriptorStuffs[] = {
+      static const Property::PropSpec clipDescriptorStuffs[] = {
         { kOfxPropType, Property::eString, 1, true, kOfxTypeClip },
         { kOfxPropName, Property::eString, 1, true, "SET ME ON CONSTRUCTION" },
         { kOfxPropLabel, Property::eString, 1, false, "" } ,
@@ -57,8 +60,8 @@ namespace OFX {
         { kOfxImageClipPropOptional, Property::eInt, 1, false, "0" },
         { kOfxImageClipPropIsMask,   Property::eInt, 1, false, "0" },
         { kOfxImageClipPropFieldExtraction, Property::eString, 1, false, kOfxImageFieldDoubled },
-        { kOfxImageEffectPropSupportsTiles,   Property::eInt, 1, false, "1" },  
-        { 0 },
+        { kOfxImageEffectPropSupportsTiles,   Property::eInt, 1, false, "1" },
+        Property::propSpecEnd,
       };
       
       ////////////////////////////////////////////////////////////////////////////////
@@ -180,7 +183,7 @@ namespace OFX {
 
       ////////////////////////////////////////////////////////////////////////////////
       /// descriptor
-      ClipDescriptor::ClipDescriptor(std::string name) 
+      ClipDescriptor::ClipDescriptor(const std::string &name)
         : ClipBase()
       {
         _properties.setStringProperty(kOfxPropName,name);
@@ -188,7 +191,7 @@ namespace OFX {
       
       /// extra properties for the instance, these are fetched from the host
       /// via a get hook and some virtuals
-      static Property::PropSpec clipInstanceStuffs[] = { 
+      static const Property::PropSpec clipInstanceStuffs[] = {
         { kOfxImageEffectPropPixelDepth, Property::eString, 1, true, kOfxBitDepthNone },
         { kOfxImageEffectPropComponents, Property::eString, 1, true, kOfxImageComponentNone },
         { kOfxImageClipPropUnmappedPixelDepth, Property::eString, 1, true, kOfxBitDepthNone },
@@ -202,7 +205,7 @@ namespace OFX {
         { kOfxImageEffectPropUnmappedFrameRange, Property::eDouble, 2, true, "0" },
         { kOfxImageEffectPropUnmappedFrameRate, Property::eDouble, 1, true, "25.0" },
         { kOfxImageClipPropContinuousSamples, Property::eInt, 1, true, "0" },
-        { 0 },
+        Property::propSpecEnd,
       };
 
 
@@ -220,7 +223,7 @@ namespace OFX {
         _properties.addProperties(clipInstanceStuffs);
         int i = 0;
         while(clipInstanceStuffs[i].name) {
-          Property::PropSpec& spec = clipInstanceStuffs[i];
+          const Property::PropSpec& spec = clipInstanceStuffs[i];
 
           switch (spec.type) {
           case Property::eDouble:
@@ -245,8 +248,8 @@ namespace OFX {
       }
 
       // don't know what to do
-      void ClipInstance::reset(const std::string &name) OFX_EXCEPTION_SPEC {
-        printf("failing in %s\n", __PRETTY_FUNCTION__);
+      void ClipInstance::reset(const std::string &/*name*/) OFX_EXCEPTION_SPEC {
+        //printf("failing in %s\n", __PRETTY_FUNCTION__);
         throw Property::Exception(kOfxStatErrMissingHostFeature);
       }
 
@@ -261,7 +264,7 @@ namespace OFX {
       {
         _components = s;
       }
-
+       
       // get the virutals for viewport size, pixel scale, background colour
       void ClipInstance::getDoublePropertyN(const std::string &name, double *values, int n) const OFX_EXCEPTION_SPEC
       {
@@ -366,13 +369,42 @@ namespace OFX {
         else
           throw Property::Exception(kOfxStatErrValue);
       }
+       
+      // fetch  multiple values in a multi-dimension property
+      void ClipInstance::getStringPropertyN(const std::string &name, const char** values, int count) const OFX_EXCEPTION_SPEC
+      {
+          if (count == 0) {
+              return;
+          }
+          if(count!=1) throw Property::Exception(kOfxStatErrValue);
+          if(name==kOfxImageEffectPropPixelDepth){
+              values[0] = getPixelDepth().c_str();
+          }
+          else if(name==kOfxImageEffectPropComponents){
+              values[0] = getComponents().c_str();
+          }
+          else if(name==kOfxImageClipPropUnmappedComponents){
+              values[0] = getUnmappedComponents().c_str();
+          }
+          else if(name==kOfxImageClipPropUnmappedPixelDepth){
+              values[0] = getUnmappedBitDepth().c_str();
+          }
+          else if(name==kOfxImageEffectPropPreMultiplication){
+              values[0] = getPremult().c_str();
+          }
+          else if(name==kOfxImageClipPropFieldOrder){
+              values[0] = getFieldOrder().c_str();
+          }
+          else
+              throw Property::Exception(kOfxStatErrValue);
+      }
 
       // notify override properties
-      void ClipInstance::notify(const std::string &name, bool isSingle, int indexOrN)  OFX_EXCEPTION_SPEC
+      void ClipInstance::notify(const std::string &/*name*/, bool /*isSingle*/, int /*indexOrN*/)  OFX_EXCEPTION_SPEC
       {
       }
 
-      OfxStatus ClipInstance::instanceChangedAction(std::string why,
+      OfxStatus ClipInstance::instanceChangedAction(const std::string &why,
                                                 OfxTime     time,
                                                 OfxPointD   renderScale)
       {
@@ -382,7 +414,7 @@ namespace OFX {
           { kOfxPropChangeReason, Property::eString, 1, true, why.c_str() },
           { kOfxPropTime, Property::eDouble, 1, true, "0" },
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
-          { 0 }
+          Property::propSpecEnd
         };
 
         Property::Set inArgs(stuff);
@@ -390,12 +422,20 @@ namespace OFX {
         // add the second dimension of the render scale
         inArgs.setDoubleProperty(kOfxPropTime,time);
         inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
+#       ifdef OFX_DEBUG_ACTIONS
+          std::cout << "OFX: "<<(void*)_effectInstance<<"->"<<kOfxActionInstanceChanged<<"("<<kOfxTypeClip<<","<<getName()<<","<<why<<","<<time<<",("<<renderScale.x<<","<<renderScale.y<<"))"<<std::endl;
+#       endif
 
+        OfxStatus st;
         if(_effectInstance){
-          return _effectInstance->mainEntry(kOfxActionInstanceChanged, _effectInstance->getHandle(), &inArgs, 0);
+          st = _effectInstance->mainEntry(kOfxActionInstanceChanged, _effectInstance->getHandle(), &inArgs, 0);
+        } else {
+          st = kOfxStatFailed;
         }
-
-        return kOfxStatFailed;
+#       ifdef OFX_DEBUG_ACTIONS
+          std::cout << "OFX: "<<(void*)_effectInstance<<"->"<<kOfxActionInstanceChanged<<"("<<kOfxTypeClip<<","<<getName()<<","<<why<<","<<time<<",("<<renderScale.x<<","<<renderScale.y<<"))->"<<StatStr(st)<<std::endl;
+#       endif
+        return st;
       }
 
       /// given the colour component, find the nearest set of supported colour components
@@ -403,25 +443,31 @@ namespace OFX {
       { 
         static const std::string none(kOfxImageComponentNone);
         static const std::string rgba(kOfxImageComponentRGBA);
+        static const std::string rgb(kOfxImageComponentRGB);
         static const std::string alpha(kOfxImageComponentAlpha);
-
         /// is it there
         if(isSupportedComponent(s))
           return s;
-
-        /// were we fed some custom non chromatic component by getUnmappedComponents? Return it. 
+          
+        /// were we fed some custom non chromatic component by getUnmappedComponents? Return it.
         /// we should never be here mind, so a bit weird
         if(!_effectInstance->isChromaticComponent(s))
           return s;
 
         /// Means we have RGBA or Alpha being passed in and the clip
         /// only supports the other one, so return that
-        if(s == kOfxImageComponentRGBA && isSupportedComponent(kOfxImageComponentAlpha))
-          return alpha;
+        if(s == rgba) {
+          if(isSupportedComponent(rgb))
+            return rgb;
+          if(isSupportedComponent(alpha))
+            return alpha;
+        } else if(s == alpha) {
+          if(isSupportedComponent(rgba))
+            return rgba;
+          if(isSupportedComponent(rgb))
+            return rgb;
+        }
 
-        if(s == kOfxImageComponentAlpha && isSupportedComponent(kOfxImageComponentRGBA))
-          return rgba;
-        
         /// wierd, must be some custom bit , if only one, choose that, otherwise no idea
         /// how to map, you need to derive to do so.
         const std::vector<std::string> &supportedComps = getSupportedComponents();
@@ -436,30 +482,29 @@ namespace OFX {
       // Image
       //
 
-      static Property::PropSpec imageStuffs[] = {
+      static const Property::PropSpec imageBaseStuffs[] = {
         { kOfxPropType, Property::eString, 1, false, kOfxTypeImage },
         { kOfxImageEffectPropPixelDepth, Property::eString, 1, true, kOfxBitDepthNone  },
         { kOfxImageEffectPropComponents, Property::eString, 1, true, kOfxImageComponentNone },
         { kOfxImageEffectPropPreMultiplication, Property::eString, 1, true, kOfxImageOpaque  },
         { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "1.0" },
         { kOfxImagePropPixelAspectRatio, Property::eDouble, 1, true, "1.0"  },
-        { kOfxImagePropData, Property::ePointer, 1, true, NULL },
         { kOfxImagePropBounds, Property::eInt, 4, true, "0" },
         { kOfxImagePropRegionOfDefinition, Property::eInt, 4, true, "0", },
         { kOfxImagePropRowBytes, Property::eInt, 1, true, "0", },
         { kOfxImagePropField, Property::eString, 1, true, "", },
         { kOfxImagePropUniqueIdentifier, Property::eString, 1, true, "" },
-        { 0 }
+        Property::propSpecEnd
       };
 
-      Image::Image()
-        : Property::Set(imageStuffs) 
+      ImageBase::ImageBase()
+        : Property::Set(imageBaseStuffs)
         , _referenceCount(1)
       {
       }
 
       /// called during ctor to get bits from the clip props into ours
-      void Image::getClipBits(ClipInstance& instance)
+      void ImageBase::getClipBits(ClipInstance& instance)
       {
         Property::Set& clipProperties = instance.getProps();
         
@@ -476,30 +521,26 @@ namespace OFX {
 
         // get and set the clip instance pixel aspect ratio
         setDoubleProperty(kOfxImagePropPixelAspectRatio, clipProperties.getDoubleProperty(kOfxImagePropPixelAspectRatio));
-        
-        // get and set the clip instance pixel aspect ratio
-        setDoubleProperty(kOfxImagePropPixelAspectRatio, clipProperties.getDoubleProperty(kOfxImagePropPixelAspectRatio));
       }
 
       /// make an image from a clip instance
-      Image::Image(ClipInstance& instance)
-        : Property::Set(imageStuffs) 
+      ImageBase::ImageBase(ClipInstance& instance)
+        : Property::Set(imageBaseStuffs)
         , _referenceCount(1)
       {
         getClipBits(instance);
       }      
 
       // construction based on clip instance
-      Image::Image(ClipInstance& instance,
+      ImageBase::ImageBase(ClipInstance& instance,
                    double renderScaleX, 
                    double renderScaleY,
-                   void* data,
                    const OfxRectI &bounds,
                    const OfxRectI &rod,
                    int rowBytes,
                    std::string field,
                    std::string uniqueIdentifier) 
-        : Property::Set(imageStuffs)
+        : Property::Set(imageBaseStuffs)
         , _referenceCount(1)
       {
         getClipBits(instance);
@@ -507,7 +548,6 @@ namespace OFX {
         // set other data
         setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleX, 0);    
         setDoubleProperty(kOfxImageEffectPropRenderScale,renderScaleY, 1);        
-        setPointerProperty(kOfxImagePropData,data);
         setIntProperty(kOfxImagePropBounds,bounds.x1, 0);
         setIntProperty(kOfxImagePropBounds,bounds.y1, 1);
         setIntProperty(kOfxImagePropBounds,bounds.x2, 2);
@@ -523,31 +563,117 @@ namespace OFX {
         setStringProperty(kOfxImagePropUniqueIdentifier,uniqueIdentifier);
       }
 
-      OfxRectI Image::getBounds() const
+      OfxRectI ImageBase::getBounds() const
       {
-        OfxRectI bounds;
+        OfxRectI bounds = {0, 0, 0, 0};
         getIntPropertyN(kOfxImagePropBounds, &bounds.x1, 4);
         return bounds;
       }
 
-      OfxRectI Image::getROD() const
+      OfxRectI ImageBase::getROD() const
       {
-        OfxRectI rod;
-        getIntPropertyN(kOfxImagePropBounds, &rod.x1, 4);
+        OfxRectI rod = {0, 0, 0, 0};
+        getIntPropertyN(kOfxImagePropRegionOfDefinition, &rod.x1, 4);
         return rod;
       }
 
-      Image::~Image() {
+      ImageBase::~ImageBase() {
+        //assert(_referenceCount <= 0);
       }
 
       // release the reference 
-      void Image::releaseReference()
+      void ImageBase::releaseReference()
       {
         _referenceCount -= 1;
         if(_referenceCount <= 0)
           delete this;
       }
 
+
+      static const Property::PropSpec imageStuffs[] = {
+        { kOfxImagePropData, Property::ePointer, 1, true, NULL },
+        Property::propSpecEnd
+      };
+
+      Image::Image()
+        : ImageBase()
+      {
+        addProperties(imageStuffs);
+      }
+
+      /// make an image from a clip instance
+      Image::Image(ClipInstance& instance)
+        : ImageBase(instance)
+      {
+        addProperties(imageStuffs);
+      }
+
+      // construction based on clip instance
+      Image::Image(ClipInstance& instance,
+                   double renderScaleX, 
+                   double renderScaleY,
+                   void* data,
+                   const OfxRectI &bounds,
+                   const OfxRectI &rod,
+                   int rowBytes,
+                   std::string field,
+                   std::string uniqueIdentifier) 
+        : ImageBase(instance, renderScaleX, renderScaleY, bounds, rod, rowBytes, field, uniqueIdentifier)
+      {
+        addProperties(imageStuffs);
+
+        // set other data
+        setPointerProperty(kOfxImagePropData,data);
+      }
+
+      Image::~Image() {
+        //assert(_referenceCount <= 0);
+      }
+#   ifdef OFX_SUPPORTS_OPENGLRENDER
+      static const Property::PropSpec textureStuffs[] = {
+        { kOfxImageEffectPropOpenGLTextureIndex, Property::eInt, 1, true, "-1" },
+        { kOfxImageEffectPropOpenGLTextureTarget, Property::eInt, 1, true, "-1" },
+        Property::propSpecEnd
+      };
+
+      Texture::Texture()
+        : ImageBase()
+      {
+        addProperties(textureStuffs);
+      }
+
+      /// make an image from a clip instance
+      Texture::Texture(ClipInstance& instance)
+        : ImageBase(instance)
+      {
+        addProperties(textureStuffs);
+      }
+
+      // construction based on clip instance
+      Texture::Texture(ClipInstance& instance,
+                   double renderScaleX, 
+                   double renderScaleY,
+                   int index,
+                   int target,
+                   const OfxRectI &bounds,
+                   const OfxRectI &rod,
+                   int rowBytes,
+                   std::string field,
+                   std::string uniqueIdentifier) 
+        : ImageBase(instance, renderScaleX, renderScaleY, bounds, rod, rowBytes, field, uniqueIdentifier)
+      {
+        addProperties(textureStuffs);
+
+        // set other data
+        setIntProperty(kOfxImageEffectPropOpenGLTextureIndex, index);
+        setIntProperty(kOfxImageEffectPropOpenGLTextureTarget, target);
+      }
+
+
+      Texture::~Texture() {
+        //assert(_referenceCount <= 0);
+      }
+#   endif
     } // Clip
 
   } // Host

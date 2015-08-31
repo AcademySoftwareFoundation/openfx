@@ -74,6 +74,18 @@ namespace MyHost {
                                const char* format,
                                va_list args);
 
+    /// vmessage
+    virtual OfxStatus setPersistentMessage(const char* type,
+                                           const char* id,
+                                           const char* format,
+                                           va_list args);
+    /// vmessage
+    virtual OfxStatus clearPersistentMessage();
+
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    /// @see OfxImageEffectOpenGLRenderSuiteV1.flushResources()
+    virtual OfxStatus flushOpenGLResources() const { return kOfxStatFailed; };
+#endif
   };
 
   // my ofx host object

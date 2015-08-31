@@ -113,7 +113,7 @@ namespace OFX
         assert(false);
       }
       
-      void propertyXMLWrite(std::ostream &o, Property::Property *prop, const std::string &indent="")
+      static void propertyXMLWrite(std::ostream &o, Property::Property *prop, const std::string &indent="")
       {        
         if (prop->getType() != Property::ePointer)  {
           

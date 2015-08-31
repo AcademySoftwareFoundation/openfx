@@ -94,7 +94,7 @@ namespace OFX {
         return _versionMinor;
       }
 
-      PluginDesc() {
+      PluginDesc() : _apiVersion(-1) {
       }
 
       virtual ~PluginDesc() {}
@@ -123,9 +123,11 @@ namespace OFX {
         _rawIdentifier = ofxPlugin->pluginIdentifier;
         _identifier = ofxPlugin->pluginIdentifier;
 
-        for (size_t i=0;i<_identifier.size();i++) {
-          _identifier[i] = tolower(_identifier[i]);
-        }
+        // Who says the pluginIdentifier is case-insensitive? OFX 1.3 spec doesn't mention this.
+        // http://openfx.sourceforge.net/Documentation/1.3/ofxProgrammingReference.html#id472588
+        //for (size_t i=0;i<_identifier.size();i++) {
+        //  _identifier[i] = tolower(_identifier[i]);
+        //}
         _versionMajor = ofxPlugin->pluginVersionMajor;
         _versionMinor = ofxPlugin->pluginVersionMinor;
       }
@@ -137,7 +139,7 @@ namespace OFX {
     /// owned by the PluginBinary it lives inside
     /// Plugins can only be pass about either by pointer or reference
     private :
-      Plugin(const Plugin&) {}                          ///< hidden
+      Plugin(const Plugin&) : PluginDesc() {}                          ///< hidden
       Plugin &operator= (const Plugin&) {return *this;} ///< hidden
 
     protected :
@@ -215,14 +217,14 @@ namespace OFX {
       std::string _bundlePath;        ///< path to the .bundle directory
       std::vector<Plugin *> _plugins; ///< my plugins
       time_t _fileModificationTime;   ///< used as a time stamp to check modification times, used for caching
-      size_t _fileSize;               ///< file size last time we check, used for caching
+      off_t _fileSize;                ///< file size last time we check, used for caching
       bool _binaryChanged;            ///< whether the timestamp/filesize in this cache is different from that in the actual binary
       
     public :
 
       /// create one from the cache.  this will invoke the Binary() constructor which
       /// will stat() the file.
-      explicit PluginBinary(const std::string &file, const std::string &bundlePath, time_t mtime, size_t size)
+      explicit PluginBinary(const std::string &file, const std::string &bundlePath, time_t mtime, off_t size)
         : _binary(file)
         , _filePath(file)
         , _bundlePath(bundlePath)
@@ -230,6 +232,9 @@ namespace OFX {
         , _fileSize(size)
         , _binaryChanged(false)
       {
+        if (isInvalid()) {
+          return;
+        }
         if (_fileModificationTime != _binary.getTime() || _fileSize != _binary.getSize()) {
           _binaryChanged = true;
         }
@@ -255,7 +260,7 @@ namespace OFX {
       	return _fileModificationTime;
       }
     
-      size_t getFileSize() {
+      off_t getFileSize() {
       	return _fileSize;
       }
 
@@ -273,6 +278,10 @@ namespace OFX {
 
       bool isLoaded() const {
         return _binary.isLoaded();
+      }
+        
+      bool isInvalid() const {
+        return _binary.isInvalid();
       }
 
       void addPlugin(Plugin *pe) {
@@ -293,7 +302,6 @@ namespace OFX {
 
     /// wrapper class for Plugin/PluginBinary.  use in a RAIA fashion to make sure the binary gets unloaded when needed and not before.
     class PluginHandle {
-      Plugin *_p;
       PluginBinary *_b;
       OfxPlugin *_op;
 
@@ -317,12 +325,12 @@ namespace OFX {
       int maxVersion;
       APICache::PluginAPICacheI *handler;
 
-      PluginCacheSupportedApi(std::string _api, int _minVersion, int _maxVersion, APICache::PluginAPICacheI *_handler) :
+      PluginCacheSupportedApi(const std::string &_api, int _minVersion, int _maxVersion, APICache::PluginAPICacheI *_handler) :
         api(_api), minVersion(_minVersion), maxVersion(_maxVersion), handler(_handler)
       {
       }
       
-      bool matches(std::string _api, int _version) const
+      bool matches(const std::string &_api, int _version) const
       {
         if (_api == api && _version >= minVersion && _version <= maxVersion) {
           return true;
@@ -384,6 +392,14 @@ namespace OFX {
       /// add a file to the plugin path
       void addFileToPath(const std::string &f, bool recurse=true) {
         _pluginPath.push_back(f);
+        if (!recurse) {
+          _nonrecursePath.insert(f);
+        }
+      }
+
+      /// prepend a file to the plugin path
+      void prependFileToPath(const std::string &f, bool recurse=true) {
+        _pluginPath.push_front(f);
         if (!recurse) {
           _nonrecursePath.insert(f);
         }

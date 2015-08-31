@@ -85,7 +85,7 @@ typedef struct OfxHost {
          - NULL if the API is unknown (either the api or the version requested),
 	 - pointer to the relevant API if it was found
   */
-  void *(*fetchSuite)(OfxPropertySetHandle host, const char *suiteName, int suiteVersion);
+  const void *(*fetchSuite)(OfxPropertySetHandle host, const char *suiteName, int suiteVersion);
 } OfxHost;
 
 
@@ -405,7 +405,7 @@ This is a longer version of the label, typically 32 character glyphs or so. Host
 /** @brief Indicates why a plug-in changed.
 
     - Type - ASCII C string X 1
-    - Property Set - the inArgs parameter on the ::kOfxActionInstanceChanged action.
+    - Property Set - inArgs parameter on the ::kOfxActionInstanceChanged action.
     - Valid Values - this can be...
        - ::kOfxChangeUserEdited - the user directly edited the instance somehow and caused a change to something, this includes undo/redos and resets
        - ::kOfxChangePluginEdited - the plug-in itself has changed the value of the object in some action
@@ -520,6 +520,11 @@ typedef struct OfxRectD {
 
 /** @brief String used to label unsigned 16 bit integer samples */
 #define kOfxBitDepthShort "OfxBitDepthShort"
+
+/** @brief String used to label OpenGL half-float (16 bit floating point) samples
+ *  \version Added in Version 1.4.
+ */
+#define kOfxBitDepthHalf "OfxBitDepthHalf"
 
 /** @brief String used to label signed 32 bit floating point samples */
 #define kOfxBitDepthFloat "OfxBitDepthFloat"

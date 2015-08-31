@@ -28,12 +28,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include <iostream>
 #include <fstream>
-#include <math.h>
-#include <time.h>
+#include <cassert>
+#include <algorithm>
+#include <cmath>
+#include <ctime>
 
 // ofx
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
+#include "ofxPixels.h"
 
 // ofx host
 #include "ofxhBinary.h"
@@ -59,28 +62,123 @@ namespace MyHost {
   const int       kPalSizeXPixels = 720;
   const int       kPalSizeYPixels = 576;
   const OfxRectI  kPalRegionPixels = {0, 0, kPalSizeXPixels, kPalSizeYPixels};
-  const OfxRectD  kPalRegionCanon = {0,0, kPalSizeXPixels * kPalPixelAspect ,kPalSizeYPixels};
-  
+  //const OfxRectD  kPalRegionCanon = {0,0, kPalSizeXPixels * kPalPixelAspect ,kPalSizeYPixels};
+
+  // 5x3 bitmaps for digits 0..9 and period
+  const char digits[11][5][3] = {
+    { {0,1,0},
+      {1,0,1},
+      {1,0,1},
+      {1,0,1},
+      {0,1,0} },
+    { {0,1,0},
+      {1,1,0},
+      {0,1,0},
+      {0,1,0},
+      {0,1,0} },    
+    { {0,1,0},
+      {1,0,1},
+      {0,0,1},
+      {0,1,0},
+      {1,1,1} },    
+    { {1,1,0},
+      {0,0,1},
+      {0,1,1},
+      {0,0,1},
+      {1,1,0} },      
+    { {0,1,0},
+      {1,0,0},
+      {1,0,1},
+      {1,1,1},
+      {0,0,1} },    
+    { {1,1,1},
+      {1,0,0},
+      {1,1,0},
+      {0,0,1},
+      {1,1,0} },  
+    { {0,1,1},
+      {1,0,0},
+      {1,1,0},
+      {1,0,1},
+      {0,1,0} },      
+    { {1,1,1},
+      {0,0,1},
+      {0,1,0},
+      {0,1,1},
+      {0,1,0} },      
+    { {0,1,0},
+      {1,0,1},
+      {0,1,0},
+      {1,0,1},
+      {0,1,0} },  
+    { {0,1,0},
+      {1,0,1},
+      {0,1,1},
+      {0,0,1},
+      {1,1,0} },
+    { {0,0,0},
+      {0,0,0},
+      {0,0,0},
+      {0,0,0},
+      {0,1,0} }
+  };
+
+  // draw digit d at x,y int the width*height image pointed to by data
+  static void drawDigit(OfxRGBAColourB* data, int width, int height, int d, int x, int y , int scale, OfxRGBAColourB color) {
+    assert(0 <= x && x+3*scale < width);
+    assert(0 <= y && y+5*scale < height);
+
+    for (int j = 0; j < 5; ++j) {
+      for (int i = 0; i < 3; ++i) {
+        if (digits[d][j][i]) {
+          for (int jj = 0; jj < scale; ++jj) {
+            for (int ii = 0; ii < scale; ++ii) {
+              int x1 = x + i*scale + ii;
+              int y1 = y + j*scale + jj;
+              data[x1+y1*width] = color;
+            }
+          }
+        }
+      }
+    }
+  }
 
   /// images are always SD PAL progressive full res images for the purpose of this example only
-  MyImage::MyImage(MyClipInstance &clip, OfxTime time)
+  MyImage::MyImage(MyClipInstance &clip, OfxTime time, int view)
     : OFX::Host::ImageEffect::Image(clip) /// this ctor will set basic props on the image
     , _data(NULL)
   {
     // make some memory
     _data = new OfxRGBAColourB[kPalSizeXPixels * kPalSizeYPixels] ; /// PAL SD RGBA
     
-    int fillValue = (int)(floor(255.0 * (time/OFXHOSTDEMOCLIPLENGTH)));
-    int realFillValue = fillValue;
-    realFillValue = realFillValue << 8;
-    realFillValue += fillValue;
-    realFillValue = realFillValue << 8;
-    realFillValue += fillValue;
-    realFillValue = realFillValue << 8;
-    realFillValue += fillValue;
+    int fillValue = (int)(floor(255.0 * (time/OFXHOSTDEMOCLIPLENGTH))) & 0xff;
+    OfxRGBAColourB color;
+    color.r = color.g = color.b = fillValue;
+    color.a = 255;
 
-    // now blank it
-    memset(_data, realFillValue, sizeof(OfxRGBAColourB) * kPalSizeXPixels * kPalSizeYPixels);
+    std::fill(_data, _data + kPalSizeXPixels * kPalSizeYPixels, color);
+    // draw the time and the view number in reverse color
+    const int scale = 5;
+    const int charwidth = 4*scale;
+    color.r = color.g = color.b = 255-fillValue;
+    int xx = 50;
+    int yy = 50;
+    int d;
+    d = (int(time)/10)%10;
+    drawDigit(_data, kPalSizeXPixels, kPalSizeYPixels, d, xx, yy, scale, color);
+    xx += charwidth;
+    d = int(time)%10;
+    drawDigit(_data, kPalSizeXPixels, kPalSizeYPixels, d, xx, yy, scale, color);
+    xx += charwidth;
+    d = 10;
+    drawDigit(_data, kPalSizeXPixels, kPalSizeYPixels, d, xx, yy, scale, color);
+    xx += charwidth;
+    d = int(time*10)%10;
+    drawDigit(_data, kPalSizeXPixels, kPalSizeYPixels, d, xx, yy, scale, color);
+    xx = 50;
+    yy += 8*scale;
+    d = int(view)%10;
+    drawDigit(_data, kPalSizeXPixels, kPalSizeYPixels, d, xx, yy, scale, color);
 
     // render scale x and y of 1.0
     setDoubleProperty(kOfxImageEffectPropRenderScale, 1.0, 0);
@@ -110,8 +208,8 @@ namespace MyHost {
     if ((x >= bounds.x1) && ( x< bounds.x2) && ( y >= bounds.y1) && ( y < bounds.y2) )
     {
       int rowBytes = getIntProperty(kOfxImagePropRowBytes);
-      int offset = (y = bounds.y1) * rowBytes + (x - bounds.x1) * sizeof(OfxRGBAColourB);
-      return &(_data[offset]);
+      int offset = (y - bounds.y1) * rowBytes + (x - bounds.x1) * sizeof(OfxRGBAColourB);
+      return reinterpret_cast<OfxRGBAColourB*>(&(reinterpret_cast<char*>(_data)[offset]));
     }
     return 0;
   }
@@ -236,8 +334,8 @@ namespace MyHost {
   }
 
 
-  /// override this to return the rod on the clip cannoical coords!
-  OfxRectD MyClipInstance::getRegionOfDefinition(OfxTime time)
+  /// override this to return the rod on the clip canonical coords!
+  OfxRectD MyClipInstance::getRegionOfDefinition(OfxTime time) const
   {
     /// our clip is pretending to be progressive PAL SD, so return 0<=x<768, 0<=y<576 
     OfxRectD v;
@@ -253,7 +351,7 @@ namespace MyHost {
   /// on the effect instance. Outside a render call, the optionalBounds should
   /// be 'appropriate' for the.
   /// If bounds is not null, fetch the indicated section of the canonical image plane.
-  OFX::Host::ImageEffect::Image* MyClipInstance::getImage(OfxTime time, OfxRectD *optionalBounds)
+  OFX::Host::ImageEffect::Image* MyClipInstance::getImage(OfxTime time, const OfxRectD *optionalBounds)
   {
     if(_name == "Output") {
       if(!_outputImage) {

@@ -225,7 +225,7 @@ If set to anything other than 0.0, the custom interface for this parameter will 
 
 /** @brief The minimum size of a parameter's custom interface, in screen pixels.
 
-    - Type - int x 2
+    - Type - double x 2
     - Property Set - plugin parameter descriptor (read/write) and instance (read only)
     - Default - 10,10
     - Valid Values - greater than (0, 0)
@@ -664,7 +664,7 @@ If a user interface represents a parameter with a slider or similar, this should
 
     - Type - int or double X N
     - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
-    - Default - the largest possible value corresponding to the parameter type (eg: INT_MIN for an integer, -DBL_MAX for a double parameter)
+    - Default - the largest possible value corresponding to the parameter type (eg: INT_MAX for an integer, DBL_MAX for a double parameter)
 
 If a user interface represents a parameter with a slider or similar, this should be the maximum bound on that slider.
 */
@@ -735,6 +735,7 @@ It is an error not to set this property in a custom parameter during a plugin's 
         - ::kOfxParamStringIsFilePath
         - ::kOfxParamStringIsDirectoryPath
         - ::kOfxParamStringIsLabel
+        - ::kOfxParamStringIsRichTextFormat
 
 */
 #define kOfxParamPropStringMode "OfxParamPropStringMode"
@@ -784,7 +785,7 @@ This property is on the \e inArgs property and \e outArgs property of a ::OfxCus
 /** @brief Used by interpolating custom parameters to indicate the time a key occurs at.
 
    - Type - double X 2
-   - Property Set - the inArgs parameter of a ::OfxCustomParamInterpFuncV1 (read only)
+   - Property Set - inArgs parameter of a ::OfxCustomParamInterpFuncV1 (read only)
 
 The two values indicate the absolute times the surrounding keyframes occur at. The keyframes are encoded in a ::kOfxParamPropCustomValue property.
 
@@ -794,7 +795,7 @@ The two values indicate the absolute times the surrounding keyframes occur at. T
 /** @brief Property used by ::OfxCustomParamInterpFuncV1 to indicate the amount of interpolation to perform
 
    - Type - double X 1
-   - Property Set - the inArgs parameter of a ::OfxCustomParamInterpFuncV1 (read only)
+   - Property Set - inArgs parameter of a ::OfxCustomParamInterpFuncV1 (read only)
    - Valid Values - from 0 to 1
 
 This property indicates how far between the two ::kOfxParamPropCustomValue keys to interpolate.
@@ -1162,7 +1163,7 @@ changes a keyframe.  The keyframe indices will not change within a single action
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
   */
-  OfxStatus (*paramCopy)(OfxParamHandle  paramTo, OfxParamHandle  paramFrom, OfxTime dstOffset, OfxRangeD *frameRange);
+  OfxStatus (*paramCopy)(OfxParamHandle  paramTo, OfxParamHandle  paramFrom, OfxTime dstOffset, const OfxRangeD *frameRange);
 
 
   /** @brief Used to group any parameter changes for undo/redo purposes

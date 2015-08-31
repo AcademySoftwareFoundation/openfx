@@ -40,6 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhMemory.h"
 #include "ofxhImageEffect.h"
 #include "ofxhInteract.h"
+#include "ofxOld.h" // old plugins may rely on deprecated properties being present
 
 namespace OFX {
 
@@ -50,10 +51,10 @@ namespace OFX {
       //
       // descriptor
       //
-      static Property::PropSpec interactDescriptorStuffs[] = {
+      static const Property::PropSpec interactDescriptorStuffs[] = {
         { kOfxInteractPropHasAlpha , Property::eInt, 1, true, "0" },
         { kOfxInteractPropBitDepth , Property::eInt, 1, true, "0" },
-        { 0 },
+        Property::propSpecEnd
       };
 
       Descriptor::Descriptor()
@@ -102,31 +103,34 @@ namespace OFX {
 
 
       ////////////////////////////////////////////////////////////////////////////////
-      static Property::PropSpec interactInstanceStuffs[] = {
+      static const Property::PropSpec interactInstanceStuffs[] = {
         { kOfxPropEffectInstance, Property::ePointer, 1, true, NULL },
         { kOfxPropInstanceData, Property::ePointer, 1, false, NULL },
         { kOfxInteractPropPixelScale, Property::eDouble, 2, true, "1.0f" },
         { kOfxInteractPropBackgroundColour , Property::eDouble, 3, true, "0.0f" },
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         { kOfxInteractPropViewportSize, Property::eDouble, 2, true, "100.0f" },
+#endif
         { kOfxInteractPropSlaveToParam , Property::eString, 0, false, ""},
-        { 0 },
+        { kOfxInteractPropSuggestedColour , Property::eDouble, 3, true, "1.0f" },
+        Property::propSpecEnd
       };
 
-      static Property::PropSpec interactArgsStuffs[] = {
+      static const Property::PropSpec interactArgsStuffs[] = {
         { kOfxPropEffectInstance, Property::ePointer, 1, false, NULL },
         { kOfxPropTime, Property::eDouble, 1, false, "0.0" },
         { kOfxImageEffectPropRenderScale, Property::eDouble, 2, false, "0.0" },
         { kOfxInteractPropBackgroundColour , Property::eDouble, 3, false, "0.0f" },
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         { kOfxInteractPropViewportSize, Property::eDouble, 2, false, "0.0f" },
+#endif
         { kOfxInteractPropPixelScale, Property::eDouble, 2, false, "1.0f" },
         { kOfxInteractPropPenPosition, Property::eDouble, 2, false, "0.0" },
-#ifdef kOfxInteractPropPenViewportPosition
-        { kOfxInteractPropPenViewportPosition, Property::eInt, 2, false, "0" },
-#endif
+        { kOfxInteractPropPenViewportPosition, Property::eInt, 2, false, "0" }, // new in OFX 1.2
         { kOfxInteractPropPenPressure, Property::eDouble, 1, false, "0.0" },
         { kOfxPropKeyString, Property::eString, 1, false, "" },
         { kOfxPropKeySym, Property::eInt, 1, false, "0" },
-        { 0 },
+        Property::propSpecEnd
       };
 
       // instance
@@ -142,11 +146,16 @@ namespace OFX {
         _properties.setChainedSet(&desc.getProperties()); /// chain it into the descriptor props
         _properties.setGetHook(kOfxInteractPropPixelScale, this);
         _properties.setGetHook(kOfxInteractPropBackgroundColour,this);
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         _properties.setGetHook(kOfxInteractPropViewportSize,this);
+#endif
+        _properties.setGetHook(kOfxInteractPropSuggestedColour,this);
 
         _argProperties.setGetHook(kOfxInteractPropPixelScale, this);
         _argProperties.setGetHook(kOfxInteractPropBackgroundColour,this);
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         _argProperties.setGetHook(kOfxInteractPropViewportSize,this);
+#endif
       }
 
       Instance::~Instance()
@@ -174,15 +183,21 @@ namespace OFX {
         else if(name == kOfxInteractPropBackgroundColour){
           return 3;
         }
+        else if(name == kOfxInteractPropSuggestedColour
+                ){
+          return 3;
+        }
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         else if(name == kOfxInteractPropViewportSize){
           return 2;
         }
+#endif
         else
           throw Property::Exception(kOfxStatErrValue);
       }
         
       // do nothing function
-      void Instance::reset(const std::string &name) OFX_EXCEPTION_SPEC
+      void Instance::reset(const std::string &/*name*/) OFX_EXCEPTION_SPEC
       {
         // no-op
       }
@@ -201,12 +216,22 @@ namespace OFX {
           getBackgroundColour(first[0],first[1],first[2]);
           return first[index];
         }
+        else if(name == kOfxInteractPropSuggestedColour
+                ){
+          if(index>=3) throw Property::Exception(kOfxStatErrBadIndex);
+          double first[3];
+          bool stat = getSuggestedColour(first[0],first[1],first[2]);
+          if (!stat) throw Property::Exception(kOfxStatReplyDefault);
+          return first[index];
+        }
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         else if(name == kOfxInteractPropViewportSize){
           if(index>=2) throw Property::Exception(kOfxStatErrBadIndex);
           double first[2];
           getViewportSize(first[0],first[1]);
           return first[index];
         }
+#endif
         else
           throw Property::Exception(kOfxStatErrUnknown);
       }
@@ -221,10 +246,18 @@ namespace OFX {
           if(n>3) throw Property::Exception(kOfxStatErrBadIndex);
           getBackgroundColour(first[0],first[1],first[2]);
         }
+        else if(name == kOfxInteractPropSuggestedColour
+                ){
+          if(n>3) throw Property::Exception(kOfxStatErrBadIndex);
+          bool stat = getSuggestedColour(first[0],first[1],first[2]);
+          if (!stat) throw Property::Exception(kOfxStatReplyDefault);
+        }
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         else if(name == kOfxInteractPropViewportSize){
           if(n>2) throw Property::Exception(kOfxStatErrBadIndex);
           getViewportSize(first[0],first[1]);
         }
+#endif
         else
           throw Property::Exception(kOfxStatErrUnknown);
       }
@@ -233,7 +266,7 @@ namespace OFX {
       {        
         int nSlaveParams = _properties.getDimension(kOfxInteractPropSlaveToParam);
                     
-        for(int i=0;i<nSlaveParams;i++){
+        for (int i=0; i<nSlaveParams; i++) {
           std::string param = _properties.getStringProperty(kOfxInteractPropSlaveToParam, i);
           params.push_back(param);
         }
@@ -245,7 +278,7 @@ namespace OFX {
       {
         double pixelScale[2];
         getPixelScale(pixelScale[0], pixelScale[1]);  
-        _argProperties.setDoublePropertyN(kOfxPropEffectInstance, pixelScale, 2);
+        _argProperties.setDoublePropertyN(kOfxInteractPropPixelScale, pixelScale, 2);
         _argProperties.setPointerProperty(kOfxPropEffectInstance, _effectInstance);
         _argProperties.setPointerProperty(kOfxPropInstanceData, _properties.getPointerProperty(kOfxPropInstanceData));
         _argProperties.setDoubleProperty(kOfxPropTime,time);
@@ -257,9 +290,7 @@ namespace OFX {
                                     double  pressure)
       {
         _argProperties.setDoublePropertyN(kOfxInteractPropPenPosition, &penPos.x, 2);
-#ifdef kOfxInteractPropPenViewportPosition
-        _argProperties.setIntPropertyN(kOfxInteractPropPenViewportPosition, &penPosViewport.x, 2);
-#endif
+        _argProperties.setIntPropertyN(kOfxInteractPropPenViewportPosition, &penPosViewport.x, 2); // new in OFX 1.2
         _argProperties.setDoubleProperty(kOfxInteractPropPenPressure, pressure);
       }
 
@@ -373,41 +404,60 @@ namespace OFX {
 
       static OfxStatus interactSwapBuffers(OfxInteractHandle handle)
       {
+        try {
         Interact::Instance *interactInstance = reinterpret_cast<Interact::Instance*>(handle);
         if(interactInstance)
           return interactInstance->swapBuffers();
         else
           return kOfxStatErrBadHandle;
+        } catch (...) {
+          return kOfxStatFailed;
+        }
       }
       
       static OfxStatus interactRedraw(OfxInteractHandle handle)
       {
+        try {
         Interact::Instance *interactInstance = reinterpret_cast<Interact::Instance*>(handle);
         if(interactInstance)
           return interactInstance->redraw();
         else
           return kOfxStatErrBadHandle;
+        } catch (...) {
+          return kOfxStatFailed;
+        }
       }
       
       static OfxStatus interactGetPropertySet(OfxInteractHandle handle, OfxPropertySetHandle *property)
       {
+        try {
         Interact::Base *interact = reinterpret_cast<Interact::Base*>(handle);
+        if (!property) {
+          return kOfxStatErrBadHandle;
+        }
+
         if (interact) {
           *property = interact->getPropHandle();
+
           return kOfxStatOK;
         }
+        *property = NULL;
+
         return kOfxStatErrBadHandle;
+        } catch (...) {
+          return kOfxStatFailed;
+        }
       }
       
       /// the interact suite
-      static OfxInteractSuiteV1 gSuite = {
+      static const OfxInteractSuiteV1 gSuite = {
         interactSwapBuffers,
         interactRedraw,
         interactGetPropertySet
       };
 
       /// function to get the sutie
-      void *GetSuite(int version) {
+      const void *GetSuite(int version) {
         if(version == 1)
           return (void *) &gSuite;
         return NULL;

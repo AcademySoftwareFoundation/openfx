@@ -114,6 +114,23 @@ public :
     }
   }
 
+  OfxStatus setPersistentMessage(const char* type,
+                                 const char* id,
+                                 const char* format,
+                                 va_list args)
+  {
+    return vmessage(type, id, format, args);
+  }
+
+  OfxStatus clearPersistentMessage()
+  {
+    return kOfxStatOK;
+  }
+
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+  /// @see OfxImageEffectOpenGLRenderSuiteV1.flushResources()
+  virtual OfxStatus flushOpenGLResources() const { return kOfxStatFailed; };
+#endif
 };
 
 int main(int argc, char **argv) 

@@ -63,7 +63,7 @@ namespace OFX
         std::string _apiName;
         int _apiVersionMin, _apiVersionMax;
       public:
-        PluginAPICacheI(std::string apiName, int verMin, int verMax)
+        PluginAPICacheI(const std::string &apiName, int verMin, int verMax)
           : _apiName(apiName)
             , _apiVersionMin(verMin)
             , _apiVersionMax(verMax)

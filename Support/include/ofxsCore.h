@@ -96,9 +96,11 @@ of the direct OFX objects and any library side only functions.
 #include "ofxMultiThread.h"
 #include "ofxParam.h"
 #include "ofxProperty.h"
+#include "ofxPixels.h"
 
 #include <assert.h>
 #include <vector>
+#include <list>
 #include <string>
 #include <map>
 #include <exception>
@@ -108,38 +110,6 @@ of the direct OFX objects and any library side only functions.
 #ifdef OFX_CLIENT_EXCEPTION_HEADER
 #include OFX_CLIENT_EXCEPTION_HEADER
 #endif
-
-/** @brief Defines an 8 bit per component RGB pixel 
-
-Should migrate this to the ofxCore.h in a v1.1
-*/
-struct OfxRGBColourB {
-  unsigned char r, g, b;
-};
-
-/** @brief Defines a 16 bit per component RGB pixel
-
-Should migrate this to the ofxCore.h in a v1.1
-*/
-struct OfxRGBColourS {
-  unsigned short r, g, b;
-};
-
-/** @brief Defines a floating point component RGB pixel
-
-Should migrate this to the ofxCore.h in a v1.1
-*/
-struct OfxRGBColourF {
-  float r, g, b;
-};
-
-/** @brief Defines a double precision floating point component RGB pixel
-
-Should migrate this to the ofxCore.h in a v1.1
-*/
-struct OfxRGBColourD {
-  double r, g, b;
-};
 
 /** @brief Defines an integer 3D point
 
@@ -159,8 +129,8 @@ struct Ofx3DPointD {
 
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
-  CLASS &operator=(const CLASS &v1) {assert(false); return *this;}	\
-  CLASS(const CLASS &v) {assert(false); } 
+  CLASS &operator=(const CLASS &) {assert(false); return *this;}	\
+  CLASS(const CLASS &) {assert(false); } 
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries.
 */
@@ -184,7 +154,7 @@ namespace OFX {
   };
 
   /** @brief maps a status to a string for debugging purposes, note a c-str for printf */
-  char * mapStatusToString(OfxStatus stat);
+  const char * mapStatusToString(OfxStatus stat);
 
   /** @brief namespace for OFX support lib exceptions, all derive from std::exception, calling it */
   namespace Exception {
@@ -196,8 +166,8 @@ namespace OFX {
       OfxStatus _status;
     public :
       Suite(OfxStatus s) : _status(s) {}
-      OfxStatus status(void) {return _status;}
-      operator OfxStatus() {return _status;}
+      OfxStatus status(void) const {return _status;}
+      operator OfxStatus() const {return _status;}
 
       /** @brief reimplemented from std::exception */
       virtual const char * what () const throw () {return mapStatusToString(_status);}
@@ -261,7 +231,7 @@ namespace OFX {
     protected :
       std::string _what;
     public :
-      HostInadequate(char *what) : _what(what) {}
+      HostInadequate(const char *what) : _what(what) {}
       virtual ~HostInadequate() throw() {}
 
       /** @brief reimplemented from std::exception */
@@ -322,7 +292,7 @@ namespace OFX {
     void propSetHandle(OfxPropertySetHandle h) { _propHandle = h;}
 
     /** @brief return the handle for this property set */
-    OfxPropertySetHandle propSetHandle(void) {return _propHandle;}
+    OfxPropertySetHandle propSetHandle(void) const {return _propHandle;}
 
     int  propGetDimension(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc, 
       OFX::Exception::PropertyUnknownToHost, 
@@ -347,6 +317,12 @@ namespace OFX {
       OFX::Exception::PropertyValueIllegalToHost, 
       OFX::Exception::Suite);
     void propSetInt(const char* property, int value, int idx, bool throwOnFailure = true) throw(std::bad_alloc, 
+      OFX::Exception::PropertyUnknownToHost, 
+      OFX::Exception::PropertyValueIllegalToHost, 
+      OFX::Exception::Suite);
+
+    // set multiple values
+    void propSetDoubleN(const char* property, const double *value, int count, bool throwOnFailure = true) throw(std::bad_alloc,
       OFX::Exception::PropertyUnknownToHost, 
       OFX::Exception::PropertyValueIllegalToHost, 
       OFX::Exception::Suite);
@@ -399,7 +375,7 @@ namespace OFX {
       OFX::Exception::PropertyValueIllegalToHost, 
       OFX::Exception::Suite);
 
-    /// get a string property with index 0
+    /// get a pointer property with index 0
     void* propGetPointer(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc, 
       OFX::Exception::PropertyUnknownToHost, 
       OFX::Exception::PropertyValueIllegalToHost, 
@@ -434,21 +410,16 @@ namespace OFX {
     {
       return propGetInt(property, 0, throwOnFailure); 
     }
+      
+    std::list<std::string> propGetNString(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc,
+    OFX::Exception::PropertyUnknownToHost,
+    OFX::Exception::PropertyValueIllegalToHost,
+    OFX::Exception::Suite);
+
   };
 
   // forward decl of the image effect
   class ImageEffect;
-
-  /** @brief namespace for memory allocation that is done via wrapping the ofx memory suite */
-  namespace Memory {
-    /** @brief allocate n bytes, returns a pointer to it */
-    void *alloc(size_t nBytes,
-      ImageEffect *handle = 0) throw(std::bad_alloc);
-
-    /** @brief free n previously allocated memory */
-    void free(void *ptr) throw();
-
-  };
 };
 
 // undeclare the protected assign and CC macro

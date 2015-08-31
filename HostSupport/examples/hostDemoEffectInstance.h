@@ -62,6 +62,12 @@ namespace MyHost {
                                const char* format,
                                va_list args);       
     
+    virtual OfxStatus setPersistentMessage(const char* type,
+                                           const char* id,
+                                           const char* format,
+                                           va_list args);
+
+    virtual OfxStatus clearPersistentMessage();       
 
     // The size of the current project in canonical coordinates. 
     // The size of a project is a sub set of the kOfxImageEffectPropProjectExtent. For example a 
@@ -159,6 +165,7 @@ namespace MyHost {
     
     /// get the first and last times available on the effect's timeline
     virtual void timeLineGetBounds(double &t1, double &t2);    
+
   };
 
 }

@@ -39,12 +39,6 @@ England
 #include <windows.h>
 #endif
 
-#ifdef __APPLE__
-#include <AGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-
 #include <stdio.h>
 #include "ofxsImageEffect.h"
 #include "ofxsMultiThread.h"
@@ -124,8 +118,8 @@ public :
     , dstClip_(0)
     , srcClip_(0)
   {
-    dstClip_ = fetchClip("Output");
-    srcClip_ = fetchClip("Source");
+    dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
+    srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
   }
 
   /* Override the render */
@@ -204,6 +198,8 @@ case OFX::eBitDepthFloat : {
   setupAndProcess(fred, args);
                            }
                            break;
+default :
+  OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   }
   else {
@@ -215,7 +211,7 @@ case OFX::eBitDepthUByte : {
                            break;
 
 case OFX::eBitDepthUShort : {
-  ImageInverter<unsigned short, 1, 65536> fred(*this);
+  ImageInverter<unsigned short, 1, 65535> fred(*this);
   setupAndProcess(fred, args);
                             }                          
                             break;
@@ -225,6 +221,8 @@ case OFX::eBitDepthFloat : {
   setupAndProcess(fred, args);
                            }                          
                            break;
+default :
+  OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   } 
 }
@@ -257,11 +255,11 @@ void InvertExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 
 }
 
-void InvertExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context)
+void InvertExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum /*context*/)
 {
   // Source clip only in the filter context
   // create the mandated source clip
-  ClipDescriptor *srcClip = desc.defineClip("Source");
+  ClipDescriptor *srcClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
   srcClip->addSupportedComponent(ePixelComponentRGBA);
   srcClip->addSupportedComponent(ePixelComponentAlpha);
   srcClip->setTemporalClipAccess(false);
@@ -269,14 +267,14 @@ void InvertExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &d
   srcClip->setIsMask(false);
 
   // create the mandated output clip
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
   dstClip->setSupportsTiles(true);
 
 }
 
-OFX::ImageEffect* InvertExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context)
+OFX::ImageEffect* InvertExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum /*context*/)
 {
   return new InvertPlugin(handle);
 }
@@ -287,7 +285,7 @@ namespace OFX
   {  
     void getPluginIDs(OFX::PluginFactoryArray &ids)
     {
-      static InvertExamplePluginFactory p("net.sf.openfx:invertPlugin", 1, 0);
+      static InvertExamplePluginFactory p("net.sf.openfx.invertPlugin", 1, 0);
       ids.push_back(&p);
     }
   }

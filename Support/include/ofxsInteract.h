@@ -48,8 +48,8 @@ of the direct OFX objects and any library side only functions.
 
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
-  CLASS &operator=(const CLASS &v1) {assert(false); return *this;}      \
-  CLASS(const CLASS &v) {assert(false); } 
+  CLASS &operator=(const CLASS &) {assert(false); return *this;}      \
+  CLASS(const CLASS &) {assert(false); } 
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries.
 */
@@ -70,6 +70,9 @@ namespace OFX {
   struct DrawArgs : public InteractArgs {
     DrawArgs(const PropertySet &props);
 
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
+    OfxPointD       viewportSize;      /**< @brief The openGL viewport size for the instance */
+#endif
     OfxPointD       pixelScale;        /**< @brief The current effect time to draw at */
     OfxRGBColourD   backGroundColour;  /**< @brief The current background colour, ignore the A */
   };
@@ -78,8 +81,13 @@ namespace OFX {
   struct PenArgs : public InteractArgs {
     PenArgs(const PropertySet &props);
 
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
+    OfxPointD       viewportSize;      /**< @brief The openGL viewport size for the instance */
+#endif
     OfxPointD       pixelScale;        /**< @brief The current effect time to draw at */
+    OfxRGBColourD   backGroundColour;  /**< @brief The current background colour, ignore the A */
     OfxPointD       penPosition;       /**< @brief The current pen position */
+    OfxPointD       penViewportPosition;/**< @brief The current pen position in viewport coordinates */
     double          penPressure;       /**< @brief The normalised pressure on the pen */
   };
 
@@ -101,6 +109,7 @@ namespace OFX {
   struct FocusArgs : public InteractArgs {
     FocusArgs(const PropertySet &props);
 
+    OfxPointD       viewportSize;      /**< @brief The openGL viewport size for the instance */
     OfxPointD       pixelScale;        /**< @brief The current effect time to draw at */
     OfxRGBColourD   backGroundColour;  /**< @brief The current background colour, ignore the A */
   };
@@ -131,6 +140,9 @@ namespace OFX {
 
     /** @brief Returns the size of a real screen pixel under the interact's cannonical projection */
     OfxPointD getPixelScale(void) const;
+
+    /** @brief The suggested colour to draw a widget in an interact. Returns false if there is no suggestion. */
+    bool getSuggestedColour(OfxRGBColourD &c) const;
 
     /** @brief the background colour */
     OfxRGBColourD getBackgroundColour(void) const;

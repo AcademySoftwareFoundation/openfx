@@ -42,7 +42,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhMemory.h"
 #include "ofxhInteract.h"
 
-#if defined(WIN32) || defined(WIN64)
+#ifdef _MSC_VER
+//Use visual studio extension
 #define __PRETTY_FUNCTION__ __FUNCSIG__
 #endif
 
@@ -52,6 +53,10 @@ namespace OFX {
 
     // forward declare    
     class Plugin;
+
+    namespace Memory {
+      class Instance;
+    }
 
     namespace ImageEffect {
 
@@ -67,7 +72,7 @@ namespace OFX {
         Host();
 
         /// fetch a suite
-        virtual void *fetchSuite(const char *suiteName, int suiteVersion);
+        virtual const void *fetchSuite(const char *suiteName, int suiteVersion);
 
         /// Create a new instance of an image effect plug-in.
         ///
@@ -106,6 +111,50 @@ namespace OFX {
         /// Override this to initialise an image effect descriptor after it has been
         /// created.
         virtual void initDescriptor(Descriptor* desc);
+
+#ifdef OFX_SUPPORTS_MULTITHREAD
+        // these functions must be implemented if the host supports OfxMultiThreadSuiteV1
+        // all the following functions are described in ofxMultiThread.h
+        //
+
+        /// @see OfxMultiThreadSuiteV1.multiThread()
+        virtual OfxStatus multiThread(OfxThreadFunctionV1 func,unsigned int nThreads, void *customArg) = 0;
+          
+        /// @see OfxMultiThreadSuiteV1.multiThreadNumCPUS()
+        virtual OfxStatus multiThreadNumCPUS(unsigned int *nCPUs) const = 0;
+
+        /// @see OfxMultiThreadSuiteV1.multiThreadIndex()
+        virtual OfxStatus multiThreadIndex(unsigned int *threadIndex) const = 0;
+          
+        /// @see OfxMultiThreadSuiteV1.multiThreadIsSpawnedThread()
+        virtual int multiThreadIsSpawnedThread() const = 0;
+          
+        /// @see OfxMultiThreadSuiteV1.mutexCreate()
+        virtual OfxStatus mutexCreate(OfxMutexHandle *mutex, int lockCount) = 0;
+          
+        /// @see OfxMultiThreadSuiteV1.mutexDestroy()
+        virtual OfxStatus mutexDestroy(const OfxMutexHandle mutex) = 0;
+
+        /// @see OfxMultiThreadSuiteV1.mutexLock()
+        virtual OfxStatus mutexLock(const OfxMutexHandle mutex) = 0;
+          
+        /// @see OfxMultiThreadSuiteV1.mutexUnLock()
+        virtual OfxStatus mutexUnLock(const OfxMutexHandle mutex) = 0;
+          
+        /// @see OfxMultiThreadSuiteV1.mutexTryLock()
+        virtual OfxStatus mutexTryLock(const OfxMutexHandle mutex) = 0;
+#endif // OFX_SUPPORTS_MULTITHREAD
+
+#     ifdef OFX_SUPPORTS_OPENGLRENDER
+        /// @see OfxImageEffectOpenGLRenderSuiteV1.flushResources()
+        virtual OfxStatus flushOpenGLResources() const = 0;
+#     endif
+
+        /// override this to use your own memory instance - must inherrit from memory::instance
+        virtual Memory::Instance* newMemoryInstance(size_t nBytes);
+
+        // return an memory::instance calls makeMemoryInstance that can be overriden
+        Memory::Instance* imageMemoryAlloc(size_t nBytes);
       };
 
       /// our global host object, set when the plugin cache is created
@@ -186,6 +235,7 @@ namespace OFX {
         
         /// does changing the named param re-tigger a clip preferences action
         bool isClipPreferencesSlaveParam(const std::string &s) const;
+
       };
 
       /// an image effect plugin descriptor
@@ -196,6 +246,7 @@ namespace OFX {
         // private CC
         Descriptor(const Descriptor &other)
           : Base(other._properties)
+          , Param::SetDescriptor()
           , _plugin(other._plugin)
         {}
 
@@ -204,7 +255,6 @@ namespace OFX {
         std::map<std::string, ClipDescriptor*>  _clips;        ///< clips descriptors by name
         std::vector<ClipDescriptor*>            _clipsByOrder; ///< clip descriptors in order of declaration
         mutable Interact::Descriptor            _overlayDescriptor; ///< descriptor to use for overlays, it has delayed description
-        int _built;
 
       public:
         /// used to construct the global description
@@ -235,7 +285,7 @@ namespace OFX {
         void addClip(const std::string &name, ClipDescriptor *clip);
 
         /// get the clips in order of construction
-        const std::vector<ClipDescriptor*> &getClipsByOrder() 
+        const std::vector<ClipDescriptor*> &getClipsByOrder() const
         {
           return _clipsByOrder;
         }
@@ -345,7 +395,7 @@ namespace OFX {
         bool isFrameVarying() const {return _frameVarying;}
 
         /// pure virtuals that must  be overriden
-        virtual ClipInstance* getClip(const std::string& name);
+        virtual ClipInstance* getClip(const std::string& name) const;
 
         /// override this to make processing abort, return 1 to abort processing
         virtual int abort();
@@ -361,10 +411,18 @@ namespace OFX {
                                               ClipDescriptor* descriptor, 
                                               int index) = 0;
 
+        /// message suite
         virtual OfxStatus vmessage(const char* type,
                                    const char* id,
                                    const char* format,	
                                    va_list args) = 0;  
+
+        virtual OfxStatus setPersistentMessage(const char* type,
+                                               const char* id,
+                                               const char* format,
+                                               va_list args) = 0;
+
+        virtual OfxStatus clearPersistentMessage() = 0;  
 
 
         /// call the effect entry point
@@ -445,7 +503,7 @@ namespace OFX {
 
         /// calculate the default rod for this effect instance
         virtual OfxRectD calcDefaultRegionOfDefinition(OfxTime  time,
-                                                       OfxPointD   renderScale);
+                                                       OfxPointD   renderScale) const;
 
         //
         // actions
@@ -502,23 +560,39 @@ namespace OFX {
         virtual OfxStatus beginInstanceEditAction();
         virtual OfxStatus endInstanceEditAction();
 
+#     ifdef OFX_SUPPORTS_OPENGLRENDER
+        // attach/detach OpenGL context
+        virtual OfxStatus contextAttachedAction();
+        virtual OfxStatus contextDetachedAction();
+#     endif
+          
         // render action
         virtual OfxStatus beginRenderAction(OfxTime  startFrame,
                                             OfxTime  endFrame,
                                             OfxTime  step,
                                             bool     interactive,
-                                            OfxPointD   renderScale);
+                                            OfxPointD   renderScale,
+                                            bool     sequentialRender,
+                                            bool     interactiveRender
+                                            );
 
         virtual OfxStatus renderAction(OfxTime      time,
                                        const std::string &  field,
                                        const OfxRectI &renderRoI,
-                                       OfxPointD   renderScale);
+                                       OfxPointD   renderScale,
+                                       bool     sequentialRender,
+                                       bool     interactiveRender,
+                                       bool     draftRender
+                                       );
 
         virtual OfxStatus endRenderAction(OfxTime  startFrame,
                                           OfxTime  endFrame,
                                           OfxTime  step,
                                           bool     interactive,
-                                          OfxPointD   renderScale);
+                                          OfxPointD   renderScale,
+                                          bool     sequentialRender,
+                                          bool     interactiveRender
+                                          );
 
         /// Call the region of definition action the plugin at the given time
         /// and with the given render scales. The value is returned in rod.

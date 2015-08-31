@@ -35,7 +35,7 @@ England
 
 */
 
-
+#include <limits>
 #include <stdio.h>
 #include "ofxsImageEffect.h"
 #include "ofxsMultiThread.h"
@@ -125,7 +125,7 @@ public :
     , dstClip_(0)
     , noise_(0)
   {
-    dstClip_ = fetchClip("Output");
+    dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
     noise_   = fetchDoubleParam("Noise");
   }
 
@@ -156,8 +156,8 @@ NoisePlugin::setupAndProcess(NoiseGeneratorBase &processor, const OFX::RenderArg
 {
   // get a dst image
   std::auto_ptr<OFX::Image>  dst(dstClip_->fetchImage(args.time));
-  OFX::BitDepthEnum         dstBitDepth    = dst->getPixelDepth();
-  OFX::PixelComponentEnum   dstComponents  = dst->getPixelComponents();
+  //OFX::BitDepthEnum         dstBitDepth    = dst->getPixelDepth();
+  //OFX::PixelComponentEnum   dstComponents  = dst->getPixelComponents();
 
   // set the images
   processor.setDstImg(dst.get());
@@ -184,7 +184,7 @@ NoisePlugin::getClipPreferences(OFX::ClipPreferencesSetter &clipPreferences)
 
 /** @brief The get RoD action.  We flag an infinite rod */
 bool 
-NoisePlugin::getRegionOfDefinition(const OFX::RegionOfDefinitionArguments &args, OfxRectD &rod)
+NoisePlugin::getRegionOfDefinition(const OFX::RegionOfDefinitionArguments &/*args*/, OfxRectD &rod)
 {
   // we can generate noise anywhere on the image plan, so set our RoD to be infinite
   rod.x1 = rod.y1 = kOfxFlagInfiniteMin;
@@ -223,6 +223,8 @@ NoisePlugin::render(const OFX::RenderArguments &args)
         setupAndProcess(fred, args);
       }
       break;
+    default :
+      OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   }
   else {
@@ -237,7 +239,7 @@ NoisePlugin::render(const OFX::RenderArguments &args)
 
     case OFX::eBitDepthUShort : 
       {
-        NoiseGenerator<unsigned short, 1, 65536> fred(*this);
+        NoiseGenerator<unsigned short, 1, 65535> fred(*this);
         setupAndProcess(fred, args);
       }                          
       break;
@@ -248,6 +250,8 @@ NoisePlugin::render(const OFX::RenderArguments &args)
         setupAndProcess(fred, args);
       }                          
       break;
+    default :
+      OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   } 
 }
@@ -261,6 +265,7 @@ void NoiseExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.setLabels("Noise", "Noise", "Noise");
   desc.setPluginGrouping("OFX");
   desc.addSupportedContext(eContextGenerator);
+  desc.addSupportedContext(eContextGeneral);
   desc.addSupportedBitDepth(eBitDepthUByte);
   desc.addSupportedBitDepth(eBitDepthUShort);
   desc.addSupportedBitDepth(eBitDepthFloat);
@@ -274,9 +279,16 @@ void NoiseExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.setRenderTwiceAlways(false);
 }        
 
-void NoiseExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context) 
+void NoiseExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum /*context*/)
 {
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  // there has to be an input clip, even for generators
+  ClipDescriptor* srcClip = desc.defineClip( kOfxImageEffectSimpleSourceClipName );
+  srcClip->addSupportedComponent( OFX::ePixelComponentRGBA );
+  srcClip->addSupportedComponent( OFX::ePixelComponentAlpha );
+  srcClip->setSupportsTiles(true);
+  srcClip->setOptional(true);
+
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
   dstClip->setSupportsTiles(true);
@@ -295,7 +307,7 @@ void NoiseExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &de
   page->addChild(*param);
 }
 
-ImageEffect* NoiseExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum context)
+ImageEffect* NoiseExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum /*context*/)
 {
   return new NoisePlugin(handle);
 }
@@ -306,7 +318,7 @@ namespace OFX
   {
     void getPluginIDs(OFX::PluginFactoryArray &ids)
     {
-      static NoiseExamplePluginFactory p("net.sf.openfx:noisePlugin", 1, 0);
+      static NoiseExamplePluginFactory p("net.sf.openfx.noisePlugin", 1, 0);
       ids.push_back(&p);
     }
   };
