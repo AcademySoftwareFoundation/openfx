@@ -1167,7 +1167,7 @@ namespace OFX {
 #endif
 
     /// Start doing progress.
-    void progressStart(const std::string &message);
+    void progressStart(const std::string &message, const std::string &messageid = "");
 
     /// finish yer progress
     void progressEnd();

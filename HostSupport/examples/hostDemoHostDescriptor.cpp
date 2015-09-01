@@ -58,7 +58,7 @@ namespace MyHost
   {
     // set host properties... TODO
     _properties.setIntProperty(kOfxPropAPIVersion, 1, 0);
-    _properties.setIntProperty(kOfxPropAPIVersion, 3, 0);
+    _properties.setIntProperty(kOfxPropAPIVersion, 4, 1);
     _properties.setStringProperty(kOfxPropName, "OFXDemoHost");
     _properties.setStringProperty(kOfxPropLabel, "OFX Demo Host");
     _properties.setIntProperty(kOfxPropVersion, 1, 0);
