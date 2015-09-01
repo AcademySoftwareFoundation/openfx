@@ -1164,6 +1164,7 @@ namespace OFX {
 #else
         _pixelComponentCount = 0;
 #endif
+        break;
       default:
         _pixelComponentCount = 0;
         break;

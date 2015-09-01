@@ -52,7 +52,7 @@ ofxuIsUnPremultiplied(OfxPropertySetHandle clipOrImageProps)
 inline bool
 ofxuIsUnPremultiplied(OfxImageClipHandle clipHandle)
 {
-  OfxPropertySetHandle props;
+  OfxPropertySetHandle props = NULL;
   gEffectHost->clipGetPropertySet(clipHandle, &props);
   return ofxuIsUnPremultiplied(props);
 }
@@ -63,8 +63,8 @@ inline bool
 ofxuIsClipConnected(OfxImageEffectHandle pluginInstance, const char *clipName)
 {
   int connected = 0;
-  OfxImageClipHandle clipHandle;
-  OfxPropertySetHandle props;
+  OfxImageClipHandle clipHandle = NULL;
+  OfxPropertySetHandle props = NULL;
   gEffectHost->clipGetHandle(pluginInstance, clipName, &clipHandle, &props);
 
   gPropHost->propGetInt(props,  kOfxImageClipPropConnected, 0, &connected);
@@ -76,7 +76,7 @@ ofxuIsClipConnected(OfxImageEffectHandle pluginInstance, const char *clipName)
 inline void
 ofxuGetProjectSetup(OfxImageEffectHandle pluginInstance, OfxPointD &projSize, OfxPointD &projOffset)
 {
-  OfxPropertySetHandle props;
+  OfxPropertySetHandle props = NULL;
   gEffectHost->getPropertySet(pluginInstance, &props);
   gPropHost->propGetDoubleN(props, kOfxImageEffectPropProjectSize, 2, &projSize.x); 
   gPropHost->propGetDoubleN(props, kOfxImageEffectPropProjectOffset, 2, &projOffset.x); 
@@ -102,7 +102,7 @@ ofxuGetTime(OfxPropertySetHandle propSet)
 inline double
 ofxuGetTime(OfxImageEffectHandle pluginInstance)
 {
-  OfxPropertySetHandle props;
+  OfxPropertySetHandle props = NULL;
   gEffectHost->getPropertySet(pluginInstance, &props);
   return ofxuGetTime(props);
 }
@@ -111,7 +111,7 @@ ofxuGetTime(OfxImageEffectHandle pluginInstance)
 inline void *
 ofxuGetImageData(OfxPropertySetHandle imageHandle)
 {
-  void *r;
+  void *r = NULL;
   gPropHost->propGetPointer(imageHandle, kOfxImagePropData, 0, &r);
   return r;
 }
@@ -119,7 +119,7 @@ ofxuGetImageData(OfxPropertySetHandle imageHandle)
 inline OfxRectI
 ofxuGetImageBounds(OfxPropertySetHandle imageHandle)
 {
-  OfxRectI r;
+  OfxRectI r = {0, 0, 0, 0};
   gPropHost->propGetIntN(imageHandle, kOfxImagePropBounds, 4, &r.x1);
   return r;
 }
@@ -127,7 +127,7 @@ ofxuGetImageBounds(OfxPropertySetHandle imageHandle)
 inline int
 ofxuGetImageRowBytes(OfxPropertySetHandle imageHandle)
 {
-  int r;
+  int r = 0;
   gPropHost->propGetInt(imageHandle, kOfxImagePropRowBytes, 0, &r);
   return r;
 }
@@ -151,7 +151,7 @@ ofxuMapPixelDepth(char *bitString)
 inline int
 ofxuGetImagePixelDepth(OfxPropertySetHandle imageHandle, bool isUnMapped = false)
 {
-  char *bitString;
+  char *bitString = NULL;
   if(isUnMapped)
     gPropHost->propGetString(imageHandle, kOfxImageClipPropUnmappedPixelDepth, 0, &bitString); // get unmapped component types of a clip
   else
@@ -162,7 +162,7 @@ ofxuGetImagePixelDepth(OfxPropertySetHandle imageHandle, bool isUnMapped = false
 inline bool
 ofxuGetImagePixelsAreRGBA(OfxPropertySetHandle imageHandle, bool unmapped = false)
 {
-  char *v;
+  char *v = NULL;
   if(unmapped)
     gPropHost->propGetString(imageHandle, kOfxImageClipPropUnmappedComponents, 0, &v); // get unmapped pixel depths
   else
@@ -173,7 +173,7 @@ ofxuGetImagePixelsAreRGBA(OfxPropertySetHandle imageHandle, bool unmapped = fals
 inline int
 ofxuGetClipPixelDepth(OfxImageClipHandle clipHandle, bool unmapped = false)
 {
-  OfxPropertySetHandle props;
+  OfxPropertySetHandle props = NULL;
   gEffectHost->clipGetPropertySet(clipHandle, &props);
   return ofxuGetImagePixelDepth(props, unmapped); // same property
 }
@@ -181,7 +181,7 @@ ofxuGetClipPixelDepth(OfxImageClipHandle clipHandle, bool unmapped = false)
 inline bool
 ofxuGetClipPixelsAreRGBA(OfxImageClipHandle clipHandle, bool unmapped = false)
 {
-  OfxPropertySetHandle props;
+  OfxPropertySetHandle props = NULL;
   gEffectHost->clipGetPropertySet(clipHandle, &props);
   return ofxuGetImagePixelsAreRGBA(props, unmapped); // same property
 }
@@ -197,7 +197,7 @@ ofxuClipGetFormat(OfxImageClipHandle clipHandle, int &bitDepth, bool &isRGBA, bo
 inline void
 ofxuSetInteractInstanceData(OfxInteractHandle interactInstance, void *data)
 {
-  OfxPropertySetHandle props;
+  OfxPropertySetHandle props = NULL;
   gInteractHost->interactGetPropertySet(interactInstance, &props);
   gPropHost->propSetPointer(props, kOfxPropInstanceData, 0, data); 
 }
@@ -206,9 +206,9 @@ ofxuSetInteractInstanceData(OfxInteractHandle interactInstance, void *data)
 inline void *
 ofxuGetInteractInstanceData(OfxInteractHandle interactInstance)
 {
-  OfxPropertySetHandle props;
+  OfxPropertySetHandle props = NULL;
   gInteractHost->interactGetPropertySet(interactInstance, &props);
-  void *data;
+  void *data = NULL;
   gPropHost->propGetPointer(props, kOfxPropInstanceData, 0, &data);   
   return data;
 }
@@ -217,7 +217,7 @@ ofxuGetInteractInstanceData(OfxInteractHandle interactInstance)
 inline void
 ofxuSetEffectInstanceData(OfxImageEffectHandle effect, void *data)
 {
-  OfxPropertySetHandle props;
+  OfxPropertySetHandle props = NULL;
   gEffectHost->getPropertySet(effect, &props);
   gPropHost->propSetPointer(props, kOfxPropInstanceData, 0, data); 
 }
@@ -226,9 +226,9 @@ ofxuSetEffectInstanceData(OfxImageEffectHandle effect, void *data)
 inline void *
 ofxuGetEffectInstanceData(OfxImageEffectHandle effect)
 {
-  OfxPropertySetHandle props;
+  OfxPropertySetHandle props = NULL;
   gEffectHost->getPropertySet(effect, &props);
-  void *data;
+  void *data = NULL;
   gPropHost->propGetPointer(props, kOfxPropInstanceData, 0, &data);   
   return data;
 }

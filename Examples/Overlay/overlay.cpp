@@ -229,7 +229,7 @@ interactPenMotion(OfxImageEffectHandle  pluginInstance,
   // Have we grabbed on a pen down already?
   if(data->selected) {
     // get the pen position
-    OfxPointD penPos;
+    OfxPointD penPos = {0., 0.};
     gPropHost->propGetDoubleN(inArgs, kOfxInteractPropPenPosition, 2, &penPos.x);
 
     // set the value of the 'point' param

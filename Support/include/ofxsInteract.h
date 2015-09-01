@@ -109,7 +109,9 @@ namespace OFX {
   struct FocusArgs : public InteractArgs {
     FocusArgs(const PropertySet &props);
 
+#ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
     OfxPointD       viewportSize;      /**< @brief The openGL viewport size for the instance */
+#endif
     OfxPointD       pixelScale;        /**< @brief The current effect time to draw at */
     OfxRGBColourD   backGroundColour;  /**< @brief The current background colour, ignore the A */
   };
