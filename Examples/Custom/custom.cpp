@@ -38,19 +38,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <windows.h>
 #endif 
 
-#include <string.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif
-#include <math.h>
+#include <cmath>
+#include <stdexcept>
+#include <new>
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
 
 #include "../include/ofxUtilities.H" // example support utils
+
+#if defined __APPLE__ || defined linux || defined __FreeBSD__
+#  define EXPORT __attribute__((visibility("default")))
+#elif defined _WIN32
+#  define EXPORT OfxExport
+#else
+#  error Not building on your operating system quite yet
+#endif
 
 #define kPointParam "point"
 
@@ -130,7 +140,7 @@ setCustomParam(OfxImageEffectHandle pluginInstance, double x, double y)
 
 // The callback passed across the API do do custom parameter animation
 static OfxStatus 
-customParamInterpFunction(OfxImageEffectHandle instance,  
+customParamInterpFunction(OfxImageEffectHandle /*instance*/,
 			     OfxPropertySetHandle inArgs,
 			     OfxPropertySetHandle outArgs)
 {
@@ -160,39 +170,39 @@ customParamInterpFunction(OfxImageEffectHandle instance,
   // now encode the value and set it 
   char str[1024];
   writeCustomParam(str, 1024, x, y);
-  gPropHost->propSetString(inArgs, kOfxParamPropCustomValue, 0, str);
+  gPropHost->propSetString(outArgs, kOfxParamPropCustomValue, 0, str);
 
   return kOfxStatOK;
 }
 
 // plugin instance construction
 static OfxStatus
-createInstance(OfxImageEffectHandle  instance)
+createInstance(OfxImageEffectHandle  /*instance*/)
 {
   return kOfxStatOK;
 }
 
 // plugin instance destruction
 static OfxStatus
-destroyInstance(OfxImageEffectHandle  instance)
+destroyInstance(OfxImageEffectHandle  /*instance*/)
 {
   return kOfxStatOK;
 }
 
 static OfxStatus
-isIdentity(OfxImageEffectHandle pluginInstance,
-	   OfxPropertySetHandle inArgs,
+isIdentity(OfxImageEffectHandle /*pluginInstance*/,
+	   OfxPropertySetHandle /*inArgs*/,
 	   OfxPropertySetHandle outArgs)
 {
   // set the property in the out args indicating which is the identity clip
-  gPropHost->propSetString(outArgs, kOfxPropName, 0, "Source");
+  gPropHost->propSetString(outArgs, kOfxPropName, 0, kOfxImageEffectSimpleSourceClipName);
   return kOfxStatOK;
 }
 
 // the process code  that the host sees
-static OfxStatus render(OfxImageEffectHandle  instance,
-			OfxPropertySetHandle inArgs,
-			OfxPropertySetHandle outArg)
+static OfxStatus render(OfxImageEffectHandle  /*instance*/,
+			OfxPropertySetHandle /*inArgs*/,
+			OfxPropertySetHandle /*outArg*/)
 {
   // do nothing as this should never be called as isIdentity should always be trapped
   return kOfxStatOK;
@@ -221,7 +231,7 @@ getInteractData(OfxInteractHandle interactInstance)
 
 // creation of an interact instance
 static OfxStatus 
-interactDescribe(OfxInteractHandle interactDescriptor)
+interactDescribe(OfxInteractHandle /*interactDescriptor*/)
 {
   // and we are good
   return kOfxStatOK;
@@ -257,7 +267,7 @@ interactCreateInstance(OfxImageEffectHandle pluginInstance,
 
 // destruction of an interact instance
 static OfxStatus 
-interactDestroyInstance(OfxImageEffectHandle pluginInstance, 
+interactDestroyInstance(OfxImageEffectHandle /*pluginInstance*/,
 			OfxInteractHandle interactInstance)
 {
   MyInteractData *data = getInteractData(interactInstance);
@@ -368,7 +378,10 @@ interactPenDown(OfxImageEffectHandle pluginInstance,
 
   // get the point param's value
   double x, y;
-  getCustomParam(pluginInstance, x, y);
+  OfxStatus stat = getCustomParam(pluginInstance, x, y);
+  if (stat != kOfxStatOK) {
+    return stat;
+  }
 
   // scale it up to the project size as it is a normalised spatial parameter
   x = projOffset.x + x * projSize.x;
@@ -389,9 +402,9 @@ interactPenDown(OfxImageEffectHandle pluginInstance,
 }
 
 static OfxStatus
-interactPenUp(OfxImageEffectHandle pluginInstance, 
+interactPenUp(OfxImageEffectHandle /*pluginInstance*/,
 	      OfxInteractHandle interactInstance, 
-	      OfxPropertySetHandle inArgs)
+	      OfxPropertySetHandle /*inArgs*/)
 {
   // get my data handle
   MyInteractData *data = getInteractData(interactInstance);
@@ -407,7 +420,7 @@ interactPenUp(OfxImageEffectHandle pluginInstance,
 ////////////////////////////////////////////////////////////////////////////////
 // the entry point for the overlay
 static OfxStatus
-overlayMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs)
+overlayMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle /*outArgs*/)
 {
   OfxInteractHandle interact = (OfxInteractHandle ) handle;
   
@@ -442,6 +455,7 @@ overlayMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs
     else if(strcmp(action, kOfxInteractActionPenUp) == 0) {
       return interactPenUp(pluginInstance, interact, inArgs);
     }
+      return kOfxStatReplyDefault;
   }
 }
 
@@ -457,7 +471,7 @@ describe(OfxImageEffectHandle effect)
     return stat;
   
   // see if the host supports overlays and custom params and custom param animation
-  int supportsOverlays, supportsCustomAnim;
+  int supportsOverlays;
   gPropHost->propGetInt(gHost->host, kOfxImageEffectPropSupportsOverlays, 0, &supportsOverlays);
   if(supportsOverlays == 0)
     return kOfxStatErrMissingHostFeature;
@@ -485,16 +499,16 @@ describe(OfxImageEffectHandle effect)
 }
 
 static OfxStatus
-describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
+describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle /*inArgs*/)
 {
   // define the mandated single source clip
   OfxPropertySetHandle props;
-  gEffectHost->clipDefine(effect, "Source", &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectSimpleSourceClipName, &props);
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
 
   // define the output clip
-  gEffectHost->clipDefine(effect, "Output", &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectOutputClipName, &props);
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
   
@@ -528,6 +542,7 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
 static OfxStatus
 pluginMain(const char *action,  const void *handle,  OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs)
 {
+  try {
   // cast to appropriate type
   OfxImageEffectHandle effect = (OfxImageEffectHandle) handle;
 
@@ -537,10 +552,35 @@ pluginMain(const char *action,  const void *handle,  OfxPropertySetHandle inArgs
   else if(strcmp(action, kOfxImageEffectActionDescribeInContext) == 0) {
     return describeInContext(effect, inArgs);
   }
+  else if(strcmp(action, kOfxActionCreateInstance) == 0) {
+    return createInstance(effect);
+  } 
+  else if(strcmp(action, kOfxActionDestroyInstance) == 0) {
+    return destroyInstance(effect);
+  } 
   else if(strcmp(action, kOfxImageEffectActionIsIdentity) == 0) {
     return isIdentity(effect, inArgs, outArgs);
   }    
-    
+  else if(strcmp(action, kOfxImageEffectActionRender) == 0) {
+    return render(effect, inArgs, outArgs);
+  }    
+  } catch (std::bad_alloc) {
+    // catch memory
+    //std::cout << "OFX Plugin Memory error." << std::endl;
+    return kOfxStatErrMemory;
+  } catch ( const std::exception& e ) {
+    // standard exceptions
+    //std::cout << "OFX Plugin error: " << e.what() << std::endl;
+    return kOfxStatErrUnknown;
+  } catch (int err) {
+      // ho hum, gone wrong somehow
+      return err;
+  } catch ( ... ) {
+    // everything else
+    //std::cout << "OFX Plugin error" << std::endl;
+    return kOfxStatErrUnknown;
+  }
+
   // other actions to take the default value
   return kOfxStatReplyDefault;
 }
@@ -558,7 +598,7 @@ static OfxPlugin basicPlugin =
 {       
   kOfxImageEffectPluginApi,
   1,
-  "uk.co.thefoundry:CustomParamPlugin",
+  "uk.co.thefoundry.CustomParamPlugin",
   1,
   0,
   setHostFunc,
@@ -566,7 +606,7 @@ static OfxPlugin basicPlugin =
 };
    
 // the two mandated functions
-OfxPlugin *
+EXPORT OfxPlugin *
 OfxGetPlugin(int nth)
 {
   if(nth == 0)
@@ -574,7 +614,7 @@ OfxGetPlugin(int nth)
   return 0;
 }
  
-int
+EXPORT int
 OfxGetNumberOfPlugins(void)
 {       
   return 1;

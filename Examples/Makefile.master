@@ -47,23 +47,9 @@ endif
 
 OBJECTPATH = $(OS)-$(BITS)-$(DEBUGNAME)
 
-$(PATHTOROOT)/Library/$(OBJECTPATH)/%.o : $(PATHTOROOT)/Library/%.cpp
-	mkdir -p $(PATHTOROOT)/Library/$(OBJECTPATH)
-	$(CXX) -c $(CXXFLAGS) $< -o $@
-
 $(OBJECTPATH)/%.o : %.cpp
 	mkdir -p $(OBJECTPATH)
 	$(CXX) -c $(CXXFLAGS) $< -o $@
-
-SUPPORTOBJECTS = $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsMultiThread.o \
-		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsInteract.o \
-		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsProperty.o \
-		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsLog.o \
-		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsCore.o \
-		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsPropertyValidation.o \
-		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsImageEffect.o \
-		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsParams.o 
-
 
 all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
 
@@ -97,8 +83,8 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
       ARCH = FreeBSD-x86-64
     endif
     LINKFLAGS := $(LINKFLAGS) $(BITSFLAG)
-  endif 
-  ifeq ($(OS),Darwin) 
+  endif
+  ifeq ($(OS),Darwin)
     ifeq ($(BITS), Universal)
       # Universal 32/64 is useful only on OSX 10.4 (i386/ppc), 10.5 (i386/ppc) and 10.6 (i386/x86_64).
       # OSX 10.6 (Snow Leopard) or later, build for i386/x86_64
@@ -117,15 +103,15 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
         MACOSXSDK := 10.5
         ARCHFLAGS=-arch i386 -arch ppc
       endif
-      BITSFLAG = -isysroot /Developer/SDKs/MacOSX$(MACOSX).sdk $(ARCHFLAGS) -mmacosx-version-min=$(MACOSX) -fPIC
+      BITSFLAG = -isysroot /Developer/SDKs/MacOSX$(MACOSXSDK).sdk $(ARCHFLAGS) -mmacosx-version-min=$(MACOSX) -fPIC
     endif
     LINKFLAGS = $(BITSFLAG) -bundle -fvisibility=hidden -exported_symbols_list $(PATHTOROOT)/include/osxSymbols -framework OpenGL -Wl,-rpath,@loader_path/../Frameworks -Wl,-rpath,@loader_path/../Libraries
     ARCH = MacOS
   endif
 
-  CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include -I$(PATHTOROOT)/Plugins/include $(BITSFLAG) -fvisibility=hidden $(CXXFLAGS_ADD)
+  CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include $(BITSFLAG) -fvisibility=hidden $(CXXFLAGS_ADD)
 
-$(OBJECTPATH)/$(PLUGINNAME).ofx: $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS)) $(SUPPORTOBJECTS)
+$(OBJECTPATH)/$(PLUGINNAME).ofx: $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS))
 	mkdir -p $(OBJECTPATH)/
 	$(CXX) $^ $(LINKFLAGS) $(LDFLAGS_ADD) -o $@
 
@@ -136,9 +122,9 @@ $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle: $(OBJECTPATH)/$(PLUGINNAME).ofx
 	if [ -n "$(RESOURCES)" ]; then mkdir -p $@/Contents/Resources; cp $(RESOURCES)  $@/Contents/Resources; fi
 	if [ $(DEBUGNAME) = "release" -a $(ARCH) = "MacOS" ]; then bash $(PATHTOROOT)/include/osxDeploy.sh $@ $(PLUGINNAME).ofx; fi
 
-clean :
-	rm -rf $(SUPPORTOBJECTS) $(OBJECTPATH)/ $(PATHTOROOT)/Library/$(OBJECTPATH)/ 
+clean:
+	rm -rf $(OBJECTPATH)/ $(PATHTOROOT)/Library/$(OBJECTPATH)/ 
 
-release :
+release:
 	make DEBUGFLAG=-O3
 

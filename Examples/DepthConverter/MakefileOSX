@@ -1,6 +1,7 @@
-CXXFLAGS = -I../../include 
+CXXFLAGS = -I../../include
 OPTIMIZER = -g
 
-depthConverter.bundle : depthConverter.o
-	$(CXX) -bundle depthConverter.o -o depthConverter.bundle
-
+depthConverter.ofx : depthConverter.o
+	$(CXX) -bundle depthConverter.o -o depthConverter.ofx
+	mkdir -p depthConverter.ofx.bundle/Contents/MacOS/
+	cp depthConverter.ofx depthConverter.ofx.bundle/Contents/MacOS/

@@ -43,7 +43,7 @@ ofxuFetchHostSuites(void)
 inline bool
 ofxuIsUnPremultiplied(OfxPropertySetHandle clipOrImageProps)
 {
-  char *premult = "";
+  char *premult = NULL;
   gPropHost->propGetString(clipOrImageProps, kOfxImageEffectPropPreMultiplication, 0, &premult);
   return strcmp(premult, kOfxImageUnPreMultiplied) == 0;
 }
@@ -60,7 +60,7 @@ ofxuIsUnPremultiplied(OfxImageClipHandle clipHandle)
 
 // Convinience wrapper to check for connection of a clip
 inline bool
-ofxuIsClipConnected(OfxImageEffectHandle pluginInstance, char *clipName)
+ofxuIsClipConnected(OfxImageEffectHandle pluginInstance, const char *clipName)
 {
   int connected = 0;
   OfxImageClipHandle clipHandle;
@@ -278,6 +278,12 @@ inline OfxPropertySetHandle ofxuGetImage(OfxImageClipHandle &clip,
       gEffectHost->clipReleaseImage(imageProps);
       imageProps = NULL;
     }
+  } else {
+    rowBytes  = 0;
+    bitDepth  = 0;
+    isAlpha   = false;
+    rect.x1 = rect.x2 = rect.y1 = rect.y2 = 0;
+    data      =  NULL;
   }
   return imageProps;
 }
