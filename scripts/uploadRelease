@@ -1,4 +1,4 @@
-#! /bin/sh 
+#! /bin/sh
 
 # Upload all the files for a release to Sourceforge (and anywhere else they need to go)
 
@@ -38,6 +38,9 @@ set -x
 #
 $RSYNC $RSYNCOPTS *.tar.gz $SF_USER@$SF_MACHINE:$SF_TOPDIR/openfx/openfx-$LABEL/
 
+# upload the release notes (note name change release-notes.md -> readme.md)
+$RSYNC $RSYNCOPTS release-notes.md $SF_USER@$SF_MACHINE:$SF_TOPDIR/openfx/openfx-$LABEL/readme.md
+
 #
 # Upload the docs to SF:
 #
@@ -69,6 +72,3 @@ $RSYNC -az $RSYNCOPTS \
 # Do this separately due to name change
 $RSYNC -az $RSYNCOPTS doc/ \
   $SF_USER@$SFWEB_MACHINE:$SFWEB_TOPDIR/Documentation/$LABEL/Doxygen
-
-
-

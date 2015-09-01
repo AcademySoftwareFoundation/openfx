@@ -3,7 +3,7 @@
 The authoritative source for information about OFX is http://openeffects.org/
 
 * [OFX Programming Guide By Example](https://github.com/ofxa/openfx/tree/master/Guide)
-* [OFX API v. 1.3 Reference](http://openeffects.org/documentation/api_doc)
+* [OFX API v. 1.4 Reference](http://openeffects.org/documentation/api_doc)
 * [OFX API Programming Guide](http://openeffects.org/documentation/guide)
 * [OFX API Programming Reference](http://openeffects.org/documentation/reference)
 * [OFX Discussion Google Group](https://groups.google.com/forum/#!forum/ofx-discussion)
@@ -29,6 +29,6 @@ An application which allows you build a video clip by layering video clips, stil
 
 ## About the Open Effects Association
 
-The Open Effects Association (OFX), a non-profit organization, develops and promotes open standards across the visual effects community. The founding members come from Assimilate, Autodesk, Digieffects, FilmLight, The Foundry, Genarts and RE:Vision FX. These are companies which have helped artists create ground-breaking VFX shots on nearly every blockbuster movie.
+The Open Effects Association (OFX), a non-profit organization, develops and promotes open standards across the visual effects community. The founding members come from Assimilate, Autodesk, Digieffects, FilmLight, The Foundry, GenArts and RE:Vision FX. These are companies which have helped artists create ground-breaking VFX shots on nearly every blockbuster movie.
 
-The Association’s initial focus is to improve the OpenFX image processing plug-in standard. This goal of this standard is to reduce development effort and support needed for plug-ins across different compositing and editing host platforms.
+The Association's initial focus is to improve the OpenFX image processing plug-in standard. This goal of this standard is to reduce development effort and support needed for plug-ins across different compositing and editing host platforms.

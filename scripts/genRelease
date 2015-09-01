@@ -36,6 +36,8 @@ fi
 rm -r doc
 cd include
 rm -r doc
+# delete Emacs backups, else they could end up in the release.
+find . -name '*~' -exec rm {} +
 
 # Build the doxygen docs
 doxygen ofx.doxy  || die "building doxygen docs"
