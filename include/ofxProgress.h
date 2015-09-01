@@ -74,6 +74,8 @@ typedef struct OfxProgressSuiteV1 {
       \arg \e label          - a text label to display in any message portion of the
                                progress object's user interface. A UTF8 string.
 
+      \precondition          - There is no currently ongoing progress display for this instance.
+
       \returns
       - ::kOfxStatOK - the handle is now valid for use
       - ::kOfxStatFailed - the progress object failed for some reason
@@ -123,8 +125,14 @@ typedef struct OfxProgressSuiteV2 {
 
       \arg \e effectInstance - the instance of the plugin this progress bar is
                                associated with. It cannot be NULL.
-      \arg \e label          - a text label to display in any message portion of the
+      \arg \e message        - a text label to display in any message portion of the
                                progress object's user interface. A UTF8 string.
+      \arg \e messageId      - plugin-specified id to associate with this message.
+                               If overriding the message in an XML resource, the message
+			       is identified with this, this may be NULL, or "", in
+			       which case no override will occur.
+			       New in V2 of this suite.
+      \precondition          - There is no currently ongoing progress display for this instance.
 
       \returns
       - ::kOfxStatOK - the handle is now valid for use
