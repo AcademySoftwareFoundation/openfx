@@ -221,7 +221,7 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 
 /** @brief bool property to indicate that an effect should be considered deprecated
  - Type - int x 1
- - Property Set - image effect descriptor (read/write)
+ - Property Set - image effect descriptor (read/write) image effect (read only)
  - Default - 0
  - Valid Values - 0 or 1
  When set to 1, the host may disable using this plugin in new projects.

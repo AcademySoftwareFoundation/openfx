@@ -270,6 +270,11 @@ namespace OFX {
         /// Indicates to the host that a view aware plugin produces the same image independent of the view being rendered
         int getViewInvariance() const;
 #endif
+
+#ifdef OFX_EXTENSIONS_NATRON
+        /// is this effect deprecated
+        bool isDeprecated() const;
+#endif
       };
 
       /// an image effect plugin descriptor

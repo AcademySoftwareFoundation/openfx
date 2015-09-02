@@ -686,6 +686,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NATRON
   /** @brief indicate if the host may add a channel selector */
   void setChannelSelector(PixelComponentEnum v);
+
+  /** @brief indicate that the plugin is deprecated */
+  void setIsDeprecated(bool v);
 #endif
   };
 

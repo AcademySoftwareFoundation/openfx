@@ -1095,30 +1095,15 @@ namespace OFX {
   /** @brief indicate if the host may add a channel selector */
   void ImageEffectDescriptor::setChannelSelector(PixelComponentEnum v)
   {
-    // the header says this property is on the effect instance, but on Nuke it only exists on the effect descriptor
     if (gHostDescription.supportsChannelSelector) {
-      switch(v)
-      {
-      case ePixelComponentNone :
-        _effectProps.propSetString(kNatronOfxImageEffectPropChannelSelector, kOfxImageComponentNone, false);
-        break;
-
-      case ePixelComponentRGBA :
-        _effectProps.propSetString(kNatronOfxImageEffectPropChannelSelector, kOfxImageComponentNone, false);
-        break;
-
-      case ePixelComponentRGB :
-        _effectProps.propSetString(kNatronOfxImageEffectPropChannelSelector, kOfxImageComponentNone, false);
-        break;
-
-      case ePixelComponentAlpha :
-        _effectProps.propSetString(kNatronOfxImageEffectPropChannelSelector, kOfxImageComponentNone, false);
-        break;
-
-      default :
-        break;
-      }
+      _effectProps.propSetString(kNatronOfxImageEffectPropChannelSelector, mapPixelComponentEnumToStr(v), false);
     }
+  }
+
+  /** @brief indicate that this plugin is deprecated */
+  void ImageEffectDescriptor::setIsDeprecated(bool v)
+  {
+    _effectProps.propSetInt(kNatronOFXImageEffectPropDeprecated, v, false);
   }
 #endif
 
