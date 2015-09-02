@@ -82,6 +82,10 @@ namespace MyHost {
     /// vmessage
     virtual OfxStatus clearPersistentMessage();
 
+#ifdef OFX_SUPPORTS_DIALOG
+    virtual OfxStatus notifyRedrawPending();
+#endif
+
 #ifdef OFX_SUPPORTS_OPENGLRENDER
     /// @see OfxImageEffectOpenGLRenderSuiteV1.flushResources()
     virtual OfxStatus flushOpenGLResources() const { return kOfxStatFailed; };

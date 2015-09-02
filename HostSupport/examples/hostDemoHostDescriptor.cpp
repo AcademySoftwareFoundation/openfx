@@ -168,4 +168,12 @@ namespace MyHost
   {
     return kOfxStatOK;
   }
+
+#ifdef OFX_SUPPORTS_DIALOG
+  // dialog
+  OfxStatus notifyRedrawPending()
+  {
+    return kOfxStatReplyDefault;
+  }
+#endif
 }

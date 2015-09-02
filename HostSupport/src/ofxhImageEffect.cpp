@@ -32,6 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ofx
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
+#ifdef OFX_SUPPORTS_DIALOG
+#include "ofxDialog.h"
+#endif
 #ifdef OFX_EXTENSIONS_VEGAS
 #include "ofxSonyVegas.h"
 #endif
@@ -3159,6 +3162,44 @@ namespace OFX {
         clearPersistentMessage
       };
 
+#ifdef OFX_SUPPORTS_DIALOG
+      ////////////////////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////////////
+      // Dialog suite functions
+      static OfxStatus requestDialog(OfxImageEffectHandle imageEffect, void *user_data)
+      {
+        try {
+          ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(imageEffect);
+
+          if (!effectBase || !effectBase->verifyMagic()) {
+            return kOfxStatErrBadHandle;
+          }
+
+          ImageEffect::Instance *effectInstance = reinterpret_cast<ImageEffect::Instance*>(effectBase);
+          OfxStatus stat;
+          if(effectInstance){
+            stat = effectInstance->requestDialog(user_data);
+          }
+          else{
+            stat = kOfxStatErrBadHandle;
+          }
+          return stat;
+        } catch (...) {
+          return kOfxStatFailed;
+        }
+      }
+
+      static OfxStatus notifyredrawPending()
+      {
+        return gImageEffectHost->notifyRedrawPending();
+      }
+
+      /// dialog suite for an image effect plugin
+      static const struct OfxDialogSuiteV1 gDialogSuite = {
+        requestDialog,
+        notifyredrawPending
+      };
+#endif // OFX_SUPPORTS_DIALOG
 
       ////////////////////////////////////////////////////////////////////////////////
       /// make an overlay interact for an image effect
@@ -3519,6 +3560,14 @@ namespace OFX {
           else 
             return NULL;
         }
+#ifdef OFX_SUPPORTS_DIALOG
+        else if (strcmp(suiteName, kOfxDialogSuite)==0) {
+          if(suiteVersion==1)
+            return (void *)&gDialogSuite;
+          else 
+            return NULL;
+        }
+#endif
         else if (strcmp(suiteName, kOfxInteractSuite)==0) {
           return Interact::GetSuite(suiteVersion);
         }

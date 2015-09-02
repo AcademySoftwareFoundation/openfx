@@ -127,6 +127,13 @@ public :
     return kOfxStatOK;
   }
 
+#ifdef OFX_SUPPORTS_DIALOG
+  OfxStatus notifyRedrawPending()
+  {
+    return kOfxStatReplyDefault;
+  }
+#endif
+
 #ifdef OFX_SUPPORTS_OPENGLRENDER
   /// @see OfxImageEffectOpenGLRenderSuiteV1.flushResources()
   virtual OfxStatus flushOpenGLResources() const { return kOfxStatFailed; };

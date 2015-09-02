@@ -145,6 +145,11 @@ namespace OFX {
         virtual OfxStatus mutexTryLock(const OfxMutexHandle mutex) = 0;
 #endif // OFX_SUPPORTS_MULTITHREAD
 
+#ifdef OFX_SUPPORTS_DIALOG
+        // dialog suite
+        virtual OfxStatus notifyRedrawPending() = 0;
+#endif
+
 #     ifdef OFX_SUPPORTS_OPENGLRENDER
         /// @see OfxImageEffectOpenGLRenderSuiteV1.flushResources()
         virtual OfxStatus flushOpenGLResources() const = 0;
@@ -460,6 +465,10 @@ namespace OFX {
 
         virtual OfxStatus clearPersistentMessage() = 0;  
 
+#ifdef OFX_SUPPORTS_DIALOG
+        // dialog suite
+        virtual OfxStatus requestDialog(void* user_data) = 0;
+#endif
 
         /// call the effect entry point
         virtual OfxStatus mainEntry(const char *action, 
