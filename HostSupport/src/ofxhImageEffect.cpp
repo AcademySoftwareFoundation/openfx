@@ -2399,8 +2399,7 @@ namespace OFX {
           std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionGetTimeDomain<<"()->"<<StatStr(st);
           if (st == kOfxStatOK) {
               std::cout << ": ("<<outArgs.getDoubleProperty(kOfxImageEffectPropFrameRange,0)<<","<<outArgs.getDoubleProperty(kOfxImageEffectPropFrameRange,1)<<")";
-          }
-          std::cout << std::endl;
+          }          std::cout << std::endl;
 #       endif
         if(st!=kOfxStatOK) return st;
 
@@ -2410,7 +2409,27 @@ namespace OFX {
         return kOfxStatOK;
       }
 
-      
+ #ifdef OFX_SUPPORTS_DIALOG
+        // OfxDialogSuiteV1
+        /// @see kOfxActionDialog
+      OfxStatus Instance::dialog(void *user_data)
+      {
+#       ifdef OFX_DEBUG_ACTIONS
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionDialog<<"("<<user_data<<")"<<std::endl;
+#       endif
+        OfxStatus st = mainEntry(kOfxActionDialog,
+                                 user_data,
+                                 0,
+                                 0);
+#       ifdef OFX_DEBUG_ACTIONS
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionDialog<<"("<<user_data<<")->"<<StatStr(st);
+          std::cout << std::endl;
+#       endif
+
+        return st;
+      }
+#endif
+
       /// implemented for Param::SetInstance
       void Instance::paramChangedByPlugin(Param::Instance *param)
       {

@@ -736,6 +736,12 @@ namespace OFX {
         // time domain
         virtual OfxStatus getTimeDomainAction(OfxRangeD& range);
 
+#ifdef OFX_SUPPORTS_DIALOG
+        // OfxDialogSuiteV1
+        /// @see kOfxActionDialog
+        virtual OfxStatus dialog(void *user_data);
+#endif
+
         /// Get the interact description, this will also call describe on the interact
         /// This will return NULL if there is not main entry point or if the description failed
         /// otherwise it will return the described overlay
