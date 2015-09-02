@@ -49,6 +49,19 @@ ifeq ($(DEBUGFLAG),-O3)
   DEBUGNAME = release
 endif
 
+ifeq ($(OS),$(filter $(OS),MINGW64_NT-6.1 MINGW32_NT-6.1))
+  PLUGINPATH=C:\\Program Files\\Common Files\\OFX\\Plugins
+endif
+ifeq ($(OS),Linux)
+  PLUGINPATH=/usr/OFX/Plugins
+endif
+ifeq ($(OS),FreeBSD)
+  PLUGINPATH=/usr/OFX/Plugins
+endif
+ifeq ($(OS),Darwin)
+  PLUGINPATH=/Library/OFX/Plugins
+endif
+
 OBJECTPATH = $(OS)-$(BITS)-$(DEBUGNAME)
 
 $(PATHTOROOT)/Library/$(OBJECTPATH)/%.o : $(PATHTOROOT)/Library/%.cpp
@@ -68,8 +81,15 @@ SUPPORTOBJECTS = $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsMultiThread.o \
 		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsImageEffect.o \
 		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsParams.o 
 
+.PHONY: all install uninstall
 
 all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
+
+install:
+	(cd $(OBJECTPATH); tar cf - $(PLUGINNAME).ofx.bundle) | (cd "$(PLUGINPATH)"; tar xvf -)
+
+uninstall:
+	rm -rf "$(PLUGINPATH)/$(PLUGINNAME).ofx.bundle"
 
   ifeq ($(OS),$(filter $(OS),MINGW64_NT-6.1 MINGW32_NT-6.1))
     LINKFLAGS = -shared -fvisibility=hidden -Xlinker --version-script=$(PATHTOROOT)/include/linuxSymbols -lopengl32
