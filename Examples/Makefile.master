@@ -33,6 +33,10 @@ ifeq ($(CONFIG), release)
   DEBUGFLAG = -O3 -DNDEBUG
   DEBUGNAME = release
 endif
+ifeq ($(CONFIG), relwithdebinfo)
+  DEBUGFLAG = -O2 -g -DNDEBUG
+  DEBUGNAME = relwithdebinfo
+endif
 
 BITS := 32
 ifeq ($(shell getconf LONG_BIT),64)
