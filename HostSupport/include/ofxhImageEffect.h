@@ -147,6 +147,13 @@ namespace OFX {
 
 #ifdef OFX_SUPPORTS_DIALOG
         // dialog suite
+        // In OfxDialogSuiteV1, only the host can figure out which effect instance triggered
+        // that request.
+
+        /// @see OfxDialogSuiteV1.RequestDialog()
+        virtual OfxStatus requestDialog(void* user_data) = 0;
+
+        /// @see OfxDialogSuiteV1.NotifyRedrawPending()
         virtual OfxStatus notifyRedrawPending() = 0;
 #endif
 
@@ -469,11 +476,6 @@ namespace OFX {
                                                va_list args) = 0;
 
         virtual OfxStatus clearPersistentMessage() = 0;  
-
-#ifdef OFX_SUPPORTS_DIALOG
-        // dialog suite
-        virtual OfxStatus requestDialog(void* user_data) = 0;
-#endif
 
         /// call the effect entry point
         virtual OfxStatus mainEntry(const char *action, 

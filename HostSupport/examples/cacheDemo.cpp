@@ -128,6 +128,13 @@ public :
   }
 
 #ifdef OFX_SUPPORTS_DIALOG
+  /// @see OfxDialogSuiteV1.RequestDialog()
+  OfxStatus requestDialog(void* user_data)
+  {
+    return kOfxStatFailed;
+  }
+
+  /// @see OfxDialogSuiteV1.NotifyRedrawPending()
   OfxStatus notifyRedrawPending()
   {
     return kOfxStatReplyDefault;

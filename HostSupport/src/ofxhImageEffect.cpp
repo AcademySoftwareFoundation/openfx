@@ -3174,27 +3174,11 @@ namespace OFX {
       ////////////////////////////////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////////////
       // Dialog suite functions
-      static OfxStatus requestDialog(OfxImageEffectHandle imageEffect, void *user_data)
+      static OfxStatus requestDialog(void *user_data)
       {
-        try {
-          ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(imageEffect);
-
-          if (!effectBase || !effectBase->verifyMagic()) {
-            return kOfxStatErrBadHandle;
-          }
-
-          ImageEffect::Instance *effectInstance = reinterpret_cast<ImageEffect::Instance*>(effectBase);
-          OfxStatus stat;
-          if(effectInstance){
-            stat = effectInstance->requestDialog(user_data);
-          }
-          else{
-            stat = kOfxStatErrBadHandle;
-          }
-          return stat;
-        } catch (...) {
-          return kOfxStatFailed;
-        }
+        // In OfxDialogSuiteV1, only the host can figure out which effect instance triggered
+        // that request.
+        return gImageEffectHost->requestDialog(user_data);
       }
 
       static OfxStatus notifyredrawPending()
@@ -3203,7 +3187,7 @@ namespace OFX {
       }
 
       /// dialog suite for an image effect plugin
-      static const struct OfxDialogSuiteV1 gDialogSuite = {
+      static const struct OfxDialogSuiteV1 gDialogSuiteV1 = {
         requestDialog,
         notifyredrawPending
       };
@@ -3571,7 +3555,7 @@ namespace OFX {
 #ifdef OFX_SUPPORTS_DIALOG
         else if (strcmp(suiteName, kOfxDialogSuite)==0) {
           if(suiteVersion==1)
-            return (void *)&gDialogSuite;
+            return (void *)&gDialogSuiteV1;
           else 
             return NULL;
         }

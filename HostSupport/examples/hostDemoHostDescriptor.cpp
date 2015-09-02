@@ -171,7 +171,14 @@ namespace MyHost
 
 #ifdef OFX_SUPPORTS_DIALOG
   // dialog
-  OfxStatus notifyRedrawPending()
+  /// @see OfxDialogSuiteV1.RequestDialog()
+  OfxStatus Host::requestDialog(void* user_data)
+  {
+    return kOfxStatFailed;
+  }
+
+  /// @see OfxDialogSuiteV1.NotifyRedrawPending()
+  OfxStatus Host::notifyRedrawPending()
   {
     return kOfxStatReplyDefault;
   }

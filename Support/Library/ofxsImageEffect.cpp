@@ -1911,7 +1911,7 @@ namespace OFX {
   void ImageEffect::requestDialog(void *userData)
   {
     if(!OFX::Private::gDialogSuite || !OFX::Private::gDialogSuite->RequestDialog){ throwHostMissingSuiteException("requestDialog"); }
-    OfxStatus stat = OFX::Private::gDialogSuite->RequestDialog(_effectHandle, userData);
+    OfxStatus stat = OFX::Private::gDialogSuite->RequestDialog(userData);
     throwSuiteStatusException(stat);
   }
 
@@ -2104,7 +2104,7 @@ namespace OFX {
 
 #ifdef OFX_SUPPORTS_DIALOG
   /** @brief called in the host's UI thread after a plugin has requested a dialog @see requestDialog() */
-  void ImageEffect::dialog(void *userData)
+  void ImageEffect::dialog(void */*userData*/)
   {
   }
 #endif
@@ -3426,21 +3426,6 @@ namespace OFX {
       effectInstance->endChanged(reason);
     }
 
-#ifdef OFX_SUPPORTS_DIALOG
-    /** @brief Library side dialog action */
-    static
-    void
-      dialogAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs)
-    {
-      ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
-
-      void *userData = inArgs.propGetPointer(kOfxPropUserData, false);
-
-      // and call the plugin client code
-      effectInstance->dialog(userData);
-    }
-#endif
-
 #ifdef OFX_EXTENSIONS_VEGAS
     /** @brief Library side uplift vegas keyframe action */
     static
@@ -3830,16 +3815,17 @@ namespace OFX {
           instance->contextDetached();
         }
 #endif
-
 #ifdef OFX_SUPPORTS_DIALOG
         else if(action == kOfxActionDialog) {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
 
-          // call the dialog action
-          dialogAction(handle, inArgs);
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+
+          // call the dialog action (user_data is in the raw handle)
+          instance->dialog(const_cast<void*>(handleRaw));
         }
 #endif
-
 #ifdef OFX_EXTENSIONS_VEGAS
         else if(action == kOfxImageEffectActionVegasKeyframeUplift) {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
@@ -3863,7 +3849,6 @@ namespace OFX {
         }
 #endif
 #ifdef OFX_EXTENSIONS_NUKE
-
         else if(action == kFnOfxImageEffectActionGetClipComponents) {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
