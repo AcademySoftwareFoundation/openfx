@@ -387,6 +387,8 @@ namespace OFX {
         return kOfxImageComponentRGB;
       case ePixelComponentAlpha:
         return kOfxImageComponentAlpha;
+      case ePixelComponentNone:
+        return kOfxImageComponentNone;
 #ifdef OFX_EXTENSIONS_NUKE
       case ePixelComponentMotionVectors:
         return kFnOfxImageComponentMotionVectors;
