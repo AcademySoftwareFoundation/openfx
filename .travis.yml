@@ -53,9 +53,9 @@ install:
     then
         exit 0;
     fi
-  - if [[ ${TRAVIS_OS_NAME} == "linux" -a "$CC" = "gcc" ];
+  - if [ ${TRAVIS_OS_NAME} = "linux" -a "$CC" = "gcc" ];
     then
-        sudo apt-get doxygen xsltproc;
+        sudo apt-get install doxygen xsltproc;
         sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;
         sudo apt-get update;
         sudo apt-get install gcc-4.8 g++-4.8;
