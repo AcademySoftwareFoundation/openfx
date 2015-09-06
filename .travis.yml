@@ -72,7 +72,7 @@ script:
   - make $J CONFIG=debug
   - make clean CONFIG=debug
   - make $J -C HostSupport DEBUG=true OPTIMIZE="-g -Wall -DOFX_EXTENSIONS_VEGAS -DOFX_EXTENSIONS_NUKE -DOFX_EXTENSIONS_NATRON -DOFX_EXTENSIONS_TUTTLE -DOFX_DEBUG_ACTIONS -DOFX_DEBUG_PARAMETERS -DOFX_DEBUG_PROPERTIES -DOFX_SUPPORTS_OPENGLRENDER -DOFX_SUPPORTS_DIALOG"
-  - if [[ ${TRAVIS_OS_NAME} == "linux" -a "$CC" = "gcc" ];
+  - if [ ${TRAVIS_OS_NAME} = "linux" -a "$CC" = "gcc" ];
     then
         make -C Documentation;
     fi
