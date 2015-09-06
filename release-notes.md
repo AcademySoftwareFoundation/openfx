@@ -16,8 +16,8 @@ Documentation and more info can be found at:
 This is version 1.4 of the OFX API.  Significant additions include a
 Dialog Suite for plugins to request the host to allow them to put up a
 modal dialog, a NativeOrigin host property, draft render quality
-support, half-float format tag for OpenGL rendering, and a new
-internationalizable version of the progress suite.
+support, half-float format tag available for CPU rendering (not just
+OpenGL), and a new internationalizable version of the progress suite.
 
 A number of ambiguities in the spec have also been clarified in this
 version, including allowing OpenGL processing and tiled rendering to

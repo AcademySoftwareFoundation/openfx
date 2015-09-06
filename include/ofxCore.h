@@ -14,7 +14,7 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name The Open Effects Association Ltd, nor the names of its 
+    * Neither the name The Open Effects Association Ltd, nor the names of its
       contributors may be used to endorse or promote products derived from this
       software without specific prior written permission.
 
@@ -91,7 +91,7 @@ typedef struct OfxHost {
 
 /** @brief Entry point for plug-ins
 
-  \arg \e action   - ASCII c string indicating which action to take 
+  \arg \e action   - ASCII c string indicating which action to take
   \arg \e instance - object to which action should be applied, this will need to be cast to the appropriate blind data type depending on the \e action
   \arg \e inData   - handle that contains action specific properties
   \arg \e outData  - handle where the plug-in should set various action specific properties
@@ -115,7 +115,7 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
  *
  */
 typedef struct OfxPlugin {
-  /** Defines the type of the plug-in, this will tell the host what the plug-in does. e.g.: an image 
+  /** Defines the type of the plug-in, this will tell the host what the plug-in does. e.g.: an image
       effects plug-in would be a "OfxImageEffectPlugin"
    */
   const char		*pluginApi;
@@ -130,20 +130,20 @@ typedef struct OfxPlugin {
       name and no non printing chars.
       For example "uk.co.somesoftwarehouse.myPlugin"
   */
-  const char 		*pluginIdentifier; 
-  
+  const char 		*pluginIdentifier;
+
   /** Major version of this plug-in, this gets incremented when backwards compatibility is broken. */
   unsigned int 	 pluginVersionMajor;
-  
+
   /**  Major version of this plug-in, this gets incremented when software is changed,
        but does not break backwards compatibility. */
   unsigned int   pluginVersionMinor;
 
   /** @brief Function the host uses to connect the plug-in to the host's api fetcher
-      
+
       \arg \e fetchApi - pointer to host's API fetcher
 
-      Mandatory function. 
+      Mandatory function.
 
       The very first function called in a plug-in. The plug-in \em must \em not call any OFX functions within this, it must only set its local copy of the host pointer.
 
@@ -154,7 +154,7 @@ typedef struct OfxPlugin {
         - the pointer suite is valid until the plug-in is unloaded
   */
   void     (*setHost)(OfxHost *host);
- 
+
   /** @brief Main entry point for plug-ins
 
   Mandatory function.
@@ -229,14 +229,14 @@ OfxExport OfxPlugin *OfxGetPlugin(int nth);
 OfxExport int OfxGetNumberOfPlugins(void);
 
 /**
-   \defgroup PropertiesAll Ofx Properties 
+   \defgroup PropertiesAll Ofx Properties
 
 These strings are used to identify properties within OFX, they are broken up by the host suite or API they relate to.
 */
 /*@{*/
 
 /**
-   \defgroup PropertiesGeneral General Properties 
+   \defgroup PropertiesGeneral General Properties
 
 These properties are general properties and  apply to may objects across OFX
 */
@@ -282,7 +282,7 @@ The output of an effect should only ever depend on the state of its parameters, 
 This is a string that indicates the file path where the plug-in was found by the host. The path is in the native
 path format for the host OS (eg:  UNIX directory separators are forward slashes, Windows ones are backslashes).
 
-The path is to the bundle location, see \ref InstallationLocation. 
+The path is to the bundle location, see \ref InstallationLocation.
 eg:  '/usr/OFX/Plugins/AcmePlugins/AcmeFantasticPlugin.ofx.bundle'
 */
 #define kOfxPluginPropFilePath "OfxPluginPropFilePath"
@@ -363,7 +363,7 @@ This is a string giving a potentially verbose description of the effect.
     - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject. Typically readable and writable in most cases.
     - Default - the ::kOfxPropName the object was created with.
 
-The label is what a user sees on any interface in place of the object's name. 
+The label is what a user sees on any interface in place of the object's name.
 
 Note that resetting this will also reset ::kOfxPropShortLabel and ::kOfxPropLongLabel.
 */
@@ -420,7 +420,7 @@ Argument property for the ::kOfxActionInstanceChanged action.
     - Type - pointer X 1
     - Property Set - on an interact instance (read only)
 
-This property is used to link an object to the effect. For example if the plug-in supplies an openGL overlay for an image effect, 
+This property is used to link an object to the effect. For example if the plug-in supplies an openGL overlay for an image effect,
 the interact instance will have one of these so that the plug-in can connect back to the effect the GUI links to.
 */
 #define kOfxPropEffectInstance "OfxPropEffectInstance"
@@ -472,7 +472,7 @@ typedef struct OfxPointD {
 
 /** @brief Used to flag infinite rects. Set minimums to this to indicate infinite
 
-This is effectively INT_MAX. 
+This is effectively INT_MAX.
  */
 #define kOfxFlagInfiniteMax INT_MAX
 
@@ -521,8 +521,8 @@ typedef struct OfxRectD {
 /** @brief String used to label unsigned 16 bit integer samples */
 #define kOfxBitDepthShort "OfxBitDepthShort"
 
-/** @brief String used to label OpenGL half-float (16 bit floating point) samples
- *  \version Added in Version 1.4.
+/** @brief String used to label half-float (16 bit floating point) samples
+ *  \version Added in Version 1.4. Was in ofxOpenGLRender.h before.
  */
 #define kOfxBitDepthHalf "OfxBitDepthHalf"
 
@@ -530,16 +530,16 @@ typedef struct OfxRectD {
 #define kOfxBitDepthFloat "OfxBitDepthFloat"
 
 /**
-   \defgroup StatusCodes Status Codes 
+   \defgroup StatusCodes Status Codes
 
 These strings are used to identify error states within ofx, they are returned
-by various host suite functions, as well as plug-in functions. The valid return codes 
+by various host suite functions, as well as plug-in functions. The valid return codes
 for each function are documented with that function.
 */
 /*@{*/
 
 /**
-   \defgroup StatusCodesGeneral General Status Codes 
+   \defgroup StatusCodesGeneral General Status Codes
 
 General status codes start at 1 and continue until 999
 
@@ -554,7 +554,7 @@ General status codes start at 1 and continue until 999
 
 /** @brief Status error code for a fatal error
 
-  Only returned in the case where the plug-in or host cannot continue to function and needs to be restarted. 
+  Only returned in the case where the plug-in or host cannot continue to function and needs to be restarted.
  */
 #define kOfxStatErrFatal ((int)2)
 
