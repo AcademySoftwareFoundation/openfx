@@ -61,7 +61,7 @@ install:
     then
         if [ "$BUILDDOC" = 1 ]; then
             sudo apt-get install doxygen xsltproc;
-	fi
+        fi
         sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;
         sudo apt-get update;
         sudo apt-get install gcc-4.8 g++-4.8;
@@ -101,3 +101,8 @@ addons:
     build_command: "make $J CONFIG=debug"
     # Pattern to match selecting branches that will run analysis
     branch_pattern: coverity_scan
+
+# Local Variables:
+# indent-tabs-mode: nil
+# coding: utf-8
+# End:
