@@ -35,6 +35,7 @@ addons:
     - gcc-4.8
     - g++-4.8
     - doxygen
+    - xsltproc
     
 # Travis CI has 1.5 cores per VM, take advantage of it
 # But first, the makefiles have to be fixed: all plugins are using the same .o's
@@ -52,17 +53,14 @@ install:
     then
         exit 0;
     fi
-  - if [[ ${TRAVIS_OS_NAME} == "linux" ]];
+  - if [[ ${TRAVIS_OS_NAME} == "linux" -a "$CC" = "gcc" ];
     then
-        sudo apt-get install doxygen;
-        if [ "$CC" = "$TEST_CC" ];
-        then
-            sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;
-            sudo apt-get update;
-            sudo apt-get install gcc-4.8 g++-4.8;
-            sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90;
-            sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90;
-        fi
+        sudo apt-get doxygen xsltproc
+        sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;
+        sudo apt-get update;
+        sudo apt-get install gcc-4.8 g++-4.8;
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90;
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90;
     fi
 
 script:
@@ -74,7 +72,10 @@ script:
   - make $J CONFIG=debug
   - make clean CONFIG=debug
   - make $J -C HostSupport DEBUG=true OPTIMIZE="-g -Wall -DOFX_EXTENSIONS_VEGAS -DOFX_EXTENSIONS_NUKE -DOFX_EXTENSIONS_NATRON -DOFX_EXTENSIONS_TUTTLE -DOFX_DEBUG_ACTIONS -DOFX_DEBUG_PARAMETERS -DOFX_DEBUG_PROPERTIES -DOFX_SUPPORTS_OPENGLRENDER -DOFX_SUPPORTS_DIALOG"
-  - make -C Documentation
+  - if [[ ${TRAVIS_OS_NAME} == "linux" -a "$CC" = "gcc" ];
+    then
+        make -C Documentation;
+    fi
 
 addons:
   coverity_scan:
