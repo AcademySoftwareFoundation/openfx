@@ -1,3 +1,5 @@
+
+# set BUILDDOC to 1 to build documentation on travis
 env:
   global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
@@ -9,6 +11,10 @@ env:
    # Coverity script test mode (if true no uploading, avoid reaching the quota)
    # usual processing: false.
    - coverity_scan_script_test_mode=false
+   - BUILDDOC=0
+   # Travis CI has 1.5 cores per VM, take advantage of it
+   # But first, the makefiles have to be fixed: all plugins are using the same .o's
+   #- MAKEFLAGS="-j 2"
 
 os:
   - linux
@@ -37,14 +43,6 @@ addons:
     - doxygen
     - xsltproc
     
-# Travis CI has 1.5 cores per VM, take advantage of it
-# But first, the makefiles have to be fixed: all plugins are using the same .o's
-#env:
-#  - MAKEFLAGS="-j 2"
-
-# set BUILDDOC to 1 to build documentation on travis
-env:
-  - BUILDDOC=0
 
 before_install:
   - date -u
