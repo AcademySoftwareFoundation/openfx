@@ -68,8 +68,12 @@ void Binary::load()
 #if defined (UNIX)
   _dlHandle = dlopen(_binaryPath.c_str(), RTLD_LAZY|RTLD_LOCAL);
 #else
+#ifdef UNICODE
   std::wstring ws = stringToWideString(_binaryPath);
   _dlHandle = LoadLibrary(ws.c_str());
+#else
+  _dlHandle = LoadLibrary(_binaryPath.c_str());
+#endif
 #endif
   if (_dlHandle == 0) {
 #if defined (UNIX)
