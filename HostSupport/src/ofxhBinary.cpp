@@ -31,6 +31,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace OFX;
 
+#ifdef WINDOWS
+static std::wstring stringToWideString(const std::string& s) {
+    int len;
+    int slength = (int)s.length() + 1;
+    len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
+    wchar_t* buf = new wchar_t[len];
+    MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
+    std::wstring r(buf);
+    delete[] buf;
+    return r;
+}
+#endif
+
 Binary::Binary(const std::string &binaryPath): _binaryPath(binaryPath), _invalid(false), _dlHandle(0), _users(0)
 {
   struct stat sb;
@@ -55,7 +68,8 @@ void Binary::load()
 #if defined (UNIX)
   _dlHandle = dlopen(_binaryPath.c_str(), RTLD_LAZY|RTLD_LOCAL);
 #else
-  _dlHandle = LoadLibrary(_binaryPath.c_str());
+  ws = stringToWideString(_binaryPath);
+  _dlHandle = LoadLibrary(ws.c_str());
 #endif
   if (_dlHandle == 0) {
 #if defined (UNIX)
