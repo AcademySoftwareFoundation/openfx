@@ -319,7 +319,7 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
     {
       return;
     }
-  
+
   while (1)
 #endif
     {
@@ -327,7 +327,8 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
       std::string name = de->d_name;
       bool isdir = true;
 #else
-      std::string name = findData.cFileName;
+      std::wstring wname = findData.cFileName;
+      std::string name((const char*)&wname[0], sizeof(wchar_t)/sizeof(char)*wname.size());
       bool isdir = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
 #endif
       if (name.find(".ofx.bundle") != std::string::npos) {
