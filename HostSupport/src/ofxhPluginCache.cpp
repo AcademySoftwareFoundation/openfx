@@ -52,6 +52,7 @@
 #include "ofxhPluginCache.h"
 #include "ofxhHost.h"
 #include "ofxhXml.h"
+#include "ofxhUtilities.h"
 
 #if defined (__linux__) || defined (__FreeBSD__)
 
@@ -332,12 +333,12 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
 #if defined (UNIX)
   while (dirent *de = readdir(d))
 #elif defined (WINDOWS)
-#ifdef UNICODE
+# ifdef UNICODE
     std::wstring ws = stringToWideString((dir + "\\*"));
     findHandle = FindFirstFile(ws.c_str(), &findData);
-#else
+# else
 	findHandle = FindFirstFile((dir + "\\*").c_str(), &findData);
-#endif 
+# endif
   if (findHandle == INVALID_HANDLE_VALUE) 
     {
       return;
@@ -350,12 +351,12 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
       std::string name = de->d_name;
       bool isdir = true;
 #else
-#ifdef UNICODE
+#   ifdef UNICODE
       std::wstring wname = findData.cFileName;
-      std::string name((const char*)&wname[0], sizeof(wchar_t)/sizeof(char)*wname.size());
-#else
+      std::string name((const char*)&wname[0], (sizeof(wchar_t)/sizeof(char))*wname.size());
+#   else
 	  std::string name = findData.cFileName;
-#endif
+#   endif
       bool isdir = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
 #endif
       if (name.find(".ofx.bundle") != std::string::npos) {

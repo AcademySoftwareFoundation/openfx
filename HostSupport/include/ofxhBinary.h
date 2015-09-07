@@ -61,10 +61,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace OFX 
 {
 
-#ifdef WINDOWS
-std::wstring stringToWideString(const std::string& s);
-#endif
-    
   /// class representing a DLL/Shared Object/etc
   class Binary {
     /// destruction will close the library and invalidate
