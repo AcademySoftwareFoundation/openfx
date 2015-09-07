@@ -312,7 +312,8 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
 #if defined (UNIX)
   while (dirent *de = readdir(d))
 #elif defined (WINDOWS)
-    findHandle = FindFirstFile((dir + "\\*").c_str(), &findData);
+    std::wstring ws = stringToWideString((dir + "\\*"));
+    findHandle = FindFirstFile(ws.c_str(), &findData);
   
   if (findHandle == INVALID_HANDLE_VALUE) 
     {
