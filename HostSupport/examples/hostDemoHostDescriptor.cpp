@@ -168,4 +168,19 @@ namespace MyHost
   {
     return kOfxStatOK;
   }
+
+#ifdef OFX_SUPPORTS_DIALOG
+  // dialog
+  /// @see OfxDialogSuiteV1.RequestDialog()
+  OfxStatus Host::requestDialog(void* user_data)
+  {
+    return kOfxStatFailed;
+  }
+
+  /// @see OfxDialogSuiteV1.NotifyRedrawPending()
+  OfxStatus Host::notifyRedrawPending()
+  {
+    return kOfxStatReplyDefault;
+  }
+#endif
 }

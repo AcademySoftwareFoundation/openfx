@@ -66,7 +66,7 @@ namespace OFX {
               ns += "&#x";
               if (c > 0xf) {
                 int d = c / 0x10;
-                ns += d < 10 ? ('0' + d) : ('A' + d - 10);
+                ns += ('0' + d); // d cannot be more than 9 (because c <= 0x9F)
               }
               int d = c & 0xf;
               ns += d < 10 ? ('0' + d) : ('A' + d - 10);

@@ -28,6 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "ofxhBinary.h"
+#include "ofxhUtilities.h"
 
 using namespace OFX;
 
@@ -55,7 +56,11 @@ void Binary::load()
 #if defined (UNIX)
   _dlHandle = dlopen(_binaryPath.c_str(), RTLD_LAZY|RTLD_LOCAL);
 #else
+#ifdef UNICODE
+  _dlHandle = LoadLibrary(stringToWideString(_binaryPath).c_str());
+#else
   _dlHandle = LoadLibrary(_binaryPath.c_str());
+#endif
 #endif
   if (_dlHandle == 0) {
 #if defined (UNIX)

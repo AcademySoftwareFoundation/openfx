@@ -172,6 +172,10 @@ namespace OFX {
                 return "(unknown error code)";
         }
     }
+
+# ifdef WINDOWS
+  std::wstring stringToWideString(const std::string& s);
+# endif
 }
 #endif
 

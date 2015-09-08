@@ -32,6 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ofx
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
+#ifdef OFX_SUPPORTS_DIALOG
+#include "ofxDialog.h"
+#endif
 
 // ofx host
 #include "ofxhBinary.h"
@@ -891,7 +894,8 @@ namespace OFX {
                                             bool     interactive,
                                             OfxPointD   renderScale,
                                             bool     sequentialRender,
-                                            bool     interactiveRender
+                                            bool     interactiveRender,
+                                            bool     draftRender
                                             )
       {
         Property::PropSpec stuff[] = {
@@ -901,6 +905,7 @@ namespace OFX {
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
           { kOfxImageEffectPropSequentialRenderStatus, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropInteractiveRenderStatus, Property::eInt, 1, true, "0" },
+          { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" },
           Property::propSpecEnd
         };
 
@@ -918,15 +923,16 @@ namespace OFX {
 
         inArgs.setIntProperty(kOfxImageEffectPropSequentialRenderStatus,sequentialRender);
         inArgs.setIntProperty(kOfxImageEffectPropInteractiveRenderStatus,interactiveRender);
+        inArgs.setIntProperty(kOfxImageEffectPropRenderQualityDraft,draftRender);
 
 #       ifdef OFX_DEBUG_ACTIONS
-          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionBeginSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","<<interactiveRender
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionBeginSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","<<interactiveRender<<","<<draftRender
           <<")"<<std::endl;
 #       endif
 
         OfxStatus st = mainEntry(kOfxImageEffectActionBeginSequenceRender, this->getHandle(), &inArgs, 0);
 #       ifdef OFX_DEBUG_ACTIONS
-          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionBeginSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","<<interactiveRender
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionBeginSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","<<interactiveRender<<","<<draftRender
           <<")->"<<StatStr(st)<<std::endl;
 #       endif
         return st;
@@ -963,13 +969,13 @@ namespace OFX {
         inArgs.setIntProperty(kOfxImageEffectPropRenderQualityDraft,draftRender);
 
 #       ifdef OFX_DEBUG_ACTIONS
-          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionRender<<"("<<time<<","<<field<<",("<<renderRoI.x1<<","<<renderRoI.y1<<","<<renderRoI.x2<<","<<renderRoI.y2<<"),("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","<<interactiveRender
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionRender<<"("<<time<<","<<field<<",("<<renderRoI.x1<<","<<renderRoI.y1<<","<<renderRoI.x2<<","<<renderRoI.y2<<"),("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","<<interactiveRender<<","<<draftRender
           <<")"<<std::endl;
 #       endif
 
         OfxStatus st = mainEntry(kOfxImageEffectActionRender,this->getHandle(), &inArgs, 0);
 #       ifdef OFX_DEBUG_ACTIONS
-          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionRender<<"("<<time<<","<<field<<",("<<renderRoI.x1<<","<<renderRoI.y1<<","<<renderRoI.x2<<","<<renderRoI.y2<<"),("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","<<interactiveRender
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionRender<<"("<<time<<","<<field<<",("<<renderRoI.x1<<","<<renderRoI.y1<<","<<renderRoI.x2<<","<<renderRoI.y2<<"),("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","<<interactiveRender<<","<<draftRender
           <<")->"<<StatStr(st)<<std::endl;
 #       endif
         return st;
@@ -981,7 +987,8 @@ namespace OFX {
                                           bool     interactive,
                                           OfxPointD   renderScale,
                                           bool     sequentialRender,
-                                          bool     interactiveRender
+                                          bool     interactiveRender,
+                                          bool     draftRender
                                           )
       {
         static const Property::PropSpec inStuff[] = {
@@ -991,6 +998,7 @@ namespace OFX {
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
           { kOfxImageEffectPropSequentialRenderStatus, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropInteractiveRenderStatus, Property::eInt, 1, true, "0" },
+          { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" },
           Property::propSpecEnd
         };
 
@@ -1004,14 +1012,15 @@ namespace OFX {
         inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
         inArgs.setIntProperty(kOfxImageEffectPropSequentialRenderStatus,sequentialRender);
         inArgs.setIntProperty(kOfxImageEffectPropInteractiveRenderStatus,interactiveRender);
+        inArgs.setIntProperty(kOfxImageEffectPropRenderQualityDraft,draftRender);
 #       ifdef OFX_DEBUG_ACTIONS
-          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionEndSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","<<interactiveRender
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionEndSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","<<interactiveRender<<","<<draftRender
           <<")"<<std::endl;
 #       endif
 
         OfxStatus st = mainEntry(kOfxImageEffectActionEndSequenceRender,this->getHandle(), &inArgs, 0);
 #       ifdef OFX_DEBUG_ACTIONS
-          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionEndSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","<<interactiveRender
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionEndSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","<<interactiveRender<<","<<draftRender
           <<")->"<<StatStr(st)<<std::endl;
 #       endif
         return st;
@@ -1273,7 +1282,7 @@ namespace OFX {
   
         return stat;
       }
-        
+
 
       ////////////////////////////////////////////////////////////////////////////////
       /// see how many frames are needed from each clip to render the indicated frame
@@ -1855,8 +1864,7 @@ namespace OFX {
           std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionGetTimeDomain<<"()->"<<StatStr(st);
           if (st == kOfxStatOK) {
               std::cout << ": ("<<outArgs.getDoubleProperty(kOfxImageEffectPropFrameRange,0)<<","<<outArgs.getDoubleProperty(kOfxImageEffectPropFrameRange,1)<<")";
-          }
-          std::cout << std::endl;
+          }          std::cout << std::endl;
 #       endif
         if(st!=kOfxStatOK) return st;
 
@@ -1866,7 +1874,27 @@ namespace OFX {
         return kOfxStatOK;
       }
 
-      
+ #ifdef OFX_SUPPORTS_DIALOG
+        // OfxDialogSuiteV1
+        /// @see kOfxActionDialog
+      OfxStatus Instance::dialog(void *user_data)
+      {
+#       ifdef OFX_DEBUG_ACTIONS
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionDialog<<"("<<user_data<<")"<<std::endl;
+#       endif
+        OfxStatus st = mainEntry(kOfxActionDialog,
+                                 user_data,
+                                 0,
+                                 0);
+#       ifdef OFX_DEBUG_ACTIONS
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionDialog<<"("<<user_data<<")->"<<StatStr(st);
+          std::cout << std::endl;
+#       endif
+
+        return st;
+      }
+#endif
+
       /// implemented for Param::SetInstance
       void Instance::paramChangedByPlugin(Param::Instance *param)
       {
@@ -2427,6 +2455,28 @@ namespace OFX {
         clearPersistentMessage
       };
 
+#ifdef OFX_SUPPORTS_DIALOG
+      ////////////////////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////////////
+      // Dialog suite functions
+      static OfxStatus requestDialog(void *user_data)
+      {
+        // In OfxDialogSuiteV1, only the host can figure out which effect instance triggered
+        // that request.
+        return gImageEffectHost->requestDialog(user_data);
+      }
+
+      static OfxStatus notifyredrawPending()
+      {
+        return gImageEffectHost->notifyRedrawPending();
+      }
+
+      /// dialog suite for an image effect plugin
+      static const struct OfxDialogSuiteV1 gDialogSuiteV1 = {
+        requestDialog,
+        notifyredrawPending
+      };
+#endif // OFX_SUPPORTS_DIALOG
 
       ////////////////////////////////////////////////////////////////////////////////
       /// make an overlay interact for an image effect
@@ -2775,6 +2825,14 @@ namespace OFX {
           else 
             return NULL;
         }
+#ifdef OFX_SUPPORTS_DIALOG
+        else if (strcmp(suiteName, kOfxDialogSuite)==0) {
+          if(suiteVersion==1)
+            return (void *)&gDialogSuiteV1;
+          else 
+            return NULL;
+        }
+#endif
         else if (strcmp(suiteName, kOfxInteractSuite)==0) {
           return Interact::GetSuite(suiteVersion);
         }
@@ -2795,7 +2853,7 @@ namespace OFX {
         else if (strcmp(suiteName, kOfxMultiThreadSuite)==0) {
           if(suiteVersion == 1)
             return (void*)&gMultiThreadSuite;
-          else 
+          else
             return NULL;
         }
 #     ifdef OFX_SUPPORTS_OPENGLRENDER

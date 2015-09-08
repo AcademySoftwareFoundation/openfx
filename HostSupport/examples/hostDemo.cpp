@@ -171,7 +171,7 @@ int main(int argc, char **argv)
       int numFramesToRender = OFXHOSTDEMOCLIPLENGTH;
 
       // say we are about to render a bunch of frames 
-      stat = instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale, /*sequential=*/true, /*interactive=*/false
+      stat = instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale, /*sequential=*/true, /*interactive=*/false, /*draftRender=*/false
                                          );
       assert(stat == kOfxStatOK || stat == kOfxStatReplyDefault);
 
@@ -207,7 +207,7 @@ int main(int argc, char **argv)
         exportToPPM(ss.str(), outputImage);
       }
 
-      instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale, /*sequential=*/true, /*interactive=*/false
+      instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale, /*sequential=*/true, /*interactive=*/false, /*draftRender=*/false
                                 );
     }
   }

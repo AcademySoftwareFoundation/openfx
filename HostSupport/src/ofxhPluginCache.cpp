@@ -52,6 +52,7 @@
 #include "ofxhPluginCache.h"
 #include "ofxhHost.h"
 #include "ofxhXml.h"
+#include "ofxhUtilities.h"
 
 #if defined (__linux__) || defined (__FreeBSD__)
 
@@ -184,6 +185,7 @@ PluginHandle::~PluginHandle() {
 
 
 #if defined (WINDOWS)
+static
 const TCHAR *getStdOFXPluginPath(const std::string &hostId = "Plugins")
 {
   static TCHAR buffer[MAX_PATH];
@@ -191,7 +193,15 @@ const TCHAR *getStdOFXPluginPath(const std::string &hostId = "Plugins")
   if(!gotIt) {
     gotIt = 1;	   
     SHGetFolderPath(NULL, CSIDL_PROGRAM_FILES_COMMON, NULL, SHGFP_TYPE_CURRENT, buffer);
-    strcat_s(buffer, MAX_PATH, __T("\\OFX\\Plugins"));
+#ifndef UNICODE
+	std::string str(__T("\\OFX\\"));
+	str.append(hostId);
+    strcat_s(buffer, MAX_PATH, str.c_str());
+#else
+	std::wstring str(__T("\\OFX\\"));
+	str.append(OFX::stringToWideString(hostId));
+	wcscat_s(buffer, MAX_PATH, str.c_str());
+#endif
   }
   return buffer;	   
 }
@@ -267,7 +277,13 @@ PluginCache::PluginCache() : _hostSpec(0), _xmlCurrentBinary(0), _xmlCurrentPlug
   }
   
 #if defined(WINDOWS)
-  _pluginPath.push_back(getStdOFXPluginPath());
+#ifdef UNICODE
+  std::wstring wpath = getStdOFXPluginPath();
+  std::string path((const char*)&wpath[0], sizeof(wchar_t)/sizeof(char)*wpath.size());
+#else
+  std::string path(getStdOFXPluginPath());
+#endif
+  _pluginPath.push_back(path);
   _pluginPath.push_back("C:\\Program Files\\Common Files\\OFX\\Plugins");
 #endif
 #if defined(__linux__) || defined(__FreeBSD__)
@@ -280,7 +296,13 @@ PluginCache::PluginCache() : _hostSpec(0), _xmlCurrentBinary(0), _xmlCurrentPlug
 
 void PluginCache::setPluginHostPath(const std::string &hostId) {
 #if defined(WINDOWS)
-  _pluginPath.push_back(getStdOFXPluginPath(hostId));
+#ifdef UNICODE
+  std::wstring wpath = getStdOFXPluginPath(hostId);
+  std::string path((const char*)&wpath[0], sizeof(wchar_t)/sizeof(char)*wpath.size());
+#else
+  std::string path(getStdOFXPluginPath(hostId));
+#endif
+  _pluginPath.push_back(path);
   _pluginPath.push_back("C:\\Program Files\\Common Files\\OFX\\" + hostId);
 #endif
 #if defined(__linux__) || defined(__FreeBSD__)
@@ -312,13 +334,17 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
 #if defined (UNIX)
   while (dirent *de = readdir(d))
 #elif defined (WINDOWS)
-    findHandle = FindFirstFile((dir + "\\*").c_str(), &findData);
-  
+# ifdef UNICODE
+    std::wstring ws = stringToWideString((dir + "\\*"));
+    findHandle = FindFirstFile(ws.c_str(), &findData);
+# else
+	findHandle = FindFirstFile((dir + "\\*").c_str(), &findData);
+# endif
   if (findHandle == INVALID_HANDLE_VALUE) 
     {
       return;
     }
-  
+
   while (1)
 #endif
     {
@@ -326,7 +352,12 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
       std::string name = de->d_name;
       bool isdir = true;
 #else
-      std::string name = findData.cFileName;
+#   ifdef UNICODE
+      std::wstring wname = findData.cFileName;
+      std::string name((const char*)&wname[0], (sizeof(wchar_t)/sizeof(char))*wname.size());
+#   else
+	  std::string name = findData.cFileName;
+#   endif
       bool isdir = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
 #endif
       if (name.find(".ofx.bundle") != std::string::npos) {

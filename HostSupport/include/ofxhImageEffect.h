@@ -145,6 +145,18 @@ namespace OFX {
         virtual OfxStatus mutexTryLock(const OfxMutexHandle mutex) = 0;
 #endif // OFX_SUPPORTS_MULTITHREAD
 
+#ifdef OFX_SUPPORTS_DIALOG
+        // dialog suite
+        // In OfxDialogSuiteV1, only the host can figure out which effect instance triggered
+        // that request.
+
+        /// @see OfxDialogSuiteV1.RequestDialog()
+        virtual OfxStatus requestDialog(void* user_data) = 0;
+
+        /// @see OfxDialogSuiteV1.NotifyRedrawPending()
+        virtual OfxStatus notifyRedrawPending() = 0;
+#endif
+
 #     ifdef OFX_SUPPORTS_OPENGLRENDER
         /// @see OfxImageEffectOpenGLRenderSuiteV1.flushResources()
         virtual OfxStatus flushOpenGLResources() const = 0;
@@ -573,7 +585,8 @@ namespace OFX {
                                             bool     interactive,
                                             OfxPointD   renderScale,
                                             bool     sequentialRender,
-                                            bool     interactiveRender
+                                            bool     interactiveRender,
+                                            bool     draftRender
                                             );
 
         virtual OfxStatus renderAction(OfxTime      time,
@@ -591,7 +604,8 @@ namespace OFX {
                                           bool     interactive,
                                           OfxPointD   renderScale,
                                           bool     sequentialRender,
-                                          bool     interactiveRender
+                                          bool     interactiveRender,
+                                          bool     draftRender
                                           );
 
         /// Call the region of definition action the plugin at the given time
@@ -626,6 +640,12 @@ namespace OFX {
 
         // time domain
         virtual OfxStatus getTimeDomainAction(OfxRangeD& range);
+
+#ifdef OFX_SUPPORTS_DIALOG
+        // OfxDialogSuiteV1
+        /// @see kOfxActionDialog
+        virtual OfxStatus dialog(void *user_data);
+#endif
 
         /// Get the interact description, this will also call describe on the interact
         /// This will return NULL if there is not main entry point or if the description failed
