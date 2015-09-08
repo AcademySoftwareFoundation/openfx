@@ -185,6 +185,7 @@ PluginHandle::~PluginHandle() {
 
 
 #if defined (WINDOWS)
+static
 const TCHAR *getStdOFXPluginPath(const std::string hostId = "Plugins")
 {
   static TCHAR buffer[MAX_PATH];
