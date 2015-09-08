@@ -101,7 +101,6 @@ static const char *getArchStr()
 #define DIRSEP "\\"
 
 #include "shlobj.h"
-#include "tchar.h"
 #endif
 
 OFX::Host::PluginCache* OFX::Host::PluginCache::gPluginCachePtr = 0;
@@ -185,8 +184,8 @@ PluginHandle::~PluginHandle() {
 
 
 #if defined (WINDOWS)
-static
-const TCHAR *getStdOFXPluginPath(const std::string &hostId = "Plugins")
+const TCHAR
+PluginCache::*getStdOFXPluginPath(const std::string &hostId)
 {
   static TCHAR buffer[MAX_PATH];
   static int gotIt = 0;

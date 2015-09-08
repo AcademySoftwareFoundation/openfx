@@ -45,6 +45,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhPluginAPICache.h"
 #include "ofxhBinary.h"
 
+#ifdef WINDOWS
+#include "tchar.h"
+#endif
+
 namespace OFX {
 
   namespace Host {
@@ -377,8 +381,13 @@ namespace OFX {
       static PluginCache* getPluginCache();
 
       /// clear our plugin cache
-      static void clearPluginCache();		
-
+      static void clearPluginCache();
+        
+#if defined (WINDOWS)
+      /// This is windows only since it may vary on the location of CSIDL_PROGRAM_FILES_COMMON.
+      static const TCHAR *getStdOFXPluginPath(const std::string &hostId = "Plugins");
+#endif
+        
       /// get the list in which plugins are sought
       const std::list<std::string> &getPluginPath() {
         return _pluginPath;
