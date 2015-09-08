@@ -549,7 +549,6 @@ public :
           }
           else
             maskV = 0.0f;
-          maskPix++;
         }
 
         // figure the scale values per component
@@ -624,6 +623,8 @@ public :
           if(maskPix) {
             maskV = float(*maskPix)/float(max);
           }
+          else
+            maskV = 0.0f;
         }
 
         // figure the scale values per component

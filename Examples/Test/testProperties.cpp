@@ -123,11 +123,11 @@ struct PropertyValueOnion {
   double vDouble;
   void  *vPointer;
   
-  PropertyValueOnion(void) {}
-  PropertyValueOnion(const char  *s) : vString(s) {}
-  PropertyValueOnion(int    i) : vInt(i) {}
-  PropertyValueOnion(double d) : vDouble(d) {}
-  PropertyValueOnion(void  *p) : vPointer(p) {}
+  PropertyValueOnion(void) : vString(), vInt(0), vDouble(0.), vPointer(NULL) {}
+  PropertyValueOnion(const char  *s) : vString(s), vInt(0), vDouble(0.), vPointer(NULL)  {}
+  PropertyValueOnion(int    i) : vString(), vInt(i), vDouble(0.), vPointer(NULL)  {}
+  PropertyValueOnion(double d) : vString(), vInt(0), vDouble(d), vPointer(NULL) {}
+  PropertyValueOnion(void  *p) : vString(), vInt(0), vDouble(0.), vPointer(p) {}
   
   PropertyValueOnion &operator = (const char *v)  {vString = v; return *this;}
   PropertyValueOnion &operator = (const std::string &v)  {vString = v; return *this;}

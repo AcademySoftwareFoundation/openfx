@@ -266,8 +266,8 @@ isIdentity(OfxImageEffectHandle effect,
   if(myData->context != eIsGenerator){ 
 
     // get the render window and the time from the inArgs
-    OfxTime time;
-    OfxRectI renderWindow;
+    OfxTime time = 0.;
+    OfxRectI renderWindow = {0, 0, 0, 0};
   
     gPropHost->propGetDouble(inArgs, kOfxPropTime, 0, &time);
     gPropHost->propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &renderWindow.x1);
@@ -604,8 +604,8 @@ static OfxStatus render(OfxImageEffectHandle effect,
                         OfxPropertySetHandle /*outArgs*/)
 {
   // get the render window and the time from the inArgs
-  OfxTime time;
-  OfxRectI renderWindow;
+  OfxTime time = 0.;
+  OfxRectI renderWindow = {0, 0, 0, 0};
   OfxStatus status = kOfxStatOK;
   
   gPropHost->propGetDouble(inArgs, kOfxPropTime, 0, &time);
