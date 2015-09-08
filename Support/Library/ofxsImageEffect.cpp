@@ -154,6 +154,9 @@ namespace OFX {
     OfxMessageSuiteV2     *gMessageSuiteV2 = 0;
     OfxProgressSuiteV1    *gProgressSuiteV1 = 0;
     OfxProgressSuiteV2    *gProgressSuiteV2 = 0;
+#ifdef OFX_SUPPORTS_DIALOG
+    OfxDialogSuiteV1      *gDialogSuite = 0;
+#endif
     OfxTimeLineSuiteV1    *gTimeLineSuite = 0;
     OfxParametricParameterSuiteV1 *gParametricParameterSuite = 0;
 #ifdef OFX_SUPPORTS_OPENGLRENDER
@@ -316,6 +319,8 @@ namespace OFX {
         return kOfxImageComponentRGB;
       case ePixelComponentAlpha:
         return kOfxImageComponentAlpha;
+      case ePixelComponentNone:
+        return kOfxImageComponentNone;
       case ePixelComponentCustom:
         return "OfxImageComponentCustom";
       default:
@@ -635,6 +640,7 @@ namespace OFX {
   }
 #endif
 
+
   /** @brief Is the plugin single instance only ? */
   void ImageEffectDescriptor::setSingleInstance(bool v)
   {
@@ -784,6 +790,8 @@ namespace OFX {
         _pixelComponentCount = 4;
         break;
       case ePixelComponentCustom:
+        _pixelComponentCount = 0;
+        break;
       default:
         _pixelComponentCount = 0;
         break;
@@ -1003,6 +1011,7 @@ namespace OFX {
       case ePixelComponentRGBA:
         return 4;
       case ePixelComponentCustom:
+        return 0;
       default:
         return 0;
     }
@@ -1361,6 +1370,22 @@ namespace OFX {
     return mapToMessageReplyEnum(stat);
   }
 
+#ifdef OFX_SUPPORTS_DIALOG
+  void ImageEffect::requestDialog(void *userData)
+  {
+    if(!OFX::Private::gDialogSuite || !OFX::Private::gDialogSuite->RequestDialog){ throwHostMissingSuiteException("requestDialog"); }
+    OfxStatus stat = OFX::Private::gDialogSuite->RequestDialog(userData);
+    throwSuiteStatusException(stat);
+  }
+
+  void ImageEffect::notifyRedrawPending()
+  {
+    if(!OFX::Private::gDialogSuite || !OFX::Private::gDialogSuite->NotifyRedrawPending){ throwHostMissingSuiteException("requestDialog"); }
+    OfxStatus stat = OFX::Private::gDialogSuite->NotifyRedrawPending();
+    throwSuiteStatusException(stat);
+  }
+#endif
+
   /** @brief Fetch the named clip from this instance */
   Clip *ImageEffect::fetchClip(const std::string &name)
   {
@@ -1529,6 +1554,13 @@ namespace OFX {
   void ImageEffect::endChanged(InstanceChangeReason /*reason*/)
   {
   }
+
+#ifdef OFX_SUPPORTS_DIALOG
+  /** @brief called in the host's UI thread after a plugin has requested a dialog @see requestDialog() */
+  void ImageEffect::dialog(void */*userData*/)
+  {
+  }
+#endif
 
   /** @brief get the time domain */
   bool ImageEffect::getTimeDomain(OfxRangeD &/*range*/)
@@ -2144,7 +2176,10 @@ namespace OFX {
       // They appeared in OFX 1.2
       args.sequentialRenderStatus = inArgs.propGetInt(kOfxImageEffectPropSequentialRenderStatus, false) != 0;
       args.interactiveRenderStatus = inArgs.propGetInt(kOfxImageEffectPropInteractiveRenderStatus, false) != 0;
-        
+
+      // kOfxImageEffectPropRenderQualityDraft appeared in OFX 1.4
+      args.renderQualityDraft = inArgs.propGetInt(kOfxImageEffectPropRenderQualityDraft, false) != 0;
+
       // and call the plugin client render code
       effectInstance->beginSequenceRender(args);
     }
@@ -2171,6 +2206,9 @@ namespace OFX {
       // They appeared in OFX 1.2
       args.sequentialRenderStatus = inArgs.propGetInt(kOfxImageEffectPropSequentialRenderStatus, false) != 0;
       args.interactiveRenderStatus = inArgs.propGetInt(kOfxImageEffectPropInteractiveRenderStatus, false) != 0;
+
+      // kOfxImageEffectPropRenderQualityDraft appeared in OFX 1.4
+      args.renderQualityDraft = inArgs.propGetInt(kOfxImageEffectPropRenderQualityDraft, false) != 0;
 
       // and call the plugin client render code
       effectInstance->endSequenceRender(args);
@@ -2772,6 +2810,17 @@ namespace OFX {
 
           // call the context detached function
           instance->contextDetached();
+        }
+#endif
+#ifdef OFX_SUPPORTS_DIALOG
+        else if(action == kOfxActionDialog) {
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
+
+          // fetch our pointer out of the props on the handle
+          ImageEffect *instance = retrieveImageEffectPointer(handle);
+
+          // call the dialog action (user_data is in the raw handle)
+          instance->dialog(const_cast<void*>(handleRaw));
         }
 #endif
         else if(actionRaw) {

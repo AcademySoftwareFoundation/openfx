@@ -794,7 +794,7 @@ namespace OFX {
     FieldEnum fieldToRender;
   };
 
-  /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::render */
+  /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::beginSequenceRender */
   struct BeginSequenceRenderArguments {
     OfxRangeD frameRange;
     double    frameStep;
@@ -805,9 +805,10 @@ namespace OFX {
 #endif
     bool      sequentialRenderStatus;
     bool      interactiveRenderStatus;
+    bool      renderQualityDraft;
   };
 
-  /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::beginSequenceRender */
+  /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::endSequenceRender */
   struct EndSequenceRenderArguments {
     bool      isInteractive;
     OfxPointD renderScale;
@@ -816,6 +817,7 @@ namespace OFX {
 #endif
     bool      sequentialRenderStatus;
     bool      interactiveRenderStatus;
+    bool      renderQualityDraft;
   };
 
   /** @brief POD struct to pass arguments into  @ref OFX::ImageEffect::getRegionOfDefinition */
@@ -1055,6 +1057,14 @@ namespace OFX {
       OFX::Message::MessageReplyEnum setPersistentMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg);
       OFX::Message::MessageReplyEnum clearPersistentMessage();
 
+#ifdef OFX_SUPPORTS_DIALOG
+    /** @brief Request the host to send a kOfxActionDialog to the plugin from its UI thread. */
+    void requestDialog(void *user_data);
+
+    /** @brief Inform the host of redraw event so it can redraw itself */
+    void notifyRedrawPending();
+#endif
+
     /** @brief Fetch the named clip from this instance
 
     The returned clip \em must not be deleted by the client code. This is all managed by the ImageEffect itself.
@@ -1148,6 +1158,11 @@ namespace OFX {
 
     /** @brief the effect has just had some values changed */
     virtual void endChanged(InstanceChangeReason reason);
+
+#ifdef OFX_SUPPORTS_DIALOG
+    /** @brief called in the host's UI thread after a plugin has requested a dialog @see requestDialog() */
+    virtual void dialog(void *userData);
+#endif
 
     /** @brief called when a custom param needs to be interpolated */
     virtual std::string interpolateCustomParam(const InterpolateCustomArgs &args, const std::string &paramName);

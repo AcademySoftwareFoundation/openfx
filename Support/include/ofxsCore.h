@@ -97,6 +97,9 @@ of the direct OFX objects and any library side only functions.
 #include "ofxParam.h"
 #include "ofxProperty.h"
 #include "ofxPixels.h"
+#ifdef OFX_SUPPORTS_DIALOG
+#include "ofxDialog.h"
+#endif
 
 #include <assert.h>
 #include <vector>
