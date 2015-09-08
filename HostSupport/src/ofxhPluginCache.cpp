@@ -184,8 +184,8 @@ PluginHandle::~PluginHandle() {
 
 
 #if defined (WINDOWS)
-const TCHAR
-PluginCache::*getStdOFXPluginPath(const std::string &hostId)
+const TCHAR*
+PluginCache::getStdOFXPluginPath(const std::string &hostId)
 {
   static TCHAR buffer[MAX_PATH];
   static int gotIt = 0;
