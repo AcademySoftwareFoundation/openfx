@@ -50,7 +50,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // the one OFX header we need, it includes the others necessary
 #include "ofxImageEffect.h"
 
-#if defined __APPLE__ || defined linux
+#if defined __APPLE__ || defined linux || defined __FreeBSD__
 #  define EXPORT __attribute__((visibility("default")))
 #elif defined _WIN32
 #  define EXPORT OfxExport
@@ -235,8 +235,8 @@ namespace {
   }
 
   // are the settings of the effect making it redundant and so not do anything to the image data
-  OfxStatus IsIdentityAction(OfxImageEffectHandle instance,
-                             OfxPropertySetHandle inArgs,
+  OfxStatus IsIdentityAction(OfxImageEffectHandle /*instance*/,
+                             OfxPropertySetHandle /*inArgs*/,
                              OfxPropertySetHandle outArgs)
   {
     // we set the name of the input clip to pull data from

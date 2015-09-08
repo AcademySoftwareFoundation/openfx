@@ -47,7 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // the one OFX header we need, it includes the others necessary
 #include "ofxImageEffect.h"
 
-#if defined __APPLE__ || defined linux
+#if defined __APPLE__ || defined linux || defined __FreeBSD__
 #  define EXPORT __attribute__((visibility("default")))
 #elif defined _WIN32
 #  define EXPORT OfxExport
@@ -226,7 +226,7 @@ namespace {
   //  describe the plugin in context
   OfxStatus
   DescribeInContextAction(OfxImageEffectHandle descriptor,
-                          OfxPropertySetHandle inArgs)
+                          OfxPropertySetHandle /*inArgs*/)
   {
     OfxPropertySetHandle props;
     // define the mandated single output clip
@@ -489,7 +489,7 @@ namespace {
   // Render an output image
   OfxStatus RenderAction( OfxImageEffectHandle instance,
                           OfxPropertySetHandle inArgs,
-                          OfxPropertySetHandle outArgs)
+                          OfxPropertySetHandle /*outArgs*/)
   {
     // get the render window and the time from the inArgs
     OfxTime time;
@@ -561,7 +561,6 @@ namespace {
       }
       else {
         throw " bad data type!";
-        throw 1;
       }
 
     }
