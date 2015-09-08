@@ -34,7 +34,23 @@ CXX_OSFLAGS =
 RANLIB = echo
 
 ifeq ($(OS),Darwin) 
-  CXX_OSFLAGS = -arch ppc -arch i386 
+  # Universal 32/64 is useful only on OSX 10.4 (i386/ppc), 10.5 (i386/ppc) and 10.6 (i386/x86_64).
+  # OSX 10.6 (Snow Leopard) or later, build for i386/x86_64
+  MACOSX := 10.6
+  MACOSXSDK := 10.6
+  CXX_OSFLAGS=-arch i386 -arch x86_64
+  ifeq ($(shell uname -r | sed 's/^\(.*\)\..*\..*/\1/'), 8)
+    # OSX 10.4 (Tiger)
+    MACOSX := 10.4
+    MACOSXSDK := 10.4u
+    CXX_OSFLAGS=-arch i386 -arch ppc
+  endif
+  ifeq ($(shell uname -r | sed 's/^\(.*\)\..*\..*/\1/'), 9)
+    # OSX 10.5 (Leopard)
+    MACOSX := 10.5
+    MACOSXSDK := 10.5
+    CXX_OSFLAGS=-arch i386 -arch ppc
+  endif
   RANLIB = ranlib
 endif
 
