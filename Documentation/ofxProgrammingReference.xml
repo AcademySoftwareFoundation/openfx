@@ -2216,7 +2216,7 @@ Other plugins are able to render correctly when called in an arbitrary frame ord
 	  for use in the final result.
 	</para>
 
-  <para> A host may set the in args property <link linkend="kOfxImageEffectPropRenderQualityDraft"><code>kOfxImageEffectPropRenderQualityDraft</code></link> in <link linkend="kOfxImageEffectActionRender">the sequence render action</link> to asj for a render in Draft/Preview mode. This is useful for applications that must support fast scrubbing. These allow a plug-in to take short-cuts for improved performance when the situation allows and it makes sense, for example to generate thumbnails with effects applied.
+  <para> A host may set the in args property <link linkend="kOfxImageEffectPropRenderQualityDraft"><code>kOfxImageEffectPropRenderQualityDraft</code></link> in <link linkend="kOfxImageEffectActionBeginSequenceRender">the begin sequence render action</link>, <link linkend="kOfxImageEffectActionRender">the sequence render action</link> and <link linkend="kOfxImageEffectActionEndSequenceRender">the end sequence render action</link> to ask for a render in Draft/Preview mode. This is useful for applications that must support fast scrubbing. These allow a plug-in to take short-cuts for improved performance when the situation allows and it makes sense, for example to generate thumbnails with effects applied.
 For example switch to a cheaper interpolation type or rendering mode. A plugin should expect frames rendered in this manner that will not be stucked in host cache unless the cache is only used in the same draft situations.
   </para>
 

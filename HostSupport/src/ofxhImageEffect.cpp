@@ -997,7 +997,8 @@ namespace OFX {
                                             bool     interactive,
                                             OfxPointD   renderScale,
                                             bool     sequentialRender,
-                                            bool     interactiveRender
+                                            bool     interactiveRender,
+                                            bool     draftRender
 #                                         ifdef OFX_EXTENSIONS_NUKE
                                             ,
                                             int view
@@ -1011,6 +1012,7 @@ namespace OFX {
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
           { kOfxImageEffectPropSequentialRenderStatus, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropInteractiveRenderStatus, Property::eInt, 1, true, "0" },
+          { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" },
 #       ifdef OFX_EXTENSIONS_NUKE
           { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
 #       endif
@@ -1031,6 +1033,7 @@ namespace OFX {
 
         inArgs.setIntProperty(kOfxImageEffectPropSequentialRenderStatus,sequentialRender);
         inArgs.setIntProperty(kOfxImageEffectPropInteractiveRenderStatus,interactiveRender);
+        inArgs.setIntProperty(kOfxImageEffectPropRenderQualityDraft,draftRender);
 
 #ifdef OFX_EXTENSIONS_NUKE
         inArgs.setIntProperty(kFnOfxImageEffectPropView,view);
@@ -1155,7 +1158,8 @@ namespace OFX {
                                           bool     interactive,
                                           OfxPointD   renderScale,
                                           bool     sequentialRender,
-                                          bool     interactiveRender
+                                          bool     interactiveRender,
+                                          bool     draftRender
 #ifdef OFX_EXTENSIONS_NUKE
                                           ,
                                           int view
@@ -1169,6 +1173,7 @@ namespace OFX {
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
           { kOfxImageEffectPropSequentialRenderStatus, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropInteractiveRenderStatus, Property::eInt, 1, true, "0" },
+          { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" },
 #ifdef OFX_EXTENSIONS_NUKE
           { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
 #endif
@@ -1185,6 +1190,7 @@ namespace OFX {
         inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
         inArgs.setIntProperty(kOfxImageEffectPropSequentialRenderStatus,sequentialRender);
         inArgs.setIntProperty(kOfxImageEffectPropInteractiveRenderStatus,interactiveRender);
+        inArgs.setIntProperty(kOfxImageEffectPropRenderQualityDraft,draftRender);
 #ifdef OFX_EXTENSIONS_NUKE
         inArgs.setIntProperty(kFnOfxImageEffectPropView,view);
 #endif

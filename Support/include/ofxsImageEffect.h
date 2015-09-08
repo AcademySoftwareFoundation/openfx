@@ -1093,6 +1093,7 @@ namespace OFX {
 #endif
     bool      sequentialRenderStatus;
     bool      interactiveRenderStatus;
+    bool      renderQualityDraft;
 #ifdef OFX_EXTENSIONS_NUKE
     int view;
 #endif
@@ -1107,6 +1108,7 @@ namespace OFX {
 #endif
     bool      sequentialRenderStatus;
     bool      interactiveRenderStatus;
+    bool      renderQualityDraft;
 #ifdef OFX_EXTENSIONS_NUKE
     int view;
 #endif

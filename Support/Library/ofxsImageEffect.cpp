@@ -3039,7 +3039,10 @@ namespace OFX {
       // They appeared in OFX 1.2
       args.sequentialRenderStatus = inArgs.propGetInt(kOfxImageEffectPropSequentialRenderStatus, false) != 0;
       args.interactiveRenderStatus = inArgs.propGetInt(kOfxImageEffectPropInteractiveRenderStatus, false) != 0;
-        
+
+      // kOfxImageEffectPropRenderQualityDraft appeared in OFX 1.4
+      args.renderQualityDraft = inArgs.propGetInt(kOfxImageEffectPropRenderQualityDraft, false) != 0;
+
 #ifdef OFX_EXTENSIONS_NUKE
       args.view = inArgs.propGetInt(kFnOfxImageEffectPropView, 0, false);
 #endif
@@ -3070,6 +3073,9 @@ namespace OFX {
       // They appeared in OFX 1.2
       args.sequentialRenderStatus = inArgs.propGetInt(kOfxImageEffectPropSequentialRenderStatus, false) != 0;
       args.interactiveRenderStatus = inArgs.propGetInt(kOfxImageEffectPropInteractiveRenderStatus, false) != 0;
+
+      // kOfxImageEffectPropRenderQualityDraft appeared in OFX 1.4
+      args.renderQualityDraft = inArgs.propGetInt(kOfxImageEffectPropRenderQualityDraft, false) != 0;
 
 #ifdef OFX_EXTENSIONS_NUKE
       args.view = inArgs.propGetInt(kFnOfxImageEffectPropView, 0, false);

@@ -625,7 +625,8 @@ namespace OFX {
                                             bool     interactive,
                                             OfxPointD   renderScale,
                                             bool     sequentialRender,
-                                            bool     interactiveRender
+                                            bool     interactiveRender,
+                                            bool     draftRender
 #                                         ifdef OFX_EXTENSIONS_NUKE
                                             ,
                                             int view
@@ -659,7 +660,8 @@ namespace OFX {
                                           bool     interactive,
                                           OfxPointD   renderScale,
                                           bool     sequentialRender,
-                                          bool     interactiveRender
+                                          bool     interactiveRender,
+                                          bool     draftRender
 #                                       ifdef OFX_EXTENSIONS_NUKE
                                           ,
                                           int view
