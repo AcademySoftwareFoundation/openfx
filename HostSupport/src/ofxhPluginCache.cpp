@@ -278,7 +278,7 @@ PluginCache::PluginCache() : _hostSpec(0), _xmlCurrentBinary(0), _xmlCurrentPlug
 #if defined(WINDOWS)
 #ifdef UNICODE
   std::wstring wpath = getStdOFXPluginPath();
-  std::string path((const char*)&wpath[0], sizeof(wchar_t)/sizeof(char)*wpath.size());
+  std::string path = OFX::wideStringToString(wpath);
 #else
   std::string path(getStdOFXPluginPath());
 #endif
@@ -297,7 +297,7 @@ void PluginCache::setPluginHostPath(const std::string &hostId) {
 #if defined(WINDOWS)
 #ifdef UNICODE
   std::wstring wpath = getStdOFXPluginPath(hostId);
-  std::string path((const char*)&wpath[0], sizeof(wchar_t)/sizeof(char)*wpath.size());
+  std::string path = OFX::wideStringToString(wpath);
 #else
   std::string path(getStdOFXPluginPath(hostId));
 #endif
@@ -355,7 +355,7 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
 #else
 #   ifdef UNICODE
       std::wstring wname = findData.cFileName;
-      std::string name((const char*)&wname[0], (sizeof(wchar_t)/sizeof(char))*wname.size());
+      std::string name = OFX::wideStringToString(wname);
 #   else
 	  std::string name = findData.cFileName;
 #   endif
@@ -423,7 +423,7 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
         // insert final path (universal or not) in the list of found files
         foundBinFiles.insert(binpath);
       } else {
-        if (isdir && (recurse && name[0] != '@' && name != "." && name != "..")) {
+        if (isdir && (recurse && !name.empty() && name[0] != '@' && name[name.size() - 1] != '.')) {
           scanDirectory(foundBinFiles, dir + DIRSEP + name, recurse);
         }
       }
