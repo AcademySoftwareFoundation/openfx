@@ -175,6 +175,7 @@ namespace OFX {
 
 # ifdef WINDOWS
   std::wstring stringToWideString(const std::string& s);
+  std::string  wideStringToString(const std::wstring& s);
 # endif
 }
 #endif
