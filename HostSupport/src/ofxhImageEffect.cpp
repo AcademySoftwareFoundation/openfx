@@ -1633,7 +1633,7 @@ namespace OFX {
         double projectPAR = getProjectPixelAspectRatio();
         bool multipleClipsPAR = supportsMultipleClipPARs();
         /// get the PAR of inputs, if it has different PARs and the effect does not support multiple clips PAR, throw an exception
-        double inputPar;
+        double inputPar = 1.;
         bool inputParSet = false;
         for (std::map<std::string, ClipInstance*>::iterator it2 = _clips.begin(); it2 != _clips.end(); ++it2) {
           if (!it2->second->isOutput() && it2->second->getConnected()) {
