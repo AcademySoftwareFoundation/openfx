@@ -260,6 +260,15 @@ namespace OFX {
         return _properties.findStringPropValueIndex(kOfxImageEffectPropSupportedPixelDepths, s) != -1;
       }
 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+      /// is the given RGBA/A OpenGL pixel depth supported by the effect
+      bool Base::isOpenGLPixelDepthSupported(const std::string &s) const
+      {
+        // if property is empty, all depths are supported
+        return _properties.getDimension(kOfxOpenGLPropPixelDepth) == 0 || _properties.findStringPropValueIndex(kOfxOpenGLPropPixelDepth, s) != -1;
+      }
+#endif
+
       /// when field rendering, does the effect need to be called
       /// twice to render a frame in all Base::circumstances (with different fields)
       bool Base::fieldRenderTwiceAlways() const

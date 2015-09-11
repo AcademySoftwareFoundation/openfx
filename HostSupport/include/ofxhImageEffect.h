@@ -235,6 +235,10 @@ namespace OFX {
         /// is the given RGBA/A pixel depth supported by the effect
         bool isPixelDepthSupported(const std::string &s) const;
 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+        /// is the given RGBA/A OpenGL pixel depth supported by the effect
+        bool isOpenGLPixelDepthSupported(const std::string &s) const;
+#endif
         /// when field rendering, does the effect need to be called
         /// twice to render a frame in all circumstances (with different fields)
         bool fieldRenderTwiceAlways() const;
