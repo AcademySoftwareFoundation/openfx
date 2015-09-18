@@ -47,6 +47,7 @@ namespace OFX {
       int IntValue::kEmpty = 0;
       double DoubleValue::kEmpty = 0;
       void *PointerValue::kEmpty = 0;
+      void (*FuncPointerValue::kEmpty)() = 0;
       std::string StringValue::kEmpty;
       const char *gTypeNames[] = {"int", "double", "string", "pointer" };
 
@@ -66,6 +67,12 @@ namespace OFX {
       template<> void *GetHook::getProperty<PointerValue>(const std::string &name, int index) const OFX_EXCEPTION_SPEC
       {
         return getPointerProperty(name, index);
+      }
+      
+      /// this does some magic so that it calls get string/int/double/pointer appropriately
+      template<> void (*GetHook::getProperty<FuncPointerValue>(const std::string &name, int index) const OFX_EXCEPTION_SPEC)()
+      {
+        return getFuncPointerProperty(name, index);
       }
 
       /// this does some magic so that it calls get string/int/double/pointer appropriately
@@ -143,6 +150,15 @@ namespace OFX {
         return NULL;
       }
       
+      /// override this to fetch a single value at the given index.
+      void (*GetHook::getFuncPointerProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC)()
+      {
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getFuncPointerProperty!!!! " << std::endl;
+#       endif
+        return NULL;
+      }
+
       /// override this to fetch a multiple values in a multi-dimension property
       void GetHook::getDoublePropertyN(const std::string &/*name*/, double *values, int count) const OFX_EXCEPTION_SPEC
       {
@@ -658,13 +674,19 @@ namespace OFX {
         return getPropertyRaw<OFX::Host::Property::DoubleValue>(property, index);
       }
 
-      /// get a particular double property
+      /// get a particular pointer property
       void *Set::getPointerPropertyRaw(const std::string &property, int index)  const
       {
         return getPropertyRaw<OFX::Host::Property::PointerValue>(property, index);
       }
-        
-      /// get a particular double property
+
+      /// get a particular pointer property
+      void (*Set::getFuncPointerPropertyRaw(const std::string &property, int index)  const)()
+      {
+        return getPropertyRaw<OFX::Host::Property::FuncPointerValue>(property, index);
+      }
+
+      /// get a particular string property
       const std::string &Set::getStringPropertyRaw(const std::string &property, int index)  const
       {
         String *prop;
@@ -680,7 +702,7 @@ namespace OFX {
         return getProperty<OFX::Host::Property::IntValue>(property, index);
       }
         
-      /// get the value of a particular double property
+      /// get the value of a particular int property
       void Set::getIntPropertyN(const std::string &property,  int *v, int N) const
       {
         return getPropertyN<OFX::Host::Property::IntValue>(property, N, v);
@@ -698,13 +720,19 @@ namespace OFX {
         return getPropertyN<OFX::Host::Property::DoubleValue>(property, N, v);
       }
 
-      /// get a particular double property
+      /// get a particular pointer property
       void *Set::getPointerProperty(const std::string &property, int index)  const
       {
         return getProperty<OFX::Host::Property::PointerValue>(property, index);
       }
-        
-      /// get a particular double property
+
+      /// get a particular function pointer property
+      void (*Set::getFuncPointerProperty(const std::string &property, int index)  const)(void)
+      {
+        return getProperty<OFX::Host::Property::FuncPointerValue>(property, index);
+      }
+
+      /// get a particular string property
       const std::string &Set::getStringProperty(const std::string &property, int index)  const
       {
         return getProperty<OFX::Host::Property::StringValue>(property, index);
@@ -740,10 +768,16 @@ namespace OFX {
         setPropertyN<OFX::Host::Property::DoubleValue>(property, N, v);
       }
 
-      /// get a particular double property
+      /// set a particular pointer property
       void Set::setPointerProperty(const std::string &property,  void *v, int index)
       {
         setProperty<OFX::Host::Property::PointerValue>(property, index, v);
+      }
+
+      /// set a particular pointer property
+      void Set::setFuncPointerProperty(const std::string &property,  void (*v)(), int index)
+      {
+        setProperty<OFX::Host::Property::FuncPointerValue>(property, index, v);
       }
         
       /// get the dimension of a particular property

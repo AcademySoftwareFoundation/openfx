@@ -233,7 +233,7 @@ namespace OFX {
       /// get the overlay interact main entry if it exists
       OfxPluginEntryPoint *Base::getOverlayInteractMainEntry() const
       {
-        return (OfxPluginEntryPoint *)(_properties.getPointerProperty(kOfxImageEffectPluginPropOverlayInteractV1));
+        return (OfxPluginEntryPoint *)(_properties.getFuncPointerProperty(kOfxImageEffectPluginPropOverlayInteractV1));
       }
 
       /// does the effect support images of differing sizes
