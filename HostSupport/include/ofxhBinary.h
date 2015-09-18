@@ -113,7 +113,7 @@ namespace OFX
 
     /// look up a symbol in the binary file and return it as a pointer.
     /// returns null pointer if not found, or if the library is not loaded.
-    void *findSymbol(const std::string &symbol);
+    void (*findSymbol(const std::string &symbol))();
   };
 }
 
