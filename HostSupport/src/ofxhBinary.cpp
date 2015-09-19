@@ -99,27 +99,14 @@ void Binary::unload() {
   }
 }
 
-#if defined(UNIX)
-// dlsym() is declared as returning void*, but it really returns void(*)()
-// and cast between pointer-to-object and pointer-to-function is only conditionally-supported.
-// Ref:
-// ISO/IEC 14882:2011
-// 5.2.10 Reinterpret cast [expr.reinterpret.cast]
-// 8 Converting a function pointer to an object pointer type or vice versa is conditionally-supported. The meaning of such a conversion is implementation-defined, except that if an implementation supports conversions in both directions, converting a prvalue of one type to the other type and back, possibly with different cvqualification, shall yield the original pointer value.
-namespace {
-typedef void (*func_t)(void);
-typedef func_t (*func_dlsym_t)(void *, const char *);
-}
-#endif
-
 /// look up a symbol in the binary file and return it as a pointer.
 /// returns null pointer if not found, or if the library is not loaded.
-void (*Binary::findSymbol(const std::string &symbol))() {
+void *Binary::findSymbol(const std::string &symbol) {
   if (_dlHandle != 0) {
 #if defined(UNIX)
-    return ((func_dlsym_t)(dlsym))(_dlHandle, symbol.c_str());
+    return dlsym(_dlHandle, symbol.c_str());
 #elif defined (WINDOWS)
-    return (func_t)GetProcAddress(_dlHandle, symbol.c_str());
+    return (void*)GetProcAddress(_dlHandle, symbol.c_str());
 #endif
   } else {
     return 0;
