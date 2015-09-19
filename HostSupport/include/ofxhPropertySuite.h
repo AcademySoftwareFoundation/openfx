@@ -128,16 +128,6 @@ namespace OFX {
         static void *kEmpty;
       };
 
-      /// type holder, for function pointers, used to template up pointer properties
-      struct FuncPointerValue {
-        typedef void (*APIType)();
-        typedef void (*APITypeConstless)();
-        typedef void (*Type)();
-        typedef void (*ReturnType)(); ///< type to return from a function call
-        static const TypeEnum typeCode = ePointer;
-        static void (*kEmpty)();
-      };
-
       /// type holder, for strings, used to template up string properties
       struct StringValue { 
         typedef const char *APIType;
@@ -188,10 +178,7 @@ namespace OFX {
 
         /// override this to fetch a single value at the given index.
         virtual void *getPointerProperty(const std::string &name, int index = 0) const OFX_EXCEPTION_SPEC;
-
-        /// override this to fetch a single value at the given index.
-        virtual void (*getFuncPointerProperty(const std::string &name, int index = 0) const OFX_EXCEPTION_SPEC)();
-
+        
         /// override this to fetch a multiple values in a multi-dimension property
         virtual void getPointerPropertyN(const std::string &name, void **values, int count) const OFX_EXCEPTION_SPEC;
 
@@ -499,10 +486,10 @@ namespace OFX {
         /// retrieve the named double property
         Double *fetchDoubleProperty(const std::string &name,  bool followChain = false) const;
 
-        /// retrieve the named pointer property
+        /// retrieve the named double property
         Pointer *fetchPointerProperty(const std::string &name, bool followChain = false) const;
 
-        /// retrieve the named int property
+        /// retrieve the named double property
         Int *fetchIntProperty(const std::string &name, bool followChain = false) const;
 
 
@@ -516,9 +503,6 @@ namespace OFX {
         /// get a particular pointer property without fetching via a get hook, useful for notifies
         void *getPointerPropertyRaw(const std::string &property, int index = 0) const;
 
-        /// get a particular pointer property without fetching via a get hook, useful for notifies
-        void (*getFuncPointerPropertyRaw(const std::string &property, int index = 0) const)();
-
         /// get a particular string property
         const std::string &getStringPropertyRaw(const std::string &property, int index = 0) const;
                 
@@ -528,7 +512,7 @@ namespace OFX {
         /// get the value of a particular int property
         int getIntProperty(const std::string &property, int index = 0) const;
         
-        /// get the value of a particular int property
+        /// get the value of a particular double property
         void getIntPropertyN(const std::string &property,  int *v, int N) const;
 
         /// get the value of a particular double property
@@ -540,9 +524,6 @@ namespace OFX {
         /// get the value of a particular pointer property
         void *getPointerProperty(const std::string &property, int index = 0) const;
 
-        /// get the value of a particular function pointer property
-        void (*getFuncPointerProperty(const std::string &property, int index = 0) const)(void);
-
 
 
         /// set a particular string property without fetching via a get hook, useful for notifies
@@ -551,21 +532,18 @@ namespace OFX {
         /// get a particular int property
         void setIntProperty(const std::string &property, int v, int index = 0);
 
-        /// set a particular int property
+        /// get a particular double property
         void setIntPropertyN(const std::string &property, const int *v, int N);
         
-        /// set a particular double property
+        /// get a particular double property
         void setDoubleProperty(const std::string &property, double v, int index = 0);
 
         /// get a particular double property
         void setDoublePropertyN(const std::string &property, const double *v, int N);
 
-        /// set a particular pointer property
+        /// get a particular double property
         void setPointerProperty(const std::string &property,  void *v, int index = 0);
-
-        /// set a particular function pointer property
-        void setFuncPointerProperty(const std::string &property,  void (*v)(), int index = 0);
-
+        
 
 
         /// get the dimension of a particular property
