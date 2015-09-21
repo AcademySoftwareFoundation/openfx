@@ -2434,8 +2434,8 @@ namespace OFX {
           std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionDialog<<"("<<user_data<<")"<<std::endl;
 #       endif
         OfxStatus st = mainEntry(kOfxActionDialog,
-                                 user_data,
-                                 0,
+                                 this->getHandle(),
+                                 (Property::Set*)user_data,
                                  0);
 #       ifdef OFX_DEBUG_ACTIONS
           std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionDialog<<"("<<user_data<<")->"<<StatStr(st);
