@@ -784,7 +784,7 @@ namespace OFX {
         try {            
           Set *thisSet = reinterpret_cast<Set*>(properties);
           if(!thisSet || !thisSet->verifyMagic()) {
-#           ifdef OFX_DEBUG_PARAMETERS
+#           ifdef OFX_DEBUG_PROPERTIES
             std::cout << ' ' << StatStr(kOfxStatErrBadHandle) << std::endl;
 #           endif
             return kOfxStatErrBadHandle;
@@ -831,7 +831,7 @@ namespace OFX {
         try {
           Set *thisSet = reinterpret_cast<Set*>(properties);
           if(!thisSet || !thisSet->verifyMagic()) {
-#           ifdef OFX_DEBUG_PARAMETERS
+#           ifdef OFX_DEBUG_PROPERTIES
             std::cout << ' ' << StatStr(kOfxStatErrBadHandle) << std::endl;
 #           endif
             return kOfxStatErrBadHandle;
@@ -872,7 +872,7 @@ namespace OFX {
         try {
           Set *thisSet = reinterpret_cast<Set*>(properties);
           if(!thisSet || !thisSet->verifyMagic()) {
-#           ifdef OFX_DEBUG_PARAMETERS
+#           ifdef OFX_DEBUG_PROPERTIES
             std::cout << ' ' << StatStr(kOfxStatErrBadHandle) << std::endl;
 #           endif
             return kOfxStatErrBadHandle;
@@ -914,7 +914,7 @@ namespace OFX {
         try {
           Set *thisSet = reinterpret_cast<Set*>(properties);
           if(!thisSet || !thisSet->verifyMagic()) {
-#           ifdef OFX_DEBUG_PARAMETERS
+#           ifdef OFX_DEBUG_PROPERTIES
             std::cout << ' ' << StatStr(kOfxStatErrBadHandle) << std::endl;
 #           endif
             return kOfxStatErrBadHandle;
@@ -958,7 +958,7 @@ namespace OFX {
         try {            
           Set *thisSet = reinterpret_cast<Set*>(properties);
           if(!thisSet || !thisSet->verifyMagic()) {
-#           ifdef OFX_DEBUG_PARAMETERS
+#           ifdef OFX_DEBUG_PROPERTIES
             std::cout << ' ' << StatStr(kOfxStatErrBadHandle) << std::endl;
 #           endif
             return kOfxStatErrBadHandle;
@@ -994,7 +994,7 @@ namespace OFX {
         std::cout << "OFX: propGetDimension - " << properties << ' ' << property << " ...";
 #       endif
         if (!properties) {
-#         ifdef OFX_DEBUG_PARAMETERS
+#         ifdef OFX_DEBUG_PROPERTIES
           std::cout << ' ' << StatStr(kOfxStatErrBadHandle) << std::endl;
 #         endif
           return kOfxStatErrBadHandle;
