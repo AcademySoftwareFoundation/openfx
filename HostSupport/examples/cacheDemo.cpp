@@ -128,14 +128,14 @@ public :
   }
 
 #ifdef OFX_SUPPORTS_DIALOG
-  /// @see OfxDialogSuiteV1.RequestDialog()
-  OfxStatus requestDialog(void* user_data)
+  /// @see OfxDialogSuite.requestDialog()
+  OfxStatus requestDialog(OfxImageEffectHandle instance, OfxPropertySetHandle inArgs, void *instanceData)
   {
     return kOfxStatFailed;
   }
 
-  /// @see OfxDialogSuiteV1.NotifyRedrawPending()
-  OfxStatus notifyRedrawPending()
+  /// @see OfxDialogSuite.notifyRedrawPending()
+  OfxStatus notifyRedrawPending(OfxImageEffectHandle instance, OfxPropertySetHandle inArgs)
   {
     return kOfxStatReplyDefault;
   }

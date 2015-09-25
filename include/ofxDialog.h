@@ -78,7 +78,7 @@ typedef struct OfxDialogSuiteV1
     - ::kOfxStatOK - The host has queued the request and will send an 'OfxActionDialog'
     - ::kOfxStatFailed - The host has no provisio for this or can not deal with it currently.
   */
-  OfxStatus (*RequestDialog)( void *user_data );
+  OfxStatus (*requestDialog)( void *instanceData );
   
   /** @brief Inform the host of redraw event so it can redraw itself
       If the host runs fullscreen in OpenGL, it would otherwise not receive
@@ -88,7 +88,7 @@ redraw event when a dialog in front would catch all events.
   @returns
     - ::kOfxStatReplyDefault
   */
-  OfxStatus (*NotifyRedrawPending)( void );
+  OfxStatus (*notifyRedrawPending)( void );
 } OfxDialogSuiteV1;
 
 

@@ -171,14 +171,14 @@ namespace MyHost
 
 #ifdef OFX_SUPPORTS_DIALOG
   // dialog
-  /// @see OfxDialogSuiteV1.RequestDialog()
-  OfxStatus Host::requestDialog(void* user_data)
+  /// @see OfxDialogSuite.requestDialog()
+  OfxStatus Host::requestDialog(OfxImageEffectHandle instance, OfxPropertySetHandle inArgs, void *instanceData)
   {
     return kOfxStatFailed;
   }
 
-  /// @see OfxDialogSuiteV1.NotifyRedrawPending()
-  OfxStatus Host::notifyRedrawPending()
+  /// @see OfxDialogSuite.notifyRedrawPending()
+  OfxStatus Host::notifyRedrawPending(OfxImageEffectHandle instance, OfxPropertySetHandle inArgs)
   {
     return kOfxStatReplyDefault;
   }

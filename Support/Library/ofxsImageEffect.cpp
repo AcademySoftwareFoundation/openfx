@@ -155,7 +155,8 @@ namespace OFX {
     OfxProgressSuiteV1    *gProgressSuiteV1 = 0;
     OfxProgressSuiteV2    *gProgressSuiteV2 = 0;
 #ifdef OFX_SUPPORTS_DIALOG
-    OfxDialogSuiteV1      *gDialogSuite = 0;
+    OfxDialogSuiteV1      *gDialogSuiteV1 = 0;
+    OfxDialogSuiteV2      *gDialogSuiteV2 = 0;
 #endif
     OfxTimeLineSuiteV1    *gTimeLineSuite = 0;
     OfxParametricParameterSuiteV1 *gParametricParameterSuite = 0;
@@ -1371,17 +1372,30 @@ namespace OFX {
   }
 
 #ifdef OFX_SUPPORTS_DIALOG
-  void ImageEffect::requestDialog(void *userData)
+  void ImageEffect::requestDialog(OfxPropertySetHandle inArgs, void *instanceData)
   {
-    if(!OFX::Private::gDialogSuite || !OFX::Private::gDialogSuite->RequestDialog){ throwHostMissingSuiteException("requestDialog"); }
-    OfxStatus stat = OFX::Private::gDialogSuite->RequestDialog(userData);
+    if(!(OFX::Private::gDialogSuiteV1 && OFX::Private::gDialogSuiteV1->requestDialog) &&
+       !(OFX::Private::gDialogSuiteV2 && OFX::Private::gDialogSuiteV2->requestDialog)){ throwHostMissingSuiteException("requestDialog"); }
+    OfxStatus stat;
+    if (OFX::Private::gDialogSuiteV2) {
+      stat = OFX::Private::gDialogSuiteV2->requestDialog(_effectHandle, inArgs, instanceData);
+    } else {
+      stat = OFX::Private::gDialogSuiteV1->requestDialog(instanceData);
+    }
     throwSuiteStatusException(stat);
   }
 
-  void ImageEffect::notifyRedrawPending()
+  void ImageEffect::notifyRedrawPending(OfxPropertySetHandle inArgs)
   {
-    if(!OFX::Private::gDialogSuite || !OFX::Private::gDialogSuite->NotifyRedrawPending){ throwHostMissingSuiteException("requestDialog"); }
-    OfxStatus stat = OFX::Private::gDialogSuite->NotifyRedrawPending();
+    if(!(OFX::Private::gDialogSuiteV1 && OFX::Private::gDialogSuiteV1->notifyRedrawPending) &&
+       !(OFX::Private::gDialogSuiteV2 && OFX::Private::gDialogSuiteV2->notifyRedrawPending))
+      { throwHostMissingSuiteException("notifyRedrawPending"); }
+    OfxStatus stat;
+    if (OFX::Private::gDialogSuiteV2) {
+      stat = OFX::Private::gDialogSuiteV2->notifyRedrawPending(_effectHandle, inArgs);
+    } else {
+      stat = OFX::Private::gDialogSuiteV1->notifyRedrawPending();
+    }
     throwSuiteStatusException(stat);
   }
 #endif
@@ -1557,7 +1571,7 @@ namespace OFX {
 
 #ifdef OFX_SUPPORTS_DIALOG
   /** @brief called in the host's UI thread after a plugin has requested a dialog @see requestDialog() */
-  void ImageEffect::dialog(void */*userData*/)
+  void ImageEffect::dialog(void */*instanceData*/)
   {
   }
 #endif
@@ -2814,13 +2828,15 @@ namespace OFX {
 #endif
 #ifdef OFX_SUPPORTS_DIALOG
         else if(action == kOfxActionDialog) {
-          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, true);
+          checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, true);
 
           // fetch our pointer out of the props on the handle
           ImageEffect *instance = retrieveImageEffectPointer(handle);
 
+          void* instanceData = inArgs.propGetPointer(kOfxPropInstanceData);
+
           // call the dialog action (user_data is in the raw handle)
-          instance->dialog(const_cast<void*>(handleRaw));
+          instance->dialog(instanceData);
         }
 #endif
         else if(actionRaw) {

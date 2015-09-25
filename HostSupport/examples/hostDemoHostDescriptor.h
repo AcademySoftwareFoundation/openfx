@@ -83,11 +83,11 @@ namespace MyHost {
     virtual OfxStatus clearPersistentMessage();
 
 #ifdef OFX_SUPPORTS_DIALOG
-    /// @see OfxDialogSuiteV1.RequestDialog()
-    virtual OfxStatus requestDialog(void* user_data);
+    /// @see OfxDialogSuiteV.requestDialog()
+    virtual OfxStatus requestDialog(OfxImageEffectHandle instance, OfxPropertySetHandle inArgs, void *instanceData);
 
-    /// @see OfxDialogSuiteV1.NotifyRedrawPending()
-    virtual OfxStatus notifyRedrawPending();
+    /// @see OfxDialogSuiteV.notifyRedrawPending()
+    virtual OfxStatus notifyRedrawPending(OfxImageEffectHandle instance, OfxPropertySetHandle inArgs);
 #endif
 
 #ifdef OFX_SUPPORTS_OPENGLRENDER
