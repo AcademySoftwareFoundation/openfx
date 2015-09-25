@@ -1469,10 +1469,10 @@ namespace OFX {
 
 #ifdef OFX_SUPPORTS_DIALOG
     /** @brief Request the host to send a kOfxActionDialog to the plugin from its UI thread. */
-    void requestDialog(void *user_data);
+    void requestDialog(OfxPropertySetHandle inArgs, void *instanceData);
 
     /** @brief Inform the host of redraw event so it can redraw itself */
-    void notifyRedrawPending();
+    void notifyRedrawPending(OfxPropertySetHandle inArgs);
 #endif
 
     /** @brief Fetch the named clip from this instance

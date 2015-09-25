@@ -150,11 +150,11 @@ namespace OFX {
         // In OfxDialogSuiteV1, only the host can figure out which effect instance triggered
         // that request.
 
-        /// @see OfxDialogSuiteV1.RequestDialog()
-        virtual OfxStatus requestDialog(void* user_data) = 0;
+        /// @see OfxDialogSuite.requestDialog()
+        virtual OfxStatus requestDialog(OfxImageEffectHandle instance, OfxPropertySetHandle inArgs, void *instanceData) = 0;
 
-        /// @see OfxDialogSuiteV1.NotifyRedrawPending()
-        virtual OfxStatus notifyRedrawPending() = 0;
+        /// @see OfxDialogSuite.notifyRedrawPending()
+        virtual OfxStatus notifyRedrawPending(OfxImageEffectHandle instance, OfxPropertySetHandle inArgs) = 0;
 #endif
 
 #     ifdef OFX_SUPPORTS_OPENGLRENDER
@@ -745,7 +745,7 @@ namespace OFX {
 #ifdef OFX_SUPPORTS_DIALOG
         // OfxDialogSuiteV1
         /// @see kOfxActionDialog
-        virtual OfxStatus dialog(void *user_data);
+        virtual OfxStatus dialog(void *instanceData);
 #endif
 
         /// Get the interact description, this will also call describe on the interact

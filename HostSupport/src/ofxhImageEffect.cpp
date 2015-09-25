@@ -2426,19 +2426,28 @@ namespace OFX {
       }
 
  #ifdef OFX_SUPPORTS_DIALOG
-        // OfxDialogSuiteV1
-        /// @see kOfxActionDialog
-      OfxStatus Instance::dialog(void *user_data)
+      // OfxDialogSuite
+      /// @see kOfxActionDialog
+      OfxStatus Instance::dialog(void *instanceData)
       {
+        static const Property::PropSpec inStuff[] = {
+          { kOfxPropInstanceData, Property::ePointer, 1, true, NULL },
+          Property::propSpecEnd
+        };
+
+        Property::Set inArgs(inStuff);        
+
+        inArgs.setPointerProperty(kOfxPropInstanceData, instanceData);
+
 #       ifdef OFX_DEBUG_ACTIONS
-          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionDialog<<"("<<user_data<<")"<<std::endl;
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionDialog<<"("<<instanceData<<")"<<std::endl;
 #       endif
         OfxStatus st = mainEntry(kOfxActionDialog,
                                  this->getHandle(),
-                                 (Property::Set*)user_data,
+                                 &inArgs,
                                  0);
 #       ifdef OFX_DEBUG_ACTIONS
-          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionDialog<<"("<<user_data<<")->"<<StatStr(st);
+          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionDialog<<"("<<instanceData<<")->"<<StatStr(st);
           std::cout << std::endl;
 #       endif
 
@@ -3254,20 +3263,38 @@ namespace OFX {
       ////////////////////////////////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////////////
       // Dialog suite functions
-      static OfxStatus requestDialog(void *user_data)
+      static OfxStatus requestDialogV1(void *user_data)
       {
         // In OfxDialogSuiteV1, only the host can figure out which effect instance triggered
         // that request.
-        return gImageEffectHost->requestDialog(user_data);
+        return gImageEffectHost->requestDialog(NULL, NULL, user_data);
       }
 
-      static OfxStatus notifyredrawPending()
+      static OfxStatus notifyredrawPendingV1()
       {
-        return gImageEffectHost->notifyRedrawPending();
+        return gImageEffectHost->notifyRedrawPending(NULL, NULL);
       }
 
       /// dialog suite for an image effect plugin
       static const struct OfxDialogSuiteV1 gDialogSuiteV1 = {
+        requestDialogV1,
+        notifyredrawPendingV1
+      };
+
+      static OfxStatus requestDialog(OfxImageEffectHandle instance, OfxPropertySetHandle inArgs, void *instanceData)
+      {
+        // In OfxDialogSuiteV1, only the host can figure out which effect instance triggered
+        // that request.
+        return gImageEffectHost->requestDialog(instance, inArgs, instanceData);
+      }
+
+      static OfxStatus notifyredrawPending(OfxImageEffectHandle instance, OfxPropertySetHandle inArgs)
+      {
+        return gImageEffectHost->notifyRedrawPending(instance, inArgs);
+      }
+
+      /// dialog suite for an image effect plugin
+      static const struct OfxDialogSuiteV2 gDialogSuiteV2 = {
         requestDialog,
         notifyredrawPending
       };
@@ -3636,6 +3663,8 @@ namespace OFX {
         else if (strcmp(suiteName, kOfxDialogSuite)==0) {
           if(suiteVersion==1)
             return (void *)&gDialogSuiteV1;
+          else if(suiteVersion==2)
+            return (void *)&gDialogSuiteV2;
           else 
             return NULL;
         }
