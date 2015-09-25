@@ -50,9 +50,9 @@ LANG=C
 export LANG
 
 if [ $# != 2 ]; then
-  echo "Usage: $0 AppName.app|Bundle.bundle Executablename"
-  echo "moves macports and local libraries into AppName.app"
-  exit 1
+    echo "Usage: $0 AppName.app|Bundle.bundle Executablename"
+    echo "moves macports and local libraries into AppName.app"
+    exit 1
 fi
 
 MACPORTS=/opt/local
@@ -79,13 +79,12 @@ if [ ! -x "$binary" ]; then
 fi
 
 rpath=`otool -l $binary | grep -A 3 LC_RPATH |grep path|awk '{ print $2 }'`
-if [[ ! ("$rpath" == *"@loader_path/../Libraries"*) ]]; then
-  echo "Error:: The runtime search path in $binary does not contain \"@loader_path/../Libraries\". Please set it in your Xcode project, or link the binary with the flags -Xlinker -rpath -Xlinker \"@loader_path/../Libraries\""
-  exit 1
+if [[ ! ("$rpath" == *"@loader_path/../$libdir"*) ]]; then
+    echo "Error:: The runtime search path in $binary does not contain \"@loader_path/../$libdir\". Please set it in your Xcode project, or link the binary with the flags -Xlinker -rpath -Xlinker \"@loader_path/../$libdir\""
+    exit 1
 fi
 # Test dirs
 test -d "$pkglib" || mkdir "$pkglib"
-test -d "$pkglib/share/" || mkdir "$pkglib/share/"
 
 LIBADD=
 
@@ -94,8 +93,8 @@ LIBADD=
 if otool -L "$binary"  | fgrep libMagick > /dev/null; then
     # Check that ImageMagick is properly installed
     if ! pkg-config --modversion ImageMagick >/dev/null 2>&1; then
-	echo "Missing ImageMagick -- please install ImageMagick ('sudo port install ImageMagick +no_x11 +universal') and try again." >&2
-	exit 1
+        echo "Missing ImageMagick -- please install ImageMagick ('sudo port install ImageMagick +no_x11 +universal') and try again." >&2
+        exit 1
     fi
 
     # Update the ImageMagick path in startup script.
@@ -110,6 +109,7 @@ if otool -L "$binary"  | fgrep libMagick > /dev/null; then
 
     # copy the ImageMagick libraries (.la and .so)
     cp -r "$IMAGEMAGICKLIB/ImageMagick-$IMAGEMAGICKVER" "$pkglib/"
+    test -d "$pkglib/share" || mkdir "$pkglib/share"
     cp -r "$IMAGEMAGICKSHARE/ImageMagick-$IMAGEMAGICKMAJ" "$pkglib/share/"
 
     LIBADD="$LIBADD $pkglib/ImageMagick-$IMAGEMAGICKVER/modules-*/*/*.so"
@@ -126,19 +126,19 @@ nfiles=0
 alllibs=""
 endl=true
 while $endl; do
-	#echo -e "\033[1mLooking for dependencies.\033[0m Round" $a
-	libs="`otool -L $pkglib/* $LIBADD $binary 2>/dev/null | fgrep compatibility | cut -d\( -f1 | grep -e $LOCAL'\\|'$HOMEBREW'\\|'$MACPORTS | sort | uniq`"
-	if [ -n "$libs" ]; then
-          cp -f $libs $pkglib
-	  alllibs="`ls $alllibs $libs | sort | uniq`"
-	fi
-	let "a+=1"	
-	nnfiles=`ls $pkglib | wc -l`
-	if [ $nnfiles = $nfiles ]; then
-		endl=false
-	else
-		nfiles=$nnfiles
-	fi
+    #echo -e "\033[1mLooking for dependencies.\033[0m Round" $a
+    libs="`otool -L $pkglib/* $LIBADD $binary 2>/dev/null | fgrep compatibility | cut -d\( -f1 | grep -e $LOCAL'\\|'$HOMEBREW'\\|'$MACPORTS | sort | uniq`"
+    if [ -n "$libs" ]; then
+        cp -f $libs $pkglib
+        alllibs="`ls $alllibs $libs | sort | uniq`"
+    fi
+    let "a+=1"      
+    nnfiles=`ls $pkglib | wc -l`
+    if [ $nnfiles = $nfiles ]; then
+        endl=false
+    else
+        nfiles=$nnfiles
+    fi
 done
 
 # all the libraries were copied, now change the names...
@@ -147,20 +147,26 @@ done
 ## has to link the binary with "Runtime search paths" set correctly
 ## (e.g. to "@loader_path/../Frameworks @loader_path/../Libraries" ).
 if [ -n "$alllibs" ]; then
-  changes=""
-  for l in $alllibs; do
-    changes="$changes -change $l @rpath/`basename $l`"
-  done
+    changes=""
+    for l in $alllibs; do
+        changes="$changes -change $l @rpath/`basename $l`"
+    done
 
-  for f in  $pkglib/* $LIBADD "$binary"; do
-    # avoid directories
-    if [ -f $f ]; then
-      if ! install_name_tool $changes $f; then
-        echo "Error: 'install_name_tool $changes $f' failed"
-        exit 1
-      fi
-    fi
-  done
+    for f in  $pkglib/* $LIBADD "$binary"; do
+        # avoid directories
+        if [ -f "$f" ]; then
+            chmod +w "$f"
+            if ! install_name_tool $changes "$f"; then
+                echo "Error: 'install_name_tool $changes $f' failed"
+                exit 1
+            fi
+            install_name_tool -id @rpath/`basename $f` "$f"
+            if ! install_name_tool -id @rpath/`basename $f` "$f"; then
+                echo "Error: 'install_name_tool -id @rpath/`basename $f` $f' failed"
+                exit 1
+            fi
+        fi
+    done
 fi
 
 #if [ "$WITH_IMAGEMAGICK" = "yes" ]; then
