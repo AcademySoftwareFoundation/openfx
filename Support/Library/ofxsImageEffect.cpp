@@ -912,7 +912,7 @@ namespace OFX {
     _effectProps.propSetInt(kOfxImageEffectPropSupportsTiles, int(v));
   }
 
-  /** @brief Does the plugin support image tiling */
+  /** @brief Does the plugin handles render quality */
   void ImageEffectDescriptor::setSupportsRenderQuality(bool v)
   {
     _effectProps.propSetInt(kOfxImageEffectPropRenderQualityDraft, int(v), false); // OFX 1.4+
