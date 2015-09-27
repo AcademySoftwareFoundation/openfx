@@ -958,6 +958,21 @@ namespace OFX {
       break;
     }
   }
+    
+#ifdef OFX_EXTENSIONS_NATRON
+    /*Indicates if the host may add a mask that will be handled automatically.*/
+  void ImageEffectDescriptor::setHostMaskingEnabled(bool enabled)
+  {
+    _effectProps.propSetInt(kNatronOfxImageEffectPropHostMasking, (int)enabled, 0, false);
+  }
+    
+    /*Indicates if the host may add a "Mix" double parameter that will dissolve
+     between the source image at 0 and the full effect at 1.*/
+  void ImageEffectDescriptor::setHostMixingEnabled(bool enabled)
+  {
+    _effectProps.propSetInt(kNatronOfxImageEffectPropHostMixing, (int)enabled, 0, false);
+  }
+#endif
 
 #ifdef OFX_EXTENSIONS_VEGAS
   void ImageEffectDescriptor::setPresetThumbnailHint(VegasPresetThumbnailEnum v)
@@ -1886,20 +1901,6 @@ namespace OFX {
   }
 #endif
     
-#ifdef OFX_EXTENSIONS_NATRON
-    /*Indicates if the host may add a mask that will be handled automatically.*/
-  void ImageEffect::setHostMaskingEnabled(bool enabled)
-  {
-      _effectProps.propSetInt(kNatronOfxImageEffectPropHostMasking, (int)enabled, 0, false);
-  }
-    
-    /*Indicates if the host may add a "Mix" double parameter that will dissolve
-     between the source image at 0 and the full effect at 1.*/
-  void ImageEffect::setHostMixingEnabled(bool enabled)
-  {
-      _effectProps.propSetInt(kNatronOfxImageEffectPropHostMixing, (int)enabled, 0, false);
-  }
-#endif
 
   /** @brief notify host that the internal data structures need syncing back to parameters for persistance and so on.  This is reset by the host after calling SyncPrivateData. */
   void ImageEffect::setParamSetNeedsSyncing()
