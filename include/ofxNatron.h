@@ -144,9 +144,7 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
  - Property Set - image effect descriptor (read/write), host descriptor (read only)
  - Valid Values - 0 or 1
  - Default value: 0
- 
- When set to 1, the plug-in should be able to call clipGetHandle on the clip created by the host.
- */
+*/
 #define kNatronOfxImageEffectPropHostMixing "kNatronOfxImageEffectPropHostMixing"
 
 

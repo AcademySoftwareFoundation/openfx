@@ -1461,6 +1461,15 @@ namespace OFX {
     /** @brief Does the plugin require OpenGL accelerated rendering ? Can only be called from changedParam or changedClip. */
     void setNeedsOpenGLRender(bool v);
 #endif
+      
+#ifdef OFX_EXTENSIONS_NATRON
+    /*Indicates if the host may add a mask that will be handled automatically.*/
+    void setHostMaskingEnabled(bool enabled);
+      
+    /*Indicates if the host may add a "Mix" double parameter that will dissolve
+          between the source image at 0 and the full effect at 1.*/
+    void setHostMixingEnabled(bool enabled);
+#endif
 
     /** @brief notify host that the internal data structures need syncing back to parameters for persistance and so on.  This is reset by the host after calling SyncPrivateData. */
     void setParamSetNeedsSyncing();
