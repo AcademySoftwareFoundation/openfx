@@ -598,6 +598,9 @@ namespace OFX {
     /** @brief Does the plugin support image tiling, defaults to true */
     void setSupportsTiles(bool v);
 
+    /** @brief Does the plugin handle render quality, defaults to false */
+    void setSupportsRenderQuality(bool v);
+
     /** @brief Does the plugin perform temporal clip access, defaults to false */
     void setTemporalClipAccess(bool v);
 

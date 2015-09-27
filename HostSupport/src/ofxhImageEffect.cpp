@@ -102,6 +102,7 @@ namespace OFX {
         { kOfxImageEffectPropSupportsMultipleClipPARs,   Property::eInt, 1, false, "0" },
         { kOfxImageEffectPropClipPreferencesSlaveParam, Property::eString, 0, false, "" },
         { kOfxImageEffectInstancePropSequentialRender, Property::eInt, 1, false, "0" },
+        { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, false, "0" },
         { kOfxPluginPropFilePath, Property::eString, 1, true, ""},
 #ifdef OFX_SUPPORTS_OPENGLRENDER
         { kOfxImageEffectPropOpenGLRenderSupported, Property::eString, 1, false, "false"}, // OFX 1.3
@@ -292,6 +293,25 @@ namespace OFX {
       bool Base::isClipPreferencesSlaveParam(const std::string &s) const
       {
         return _properties.findStringPropValueIndex(kOfxImageEffectPropClipPreferencesSlaveParam, s) != -1;
+      }
+
+        
+      /// does the effect require sequential render
+      bool Base::requiresSequentialRender() const
+      {
+        return _properties.getIntProperty(kOfxImageEffectInstancePropSequentialRender) == 1;
+      }
+        
+      /// does the effect prefer sequential render
+      bool Base::prefersSequentialRender() const
+      {
+        return _properties.getIntProperty(kOfxImageEffectInstancePropSequentialRender) != 0;
+      }
+        
+      /// does the effect support render quality
+      bool Base::supportsRenderQuality() const
+      {
+        return _properties.getIntProperty(kOfxImageEffectPropRenderQualityDraft) != 0;
       }
 
 #ifdef OFX_EXTENSIONS_NUKE

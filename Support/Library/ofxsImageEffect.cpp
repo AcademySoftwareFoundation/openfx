@@ -912,6 +912,12 @@ namespace OFX {
     _effectProps.propSetInt(kOfxImageEffectPropSupportsTiles, int(v));
   }
 
+  /** @brief Does the plugin support image tiling */
+  void ImageEffectDescriptor::setSupportsRenderQuality(bool v)
+  {
+    _effectProps.propSetInt(kOfxImageEffectPropRenderQualityDraft, int(v), false); // OFX 1.4+
+  }
+
   /** @brief Does the plugin perform temporal clip access */
   void ImageEffectDescriptor::setTemporalClipAccess(bool v)
   {

@@ -252,6 +252,15 @@ namespace OFX {
         /// does changing the named param re-tigger a clip preferences action
         bool isClipPreferencesSlaveParam(const std::string &s) const;
 
+        /// does the effect require sequential render
+        bool requiresSequentialRender() const;
+        
+        /// does the effect prefer sequential render
+        bool prefersSequentialRender() const;
+        
+        /// does the effect support render quality
+        bool supportsRenderQuality() const;
+
 #ifdef OFX_EXTENSIONS_NUKE
         /// does this effect handle transform effects
         bool canTransform() const;
