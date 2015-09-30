@@ -82,6 +82,80 @@ static bool starts_with(std::string const & value, std::string const & beginning
   return std::equal(beginning.begin(), beginning.end(), value.begin());
 }
 
+// The function that wrote string properties to the OFX plugin cache used to
+// escape only que quote (") character. As a result, if one of the string
+// properties in the Image Effect descriptor contains special characters,
+// the host may be unable to read the plugin cache, giving an "xml error 4"
+// (error 4 is XML_ERROR_INVALID_TOKEN).
+//
+// The plugin label and grouping may not contain any of these bad characters.
+// The plugin description may contain characters that do not corrupt the XML,
+// because kOfxActionDescribe is usually called at plugin loading.
+//
+// Version with the bug:
+// https://github.com/ofxa/openfx/blob/34ff595a2918e9e4065603d7fc4d500ae9efc421/HostSupport/include/ofxhXml.h
+// Version without the bug:
+// https://github.com/ofxa/openfx/blob/64ba52fff61894759fbf3942b92659b02b2b17cd/HostSupport/include/ofxhXml.h
+//
+// With the old version:
+// - all characters within 0x01..0x1f and 0x7F..0x9F, except \t \b \r (0x09 0x0A 0X0D) are forbidden
+//   in label and grouping, because these may be used to build the GUI before loading the plugin,
+//   but may appear in the description
+// - the '<' and '&' characters generate bad XML in all cases
+// - the '>' and '\'' characters are tolerated by the expat parser, although the XML is not valid
+
+static void validateXMLString(std::string const & s, bool strict)
+{
+#ifdef DEBUG
+  int lt = 0;
+  int amp = 0;
+  int ctrl = 0;
+  for (size_t i=0;i<s.size();i++) {
+    // The are exactly five characters which must be escaped
+    // http://www.w3.org/TR/xml/#syntax
+    switch (s[i]) {
+      case '\t':
+      case '\n':
+      case '\r':
+      case '"':
+      case '\'':
+      case '>':
+        break;
+      case '<':
+        ++lt;
+        break;
+      case '&':
+        ++amp;
+        break;
+      default: {
+        unsigned char c = (unsigned char)(s[i]);
+        if ((0x01 <= c && c <= 0x1f) || (0x7F <= c && c <= 0x9F)) {
+          ++ctrl;
+        }
+      } break;
+    }
+  }
+  if (lt || amp || ctrl) {
+    std::cout << "Warning: the following string value may break the OFX plugin cache on older hosts,\n";
+    std::cout << "because it contains:\n";
+    if (lt) {
+      std::cout << lt << " '<' characters\n";
+    }
+    if (amp) {
+      std::cout << amp << " '&' characters\n";
+    }
+    if (ctrl) {
+      if (!strict) {
+        std::cout << "(nonfatal) ";
+      }
+      std::cout << ctrl << " invalid characters in the range 0x01..0x1f or 0x7F..0x9F\n";
+    }
+    std::cout << "Raw string value:\n";
+    std::cout << s << std::endl;
+  }
+#endif
+}
+
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {
 
@@ -668,6 +742,7 @@ namespace OFX {
   /** @brief, set the label properties in a plugin */
   void ImageEffectDescriptor::setLabel(const std::string &label)
   {
+    validateXMLString(label, true);
     _effectProps.propSetString(kOfxPropLabel, label);
   }
 
@@ -675,7 +750,9 @@ namespace OFX {
   void ImageEffectDescriptor::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
   {
     setLabel(label);
+    validateXMLString(shortLabel, false);
     _effectProps.propSetString(kOfxPropShortLabel, shortLabel, false);
+    validateXMLString(longLabel, false);
     _effectProps.propSetString(kOfxPropLongLabel, longLabel, false);
   }
 
@@ -694,6 +771,7 @@ namespace OFX {
       }
     }
     if (!versionLabel.empty()) {
+      validateXMLString(versionLabel, false);
       _effectProps.propSetString(kOfxPropVersionLabel, versionLabel, false);
     }
   }
@@ -701,12 +779,14 @@ namespace OFX {
   /** @brief Set the plugin grouping */
   void ImageEffectDescriptor::setPluginGrouping(const std::string &group)
   {
+    validateXMLString(group, true);
     _effectProps.propSetString(kOfxImageEffectPluginPropGrouping, group);
   }
 
   /** @brief Set the plugin description, defaults to "" */
   void ImageEffectDescriptor::setPluginDescription(const std::string &description)
   {
+    validateXMLString(description, false);
     _effectProps.propSetString(kOfxPropPluginDescription, description, false); // introduced in OFX 1.2
   }
 
@@ -839,6 +919,7 @@ namespace OFX {
   /** @brief Add a file extension to those supported */
   void ImageEffectDescriptor::addSupportedExtension(const std::string& extension)
   {
+    validateXMLString(extension, false);
     // only Tuttle support this property ( out of standard )
     //if( OFX::Private::gHostDescription.hostName == "TuttleOfx" ) {
     try {
@@ -856,7 +937,8 @@ namespace OFX {
     try {
       int n = _effectProps.propGetDimension( kTuttleOfxImageEffectPropSupportedExtensions );
       
-        for (std::vector<std::string>::const_iterator it = extensions.begin(); it != extensions.end(); ++it, ++n) {
+      for (std::vector<std::string>::const_iterator it = extensions.begin(); it != extensions.end(); ++it, ++n) {
+        validateXMLString(*it, false);
         _effectProps.propSetString(kTuttleOfxImageEffectPropSupportedExtensions, *it, n);
       }
     } catch (OFX::Exception::PropertyUnknownToHost &e) {
@@ -872,6 +954,7 @@ namespace OFX {
       int n = _effectProps.propGetDimension( kTuttleOfxImageEffectPropSupportedExtensions );
       
       while (*extensions) {
+        validateXMLString(*extensions, false);
         _effectProps.propSetString(kTuttleOfxImageEffectPropSupportedExtensions, *extensions, n);
         ++extensions;
         ++n;
@@ -1062,6 +1145,7 @@ namespace OFX {
   void ImageEffectDescriptor::addClipPreferencesSlaveParam(ParamDescriptor &p)
   {
     int n = _effectProps.propGetDimension(kOfxImageEffectPropClipPreferencesSlaveParam);
+    validateXMLString(p.getName(), false);
     _effectProps.propSetString(kOfxImageEffectPropClipPreferencesSlaveParam, p.getName(), n);
   }
 
@@ -1070,12 +1154,14 @@ namespace OFX {
   void ImageEffectDescriptor::addVegasUpgradePath(const std::string &guidString)
   {
     int n = _effectProps.propGetDimension(kOfxImageEffectPropVegasUpliftGUID);
+    validateXMLString(guidString, false);
     _effectProps.propSetString(kOfxImageEffectPropVegasUpliftGUID, guidString.c_str(), n);
   }
 
   /** @brief sets the path to a help file, defaults to none, must be called at least once */
   void ImageEffectDescriptor::setHelpPath(const std::string &helpPathString)
   {
+    validateXMLString(helpPathString, false);
     _effectProps.propSetString(kOfxImageEffectPropHelpFile, helpPathString.c_str());
   }
 
@@ -1089,6 +1175,7 @@ namespace OFX {
   /** @brief Create a clip, only callable from describe in context */
   ClipDescriptor *ImageEffectDescriptor::defineClip(const std::string &name)
   {
+    validateXMLString(name, false);
     // do we have the clip already
     std::map<std::string, ClipDescriptor *>::const_iterator search;
     search = _definedClips.find(name);
