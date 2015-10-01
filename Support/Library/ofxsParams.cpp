@@ -1328,10 +1328,9 @@ namespace OFX {
   ParametricParamDescriptor* ParamSetDescriptor::defineParametricParam(const std::string &name)
   {
     ParametricParamDescriptor* param = NULL;
-    if (defineParamDescriptor(name, eParametricParam, param)) {
-      // Parametric parameters need the ParamSet !
-      param->setParamSet(*this);
-    }
+    defineParamDescriptor(name, eParametricParam, param);
+    // Parametric parameters need the ParamSet !
+    param->setParamSet(*this);
     return param;
   }
 
