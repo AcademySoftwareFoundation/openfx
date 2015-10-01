@@ -82,6 +82,9 @@ static bool starts_with(std::string const & value, std::string const & beginning
   return std::equal(beginning.begin(), beginning.end(), value.begin());
 }
 
+#ifdef DEBUG
+// Check the effect descriptor for potentially bad XML in the OFX Plugin cache.
+//
 // The function that wrote string properties to the OFX plugin cache used to
 // escape only que quote (") character. As a result, if one of the string
 // properties in the Image Effect descriptor contains special characters,
@@ -98,15 +101,13 @@ static bool starts_with(std::string const & value, std::string const & beginning
 // https://github.com/ofxa/openfx/blob/64ba52fff61894759fbf3942b92659b02b2b17cd/HostSupport/include/ofxhXml.h
 //
 // With the old version:
-// - all characters within 0x01..0x1f and 0x7F..0x9F, except \t \b \r (0x09 0x0A 0X0D) are forbidden
-//   in label and grouping, because these may be used to build the GUI before loading the plugin,
-//   but may appear in the description
-// - the '<' and '&' characters generate bad XML in all cases
-// - the '>' and '\'' characters are tolerated by the expat parser, although the XML is not valid
-
+// - All characters within 0x01..0x1f and 0x7F..0x9F, except \t \b \r (0x09 0x0A 0X0D) are forbidden
+//   in label and grouping, because these may be used to build the GUI before loading the plugin.
+//   They may appear in the description, although it is not recommended.
+// - The '<' and '&' characters generate bad XML in all cases
+// - The '>' and '\'' characters are tolerated by the expat parser, although the XML is not valid
 static void validateXMLString(std::string const & s, bool strict)
 {
-#ifdef DEBUG
   int lt = 0;
   int amp = 0;
   int ctrl = 0;
@@ -153,8 +154,10 @@ static void validateXMLString(std::string const & s, bool strict)
     std::cout << "Raw string value:\n";
     std::cout << s << std::endl;
   }
-#endif
 }
+#else
+#define validateXMLString(s,b) (void)0;
+#endif
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {
