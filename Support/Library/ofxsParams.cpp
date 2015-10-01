@@ -651,12 +651,6 @@ namespace OFX {
     _paramProps.propSetString(kOfxParamPropDimensionLabel, y, 1);
   }
 
-  /** @brief set kOfxParamPropUseHostOverlayHandle */
-  void Double2DParamDescriptor::setUseHostOverlayHandle(bool v)
-  {
-    _paramProps.propSetInt(kOfxParamPropUseHostOverlayHandle, v);
-  }
-
 #ifdef OFX_EXTENSIONS_VEGAS
   /** @brief set the color wheel level value, default is 0.75 */
   void Double2DParamDescriptor::setColorWheelLevel(double x)

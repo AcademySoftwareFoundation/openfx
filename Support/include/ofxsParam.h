@@ -536,9 +536,6 @@ namespace OFX {
         void setDimensionLabels(const std::string &x,
                                 const std::string &y);
 
-        /** @brief set kOfxParamPropUseHostOverlayHandle */
-        void setUseHostOverlayHandle(bool v);
-
         /** @brief set the default value, default is 0 */
         void setDefault(double x, double y);
 
