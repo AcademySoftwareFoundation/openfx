@@ -1369,8 +1369,13 @@ namespace OFX {
           if(clip) {
             Param::DoubleInstance *param = dynamic_cast<Param::DoubleInstance *>(getParam(kOfxImageEffectRetimerParamName));
             if(param) {
-              rod = clip->getRegionOfDefinition(floor(time));
-              rod = Union(rod, clip->getRegionOfDefinition(floor(time) + 1));
+              double srctime;
+              OfxStatus stat = param->get(time, srctime);
+              if (stat != kOfxStatOK) {
+                throw Property::Exception(stat);
+              }
+              rod = clip->getRegionOfDefinition(floor(srctime));
+              rod = Union(rod, clip->getRegionOfDefinition(ceil(srctime)));
             } else {
                 throw Property::Exception(kOfxStatFailed);
             }
