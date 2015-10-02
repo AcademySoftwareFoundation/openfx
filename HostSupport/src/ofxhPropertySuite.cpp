@@ -655,7 +655,13 @@ namespace OFX {
       /// get a particular double property
       double Set::getDoublePropertyRaw(const std::string &property, int index)  const
       {
-        return getPropertyRaw<OFX::Host::Property::DoubleValue>(property, index);
+        double v = getPropertyRaw<OFX::Host::Property::DoubleValue>(property, index);
+        if (v != v) {
+          // trying to get a NaN value
+          throw Exception(kOfxStatErrValue);
+        }
+        return v;
+
       }
 
       /// get a particular double property
@@ -680,7 +686,7 @@ namespace OFX {
         return getProperty<OFX::Host::Property::IntValue>(property, index);
       }
         
-      /// get the value of a particular double property
+      /// get the value of a particular int property
       void Set::getIntPropertyN(const std::string &property,  int *v, int N) const
       {
         return getPropertyN<OFX::Host::Property::IntValue>(property, N, v);
@@ -689,13 +695,24 @@ namespace OFX {
       /// get a particular double property
       double Set::getDoubleProperty(const std::string &property, int index)  const
       {
-        return getProperty<OFX::Host::Property::DoubleValue>(property, index);
+        double v = getProperty<OFX::Host::Property::DoubleValue>(property, index);
+        if (v != v) {
+          // trying to get a NaN value
+          throw Exception(kOfxStatErrValue);
+        }
+        return v;
       }
 
       /// get the value of a particular double property
       void Set::getDoublePropertyN(const std::string &property,  double *v, int N) const
       {
-        return getPropertyN<OFX::Host::Property::DoubleValue>(property, N, v);
+        getPropertyN<OFX::Host::Property::DoubleValue>(property, N, v);
+        for (int i = 0; i < N; ++i) {
+          if (v[i] != v[i]) {
+            // trying to get a NaN value
+            throw Exception(kOfxStatErrValue);
+          }
+        }
       }
 
       /// get a particular double property
@@ -722,25 +739,35 @@ namespace OFX {
         setProperty<OFX::Host::Property::IntValue>(property, index, v);
       }
       
-      /// get a particular double property
+      /// set a particular double property
       void Set::setIntPropertyN(const std::string &property, const int *v, int N)
       {
         setPropertyN<OFX::Host::Property::IntValue>(property, N, v);
       }
 
-      /// get a particular double property
+      /// set a particular double property
       void Set::setDoubleProperty(const std::string &property, double v, int index)
       {
+        if (v != v) {
+          // trying to set a NaN value
+          throw Exception(kOfxStatErrValue);
+        }
         setProperty<OFX::Host::Property::DoubleValue>(property, index, v);
       }
       
-      /// get a particular double property
+      /// set a particular double property
       void Set::setDoublePropertyN(const std::string &property, const double *v, int N)
       {
+        for (int i = 0; i < N; ++i) {
+          if (v[i] != v[i]) {
+            // trying to set a NaN value
+            throw Exception(kOfxStatErrValue);
+          }
+        }
         setPropertyN<OFX::Host::Property::DoubleValue>(property, N, v);
       }
 
-      /// get a particular double property
+      /// set a particular pointer property
       void Set::setPointerProperty(const std::string &property,  void *v, int index)
       {
         setProperty<OFX::Host::Property::PointerValue>(property, index, v);

@@ -294,6 +294,10 @@ namespace OFX {
       void Instance::initArgProp(OfxTime time, 
                                  const OfxPointD &renderScale)
       {
+        if (time != time) {
+          // time is NaN
+          throw Property::Exception(kOfxStatErrValue);
+        }
         double pixelScale[2];
         getPixelScale(pixelScale[0], pixelScale[1]);  
         _argProperties.setDoublePropertyN(kOfxInteractPropPixelScale, pixelScale, 2);
@@ -334,6 +338,10 @@ namespace OFX {
       OfxStatus Instance::drawAction(OfxTime time,  
                                      const OfxPointD &renderScale)
       {        
+        if (time != time) {
+          // time is NaN
+          return kOfxStatErrValue;
+        }
         initArgProp(time, renderScale);
         return callEntry(kOfxInteractActionDraw, &_argProperties);
       }
@@ -344,6 +352,10 @@ namespace OFX {
                                           const OfxPointI &penPosViewport,
                                           double  pressure)
       {
+        if (time != time) {
+          // time is NaN
+          return kOfxStatErrValue;
+        }
         initArgProp(time, renderScale);
         setPenArgProps(penPos, penPosViewport, pressure);
         return callEntry(kOfxInteractActionPenMotion,&_argProperties);
@@ -355,6 +367,10 @@ namespace OFX {
                                       const OfxPointI &penPosViewport,
                                       double pressure)
       {
+        if (time != time) {
+          // time is NaN
+          return kOfxStatErrValue;
+        }
         initArgProp(time, renderScale);
         setPenArgProps(penPos, penPosViewport, pressure);
         return callEntry(kOfxInteractActionPenUp,&_argProperties);
@@ -366,6 +382,10 @@ namespace OFX {
                                         const OfxPointI &penPosViewport,
                                         double pressure)
       {
+        if (time != time) {
+          // time is NaN
+          return kOfxStatErrValue;
+        }
         initArgProp(time, renderScale);
         setPenArgProps(penPos, penPosViewport, pressure);
         return callEntry(kOfxInteractActionPenDown,&_argProperties);
@@ -376,6 +396,10 @@ namespace OFX {
                                         int     key,
                                         char*   keyString)
       {
+        if (time != time) {
+          // time is NaN
+          return kOfxStatErrValue;
+        }
         initArgProp(time, renderScale);
         setKeyArgProps(key, keyString);
         return callEntry(kOfxInteractActionKeyDown,&_argProperties);
@@ -386,6 +410,10 @@ namespace OFX {
                                       int     key,
                                       char*   keyString)
       {
+        if (time != time) {
+          // time is NaN
+          return kOfxStatErrValue;
+        }
         initArgProp(time, renderScale);
         setKeyArgProps(key, keyString);
         return callEntry(kOfxInteractActionKeyUp,&_argProperties);
@@ -396,6 +424,10 @@ namespace OFX {
                                           int     key,
                                           char*   keyString)
       {
+        if (time != time) {
+          // time is NaN
+          return kOfxStatErrValue;
+        }
         initArgProp(time, renderScale);
         setKeyArgProps(key, keyString);
         return callEntry(kOfxInteractActionKeyRepeat,&_argProperties);
@@ -404,6 +436,10 @@ namespace OFX {
       OfxStatus Instance::gainFocusAction(OfxTime time,
                                           const OfxPointD &renderScale)
       {
+        if (time != time) {
+          // time is NaN
+          return kOfxStatErrValue;
+        }
         initArgProp(time, renderScale);
         return callEntry(kOfxInteractActionGainFocus,&_argProperties);
       }
