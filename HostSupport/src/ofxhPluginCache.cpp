@@ -691,7 +691,8 @@ void PluginCache::readCache(std::istream &ifs) {
     int p = XML_Parse(xP, buf, int(strlen(buf)), XML_FALSE);
     
     if (p == XML_STATUS_ERROR) {
-      std::cout << "xml error : " << XML_GetErrorCode(xP) << std::endl;
+      enum XML_Error code = XML_GetErrorCode(xP);
+      std::cout << "xml error : " << XML_ErrorString(code) << " (" << (int)code << ")" << std::endl;
       /// XXX: do something here
       break;
     }

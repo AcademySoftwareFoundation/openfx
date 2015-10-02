@@ -45,4 +45,17 @@ Documentation/ofxPropertySuiteReference.xml
 Documentation/ofxThreadingSuiteReference.xml
 Documentation/ofxTimeLineSuiteReference.xml
 
-xizvuaie.fcz.txt
+HostSupport/expat*/.libs/libexpat.la
+HostSupport/expat*/.libs/libexpat.lai
+HostSupport/expat*/libexpat.la
+HostSupport/expat*/config.log
+HostSupport/expat*/config.status
+HostSupport/expat*/expat_config.h
+HostSupport/expat*/expat.pc
+HostSupport/expat*/lib/xmlparse.lo
+HostSupport/expat*/lib/xmlrole.lo
+HostSupport/expat*/lib/xmltok.lo
+HostSupport/expat*/libtool
+HostSupport/expat*/Makefile
+HostSupport/expat*/xmlwf/xmlwf
+
