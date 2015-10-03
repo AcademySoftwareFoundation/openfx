@@ -86,6 +86,9 @@ uninstall:
       BITSFLAG = -m64
       ARCH = Win64
     endif
+    # mingw64 runtime >=3 or mingw32 runtime>=3.15 is required to get a proper snprintf implementation,
+    # which is triggered by the following CPPFLAGS.
+    CPPFLAGS = -U__STRICT_ANSI__ -D__USE_MINGW_ANSI_STDIO=1
     LINKFLAGS := $(LINKFLAGS) $(BITSFLAG)
   endif
   ifeq ($(OS),Linux)
@@ -134,7 +137,7 @@ uninstall:
     ARCH = MacOS
   endif
 
-  CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include $(BITSFLAG) -fvisibility=hidden $(CXXFLAGS_ADD)
+  CXXFLAGS := $(DEBUGFLAG) $(CPPFLAGS) -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include $(BITSFLAG) -fvisibility=hidden $(CXXFLAGS_ADD)
 
 $(OBJECTPATH)/$(PLUGINNAME).ofx: $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS))
 	mkdir -p $(OBJECTPATH)/
