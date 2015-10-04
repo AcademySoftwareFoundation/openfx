@@ -844,14 +844,21 @@ namespace OFX {
         void defineRawParam(const std::string &name, ParamTypeEnum paramType, OfxPropertySetHandle &props);
 
         /** @brief Define a param descriptor of the given type */
-        template <class T> void
+        template <class T> bool
         defineParamDescriptor(const std::string &name, ParamTypeEnum paramType, T * &paramPtr)
         {
             paramPtr = NULL;
 
-            if(findPreviouslyDefinedParam(name)) {
-                throw std::logic_error("Trying to redefine existing param " + name);
-            } else {
+            // have we made it already in this param set and is it of the correct type
+            if(ParamDescriptor *param  = findPreviouslyDefinedParam(name)) {
+                if(param->getType() == paramType) {
+                    paramPtr = (T *) param; // could be a dynamic cast here
+                    return true;
+                }
+                else
+                    return false; // SHOULD THROW SOMETHING HERE!!!!!!!
+            }
+            else {
                 // ok define one and add it in
                 OfxPropertySetHandle props;
                 defineRawParam(name, paramType, props);
@@ -862,6 +869,7 @@ namespace OFX {
                 // add it to our map of described ones
                 _definedParams[name] = paramPtr;
             }
+            return true;
         }
 
     protected :
