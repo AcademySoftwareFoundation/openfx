@@ -83,6 +83,21 @@ static bool starts_with(std::string const & value, std::string const & beginning
 }
 
 #ifdef DEBUG
+//table for xml encoding compatibility with expat decoding
+//see expat/src/xmltok_impl.h
+//and expat/src/asciitab.h
+static const int charXMLCompatiblity[] =
+{
+    /* 0x00 */ 0, 0, 0, 0,
+    /* 0x04 */ 0, 0, 0, 0,
+    /* 0x08 */ 0, 1, 1, 0,
+    /* 0x0C */ 0, 1, 0, 0,
+    /* 0x10 */ 0, 0, 0, 0,
+    /* 0x14 */ 0, 0, 0, 0,
+    /* 0x18 */ 0, 0, 0, 0,
+    /* 0x1C */ 0, 0, 0, 0,
+};
+
 // Check the effect descriptor for potentially bad XML in the OFX Plugin cache.
 //
 // The function that wrote string properties to the OFX plugin cache used to
@@ -111,6 +126,7 @@ static void validateXMLString(std::string const & s, bool strict)
   int lt = 0;
   int amp = 0;
   int ctrl = 0;
+  int ctrlexpatbug = 0; // control characters which expat can not decode anyway, because of a bug in xmltok.c:checkCharRefNumber
   for (size_t i=0;i<s.size();i++) {
     // The are exactly five characters which must be escaped
     // http://www.w3.org/TR/xml/#syntax
@@ -132,6 +148,14 @@ static void validateXMLString(std::string const & s, bool strict)
         unsigned char c = (unsigned char)(s[i]);
         if ((0x01 <= c && c <= 0x1f) || (0x7F <= c && c <= 0x9F)) {
           ++ctrl;
+          //characters such ase eot (0x04) and stx (0x02) make expat parser bail
+          //see xmltok.c in expat checkCharRefNumber() to see how expat bails on these chars.
+          //also see expat/src/asciitab.h to see which characters are nonxml compatible post decode
+          //(we can still encode '&' and '<' with this table, but it prevents us from encoding eot)
+          //everything is compatible past ascii 0x20, so we don't check higher than this.
+          if(c <= 0x1F && charXMLCompatiblity[c] == 0) {
+            ++ctrlexpatbug;
+          }
         }
       } break;
     }
@@ -150,6 +174,12 @@ static void validateXMLString(std::string const & s, bool strict)
         std::cout << "(nonfatal) ";
       }
       std::cout << ctrl << " invalid characters in the range 0x01..0x1f or 0x7F..0x9F\n";
+    }
+    if (ctrlexpatbug) {
+      if (!strict) {
+        std::cout << "(nonfatal) ";
+      }
+      std::cout << ctrlexpatbug << " invalid characters in the range 0x01..0x1f which expat cannot decode (will cause xml error 'reference to invalid character number (14)')\n";
     }
     std::cout << "Raw string value:\n";
     std::cout << s << std::endl;
