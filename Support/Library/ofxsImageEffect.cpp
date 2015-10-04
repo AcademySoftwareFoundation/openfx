@@ -4251,6 +4251,7 @@ namespace OFX {
 static
 OFX::OfxPlugInfo generatePlugInfo(OFX::PluginFactory* factory, std::string& newID)
 {
+  validateXMLString(factory->getID(), true);
   newID = factory->getUID();
   std::auto_ptr<OfxPlugin> ofxPlugin(new OfxPlugin());
   ofxPlugin->pluginApi  = kOfxImageEffectPluginApi;
