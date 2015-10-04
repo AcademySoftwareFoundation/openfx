@@ -852,11 +852,17 @@ namespace OFX {
             // have we made it already in this param set and is it of the correct type
             if(ParamDescriptor *param  = findPreviouslyDefinedParam(name)) {
                 if(param->getType() == paramType) {
+#                 ifdef DEBUG
+                    throw std::logic_error("Trying to redefine existing param " + name);
+#                 endif
                     paramPtr = (T *) param; // could be a dynamic cast here
                     return true;
-                }
-                else
+                } else {
+#                 ifdef DEBUG
+                    throw std::logic_error("Trying to redefine existing param " + name + " with a different type");
+#                 endif
                     return false; // SHOULD THROW SOMETHING HERE!!!!!!!
+                }
             }
             else {
                 // ok define one and add it in
