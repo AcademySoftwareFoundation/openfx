@@ -118,7 +118,64 @@ namespace OFX {
 
   /** @brief Wraps up an OFX interact object for an Image Effect. It won't work for any other plug-in type at present (it would need to be broken into a hierarchy of classes).
   */
-  class Interact {
+  class InteractAbstract {
+  public:
+    ////////////////////////////////////////////////////////////////////////////////
+    // override the below in derived classes to do something useful
+
+    /** @brief the function called to draw in the interact */
+    virtual bool draw(const DrawArgs &args) = 0;
+
+    /** @brief the function called to handle pen motion in the interact
+
+    returns true if the interact trapped the action in some sense. This will block the action being passed to 
+    any other interact that may share the viewer.
+    */
+    virtual bool penMotion(const PenArgs &args) = 0;
+
+    /** @brief the function called to handle pen down events in the interact 
+
+    returns true if the interact trapped the action in some sense. This will block the action being passed to 
+    any other interact that may share the viewer.
+    */
+    virtual bool penDown(const PenArgs &args) = 0;
+
+    /** @brief the function called to handle pen up events in the interact 
+
+    returns true if the interact trapped the action in some sense. This will block the action being passed to 
+    any other interact that may share the viewer.
+    */
+    virtual bool penUp(const PenArgs &args) = 0;
+
+    /** @brief the function called to handle key down events in the interact 
+
+    returns true if the interact trapped the action in some sense. This will block the action being passed to 
+    any other interact that may share the viewer.
+    */
+    virtual bool keyDown(const KeyArgs &args) = 0;
+
+    /** @brief the function called to handle key up events in the interact 
+
+    returns true if the interact trapped the action in some sense. This will block the action being passed to 
+    any other interact that may share the viewer.
+    */
+    virtual bool keyUp(const KeyArgs &args) = 0;
+
+    /** @brief the function called to handle key down repeat events in the interact 
+
+    returns true if the interact trapped the action in some sense. This will block the action being passed to 
+    any other interact that may share the viewer.
+    */
+    virtual bool keyRepeat(const KeyArgs &args) = 0;
+
+    /** @brief Called when the interact is given input focus */
+    virtual void gainFocus(const FocusArgs &args) = 0;
+
+    /** @brief Called when the interact is loses input focus */
+    virtual void loseFocus(const FocusArgs &args) = 0;
+  };
+
+  class Interact : public InteractAbstract {
   protected :
     OfxInteractHandle  _interactHandle;     /**< @brief The handle for this interact */
     PropertySet        _interactProperties; /**< @brief The property set on this interact */
@@ -224,6 +281,156 @@ namespace OFX {
 
     /** @brief dtor */
     virtual ~OverlayInteract();
+  };
+
+  /** @brief an interact for an image effect overlay made from an InteractAbstract helper class */
+  template<class InteractHelper1>
+  class OverlayInteractFromHelper : public OFX::OverlayInteract, private InteractHelper1
+  {
+  public:
+    OverlayInteractFromHelper(OfxInteractHandle handle, OFX::ImageEffect* effect)
+     : OFX::OverlayInteract(handle)
+        , InteractHelper1(effect, this)
+    {
+    }
+
+  private:
+    virtual bool draw(const DrawArgs &args) {
+      return InteractHelper1::draw(args);
+    }
+
+    virtual bool penMotion(const PenArgs &args) {
+      return InteractHelper1::penMotion(args);
+    }
+
+    virtual bool penDown(const PenArgs &args) {
+      return InteractHelper1::penDown(args);
+    }
+
+    virtual bool penUp(const PenArgs &args) {
+      return InteractHelper1::penUp(args);
+    }
+
+    virtual bool keyDown(const OFX::KeyArgs &args) {
+      return InteractHelper1::keyDown(args);
+    }
+
+    virtual bool keyUp(const OFX::KeyArgs &args) {
+      return InteractHelper1::keyUp(args);
+    }
+
+    virtual bool keyRepeat(const KeyArgs &args) {
+      return InteractHelper1::keyRepeat(args);
+    }
+
+    virtual void gainFocus(const FocusArgs &args) {
+      InteractHelper1::gainFocus(args);
+    }
+
+    virtual void loseFocus(const FocusArgs &args) {
+      InteractHelper1::loseFocus(args);
+    }
+  };
+
+  /** @brief an interact for an image effect overlay made from two InteractAbstract helper classes */
+  template<class InteractHelper1, class InteractHelper2>
+  class OverlayInteractFromHelpers2 : public OFX::OverlayInteract, private InteractHelper1, InteractHelper2
+  {
+  public:
+    OverlayInteractFromHelpers2(OfxInteractHandle handle, OFX::ImageEffect* effect)
+     : OFX::OverlayInteract(handle)
+     , InteractHelper1(effect, this)
+        , InteractHelper2(effect, this)
+    {
+    }
+
+  private:
+    virtual bool draw(const DrawArgs &args) {
+      return InteractHelper1::draw(args) || InteractHelper2::draw(args);
+    }
+
+    virtual bool penMotion(const PenArgs &args) {
+      return InteractHelper1::penMotion(args) || InteractHelper2::penMotion(args);
+    }
+
+    virtual bool penDown(const PenArgs &args) {
+      return InteractHelper1::penDown(args) || InteractHelper2::penDown(args);
+    }
+
+    virtual bool penUp(const PenArgs &args) {
+      return InteractHelper1::penUp(args) || InteractHelper2::penUp(args);
+    }
+
+    virtual bool keyDown(const OFX::KeyArgs &args) {
+      return InteractHelper1::keyDown(args) || InteractHelper2::keyDown(args);
+    }
+
+    virtual bool keyUp(const OFX::KeyArgs &args) {
+      return InteractHelper1::keyUp(args) || InteractHelper2::keyUp(args);
+    }
+
+    virtual bool keyRepeat(const KeyArgs &args) {
+      return InteractHelper1::keyRepeat(args) || InteractHelper2::keyRepeat(args);
+    }
+
+    virtual void gainFocus(const FocusArgs &args) {
+      InteractHelper1::gainFocus(args); InteractHelper2::gainFocus(args);
+    }
+
+    virtual void loseFocus(const FocusArgs &args) {
+      InteractHelper1::loseFocus(args); InteractHelper2::loseFocus(args);
+    }
+  };
+
+  /** @brief an interact for an image effect overlay made from three InteractAbstract helper classes */
+  template<class InteractHelper1, class InteractHelper2, class InteractHelper3>
+  class OverlayInteractFromHelpers3 : public OFX::OverlayInteract, private InteractHelper1, InteractHelper2, InteractHelper3
+  {
+  public:
+    OverlayInteractFromHelpers3(OfxInteractHandle handle, OFX::ImageEffect* effect)
+     : OFX::OverlayInteract(handle)
+     , InteractHelper1(effect, this)
+     , InteractHelper2(effect, this)
+     , InteractHelper3(effect, this)
+    {
+    }
+
+  private:
+    virtual bool draw(const DrawArgs &args) {
+      return InteractHelper1::draw(args) || InteractHelper2::draw(args) || InteractHelper3::draw(args);
+    }
+
+    virtual bool penMotion(const PenArgs &args) {
+      return InteractHelper1::penMotion(args) || InteractHelper2::penMotion(args) || InteractHelper3::penMotion(args);
+    }
+
+    virtual bool penDown(const PenArgs &args) {
+      return InteractHelper1::penDown(args) || InteractHelper2::penDown(args) || InteractHelper3::penDown(args);
+    }
+
+    virtual bool penUp(const PenArgs &args) {
+      return InteractHelper1::penUp(args) || InteractHelper2::penUp(args) || InteractHelper3::penUp(args);
+    }
+
+    virtual bool keyDown(const OFX::KeyArgs &args) {
+      return InteractHelper1::keyDown(args) || InteractHelper2::keyDown(args) || InteractHelper3::keyDown(args);
+    }
+
+    virtual bool keyUp(const OFX::KeyArgs &args) {
+      return InteractHelper1::keyUp(args) || InteractHelper2::keyUp(args) || InteractHelper3::keyUp(args);
+    }
+
+    virtual bool keyRepeat(const KeyArgs &args) {
+      return InteractHelper1::keyRepeat(args) || InteractHelper2::keyRepeat(args) || InteractHelper3::keyRepeat(args);
+    }
+
+    virtual void gainFocus(const FocusArgs &args) {
+      InteractHelper1::gainFocus(args); InteractHelper2::gainFocus(args); InteractHelper3::gainFocus(args);
+    }
+
+    virtual void loseFocus(const FocusArgs &args) {
+      InteractHelper1::loseFocus(args); InteractHelper2::loseFocus(args);; InteractHelper3::loseFocus(args);
+    }
   };
 
   class InteractDescriptor
