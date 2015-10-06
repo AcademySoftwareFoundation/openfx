@@ -346,7 +346,10 @@ namespace OFX {
 
   private:
     virtual bool draw(const DrawArgs &args) {
-      return InteractHelper1::draw(args) || InteractHelper2::draw(args);
+      // draw all interacts, in reverse order
+      bool ret2 = InteractHelper2::draw(args);
+      bool ret1 = InteractHelper1::draw(args);
+      return ret1 || ret2;
     }
 
     virtual bool penMotion(const PenArgs &args) {
@@ -397,7 +400,11 @@ namespace OFX {
 
   private:
     virtual bool draw(const DrawArgs &args) {
-      return InteractHelper1::draw(args) || InteractHelper2::draw(args) || InteractHelper3::draw(args);
+      // draw all interacts, in reverse order
+      bool ret3 = InteractHelper3::draw(args);
+      bool ret2 = InteractHelper2::draw(args);
+      bool ret1 = InteractHelper1::draw(args);
+      return ret1 || ret2 || ret3;
     }
 
     virtual bool penMotion(const PenArgs &args) {
