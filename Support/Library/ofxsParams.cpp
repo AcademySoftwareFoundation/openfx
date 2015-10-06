@@ -1198,7 +1198,7 @@ namespace OFX {
 
   /** @brief if a param has been defined in this set, go find it */
   ParamDescriptor *
-    ParamSetDescriptor::findPreviouslyDefinedParam(const std::string &name)
+    ParamSetDescriptor::findPreviouslyDefinedParam(const std::string &name) const
   {
     // search
     std::map<std::string, ParamDescriptor *>::const_iterator search;
@@ -1341,6 +1341,134 @@ namespace OFX {
     return param;
   }
 
+  /** @brief Fetch an integer param */
+  IntParamDescriptor * 
+    ParamSetDescriptor::fetchIntParam(const std::string &name) const
+  { 
+    IntParamDescriptor *param = NULL;
+    fetchParamDescriptor(name, eIntParam, param);
+    return param;
+  }
+
+  /** @brief Fetch a 2D integer param */
+  Int2DParamDescriptor *ParamSetDescriptor::fetchInt2DParam(const std::string &name) const
+  {
+    Int2DParamDescriptor *param = NULL;
+    fetchParamDescriptor(name, eInt2DParam, param);
+    return param;
+  }
+
+  /** @brief Fetch a 3D integer param */
+  Int3DParamDescriptor *ParamSetDescriptor::fetchInt3DParam(const std::string &name) const
+  {
+    Int3DParamDescriptor *param = NULL;
+    fetchParamDescriptor(name, eInt3DParam, param);
+    return param;
+  }
+
+  /** @brief Fetch an double param */
+  DoubleParamDescriptor *ParamSetDescriptor::fetchDoubleParam(const std::string &name) const
+  { 
+    DoubleParamDescriptor *param = NULL;
+    fetchParamDescriptor(name, eDoubleParam, param);
+    return param;
+  }
+
+  /** @brief Fetch a 2D double param */
+  Double2DParamDescriptor *ParamSetDescriptor::fetchDouble2DParam(const std::string &name) const
+  {
+    Double2DParamDescriptor *param = NULL;
+    fetchParamDescriptor(name, eDouble2DParam, param);
+    return param;
+  }
+
+  /** @brief Fetch a 3D double param */
+  Double3DParamDescriptor *ParamSetDescriptor::fetchDouble3DParam(const std::string &name) const
+  {
+    Double3DParamDescriptor *param = NULL;
+    fetchParamDescriptor(name, eDouble3DParam, param);
+    return param;
+  }
+
+  /** @brief Fetch a string param */
+  StringParamDescriptor *ParamSetDescriptor::fetchStringParam(const std::string &name) const
+  {
+    StringParamDescriptor *param = NULL;
+    fetchParamDescriptor(name, eStringParam, param);
+    return param;
+  }
+
+  /** @brief Fetch a RGBA param */
+  RGBAParamDescriptor *ParamSetDescriptor::fetchRGBAParam(const std::string &name) const
+  {
+    RGBAParamDescriptor *param = NULL;
+    fetchParamDescriptor(name, eRGBAParam, param);
+    return param;
+  }
+
+  /** @brief Fetch an RGB  param */
+  RGBParamDescriptor *ParamSetDescriptor::fetchRGBParam(const std::string &name) const
+  {
+    RGBParamDescriptor *param = NULL;
+    fetchParamDescriptor(name, eRGBParam, param);
+    return param;
+  }
+
+  /** @brief Fetch a Boolean  param */
+  BooleanParamDescriptor *ParamSetDescriptor::fetchBooleanParam(const std::string &name) const
+  {
+    BooleanParamDescriptor *param = NULL;
+    fetchParamDescriptor(name, eBooleanParam, param);
+    return param;
+  }
+
+  /** @brief Fetch a Choice param */
+  ChoiceParamDescriptor *ParamSetDescriptor::fetchChoiceParam(const std::string &name) const
+  {
+    ChoiceParamDescriptor *param = NULL;
+    fetchParamDescriptor(name, eChoiceParam, param);
+    return param;
+  }
+
+  /** @brief Fetch a group param */
+  GroupParamDescriptor *ParamSetDescriptor::fetchGroupParam(const std::string &name) const
+  {
+    GroupParamDescriptor *param = NULL;
+    fetchParamDescriptor(name, eGroupParam, param);
+    return param;
+  }
+
+  /** @brief Fetch a Page param */
+  PageParamDescriptor *ParamSetDescriptor::fetchPageParam(const std::string &name) const
+  {
+    PageParamDescriptor *param = NULL;
+    fetchParamDescriptor(name, ePageParam, param);
+    return param;
+  }
+
+  /** @brief Fetch a push button  param */
+  PushButtonParamDescriptor *ParamSetDescriptor::fetchPushButtonParam(const std::string &name) const
+  {
+    PushButtonParamDescriptor *param = NULL;
+    fetchParamDescriptor(name, ePushButtonParam, param);
+    return param;
+  }
+
+  /** @brief Fetch a custom param */
+  CustomParamDescriptor *ParamSetDescriptor::fetchCustomParam(const std::string &name) const
+  {
+    CustomParamDescriptor *param = NULL;
+    fetchParamDescriptor(name, eCustomParam, param);
+    return param;
+  }
+
+  /** @brief Fetch a parametric param */
+  ParametricParamDescriptor *ParamSetDescriptor::fetchParametricParam(const std::string &name) const
+  {
+    ParametricParamDescriptor *param = NULL;
+    fetchParamDescriptor(name, eParametricParam, param);
+    return param;
+  }
 
   ////////////////////////////////////////////////////////////////////////////////
   /** @brief Base class for all param instances */
@@ -3392,7 +3520,7 @@ namespace OFX {
     return search->second;
   }
 
-  /** @brief Fetch an integer param, only callable from describe in context */
+  /** @brief Fetch an integer param */
   IntParam * 
     ParamSet::fetchIntParam(const std::string &name) const
   { 
@@ -3417,7 +3545,7 @@ namespace OFX {
     return param;
   }
 
-  /** @brief Fetch an double param, only callable from describe in context */
+  /** @brief Fetch an double param */
   DoubleParam * 
     ParamSet::fetchDoubleParam(const std::string &name) const
   { 

@@ -853,13 +853,13 @@ namespace OFX {
             if(ParamDescriptor *param  = findPreviouslyDefinedParam(name)) {
                 if(param->getType() == paramType) {
 #                 ifdef DEBUG
-                    throw std::logic_error("Trying to redefine existing param " + name);
+                    throw std::logic_error("Trying to redefine existing param '" + name + "'");
 #                 endif
                     paramPtr = (T *) param; // could be a dynamic cast here
                     return true;
                 } else {
 #                 ifdef DEBUG
-                    throw std::logic_error("Trying to redefine existing param " + name + " with a different type");
+                    throw std::logic_error("Trying to redefine existing param '" + name + "' with a different type");
 #                 endif
                     return false; // SHOULD THROW SOMETHING HERE!!!!!!!
                 }
@@ -876,6 +876,25 @@ namespace OFX {
                 _definedParams[name] = paramPtr;
             }
             return true;
+        }
+
+        /** @brief Fetch a param of the given name and type */
+        template <class T> void
+        fetchParamDescriptor(const std::string &name, ParamTypeEnum paramType, T * &paramPtr) const
+        {
+            paramPtr = NULL;
+
+            // have we made it already in this param set and is it an int?
+            if(ParamDescriptor *param  = findPreviouslyDefinedParam(name)) {
+                if(param->getType() == paramType) {
+                    paramPtr = (T *) param; // could be a dynamic cast here
+                }
+                else
+                  throw OFX::Exception::TypeRequest("Fetching param and attempting to return the wrong type");
+            }
+            else {
+              throw std::logic_error("Trying to fetch inexistant param descriptor '" + name + "'");
+            }
         }
 
     protected :
@@ -895,7 +914,7 @@ namespace OFX {
         void setParamSetHandle(OfxParamSetHandle h);
 
         /** @brief find a param in the map */
-        ParamDescriptor *findPreviouslyDefinedParam(const std::string &name);
+        ParamDescriptor *findPreviouslyDefinedParam(const std::string &name) const;
 
     public :
         OfxParamSetHandle getParamSetHandle()
@@ -957,6 +976,55 @@ namespace OFX {
 
         /** @brief Define a custom param */
         CustomParamDescriptor *defineCustomParam(const std::string &name);
+
+        
+        /** @brief Fetch an integer param */
+        IntParamDescriptor *fetchIntParam(const std::string &name) const;
+
+        /** @brief Fetch a 2D integer param */
+        Int2DParamDescriptor *fetchInt2DParam(const std::string &name) const;
+
+        /** @brief Fetch a 3D integer param */
+        Int3DParamDescriptor *fetchInt3DParam(const std::string &name) const;
+    
+        /** @brief Fetch an double param */
+        DoubleParamDescriptor *fetchDoubleParam(const std::string &name) const;
+
+        /** @brief Fetch a 2D double param */
+        Double2DParamDescriptor *fetchDouble2DParam(const std::string &name) const;
+
+        /** @brief Fetch a 3D double param */
+        Double3DParamDescriptor *fetchDouble3DParam(const std::string &name) const;
+    
+        /** @brief Fetch a string param */
+        StringParamDescriptor *fetchStringParam(const std::string &name) const;
+
+        /** @brief Fetch a RGBA param */
+        RGBAParamDescriptor *fetchRGBAParam(const std::string &name) const;
+
+        /** @brief Fetch an RGB  param */
+        RGBParamDescriptor *fetchRGBParam(const std::string &name) const;
+
+        /** @brief Fetch a Boolean  param */
+        BooleanParamDescriptor *fetchBooleanParam(const std::string &name) const;
+
+        /** @brief Fetch a Choice param */
+        ChoiceParamDescriptor *fetchChoiceParam(const std::string &name) const;
+
+        /** @brief Fetch a group param */
+        GroupParamDescriptor *fetchGroupParam(const std::string &name) const;
+
+        /** @brief Fetch a page param */
+        PageParamDescriptor *fetchPageParam(const std::string &name) const;
+
+        /** @brief Fetch a push button param */
+        PushButtonParamDescriptor *fetchPushButtonParam(const std::string &name) const;
+
+        /** @brief Fetch a custom param */
+        CustomParamDescriptor *fetchCustomParam(const std::string &name) const;
+
+        /** @brief Fetch a parametric param */
+        ParametricParamDescriptor *fetchParametricParam(const std::string &name) const;
     };
 
     ////////////////////////////////////////////////////////////////////////////////
