@@ -854,14 +854,16 @@ namespace OFX {
                 if(param->getType() == paramType) {
 #                 ifdef DEBUG
                     throw std::logic_error("Trying to redefine existing param '" + name + "'");
-#                 endif
+#                 else
                     paramPtr = (T *) param; // could be a dynamic cast here
                     return true;
+#                 endif
                 } else {
 #                 ifdef DEBUG
                     throw std::logic_error("Trying to redefine existing param '" + name + "' with a different type");
-#                 endif
+#                 else
                     return false; // SHOULD THROW SOMETHING HERE!!!!!!!
+#                 endif
                 }
             }
             else {
