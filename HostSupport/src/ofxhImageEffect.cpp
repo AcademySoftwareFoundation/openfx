@@ -2144,7 +2144,7 @@ namespace OFX {
         std::string deepestBitDepth = kOfxBitDepthNone;
         std::string mostComponents  = kOfxImageComponentNone;       
         double frameRate = getFrameRate(); //< default to the project frame rate
-        std::string premult = kOfxImageOpaque;
+        std::string premult;
         for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
             it!=_clips.end();
             ++it) {
@@ -2164,7 +2164,9 @@ namespace OFX {
             const std::string &rawPreMult = clip->getPremult();            
               
             if(isChromaticComponent(rawComp)) {
-              if(connected) {
+              // Note: first chromatic input gives the default output premult too, even if not connected
+              // (else the output of generators may be opaque even if the host default is premultiplied)
+              if(connected || premult.empty()) {
                 if(rawPreMult == kOfxImagePreMultiplied)
                   premult = kOfxImagePreMultiplied;
                 else if(rawPreMult == kOfxImageUnPreMultiplied && premult != kOfxImagePreMultiplied)
@@ -2181,6 +2183,9 @@ namespace OFX {
           }
         }
         // default to a reasonable value if there is no input
+        if (premult.empty()) {
+          premult = kOfxImageOpaque;
+        }
         if (!hasSetCompsAndDepth) {
           mostComponents = kOfxImageComponentRGBA;
           deepestBitDepth = kOfxBitDepthFloat;
