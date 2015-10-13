@@ -284,7 +284,7 @@ namespace OFX {
     if (dimension <= 0) {
       return ret;
     }
-    std::vector<char*> rawValue(dimension);
+    std::vector<char*> rawValue(dimension, 0);
     OfxStatus stat = gPropSuite->propGetStringN(_propHandle, property, dimension, rawValue.data());
     OFX::Log::error(stat != kOfxStatOK, "Failed on getting string property %s, host returned status %s;",
                       property, mapStatusToString(stat));
@@ -294,7 +294,11 @@ namespace OFX {
     if(_gPropLogging > 0) Log::print("Retrieved string property %s, was given %s.",  property,rawValue.data());
       
     for (int i = 0; i < dimension; ++i) {
-      ret.push_back(std::string(rawValue[i]));
+      if (rawValue[i] != NULL) {
+        ret.push_back(std::string(rawValue[i]));
+      } else {
+        ret.push_back(std::string());
+      }
     }
     return ret;
 
