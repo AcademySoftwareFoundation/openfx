@@ -908,10 +908,10 @@ namespace OFX {
       // Choice label is an ofx extension. If the host doesn't support it,
       // we put this information into the parameter hint.
       // from https://github.com/tuttleofx/TuttleOFX/commit/ae6e14e99f62b5efa89e4de4a3bc33129ac6afd0
-      if (_paramProps.propGetDimension(kOfxParamPropChoiceLabelOption, false) > 0) {
+      try {
         // this property is an optional extension.
-        _paramProps.propSetString(kOfxParamPropChoiceLabelOption, label, nCurrentValues);
-      } else
+         _paramProps.propSetString(kOfxParamPropChoiceLabelOption, label, nCurrentValues);
+      } catch(std::exception&)
 #endif
       {
         // If the kOfxParamPropChoiceLabelOption doesn't exist, we put that information into the Hint.
@@ -933,6 +933,11 @@ namespace OFX {
   void ChoiceParamDescriptor::resetOptions(void)
   {
     _paramProps.propReset(kOfxParamPropChoiceOption);
+#ifdef OFX_EXTENSIONS_TUTTLE
+    if (_paramProps.propGetDimension(kOfxParamPropChoiceLabelOption, false) > 0) {
+      _paramProps.propReset(kOfxParamPropChoiceLabelOption);
+    }
+#endif
   }
 
 #ifdef OFX_EXTENSIONS_NATRON
@@ -2951,6 +2956,11 @@ namespace OFX {
   void ChoiceParam::resetOptions(void)
   {
     _paramProps.propReset(kOfxParamPropChoiceOption);
+#ifdef OFX_EXTENSIONS_TUTTLE
+    if (_paramProps.propGetDimension(kOfxParamPropChoiceLabelOption, false) > 0) {
+      _paramProps.propReset(kOfxParamPropChoiceLabelOption);
+    }
+#endif
   }
 
 #ifdef OFX_EXTENSIONS_NATRON
