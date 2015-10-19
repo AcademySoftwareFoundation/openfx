@@ -1223,7 +1223,7 @@ namespace OFX {
     // no, so make it
     OfxPropertySetHandle propSet;
     OfxStatus stat = OFX::Private::gEffectSuite->clipDefine(_effectHandle, name.c_str(), &propSet);
-    (void)stat;
+    throwSuiteStatusException(stat);
 
     ClipDescriptor *clip = new ClipDescriptor(name, propSet);
 
@@ -1399,6 +1399,7 @@ namespace OFX {
 
   Image::~Image()
   {
+    // error are ignored: don't throw in a destructor
     OFX::Private::gEffectSuite->clipReleaseImage(_imageProps.propSetHandle());
   }
 

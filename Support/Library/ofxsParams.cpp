@@ -1081,7 +1081,8 @@ namespace OFX {
   void ParametricParamDescriptor::setParamSet(ParamSetDescriptor& paramSet)
   {
     _paramSet = &paramSet;
-    OFX::Private::gParamSuite->paramGetHandle(_paramSet->getParamSetHandle(), getName().c_str(), &_ofxParamHandle, 0);
+    OfxStatus stat = OFX::Private::gParamSuite->paramGetHandle(_paramSet->getParamSetHandle(), getName().c_str(), &_ofxParamHandle, 0);
+    throwSuiteStatusException(stat);
   }
 
   void ParametricParamDescriptor::setRange(const double min, const double max)
@@ -1113,7 +1114,8 @@ namespace OFX {
       // time is NaN
       throwSuiteStatusException(kOfxStatErrValue);
     }
-    OFX::Private::gParametricParameterSuite->parametricParamAddControlPoint(_ofxParamHandle, id, time, x, y, addKey);
+    OfxStatus stat = OFX::Private::gParametricParameterSuite->parametricParamAddControlPoint(_ofxParamHandle, id, time, x, y, addKey);
+    throwSuiteStatusException(stat);
   }
 
   void ParametricParamDescriptor::setIdentity(const int id)
@@ -3664,14 +3666,14 @@ namespace OFX {
   void ParamSet::beginEditBlock(const std::string &name)
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramEditBegin(_paramSetHandle, name.c_str());
-    (void)stat;
+    throwSuiteStatusException(stat);
   }
 
   /// close an undoblock
   void ParamSet::endEditBlock()
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramEditEnd(_paramSetHandle);
-    (void)stat;
+    throwSuiteStatusException(stat);
   }
 
 };
