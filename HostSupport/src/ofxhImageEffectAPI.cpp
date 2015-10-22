@@ -406,6 +406,10 @@ namespace OFX {
 
         ImageEffectPlugin *p = dynamic_cast<ImageEffectPlugin*>(op);
         assert(p);
+        if (!p) {
+          std::cerr << "bad handle for plugin " << op->getIdentifier() << std::endl;
+          return;
+        }
 
         PluginHandle plug(p, _host);
 
