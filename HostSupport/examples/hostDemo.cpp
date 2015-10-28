@@ -171,7 +171,11 @@ int main(int argc, char **argv)
       int numFramesToRender = OFXHOSTDEMOCLIPLENGTH;
 
       // say we are about to render a bunch of frames 
-      stat = instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale, /*sequential=*/true, /*interactive=*/false, /*draftRender=*/false
+      stat = instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale, /*sequential=*/true, /*interactive=*/false,
+#                                        ifdef OFX_SUPPORTS_OPENGLRENDER
+                                         /*openGLRender=*/false,
+#                                        endif
+                                         /*draftRender=*/false
 #                                        ifdef OFX_EXTENSIONS_NUKE
                                          , 0 /* view*/
 #                                        endif
@@ -204,14 +208,18 @@ int main(int argc, char **argv)
 #if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
         // render a stereoscopic frame
         { // left view
-          stat = instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, /*sequential=*/true, /*interactive=*/false, /*draft=*/false,
+          stat = instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, /*sequential=*/true, /*interactive=*/false,
+#                                        ifdef OFX_SUPPORTS_OPENGLRENDER
+                                        /*openGLRender=*/false,
+#                                        endif
+                                        /*draft=*/false,
                                         0 /*view*/
-#ifdef OFX_EXTENSIONS_VEGAS
+#                                       ifdef OFX_EXTENSIONS_VEGAS
                                         , 2 /*nViews*/
-#endif
-#ifdef OFX_EXTENSIONS_NUKE
+#                                       endif
+#                                       ifdef OFX_EXTENSIONS_NUKE
                                         , std::list<std::string>() /*planes*/
-#endif
+#                                       endif
                                         );
           assert(stat == kOfxStatOK);
 
@@ -224,14 +232,18 @@ int main(int argc, char **argv)
           exportToPPM(ss.str(), outputImage);
         }
         {  // right view
-          instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, /*sequential=*/true, /*interactive=*/false, /*draft=*/false,
+          instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, /*sequential=*/true, /*interactive=*/false,
+#                                ifdef OFX_SUPPORTS_OPENGLRENDER
+                                 /*openGLRender=*/false,
+#                                endif
+                                 /*draft=*/false,
                                  1 /*view*/
-#ifdef OFX_EXTENSIONS_VEGAS
+#                                ifdef OFX_EXTENSIONS_VEGAS
                                  , 2 /*nViews*/
-#endif
-#ifdef OFX_EXTENSIONS_NUKE
+#                                endif
+#                                ifdef OFX_EXTENSIONS_NUKE
                                  , std::list<std::string>() /*planes*/
-#endif
+#                                endif
                                  );
           assert(stat == kOfxStatOK);
 
@@ -257,7 +269,11 @@ int main(int argc, char **argv)
 #endif
       }
 
-      instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale, /*sequential=*/true, /*interactive=*/false, /*draftRender=*/false
+      instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale, /*sequential=*/true, /*interactive=*/false,
+#                               ifdef OFX_SUPPORTS_OPENGLRENDER
+                                /*openGLRender=*/false,
+#                               endif
+                                /*draftRender=*/false
 #                               ifdef OFX_EXTENSIONS_NUKE
                                 , 0 /* view*/
 #                               endif

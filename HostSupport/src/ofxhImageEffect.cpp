@@ -1036,6 +1036,9 @@ namespace OFX {
                                             OfxPointD   renderScale,
                                             bool     sequentialRender,
                                             bool     interactiveRender,
+#                                         ifdef OFX_SUPPORTS_OPENGLRENDER
+                                            bool     openGLRender,
+#                                         endif
                                             bool     draftRender
 #                                         ifdef OFX_EXTENSIONS_NUKE
                                             ,
@@ -1056,7 +1059,10 @@ namespace OFX {
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
           { kOfxImageEffectPropSequentialRenderStatus, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropInteractiveRenderStatus, Property::eInt, 1, true, "0" },
-          { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" },
+#       ifdef OFX_SUPPORTS_OPENGLRENDER
+          { kOfxImageEffectPropOpenGLEnabled, Property::eInt, 1, true, "0" }, // OFX 1.3
+#       endif
+          { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" }, // OFX 1.4
 #       ifdef OFX_EXTENSIONS_NUKE
           { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
 #       endif
@@ -1077,11 +1083,14 @@ namespace OFX {
 
         inArgs.setIntProperty(kOfxImageEffectPropSequentialRenderStatus,sequentialRender);
         inArgs.setIntProperty(kOfxImageEffectPropInteractiveRenderStatus,interactiveRender);
+#     ifdef OFX_SUPPORTS_OPENGLRENDER
+        inArgs.setIntProperty(kOfxImageEffectPropOpenGLEnabled,openGLRender);
+#     endif
         inArgs.setIntProperty(kOfxImageEffectPropRenderQualityDraft,draftRender);
 
-#ifdef OFX_EXTENSIONS_NUKE
+#     ifdef OFX_EXTENSIONS_NUKE
         inArgs.setIntProperty(kFnOfxImageEffectPropView,view);
-#endif
+#     endif
 
 #       ifdef OFX_DEBUG_ACTIONS
           std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionBeginSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","<<interactiveRender<<","<<draftRender
@@ -1108,6 +1117,9 @@ namespace OFX {
                                        OfxPointD   renderScale,
                                        bool     sequentialRender,
                                        bool     interactiveRender,
+#                                    ifdef OFX_SUPPORTS_OPENGLRENDER
+                                       bool     openGLRender,
+#                                    endif
                                        bool     draftRender
 #if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
                                        ,
@@ -1134,16 +1146,19 @@ namespace OFX {
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
           { kOfxImageEffectPropSequentialRenderStatus, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropInteractiveRenderStatus, Property::eInt, 1, true, "0" },
-          { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" },
-#ifdef OFX_EXTENSIONS_VEGAS
+#       ifdef OFX_SUPPORTS_OPENGLRENDER
+          { kOfxImageEffectPropOpenGLEnabled, Property::eInt, 1, true, "0" }, // OFX 1.3
+#       endif
+          { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" }, // OFX 1.4
+#       ifdef OFX_EXTENSIONS_VEGAS
           { kOfxImageEffectPropRenderView, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropViewsToRender, Property::eInt, 1, true, "1" },
           { kOfxImageEffectPropRenderQuality, Property::eString, 1, true, "" },
-#endif
-#ifdef OFX_EXTENSIONS_NUKE
+#       endif
+#       ifdef OFX_EXTENSIONS_NUKE
           { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
           { kFnOfxImageEffectPropComponentsPresent, Property::eString, 0, true, "" },
-#endif
+#       endif
           Property::propSpecEnd
         };
 
@@ -1155,25 +1170,28 @@ namespace OFX {
         inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
         inArgs.setIntProperty(kOfxImageEffectPropSequentialRenderStatus,sequentialRender);
         inArgs.setIntProperty(kOfxImageEffectPropInteractiveRenderStatus,interactiveRender);
+#     ifdef OFX_SUPPORTS_OPENGLRENDER
+        inArgs.setIntProperty(kOfxImageEffectPropOpenGLEnabled,openGLRender);
+#     endif
         inArgs.setIntProperty(kOfxImageEffectPropRenderQualityDraft,draftRender);
-#ifdef OFX_EXTENSIONS_VEGAS
+#     ifdef OFX_EXTENSIONS_VEGAS
         inArgs.setIntProperty(kOfxImageEffectPropRenderView,view);
         inArgs.setIntProperty(kOfxImageEffectPropViewsToRender,nViews);
-#endif
-#ifdef OFX_EXTENSIONS_NUKE
+#     endif
+#     ifdef OFX_EXTENSIONS_NUKE
         inArgs.setIntProperty(kFnOfxImageEffectPropView,view);
         int k = 0;
         for (std::list<std::string>::const_iterator it = planes.begin(); it != planes.end(); ++it,++k) {
             inArgs.setStringProperty(kFnOfxImageEffectPropComponentsPresent,*it,k);
         }
-#endif
-#if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
+#     endif
+#     if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
         for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
             it!=_clips.end();
             ++it) {
             it->second->setView(view);
         }
-#endif
+#     endif
 
 #       ifdef OFX_DEBUG_ACTIONS
           std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionRender<<"("<<time<<","<<field<<",("<<renderRoI.x1<<","<<renderRoI.y1<<","<<renderRoI.x2<<","<<renderRoI.y2<<"),("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","<<interactiveRender<<","<<draftRender
@@ -1207,11 +1225,14 @@ namespace OFX {
                                           OfxPointD   renderScale,
                                           bool     sequentialRender,
                                           bool     interactiveRender,
+#                                       ifdef OFX_SUPPORTS_OPENGLRENDER
+                                          bool     openGLRender,
+#                                       endif
                                           bool     draftRender
-#ifdef OFX_EXTENSIONS_NUKE
+#                                       ifdef OFX_EXTENSIONS_NUKE
                                           ,
                                           int view
-#endif
+#                                       endif
                                           )
       {
         if (startFrame != startFrame ||
@@ -1227,10 +1248,13 @@ namespace OFX {
           { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
           { kOfxImageEffectPropSequentialRenderStatus, Property::eInt, 1, true, "0" },
           { kOfxImageEffectPropInteractiveRenderStatus, Property::eInt, 1, true, "0" },
-          { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" },
-#ifdef OFX_EXTENSIONS_NUKE
+#       ifdef OFX_SUPPORTS_OPENGLRENDER
+          { kOfxImageEffectPropOpenGLEnabled, Property::eInt, 1, true, "0" }, // OFX 1.3
+#       endif
+          { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" }, // OFX 1.4
+#       ifdef OFX_EXTENSIONS_NUKE
           { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
-#endif
+#       endif
           Property::propSpecEnd
         };
 
@@ -1244,10 +1268,13 @@ namespace OFX {
         inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
         inArgs.setIntProperty(kOfxImageEffectPropSequentialRenderStatus,sequentialRender);
         inArgs.setIntProperty(kOfxImageEffectPropInteractiveRenderStatus,interactiveRender);
+#     ifdef OFX_SUPPORTS_OPENGLRENDER
+        inArgs.setIntProperty(kOfxImageEffectPropOpenGLEnabled,openGLRender);
+#     endif
         inArgs.setIntProperty(kOfxImageEffectPropRenderQualityDraft,draftRender);
-#ifdef OFX_EXTENSIONS_NUKE
+#     ifdef OFX_EXTENSIONS_NUKE
         inArgs.setIntProperty(kFnOfxImageEffectPropView,view);
-#endif
+#     endif
 #       ifdef OFX_DEBUG_ACTIONS
           std::cout << "OFX: "<<(void*)this<<"->"<<kOfxImageEffectActionEndSequenceRender<<"(("<<startFrame<<","<<endFrame<<"),"<<step<<","<<interactive<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<sequentialRender<<","<<interactiveRender<<","<<draftRender
 #         ifdef OFX_EXTENSIONS_NUKE
@@ -3686,30 +3713,30 @@ namespace OFX {
         { kOfxParamHostPropSupportsBooleanAnimation, Property::eInt, 1, true, "0" },
         { kOfxParamHostPropSupportsCustomAnimation, Property::eInt, 1, true, "0" },
         { kOfxPropHostOSHandle, Property::ePointer, 1, true, NULL },
-#ifdef OFX_SUPPORTS_PARAMETRIC
+#     ifdef OFX_SUPPORTS_PARAMETRIC
         { kOfxParamHostPropSupportsParametricAnimation, Property::eInt, 1, true, "0"},
-#endif
+#     endif
         { kOfxParamHostPropMaxParameters, Property::eInt, 1, true, "-1" },
         { kOfxParamHostPropMaxPages, Property::eInt, 1, true, "0" },
         { kOfxParamHostPropPageRowColumnCount, Property::eInt, 2, true, "0" },
         { kOfxImageEffectInstancePropSequentialRender, Property::eInt, 1, true, "0" }, // OFX 1.2
-#ifdef OFX_SUPPORTS_OPENGLRENDER
+#     ifdef OFX_SUPPORTS_OPENGLRENDER
         { kOfxImageEffectPropOpenGLRenderSupported, Property::eString, 1, true, "false"}, // OFX 1.3
-#endif
+#     endif
         { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" }, // OFX 1.4
         { kOfxImageEffectHostPropNativeOrigin, Property::eString, 0, true, kOfxHostNativeOriginBottomLeft }, // OFX 1.4
-#ifdef OFX_EXTENSIONS_NUKE
+#     ifdef OFX_EXTENSIONS_NUKE
         { kFnOfxImageEffectPropMultiPlanar,   Property::eInt, 1, false, "0" },
         { kFnOfxImageEffectCanTransform,      Property::eInt, 1, true, "0" },
-#endif
-#ifdef OFX_EXTENSIONS_NATRON
+#     endif
+#     ifdef OFX_EXTENSIONS_NATRON
         { kNatronOfxHostIsNatron, Property::eInt, 1, true, "0" },
         { kNatronOfxParamHostPropSupportsDynamicChoices, Property::eInt, 1, true, "0" },
         { kNatronOfxParamPropChoiceCascading, Property::eInt, 1, true, "0" },
         { kNatronOfxImageEffectPropChannelSelector, Property::eString, 1, true, kOfxImageComponentNone },
         { kNatronOfxImageEffectPropHostMasking, Property::eInt, 1, true, "0" },
         { kNatronOfxImageEffectPropHostMixing, Property::eInt, 1, true, "0" },
-#endif
+#    endif
         Property::propSpecEnd
       };    
 

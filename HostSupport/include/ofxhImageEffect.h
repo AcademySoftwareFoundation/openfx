@@ -639,6 +639,9 @@ namespace OFX {
                                             OfxPointD   renderScale,
                                             bool     sequentialRender,
                                             bool     interactiveRender,
+#                                    ifdef OFX_SUPPORTS_OPENGLRENDER
+                                            bool     openGLRender,
+#                                    endif
                                             bool     draftRender
 #                                         ifdef OFX_EXTENSIONS_NUKE
                                             ,
@@ -652,6 +655,9 @@ namespace OFX {
                                        OfxPointD   renderScale,
                                        bool     sequentialRender,
                                        bool     interactiveRender,
+#                                    ifdef OFX_SUPPORTS_OPENGLRENDER
+                                       bool     openGLRender,
+#                                    endif
                                        bool     draftRender
 #                                    if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
                                        ,
@@ -674,6 +680,9 @@ namespace OFX {
                                           OfxPointD   renderScale,
                                           bool     sequentialRender,
                                           bool     interactiveRender,
+#                                    ifdef OFX_SUPPORTS_OPENGLRENDER
+                                          bool     openGLRender,
+#                                    endif
                                           bool     draftRender
 #                                       ifdef OFX_EXTENSIONS_NUKE
                                           ,
