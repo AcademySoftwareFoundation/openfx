@@ -126,7 +126,33 @@ namespace OFX {
 
     /** @brief the set of descriptors, one per context used by kOfxActionDescribeInContext,  'eContextNone' is the one used by the kOfxActionDescribe */
     typedef std::map<ContextEnum, ImageEffectDescriptor*> EffectContextMap;
-    typedef std::map<std::string, EffectContextMap> EffectDescriptorMap;
+    
+    struct VersionIDKey
+    {
+        unsigned int major,minor;
+        std::string id;
+        
+        VersionIDKey(): major(0), minor(0), id() {}
+        
+        bool operator< (const VersionIDKey& rhs) const
+        {
+            if (id == rhs.id) {
+                if (major == rhs.major) {
+                    if (minor == rhs.minor) {
+                        return false;
+                    } else {
+                        return minor < rhs.minor;
+                    }
+                } else {
+                    return major < rhs.major;
+                }
+            } else {
+                return id < rhs.id;
+            }
+        }
+    };
+      
+    typedef std::map<VersionIDKey, EffectContextMap> EffectDescriptorMap;
     extern EffectDescriptorMap gEffectDescriptors;
   };
 

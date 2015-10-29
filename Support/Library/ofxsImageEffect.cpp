@@ -3030,7 +3030,7 @@ namespace OFX {
 
     /** @brief Library side unload action, this fetches all the suite pointers */
     static
-    void unloadAction(const char* id)
+    void unloadAction(const char* id, unsigned int majorVersion, unsigned int minorVersion)
     {
       gLoadCount--;
       if (gLoadCount<0) {
@@ -3065,7 +3065,11 @@ namespace OFX {
       }
 
       {
-        EffectDescriptorMap::iterator it = gEffectDescriptors.find(id);
+        OFX::Private::VersionIDKey key;
+        key.id = id;
+        key.major = majorVersion;
+        key.minor = minorVersion;
+        EffectDescriptorMap::iterator it = gEffectDescriptors.find(key);
         EffectContextMap& toBeDeleted = it->second;
         for(EffectContextMap::iterator it2 = toBeDeleted.begin(); it2 != toBeDeleted.end(); ++it2)
         {
@@ -3388,7 +3392,7 @@ namespace OFX {
     /** @brief Library side get regions of interest function */
     static
     bool
-      regionsOfInterestAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs, const char* plugname)
+      regionsOfInterestAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs, const char* plugname, unsigned int majorVersion, unsigned int minorVersion)
     {
       /** @brief local class to set the roi of a clip */
       class LOCAL ActualROISetter : public OFX::RegionOfInterestSetter {
@@ -3447,7 +3451,11 @@ namespace OFX {
 #endif
 
       // make a roi setter object
-      ActualROISetter setRoIs(outArgs, gEffectDescriptors[plugname][effectInstance->getContext()]->getClipROIPropNames());
+      OFX::Private::VersionIDKey key;
+      key.id = plugname;
+      key.major = majorVersion;
+      key.minor = minorVersion;
+      ActualROISetter setRoIs(outArgs, gEffectDescriptors[key][effectInstance->getContext()]->getClipROIPropNames());
 
       // and call the plugin client code
       effectInstance->getRegionsOfInterest(args, setRoIs);
@@ -3461,7 +3469,7 @@ namespace OFX {
     /** @brief Library side frames needed action */
     static
     bool
-      framesNeededAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs, const char* plugname)
+      framesNeededAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs, const char* plugname,  unsigned int majorVersion, unsigned int minorVersion)
     {
       /** @brief local class to set the frames needed from a clip */
       class LOCAL ActualSetter : public OFX::FramesNeededSetter {
@@ -3525,7 +3533,11 @@ namespace OFX {
       args.time = inArgs.propGetDouble(kOfxPropTime);
 
       // make a roi setter object
-      ActualSetter setFrames(outArgs, gEffectDescriptors[plugname][effectInstance->getContext()]->getClipFrameRangePropNames());
+      OFX::Private::VersionIDKey key;
+      key.id = plugname;
+      key.major = majorVersion;
+      key.minor = minorVersion;
+      ActualSetter setFrames(outArgs, gEffectDescriptors[key][effectInstance->getContext()]->getClipFrameRangePropNames());
 
       // and call the plugin client code
       effectInstance->getFramesNeeded(args, setFrames);
@@ -3569,13 +3581,17 @@ namespace OFX {
     /** @brief Library side get regions of interest function */
     static
     bool
-      clipPreferencesAction(OfxImageEffectHandle handle, OFX::PropertySet &outArgs, const char* plugname)
+      clipPreferencesAction(OfxImageEffectHandle handle, OFX::PropertySet &outArgs, const char* plugname, unsigned int majorVersion, unsigned int minorVersion)
     {
       // fetch our effect pointer 
       ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
 
       // set up our clip preferences setter
-      ImageEffectDescriptor* desc = gEffectDescriptors[plugname][effectInstance->getContext()];
+      OFX::Private::VersionIDKey key;
+      key.id = plugname;
+      key.major = majorVersion;
+      key.minor = minorVersion;
+      ImageEffectDescriptor* desc = gEffectDescriptors[key][effectInstance->getContext()];
       ClipPreferencesSetter prefs(outArgs, desc->getClipDepthPropNames(), desc->getClipComponentPropNames(), desc->getClipPARPropNames());
 
       // and call the plug-in client code
@@ -3696,14 +3712,19 @@ namespace OFX {
 
     static
     bool
-    getFrameViewsNeededAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs, const char* plugname)
+    getFrameViewsNeededAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs, const char* plugname, unsigned int majorVersion, unsigned int minorVersion)
     {
         ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
         FrameViewsNeededArguments args;
         args.time = inArgs.propGetDouble(kOfxPropTime);
         args.view = inArgs.propGetInt(kFnOfxImageEffectPropView);
         
-        ImageEffectDescriptor* desc = gEffectDescriptors[plugname][effectInstance->getContext()];
+        
+        OFX::Private::VersionIDKey key;
+        key.id = plugname;
+        key.major = majorVersion;
+        key.minor = minorVersion;
+        ImageEffectDescriptor* desc = gEffectDescriptors[key][effectInstance->getContext()];
         FrameViewsNeededSetter setter(outArgs,desc->getClipFrameViewsPropNames());
         effectInstance->getFrameViewsNeeded(args,setter);
         if (setter.setOutProperties()) {
@@ -3714,20 +3735,24 @@ namespace OFX {
       
     static
     bool
-    getClipComponentsAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs, const char* plugname)
+    getClipComponentsAction(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs, const char* plugname, unsigned int majorVersion, unsigned int minorVersion)
     {
-          ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
-          ClipComponentsArguments args;
-          args.time = inArgs.propGetDouble(kOfxPropTime);
-          args.view = inArgs.propGetInt(kFnOfxImageEffectPropView);
-          
-          ImageEffectDescriptor* desc = gEffectDescriptors[plugname][effectInstance->getContext()];
-          ClipComponentsSetter setter(outArgs,desc->getClipPlanesPropNames());
-          effectInstance->getClipComponents(args,setter);
-          if (setter.setOutProperties()) {
-              return true;
-          }
-          return false;
+        ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
+        ClipComponentsArguments args;
+        args.time = inArgs.propGetDouble(kOfxPropTime);
+        args.view = inArgs.propGetInt(kFnOfxImageEffectPropView);
+        
+        OFX::Private::VersionIDKey key;
+        key.id = plugname;
+        key.major = majorVersion;
+        key.minor = minorVersion;
+        ImageEffectDescriptor* desc = gEffectDescriptors[key][effectInstance->getContext()];
+        ClipComponentsSetter setter(outArgs,desc->getClipPlanesPropNames());
+        effectInstance->getClipComponents(args,setter);
+        if (setter.setOutProperties()) {
+            return true;
+        }
+        return false;
     }
       
     /** @brief Action called in place of a render to recover a transform matrix from an effect. */
@@ -3821,7 +3846,7 @@ namespace OFX {
           factory->unload();
 
           // call the support unload function, param-less
-          OFX::Private::unloadAction(plugname); 
+          OFX::Private::unloadAction(plugname, it->second._plug->pluginVersionMajor, it->second._plug->pluginVersionMinor);
 
           // got here, must be good
           stat = kOfxStatOK;
@@ -3841,7 +3866,11 @@ namespace OFX {
           factory->describe(*desc);
 
           // add it to our map
-          gEffectDescriptors[plugname][eContextNone] = desc;
+          OFX::Private::VersionIDKey key;
+          key.id = it->first;
+          key.major = it->second._plug->pluginVersionMajor;
+          key.minor = it->second._plug->pluginVersionMinor;
+          gEffectDescriptors[key][eContextNone] = desc;
 
           // got here, must be good
           stat = kOfxStatOK;
@@ -3863,7 +3892,11 @@ namespace OFX {
           factory->describeInContext(*desc, context);
 
           // add it to our map
-          gEffectDescriptors[plugname][context] = desc;
+          OFX::Private::VersionIDKey key;
+          key.id = it->first;
+          key.major = it->second._plug->pluginVersionMajor;
+          key.minor = it->second._plug->pluginVersionMinor;
+          gEffectDescriptors[key][context] = desc;
 
           // got here, must be good
           stat = kOfxStatOK;
@@ -3939,21 +3972,21 @@ namespace OFX {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
           // call the RoI action, return OK if it does something
-          if(regionsOfInterestAction(handle, inArgs, outArgs, plugname))
+          if(regionsOfInterestAction(handle, inArgs, outArgs, plugname, it->second._plug->pluginVersionMajor, it->second._plug->pluginVersionMinor))
             stat = kOfxStatOK;
         }
         else if(action == kOfxImageEffectActionGetFramesNeeded) {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
           // call the frames needed action, return OK if it does something
-          if(framesNeededAction(handle, inArgs, outArgs, plugname))
+          if(framesNeededAction(handle, inArgs, outArgs, plugname, it->second._plug->pluginVersionMajor, it->second._plug->pluginVersionMinor))
             stat = kOfxStatOK;
         }
         else if(action == kOfxImageEffectActionGetClipPreferences) {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, true, false);
 
           // call the frames needed action, return OK if it does something
-          if(clipPreferencesAction(handle, outArgs, plugname))
+          if(clipPreferencesAction(handle, outArgs, plugname, it->second._plug->pluginVersionMajor, it->second._plug->pluginVersionMinor))
             stat = kOfxStatOK;
         }
         else if(action == kOfxActionPurgeCaches) {
@@ -4079,7 +4112,7 @@ namespace OFX {
           // call the clip components function, return OK if it does something
           // the spec is not clear as to whether it is allowed to do nothing but
           // this action should always be implemented for multi-planes effects.
-          if (getClipComponentsAction(handle, inArgs, outArgs, plugname)) {
+          if (getClipComponentsAction(handle, inArgs, outArgs, plugname, it->second._plug->pluginVersionMajor, it->second._plug->pluginVersionMinor)) {
               stat = kOfxStatOK;
           }
         }
@@ -4087,7 +4120,7 @@ namespace OFX {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
           // call the frames views needed action, return OK if it does something
-          if (getFrameViewsNeededAction(handle, inArgs, outArgs, plugname)) {
+          if (getFrameViewsNeededAction(handle, inArgs, outArgs, plugname, it->second._plug->pluginVersionMajor, it->second._plug->pluginVersionMinor)) {
               stat = kOfxStatOK;
           }
         }
