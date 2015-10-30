@@ -91,7 +91,7 @@ namespace OFX {
         /// Function called as each plugin binary is found and loaded from disk
         ///
         /// Use this in any dialogue etc... showing progress
-        virtual void loadingStatus(const std::string &);
+        virtual void loadingStatus(const std::string &id, int versionMajor, int versionMinor);
         
         /// Override this to filter out plugins which the host can't support for whatever reason
         ///

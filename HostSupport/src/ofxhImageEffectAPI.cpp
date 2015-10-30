@@ -399,10 +399,7 @@ namespace OFX {
 
       /// handle the case where the info needs filling in from the file.  runs the "describe" action on the plugin.
       void PluginCache::loadFromPlugin(Plugin *op) const {
-        std::string msg = "loading ";
-        msg += op->getRawIdentifier();
-
-        _host->loadingStatus(msg);
+        _host->loadingStatus(op->getRawIdentifier(), op->getVersionMajor(), op->getVersionMinor());
 
         ImageEffectPlugin *p = dynamic_cast<ImageEffectPlugin*>(op);
         assert(p);
