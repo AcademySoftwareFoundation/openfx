@@ -902,7 +902,6 @@ namespace OFX {
   void ChoiceParamDescriptor::appendOption(const std::string &v, const std::string& label)
   {
     int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
-    _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
     if(!label.empty()) {
 #ifdef OFX_EXTENSIONS_TUTTLE
       // Choice label is an ofx extension. If the host doesn't support it,
@@ -927,6 +926,7 @@ namespace OFX {
         _paramProps.propSetString(kOfxParamPropHint, hint);
       }
     }
+    _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
   }
 
   /** @brief set the default value */
@@ -2921,7 +2921,6 @@ namespace OFX {
   void ChoiceParam::appendOption(const std::string &v, const std::string& label)
   {
     int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
-    _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
     if(!label.empty()) {
 #ifdef OFX_EXTENSIONS_TUTTLE
       // Choice label is an ofx extension. If the host doesn't support it,
@@ -2946,6 +2945,7 @@ namespace OFX {
         _paramProps.propSetString(kOfxParamPropHint, hint);
       }
     }
+    _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
   }
 
   /** @brief set the string of a specific option */
