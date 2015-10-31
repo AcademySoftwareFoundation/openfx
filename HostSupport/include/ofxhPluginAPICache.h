@@ -74,6 +74,8 @@ namespace OFX
         
         virtual void loadFromPlugin(Plugin *) const = 0;
 
+        virtual void unloadPlugin(Plugin *) const = 0;
+
         /// factory method, to create a new plugin (from binary)
         virtual Plugin *newPlugin(PluginBinary *, int pi, OfxPlugin *plug) = 0;
 

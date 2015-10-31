@@ -89,9 +89,14 @@ namespace OFX {
                                       const std::string& context) = 0;
 
         /// Function called as each plugin binary is found and loaded from disk
+        /// or when it is unloaded.
         ///
         /// Use this in any dialogue etc... showing progress
-        virtual void loadingStatus(const std::string &id, int versionMajor, int versionMinor);
+        /// \arg loading - whether this plugin is loading or unloading
+        /// \arg id - the plugin ID
+        /// \arg versionMajor - the plugin major version number
+        /// \arg versionMinor - the plugin minor version number
+        virtual void loadingStatus(bool loading, const std::string &id, int versionMajor, int versionMinor);
         
         /// Override this to filter out plugins which the host can't support for whatever reason
         ///

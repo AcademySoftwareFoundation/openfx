@@ -399,7 +399,7 @@ namespace OFX {
 
       /// handle the case where the info needs filling in from the file.  runs the "describe" action on the plugin.
       void PluginCache::loadFromPlugin(Plugin *op) const {
-        _host->loadingStatus(op->getRawIdentifier(), op->getVersionMajor(), op->getVersionMinor());
+        _host->loadingStatus(true, op->getRawIdentifier(), op->getVersionMajor(), op->getVersionMinor());
 
         ImageEffectPlugin *p = dynamic_cast<ImageEffectPlugin*>(op);
         assert(p);
@@ -467,6 +467,9 @@ namespace OFX {
         }
       }
 
+      void PluginCache::unloadPlugin(Plugin *op) const {
+        _host->loadingStatus(false, op->getRawIdentifier(), op->getVersionMajor(), op->getVersionMinor());
+      }
 
       /// handler for preparing to read in a chunk of XML from the cache, set up context to do this
       void PluginCache::beginXmlParsing(Plugin *p) {

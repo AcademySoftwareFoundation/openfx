@@ -202,7 +202,10 @@ namespace OFX {
 
         /// handle the case where the info needs filling in from the file.  runs the "describe" action on the plugin.
         void loadFromPlugin(Plugin *p) const;
-        
+
+        /// hook run before deleting the ImageEffect
+        void unloadPlugin(Plugin *p) const;
+
         /// handler for preparing to read in a chunk of XML from the cache, set up context to do this
         void beginXmlParsing(Plugin *p);
 

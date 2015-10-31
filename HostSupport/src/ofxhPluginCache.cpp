@@ -153,6 +153,8 @@ void PluginBinary::loadPluginInfo(PluginCache *cache) {
 PluginBinary::~PluginBinary() {
   std::vector<Plugin*>::iterator i = _plugins.begin();
   while (i != _plugins.end()) {
+    const APICache::PluginAPICacheI &api = (*i)->getApiHandler();
+    api.unloadPlugin(*i);
     delete *i;
     i++;
   }
