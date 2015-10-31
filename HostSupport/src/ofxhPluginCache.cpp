@@ -365,21 +365,28 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
 #endif
       if (name.find(".ofx.bundle") != std::string::npos) {
         std::string barename = name.substr(0, name.length() - strlen(".bundle"));
-        std::string bundleAbsolutePath = dir + DIRSEP + name;
+        std::string bundlename = dir + DIRSEP + name;
         std::string binpath = dir + DIRSEP + name + DIRSEP "Contents" DIRSEP + ARCHSTR + DIRSEP + barename;
           
-        std::string foundExistingBinary;
-        for (std::set<std::string>::iterator it = _knownBinFiles.begin(); it != _knownBinFiles.end(); ++it) {
-            const std::string& existingBinary = *it;
-            if ((existingBinary.size() >= barename.size()) &&
-                (existingBinary.compare(existingBinary.size() - barename.size(), barename.size(), barename) == 0)) {
-                //We found another binary in the path ending with the same barename, just ignore this one
-                foundExistingBinary = existingBinary;
-                break;
-            }
-        }
+        // don't insert binpath yet, do it later because of Mac OS X Universal stuff
+        //foundBinFiles.insert(binpath);
+
+#if defined(__APPLE__) && (defined(__x86_64) || defined(__x86_64__))
+        /* From the OpenFX specification:
+           
+           MacOS-x86-64 - for Apple Macintosh OS X, specifically on
+           intel x86 CPUs running AMD's 64 bit extensions. 64 bit host
+           applications should check this first, and if it doesn't
+           exist or is empty, fall back to "MacOS" looking for a
+           universal binary.
+        */
           
-        if (foundExistingBinary.empty()) {
+        std::string binpath_universal = dir + DIRSEP + name + DIRSEP "Contents" DIRSEP + "MacOS" + DIRSEP + barename;
+        if (_knownBinFiles.find(binpath_universal) != _knownBinFiles.end()) {
+          binpath = binpath_universal;
+        }
+#endif
+        if (_knownBinFiles.find(binpath) == _knownBinFiles.end()) {
 #ifdef CACHE_DEBUG
           printf("found non-cached binary %s\n", binpath.c_str());
 #endif
@@ -389,25 +396,17 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
           
           PluginBinary *pb = 0;
 #if defined(__x86_64) || defined(__x86_64__)
-          pb = new PluginBinary(binpath, bundleAbsolutePath, this);
+          pb = new PluginBinary(binpath, bundlename, this);
 #  if defined(__APPLE__)
           if (pb->isInvalid()) {
-              /* From the OpenFX specification:
-               
-               MacOS-x86-64 - for Apple Macintosh OS X, specifically on
-               intel x86 CPUs running AMD's 64 bit extensions. 64 bit host
-               applications should check this first, and if it doesn't
-               exist or is empty, fall back to "MacOS" looking for a
-               universal binary.
-               */
-
+            // fallback to "MacOS"
             delete pb;
-            binpath = dir + DIRSEP + name + DIRSEP "Contents" DIRSEP + "MacOS" + DIRSEP + barename;
-            pb = new PluginBinary(binpath, bundleAbsolutePath, this);
+            binpath = binpath_universal;
+            pb = new PluginBinary(binpath, bundlename, this);
           }
 #  endif
 #else
-          pb = new PluginBinary(binpath, bundleAbsolutePath, this);
+          pb = new PluginBinary(binpath, bundlename, this);
 #endif
           _binaries.push_back(pb);
           _knownBinFiles.insert(binpath);
@@ -419,12 +418,12 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
             api.loadFromPlugin(plug);
           }
         } else {
-          // insert final path (universal or not) in the list of found files
-          foundBinFiles.insert(foundExistingBinary);
 #ifdef CACHE_DEBUG
           printf("found cached binary %s\n", binpath.c_str());
 #endif
         }
+        // insert final path (universal or not) in the list of found files
+        foundBinFiles.insert(binpath);
       } else {
         if (isdir && (recurse && !name.empty() && name[0] != '@' && name[name.size() - 1] != '.')) {
           scanDirectory(foundBinFiles, dir + DIRSEP + name, recurse);
