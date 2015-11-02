@@ -210,7 +210,7 @@ namespace OFX {
         void beginXmlParsing(Plugin *p);
 
         /// XML handler : element begins (everything is stored in elements and attributes)       
-        virtual void xmlElementBegin(const std::string &el, std::map<std::string, std::string> map);
+        virtual void xmlElementBegin(const std::string &el, const std::map<std::string, std::string> &map);
 
         virtual void xmlCharacterHandler(const std::string &);
         

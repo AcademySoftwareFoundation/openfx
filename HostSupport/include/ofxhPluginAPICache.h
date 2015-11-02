@@ -84,7 +84,7 @@ namespace OFX
                                   const std::string &rawId, int pluginMajorVersion, int pluginMinorVersion) = 0;
 
         virtual void beginXmlParsing(Plugin *) = 0;
-        virtual void xmlElementBegin(const std::string &, std::map<std::string, std::string>) = 0;
+        virtual void xmlElementBegin(const std::string &, const std::map<std::string, std::string>&) = 0;
         virtual void xmlCharacterHandler(const std::string &) = 0;
         virtual void xmlElementEnd(const std::string &) = 0;
         virtual void endXmlParsing() = 0;

@@ -477,7 +477,7 @@ namespace OFX {
       }
 
       /// XML handler : element begins (everything is stored in elements and attributes)       
-      void PluginCache::xmlElementBegin(const std::string &el, std::map<std::string, std::string> map) 
+      void PluginCache::xmlElementBegin(const std::string &el, const std::map<std::string, std::string> &map)
       {
         if (el == "apiproperties") {
           return;
@@ -485,20 +485,20 @@ namespace OFX {
 
         if (el == "context") {
           _currentContext = gImageEffectHost->makeDescriptor(_currentPlugin->getBinary()->getBundlePath(), _currentPlugin);
-          _currentPlugin->addContext(map["name"], _currentContext);
+          _currentPlugin->addContext(map.at("name"), _currentContext);
           return;
         }
 
         if (el == "param" && _currentContext) {
-          std::string pname = map["name"];
-          std::string ptype = map["type"];
+          std::string pname = map.at("name");
+          std::string ptype = map.at("type");
 
           _currentParam = _currentContext->paramDefine(ptype.c_str(), pname.c_str());
           return;
         }
 
         if (el == "clip" && _currentContext) {
-          std::string cname = map["name"];
+          std::string cname = map.at("name");
 
           _currentClip = new ClipDescriptor(cname);
           _currentContext->addClip(cname, _currentClip);
