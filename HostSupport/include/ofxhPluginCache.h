@@ -205,6 +205,20 @@ namespace OFX {
 
         return false;
       }
+
+      bool equals(Plugin *other) {
+        int myMajor = getVersionMajor();
+        int theirMajor = other->getVersionMajor();
+
+        int myMinor = getVersionMinor();
+        int theirMinor = other->getVersionMinor();
+
+        if (myMajor == theirMajor && myMinor == theirMinor) {
+          return true;
+        }
+
+        return false;
+      }
     };
 
     class PluginHandle;

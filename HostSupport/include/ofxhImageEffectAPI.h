@@ -220,7 +220,7 @@ namespace OFX {
         
         virtual void saveXML(Plugin *ip, std::ostream &os) const;
 
-        void confirmPlugin(Plugin *p);
+        void confirmPlugin(Plugin *p, const std::list<std::string>& pluginPath);
 
         virtual bool pluginSupported(Plugin *p, std::string &reason) const;
 

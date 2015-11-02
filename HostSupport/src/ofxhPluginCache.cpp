@@ -415,14 +415,6 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
           for (int j=0;j<pb->getNPlugins();j++) {
             Plugin *plug = &pb->getPlugin(j);
             const APICache::PluginAPICacheI &api = plug->getApiHandler();
-            // TODO: add the following conditions
-            // - if there is no plugin in the cache with the same id plug->getRawIdentifier() and major version op->getVersionMajor(),
-            //   load plug with api.loadFromPlugin(plug) and put it in the cache
-            // Let us call Q the ^plugin in the cache with the same id plug->getRawIdentifier() and major version op->getVersionMajor()
-            // - if the plugin Q has a smaller op->getVersionMinor(), remove Q from cache,
-            //   and load plug with api.loadFromPlugin(plug) and put it in the cache
-            // - if the plugin Q is *after* plug in the plugin path,  remove Q from cache,
-            //   and load plug with api.loadFromPlugin(plug) and put it in the cache
             api.loadFromPlugin(plug);
           }
         } else {
@@ -508,14 +500,6 @@ void PluginCache::scanPluginFiles()
         APICache::PluginAPICacheI &api = plug->getApiHandler();
         
         if (binChanged) {
-          // TODO: add the following conditions (bin has changed, thus the id and versions may have changed too)
-          // - if there is no plugin in the cache with the same id plug->getRawIdentifier() and major version op->getVersionMajor(),
-          //   load plug with api.loadFromPlugin(plug) and put it in the cache
-          // Let us call Q the ^plugin in the cache with the same id plug->getRawIdentifier() and major version op->getVersionMajor()
-          // - if the plugin Q has a smaller op->getVersionMinor(), remove Q from cache,
-          //   and load plug with api.loadFromPlugin(plug) and put it in the cache
-          // - if the plugin Q is *after* plug in the plugin path,  remove Q from cache,
-          //   and load plug with api.loadFromPlugin(plug) and put it in the cache
           api.loadFromPlugin(plug);
         }
         
@@ -523,7 +507,7 @@ void PluginCache::scanPluginFiles()
         
         if (api.pluginSupported(plug, reason)) {
           _plugins.push_back(plug);
-          api.confirmPlugin(plug);
+          api.confirmPlugin(plug, _pluginPath);
         } else {
           std::cerr << "ignoring plugin " << plug->getIdentifier() <<
             " as unsupported (" << reason << ")" << std::endl;

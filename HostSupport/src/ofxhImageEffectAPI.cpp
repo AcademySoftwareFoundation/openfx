@@ -548,7 +548,7 @@ namespace OFX {
         }
       }
 
-      void PluginCache::confirmPlugin(Plugin *p) {
+      void PluginCache::confirmPlugin(Plugin *p, const std::list<std::string>& pluginPath) {
         ImageEffectPlugin *plugin = dynamic_cast<ImageEffectPlugin*>(p);
         if (!plugin) {
           return;
@@ -570,6 +570,29 @@ namespace OFX {
           ImageEffectPlugin *otherPlugin = _pluginsByIDMajor[maj];
           if (plugin->trumps(otherPlugin)) {
             _pluginsByIDMajor[maj] = plugin;
+          } else if(plugin->equals(otherPlugin)) {
+            // if the plugin *before* otherPlugin in the plugin path, insert it.
+            const std::string& thisPath = plugin->getBinary()->getBundlePath();
+            const std::string& otherPath = otherPlugin->getBinary()->getBundlePath();
+            int thisRank = -1;
+            int otherRank = -1;
+            int rank = 0;
+            for (std::list<std::string>::const_iterator paths= pluginPath.begin();
+                 paths != pluginPath.end();
+                 ++paths, ++rank) {
+              const std::string& p = *paths;
+              // check if the bundle path for each plugin starts with the current path item
+              if (!thisPath.compare(0, p.size(), p)) {
+                thisRank = rank;
+              }
+              if (!otherPath.compare(0, p.size(), p)) {
+                otherRank = rank;
+              }
+            }
+            assert(thisRank != -1 && otherRank != -1);
+            if (thisRank < otherRank) {
+              _pluginsByIDMajor[maj] = plugin;
+            }
           }
         } else {
           _pluginsByIDMajor[maj] = plugin;

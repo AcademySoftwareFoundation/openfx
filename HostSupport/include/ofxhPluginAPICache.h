@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <ostream>
 #include <map>
+#include <list>
 
 #include "ofxhPropertySuite.h"
 
@@ -91,7 +92,7 @@ namespace OFX
         
         virtual void saveXML(Plugin *, std::ostream &) const = 0;
 
-        virtual void confirmPlugin(Plugin *) = 0;
+        virtual void confirmPlugin(Plugin *, const std::list<std::string>& pluginPath) = 0;
 
         virtual bool pluginSupported(Plugin *, std::string &reason) const = 0;
 
