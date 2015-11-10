@@ -2195,16 +2195,6 @@ namespace OFX {
     }
   }
 
-  /** @brief force all overlays on this interact to be redrawn */
-  void ImageEffect::redrawOverlays(void)
-  {
-    // find it
-    std::list<OverlayInteract *>::iterator i;
-    for(i = _overlayInteracts.begin(); i != _overlayInteracts.end(); ++i) {
-      (*i)->requestRedraw();
-    }
-  }
-
 #ifdef OFX_SUPPORTS_OPENGLRENDER
     bool ImageEffect::flushOpenGLResources(void)
     {
