@@ -7,9 +7,10 @@ all: subdirs
 subdirs: $(SUBDIRS)
 
 $(SUBDIRS):
-	$(MAKE) -C $@
+	(cd $@ && $(MAKE))
 
 clean :
-	for i in $(SUBDIRS) ; do \
-	  $(MAKE) -C $$i clean; \
+	@for i in $(SUBDIRS) ; do \
+	  echo "(cd $$i && $(MAKE) $@)"; \
+	  (cd $$i && $(MAKE) $@); \
 	done
