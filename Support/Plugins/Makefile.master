@@ -64,22 +64,21 @@ endif
 
 OBJECTPATH = $(OS)-$(BITS)-$(DEBUGNAME)
 
-$(PATHTOROOT)/Library/$(OBJECTPATH)/%.o : $(PATHTOROOT)/Library/%.cpp
-	mkdir -p $(PATHTOROOT)/Library/$(OBJECTPATH)
-	$(CXX) -c $(CXXFLAGS) $< -o $@
-
 $(OBJECTPATH)/%.o : %.cpp
-	mkdir -p $(OBJECTPATH)
+	@mkdir -p $(OBJECTPATH)
 	$(CXX) -c $(CXXFLAGS) $< -o $@
 
-SUPPORTOBJECTS = $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsMultiThread.o \
-		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsInteract.o \
-		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsProperty.o \
-		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsLog.o \
-		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsCore.o \
-		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsPropertyValidation.o \
-		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsImageEffect.o \
-		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsParams.o 
+SUPPORTOBJECTS ?= \
+ofxsMultiThread.o \
+ofxsInteract.o \
+ofxsProperty.o \
+ofxsLog.o \
+ofxsCore.o \
+ofxsPropertyValidation.o \
+ofxsImageEffect.o \
+ofxsParams.o 
+
+VPATH += $(PATHTOROOT)/Library
 
 .PHONY: all install uninstall
 
@@ -152,8 +151,8 @@ uninstall:
 
   CXXFLAGS := $(DEBUGFLAG) $(CPPFLAGS) -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include -I$(PATHTOROOT)/Plugins/include $(BITSFLAG) -fvisibility=hidden $(CXXFLAGS_ADD)
 
-$(OBJECTPATH)/$(PLUGINNAME).ofx: $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS)) $(SUPPORTOBJECTS)
-	mkdir -p $(OBJECTPATH)/
+$(OBJECTPATH)/$(PLUGINNAME).ofx: $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS) $(SUPPORTOBJECTS))
+	@mkdir -p $(OBJECTPATH)/
 	$(CXX) $^ $(LINKFLAGS) $(LDFLAGS_ADD) -o $@
 
 $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle: $(OBJECTPATH)/$(PLUGINNAME).ofx
@@ -164,7 +163,7 @@ $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle: $(OBJECTPATH)/$(PLUGINNAME).ofx
 	if [ \( $(DEBUGNAME) = "release" -o $(DEBUGNAME) = "relwithdebinfo" \) -a $(ARCH) = "MacOS" ]; then bash $(PATHTOROOT)/include/osxDeploy.sh $@ $(PLUGINNAME).ofx; fi
 
 clean :
-	rm -rf $(SUPPORTOBJECTS) $(OBJECTPATH)/ $(PATHTOROOT)/Library/$(OBJECTPATH)/ 
+	rm -rf $(OBJECTPATH)
 
 release :
 	make DEBUGFLAG=-O3
