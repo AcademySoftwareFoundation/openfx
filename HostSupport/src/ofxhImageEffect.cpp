@@ -3414,11 +3414,13 @@ namespace OFX {
         return gImageEffectHost->notifyRedrawPending(NULL, NULL);
       }
 
+#ifdef OFX_SUPPORTS_DIALOG_V1
       /// dialog suite for an image effect plugin
       static const struct OfxDialogSuiteV1 gDialogSuiteV1 = {
         requestDialogV1,
         notifyredrawPendingV1
       };
+#endif
 
       static OfxStatus requestDialog(OfxImageEffectHandle instance, OfxPropertySetHandle inArgs, void *instanceData)
       {
