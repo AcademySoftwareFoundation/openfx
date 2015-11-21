@@ -567,7 +567,7 @@ namespace OFX {
     void setPluginGrouping(const std::string &group);
 
     /** @brief Set the plugin description, defaults to "" */
-    void setPluginDescription(const std::string &description);
+    void setPluginDescription(const std::string &description, bool validate = true);
 
     /** @brief Add a context to those supported, defaults to none, must be called at least once */
     void addSupportedContext(ContextEnum v);

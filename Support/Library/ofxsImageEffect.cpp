@@ -822,9 +822,11 @@ namespace OFX {
   }
 
   /** @brief Set the plugin description, defaults to "" */
-  void ImageEffectDescriptor::setPluginDescription(const std::string &description)
+  void ImageEffectDescriptor::setPluginDescription(const std::string &description, bool validate)
   {
-    validateXMLString(description, false);
+    if (validate) {
+      validateXMLString(description, false);
+    }
     _effectProps.propSetString(kOfxPropPluginDescription, description, false); // introduced in OFX 1.2
   }
 
