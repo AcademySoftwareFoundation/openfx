@@ -312,7 +312,7 @@ namespace OFX {
         _argProperties.setPointerProperty(kOfxPropInstanceData, _properties.getPointerProperty(kOfxPropInstanceData));
         _argProperties.setDoubleProperty(kOfxPropTime,time);
 #ifdef OFX_EXTENSIONS_NUKE
-        _argProperties.setDoubleProperty(kFnOfxImageEffectPropView,view);
+        _argProperties.setIntProperty(kFnOfxImageEffectPropView,view);
 #endif
         _argProperties.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
       }
