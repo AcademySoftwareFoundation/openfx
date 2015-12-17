@@ -63,10 +63,10 @@ namespace OFX {
     /// ctor
     InteractArgs(const PropertySet &props);
     double          time;              /**< @brief The current effect time to draw at */
-#ifdef OFX_EXTENSIONS_NUKE
-    int             view;              /**< @brief The current effect view to draw onto */
-#endif
     OfxPointD       renderScale;       /**< @brief The current render scale being applied to any image that would be fetched */
+#ifdef OFX_EXTENSIONS_NUKE
+      int             view;              /**< @brief The current effect view to draw onto */
+#endif
   };
 
   /** @brief struct to pass arguments into OFX::Interact::draw */

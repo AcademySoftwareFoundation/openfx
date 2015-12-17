@@ -114,10 +114,11 @@ namespace OFX {
 
         /// initialise the argument properties
         void initArgProp(OfxTime time,
+                         const OfxPointD   &renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                        int view,
+                         , int view
 #endif
-                         const OfxPointD   &renderScale);
+                         );
                 
         /// set pen props in the args
         void setPenArgProps(const OfxPointD &penPos,
@@ -193,10 +194,11 @@ namespace OFX {
         //    time              - the effect time at which changed occured
         //    renderScale       - the render scale
         virtual OfxStatus drawAction(OfxTime time,
+                                     const OfxPointD &renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                                     int view,
+                                     , int view
 #endif
-                                     const OfxPointD &renderScale);
+                                     );
 
         // interact action - kOfxInteractActionPenMotion
         //
@@ -208,10 +210,10 @@ namespace OFX {
         //    penY              - the Y position
         //    pressure          - the pen pressue 0 to 1
         virtual OfxStatus penMotionAction(OfxTime time,
+                                          const OfxPointD &renderScale,
 #ifdef OFX_EXTENSIONS_NUKE
                                           int view,
 #endif
-                                          const OfxPointD &renderScale,
                                           const OfxPointD &penPos,
                                           const OfxPointI &penPosViewport,
                                           double pressure);
@@ -226,10 +228,10 @@ namespace OFX {
         //    penY              - the Y position
         //    pressure          - the pen pressue 0 to 1
         virtual OfxStatus penUpAction(OfxTime time,
+                                      const OfxPointD &renderScale,
 #ifdef OFX_EXTENSIONS_NUKE
                                       int view,
 #endif
-                                      const OfxPointD &renderScale,
                                       const OfxPointD &penPos,
                                       const OfxPointI &penPosViewport,
                                       double  pressure);
@@ -244,10 +246,10 @@ namespace OFX {
         //    penY              - the Y position
         //    pressure          - the pen pressue 0 to 1
         virtual OfxStatus penDownAction(OfxTime time,
+                                        const OfxPointD &renderScale,
 #ifdef OFX_EXTENSIONS_NUKE
                                         int view,
 #endif
-                                        const OfxPointD &renderScale,
                                         const OfxPointD &penPos,
                                         const OfxPointI &penPosViewport,
                                         double  pressure);
@@ -261,10 +263,10 @@ namespace OFX {
         //    key               - the pressed key
         //    keyString         - the pressed key string
         virtual OfxStatus keyDownAction(OfxTime time,
+                                        const OfxPointD &renderScale,
 #ifdef OFX_EXTENSIONS_NUKE
                                         int view,
 #endif
-                                        const OfxPointD &renderScale,
                                         int     key,
                                         char*   keyString);
 
@@ -277,10 +279,10 @@ namespace OFX {
         //    key               - the pressed key
         //    keyString         - the pressed key string
         virtual OfxStatus keyUpAction(OfxTime time,
+                                      const OfxPointD &renderScale,
 #ifdef OFX_EXTENSIONS_NUKE
                                       int view,
 #endif
-                                      const OfxPointD &renderScale,
                                       int     key,
                                       char*   keyString);
 
@@ -293,10 +295,10 @@ namespace OFX {
         //    key               - the pressed key
         //    keyString         - the pressed key string
         virtual OfxStatus keyRepeatAction(OfxTime time,
+                                          const OfxPointD &renderScale,
 #ifdef OFX_EXTENSIONS_NUKE
                                           int view,
 #endif
-                                          const OfxPointD &renderScale,
                                           int     key,
                                           char*   keyString);
 
@@ -307,10 +309,11 @@ namespace OFX {
         //    time              - the effect time at which changed occured
         //    renderScale       - the render scale
         virtual OfxStatus gainFocusAction(OfxTime time,
+                                          const OfxPointD &renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                                          int view,
+                                          , int view
 #endif
-                                          const OfxPointD &renderScale);
+                                          );
 
         // interact action - kOfxInteractActionLoseFocus
         // 
@@ -319,13 +322,14 @@ namespace OFX {
         //    time              - the effect time at which changed occured
         //    renderScale       - the render scale
         virtual OfxStatus loseFocusAction(OfxTime  time,
+                                          const OfxPointD &renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                                          int view,
+                                          , int view
 #endif
-                                          const OfxPointD &renderScale);
+                                          );
       };
 
-    } // Interact 
+    } // Interact
 
   } // Host
 

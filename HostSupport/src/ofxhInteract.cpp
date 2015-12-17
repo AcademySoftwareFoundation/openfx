@@ -126,10 +126,10 @@ namespace OFX {
       static const Property::PropSpec interactArgsStuffs[] = {
         { kOfxPropEffectInstance, Property::ePointer, 1, false, NULL },
         { kOfxPropTime, Property::eDouble, 1, false, "0.0" },
+        { kOfxImageEffectPropRenderScale, Property::eDouble, 2, false, "0.0" },
 #ifdef OFX_EXTENSIONS_NUKE
         { kFnOfxImageEffectPropView, Property::eInt, 1, false, "0" },
 #endif
-        { kOfxImageEffectPropRenderScale, Property::eDouble, 2, false, "0.0" },
         { kOfxInteractPropBackgroundColour , Property::eDouble, 3, false, "0.0f" },
 #ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         { kOfxInteractPropViewportSize, Property::eDouble, 2, false, "0.0f" },
@@ -296,10 +296,11 @@ namespace OFX {
       
       /// initialise the argument properties
       void Instance::initArgProp(OfxTime time,
+                                 const OfxPointD &renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                                 int view,
+                                 , int view
 #endif
-                                 const OfxPointD &renderScale)
+                                 )
       {
         if (time != time) {
           // time is NaN
@@ -311,10 +312,10 @@ namespace OFX {
         _argProperties.setPointerProperty(kOfxPropEffectInstance, _effectInstance);
         _argProperties.setPointerProperty(kOfxPropInstanceData, _properties.getPointerProperty(kOfxPropInstanceData));
         _argProperties.setDoubleProperty(kOfxPropTime,time);
+        _argProperties.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
 #ifdef OFX_EXTENSIONS_NUKE
         _argProperties.setIntProperty(kFnOfxImageEffectPropView,view);
 #endif
-        _argProperties.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
       }
                
       void Instance::setPenArgProps(const OfxPointD &penPos,
@@ -346,28 +347,30 @@ namespace OFX {
       }
 
       OfxStatus Instance::drawAction(OfxTime time,
+                                     const OfxPointD &renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                                     int view,
+                                     , int view
 #endif
-                                     const OfxPointD &renderScale)
+                                     )
       {        
         if (time != time) {
           // time is NaN
           return kOfxStatErrValue;
         }
         initArgProp(time,
+                    renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                    view,
+                    , view
 #endif
-                    renderScale);
+                    );
         return callEntry(kOfxInteractActionDraw, &_argProperties);
       }
 
       OfxStatus Instance::penMotionAction(OfxTime time,
+                                          const OfxPointD &renderScale,
 #ifdef OFX_EXTENSIONS_NUKE
                                           int view,
 #endif
-                                          const OfxPointD &renderScale,
                                           const OfxPointD &penPos,
                                           const OfxPointI &penPosViewport,
                                           double  pressure)
@@ -377,19 +380,20 @@ namespace OFX {
           return kOfxStatErrValue;
         }
           initArgProp(time,
+                      renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                      view,
+                      , view
 #endif
-                      renderScale);
+                      );
         setPenArgProps(penPos, penPosViewport, pressure);
         return callEntry(kOfxInteractActionPenMotion,&_argProperties);
       }
 
       OfxStatus Instance::penUpAction(OfxTime time,
+                                      const OfxPointD &renderScale,
 #ifdef OFX_EXTENSIONS_NUKE
                                       int view,
 #endif
-                                      const OfxPointD &renderScale,
                                       const OfxPointD &penPos,
                                       const OfxPointI &penPosViewport,
                                       double pressure)
@@ -399,19 +403,20 @@ namespace OFX {
           return kOfxStatErrValue;
         }
           initArgProp(time,
+                      renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                      view,
+                      , view
 #endif
-                      renderScale);
+                      );
         setPenArgProps(penPos, penPosViewport, pressure);
         return callEntry(kOfxInteractActionPenUp,&_argProperties);
       }
 
       OfxStatus Instance::penDownAction(OfxTime time,
+                                        const OfxPointD &renderScale,
 #ifdef OFX_EXTENSIONS_NUKE
                                         int view,
 #endif
-                                        const OfxPointD &renderScale,
                                         const OfxPointD &penPos,
                                         const OfxPointI &penPosViewport,
                                         double pressure)
@@ -421,19 +426,20 @@ namespace OFX {
           return kOfxStatErrValue;
         }
           initArgProp(time,
+                      renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                      view,
+                      , view
 #endif
-                      renderScale);
+                      );
         setPenArgProps(penPos, penPosViewport, pressure);
         return callEntry(kOfxInteractActionPenDown,&_argProperties);
       }
 
       OfxStatus Instance::keyDownAction(OfxTime time,
+                                        const OfxPointD &renderScale,
 #ifdef OFX_EXTENSIONS_NUKE
                                         int view,
 #endif
-                                        const OfxPointD &renderScale,
                                         int     key,
                                         char*   keyString)
       {
@@ -442,19 +448,20 @@ namespace OFX {
           return kOfxStatErrValue;
         }
           initArgProp(time,
+                      renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                      view,
+                      , view
 #endif
-                      renderScale);
+                      );
         setKeyArgProps(key, keyString);
         return callEntry(kOfxInteractActionKeyDown,&_argProperties);
       }
 
       OfxStatus Instance::keyUpAction(OfxTime time,
+                                      const OfxPointD &renderScale,
 #ifdef OFX_EXTENSIONS_NUKE
                                       int view,
 #endif
-                                      const OfxPointD &renderScale,
                                       int     key,
                                       char*   keyString)
       {
@@ -463,19 +470,20 @@ namespace OFX {
           return kOfxStatErrValue;
         }
           initArgProp(time,
+                      renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                      view,
+                      , view
 #endif
-                      renderScale);
+                      );
         setKeyArgProps(key, keyString);
         return callEntry(kOfxInteractActionKeyUp,&_argProperties);
       }
 
       OfxStatus Instance::keyRepeatAction(OfxTime time,
+                                          const OfxPointD &renderScale,
 #ifdef OFX_EXTENSIONS_NUKE
                                           int view,
 #endif
-                                          const OfxPointD &renderScale,
                                           int     key,
                                           char*   keyString)
       {
@@ -484,43 +492,48 @@ namespace OFX {
           return kOfxStatErrValue;
         }
           initArgProp(time,
+                      renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                      view,
+                      , view
 #endif
-                      renderScale);
+                      );
         setKeyArgProps(key, keyString);
         return callEntry(kOfxInteractActionKeyRepeat,&_argProperties);
       }
       
       OfxStatus Instance::gainFocusAction(OfxTime time,
+                                          const OfxPointD &renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                                          int view,
+                                          , int view
 #endif
-                                          const OfxPointD &renderScale)
+                                          )
       {
         if (time != time) {
           // time is NaN
           return kOfxStatErrValue;
         }
           initArgProp(time,
+                      renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                      view,
+                      , view
 #endif
-                      renderScale);
+                      );
         return callEntry(kOfxInteractActionGainFocus,&_argProperties);
       }
 
       OfxStatus Instance::loseFocusAction(OfxTime  time,
+                                          const OfxPointD &renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                                          int view,
+                                          , int view
 #endif
-                                          const OfxPointD &renderScale)
+        )
       {
           initArgProp(time,
+                      renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                      view,
+                      , view
 #endif
-                      renderScale);
+                      );
         return callEntry(kOfxInteractActionLoseFocus,&_argProperties);
       }
 

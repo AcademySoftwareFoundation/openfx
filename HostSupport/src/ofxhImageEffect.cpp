@@ -1326,7 +1326,7 @@ namespace OFX {
         inArgs.setStringProperty(kOfxImageEffectPropFieldToRender,field);
         inArgs.setDoubleProperty(kOfxPropTime,time);
         inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
-        inArgs.setIntProperty(kFnOfxImageEffectPropView,view);
+        inArgs.setIntProperty(kFnOfxImageEffectPropView, view);
         for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
             it!=_clips.end();
             ++it) {
@@ -1813,8 +1813,8 @@ namespace OFX {
               Property::propSpecEnd
           };
           Property::Set inArgs(inStuff);
-          inArgs.setDoubleProperty(kOfxPropTime,time);
-          inArgs.setIntProperty(kFnOfxImageEffectPropView,view);
+          inArgs.setDoubleProperty(kOfxPropTime, time);
+          inArgs.setIntProperty(kFnOfxImageEffectPropView, view);
           
           for (std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
                it!=_clips.end();

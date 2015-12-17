@@ -342,10 +342,10 @@ namespace OFX {
   InteractArgs::InteractArgs(const PropertySet &props)
   {
     time          = props.propGetDouble(kOfxPropTime);
-#ifdef OFX_EXTENSIONS_NUKE
-    view          = props.propGetInt(kFnOfxImageEffectPropView);
-#endif
     renderScale   = getRenderScale(props);
+#ifdef OFX_EXTENSIONS_NUKE
+    view          = props.propGetInt(kFnOfxImageEffectPropView, 0, false);
+#endif
   }
 
   /** @brief ctor */
