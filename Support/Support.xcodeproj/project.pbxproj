@@ -664,6 +664,7 @@
 				1E551EDA17994E8100A4135C /* Frameworks */,
 				1E551EC217994D4000A4135C /* Products */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
 		};
 		1E551EC217994D4000A4135C /* Products */ = {

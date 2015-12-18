@@ -477,6 +477,7 @@
 				1E3CB81917992E2B0032B538 /* Headers */,
 				1E742FEB17992CF9007D295B /* Products */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
 		};
 		1E742FEB17992CF9007D295B /* Products */ = {
