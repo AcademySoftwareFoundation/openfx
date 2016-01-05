@@ -198,7 +198,7 @@ static void validateXMLString(std::string const & s, bool strict)
 namespace OFX {
 
   // globals to keep consistent data structures around.
-  OFX::PluginFactoryArray plugIDs;
+  OFX::PluginFactoryArray PluginFactories::plugIDs;
   //Put it all into a map, so we know when to delete what!
   struct OfxPlugInfo
   {
@@ -4307,6 +4307,22 @@ namespace OFX {
     return suite;
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  /** @brief The OFX::Plugin namespace. All the functions in here needs to be defined by each plugin that uses the support libs.
+   */
+  namespace Plugin {
+    /** @brief Plugin side function used to identify the plugin to the support library.
+
+     This was obsoleted by automatic plugin registration, using the macro mRegisterPluginFactoryInstance:
+     static BasicExamplePluginFactory p("net.sf.openfx.basicPlugin", 1, 0);
+     mRegisterPluginFactoryInstance(p)
+     */
+    void getPluginIDs(OFX::PluginFactoryArray &/*id*/)
+    {
+      // an empty definition is enough to prevent old code from compiling.
+    }
+  };
+
 }; // namespace OFX
 
 static
@@ -4333,12 +4349,12 @@ void init()
   if(gHasInit)
     return;
 
-  OFX::Plugin::getPluginIDs(OFX::plugIDs);
+  const OFX::PluginFactoryArray& plugIDs = OFX::PluginFactories::plugIDs;
   if(OFX::ofxPlugs.empty())
-    OFX::ofxPlugs.resize(OFX::plugIDs.size());
+    OFX::ofxPlugs.resize(plugIDs.size());
 
   int counter = 0;
-  for (OFX::PluginFactoryArray::const_iterator it = OFX::plugIDs.begin(); it != OFX::plugIDs.end(); ++it, ++counter)
+  for (OFX::PluginFactoryArray::const_iterator it = plugIDs.begin(); it != plugIDs.end(); ++it, ++counter)
   {
     std::string newID;
     OFX::OfxPlugInfo info = generatePlugInfo(*it, newID);
@@ -4352,7 +4368,7 @@ void init()
 EXPORT int OfxGetNumberOfPlugins(void)
 {
   init();
-  return (int)OFX::plugIDs.size();
+  return (int)OFX::PluginFactories::plugIDs.size();
 }
 
 /** @brief, mandated function returning the nth plugin 
@@ -4368,7 +4384,7 @@ EXPORT OfxPlugin* OfxGetPlugin(int nth)
   if(OFX::ofxPlugs[nth] == 0)
   {
     std::string newID;
-    OFX::OfxPlugInfo info = generatePlugInfo(OFX::plugIDs[nth], newID);
+    OFX::OfxPlugInfo info = generatePlugInfo(OFX::PluginFactories::plugIDs[nth], newID);
     OFX::plugInfoMap[newID] = info;
     OFX::ofxPlugs[nth] = info._plug;
   }

@@ -79,7 +79,6 @@
 		1E3E3D1117995FB3005F2132 /* ofxsPropertyValidation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3E3CBC17995D5C005F2132 /* ofxsPropertyValidation.cpp */; };
 		1E3E3D2217996042005F2132 /* multibundle1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3E3D1A17996029005F2132 /* multibundle1.cpp */; };
 		1E3E3D2317996042005F2132 /* multibundle2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3E3D1C1799602A005F2132 /* multibundle2.cpp */; };
-		1E3E3D2417996042005F2132 /* PluginRegistration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3E3D1E1799602A005F2132 /* PluginRegistration.cpp */; };
 		1E3E3D251799609D005F2132 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E551F5A179950EC00A4135C /* OpenGL.framework */; };
 		1E3E3D3B179961B4005F2132 /* ofxsCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3E3CB517995D5C005F2132 /* ofxsCore.cpp */; };
 		1E3E3D3C179961B4005F2132 /* ofxsImageEffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3E3CB617995D5C005F2132 /* ofxsImageEffect.cpp */; };
@@ -302,10 +301,7 @@
 		1E3E3D0617995F83005F2132 /* invert.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = invert.cpp; sourceTree = "<group>"; };
 		1E3E3D1817995FB3005F2132 /* multibundle.ofx.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = multibundle.ofx.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E3E3D1A17996029005F2132 /* multibundle1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = multibundle1.cpp; sourceTree = "<group>"; };
-		1E3E3D1B17996029005F2132 /* multibundle1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = multibundle1.h; sourceTree = "<group>"; };
 		1E3E3D1C1799602A005F2132 /* multibundle2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = multibundle2.cpp; sourceTree = "<group>"; };
-		1E3E3D1D1799602A005F2132 /* multibundle2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = multibundle2.h; sourceTree = "<group>"; };
-		1E3E3D1E1799602A005F2132 /* PluginRegistration.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PluginRegistration.cpp; sourceTree = "<group>"; };
 		1E3E3D3117996112005F2132 /* ofxsCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxsCore.h; sourceTree = "<group>"; };
 		1E3E3D3217996112005F2132 /* ofxsImageEffect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxsImageEffect.h; sourceTree = "<group>"; };
 		1E3E3D3317996112005F2132 /* ofxsInteract.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxsInteract.h; sourceTree = "<group>"; };
@@ -505,10 +501,7 @@
 			isa = PBXGroup;
 			children = (
 				1E3E3D1A17996029005F2132 /* multibundle1.cpp */,
-				1E3E3D1B17996029005F2132 /* multibundle1.h */,
 				1E3E3D1C1799602A005F2132 /* multibundle2.cpp */,
-				1E3E3D1D1799602A005F2132 /* multibundle2.h */,
-				1E3E3D1E1799602A005F2132 /* PluginRegistration.cpp */,
 				1E08329C19A1E46C00A819A5 /* Info.plist */,
 				1E08329D19A1E46C00A819A5 /* Makefile */,
 				1E08329E19A1E46C00A819A5 /* multibundle.vcproj */,
@@ -1069,7 +1062,6 @@
 				1E3E3D1117995FB3005F2132 /* ofxsPropertyValidation.cpp in Sources */,
 				1E3E3D2217996042005F2132 /* multibundle1.cpp in Sources */,
 				1E3E3D2317996042005F2132 /* multibundle2.cpp in Sources */,
-				1E3E3D2417996042005F2132 /* PluginRegistration.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

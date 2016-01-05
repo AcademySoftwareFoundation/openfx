@@ -267,17 +267,8 @@ public:
   virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context);
 };
 
-namespace OFX 
-{
-  namespace Plugin 
-  {
-    void getPluginIDs(OFX::PluginFactoryArray &ids)
-    {
-      static PropTesterPluginFactory p;
-      ids.push_back(&p);
-    }
-  }
-}
+static PropTesterPluginFactory p;
+mRegisterPluginFactoryInstance(p)
 
 void PropTesterPluginFactory::describe(OFX::ImageEffectDescriptor &desc) 
 {

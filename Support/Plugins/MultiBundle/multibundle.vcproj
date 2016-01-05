@@ -415,23 +415,11 @@
 				RelativePath=".\multibundle2.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\PluginRegistration.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
-			<File
-				RelativePath=".\multibundle1.h"
-				>
-			</File>
-			<File
-				RelativePath=".\multibundle2.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

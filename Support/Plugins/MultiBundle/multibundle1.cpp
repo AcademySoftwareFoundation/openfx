@@ -51,8 +51,6 @@ England
 #include "ofxsMultiThread.h"
 #include "../include/ofxsProcessing.H"
 
-#include "multibundle1.h"
-
 static const OfxPointD kBoxSize = {20, 20};
 class GammaInteract : public OFX::OverlayInteract 
 {
@@ -461,7 +459,9 @@ bool GammaInteract::penUp(const OFX::PenArgs &args)
 using namespace OFX;
 
 class GammaOverlayDescriptor : public DefaultEffectOverlayDescriptor<GammaOverlayDescriptor, GammaInteract> {};
-    
+
+mDeclarePluginFactory(GammaExamplePluginFactory, {}, {});
+
 void GammaExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 {
   desc.setLabels("Gamma", "Gamma", "Gamma");
@@ -561,3 +561,5 @@ ImageEffect* GammaExamplePluginFactory::createInstance(OfxImageEffectHandle hand
   return new GammaPlugin(handle);
 }
 
+static GammaExamplePluginFactory p("net.sf.openfx.gammaexample", 1, 0);
+mRegisterPluginFactoryInstance(p)
