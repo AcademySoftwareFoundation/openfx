@@ -91,10 +91,10 @@ namespace OFX {
                 // empty render subwindow
                 return;
             }
-            unsigned int y1 = _renderWindow.y1 + threadId * h;
+            int y1 = _renderWindow.y1 + threadId * h;
 
             unsigned int step = (threadId + 1) * h;
-            unsigned int y2 = _renderWindow.y1 + (step < dy ? step : dy);
+            int y2 = _renderWindow.y1 + (step < dy ? step : dy);
 
             OfxRectI win = _renderWindow;
             win.y1 = y1; win.y2 = y2;
