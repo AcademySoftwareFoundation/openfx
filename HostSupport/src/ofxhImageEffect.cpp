@@ -471,6 +471,7 @@ namespace OFX {
 #endif
 #     ifdef OFX_EXTENSIONS_NUKE
         //{ ".verbosityProp",                Property::eInt,        2, true, "0" }, // Unknown Nuke property
+        { kFnOfxImageEffectCanTransform,   Property::eInt, 1, false, "0" },
 #     endif
 #     ifdef OFX_EXTENSIONS_VEGAS
         { kOfxImageEffectPropVegasContext,      Property::eString,     1, true, "" },
