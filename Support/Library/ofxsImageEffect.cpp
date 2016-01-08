@@ -2052,6 +2052,19 @@ namespace OFX {
     return _effectProps.propGetInt(kOfxImageEffectPropSupportsTiles) != 0;
   }
 
+#ifdef OFX_EXTENSIONS_NUKE
+  void
+  ImageEffect::setCanTransform(bool v)
+  {
+    _effectProps.propSetInt(kFnOfxImageEffectCanTransform, int(v), false);
+  }
+  
+  bool
+  ImageEffect::getCanTransform() const
+  {
+    return _effectProps.propGetInt(kFnOfxImageEffectCanTransform) != 0;
+  }
+#endif
 
 #ifdef OFX_SUPPORTS_OPENGLRENDER
   /** @brief Does the plugin support OpenGL accelerated rendering (but is also capable of CPU rendering) ? Can only be called from changedParam or changedClip. */

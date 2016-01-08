@@ -1462,6 +1462,13 @@ namespace OFX {
 
     /** @brief Have we informed the host we support image tiling ? */
     bool getSupportsTiles(void) const;
+    
+#ifdef OFX_EXTENSIONS_NUKE
+    /** @brief indicate that a plugin or host can handle transform effects */
+    void setCanTransform(bool v);
+    
+    bool getCanTransform() const;
+#endif
 
 #ifdef OFX_SUPPORTS_OPENGLRENDER
     /** @brief Does the plugin support OpenGL accelerated rendering (but is also capable of CPU rendering) ? Can only be called from changedParam or changedClip. */
