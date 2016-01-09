@@ -244,7 +244,7 @@ namespace OFX {
         , _pixelDepth(kOfxBitDepthNone) 
         , _components(kOfxImageComponentNone)
       {
-        // this will a parameters that are needed in an instance but not a 
+        // this will add parameters that are needed in an instance but not a
         // Descriptor
         _properties.addProperties(clipInstanceStuffs);
         int i = 0;

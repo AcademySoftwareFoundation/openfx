@@ -450,7 +450,6 @@ namespace OFX {
 
       static const Property::PropSpec effectInstanceStuff[] = {
         /* name                                 type                   dim.   r/o    default value */
-        { kOfxPropType,                         Property::eString,     1, true,  kOfxTypeImageEffectInstance },
         { kOfxImageEffectPropContext,           Property::eString,     1, true, "" },
         { kOfxPropInstanceData,                 Property::ePointer,    1, false, NULL },
         { kOfxImageEffectPropPluginHandle,      Property::ePointer,    1, false, NULL },
@@ -459,16 +458,11 @@ namespace OFX {
         { kOfxImageEffectPropProjectExtent,     Property::eDouble,     2, true,  "0" },
         { kOfxImageEffectPropProjectPixelAspectRatio, Property::eDouble, 1, true,  "0" },
         { kOfxImageEffectInstancePropEffectDuration, Property::eDouble, 1, true,  "0" },
-        { kOfxImageEffectInstancePropSequentialRender, Property::eInt, 1, false, "0" },
         { kOfxImageEffectPropFrameRate ,        Property::eDouble,     1, true,  "0" },
         { kOfxPropIsInteractive,                Property::eInt,        1, true, "0" },
 #     ifdef kOfxImageEffectPropInAnalysis
         { kOfxImageEffectPropInAnalysis,        Property::eInt,        1, false, "0" }, // removed in OFX 1.4
 #     endif
-        { kOfxImageEffectPropSupportsTiles,     Property::eInt,        1, false, "1" }, // OFX 1.4
-#ifdef OFX_SUPPORTS_OPENGLRENDER
-        { kOfxImageEffectPropOpenGLRenderSupported, Property::eString, 1, false, "false"}, // OFX 1.4
-#endif
 #     ifdef OFX_EXTENSIONS_NUKE
         //{ ".verbosityProp",                Property::eInt,        2, true, "0" }, // Unknown Nuke property
 #     endif
@@ -482,7 +476,7 @@ namespace OFX {
                          Descriptor         &other, 
                          const std::string  &context,
                          bool               interactive) 
-        : Base(effectInstanceStuff)
+        : Base(other)
         , _plugin(plugin)
         , _context(context)
         , _descriptor(&other)
@@ -494,6 +488,9 @@ namespace OFX {
         , _outputFrameRate(24)
       {
         int i = 0;
+        
+        // this will add parameters that are needed in an instance but not a Descriptor
+        _properties.addProperties(effectInstanceStuff);
         _properties.setChainedSet(&other.getProps());
 
         _properties.setPointerProperty(kOfxImageEffectPropPluginHandle, _plugin->getPluginHandle()->getOfxPlugin());
@@ -507,14 +504,15 @@ namespace OFX {
 
         while(effectInstanceStuff[i].name) {
           
-          // don't set hooks for context or isinteractive
+          // don't set hooks for context or isinteractive or kOfxImageEffectInstancePropSequentialRender
+          // since we only set hook on the double properties anyway, don't do these comparisons since these properties
+          // are not of type Property::eDouble
 
-          if(strcmp(effectInstanceStuff[i].name,kOfxImageEffectPropContext) &&
-             strcmp(effectInstanceStuff[i].name,kOfxPropIsInteractive) &&
-             strcmp(effectInstanceStuff[i].name,kOfxImageEffectInstancePropSequentialRender) )
+          //if(strcmp(effectInstanceStuff[i].name,kOfxImageEffectPropContext) &&
+          //   strcmp(effectInstanceStuff[i].name,kOfxPropIsInteractive) &&
+          //   strcmp(effectInstanceStuff[i].name,kOfxImageEffectInstancePropSequentialRender) )
             {
               const Property::PropSpec& spec = effectInstanceStuff[i];
-
               switch (spec.type) {
               case Property::eDouble:
                 _properties.setGetHook(spec.name, this);
@@ -523,7 +521,6 @@ namespace OFX {
                 break;
               }
             }
-
           i++;
         }
       }
