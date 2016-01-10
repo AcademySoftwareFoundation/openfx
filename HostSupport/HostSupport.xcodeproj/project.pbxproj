@@ -166,34 +166,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1E0832E619A1EC4F00A819A5 /* BUILDING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BUILDING; sourceTree = "<group>"; };
-		1E0832E719A1EC4F00A819A5 /* HostSupport.sln */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = HostSupport.sln; sourceTree = "<group>"; };
-		1E0832E819A1EC4F00A819A5 /* HostSupport.vcproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = HostSupport.vcproj; sourceTree = "<group>"; };
-		1E0832E919A1EC4F00A819A5 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		1E0832EA19A1EC4F00A819A5 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
-		1E0832EB19A1EC4F00A819A5 /* TTD */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TTD; sourceTree = "<group>"; };
-		1E0832EE19A1ECA600A819A5 /* apiChanges_1_2_Chapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = apiChanges_1_2_Chapter.xml; sourceTree = "<group>"; };
-		1E0832EF19A1ECA600A819A5 /* clipPreferencesChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = clipPreferencesChapter.xml; sourceTree = "<group>"; };
-		1E0832F019A1ECA600A819A5 /* extractPropertyDefinitions.perl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = extractPropertyDefinitions.perl; sourceTree = "<group>"; };
-		1E0832F119A1ECA600A819A5 /* formating.pm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = formating.pm; sourceTree = "<group>"; };
-		1E0832F219A1ECA600A819A5 /* getSuiteReference.perl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = getSuiteReference.perl; sourceTree = "<group>"; };
-		1E0832F319A1ECA600A819A5 /* header.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = header.xml; sourceTree = "<group>"; };
-		1E0832F419A1ECA600A819A5 /* imageEffectActionsChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = imageEffectActionsChapter.xml; sourceTree = "<group>"; };
-		1E0832F519A1ECA600A819A5 /* imageEffectsAPIChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = imageEffectsAPIChapter.xml; sourceTree = "<group>"; };
-		1E0832F619A1ECA600A819A5 /* interactActionsChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = interactActionsChapter.xml; sourceTree = "<group>"; };
-		1E0832F719A1ECA600A819A5 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		1E0832F819A1ECA600A819A5 /* ofxHostStruct.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxHostStruct.xml; sourceTree = "<group>"; };
-		1E0832F919A1ECA600A819A5 /* ofxLoadingSequence.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxLoadingSequence.xml; sourceTree = "<group>"; };
-		1E0832FA19A1ECA600A819A5 /* ofxPackaging.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxPackaging.xml; sourceTree = "<group>"; };
-		1E0832FB19A1ECA600A819A5 /* ofxParameterChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxParameterChapter.xml; sourceTree = "<group>"; };
-		1E0832FC19A1ECA600A819A5 /* ofxPluginStruct.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxPluginStruct.xml; sourceTree = "<group>"; };
-		1E0832FD19A1ECA600A819A5 /* ofxProgrammingGuide.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxProgrammingGuide.xml; sourceTree = "<group>"; };
-		1E0832FE19A1ECA600A819A5 /* ofxProgrammingReference.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxProgrammingReference.xml; sourceTree = "<group>"; };
-		1E0832FF19A1ECA600A819A5 /* ofxPropertiesByObject.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxPropertiesByObject.xml; sourceTree = "<group>"; };
-		1E08330019A1ECA600A819A5 /* ofxStyle.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = ofxStyle.css; sourceTree = "<group>"; };
-		1E08330119A1ECA600A819A5 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
-		1E08330319A1ECA600A819A5 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html.documentation; path = index.html; sourceTree = "<group>"; };
-		1E08330519A1ECA600A819A5 /* statusCodesChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = statusCodesChapter.xml; sourceTree = "<group>"; };
 		1E1A06981B7D0D0C00ED08EF /* ofxOld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxOld.h; sourceTree = "<group>"; };
 		1E31EC2E17F5CA44004AB554 /* ofxOpenGLRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxOpenGLRender.h; sourceTree = "<group>"; };
 		1E31EC2F17F5CA44004AB554 /* ofxParametricParam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxParametricParam.h; sourceTree = "<group>"; };
@@ -303,44 +275,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1E0832ED19A1EC7700A819A5 /* Documentation */ = {
-			isa = PBXGroup;
-			children = (
-				1E08330119A1ECA600A819A5 /* README.txt */,
-				1E0832F719A1ECA600A819A5 /* Makefile */,
-				1E08330019A1ECA600A819A5 /* ofxStyle.css */,
-				1E0832EE19A1ECA600A819A5 /* apiChanges_1_2_Chapter.xml */,
-				1E0832EF19A1ECA600A819A5 /* clipPreferencesChapter.xml */,
-				1E0832F019A1ECA600A819A5 /* extractPropertyDefinitions.perl */,
-				1E0832F119A1ECA600A819A5 /* formating.pm */,
-				1E0832F219A1ECA600A819A5 /* getSuiteReference.perl */,
-				1E0832F319A1ECA600A819A5 /* header.xml */,
-				1E0832F419A1ECA600A819A5 /* imageEffectActionsChapter.xml */,
-				1E0832F519A1ECA600A819A5 /* imageEffectsAPIChapter.xml */,
-				1E0832F619A1ECA600A819A5 /* interactActionsChapter.xml */,
-				1E0832F819A1ECA600A819A5 /* ofxHostStruct.xml */,
-				1E0832F919A1ECA600A819A5 /* ofxLoadingSequence.xml */,
-				1E0832FA19A1ECA600A819A5 /* ofxPackaging.xml */,
-				1E0832FB19A1ECA600A819A5 /* ofxParameterChapter.xml */,
-				1E0832FC19A1ECA600A819A5 /* ofxPluginStruct.xml */,
-				1E0832FD19A1ECA600A819A5 /* ofxProgrammingGuide.xml */,
-				1E0832FE19A1ECA600A819A5 /* ofxProgrammingReference.xml */,
-				1E0832FF19A1ECA600A819A5 /* ofxPropertiesByObject.xml */,
-				1E08330519A1ECA600A819A5 /* statusCodesChapter.xml */,
-				1E08330219A1ECA600A819A5 /* sourceforge */,
-			);
-			name = Documentation;
-			path = ../Documentation;
-			sourceTree = "<group>";
-		};
-		1E08330219A1ECA600A819A5 /* sourceforge */ = {
-			isa = PBXGroup;
-			children = (
-				1E08330319A1ECA600A819A5 /* index.html */,
-			);
-			path = sourceforge;
-			sourceTree = "<group>";
-		};
 		1E3CB81917992E2B0032B538 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
@@ -451,13 +385,6 @@
 		1E742FE117992CF9007D295B = {
 			isa = PBXGroup;
 			children = (
-				1E0832ED19A1EC7700A819A5 /* Documentation */,
-				1E0832E619A1EC4F00A819A5 /* BUILDING */,
-				1E0832E719A1EC4F00A819A5 /* HostSupport.sln */,
-				1E0832E819A1EC4F00A819A5 /* HostSupport.vcproj */,
-				1E0832E919A1EC4F00A819A5 /* Makefile */,
-				1E0832EA19A1EC4F00A819A5 /* README */,
-				1E0832EB19A1EC4F00A819A5 /* TTD */,
 				1E3CB86C179930D30032B538 /* Examples */,
 				1E3CB84F17992EAB0032B538 /* Sources */,
 				1E3CB83817992E620032B538 /* External Headers */,
