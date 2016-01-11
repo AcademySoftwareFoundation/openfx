@@ -374,8 +374,14 @@ namespace OFX {
 
   typedef std::vector<PluginFactory*> PluginFactoryArray;
   struct PluginFactories {
-    static OFX::PluginFactoryArray plugIDs;
-    PluginFactories(PluginFactory* pf) { plugIDs.push_back(pf); }
+    static OFX::PluginFactoryArray& plugIDs() {
+      // Use a static variable in a member function to make sure plugIDs is initialized before PluginFactories.
+      // This is OK, since s_plugIDs is not used in the PluginFactories destructor.
+      // see https://isocpp.org/wiki/faq/ctors#construct-on-first-use-v2
+      static OFX::PluginFactoryArray _plugIDs;
+      return _plugIDs;
+    }
+    PluginFactories(PluginFactory* pf) { plugIDs().push_back(pf); }
   };
 #define mRegisterPluginFactoryInstance(pf) static OFX::PluginFactories mypluginfactory_##pf(&pf);
 

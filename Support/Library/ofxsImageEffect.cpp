@@ -197,8 +197,6 @@ static void validateXMLString(std::string const & s, bool strict)
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
 namespace OFX {
 
-  // globals to keep consistent data structures around.
-  OFX::PluginFactoryArray PluginFactories::plugIDs;
   //Put it all into a map, so we know when to delete what!
   struct OfxPlugInfo
   {
@@ -4354,9 +4352,9 @@ void init()
 #ifdef OFXS_MANUAL_REGISTRATION
   // Call OFX::Plugin::getPluginIDs if the plugin uses manual plugin registration.
   // Note that manual registration was obsoleted by automatic registratic using mRegisterPluginFactoryInstance().
-  OFX::Plugin::getPluginIDs(OFX::PluginFactories::plugIDs);
+  OFX::Plugin::getPluginIDs(OFX::PluginFactories::plugIDs());
 #endif // OFXS_MANUAL_REGISTRATION
-  const OFX::PluginFactoryArray& plugIDs = OFX::PluginFactories::plugIDs;
+  const OFX::PluginFactoryArray& plugIDs = OFX::PluginFactories::plugIDs();
   if(OFX::ofxPlugs.empty())
     OFX::ofxPlugs.resize(plugIDs.size());
 
@@ -4375,7 +4373,7 @@ void init()
 EXPORT int OfxGetNumberOfPlugins(void)
 {
   init();
-  return (int)OFX::PluginFactories::plugIDs.size();
+  return (int)OFX::PluginFactories::plugIDs().size();
 }
 
 /** @brief, mandated function returning the nth plugin 
@@ -4391,7 +4389,7 @@ EXPORT OfxPlugin* OfxGetPlugin(int nth)
   if(OFX::ofxPlugs[nth] == 0)
   {
     std::string newID;
-    OFX::OfxPlugInfo info = generatePlugInfo(OFX::PluginFactories::plugIDs[nth], newID);
+    OFX::OfxPlugInfo info = generatePlugInfo(OFX::PluginFactories::plugIDs()[nth], newID);
     OFX::plugInfoMap[newID] = info;
     OFX::ofxPlugs[nth] = info._plug;
   }
