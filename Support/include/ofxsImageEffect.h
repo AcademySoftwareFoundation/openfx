@@ -322,21 +322,30 @@ namespace OFX {
     }
     FactoryMainEntryHelper(const std::string& id, unsigned int maj, unsigned int min): _id(id), _maj(maj), _min(min)
     {
-      assert(_uid.empty()); // constructor should only be called once
-      _uid = id + toString(maj) + toString(min);
+      assert(uid().empty()); // constructor should only be called once
+      uid() = id + toString(maj) + toString(min);
     }
-    const std::string& getHelperUID() const { return _uid; }
+    const std::string& getHelperUID() const { return uid(); }
     static OfxStatus mainEntry(const char *action, const void* handle, OfxPropertySetHandle in, OfxPropertySetHandle out)
     { 
-      return OFX::Private::mainEntryStr(action, handle, in, out, _uid.c_str());
+      return OFX::Private::mainEntryStr(action, handle, in, out, uid().c_str());
     }
 
-    static std::string _uid;
+  private:
+    static std::string& uid() {
+      // _uid can not be a static class member, because in that case it may be
+      // initialized after the constructor is called (plugin factories are declared as global variables).
+
+      // since only one instance of FactoryMainEntryHelp<FACTORY> is constructed
+      // (see the assert() above), there is no deinitialization order issue.
+      // see https://isocpp.org/wiki/faq/ctors#construct-on-first-use-v2
+      static std::string _uid;
+      return _uid;
+    }
     std::string _id;
     unsigned int _maj;
     unsigned int _min;
   };
-  template<class T> std::string OFX::FactoryMainEntryHelper<T>::_uid; 
 
   template<class FACTORY>
   class PluginFactoryHelper : public FactoryMainEntryHelper<FACTORY>, public PluginFactory
