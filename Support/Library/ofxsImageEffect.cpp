@@ -962,27 +962,19 @@ namespace OFX {
     validateXMLString(extension, false);
     // only Tuttle support this property ( out of standard )
     //if( OFX::Private::gHostDescription.hostName == "TuttleOfx" ) {
-    try {
-      const int n = _effectProps.propGetDimension( kTuttleOfxImageEffectPropSupportedExtensions );
-      _effectProps.propSetString(kTuttleOfxImageEffectPropSupportedExtensions, extension, n);
-    } catch (OFX::Exception::PropertyUnknownToHost &e) {
-      // ignore exception
-    }
+    const int n = _effectProps.propGetDimension( kTuttleOfxImageEffectPropSupportedExtensions, false);
+    _effectProps.propSetString(kTuttleOfxImageEffectPropSupportedExtensions, extension, n, false);
   }
 
   void ImageEffectDescriptor::addSupportedExtensions(const std::vector<std::string>& extensions)
   {
     // only Tuttle support this property ( out of standard )
     //if( OFX::Private::gHostDescription.hostName == "TuttleOfx" ) {
-    try {
-      int n = _effectProps.propGetDimension( kTuttleOfxImageEffectPropSupportedExtensions );
-      
-      for (std::vector<std::string>::const_iterator it = extensions.begin(); it != extensions.end(); ++it, ++n) {
-        validateXMLString(*it, false);
-        _effectProps.propSetString(kTuttleOfxImageEffectPropSupportedExtensions, *it, n);
-      }
-    } catch (OFX::Exception::PropertyUnknownToHost &e) {
-      // ignore exception
+    int n = _effectProps.propGetDimension( kTuttleOfxImageEffectPropSupportedExtensions, false );
+
+    for (std::vector<std::string>::const_iterator it = extensions.begin(); it != extensions.end(); ++it, ++n) {
+      validateXMLString(*it, false);
+      _effectProps.propSetString(kTuttleOfxImageEffectPropSupportedExtensions, *it, n, false);
     }
   }
 
@@ -990,17 +982,13 @@ namespace OFX {
   {
     // only Tuttle support this property ( out of standard )
     //if( OFX::Private::gHostDescription.hostName == "TuttleOfx" ) {
-    try {
-      int n = _effectProps.propGetDimension( kTuttleOfxImageEffectPropSupportedExtensions );
-      
-      while (*extensions) {
-        validateXMLString(*extensions, false);
-        _effectProps.propSetString(kTuttleOfxImageEffectPropSupportedExtensions, *extensions, n);
-        ++extensions;
-        ++n;
-      }
-    } catch (OFX::Exception::PropertyUnknownToHost &e) {
-      // ignore exception
+    int n = _effectProps.propGetDimension( kTuttleOfxImageEffectPropSupportedExtensions );
+
+    while (*extensions) {
+      validateXMLString(*extensions, false);
+      _effectProps.propSetString(kTuttleOfxImageEffectPropSupportedExtensions, *extensions, n);
+      ++extensions;
+      ++n;
     }
   }
 
@@ -1103,13 +1091,13 @@ namespace OFX {
     switch(v) 
     {
     case eVegasPresetThumbnailDefault :
-      _effectProps.propSetString(kOfxProbPluginVegasPresetThumbnail, kOfxProbPluginVegasPresetThumbnailDefault);
+      _effectProps.propSetString(kOfxProbPluginVegasPresetThumbnail, kOfxProbPluginVegasPresetThumbnailDefault, false);
       break;
     case eVegasPresetThumbnailSolidImage :
-      _effectProps.propSetString(kOfxProbPluginVegasPresetThumbnail, kOfxProbPluginVegasPresetThumbnailSolidImage);
+      _effectProps.propSetString(kOfxProbPluginVegasPresetThumbnail, kOfxProbPluginVegasPresetThumbnailSolidImage, false);
       break;
     case eVegasPresetThumbnailImageWithAlpha :
-      _effectProps.propSetString(kOfxProbPluginVegasPresetThumbnail, kOfxProbPluginVegasPresetThumbnailImageWithAlpha);
+      _effectProps.propSetString(kOfxProbPluginVegasPresetThumbnail, kOfxProbPluginVegasPresetThumbnailImageWithAlpha, false);
       break;
     }
   }
@@ -1193,22 +1181,22 @@ namespace OFX {
   /** @brief Add a guid to tell Vegas that this plug-in can uplift the guid of that older plug-in */
   void ImageEffectDescriptor::addVegasUpgradePath(const std::string &guidString)
   {
-    int n = _effectProps.propGetDimension(kOfxImageEffectPropVegasUpliftGUID);
+    int n = _effectProps.propGetDimension(kOfxImageEffectPropVegasUpliftGUID, false);
     validateXMLString(guidString, false);
-    _effectProps.propSetString(kOfxImageEffectPropVegasUpliftGUID, guidString.c_str(), n);
+    _effectProps.propSetString(kOfxImageEffectPropVegasUpliftGUID, guidString.c_str(), n, false);
   }
 
   /** @brief sets the path to a help file, defaults to none, must be called at least once */
   void ImageEffectDescriptor::setHelpPath(const std::string &helpPathString)
   {
     validateXMLString(helpPathString, false);
-    _effectProps.propSetString(kOfxImageEffectPropHelpFile, helpPathString.c_str());
+    _effectProps.propSetString(kOfxImageEffectPropHelpFile, helpPathString.c_str(), false);
   }
 
   /** @brief sets the context ID to a help file if it's a .chm file, defaults to none, must be called at least once */
   void ImageEffectDescriptor::setHelpContextID(int helpContextID)
   {
-    _effectProps.propSetInt(kOfxImageEffectPropHelpContextID, helpContextID);
+    _effectProps.propSetInt(kOfxImageEffectPropHelpContextID, helpContextID, false);
   }
 #endif
 
@@ -1675,11 +1663,11 @@ namespace OFX {
   /** @brief get the scale factor that has been applied to this clip */
   double Clip::getPixelAspectRatio(void) const
   {
-    try {
-      return _clipProps.propGetDouble(kOfxImagePropPixelAspectRatio);
-    } catch(...) {
-      return 1.0;  // This error could happen in Eyeon Fusion.
+    double par = _clipProps.propGetDouble(kOfxImagePropPixelAspectRatio, false);
+    if (par != 0.) {
+      return par;
     }
+    return 1.;
   }
 
   /** @brief get the frame rate, in frames per second on this clip, after any clip preferences have been applied */
@@ -1972,7 +1960,7 @@ namespace OFX {
   VegasContextEnum ImageEffect::getVegasContext(void)
   {
     // fetch the context
-    std::string ctxt = _effectProps.propGetString(kOfxImageEffectPropVegasContext);
+    std::string ctxt = _effectProps.propGetString(kOfxImageEffectPropVegasContext, false);
     return mapToVegasContextEnum(ctxt);
   }
 #endif
@@ -2062,7 +2050,7 @@ namespace OFX {
   bool
   ImageEffect::getCanTransform() const
   {
-    return _effectProps.propGetInt(kFnOfxImageEffectCanTransform) != 0;
+    return _effectProps.propGetInt(kFnOfxImageEffectCanTransform, false) != 0;
   }
 #endif
 
