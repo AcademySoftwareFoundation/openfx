@@ -34,8 +34,13 @@ CXX_OSFLAGS =
 RANLIB = echo
 
 ifeq ($(OS),Darwin) 
-  CXX_OSFLAGS = -arch ppc -arch i386 
+  CXX_OSFLAGS=-arch i386 -arch x86_64
   RANLIB = ranlib
+
+  MACOSX_VERSION := $(shell sw_vers -productVersion | awk -F '.' '{print $$1 "." $$2}' )
+  ifeq ($(MACOSX_VERSION),10.5)
+    CXX_OSFLAGS=-arch i386 -arch ppc
+  endif
 endif
 
 HEADERS = include/ofxhBinary.h                  \
@@ -105,5 +110,4 @@ clean :
 	rm -f $(DST_DIR)/$(EXPATLIB)
 	rm -f $(DST_DIR)/$(LIBTARGET)
 	rm -f $(INT_DIR)/*$(OBJSUF)
-
 
