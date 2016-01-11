@@ -312,14 +312,5 @@ ImageEffect* NoiseExamplePluginFactory::createInstance(OfxImageEffectHandle hand
   return new NoisePlugin(handle);
 }
 
-namespace OFX
-{
-  namespace Plugin
-  {
-    void getPluginIDs(OFX::PluginFactoryArray &ids)
-    {
-      static NoiseExamplePluginFactory p("net.sf.openfx.noisePlugin", 1, 0);
-      ids.push_back(&p);
-    }
-  };
-};
+static NoiseExamplePluginFactory p("net.sf.openfx.noisePlugin", 1, 0);
+mRegisterPluginFactoryInstance(p)

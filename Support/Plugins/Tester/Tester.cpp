@@ -550,14 +550,5 @@ OFX::ImageEffect* GenericTestExamplePluginFactory::createInstance(OfxImageEffect
   return new GenericTestPlugin(handle);
 }
 
-namespace OFX 
-{
-  namespace Plugin 
-  {  
-    void getPluginIDs(OFX::PluginFactoryArray &ids)
-    {
-      static GenericTestExamplePluginFactory p("net.sf.openfx.GenericTestPlugin", 1, 0);
-      ids.push_back(&p);
-    }
-  }
-}
+static GenericTestExamplePluginFactory p("net.sf.openfx.GenericTestPlugin", 1, 0);
+mRegisterPluginFactoryInstance(p)

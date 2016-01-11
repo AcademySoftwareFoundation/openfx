@@ -308,14 +308,5 @@ OFX::ImageEffect* FieldExamplePluginFactory::createInstance(OfxImageEffectHandle
   return new FieldPlugin(handle);
 }
 
-namespace OFX 
-{
-  namespace Plugin 
-  {  
-    void getPluginIDs(OFX::PluginFactoryArray &ids)
-    {
-      static FieldExamplePluginFactory p("net.sf.openfx.fieldPlugin", 1, 0);
-      ids.push_back(&p);
-    }
-  }
-}
+static FieldExamplePluginFactory p("net.sf.openfx.fieldPlugin", 1, 0);
+mRegisterPluginFactoryInstance(p)

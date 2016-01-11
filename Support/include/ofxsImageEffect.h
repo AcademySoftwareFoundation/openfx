@@ -364,6 +364,11 @@ namespace OFX {
   };
 
   typedef std::vector<PluginFactory*> PluginFactoryArray;
+  struct PluginFactories {
+    static OFX::PluginFactoryArray plugIDs;
+    PluginFactories(PluginFactory* pf) { plugIDs.push_back(pf); }
+  };
+#define mRegisterPluginFactoryInstance(pf) static OFX::PluginFactories mypluginfactory_##pf(&pf);
 
   /** @brief Fetch's a suite from the host and logs errors 
 
@@ -1672,7 +1677,12 @@ namespace OFX {
   /** @brief The OFX::Plugin namespace. All the functions in here needs to be defined by each plugin that uses the support libs.
   */  
   namespace Plugin {
-    /** @brief Plugin side function used to identify the plugin to the support library */
+    /** @brief Plugin side function used to identify the plugin to the support library.
+     
+     This was obsoleted by automatic plugin registration, using the macro mRegisterPluginFactoryInstance:
+     static BasicExamplePluginFactory p("net.sf.openfx.basicPlugin", 1, 0);
+     mRegisterPluginFactoryInstance(p)
+     */
     void getPluginIDs(OFX::PluginFactoryArray &id);
 
     /// If the client has defined its own exception type, allow it to catch it in the main function

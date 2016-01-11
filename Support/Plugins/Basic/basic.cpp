@@ -751,14 +751,5 @@ ImageEffect *BasicExamplePluginFactory::createInstance(OfxImageEffectHandle hand
   return new BasicPlugin(handle);
 }
 
-namespace OFX 
-{
-  namespace Plugin 
-  {
-    void getPluginIDs(OFX::PluginFactoryArray &ids)
-    {
-      static BasicExamplePluginFactory p("net.sf.openfx.basicPlugin", 1, 0);
-      ids.push_back(&p);
-    }  
-  }
-}
+static BasicExamplePluginFactory p("net.sf.openfx.basicPlugin", 1, 0);
+mRegisterPluginFactoryInstance(p)

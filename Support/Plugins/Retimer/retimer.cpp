@@ -302,17 +302,8 @@ RetimerPlugin::render(const OFX::RenderArguments &args)
 using namespace OFX;
 mDeclarePluginFactory(RetimerExamplePluginFactory, ;, {});
 
-namespace OFX
-{
-  namespace Plugin
-  {
-    void getPluginIDs(OFX::PluginFactoryArray &ids)
-    {
-      static RetimerExamplePluginFactory p("net.sf.openfx.retimer", 1, 0);
-      ids.push_back(&p);
-    }
-  };
-};
+static RetimerExamplePluginFactory p("net.sf.openfx.retimer", 1, 0);
+mRegisterPluginFactoryInstance(p)
 
 void RetimerExamplePluginFactory::load()
 {

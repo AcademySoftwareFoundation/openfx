@@ -279,14 +279,5 @@ OFX::ImageEffect* InvertExamplePluginFactory::createInstance(OfxImageEffectHandl
   return new InvertPlugin(handle);
 }
 
-namespace OFX 
-{
-  namespace Plugin 
-  {  
-    void getPluginIDs(OFX::PluginFactoryArray &ids)
-    {
-      static InvertExamplePluginFactory p("net.sf.openfx.invertPlugin", 1, 0);
-      ids.push_back(&p);
-    }
-  }
-}
+static InvertExamplePluginFactory p("net.sf.openfx.invertPlugin", 1, 0);
+mRegisterPluginFactoryInstance(p)
