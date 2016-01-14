@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <map>
 #include <ctype.h>
+#include <stdexcept>
 
 // ofx
 #include "ofxImageEffect.h"
