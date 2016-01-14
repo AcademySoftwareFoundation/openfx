@@ -476,6 +476,16 @@ namespace OFX {
         _currentPlugin = dynamic_cast<ImageEffectPlugin*>(p);
       }
 
+      // C++98 does not have map::at (was introduced with C++11)
+      template <typename K, typename V, typename C, typename A>
+      V const& at(std::map<K, V, C, A> const& m, K const& k) {
+        typename std::map<K, V, C, A>::const_iterator it(m.find(k));
+        if (it == m.end()) {
+          throw std::out_of_range("map::at");
+        }
+        return it->second;
+      }
+
       /// XML handler : element begins (everything is stored in elements and attributes)       
       void PluginCache::xmlElementBegin(const std::string &el, const std::map<std::string, std::string> &map)
       {
@@ -485,20 +495,20 @@ namespace OFX {
 
         if (el == "context") {
           _currentContext = gImageEffectHost->makeDescriptor(_currentPlugin->getBinary()->getBundlePath(), _currentPlugin);
-          _currentPlugin->addContext(map.at("name"), _currentContext);
+          _currentPlugin->addContext(at(map, std::string("name")), _currentContext);
           return;
         }
 
         if (el == "param" && _currentContext) {
-          std::string pname = map.at("name");
-          std::string ptype = map.at("type");
+          std::string pname = at(map, std::string("name"));
+          std::string ptype = at(map, std::string("type"));
 
           _currentParam = _currentContext->paramDefine(ptype.c_str(), pname.c_str());
           return;
         }
 
         if (el == "clip" && _currentContext) {
-          std::string cname = map.at("name");
+          std::string cname = at(map, std::string("name"));
 
           _currentClip = new ClipDescriptor(cname);
           _currentContext->addClip(cname, _currentClip);
