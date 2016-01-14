@@ -7,9 +7,9 @@ all: subdirs
 subdirs: $(SUBDIRS)
 
 $(SUBDIRS):
-	$(MAKE) -C $@
+	$(MAKE) $(MFLAGS) -C $@
 
 clean :
 	for i in $(SUBDIRS) ; do \
-	  $(MAKE) -C $$i clean; \
+	  $(MAKE) $(MFLAGS) -C $$i clean; \
 	done
