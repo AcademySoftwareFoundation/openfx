@@ -18,7 +18,7 @@ EXPATLIB = $(LIBPREFIX)expat$(LIBSUF)
 ifeq ($(DEBUG), true)
   DST_DIR = $(OS)-debug
   OPTIMISE ?= -g -Wall
-  EXPATFLAG = --enable-debug
+  EXPATFLAGS = --enable-debug
 else ifeq ($(DEBUG), instrument)
   DST_DIR = $(OS)-instrument
   OPTIMISE ?= -g -O3 -Wall
