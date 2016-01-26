@@ -310,7 +310,7 @@ If clipGetImagePlane is called twice with the same parameters, then two separate
   OfxStatus (*clipGetImagePlane)(OfxImageClipHandle clip,
                                  OfxTime       time,
                                  const char   *plane,
-                                 OfxRectD     *region,
+                                 const OfxRectD *region,
                                  OfxPropertySetHandle   *imageHandle);
 } FnOfxImageEffectPlaneSuiteV1 ;
 
@@ -355,7 +355,7 @@ If clipGetImagePlane is called twice with the same parameters, then two separate
                                  OfxTime       time,
                                  int           view,
                                  const char   *plane,
-                                 OfxRectD     *region,
+                                 const OfxRectD *region,
                                  OfxPropertySetHandle   *imageHandle);
 
   /// get the rod on the given clip at the given time for the given view
