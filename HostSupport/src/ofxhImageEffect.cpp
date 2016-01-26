@@ -3080,7 +3080,7 @@ namespace OFX {
                                            OfxTime       time,
                                            int           view,
                                            const char   *plane,
-                                           OfxRectD     *region,
+                                           const OfxRectD     *region,
                                            OfxPropertySetHandle   *imageHandle)
     {
         try {
@@ -3120,7 +3120,7 @@ namespace OFX {
     static OfxStatus clipGetImagePlane(OfxImageClipHandle clip,
                                        OfxTime       time,
                                        const char   *plane,
-                                       OfxRectD     *region,
+                                       const OfxRectD     *region,
                                        OfxPropertySetHandle   *imageHandle)
     {
         return clipGetImagePlane(clip, time, -1, plane, region, imageHandle);
