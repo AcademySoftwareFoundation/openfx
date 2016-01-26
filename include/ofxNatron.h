@@ -239,15 +239,18 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
   
   The plug-in should still handle the case where the instanceChanged action is called for kNatronParamFormatChoice
   which would indicate that the host does not handle the parameter itself.
+
  */
 
 /** @brief Choice parameter used to choose the target format*/
 #define kNatronParamFormatChoice "NatronParamFormatChoice"
 
-/** @brief Double2D parameter used to store the width,height of the format*/
+/** @brief Int2D parameter used to store the width,height of the format. Should be secret and evaluateOnChange=false
+ The values returned are in pixel coordinates.
+ */
 #define kNatronParamFormatSize "NatronParamFormatSize"
 
-/** @brief Double parameter used to store the pixel aspect ratio of the format*/
+/** @brief Double parameter used to store the pixel aspect ratio of the format. Should be secret and evaluateOnChange=false*/
 #define kNatronParamFormatPar "NatronParamFormatPar"
 
 #endif // #ifndef _ofxNatron_h_
