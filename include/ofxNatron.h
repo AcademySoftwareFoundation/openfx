@@ -226,4 +226,31 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 */
 #define kNatronOFXImageEffectPropDeprecated "NatronOFXImageEffectPropDeprecated"
 
+/** @brief This extension is to allow the Host application to add extra formats 
+  (which are a set of 3 values: width, height, pixel aspect ratio) to a choice parameter.
+  If the host application finds the following 3 parameters:
+  - kNatronParamFormatChoice
+  - kNatronParamFormatSize
+  - kNatronParamFormatPar
+  The host will then control the choice parameter itself, including:
+  - Refreshing the list of available formats in the choice parameter
+  - Handling the instanceChanged action calls instead of the plug-in on the parameter kNatronParamFormatChoice by setting
+  the values of kNatronParamFormatSize and kNatronParamFormatPar accordingly. The handler will not be called on the plug-in.
+  
+  The plug-in should still handle the case where the instanceChanged action is called for kNatronParamFormatChoice
+  which would indicate that the host does not handle the parameter itself.
+
+ */
+
+/** @brief Choice parameter used to choose the target format*/
+#define kNatronParamFormatChoice "NatronParamFormatChoice"
+
+/** @brief Int2D parameter used to store the width,height of the format. Should be secret and evaluateOnChange=false
+ The values returned are in pixel coordinates.
+ */
+#define kNatronParamFormatSize "NatronParamFormatSize"
+
+/** @brief Double parameter used to store the pixel aspect ratio of the format. Should be secret and evaluateOnChange=false*/
+#define kNatronParamFormatPar "NatronParamFormatPar"
+
 #endif // #ifndef _ofxNatron_h_
