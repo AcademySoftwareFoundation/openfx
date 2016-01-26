@@ -3183,17 +3183,23 @@ namespace OFX {
       // kOfxImageEffectPropRenderQualityDraft appeared in OFX 1.4
       args.renderQualityDraft = inArgs.propGetInt(kOfxImageEffectPropRenderQualityDraft, false) != 0;
 
+#ifdef OFX_EXTENSIONS_NUKE
+      args.renderView = 0; // to support both Nuke and Vegas
+#endif
+
 #ifdef OFX_EXTENSIONS_VEGAS
       args.viewsToRender = inArgs.propGetInt(kOfxImageEffectPropViewsToRender, 0, false);
       args.renderView = inArgs.propGetInt(kOfxImageEffectPropRenderView, 0, false);
 #endif
         
 #ifdef OFX_EXTENSIONS_NUKE
+      if (args.renderView == 0) {
         args.renderView = inArgs.propGetInt(kFnOfxImageEffectPropView, 0, false);
-        int numPlanes = inArgs.propGetDimension(kFnOfxImageEffectPropComponentsPresent, false);
-        for (int i = 0; i < numPlanes; ++i) {
-            args.planes.push_back(inArgs.propGetString(kFnOfxImageEffectPropComponentsPresent, i, false));
-        }
+      }
+      int numPlanes = inArgs.propGetDimension(kFnOfxImageEffectPropComponentsPresent, false);
+      for (int i = 0; i < numPlanes; ++i) {
+        args.planes.push_back(inArgs.propGetString(kFnOfxImageEffectPropComponentsPresent, i, false));
+      }
 #endif
 
       args.fieldToRender = eFieldNone;
