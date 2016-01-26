@@ -960,7 +960,7 @@ namespace OFX {
     validateXMLString(extension, false);
     // only Tuttle support this property ( out of standard )
     //if( OFX::Private::gHostDescription.hostName == "TuttleOfx" ) {
-    const int n = _effectProps.propGetDimension( kTuttleOfxImageEffectPropSupportedExtensions, false);
+    const int n = _effectProps.propGetDimension(kTuttleOfxImageEffectPropSupportedExtensions, false);
     _effectProps.propSetString(kTuttleOfxImageEffectPropSupportedExtensions, extension, n, false);
   }
 
@@ -968,7 +968,7 @@ namespace OFX {
   {
     // only Tuttle support this property ( out of standard )
     //if( OFX::Private::gHostDescription.hostName == "TuttleOfx" ) {
-    int n = _effectProps.propGetDimension( kTuttleOfxImageEffectPropSupportedExtensions, false );
+    int n = _effectProps.propGetDimension(kTuttleOfxImageEffectPropSupportedExtensions, false);
 
     for (std::vector<std::string>::const_iterator it = extensions.begin(); it != extensions.end(); ++it, ++n) {
       validateXMLString(*it, false);
@@ -980,11 +980,11 @@ namespace OFX {
   {
     // only Tuttle support this property ( out of standard )
     //if( OFX::Private::gHostDescription.hostName == "TuttleOfx" ) {
-    int n = _effectProps.propGetDimension( kTuttleOfxImageEffectPropSupportedExtensions );
+    int n = _effectProps.propGetDimension(kTuttleOfxImageEffectPropSupportedExtensions, false);
 
     while (*extensions) {
       validateXMLString(*extensions, false);
-      _effectProps.propSetString(kTuttleOfxImageEffectPropSupportedExtensions, *extensions, n);
+      _effectProps.propSetString(kTuttleOfxImageEffectPropSupportedExtensions, *extensions, n, false);
       ++extensions;
       ++n;
     }
@@ -993,7 +993,7 @@ namespace OFX {
   void ImageEffectDescriptor::setPluginEvaluation(double evaluation)
   {
     // This property is an extension, so it's optional.
-    _effectProps.propSetDouble( kTuttleOfxImageEffectPropEvaluation, evaluation, false );
+    _effectProps.propSetDouble(kTuttleOfxImageEffectPropEvaluation, evaluation, false);
   }
 #endif
 
@@ -2593,12 +2593,12 @@ namespace OFX {
       }
       _doneSomething = true;
       if (clip) {
-        _outArgs.propSetString(kFnOfxImageEffectPropPassThroughClip, clip->name(), 0);
+        _outArgs.propSetString(kFnOfxImageEffectPropPassThroughClip, clip->name(), 0, false);
       } else {
-        _outArgs.propSetString(kFnOfxImageEffectPropPassThroughClip, "", 0);
+        _outArgs.propSetString(kFnOfxImageEffectPropPassThroughClip, "", 0, false);
       }
-      _outArgs.propSetDouble(kFnOfxImageEffectPropPassThroughTime, time, 0);
-      _outArgs.propSetInt(kFnOfxImageEffectPropPassThroughView, view, 0);
+      _outArgs.propSetDouble(kFnOfxImageEffectPropPassThroughTime, time, 0, false);
+      _outArgs.propSetInt(kFnOfxImageEffectPropPassThroughView, view, 0, false);
   }
 
     

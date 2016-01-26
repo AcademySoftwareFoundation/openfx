@@ -950,7 +950,7 @@ namespace OFX {
   /** @brief may the host add new options? */
   void ChoiceParamDescriptor::setHostCanAddOptions(bool can)
   {
-    _paramProps.propSetInt(kNatronOfxParamPropChoiceHostCanAddOptions, (int)can, 0,false);
+    _paramProps.propSetInt(kNatronOfxParamPropChoiceHostCanAddOptions, (int)can, 0, false);
   }
 #endif
   ////////////////////////////////////////////////////////////////////////////////
