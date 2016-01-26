@@ -1019,7 +1019,7 @@ namespace OFX {
     */
     Image *fetchImage(double t);
 
-#ifdef OFX_EXTENSIONS_VEGAS
+#if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
     /** @brief fetch an image
 
     When finished with, the client code must delete the image.
