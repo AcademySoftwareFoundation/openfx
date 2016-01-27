@@ -234,6 +234,12 @@ namespace OFX {
   {
     _paramProps.propSetInt(kOfxParamPropLayoutHint, static_cast<int>(layoutHint), false);
   }
+
+  void
+    ParamDescriptor::setLayoutPadWidth(int pixels)
+  {
+    _paramProps.propSetInt(kOfxParamPropLayoutPadWidth, pixels, false);
+  }
 #endif
     
 #ifdef OFX_EXTENSIONS_NATRON
