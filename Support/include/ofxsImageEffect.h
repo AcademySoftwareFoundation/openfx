@@ -295,6 +295,8 @@ namespace OFX {
   class PluginFactory
   {
   public:
+    /** @brief virtual destructor */
+    virtual ~PluginFactory() {};
     virtual void load() {}
     virtual void unload() {}
     virtual void describe(OFX::ImageEffectDescriptor &desc) = 0;
@@ -1204,6 +1206,9 @@ namespace OFX {
   */ 
   class RegionOfInterestSetter {
   public :
+    /** @brief virtual destructor */
+    virtual ~RegionOfInterestSetter() {}
+
     /** @brief function to set the RoI of a clip, pass in the clip to set the RoI of, and the RoI itself */
     virtual void setRegionOfInterest(const Clip &clip, const OfxRectD &RoI) = 0;
   };
@@ -1219,6 +1224,9 @@ namespace OFX {
   */ 
   class FramesNeededSetter {
   public :
+    /** @brief virtual destructor */
+    virtual ~FramesNeededSetter() {}
+
     /** @brief function to set the frames needed on a clip, the range is min <= time <= max */
     virtual void setFramesNeeded(const Clip &clip, const OfxRangeD &range) = 0;
   };

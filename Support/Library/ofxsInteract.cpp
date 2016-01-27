@@ -106,9 +106,10 @@ namespace OFX {
     _effect = retrieveEffectFromInteractHandle(handle);
   }
 
-  /** @brief ctor */
+  /** @brief virtual destructor */
   Interact::~Interact()
   {
+    // fetched clips and params are owned and deleted by the ImageEffect and its ParamSet
   }
 
   /** @brief The bitdepth of each component in the openGL frame buffer */

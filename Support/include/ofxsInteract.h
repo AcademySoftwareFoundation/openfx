@@ -123,6 +123,9 @@ namespace OFX {
   */
   class InteractAbstract {
   public:
+    /** @brief virtual destructor */
+    virtual ~InteractAbstract() {}
+
     ////////////////////////////////////////////////////////////////////////////////
     // override the below in derived classes to do something useful
 
@@ -190,7 +193,7 @@ namespace OFX {
     Interact(OfxInteractHandle handle);
 
     /** @brief virtual destructor */
-    virtual ~Interact(); 
+    virtual ~Interact();
 
     PropertySet &getProperties() { return _interactProperties; }
 
