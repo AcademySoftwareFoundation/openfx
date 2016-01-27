@@ -1491,6 +1491,9 @@ namespace OFX {
         /** @brief get the value at a time */
         void getValueAtTime(double t, double &x, double &y);
 
+        /** @brief get the  value */
+        OfxPointD getValueAtTime(double t) {OfxPointD v; getValueAtTime(t, v.x, v.y); return v;}
+
         /** @brief set value */
         void setValue(double x, double y);
 
