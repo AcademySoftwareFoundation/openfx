@@ -1474,14 +1474,23 @@ namespace OFX {
         /** @brief get value */
         void getValue(double &x, double &y);
 
+        /** @brief get value */
+        OfxPointD getValue(void) {OfxPointD v; getValue(v.x, v.y); return v;}
+
         /** @brief get the value at a time */
         void getValueAtTime(double t, double &x, double &y);
 
         /** @brief set value */
         void setValue(double x, double y);
 
+        /** @brief set the current value */
+        void setValue(const OfxPointD &v) {setValue(v.x, v.y);}
+
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, double x, double y);
+
+        /** @brief set the value at a time, implicitly adds a keyframe */
+        void setValueAtTime(double t, const OfxPointD &v) {setValueAtTime(t, v.x, v.y);}
 
         /** @brief differentiate the param */
         void differentiate(double t, double &x, double &y);
@@ -1700,8 +1709,14 @@ namespace OFX {
         /** @brief get value */
         void getValue(int &v);
 
+        /** @brief get value */
+        int getValue(void) {int v; getValue(v); return v;}
+
         /** @brief get the value at a time */
         void getValueAtTime(double t, int &v);
+
+        /** @brief get the value at a time */
+        int getValueAtTime(double t) {int v; getValueAtTime(t, v); return v;}
 
         /** @brief set value */
         void setValue(int v);
