@@ -296,28 +296,18 @@ namespace OFX {
         void setEnabled(bool v);
 
 #ifdef OFX_EXTENSIONS_NUKE
-        /** @brief Layout hint for hierarchical layouts
+        /** @brief Layout hint
 
-         - Default - 0
-         - Valid Values - 0,1 or 2
-             0 - for a new line after the parameter
-             1 - for a seperator between this parameter and the one to follow
-             2 - for no new line, continue the next parameter on the same horizontal level
-
-         @see kOfxParamPropLayoutHint
-         */
-        void setLayoutHint( const ELayoutHint layoutHint );
-
-        /** @brief Layout padding for hierarchical views, only pertinent with kOfxParamPropLayoutHint==2
-
-         - Default - 0
-         - Valid Values - any positive integer value
-
-         It tells the host how much space (in pixels) to leave between the current parameter and the next parameter in
-         horizontal layouts. A value of 0 corresponds to stretchable space.
+         @param layoutHint  @see kOfxParamPropLayoutHint
+         eLayoutHintNormal  - for a new line after the parameter (default)
+         eLayoutHintDivider - for a separator between this parameter and the one to follow
+         eLayoutHintNoNewLine - for no new line, continue the next parameter on the same horizontal level
          
-         @see kOfxParamPropLayoutPadWidth */
-        void setLayoutPadWidth(int pixels);
+         @param padWidth @see kOfxParamPropLayoutPadWidth
+         It tells the host how much space (in pixels) to leave between the current parameter and the next parameter in
+         horizontal layouts. A value of 0 (default) corresponds to stretchable space.
+         */
+        void setLayoutHint(const ELayoutHint layoutHint, int padWidth = 0);
 #endif
         
 #ifdef OFX_EXTENSIONS_NATRON

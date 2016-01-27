@@ -230,15 +230,12 @@ namespace OFX {
 
 #ifdef OFX_EXTENSIONS_NUKE
   void
-    ParamDescriptor::setLayoutHint(const ELayoutHint layoutHint)
+    ParamDescriptor::setLayoutHint(const ELayoutHint layoutHint, int padWidth)
   {
     _paramProps.propSetInt(kOfxParamPropLayoutHint, static_cast<int>(layoutHint), false);
-  }
-
-  void
-    ParamDescriptor::setLayoutPadWidth(int pixels)
-  {
-    _paramProps.propSetInt(kOfxParamPropLayoutPadWidth, pixels, false);
+    if (layoutHint == eLayoutHintNoNewLine) {
+      _paramProps.propSetInt(kOfxParamPropLayoutPadWidth, padWidth, false);
+    }
   }
 #endif
     
