@@ -455,6 +455,9 @@ namespace OFX {
       OFX::Log::error(instance == 0, "Instance data handle in effect instance properties is NULL!");
 
       // need to throw something here
+      if (!instance) {
+        throwSuiteStatusException(kOfxStatErrBadHandle);
+      }
 
       // and dance to the music
       return instance;

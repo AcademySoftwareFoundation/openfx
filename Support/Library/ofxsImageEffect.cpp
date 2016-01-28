@@ -3118,7 +3118,9 @@ namespace OFX {
       OFX::Log::error(instance == 0, "Instance data handle in effect instance properties is NULL!");
 
       // need to throw something here
-
+      if (!instance) {
+        throwSuiteStatusException(kOfxStatErrBadHandle);
+      }
       // and dance to the music
       return instance;
     }
@@ -4094,6 +4096,10 @@ namespace OFX {
 
           void* instanceData = inArgs.propGetPointer(kOfxPropInstanceData);
 
+          // need to throw something here
+          if (!instanceData) {
+            throwSuiteStatusException(kOfxStatErrBadHandle);
+          }
           // call the dialog action (user_data is in the raw handle)
           instance->dialog(instanceData);
         }
