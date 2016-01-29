@@ -1172,6 +1172,11 @@ namespace OFX {
   {
     int n = _effectProps.propGetDimension(kOfxImageEffectPropClipPreferencesSlaveParam);
     validateXMLString(p.getName(), false);
+# ifdef DEBUG
+    if (p.getPropertySet().propGetInt(kOfxParamPropAnimates)) {
+      std::cout << "Warning: parameter " << p.getName() << " is a clip preferences slave param but is animated\n";
+    }
+# endif
     _effectProps.propSetString(kOfxImageEffectPropClipPreferencesSlaveParam, p.getName(), n);
   }
 
