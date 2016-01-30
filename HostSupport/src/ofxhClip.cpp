@@ -292,7 +292,7 @@ namespace OFX {
       }
        
 #ifdef OFX_EXTENSIONS_NUKE
-      const std::vector<std::string>& ClipInstance::getComponentsPresent() const
+      const std::vector<std::string>& ClipInstance::getComponentsPresent() const OFX_EXCEPTION_SPEC
       {
           static std::vector<std::string> components;
           if (components.empty()) {

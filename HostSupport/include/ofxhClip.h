@@ -217,7 +217,7 @@ namespace OFX {
         /// return components from other planes.
         /// Returns a vector since the function getStringPropertyN does not exist. Only getStringProperty
         /// with an index exists.
-        virtual const std::vector<std::string>& getComponentsPresent() const;
+        virtual const std::vector<std::string>& getComponentsPresent() const OFX_EXCEPTION_SPEC;
                             
 #endif
 
