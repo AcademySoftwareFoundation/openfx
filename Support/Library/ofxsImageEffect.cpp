@@ -3534,10 +3534,15 @@ namespace OFX {
               std::vector<OfxRangeD>::iterator j;
               int n = 0;
 
+              try {
               // and set 'em
               for(j = clipRange.begin(); j < clipRange.end(); ++j) {
                 outArgs_.propSetDouble(propName.c_str(), j->min, n++);
                 outArgs_.propSetDouble(propName.c_str(), j->max, n++);
+              }
+              } catch (Exception::PropertyUnknownToHost) {
+                // The host may not have the property if the clip is not connected (Resolve).
+                // Just proceed to the next clip.
               }
             }
           }
