@@ -37,14 +37,100 @@ England
 /** @brief This file contains code that skins the ofx param suite */
 
 #include <cstring>
+#include <iostream>
 #include "ofxsSupportPrivate.h"
 #include "ofxParametricParam.h"
 #ifdef OFX_EXTENSIONS_NUKE
 #include "nuke/camera.h"
 #endif
 
+namespace {
+// See http://stackoverflow.com/questions/1031645/how-to-detect-utf-8-in-plain-c
+// We check that strings contained in StringParam are UTF-8 encoded
+// See http://openfx.sourceforge.net/Documentation/1.4/ofxProgrammingReference.html
+static bool is_utf8(const char * string)
+{
+  if(!string)
+    return 0;
+  
+  const unsigned char * bytes = (const unsigned char *)string;
+  while(*bytes)
+  {
+    if( (// ASCII
+         // use bytes[0] <= 0x7F to allow ASCII control characters
+         bytes[0] == 0x09 ||
+         bytes[0] == 0x0A ||
+         bytes[0] == 0x0D ||
+         (0x20 <= bytes[0] && bytes[0] <= 0x7E)
+         )
+       ) {
+      bytes += 1;
+      continue;
+    }
+    
+    if( (// non-overlong 2-byte
+         (0xC2 <= bytes[0] && bytes[0] <= 0xDF) &&
+         (0x80 <= bytes[1] && bytes[1] <= 0xBF)
+         )
+       ) {
+      bytes += 2;
+      continue;
+    }
+    
+    if( (// excluding overlongs
+         bytes[0] == 0xE0 &&
+         (0xA0 <= bytes[1] && bytes[1] <= 0xBF) &&
+         (0x80 <= bytes[2] && bytes[2] <= 0xBF)
+         ) ||
+       (// straight 3-byte
+        ((0xE1 <= bytes[0] && bytes[0] <= 0xEC) ||
+         bytes[0] == 0xEE ||
+         bytes[0] == 0xEF) &&
+        (0x80 <= bytes[1] && bytes[1] <= 0xBF) &&
+        (0x80 <= bytes[2] && bytes[2] <= 0xBF)
+        ) ||
+       (// excluding surrogates
+        bytes[0] == 0xED &&
+        (0x80 <= bytes[1] && bytes[1] <= 0x9F) &&
+        (0x80 <= bytes[2] && bytes[2] <= 0xBF)
+        )
+       ) {
+      bytes += 3;
+      continue;
+    }
+    
+    if( (// planes 1-3
+         bytes[0] == 0xF0 &&
+         (0x90 <= bytes[1] && bytes[1] <= 0xBF) &&
+         (0x80 <= bytes[2] && bytes[2] <= 0xBF) &&
+         (0x80 <= bytes[3] && bytes[3] <= 0xBF)
+         ) ||
+       (// planes 4-15
+        (0xF1 <= bytes[0] && bytes[0] <= 0xF3) &&
+        (0x80 <= bytes[1] && bytes[1] <= 0xBF) &&
+        (0x80 <= bytes[2] && bytes[2] <= 0xBF) &&
+        (0x80 <= bytes[3] && bytes[3] <= 0xBF)
+        ) ||
+       (// plane 16
+        bytes[0] == 0xF4 &&
+        (0x80 <= bytes[1] && bytes[1] <= 0x8F) &&
+        (0x80 <= bytes[2] && bytes[2] <= 0xBF) &&
+        (0x80 <= bytes[3] && bytes[3] <= 0xBF)
+        )
+       ) {
+      bytes += 4;
+      continue;
+    }
+    
+    return 0;
+  }
+  
+  return 1;
+}
+} // anon namespace
+
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries. */
-namespace OFX {  
+namespace OFX {
 
   /** @brief dummy page positioning parameter to be passed to @ref OFX::PageParamDescriptor::addChild */
   DummyParamDescriptor PageParamDescriptor::gSkipRow(kOfxParamPageSkipRow);
@@ -2753,6 +2839,11 @@ namespace OFX {
     char *cStr;
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &cStr);
     throwSuiteStatusException(stat);
+#ifdef DEBUG
+    if (!is_utf8(cStr)) {
+      std::cerr << getName() << " contains a non UTF-8 encoded string: " << cStr << std::endl;
+    }
+#endif
     v = cStr;
   }
 
@@ -2766,6 +2857,11 @@ namespace OFX {
     char *cStr;
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValueAtTime(_paramHandle, t, &cStr);
     throwSuiteStatusException(stat);
+#ifdef DEBUG
+    if (!is_utf8(cStr)) {
+      std::cerr << getName() << " contains a non UTF-8 encoded string: " << cStr << std::endl;
+    }
+#endif
     v = cStr;
   }
 
@@ -2774,6 +2870,11 @@ namespace OFX {
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValue(_paramHandle, v.c_str());
     throwSuiteStatusException(stat);
+#ifdef DEBUG
+    if (!is_utf8(v.c_str())) {
+      std::cerr << getName() << " contains a non UTF-8 encoded string: " << v.c_str() << std::endl;
+    }
+#endif
   }
 
   /** @brief set the value at a time, implicitly adds a keyframe */
@@ -2786,6 +2887,11 @@ namespace OFX {
     if(!OFX::Private::gParamSuite->paramSetValueAtTime) throwHostMissingSuiteException("paramSetValueAtTime");
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, v.c_str());
     throwSuiteStatusException(stat);
+#ifdef DEBUG
+    if (!is_utf8(v.c_str())) {
+      std::cerr << getName() << " contains a non UTF-8 encoded string: " << v.c_str() << std::endl;
+    }
+#endif
   }
     
   ////////////////////////////////////////////////////////////////////////////////
