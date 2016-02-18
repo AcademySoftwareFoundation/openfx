@@ -2190,7 +2190,7 @@ namespace OFX {
             if(isChromaticComponent(rawComp)) {
               // Note: first chromatic input gives the default output premult too, even if not connected
               // (else the output of generators may be opaque even if the host default is premultiplied)
-              if(connected || premult.empty()) {
+              if(rawComp == kOfxImageComponentRGBA && (connected || premult.empty())) {
                 if(rawPreMult == kOfxImagePreMultiplied)
                   premult = kOfxImagePreMultiplied;
                 else if(rawPreMult == kOfxImageUnPreMultiplied && premult != kOfxImagePreMultiplied)
@@ -2206,10 +2206,6 @@ namespace OFX {
             }
           }
         }
-        // default to a reasonable value if there is no input
-        if (premult.empty()) {
-          premult = kOfxImageOpaque;
-        }
         if (!hasSetCompsAndDepth) {
           mostComponents = kOfxImageComponentRGBA;
           deepestBitDepth = kOfxBitDepthFloat;
@@ -2218,7 +2214,6 @@ namespace OFX {
         /// set some stuff up
         _outputFrameRate           = frameRate;
         _outputFielding            = getDefaultOutputFielding();
-        _outputPreMultiplication   = premult;
         _continuousSamples         = false;
         _frameVarying              = false;
 
@@ -2247,6 +2242,10 @@ namespace OFX {
                   
               clip->setPixelDepth(depth);
               clip->setComponents(comp);
+              if(clip->isOutput() && premult.empty() &&
+                 (comp == kOfxImageComponentRGBA || comp == kOfxImageComponentAlpha)) {
+                premult = kOfxImagePreMultiplied;
+              }
             }
             else {                 
               comp  = rawComp;
@@ -2262,6 +2261,12 @@ namespace OFX {
             clip->setComponents(rawComp);
           }
         }
+        // default to a reasonable value if there is no input
+        if (premult.empty()) {
+          premult = kOfxImageOpaque;
+        }
+        // set output premultiplication
+        _outputPreMultiplication = premult;
       }
 
       /// Initialise the clip preferences arguments, override this to do
