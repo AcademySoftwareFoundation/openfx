@@ -27,4 +27,5 @@ install(
 )
 
 # Build OFX C++ wrapper
+add_subdirectory(HostSupport)
 add_subdirectory(Support)
