@@ -31,6 +31,7 @@ modification, are permitted provided that the following conditions are met:
 #include <iostream>
 #include <fstream>
 #include <cassert>
+#include <stdexcept>
 
 // ofx
 #include "ofxCore.h"
@@ -116,7 +117,11 @@ int main(int argc, char **argv)
 
   // try to read an old cache
   std::ifstream ifs("hostDemoPluginCache.xml");
-  OFX::Host::PluginCache::getPluginCache()->readCache(ifs);
+  try {
+    OFX::Host::PluginCache::getPluginCache()->readCache(ifs);
+  } catch (const std::exception &e) {
+    std::cerr << "Error while reading XML cache: " << e.what() << std::endl;
+  }
   OFX::Host::PluginCache::getPluginCache()->scanPluginFiles();
   ifs.close();
 

@@ -32,7 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <fstream>
-    
+#include <stdexcept>
+
 #include "ofxhPluginCache.h"
 #include "ofxhPropertySuite.h"
 #include "ofxhImageEffectAPI.h"
@@ -167,7 +168,11 @@ int main(int argc, char **argv)
 
   /// now read an old cache cache
   std::ifstream ifs("oldcache.xml");
-  OFX::Host::PluginCache::getPluginCache()->readCache(ifs);
+  try {
+    OFX::Host::PluginCache::getPluginCache()->readCache(ifs);
+  } catch (const std::exception &e) {
+    std::cerr << "Error while reading XML cache: " << e.what() << std::endl;
+  }
   OFX::Host::PluginCache::getPluginCache()->scanPluginFiles();
   ifs.close();
 

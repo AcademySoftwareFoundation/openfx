@@ -14,7 +14,7 @@
   * Neither the name The Open Effects Association Ltd, nor the names of its 
   contributors may be used to endorse or promote products derived from this
   software without specific prior written permission.
-  
+
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -34,6 +34,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 
 #include <string.h>
 #include <stdlib.h>
@@ -678,28 +679,35 @@ void PluginCache::elementEndCallback(void */*userData*/, const XML_Char *name) {
 
 void PluginCache::readCache(std::istream &ifs) {
   XML_Parser xP = XML_ParserCreate(NULL);
+  if (!xP) {
+    throw std::runtime_error("Error creating XML parser");
+
+  }
   XML_SetElementHandler(xP, elementBeginHandler, elementEndHandler);
   XML_SetCharacterDataHandler(xP, elementCharHandler);
-  
-  while (ifs.good()) {
-    char buf[1001] = {0};
-    ifs.read(buf, 1000);
-    
-    if (buf[0] == 0) {
-      XML_Parse(xP, "", 0, XML_TRUE);
-      break;
-    }
-    
-    int p = XML_Parse(xP, buf, int(strlen(buf)), XML_FALSE);
-    
-    if (p == XML_STATUS_ERROR) {
-      enum XML_Error code = XML_GetErrorCode(xP);
-      std::cout << "xml error : " << XML_ErrorString(code) << " (" << (int)code << ")" << std::endl;
-      /// XXX: do something here
-      break;
+  int done = false;
+  char buf[4096];
+  std::istream::iostate st = ifs.exceptions();
+  ifs.exceptions(std::istream::failbit | std::istream::badbit);
+  while (!done) {
+    ifs.read(buf, sizeof(buf));
+    int n = (int)ifs.gcount();
+    done = (n != sizeof(buf));
+
+    if (XML_Parse(xP, buf, n, done) == XML_STATUS_ERROR) {
+      XML_Error errorCode = XML_GetErrorCode(xP);
+      XML_Size errorLine = XML_GetCurrentLineNumber(xP);
+      XML_Size errorCol = XML_GetCurrentColumnNumber(xP);
+      const XML_LChar *errorString = XML_ErrorString(errorCode);
+      std::stringstream errorDesc;
+      errorDesc << "XML parsing error at line " << errorLine << ":" << errorCol;
+      errorDesc << ": " << errorString;
+      ifs.exceptions(st);
+      XML_ParserFree(xP);
+      throw std::runtime_error(errorDesc.str());
     }
   }
-  
+  ifs.exceptions(st);
   XML_ParserFree(xP);
 }
 
