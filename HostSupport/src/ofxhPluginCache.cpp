@@ -687,9 +687,10 @@ void PluginCache::readCache(std::istream &ifs) {
   XML_SetCharacterDataHandler(xP, elementCharHandler);
   int done = false;
   char buf[4096];
-  std::istream::iostate st = ifs.exceptions();
-  ifs.exceptions(std::istream::failbit | std::istream::badbit);
-  while (!done) {
+  while (!done && !ifs.eof()) {
+    if (!ifs.good()) {
+      throw std::runtime_error("Error reading cache stream");
+    }
     ifs.read(buf, sizeof(buf));
     int n = (int)ifs.gcount();
     done = (n != sizeof(buf));
@@ -702,12 +703,10 @@ void PluginCache::readCache(std::istream &ifs) {
       std::stringstream errorDesc;
       errorDesc << "XML parsing error at line " << errorLine << ":" << errorCol;
       errorDesc << ": " << errorString;
-      ifs.exceptions(st);
       XML_ParserFree(xP);
       throw std::runtime_error(errorDesc.str());
     }
   }
-  ifs.exceptions(st);
   XML_ParserFree(xP);
 }
 
