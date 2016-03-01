@@ -56,11 +56,7 @@ void Binary::load()
 #if defined (UNIX)
   _dlHandle = dlopen(_binaryPath.c_str(), RTLD_LAZY|RTLD_LOCAL);
 #else
-#ifdef UNICODE
-  _dlHandle = LoadLibrary(stringToWideString(_binaryPath).c_str());
-#else
-  _dlHandle = LoadLibrary(_binaryPath.c_str());
-#endif
+  _dlHandle = LoadLibraryW(utf8_to_utf16(_binaryPath).c_str());
 #endif
   if (_dlHandle == 0) {
 #if defined (UNIX)

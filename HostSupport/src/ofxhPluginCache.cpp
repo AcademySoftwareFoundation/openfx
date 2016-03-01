@@ -195,15 +195,10 @@ PluginCache::getStdOFXPluginPath(const std::string &hostId)
   if(!gotIt) {
     gotIt = 1;	   
     SHGetFolderPath(NULL, CSIDL_PROGRAM_FILES_COMMON, NULL, SHGFP_TYPE_CURRENT, buffer);
-#ifndef UNICODE
-	std::string str(__T("\\OFX\\"));
-	str.append(hostId);
-    strcat_s(buffer, MAX_PATH, str.c_str());
-#else
+
 	std::wstring str(__T("\\OFX\\"));
-	str.append(OFX::stringToWideString(hostId));
+	str.append(OFX::utf8_to_utf16(hostId));
 	wcscat_s(buffer, MAX_PATH, str.c_str());
-#endif
   }
   return buffer;	   
 }
@@ -337,12 +332,8 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
   while (dirent *de = readdir(d))
 #elif defined (WINDOWS)
     {
-# ifdef UNICODE
-      std::wstring ws = stringToWideString((dir + "\\*"));
-      findHandle = FindFirstFile(ws.c_str(), &findData);
-# else
-	  findHandle = FindFirstFile((dir + "\\*").c_str(), &findData);
-# endif
+      std::wstring ws = utf8_to_utf16((dir + "\\*"));
+      findHandle = FindFirstFileW(ws.c_str(), &findData);
     }
   if (findHandle == INVALID_HANDLE_VALUE) 
     {

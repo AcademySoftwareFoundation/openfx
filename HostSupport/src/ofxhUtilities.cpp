@@ -65,16 +65,15 @@ namespace OFX {
   }
 
 # ifdef WINDOWS
-  std::wstring stringToWideString(const std::string& s)
+  std::wstring utf8_to_utf16(const std::string& s)
   {
-    int len;
-    int slength = (int)s.length() + 1;
-    len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
-    wchar_t* buf = new wchar_t[len];
-    MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
-    std::wstring r(buf);
-    delete[] buf;
-    return r;
+    std::wstring native;
+    
+    
+    native.resize(MultiByteToWideChar (CP_UTF8, 0, s.c_str(), -1, NULL, 0) -1);
+    MultiByteToWideChar (CP_UTF8, 0, s.c_str(), s.size(), &native[0], (int)native.size());
+    
+    return native;
   }
   
   std::string  wideStringToString(const std::wstring& s)
