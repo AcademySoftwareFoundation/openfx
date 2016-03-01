@@ -187,20 +187,22 @@ PluginHandle::~PluginHandle() {
 
 
 #if defined (WINDOWS)
-const TCHAR*
+const std::wstring&
 PluginCache::getStdOFXPluginPath(const std::string &hostId)
 {
-  static TCHAR buffer[MAX_PATH];
+  static std::wstring ret;
   static int gotIt = 0;
   if(!gotIt) {
-    gotIt = 1;	   
-    SHGetFolderPath(NULL, CSIDL_PROGRAM_FILES_COMMON, NULL, SHGFP_TYPE_CURRENT, buffer);
-
-	std::wstring str(__T("\\OFX\\"));
+	gotIt = 1;
+    wchar_t buffer[MAX_PATH];
+    SHGetFolderPathW(NULL, CSIDL_PROGRAM_FILES_COMMON, NULL, SHGFP_TYPE_CURRENT, buffer);
+	std::wstring str;
+	str.append(L"\\OFX\\");
 	str.append(OFX::utf8_to_utf16(hostId));
 	wcscat_s(buffer, MAX_PATH, str.c_str());
+	ret = std::wstring(buffer);
   }
-  return buffer;	   
+  return ret;	   
 }
 #endif
 
@@ -274,12 +276,10 @@ PluginCache::PluginCache() : _hostSpec(0), _xmlCurrentBinary(0), _xmlCurrentPlug
   }
   
 #if defined(WINDOWS)
-#ifdef UNICODE
+
   std::wstring wpath = getStdOFXPluginPath();
   std::string path = OFX::wideStringToString(wpath);
-#else
-  std::string path(getStdOFXPluginPath());
-#endif
+
   _pluginPath.push_back(path);
   _pluginPath.push_back("C:\\Program Files\\Common Files\\OFX\\Plugins");
 #endif
@@ -293,12 +293,9 @@ PluginCache::PluginCache() : _hostSpec(0), _xmlCurrentBinary(0), _xmlCurrentPlug
 
 void PluginCache::setPluginHostPath(const std::string &hostId) {
 #if defined(WINDOWS)
-#ifdef UNICODE
   std::wstring wpath = getStdOFXPluginPath(hostId);
   std::string path = OFX::wideStringToString(wpath);
-#else
-  std::string path(getStdOFXPluginPath(hostId));
-#endif
+
   _pluginPath.push_back(path);
   _pluginPath.push_back("C:\\Program Files\\Common Files\\OFX\\" + hostId);
 #endif
@@ -332,7 +329,7 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
   while (dirent *de = readdir(d))
 #elif defined (WINDOWS)
     {
-      std::wstring ws = utf8_to_utf16((dir + "\\*"));
+      std::wstring ws = OFX::utf8_to_utf16((dir + "\\*"));
       findHandle = FindFirstFileW(ws.c_str(), &findData);
     }
   if (findHandle == INVALID_HANDLE_VALUE) 
@@ -347,12 +344,9 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
       std::string name = de->d_name;
       bool isdir = true;
 #else
-#   ifdef UNICODE
       std::wstring wname = findData.cFileName;
       std::string name = OFX::wideStringToString(wname);
-#   else
-	  std::string name = findData.cFileName;
-#   endif
+
       bool isdir = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
 #endif
       if (name.find(".ofx.bundle") != std::string::npos) {
@@ -422,7 +416,7 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
         }
       }
 #if defined(WINDOWS)
-      int rval = FindNextFile(findHandle, &findData);
+      int rval = FindNextFileW(findHandle, &findData);
       
       if (rval == 0) {
         break;

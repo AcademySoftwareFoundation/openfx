@@ -399,7 +399,7 @@ namespace OFX {
         
 #if defined (WINDOWS)
       /// This is windows only since it may vary on the location of CSIDL_PROGRAM_FILES_COMMON.
-      static const TCHAR *getStdOFXPluginPath(const std::string &hostId = "Plugins");
+      static const std::wstring& getStdOFXPluginPath(const std::string &hostId = "Plugins");
 #endif
         
       /// get the list in which plugins are sought
