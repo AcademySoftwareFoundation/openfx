@@ -317,7 +317,7 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
 #endif
   
 #if defined (WINDOWS)
-  WIN32_FIND_DATA findData;
+  WIN32_FIND_DATAW findData;
   HANDLE findHandle;
 #else
   DIR *d = opendir(dir.c_str());
