@@ -1015,6 +1015,18 @@ namespace OFX {
     _effectProps.propSetInt(kOfxImageEffectPropSupportsMultiResolution, int(v));
   }
 
+  /** @brief set the instance to be sequentially renderred, this should have been part of clip preferences! */
+  void ImageEffectDescriptor::setSequentialRender(bool v)
+  {
+    _effectProps.propSetInt(kOfxImageEffectInstancePropSequentialRender, int(v));
+  }
+
+  /** @brief Have we informed the host we want to be seqentially renderred ? */
+  bool ImageEffectDescriptor::getSequentialRender(void) const
+  {
+    return _effectProps.propGetInt(kOfxImageEffectInstancePropSequentialRender) != 0;
+  }
+
   /** @brief Does the plugin support image tiling */
   void ImageEffectDescriptor::setSupportsTiles(bool v)
   {

@@ -617,6 +617,12 @@ namespace OFX {
     /** @brief Does the plugin support multi resolution images, defaults to true */
     void setSupportsMultiResolution(bool v);
 
+    /** @brief set the instance to be sequentially renderred, this should have been part of clip preferences! */
+    void setSequentialRender(bool v);
+
+    /** @brief Have we informed the host we want to be seqentially renderred ? */
+    bool getSequentialRender(void) const;
+
     /** @brief Does the plugin support image tiling, defaults to true */
     void setSupportsTiles(bool v);
 

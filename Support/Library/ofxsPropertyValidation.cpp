@@ -354,6 +354,7 @@ namespace OFX {
       PropertyDescription(kOfxImageEffectPluginPropSingleInstance,         OFX::eInt, 1, eDescDefault, 0, eDescFinished),
       PropertyDescription(kOfxImageEffectPluginPropHostFrameThreading,     OFX::eInt, 1, eDescDefault, 0, eDescFinished),
       PropertyDescription(kOfxImageEffectPropSupportsMultiResolution,      OFX::eInt, 1, eDescDefault, 1, eDescFinished),
+      PropertyDescription(kOfxImageEffectInstancePropSequentialRender,     OFX::eInt, 1, eDescDefault, 0, eDescFinished),
       PropertyDescription(kOfxImageEffectPropSupportsTiles,                OFX::eInt, 1, eDescDefault, 1, eDescFinished),
       PropertyDescription(kOfxImageEffectPropTemporalClipAccess,           OFX::eInt, 1, eDescDefault, 0, eDescFinished),
       PropertyDescription(kOfxImageEffectPluginPropFieldRenderTwiceAlways, OFX::eInt, 1, eDescDefault, 1, eDescFinished),
@@ -382,6 +383,7 @@ namespace OFX {
 
       // int props with defaults that can be checked against
       PropertyDescription(kOfxImageEffectInstancePropSequentialRender, OFX::eInt,     1, eDescDefault, 0, eDescFinished),
+      PropertyDescription(kOfxImageEffectPropSupportsTiles,            OFX::eInt,     1, eDescDefault, 1, eDescFinished),
 
       // Pointer props with defaults that can be checked against
       PropertyDescription(kOfxPropInstanceData,                        OFX::ePointer, 1, eDescDefault, (void *)(0), eDescFinished),
