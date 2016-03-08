@@ -224,7 +224,7 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
  - Valid Values - 0 or 1
  When set to 1, the host may disable using this plugin in new projects.
 */
-#define kNatronOFXImageEffectPropDeprecated "NatronOFXImageEffectPropDeprecated"
+#define kNatronOfxImageEffectPropDeprecated "NatronOfxImageEffectPropDeprecated"
 
 /** @brief This extension is to allow the Host application to add extra formats 
   (which are a set of 3 values: width, height, pixel aspect ratio) to a choice parameter.
@@ -252,5 +252,30 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 
 /** @brief Double parameter used to store the pixel aspect ratio of the format. Should be secret and evaluateOnChange=false*/
 #define kNatronParamFormatPar "NatronParamFormatPar"
+
+/** @brief string property that uniquely identifies the project which holds the instance within the host
+ - Type - string x 1
+ - Property Set - image effect descriptor (read only) image effect (read only)
+ - Default - ""
+ - Valid Values - any
+ */
+#define kNatronOfxImageEffectPropProjectId "NatronOfxImageEffectPropProjectId"
+
+/** @brief string property that uniquely identifies the group (if any) containing the instance within the current project
+ If the instance os within nested groups, this should be something like "Group1/Group2"
+ - Type - string x 1
+ - Property Set - image effect descriptor (read only) image effect (read only)
+ - Default - ""
+ - Valid Values - any
+ */
+#define kNatronOfxImageEffectPropGroupId "NatronOfxImageEffectPropGroupId"
+
+/** @brief string property that uniquely identifies the instance within the group (if any) or within the current project
+ - Type - string x 1
+ - Property Set - image effect descriptor (read only) image effect (read only)
+ - Default - ""
+ - Valid Values - any
+ */
+#define kNatronOfxImageEffectPropInstanceId "NatronOfxImageEffectPropInstanceId"
 
 #endif // #ifndef _ofxNatron_h_
