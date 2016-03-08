@@ -102,20 +102,7 @@ namespace OFX {
           delete it->second;
         }
         _contexts.clear();
-        if(_pluginHandle.get()) {
-          OfxPlugin *op = _pluginHandle->getOfxPlugin();
-          OfxStatus stat;
-          try {
-#           ifdef OFX_DEBUG_ACTIONS
-              std::cout << "OFX: "<<(void*)op<<"->"<<kOfxActionUnload<<"()"<<std::endl;
-#           endif
-            stat = op->mainEntry(kOfxActionUnload, 0, 0, 0);
-#           ifdef OFX_DEBUG_ACTIONS
-              std::cout << "OFX: "<<(void*)op<<"->"<<kOfxActionUnload<<"()->"<<StatStr(stat)<<std::endl;
-#           endif
-          } CatchAllSetStatus(stat, gImageEffectHost, op, kOfxActionUnload);
-          (void)stat;
-        }
+        unload();
         delete _baseDescriptor;
       }
 
@@ -189,11 +176,11 @@ namespace OFX {
           OfxStatus stat;
           try {
 #           ifdef OFX_DEBUG_ACTIONS
-              std::cout << "OFX: "<<(void*)op<<"->"<<kOfxActionLoad<<"()"<<std::endl;
+              std::cout << "OFX: "<<op->pluginIdentifier<<"("<<(void*)op<<")->"<<kOfxActionLoad<<"()"<<std::endl;
 #           endif
             stat = op->mainEntry(kOfxActionLoad, 0, 0, 0);
 #           ifdef OFX_DEBUG_ACTIONS
-              std::cout << "OFX: "<<(void*)op<<"->"<<kOfxActionLoad<<"()->"<<StatStr(stat)<<std::endl;
+              std::cout << "OFX: "<<op->pluginIdentifier<<"("<<(void*)op<<")->"<<kOfxActionLoad<<"()->"<<StatStr(stat)<<std::endl;
 #           endif
           } CatchAllSetStatus(stat, gImageEffectHost, op, kOfxActionLoad);
 
@@ -204,11 +191,11 @@ namespace OFX {
           
           try {
 #           ifdef OFX_DEBUG_ACTIONS
-              std::cout << "OFX: "<<(void*)op<<"->"<<kOfxActionDescribe<<"()"<<std::endl;
+              std::cout << "OFX: "<<op->pluginIdentifier<<"("<<(void*)op<<")->"<<kOfxActionDescribe<<"()"<<std::endl;
 #           endif
             stat = op->mainEntry(kOfxActionDescribe, getDescriptor().getHandle(), 0, 0);
 #           ifdef OFX_DEBUG_ACTIONS
-              std::cout << "OFX: "<<(void*)op<<"->"<<kOfxActionDescribe<<"()->"<<StatStr(stat)<<std::endl;
+              std::cout << "OFX: "<<op->pluginIdentifier<<"("<<(void*)op<<")->"<<kOfxActionDescribe<<"()->"<<StatStr(stat)<<std::endl;
 #           endif
           } CatchAllSetStatus(stat, gImageEffectHost, op, kOfxActionDescribe);
 
@@ -249,11 +236,13 @@ namespace OFX {
         OfxStatus stat;
         try {
 #         ifdef OFX_DEBUG_ACTIONS
-            std::cout << "OFX: "<<(void*)ph->getOfxPlugin()<<"->"<<kOfxImageEffectActionDescribeInContext<<"("<<context<<")"<<std::endl;
+            OfxPlugin *ofxp = ph->getOfxPlugin();
+            const char* id = ofxp->pluginIdentifier;
+            std::cout << "OFX: "<<id<<"("<<ofxp<<")->"<<kOfxImageEffectActionDescribeInContext<<"("<<context<<")"<<std::endl;
 #         endif
           stat = ph->getOfxPlugin()->mainEntry(kOfxImageEffectActionDescribeInContext, newContext->getHandle(), inarg.getHandle(), 0);
 #         ifdef OFX_DEBUG_ACTIONS
-            std::cout << "OFX: "<<(void*)ph->getOfxPlugin()<<"->"<<kOfxImageEffectActionDescribeInContext<<"("<<context<<")->"<<StatStr(stat)<<std::endl;
+            std::cout << "OFX: "<<id<<"("<<ofxp<<")->"<<kOfxImageEffectActionDescribeInContext<<"("<<context<<")->"<<StatStr(stat)<<std::endl;
 #         endif
         } CatchAllSetStatus(stat, gImageEffectHost, ph->getOfxPlugin(), kOfxImageEffectActionDescribeInContext);
 
@@ -291,11 +280,12 @@ namespace OFX {
           OfxStatus stat;
           try {
 #           ifdef OFX_DEBUG_ACTIONS
-              std::cout << "OFX: "<<(void*)_pluginHandle->getOfxPlugin()<<"->"<<kOfxActionUnload<<"()"<<std::endl;
+              OfxPlugin *op = _pluginHandle->getOfxPlugin();
+              std::cout << "OFX: "<<op->pluginIdentifier<<"("<<(void*)op<<")->"<<kOfxActionUnload<<"()"<<std::endl;
 #           endif
             stat = (*_pluginHandle)->mainEntry(kOfxActionUnload, 0, 0, 0);
 #           ifdef OFX_DEBUG_ACTIONS
-              std::cout << "OFX: "<<(void*)_pluginHandle->getOfxPlugin()<<"->"<<kOfxActionUnload<<"()->"<<StatStr(stat)<<std::endl;
+              std::cout << "OFX: "<<op->pluginIdentifier<<"("<<(void*)op<<")->"<<kOfxActionUnload<<"()->"<<StatStr(stat)<<std::endl;
 #           endif
           } CatchAllSetStatus(stat, gImageEffectHost, (*_pluginHandle), kOfxActionUnload);
           (void)stat;
@@ -410,15 +400,19 @@ namespace OFX {
         }
 
         PluginHandle plug(p, _host);
+#       ifdef OFX_DEBUG_ACTIONS
+        OfxPlugin *ofxp = plug.getOfxPlugin();
+        const char* id = ofxp->pluginIdentifier;
+#       endif
 
         OfxStatus stat;
         try {
 #         ifdef OFX_DEBUG_ACTIONS
-            std::cout << "OFX: "<<(void*)plug.getOfxPlugin()<<"->"<<kOfxActionLoad<<"()"<<std::endl;
+            std::cout << "OFX: "<<id<<"("<<ofxp<<")->"<<kOfxActionLoad<<"()"<<std::endl;
 #         endif
           stat = plug->mainEntry(kOfxActionLoad, 0, 0, 0);
 #         ifdef OFX_DEBUG_ACTIONS
-            std::cout << "OFX: "<<(void*)plug.getOfxPlugin()<<"->"<<kOfxActionLoad<<"()->"<<StatStr(stat)<<std::endl;
+            std::cout << "OFX: "<<id<<"("<<ofxp<<")->"<<kOfxActionLoad<<"()->"<<StatStr(stat)<<std::endl;
 #         endif
         } CatchAllSetStatus(stat, gImageEffectHost, plug, kOfxActionLoad);
 
@@ -429,11 +423,11 @@ namespace OFX {
 
         try {
 #         ifdef OFX_DEBUG_ACTIONS
-            std::cout << "OFX: "<<(void*)plug.getOfxPlugin()<<"->"<<kOfxActionDescribe<<"()"<<std::endl;
+            std::cout << "OFX: "<<id<<"("<<ofxp<<")->"<<kOfxActionDescribe<<"()"<<std::endl;
 #         endif
           stat = plug->mainEntry(kOfxActionDescribe, p->getDescriptor().getHandle(), 0, 0);
 #         ifdef OFX_DEBUG_ACTIONS
-            std::cout << "OFX: "<<(void*)plug.getOfxPlugin()<<"->"<<kOfxActionDescribe<<"()->"<<StatStr(stat)<<std::endl;
+            std::cout << "OFX: "<<id<<"("<<ofxp<<")->"<<kOfxActionDescribe<<"()->"<<StatStr(stat)<<std::endl;
 #         endif
         } CatchAllSetStatus(stat, gImageEffectHost, plug, kOfxActionDescribe);
 
@@ -454,11 +448,11 @@ namespace OFX {
 
         try {
 #         ifdef OFX_DEBUG_ACTIONS
-            std::cout << "OFX: "<<(void*)plug.getOfxPlugin()<<"->"<<kOfxActionUnload<<"()"<<std::endl;
+            std::cout << "OFX: "<<id<<"("<<ofxp<<")->"<<kOfxActionUnload<<"()"<<std::endl;
 #         endif
           stat = plug->mainEntry(kOfxActionUnload, 0, 0, 0);
 #         ifdef OFX_DEBUG_ACTIONS
-            std::cout << "OFX: "<<(void*)plug.getOfxPlugin()<<"->"<<kOfxActionUnload<<"()->"<<StatStr(stat)<<std::endl;
+            std::cout << "OFX: "<<id<<"("<<ofxp<<")->"<<kOfxActionUnload<<"()->"<<StatStr(stat)<<std::endl;
 #         endif
         } CatchAllSetStatus(stat, gImageEffectHost, plug, kOfxActionUnload);
 
