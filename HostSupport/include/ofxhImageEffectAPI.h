@@ -70,7 +70,7 @@ namespace OFX {
         void addContextInternal(const std::string &context) const;
 
       public:
-			  ImageEffectPlugin(PluginCache &pc, PluginBinary *pb, int pi, OfxPlugin *pl);
+		ImageEffectPlugin(PluginCache &pc, PluginBinary *pb, int pi, OfxPlugin *pl);
 
         ImageEffectPlugin(PluginCache &pc,
                           PluginBinary *pb,
@@ -106,12 +106,12 @@ namespace OFX {
 
         PluginHandle *getPluginHandle();
 
-        void unload();
-
         /// this is called to make an instance of the effect
         /// the client data ptr is what is passed back to the client creation function
         ImageEffect::Instance* createInstance(const std::string &context, void *clientDataPtr);
 
+      private:
+        void unload();
       };
 
       class MajorPlugin {
