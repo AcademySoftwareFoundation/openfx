@@ -1257,7 +1257,7 @@ namespace OFX {
   /** @brief indicate that this plugin is deprecated */
   void ImageEffectDescriptor::setIsDeprecated(bool v)
   {
-    _effectProps.propSetInt(kNatronOFXImageEffectPropDeprecated, v, false);
+    _effectProps.propSetInt(kNatronOfxImageEffectPropDeprecated, (int)v, false);
   }
 #endif
 
