@@ -57,7 +57,7 @@ function(create_ofx_plugin PLUGIN_NAME)
 
     # Install OFX plugin
     get_ofx_architecture(OFX_ARCH)
-    install(TARGETS ${PLUGIN_NAME} DESTINATION "${CMAKE_INSTALL_PREFIX}/Plugins/${PLUGIN_NAME}.ofx.bundle/Contents/${OFX_ARCH}" OPTIONAL)
+    install(TARGETS ${PLUGIN_NAME} DESTINATION "${CMAKE_INSTALL_PREFIX}/OFX/${PLUGIN_NAME}.ofx.bundle/Contents/${OFX_ARCH}" OPTIONAL)
 
     # Add this new plugin to the global alias OfxPlugins
     add_dependencies(OfxPlugins ${PLUGIN_NAME})
