@@ -14,10 +14,8 @@ target_include_directories(OfxSupport PUBLIC ${OFX_HEADER_DIR} ${OFX_SUPPORT_HEA
 
 # Install OfxSupport headers and library
 install(
-    DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include"
-    DESTINATION "Support"
-    FILES_MATCHING
-    PATTERN "*.h"
+    FILES ${OFX_SUPPORT_HEADER_FILES}
+    DESTINATION "include"
 )
 install(TARGETS OfxSupport DESTINATION "Support/lib" OPTIONAL)
 

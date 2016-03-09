@@ -21,9 +21,7 @@ target_include_directories(OfxHost PUBLIC ${OFX_HEADER_DIR} ${OFX_HOSTSUPPORT_HE
 
 # Install OfxHost headers and library
 install(
-    DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include"
-    DESTINATION "HostSupport"
-    FILES_MATCHING
-    PATTERN "*.h"
+    FILES ${OFX_HOSTSUPPORT_HEADER_FILES}
+    DESTINATION "include"
 )
 install(TARGETS OfxHost DESTINATION "HostSupport/lib" OPTIONAL)
