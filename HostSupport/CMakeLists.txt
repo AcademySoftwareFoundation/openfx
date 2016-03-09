@@ -24,4 +24,4 @@ install(
     FILES ${OFX_HOSTSUPPORT_HEADER_FILES}
     DESTINATION "include"
 )
-install(TARGETS OfxHost DESTINATION "HostSupport/lib" OPTIONAL)
+install(TARGETS OfxHost DESTINATION "lib" OPTIONAL)

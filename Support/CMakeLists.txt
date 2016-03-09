@@ -17,7 +17,7 @@ install(
     FILES ${OFX_SUPPORT_HEADER_FILES}
     DESTINATION "include"
 )
-install(TARGETS OfxSupport DESTINATION "Support/lib" OPTIONAL)
+install(TARGETS OfxSupport DESTINATION "lib" OPTIONAL)
 
 # Create an alias for all OFX plugins.
 add_custom_target(OfxPlugins)
