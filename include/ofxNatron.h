@@ -262,7 +262,7 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 #define kNatronOfxImageEffectPropProjectId "NatronOfxImageEffectPropProjectId"
 
 /** @brief string property that uniquely identifies the group (if any) containing the instance within the current project
- If the instance os within nested groups, this should be something like "Group1/Group2"
+ If the instance os within nested groups, this should be something like "Group1.Group2" with each group level separated by a dot.
  - Type - string x 1
  - Property Set - image effect descriptor (read only) image effect (read only)
  - Default - ""
