@@ -61,7 +61,7 @@ namespace OFX {
 
     default :
 #    ifdef DEBUG
-      std::cout << "Threw suite exception!" << std::endl;
+      std::cout << "Throwing suite exception! " << mapStatusToString(stat) << std::endl;
 #     if defined(__APPLE__) || defined(linux)
       void* callstack[128];
       int i, frames = backtrace(callstack, 128);
@@ -79,7 +79,7 @@ namespace OFX {
   void throwHostMissingSuiteException(std::string name) throw(OFX::Exception::Suite)
   {
 #  ifdef DEBUG
-    std::cout << "Threw suite exception! Host missing '" << name << "' suite." << std::endl;
+    std::cout << "Throwing suite exception! Host missing '" << name << "' suite." << std::endl;
 #   if defined(__APPLE__) || defined(linux)
     void* callstack[128];
     int i, frames = backtrace(callstack, 128);
