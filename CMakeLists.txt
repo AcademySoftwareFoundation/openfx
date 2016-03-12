@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 2.8)
 
 project(openfx)
 
+# Add custom cmake macros
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+set_property(GLOBAL PROPERTY OPENFX_PROJECT_SOURCE_DIR "${PROJECT_SOURCE_DIR}")
+
 # The install rule does not depend on all, i.e. everything will not be built before installing
 set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 
