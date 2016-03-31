@@ -3033,7 +3033,9 @@ namespace OFX {
   {
     _paramProps.propGetNString(kOfxParamPropChoiceOption, options);
 #ifdef OFX_EXTENSIONS_TUTTLE
-    _paramProps.propGetNString(kOfxParamPropChoiceLabelOption, labels, false);
+    if (labels) {
+      _paramProps.propGetNString(kOfxParamPropChoiceLabelOption, labels, false);
+    }
 #endif
   }
 
