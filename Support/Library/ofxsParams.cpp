@@ -3067,14 +3067,29 @@ namespace OFX {
   }
 
   /** @brief set to the default value */
-  void ChoiceParam::resetOptions(void)
+  void ChoiceParam::resetOptions(const std::vector<std::string>& newEntries,
+                                 const std::vector<std::string>& newEntriesLabel)
   {
-    _paramProps.propReset(kOfxParamPropChoiceOption);
+    assert(newEntries.size() == newEntriesLabel.size() || newEntriesLabel.empty());
+    if (newEntries.empty() || (newEntries.size() != newEntriesLabel.size() && !newEntriesLabel.empty())) {
+      
+      // Invalid parameters or empty newEntries, reset the property
+      _paramProps.propReset(kOfxParamPropChoiceOption);
 #ifdef OFX_EXTENSIONS_TUTTLE
-    if (_paramProps.propGetDimension(kOfxParamPropChoiceLabelOption, false) > 0) {
-      _paramProps.propReset(kOfxParamPropChoiceLabelOption);
-    }
+      if (_paramProps.propGetDimension(kOfxParamPropChoiceLabelOption, false) > 0) {
+        _paramProps.propReset(kOfxParamPropChoiceLabelOption);
+      }
 #endif
+    } else {
+      // Set the new entries
+      _paramProps.propSetStringN(kOfxParamPropChoiceOption, newEntries);
+#ifdef OFX_EXTENSIONS_TUTTLE
+      if (!newEntriesLabel.empty()) {
+        _paramProps.propSetStringN(kOfxParamPropChoiceLabelOption, newEntriesLabel, false);
+      }
+#endif
+    }
+
   }
 
 #ifdef OFX_EXTENSIONS_NATRON

@@ -329,6 +329,12 @@ namespace OFX {
       OFX::Exception::PropertyUnknownToHost, 
       OFX::Exception::PropertyValueIllegalToHost, 
       OFX::Exception::Suite);
+    
+    void propSetStringN(const char* property, const std::vector<std::string> &values, bool throwOnFailure = true) throw(std::bad_alloc,
+    OFX::Exception::PropertyUnknownToHost,
+    OFX::Exception::PropertyValueIllegalToHost,
+    OFX::Exception::Suite);
+
 
     void propSetPointer(const char* property, void *value, bool throwOnFailure = true) throw(std::bad_alloc, 
       OFX::Exception::PropertyUnknownToHost, 

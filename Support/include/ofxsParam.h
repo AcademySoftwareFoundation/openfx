@@ -1710,7 +1710,7 @@ namespace OFX {
         void getOption(int ix, std::string &v);
 
         /** @brief clear all the options so as to add some new ones in */
-        void resetOptions(void);
+        void resetOptions(const std::vector<std::string>& newEntries = std::vector<std::string>(), const std::vector<std::string>& newEntriesLabels = std::vector<std::string>());
 
 #ifdef OFX_EXTENSIONS_NATRON
         /** @brief whether the menu should be cascading, and each option contains a slash-separated path to the item, defaults to false. */

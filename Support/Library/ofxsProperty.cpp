@@ -199,6 +199,25 @@ namespace OFX {
 
     if(_gPropLogging > 0) Log::print("Set double property %s[0..%d].",  property, count-1);
   }
+  
+  void PropertySet::propSetStringN(const char* property, const std::vector<std::string> &values, bool throwOnFailure) throw(std::bad_alloc,
+  OFX::Exception::PropertyUnknownToHost,
+  OFX::Exception::PropertyValueIllegalToHost,
+  OFX::Exception::Suite)
+  {
+    assert(_propHandle != 0);
+    std::vector<const char*> data(values.size());
+    for (std::size_t i = 0; i < values.size(); ++i) {
+      data[i] = values[i].c_str();
+    }
+    OfxStatus stat = gPropSuite->propSetStringN(_propHandle, property, (int)values.size(), &data[0]);
+    OFX::Log::error(stat != kOfxStatOK, "Failed on setting string property %s[0..%d], host returned status %s;",
+                    property, values.size()-1, mapStatusToString(stat));
+    if(throwOnFailure)
+      throwPropertyException(stat, property);
+    
+    if(_gPropLogging > 0) Log::print("Set string property %s[0..%d].",  property, values.size()-1);
+  }
 
   /** @brief Get single pointer property */
   void*  PropertySet::propGetPointer(const char* property, int idx, bool throwOnFailure) const throw(std::bad_alloc, 
