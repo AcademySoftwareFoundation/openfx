@@ -3028,6 +3028,14 @@ namespace OFX {
   {    
     v = _paramProps.propGetString(kOfxParamPropChoiceOption, ix);
   }
+  
+  void ChoiceParam::getOptions(std::vector<std::string>* options, std::vector<std::string>* labels)
+  {
+    _paramProps.propGetNString(kOfxParamPropChoiceOption, options);
+#ifdef OFX_EXTENSIONS_TUTTLE
+    _paramProps.propGetNString(kOfxParamPropChoiceLabelOption, labels, false);
+#endif
+  }
 
   /** @brief add another option */
   void ChoiceParam::appendOption(const std::string &v, const std::string& label)

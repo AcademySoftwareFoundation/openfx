@@ -1708,6 +1708,9 @@ namespace OFX {
     
         /** @brief get the option value */
         void getOption(int ix, std::string &v);
+      
+        /** @brief get all options at once*/
+        void getOptions(std::vector<std::string>* options,std::vector<std::string>* optionsLabel);
 
         /** @brief clear all the options so as to add some new ones in */
         void resetOptions(const std::vector<std::string>& newEntries = std::vector<std::string>(), const std::vector<std::string>& newEntriesLabels = std::vector<std::string>());

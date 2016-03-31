@@ -1010,7 +1010,7 @@ namespace OFX {
     Image* fetchImagePlane(double t, const char* plane, const OfxRectD& bounds);
 
     /** @brief Property set indicating the components present on something*/
-    std::list<std::string> getComponentsPresent() const;
+    void getComponentsPresent(std::vector<std::string>* components) const;
       
 #endif
       

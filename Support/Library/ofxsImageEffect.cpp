@@ -1868,10 +1868,9 @@ namespace OFX {
     return new Image(imageHandle);
   }
     
-  std::list<std::string> Clip::getComponentsPresent() const
+  void Clip::getComponentsPresent(std::vector<std::string>* components) const
   {
-    std::list<std::string> ret = _clipProps.propGetNString(kFnOfxImageEffectPropComponentsPresent, false);
-    return ret;
+    _clipProps.propGetNString(kFnOfxImageEffectPropComponentsPresent, components, false);
   }
 #endif // OFX_EXTENSIONS_NUKE
 

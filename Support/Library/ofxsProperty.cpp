@@ -292,16 +292,15 @@ namespace OFX {
     return value;
   }
     
-  std::list<std::string> PropertySet::propGetNString(const char* property, bool throwOnFailure) const throw(std::bad_alloc,
+  void PropertySet::propGetNString(const char* property, std::vector<std::string>* values, bool throwOnFailure) const throw(std::bad_alloc,
   OFX::Exception::PropertyUnknownToHost,
   OFX::Exception::PropertyValueIllegalToHost,
   OFX::Exception::Suite)
   {
     assert(_propHandle != 0);
-    std::list<std::string> ret;
     int dimension = propGetDimension(property,throwOnFailure);
-    if (dimension <= 0) {
-      return ret;
+    if (dimension <= 0 || !values) {
+      return;
     }
     std::vector<char*> rawValue(dimension, (char*)0);
     OfxStatus stat = gPropSuite->propGetStringN(_propHandle, property, dimension, &rawValue.front());
@@ -311,16 +310,15 @@ namespace OFX {
       throwPropertyException(stat, property);
       
     if(_gPropLogging > 0) Log::print("Retrieved string property %s, was given %s.", property, &rawValue.front());
-      
+    
+    values->resize(dimension);
     for (int i = 0; i < dimension; ++i) {
       if (rawValue[i] != NULL) {
-        ret.push_back(std::string(rawValue[i]));
+        (*values)[i] = std::string(rawValue[i]);
       } else {
-        ret.push_back(std::string());
+        (*values)[i] = std::string();
       }
     }
-    return ret;
-
   }
 
 };

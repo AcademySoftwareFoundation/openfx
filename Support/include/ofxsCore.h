@@ -420,7 +420,7 @@ namespace OFX {
       return propGetInt(property, 0, throwOnFailure); 
     }
       
-    std::list<std::string> propGetNString(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc,
+    void propGetNString(const char* property, std::vector<std::string>* values, bool throwOnFailure = true) const throw(std::bad_alloc,
     OFX::Exception::PropertyUnknownToHost,
     OFX::Exception::PropertyValueIllegalToHost,
     OFX::Exception::Suite);
