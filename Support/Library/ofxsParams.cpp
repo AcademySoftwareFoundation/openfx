@@ -3082,20 +3082,20 @@ namespace OFX {
     if (newEntries.empty() || (newEntries.size() != newEntriesLabel.size() && !newEntriesLabel.empty())) {
       
       // Invalid parameters or empty newEntries, reset the property
-      _paramProps.propReset(kOfxParamPropChoiceOption);
 #ifdef OFX_EXTENSIONS_TUTTLE
       if (_paramProps.propGetDimension(kOfxParamPropChoiceLabelOption, false) > 0) {
         _paramProps.propReset(kOfxParamPropChoiceLabelOption);
       }
 #endif
+      _paramProps.propReset(kOfxParamPropChoiceOption);
     } else {
       // Set the new entries
-      _paramProps.propSetStringN(kOfxParamPropChoiceOption, newEntries);
 #ifdef OFX_EXTENSIONS_TUTTLE
       if (!newEntriesLabel.empty()) {
         _paramProps.propSetStringN(kOfxParamPropChoiceLabelOption, newEntriesLabel, false);
       }
 #endif
+      _paramProps.propSetStringN(kOfxParamPropChoiceOption, newEntries);
     }
 
   }
