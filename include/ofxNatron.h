@@ -55,6 +55,92 @@ Valid values:
  */
 #define kNatronOfxParamStringSublabelName "NatronOfxParamStringSublabelName"
 
+/*
+  ----------------------------------------------- -----------------------------------------------------------------
+ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ Natron multi-plane definitions and extensions brought to Nuke multi-plane extensions defined in fnOfxExtensions.h:
+ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ ----------------------------------------------- -----------------------------------------------------------------
+ 
+ Definitions:
+ ------------
+ 
+ - Layer: Corresponds to 1 image plane and has a unique name
+ 
+ - Components: The "type" of data (i.e: the number of channels) contained by a Layer. This may be equal to any of the default
+ components defined by OpenFX (e.g: kOfxImageComponentRGBA) but also to the one added by fnOfxExtensions.h (namely 
+ kFnOfxImagePlaneForwardMotionVector or kFnOfxImagePlaneBackwardMotionVector) and finally to the custom planes extension
+ defined by Natron.
+ 
+ ----------------------------------------------- -----------------------------------------------------------------
+
+The Foundry multi-plane suite:
+------------------------------
+ 
+ - In The Foundry specification, some layers are paired and can be requested at the same time:
+ this is the (kFnOfxImagePlaneBackwardMotionVector, kFnOfxImagePlaneForwardMotionVector) and (kFnOfxImagePlaneStereoDisparityLeft, kFnOfxImagePlaneStereoDisparityRight) layers. A pair means both layers have the same components type and are generally rendered together.
+ These layers are the only one added by this extension.
+ 
+ - The color layer (kFnOfxImagePlaneColour) can have the default OpenFX types.
+ 
+ - The only plug-ins to support The Foundry multi-plane suite are the Furnace ones (among potentially others) and the only (known) hosts to support it are Natron and Nuke.
+ 
+ - In The Foundry multi-plane suite, the plug-in specify that it wants to operate on a motion vector plane or disparity plane by setting kFnOfxImageComponentMotionVectors or kFnOfxImageComponentStereoDisparity on the clip components during the getClipPreferences action. They do not support other planes.
+
+ - The getClipComponents action is unused.
+ 
+ - If the clip components are set to kFnOfxImageComponentMotionVectors or kFnOfxImageComponentStereoDisparity is is expected that the following render actions are called on both paired planes (the plug-in will attempt to fetch both from the render action).
+ 
+Natron modifications:
+---------------------
+ 
+ - Some file formats (OpenEXR, TIFF) allow multiple arbitrary image layers (= planes) to be embedded in a single file.
+ In the same way, a host application may want/need to use multiple arbitrary image layers into the same image stream
+ coming from a clip.
+ The multi-plane extension defined in fnOfxExtensions.h by The Foundry has nothing set in this regard and we had to come-up
+ with one.
+ 
+ A custom Layer (or plane) is defined as follows:
+ 
+ - A unique name, e.g: "RenderLayer"
+ - A set of 1 to 4 channels represented by strings, e.g: ["R","G","B","A"]
+ 
+ Typically it would be presented like this to the user in a choice parameter:
+ 
+ RenderLayer.RGBA
+ 
+ Internally instead of passing this string and parsing it, we encode the layer as such:
+ 
+ kNatronOfxImageComponentsPlane + layerName + kNatronOfxImageComponentsPlaneChannel + channel1Name + kNatronOfxImageComponentsPlaneChannel + channel2Name + kNatronOfxImageComponentsPlaneChannel + channel3Name
+ 
+ e.g: kNatronOfxImageComponentsPlane + "Position" + kNatronOfxImageComponentsPlaneChannel + "X" + kNatronOfxImageComponentsPlaneChannel + "Y" + kNatronOfxImageComponentsPlaneChannel + "Z"
+ 
+
+ Natron custom layers can be passed wherever layers are used (clipGetImage,render action) or components are used: getClipComponents. They may not be used
+ in getClipPreferences.
+ 
+ - Multi-plane effects (kFnOfxImageEffectPropMultiPlanar=1) request their layers via the getClipComponents action
+ 
+ - getClipPreferences has not changed and may only be used to specify the type of components onto which the color layer (kFnOfxImagePlaneColour) will be mapped
+ 
+ - Multi-plane effects (kFnOfxImageEffectPropMultiPlanar=1) are expected to support arbitrary component types and should not rely on the components set during getClipPreferences except for the kFnOfxImagePlaneColour layer.
+
+ - OpenFX didn't allow to pass 2-channel image natively through a clip, even for plug-ins that are not multi-plane.
+ The color layer (kFnOfxImagePlaneColour) can now have the default OpenFX types of components as well as kNatronOfxImageComponentXY to specify 2-channel images.
+ kNatronOfxImageComponentXY may be specified wherever default OpenFX components types are used. 
+ 
+
+ 
+ 
+Notes:
+------
+ 
+ - Layers are what is passed to the render action and clipGetImage function whereas components are what is used for getClipComponents and getClipPreferences
+ 
+ - In the getClipComponents action, the plug-in passes OpenFX components.
+ 
+ */
+
 
 /** @brief string property to indicate the presence of custom components on a clip in or out.
   The string should be formed as such:
