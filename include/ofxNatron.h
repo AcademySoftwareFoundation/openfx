@@ -293,17 +293,49 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 #define kNatronParamTrackingForward "trackForward"
 
 
-/** @brief String to identify a param as a Matrix 4x4 parameter. This is identical to a 16-dimensional double parameter */
-#define kNatronOfxParamTypeMatrix4x4 "NatronOfxParamTypeMatrix4x4"
+/** @brief int  property to indicate whether a double 3D parameter is associated to a matrix 3x3
+ - Type - int x 1
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write only)
+ - Valid values - 0, 1, 2, 3
+ 0: The parameter is a regular Double3D and the host should use it as any other parameter
+ 1: The parameter is the first row of the 3x3 matrix
+ 2: The parameter is the second row of the 3x3 matrix
+ 3: The parameter is the third row of the 3x3 matrix
+ 
+ The 3 parameters are identified by the host by their name: the share the same name, but they end with "_rowX", with X being replaced
+ by the 1-based index row of the matrix, e.g:
+ 
+ transform_row1
+ transform_row2
+ transform_row3
+ 
+ would be recognized by the host as a parameter of type Matrix3x3 with the name "transform".
+ In this case the properties of the host rectangle parameter are taken from the row1 parameter, except
+ for the kOfxParamPropDimensionLabel, kOfxParamPropDefault
+ */
+#define kNatronOfxParamPropDoubleTypeMatrix3x3 "NatronOfxParamTypeMatrix3x3"
 
-/** @brief String to identify a param as a Matrix 3x3 parameter. This is identical to a 9-dimensional double parameter */
-#define kNatronOfxParamTypeMatrix3x3 "NatronOfxParamTypeMatrix3x3"
 
-/** @brief String to identify a param as a Four dimensional floating point parameter */
-#define kNatronOfxParamTypeDouble4D "NatronOfxParamTypeDouble4D"
-
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating a position (x,y) and a size (width,height). See \ref ::kOfxParamPropDoubleType. */
-#define kNatronOfxParamDoubleTypeRectangle  "NatronOfxParamDoubleTypeRectangle"
+/** @brief int  property to indicate whether a double 2D parameter is associated to a rectangle [(x,y),(w,h)]
+ - Type - int x 1
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write only)
+ - Valid values - 0, 1, or 2
+  0: The parameter is a regular Double2D and the host should use its double type property
+  1: The parameter is the position component of the rectangle (x,y)
+  2: The parameter is the size component of the rectangle (w,h)
+ 
+ The 2 parameters are identified by the host by their name: the share both the same name, but one end with "_position"
+ and the other with "_size", e.g:
+ 
+ rectangle_position
+ rectangle_size
+ 
+ would be recognized by the host as a parameter of type rectangle with the name "rectangle".
+ In this case the properties of the host rectangle parameter are taken from the position component parameter, except
+ for the kOfxParamPropMin, kOfxParamPropMax, kOfxParamPropDisplayMin, kOfxParamPropDisplayMax, kOfxParamPropDimensionLabel, 
+ kOfxParamPropDefault
+ */
+#define kNatronOfxParamPropDoubleTypeRectangle  "NatronOfxParamDoubleTypeRectangle"
 
 
 
