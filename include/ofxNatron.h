@@ -292,6 +292,21 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
  bound of the timeline..*/
 #define kNatronParamTrackingForward "trackForward"
 
+
+/** @brief String to identify a param as a Matrix 4x4 parameter. This is identical to a 16-dimensional double parameter */
+#define kNatronOfxParamTypeMatrix4x4 "NatronOfxParamTypeMatrix4x4"
+
+/** @brief String to identify a param as a Matrix 3x3 parameter. This is identical to a 9-dimensional double parameter */
+#define kNatronOfxParamTypeMatrix3x3 "NatronOfxParamTypeMatrix3x3"
+
+/** @brief String to identify a param as a Four dimensional floating point parameter */
+#define kNatronOfxParamTypeDouble4D "NatronOfxParamTypeDouble4D"
+
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating a position (x,y) and a size (width,height). See \ref ::kOfxParamPropDoubleType. */
+#define kNatronOfxParamDoubleTypeRectangle  "NatronOfxParamDoubleTypeRectangle"
+
+
+
 /** @brief int  property to indicate whether a parameter is instance-specific or not.
  - Type - int x 1
  - Property Set - plugin parameter descriptor (read/write) and instance (read/write only)
