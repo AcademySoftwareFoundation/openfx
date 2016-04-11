@@ -316,11 +316,11 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 #define kNatronOfxParamPropDoubleTypeMatrix3x3 "NatronOfxParamTypeMatrix3x3"
 
 
-/** @brief int  property to indicate whether a double 2D parameter is associated to a rectangle [(x,y),(w,h)]
+/** @brief int  property to indicate whether a double or int 2D parameter is associated to a rectangle [(x,y),(w,h)]
  - Type - int x 1
  - Property Set - plugin parameter descriptor (read/write) and instance (read/write only)
  - Valid values - 0, 1, or 2
-  0: The parameter is a regular Double2D and the host should use its double type property
+  0: The parameter is a regular Int2D/Double2D and the host should use its double type property
   1: The parameter is the position component of the rectangle (x,y)
   2: The parameter is the size component of the rectangle (w,h)
  
@@ -335,7 +335,7 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
  for the kOfxParamPropMin, kOfxParamPropMax, kOfxParamPropDisplayMin, kOfxParamPropDisplayMax, kOfxParamPropDimensionLabel, 
  kOfxParamPropDefault
  */
-#define kNatronOfxParamPropDoubleTypeRectangle  "NatronOfxParamDoubleTypeRectangle"
+#define kNatronOfxParamPropTypeRectangle  "NatronOfxParamPropTypeRectangle"
 
 
 

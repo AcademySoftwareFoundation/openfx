@@ -493,6 +493,15 @@ namespace OFX {
             
             _properties.addProperties(allDouble1D);
           }
+#ifdef OFX_EXTENSIONS_NATRON
+          if (dim == 3) {
+            static const Property::PropSpec matrixType[] = {
+              { kNatronOfxParamPropDoubleTypeMatrix3x3,  Property::eInt, 1, false, "0" },
+              Property::propSpecEnd
+            };
+            _properties.addProperties(matrixType);
+          }
+#endif
         }
 
         /// if a multi dimensional param
@@ -506,6 +515,16 @@ namespace OFX {
             Property::propSpecEnd
           };  
 
+#ifdef OFX_EXTENSIONS_NATRON
+          if (dim == 2) {
+            static const Property::PropSpec rectangleType[] = {
+              { kNatronOfxParamPropTypeRectangle,  Property::eInt, 1, false, "0" },
+              Property::propSpecEnd
+            };
+            _properties.addProperties(rectangleType);
+          }
+#endif
+          
           _properties.addProperties(all2D3D);
           _properties.setStringProperty(kOfxParamPropDimensionLabel, "x", 0);
           _properties.setStringProperty(kOfxParamPropDimensionLabel, "y", 1);
