@@ -707,6 +707,28 @@ namespace OFX {
   {
   }
 
+#ifdef OFX_EXTENSIONS_NATRON
+  /**
+   * @brief Set as the
+   **/
+  void Double2DParamDescriptor::setRectanglePart(RectangleParamPartEnum rectanglePart)
+  {
+    int i;
+    switch (rectanglePart) {
+      case eRectangleParamPartNone:
+        i = 0;
+        break;
+      case eRectangleParamPartPosition:
+        i = 1;
+        break;
+      case eRectangleParamPartSize:
+        i = 2;
+        break;
+    }
+    _paramProps.propSetInt(kNatronOfxParamPropTypeRectangle, i, 0, false);
+  }
+#endif
+  
   /** @brief set the default value, default is 0 */
   void 
     Double2DParamDescriptor::setDefault(double x, double y)
@@ -759,6 +781,16 @@ namespace OFX {
     : BaseDoubleParamDescriptor(name, eDouble3DParam, props)
   {
   }
+  
+#ifdef OFX_EXTENSIONS_NATRON
+  /**
+   * @brief Set the (1-based) matrix row
+   **/
+  void Double3DParamDescriptor::setMatrixRow(int rowIndex)
+  {
+    _paramProps.propSetInt(kNatronOfxParamPropDoubleTypeMatrix3x3, rowIndex, 0, false);
+  }
+#endif
 
   /** @brief set the default value, default is 0 */
   void 

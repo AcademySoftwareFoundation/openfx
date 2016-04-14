@@ -543,6 +543,22 @@ namespace OFX {
         friend class ParamSetDescriptor;
 
     public :
+      
+      
+#ifdef OFX_EXTENSIONS_NATRON
+        enum RectangleParamPartEnum
+        {
+          eRectangleParamPartNone,
+          eRectangleParamPartPosition,
+          eRectangleParamPartSize
+        };
+      
+        /**
+         * @brief Set as the
+         **/
+        void setRectanglePart(RectangleParamPartEnum rectanglePart);
+#endif
+      
         /** @brief set the dimension labels */
         void setDimensionLabels(const std::string &x,
                                 const std::string &y);
@@ -578,6 +594,14 @@ namespace OFX {
         friend class ParamSetDescriptor;
 
     public :
+      
+#ifdef OFX_EXTENSIONS_NATRON
+        /**
+         * @brief Set the (1-based) matrix row
+         **/
+        void setMatrixRow(int rowIndex);
+#endif
+      
         /** @brief set the dimension labels */
         void setDimensionLabels(const std::string &x,
                                 const std::string &y,
