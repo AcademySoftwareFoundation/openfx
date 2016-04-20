@@ -49,7 +49,7 @@ ifeq ($(DEBUGFLAG),-O3)
   DEBUGNAME = release
 endif
 
-ifeq ($(OS),$(filter $(OS),MINGW64_NT-6.1 MINGW32_NT-6.1))
+ifeq ($(OS),$(filter $(OS),MINGW64_NT-6.1 MINGW32_NT-6.1 MINGW64_NT-6.2 MINGW32_NT-6.2 MINGW64_NT-6.3 MINGW32_NT-6.3 MINGW64_NT-10.0 MINGW32_NT-10.0))
   PLUGINPATH=C:\\Program Files\\Common Files\\OFX\\Plugins
 endif
 ifeq ($(OS),Linux)
@@ -90,7 +90,7 @@ install:
 uninstall:
 	rm -rf "$(PLUGINPATH)/$(PLUGINNAME).ofx.bundle"
 
-  ifeq ($(OS),$(filter $(OS),MINGW64_NT-6.1 MINGW32_NT-6.1))
+  ifeq ($(OS),$(filter $(OS),MINGW64_NT-6.1 MINGW32_NT-6.1 MINGW64_NT-6.2 MINGW32_NT-6.2 MINGW64_NT-6.3 MINGW32_NT-6.3 MINGW64_NT-10.0 MINGW32_NT-10.0))
     LINKFLAGS = -shared -fvisibility=hidden -Xlinker --version-script=$(PATHTOROOT)/include/linuxSymbols -lopengl32
     ARCH = Win32
     BITSFLAG = -m32
