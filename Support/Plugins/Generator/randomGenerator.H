@@ -34,7 +34,7 @@
 /* 2005, re-editted by B. Nicoletti to be C++ and to carry the seed with it */
 
 
-#ifdef _WINDOWS
+#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
 #define uint32_t unsigned int
 #else
 #include <stdint.h> // for uint32_t
