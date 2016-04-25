@@ -127,6 +127,8 @@ the current action
 use OpenGL, so the effect SHOULD access all its images through the
 OpenGL suite.
 
+v1.4:  kOfxImageEffectPropOpenGLEnabled should probably be checked in Instance Changed prior to try to read image via clipLoadTexture
+
 */
 #define kOfxImageEffectPropOpenGLEnabled "OfxImageEffectPropOpenGLEnabled"
 
@@ -270,8 +272,8 @@ returns
 
   OfxStatus (*clipLoadTexture)(OfxImageClipHandle clip,
                                OfxTime       time,
-			       const char   *format,
-                               OfxRectD     *region,
+                               const char   *format,
+                               const OfxRectD     *region,
                                OfxPropertySetHandle   *textureHandle);
 
   /** @brief Releases the texture handle previously returned by

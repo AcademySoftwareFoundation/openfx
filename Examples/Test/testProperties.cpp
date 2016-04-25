@@ -35,12 +35,22 @@ run it through a c beautifier or emacs auto formating, automagic indenting will 
 */
 #include <string> // stl strings
 #include <map> // stl maps
+#include <stdexcept>
+#include <iostream>
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
 #include "ofxMessage.h"
 
 #include "ofxLog.H"
+
+#if defined __APPLE__ || defined linux || defined __FreeBSD__
+#  define EXPORT __attribute__((visibility("default")))
+#elif defined _WIN32
+#  define EXPORT OfxExport
+#else
+#  error Not building on your operating system quite yet
+#endif
 
 static OfxHost               *gHost;
 static OfxImageEffectSuiteV1 *gEffectSuite;
@@ -53,10 +63,10 @@ static OfxMessageSuiteV1     *gMessageSuite;
 
 ////////////////////////////////////////////////////////////////////////////////
 // fetch a suite
-static void *
-fetchSuite(char *suiteName, int suiteVersion, bool optional = false)
+static const void *
+fetchSuite(const char *suiteName, int suiteVersion, bool optional = false)
 {
-  void *suite = gHost->fetchSuite(gHost->host, suiteName, suiteVersion);
+  const void *suite = gHost->fetchSuite(gHost->host, suiteName, suiteVersion);
   if(optional)
     OFX::logWarning(suite == 0, "Could not fetch the optional suite '%s' version %d;", suiteName, suiteVersion);
   else
@@ -75,8 +85,8 @@ protected :
   
 public :
   PropertySet(OfxPropertySetHandle h = 0) 
-    : _propHandle(h)
-    , _propLogMessages(0)
+    : _propLogMessages(0)
+    , _propHandle(h)
   {}
   
   virtual ~PropertySet();
@@ -114,13 +124,13 @@ struct PropertyValueOnion {
   void  *vPointer;
   
   PropertyValueOnion(void) {}
-  PropertyValueOnion(char  *s) : vString(s) {}
+  PropertyValueOnion(const char  *s) : vString(s) {}
   PropertyValueOnion(int    i) : vInt(i) {}
   PropertyValueOnion(double d) : vDouble(d) {}
   PropertyValueOnion(void  *p) : vPointer(p) {}
   
-  PropertyValueOnion &operator = (char *v)  {vString = v; return *this;}
-  PropertyValueOnion &operator = (std::string v)  {vString = v; return *this;}
+  PropertyValueOnion &operator = (const char *v)  {vString = v; return *this;}
+  PropertyValueOnion &operator = (const std::string &v)  {vString = v; return *this;}
   PropertyValueOnion &operator = (void *v)  {vPointer = v; return *this;}
   PropertyValueOnion &operator = (int v)    {vInt = v; return *this;}
   PropertyValueOnion &operator = (double v) {vDouble = v; return *this;}
@@ -141,7 +151,7 @@ public :
                  eInt,
                  eString,
                  eDouble};
-  char *   _name;
+  const char * _name;
   int      _dimension;        // -1 implies variable dim
   TypeEnum _ilk;
   
@@ -158,14 +168,14 @@ protected :
   
   // set basic beets
   template <class T> void
-  initialise( char *nm, int dim, TypeEnum ilk,
-              T *wantedVals, int nWantedVals, T *defs, int nDefs)
+  initialise( const char *nm, int dim, TypeEnum ilk,
+              const T *wantedVals, int nWantedVals, const T *defs, int nDefs)
   {
     _name = nm;
     _dimension = dim;
     _ilk = ilk;
     _defs = _wantedVals = _currentVals = 0;
-    _nDefs = nWantedVals = _nCurrentVals = 0;
+    _nDefs = _nWantedVals = _nCurrentVals = 0;
     
     // make the default and value arrays and set them
     if(nWantedVals) {
@@ -191,13 +201,13 @@ public :
   }
   
   // multi dimension string prop
-  PropertyDescription(char *nm, int dim,  char **wantedVals, int nV,  char **defs, int nD)
+  PropertyDescription(const char *nm, int dim,  const char * const *wantedVals, int nV,  const char * const *defs, int nD)
   {
     initialise(nm, dim, eString, wantedVals, nV, defs, nD);
   }
   
   // single dimension string prop
-  PropertyDescription(char *nm, int dim,  char *value, bool setValue,  char *def, bool hasDefault) 
+  PropertyDescription(const char *nm, int dim,  const char *value, bool setValue,  const char *def, bool hasDefault)
   {
     initialise(nm, dim, eString,
                &value, setValue ? 1 : 0,
@@ -205,13 +215,13 @@ public :
   }
   
   // multi dimension int prop
-  PropertyDescription(char *nm, int dim, int  *wantedVals, int nV, int *defs, int nD)
+  PropertyDescription(const char *nm, int dim, const int  *wantedVals, int nV, const int *defs, int nD)
   {
     initialise(nm, dim, eInt, wantedVals, nV, defs, nD);
   }
   
   // single dimension int prop
-  PropertyDescription(char *nm, int dim, int value, bool setValue, int def, bool hasDefault) 
+  PropertyDescription(const char *nm, int dim, int value, bool setValue, int def, bool hasDefault)
   {
     initialise(nm, dim, eInt,
                &value, setValue ? 1 : 0,
@@ -219,13 +229,13 @@ public :
   }
   
   // multi dimension double prop
-  PropertyDescription(char *nm, int dim, double  *wantedVals, int nV, double *defs, int nD)
+  PropertyDescription(const char *nm, int dim, const double  *wantedVals, int nV, const double *defs, int nD)
   {
     initialise(nm, dim, eDouble, wantedVals, nV, defs, nD);
   }
   
   // single dimension double prop
-  PropertyDescription(char *nm, int dim, double value, bool setValue, double def, bool hasDefault) 
+  PropertyDescription(const char *nm, int dim, double value, bool setValue, double def, bool hasDefault)
   {
     initialise(nm, dim, eDouble,
                &value, setValue ? 1 : 0,
@@ -233,7 +243,7 @@ public :
   }
   
   // single dimension pointer prop
-  PropertyDescription(char *nm, int dim, void *value, bool setValue, void *def, bool hasDefault)
+  PropertyDescription(const char *nm, int dim, void *value, bool setValue, void *def, bool hasDefault)
   {
     initialise(nm, dim, ePointer,
                &value, setValue ? 1 : 0,
@@ -251,14 +261,14 @@ public :
 // Describes a set of properties
 class PropertySetDescription : PropertySet {
 protected :
-  char                  *_setName;
+  const char            *_setName;
   PropertyDescription   *_descriptions;
   int                   _nDescriptions;
   
   std::map<std::string, PropertyDescription *> _descriptionsByName;
   
 public :
-  PropertySetDescription(char *setName, OfxPropertySetHandle handle, PropertyDescription *v, int nV);
+  PropertySetDescription(const char *setName, OfxPropertySetHandle handle, PropertyDescription *v, int nV);
   void checkProperties(bool logOrdinaryMessages = false); // see if they are there in the first place
   void checkDefaults(bool logOrdinaryMessages = false);   // check default values
   void retrieveValues(bool logOrdinaryMessages = false);  // get current values on the host
@@ -275,7 +285,7 @@ public :
 
 ////////////////////////////////////////////////////////////////////////////////
 // maps status to a string
-static char *
+static const char *
 mapStatus(OfxStatus stat)
 {
   switch(stat) {    
@@ -496,7 +506,8 @@ void PropertyDescription::checkDefault(PropertySet &propSet)
     // fetch the dimension on the host
     int hostDimension;
     OfxStatus stat = propSet.propGetDimension(_name, hostDimension);
-    
+    (void)stat;
+
     OFX::logError(hostDimension != _nDefs, "Host reports default dimension of '%s' is %d, which is different to the default value %d;", _name, hostDimension, _nDefs);
     
     int N = hostDimension < _nDefs ? hostDimension : _nDefs;
@@ -522,7 +533,7 @@ void PropertyDescription::checkDefault(PropertySet &propSet)
         break;
       case PropertyDescription::eDouble  :
         propSet.propGet(_name, vD, i); 
-        OFX::logError(vD != (double) _defs[i], "Default value of %s[%d] = %g, it should be %g;", _name, i, vP, (double) _defs[i]);
+        OFX::logError(vD != (double) _defs[i], "Default value of %s[%d] = %g, it should be %g;", _name, i, vD, (double) _defs[i]);
         break;
       }
     }
@@ -564,7 +575,7 @@ PropertyDescription::retrieveValue(PropertySet &propSet)
           if(stat == kOfxStatOK)
                                   _currentVals[i] = vS;
                                   else
-                                        _currentVals[i] =_currentVals[i] = std::string("");
+                                        _currentVals[i] = std::string("");
 	  break;
       case PropertyDescription::eDouble  :
         stat = propSet.propGet(_name, vD, i); 
@@ -638,7 +649,7 @@ PropertyDescription::setValue(PropertySet &propSet)
 
 ////////////////////////////////////////////////////////////////////////////////
 // a set of property descriptions
-PropertySetDescription::PropertySetDescription(char *setName, OfxPropertySetHandle handle, PropertyDescription *v, int nV)
+PropertySetDescription::PropertySetDescription(const char *setName, OfxPropertySetHandle handle, PropertyDescription *v, int nV)
   : PropertySet(handle)
   , _setName(setName)
   , _descriptions(v)
@@ -723,7 +734,6 @@ PropertySetDescription::setValues(bool logOrdinaryMessages)
 PropertyDescription *
 PropertySetDescription::findDescription(const std::string &name)
 {
-  PropertyDescription *desc = 0;
   std::map<std::string, PropertyDescription *>::iterator iter;
   iter = _descriptionsByName.find(name);
   if (iter != _descriptionsByName.end()) {
@@ -737,7 +747,8 @@ int
 PropertySetDescription::intPropValue(const std::string &name, int idx)
 {
   PropertyDescription *desc = 0;
-  if(desc = findDescription(name)) {
+  desc = findDescription(name);
+  if(desc) {
     if(idx < desc->_nCurrentVals) {
       return int(desc->_currentVals[idx]);
     }
@@ -787,11 +798,11 @@ public :
   int supportsMultipleClipPARs;
   int supportsSetableFrameRate;
   int supportsSetableFielding;
+  int supportsCustomAnimation;
   int supportsStringAnimation;
   int supportsCustomInteract;
   int supportsChoiceAnimation;
   int supportsBooleanAnimation;
-  int supportsCustomAnimation;
   int maxParameters;
   int maxPages;
   int pageRowCount;
@@ -933,7 +944,7 @@ actionLoad(void)
 static OfxStatus
 unLoadAction(void)
 {
-  OFX::logError(gLoadCount != 0, "UnLoad action called without a corresponding load action having been called;");
+  OFX::logError(gLoadCount <= 0, "UnLoad action called without a corresponding load action having been called;");
   gLoadCount--;
   
   // force these to null
@@ -949,28 +960,28 @@ unLoadAction(void)
 
 //  instance construction
 static OfxStatus
-createInstance( OfxImageEffectHandle effect)
+createInstance( OfxImageEffectHandle /*effect*/)
 {
   return kOfxStatOK;
 }
 
 // instance destruction
 static OfxStatus
-destroyInstance( OfxImageEffectHandle  effect)
+destroyInstance( OfxImageEffectHandle  /*effect*/)
 {
   return kOfxStatOK;
 }
 
 // tells the host what region we are capable of filling
 OfxStatus 
-getSpatialRoD( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+getSpatialRoD( OfxImageEffectHandle  /*effect*/,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle /*outArgs*/)
 {
   return kOfxStatOK;
 }
 
 // tells the host how much of the input we need to fill the given window
 OfxStatus 
-getSpatialRoI( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+getSpatialRoI( OfxImageEffectHandle  /*effect*/,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle /*outArgs*/)
 {
   return kOfxStatOK;
 }
@@ -979,7 +990,7 @@ getSpatialRoI( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxP
 // This is actually redundant as this is the default behaviour, but for illustrative
 // purposes.
 OfxStatus 
-getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+getTemporalDomain( OfxImageEffectHandle  /*effect*/,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle /*outArgs*/)
 {
   return kOfxStatOK;
 }
@@ -987,16 +998,16 @@ getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  
 
 // Set our clip preferences 
 static OfxStatus 
-getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+getClipPreferences( OfxImageEffectHandle  /*effect*/,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle /*outArgs*/)
 {
   return kOfxStatOK;
 }
 
 // are the settings of the effect performing an identity operation
 static OfxStatus
-isIdentity( OfxImageEffectHandle effect,
-            OfxPropertySetHandle inArgs,
-            OfxPropertySetHandle outArgs)
+isIdentity( OfxImageEffectHandle /*effect*/,
+            OfxPropertySetHandle /*inArgs*/,
+            OfxPropertySetHandle /*outArgs*/)
 {
   // In this case do the default, which in this case is to render 
   return kOfxStatReplyDefault;
@@ -1005,26 +1016,29 @@ isIdentity( OfxImageEffectHandle effect,
 ////////////////////////////////////////////////////////////////////////////////
 // function called when the instance has been changed by anything
 static OfxStatus
-instanceChanged( OfxImageEffectHandle  effect,
-                 OfxPropertySetHandle inArgs,
-                 OfxPropertySetHandle outArgs)
+instanceChanged( OfxImageEffectHandle  /*effect*/,
+                 OfxPropertySetHandle /*inArgs*/,
+                 OfxPropertySetHandle /*outArgs*/)
 {
   // don't trap any others
   return kOfxStatReplyDefault;
 }
 
 // the process code  that the host sees
-static OfxStatus render(OfxImageEffectHandle  instance,
-                        OfxPropertySetHandle inArgs,
-                        OfxPropertySetHandle outArgs)
+static OfxStatus render(OfxImageEffectHandle  /*instance*/,
+                        OfxPropertySetHandle /*inArgs*/,
+                        OfxPropertySetHandle /*outArgs*/)
 {  
   return kOfxStatOK;
 }
 
 //  describe the plugin in context
 static OfxStatus
-describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
+describeInContext( OfxImageEffectHandle  /*effect*/,  OfxPropertySetHandle /*inArgs*/)
 {
+  if (!OFX::logOpenFile()) {
+    std::cout << "Error: OFX Test Properties plugin cannot open log file " << OFX::logGetFileName() << std::endl;
+  }
   return kOfxStatOK;
 }
 
@@ -1032,7 +1046,7 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
 // code for the plugin's description routine
 
 // contexts we can be 
-static char *gSupportedContexts[] =
+static const char *gSupportedContexts[] =
   {
     kOfxImageEffectContextGenerator,
     kOfxImageEffectContextFilter,
@@ -1043,7 +1057,7 @@ static char *gSupportedContexts[] =
   };
 
 // pixel depths we can be
-static char *gSupportedPixelDepths[] =
+static const char *gSupportedPixelDepths[] =
   {
     kOfxBitDepthByte,
     kOfxBitDepthShort,
@@ -1058,7 +1072,7 @@ static PropertyDescription gPluginPropertyDescriptions[] =
     PropertyDescription(kOfxPropShortLabel,                              1, "OFX Test Props",               true,  "",                             false),
     PropertyDescription(kOfxPropLongLabel,                               1, "OFX Test Properties",          true,  "",                             false),
     PropertyDescription(kOfxPluginPropFilePath,                          1, "",                             false, "",                             false),
-    PropertyDescription(kOfxImageEffectPluginPropGrouping,               1, "OFX Test",                     true,  "",                             false),
+    PropertyDescription(kOfxImageEffectPluginPropGrouping,               1, "OFX Example",                  true,  "",                             false),
     PropertyDescription(kOfxImageEffectPluginPropSingleInstance,         1, 0,                              true,  0,                              true),
     PropertyDescription(kOfxImageEffectPluginRenderThreadSafety,         1, kOfxImageEffectRenderFullySafe, true,  kOfxImageEffectRenderFullySafe, true),
     PropertyDescription(kOfxImageEffectPluginPropHostFrameThreading,     1, 0,                              true,  0,                              true),
@@ -1153,9 +1167,11 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgsH
     }
     else if(OFX::strEquals(action, kOfxActionCreateInstance)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, true, true);
+      stat = createInstance(effectHandle);
     }
     else if(OFX::strEquals(action, kOfxActionDestroyInstance)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, true, true);
+      stat = destroyInstance(effectHandle);
     }
     else if(OFX::strEquals(action, kOfxActionInstanceChanged)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, false, true);
@@ -1165,6 +1181,7 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgsH
     }
     else if(OFX::strEquals(action, kOfxActionEndInstanceChanged)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, false, true);
+      stat = instanceChanged(effectHandle, inArgsHandle, outArgsHandle);
     }
     else if(OFX::strEquals(action, kOfxActionBeginInstanceEdit)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, true, true);
@@ -1186,12 +1203,15 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgsH
     }
     else if(OFX::strEquals(action, kOfxImageEffectActionGetClipPreferences)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, false, false);
+      stat = getClipPreferences(effectHandle, inArgsHandle, outArgsHandle);
     }
     else if(OFX::strEquals(action, kOfxImageEffectActionIsIdentity)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, false, false);
+      stat = isIdentity(effectHandle, inArgsHandle, outArgsHandle);
     }
     else if(OFX::strEquals(action, kOfxImageEffectActionRender)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, false, true);
+      stat = render(effectHandle, inArgsHandle, outArgsHandle);
     }
     else if(OFX::strEquals(action, kOfxImageEffectActionBeginSequenceRender)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, false, true);
@@ -1201,17 +1221,28 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgsH
     }
     else if(OFX::strEquals(action, kOfxImageEffectActionDescribeInContext)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, false, true);
+      stat = describeInContext(effectHandle, inArgsHandle);
     }
     else {
-      OFX::logError("Unknown action '%s';", action);
+      OFX::logError(true, "Unknown action '%s';", action);
     }
+  } catch (std::bad_alloc) {
+    // catch memory
+    OFX::logError(true, "OFX Plugin Memory error;");
+    stat = kOfxStatErrMemory;
+  } catch ( const std::exception& e ) {
+    // standard exceptions
+    OFX::logError(true, "OFX Plugin error: '%s';", e.what());
+    stat = kOfxStatErrUnknown;
+  } catch (int err) {
+    // ho hum, gone wrong somehow
+    OFX::logError(true, "OFX Plugin error: '%s';", mapStatus(err));
+    stat = err;
+  } catch ( ... ) {
+    // everything else
+    OFX::logError(true, "OFX Plugin error;");
+    stat = kOfxStatErrUnknown;
   }
-  
-  catch (int err)
-    {
-      // ho hum, gone wrong somehow
-      stat = err;
-    }
   
   OFX::logPrint("}pluginMain - stop;");
   
@@ -1243,7 +1274,7 @@ static OfxPlugin basicPlugin =
   };
 
 // the two mandated functions
-OfxPlugin *
+EXPORT OfxPlugin *
 OfxGetPlugin(int nth)
 {
   OFX::logPrint("OfxGetPlugin - start();\n{");
@@ -1255,7 +1286,7 @@ OfxGetPlugin(int nth)
   return 0;
 }
 
-int
+EXPORT int
 OfxGetNumberOfPlugins(void)
 {       
   OFX::logPrint("OfxGetNumberOfPlugins - start();\n{");

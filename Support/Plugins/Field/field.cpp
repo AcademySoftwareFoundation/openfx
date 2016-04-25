@@ -39,12 +39,6 @@ England
 #include <windows.h>
 #endif
 
-#ifdef __APPLE__
-#include <AGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-
 #include <iostream>
 #include <stdio.h>
 #include "ofxsImageEffect.h"
@@ -139,8 +133,8 @@ public :
     , dstClip_(0)
     , srcClip_(0)
   {
-    dstClip_ = fetchClip("Output");
-    srcClip_ = fetchClip("Source");
+    dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
+    srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
   }
 
   /* Override the render */
@@ -228,6 +222,8 @@ FieldPlugin::render(const OFX::RenderArguments &args)
       setupAndProcess(fred, args);
     }
     break;
+    default :
+      OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   }
   else 
@@ -243,7 +239,7 @@ FieldPlugin::render(const OFX::RenderArguments &args)
       
     case OFX::eBitDepthUShort : 
     {
-      ImageFielder<unsigned short, 1, 65536> fred(*this, field);
+      ImageFielder<unsigned short, 1, 65535> fred(*this, field);
       setupAndProcess(fred, args);
     }                          
     break;
@@ -254,6 +250,8 @@ FieldPlugin::render(const OFX::RenderArguments &args)
       setupAndProcess(fred, args);
     }                          
     break;
+    default :
+      OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   } 
 }
@@ -285,11 +283,11 @@ void FieldExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.setSupportsMultipleClipPARs(false);
 }
 
-void FieldExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context)
+void FieldExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum /*context*/)
 {
   // Source clip only in the filter context
   // create the mandated source clip
-  ClipDescriptor *srcClip = desc.defineClip("Source");
+  ClipDescriptor *srcClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
   srcClip->addSupportedComponent(ePixelComponentRGBA);
   srcClip->addSupportedComponent(ePixelComponentAlpha);
   srcClip->setTemporalClipAccess(false);
@@ -298,14 +296,14 @@ void FieldExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &de
   srcClip->setFieldExtraction(eFieldExtractSingle);
 
   // create the mandated output clip
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
   dstClip->setSupportsTiles(true);
 
 }
 
-OFX::ImageEffect* FieldExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context)
+OFX::ImageEffect* FieldExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum /*context*/)
 {
   return new FieldPlugin(handle);
 }
@@ -316,7 +314,7 @@ namespace OFX
   {  
     void getPluginIDs(OFX::PluginFactoryArray &ids)
     {
-      static FieldExamplePluginFactory p("net.sf.openfx:fieldPlugin", 1, 0);
+      static FieldExamplePluginFactory p("net.sf.openfx.fieldPlugin", 1, 0);
       ids.push_back(&p);
     }
   }

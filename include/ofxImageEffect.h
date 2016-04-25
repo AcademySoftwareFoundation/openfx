@@ -77,14 +77,6 @@ typedef struct OfxImageMemoryStruct *OfxImageMemoryHandle;
 /** @brief String to label images with only Alpha components */
 #define kOfxImageComponentAlpha "OfxImageComponentAlpha"
 
-/** @brief String to label images with YUVA components
-
-Note, this has been deprecated.
-#define kOfxImageComponentYUVA "OfxImageComponentYUVA"
-removed in v1.4
- */
-
-
 /** @brief Use to define the generator image effect context. See \ref ::kOfxImageEffectPropContext
  */
 #define kOfxImageEffectContextGenerator "OfxImageEffectContextGenerator"
@@ -435,7 +427,7 @@ Multiple resolution images mean...
 /** @brief Indicates whether a clip, plugin or host supports tiled images
 
    - Type - int X 1
-   - Property Set - host descriptor (read only), plugin descriptor (read/write), clip descriptor (read/write)
+   - Property Set - host descriptor (read only), plugin descriptor (read/write), clip descriptor (read/write), instance (read/write)
    - Default - to 1 for a plugin and clip
    - Valid Values - This must be one of 0 or 1
 
@@ -443,21 +435,9 @@ Tiled images mean that input or output images can contain pixel data that is onl
 
 If a clip or plugin does not support tiled images, then the host should supply full RoD images to the effect whenever it fetches one.
 
-V1.4:  It is now possible to change OfxImageEffectPropSupportsTiles in Instance Changed 
+V1.4:  It is now possible (defined) to change OfxImageEffectPropSupportsTiles in Instance Changed 
 */
 #define kOfxImageEffectPropSupportsTiles "OfxImageEffectPropSupportsTiles"
-
-/** @brief Indicates whether an effect is performing an analysis pass.
-
-   - Type - int X 1
-   - Property Set -  plugin instance (read/write)
-   - Default - to 0
-   - Valid Values - This must be one of 0 or 1
-
-This feature has been deprecated - officially commented out v1.4.
-#define kOfxImageEffectPropInAnalysis "OfxImageEffectPropInAnalysis"
-
-*/
 
 
 /** @brief Indicates support for random temporal access to images in a clip.
@@ -498,6 +478,7 @@ On a clip, it indicates that the clip needs temporal access to images.
        - kOfxBitDepthNone (implying a clip is unconnected, not valid for an image)
        - kOfxBitDepthByte
        - kOfxBitDepthShort
+       - kOfxBitDepthHalf
        - kOfxBitDepthFloat
 
 Note that for a clip, this is the value set by the clip preferences action, not the raw 'actual' value of the clip.
@@ -552,6 +533,7 @@ errors the frame rate should then be set to 0.
        - kOfxBitDepthNone (implying a clip is unconnected image)
        - kOfxBitDepthByte
        - kOfxBitDepthShort
+       - kOfxBitDepthHalf
        - kOfxBitDepthFloat
 
 This is the actual value of the component depth, before any mapping by clip preferences.
@@ -602,6 +584,7 @@ See the documentation on clip preferences for more details on how this is used w
        - kOfxBitDepthNone (implying a clip is unconnected, not valid for an image)
        - kOfxBitDepthByte
        - kOfxBitDepthShort
+       - kOfxBitDepthHalf
        - kOfxBitDepthFloat
 
 The default for a plugin is to have none set, the plugin \em must define at least one in its describe action.
@@ -750,6 +733,16 @@ or input image changes. For example a generater that creates random noise pixel 
         - ::kOfxImageEffectActionIsIdentity
         - ::kOfxImageEffectActionGetRegionOfDefinition
         - ::kOfxImageEffectActionGetRegionsOfInterest
+        - ::kOfxActionInstanceChanged
+        - ::kOfxInteractActionDraw
+        - ::kOfxInteractActionPenMotion
+        - ::kOfxInteractActionPenDown
+        - ::kOfxInteractActionPenUp
+        - ::kOfxInteractActionKeyDown
+        - ::kOfxInteractActionKeyUp
+        - ::kOfxInteractActionKeyRepeat
+        - ::kOfxInteractActionGainFocus
+        - ::kOfxInteractActionLoseFocus
 
 This should be applied to any spatial parameters to position them correctly. Not that the 'x' value does not include any pixel aspect ratios.
 */
@@ -1013,6 +1006,9 @@ This will be in \ref PixelCoordinates
 /** @brief String that is the name of the 'from' clip in the OFX transition context */
 #define kOfxImageEffectTransitionSourceToClipName "SourceTo"
 
+/** @brief the name of the mandated 'Transition' param for the transition context */
+#define kOfxImageEffectTransitionParamName "Transition"
+
 /** @brief the name of the mandated 'SourceTime' param for the retime context */
 #define kOfxImageEffectRetimerParamName "SourceTime"
 
@@ -1151,7 +1147,7 @@ If clipGetImage is called twice with the same parameters, then two separate imag
   */
   OfxStatus (*clipGetImage)(OfxImageClipHandle clip,
 			    OfxTime       time,
-			    OfxRectD     *region,
+			    const OfxRectD     *region,
 			    OfxPropertySetHandle   *imageHandle);
   
   /** @brief Releases the image handle previously returned by clipGetImage

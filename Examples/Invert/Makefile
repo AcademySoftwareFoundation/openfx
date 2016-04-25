@@ -1,7 +1,6 @@
-CXXFLAGS = -I../../include
-OPTIMIZER = -O3
+PLUGINOBJECTS = invert.o
+PLUGINNAME = invert
+PATHTOROOT = ../
 
-invert.dso : invert.o
-	$(CXX) -shared invert.o -o invert.dso
-	strip -fhls invert.dso
+include ../Makefile.master
 

@@ -27,6 +27,10 @@
     <listitem><link linkend="kOfxParamHostPropPageRowColumnCount">kOfxParamHostPropPageRowColumnCount</link> - (read only) the number of rows and columns on a page parameter</listitem>
     <listitem><link linkend="kOfxPropHostOSHandle">kOfxPropHostOSHandle</link> - (read only) a pointer to an OS specific application handle (eg: the root hWnd on Windows) </listitem>
     <listitem><link linkend="kOfxParamHostPropSupportsParametricAnimation">kOfxParamHostPropSupportsParametricAnimation</link> - (read only) does the host support animation of parametric parameters</listitem>
+    <listitem><link linkend="kOfxImageEffectInstancePropSequentialRender">kOfxImageEffectInstancePropSequentialRender</link> - (read only) does the host support sequential rendering</listitem>
+    <listitem><link linkend="kOfxImageEffectPropOpenGLRenderSupported">kOfxImageEffectPropOpenGLRenderSupported</link> - (read only) does the host support OpenGL accelerated rendering</listitem>
+    <listitem><link linkend="kOfxImageEffectPropRenderQualityDraft">kOfxImageEffectPropRenderQualityDraft</link> - (read only) does the host support draft quality rendering</listitem>
+    <listitem><link linkend="kOfxImageEffectHostPropNativeOrigin">kOfxImageEffectHostPropNativeOrigin</link> - (read only) native origin of the host</listitem>
   </itemizedlist>
 </section>
 
@@ -55,6 +59,7 @@
     <listitem><link linkend="kOfxImageEffectPropSupportsMultipleClipPARs">kOfxImageEffectPropSupportsMultipleClipPARs</link> - (read/write)</listitem>
     <listitem><link linkend="kOfxImageEffectPluginRenderThreadSafety">kOfxImageEffectPluginRenderThreadSafety</link> - (read/write)</listitem>
     <listitem><link linkend="kOfxImageEffectPropClipPreferencesSlaveParam">kOfxImageEffectPropClipPreferencesSlaveParam</link> - (read/write)</listitem>
+    <listitem><link linkend="kOfxImageEffectPropOpenGLRenderSupported">kOfxImageEffectPropOpenGLRenderSupported</link> - (read and write)</listitem>
     <listitem><link linkend="kOfxPluginPropFilePath">kOfxPluginPropFilePath</link> (read only)</listitem>
   </itemizedlist>
 </section>
@@ -71,6 +76,8 @@
     <listitem><link linkend="kOfxImageEffectPropProjectPixelAspectRatio">kOfxImageEffectPropProjectPixelAspectRatio</link> - (read only)</listitem>
     <listitem><link linkend="kOfxImageEffectInstancePropEffectDuration">kOfxImageEffectInstancePropEffectDuration</link> - (read only)</listitem>
     <listitem><link linkend="kOfxImageEffectInstancePropSequentialRender">kOfxImageEffectInstancePropSequentialRender</link> - (read and write)</listitem>
+    <listitem><link linkend="kOfxImageEffectPropSupportsTiles">kOfxImageEffectPropSupportsTiles</link> - (read/write)</listitem>
+    <listitem><link linkend="kOfxImageEffectPropOpenGLRenderSupported">kOfxImageEffectPropOpenGLRenderSupported</link> - (read and write)</listitem>
     <listitem><link linkend="kOfxImageEffectPropFrameRate">kOfxImageEffectPropFrameRate</link> - (read only) </listitem>
     <listitem><link linkend="kOfxPropIsInteractive">kOfxPropIsInteractive</link> - (read only)</listitem>
   </itemizedlist>
@@ -157,7 +164,6 @@
       <listitem><link linkend="kOfxPropLongLabel">kOfxPropLongLabel</link> read/write in the descriptor and instance</listitem>
       <listitem><link linkend="kOfxParamPropType">kOfxParamPropType</link>read only in the descriptor and instance, the value is set on construction</listitem>
       <listitem><link linkend="kOfxParamPropSecret">kOfxParamPropSecret</link> read/write in the descriptor and instance</listitem>
-      <listitem><link linkend="kOfxParamPropCanUndo">kOfxParamPropCanUndo</link> read/write in the descriptor, read only on an instance </listitem>
       <listitem><link linkend="kOfxParamPropHint">kOfxParamPropHint</link> read/write in the descriptor and instance</listitem>
       <listitem><link linkend="kOfxParamPropScriptName">kOfxParamPropScriptName</link> read/write in the descriptor, read only on an instance</listitem>
       <listitem><link linkend="kOfxParamPropParent">kOfxParamPropParent</link> read/write in the descriptor, read only on an instance</listitem>
@@ -294,7 +300,6 @@
     <listitem><link linkend="kOfxPropInstanceData">kOfxPropInstanceData</link> read/write only</listitem>
     <listitem><link linkend="kOfxInteractPropPixelScale">kOfxInteractPropPixelScale</link> read only</listitem>
     <listitem><link linkend="kOfxInteractPropBackgroundColour">kOfxInteractPropBackgroundColour</link> read only</listitem>
-    <listitem><link linkend="kOfxInteractPropViewportSize">kOfxInteractPropViewportSize</link> read only</listitem>
     <listitem><link linkend="kOfxInteractPropHasAlpha">kOfxInteractPropHasAlpha</link> read only</listitem>
     <listitem><link linkend="kOfxInteractPropBitDepth">kOfxInteractPropBitDepth</link> read only</listitem>
     <listitem><link linkend="kOfxInteractPropSlaveToParam">kOfxInteractPropSlaveToParam</link> read/write</listitem>

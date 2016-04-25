@@ -42,12 +42,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     - how spatially based effects should scale parameters appropriately.
     - premultiplication
  */
-#include <string.h>
+#include <cstring>
+#include <stdexcept>
+#include <new>
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
 
 #include "../include/ofxUtilities.H" // example support utils
+
+#if defined __APPLE__ || defined linux || defined __FreeBSD__
+#  define EXPORT __attribute__((visibility("default")))
+#elif defined _WIN32
+#  define EXPORT OfxExport
+#else
+#  error Not building on your operating system quite yet
+#endif
 
 template <class T> inline T Maximum(T a, T b) {return a > b ? a : b;}
 template <class T> inline T Minimum(T a, T b) {return a < b ? a : b;}
@@ -134,8 +144,8 @@ createInstance(OfxImageEffectHandle effect)
 
   // cache away clip handles
   if( myData->context  != eIsGenerator)
-    gEffectHost->clipGetHandle(effect, "Source", &myData->sourceClip, 0);
-  gEffectHost->clipGetHandle(effect, "Output", &myData->outputClip, 0);
+    gEffectHost->clipGetHandle(effect, kOfxImageEffectSimpleSourceClipName, &myData->sourceClip, 0);
+  gEffectHost->clipGetHandle(effect, kOfxImageEffectOutputClipName, &myData->outputClip, 0);
   
   // set my private instance data
   gPropHost->propSetPointer(effectProps, kOfxPropInstanceData, 0, (void *) myData);
@@ -167,17 +177,6 @@ getCannonicalRect(OfxImageEffectHandle effect, double time, OfxRectD &rect)
   gParamHost->paramGetValueAtTime(myData->corner1Param, time, &c1.x, &c1.y);
   gParamHost->paramGetValueAtTime(myData->corner2Param, time, &c2.x, &c2.y);
   
-  // get the project size and offset
-  OfxPointD projSize, projOffset;
-  ofxuGetProjectSetup(effect, projSize, projOffset);
-
-  // move the params into project space
-  c1.x = c1.x * projSize.x + projOffset.x;
-  c1.y = c1.y * projSize.y + projOffset.y;
-
-  c2.x = c2.x * projSize.x + projOffset.x;
-  c2.y = c2.y * projSize.y + projOffset.y;
-
   // and min/max 'em into the rect
   rect.x1 = Minimum(c1.x, c2.x);
   rect.y1 = Minimum(c1.y, c2.y);
@@ -284,7 +283,7 @@ isIdentity(OfxImageEffectHandle effect,
     if(col.a <= 0.0 || rect.x1 > renderWindow.x2 ||  rect.y1 > renderWindow.y2 || 
        rect.x2 < renderWindow.x1 ||  rect.y2 < renderWindow.y1) {
       // set the property in the out args indicating which is the identity clip
-      gPropHost->propSetString(outArgs, kOfxPropName, 0, "Source");
+      gPropHost->propSetString(outArgs, kOfxPropName, 0, kOfxImageEffectSimpleSourceClipName);
       return kOfxStatOK;
     }
   }
@@ -355,10 +354,10 @@ public :
     , dstV(dst)
     , srcRect(sRect)
     , dstRect(dRect)
+    , window(win)
     , srcBytesPerLine(sBytesPerLine)
     , dstBytesPerLine(dBytesPerLine)
-    , window(win)
-  {}  
+  {}
 
   static void multiThreadProcessing(unsigned int threadId, unsigned int nThreads, void *arg);
   virtual void doProcessing(OfxRectI window) = 0;
@@ -423,7 +422,6 @@ public :
 
     // value and premulitplied of the colour scaled up to quantisation space
     PIX value, premultValue;
-    float alpha = float(colour.a);
     if(isFloat) {
       // no need to clamp
       value.r = colour.r * max;
@@ -603,7 +601,7 @@ class ProcessAlpha : public Processor {
 // the process code  that the host sees
 static OfxStatus render(OfxImageEffectHandle effect,
                         OfxPropertySetHandle inArgs,
-                        OfxPropertySetHandle outArgs)
+                        OfxPropertySetHandle /*outArgs*/)
 {
   // get the render window and the time from the inArgs
   OfxTime time;
@@ -749,7 +747,7 @@ static OfxStatus render(OfxImageEffectHandle effect,
 
 // Set our clip preferences 
 static OfxStatus 
-getClipPreferences(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs)
+getClipPreferences(OfxImageEffectHandle effect, OfxPropertySetHandle /*inArgs*/, OfxPropertySetHandle outArgs)
 {
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
@@ -783,7 +781,7 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
 
   OfxPropertySetHandle clipProps;
   // define the single output clip in both contexts
-  gEffectHost->clipDefine(effect, "Output", &clipProps);
+  gEffectHost->clipDefine(effect, kOfxImageEffectOutputClipName, &clipProps);
 
   // set the component types we can handle on out output
   gPropHost->propSetString(clipProps, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
@@ -792,7 +790,7 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
 
   if(!isGeneratorContext) {
     // define the single source clip in filter and general contexts
-    gEffectHost->clipDefine(effect, "Source", &clipProps);
+    gEffectHost->clipDefine(effect, kOfxImageEffectSimpleSourceClipName, &clipProps);
 
     // set the component types we can handle on our main input
     gPropHost->propSetString(clipProps, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
@@ -811,16 +809,18 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
   OfxPropertySetHandle paramProps;
 
   gParamHost->paramDefine(paramSet, kOfxParamTypeDouble2D, "corner1", &paramProps);
+  gPropHost->propSetString(paramProps, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeXYAbsolute);
+  gPropHost->propSetString(paramProps, kOfxParamPropDefaultCoordinateSystem, 0, kOfxParamCoordinatesNormalised);
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 0, 0.4);
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 1, 0.4);
-  gPropHost->propSetString(paramProps, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeNormalisedXYAbsolute);
   gPropHost->propSetString(paramProps, kOfxParamPropHint, 0, "A corner of the rectangle to draw");
   gPropHost->propSetString(paramProps, kOfxPropLabel, 0, "Corner 1");
   
   gParamHost->paramDefine(paramSet, kOfxParamTypeDouble2D, "corner2", &paramProps);
+  gPropHost->propSetString(paramProps, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeXYAbsolute);
+  gPropHost->propSetString(paramProps, kOfxParamPropDefaultCoordinateSystem, 0, kOfxParamCoordinatesNormalised);
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 0, 0.6);
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 1, 0.6);
-  gPropHost->propSetString(paramProps, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeNormalisedXYAbsolute);
   gPropHost->propSetString(paramProps, kOfxParamPropHint, 0, "A corner of the rectangle to draw");
   gPropHost->propSetString(paramProps, kOfxPropLabel, 0, "Corner 2");
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 0, 0);
@@ -882,6 +882,7 @@ describe(OfxImageEffectHandle effect)
 static OfxStatus
 pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs)
 {
+  try {
   // cast to appropriate type
   OfxImageEffectHandle effect = (OfxImageEffectHandle ) handle;
 
@@ -912,6 +913,22 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,
   else if(strcmp(action, kOfxImageEffectActionGetClipPreferences) == 0) {
     return getClipPreferences(effect, inArgs, outArgs);
   }  
+  } catch (std::bad_alloc) {
+    // catch memory
+    //std::cout << "OFX Plugin Memory error." << std::endl;
+    return kOfxStatErrMemory;
+  } catch ( const std::exception& e ) {
+    // standard exceptions
+    //std::cout << "OFX Plugin error: " << e.what() << std::endl;
+    return kOfxStatErrUnknown;
+  } catch (int err) {
+    // ho hum, gone wrong somehow
+    return err;
+  } catch ( ... ) {
+    // everything else
+    //std::cout << "OFX Plugin error" << std::endl;
+    return kOfxStatErrUnknown;
+  }
     
   // other actions to take the default value
   return kOfxStatReplyDefault;
@@ -930,7 +947,7 @@ static OfxPlugin basicPlugin =
 {       
   kOfxImageEffectPluginApi,
   1,
-  "uk.co.thefoundry:GeneratorExample",
+  "uk.co.thefoundry.GeneratorExample",
   1,
   0,
   setHostFunc,
@@ -938,7 +955,7 @@ static OfxPlugin basicPlugin =
 };
    
 // the two mandated functions
-OfxPlugin *
+EXPORT OfxPlugin *
 OfxGetPlugin(int nth)
 {
   if(nth == 0)
@@ -946,7 +963,7 @@ OfxGetPlugin(int nth)
   return 0;
 }
  
-int
+EXPORT int
 OfxGetNumberOfPlugins(void)
 {       
   return 1;

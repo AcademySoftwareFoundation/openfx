@@ -4,7 +4,7 @@
 /*
 Software License :
 
-Copyright (c) 2003-2009, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2003-2015, The Open Effects Association Ltd. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -225,7 +225,7 @@ If set to anything other than 0.0, the custom interface for this parameter will 
 
 /** @brief The minimum size of a parameter's custom interface, in screen pixels.
 
-    - Type - int x 2
+    - Type - double x 2
     - Property Set - plugin parameter descriptor (read/write) and instance (read only)
     - Default - 10,10
     - Valid Values - greater than (0, 0)
@@ -320,10 +320,11 @@ an expression in the host.
     - Valid Values - 0 or 1
 
 This is used to tell the host whether the plug-in is going to attempt to set the value of the parameter.
-#define kOfxParamPropPluginMayWrite "OfxParamPropPluginMayWrite"
-v1.4: removed
+
+@deprecated - v1.4: deprecated - to be removed in 1.5
 */
 
+#define kOfxParamPropPluginMayWrite "OfxParamPropPluginMayWrite"
 
 /** @brief Flags whether the value of a parameter should persist.
 
@@ -443,13 +444,6 @@ The exact type and dimension is dependant on the type of the parameter. These ar
       - ::kOfxParamDoubleTypeTime  - parameter represents a time value (1D only),
       - ::kOfxParamDoubleTypeAbsoluteTime  - parameter represents an absolute time value (1D only),
 
-      - ::kOfxParamDoubleTypeNormalisedX - normalised size wrt to the project's X dimension (1D only),
-      - ::kOfxParamDoubleTypeNormalisedXAbsolute - normalised absolute position on the X axis (1D only)
-      - ::kOfxParamDoubleTypeNormalisedY - normalised size wrt to the project's Y dimension(1D only),
-      - ::kOfxParamDoubleTypeNormalisedYAbsolute - normalised absolute position on the Y axis (1D only)
-      - ::kOfxParamDoubleTypeNormalisedXY - normalised to the project's X and Y size (2D only),
-      - ::kOfxParamDoubleTypeNormalisedXYAbsolute - normalised to the projects X and Y size, and is an absolute position on the image plane,
-
       - ::kOfxParamDoubleTypeX - size wrt to the project's X dimension (1D only), in canonical coordinates,
       - ::kOfxParamDoubleTypeXAbsolute - absolute position on the X axis (1D only), in canonical coordinates,
       - ::kOfxParamDoubleTypeY - size wrt to the project's Y dimension(1D only), in canonical coordinates,
@@ -476,43 +470,6 @@ as to the interface of the parameter.
 
 /** @brief value for the ::kOfxParamDoubleTypeAngle property, indicating the parameter is to be interpreted as an absolute time from the start of the effect. See \ref ::kOfxParamPropDoubleType. */
 #define kOfxParamDoubleTypeAbsoluteTime "OfxParamDoubleTypeAbsoluteTime"
-
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating a size normalised to the X dimension. See \ref ::kOfxParamPropDoubleType.
-
-Deprecated in favour of ::OfxParamDoubleTypeX
- */
-#define kOfxParamDoubleTypeNormalisedX  "OfxParamDoubleTypeNormalisedX"
-
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating a size normalised to the Y dimension. See \ref ::kOfxParamPropDoubleType.
-
-Deprecated in favour of ::OfxParamDoubleTypeY
- */
-#define kOfxParamDoubleTypeNormalisedY  "OfxParamDoubleTypeNormalisedY"
-
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating an absolute position normalised to the X dimension. See \ref ::kOfxParamPropDoubleType. 
-
-Deprecated in favour of ::OfxParamDoubleTypeXAbsolute
-*/
-#define kOfxParamDoubleTypeNormalisedXAbsolute  "OfxParamDoubleTypeNormalisedXAbsolute"
-
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating an absolute position  normalised to the Y dimension. See \ref ::kOfxParamPropDoubleType.
-
-Deprecated in favour of ::OfxParamDoubleTypeYAbsolute
- */
-#define kOfxParamDoubleTypeNormalisedYAbsolute  "OfxParamDoubleTypeNormalisedYAbsolute"
-
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to the X and Y dimension for 2D params. See \ref ::kOfxParamPropDoubleType. 
-
-Deprecated in favour of ::OfxParamDoubleTypeXY
-*/
-#define kOfxParamDoubleTypeNormalisedXY  "OfxParamDoubleTypeNormalisedXY"
-
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to the X and Y dimension for a 2D param that can be interpretted as an absolute spatial position. See \ref ::kOfxParamPropDoubleType. 
-
-Deprecated in favour of ::kOfxParamDoubleTypeXYAbsolute 
-*/
-#define kOfxParamDoubleTypeNormalisedXYAbsolute  "OfxParamDoubleTypeNormalisedXYAbsolute"
-
 
 
 /** @brief value for the ::kOfxParamPropDoubleType property, indicating a size in canonical coords in the X dimension. See \ref ::kOfxParamPropDoubleType. */
@@ -707,7 +664,7 @@ If a user interface represents a parameter with a slider or similar, this should
 
     - Type - int or double X N
     - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
-    - Default - the largest possible value corresponding to the parameter type (eg: INT_MIN for an integer, -DBL_MAX for a double parameter)
+    - Default - the largest possible value corresponding to the parameter type (eg: INT_MAX for an integer, DBL_MAX for a double parameter)
 
 If a user interface represents a parameter with a slider or similar, this should be the maximum bound on that slider.
 */
@@ -778,6 +735,7 @@ It is an error not to set this property in a custom parameter during a plugin's 
         - ::kOfxParamStringIsFilePath
         - ::kOfxParamStringIsDirectoryPath
         - ::kOfxParamStringIsLabel
+        - ::kOfxParamStringIsRichTextFormat
 
 */
 #define kOfxParamPropStringMode "OfxParamPropStringMode"
@@ -827,7 +785,7 @@ This property is on the \e inArgs property and \e outArgs property of a ::OfxCus
 /** @brief Used by interpolating custom parameters to indicate the time a key occurs at.
 
    - Type - double X 2
-   - Property Set - the inArgs parameter of a ::OfxCustomParamInterpFuncV1 (read only)
+   - Property Set - inArgs parameter of a ::OfxCustomParamInterpFuncV1 (read only)
 
 The two values indicate the absolute times the surrounding keyframes occur at. The keyframes are encoded in a ::kOfxParamPropCustomValue property.
 
@@ -837,7 +795,7 @@ The two values indicate the absolute times the surrounding keyframes occur at. T
 /** @brief Property used by ::OfxCustomParamInterpFuncV1 to indicate the amount of interpolation to perform
 
    - Type - double X 1
-   - Property Set - the inArgs parameter of a ::OfxCustomParamInterpFuncV1 (read only)
+   - Property Set - inArgs parameter of a ::OfxCustomParamInterpFuncV1 (read only)
    - Valid Values - from 0 to 1
 
 This property indicates how far between the two ::kOfxParamPropCustomValue keys to interpolate.
@@ -970,6 +928,8 @@ typedef struct OfxParameterSuiteV1 {
   ofxHost->paramGetValue(myColourParam, &myR, &myG, &myB);
   @endverbatim
 
+  \note paramGetValue should only be called from within a ::kOfxActionInstanceChanged or interact action and never from the render actions (which should always use paramGetValueAtTime).
+
 @returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
@@ -1054,6 +1014,8 @@ typedef struct OfxParameterSuiteV1 {
   ofxHost->paramSetValue(instance, "myColourParam", double(pix.r), double(pix.g), double(pix.b));
   @endverbatim
 
+  \note paramSetValue should only be called from within a ::kOfxActionInstanceChanged or interact action.
+
 @returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
@@ -1071,8 +1033,10 @@ typedef struct OfxParameterSuiteV1 {
   The varargs ... argument needs to be values of the relevant type for this parameter. See the note on 
   OfxParameterSuiteV1::paramSetValue for more detail
 
-  This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
+  \note paramSetValueAtTime should only be called from within a ::kOfxActionInstanceChanged or interact action.
 
+  V1.3: This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
+  V1.4: This function can be called the ::kOfxActionInstanceChanged action 
 @returns
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
@@ -1101,7 +1065,8 @@ changes a keyframe.  The keyframe indices will not change within a single action
   \arg paramHandle parameter handle to interogate
   \arg numberOfKeys  pointer to integer where the return value is placed
 
-  This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
+  V1.3: This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
+  V1.4: This function can be called the ::kOfxActionInstanceChanged action 
 
   Returns the number of keyframes in the parameter.
 
@@ -1166,7 +1131,8 @@ changes a keyframe.  The keyframe indices will not change within a single action
   \arg paramHandle parameter handle to delete the keys from
   \arg name      parameter to delete the keyframes frome is
 
-  This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
+  V1.3: This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
+  V1.4: This function can be called the ::kOfxActionInstanceChanged action 
 
 @returns
   - ::kOfxStatOK       - all was OK
@@ -1187,7 +1153,8 @@ changes a keyframe.  The keyframe indices will not change within a single action
 
   To choose all animation in \e paramFrom set \e frameRange to [0, 0]
 
-  This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
+   V1.3: This function can be called the ::kOfxActionInstanceChanged action and during image effect analysis render passes.
+  V1.4: This function can be called the ::kOfxActionInstanceChanged action 
 
   \pre
   - Both parameters must be of the same type.
@@ -1196,7 +1163,7 @@ changes a keyframe.  The keyframe indices will not change within a single action
   - ::kOfxStatOK       - all was OK
   - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
   */
-  OfxStatus (*paramCopy)(OfxParamHandle  paramTo, OfxParamHandle  paramFrom, OfxTime dstOffset, OfxRangeD *frameRange);
+  OfxStatus (*paramCopy)(OfxParamHandle  paramTo, OfxParamHandle  paramFrom, OfxTime dstOffset, const OfxRangeD *frameRange);
 
 
   /** @brief Used to group any parameter changes for undo/redo purposes
@@ -1207,6 +1174,8 @@ changes a keyframe.  The keyframe indices will not change within a single action
   If a plugin calls paramSetValue/paramSetValueAtTime on one or more parameters, either from custom GUI interaction
   or some analysis of imagery etc.. this is used to indicate the start of a set of a parameter
   changes that should be considered part of a single undo/redo block.
+
+  \note paramEditBegin should only be called from within a ::kOfxActionInstanceChanged or interact action.
 
   See also OfxParameterSuiteV1::paramEditEnd
 
@@ -1224,6 +1193,8 @@ changes a keyframe.  The keyframe indices will not change within a single action
   If a plugin calls paramSetValue/paramSetValueAtTime on one or more parameters, either from custom GUI interaction
   or some analysis of imagery etc.. this is used to indicate the end of a set of parameter
   changes that should be considerred part of a single undo/redo block
+
+  \note paramEditEnd should only be called from within a ::kOfxActionInstanceChanged or interact action.
 
   See also OfxParameterSuiteV1::paramEditBegin
 

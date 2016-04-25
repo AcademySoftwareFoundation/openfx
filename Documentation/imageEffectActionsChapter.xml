@@ -357,7 +357,7 @@
     </para>
   </section>
   
-  <section id="kOfxActionPurgeCaches"><title >The Generic Purge Caches Action></title>
+  <section id="kOfxActionPurgeCaches"><title >The Generic Purge Caches Action</title>
     <blockquote><programlisting>
 	#include "ofxCore.h"
 	#define kOfxActionPurgeCaches                 "OfxActionPurgeCaches"</programlisting></blockquote>
@@ -593,7 +593,7 @@
 	</listitem>
 	<listitem><code>outArgs</code>  has the following property which the plug-in may set...
 	  <itemizedlist>
-	    <listitem><link linkend="kOfxImageEffectPropRegionOfDefinition"><code>kOfxImageEffectPropRegionOfDefinitiong</code></link>, the calculated region of definition, initially set by the host to the default RoD (see below), in Canonical Coordinates.</listitem>
+	    <listitem><link linkend="kOfxImageEffectPropRegionOfDefinition"><code>kOfxImageEffectPropRegionOfDefinition</code></link>, the calculated region of definition, initially set by the host to the default RoD (see below), in Canonical Coordinates.</listitem>
 	  </itemizedlist>
 	</listitem>
       </itemizedlist>
@@ -625,7 +625,8 @@
 	<listitem>generator context  - defaults to the project window,</listitem>
 	<listitem>filter and paint contexts   - defaults to the RoD of the 'Source' input clip at the given time,</listitem>
 	<listitem>transition context - defaults to the union of the RoDs of the 'SourceFrom' and 'SourceTo' input clips at the given time,</listitem>
-	<listitem>general context    - defaults to the union of the RoDs of all the effect non optional input clips 
+	<listitem>general context    - defaults to the union of the RoDs of all the non optional input clips 
+	  and the 'Source' input clip (if it exists and it is connected)
 	  at the given time, if none exist, then it is the project window</listitem>
 	<listitem>retimer context    - defaults to the union of the RoD of the 'Source' input clip at the frame directly preceding the
 	  value of the 'SourceTime' double parameter and the frame directly after it</listitem>
@@ -698,7 +699,7 @@
       This action lets the host ask the effect what frames are needed from each input clip to process a given frame. For example a temporal based degrainer may need several frames around the frame to render to do its work.
     </para>
     <para>
-      This action need only ever be called if the plugin has set the <link linkend="kOfxImageEffectPropTemporalClipAccess"><code>kOfxImageEffectPropTemporalClipAccessg</code></link> property on the plugin descriptor to be true. Otherwise the host assumes that the only frame needed from the inputs is the current one and this acion is not called.
+      This action need only ever be called if the plugin has set the <link linkend="kOfxImageEffectPropTemporalClipAccess"><code>kOfxImageEffectPropTemporalClipAccess</code></link> property on the plugin descriptor to be true. Otherwise the host assumes that the only frame needed from the inputs is the current one and this action is not called.
     </para>
     <para>
       Note that each clip can have it's required frame range specified, and that you can specify discontinuous sets of ranges for each clip, for example...
@@ -803,6 +804,7 @@
 	    <listitem><link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link> - the scale factor being applied to the images being renderred</listitem>
 	    <listitem><link linkend="kOfxImageEffectPropSequentialRenderStatus"><code>kOfxImageEffectPropSequentialRenderStatus</code></link> - whether the effect is currently being rendered in strict frame order on a single instance</listitem>
 	    <listitem><link linkend="kOfxImageEffectPropInteractiveRenderStatus"><code>kOfxImageEffectPropInteractiveRenderStatus</code></link> - if the render is in response to a user modifying the effect in an interactive session</listitem>
+	    <listitem><link linkend="kOfxImageEffectPropRenderQualityDraft"><code>kOfxImageEffectPropRenderQualityDraft</code></link> - if the render should be done in draft mode (e.g. for faster scrubbing)</listitem>
 	  </itemizedlist>
 	</listitem>
 	<listitem><code>outArgs</code> is redundant and should be set to NULL.</listitem>

@@ -42,6 +42,9 @@ This file contains headers for classes that are used to validate property sets a
 
 #include "ofxsSupportPrivate.h"
 #include <stdarg.h>
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+#include "ofxOpenGLRender.h"
+#endif
 
 /** @brief Null pointer definition */
 #define NULLPTR ((void *)(0))
@@ -53,7 +56,7 @@ This file contains headers for classes that are used to validate property sets a
 #define  kOfxsDisableValidation
 #endif
 
-#define kOfxsDisableValidation
+//#define kOfxsDisableValidation
 /** @brief OFX namespace
 */
 namespace OFX {
@@ -101,11 +104,11 @@ namespace OFX {
 
 
     /** @brief PropertyDescription var-args constructor */
-    PropertyDescription::PropertyDescription(char *name, OFX::PropertyTypeEnum ilk, int dimension, ...)
+    PropertyDescription::PropertyDescription(const char *name, OFX::PropertyTypeEnum ilk, int dimension, ...)
       : _name(name)
+      , _exists(false) // only set when we have validated it
       , _dimension(dimension)
       , _ilk(ilk)
-      , _exists(false) // only set when we have validated it
     {      
       // go through the var args to extract defaults to check against and values to set to
       va_list argp;
@@ -141,7 +144,7 @@ namespace OFX {
       // see if it exists by fetching the dimension, 
 
       try {
-        int hostDimension = propSet.propGetDimension(_name);
+        int hostDimension = propSet.propGetDimension(_name.c_str());
         _exists = true;  
 
         if(_dimension != -1) // -1 implies variable dimension
@@ -150,15 +153,15 @@ namespace OFX {
         if(hostDimension > 0) {
           switch(_ilk) 
           {
-          case OFX::ePointer : { void *vP = propSet.propGetPointer(_name); }break;
-          case OFX::eInt :     { int vI = propSet.propGetInt(_name); } break;
-          case OFX::eString  : { std::string vS = propSet.propGetString(_name); } break;
-          case OFX::eDouble  : { double vD = propSet.propGetDouble(_name); } break;
+          case OFX::ePointer : { void *vP = propSet.propGetPointer(_name.c_str()); (void)vP; }break;
+          case OFX::eInt :     { int vI = propSet.propGetInt(_name.c_str()); (void)vI; } break;
+          case OFX::eString  : { std::string vS = propSet.propGetString(_name.c_str()); (void)vS; } break;
+          case OFX::eDouble  : { double vD = propSet.propGetDouble(_name.c_str()); (void)vD; } break;
           }
         }
 
         // check the defaults are OK, if there are any
-        int nDefs = _defaultValue.size();
+        int nDefs = (int)_defaultValue.size();
         if(checkDefaults && nDefs > 0) {
           OFX::Log::error(hostDimension != nDefs, "Host reports default dimension of '%s' as %d, which is different to the default dimension size of %d;", 
             _name.c_str(), hostDimension, nDefs);
@@ -169,25 +172,25 @@ namespace OFX {
             switch(_ilk) 
             {
             case OFX::ePointer : {
-              void *vP = propSet.propGetPointer(_name, i); 
+              void *vP = propSet.propGetPointer(_name.c_str(), i);
               OFX::Log::error(vP != (void *) _defaultValue[i], "Default value of %s[%d] = %p, it should be %p;",
                 _name.c_str(), i, vP, (void *) _defaultValue[i]);
                                  }
                                  break;
             case OFX::eInt : {
-              int vI = propSet.propGetInt(_name, i);
+              int vI = propSet.propGetInt(_name.c_str(), i);
               OFX::Log::error(vI != (int) _defaultValue[i], "Default value of %s[%d] = %d, it should be %d;",
                 _name.c_str(), i, vI, (int) _defaultValue[i]);
                              }
                              break;
             case OFX::eString  : {
-              std::string vS = propSet.propGetString(_name, i); 
+              std::string vS = propSet.propGetString(_name.c_str(), i);
               OFX::Log::error(vS != _defaultValue[i].vString, "Default value of %s[%d] = '%s', it should be '%s';",
                 _name.c_str(), i, vS.c_str(), _defaultValue[i].vString.c_str());
                                  }
                                  break;
             case OFX::eDouble  : {
-              double vD = propSet.propGetDouble(_name, i); 
+              double vD = propSet.propGetDouble(_name.c_str(), i);
               OFX::Log::error(vD != (double) _defaultValue[i], "Default value of %s[%d] = %g, it should be %g;",
                 _name.c_str(), i, vD, (double) _defaultValue[i]);
                                  }
@@ -222,7 +225,7 @@ namespace OFX {
     Passed in as a zero terminated pairs of (PropertyDescription *descArray, int nDescriptions)
 
     */
-    PropertySetDescription::PropertySetDescription(char *setName, ...) // PropertyDescription *v, int nV)
+    PropertySetDescription::PropertySetDescription(const char *setName, ...) // PropertyDescription *v, int nV)
       : _setName(setName)
     {
 
@@ -230,7 +233,6 @@ namespace OFX {
       va_list argp;
       va_start(argp, setName);
 
-      bool going = true;
       while(1) {
         // get a pointer 
         PropertyDescription *descs = (PropertyDescription *) va_arg(argp, PropertyDescription *);
@@ -254,7 +256,7 @@ namespace OFX {
     /** @brief destructor */
     PropertySetDescription::~PropertySetDescription()
     {
-      int nToDelete  = _deleteThese.size();
+      int nToDelete  = (int)_deleteThese.size();
       for(int i = 0; i < nToDelete; i++) {
         delete _deleteThese[i];
       }
@@ -283,7 +285,7 @@ namespace OFX {
       if(!logOrdinaryMessages) PropertySet::propDisableLogging();
 
       // check each property in the description
-      int n = _descriptions.size();
+      int n = (int)_descriptions.size();
       for(int i = 0; i < n; i++) 
         _descriptions[i]->validate(checkDefaults, propSet);
 
@@ -383,7 +385,7 @@ namespace OFX {
 
       // Pointer props with defaults that can be checked against
       PropertyDescription(kOfxPropInstanceData,                        OFX::ePointer, 1, eDescDefault, (void *)(0), eDescFinished),
-      PropertyDescription(kOfxImageEffectPropPluginHandle,             OFX::ePointer, eDescFinished),
+      PropertyDescription(kOfxImageEffectPropPluginHandle,             OFX::ePointer, 1, eDescFinished),
 
       // string props that have no defaults that can be checked against
       PropertyDescription(kOfxImageEffectPropContext,                  OFX::eString,  1, eDescFinished),
@@ -472,8 +474,8 @@ namespace OFX {
     static PropertySetDescription gClipInstancePropSet("Clip Instance", gClipInstanceProps, sizeof(gClipInstanceProps)/sizeof(PropertyDescription),
       NULLPTR);
 
-    /** @brief List of properties to validate an image instance */
-    static PropertyDescription gImageInstanceProps[ ] =
+    /** @brief List of properties to validate an image or texture instance */
+    static PropertyDescription gImageBaseInstanceProps[ ] =
     {
       // this is the only property with a checkable default
       PropertyDescription(kOfxPropType,                         OFX::eString, 1, eDescDefault, kOfxTypeImage, eDescFinished),
@@ -499,10 +501,36 @@ namespace OFX {
     };
 
     /** @brief the property set for an image instance */
-    static PropertySetDescription gImageInstancePropSet("Image Instance", 
+    static PropertySetDescription gImageBaseInstancePropSet("Image or Texture Instance",
+      gImageBaseInstanceProps, sizeof(gImageBaseInstanceProps)/sizeof(PropertyDescription),
+      NULLPTR);
+
+    /** @brief List of properties to validate an image or texture instance */
+    static PropertyDescription gImageInstanceProps[ ] =
+    {
+      // pointer props
+      PropertyDescription(kOfxImagePropData,                    OFX::ePointer, 1, eDescFinished),
+    };
+
+    /** @brief the property set for an image instance */
+    static PropertySetDescription gImageInstancePropSet("Image Instance",
       gImageInstanceProps, sizeof(gImageInstanceProps)/sizeof(PropertyDescription),
       NULLPTR);
 
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    /** @brief List of properties to validate an image or texture instance */
+    static PropertyDescription gTextureInstanceProps[ ] =
+    {
+      // pointer props
+      PropertyDescription(kOfxImageEffectPropOpenGLTextureIndex, OFX::eInt, 1, eDescFinished),
+      PropertyDescription(kOfxImageEffectPropOpenGLTextureTarget, OFX::eInt, 1, eDescFinished),
+    };
+
+    /** @brief the property set for an image instance */
+    static PropertySetDescription gTextureInstancePropSet("Texture Instance",
+      gTextureInstanceProps, sizeof(gTextureInstanceProps)/sizeof(PropertyDescription),
+      NULLPTR);
+#endif
 
     ////////////////////////////////////////////////////////////////////////////////
     // Action in/out args properties 
@@ -526,6 +554,11 @@ namespace OFX {
       PropertyDescription(kOfxImageEffectPropRenderScale,   OFX::eDouble, 2, eDescFinished),
       PropertyDescription(kOfxImageEffectPropRenderWindow,  OFX::eInt,    4, eDescFinished),
       PropertyDescription(kOfxImageEffectPropFieldToRender, OFX::eString, 1, eDescFinished),
+      // The following appeared in OFX 1.2, and are thus not mandatory
+      //PropertyDescription(kOfxImageEffectPropSequentialRenderStatus,  OFX::eInt,    1, eDescFinished),
+      //PropertyDescription(kOfxImageEffectPropInteractiveRenderStatus, OFX::eInt,    1, eDescFinished),
+      // The following appeared in OFX 1.4,  and is thus not mandatory
+      //PropertyDescription(kOfxImageEffectPropRenderQualityDraft, OFX::eInt,    1, eDescFinished),
     };
 
     /** @brief kOfxImageEffectActionRender property set */
@@ -540,6 +573,9 @@ namespace OFX {
       PropertyDescription(kOfxImageEffectPropFrameStep,   OFX::eDouble, 1, eDescFinished),
       PropertyDescription(kOfxImageEffectPropRenderScale, OFX::eDouble, 2, eDescFinished),
       PropertyDescription(kOfxPropIsInteractive,          OFX::eInt, 1, eDescFinished),
+      // The following appeared in OFX 1.2, and are thus not mandatory
+      //PropertyDescription(kOfxImageEffectPropSequentialRenderStatus,  OFX::eInt,    1, eDescFinished),
+      //PropertyDescription(kOfxImageEffectPropInteractiveRenderStatus, OFX::eInt,    1, eDescFinished),
     };
 
     /** @brief kOfxImageEffectActionBeginSequenceRender property set */
@@ -550,8 +586,13 @@ namespace OFX {
     /** @brief kOfxImageEffectActionEndSequenceRender action's inargs properties */
     static PropertyDescription gEndSequenceRenderActionInArgProps[ ] =
     {
+      PropertyDescription(kOfxImageEffectPropFrameRange,  OFX::eDouble, 2, eDescFinished),
+      PropertyDescription(kOfxImageEffectPropFrameStep,   OFX::eDouble, 1, eDescFinished),
       PropertyDescription(kOfxImageEffectPropRenderScale, OFX::eDouble, 2, eDescFinished),
       PropertyDescription(kOfxPropIsInteractive,          OFX::eInt, 1, eDescFinished),
+      // The following appeared in OFX 1.2, and are thus not mandatory
+      //PropertyDescription(kOfxImageEffectPropSequentialRenderStatus,  OFX::eInt,    1, eDescFinished),
+      //PropertyDescription(kOfxImageEffectPropInteractiveRenderStatus, OFX::eInt,    1, eDescFinished),
     };
 
     /** @brief kOfxImageEffectActionEndSequenceRender property set */
@@ -647,7 +688,7 @@ namespace OFX {
     static PropertyDescription gGetClipPreferencesOutArgProps[ ] =
     {
       PropertyDescription(kOfxImageEffectPropFrameRate,         OFX::eDouble, 1, eDescFinished),
-      PropertyDescription(kOfxImagePropPixelAspectRatio,        OFX::eDouble, 1, eDescFinished),
+      PropertyDescription(kOfxImageClipPropFieldOrder,          OFX::eString, 1, eDescFinished),
       PropertyDescription(kOfxImageClipPropContinuousSamples,   OFX::eInt, 1, eDescDefault, 0, eDescFinished),
       PropertyDescription(kOfxImageEffectFrameVarying,          OFX::eInt, 1, eDescDefault, 0, eDescFinished),
       PropertyDescription(kOfxImageEffectPropPreMultiplication, OFX::eString, 1, eDescFinished),
@@ -703,7 +744,6 @@ namespace OFX {
       PropertyDescription(kOfxPropLongLabel,              OFX::eString, 1, eDescFinished),
       PropertyDescription(kOfxParamPropType,              OFX::eString, 1, eDescFinished),
       PropertyDescription(kOfxParamPropSecret,            OFX::eInt,    1, eDescDefault, 0, eDescFinished),
-      PropertyDescription(kOfxParamPropCanUndo,           OFX::eInt,    1, eDescDefault, 1, eDescFinished),
       PropertyDescription(kOfxParamPropHint,              OFX::eString, 1, eDescFinished),
       PropertyDescription(kOfxParamPropScriptName,        OFX::eString, 1, eDescFinished),
       PropertyDescription(kOfxParamPropParent,            OFX::eString, 1, eDescFinished),
@@ -718,7 +758,7 @@ namespace OFX {
       PropertyDescription(kOfxParamPropInteractV1,           OFX::ePointer,1, eDescDefault, (void *)(0), eDescFinished),
       PropertyDescription(kOfxParamPropInteractSize,         OFX::eDouble, 2, eDescFinished),
       PropertyDescription(kOfxParamPropInteractSizeAspect,   OFX::eDouble, 1, eDescDefault, 1.0, eDescFinished),
-      PropertyDescription(kOfxParamPropInteractMinimumSize,  OFX::eInt,    2, eDescDefault, 10, 10, eDescFinished),
+      PropertyDescription(kOfxParamPropInteractMinimumSize,  OFX::eDouble, 2, eDescDefault, 10, 10, eDescFinished),
       PropertyDescription(kOfxParamPropInteractPreferedSize, OFX::eInt,    2, eDescDefault, 10, 10, eDescFinished),
     };
 
@@ -729,8 +769,11 @@ namespace OFX {
       PropertyDescription(kOfxParamPropIsAutoKeying,              OFX::eInt,    1, eDescFinished),
       PropertyDescription(kOfxParamPropPersistant,                OFX::eInt,    1, eDescDefault, 1, eDescFinished),
       PropertyDescription(kOfxParamPropEvaluateOnChange,          OFX::eInt,    1, eDescDefault, 1, eDescFinished),
-      PropertyDescription(kOfxParamPropPluginMayWrite,            OFX::eInt,    1, eDescDefault, 0, eDescFinished),
+#    ifdef kOfxParamPropPluginMayWrite
+      PropertyDescription(kOfxParamPropPluginMayWrite,            OFX::eInt,    1, eDescDefault, 0, eDescFinished), // removed in OFX 1.4
+#    endif
       PropertyDescription(kOfxParamPropCacheInvalidation,         OFX::eString, 1, eDescDefault, kOfxParamInvalidateValueChange, eDescFinished),
+      PropertyDescription(kOfxParamPropCanUndo,                   OFX::eInt,    1, eDescDefault, 1, eDescFinished),
     };
 
     /** @brief values for a string param */
@@ -746,6 +789,7 @@ namespace OFX {
     static PropertyDescription gCustomParamProps[ ] =
     {
       PropertyDescription(kOfxParamPropDefault,                OFX::eString,  1, eDescFinished),
+      PropertyDescription(kOfxParamPropAnimates,               OFX::eInt,     1, eDescDefault, 0, eDescFinished),
       PropertyDescription(kOfxParamPropCustomInterpCallbackV1, OFX::ePointer, 1, eDescDefault, NULLPTR, eDescFinished),
     };
 
@@ -754,6 +798,11 @@ namespace OFX {
     {
       PropertyDescription(kOfxParamPropDefault,              OFX::eDouble, 3, eDescFinished),
       PropertyDescription(kOfxParamPropAnimates,             OFX::eInt,    1, eDescDefault, 1, eDescFinished),
+      PropertyDescription(kOfxParamPropMin,                  OFX::eDouble, 3, eDescDefault, 0., 0., 0., eDescFinished),
+      PropertyDescription(kOfxParamPropMax,                  OFX::eDouble, 3, eDescDefault, 1., 1., 1., eDescFinished),
+      PropertyDescription(kOfxParamPropDisplayMin,           OFX::eDouble, 3, eDescDefault, 0., 0., 0., eDescFinished),
+      PropertyDescription(kOfxParamPropDisplayMax,           OFX::eDouble, 3, eDescDefault, 1., 1., 1., eDescFinished),
+      PropertyDescription(kOfxParamPropDimensionLabel,       OFX::eString, 3, eDescDefault, "r", "g", "b", eDescFinished),
     };
 
     /** @brief properties for an RGBA colour param */
@@ -761,6 +810,11 @@ namespace OFX {
     {
       PropertyDescription(kOfxParamPropDefault,              OFX::eDouble, 4, eDescFinished),
       PropertyDescription(kOfxParamPropAnimates,             OFX::eInt,    1, eDescDefault, 1, eDescFinished),
+      PropertyDescription(kOfxParamPropMin,                  OFX::eDouble, 4, eDescDefault, 0., 0., 0., 0., eDescFinished),
+      PropertyDescription(kOfxParamPropMax,                  OFX::eDouble, 4, eDescDefault, 1., 1., 1., 1., eDescFinished),
+      PropertyDescription(kOfxParamPropDisplayMin,           OFX::eDouble, 4, eDescDefault, 0., 0., 0., 0., eDescFinished),
+      PropertyDescription(kOfxParamPropDisplayMax,           OFX::eDouble, 4, eDescDefault, 1., 1., 1., 1., eDescFinished),
+      PropertyDescription(kOfxParamPropDimensionLabel,       OFX::eString, 4, eDescDefault, "r", "g", "b", "a", eDescFinished),
     };
 
     /** @brief properties for a boolean param */
@@ -787,7 +841,7 @@ namespace OFX {
       PropertyDescription(kOfxParamPropMax,                  OFX::eInt, 1, eDescFinished),
       PropertyDescription(kOfxParamPropDisplayMin,           OFX::eInt, 1, eDescFinished),
       PropertyDescription(kOfxParamPropDisplayMax,           OFX::eInt, 1, eDescFinished),
-      PropertyDescription(kOfxParamPropAnimates,             OFX::eInt, 1, eDescDefault, 0, eDescFinished),
+      PropertyDescription(kOfxParamPropAnimates,             OFX::eInt, 1, eDescDefault, 1, eDescFinished),
     };
 
     /** @brief properties for a 2D integer param */
@@ -798,7 +852,7 @@ namespace OFX {
       PropertyDescription(kOfxParamPropMax,                  OFX::eInt, 2, eDescFinished),
       PropertyDescription(kOfxParamPropDisplayMin,           OFX::eInt, 2, eDescFinished),
       PropertyDescription(kOfxParamPropDisplayMax,           OFX::eInt, 2, eDescFinished),
-      PropertyDescription(kOfxParamPropAnimates,             OFX::eInt, 1, eDescDefault, 0, eDescFinished),
+      PropertyDescription(kOfxParamPropAnimates,             OFX::eInt, 1, eDescDefault, 1, eDescFinished),
       PropertyDescription(kOfxParamPropDimensionLabel,       OFX::eString, 2, eDescDefault, "x", "y", eDescFinished),
     };
 
@@ -810,7 +864,7 @@ namespace OFX {
       PropertyDescription(kOfxParamPropMax,                  OFX::eInt, 3, eDescFinished),
       PropertyDescription(kOfxParamPropDisplayMin,           OFX::eInt, 3, eDescFinished),
       PropertyDescription(kOfxParamPropDisplayMax,           OFX::eInt, 3, eDescFinished),
-      PropertyDescription(kOfxParamPropAnimates,             OFX::eInt, 1, eDescDefault, 0, eDescFinished),
+      PropertyDescription(kOfxParamPropAnimates,             OFX::eInt, 1, eDescDefault, 1, eDescFinished),
       PropertyDescription(kOfxParamPropDimensionLabel,       OFX::eString, 3, eDescDefault, "x", "y", "z", eDescFinished),
     };
 
@@ -857,12 +911,28 @@ namespace OFX {
       PropertyDescription(kOfxParamPropDimensionLabel,       OFX::eString, 3, eDescDefault, "x", "y", "z", eDescFinished),
     };
 
+    /** @brief properties for a group param */
+    static PropertyDescription gGroupParamProps[ ] =
+    {
+      PropertyDescription(kOfxParamPropGroupOpen,           OFX::eInt, 1, eDescFinished),
+    };
+
     /** @brief properties for a page param */
     static PropertyDescription gPageParamProps[ ] =
     {
       PropertyDescription(kOfxParamPropPageChild,            OFX::eString, -1, eDescFinished),
     };
 
+    /** @brief properties for a parametric param */
+    static PropertyDescription gParametricParamProps[ ] =
+    {
+      PropertyDescription(kOfxParamPropAnimates,                     OFX::eInt,     1, eDescDefault, 1, eDescFinished),
+      PropertyDescription(kOfxParamPropCanUndo,                      OFX::eInt,     1, eDescDefault, 1, eDescFinished),
+      PropertyDescription(kOfxParamPropParametricDimension,          OFX::eInt,     1, eDescDefault, 1, eDescFinished),
+      PropertyDescription(kOfxParamPropParametricUIColour,           OFX::eDouble, -1, eDescFinished),
+      PropertyDescription(kOfxParamPropParametricInteractBackground, OFX::ePointer, 1, eDescDefault, (void*)(0), eDescFinished),
+      PropertyDescription(kOfxParamPropParametricRange,              OFX::eDouble,  2, eDescDefault, 0.0, 1.0, eDescFinished),
+    };
 
     /** @brief Property set for 1D ints */
     static PropertySetDescription gInt1DParamPropSet("1D Integer parameter",
@@ -971,15 +1041,23 @@ namespace OFX {
       mPropDescriptionArg(gInteractOverideParamProps),
       NULLPTR);
 
-    /** @brief Property set for push button params */
+    /** @brief Property set for group params */
     static PropertySetDescription gGroupParamPropSet("Group Parameter",
       mPropDescriptionArg(gBasicParamProps),
+      mPropDescriptionArg(gGroupParamProps),
       NULLPTR);
 
-    /** @brief Property set for push button params */
-    static PropertySetDescription gPageParamPropSet("Group Parameter",
+    /** @brief Property set for page params */
+    static PropertySetDescription gPageParamPropSet("Page Parameter",
       mPropDescriptionArg(gBasicParamProps),
       mPropDescriptionArg(gPageParamProps),
+      NULLPTR);
+
+    static PropertySetDescription gParametricParamPropSet("Parametric Parameter",
+      mPropDescriptionArg(gBasicParamProps),
+      mPropDescriptionArg(gInteractOverideParamProps),
+      mPropDescriptionArg(gValueHolderParamProps),
+      mPropDescriptionArg(gParametricParamProps),
       NULLPTR);
 
 #endif
@@ -987,7 +1065,9 @@ namespace OFX {
     void
       validateHostProperties(OfxHost *host)
     {
-#ifndef kOfxsDisableValidation
+#ifdef kOfxsDisableValidation
+    (void)host;
+#else
       // make a description set
       PropertySet props(host->host);
       gHostPropSet.validate(props);
@@ -998,7 +1078,9 @@ namespace OFX {
     void
       validatePluginDescriptorProperties(PropertySet props)
     {
-#ifndef kOfxsDisableValidation
+#ifdef kOfxsDisableValidation
+    (void)props;
+#else
       gPluginDescriptorPropSet.validate(props);
 #endif
     }
@@ -1007,7 +1089,9 @@ namespace OFX {
     void
       validatePluginInstanceProperties(PropertySet props)
     {
-#ifndef kOfxsDisableValidation
+#ifdef kOfxsDisableValidation
+    (void)props;
+#else
       gPluginInstancePropSet.validate(props);
 #endif
     }
@@ -1016,7 +1100,9 @@ namespace OFX {
     void
       validateClipDescriptorProperties(PropertySet props)
     {
-#ifndef kOfxsDisableValidation
+#ifdef kOfxsDisableValidation
+    (void)props;
+#else
       gClipDescriptorPropSet.validate(props);
 #endif
     }
@@ -1025,25 +1111,57 @@ namespace OFX {
     void
       validateClipInstanceProperties(PropertySet props)
     {
-#ifndef kOfxsDisableValidation
+#ifdef kOfxsDisableValidation
+    (void)props;
+#else
       gClipInstancePropSet.validate(props);
 #endif
     }
 
-    /** @brief validates a clip descriptor */
+    /** @brief validates an image or texture instance */
+    void
+      validateImageBaseProperties(PropertySet props)
+    {
+#ifdef kOfxsDisableValidation
+    (void)props;
+#else
+      gImageBaseInstancePropSet.validate(props);
+#endif
+    }
+
+    /** @brief validates an image instance */
     void
       validateImageProperties(PropertySet props)
     {
-#ifndef kOfxsDisableValidation
+#ifdef kOfxsDisableValidation
+    (void)props;
+#else
       gImageInstancePropSet.validate(props);
 #endif
     }
+
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+    /** @brief validates an OpenGL texture instance */
+    void
+      validateTextureProperties(PropertySet props)
+    {
+#ifdef kOfxsDisableValidation
+    (void)props;
+#else
+      gTextureInstancePropSet.validate(props);
+#endif
+    }
+#endif
 
     /** @brief Validates action in/out arguments */
     void
       validateActionArgumentsProperties(const std::string &action, PropertySet inArgs, PropertySet outArgs)
     {
-#ifndef kOfxsDisableValidation
+#ifdef kOfxsDisableValidation
+    (void)action;
+    (void)inArgs;
+    (void)outArgs;
+#else
       if(action == kOfxActionInstanceChanged) {
         gInstanceChangedInArgPropSet.validate(inArgs);
       }
@@ -1094,7 +1212,11 @@ namespace OFX {
       OFX::PropertySet paramProps,
       bool checkDefaults)
     {
-#ifndef kOfxsDisableValidation
+#ifdef kOfxsDisableValidation
+    (void)paramType;
+    (void)paramProps;
+    (void)checkDefaults;
+#else
       // should use a map here
       switch(paramType) 
       {
@@ -1143,6 +1265,12 @@ namespace OFX {
       case ePushButtonParam :
         gPushButtonParamPropSet.validate(paramProps, checkDefaults);
         break;
+      case eParametricParam:
+        gParametricParamPropSet.validate(paramProps, checkDefaults);
+        break;
+      case eDummyParam:
+      //default:
+            break;
       }
 #endif
     }

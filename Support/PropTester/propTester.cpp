@@ -69,16 +69,16 @@ public:
     OfxPointI size = getInteractSize();
     glBegin (GL_POLYGON);
     
-    glColor3f (0.0, 0.0, 0.0);
-    glVertex2f (-0.5, -0.5);
+    glColor3f (0.0f, 0.0f, 0.0f);
+    glVertex2f (-0.5f, -0.5f);
 
-    glColor3f (1.0, 0.0, 0.0);
+    glColor3f (1.0f, 0.0f, 0.0f);
     glVertex2f (-0.5f, size.y-0.5f);
 
-    glColor3f (0.0, 1.0, 0.0);
+    glColor3f (0.0f, 1.0f, 0.0f);
     glVertex2f (size.x - 0.5f, size.y - 0.5f);
     
-    glColor3f (0.0, 0.0, 1.0);
+    glColor3f (0.0f, 0.0f, 1.0f);
     glVertex2f (size.x - 0.5f, -0.5f);
     
     glEnd();
@@ -158,7 +158,7 @@ public:
     }
     return false;
   }
-  virtual bool penUp(const OFX::PenArgs &args)
+  virtual bool penUp(const OFX::PenArgs &/*args*/)
   {
     _state = ePoised;
     requestRedraw();
@@ -200,7 +200,7 @@ public :
     : ImageEffect(handle)
     , dstClip_(0)
   {
-    dstClip_ = fetchClip("Output");
+    dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
   }
 
 };
@@ -231,7 +231,7 @@ public :
     : BasePlugin(handle)
     , srcClip_(0)
   {
-    srcClip_ = fetchClip("Source");
+    srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
   }
 
   /** @brief client render function, this is one of the few that must be set */
@@ -261,7 +261,7 @@ using namespace OFX;
 class PropTesterPluginFactory : public OFX::PluginFactoryHelper<PropTesterPluginFactory>
 {
 public:
-  PropTesterPluginFactory():OFX::PluginFactoryHelper<PropTesterPluginFactory>("net.sf.openfx:propertyTester", 1, 0){}
+  PropTesterPluginFactory():OFX::PluginFactoryHelper<PropTesterPluginFactory>("net.sf.openfx.propertyTester", 1, 0){}
   virtual void describe(OFX::ImageEffectDescriptor &desc);
   virtual void describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context);
   virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context);
@@ -307,6 +307,7 @@ void PropTesterPluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 }
 
 /** @brief describe a string param with the given name and type */
+static
 void describeStringParam(OFX::ImageEffectDescriptor &desc, const std::string &name, StringTypeEnum strType, PageParamDescriptor *page)
 {
   StringParamDescriptor *param = desc.defineStringParam(name);
@@ -319,6 +320,7 @@ void describeStringParam(OFX::ImageEffectDescriptor &desc, const std::string &na
 }
 
 /** @brief describe a double param */
+static
 void describeDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &name, DoubleTypeEnum doubleType,
                          double min, double max, PageParamDescriptor *page)
 {
@@ -334,6 +336,7 @@ void describeDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &na
 }
 
 /** @brief describe a double param */
+static
 void describe2DDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &name, DoubleTypeEnum doubleType,
                            double min, double max, PageParamDescriptor *page)
 {
@@ -349,6 +352,7 @@ void describe2DDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &
 }
 
 /** @brief describe a double param */
+static
 void describe3DDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &name, DoubleTypeEnum doubleType,
                            double min, double max, PageParamDescriptor *page)
 {
@@ -380,7 +384,7 @@ void PropTesterPluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   // Source clip only in the filter context
   if(context == eContextFilter || context == eContextGeneral) {
     // create the mandated source clip
-    ClipDescriptor *srcClip = desc.defineClip("Source");
+    ClipDescriptor *srcClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
     srcClip->addSupportedComponent(ePixelComponentRGBA);
     srcClip->setTemporalClipAccess(false);
     //srcClip->setOptional(false);
@@ -389,7 +393,7 @@ void PropTesterPluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   }
 
   // create the mandated output clip
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->setTemporalClipAccess(false);
   //dstClip->setOptional(false);
@@ -447,13 +451,13 @@ void PropTesterPluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   // choice 
   ChoiceParamDescriptor *choice = desc.defineChoiceParam("choice");
   choice->setLabels("choice", "choice", "choice");
-  choice->appendOption("This");
-  choice->appendOption("That");
-  choice->appendOption("The Other");
+  choice->appendOption("This", "This");
+  choice->appendOption("That", "That");
+  choice->appendOption("The Other", "The Other");
   choice->resetOptions();
-  choice->appendOption("Tom");
-  choice->appendOption("Dick");
-  choice->appendOption("Harry");
+  choice->appendOption("Tom", "Tom");
+  choice->appendOption("Dick", "Dick");
+  choice->appendOption("Harry", "Harry");
   choice->setDefault(0);
 
   page1->addChild(*choice);
@@ -503,10 +507,10 @@ void PropTesterPluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   describeDoubleParam(desc, "scale", eDoubleTypeScale, -1, 1, page2);
   describeDoubleParam(desc, "time", eDoubleTypeTime, -100, 100, page2);
   describeDoubleParam(desc, "absoluteTime", eDoubleTypeAbsoluteTime, 0, 1000, page2);
-  describeDoubleParam(desc, "X_Value", eDoubleTypeNormalisedX, -1, 1, page2);
-  describeDoubleParam(desc, "Y_Value", eDoubleTypeNormalisedY, -1, 1, page2);
-  describeDoubleParam(desc, "X_Position", eDoubleTypeNormalisedXAbsolute, -1, 1, page2);
-  describeDoubleParam(desc, "Y_Position", eDoubleTypeNormalisedYAbsolute, -1, 1, page2);
+  describeDoubleParam(desc, "X_Value", eDoubleTypeX, -1, 1, page2);
+  describeDoubleParam(desc, "Y_Value", eDoubleTypeY, -1, 1, page2);
+  describeDoubleParam(desc, "X_Position", eDoubleTypeXAbsolute, -1, 1, page2);
+  describeDoubleParam(desc, "Y_Position", eDoubleTypeYAbsolute, -1, 1, page2);
 
   page2->addChild(PageParamDescriptor::gSkipColumn);
 
@@ -514,8 +518,8 @@ void PropTesterPluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   describe2DDoubleParam(desc, "double2D", eDoubleTypePlain, -100, 100, page2);
   describe2DDoubleParam(desc, "angle2D", eDoubleTypeAngle, -100, 100, page2);
   describe2DDoubleParam(desc, "scale2D", eDoubleTypeScale, -1, 1, page2);
-  describe2DDoubleParam(desc, "XY_Value", eDoubleTypeNormalisedXY, -1, 1, page2);
-  describe2DDoubleParam(desc, "XY_Position", eDoubleTypeNormalisedXYAbsolute, -1, 1, page2);
+  describe2DDoubleParam(desc, "XY_Value", eDoubleTypeXY, -1, 1, page2);
+  describe2DDoubleParam(desc, "XY_Position", eDoubleTypeXYAbsolute, -1, 1, page2);
 
   page2->addChild(PageParamDescriptor::gSkipColumn);
 

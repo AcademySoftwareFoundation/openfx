@@ -1,7 +1,6 @@
-CXXFLAGS = -I../../include
-OPTIMIZER = -O3
+PLUGINOBJECTS = depthConverter.o
+PLUGINNAME = depthConverter
+PATHTOROOT = ../
 
-depthConverter.dso : depthConverter.o
-	$(CXX) -shared depthConverter.o -o depthConverter.dso
-	strip -fhls depthConverter.dso
+include ../Makefile.master
 

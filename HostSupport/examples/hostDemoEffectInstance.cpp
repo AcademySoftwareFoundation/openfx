@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ofx
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
+#include "ofxPixels.h"
 
 // ofx host
 #include "ofxhBinary.h"
@@ -92,7 +93,20 @@ namespace MyHost {
     vprintf(format,args);
     return kOfxStatOK;
   }
-  
+
+  OfxStatus MyEffectInstance::setPersistentMessage(const char* type,
+                                                   const char* id,
+                                                   const char* format,
+                                                   va_list args)
+  {
+    return vmessage(type, id, format, args);
+  }
+
+  OfxStatus MyEffectInstance::clearPersistentMessage()
+  {
+    return kOfxStatOK;
+  }
+
   // get the project size in CANONICAL pixels, so PAL SD return 768, 576
   void MyEffectInstance::getProjectSize(double& xSize, double& ySize) const
   {
@@ -186,7 +200,7 @@ namespace MyHost {
   }
 
   /// Start doing progress. 
-  void  MyEffectInstance::progressStart(const std::string &message)
+  void  MyEffectInstance::progressStart(const std::string &message, const std::string &messageid)
   {
   }
   
@@ -221,4 +235,5 @@ namespace MyHost {
     t1 = 0;
     t2 = 25;
   }
+
 }

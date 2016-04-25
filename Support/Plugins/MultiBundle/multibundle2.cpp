@@ -40,12 +40,12 @@ England
 #endif
 
 #ifdef __APPLE__
-#include <AGL/gl.h>
+#include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif
 
-#include <stdio.h>
+#include <cassert>
 #include "ofxsImageEffect.h"
 #include "ofxsMultiThread.h"
 #include "../include/ofxsProcessing.H"
@@ -84,7 +84,7 @@ inline T Absolute(T a)
 class DotGeneratorBase : public OFX::ImageProcessor 
 {  
 public :
-  DotGeneratorBase(OFX::ImageEffect &instance) : OFX::ImageProcessor(instance), _radius(0.0f), _positionx(0.0), _positiony(0.0)
+  DotGeneratorBase(OFX::ImageEffect &instance) : OFX::ImageProcessor(instance), _radius(0.0f), _positionx(0.0f), _positiony(0.0f)
   {
     _colour[0] = _colour[1] = _colour[2] = _colour[3] = 0;
   }
@@ -131,7 +131,7 @@ public :
         for(int c = 0; c < nComponents; c++) 
         {
           dstPix[c] = val < 1.0f ? PIX((1.0f-val)*max) : PIX(0);
-          dstPix[c] *= _colour[c];
+          dstPix[c] = (PIX)(dstPix[c] * _colour[c]);
         }
         dstPix += nComponents;
       }
@@ -149,7 +149,7 @@ protected:
 public:
   DotExamplePlugin(OfxImageEffectHandle handle): ImageEffect(handle), dstClip_(0), radius_(0) , colour_(0), position_(0)
   {
-    dstClip_ = fetchClip("Output");
+    dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
     radius_   = fetchDoubleParam("radius");
     colour_ = fetchRGBAParam("colour");
     position_ = fetchDouble2DParam("position");
@@ -166,11 +166,7 @@ public:
 template<class ARGS>
 void DotExamplePlugin::getPositionInCanonical(double& x, double& y, const ARGS& args)
 {
-  OfxPointD size = getProjectSize();
-  OfxPointD off = getProjectOffset();
   position_->getValueAtTime(args.time, x, y);
-  x = x*size.x + off.x;
-  y = y*size.y + off.y;
 }
 
 template<class ARGS>
@@ -185,11 +181,10 @@ void DotExamplePlugin::getPositionInPixels(double& x, double& y, const ARGS& arg
 void DotExamplePlugin::setupAndProcess(DotGeneratorBase &processor, const OFX::RenderArguments &args)
 {
   std::auto_ptr<OFX::Image>  dst(dstClip_->fetchImage(args.time));
-  OFX::BitDepthEnum         dstBitDepth    = dst->getPixelDepth();
-  OFX::PixelComponentEnum   dstComponents  = dst->getPixelComponents();
+  //OFX::BitDepthEnum         dstBitDepth    = dst->getPixelDepth();
+  //OFX::PixelComponentEnum   dstComponents  = dst->getPixelComponents();
   double rad = radius_->getValueAtTime(args.time);
-  OfxPointD size = getProjectSize();
-  processor.setRadius((float)(rad * size.x));
+  processor.setRadius((float)(rad));
   double r, g, b, a;
   colour_->getValueAtTime(args.time, r, g, b, a);
   processor.setColour(r,g,b,a);
@@ -209,13 +204,10 @@ bool DotExamplePlugin::getRegionOfDefinition(const OFX::RegionOfDefinitionArgume
   double r = radius_->getValueAtTime(args.time);
   double x, y;
   position_->getValueAtTime(args.time, x, y);
-  OfxPointD size = getProjectSize();
-  OfxPointD offset = getProjectOffset();
-  float scaledR = (float)(r * size.x);
-  rod.x1 = x * size.x - scaledR + offset.x;
-  rod.y1 = y * size.y - scaledR  + offset.y;
-  rod.x2 = x * size.x + scaledR  + offset.x;
-  rod.y2 = x * size.y + scaledR  + offset.y;
+  rod.x1 = x - r;
+  rod.y1 = y - r;
+  rod.x2 = x + r;
+  rod.y2 = y + r;
   return true;
 }
 
@@ -245,6 +237,8 @@ void DotExamplePlugin::render(const OFX::RenderArguments &args)
         setupAndProcess(fred, args);
       }
       break;
+    default :
+      OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   }
   else 
@@ -259,7 +253,7 @@ void DotExamplePlugin::render(const OFX::RenderArguments &args)
       break;
     case OFX::eBitDepthUShort : 
       {
-        DotGenerator<unsigned short, 1, 65536> fred(*this);
+        DotGenerator<unsigned short, 1, 65535> fred(*this);
         setupAndProcess(fred, args);
       }
       break;
@@ -269,6 +263,8 @@ void DotExamplePlugin::render(const OFX::RenderArguments &args)
         setupAndProcess(fred, args);
       }
       break;
+    default :
+      OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   } 
 }
@@ -295,9 +291,12 @@ bool DotExampleInteract::draw(const OFX::DrawArgs &args)
 
   float dx = (float)(kBoxSize.x * args.pixelScale.x);
   float dy = (float)(kBoxSize.y * args.pixelScale.y);
-  double xpos, ypos;
+  double xpos = 0., ypos = 0.;
   DotExamplePlugin* plug = dynamic_cast<DotExamplePlugin*>(_effect);
-  plug->getPositionInCanonical(xpos, ypos, args);
+  assert(plug);
+  if (plug) {
+    plug->getPositionInCanonical(xpos, ypos, args);
+  }
   glPushMatrix();
   glColor3f(col.r, col.g, col.b);
   glTranslated(xpos, ypos, 0);
@@ -331,9 +330,11 @@ bool DotExampleInteract::penMotion(const OFX::PenArgs &args)
   case ePoised   : 
     {
       StateEnum newState;
-      double xpos, ypos;
+      double xpos = 0., ypos = 0.;
       DotExamplePlugin* plug = dynamic_cast<DotExamplePlugin*>(_effect);
-      plug->getPositionInCanonical(xpos, ypos, args);
+      if (plug) {
+        plug->getPositionInCanonical(xpos, ypos, args);
+      }
       penPos.x -= xpos;
       penPos.y -= ypos;
       if(Absolute(penPos.x) < dx && Absolute(penPos.y) < dy) 
@@ -355,11 +356,7 @@ bool DotExampleInteract::penMotion(const OFX::PenArgs &args)
   case ePicked   : 
     {
       
-    OfxPointD size = _effect->getProjectSize();
-    OfxPointD off = _effect->getProjectOffset();
-    double x = (args.penPosition.x - off.x)/size.x;
-    double y = (args.penPosition.y - off.y)/size.y;
-    position_->setValueAtTime(args.time, x, y);
+    position_->setValueAtTime(args.time, args.penPosition.x, args.penPosition.y);
       _effect->redrawOverlays();
     }
     break;
@@ -399,6 +396,7 @@ void DotExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.setLabels("Dot Generator", "Dot Generator", "Dot Generator");
   desc.setPluginGrouping("OFX");
   desc.addSupportedContext(eContextGenerator);
+  desc.addSupportedContext(eContextGeneral);
   desc.addSupportedBitDepth(eBitDepthUByte);
   desc.addSupportedBitDepth(eBitDepthUShort);
   desc.addSupportedBitDepth(eBitDepthFloat);
@@ -413,9 +411,16 @@ void DotExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.setOverlayInteractDescriptor( new DotExampleOverlayDescriptor );
 }
 
-void DotExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context)
+void DotExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum /*context*/)
 {
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  // there has to be an input clip, even for generators
+  ClipDescriptor* srcClip = desc.defineClip( kOfxImageEffectSimpleSourceClipName );
+  srcClip->addSupportedComponent( OFX::ePixelComponentRGBA );
+  srcClip->addSupportedComponent( OFX::ePixelComponentAlpha );
+  srcClip->setSupportsTiles(true);
+  srcClip->setOptional(true);
+
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
   dstClip->setSupportsTiles(true);
@@ -425,12 +430,13 @@ void DotExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   param->setLabels("Radius", "Radius", "Radius");
   param->setScriptName("radius");
   param->setHint("The radius of the dot produced.");
+  param->setDoubleType(eDoubleTypeX);
+  param->setDefaultCoordinateSystem(eCoordinatesNormalised);
   param->setDefault(0.02);
   //param->setRange(0, 1);
   param->setIncrement(1);
   param->setDisplayRange(0, 1);
   param->setAnimates(true);
-  param->setDoubleType(eDoubleTypeNormalisedX);
 
   RGBAParamDescriptor *param2 = desc.defineRGBAParam("colour");
   param2->setAnimates(true);
@@ -441,10 +447,11 @@ void DotExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
 
   Double2DParamDescriptor* param3 = desc.defineDouble2DParam("position");
   param3->setLabels("Dot Position", "Dot Position", "Dot Position");
+  param->setDoubleType(eDoubleTypeXY);
+  param->setDefaultCoordinateSystem(eCoordinatesNormalised);
   param3->setAnimates(true);
   param3->setDimensionLabels("X", "Y");
   param3->setDefault(0.5, 0.5);
-  param3->setDoubleType(eDoubleTypeNormalisedXY);
 
   PageParamDescriptor *page = desc.definePageParam("Controls");
   page->addChild(*param);
@@ -452,7 +459,7 @@ void DotExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   page->addChild(*param3);
 }
 
-ImageEffect* DotExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context)
+ImageEffect* DotExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum /*context*/)
 {
   return new DotExamplePlugin(handle);
 }

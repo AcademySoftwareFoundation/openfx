@@ -53,7 +53,7 @@
 #include "ofxhHost.h"
 #include "ofxhXml.h"
 
-#if defined (__linux__)
+#if defined (__linux__) || defined (__FreeBSD__)
 
 #define DIRLIST_SEP_CHARS ":;"
 #define DIRSEP "/"
@@ -62,10 +62,18 @@
 static const char *getArchStr() 
 {
   if(sizeof(void *) == 4) {
+#if defined(__linux__)
     return  "Linux-x86";
+#else
+    return  "FreeBSD-x86";
+#endif
   }
   else {
+#if defined(__linux__)
     return  "Linux-x86-64";
+#else
+    return  "FreeBSD-x86-64";
+#endif
   }
 }
 
@@ -74,7 +82,11 @@ static const char *getArchStr()
 #elif defined (__APPLE__)
 
 #define DIRLIST_SEP_CHARS ";:"
+#if defined(__x86_64) || defined(__x86_64__)
+#define ARCHSTR "MacOS-x86-64"
+#else
 #define ARCHSTR "MacOS"
+#endif
 #define DIRSEP "/"
 #include <dirent.h>
 
@@ -101,12 +113,20 @@ using namespace OFX::Host;
 
 /// try to open the plugin bundle object and query it for plugins
 void PluginBinary::loadPluginInfo(PluginCache *cache) {      
+  if (isInvalid()) {
+    return;
+  }
   _fileModificationTime = _binary.getTime();
   _fileSize = _binary.getSize();
   _binaryChanged = false;
   
-  _binary.load();
-  
+  // Take a reference to load the binary only once per session. It will
+  // eventually be unloaded in the destructor (see below).
+  // This avoid lots of useless calls to dlopen()/dlclose().
+  if (!_binary.isLoaded()) {
+    _binary.ref();
+  }
+
   int (*getNo)(void) = (int(*)()) _binary.findSymbol("OfxGetNumberOfPlugins");
   OfxPlugin* (*getPlug)(int) = (OfxPlugin*(*)(int)) _binary.findSymbol("OfxGetPlugin");
   
@@ -128,8 +148,6 @@ void PluginBinary::loadPluginInfo(PluginCache *cache) {
       _plugins.push_back(api->newPlugin(this, i, plug));
     }
   }
-  
-  _binary.unload();
 }
 
 PluginBinary::~PluginBinary() {
@@ -138,9 +156,15 @@ PluginBinary::~PluginBinary() {
     delete *i;
     i++;
   }
+  // release the last reference to the binary, which should unload it
+  // if this reference was taken by loadPluginInfo().
+  if (_binary.isLoaded()) {
+    _binary.unref();
+  }
+  assert(!_binary.isLoaded());
 }
 
-PluginHandle::PluginHandle(Plugin *p, OFX::Host::Host *host) : _p(p) 
+PluginHandle::PluginHandle(Plugin *p, OFX::Host::Host *host)
 {
   _b = p->getBinary();
   _b->_binary.ref();
@@ -173,9 +197,10 @@ const TCHAR *getStdOFXPluginPath(const std::string &hostId = "Plugins")
 }
 #endif
 
+static
 std::string OFXGetEnv(const char* e)
 {
-#ifdef WINDOWS
+#if defined(WINDOWS) && !defined(__MINGW32__)
   size_t requiredSize;
   getenv_s(&requiredSize, 0, 0, e);
   std::vector<char> buffer(requiredSize);
@@ -213,7 +238,7 @@ PluginCache::~PluginCache()
   _binaries.clear();
 }
 
-PluginCache::PluginCache() : _xmlCurrentBinary(0), _xmlCurrentPlugin(0) {
+PluginCache::PluginCache() : _hostSpec(0), _xmlCurrentBinary(0), _xmlCurrentPlugin(0) {
   
   _cacheVersion = "";
   _ignoreCache = false;
@@ -245,7 +270,7 @@ PluginCache::PluginCache() : _xmlCurrentBinary(0), _xmlCurrentPlugin(0) {
   _pluginPath.push_back(getStdOFXPluginPath());
   _pluginPath.push_back("C:\\Program Files\\Common Files\\OFX\\Plugins");
 #endif
-#if defined(__linux__)
+#if defined(__linux__) || defined(__FreeBSD__)
   _pluginPath.push_back("/usr/OFX/Plugins");
 #endif
 #if defined(__APPLE__)
@@ -258,7 +283,7 @@ void PluginCache::setPluginHostPath(const std::string &hostId) {
   _pluginPath.push_back(getStdOFXPluginPath(hostId));
   _pluginPath.push_back("C:\\Program Files\\Common Files\\OFX\\" + hostId);
 #endif
-#if defined(__linux__)
+#if defined(__linux__) || defined(__FreeBSD__)
   _pluginPath.push_back("/usr/OFX/" + hostId);
 #endif
 #if defined(__APPLE__)
@@ -308,9 +333,25 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
         std::string barename = name.substr(0, name.length() - strlen(".bundle"));
         std::string bundlename = dir + DIRSEP + name;
         std::string binpath = dir + DIRSEP + name + DIRSEP "Contents" DIRSEP + ARCHSTR + DIRSEP + barename;
-        
-        foundBinFiles.insert(binpath);
-        
+          
+        // don't insert binpath yet, do it later because of Mac OS X Universal stuff
+        //foundBinFiles.insert(binpath);
+
+#if defined(__APPLE__) && (defined(__x86_64) || defined(__x86_64__))
+        /* From the OpenFX specification:
+           
+           MacOS-x86-64 - for Apple Macintosh OS X, specifically on
+           intel x86 CPUs running AMD's 64 bit extensions. 64 bit host
+           applications should check this first, and if it doesn't
+           exist or is empty, fall back to "MacOS" looking for a
+           universal binary.
+        */
+          
+        std::string binpath_universal = dir + DIRSEP + name + DIRSEP "Contents" DIRSEP + "MacOS" + DIRSEP + barename;
+        if (_knownBinFiles.find(binpath_universal) != _knownBinFiles.end()) {
+          binpath = binpath_universal;
+        }
+#endif
         if (_knownBinFiles.find(binpath) == _knownBinFiles.end()) {
 #ifdef CACHE_DEBUG
           printf("found non-cached binary %s\n", binpath.c_str());
@@ -319,10 +360,24 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
           
           // the binary was not in the cache
           
-          PluginBinary *pb = new PluginBinary(binpath, bundlename, this);
+          PluginBinary *pb = 0;
+#if defined(__x86_64) || defined(__x86_64__)
+          pb = new PluginBinary(binpath, bundlename, this);
+#  if defined(__APPLE__)
+          if (pb->isInvalid()) {
+            // fallback to "MacOS"
+            delete pb;
+            binpath = binpath_universal;
+            pb = new PluginBinary(binpath, bundlename, this);
+          }
+#  endif
+#else
+          pb = new PluginBinary(binpath, bundlename, this);
+#endif
           _binaries.push_back(pb);
           _knownBinFiles.insert(binpath);
-          
+          foundBinFiles.insert(binpath);
+
           for (int j=0;j<pb->getNPlugins();j++) {
             Plugin *plug = &pb->getPlugin(j);
             const APICache::PluginAPICacheI &api = plug->getApiHandler();
@@ -333,6 +388,8 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
           printf("found cached binary %s\n", binpath.c_str());
 #endif
         }
+        // insert final path (universal or not) in the list of found files
+        foundBinFiles.insert(binpath);
       } else {
         if (isdir && (recurse && name[0] != '@' && name != "." && name != "..")) {
           scanDirectory(foundBinFiles, dir + DIRSEP + name, recurse);
@@ -454,7 +511,7 @@ static bool mapHasAll(const std::map<std::string, std::string> &attmap, const ch
   return true;
 }
 
-void PluginCache::elementBeginCallback(void *userData, const XML_Char *name, const XML_Char **atts) {
+void PluginCache::elementBeginCallback(void */*userData*/, const XML_Char *name, const XML_Char **atts) {
   if (_ignoreCache) {
     return;
   }
@@ -482,7 +539,7 @@ void PluginCache::elementBeginCallback(void *userData, const XML_Char *name, con
   }
   
   if (ename == "binary") {
-    const char *binAtts[] = {"path", "bundlepath", "mtime", "size", NULL};
+    const char *binAtts[] = {"path", "bundle_path", "mtime", "size", NULL};
     
     if (!mapHasAll(attmap, binAtts)) {
       // no path: bad XML
@@ -511,9 +568,11 @@ void PluginCache::elementBeginCallback(void *userData, const XML_Char *name, con
     
     std::string identifier = rawIdentifier;
     
-    for (size_t i=0;i<identifier.size();i++) {
-      identifier[i] = tolower(identifier[i]);
-    }
+    // Who says the pluginIdentifier is case-insensitive? OFX 1.3 spec doesn't mention this.
+    // http://openfx.sourceforge.net/Documentation/1.3/ofxProgrammingReference.html#id472588
+    //for (size_t i=0;i<identifier.size();i++) {
+    //  identifier[i] = tolower(identifier[i]);
+    //}
     
     int idx = OFX::Host::Property::stringToInt(attmap["index"]);
     int api_version = OFX::Host::Property::stringToInt(attmap["api_version"]);
@@ -539,7 +598,7 @@ void PluginCache::elementBeginCallback(void *userData, const XML_Char *name, con
   
 }
 
-void PluginCache::elementCharCallback(void *userData, const XML_Char *data, int size) 
+void PluginCache::elementCharCallback(void */*userData*/, const XML_Char *data, int size)
 {
   if (_ignoreCache) {
     return;
@@ -554,7 +613,7 @@ void PluginCache::elementCharCallback(void *userData, const XML_Char *data, int 
   }
 }
 
-void PluginCache::elementEndCallback(void *userData, const XML_Char *name) {
+void PluginCache::elementEndCallback(void */*userData*/, const XML_Char *name) {
   if (_ignoreCache) {
     return;
   }

@@ -30,10 +30,12 @@ modification, are permitted provided that the following conditions are met:
 
 #include <iostream>
 #include <fstream>
+#include <cassert>
 
 // ofx
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
+#include "ofxPixels.h"
 
 // ofx host
 #include "ofxhBinary.h"
@@ -69,19 +71,18 @@ modification, are permitted provided that the following conditions are met:
 //
 // There is no file io to work with this.
 
-void exportToPGM(const std::string& fname, MyHost::MyImage* im)
+void exportToPPM(const std::string& fname, MyHost::MyImage* im)
 {
   std::ofstream op(fname.c_str());
   OfxRectI rod = im->getROD();
-  OfxRectI bounds = im->getBounds();
   op << "P3" << "\t# FORMAT" << std::endl;
   op << rod.x2 - rod.x1 << "\t#WIDTH" << std::endl;
   op << rod.y2 - rod.y1 << "\t#HEIGHT" <<std::endl;
   //This assumes 8-bit.
   op << "255" << std::endl;
-  for (int x = rod.x1; x < rod.x2; ++x)
+  for (int y = rod.y1; y< rod.y2; ++y)
   {
-    for (int y = rod.y1; y< rod.y2; ++y)
+    for (int x = rod.x1; x < rod.x2; ++x)
     {
       OfxRGBAColourB* pix = im->pixel(x,y);
       if(pix)
@@ -137,14 +138,18 @@ int main(int argc, char **argv)
 
     if(instance.get())
     {
+        OfxStatus stat;
+
       // now we need to call the create instance action. Only call this once you have initialised all the params
       // and clips to their correct values. So if you are loading a saved plugin state, set up your params from
       // that state, _then_ call create instance.
-      instance->createInstanceAction();
+      stat = instance->createInstanceAction();
+      assert(stat == kOfxStatOK || stat == kOfxStatReplyDefault);
 
       // now we need to to call getClipPreferences on the instance so that it does the clip component/depth
       // logic and caches away the components and depth on each clip.
-      instance->getClipPreferences();
+      bool ok = instance->getClipPreferences();
+      assert(ok);
       
       // current render scale of 1
       OfxPointD renderScale;
@@ -166,10 +171,13 @@ int main(int argc, char **argv)
       int numFramesToRender = OFXHOSTDEMOCLIPLENGTH;
 
       // say we are about to render a bunch of frames 
-      instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale);
+      stat = instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale, /*sequential=*/true, /*interactive=*/false
+                                         );
+      assert(stat == kOfxStatOK || stat == kOfxStatReplyDefault);
 
       // get the output clip
       MyHost::MyClipInstance* outputClip = dynamic_cast<MyHost::MyClipInstance*>(instance->getClip("Output"));
+      assert(outputClip);
 
       for(int t = 0; t <= numFramesToRender; ++t) 
       {
@@ -183,20 +191,24 @@ int main(int argc, char **argv)
         //
         // In our example we are doing full frame fetches regardless.
         std::map<OFX::Host::ImageEffect::ClipInstance *, OfxRectD> rois;
-        instance->getRegionOfInterestAction(frame, renderScale, regionOfInterest, rois);
-  
+        stat = instance->getRegionOfInterestAction(frame, renderScale,
+                                                   regionOfInterest, rois);
+        assert(stat == kOfxStatOK || stat == kOfxStatReplyDefault);
+
         // render a frame
-        instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale);
+        stat = instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, /*sequential=*/true, /*interactive=*/false, /*draft=*/false);
+        assert(stat == kOfxStatOK);
 
         // get the output image buffer
         MyHost::MyImage *outputImage = outputClip->getOutputImage();
 
         std::ostringstream ss;
-        ss << "Output." << t << ".pgm";
-        exportToPGM(ss.str(), outputImage);
+        ss << "Output." << t << ".ppm";
+        exportToPPM(ss.str(), outputImage);
       }
 
-      instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale);
+      instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale, /*sequential=*/true, /*interactive=*/false
+                                );
     }
   }
   OFX::Host::PluginCache::clearPluginCache();

@@ -34,6 +34,7 @@
 // ofx host
 #include "ofxhBinary.h"
 #include "ofxhPropertySuite.h"
+#include "ofxhUtilities.h"
 
 #include <iostream>
 #include <string.h>
@@ -90,86 +91,101 @@ namespace OFX {
       {
         getPointerPropertyN(name, values, count);
       }
+        
+      /// this does some magic so that it calls get string/int/double/pointer appropriately
+      template<> void GetHook::getPropertyN<StringValue>(const std::string &name, const char **values, int count) const OFX_EXCEPTION_SPEC
+      {
+        getStringPropertyN(name, values, count);
+      }
+
 
       /// override this to get a single value at the given index.
-      const std::string &GetHook::getStringProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC
+      const std::string &GetHook::getStringProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
       {        
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::getStringProperty!!!! " << std::endl;
-#endif
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getStringProperty!!!! " << std::endl;
+#       endif
         return StringValue::kEmpty;
       }
+       
+       /// override this function to optimize multiple-string properties fetching
+      void GetHook::getStringPropertyN(const std::string &name, const char** values, int count) const OFX_EXCEPTION_SPEC
+      {
+        for (int i = 0; i < count; ++i) {
+          values[i] = getStringProperty(name, i).c_str();
+        }
+      }
       
       /// override this to fetch a single value at the given index.
-      int GetHook::getIntProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC
+      int GetHook::getIntProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
       {
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::getIntProperty!!!! " << std::endl;
-#endif
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getIntProperty!!!! " << std::endl;
+#       endif
         return 0;
       }
       
       /// override this to fetch a single value at the given index.
-      double GetHook::getDoubleProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC
+      double GetHook::getDoubleProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
       {
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::getDoubleProperty!!!! " << std::endl;
-#endif
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getDoubleProperty!!!! " << std::endl;
+#       endif
         return 0;
       }
       
       /// override this to fetch a single value at the given index.
-      void *GetHook::getPointerProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC
+      void *GetHook::getPointerProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
       {
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::getPointerProperty!!!! " << std::endl;
-#endif
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getPointerProperty!!!! " << std::endl;
+#       endif
         return NULL;
       }
       
       /// override this to fetch a multiple values in a multi-dimension property
-      void GetHook::getDoublePropertyN(const std::string &name, double *values, int count) const OFX_EXCEPTION_SPEC
+      void GetHook::getDoublePropertyN(const std::string &/*name*/, double *values, int count) const OFX_EXCEPTION_SPEC
       {
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::getDoublePropertyN!!!! " << std::endl;
-#endif
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getDoublePropertyN!!!! " << std::endl;
+#       endif
         memset(values, 0, sizeof(double) * count);
       }
 
       /// override this to fetch a multiple values in a multi-dimension property
-      void GetHook::getIntPropertyN(const std::string &name, int *values, int count) const OFX_EXCEPTION_SPEC
+      void GetHook::getIntPropertyN(const std::string &/*name*/, int *values, int count) const OFX_EXCEPTION_SPEC
       {
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::getIntPropertyN!!!! " << std::endl;
-#endif
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getIntPropertyN!!!! " << std::endl;
+#       endif
         memset(values, 0, sizeof(int) * count);
       }
 
       /// override this to fetch a multiple values in a multi-dimension property
-      void GetHook::getPointerPropertyN(const std::string &name, void **values, int count) const OFX_EXCEPTION_SPEC
+      void GetHook::getPointerPropertyN(const std::string &/*name*/, void **values, int count) const OFX_EXCEPTION_SPEC
       {
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::getPointerPropertyN!!!! " << std::endl;
-#endif
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getPointerPropertyN!!!! " << std::endl;
+#       endif
         memset(values, 0, sizeof(void *) * count);
       }
 
 
       /// override this to fetch the dimension size.
-      int GetHook::getDimension(const std::string &name) const OFX_EXCEPTION_SPEC
+      int GetHook::getDimension(const std::string &/*name*/) const OFX_EXCEPTION_SPEC
       {
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::getDimension!!!! " << std::endl;
-#endif
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::getDimension!!!! " << std::endl;
+#       endif
         return 0;
       }
       
       /// override this to handle a reset(). 
-      void GetHook::reset(const std::string &name) OFX_EXCEPTION_SPEC
+      void GetHook::reset(const std::string &/*name*/) OFX_EXCEPTION_SPEC
       {
-#ifdef DEBUG
-        std::cout << "Calling un-overriden GetHook::reset!!!! " << std::endl;
-#endif
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: Calling un-overriden GetHook::reset!!!! " << std::endl;
+#       endif
       }
 
       Property::Property(const std::string &name,
@@ -209,7 +225,7 @@ namespace OFX {
 
       template<class T> PropertyTemplate<T>::PropertyTemplate(const std::string &name,					    
         int dimension,													    
-        bool pluginReadOnly,												    
+        bool /*pluginReadOnly*/,
         APIType defaultValue)												    
         : Property(name, T::typeCode, dimension)									    
       {															    
@@ -256,19 +272,6 @@ namespace OFX {
       void PropertyTemplate<T>::getValueN(typename T::APIType *values, int count) const OFX_EXCEPTION_SPEC {
         if (_getHook) {
           _getHook->getPropertyN<T>(_name, values, count);
-        } 
-        else {
-          getValueNRaw(values, count);
-        }
-      }
-
-      // get multiple values
-      template<> 
-      void PropertyTemplate<StringValue>::getValueN(StringValue::APIType *values, int count) const OFX_EXCEPTION_SPEC {
-        if (_getHook) {
-          for(int i = 0; i < count; ++i) {
-            values[i] = castToAPIType(_getHook->getStringProperty(_name, i));
-          }
         } 
         else {
           getValueNRaw(values, count);
@@ -377,6 +380,11 @@ namespace OFX {
         }
       }
 
+      // explicit instanciations (required by ofxhPluginAPICache.cpp)
+      template class PropertyTemplate<IntValue>;
+      template class PropertyTemplate<DoubleValue>;
+      template class PropertyTemplate<PointerValue>;
+      template class PropertyTemplate<StringValue>;
 
       inline int castAwayConst(int i) { return i; }
       inline double castAwayConst(double d) { return d; }
@@ -437,34 +445,44 @@ namespace OFX {
       }
 
       String *Set::fetchStringProperty(const std::string &name, bool followChain) const {
-        String *p = NULL;
-        fetchTypedProperty(name, p, followChain);
-        return p;
+        String *p;
+        if (fetchTypedProperty(name, p, followChain)) {
+          return p;
+        }
+        return NULL;
       }
 
       Int *Set::fetchIntProperty(const std::string &name, bool followChain) const {
-        Int *p = NULL;
-        fetchTypedProperty(name, p, followChain);
-        return p;
+        Int *p;
+        if (fetchTypedProperty(name, p, followChain)) {
+          return p;
+        }
+        return NULL;
       }
 
       Pointer *Set::fetchPointerProperty(const std::string &name,  bool followChain) const {
-        Pointer *p = NULL;
-        fetchTypedProperty(name, p, followChain);
-        return p;
+        Pointer *p;
+        if (fetchTypedProperty(name, p, followChain)) {
+          return p;
+        }
+        return NULL;
       }
 
       Double *Set::fetchDoubleProperty(const std::string &name, bool followChain) const {
-        Double *p = NULL;
-        fetchTypedProperty(name, p, followChain);
-        return p;
+        Double *p;
+        if (fetchTypedProperty(name, p, followChain)) {
+          return p;
+        }
+        return NULL;
       }
 
       /// add one new property
       void Set::createProperty(const PropSpec &spec)
       {
         if (_props.find(spec.name) != _props.end()) {
-          std::cerr << "Tried to add a duplicate property to a Property::Set" << spec.name << std::endl;
+#         ifdef OFX_DEBUG_PROPERTIES
+          std::cout << "OFX: Tried to add a duplicate property to a Property::Set: " << spec.name << std::endl;
+#         endif
           return;
         }
 
@@ -760,24 +778,39 @@ namespace OFX {
                                                  const char *property,
                                                  int index,
                                                  typename T::APIType value) {          
-#ifdef DEBUG
-        std::cout << "propSet - " << properties << " " << property << "[" << index << "] = " << value << " \n";
-#endif
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: propSet - " << properties << ' ' << property << "[" << index << "] = " << value << " ...";
+#       endif
         try {            
           Set *thisSet = reinterpret_cast<Set*>(properties);
-          if(!thisSet->verifyMagic())
+          if(!thisSet || !thisSet->verifyMagic()) {
+#           ifdef OFX_DEBUG_PARAMETERS
+            std::cout << ' ' << StatStr(kOfxStatErrBadHandle) << std::endl;
+#           endif
             return kOfxStatErrBadHandle;
+          }
           PropertyTemplate<T> *prop = 0;
           if(!thisSet->fetchTypedProperty(property, prop, false)) {
+#           ifdef OFX_DEBUG_PROPERTIES
+            std::cout << ' ' << StatStr(kOfxStatErrUnknown) << std::endl;
+#           endif
             return kOfxStatErrUnknown;
           }
           prop->setValue(value, index);
-        } catch (Exception e) {
-#ifdef DEBUG
-          std::cout << " returning status " << e.getStatus() << "\n";
-#endif
+        } catch (const Exception& e) {
+#         ifdef OFX_DEBUG_PROPERTIES
+          std::cout << ' ' << StatStr(e.getStatus()) << std::endl;
+#         endif
           return e.getStatus();
+        } catch (...) {
+#         ifdef OFX_DEBUG_PROPERTIES
+          std::cout << ' ' << StatStr(kOfxStatErrUnknown) << std::endl;
+#         endif
+          return kOfxStatErrUnknown;
         }
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << ' ' << StatStr(kOfxStatOK) << std::endl;
+#       endif
         return kOfxStatOK;
       }
       
@@ -785,23 +818,46 @@ namespace OFX {
       template<class T> static OfxStatus propSetN(OfxPropertySetHandle properties,
                                                 const char *property,
                                                 int count,
-                                                typename T::APIType *values) {          
-#ifdef DEBUG
-        std::cout << "propSetN - " << properties << " " << property << " \n";
-#endif
-
+                                                const typename T::APIType *values) {
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: propSetN - " << properties << ' ' << property << "[0.." << count-1 << "] = ";
+        for (int i = 0; i < count; ++i) {
+            if (i != 0) {
+                std::cout << ',';
+            }
+            std::cout << values[i];
+        }
+#       endif
         try {
           Set *thisSet = reinterpret_cast<Set*>(properties);
-          if(!thisSet->verifyMagic())
+          if(!thisSet || !thisSet->verifyMagic()) {
+#           ifdef OFX_DEBUG_PARAMETERS
+            std::cout << ' ' << StatStr(kOfxStatErrBadHandle) << std::endl;
+#           endif
             return kOfxStatErrBadHandle;
+          }
           PropertyTemplate<T> *prop = 0;
           if(!thisSet->fetchTypedProperty(property, prop, false)) {
+#           ifdef OFX_DEBUG_PROPERTIES
+            std::cout << ' ' << StatStr(kOfxStatErrUnknown) << std::endl;
+#           endif
             return kOfxStatErrUnknown;
           }
           prop->setValueN(values, count);
-        } catch (Exception e) {
+        } catch (const Exception& e) {
+#         ifdef OFX_DEBUG_PROPERTIES
+          std::cout << ' ' << StatStr(e.getStatus()) << std::endl;
+#         endif
           return e.getStatus();
+        } catch (...) {
+#         ifdef OFX_DEBUG_PROPERTIES
+          std::cout << ' ' << StatStr(kOfxStatErrUnknown) << std::endl;
+#         endif
+          return kOfxStatErrUnknown;
         }
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << ' ' << StatStr(kOfxStatOK) << std::endl;
+#       endif
         return kOfxStatOK;
       }
       
@@ -810,29 +866,39 @@ namespace OFX {
                                                const char *property,
                                                int index,
                                                typename T::APITypeConstless *value) {
-#ifdef DEBUG
-        std::cout << "propGet - " << properties << " " << property << " = ...";
-#endif
-
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: propGet - " << properties << ' ' << property << "[" << index << "] = ...";
+#       endif
         try {
           Set *thisSet = reinterpret_cast<Set*>(properties);
-          if(!thisSet->verifyMagic())
+          if(!thisSet || !thisSet->verifyMagic()) {
+#           ifdef OFX_DEBUG_PARAMETERS
+            std::cout << ' ' << StatStr(kOfxStatErrBadHandle) << std::endl;
+#           endif
             return kOfxStatErrBadHandle;
+          }
           PropertyTemplate<T> *prop = 0;
           if(!thisSet->fetchTypedProperty(property, prop, true)) {
+#           ifdef OFX_DEBUG_PROPERTIES
+            std::cout << ' ' << StatStr(kOfxStatErrUnknown) << std::endl;
+#           endif
             return kOfxStatErrUnknown;
           }
           *value = castAwayConst(castToAPIType(prop->getValue(index)));
 
-#ifdef DEBUG
-          std::cout << *value << "\n";
-#endif
-        } catch (Exception e) {
-
-#ifdef DEBUG
-          std::cout  << "\n";
-#endif
+#         ifdef OFX_DEBUG_PROPERTIES
+          std::cout << *value << ' ' << StatStr(kOfxStatOK) << std::endl;
+#         endif
+        } catch (const Exception& e) {
+#         ifdef OFX_DEBUG_PROPERTIES
+          std::cout << ' ' << StatStr(e.getStatus()) << std::endl;
+#         endif
           return e.getStatus();
+        } catch (...) {
+#         ifdef OFX_DEBUG_PROPERTIES
+          std::cout << ' ' << StatStr(kOfxStatErrUnknown) << std::endl;
+#         endif
+          return kOfxStatErrUnknown;
         }
         return kOfxStatOK;
       }
@@ -842,50 +908,123 @@ namespace OFX {
                                             const char *property,
                                             int count,
                                             typename T::APITypeConstless *values) {
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: propGetN - " << properties << ' ' << property << "[0.." << count-1 << "] = ...";
+#       endif
         try {
           Set *thisSet = reinterpret_cast<Set*>(properties);
-          if(!thisSet->verifyMagic())
+          if(!thisSet || !thisSet->verifyMagic()) {
+#           ifdef OFX_DEBUG_PARAMETERS
+            std::cout << ' ' << StatStr(kOfxStatErrBadHandle) << std::endl;
+#           endif
             return kOfxStatErrBadHandle;
+          }
           PropertyTemplate<T> *prop = 0;
           if(!thisSet->fetchTypedProperty(property, prop, true)) {
+#           ifdef OFX_DEBUG_PROPERTIES
+            std::cout << ' ' << StatStr(kOfxStatErrUnknown) << std::endl;
+#           endif
             return kOfxStatErrUnknown;
           }
           prop->getValueN(castToConst(values), count);
-        } 
-        catch (Exception e) {
+#         ifdef OFX_DEBUG_PROPERTIES
+          for (int i = 0; i < count; ++i) {
+            if (i != 0) {
+                std::cout << ',';
+            }
+            std::cout << values[i];
+          }
+          std::cout << ' ' << StatStr(kOfxStatOK) << std::endl;
+#         endif
+        } catch (const Exception& e) {
+#         ifdef OFX_DEBUG_PROPERTIES
+          std::cout << ' ' << StatStr(e.getStatus()) << std::endl;
+#         endif
           return e.getStatus();
+        } catch (...) {
+#         ifdef OFX_DEBUG_PROPERTIES
+          std::cout << ' ' << StatStr(kOfxStatErrUnknown) << std::endl;
+#         endif
+          return kOfxStatErrUnknown;
         }
         return kOfxStatOK;
       }
       
       /// static functions for the suite
       static OfxStatus propReset(OfxPropertySetHandle properties, const char *property) {
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: propReset - " << properties << ' ' << property << " ...";
+#       endif
         try {            
           Set *thisSet = reinterpret_cast<Set*>(properties);
-          if(!thisSet->verifyMagic())
+          if(!thisSet || !thisSet->verifyMagic()) {
+#           ifdef OFX_DEBUG_PARAMETERS
+            std::cout << ' ' << StatStr(kOfxStatErrBadHandle) << std::endl;
+#           endif
             return kOfxStatErrBadHandle;
+          }
           Property *prop = thisSet->fetchProperty(property, false);
           if(!prop) {
+#           ifdef OFX_DEBUG_PROPERTIES
+            std::cout << ' ' << StatStr(kOfxStatErrUnknown) << std::endl;
+#           endif
             return kOfxStatErrUnknown;
           }
           prop->reset();
-        }
-        catch (Exception e) {
+#         ifdef OFX_DEBUG_PROPERTIES
+          std::cout << ' ' << StatStr(kOfxStatOK) << std::endl;
+#         endif
+        } catch (const Exception& e) {
+#         ifdef OFX_DEBUG_PROPERTIES
+          std::cout << ' ' << StatStr(e.getStatus()) << std::endl;
+#         endif
           return e.getStatus();
+        } catch (...) {
+#         ifdef OFX_DEBUG_PROPERTIES
+          std::cout << ' ' << StatStr(kOfxStatErrUnknown) << std::endl;
+#         endif
+          return kOfxStatErrUnknown;
         }
         return kOfxStatOK;
       }
       
       /// static functions for the suite
       static OfxStatus propGetDimension(OfxPropertySetHandle properties, const char *property, int *count) {
-        Set *thisSet = reinterpret_cast<Set*>(properties);
-        Property *prop = thisSet->fetchProperty(property, true);
-        if(!prop) {
+#       ifdef OFX_DEBUG_PROPERTIES
+        std::cout << "OFX: propGetDimension - " << properties << ' ' << property << " ...";
+#       endif
+        if (!properties) {
+#         ifdef OFX_DEBUG_PARAMETERS
+          std::cout << ' ' << StatStr(kOfxStatErrBadHandle) << std::endl;
+#         endif
+          return kOfxStatErrBadHandle;
+        }
+        try {            
+          Set *thisSet = reinterpret_cast<Set*>(properties);
+          Property *prop = thisSet->fetchProperty(property, true);
+          if(!prop) {
+#           ifdef OFX_DEBUG_PROPERTIES
+            std::cout << "unknown property\n";
+#           endif
+            return kOfxStatErrUnknown;
+          }
+          *count = prop->getDimension();
+#         ifdef OFX_DEBUG_PROPERTIES
+          std::cout << *count << ' ' << StatStr(kOfxStatOK) << std::endl;
+#         endif
+          return kOfxStatOK;
+        } catch (const Exception& e) {
+#         ifdef OFX_DEBUG_PROPERTIES
+          std::cout << ' ' << StatStr(e.getStatus()) << std::endl;
+#         endif
+          return e.getStatus();
+        } catch (...) {
+#         ifdef OFX_DEBUG_PROPERTIES
+          std::cout << ' ' << StatStr(kOfxStatErrUnknown) << std::endl;
+#         endif
           return kOfxStatErrUnknown;
         }
-        *count = prop->getDimension();
-        return kOfxStatOK;
-      }    
+      }
 
       /// the actual suite that is passed across the API to manage properties
       struct OfxPropertySuiteV1 gSuite = {
@@ -910,7 +1049,7 @@ namespace OFX {
       };     
       
       /// return the OFX function suite that manages properties
-      void *GetSuite(int version)
+      const void *GetSuite(int version)
       {
         if(version == 1)
           return (void *)(&gSuite);

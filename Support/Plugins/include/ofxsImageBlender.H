@@ -8,9 +8,9 @@ namespace OFX {
     /** @brief  Base class used to blend two images together */
     class ImageBlenderBase : public OFX::ImageProcessor {
     protected :
-        OFX::Image *_fromImg; // be this at 0
-        OFX::Image *_toImg;   // be this at 1
-        float       _blend;   // how much to blend
+        const OFX::Image *_fromImg; // be this at 0
+        const OFX::Image *_toImg;   // be this at 1
+        float             _blend;   // how much to blend
 
     public :
         /** @brief no arg ctor */
@@ -18,13 +18,13 @@ namespace OFX {
           : OFX::ImageProcessor(instance)
           , _fromImg(0)
           , _toImg(0)
-          , _blend(0.5)
+          , _blend(0.5f)
         {        
         }
 
         /** @brief set the src image */
-        void setFromImg(OFX::Image *v) {_fromImg = v;}
-        void setToImg(OFX::Image *v)   {_toImg = v;}
+        void setFromImg(const OFX::Image *v) {_fromImg = v;}
+        void setToImg(const OFX::Image *v)   {_toImg = v;}
 
         /** @brief set the scale */
         void setBlend(float v) {_blend = v;}    

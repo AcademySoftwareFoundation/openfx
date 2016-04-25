@@ -1,8 +1,8 @@
 # where to get our style sheet from
 #STYLESHEETARCHIVE = http://docbook.sourceforge.net/snapshot/docbook-xsl-snapshot.zip
-STYLESHEETARCHIVE = http://downloads.sourceforge.net/project/docbook/docbook-xsl/1.77.1/docbook-xsl-1.77.1.zip
+STYLESHEETARCHIVE = http://downloads.sourceforge.net/project/docbook/docbook-xsl/1.78.1/docbook-xsl-1.78.1.zip
 # local stylesheet dir as it takes ages over a network connection
-STYLESHEETDIR = docbook-xsl-1.77.1/xhtml/
+STYLESHEETDIR = docbook-xsl-1.78.1/xhtml/
 
 # stylesheet to use
 STYLESHEET = docbook.xsl 

@@ -36,6 +36,8 @@ Binary::Binary(const std::string &binaryPath): _binaryPath(binaryPath), _invalid
   struct stat sb;
   if (stat(binaryPath.c_str(), &sb) != 0) {
     _invalid = true;
+    _time = 0;
+    _size = 0;
   } 
   else {
     _time = sb.st_mtime;
@@ -51,7 +53,7 @@ void Binary::load()
     return;
 
 #if defined (UNIX)
-  _dlHandle = dlopen(_binaryPath.c_str(), RTLD_LAZY);
+  _dlHandle = dlopen(_binaryPath.c_str(), RTLD_LAZY|RTLD_LOCAL);
 #else
   _dlHandle = LoadLibrary(_binaryPath.c_str());
 #endif
@@ -99,7 +101,7 @@ void *Binary::findSymbol(const std::string &symbol) {
 #if defined(UNIX)
     return dlsym(_dlHandle, symbol.c_str());
 #elif defined (WINDOWS)
-    return GetProcAddress(_dlHandle, symbol.c_str());
+    return (void*)GetProcAddress(_dlHandle, symbol.c_str());
 #endif
   } else {
     return 0;

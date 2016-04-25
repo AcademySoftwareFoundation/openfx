@@ -40,7 +40,7 @@ England
 #endif
 
 #ifdef __APPLE__
-#include <AGL/gl.h>
+#include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif
@@ -65,7 +65,7 @@ protected :
   OfxPointD _position;
   StateEnum _state;
 public :
-  GammaInteract(OfxInteractHandle handle, OFX::ImageEffect* effect) : OFX::OverlayInteract(handle), _state(eInActive)
+  GammaInteract(OfxInteractHandle handle, OFX::ImageEffect* /*effect*/) : OFX::OverlayInteract(handle), _state(eInActive)
   {
     _position.x = 0;
     _position.y = 0;
@@ -188,8 +188,8 @@ public :
   GammaPlugin(OfxImageEffectHandle handle): ImageEffect(handle), dstClip_(0), srcClip_(0), scale_(0)
     , rScale_(0), gScale_(0), bScale_(0), aScale_(0), componentScalesEnabled_(0)
   {
-    dstClip_ = fetchClip("Output");
-    srcClip_ = fetchClip("Source");
+    dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
+    srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
     maskClip_ = getContext() == OFX::eContextFilter ? NULL : fetchClip(getContext() == OFX::eContextPaint ? "Brush" : "Mask");
     scale_   = fetchDoubleParam("scale");
     rScale_  = fetchDoubleParam("scaleR");
@@ -201,7 +201,7 @@ public :
   }
   void setEnabledness();
   virtual void render(const OFX::RenderArguments &args);
-  virtual bool isIdentity(const OFX::RenderArguments &args, OFX::Clip * &identityClip, double &identityTime);
+  virtual bool isIdentity(const OFX::IsIdentityArguments &args, OFX::Clip * &identityClip, double &identityTime);
   virtual void changedParam(const OFX::InstanceChangedArgs &args, const std::string &paramName);
   virtual void changedClip(const OFX::InstanceChangedArgs &args, const std::string &clipName);
   virtual bool getRegionOfDefinition(const OFX::RegionOfDefinitionArguments &args, OfxRectD &rod);
@@ -282,6 +282,8 @@ void GammaPlugin::render(const OFX::RenderArguments &args)
         setupAndProcess(fred, args);
         break;
       }
+    default :
+      OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   }
   else 
@@ -296,7 +298,7 @@ void GammaPlugin::render(const OFX::RenderArguments &args)
       }
     case OFX::eBitDepthUShort :
       {
-        ImageScaler<unsigned short, 1, 65536> fred(*this);
+        ImageScaler<unsigned short, 1, 65535> fred(*this);
         setupAndProcess(fred, args);
         break;
       }
@@ -306,11 +308,13 @@ void GammaPlugin::render(const OFX::RenderArguments &args)
         setupAndProcess(fred, args);
         break;
       }
+    default :
+      OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
   } 
 }
 
-bool GammaPlugin:: isIdentity(const OFX::RenderArguments &args, OFX::Clip * &identityClip, double &identityTime)
+bool GammaPlugin:: isIdentity(const OFX::IsIdentityArguments &args, OFX::Clip * &identityClip, double &identityTime)
 {
   double scale = scale_->getValueAtTime(args.time);
   double rScale = 1, gScale = 1, bScale = 1, aScale = 1;
@@ -340,15 +344,15 @@ void GammaPlugin::setEnabledness(void)
   aScale_->setEnabled(v);
 }
 
-void GammaPlugin::changedParam(const OFX::InstanceChangedArgs &args, const std::string &paramName)
+void GammaPlugin::changedParam(const OFX::InstanceChangedArgs &/*args*/, const std::string &paramName)
 {
   if(paramName == "scaleComponents")  
     setEnabledness(); 
 }
 
-void GammaPlugin::changedClip(const OFX::InstanceChangedArgs &args, const std::string &clipName)
+void GammaPlugin::changedClip(const OFX::InstanceChangedArgs &/*args*/, const std::string &clipName)
 {
-  if(clipName == "Source")  
+  if(clipName == kOfxImageEffectSimpleSourceClipName)  
     setEnabledness();
 }
 
@@ -478,7 +482,8 @@ void GammaExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.setOverlayInteractDescriptor( new GammaOverlayDescriptor );
 }
 
-DoubleParamDescriptor *defineScaleParam(OFX::ImageEffectDescriptor &desc, 
+static
+DoubleParamDescriptor *defineScaleParam(OFX::ImageEffectDescriptor &desc,
                                         const std::string &name, const std::string &label, const std::string &hint,
                                         GroupParamDescriptor *parent, double def = 1.0)
 {
@@ -498,7 +503,7 @@ DoubleParamDescriptor *defineScaleParam(OFX::ImageEffectDescriptor &desc,
 
 void GammaExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context)
 {
-  ClipDescriptor *srcClip = desc.defineClip("Source");
+  ClipDescriptor *srcClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
   srcClip->addSupportedComponent(ePixelComponentRGBA);
   srcClip->addSupportedComponent(ePixelComponentAlpha);
   srcClip->setTemporalClipAccess(false);
@@ -516,7 +521,7 @@ void GammaExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &de
     maskClip->setIsMask(true);
   }
 
-  ClipDescriptor *dstClip = desc.defineClip("Output");
+  ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->addSupportedComponent(ePixelComponentAlpha);
   dstClip->setSupportsTiles(true);
@@ -551,7 +556,7 @@ void GammaExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &de
 
 }
 
-ImageEffect* GammaExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context)
+ImageEffect* GammaExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum /*context*/)
 {
   return new GammaPlugin(handle);
 }
