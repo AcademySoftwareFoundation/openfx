@@ -1,10 +1,19 @@
 cmake_minimum_required(VERSION 2.8) 
 
+set(OPENFX_PARENT_PROJECT_SOURCE_DIR "${PROJECT_SOURCE_DIR}")
 project(openfx)
 
 # Add custom cmake macros
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+include(OpenFX)
+set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 set_property(GLOBAL PROPERTY OPENFX_PROJECT_SOURCE_DIR "${PROJECT_SOURCE_DIR}")
+
+if("${OPENFX_PARENT_PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_SOURCE_DIR}")
+    set(OPENFX_IS_MAIN YES)
+else()
+    set(OPENFX_IS_MAIN NO)
+endif()
 
 # The install rule does not depend on all, i.e. everything will not be built before installing
 set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
@@ -29,5 +38,9 @@ install(
 )
 
 # Build OFX C++ wrapper
-add_subdirectory(HostSupport)
 add_subdirectory(Support)
+
+if(OPENFX_IS_MAIN)
+    add_subdirectory(HostSupport)
+    add_subdirectory(Support/Plugins)
+endif()

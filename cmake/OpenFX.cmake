@@ -27,11 +27,18 @@ endfunction(get_ofx_architecture)
 
 
 # Create a new OFX plugin
+# Arguments: PLUGIN_NAME
+# Optional Arguments: PLUGIN_SRC
 function(create_ofx_plugin PLUGIN_NAME)
+    if(ARGV1)
+        set(PLUGIN_SRC ${ARGV1})
+    else()
+        set(PLUGIN_SRC ${PLUGIN_NAME})
+    endif()
     GET_PROPERTY(OPENFX_PROJECT_SOURCE_DIR GLOBAL PROPERTY OPENFX_PROJECT_SOURCE_DIR)
     set(OFX_SUPPORT_HEADER_DIR "${OPENFX_PROJECT_SOURCE_DIR}/Support/include")
 
-    file(GLOB_RECURSE PLUGIN_SOURCES "${PLUGIN_NAME}/*.cpp")
+    file(GLOB_RECURSE PLUGIN_SOURCES "${PLUGIN_SRC}/*.cpp")
 
     # Plugin target is a shared library
     add_library(${PLUGIN_NAME} MODULE ${PLUGIN_SOURCES})
@@ -61,7 +68,10 @@ function(create_ofx_plugin PLUGIN_NAME)
 
     # Install OFX plugin
     get_ofx_architecture(OFX_ARCH)
-    install(TARGETS ${PLUGIN_NAME} DESTINATION "${CMAKE_INSTALL_PREFIX}/OFX/${PLUGIN_NAME}.ofx.bundle/Contents/${OFX_ARCH}" OPTIONAL)
+    install(TARGETS ${PLUGIN_NAME}
+            DESTINATION "${CMAKE_INSTALL_PREFIX}/OFX/${PLUGIN_NAME}.ofx.bundle/Contents/${OFX_ARCH}"
+            COMPONENT OfxPlugins
+            OPTIONAL)
 
 endfunction(create_ofx_plugin)
 

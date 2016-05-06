@@ -18,9 +18,3 @@ install(
     DESTINATION "include"
 )
 install(TARGETS OfxSupport DESTINATION "lib" OPTIONAL)
-
-# Create an alias for all OFX plugins.
-add_custom_target(OfxPlugins)
-
-# Build OFX plugins
-add_subdirectory(Plugins)
