@@ -250,7 +250,7 @@ namespace OFX {
       {															    
       }
 
-#ifdef WINDOWS
+#ifdef _MSC_VER
 #pragma warning( disable : 4181 )
 #endif
       /// get one value
@@ -264,7 +264,7 @@ namespace OFX {
           return getValueRaw(index);
         }
       }
-#ifdef WINDOWS
+#ifdef _MSC_VER
 #pragma warning( default : 4181 )
 #endif
       // get multiple values
@@ -278,7 +278,7 @@ namespace OFX {
         }
       }
 
-#ifdef WINDOWS
+#ifdef _MSC_VER
 #pragma warning( disable : 4181 )
 #endif
       /// get one value, without going through the getHook
@@ -290,7 +290,7 @@ namespace OFX {
         }
         return _value[index];
       }
-#ifdef WINDOWS
+#ifdef _MSC_VER
 #pragma warning( default : 4181 )
 #endif      
       // get multiple values, without going through the getHook

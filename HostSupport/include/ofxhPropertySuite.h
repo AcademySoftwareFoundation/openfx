@@ -337,8 +337,8 @@ namespace OFX {
         // get multiple values
         void getValueN(APIType *value, int count) const OFX_EXCEPTION_SPEC;
 
-#ifdef WINDOWS
-#pragma warning( disable : 4181 )	
+#ifdef _MSC_VER
+#pragma warning( disable : 4181 )
 #endif		
         /// get one value
         const ReturnType getValue(int index=0) const OFX_EXCEPTION_SPEC;
@@ -346,8 +346,8 @@ namespace OFX {
         /// get one value, without going through the getHook
         const ReturnType getValueRaw(int index=0) const OFX_EXCEPTION_SPEC;
 
-#ifdef WINDOWS
-#pragma warning( default : 4181 )	
+#ifdef _MSC_VER
+#pragma warning( default : 4181 )
 #endif				
         // get multiple values, without going through the getHook
         void getValueNRaw(APIType *value, int count) const OFX_EXCEPTION_SPEC;
