@@ -411,4 +411,205 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
  */
 #define kNatronOfxImageEffectPropInstanceId "NatronOfxImageEffectPropInstanceId"
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////// Natron in-viewer parameters extension /////////////////////////////////
+/*
+ The need for this extension was to be able to create parameters within the viewport of the host application when the user
+ would be engaged in a fullscreen task.
+
+ Typically, the desired parameters can be arranged by widget rows controlled by the kNatronOfxParamPropInViewerContextIndex property. 
+ This index indicates the position of the parameter in the rows.
+ New rows are created if the parameter also have the property kNatronOfxParamPropInViewerContextLayoutHint set to kNatronOfxParamPropInViewerContextLayoutHintAddNewLine.
+ Note that the host should try to make the parameters UI concise.
+ 
+ Several properties are a duplicate of existing properties on the parameter descriptor, because there was a need to differentiate
+ the state of the interface of the parameter on the viewer and at the same time in its standard page. 
+ The Host should carefully ensure that the state of the interface of a parameter in the viewer and in the page are synchronized.
+ 
+ PushButton parameters and BooleanParameters with property kNatronOfxBooleanParamPropIsToggableButton on the viewer interface can have shortcuts. 
+ The plug-in informs to the host via the property kNatronOfxParamPropInViewerContextShortcutID the default shortcuts for a parameter. The host could then let the user edit the shortcut in some sort of shortcut editor preference and display the shortcut for this parameter somewhere
+ to indicate to the user that a shortcut is available for this parameter.
+ Each shortcut, should be specified with a symbol kNatronOfxParamPropInViewerContextShortcutSymbol, as well and indicate its modifiers via
+ kNatronOfxParamPropInViewerContextShortcutHasControlModifier, kNatronOfxParamPropInViewerContextShortcutHasShiftModifier, kNatronOfxParamPropInViewerContextShortcutHasAltModifier and kNatronOfxParamPropInViewerContextShortcutHasMetaModifier.
+ All these properties should have the same dimension as kNatronOfxParamPropInViewerContextShortcutID.
+ 
+ When a shortcut is triggered, the host will not call the associated keydown action but instead will call the action kOfxActionInstanceChanged and add it the
+ kNatronOfxParamPropInViewerContextShortcutID property to indicate the plug-in which shortcut was pressed by the user as well as the name of the parameter so that the plug-in does not have to monitor potential shortcut changes by the host.
+ 
+ It is also possible to add a toolbar to the host viewport, to indicate "states" in the plug-in, e.g: "Selecting", "Drawing", "Cloning", etc...
+ A toolbar is defined simply by defining a Page parameter with property kNatronOfxParamPropInViewerContextIsInToolbar set to 1.
+ To add toolbuttons, add Group parameters to the page, with the property kNatronOfxParamPropInViewerContextIsInToolbar set to 1.
+ To add an action to a toolbutton, add a BooleanParam to a group with the property kNatronOfxParamPropInViewerContextIsInToolbar set to 1.
+ A shortcut can be set on the group parameters which are represented as toolbuttons so that the user can cycle through the actions with the keyboard.
+ */
+
+/**
+ int property that tells if this parameter should have an interface embedded into the host viewer.
+
+ - Type - int x 1
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write only)
+ - Default - -1
+ - Valid Values - -1 or any number >= 0
+ If the value is -1, this parameter cannot have an interface in the viewport.
+ If the value is >=0, this corresponds to the index on the viewport at which the host should place the parameter.
+ */
+#define kNatronOfxParamPropInViewerContextLayoutIndex "kNatronOfxParamPropInViewerContextIndex"
+
+/**
+ int property that controls the host viewer parameter layout.
+ - Type - int x 1
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write only)
+ - Default - 0
+ - Valid Values - kNatronOfxParamPropInViewerContextLayoutHintNormal, kNatronOfxParamPropInViewerContextLayoutHintNormalDivider, kNatronOfxParamPropInViewerContextLayoutHintAddNewLine
+
+ kNatronOfxParamPropInViewerContextLayoutHintNormal: the host will not create a new row in the viewer interface before creating the next parameter
+ kNatronOfxParamPropInViewerContextLayoutHintNormalDivider: the host will not create a new row in the viewer interface before creating the next parameter and will add a vertical separator before this parameter and the next
+ kNatronOfxParamPropInViewerContextLayoutHintAddNewLine: the host will create a new row after this parameter
+ */
+#define kNatronOfxParamPropInViewerContextLayoutHint "NatronOfxParamPropInViewerContextLayoutHint"
+
+//   lay out as normal, no need line added
+#define kNatronOfxParamPropInViewerContextLayoutHintNormal 0
+
+//   put a divider after parameter and don't add a new line
+#define kNatronOfxParamPropInViewerContextLayoutHintNormalDivider 1
+
+//   have the next parameter start on a new line after this parameter
+#define kNatronOfxParamPropInViewerContextLayoutHintAddNewLine 2
+
+/** @brief Layout padding between this parameter and the next in the viewport
+
+ - Type - int X 1
+ - Property Set - plugin parameter descriptor (read/write) and instance (read only)
+ - Default - 1
+ - Valid Values - any positive integer value
+
+ It tells the host how much space (in pixels) to leave between the current parameter and the next parameter in a viewport row
+ Note that this is only relevant if kNatronOfxParamPropInViewerContextLayoutHint is set to kNatronOfxParamPropInViewerContextLayoutHintNormal
+ */
+#define kNatronOfxParamPropInViewerContextLayoutPadWidth "NatronOfxParamPropInViewerContextLayoutPadWidth"
+
+
+/** @brief Label for the parameter in the viewer. This is distinct from the parameter label, because for layout efficiency we might want to display the label
+ only in the page and not on the viewer.
+
+ - Type - UTF8 C string X 1
+ - Property Set - plugin parameter descriptor (read/write) and instance (read only),
+ - Default -
+ - Valid Values - any
+ */
+#define kNatronOfxParamPropInViewerContextLabel "NatronOfxParamPropInViewerContextLabel"
+
+/** @brief Flags whether the viewer interface of a parameter should be exposed to a user
+
+ - Type - int x 1
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
+ - Default - 0
+ - Valid Values - 0 or 1
+
+ If secret, a parameter is not exposed to a user in the viewer interface, but should otherwise behave as a normal parameter.
+ */
+#define kNatronOfxParamPropInViewerContextSecret "NatronOfxParamPropInViewerContextSecret"
+
+
+/** @brief Flags whether a Boolean parameter should be represented as a toggable button instead of a checkbox.
+ - Type - int x 1
+ - Property Set - plugin boolean parameter descriptor (read/write) and instance (read/write)
+ - Default - 0
+ - Valid Values - 0 or 1
+ If 0, the boolean parameter should be a checkbox. If 1, it should be a toggable button.
+ */
+#define kNatronOfxBooleanParamPropIsToggableButton "NatronOfxBooleanParamPropIsToggableButton"
+
+
+/** @brief Valid for Page, Group and Boolean parameters:
+    For a page , flags whether a Page parameter should be represented as a tool bar inside the viewer
+    For a group , flags whether a Group parameter should be represented as a tool button inside a toolbar of the viewer
+    For a boolean param , flags whether a Boolean parameter should be represented as a tool button action inside a toolbar of the viewer
+ - Type - int x 1
+ - Property Set - plugin group parameter descriptor (read/write) and instance (read/write)
+ - Default - 0
+ - Valid Values - 0 or 1
+ */
+#define kNatronOfxParamPropInViewerContextIsInToolbar "NatronOfxPageParamPropInViewerContextIsToolbar"
+
+
+/** @brief Property referencing uniquely a shortcut in the plug-in, so that the host can asociate with it
+ a key symbol and keyboard modifiers.  This property should only be applied to PushButtonParameters and BooleanParameters
+ with the kNatronOfxBooleanParamPropIsToggableButton property
+
+ Note that a parameter can have multiple shortcuts. For example, imagine a toggable button that defines whether the plug-in
+ should draw a user-defined rectangle. A first shortcut could toggle on/off the activation of the rectangle and another shortcut
+ could toggle on + also let the user redefine the rectangle portion in a single click.
+
+ This property will then be passed to the action kOfxActionInstanceChanged
+ to indicate the plug-in which shortcut was pressed by the user.
+ 
+ Each shortcut ID should be accompanied by the following properties of the same size:
+
+
+ - Type - string x N
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
+ - Default -
+ - Valid Values -
+ */
+#define kNatronOfxParamPropInViewerContextShortcutID "NatronOfxParamPropInViewerContextShortcutID"
+
+/** @brief Property indicating the symbol of a shortcut as defined in ofxKeySyms.h for a parameter with a shortcut. This should not include any modifier (that is kOfxKey_Control_L, kOfxKey_Control_R, kOfxKey_Shift_L, kOfxKey_Shift_R, kOfxKey_Alt_L, kOfxKey_Alt_R, kOfxKey_Meta_L, kOfxKey_Meta_R).
+ The shortcut is associated to kNatronOfxParamPropInViewerContextShortcutID and should thus have the same dimension.
+
+ - Type - int x N
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
+ - Default - 0
+ - Valid Values - Any symbol defined in ofxKeySyms.h
+ */
+#define kNatronOfxParamPropInViewerContextShortcutSymbol "NatronOfxParamPropInViewerContextShortcutID"
+
+/** @brief Property indicating whether the control modifier (kOfxKey_Control_L or kOfxKey_Control_R) must be held for a parameter shortcut to trigger.
+ The shortcut is associated to kNatronOfxParamPropInViewerContextShortcutID and should thus have the same dimension.
+
+ - Type - int x N
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
+ - Default - 0
+ - Valid Values - 0 or 1
+ */
+#define kNatronOfxParamPropInViewerContextShortcutHasControlModifier "NatronOfxParamPropInViewerContextShortcutHasControlModifier"
+
+
+/** @brief Property indicating whether the shit modifier (kOfxKey_Shift_L or kOfxKey_Shift_R) must be held for a parameter shortcut to trigger.
+ The shortcut is associated to kNatronOfxParamPropInViewerContextShortcutID and should thus have the same dimension.
+
+ - Type - int x N
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
+ - Default - 0
+ - Valid Values - 0 or 1
+ */
+#define kNatronOfxParamPropInViewerContextShortcutHasShiftModifier "NatronOfxParamPropInViewerContextShortcutHasShiftModifier"
+
+
+/** @brief Property indicating whether the control modifier (kOfxKey_Alt_L orkOfxKey_Alt_R) must be held for a parameter shortcut to trigger.
+ The shortcut is associated to kNatronOfxParamPropInViewerContextShortcutID and should thus have the same dimension.
+
+ - Type - int x N
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
+ - Default - 0
+ - Valid Values - 0 or 1
+ */
+#define kNatronOfxParamPropInViewerContextShortcutHasAltModifier "NatronOfxParamPropInViewerContextShortcutHasAltModifier"
+
+
+/** @brief Property indicating whether the control modifier (kOfxKey_Meta_L or kOfxKey_Meta_R) must be held for a parameter shortcut to trigger.
+ The shortcut is associated to kNatronOfxParamPropInViewerContextShortcutID and should thus have the same dimension.
+
+ - Type - int x N
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
+ - Default - 0
+ - Valid Values - 0 or 1
+ */
+#define kNatronOfxParamPropInViewerContextShortcutHasMetaModifier "NatronOfxParamPropInViewerContextShortcutHasMetaModifier"
+
+
+
 #endif // #ifndef _ofxNatron_h_
