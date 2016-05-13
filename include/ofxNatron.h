@@ -414,12 +414,25 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////// Natron in-viewer parameters extension /////////////////////////////////
+//////////////////////////////////// Natron in-viewer interface extension /////////////////////////////////
 /*
  The need for this extension was to be able to create parameters within the viewport of the host application when the user
- would be engaged in a fullscreen task.
+ would be engaged in a fullscreen task and to get better support with the viewport.
+ 
+ Several things are covered in this extension:
+ 
+    1) In-viewer parameters that behave like normal parameters but have their interface directly next to the viewport.
+    2) Toggable buttons, implemented as Boolean parameters.
+    3) Buttons and toggable buttons can be assigned shortcuts
+    4) Ability to add toolbars which can let the user define the "state" of the interaction (selecting, editing, etc...) Implemented using page group and boolean parameters.
+    5) Ability to pop a menu during overlay actions that uses the native software menu interface (typically a right click menu)
+    6) Addition of the kOfxInteractPropPenPosition and kOfxInteractPropPenViewportPosition properties for ALL interact actions (even draw, focus in/out) so the plug-in can now at any moment where the position of the cursor is
+    7) A lot of overlay interacts require some sort of selection where the user can draw a rectangle to select specific items. Rather than re-create a new custom-looking selection rectangle, let the host make one for us through its own interact actions and notify us if needed.
+        A new parameter with a special name can be used to let the host know we are interested in knowing the state of the selection.
+ 
+    8) Let the plug-in a way to control the host application cursor.
 
- Typically, the desired parameters can be arranged by widget rows controlled by the kNatronOfxParamPropInViewerContextIndex property. 
+1) In the host viewport, parameters can be arranged by widget rows controlled by the kNatronOfxParamPropInViewerContextIndex property.
  This index indicates the position of the parameter in the rows.
  New rows are created if the parameter also have the property kNatronOfxParamPropInViewerContextLayoutHint set to kNatronOfxParamPropInViewerContextLayoutHintAddNewLine.
  Note that the host should try to make the parameters UI concise.
@@ -428,7 +441,10 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
  the state of the interface of the parameter on the viewer and at the same time in its standard page. 
  The Host should carefully ensure that the state of the interface of a parameter in the viewer and in the page are synchronized.
  
- PushButton parameters and BooleanParameters with property kNatronOfxBooleanParamPropIsToggableButton on the viewer interface can have shortcuts. 
+ 2) Boolean parameters now have a property kNatronOfxBooleanParamPropIsToggableButton that indicate whether it should be 
+ displayed as a toggable button instead of a checkbox.
+
+ 3) PushButton parameters and BooleanParameters with property kNatronOfxBooleanParamPropIsToggableButton on the viewer interface can have shortcuts.
  The plug-in informs to the host via the property kNatronOfxParamPropInViewerContextShortcutID the default shortcuts for a parameter. The host could then let the user edit the shortcut in some sort of shortcut editor preference and display the shortcut for this parameter somewhere
  to indicate to the user that a shortcut is available for this parameter.
  Each shortcut, should be specified with a symbol kNatronOfxParamPropInViewerContextShortcutSymbol, as well and indicate its modifiers via
@@ -438,12 +454,92 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
  When a shortcut is triggered, the host will not call the associated keydown action but instead will call the action kOfxActionInstanceChanged and add it the
  kNatronOfxParamPropInViewerContextShortcutID property to indicate the plug-in which shortcut was pressed by the user as well as the name of the parameter so that the plug-in does not have to monitor potential shortcut changes by the host.
  
- It is also possible to add a toolbar to the host viewport, to indicate "states" in the plug-in, e.g: "Selecting", "Drawing", "Cloning", etc...
+ 4) It is also possible to add a toolbar to the host viewport, to indicate "states" in the plug-in, e.g: "Selecting", "Drawing", "Cloning", etc...
  A toolbar is defined simply by defining a Page parameter with property kNatronOfxParamPropInViewerContextIsInToolbar set to 1.
  To add toolbuttons, add Group parameters to the page, with the property kNatronOfxParamPropInViewerContextIsInToolbar set to 1.
  To add an action to a toolbutton, add a BooleanParam to a group with the property kNatronOfxParamPropInViewerContextIsInToolbar set to 1.
  A shortcut can be set on the group parameters which are represented as toolbuttons so that the user can cycle through the actions with the keyboard.
+ 
+ The selected toolbutton in the toolbar will have the property kOfxParamPropGroupOpen set to 1. 
+ The selected tool action in a toolbutton will have its parameter value set to true.
+ To find out the active tool, retrieve the active action of the selected toolbutton.
+ The host should always make sure that there is a selected toolbutton and that it has an active action.
+ Similarly, the plug-in should by default ensure that one and only one toolbutton is selected and that for each toolbutton, one action is at least active.
+ 
+ 5) A menu can be popped on the viewer under the position of the cursor when requested during overlay interacts actions.
+   The menu itself is described via a secret Choice parameter with the name kNatronOfxParamRightClickMenu
+ which kOfxParamPropChoiceOption are the script-name of parameters which have been defined as in-viewer parameters with the kNatronOfxParamPropInViewerContextIndex set. Only Boolean parameters and  PushButton parameters can be specified in the menu, typically to represent a checkable state or that an action can be triggered.
+    The menu must be constructed by the plug-in during the action it wants to use it, hence the host must support kNatronOfxParamHostPropSupportsDynamicChoices
+
+ 6) The kOfxInteractPropPenPosition and kOfxInteractPropPenViewportPosition properties have been added to all overlay interacts actions as they are sometimes needed to know the position of the cursor during the draw action, for example to draw something only if the cursor is in the window.
+
+ 7) Add a way to use the host native selection rectangle to define the selection of items. To advertise to the host that we are interested in the selection state of the rectangle, we declare a Int parameter with the name kNatronOfxParamSelectionRectangleState. The host notifies the plug-in of the selection state change via the kOfxActionInstanceChanged action.
+     The value of the parameter can be 3-fold:
+         0 meaning that the selection has been cleared by the user
+         1 meaning that the selection is being actively edited by the user (i.e: during pen motion)
+         2 meaning that the selection is finilized by the user (i.e: during pen up)
+    The property kNatronOfxImageEffectSelectionRectangle will be updated prior to calling the kOfxActionInstanceChanged action for this parameter by the host, indicating the region covered by the selection rectangle. 
+
+ 8) The host application cursor can be controled by the plug-in via a secret String parameter with the name kNatronOfxParamCursorName. If this parameter is found, the host should display a cursor depending on the value of this parameter.  The value of the parameter should be the name of the cursor. Several default cursor can be made available by the host as advertised by the kNatronOfxImageEffectPropDefaultCursors property.
+
  */
+
+/**
+ The name of the choice parameter that should be used to implement host right click menus. See 5) of the extension description.
+ */
+#define kNatronOfxParamRightClickMenu "NatronOfxParamRightClickMenu"
+
+
+/**
+ The name of the int parameter that should be used to implement host selection rectangle. See 7) of the extension description.
+ */
+#define kNatronOfxParamSelectionRectangleState "NatronOfxParamSelectionRectangleState"
+
+/**
+ The name of the string parameter that should be used to implement host cursors. See 8) of the extension description.
+ */
+#define kNatronOfxParamCursorName "NatronOfxParamCursorName"
+
+/**
+ double property that defines the current selection rectangle drawn by the user on the host viewport.
+ See 7) for the associated extension. This value is refreshed whenever calling the kOfxActionInstanceChanged action for the parameter kNatronOfxParamSelectionRectangleState to let the plug-in a change to correctly synchronized its selection.
+
+ - Type - double x 4
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write only)
+ - Default - (0,0,0,0)
+ - Valid Values - (x1,y1,x2,y2) quadruplet such as x1 < x2 and y1 < y2
+ */
+#define kNatronOfxImageEffectSelectionRectangle "NatronOfxImageEffectSelectionRectangle"
+
+/** 
+ string property indicating for a host, which are the default cursor provided to the plug-in and for a plug-in which are the cursor that it provides a drawing for.
+ - Type - string x1
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write only) or  host descriptor (read only)
+ - Default -
+ - Valid Values: For a host, any of the cursor defined below by the properties kNatronOfx*Cursor 
+    For a plug-in, any cursor defined by the properties kNatronOfx*Cursor, plus any filename of a png image file distributed in the plug-in resource bundle.
+ */
+#define kNatronOfxImageEffectPropDefaultCursors "NatronOfxImageEffectPropDefaultCursors"
+
+// Default cursors that can be defined by a host, see http://doc.qt.io/qt-4.8/qcursor.html for an illustration to how they could look
+#define kNatronOfxArrowCursor "NatronOfxArrowCursor"
+#define kNatronOfxUpArrowCursor "NatronOfxUpArrowCursor"
+#define kNatronOfxCrossCursor "NatronOfxCrossCursor"
+#define kNatronOfxIBeamCursor "NatronOfxIBeamCursor"
+#define kNatronOfxWaitCursor "NatronOfxWaitCursor"
+#define kNatronOfxBusyCursor "NatronOfxBusyCursor"
+#define kNatronOfxForbiddenCursor "NatronOfxForbiddenCursor"
+#define kNatronOfxPointingHandCursor "NatronOfxPointingHandCursor"
+#define kNatronOfxWhatsThisCursor "NatronOfxWhatsThisCursor"
+#define kNatronOfxSizeVerCursor "NatronOfxSizeVerCursor"
+#define kNatronOfxSizeHorCursor "NatronOfxSizeHorCursor"
+#define kNatronOfxSizeBDiagCursor "NatronOfxSizeBDiagCursor"
+#define kNatronOfxSizeFDiagCursor "NatronOfxSizeFDiagCursor"
+#define kNatronOfxSizeAllCursor "NatronOfxSizeAllCursor"
+#define kNatronOfxSplitVCursor "NatronOfxSplitVCursor"
+#define kNatronOfxSplitHCursor "NatronOfxSplitHCursor"
+#define kNatronOfxOpenHandCursor "NatronOfxOpenHandCursor"
+#define kNatronOfxClosedHandCursor "NatronOfxClosedHandCursor"
 
 /**
  int property that tells if this parameter should have an interface embedded into the host viewer.
