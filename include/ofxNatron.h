@@ -515,13 +515,18 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
  string property indicating for a host, which are the default cursor provided to the plug-in and for a plug-in which are the cursor that it provides a drawing for.
  - Type - string x1
  - Property Set - plugin parameter descriptor (read/write) and instance (read/write only) or  host descriptor (read only)
- - Default -
+ - Default - kNatronOfxDefaultCursor
  - Valid Values: For a host, any of the cursor defined below by the properties kNatronOfx*Cursor 
     For a plug-in, any cursor defined by the properties kNatronOfx*Cursor, plus any filename of a png image file distributed in the plug-in resource bundle.
+ 
+ The special value of kNatronOfxDefaultCursor means that the host should keep the default cursor.
+ The special value of kNatronOfxBlankCursor means that the host should not draw any cursor at all.
  */
 #define kNatronOfxImageEffectPropDefaultCursors "NatronOfxImageEffectPropDefaultCursors"
 
 // Default cursors that can be defined by a host, see http://doc.qt.io/qt-4.8/qcursor.html for an illustration to how they could look
+#define kNatronOfxDefaultCursor "NatronOfxDefaultCursor"
+#define kNatronOfxBlankCursor "kNatronOfxBlankCursor"
 #define kNatronOfxArrowCursor "NatronOfxArrowCursor"
 #define kNatronOfxUpArrowCursor "NatronOfxUpArrowCursor"
 #define kNatronOfxCrossCursor "NatronOfxCrossCursor"
