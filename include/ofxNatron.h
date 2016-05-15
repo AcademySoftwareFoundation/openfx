@@ -481,6 +481,7 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
     The property kNatronOfxImageEffectSelectionRectangle will be updated prior to calling the kOfxActionInstanceChanged action for this parameter by the host, indicating the region covered by the selection rectangle. 
 
  8) The host application cursor can be controled by the plug-in via a secret String parameter with the name kNatronOfxParamCursorName. If this parameter is found, the host should display a cursor depending on the value of this parameter.  The value of the parameter should be the name of the cursor. Several default cursor can be made available by the host as advertised by the kNatronOfxImageEffectPropDefaultCursors property.
+     Whenever an event is sent to overlay interacts (PenDown, PenMotion, PenUp, KeyDown, KeyUp, KeyRepeat, GainFocus, LoseFocus, the OFX Host should set the cursor to the one of the first interact which catches the event by returning kOfxStatOK to the corresponding action. If no overlay interact returns kOfxStatOK, the cursor should be set to the default cursor.
 
  */
 
@@ -521,6 +522,9 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
  
  The special value of kNatronOfxDefaultCursor means that the host should keep the default cursor.
  The special value of kNatronOfxBlankCursor means that the host should not draw any cursor at all.
+ 
+ Whenever an event is sent to overlay interacts (PenDown, PenMotion, PenUp, KeyDown, KeyUp, KeyRepeat, GainFocus, LoseFocus, the OFX Host should set the cursor to the one of the first interact which catches the event by returning kOfxStatOK to the corresponding action. If no overlay interact returns kOfxStatOK, the cursor should be set to the default cursor.
+
  */
 #define kNatronOfxImageEffectPropDefaultCursors "NatronOfxImageEffectPropDefaultCursors"
 
