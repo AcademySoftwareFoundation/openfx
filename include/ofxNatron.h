@@ -431,6 +431,8 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
         A new parameter with a special name can be used to let the host know we are interested in knowing the state of the selection.
  
     8) Let the plug-in a way to control the host application cursor.
+    9) Add a way to show a custom dialog with fields represented as parameters. This is implemented as a property on a group parameter whether its content can be represented as a non-modal dialog or not.
+    10) Plug-ins description (kOfxPropPluginDescription) and parameters hint (kOfxParamPropHint) may be written in markdown.
 
 1) In the host viewport, parameters can be arranged by widget rows controlled by the kNatronOfxParamPropInViewerContextIndex property.
  This index indicates the position of the parameter in the rows.
@@ -444,15 +446,13 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
  2) Boolean parameters now have a property kNatronOfxBooleanParamPropIsToggableButton that indicate whether it should be 
  displayed as a toggable button instead of a checkbox.
 
- 3) PushButton parameters and BooleanParameters with property kNatronOfxBooleanParamPropIsToggableButton on the viewer interface can have shortcuts.
- The plug-in informs to the host via the property kNatronOfxParamPropInViewerContextShortcutID the default shortcuts for a parameter. The host could then let the user edit the shortcut in some sort of shortcut editor preference and display the shortcut for this parameter somewhere
- to indicate to the user that a shortcut is available for this parameter.
- Each shortcut, should be specified with a symbol kNatronOfxParamPropInViewerContextShortcutSymbol, as well and indicate its modifiers via
- kNatronOfxParamPropInViewerContextShortcutHasControlModifier, kNatronOfxParamPropInViewerContextShortcutHasShiftModifier, kNatronOfxParamPropInViewerContextShortcutHasAltModifier and kNatronOfxParamPropInViewerContextShortcutHasMetaModifier.
- All these properties should have the same dimension as kNatronOfxParamPropInViewerContextShortcutID.
+ 3) PushButton parameters, Boolean Parameters with property kNatronOfxBooleanParamPropIsToggableButton, and Group parameters with the property kNatronOfxParamPropInViewerContextIsInToolbar can have shortcuts. Instead of responding to specific key strokes in the overlay interact actions, the plug-in can then just inform the host about the shortcut associated to this parameter. This enables the host to represent the shortcut in some sort of shortcut editor where the user could modify the shortcut.
+ The plug-in informs to the host via the property on the image effect kNatronOfxImageEffectPropInViewerContextDefaultShortcuts the default shortcuts for a parameter.
+ Each shortcut, should be specified with a symbol kNatronOfxImageEffectPropInViewerContextShortcutSymbol, as well and indicate its modifiers via
+ kNatronOfxImageEffectPropInViewerContextShortcutHasControlModifier, kNatronOfxImageEffectPropInViewerContextShortcutHasShiftModifier, kNatronOfxImageEffectPropInViewerContextShortcutHasAltModifier and kNatronOfxImageEffectPropInViewerContextShortcutHasMetaModifier.
+ All these properties should have the same dimension as kNatronOfxImageEffectPropInViewerContextDefaultShortcuts.
  
- When a shortcut is triggered, the host will not call the associated keydown action but instead will call the action kOfxActionInstanceChanged and add it the
- kNatronOfxParamPropInViewerContextShortcutID property to indicate the plug-in which shortcut was pressed by the user as well as the name of the parameter so that the plug-in does not have to monitor potential shortcut changes by the host.
+ When a shortcut is triggered, the host will not call the associated keydown action but instead will call the action kOfxActionInstanceChanged.
  
  4) It is also possible to add a toolbar to the host viewport, to indicate "states" in the plug-in, e.g: "Selecting", "Drawing", "Cloning", etc...
  A toolbar is defined simply by defining a Page parameter with property kNatronOfxParamPropInViewerContextIsInToolbar set to 1.
@@ -482,8 +482,40 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 
  8) The host application cursor can be controled by the plug-in via a secret String parameter with the name kNatronOfxParamCursorName. If this parameter is found, the host should display a cursor depending on the value of this parameter.  The value of the parameter should be the name of the cursor. Several default cursor can be made available by the host as advertised by the kNatronOfxImageEffectPropDefaultCursors property.
      Whenever an event is sent to overlay interacts (PenDown, PenMotion, PenUp, KeyDown, KeyUp, KeyRepeat, GainFocus, LoseFocus, the OFX Host should set the cursor to the one of the first interact which catches the event by returning kOfxStatOK to the corresponding action. If no overlay interact returns kOfxStatOK, the cursor should be set to the default cursor.
+ 
+ 9) It may be useful to show a dialog to a user to request a few informations before doing a task such as an analysis.
+ Instead of embedding the parameters in the settings of an image effect, the host could display a temporary dialog with the parameters requested. If the property kNatronOfxGroupParamPropIsDialog is set to 1, then whenever the property kOfxParamPropGroupOpen is set to 1, the dialog should be displayed by the host.
+
+ 10) If the property kNatronOfxPropDescriptionIsMarkdown is set to 1 on a parameter descriptor or on an image effect descriptor, then their corresponding description (kOfxParamPropHint for a parameter descriptor and kOfxPropPluginDescription for an image effect descriptor) may be interpreted as markdown by the host.
 
  */
+
+
+/**
+ int property that tells if a hint or description is written in markdown instead of plain text.
+ This can be applied either to the content of the kOfxPropPluginDescription property for plug-in descripion or the kOfxParamPropHint property for parameter description.
+ - Type - int x 1
+ - Property Set - plugin parameter descriptor (read/write) and instance (read only) or image effect descriptor (read/write) and instance (read only)
+ - Default - 0
+ - Valid Values - 1 or 0
+ If the value is 1, the hint is written in markdown
+ If the value is 0, the hint is written in plain-text
+ */
+#define kNatronOfxPropDescriptionIsMarkdown "NatronOfxPropDescriptionIsMarkdown"
+
+/**
+ int property that tells if a group parameter can be displayed as a dialog by the host when its kOfxParamPropGroupOpen
+property is set to 1.
+ When a dialog is requested, all parameters within this group should be represented in the dialog. The dialog itself could be titled with the label of the group parameter.
+ - Type - int x 1
+ - Property Set - group parameter descriptor (read/write) and instance (read only)
+ - Default - 1
+ - Valid Values - 1 or 0
+ If the value is 1, this parameter cannot have an interface in the viewport.
+ If the value is 0, this corresponds to the index on the viewport at which the host should place the parameter.
+ */
+#define kNatronOfxGroupParamPropIsDialog "NatronOfxGroupParamPropIsDialog"
+
 
 /**
  The name of the choice parameter that should be used to implement host right click menus. See 5) of the extension description.
@@ -506,7 +538,7 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
  See 7) for the associated extension. This value is refreshed whenever calling the kOfxActionInstanceChanged action for the parameter kNatronOfxParamSelectionRectangleState to let the plug-in a change to correctly synchronized its selection.
 
  - Type - double x 4
- - Property Set - plugin parameter descriptor (read/write) and instance (read/write only)
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
  - Default - (0,0,0,0)
  - Valid Values - (x1,y1,x2,y2) quadruplet such as x1 < x2 and y1 < y2
  */
@@ -515,7 +547,7 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 /** 
  string property indicating for a host, which are the default cursor provided to the plug-in and for a plug-in which are the cursor that it provides a drawing for.
  - Type - string x1
- - Property Set - plugin parameter descriptor (read/write) and instance (read/write only) or  host descriptor (read only)
+ - Property Set - plugin parameter descriptor (read/write) and instance (read only) or  host descriptor (read only)
  - Default - kNatronOfxDefaultCursor
  - Valid Values: For a host, any of the cursor defined below by the properties kNatronOfx*Cursor 
     For a plug-in, any cursor defined by the properties kNatronOfx*Cursor, plus any filename of a png image file distributed in the plug-in resource bundle.
@@ -554,7 +586,7 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
  int property that tells if this parameter should have an interface embedded into the host viewer.
 
  - Type - int x 1
- - Property Set - plugin parameter descriptor (read/write) and instance (read/write only)
+ - Property Set - plugin parameter descriptor (read/write) and instance (read only)
  - Default - -1
  - Valid Values - -1 or any number >= 0
  If the value is -1, this parameter cannot have an interface in the viewport.
@@ -634,49 +666,58 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
     For a group , flags whether a Group parameter should be represented as a tool button inside a toolbar of the viewer
     For a boolean param , flags whether a Boolean parameter should be represented as a tool button action inside a toolbar of the viewer
  - Type - int x 1
- - Property Set - plugin group parameter descriptor (read/write) and instance (read/write)
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
  - Default - 0
  - Valid Values - 0 or 1
  */
 #define kNatronOfxParamPropInViewerContextIsInToolbar "NatronOfxPageParamPropInViewerContextIsToolbar"
 
 
-/** @brief Property referencing uniquely a shortcut in the plug-in, so that the host can asociate with it
- a key symbol and keyboard modifiers.  This property should only be applied to PushButtonParameters and BooleanParameters
- with the kNatronOfxBooleanParamPropIsToggableButton property
+/** @brief Valid for Group parameters with the property kNatronOfxParamPropInViewerContextIsInToolbar set to 1, Boolean parameters with the property kNatronOfxBooleanParamPropIsToggableButton set to 1 and PushButton parameters:
+ Determines whether a parameter may be assigned a shortcut by the host or not.
+ - Type - int x 1
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
+ - Default - 0
+ - Valid Values - 0 or 1
+  If set to 1 then the host could display this parameter in some sort of shortcut editor where the user may modify it.
+ */
+#define kNatronOfxParamPropInViewerContextCanHaveShortcut "NatronOfxParamPropInViewerContextCanHaveShortcut"
 
- Note that a parameter can have multiple shortcuts. For example, imagine a toggable button that defines whether the plug-in
- should draw a user-defined rectangle. A first shortcut could toggle on/off the activation of the rectangle and another shortcut
- could toggle on + also let the user redefine the rectangle portion in a single click.
 
- This property will then be passed to the action kOfxActionInstanceChanged
- to indicate the plug-in which shortcut was pressed by the user.
- 
- Each shortcut ID should be accompanied by the following properties of the same size:
+/** @brief Property defining the default shortcuts for parameters that have the property kNatronOfxParamPropInViewerContextCanHaveShortcut set to 1. This property is a list
+ of the parameter names that have a default shortcut assigned. Parameter that do not appear here but have
+ the property kNatronOfxParamPropInViewerContextCanHaveShortcut set to 1 are assumed to have no default shortcut
+ assigned, but the user could modify it via the host appropriate interface.
 
+ Each parameter name should be accompanied by the following properties of the same dimension:
+ - kNatronOfxParamPropInViewerContextShortcutSymbol
+ - kNatronOfxParamPropInViewerContextShortcutHasControlModifier
+ - kNatronOfxParamPropInViewerContextShortcutHasShiftModifier
+ - kNatronOfxParamPropInViewerContextShortcutHasAltModifier
+ - kNatronOfxParamPropInViewerContextShortcutHasMetaModifier
 
  - Type - string x N
- - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
+ - Property Set - image effect descriptor (read/write) and instance (read/write)
  - Default -
  - Valid Values -
  */
-#define kNatronOfxParamPropInViewerContextShortcutID "NatronOfxParamPropInViewerContextShortcutID"
+#define kNatronOfxImageEffectPropInViewerContextDefaultShortcuts "NatronOfxImageEffectPropInViewerContextDefaultShortcuts"
 
 /** @brief Property indicating the symbol of a shortcut as defined in ofxKeySyms.h for a parameter with a shortcut. This should not include any modifier (that is kOfxKey_Control_L, kOfxKey_Control_R, kOfxKey_Shift_L, kOfxKey_Shift_R, kOfxKey_Alt_L, kOfxKey_Alt_R, kOfxKey_Meta_L, kOfxKey_Meta_R).
- The shortcut is associated to kNatronOfxParamPropInViewerContextShortcutID and should thus have the same dimension.
+ The shortcut is associated to kNatronOfxImageEffectPropInViewerContextDefaultShortcuts and should thus have the same dimension.
 
  - Type - int x N
- - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
+ - Property Set - image effect descriptor (read/write) and instance (read/write)
  - Default - 0
  - Valid Values - Any symbol defined in ofxKeySyms.h
  */
-#define kNatronOfxParamPropInViewerContextShortcutSymbol "NatronOfxParamPropInViewerContextShortcutID"
+#define kNatronOfxImageEffectPropInViewerContextShortcutSymbol "NatronOfxImageEffectPropInViewerContextShortcutSymbol"
 
 /** @brief Property indicating whether the control modifier (kOfxKey_Control_L or kOfxKey_Control_R) must be held for a parameter shortcut to trigger.
- The shortcut is associated to kNatronOfxParamPropInViewerContextShortcutID and should thus have the same dimension.
+ The shortcut is associated to kNatronOfxImageEffectPropInViewerContextDefaultShortcuts and should thus have the same dimension.
 
  - Type - int x N
- - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
+ - Property Set - image effect descriptor (read/write) and instance (read/write)
  - Default - 0
  - Valid Values - 0 or 1
  */
@@ -684,36 +725,36 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 
 
 /** @brief Property indicating whether the shit modifier (kOfxKey_Shift_L or kOfxKey_Shift_R) must be held for a parameter shortcut to trigger.
- The shortcut is associated to kNatronOfxParamPropInViewerContextShortcutID and should thus have the same dimension.
+ The shortcut is associated to kNatronOfxImageEffectPropInViewerContextDefaultShortcuts and should thus have the same dimension.
 
  - Type - int x N
- - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
+ - Property Set - image effect descriptor (read/write) and instance (read/write)
  - Default - 0
  - Valid Values - 0 or 1
  */
-#define kNatronOfxParamPropInViewerContextShortcutHasShiftModifier "NatronOfxParamPropInViewerContextShortcutHasShiftModifier"
+#define kNatronOfxImageEffectPropInViewerContextShortcutHasShiftModifier "NatronOfxImageEffectPropInViewerContextShortcutHasShiftModifier"
 
 
 /** @brief Property indicating whether the control modifier (kOfxKey_Alt_L orkOfxKey_Alt_R) must be held for a parameter shortcut to trigger.
- The shortcut is associated to kNatronOfxParamPropInViewerContextShortcutID and should thus have the same dimension.
+ The shortcut is associated to kNatronOfxImageEffectPropInViewerContextDefaultShortcuts and should thus have the same dimension.
 
  - Type - int x N
- - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
+ - Property Set - image effect descriptor (read/write) and instance (read/write)
  - Default - 0
  - Valid Values - 0 or 1
  */
-#define kNatronOfxParamPropInViewerContextShortcutHasAltModifier "NatronOfxParamPropInViewerContextShortcutHasAltModifier"
+#define kNatronOfxImageEffectPropInViewerContextShortcutHasAltModifier "NatronOfxImageEffectPropInViewerContextShortcutHasAltModifier"
 
 
 /** @brief Property indicating whether the control modifier (kOfxKey_Meta_L or kOfxKey_Meta_R) must be held for a parameter shortcut to trigger.
- The shortcut is associated to kNatronOfxParamPropInViewerContextShortcutID and should thus have the same dimension.
+ The shortcut is associated to kNatronOfxImageEffectPropInViewerContextDefaultShortcuts and should thus have the same dimension.
 
  - Type - int x N
- - Property Set - plugin parameter descriptor (read/write) and instance (read/write)
+ - Property Set - image effect descriptor (read/write) and instance (read/write)
  - Default - 0
  - Valid Values - 0 or 1
  */
-#define kNatronOfxParamPropInViewerContextShortcutHasMetaModifier "NatronOfxParamPropInViewerContextShortcutHasMetaModifier"
+#define kNatronOfxImageEffectPropInViewerContextShortcutHasMetaModifier "NatronOfxImageEffectPropInViewerContextShortcutHasMetaModifier"
 
 
 
