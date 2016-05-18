@@ -299,6 +299,28 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NATRON
         /// is this effect deprecated
         bool isDeprecated() const;
+
+        // Is the plug-in description string encoded in markdown instead of plain-text ?
+        bool isPluginDescriptionInMarkdown() const;
+
+        struct PluginShortcut
+        {
+          std::string shortcutID;
+          int symbol;
+          bool hasCtrlMod,hasAltMod,hasShiftMod,hasMetaMod;
+        };
+
+        // Get the default shortcuts defined for in viewport parameters
+        void getPluginDefaultShortcuts(std::list<PluginShortcut>* shortcuts) const;
+
+        // Get a list of the parameters name that are to be displayed in the viewport
+        void getInViewportParametersName(std::list<std::string>* parameterNames) const;
+
+        // Get a list of the cursors used by this plug-in
+        void getDefaultCursors(std::list<std::string>* cursors) const;
+
+        // Update the selection rectangle property
+        void setSelectionRectangleState(double x1, double y1, double x2, double y2);
 #endif
       };
 

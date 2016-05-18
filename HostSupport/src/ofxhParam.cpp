@@ -138,6 +138,14 @@ namespace OFX {
         return _properties.getStringProperty(kOfxParamPropHint, 0);
       }
 
+#ifdef OFX_EXTENSIONS_NATRON
+      // Is the hint string encoded in markdown instead of plain-text ?
+      bool Base::isHintInMarkdown() const
+      {
+        return _properties.getIntProperty(kNatronOfxPropDescriptionIsMarkdown) != 0;
+      }
+#endif
+
       bool Base::getEnabled() const {
         return _properties.getIntProperty(kOfxParamPropEnabled, 0) != 0;
       }
@@ -280,6 +288,11 @@ namespace OFX {
 #endif
 #ifdef OFX_EXTENSIONS_NATRON
           { kNatronOfxParamPropIsInstanceSpecific, Property::eInt, 1, false, "0"},
+          { kNatronOfxPropDescriptionIsMarkdown,            Property::eInt,     1, false, "0" },
+          { kNatronOfxParamPropInViewerContextLayoutHint,            Property::eInt,     1, false, "0" },
+          { kNatronOfxParamPropInViewerContextLayoutPadWidth,            Property::eInt,     1, false, "3" },
+          { kNatronOfxParamPropInViewerContextLabel,            Property::eString,     1, false, "" },
+          { kNatronOfxParamPropInViewerContextSecret,            Property::eInt,     1, false, "" },
 #endif
           Property::propSpecEnd
         };
@@ -320,6 +333,9 @@ namespace OFX {
 
         static const Property::PropSpec allPage[] = {
           { kOfxParamPropPageChild,    Property::eString,    0,    false,    "" },
+#         ifdef OFX_EXTENSIONS_NATRON
+          { kNatronOfxParamPropInViewerContextIsInToolbar, Property::eInt, 1, false, "0" },
+#         endif
           Property::propSpecEnd
         };
 
@@ -327,6 +343,11 @@ namespace OFX {
           { kOfxParamPropGroupOpen, Property::eInt, 1, false, "1" },
 #         ifdef OFX_EXTENSIONS_NUKE
           { kFnOfxParamPropGroupIsTab, Property::eInt, 1, false, "0" },
+#         endif
+#         ifdef OFX_EXTENSIONS_NATRON
+          { kNatronOfxGroupParamPropIsDialog, Property::eInt, 1, false, "0" },
+          { kNatronOfxParamPropInViewerContextIsInToolbar, Property::eInt, 1, false, "0" },
+          { kNatronOfxParamPropInViewerContextCanHaveShortcut, Property::eInt, 1, false, "0" },
 #         endif
           Property::propSpecEnd
         };
@@ -380,6 +401,26 @@ namespace OFX {
           _properties.setDoubleProperty(kOfxParamPropParametricRange, 1., 1);
         }
 #       endif
+
+#       ifdef OFX_EXTENSIONS_NATRON
+
+        if (type == kOfxParamTypePushButton) {
+          static const Property::PropSpec allPushButton[] = {
+            { kNatronOfxParamPropInViewerContextCanHaveShortcut, Property::eInt, 1, false, "0" },
+            Property::propSpecEnd
+          };
+          _properties.addProperties(allPushButton);
+        } else if (type == kOfxParamTypeBoolean) {
+          static const Property::PropSpec allBoolean[] = {
+            { kNatronOfxParamPropInViewerContextIsInToolbar, Property::eInt, 1, false, "0" },
+            { kNatronOfxParamPropInViewerContextCanHaveShortcut, Property::eInt, 1, false, "0" },
+            { kNatronOfxBooleanParamPropIsToggableButton, Property::eInt, 1, false, "0" },
+            Property::propSpecEnd
+          };
+          _properties.addProperties(allBoolean);
+        }
+
+#       endif // OFX_EXTENSIONS_NATRON
       }
 
       /// add standard properties to a params that can take an interact

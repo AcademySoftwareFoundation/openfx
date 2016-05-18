@@ -107,6 +107,11 @@ namespace OFX {
 
         const std::string &getHint() const;
 
+#ifdef OFX_EXTENSIONS_NATRON
+        // Is the hint string encoded in markdown instead of plain-text ?
+        bool isHintInMarkdown() const;
+#endif
+
         bool getEnabled() const;
 
         bool getCanUndo() const;

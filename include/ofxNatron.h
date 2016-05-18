@@ -435,8 +435,8 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
     10) Plug-ins description (kOfxPropPluginDescription) and parameters hint (kOfxParamPropHint) may be written in markdown.
     11) A plug-in might want to be able to access the host undo/redo actions of the Edit menu when doing special actions from within the overlay interact actions not involving parameters.
 
-1) In the host viewport, parameters can be arranged by widget rows controlled by the kNatronOfxParamPropInViewerContextIndex property.
- This index indicates the position of the parameter in the rows.
+1) In the host viewport, parameters can be arranged by widget rows controlled by the kNatronOfxImageEffectPropInViewerContextParamsOrder property.
+ This index indicates the order of the parameter in the rows.
  New rows are created if the parameter also have the property kNatronOfxParamPropInViewerContextLayoutHint set to kNatronOfxParamPropInViewerContextLayoutHintAddNewLine.
  Note that the host should try to make the parameters UI concise.
  
@@ -559,8 +559,8 @@ property is set to 1.
 #define kNatronOfxImageEffectSelectionRectangle "NatronOfxImageEffectSelectionRectangle"
 
 /** 
- string property indicating for a host, which are the default cursor provided to the plug-in and for a plug-in which are the cursor that it provides a drawing for.
- - Type - string x1
+ string property indicating for a host, which are the default cursors provided to the plug-in and for a plug-in which are the cursor that it provides a drawing for.
+ - Type - string x N
  - Property Set - plugin parameter descriptor (read/write) and instance (read only) or  host descriptor (read only)
  - Default - kNatronOfxDefaultCursor
  - Valid Values: For a host, any of the cursor defined below by the properties kNatronOfx*Cursor 
@@ -597,16 +597,17 @@ property is set to 1.
 #define kNatronOfxClosedHandCursor "NatronOfxClosedHandCursor"
 
 /**
- int property that tells if this parameter should have an interface embedded into the host viewer.
+ string property on the image effect descriptor that defines which parameters should have an interface on the host viewport
 
- - Type - int x 1
- - Property Set - plugin parameter descriptor (read/write) and instance (read only)
- - Default - -1
- - Valid Values - -1 or any number >= 0
- If the value is -1, this parameter cannot have an interface in the viewport.
- If the value is >=0, this corresponds to the index on the viewport at which the host should place the parameter.
+ - Type - string x N
+ - Property Set - image effect descriptor (read/write) and instance (read only)
+ - Default -
+
+ This property should contain a list of all parameters name that should be visible in the viewer. The ordering on which they appear
+ on the viewport is defined by their order in this property, with index 0 defining the top-left parameter and last index the bottom-right
+ parameter.
  */
-#define kNatronOfxParamPropInViewerContextLayoutIndex "kNatronOfxParamPropInViewerContextIndex"
+#define kNatronOfxImageEffectPropInViewerContextParamsOrder "NatronOfxParamPropInViewerContextParamsOrder"
 
 /**
  int property that controls the host viewer parameter layout.
@@ -634,7 +635,7 @@ property is set to 1.
 
  - Type - int X 1
  - Property Set - plugin parameter descriptor (read/write) and instance (read only)
- - Default - 1
+ - Default - 3
  - Valid Values - any positive integer value
 
  It tells the host how much space (in pixels) to leave between the current parameter and the next parameter in a viewport row
@@ -735,7 +736,7 @@ property is set to 1.
  - Default - 0
  - Valid Values - 0 or 1
  */
-#define kNatronOfxParamPropInViewerContextShortcutHasControlModifier "NatronOfxParamPropInViewerContextShortcutHasControlModifier"
+#define kNatronOfxImageEffectPropInViewerContextShortcutHasControlModifier "NatronOfxImageEffectPropInViewerContextShortcutHasControlModifier"
 
 
 /** @brief Property indicating whether the shit modifier (kOfxKey_Shift_L or kOfxKey_Shift_R) must be held for a parameter shortcut to trigger.

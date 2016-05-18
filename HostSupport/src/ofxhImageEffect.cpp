@@ -134,6 +134,16 @@ namespace OFX {
         { kNatronOfxImageEffectPropProjectId, Property::eString, 1, true, "" },
         { kNatronOfxImageEffectPropGroupId, Property::eString, 1, true, "" },
         { kNatronOfxImageEffectPropInstanceId, Property::eString, 1, true, "" },
+        { kNatronOfxPropDescriptionIsMarkdown, Property::eInt,     1, false, "0" },
+        { kNatronOfxImageEffectSelectionRectangle, Property::eDouble,     4, true, "" },
+        { kNatronOfxImageEffectPropDefaultCursors, Property::eString,     0, true, "" },
+        { kNatronOfxImageEffectPropInViewerContextParamsOrder, Property::eString,     0, false, "" },
+        { kNatronOfxImageEffectPropInViewerContextDefaultShortcuts, Property::eString, 0, true, "" },
+        { kNatronOfxImageEffectPropInViewerContextShortcutSymbol, Property::eInt, 0, true, "" },
+        { kNatronOfxImageEffectPropInViewerContextShortcutHasControlModifier, Property::eInt, 0, true, "" },
+        { kNatronOfxImageEffectPropInViewerContextShortcutHasShiftModifier, Property::eInt, 0, true, "" },
+        { kNatronOfxImageEffectPropInViewerContextShortcutHasAltModifier, Property::eInt, 0, true, "" },
+        { kNatronOfxImageEffectPropInViewerContextShortcutHasMetaModifier, Property::eInt, 0, true, "" },
 #endif
         Property::propSpecEnd
       };
@@ -375,7 +385,78 @@ namespace OFX {
       {
         return _properties.getIntProperty(kNatronOfxImageEffectPropDeprecated) != 0;
       }
-#endif
+
+      bool Base::isPluginDescriptionInMarkdown() const
+      {
+        return _properties.getIntProperty(kNatronOfxPropDescriptionIsMarkdown) != 0;
+      }
+
+      void Base::getPluginDefaultShortcuts(std::list<PluginShortcut>* shortcuts) const
+      {
+        if (!shortcuts) {
+          return;
+        }
+        const int nIds = _properties.getDimension(kNatronOfxImageEffectPropInViewerContextDefaultShortcuts);
+        const int nSyms = _properties.getDimension(kNatronOfxImageEffectPropInViewerContextShortcutSymbol);
+        const int nCtrl = _properties.getDimension(kNatronOfxImageEffectPropInViewerContextShortcutHasControlModifier);
+        const int nShift = _properties.getDimension(kNatronOfxImageEffectPropInViewerContextShortcutHasShiftModifier);
+        const int nAlt = _properties.getDimension(kNatronOfxImageEffectPropInViewerContextShortcutHasAltModifier);
+        const int nMeta = _properties.getDimension(kNatronOfxImageEffectPropInViewerContextShortcutHasMetaModifier);
+
+        // Invalid properties
+        if (nIds != nSyms || nIds != nCtrl || nIds != nShift || nIds != nAlt || nIds != nMeta) {
+          return;
+        }
+
+        for (int i = 0; i < nIds; ++i) {
+          PluginShortcut p;
+          p.shortcutID = _properties.getStringProperty(kNatronOfxImageEffectPropInViewerContextDefaultShortcuts, i);
+          p.symbol = _properties.getIntProperty(kNatronOfxImageEffectPropInViewerContextShortcutSymbol, i);
+          p.hasCtrlMod = _properties.getIntProperty(kNatronOfxImageEffectPropInViewerContextShortcutHasControlModifier, i);
+          p.hasShiftMod = _properties.getIntProperty(kNatronOfxImageEffectPropInViewerContextShortcutHasShiftModifier, i);
+          p.hasAltMod = _properties.getIntProperty(kNatronOfxImageEffectPropInViewerContextShortcutHasAltModifier, i);
+          p.hasMetaMod = _properties.getIntProperty(kNatronOfxImageEffectPropInViewerContextShortcutHasMetaModifier, i);
+          shortcuts->push_back(p);
+        }
+
+      }
+
+      // Get a list of the parameters name that are to be displayed in the viewport
+      void Base::getInViewportParametersName(std::list<std::string>* parameterNames) const
+      {
+        if (!parameterNames) {
+          return;
+        }
+        const int nItems = _properties.getDimension(kNatronOfxImageEffectPropInViewerContextParamsOrder);
+        for (int i = 0; i < nItems; ++i) {
+          std::string paramName = _properties.getStringProperty(kNatronOfxImageEffectPropInViewerContextParamsOrder, i);
+          parameterNames->push_back(paramName);
+        }
+      }
+
+      // Get a list of the cursors used by this plug-in
+      void Base::getDefaultCursors(std::list<std::string>* cursors) const
+      {
+        if (!cursors) {
+          return;
+        }
+        const int nItems = _properties.getDimension(kNatronOfxImageEffectPropDefaultCursors);
+        for (int i = 0; i < nItems; ++i) {
+          std::string cursor = _properties.getStringProperty(kNatronOfxImageEffectPropDefaultCursors, i);
+          cursors->push_back(cursor);
+        }
+      }
+
+      // Update the selection rectangle property
+      void Base::setSelectionRectangleState(double x1, double y1, double x2, double y2)
+      {
+        _properties.setDoubleProperty(kNatronOfxImageEffectSelectionRectangle, x1, 0);
+        _properties.setDoubleProperty(kNatronOfxImageEffectSelectionRectangle, y1, 1);
+        _properties.setDoubleProperty(kNatronOfxImageEffectSelectionRectangle, x2, 2);
+        _properties.setDoubleProperty(kNatronOfxImageEffectSelectionRectangle, y2, 3);
+      }
+
+#endif // OFX_EXTENSIONS_NATRON
       ////////////////////////////////////////////////////////////////////////////////
       // descriptor
 
