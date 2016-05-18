@@ -504,8 +504,9 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 /**
  int property that tells if a hint or description is written in markdown instead of plain text.
  This can be applied either to the content of the kOfxPropPluginDescription property for plug-in descripion or the kOfxParamPropHint property for parameter description.
+ For a host, this indicates whether markdown is supported or not
  - Type - int x 1
- - Property Set - plugin parameter descriptor (read/write) and instance (read only) or image effect descriptor (read/write) and instance (read only)
+ - Property Set - plugin parameter descriptor (read/write) and instance (read only) or image effect descriptor (read/write) and instance (read only) or host descriptor (read only)
  - Default - 0
  - Valid Values - 1 or 0
  If the value is 1, the hint is written in markdown

@@ -3854,6 +3854,8 @@ namespace OFX {
         { kNatronOfxImageEffectPropChannelSelector, Property::eString, 1, true, kOfxImageComponentNone },
         { kNatronOfxImageEffectPropHostMasking, Property::eInt, 1, true, "0" },
         { kNatronOfxImageEffectPropHostMixing, Property::eInt, 1, true, "0" },
+        { kNatronOfxPropDescriptionIsMarkdown, Property::eInt, 1, true, "0" },
+        { kNatronOfxImageEffectPropDefaultCursors, Property::eString, 0, true, "" },
 #    endif
         Property::propSpecEnd
       };    
