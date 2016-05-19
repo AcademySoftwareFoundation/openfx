@@ -757,10 +757,10 @@ namespace OFX {
     /** @brief Props for params that can have an interact override their UI */
     static PropertyDescription gInteractOverideParamProps[ ] =
     {
-      PropertyDescription(kOfxParamPropInteractV1,           OFX::ePointer,1, eDescDefault, (void *)(0), eDescFinished),
+      PropertyDescription(kOfxParamPropInteractV1,           OFX::ePointer,1, eDescFinished),
       PropertyDescription(kOfxParamPropInteractSize,         OFX::eDouble, 2, eDescFinished),
       PropertyDescription(kOfxParamPropInteractSizeAspect,   OFX::eDouble, 1, eDescDefault, 1.0, eDescFinished),
-      PropertyDescription(kOfxParamPropInteractMinimumSize,  OFX::eDouble, 2, eDescDefault, 10, 10, eDescFinished),
+      PropertyDescription(kOfxParamPropInteractMinimumSize,  OFX::eDouble, 2, eDescDefault, 10., 10., eDescFinished),
       PropertyDescription(kOfxParamPropInteractPreferedSize, OFX::eInt,    2, eDescDefault, 10, 10, eDescFinished),
     };
 
