@@ -636,21 +636,27 @@ namespace OFX {
     }
   }
 
+  /** @brief returns true if the param descriptor prop kOfxParamPropDefaultCoordinateSystem is present */
+  bool BaseDoubleParamDescriptor::supportsDefaultCoordinateSystem()
+  {
+    //OfxStatus stat = Private::gPropSuite->propSetString(_paramProps.propSetHandle(), kOfxParamPropDefaultCoordinateSystem, 0, kOfxParamCoordinatesCanonical);
+    char *value;
+    OfxStatus stat = Private::gPropSuite->propGetString(_paramProps.propSetHandle(), kOfxParamPropDefaultCoordinateSystem, 0, &value);
+    return (stat == kOfxStatOK);
+  }
+
   /** @brief set the type of coordinate system for default values */
   void BaseDoubleParamDescriptor::setDefaultCoordinateSystem(DefaultCoordinateSystemEnum v)
   {
-    try {
-      // this property was introduced with OpenFX 1.2
-      switch(v)
-      {
-      case eCoordinatesCanonical :
-        _paramProps.propSetString(kOfxParamPropDefaultCoordinateSystem, kOfxParamCoordinatesCanonical);
-        break;
-      case eCoordinatesNormalised :
-        _paramProps.propSetString(kOfxParamPropDefaultCoordinateSystem, kOfxParamCoordinatesNormalised);
-        break;
-      }
-    } catch (std::exception&) {
+    // this property was introduced with OpenFX 1.2
+    switch(v)
+    {
+    case eCoordinatesCanonical :
+      _paramProps.propSetString(kOfxParamPropDefaultCoordinateSystem, kOfxParamCoordinatesCanonical, false);
+      break;
+    case eCoordinatesNormalised :
+      _paramProps.propSetString(kOfxParamPropDefaultCoordinateSystem, kOfxParamCoordinatesNormalised, false);
+      break;
     }
   }
 

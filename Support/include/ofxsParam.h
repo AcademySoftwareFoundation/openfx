@@ -493,6 +493,9 @@ namespace OFX {
         /** @brief set the type of the double param, defaults to eDoubleTypePlain */
         void setDoubleType(DoubleTypeEnum v);
 
+        /** @brief returns true if the param descriptor prop kOfxParamPropDefaultCoordinateSystem is present */
+        bool supportsDefaultCoordinateSystem();
+
         /** @brief set the type of coordinate system for default values */
         void setDefaultCoordinateSystem(DefaultCoordinateSystemEnum v);
 
