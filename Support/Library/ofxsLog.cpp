@@ -46,6 +46,16 @@ The log file is written to using printf style functions, rather than via c++ ios
 #include <cstdlib>
 #include <string>
 
+#ifdef DEBUG
+#include <iostream>
+#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+#include <direct.h>
+#define getcwd _getcwd // stupid MSFT "deprecation" warning
+#else
+#include <unistd.h>
+#endif
+#endif
+
 #include "ofxsLog.h"
 
 namespace OFX {
@@ -74,6 +84,9 @@ namespace OFX {
     {
 #ifdef DEBUG
       if(!gLogFP) {
+        char buffer[2048];
+        char *answer = getcwd(buffer, sizeof(buffer));
+        std::cout << "INFO: OFX Log is \"" << answer << '/' << gLogFileName << '\"' << std::endl;
         gLogFP = fopen(gLogFileName.c_str(), "w");
         return gLogFP != 0;
       }
