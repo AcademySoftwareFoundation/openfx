@@ -60,6 +60,7 @@ each represent the actions that can be carried out on those particular OFX objec
 #ifdef OFX_EXTENSIONS_NATRON
 #include "ofxNatron.h"
 #endif
+#include "ofxOld.h" // required for kOfxParamDoubleTypeNormalised*
 
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
