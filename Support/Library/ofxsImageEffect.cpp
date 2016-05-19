@@ -1018,7 +1018,7 @@ namespace OFX {
   /** @brief set the instance to be sequentially renderred, this should have been part of clip preferences! */
   void ImageEffectDescriptor::setSequentialRender(bool v)
   {
-    _effectProps.propSetInt(kOfxImageEffectInstancePropSequentialRender, int(v));
+    _effectProps.propSetInt(kOfxImageEffectInstancePropSequentialRender, int(v), false); // missing in Resolve
   }
 
   /** @brief Have we informed the host we want to be seqentially renderred ? */
