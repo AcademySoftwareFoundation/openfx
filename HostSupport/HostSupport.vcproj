@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\include;include;expat-2.1.0\lib"
+				AdditionalIncludeDirectories="..\include;include;expat-2.1.1\lib"
 				PreprocessorDefinitions="_CRTDBG_MAP_ALLOC;WIN32;WINDOWS;COMPILED_FROM_DSP;XML_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -106,7 +106,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\include;include;expat-2.1.0\lib"
+				AdditionalIncludeDirectories="..\include;include;expat-2.1.1\lib"
 				PreprocessorDefinitions="_CRTDBG_MAP_ALLOC;WIN32;WINDOWS;COMPILED_FROM_DSP;XML_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -172,7 +172,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\include;include;expat-2.1.0\lib"
+				AdditionalIncludeDirectories="..\include;include;expat-2.1.1\lib"
 				PreprocessorDefinitions="WIN32;WINDOWS;COMPILED_FROM_DSP;XML_STATIC"
 				RuntimeLibrary="2"
 				WarningLevel="3"
@@ -237,7 +237,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\include;include;expat-2.1.0\lib"
+				AdditionalIncludeDirectories="..\include;include;expat-2.1.1\lib"
 				PreprocessorDefinitions="WIN32;WINDOWS;COMPILED_FROM_DSP;XML_STATIC"
 				RuntimeLibrary="2"
 				WarningLevel="3"
@@ -298,7 +298,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\include;include;expat-2.1.0\lib"
+				AdditionalIncludeDirectories="..\include;include;expat-2.1.1\lib"
 				PreprocessorDefinitions="_CRTDBG_MAP_ALLOC;WIN32;WINDOWS;COMPILED_FROM_DSP;XML_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -362,7 +362,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\include;include;expat-2.1.0\lib"
+				AdditionalIncludeDirectories="..\include;include;expat-2.1.1\lib"
 				PreprocessorDefinitions="_CRTDBG_MAP_ALLOC;WIN32;WINDOWS;COMPILED_FROM_DSP;XML_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -425,7 +425,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\include;include;expat-2.1.0\lib"
+				AdditionalIncludeDirectories="..\include;include;expat-2.1.1\lib"
 				PreprocessorDefinitions="WIN32;WINDOWS;COMPILED_FROM_DSP;XML_STATIC"
 				RuntimeLibrary="2"
 				WarningLevel="3"
@@ -487,7 +487,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\include;include;expat-2.1.0\lib"
+				AdditionalIncludeDirectories="..\include;include;expat-2.1.1\lib"
 				PreprocessorDefinitions="WIN32;WINDOWS;COMPILED_FROM_DSP;XML_STATIC"
 				RuntimeLibrary="2"
 				WarningLevel="3"
