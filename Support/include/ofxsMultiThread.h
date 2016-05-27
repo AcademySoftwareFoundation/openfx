@@ -113,21 +113,34 @@ namespace OFX {
 
     /// a class to wrap around a mutex which is exception safe
     /// it locks the mutex on construction and unlocks it on destruction
-    class AutoMutex {
+    template<class M>
+    class AutoMutexT {
     private :
-      Mutex &_mutex;
+      M* _mutex;
       bool val;
     public :
       /// ctor, acquires the lock
-      explicit AutoMutex(Mutex &m)
+      explicit AutoMutexT(M &m)
+        : _mutex(&m)
+      {
+        if (_mutex) {
+          _mutex->lock();
+        }
+        val = true;
+      }
+
+      /// ctor, acquires the lock
+      explicit AutoMutexT(M* m)
         : _mutex(m)
       {
-        _mutex.lock();
+        if (_mutex) {
+          _mutex->lock();
+        }
         val = true;
       }
 
       /// dtor, releases the lock
-      ~AutoMutex()
+      ~AutoMutexT()
       {
         unlock();
       }
@@ -135,7 +148,9 @@ namespace OFX {
       void unlock()
       {
         if (val) {
-          _mutex.unlock();
+          if (_mutex) {
+            _mutex->unlock();
+          }
           val = false;
         }
       }
@@ -144,11 +159,14 @@ namespace OFX {
       void relock()
       {
         if (!val) {
-          _mutex.lock();
+          if (_mutex) {
+            _mutex->lock();
+          }
           val = true;
         }
       }
     };
+    typedef AutoMutexT<Mutex> AutoMutex;
   };
 };
 
