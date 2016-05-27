@@ -119,6 +119,7 @@ namespace OFX {
       return n;
     }
 
+#ifdef OFX_USE_MULTITHREAD_MUTEX
     ////////////////////////////////////////////////////////////////////////////////
     // MUTEX class
 
@@ -157,6 +158,7 @@ namespace OFX {
       OfxStatus stat = OFX::Private::gThreadSuite ? OFX::Private::gThreadSuite->mutexTryLock(_handle) : kOfxStatReplyDefault;
       return stat == kOfxStatOK;
     }
+#endif
 
   };
 };
