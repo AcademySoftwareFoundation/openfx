@@ -84,6 +84,7 @@ namespace OFX {
     /** @brief The index of the current thread. From 0 to numCPUs() - 1 */
     unsigned int getThreadIndex(void);
 
+#ifdef OFX_USE_MULTITHREAD_MUTEX
     /** @brief An OFX mutex */
     class Mutex {
     protected :
@@ -110,6 +111,7 @@ namespace OFX {
       */
       bool tryLock();
     };
+#endif
 
     /// a class to wrap around a mutex which is exception safe
     /// it locks the mutex on construction and unlocks it on destruction
@@ -166,7 +168,9 @@ namespace OFX {
         }
       }
     };
+#ifdef OFX_USE_MULTITHREAD_MUTEX
     typedef AutoMutexT<Mutex> AutoMutex;
+#endif
   };
 };
 
