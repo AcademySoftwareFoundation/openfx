@@ -1515,10 +1515,10 @@ namespace OFX {
     /** @brief notify host that the internal data structures need syncing back to parameters for persistance and so on.  This is reset by the host after calling SyncPrivateData. */
     void setParamSetNeedsSyncing();
 
-    OFX::Message::MessageReplyEnum sendMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg);
+    OFX::Message::MessageReplyEnum sendMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg, bool throwIfMissing = false);
 
-      OFX::Message::MessageReplyEnum setPersistentMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg);
-      OFX::Message::MessageReplyEnum clearPersistentMessage();
+    OFX::Message::MessageReplyEnum setPersistentMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg, bool throwIfMissing = false);
+    OFX::Message::MessageReplyEnum clearPersistentMessage(bool throwIfMissing = false);
 
 #ifdef OFX_SUPPORTS_DIALOG
     /** @brief Request the host to send a kOfxActionDialog to the plugin from its UI thread. */

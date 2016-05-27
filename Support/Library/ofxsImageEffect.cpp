@@ -2109,26 +2109,47 @@ namespace OFX {
     _effectProps.propSetInt(kOfxPropParamSetNeedsSyncing, 1, false); // introduced in OFX 1.2
   }
 
-  OFX::Message::MessageReplyEnum ImageEffect::sendMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg)
+  OFX::Message::MessageReplyEnum ImageEffect::sendMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg, bool throwIfMissing)
   {   
-    if(!OFX::Private::gMessageSuite){ throwHostMissingSuiteException("message"); }
-    if(!OFX::Private::gMessageSuite->message){ throwHostMissingSuiteException("message"); }
+    if (!OFX::Private::gMessageSuite || !OFX::Private::gMessageSuite->message) {
+      if (throwIfMissing) {
+        OFX::Log::error(true, "OfxMessageSuiteV1::message() not available, could not send message \"%s\"/\"%s\"", id.c_str(), msg.c_str());
+        throwHostMissingSuiteException("message");
+      } else {
+        OFX::Log::warning(true, "OfxMessageSuiteV1::message() not available, could not send message \"%s\"/\"%s\"", id.c_str(), msg.c_str());
+        return OFX::Message::eMessageReplyFailed;
+      }
+    }
     OfxStatus stat = OFX::Private::gMessageSuite->message(_effectHandle, mapMessageTypeEnumToStr(type), id.c_str(), msg.c_str());
     return mapToMessageReplyEnum(stat);
   }
 
-  OFX::Message::MessageReplyEnum ImageEffect::setPersistentMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg)
+  OFX::Message::MessageReplyEnum ImageEffect::setPersistentMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg, bool throwIfMissing)
   {   
-    if(!OFX::Private::gMessageSuiteV2){ throwHostMissingSuiteException("setPersistentMessage"); }
-    if(!OFX::Private::gMessageSuiteV2->setPersistentMessage){ throwHostMissingSuiteException("setPersistentMessage"); }
+    if (!OFX::Private::gMessageSuiteV2 || !OFX::Private::gMessageSuiteV2->setPersistentMessage) {
+      if (throwIfMissing) {
+        OFX::Log::error(true, "OfxMessageSuiteV2::setPersistentMessage() not available, could not set message \"%s\"/\"%s\"", id.c_str(), msg.c_str());
+        throwHostMissingSuiteException("setPersistentMessage");
+      } else {
+        OFX::Log::warning(true, "OfxMessageSuiteV2::setPersistentMessage() not available, could not set message \"%s\"/\"%s\"", id.c_str(), msg.c_str());
+        return OFX::Message::eMessageReplyFailed;
+      }
+    }
     OfxStatus stat = OFX::Private::gMessageSuiteV2->setPersistentMessage(_effectHandle, mapMessageTypeEnumToStr(type), id.c_str(), msg.c_str());
     return mapToMessageReplyEnum(stat);
   }
 
-  OFX::Message::MessageReplyEnum ImageEffect::clearPersistentMessage()
+  OFX::Message::MessageReplyEnum ImageEffect::clearPersistentMessage(bool throwIfMissing)
   {   
-    if(!OFX::Private::gMessageSuiteV2){ throwHostMissingSuiteException("clearPersistentMessage"); }
-    if(!OFX::Private::gMessageSuiteV2->clearPersistentMessage){ throwHostMissingSuiteException("clearPersistentMessage"); }
+    if (!OFX::Private::gMessageSuiteV2 || !OFX::Private::gMessageSuiteV2->clearPersistentMessage) {
+      if (throwIfMissing) {
+        OFX::Log::error(true, "OfxMessageSuiteV2::clearPersistentMessage() not available");
+        throwHostMissingSuiteException("clearPersistentMessage");
+      } else {
+        OFX::Log::warning(true, "OfxMessageSuiteV2::clearPersistentMessage() not available");
+        return OFX::Message::eMessageReplyFailed;
+      }
+    }
     OfxStatus stat = OFX::Private::gMessageSuiteV2->clearPersistentMessage(_effectHandle);
     return mapToMessageReplyEnum(stat);
   }
