@@ -3531,7 +3531,8 @@ namespace OFX {
     // make sure it is of our type
     std::string paramTypeStr = props.propGetString(kOfxParamPropType);
     if(paramTypeStr != mapParamTypeEnumToString(paramType)) {
-      throw OFX::Exception::TypeRequest("Parameter exists but is of the wrong type");
+      std::string msg = std::string("Parameter \"") + name + std::string("\" exists but has type ") + paramTypeStr + std::string(" instead of ") + mapParamTypeEnumToString(paramType);
+      throw OFX::Exception::TypeRequest(msg.c_str());
     }
   }
 
