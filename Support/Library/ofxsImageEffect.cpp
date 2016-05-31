@@ -2110,8 +2110,8 @@ namespace OFX {
         throwHostMissingSuiteException("message");
       } else {
         OFX::Log::warning(true, "OfxMessageSuiteV1::message() not available, could not send message \"%s\"/\"%s\"", id.c_str(), msg.c_str());
-        return OFX::Message::eMessageReplyFailed;
       }
+      return OFX::Message::eMessageReplyFailed;
     }
     OfxStatus stat = OFX::Private::gMessageSuite->message(_effectHandle, mapMessageTypeEnumToStr(type), id.c_str(), msg.c_str());
     return mapToMessageReplyEnum(stat);
@@ -2125,8 +2125,8 @@ namespace OFX {
         throwHostMissingSuiteException("setPersistentMessage");
       } else {
         OFX::Log::warning(true, "OfxMessageSuiteV2::setPersistentMessage() not available, could not set message \"%s\"/\"%s\"", id.c_str(), msg.c_str());
-        return OFX::Message::eMessageReplyFailed;
       }
+      return OFX::Message::eMessageReplyFailed;
     }
     OfxStatus stat = OFX::Private::gMessageSuiteV2->setPersistentMessage(_effectHandle, mapMessageTypeEnumToStr(type), id.c_str(), msg.c_str());
     return mapToMessageReplyEnum(stat);
@@ -2140,8 +2140,8 @@ namespace OFX {
         throwHostMissingSuiteException("clearPersistentMessage");
       } else {
         OFX::Log::warning(true, "OfxMessageSuiteV2::clearPersistentMessage() not available");
-        return OFX::Message::eMessageReplyFailed;
       }
+      return OFX::Message::eMessageReplyFailed;
     }
     OfxStatus stat = OFX::Private::gMessageSuiteV2->clearPersistentMessage(_effectHandle);
     return mapToMessageReplyEnum(stat);
