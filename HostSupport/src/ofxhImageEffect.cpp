@@ -1153,7 +1153,7 @@ namespace OFX {
 #       endif
         std::cout << ")" <<std::endl;
 #       endif
-        OfxStatus st = mainEntry(kOfxActionOpenGLContextDetached,this->getHandle(),0,0);
+        OfxStatus st = mainEntry(kOfxActionOpenGLContextDetached,this->getHandle(),&inArgs,0);
 #       ifdef OFX_DEBUG_ACTIONS
           std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionOpenGLContextDetached<<"()->"<<StatStr(st)<<std::endl;
 #       endif
