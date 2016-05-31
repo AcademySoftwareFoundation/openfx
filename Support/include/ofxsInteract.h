@@ -76,7 +76,7 @@ namespace OFX {
 #ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
     OfxPointD       viewportSize;      /**< @brief The openGL viewport size for the instance */
 #endif
-    OfxPointD       pixelScale;        /**< @brief The current effect time to draw at */
+    OfxPointD       pixelScale;        /**< @brief The size of a real screen pixel under the interact's canonical projection */
     OfxRGBColourD   backGroundColour;  /**< @brief The current background colour, ignore the A */
   };
 
@@ -87,7 +87,7 @@ namespace OFX {
 #ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
     OfxPointD       viewportSize;      /**< @brief The openGL viewport size for the instance */
 #endif
-    OfxPointD       pixelScale;        /**< @brief The current effect time to draw at */
+    OfxPointD       pixelScale;        /**< @brief The size of a real screen pixel under the interact's canonical projection */
     OfxRGBColourD   backGroundColour;  /**< @brief The current background colour, ignore the A */
     OfxPointD       penPosition;       /**< @brief The current pen position */
     OfxPointD       penViewportPosition;/**< @brief The current pen position in viewport coordinates */
@@ -115,7 +115,7 @@ namespace OFX {
 #ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
     OfxPointD       viewportSize;      /**< @brief The openGL viewport size for the instance */
 #endif
-    OfxPointD       pixelScale;        /**< @brief The current effect time to draw at */
+    OfxPointD       pixelScale;        /**< @brief The size of a real screen pixel under the interact's canonical projection */
     OfxRGBColourD   backGroundColour;  /**< @brief The current background colour, ignore the A */
   };
 
