@@ -773,5 +773,33 @@ property is set to 1.
 #define kNatronOfxImageEffectPropInViewerContextShortcutHasMetaModifier "NatronOfxImageEffectPropInViewerContextShortcutHasMetaModifier"
 
 
+/** @brief A pointer property used to hold OpenGL context-specific data, such as texture or program IDs.
+
+   - Type - pointer X 1
+   - Property Set - inArgs property set of the following actions...
+      - ::kOfxImageEffectActionRender
+      - ::kOfxImageEffectActionBeginSequenceRender
+      - ::kOfxImageEffectActionEndSequenceRender
+      - ::kOfxActionOpenGLContextDetached
+     - outArgs property set of the following actions...
+      - ::kOfxActionOpenGLContextAttached
+   - Default - NULL
+
+This pointer is a handle to plugin-owned data holding OpenGL context-specific data
+(e.g. texture or program IDs). This is returned by the plugin when the context is first
+attached, and then passed as inArgs to each render call in that context. This permits running
+several parallel renders on different OpenGL contexts, but it violates the OpenFX spec, which
+says:
+
+ "A host cannot call ::kOfxActionOpenGLContextAttached on the same instance
+ without an intervening ::kOfxActionOpenGLContextDetached. A host can have a
+ plugin swap OpenGL contexts by issuing a attach/detach for the first context
+ then another attach for the next context."
+
+ If the plugin returns NULL as outArgs of kOfxActionOpenGLContextDetached, it is supposed
+ to follow the OpenFX spec, and will have to be detached/attached when switching the render context.
+
+ */
+#define kNatronOfxImageEffectPropOpenGLContextData "NatronOfxImageEffectPropOpenGLContextData"
 
 #endif // #ifndef _ofxNatron_h_
