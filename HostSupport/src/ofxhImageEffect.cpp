@@ -1091,20 +1091,67 @@ namespace OFX {
 
 #   ifdef OFX_SUPPORTS_OPENGLRENDER
       // attach/detach OpenGL context
-      OfxStatus Instance::contextAttachedAction(){
+      OfxStatus Instance::contextAttachedAction(
+#                                              ifdef OFX_EXTENSIONS_NATRON
+                                                void* &contextData
+#                                              endif
+                                                )
+      {
+        static const Property::PropSpec outStuff[] = {
+#ifdef OFX_EXTENSIONS_NATRON
+          { kNatronOfxImageEffectPropOpenGLContextData , Property::ePointer, 1, false, "0" },
+#endif
+          Property::propSpecEnd
+        };
+
+        Property::Set outArgs(outStuff);
+
 #       ifdef OFX_DEBUG_ACTIONS
           std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionOpenGLContextAttached<<"()"<<std::endl;
 #       endif
-        OfxStatus st = mainEntry(kOfxActionOpenGLContextAttached,this->getHandle(),0,0);
+        OfxStatus st = mainEntry(kOfxActionOpenGLContextAttached,this->getHandle(), 0, &outArgs);
+        if(st == kOfxStatOK) {
+#        ifdef OFX_EXTENSIONS_NATRON
+          contextData = outArgs.getPointerProperty(kNatronOfxImageEffectPropOpenGLContextData);
+#        endif
+        }
 #       ifdef OFX_DEBUG_ACTIONS
-          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionOpenGLContextAttached<<"()->"<<StatStr(st)<<std::endl;
+        std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionOpenGLContextAttached<<"()->"<<StatStr(st);
+#        ifdef OFX_EXTENSIONS_NATRON
+        if(st == kOfxStatOK) {
+          std::cout << ": (" << contextData << ")";
+        }
+#        endif
+        std::cout << std::endl;
 #       endif
         return st;
       }
 
-      OfxStatus Instance::contextDetachedAction(){
+      OfxStatus Instance::contextDetachedAction(
+#                                              ifdef OFX_EXTENSIONS_NATRON
+                                                void* contextData
+#                                              endif
+                                                )
+      {
+        static const Property::PropSpec inStuff[] = {
+#ifdef OFX_EXTENSIONS_NATRON
+          { kNatronOfxImageEffectPropOpenGLContextData , Property::ePointer, 1, false, "0" },
+#endif
+          Property::propSpecEnd
+        };
+
+        Property::Set inArgs(inStuff);
+
+#ifdef OFX_EXTENSIONS_NATRON
+        inArgs.setPointerProperty(kNatronOfxImageEffectPropOpenGLContextData, contextData);
+#endif
+
 #       ifdef OFX_DEBUG_ACTIONS
-          std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionOpenGLContextDetached<<"()"<<std::endl;
+        std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionOpenGLContextDetached<<"(";
+#       ifdef OFX_EXTENSIONS_NATRON
+        std:: cout << contextData;
+#       endif
+        std::cout << ")" <<std::endl;
 #       endif
         OfxStatus st = mainEntry(kOfxActionOpenGLContextDetached,this->getHandle(),0,0);
 #       ifdef OFX_DEBUG_ACTIONS
@@ -1123,6 +1170,9 @@ namespace OFX {
                                             bool     interactiveRender,
 #                                         ifdef OFX_SUPPORTS_OPENGLRENDER
                                             bool     openGLRender,
+#                                          ifdef OFX_EXTENSIONS_NATRON
+                                            void*    contextData,
+#                                          endif
 #                                         endif
                                             bool     draftRender
 #                                         ifdef OFX_EXTENSIONS_NUKE
@@ -1146,6 +1196,9 @@ namespace OFX {
           { kOfxImageEffectPropInteractiveRenderStatus, Property::eInt, 1, true, "0" },
 #       ifdef OFX_SUPPORTS_OPENGLRENDER
           { kOfxImageEffectPropOpenGLEnabled, Property::eInt, 1, true, "0" }, // OFX 1.3
+#        ifdef OFX_EXTENSIONS_NATRON
+          { kNatronOfxImageEffectPropOpenGLContextData , Property::ePointer, 1, false, "0" },
+#        endif
 #       endif
           { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" }, // OFX 1.4
 #       ifdef OFX_EXTENSIONS_NUKE
@@ -1170,6 +1223,9 @@ namespace OFX {
         inArgs.setIntProperty(kOfxImageEffectPropInteractiveRenderStatus,interactiveRender);
 #     ifdef OFX_SUPPORTS_OPENGLRENDER
         inArgs.setIntProperty(kOfxImageEffectPropOpenGLEnabled,openGLRender);
+#      ifdef OFX_EXTENSIONS_NATRON
+        inArgs.setPointerProperty(kNatronOfxImageEffectPropOpenGLContextData, contextData);
+#      endif
 #     endif
         inArgs.setIntProperty(kOfxImageEffectPropRenderQualityDraft,draftRender);
 
@@ -1204,6 +1260,9 @@ namespace OFX {
                                        bool     interactiveRender,
 #                                    ifdef OFX_SUPPORTS_OPENGLRENDER
                                        bool     openGLRender,
+#                                     ifdef OFX_EXTENSIONS_NATRON
+                                       void*    contextData,
+#                                     endif
 #                                    endif
                                        bool     draftRender
 #if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
@@ -1233,6 +1292,9 @@ namespace OFX {
           { kOfxImageEffectPropInteractiveRenderStatus, Property::eInt, 1, true, "0" },
 #       ifdef OFX_SUPPORTS_OPENGLRENDER
           { kOfxImageEffectPropOpenGLEnabled, Property::eInt, 1, true, "0" }, // OFX 1.3
+#        ifdef OFX_EXTENSIONS_NATRON
+          { kNatronOfxImageEffectPropOpenGLContextData , Property::ePointer, 1, false, "0" },
+#        endif
 #       endif
           { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" }, // OFX 1.4
 #       ifdef OFX_EXTENSIONS_VEGAS
@@ -1257,6 +1319,9 @@ namespace OFX {
         inArgs.setIntProperty(kOfxImageEffectPropInteractiveRenderStatus,interactiveRender);
 #     ifdef OFX_SUPPORTS_OPENGLRENDER
         inArgs.setIntProperty(kOfxImageEffectPropOpenGLEnabled,openGLRender);
+#      ifdef OFX_EXTENSIONS_NATRON
+        inArgs.setPointerProperty(kNatronOfxImageEffectPropOpenGLContextData, contextData);
+#      endif
 #     endif
         inArgs.setIntProperty(kOfxImageEffectPropRenderQualityDraft,draftRender);
 #     ifdef OFX_EXTENSIONS_VEGAS
@@ -1314,6 +1379,9 @@ namespace OFX {
                                           bool     interactiveRender,
 #                                       ifdef OFX_SUPPORTS_OPENGLRENDER
                                           bool     openGLRender,
+#                                        ifdef OFX_EXTENSIONS_NATRON
+                                          void*    contextData,
+#                                        endif
 #                                       endif
                                           bool     draftRender
 #                                       ifdef OFX_EXTENSIONS_NUKE
@@ -1337,6 +1405,9 @@ namespace OFX {
           { kOfxImageEffectPropInteractiveRenderStatus, Property::eInt, 1, true, "0" },
 #       ifdef OFX_SUPPORTS_OPENGLRENDER
           { kOfxImageEffectPropOpenGLEnabled, Property::eInt, 1, true, "0" }, // OFX 1.3
+#        ifdef OFX_EXTENSIONS_NATRON
+          { kNatronOfxImageEffectPropOpenGLContextData , Property::ePointer, 1, false, "0" },
+#        endif
 #       endif
           { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" }, // OFX 1.4
 #       ifdef OFX_EXTENSIONS_NUKE
@@ -1357,6 +1428,9 @@ namespace OFX {
         inArgs.setIntProperty(kOfxImageEffectPropInteractiveRenderStatus,interactiveRender);
 #     ifdef OFX_SUPPORTS_OPENGLRENDER
         inArgs.setIntProperty(kOfxImageEffectPropOpenGLEnabled,openGLRender);
+#      ifdef OFX_EXTENSIONS_NATRON
+        inArgs.setPointerProperty(kNatronOfxImageEffectPropOpenGLContextData, contextData);
+#      endif
 #     endif
         inArgs.setIntProperty(kOfxImageEffectPropRenderQualityDraft,draftRender);
 #     ifdef OFX_EXTENSIONS_NUKE

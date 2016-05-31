@@ -654,10 +654,18 @@ namespace OFX {
 
 #     ifdef OFX_SUPPORTS_OPENGLRENDER
         // attach/detach OpenGL context
-        virtual OfxStatus contextAttachedAction();
-        virtual OfxStatus contextDetachedAction();
+        virtual OfxStatus contextAttachedAction(
+#                                              ifdef OFX_EXTENSIONS_NATRON
+                                                void* &contextData
+#                                              endif
+                                                );
+        virtual OfxStatus contextDetachedAction(
+#                                              ifdef OFX_EXTENSIONS_NATRON
+                                                void* contextData
+#                                              endif
+                                                );
 #     endif
-          
+
         // render action
         virtual OfxStatus beginRenderAction(OfxTime  startFrame,
                                             OfxTime  endFrame,
@@ -668,6 +676,9 @@ namespace OFX {
                                             bool     interactiveRender,
 #                                    ifdef OFX_SUPPORTS_OPENGLRENDER
                                             bool     openGLRender,
+#                                         ifdef OFX_EXTENSIONS_NATRON
+                                            void*    contextData,
+#                                         endif
 #                                    endif
                                             bool     draftRender
 #                                         ifdef OFX_EXTENSIONS_NUKE
@@ -684,6 +695,9 @@ namespace OFX {
                                        bool     interactiveRender,
 #                                    ifdef OFX_SUPPORTS_OPENGLRENDER
                                        bool     openGLRender,
+#                                     ifdef OFX_EXTENSIONS_NATRON
+                                       void*    contextData,
+#                                     endif
 #                                    endif
                                        bool     draftRender
 #                                    if defined(OFX_EXTENSIONS_VEGAS) || defined(OFX_EXTENSIONS_NUKE)
@@ -709,6 +723,9 @@ namespace OFX {
                                           bool     interactiveRender,
 #                                    ifdef OFX_SUPPORTS_OPENGLRENDER
                                           bool     openGLRender,
+#                                       ifdef OFX_EXTENSIONS_NATRON
+                                          void*    contextData,
+#                                       endif
 #                                    endif
                                           bool     draftRender
 #                                       ifdef OFX_EXTENSIONS_NUKE

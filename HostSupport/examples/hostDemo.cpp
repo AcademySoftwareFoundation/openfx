@@ -179,6 +179,9 @@ int main(int argc, char **argv)
       stat = instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale, /*sequential=*/true, /*interactive=*/false,
 #                                        ifdef OFX_SUPPORTS_OPENGLRENDER
                                          /*openGLRender=*/false,
+#                                        ifdef OFX_EXTENSIONS_NATRON
+                                         /*contextData=*/NULL,
+#                                        endif
 #                                        endif
                                          /*draftRender=*/false
 #                                        ifdef OFX_EXTENSIONS_NUKE
@@ -216,6 +219,9 @@ int main(int argc, char **argv)
           stat = instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, /*sequential=*/true, /*interactive=*/false,
 #                                        ifdef OFX_SUPPORTS_OPENGLRENDER
                                         /*openGLRender=*/false,
+#                                        ifdef OFX_EXTENSIONS_NATRON
+                                        /*contextData=*/NULL,
+#                                        endif
 #                                        endif
                                         /*draft=*/false,
                                         0 /*view*/
@@ -240,6 +246,9 @@ int main(int argc, char **argv)
           instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, /*sequential=*/true, /*interactive=*/false,
 #                                ifdef OFX_SUPPORTS_OPENGLRENDER
                                  /*openGLRender=*/false,
+#                                ifdef OFX_EXTENSIONS_NATRON
+                                 /*contextData=*/NULL,
+#                                endif
 #                                endif
                                  /*draft=*/false,
                                  1 /*view*/
@@ -277,6 +286,9 @@ int main(int argc, char **argv)
       instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale, /*sequential=*/true, /*interactive=*/false,
 #                               ifdef OFX_SUPPORTS_OPENGLRENDER
                                 /*openGLRender=*/false,
+#                               ifdef OFX_EXTENSIONS_NATRON
+                                /*contextData=*/NULL,
+#                               endif
 #                               endif
                                 /*draftRender=*/false
 #                               ifdef OFX_EXTENSIONS_NUKE
