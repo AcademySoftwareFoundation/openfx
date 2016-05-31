@@ -2087,17 +2087,10 @@ namespace OFX {
 #endif
 
 #ifdef OFX_SUPPORTS_OPENGLRENDER
-  /** @brief Does the plugin support OpenGL accelerated rendering (but is also capable of CPU rendering) ? Can only be called from changedParam or changedClip. */
+  /** @brief Does the plugin support OpenGL accelerated rendering (but is also capable of CPU rendering) ? Can only be called from changedParam or changedClip (OFX 1.4). */
   void ImageEffect::setSupportsOpenGLRender(bool v) {
     if (gHostDescription.supportsOpenGLRender) {
       _effectProps.propSetString(kOfxImageEffectPropOpenGLRenderSupported, (v ? "true" : "false"), false); // read/write from OFX 1.4
-    }
-  }
-
-  /** @brief Does the plugin require OpenGL accelerated rendering ? Can only be called from changedParam or changedClip. */
-  void ImageEffect::setNeedsOpenGLRender(bool v) {
-    if (gHostDescription.supportsOpenGLRender) {
-      _effectProps.propSetString(kOfxImageEffectPropOpenGLRenderSupported, (v ? "needed" : "false"), false); // read/write from OFX 1.4
     }
   }
 #endif
