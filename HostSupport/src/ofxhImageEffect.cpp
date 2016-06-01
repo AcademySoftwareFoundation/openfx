@@ -1110,7 +1110,7 @@ namespace OFX {
           std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionOpenGLContextAttached<<"()"<<std::endl;
 #       endif
         OfxStatus st = mainEntry(kOfxActionOpenGLContextAttached,this->getHandle(), 0, &outArgs);
-        if(st == kOfxStatOK) {
+        if(st == kOfxStatOK || st == kOfxStatReplyDefault) {
 #        ifdef OFX_EXTENSIONS_NATRON
           contextData = outArgs.getPointerProperty(kNatronOfxImageEffectPropOpenGLContextData);
 #        endif
