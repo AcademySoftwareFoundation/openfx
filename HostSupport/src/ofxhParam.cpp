@@ -1882,16 +1882,27 @@ namespace OFX {
 
       /// ctor
       SetInstance::SetInstance()
+      : _ownsParams(true)
       {}
+
+      SetInstance::SetInstance(const SetInstance& other)
+      : _params(other._params)
+      , _paramList(other._paramList)
+      , _ownsParams(false)
+      {
+
+      }
 
       /// dtor. 
       SetInstance::~SetInstance()
       {
         // iterate the params and delete them
-        std::list<Instance *>::iterator i;
-        for(i = _paramList.begin(); i != _paramList.end(); ++i) {
-          if(*i) 
-            delete (*i);
+        if (_ownsParams) {
+          std::list<Instance *>::iterator i;
+          for(i = _paramList.begin(); i != _paramList.end(); ++i) {
+            if(*i)
+              delete (*i);
+          }
         }
       }
 

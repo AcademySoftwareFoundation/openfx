@@ -418,11 +418,16 @@ namespace OFX {
         double                                        _outputFrameRate; ///< set by clip prefs
 
       public:        
-        /// constructor based on clip descriptor
+        /// constructor based on effect descriptor
         Instance(ImageEffectPlugin* plugin,
                  Descriptor         &other, 
                  const std::string  &context,
                  bool               interactive);
+
+        /// copy ctor, all clips and parameters will hold a reference (that they do not own)
+        /// to clips/parameters from the other instance. The other instance is expected to live
+        /// at least as long as this instance
+        Instance(const Instance& other);
 
         virtual ~Instance();
 

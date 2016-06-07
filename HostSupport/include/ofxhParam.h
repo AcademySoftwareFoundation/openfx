@@ -654,13 +654,16 @@ namespace OFX {
       protected:
         std::map<std::string, Instance*> _params;        ///< params by name
         std::list<Instance *>            _paramList;     ///< params list
-
+        bool _ownsParams; // false if this instance was created from another one
       public :
         /// ctor
         ///
         /// The propery set being passed in belongs to the owning 
         /// plugin instance.
         explicit SetInstance();
+
+        /// Copy ctor, based on another SetInstance. Parameters have just their pointers copied
+        SetInstance(const SetInstance& other);
 
         /// dtor. 
         virtual ~SetInstance();

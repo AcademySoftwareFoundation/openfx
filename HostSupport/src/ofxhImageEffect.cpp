@@ -609,6 +609,25 @@ namespace OFX {
         }
       }
 
+      Instance::Instance(const Instance& other)
+      : Base(other)
+      , Param::SetInstance(other)
+      , _plugin(other._plugin)
+      , _context(other._context)
+      , _descriptor(other._descriptor)
+      , _clips(other._clips)
+      , _interactive(other._interactive)
+      , _created(false)
+      , _clipPrefsDirty(other._clipPrefsDirty)
+      , _continuousSamples(other._continuousSamples)
+      , _frameVarying(other._frameVarying)
+      , _outputPreMultiplication(other._outputPreMultiplication)
+      , _outputFielding(other._outputFielding)
+      , _outputFrameRate(other._outputFrameRate)
+      {
+
+      }
+
       /// implemented for Param::SetDescriptor
       Property::Set &Instance::getParamSetProps()
       {
