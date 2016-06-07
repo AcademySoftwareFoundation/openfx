@@ -409,6 +409,7 @@ namespace OFX {
         std::map<std::string, ClipInstance*>          _clips;
         bool                                          _interactive;
         bool                                          _created;
+        bool                                          _ownsData; ///<false if this instance was created with the copy constructor
 
         bool                                          _clipPrefsDirty; ///< do we need to re-run the clip prefs action
         bool                                          _continuousSamples; ///< set by clip prefs
