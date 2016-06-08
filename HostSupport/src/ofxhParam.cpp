@@ -659,6 +659,7 @@ namespace OFX {
         _properties.addNotifyHook(kOfxParamPropEnabled, this);
         _properties.addNotifyHook(kOfxParamPropSecret, this);
         _properties.addNotifyHook(kOfxPropLabel, this);
+        _properties.addNotifyHook(kOfxParamPropHint, this);
         _properties.addNotifyHook(kOfxParamPropMin, this);
         _properties.addNotifyHook(kOfxParamPropMax, this);
         _properties.addNotifyHook(kOfxParamPropDisplayMin, this);
