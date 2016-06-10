@@ -131,6 +131,22 @@ namespace OFX {
         return s;
       }
       
+#ifdef OFX_EXTENSIONS_NATRON
+      /// doc of the clip
+      const std::string &ClipBase::getHint() const
+      {
+        const std::string &s = _properties.getStringProperty(kOfxParamPropHint);
+        return s;
+      }
+
+      /// is the clip secret
+      bool ClipBase::isSecret() const
+      {
+        return _properties.getIntProperty(kOfxParamPropSecret) != 0;
+      }
+      
+
+#endif
       /// return a std::vector of supported comp
       const std::vector<std::string> &ClipBase::getSupportedComponents() const
       {

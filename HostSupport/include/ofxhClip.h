@@ -77,6 +77,14 @@ namespace OFX {
         /// name of the clip
         const std::string &getLongLabel() const;
 
+#     ifdef OFX_EXTENSIONS_NATRON
+        /// doc of the clip
+        const std::string &getHint() const;
+
+        /// is the clip secret
+        bool isSecret() const;
+#     endif
+
         /// return a std::vector of supported comp
         const std::vector<std::string> &getSupportedComponents() const;
         
