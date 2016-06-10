@@ -909,6 +909,17 @@ namespace OFX {
     /// get the underlying property set on this clip
     PropertySet &getPropertySet() {return _clipProps;}
 
+#ifdef OFX_EXTENSIONS_NATRON
+    /** @brief set the label property in a clip */
+    void setLabel(const std::string &label);
+
+    /** @brief set the label properties in a clip */
+    void setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel);
+
+    /** @brief set the clip hint */
+    void setHint(const std::string &hint);
+#endif
+
     /// get the OFX clip handle
     OfxImageClipHandle getHandle() {return _clipHandle;}
 

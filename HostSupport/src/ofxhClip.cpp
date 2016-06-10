@@ -62,6 +62,9 @@ namespace OFX {
         { kOfxPropType, Property::eString, 1, true, kOfxTypeClip },
         { kOfxPropName, Property::eString, 1, true, "SET ME ON CONSTRUCTION" },
         { kOfxPropLabel, Property::eString, 1, false, "" } ,
+#ifdef OFX_EXTENSIONS_NATRON
+        { kOfxParamPropHint, Property::eString, 1, false, "" } ,
+#endif
         { kOfxPropShortLabel, Property::eString, 1, false, "" },
         { kOfxPropLongLabel, Property::eString, 1, false, "" },        
         { kOfxImageEffectPropSupportedComponents, Property::eString, 0, false, "" },

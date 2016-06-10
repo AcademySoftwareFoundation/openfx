@@ -1472,6 +1472,31 @@ namespace OFX {
     OFX::Validation::validateClipInstanceProperties(_clipProps);
   }
 
+#ifdef OFX_EXTENSIONS_NATRON
+  /** @brief set the label property */
+  void 
+    Clip::setLabel(const std::string &label)
+  {
+    _clipProps.propSetString(kOfxPropLabel, label, false);
+  }
+
+  /** @brief set the label properties */
+  void 
+    Clip::setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel)
+  {
+    setLabel(label);
+    _clipProps.propSetString(kOfxPropShortLabel, shortLabel, false);
+    _clipProps.propSetString(kOfxPropLongLabel, longLabel, false);
+  }
+
+  /** @brief set the param hint */
+  void 
+    Clip::setHint(const std::string &v)
+  {
+    _clipProps.propSetString(kOfxParamPropHint, v, false);
+  }
+#endif
+
   /** @brief fetch the label */
   void Clip::getLabel(std::string &label) const
   {
