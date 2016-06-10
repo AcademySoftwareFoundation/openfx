@@ -640,6 +640,21 @@ namespace OFX {
     _clipProps.propSetString(kOfxPropLongLabel, longLabel, false);
   }
 
+#ifdef OFX_EXTENSIONS_NATRON
+  /** @brief set the secretness of the param, defaults to false */
+  void ClipDescriptor::setIsSecret(bool v)
+  {
+    _clipProps.propSetInt(kOfxParamPropSecret, v);
+  }
+
+  /** @brief set the clip hint */
+  void 
+    ClipDescriptor::setHint(const std::string &v)
+  {
+    _clipProps.propSetString(kOfxParamPropHint, v, false);
+  }
+#endif
+
   /** @brief set how fielded images are extracted from the clip defaults to eFieldExtractDoubled */
   void ClipDescriptor::setFieldExtraction(FieldExtractionEnum v)
   {
@@ -1489,7 +1504,13 @@ namespace OFX {
     _clipProps.propSetString(kOfxPropLongLabel, longLabel, false);
   }
 
-  /** @brief set the param hint */
+  /** @brief set the secretness of the param, defaults to false */
+  void Clip::setIsSecret(bool v)
+  {
+    _clipProps.propSetInt(kOfxParamPropSecret, v);
+  }
+
+  /** @brief set the clip hint */
   void 
     Clip::setHint(const std::string &v)
   {

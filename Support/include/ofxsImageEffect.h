@@ -502,6 +502,14 @@ namespace OFX {
     /** @brief set the label properties */
     void setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel);
 
+#ifdef OFX_EXTENSIONS_NATRON
+    /** @brief set the secretness of the clip, defaults to false */
+    void setIsSecret(bool v);
+
+    /** @brief set the clip hint */
+    void setHint(const std::string &hint);
+#endif
+
     /** @brief set how fielded images are extracted from the clip defaults to eFieldExtractDoubled */
     void setFieldExtraction(FieldExtractionEnum v);
 
@@ -915,6 +923,9 @@ namespace OFX {
 
     /** @brief set the label properties in a clip */
     void setLabels(const std::string &label, const std::string &shortLabel, const std::string &longLabel);
+
+    /** @brief set the secretness of the clip, defaults to false */
+    void setIsSecret(bool v);
 
     /** @brief set the clip hint */
     void setHint(const std::string &hint);
