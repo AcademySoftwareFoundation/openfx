@@ -231,6 +231,9 @@ namespace OFX {
         /// callback which should update hint
         virtual void setHint();
 
+        /// callback which should set default value
+        virtual void setDefault();
+
         /// callback which should set range
         virtual void setRange();
 

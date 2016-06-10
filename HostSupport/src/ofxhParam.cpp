@@ -659,6 +659,7 @@ namespace OFX {
         _properties.addNotifyHook(kOfxParamPropEnabled, this);
         _properties.addNotifyHook(kOfxParamPropSecret, this);
         _properties.addNotifyHook(kOfxPropLabel, this);
+        _properties.addNotifyHook(kOfxParamPropDefault, this);
         _properties.addNotifyHook(kOfxParamPropHint, this);
         _properties.addNotifyHook(kOfxParamPropMin, this);
         _properties.addNotifyHook(kOfxParamPropMax, this);
@@ -687,6 +688,11 @@ namespace OFX {
       {
       }
       
+      /// callback which should set default value
+      void Instance::setDefault()
+      {
+      }
+
       /// callback which should set range
       void Instance::setRange()
       {
@@ -744,22 +750,25 @@ namespace OFX {
         if (name == kOfxPropLabel) {
           setLabel();
         }
-        if (name == kOfxParamPropHint) {
+        else if (name == kOfxParamPropHint) {
           setHint();
         }
-        if (name == kOfxParamPropEnabled) {
+        else if (name == kOfxParamPropEnabled) {
           setEnabled();
         }
-        if (name == kOfxParamPropSecret) {
+        else if (name == kOfxParamPropSecret) {
           setSecret();
         }
-        if (name == kOfxParamPropMin || name == kOfxParamPropMax) {
+        else if (name == kOfxParamPropDefault) {
+          setDefault();
+        }
+        else if (name == kOfxParamPropMin || name == kOfxParamPropMax) {
           setRange();
         }
-        if (name == kOfxParamPropDisplayMin || name == kOfxParamPropDisplayMax) {
+        else if (name == kOfxParamPropDisplayMin || name == kOfxParamPropDisplayMax) {
           setDisplayRange();
         }
-        if (name == kOfxParamPropEvaluateOnChange) {
+        else if (name == kOfxParamPropEvaluateOnChange) {
           setEvaluateOnChange();
         }
       }
