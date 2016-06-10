@@ -63,6 +63,7 @@ namespace OFX {
         { kOfxPropName, Property::eString, 1, true, "SET ME ON CONSTRUCTION" },
         { kOfxPropLabel, Property::eString, 1, false, "" } ,
 #ifdef OFX_EXTENSIONS_NATRON
+        { kOfxParamPropSecret, Property::eInt, 1, false, "0"},
         { kOfxParamPropHint, Property::eString, 1, false, "" } ,
 #endif
         { kOfxPropShortLabel, Property::eString, 1, false, "" },
@@ -266,7 +267,29 @@ namespace OFX {
 
           i++;
         }
+#     ifdef OFX_EXTENSIONS_NATRON
+        _properties.addNotifyHook(kOfxPropLabel, this);
+        _properties.addNotifyHook(kOfxParamPropSecret, this);
+        _properties.addNotifyHook(kOfxParamPropHint, this);
+#     endif
       }
+
+#     ifdef OFX_EXTENSIONS_NATRON
+      // callback which should update label
+      void ClipInstance::setLabel()
+      {
+      }
+      
+      // callback which should set secret state as appropriate
+      void ClipInstance::setSecret()
+      {
+      }
+      
+      // callback which should update hint
+      void ClipInstance::setHint()
+      {
+      }
+#     endif
 
       // do nothing
       int ClipInstance::getDimension(const std::string &name) const OFX_EXCEPTION_SPEC 
@@ -460,8 +483,19 @@ namespace OFX {
       }
 
       // notify override properties
-      void ClipInstance::notify(const std::string &/*name*/, bool /*isSingle*/, int /*indexOrN*/)  OFX_EXCEPTION_SPEC
+      void ClipInstance::notify(const std::string &name, bool /*isSingle*/, int /*indexOrN*/)  OFX_EXCEPTION_SPEC
       {
+#     ifdef OFX_EXTENSIONS_NATRON
+        if (name == kOfxPropLabel) {
+          setLabel();
+        }
+        else if (name == kOfxParamPropHint) {
+          setHint();
+        }
+        else if (name == kOfxParamPropSecret) {
+          setSecret();
+        }
+#     endif
       }
 
       OfxStatus ClipInstance::instanceChangedAction(const std::string &why,

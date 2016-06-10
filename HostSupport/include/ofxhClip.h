@@ -142,7 +142,18 @@ namespace OFX {
         
       public:
         ClipInstance(ImageEffect::Instance* effectInstance, ClipDescriptor& desc);
+
+#     ifdef OFX_EXTENSIONS_NATRON
+        // callback which should set secret state as appropriate
+        virtual void setSecret();
         
+        /// callback which should update label
+        virtual void setLabel();
+
+        /// callback which should update hint
+        virtual void setHint();
+#     endif
+
         /// is the clip an output clip
         bool isOutput() const {return  _isOutput;}
 
