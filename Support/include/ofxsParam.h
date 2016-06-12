@@ -1259,6 +1259,9 @@ namespace OFX {
 
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, int v);
+
+        /** @brief delete all keys and set to default value */
+        void resetToDefault();
     };  
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -1325,7 +1328,10 @@ namespace OFX {
 
         /** @brief set the current value */
         void setValueAtTime(double t, const OfxPointI &v) {setValueAtTime(t, v.x, v.y);}
-    };  
+
+        /** @brief delete all keys and set to default value */
+        void resetToDefault();
+    };
 
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up an integer param */
@@ -1373,7 +1379,10 @@ namespace OFX {
 
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, int x, int y, int z);
-    };  
+
+        /** @brief delete all keys and set to default value */
+        void resetToDefault();
+    };
 
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Common base to all double param types */
@@ -1473,7 +1482,10 @@ namespace OFX {
 
         /** @brief integrate the param */
         double integrate(double t1, double t2) {double v; integrate(t1, t2, v); return v;}
-    };  
+
+        /** @brief delete all keys and set to default value */
+        void resetToDefault();
+    };
 
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up an doubleeger param */
@@ -1545,7 +1557,10 @@ namespace OFX {
 
         /** @brief integrate the param */
         OfxPointD integrate(double t1, double t2) {OfxPointD v; integrate(t1, t2, v.x, v.y); return v;}
-    };  
+
+        /** @brief delete all keys and set to default value */
+        void resetToDefault();
+    };
 
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up an doubleeger param */
@@ -1605,7 +1620,10 @@ namespace OFX {
 
         /** @brief integrate the param */
         Ofx3DPointD integrate(double t1, double t2) {Ofx3DPointD v; integrate(t1, t2, v.x, v.y, v.z); return v;}
-    };  
+
+        /** @brief delete all keys and set to default value */
+        void resetToDefault();
+    };
   
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up an RGB param */
@@ -1637,7 +1655,10 @@ namespace OFX {
 
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, double r, double g, double b);
-    };  
+
+        /** @brief delete all keys and set to default value */
+        void resetToDefault();
+    };
  
   
     ////////////////////////////////////////////////////////////////////////////////
@@ -1670,7 +1691,10 @@ namespace OFX {
 
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, double r, double g, double b, double a);
-    };  
+
+        /** @brief delete all keys and set to default value */
+        void resetToDefault();
+    };
 
     ////////////////////////////////////////////////////////////////////////////////
     /** @brief Wraps up a string param */
@@ -1703,6 +1727,9 @@ namespace OFX {
 
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, const std::string &v);
+
+        /** @brief delete all keys and set to default value */
+        void resetToDefault();
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -1768,6 +1795,9 @@ namespace OFX {
 
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, int v);
+
+        /** @brief delete all keys and set to default value */
+        void resetToDefault();
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -1810,6 +1840,9 @@ namespace OFX {
 
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, bool v);
+
+        /** @brief delete all keys and set to default value */
+        void resetToDefault();
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -1880,6 +1913,9 @@ namespace OFX {
 
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, const std::string &v);
+
+        /** @brief delete all keys and set to default value */
+        void resetToDefault();
     };
 
     ////////////////////////////////////////////////////////////////////////////////

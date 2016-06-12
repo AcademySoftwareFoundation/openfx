@@ -1999,6 +1999,15 @@ namespace OFX {
     throwSuiteStatusException(stat);
   }
 
+  /** @brief delete all keys and set to default value */
+  void IntParam::resetToDefault()
+  {
+    deleteAllKeys();
+    int v;
+    getDefault(v);
+    setValue(v);
+  }
+
   ////////////////////////////////////////////////////////////////////////////////
   // 2D Int params
 
@@ -2102,6 +2111,15 @@ namespace OFX {
     if(!OFX::Private::gParamSuite->paramSetValueAtTime) throwHostMissingSuiteException("paramSetValueAtTime");
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, x, y);
     throwSuiteStatusException(stat);
+  }
+
+  /** @brief delete all keys and set to default value */
+  void Int2DParam::resetToDefault()
+  {
+    deleteAllKeys();
+    int v0, v1;
+    getDefault(v0, v1);
+    setValue(v0, v1);
   }
 
 
@@ -2218,6 +2236,15 @@ namespace OFX {
     if(!OFX::Private::gParamSuite->paramSetValueAtTime) throwHostMissingSuiteException("paramSetValueAtTime");
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, x, y, z);
     throwSuiteStatusException(stat);
+  }
+
+  /** @brief delete all keys and set to default value */
+  void Int3DParam::resetToDefault()
+  {
+    deleteAllKeys();
+    int v0, v1, v2;
+    getDefault(v0, v1, v2);
+    setValue(v0, v1, v2);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -2427,6 +2454,15 @@ namespace OFX {
     throwSuiteStatusException(stat);
   }
 
+  /** @brief delete all keys and set to default value */
+  void DoubleParam::resetToDefault()
+  {
+    deleteAllKeys();
+    double v;
+    getDefault(v);
+    setValue(v);
+  }
+
   ////////////////////////////////////////////////////////////////////////////////
   // 2D Double params
 
@@ -2564,6 +2600,14 @@ namespace OFX {
     throwSuiteStatusException(stat);
   }
 
+  /** @brief delete all keys and set to default value */
+  void Double2DParam::resetToDefault()
+  {
+    deleteAllKeys();
+    double v0, v1;
+    getDefault(v0, v1);
+    setValue(v0, v1);
+  }
 
   ////////////////////////////////////////////////////////////////////////////////
   // 3D Double params
@@ -2711,6 +2755,16 @@ namespace OFX {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetIntegral(_paramHandle, t1, t2, &x, &y, &z);
     throwSuiteStatusException(stat);
   }
+
+  /** @brief delete all keys and set to default value */
+  void Double3DParam::resetToDefault()
+  {
+    deleteAllKeys();
+    double v0, v1, v2;
+    getDefault(v0, v1, v2);
+    setValue(v0, v1, v2);
+  }
+
   ////////////////////////////////////////////////////////////////////////////////
   // RGB colour param
   /** @brief hidden constructor */
@@ -2779,6 +2833,15 @@ namespace OFX {
     if(!OFX::Private::gParamSuite->paramSetValueAtTime) throwHostMissingSuiteException("paramSetValueAtTime");
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, r, g, b);
     throwSuiteStatusException(stat);
+  }
+
+  /** @brief delete all keys and set to default value */
+  void RGBParam::resetToDefault()
+  {
+    deleteAllKeys();
+    double v0, v1, v2;
+    getDefault(v0, v1, v2);
+    setValue(v0, v1, v2);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -2851,6 +2914,15 @@ namespace OFX {
     if(!OFX::Private::gParamSuite->paramSetValueAtTime) throwHostMissingSuiteException("paramSetValueAtTime");
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, r, g, b, a);
     throwSuiteStatusException(stat);
+  }
+
+  /** @brief delete all keys and set to default value */
+  void RGBAParam::resetToDefault()
+  {
+    deleteAllKeys();
+    double v0, v1, v2, v3;
+    getDefault(v0, v1, v2, v3);
+    setValue(v0, v1, v2, v3);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -2934,7 +3006,16 @@ namespace OFX {
     }
 # endif
   }
-    
+
+  /** @brief delete all keys and set to default value */
+  void StringParam::resetToDefault()
+  {
+    deleteAllKeys();
+    std::string v;
+    getDefault(v);
+    setValue(v);
+  }
+
   ////////////////////////////////////////////////////////////////////////////////
   // Wraps up a Boolean integer param */
 
@@ -2999,6 +3080,14 @@ namespace OFX {
     throwSuiteStatusException(stat);
   }
 
+  /** @brief delete all keys and set to default value */
+  void BooleanParam::resetToDefault()
+  {
+    deleteAllKeys();
+    bool v;
+    getDefault(v);
+    setValue(v);
+  }
 
   ////////////////////////////////////////////////////////////////////////////////
   // Wraps up a choice integer param */
@@ -3140,6 +3229,15 @@ namespace OFX {
 
   }
 
+  /** @brief delete all keys and set to default value */
+  void ChoiceParam::resetToDefault()
+  {
+    deleteAllKeys();
+    int v;
+    getDefault(v);
+    setValue(v);
+  }
+
 #ifdef OFX_EXTENSIONS_NATRON
     /** @brief whether the menu should be cascading, and each option contains a slash-separated path to the item, defaults to false. */
     bool ChoiceParam::getIsCascading()
@@ -3227,6 +3325,15 @@ namespace OFX {
     if(!OFX::Private::gParamSuite->paramSetValueAtTime) throwHostMissingSuiteException("paramSetValueAtTime");
     OfxStatus stat = OFX::Private::gParamSuite->paramSetValueAtTime(_paramHandle, t, v.c_str());
     throwSuiteStatusException(stat);
+  }
+
+  /** @brief delete all keys and set to default value */
+  void CustomParam::resetToDefault()
+  {
+    deleteAllKeys();
+    std::string v;
+    getDefault(v);
+    setValue(v);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
