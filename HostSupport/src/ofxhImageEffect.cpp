@@ -3930,6 +3930,7 @@ namespace OFX {
         { kOfxPropHostOSHandle, Property::ePointer, 1, true, NULL },
 #     ifdef OFX_SUPPORTS_PARAMETRIC
         { kOfxParamHostPropSupportsParametricAnimation, Property::eInt, 1, true, "0"},
+        { kOfxHostPropSupportedParametricInterpolations, Property::eString, 0, true, ""},
 #     endif
         { kOfxParamHostPropMaxParameters, Property::eInt, 1, true, "-1" },
         { kOfxParamHostPropMaxPages, Property::eInt, 1, true, "0" },

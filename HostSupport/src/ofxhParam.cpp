@@ -354,10 +354,11 @@ namespace OFX {
 
 #       ifdef OFX_SUPPORTS_PARAMETRIC
         static const Property::PropSpec allParametric[] = {
-          { kOfxParamPropParametricDimension,         Property::eInt,     1,  false, "1" },
-          { kOfxParamPropParametricUIColour,          Property::eDouble,  0,  false, ""  },
-          { kOfxParamPropParametricInteractBackground,Property::ePointer, 1,  false, 0   },
-          { kOfxParamPropParametricRange,             Property::eDouble,  2,  false, "0" },
+          { kOfxParamPropParametricDimension,                       Property::eInt,     1,  false, "1" },
+          { kOfxParamPropParametricUIColour,                        Property::eDouble,  0,  false, ""  },
+          { kOfxParamPropParametricInteractBackground,              Property::ePointer, 1,  false, 0   },
+          { kOfxParamPropParametricRange,                           Property::eDouble,  2,  false, "0" },
+          { kOfxParamParametricInterpolationCustomInterpCallbackV1, Property::ePointer, 1,  false, 0  },
           Property::propSpecEnd
         };
 #       endif
