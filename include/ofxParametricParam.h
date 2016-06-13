@@ -300,7 +300,7 @@ typedef struct OfxParametricParameterSuiteV1 {
                                                      int   curveIndex);
  } OfxParametricParameterSuiteV1;
 
-#ifdef OFX_EXTENSIONS_NATRON
+#ifdef OFX_SUPPORTS_PARAMETRIC_V2
 /** @brief The version 2 of the suite adds support for derivatives on control points. Each control point
  has a left and right derivative which are computed by the host given an interpolation mode set on the control point.
  The interpolation mode is valid for a control point up to another. The first control point left derivative
@@ -613,7 +613,7 @@ typedef struct OfxParametricParameterSuiteV2 {
   OfxStatus (*parametricParamDeleteAllControlPoints)(OfxParamHandle param,
                                                      int   curveIndex);
 } OfxParametricParameterSuiteV2;
-#endif // OFX_EXTENSIONS_NATRON
+#endif // OFX_SUPPORTS_PARAMETRIC_V2
 
 #ifdef __cplusplus
 }

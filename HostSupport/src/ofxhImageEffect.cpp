@@ -3930,7 +3930,7 @@ namespace OFX {
         { kOfxPropHostOSHandle, Property::ePointer, 1, true, NULL },
 #     ifdef OFX_SUPPORTS_PARAMETRIC
         { kOfxParamHostPropSupportsParametricAnimation, Property::eInt, 1, true, "0"},
-#      ifdef OFX_EXTRENSIONS_NATRON
+#      ifdef OFX_SUPPORTS_PARAMETRIC_V2
         { kOfxHostPropSupportedParametricInterpolations, Property::eString, 0, true, ""},
 #      endif
 #     endif
