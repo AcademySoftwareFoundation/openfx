@@ -358,7 +358,9 @@ namespace OFX {
           { kOfxParamPropParametricUIColour,                        Property::eDouble,  0,  false, ""  },
           { kOfxParamPropParametricInteractBackground,              Property::ePointer, 1,  false, 0   },
           { kOfxParamPropParametricRange,                           Property::eDouble,  2,  false, "0" },
+#       ifdef OFX_SUPPORTS_PARAMETRIC_V2
           { kOfxParamParametricInterpolationCustomInterpCallbackV1, Property::ePointer, 1,  false, 0  },
+#       endif
           Property::propSpecEnd
         };
 #       endif
