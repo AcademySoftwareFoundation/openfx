@@ -828,6 +828,20 @@ namespace OFX {
         return _children;
       }
 
+      /// callback which should set open state
+      void GroupInstance::setOpen()
+      {
+      }
+      
+      /// overridden from Instance
+      void GroupInstance::notify(const std::string &name, bool single, int num) OFX_EXCEPTION_SPEC
+      {
+        Instance::notify(name, single, num);
+        if (name == kOfxParamPropGroupOpen) {
+          setOpen();
+        }
+      }
+
       //
       // Page Instance
       //

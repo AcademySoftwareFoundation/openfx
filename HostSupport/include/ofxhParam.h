@@ -291,6 +291,12 @@ namespace OFX {
 
         void setChildren(std::vector<Param::Instance*> children);
         const std::vector<Param::Instance*> &getChildren() const;
+
+        /// callback which should update open state
+        virtual void setOpen();
+
+        /// overridden from Property::NotifyHook
+        virtual void notify(const std::string &name, bool single, int num) OFX_EXCEPTION_SPEC;
       };
 
       class PageInstance : public Instance {

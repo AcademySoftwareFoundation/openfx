@@ -1859,8 +1859,10 @@ namespace OFX {
         // so it can make one
         friend class ParamSet;
     public :
-        /** @brief whether the initial state of a group is open or closed in a hierarchical layout, defaults to true */
+        /** @brief check whether the group is open or closed in a hierarchical layout, defaults to true */
         bool getIsOpen();
+        /** @brief whether the group is open or closed in a hierarchical layout */
+        void setOpen(const bool v);
     };
 
     ////////////////////////////////////////////////////////////////////////////////

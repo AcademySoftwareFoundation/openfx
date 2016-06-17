@@ -3344,11 +3344,17 @@ namespace OFX {
   {
   }
 
-  /** @brief whether the initial state of a group is open or closed in a hierarchical layout, defaults to true */
+  /** @brief whether the group is open or closed in a hierarchical layout */
   bool GroupParam::getIsOpen()
   {
-    bool v = _paramProps.propGetInt(kOfxParamPropGroupOpen) != 0;
+    bool v = _paramProps.propGetInt(kOfxParamPropGroupOpen, false) != 0; // introduced in OFX 1.2
     return v;
+  }
+
+  /** @brief whether the group is open or closed in a hierarchical layout, defaults to true */
+  void GroupParam::setOpen(const bool v)
+  {
+    _paramProps.propSetInt(kOfxParamPropGroupOpen, v, false); // introduced in OFX 1.2
   }
 
   ////////////////////////////////////////////////////////////////////////////////
