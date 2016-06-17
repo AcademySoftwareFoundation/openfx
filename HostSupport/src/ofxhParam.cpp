@@ -813,6 +813,17 @@ namespace OFX {
         return kOfxStatErrMissingHostFeature; 
       }
 
+      //
+      // GroupInstance
+      //
+
+      /// make a parameter, with the given type and name
+      GroupInstance::GroupInstance(Descriptor& descriptor, Param::SetInstance* instance)
+        : Instance(descriptor,instance)
+      {
+        _properties.addNotifyHook(kOfxParamPropGroupOpen, this);
+      }
+
       void GroupInstance::setChildren(std::vector<Param::Instance*> children)
       {
         _children = children;

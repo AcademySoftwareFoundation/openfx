@@ -287,7 +287,7 @@ namespace OFX {
       protected:
         std::vector<Param::Instance*> _children;
       public:
-        GroupInstance(Descriptor& descriptor, Param::SetInstance* instance = 0) : Instance(descriptor,instance) {}
+        GroupInstance(Descriptor& descriptor, Param::SetInstance* instance = 0);
 
         void setChildren(std::vector<Param::Instance*> children);
         const std::vector<Param::Instance*> &getChildren() const;
