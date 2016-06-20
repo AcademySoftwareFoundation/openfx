@@ -319,6 +319,25 @@ namespace OFX {
 
         /*Indicates if the parameter description is written in markdown or plain-text otherwise */
         void setDescriptionIsMarkdown(bool markdown);
+
+        /** @brief Layout hint for the host viewport
+
+         @param layoutHint  @see kOfxParamPropLayoutHint
+         eLayoutHintNormal  - for a new line after the parameter (default)
+         eLayoutHintDivider - for a separator between this parameter and the one to follow
+         eLayoutHintNoNewLine - for no new line, continue the next parameter on the same horizontal level
+
+         @param padWidth @see kOfxParamPropLayoutPadWidth
+         It tells the host how much space (in pixels) to leave between the current parameter and the next parameter in
+         horizontal layouts. A value of 0 (default) corresponds to stretchable space.
+        */
+        void setInViewportLayoutHint(const ELayoutHint layoutHint, int padWidth = 0);
+
+        /*Set the label of the parameter that should be displayed on the host viewport*/
+        void setInViewportLabel(const std::string& label);
+
+        /*Set whether the parameter should be secret or not in the host viewport. This is only relevant if the parameter has been added to the kNatronOfxImageEffectPropInViewerContextParamsOrder property on the image effect descriptor.*/
+        void setInViewportIsSecret(bool secret);
 #endif
         
         bool getHostHasNativeOverlayHandle() const;
@@ -713,6 +732,18 @@ namespace OFX {
     public :
         /** @brief set the default value */
         void setDefault(bool v);
+
+#ifdef OFX_EXTENSIONS_NATRON
+      /*If called, the parameter will be defined as an action in the host viewport toolbar. The parameter should be added to a group on which the property kNatronOfxParamPropInViewerContextIsInToolbar was set to 1 */
+        void setAsInViewportToolbuttonAction();
+
+      /*If called, the boolean parameter will be represented as a toggable button instead of a checkbox*/
+        void setAsToggableButton();
+
+      /*If called, the host can add an entry in the shortcut editor for this parameter when the user is using the viewport.
+       The default value for the shortcut may be specified on the ImageEffectDescriptor by calling the function setDefaultParamInViewportShortcut()*/
+        void setInViewportCanHaveShortcut();
+#endif
     };
   
     ////////////////////////////////////////////////////////////////////////////////
@@ -774,6 +805,18 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
         void setAsTab();
 #endif
+
+#ifdef OFX_EXTENSIONS_NATRON
+      /*tells if a group parameter can be displayed as a dialog by the host when its kOfxParamPropGroupOpen
+       property is set to 1.*/
+        void setAsDialog();
+
+        /*If called, the group will be defined as a Toolbutton in the host viewport toolbar.
+         @param canHaveShortcut If true, the host can add an entry in the shortcut editor for this toolbutton when the user is using the viewport.
+         The default value for the shortcut may be specified on the ImageEffectDescriptor by calling the function setDefaultParamInViewportShortcut()*/
+        void setAsInViewportToolbutton(bool canHaveShortcut);
+
+#endif
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -799,6 +842,11 @@ namespace OFX {
 
         /** @brief dummy page positioning parameter to be passed to @ref OFX::PageParamDescriptor::addChild */
         static DummyParamDescriptor gSkipColumn;
+
+#ifdef OFX_EXTENSIONS_NATRON
+      /*If called, the page will be defined as a Toolbar in the host viewport.*/
+      void setAsInViewportToolbar();
+#endif
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -815,6 +863,12 @@ namespace OFX {
         // so it can make one
         friend class ParamSetDescriptor;
     public :
+
+#ifdef OFX_EXTENSIONS_NATRON
+      /*If called, the host can add an entry in the shortcut editor for this parameter when the user is using the viewport.
+       The default value for the shortcut may be specified on the ImageEffectDescriptor by calling the function setDefaultParamInViewportShortcut()*/
+      void setInViewportCanHaveShortcut();
+#endif
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -1147,7 +1201,15 @@ namespace OFX {
         std::string getIcon(bool pngFormat) const;
         
         bool getHostHasNativeOverlayHandle() const;
-        
+
+#ifdef OFX_EXTENSIONS_NATRON
+      /*Set the label of the parameter that should be displayed on the host viewport*/
+      void setInViewportLabel(const std::string& label);
+
+      /*Set whether the parameter should be secret or not in the host viewport. This is only relevant if the parameter has been added to the kNatronOfxImageEffectPropInViewerContextParamsOrder property on the image effect descriptor.*/
+      void setInViewportIsSecret(bool secret);
+#endif
+
     };
   
     ////////////////////////////////////////////////////////////////////////////////

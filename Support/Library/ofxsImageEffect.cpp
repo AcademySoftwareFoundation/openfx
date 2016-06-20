@@ -1114,6 +1114,33 @@ namespace OFX {
   {
     _effectProps.propSetInt(kNatronOfxPropDescriptionIsMarkdown, (int)markdown, 0, false);
   }
+
+  /*The current selection rectangle drawn by the user on the host viewport.
+   This property is refreshed whenever calling the kOfxActionInstanceChanged action for the parameter kNatronOfxParamSelectionRectangleState to let the plug-in a change to correctly synchronized its selection.
+   */
+  void ImageEffectDescriptor::getSelectionRectangle(double& left, double& bottom, double& right, double& top)
+  {
+    left = _effectProps.propGetInt(kNatronOfxImageEffectSelectionRectangle, 0);
+    bottom = _effectProps.propGetInt(kNatronOfxImageEffectSelectionRectangle, 1);
+    right = _effectProps.propGetInt(kNatronOfxImageEffectSelectionRectangle, 2);
+    top = _effectProps.propGetInt(kNatronOfxImageEffectSelectionRectangle, 3);
+  }
+
+  void ImageEffectDescriptor::addInViewportParam(const std::string& paramName)
+  {
+    int nDims = _effectProps.propGetDimension(kNatronOfxImageEffectPropInViewerContextParamsOrder);
+    _effectProps.propSetString(kNatronOfxImageEffectPropInViewerContextParamsOrder, paramName, nDims);
+  }
+
+  void ImageEffectDescriptor::setDefaultParamInViewportShortcut(const std::string& paramName, int symbolKey, ShortcutModifierEnum modifiers)
+  {
+    int nDims = _effectProps.propGetDimension(kNatronOfxImageEffectPropInViewerContextDefaultShortcuts);
+    _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutSymbol, symbolKey, nDims);
+    _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutHasControlModifier, (int)(modifiers & eShortcutModifierCtrl), nDims);
+    _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutHasShiftModifier, (int)(modifiers & eShortcutModifierShift), nDims);
+    _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutHasAltModifier, (int)(modifiers & eShortcutModifierAlt), nDims);
+    _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutHasMetaModifier, (int)(modifiers & eShortcutModifierMeta), nDims);
+  }
 #endif
 
 #ifdef OFX_EXTENSIONS_VEGAS

@@ -481,7 +481,7 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
          2 meaning that the selection is finilized by the user (i.e: during pen up)
     The property kNatronOfxImageEffectSelectionRectangle will be updated prior to calling the kOfxActionInstanceChanged action for this parameter by the host, indicating the region covered by the selection rectangle. 
 
- 8) The host application cursor can be controled by the plug-in via a secret String parameter with the name kNatronOfxParamCursorName. If this parameter is found, the host should display a cursor depending on the value of this parameter.  The value of the parameter should be the name of the cursor. Several default cursor can be made available by the host as advertised by the kNatronOfxImageEffectPropDefaultCursors property.
+ 8) The host application cursor can be controled by the plug-in via a secret String parameter with the name kNatronOfxParamCursorName. If this parameter is found, the host should display a cursor depending on the value of this parameter.  The value of the parameter should be the name of the cursor. Several default cursor can be made available by the host as advertised by the kNatronOfxImageEffectPropDefaultCursors property. The plug-in may also embed custom cursors as PNG files located in the Resources directory of the plug-in bundle. To specify one the image in the plug-in bundle as an icon, you may set the value of this parameter to the filename of the image without any leading path. This is up to the host to figure out the path to the plug-in bundle Resources directory.
      Whenever an event is sent to overlay interacts (PenDown, PenMotion, PenUp, KeyDown, KeyUp, KeyRepeat, GainFocus, LoseFocus, the OFX Host should set the cursor to the one of the first interact which catches the event by returning kOfxStatOK to the corresponding action. If no overlay interact returns kOfxStatOK, the cursor should be set to the default cursor.
  
  9) It may be useful to show a dialog to a user to request a few informations before doing a task such as an analysis.
@@ -562,10 +562,10 @@ property is set to 1.
 /** 
  string property indicating for a host, which are the default cursors provided to the plug-in and for a plug-in which are the cursor that it provides a drawing for.
  - Type - string x N
- - Property Set - plugin parameter descriptor (read/write) and instance (read only) or  host descriptor (read only)
+ - Property Set -  host descriptor (read only)
  - Default - kNatronOfxDefaultCursor
- - Valid Values: For a host, any of the cursor defined below by the properties kNatronOfx*Cursor 
-    For a plug-in, any cursor defined by the properties kNatronOfx*Cursor, plus any filename of a png image file distributed in the plug-in resource bundle.
+ - Valid Values: Any of the cursor defined below by the properties kNatronOfx*Cursor
+    For a plug-in, any cursor defined by the properties kNatronOfx*Cursor
  
  The special value of kNatronOfxDefaultCursor means that the host should keep the default cursor.
  The special value of kNatronOfxBlankCursor means that the host should not draw any cursor at all.

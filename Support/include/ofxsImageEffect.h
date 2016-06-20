@@ -256,6 +256,19 @@ namespace OFX {
     eNativeOriginCenter
   };
 
+#ifdef OFX_EXTENSIONS_NATRON
+
+  enum ShortcutModifierEnum
+  {
+    eShortcutModifierNone = 0x0,
+    eShortcutModifierShift = 0x1,
+    eShortcutModifierCtrl = 0x2,
+    eShortcutModifierAlt = 0x4,
+    eShortcutModifierMeta = 0x8,
+  };
+
+#endif
+
   /** @brief turns a field string into and enum */
   FieldEnum mapStrToFieldEnum(const std::string &str)  throw(std::invalid_argument);
 
@@ -704,6 +717,17 @@ namespace OFX {
 
       /*Indicates if the plug-in description is written in markdown or plain-text otherwise */
       void setDescriptionIsMarkdown(bool markdown);
+
+      /*The current selection rectangle drawn by the user on the host viewport.
+       This property is refreshed whenever calling the kOfxActionInstanceChanged action for the parameter kNatronOfxParamSelectionRectangleState to let the plug-in a change to correctly synchronized its selection.
+       */
+      void getSelectionRectangle(double& left, double& bottom, double& right, double& top);
+
+      /*Add a parameter that will be visible in a toolbar in the viewport of the host application.*/
+      void addInViewportParam(const std::string& paramName);
+
+      /*Add a shortcut for the given parameter and set its default value. The host could then display this shortcut in an editor*/
+      void setDefaultParamInViewportShortcut(const std::string& paramName, int symbolKey, ShortcutModifierEnum modifiers);
 #endif
 
     /** @brief Create a clip, only callable from describe in context

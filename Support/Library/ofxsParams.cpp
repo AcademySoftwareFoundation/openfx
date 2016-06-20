@@ -344,6 +344,27 @@ namespace OFX {
   {
     _paramProps.propSetInt(kNatronOfxPropDescriptionIsMarkdown, (int)markdown, 0, false);
   }
+
+  void
+    ParamDescriptor::setInViewportLayoutHint(const ELayoutHint layoutHint, int padWidth)
+  {
+    _paramProps.propSetInt(kNatronOfxParamPropInViewerContextLayoutHint, static_cast<int>(layoutHint), false);
+    if (layoutHint == eLayoutHintNoNewLine) {
+      _paramProps.propSetInt(kNatronOfxParamPropInViewerContextLayoutPadWidth, padWidth, false);
+    }
+  }
+
+  void
+    ParamDescriptor::setInViewportLabel(const std::string& label)
+  {
+    _paramProps.propSetString(kNatronOfxParamPropInViewerContextLabel, label, 0);
+  }
+
+  void
+    ParamDescriptor::setInViewportIsSecret(bool secret)
+  {
+    _paramProps.propSetInt(kNatronOfxParamPropInViewerContextSecret, (int)secret);
+  }
 #endif
 
   /** @brief set the group param that is the parent of this one, default is to be ungrouped at the root level */
@@ -1013,6 +1034,26 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropDefault, int(v));
   }
 
+#ifdef OFX_EXTENSIONS_NATRON
+  /*If called, the parameter will be defined as an action in the host viewport toolbar. The parameter should be added to a group on which the property kNatronOfxParamPropInViewerContextIsInToolbar was set to 1 */
+  void BooleanParamDescriptor::setAsInViewportToolbuttonAction()
+  {
+    _paramProps.propSetInt(kNatronOfxParamPropInViewerContextIsInToolbar, 1);
+  }
+
+  void BooleanParamDescriptor::setAsToggableButton()
+  {
+    _paramProps.propSetInt(kNatronOfxBooleanParamPropIsToggableButton, 1);
+  }
+
+  /*If called, the host can add an entry in the shortcut editor for this parameter when the user is using the viewport.
+   The default value for the shortcut may be specified on the ImageEffectDescriptor by calling the function setDefaultParamInViewportShortcut()*/
+  void BooleanParamDescriptor::setInViewportCanHaveShortcut()
+  {
+    _paramProps.propSetInt(kNatronOfxParamPropInViewerContextCanHaveShortcut, 1);
+  }
+
+#endif
   ////////////////////////////////////////////////////////////////////////////////
   // choice param descriptor
 
@@ -1179,6 +1220,19 @@ namespace OFX {
   }
 #endif
 
+#ifdef OFX_EXTENSIONS_NATRON
+  void GroupParamDescriptor::setAsDialog()
+  {
+    _paramProps.propSetInt(kNatronOfxGroupParamPropIsDialog, 1, false);
+  }
+
+  void
+    GroupParamDescriptor::setAsInViewportToolbutton(bool canHaveShortcut)
+  {
+    _paramProps.propSetInt(kNatronOfxParamPropInViewerContextIsInToolbar, 1, false);
+    _paramProps.propSetInt(kNatronOfxParamPropInViewerContextCanHaveShortcut, (int)canHaveShortcut, false);
+  }
+#endif
   ////////////////////////////////////////////////////////////////////////////////
   // page param descriptor
 
@@ -1187,6 +1241,14 @@ namespace OFX {
     : ParamDescriptor(name, ePageParam, props)
   {
   }
+
+#ifdef OFX_EXTENSIONS_NATRON
+
+  void PageParamDescriptor::setAsInViewportToolbar()
+  {
+    _paramProps.propSetInt(kNatronOfxParamPropInViewerContextIsInToolbar, 1, 0);
+  }
+#endif
 
   /** @brief adds a child parameter. Note the two existing pseudo params, gColumnSkip  and gRowSkip */
   void PageParamDescriptor::addChild(const ParamDescriptor &p)
@@ -1203,6 +1265,15 @@ namespace OFX {
     : ParamDescriptor(name, ePushButtonParam, props)
   {
   }
+
+#ifdef OFX_EXTENSIONS_NATRON
+  /*If called, the host can add an entry in the shortcut editor for this parameter when the user is using the viewport.
+   The default value for the shortcut may be specified on the ImageEffectDescriptor by calling the function setDefaultParamInViewportShortcut()*/
+  void PushButtonParamDescriptor::setInViewportCanHaveShortcut()
+  {
+    _paramProps.propSetInt(kNatronOfxParamPropInViewerContextCanHaveShortcut, 1, 0);
+  }
+#endif
 
   ////////////////////////////////////////////////////////////////////////////////
   // parametric param descriptor
@@ -1749,6 +1820,21 @@ namespace OFX {
     bool v = _paramProps.propGetInt(kOfxParamPropHasHostOverlayHandle, 0, false) != 0; // OFX 1.2
     return v;
   }
+
+#ifdef OFX_EXTENSIONS_NATRON
+  /*Set the label of the parameter that should be displayed on the host viewport*/
+  void Param::setInViewportLabel(const std::string& label)
+  {
+    _paramProps.propSetString(kNatronOfxParamPropInViewerContextLabel, label, false);
+  }
+
+  /*Set whether the parameter should be secret or not in the host viewport. This is only relevant if the parameter has been added to the kNatronOfxImageEffectPropInViewerContextParamsOrder property on the image effect descriptor.*/
+  void Param::setInViewportIsSecret(bool secret)
+  {
+    _paramProps.propSetInt(kNatronOfxParamPropInViewerContextSecret, (int)secret, false);
+  }
+
+#endif
 
   ////////////////////////////////////////////////////////////////////////////////
   /** @brief Wraps up a value holding param */
