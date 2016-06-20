@@ -316,6 +316,9 @@ namespace OFX {
          unique representation for each instance. See descripton of kNatronOfxImageEffectContextTracker for more details
          on multiple instances and difference between shared and specific parameters.*/
         void setInstanceSpecific(bool isSpecific);
+
+        /*Indicates if the parameter description is written in markdown or plain-text otherwise */
+        void setDescriptionIsMarkdown(bool markdown);
 #endif
         
         bool getHostHasNativeOverlayHandle() const;

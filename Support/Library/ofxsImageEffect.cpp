@@ -1108,6 +1108,12 @@ namespace OFX {
   {
     _effectProps.propSetInt(kNatronOfxImageEffectPropHostMixing, (int)enabled, 0, false);
   }
+
+  /*Indicates if the plug-in description is written in markdown or plain-text otherwise */
+  void ImageEffectDescriptor::setDescriptionIsMarkdown(bool markdown)
+  {
+    _effectProps.propSetInt(kNatronOfxPropDescriptionIsMarkdown, (int)markdown, 0, false);
+  }
 #endif
 
 #ifdef OFX_EXTENSIONS_VEGAS

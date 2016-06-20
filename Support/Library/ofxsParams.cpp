@@ -337,6 +337,13 @@ namespace OFX {
   {
     _paramProps.propSetInt(kNatronOfxParamPropIsInstanceSpecific, (int)isSpecific, false);
   }
+
+  /*Indicates if the plug-in description is written in markdown or plain-text otherwise */
+  void
+    ParamDescriptor::setDescriptionIsMarkdown(bool markdown)
+  {
+    _paramProps.propSetInt(kNatronOfxPropDescriptionIsMarkdown, (int)markdown, 0, false);
+  }
 #endif
 
   /** @brief set the group param that is the parent of this one, default is to be ungrouped at the root level */

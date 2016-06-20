@@ -701,6 +701,9 @@ namespace OFX {
       /*Indicates if the host may add a "Mix" double parameter that will dissolve
        between the source image at 0 and the full effect at 1.*/
       void setHostMixingEnabled(bool enabled);
+
+      /*Indicates if the plug-in description is written in markdown or plain-text otherwise */
+      void setDescriptionIsMarkdown(bool markdown);
 #endif
 
     /** @brief Create a clip, only callable from describe in context
