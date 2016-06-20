@@ -489,11 +489,12 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 
  10) If the property kNatronOfxPropDescriptionIsMarkdown is set to 1 on a parameter descriptor or on an image effect descriptor, then their corresponding description (kOfxParamPropHint for a parameter descriptor and kOfxPropPluginDescription for an image effect descriptor) may be interpreted as markdown by the host.
 
- 11) To support undo/redo, the plug-in must define a string parameter named kNatronOfxParamUndoRedoText. The parameter should have the following properties settings:
+ 11) To support undo/redo, the plug-in must define a string parameter named kNatronOfxParamUndoRedoText and a boolean parameter named kNatronOfxParamUndoRedoState. The parameters should have the following properties settings:
      - kOfxParamPropEvaluateOnChange = 0
      - kOfxParamPropPersistant = 0
      - kOfxParamPropSecret = 1
     The string parameter value represents the text that should be displayed by the host in the undo/redo action of the Edit menu.
+    The boolean parameter value is used to notify the plug-in about undo/Redo stack changes. If the value is set to false, the user just pressed Undo, otherwise he/she pressed Redo.
     To notify the host that a new action has been pushed, call paramSetValue on the string parameter with the name of the action that was done. The host notifies the plug-in in-turn that an action has been redone/undone by calling the  kOfxActionInstanceChanged action with kOfxPropChangeReason = kOfxChangeUserEdited.
     It is up to the plug-in to maintain the actual undo/redo stack of actions. Also note the following:
     - The first time an action is push, the host should not call kOfxActionInstanceChanged on the plug-in since the action has already been redone
@@ -531,6 +532,11 @@ property is set to 1.
  The name of the string parameter that should be used to implement host undo/redo. See 11) of the extension description.
  */
 #define kNatronOfxParamUndoRedoText "NatronOfxParamUndoRedoText"
+
+/**
+ The name of the boolean parameter that should be used to implement host undo/redo. See 11) of the extension description.
+ */
+#define kNatronOfxParamUndoRedoState "NatronOfxParamUndoRedoState"
 
 /**
  The name of the choice parameter that should be used to implement host right click menus. See 5) of the extension description.
