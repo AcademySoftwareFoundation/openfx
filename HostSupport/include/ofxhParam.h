@@ -243,6 +243,14 @@ namespace OFX {
         /// callback which should set evaluate on change
         virtual void setEvaluateOnChange();
 
+#ifdef OFX_EXTENSIONS_NATRON
+        /// callback which should update the label on the viewport
+        virtual void setInViewportLabel();
+
+        /// callback which should set secret state in the viewport as appropriate
+        virtual void setInViewportSecret();
+#endif
+
         // va list calls below turn the var args (oh what a mistake)
         // suite functions into virtual function calls on instances
         // they are not to be overridden by host implementors by
@@ -695,7 +703,12 @@ namespace OFX {
             return 0;
         }
 
-        /// The inheriting plugin instance needs to set this up to deal with 
+#ifdef OFX_EXTENSIONS_NATRON
+        // get the list of parameters (name) in the order they should appear in the host viewport
+        virtual bool isInViewportParam(const std::string& paramName) const;
+#endif
+
+        /// The inheriting plugin instance needs to set this up to deal with
         /// plug-ins changing their own values.
         virtual void paramChangedByPlugin(Param::Instance *param) = 0;
 

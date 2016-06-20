@@ -879,6 +879,11 @@ namespace OFX {
         /// The string is owned by the host and must be valid throughout the calling action
         virtual OfxStatus getViewName(int viewIndex, const char** name) const = 0;
 #endif
+
+#ifdef OFX_EXTENSIONS_NATRON
+        // get the list of parameters (name) in the order they should appear in the host viewport
+        virtual bool isInViewportParam(const std::string& paramName) const;
+#endif
       };
 
       ////////////////////////////////////////////////////////////////////////////////

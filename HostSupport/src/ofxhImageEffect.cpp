@@ -2709,6 +2709,19 @@ namespace OFX {
         return none;          
       }
 
+#ifdef OFX_EXTENSIONS_NATRON
+      bool Instance::isInViewportParam(const std::string& paramName) const
+      {
+        int nDim = getProps().getDimension(kNatronOfxImageEffectPropInViewerContextParamsOrder);
+        for (int i = 0; nDim; ++i) {
+          const std::string& p = getProps().getStringProperty(kNatronOfxImageEffectPropInViewerContextParamsOrder, i);
+          if (paramName == p) {
+            return true;
+          }
+        }
+        return false;
+      }
+#endif
 
       /// get the interact description, this will also call describe on the interact
       Interact::Descriptor &Instance::getOverlayDescriptor(int bitDepthPerComponent, bool hasAlpha)

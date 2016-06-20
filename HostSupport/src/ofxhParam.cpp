@@ -669,6 +669,13 @@ namespace OFX {
         _properties.addNotifyHook(kOfxParamPropDisplayMin, this);
         _properties.addNotifyHook(kOfxParamPropDisplayMax, this);
         _properties.addNotifyHook(kOfxParamPropEvaluateOnChange, this);
+
+#ifdef OFX_EXTENSIONS_NATRON
+        if (paramSet && paramSet->isInViewportParam(descriptor.getName())) {
+          _properties.addNotifyHook(kNatronOfxParamPropInViewerContextLabel, this);
+          _properties.addNotifyHook(kNatronOfxParamPropInViewerContextSecret, this);
+        }
+#endif
       }
 
       // callback which should set enabled state as appropriate
@@ -710,6 +717,19 @@ namespace OFX {
       void Instance::setEvaluateOnChange()
       {
       }
+
+#ifdef OFX_EXTENSION_NATRON
+      /// callback which should set secret state in the viewport as appropriate
+      void Instance::setInViewportSecret()
+      {
+      }
+
+      /// callback which should update the label on the viewport
+      void Instance::setInViewportLabel()
+      {
+      }
+
+#endif
 
       /// get a value, implemented by instances to deconstruct var args
       OfxStatus Instance::getV(va_list /*arg*/)
@@ -774,6 +794,14 @@ namespace OFX {
         else if (name == kOfxParamPropEvaluateOnChange) {
           setEvaluateOnChange();
         }
+#ifdef OFX_EXTENSIONS_NATRON
+        else if (name == kNatronOfxParamPropInViewerContextLabel) {
+          setInViewportLabel();
+        }
+        else if (name == kNatronOfxParamPropInViewerContextSecret) {
+          setInViewportSecret();
+        }
+#endif
       }
 
       // copy one parameter to another, with a range (NULL means to copy all animation)
@@ -1961,6 +1989,15 @@ namespace OFX {
       {
         return _paramList;
       }
+
+#ifdef OFX_EXTENSIONS_NATRON
+      // get the list of parameters (name) in the order they should appear in the host viewport
+      bool SetInstance::isInViewportParam(const std::string& /*paramName*/) const
+      {
+        return false;
+      }
+
+#endif
 
       OfxStatus SetInstance::addParam(const std::string& name, Instance* instance)
       {
