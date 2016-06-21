@@ -137,11 +137,11 @@ uninstall:
     ARCH = MacOS
   endif
 
-  CXXFLAGS := $(DEBUGFLAG) $(CPPFLAGS) -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include $(BITSFLAG) -fvisibility=hidden $(CXXFLAGS_ADD)
+  CXXFLAGS := $(DEBUGFLAG) $(CPPFLAGS) -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include $(BITSFLAG) -fvisibility=hidden $(CXXFLAGS_ADD) $(CXXFLAGS_EXTRA)
 
 $(OBJECTPATH)/$(PLUGINNAME).ofx: $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS))
 	mkdir -p $(OBJECTPATH)/
-	$(CXX) $^ $(LINKFLAGS) $(LDFLAGS_ADD) -o $@
+	$(CXX) $^ $(LINKFLAGS) $(LDFLAGS_ADD) $(LDFLAGS_EXTRA) -o $@
 
 $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle: $(OBJECTPATH)/$(PLUGINNAME).ofx
 	mkdir -p  $@/Contents/$(ARCH)
