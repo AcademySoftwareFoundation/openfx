@@ -1135,6 +1135,7 @@ namespace OFX {
   void ImageEffectDescriptor::setDefaultParamInViewportShortcut(const std::string& paramName, int symbolKey, ShortcutModifierEnum modifiers)
   {
     int nDims = _effectProps.propGetDimension(kNatronOfxImageEffectPropInViewerContextDefaultShortcuts);
+    _effectProps.propSetString(kNatronOfxImageEffectPropInViewerContextDefaultShortcuts, paramName, nDims);
     _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutSymbol, symbolKey, nDims);
     _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutHasControlModifier, (int)(modifiers & eShortcutModifierCtrl), nDims);
     _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutHasShiftModifier, (int)(modifiers & eShortcutModifierShift), nDims);
