@@ -116,16 +116,14 @@ namespace OFX {
         Property::Set _argProperties;
 
         /// initialise the argument properties
-        void initArgProp(OfxTime time,
+        void initArgProp(Property::Set& props,
+                         OfxTime time,
                          const OfxPointD   &renderScale
 #ifdef OFX_EXTENSIONS_NUKE
                          , int view
 #endif
-#ifdef OFX_EXTENSIONS_NATRON
-                         , const OfxRGBAColourD& colourPicker
-#endif
-                         );
-                
+        );
+
         /// set pen props in the args
         void setPenArgProps(const OfxPointD &penPos,
                             const OfxPointI &penPosViewport,
@@ -204,10 +202,18 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                      , int view
 #endif
-#ifdef OFX_EXTENSIONS_NATRON
-                                     , const OfxRGBAColourD& colorPicker
-#endif
                                      );
+
+#ifdef OFX_EXTENSIONS_NATRON
+        // Same as draw action except that the plug-in should draw something related to the color picker
+        virtual OfxStatus drawActionWithColourPicker(OfxTime time,
+                                     const OfxPointD &renderScale
+#ifdef OFX_EXTENSIONS_NUKE
+                                     , int view
+#endif
+                                     , const OfxRGBAColourD& colorPicker
+        );
+#endif
 
         // interact action - kOfxInteractActionPenMotion
         //
