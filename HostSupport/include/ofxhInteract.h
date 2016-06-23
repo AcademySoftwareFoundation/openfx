@@ -32,6 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define OFX_INTERACT_H
 
 #include "ofxOld.h" // old plugins may rely on deprecated properties being present
+#ifdef OFX_EXTENSIONS_NATRON
+#include "ofxPixels.h" // for OfxRGBAColourD
+#endif
 
 namespace OFX {
 

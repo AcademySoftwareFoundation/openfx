@@ -37,7 +37,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #ifdef OFX_EXTENSIONS_NATRON
 #include "ofxNatron.h"
-#include "ofxPixels.h"
 #endif
 
 // ofx host
