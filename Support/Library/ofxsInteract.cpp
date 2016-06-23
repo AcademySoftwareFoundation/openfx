@@ -359,6 +359,17 @@ namespace OFX {
 #endif
     backGroundColour = getBackgroundColour(props);
     pixelScale       = getPixelScale(props);
+#ifdef OFX_EXTENSIONS_NATRON
+    try {
+      imageViewportColourPicker.r = props.propGetDouble(kNatronOfxPropPickerColour, 0, true);
+      imageViewportColourPicker.g = props.propGetDouble(kNatronOfxPropPickerColour, 1, true);
+      imageViewportColourPicker.b = props.propGetDouble(kNatronOfxPropPickerColour, 2, true);
+      imageViewportColourPicker.a = props.propGetDouble(kNatronOfxPropPickerColour, 3, true);
+      hasColourPicker = true;
+    } catch (...) {
+      hasColourPicker = false;
+    }
+#endif
   }
 
   /** @brief ctor */

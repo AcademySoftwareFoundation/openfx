@@ -78,6 +78,10 @@ namespace OFX {
 #endif
     OfxPointD       pixelScale;        /**< @brief The size of a real screen pixel under the interact's canonical projection */
     OfxRGBColourD   backGroundColour;  /**< @brief The current background colour, ignore the A */
+#ifdef OFX_EXTENSIONS_NATRON
+    bool hasColourPicker; /**< @brief If true, the imageViewportColourPicker is valid and may be used*/
+    OfxRGBAColourD imageViewportColourPicker; /**< @brief The colour of the image in the host image viewer under the mouse*/
+#endif
   };
 
   /** @brief POD  to pass arguments into OFX::Interact pen actions */

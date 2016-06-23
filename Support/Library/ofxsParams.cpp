@@ -1340,10 +1340,15 @@ namespace OFX {
     }
   }
     
-  void ParametricParamDescriptor::setInteractDescriptor(ParamInteractDescriptor* desc)
+  void ParametricParamDescriptor::setInteractDescriptor(ParamInteractDescriptor* desc, bool requiresViewportColourPicker)
   {
     _interact.reset(desc);
     _paramProps.propSetPointer(kOfxParamPropParametricInteractBackground, (void*)desc->getMainEntry());
+#ifdef OFX_EXTENSIONS_NATRON
+    _paramProps.propSetInt(kNatronOfxParamPropParametricInteractColourPicking, 1, 0);
+#else
+    (void)requiresViewportColourPicker;
+#endif
     desc->setParamName(getName());
   }
 
