@@ -211,7 +211,7 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                      , int view
 #endif
-                                     , const OfxRGBAColourD& colorPicker
+                                     , const OfxRGBAColourD& colourPicker
         );
 #endif
 

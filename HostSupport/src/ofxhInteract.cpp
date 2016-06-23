@@ -377,7 +377,7 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                      , int view
 #endif
-                                     , const OfxRGBAColourD& colorPicker
+                                     , const OfxRGBAColourD& colourPicker
       )
       {
         if (time != time) {
@@ -387,11 +387,11 @@ namespace OFX {
 
         Property::Set argProperties;
         argProperties.addProperties(interactArgsStuffs);
-        static const Property::PropSpec interactColorPickerArgsStuffs[] = {
+        static const Property::PropSpec interactColourPickerArgsStuffs[] = {
           { kNatronOfxPropPickerColour, Property::eDouble, 4, false, "0.0" },
           Property::propSpecEnd
         };
-        argProperties.addProperties(interactColorPickerArgsStuffs);
+        argProperties.addProperties(interactColourPickerArgsStuffs);
 
         initArgProp(argProperties,
                     time,
@@ -401,7 +401,7 @@ namespace OFX {
 #endif
                     );
 
-        argProperties.setDoublePropertyN(kNatronOfxPropPickerColour, &colorPicker.r, 4);
+        argProperties.setDoublePropertyN(kNatronOfxPropPickerColour, &colourPicker.r, 4);
         return callEntry(kOfxInteractActionDraw, &argProperties);
       }
 #endif // #ifdef OFX_EXTENSIONS_NATRON
