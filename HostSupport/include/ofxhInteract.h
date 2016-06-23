@@ -118,6 +118,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                          , int view
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                         , const OfxRGBAColourD& colourPicker
+#endif
                          );
                 
         /// set pen props in the args
@@ -197,6 +200,9 @@ namespace OFX {
                                      const OfxPointD &renderScale
 #ifdef OFX_EXTENSIONS_NUKE
                                      , int view
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                     , const OfxRGBAColourD& colorPicker
 #endif
                                      );
 

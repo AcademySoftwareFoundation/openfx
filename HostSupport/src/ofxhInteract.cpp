@@ -35,6 +35,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nuke/fnPublicOfxExtensions.h"
 #include "nuke/fnOfxExtensions.h"
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+#include "ofxNatron.h"
+#include "ofxPixels.h"
+#endif
 
 // ofx host
 #include "ofxhBinary.h"
@@ -140,6 +144,9 @@ namespace OFX {
         { kOfxInteractPropPenPressure, Property::eDouble, 1, false, "0.0" },
         { kOfxPropKeyString, Property::eString, 1, false, "" },
         { kOfxPropKeySym, Property::eInt, 1, false, "0" },
+#ifdef OFX_EXTENSIONS_NATRON
+        { kNatronOfxPropPickerColour, Property::eDouble, 4, false, "0.0" },
+#endif
         Property::propSpecEnd
       };
 
@@ -300,6 +307,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                  , int view
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                 , const OfxRGBAColourD& colourPicker
+#endif
                                  )
       {
         if (time != time) {
@@ -316,8 +326,11 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
         _argProperties.setIntProperty(kFnOfxImageEffectPropView,view);
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+        _argProperties.setDoublePropertyN(kNatronOfxPropPickerColour, &colourPicker.r, 4);
+#endif
       }
-               
+
       void Instance::setPenArgProps(const OfxPointD &penPos,
                                     const OfxPointI &penPosViewport,
                                     double  pressure)
@@ -351,6 +364,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                      , int view
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                     , const OfxRGBAColourD& colorPicker
+#endif
                                      )
       {        
         if (time != time) {
@@ -361,6 +377,9 @@ namespace OFX {
                     renderScale
 #ifdef OFX_EXTENSIONS_NUKE
                     , view
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+                    , colorPicker
 #endif
                     );
         return callEntry(kOfxInteractActionDraw, &_argProperties);
@@ -383,6 +402,9 @@ namespace OFX {
                       renderScale
 #ifdef OFX_EXTENSIONS_NUKE
                       , view
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+                      , OfxRGBAColourD()
 #endif
                       );
         setPenArgProps(penPos, penPosViewport, pressure);
@@ -407,6 +429,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                       , view
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                      , OfxRGBAColourD()
+#endif
                       );
         setPenArgProps(penPos, penPosViewport, pressure);
         return callEntry(kOfxInteractActionPenUp,&_argProperties);
@@ -430,6 +455,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                       , view
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                      , OfxRGBAColourD()
+#endif
                       );
         setPenArgProps(penPos, penPosViewport, pressure);
         return callEntry(kOfxInteractActionPenDown,&_argProperties);
@@ -451,6 +479,9 @@ namespace OFX {
                       renderScale
 #ifdef OFX_EXTENSIONS_NUKE
                       , view
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+                      , OfxRGBAColourD()
 #endif
                       );
         setKeyArgProps(key, keyString);
@@ -474,6 +505,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                       , view
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                      , OfxRGBAColourD()
+#endif
                       );
         setKeyArgProps(key, keyString);
         return callEntry(kOfxInteractActionKeyUp,&_argProperties);
@@ -496,6 +530,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                       , view
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                      , OfxRGBAColourD()
+#endif
                       );
         setKeyArgProps(key, keyString);
         return callEntry(kOfxInteractActionKeyRepeat,&_argProperties);
@@ -517,6 +554,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                       , view
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                      , OfxRGBAColourD()
+#endif
                       );
         return callEntry(kOfxInteractActionGainFocus,&_argProperties);
       }
@@ -532,6 +572,9 @@ namespace OFX {
                       renderScale
 #ifdef OFX_EXTENSIONS_NUKE
                       , view
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+                      , OfxRGBAColourD()
 #endif
                       );
         return callEntry(kOfxInteractActionLoseFocus,&_argProperties);

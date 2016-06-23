@@ -808,4 +808,22 @@ says:
  */
 #define kNatronOfxImageEffectPropOpenGLContextData "NatronOfxImageEffectPropOpenGLContextData"
 
+/** @brief A int property that tells whether a parametric parameter with the property kOfxParamPropParametricInteractBackground needs information from the host
+ image viewport color-picker. When set to 1, then each time the mouse moves in the host (image visualization) viewport and the color under the mouse changes, the draw
+ action of the interact is called with a supplementary inarg (kNatronOfxPropPickerColour) containing a double*4 which is the color under the mouse.
+ 
+ - Type - int x1
+ - Property Set - parametric parameter descriptor (read/write) and instance (read only)
+ - Value values - 0 or 1
+ - Default value - 0
+ */
+#define kNatronOfxParamPropParametricInteractColourPicking "NatronOfxParamPropParametricInteractColourPicking"
+
+/** @brief Double x4 property indicating the RGBA colour of the image visualized in the host viewport under the mouse. This is passed in the inargs of the draw action of parametric parameters interact (i.e: with property kOfxParamPropParametricInteractBackground).
+ - Type - Double x4
+ - Property Set - inArgs property set of the action kOfxInteractActionDraw called on the parametric parameter 
+ - Default - 0,0,0,0
+ */
+#define kNatronOfxPropPickerColour "NatronOfxPropPickerColour"
+
 #endif // #ifndef _ofxNatron_h_
