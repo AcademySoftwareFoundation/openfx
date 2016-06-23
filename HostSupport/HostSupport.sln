@@ -9,7 +9,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CacheDemo", "examples\Cache
 		{BA70A56B-0F9A-4B63-9A1D-A5E4BAB95DED} = {BA70A56B-0F9A-4B63-9A1D-A5E4BAB95DED}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "expat_static", "expat-2.1.1\lib\expat_static.vcproj", "{BA70A56B-0F9A-4B63-9A1D-A5E4BAB95DED}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "expat_static", "expat-2.2.0\lib\expat_static.vcproj", "{BA70A56B-0F9A-4B63-9A1D-A5E4BAB95DED}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HostDemo", "examples\hostDemo.vcproj", "{33D15EBD-FAD0-4DDF-ABEF-36BBE0F4BCAC}"
 	ProjectSection(ProjectDependencies) = postProject

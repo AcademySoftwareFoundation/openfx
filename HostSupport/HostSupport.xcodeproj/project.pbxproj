@@ -457,7 +457,7 @@
 				1E3CB8C1179935430032B538 /* xmltok.c */,
 			);
 			name = "Expat Sources";
-			path = "expat-2.1.1/lib";
+			path = "expat-2.2.0/lib";
 			sourceTree = "<group>";
 		};
 		1E742FE117992CF9007D295B = {
