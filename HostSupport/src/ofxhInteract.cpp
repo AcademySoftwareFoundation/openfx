@@ -61,6 +61,9 @@ namespace OFX {
       static const Property::PropSpec interactDescriptorStuffs[] = {
         { kOfxInteractPropHasAlpha , Property::eInt, 1, true, "0" },
         { kOfxInteractPropBitDepth , Property::eInt, 1, true, "0" },
+#     ifdef OFX_EXTENSIONS_NATRON
+        { kNatronOfxInteractColourPicking, Property::eInt, 1, false, "0" },
+#     endif
         Property::propSpecEnd
       };
 
@@ -123,6 +126,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
         { kOfxPropOverlayColour , Property::eDouble, 3, true, "1.0f" },
 #endif
+#     ifdef OFX_EXTENSIONS_NATRON
+        { kNatronOfxInteractColourPicking, Property::eInt, 1, false, "0" },
+#     endif
         Property::propSpecEnd
       };
 
@@ -132,6 +138,9 @@ namespace OFX {
         { kOfxImageEffectPropRenderScale, Property::eDouble, 2, false, "0.0" },
 #ifdef OFX_EXTENSIONS_NUKE
         { kFnOfxImageEffectPropView, Property::eInt, 1, false, "0" },
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+        { kNatronOfxPropPickerColour, Property::eDouble, 4, false, "-1.0f" },
 #endif
         { kOfxInteractPropBackgroundColour , Property::eDouble, 3, false, "0.0f" },
 #ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
@@ -304,6 +313,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                  , int view
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                 , const OfxRGBAColourD* colourPicker
+#endif
                                  )
       {
         if (time != time) {
@@ -319,6 +331,14 @@ namespace OFX {
         props.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
 #ifdef OFX_EXTENSIONS_NUKE
         props.setIntProperty(kFnOfxImageEffectPropView,view);
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+        if (colourPicker) {
+          props.setDoublePropertyN(kNatronOfxPropPickerColour, (const double*)colourPicker, 4);
+        } else {
+          const double noColor[4] = { -1., -1., -1., -1.};
+          props.setDoublePropertyN(kNatronOfxPropPickerColour, noColor, 4);
+        }
 #endif
       }
 
@@ -355,6 +375,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                      , int view
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                     , const OfxRGBAColourD* colourPicker
+#endif
                                      )
       {        
         if (time != time) {
@@ -367,49 +390,20 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                     , view
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                    , colourPicker
+#endif
                     );
         return callEntry(kOfxInteractActionDraw, &_argProperties);
       }
-
-#ifdef OFX_EXTENSIONS_NATRON
-      OfxStatus Instance::drawActionWithColourPicker(OfxTime time,
-                                     const OfxPointD &renderScale
-#ifdef OFX_EXTENSIONS_NUKE
-                                     , int view
-#endif
-                                     , const OfxRGBAColourD& colourPicker
-      )
-      {
-        if (time != time) {
-          // time is NaN
-          return kOfxStatErrValue;
-        }
-
-        Property::Set argProperties;
-        argProperties.addProperties(interactArgsStuffs);
-        static const Property::PropSpec interactColourPickerArgsStuffs[] = {
-          { kNatronOfxPropPickerColour, Property::eDouble, 4, false, "0.0" },
-          Property::propSpecEnd
-        };
-        argProperties.addProperties(interactColourPickerArgsStuffs);
-
-        initArgProp(argProperties,
-                    time,
-                    renderScale
-#ifdef OFX_EXTENSIONS_NUKE
-                    , view
-#endif
-                    );
-
-        argProperties.setDoublePropertyN(kNatronOfxPropPickerColour, &colourPicker.r, 4);
-        return callEntry(kOfxInteractActionDraw, &argProperties);
-      }
-#endif // #ifdef OFX_EXTENSIONS_NATRON
 
       OfxStatus Instance::penMotionAction(OfxTime time,
                                           const OfxPointD &renderScale,
 #ifdef OFX_EXTENSIONS_NUKE
                                           int view,
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                          const OfxRGBAColourD* colourPicker,
 #endif
                                           const OfxPointD &penPos,
                                           const OfxPointI &penPosViewport,
@@ -419,13 +413,16 @@ namespace OFX {
           // time is NaN
           return kOfxStatErrValue;
         }
-          initArgProp(_argProperties,
-                      time,
-                      renderScale
+        initArgProp(_argProperties,
+                    time,
+                    renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                      , view
+                    , view
 #endif
-                      );
+#ifdef OFX_EXTENSIONS_NATRON
+                    , colourPicker
+#endif
+                    );
         setPenArgProps(penPos, penPosViewport, pressure);
         return callEntry(kOfxInteractActionPenMotion,&_argProperties);
       }
@@ -435,6 +432,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                       int view,
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                      const OfxRGBAColourD* colourPicker,
+#endif
                                       const OfxPointD &penPos,
                                       const OfxPointI &penPosViewport,
                                       double pressure)
@@ -443,13 +443,16 @@ namespace OFX {
           // time is NaN
           return kOfxStatErrValue;
         }
-          initArgProp(_argProperties,
-                      time,
-                      renderScale
+        initArgProp(_argProperties,
+                    time,
+                    renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                      , view
+                    , view
 #endif
-                      );
+#ifdef OFX_EXTENSIONS_NATRON
+                    , colourPicker
+#endif
+                    );
         setPenArgProps(penPos, penPosViewport, pressure);
         return callEntry(kOfxInteractActionPenUp,&_argProperties);
       }
@@ -459,6 +462,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                         int view,
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                        const OfxRGBAColourD* colourPicker,
+#endif
                                         const OfxPointD &penPos,
                                         const OfxPointI &penPosViewport,
                                         double pressure)
@@ -467,13 +473,16 @@ namespace OFX {
           // time is NaN
           return kOfxStatErrValue;
         }
-          initArgProp(_argProperties,
-                      time,
-                      renderScale
+        initArgProp(_argProperties,
+                    time,
+                    renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                      , view
+                    , view
 #endif
-                      );
+#ifdef OFX_EXTENSIONS_NATRON
+                    , colourPicker
+#endif
+                    );
         setPenArgProps(penPos, penPosViewport, pressure);
         return callEntry(kOfxInteractActionPenDown,&_argProperties);
       }
@@ -483,6 +492,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                         int view,
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                        const OfxRGBAColourD* colourPicker,
+#endif
                                         int     key,
                                         char*   keyString)
       {
@@ -490,13 +502,16 @@ namespace OFX {
           // time is NaN
           return kOfxStatErrValue;
         }
-          initArgProp(_argProperties,
-                      time,
-                      renderScale
+        initArgProp(_argProperties,
+                    time,
+                    renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                      , view
+                    , view
 #endif
-                      );
+#ifdef OFX_EXTENSIONS_NATRON
+                    , colourPicker
+#endif
+                    );
         setKeyArgProps(key, keyString);
         return callEntry(kOfxInteractActionKeyDown,&_argProperties);
       }
@@ -506,6 +521,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                       int view,
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                      const OfxRGBAColourD* colourPicker,
+#endif
                                       int     key,
                                       char*   keyString)
       {
@@ -513,13 +531,16 @@ namespace OFX {
           // time is NaN
           return kOfxStatErrValue;
         }
-          initArgProp(_argProperties,
-                      time,
-                      renderScale
+        initArgProp(_argProperties,
+                    time,
+                    renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                      , view
+                    , view
 #endif
-                      );
+#ifdef OFX_EXTENSIONS_NATRON
+                    , colourPicker
+#endif
+                    );
         setKeyArgProps(key, keyString);
         return callEntry(kOfxInteractActionKeyUp,&_argProperties);
       }
@@ -529,6 +550,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                           int view,
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                          const OfxRGBAColourD* colourPicker,
+#endif
                                           int     key,
                                           char*   keyString)
       {
@@ -536,13 +560,16 @@ namespace OFX {
           // time is NaN
           return kOfxStatErrValue;
         }
-          initArgProp(_argProperties,
-                      time,
-                      renderScale
+        initArgProp(_argProperties,
+                    time,
+                    renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                      , view
+                    , view
 #endif
-                      );
+#ifdef OFX_EXTENSIONS_NATRON
+                    , colourPicker
+#endif
+                    );
         setKeyArgProps(key, keyString);
         return callEntry(kOfxInteractActionKeyRepeat,&_argProperties);
       }
@@ -552,19 +579,25 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                           , int view
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                          , const OfxRGBAColourD* colourPicker
+#endif
                                           )
       {
         if (time != time) {
           // time is NaN
           return kOfxStatErrValue;
         }
-          initArgProp(_argProperties,
-                      time,
-                      renderScale
+        initArgProp(_argProperties,
+                    time,
+                    renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                      , view
+                    , view
 #endif
-                      );
+#ifdef OFX_EXTENSIONS_NATRON
+                    , colourPicker
+#endif
+                    );
         return callEntry(kOfxInteractActionGainFocus,&_argProperties);
       }
 
@@ -573,15 +606,21 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                           , int view
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                          , const OfxRGBAColourD* colourPicker
+#endif
         )
       {
-          initArgProp(_argProperties,
-                      time,
-                      renderScale
+        initArgProp(_argProperties,
+                    time,
+                    renderScale
 #ifdef OFX_EXTENSIONS_NUKE
-                      , view
+                    , view
 #endif
-                      );
+#ifdef OFX_EXTENSIONS_NATRON
+                    , colourPicker
+#endif
+                    );
         return callEntry(kOfxInteractActionLoseFocus,&_argProperties);
       }
 

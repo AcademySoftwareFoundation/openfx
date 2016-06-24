@@ -171,6 +171,15 @@ namespace OFX {
     return true;
   }
 
+#ifdef OFX_EXTENSIONS_NATRON
+  /** @brief Sets wether the interact uses an additional colour picking value in the inArgs of its actions. */
+  void
+    Interact::setColourPicking(bool useColourPicking)
+  {
+    _interactProperties.propSetInt(kNatronOfxInteractColourPicking, (int)useColourPicking, 0, false);
+  }
+#endif
+
   /** @brief Request a redraw */
   void 
     Interact::requestRedraw(void) const
@@ -347,6 +356,18 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
     view          = props.propGetInt(kFnOfxImageEffectPropView, 0, false);
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+    if ( !props.propGetDimension(kNatronOfxPropPickerColour, false) ) {
+      pickerColour.r = pickerColour.g = pickerColour.b = pickerColour.a = -1.;
+      hasPickerColour = false;
+    } else {
+      pickerColour.r = props.propGetDouble(kNatronOfxPropPickerColour, 0);
+      pickerColour.g = props.propGetDouble(kNatronOfxPropPickerColour, 1);
+      pickerColour.b = props.propGetDouble(kNatronOfxPropPickerColour, 2);
+      pickerColour.a = props.propGetDouble(kNatronOfxPropPickerColour, 3);
+      hasPickerColour = (pickerColour.r != -1. || pickerColour.g != -1. || pickerColour.b != -1. || pickerColour.a != -1.);
+    }
+#endif
   }
 
   /** @brief ctor */
@@ -359,17 +380,6 @@ namespace OFX {
 #endif
     backGroundColour = getBackgroundColour(props);
     pixelScale       = getPixelScale(props);
-#ifdef OFX_EXTENSIONS_NATRON
-    if ( !props.propGetDimension(kNatronOfxPropPickerColour, false) ) {
-      hasColourPicker = false;
-    } else {
-      imageViewportColourPicker.r = props.propGetDouble(kNatronOfxPropPickerColour, 0);
-      imageViewportColourPicker.g = props.propGetDouble(kNatronOfxPropPickerColour, 1);
-      imageViewportColourPicker.b = props.propGetDouble(kNatronOfxPropPickerColour, 2);
-      imageViewportColourPicker.a = props.propGetDouble(kNatronOfxPropPickerColour, 3);
-      hasColourPicker = true;
-    }
-#endif
   }
 
   /** @brief ctor */
@@ -416,6 +426,23 @@ namespace OFX {
     backGroundColour = getBackgroundColour(props);
   }
 
+  bool InteractDescriptor::getHasAlpha() const
+  {
+    return _props->propGetInt(kOfxInteractPropHasAlpha, 0, false);
+  }
+
+  int InteractDescriptor::getBitDepth() const
+  {
+    return _props->propGetInt(kOfxInteractPropBitDepth, 0, false);
+  }
+
+#ifdef OFX_EXTENSIONS_NATRON
+  /** @brief Sets wether the interact uses an additional colour picking value in the inArgs of its actions. */
+  void InteractDescriptor::setColourPicking(bool useColourPicking)
+  {
+    _props->propSetInt(kNatronOfxInteractColourPicking, (int)useColourPicking, 0, false);
+  }
+#endif
 
   void ParamInteractDescriptor::setInteractSizeAspect(double asp)
   {

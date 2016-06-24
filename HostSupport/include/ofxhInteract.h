@@ -122,6 +122,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                          , int view
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                         , const OfxRGBAColourD* colourPicker
+#endif
         );
 
         /// set pen props in the args
@@ -202,18 +205,10 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                      , int view
 #endif
-                                     );
-
 #ifdef OFX_EXTENSIONS_NATRON
-        // Same as draw action except that the plug-in should draw something related to the color picker
-        virtual OfxStatus drawActionWithColourPicker(OfxTime time,
-                                     const OfxPointD &renderScale
-#ifdef OFX_EXTENSIONS_NUKE
-                                     , int view
+                                     , const OfxRGBAColourD* colourPicker
 #endif
-                                     , const OfxRGBAColourD& colourPicker
-        );
-#endif
+                                     );
 
         // interact action - kOfxInteractActionPenMotion
         //
@@ -228,6 +223,9 @@ namespace OFX {
                                           const OfxPointD &renderScale,
 #ifdef OFX_EXTENSIONS_NUKE
                                           int view,
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                          const OfxRGBAColourD* colourPicker,
 #endif
                                           const OfxPointD &penPos,
                                           const OfxPointI &penPosViewport,
@@ -247,6 +245,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                       int view,
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                      const OfxRGBAColourD* colourPicker,
+#endif
                                       const OfxPointD &penPos,
                                       const OfxPointI &penPosViewport,
                                       double  pressure);
@@ -265,6 +266,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                         int view,
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                        const OfxRGBAColourD* colourPicker,
+#endif
                                         const OfxPointD &penPos,
                                         const OfxPointI &penPosViewport,
                                         double  pressure);
@@ -282,6 +286,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                         int view,
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                        const OfxRGBAColourD* colourPicker,
+#endif
                                         int     key,
                                         char*   keyString);
 
@@ -297,6 +304,9 @@ namespace OFX {
                                       const OfxPointD &renderScale,
 #ifdef OFX_EXTENSIONS_NUKE
                                       int view,
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                      const OfxRGBAColourD* colourPicker,
 #endif
                                       int     key,
                                       char*   keyString);
@@ -314,6 +324,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                           int view,
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                          const OfxRGBAColourD* colourPicker,
+#endif
                                           int     key,
                                           char*   keyString);
 
@@ -328,6 +341,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
                                           , int view
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                          , const OfxRGBAColourD* colourPicker
+#endif
                                           );
 
         // interact action - kOfxInteractActionLoseFocus
@@ -340,6 +356,9 @@ namespace OFX {
                                           const OfxPointD &renderScale
 #ifdef OFX_EXTENSIONS_NUKE
                                           , int view
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+                                          , const OfxRGBAColourD* colourPicker
 #endif
                                           );
       };

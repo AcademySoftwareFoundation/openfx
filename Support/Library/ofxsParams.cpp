@@ -1348,9 +1348,6 @@ namespace OFX {
   {
     _interact.reset(desc);
     _paramProps.propSetPointer(kOfxParamPropParametricInteractBackground, (void*)desc->getMainEntry());
-#ifdef OFX_EXTENSIONS_NATRON
-    _paramProps.propSetInt(kNatronOfxParamPropParametricInteractColourPicking, (int)useColourPicker, 0, false);
-#endif
     desc->setParamName(getName());
   }
 

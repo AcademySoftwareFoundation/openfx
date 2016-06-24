@@ -65,7 +65,11 @@ namespace OFX {
     double          time;              /**< @brief The current effect time to draw at */
     OfxPointD       renderScale;       /**< @brief The current render scale being applied to any image that would be fetched */
 #ifdef OFX_EXTENSIONS_NUKE
-      int             view;              /**< @brief The current effect view to draw onto */
+    int             view;              /**< @brief The current effect view to draw onto */
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+    bool            hasPickerColour;   /**< @brief If true, the pickerColour is valid and may be used */
+    OfxRGBAColourD  pickerColour;      /**< @brief The picked colour */
 #endif
   };
 
@@ -78,10 +82,6 @@ namespace OFX {
 #endif
     OfxPointD       pixelScale;        /**< @brief The size of a real screen pixel under the interact's canonical projection */
     OfxRGBColourD   backGroundColour;  /**< @brief The current background colour, ignore the A */
-#ifdef OFX_EXTENSIONS_NATRON
-    bool hasColourPicker; /**< @brief If true, the imageViewportColourPicker is valid and may be used*/
-    OfxRGBAColourD imageViewportColourPicker; /**< @brief The colour of the image in the host image viewer under the mouse*/
-#endif
   };
 
   /** @brief POD  to pass arguments into OFX::Interact pen actions */
@@ -227,6 +227,11 @@ namespace OFX {
 
     /** @brief Swap a buffer in the case of a double bufferred interact, this is possibly a silly one */
     void swapBuffers(void) const;
+
+#ifdef OFX_EXTENSIONS_NATRON
+    /** @brief Sets wether the interact uses an additional colour picking value in the inArgs of its actions. */
+    void setColourPicking(bool useColourPicking);
+#endif
 
     ////////////////////////////////////////////////////////////////////////////////
     // override the below in derived classes to do something useful
@@ -457,10 +462,12 @@ namespace OFX {
     virtual ~InteractDescriptor() {}
     void setPropertySet(OFX::PropertySet* props){ _props = props; }
     virtual Interact* createInstance(OfxInteractHandle handle, ImageEffect *effect) = 0;
-    void setHasAlpha();
     bool getHasAlpha() const;
-    void setBitDepth();
     int getBitDepth() const;
+#ifdef OFX_EXTENSIONS_NATRON
+    /** @brief Sets wether the interact uses an additional colour picking value in the inArgs of its actions. */
+    void setColourPicking(bool useColourPicking);
+#endif
     virtual OfxPluginEntryPoint* getMainEntry() = 0;
     virtual void describe() {}
   protected:

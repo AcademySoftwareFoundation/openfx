@@ -808,21 +808,32 @@ says:
  */
 #define kNatronOfxImageEffectPropOpenGLContextData "NatronOfxImageEffectPropOpenGLContextData"
 
-/** @brief A int property that tells whether a parametric parameter with the property kOfxParamPropParametricInteractBackground needs information from the host
- image viewport color-picker. When set to 1, then each time the mouse moves in the host (image visualization) viewport and the color under the mouse changes, the draw
- action of the interact is called with a supplementary inarg (kNatronOfxPropPickerColour) containing a double*4 which is the color under the mouse.
- 
+/** @brief A int property that tells whether an interact wants colour picking information from the host.
+
+ When set to 1, the picked colour is passed as an additional kNatronOfxPropPickerColour property
+ on the inArgs of every interact action, and the draw action is called every time the picked colour
+ changes.
+ This property must be set to 1 on the interact descriptor if the descriptor may use colour picking.
+ Then, it can be set to 0 or 1 on the interact instance in order to enable colour picking and
+ to call the draw action each time the picked colour changes.
+ This can also be set on the interact of parameter interacts (kOfxParamPropInteractV1)
+ and on the interact for the background of parametric parameters
+ (kOfxParamPropParametricInteractBackground).
+
  - Type - int x1
- - Property Set - parametric parameter descriptor (read/write) and instance (read only)
+ - Property Set - interact descriptor and instance (read/write)
  - Value values - 0 or 1
  - Default value - 0
  */
-#define kNatronOfxParamPropParametricInteractColourPicking "NatronOfxParamPropParametricInteractColourPicking"
+#define kNatronOfxInteractColourPicking "NatronOfxInteractColourPicking"
 
-/** @brief Double x4 property indicating the RGBA colour of the image visualized in the host viewport under the mouse. This is passed in the inargs of the draw action of parametric parameters interact (i.e: with property kOfxParamPropParametricInteractBackground).
+/** @brief Double x4 property indicating the RGBA colour of the image visualized in the host
+  viewport under the mouse. This is passed in the inargs of the draw action of parametric
+  parameters interact (i.e: with property kOfxParamPropParametricInteractBackground).
+  The special value -1,-1,-1,-1 means no color.
  - Type - Double x4
  - Property Set - inArgs property set of the action kOfxInteractActionDraw called on the parametric parameter 
- - Default - 0,0,0,0
+ - Default - -1,-1,-1,-1
  */
 #define kNatronOfxPropPickerColour "NatronOfxPropPickerColour"
 
