@@ -87,6 +87,24 @@ namespace OFX {
   /** @brief Virtual destructor */
   PropertySet::~PropertySet() {}
 
+  /** @brief, returns wether the given property exists in this property set */
+  bool PropertySet::propExists(const char* property, bool throwOnFailure) const throw(std::bad_alloc,
+    OFX::Exception::PropertyValueIllegalToHost,
+    OFX::Exception::Suite)
+  {
+    assert(_propHandle != 0);
+    int dimension = 0;
+    OfxStatus stat = gPropSuite->propGetDimension(_propHandle, property, &dimension);
+    Log::error(stat != kOfxStatOK && stat != kOfxStatErrUnknown, "Failed on fetching dimension for property %s, host returned status %s.", property, mapStatusToString(stat));
+    if(throwOnFailure && stat != kOfxStatErrUnknown)
+      throwPropertyException(stat, property); 
+
+    if(_gPropLogging > 0) 
+      Log::print("Fetched dimension of property %s, returned status %s.",  property, mapStatusToString(stat));
+
+    return stat == kOfxStatOK;
+  }
+
   /** @brief, returns the dimension of the given property from this property set */
   int PropertySet::propGetDimension(const char* property, bool throwOnFailure) const throw(std::bad_alloc, 
     OFX::Exception::PropertyUnknownToHost, 
