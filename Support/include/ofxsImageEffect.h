@@ -721,7 +721,7 @@ namespace OFX {
       /*The current selection rectangle drawn by the user on the host viewport.
        This property is refreshed whenever calling the kOfxActionInstanceChanged action for the parameter kNatronOfxParamSelectionRectangleState to let the plug-in a change to correctly synchronized its selection.
        */
-      void getSelectionRectangle(double& left, double& bottom, double& right, double& top);
+      OfxRectI getSelectionRectangle();
 
       /*Add a parameter that will be visible in a toolbar in the viewport of the host application.*/
       void addInViewportParam(const std::string& paramName);

@@ -1118,30 +1118,32 @@ namespace OFX {
   /*The current selection rectangle drawn by the user on the host viewport.
    This property is refreshed whenever calling the kOfxActionInstanceChanged action for the parameter kNatronOfxParamSelectionRectangleState to let the plug-in a change to correctly synchronized its selection.
    */
-  void ImageEffectDescriptor::getSelectionRectangle(double& left, double& bottom, double& right, double& top)
+  OfxRectI ImageEffectDescriptor::getSelectionRectangle()
   {
-    left = _effectProps.propGetInt(kNatronOfxImageEffectSelectionRectangle, 0);
-    bottom = _effectProps.propGetInt(kNatronOfxImageEffectSelectionRectangle, 1);
-    right = _effectProps.propGetInt(kNatronOfxImageEffectSelectionRectangle, 2);
-    top = _effectProps.propGetInt(kNatronOfxImageEffectSelectionRectangle, 3);
+    OfxRectI bounds = { 0, 0, 0, 0 };
+    bounds.x1 = _effectProps.propGetInt(kNatronOfxImageEffectSelectionRectangle, 0, false);
+    bounds.y1 = _effectProps.propGetInt(kNatronOfxImageEffectSelectionRectangle, 1, false);
+    bounds.x2 = _effectProps.propGetInt(kNatronOfxImageEffectSelectionRectangle, 2, false);
+    bounds.y2 = _effectProps.propGetInt(kNatronOfxImageEffectSelectionRectangle, 3, false);
+
+    return bounds;
   }
 
   void ImageEffectDescriptor::addInViewportParam(const std::string& paramName)
   {
-    int nDims = _effectProps.propGetDimension(kNatronOfxImageEffectPropInViewerContextParamsOrder);
-    _effectProps.propSetString(kNatronOfxImageEffectPropInViewerContextParamsOrder, paramName, nDims);
+    int n = _effectProps.propGetDimension(kNatronOfxImageEffectPropInViewerContextParamsOrder, false);
+    _effectProps.propSetString(kNatronOfxImageEffectPropInViewerContextParamsOrder, paramName, n, false);
   }
 
   void ImageEffectDescriptor::setDefaultParamInViewportShortcut(const std::string& paramName, int symbolKey, ShortcutModifierEnum modifiers)
   {
-    int nDims = _effectProps.propGetDimension(kNatronOfxImageEffectPropInViewerContextDefaultShortcuts, false);
-    _effectProps.propSetString(kNatronOfxImageEffectPropInViewerContextDefaultShortcuts, paramName, nDims);
-    _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutSymbol, symbolKey, nDims);
-    _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutHasControlModifier, (int)(modifiers & eShortcutModifierCtrl), nDims);
-    _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutHasShiftModifier, (int)(modifiers & eShortcutModifierShift), nDims);
-    _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutHasAltModifier, (int)(modifiers & eShortcutModifierAlt), nDims);
-    _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutHasMetaModifier, (int)(modifiers & eShortcutModifierMeta), nDims);
-
+    int n = _effectProps.propGetDimension(kNatronOfxImageEffectPropInViewerContextDefaultShortcuts, false);
+    _effectProps.propSetString(kNatronOfxImageEffectPropInViewerContextDefaultShortcuts, paramName, n, false);
+    _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutSymbol, symbolKey, n, false);
+    _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutHasControlModifier, (int)(modifiers & eShortcutModifierCtrl), n, false);
+    _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutHasShiftModifier, (int)(modifiers & eShortcutModifierShift), n, false);
+    _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutHasAltModifier, (int)(modifiers & eShortcutModifierAlt), n, false);
+    _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutHasMetaModifier, (int)(modifiers & eShortcutModifierMeta), n, false);
   }
 #endif
 
