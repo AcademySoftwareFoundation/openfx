@@ -799,17 +799,10 @@ namespace OFX {
         // destroy the instance, only if succesfully created
         if (_created) {
 #         ifdef OFX_DEBUG_ACTIONS
-            OfxPlugin *ofxp = _plugin->getPluginHandle()->getOfxPlugin();
-            const char* id = ofxp->pluginIdentifier;
-            std::cout << "OFX: "<<id<<"("<<(void*)ofxp<<")->"<<kOfxActionDestroyInstance<<"()"<<std::endl;
+          std::cout << "OFX WARNING: OFX::Host::ImageEffect::Instance::destroyInstanceAction() was not called before the OFX::Host::ImageEffect::Instance destructor."<<std::endl;
 #         endif
-          OfxStatus st = mainEntry(kOfxActionDestroyInstance,this->getHandle(),0,0);
-#         ifdef OFX_DEBUG_ACTIONS
-            std::cout << "OFX: "<<id<<"("<<(void*)ofxp<<")->"<<kOfxActionDestroyInstance<<"()->"<<StatStr(st)<<std::endl;
-#         endif
-          (void)st;
+          destroyInstanceAction();
         }
-        
         /// clobber my clips
         if (_ownsData) {
           std::map<std::string, ClipInstance*>::iterator i;
@@ -926,7 +919,7 @@ namespace OFX {
         return 0;
       }
 
-      // create a clip instance
+      // create an image effect instance
       OfxStatus Instance::createInstanceAction() 
       {
         /// we need to init the clips before we call create instance incase
@@ -946,6 +939,28 @@ namespace OFX {
 
         if (st == kOfxStatOK) {
           _created = true;
+        }
+
+        return st;
+      }
+
+      // destroy the instance, only if succesfully created
+      OfxStatus Instance::destroyInstanceAction()
+      {
+        OfxStatus st = kOfxStatFailed;
+        if (_created) {
+#         ifdef OFX_DEBUG_ACTIONS
+            OfxPlugin *ofxp = _plugin->getPluginHandle()->getOfxPlugin();
+            const char* id = ofxp->pluginIdentifier;
+            std::cout << "OFX: "<<id<<"("<<(void*)ofxp<<")->"<<kOfxActionDestroyInstance<<"()"<<std::endl;
+#         endif
+          OfxStatus st = mainEntry(kOfxActionDestroyInstance,this->getHandle(),0,0);
+#         ifdef OFX_DEBUG_ACTIONS
+            std::cout << "OFX: "<<id<<"("<<(void*)ofxp<<")->"<<kOfxActionDestroyInstance<<"()->"<<StatStr(st)<<std::endl;
+#         endif
+          if (st == kOfxStatOK) {
+            _created = false;
+          }
         }
 
         return st;

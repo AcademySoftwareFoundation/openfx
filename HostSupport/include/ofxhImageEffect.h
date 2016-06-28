@@ -621,6 +621,10 @@ namespace OFX {
         /// values (either persisted ones or the defaults)
         virtual OfxStatus createInstanceAction();
 
+        /// destroy an instance. This needs to be called before the destructor,
+        /// since it may call virtual functions
+        virtual OfxStatus destroyInstanceAction();
+
         // begin/change/end instance changed
 
         //
