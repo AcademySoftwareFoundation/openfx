@@ -451,8 +451,8 @@ namespace OFX {
 
   void ParamInteractDescriptor::setInteractMinimumSize(int x, int y)
   {
-    _props->propSetInt(kOfxParamPropInteractMinimumSize, x, 0);
-    _props->propSetInt(kOfxParamPropInteractMinimumSize, y, 1);
+    _props->propSetDouble(kOfxParamPropInteractMinimumSize, x, 0);
+    _props->propSetDouble(kOfxParamPropInteractMinimumSize, y, 1);
   }
 
   void ParamInteractDescriptor::setInteractPreferredSize(int x, int y)
