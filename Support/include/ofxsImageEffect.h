@@ -835,6 +835,9 @@ namespace OFX {
     /** @brief get the row bytes, may be negative */
     int getRowBytes(void) const { return _rowBytes;}
 
+    /** @brief get the number of bytes per pixel */
+    int getPixelBytes(void) const { return _pixelBytes;}
+
     /** @brief get the fielding of this image */
     FieldEnum getField(void) const { return _field;}
 
