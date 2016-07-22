@@ -334,8 +334,9 @@ This is used to tell the host whether the plug-in is going to attempt to set the
     - Valid Values - 0 or 1
 
 This is used to tell the host whether the value of the parameter is important and should be save in any description of the plug-in.
+Note the spelling error in the string value.
 */
-#define kOfxParamPropPersistant "OfxParamPropPersistant"
+#define kOfxParamPropPersistent "OfxParamPropPersistant"
 
 /** @brief Flags whether changing a parameter's value forces an evalution (ie: render),
 

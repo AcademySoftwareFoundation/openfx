@@ -49,7 +49,7 @@ Valid values:
     a special GUI.
 
     This parameter should have the properties
-    - kOfxParamPropPersistant=1,
+    - kOfxParamPropPersistent=1,
     - kOfxParamPropEvaluateOnChange=0.
     You should set its default value during the kOfxImageEffectActionDescribeInContext action.
  */
@@ -491,7 +491,7 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 
  11) To support undo/redo, the plug-in must define a string parameter named kNatronOfxParamUndoRedoText and a boolean parameter named kNatronOfxParamUndoRedoState. The parameters should have the following properties settings:
      - kOfxParamPropEvaluateOnChange = 0
-     - kOfxParamPropPersistant = 0
+     - kOfxParamPropPersistent = 0
      - kOfxParamPropSecret = 1
     The string parameter value represents the text that should be displayed by the host in the undo/redo action of the Edit menu.
     The boolean parameter value is used to notify the plug-in about undo/Redo stack changes. If the value is set to false, the user just pressed Undo, otherwise he/she pressed Redo.

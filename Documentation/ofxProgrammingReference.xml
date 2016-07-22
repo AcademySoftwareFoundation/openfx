@@ -1849,7 +1849,7 @@ Source    -2            12          25
 	During an the effect's describe in context action an effect <emphasis>must</emphasis> define the clips mandated for
 	that context, it can also define extra  clips that it may need for that context. It does this using the 
 	<link linkend="OfxImageEffectSuiteV1_clipDefine"><code>OfxImageEffectSuiteV1::clipDefine</code></link> function, the property handle returned by this function is purely for definition 
-	purposes only. It has not persistance outside the describe in context action and is distinct to the clip property handles
+	purposes only. It has not persistence outside the describe in context action and is distinct to the clip property handles
 	used by instances. The <emphasis>name</emphasis> parameter is how you can later access that clip in a plugin instance via the 
 	<link linkend="OfxImageEffectSuiteV1_clipGetHandle"><code>OfxImageEffectSuiteV1::clipGetHandle</code></link> function. 
       </para>

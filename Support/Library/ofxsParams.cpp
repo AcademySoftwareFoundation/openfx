@@ -414,10 +414,10 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropAnimates, v);
   }
 
-  /** @brief set whether the param is persistant, defaults to true */
-  void ValueParamDescriptor::setIsPersistant(bool v)
+  /** @brief set whether the param is persistent, defaults to true */
+  void ValueParamDescriptor::setIsPersistent(bool v)
   {
-    _paramProps.propSetInt(kOfxParamPropPersistant, v);
+    _paramProps.propSetInt(kOfxParamPropPersistent, v);
   }
 
   /** @brief Set's whether the value of the param is significant (ie: affects the rendered image), defaults to true */
@@ -1871,11 +1871,11 @@ namespace OFX {
     return _paramProps.propGetInt(kOfxParamPropIsAutoKeying) != 0;
   }
 
-  /** @brief is the param persistant */
+  /** @brief is the param persistent */
   bool 
-    ValueParam::getIsPersistant(void) const
+    ValueParam::getIsPersistent(void) const
   {
-    return _paramProps.propGetInt(kOfxParamPropPersistant) != 0;
+    return _paramProps.propGetInt(kOfxParamPropPersistent) != 0;
   }
 
   /** @brief Get's whether the value of the param is significant (ie: affects the rendered image) */

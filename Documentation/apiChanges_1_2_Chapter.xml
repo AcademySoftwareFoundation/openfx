@@ -48,7 +48,7 @@
 
   <section id="APIChanges_1_2_ParameterSyncing"><title>New Syncing Property</title>
   <para>
-  A new property has been added to parameter sets, <link linkend="kOfxPropParamSetNeedsSyncing">kOfxPropParamSetNeedsSyncing</link>. This is used by plugins with internal data structures that need syncing back to parameters for persistance and so on. This property should be set whenever the plugin changes it's internal state to inform the host that a sync will be required before the next serialisation of the plugin. Without this property, the host would have to continually force the plugin to sync it's private data, whether that was a redundant operation or not. For large data sets, this can be a significant overhead.
+  A new property has been added to parameter sets, <link linkend="kOfxPropParamSetNeedsSyncing">kOfxPropParamSetNeedsSyncing</link>. This is used by plugins with internal data structures that need syncing back to parameters for persistence and so on. This property should be set whenever the plugin changes it's internal state to inform the host that a sync will be required before the next serialisation of the plugin. Without this property, the host would have to continually force the plugin to sync it's private data, whether that was a redundant operation or not. For large data sets, this can be a significant overhead.
   </para>
   </section>
 

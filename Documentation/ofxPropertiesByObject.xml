@@ -196,7 +196,7 @@
       <listitem><link linkend="kOfxParamPropAnimates">kOfxParamPropAnimates</link> read/write in the descriptor, read only on an instance</listitem>
       <listitem><link linkend="kOfxParamPropIsAnimating">kOfxParamPropIsAnimating</link> read/write in the descriptor, read only on an instance</listitem>
       <listitem><link linkend="kOfxParamPropIsAutoKeying">kOfxParamPropIsAutoKeying</link> read/write in the descriptor, read only on an instance</listitem>
-      <listitem><link linkend="kOfxParamPropPersistant">kOfxParamPropPersistant</link> read/write in the descriptor, read only on an instance</listitem>
+      <listitem><link linkend="kOfxParamPropPersistent">kOfxParamPropPersistent</link> read/write in the descriptor, read only on an instance</listitem>
       <listitem><link linkend="kOfxParamPropEvaluateOnChange">kOfxParamPropEvaluateOnChange</link>  read/write in the descriptor and instance</listitem>
       <listitem><link linkend="kOfxParamPropPluginMayWrite">kOfxParamPropPluginMayWrite</link> read/write in the descriptor, read only on an instance</listitem>
       <listitem><link linkend="kOfxParamPropCacheInvalidation">kOfxParamPropCacheInvalidation</link> read/write in the descriptor, read only on an instance</listitem>
@@ -274,7 +274,7 @@
       <listitem><link linkend="kOfxParamPropAnimates">kOfxParamPropAnimates</link> read/write in the descriptor, read only on an instance</listitem>
       <listitem><link linkend="kOfxParamPropIsAnimating">kOfxParamPropIsAnimating</link> read/write in the descriptor, read only on an instance</listitem>
       <listitem><link linkend="kOfxParamPropIsAutoKeying">kOfxParamPropIsAutoKeying</link> read/write in the descriptor, read only on an instance</listitem>
-      <listitem><link linkend="kOfxParamPropPersistant">kOfxParamPropPersistant</link> read/write in the descriptor, read only on an instance</listitem>
+      <listitem><link linkend="kOfxParamPropPersistent">kOfxParamPropPersistent</link> read/write in the descriptor, read only on an instance</listitem>
       <listitem><link linkend="kOfxParamPropEvaluateOnChange">kOfxParamPropEvaluateOnChange</link>  read/write in the descriptor and instance</listitem>
       <listitem><link linkend="kOfxParamPropPluginMayWrite">kOfxParamPropPluginMayWrite</link> read/write in the descriptor, read only on an instance</listitem>
       <listitem><link linkend="kOfxParamPropCacheInvalidation">kOfxParamPropCacheInvalidation</link> read/write in the descriptor, read only on an instance</listitem>

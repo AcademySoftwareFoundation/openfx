@@ -2179,7 +2179,7 @@ namespace OFX {
 #endif
     
 
-  /** @brief notify host that the internal data structures need syncing back to parameters for persistance and so on.  This is reset by the host after calling SyncPrivateData. */
+  /** @brief notify host that the internal data structures need syncing back to parameters for persistence and so on.  This is reset by the host after calling SyncPrivateData. */
   void ImageEffect::setParamSetNeedsSyncing()
   {
     _effectProps.propSetInt(kOfxPropParamSetNeedsSyncing, 1, false); // introduced in OFX 1.2
@@ -2384,7 +2384,7 @@ namespace OFX {
     // fa niente
   }
 
-  /** @brief The sync private data action, called when the effect needs to sync any private data to persistant parameters */
+  /** @brief The sync private data action, called when the effect needs to sync any private data to persistent parameters */
   void ImageEffect::syncPrivateData(void)
   {
     // fa niente

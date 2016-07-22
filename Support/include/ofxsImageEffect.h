@@ -1570,7 +1570,7 @@ namespace OFX {
     void setSupportsOpenGLRender(bool v);
 #endif
 
-    /** @brief notify host that the internal data structures need syncing back to parameters for persistance and so on.  This is reset by the host after calling SyncPrivateData. */
+    /** @brief notify host that the internal data structures need syncing back to parameters for persistence and so on.  This is reset by the host after calling SyncPrivateData. */
     void setParamSetNeedsSyncing();
 
     OFX::Message::MessageReplyEnum sendMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg, bool throwIfMissing = false);
@@ -1622,7 +1622,7 @@ namespace OFX {
     /** @brief The purge caches action, a request for an instance to free up as much memory as possible in low memory situations */
     virtual void purgeCaches(void);
 
-    /** @brief The sync private data action, called when the effect needs to sync any private data to persistant parameters */
+    /** @brief The sync private data action, called when the effect needs to sync any private data to persistent parameters */
     virtual void syncPrivateData(void);
 
     /** @brief client render function, this is one of the few that must be overridden */

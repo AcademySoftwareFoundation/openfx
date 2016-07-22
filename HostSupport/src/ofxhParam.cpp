@@ -154,8 +154,8 @@ namespace OFX {
         return _properties.getIntProperty(kOfxParamPropSecret, 0) != 0;
       }
 
-      bool Base::getIsPersistant() const {
-        return _properties.getIntProperty(kOfxParamPropPersistant, 0) != 0;
+      bool Base::getIsPersistent() const {
+        return _properties.getIntProperty(kOfxParamPropPersistent, 0) != 0;
       }
 
       bool Base::getEvaluateOnChange() const {
@@ -448,7 +448,7 @@ namespace OFX {
         static const Property::PropSpec invariantProps[] = {
           { kOfxParamPropIsAnimating, Property::eInt, 1,       false, "0" },
           { kOfxParamPropIsAutoKeying,Property::eInt, 1,       false, "0" },
-          { kOfxParamPropPersistant,  Property::eInt, 1,       false, "1" },
+          { kOfxParamPropPersistent,  Property::eInt, 1,       false, "1" },
           { kOfxParamPropEvaluateOnChange, Property::eInt, 1,  false, "1" },
 #       ifdef kOfxParamPropPluginMayWrite
           { kOfxParamPropPluginMayWrite,    Property::eInt,    1,    false,    "0" }, // removed in OFX 1.4

@@ -7,7 +7,7 @@
       and so on.
     </para>
     <para>
-      Seeing as hosts already provide for the general management of their own native parameters (eg: persistance, 
+      Seeing as hosts already provide for the general management of their own native parameters (eg: persistence, 
       interface, animation etc...), it would make no sense to force plug-ins to do this all themselves. 
     </para>
     <para>
@@ -378,10 +378,10 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
     </para>
   </section>
   
-  <section id="ParametersPersistance"><title>Parameter Persistance </title>
+  <section id="ParametersPersistence"><title>Parameter Persistence </title>
     
     <para>
-      All parameters flagged with the <link linkend='kOfxParamPropPersistant'><code>kOfxParamPropPersistant</code></link> property will persist when an effect is saved. How the effect is saved is completely up to the host, it may be in a file, a data base, where ever. We call a saved set of parameters a <emphasis>setup</emphasis>. A host will need to save the major version number of the plugin, as well as the plugin's unique identifier, in any setup.
+      All parameters flagged with the <link linkend='kOfxParamPropPersistent'><code>kOfxParamPropPersistent</code></link> property will persist when an effect is saved. How the effect is saved is completely up to the host, it may be in a file, a data base, where ever. We call a saved set of parameters a <emphasis>setup</emphasis>. A host will need to save the major version number of the plugin, as well as the plugin's unique identifier, in any setup.
     </para>
     <para>
       When an host loads a set up it should do so in the following manner...
@@ -390,7 +390,7 @@ propHost->propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the c
 	<listitem> find a matching plugin with that major version number, if multiple minor versions exist, the plugin with the largest minor version should be used.</listitem>
 	<listitem> creates an instance of that plugin with its set of parameters.</listitem>
 	<listitem> sets all those parameters to the defaults specified by the plugin.</listitem>
-	<listitem> examines the setup for any persistant parameters, then sets the instance's parameters to any found in it.</listitem>
+	<listitem> examines the setup for any persistent parameters, then sets the instance's parameters to any found in it.</listitem>
 	<listitem> calls create instance on the plugin.</listitem>
       </orderedlist>
     </para>

@@ -118,7 +118,7 @@ namespace OFX {
 
         bool getSecret() const;
 
-        bool getIsPersistant() const;
+        bool getIsPersistent() const;
 
         bool getEvaluateOnChange() const;
 
