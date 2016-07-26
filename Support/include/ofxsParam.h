@@ -768,10 +768,13 @@ namespace OFX {
     
         /** @brief how many options do we have */
         int getNOptions(void);
-    
+
         /** @brief clear all the options so as to add some new ones in */
         void resetOptions(void);
-        
+
+        /** @brief clear all the options so as to add some new ones in */
+        void resetOptions(const std::vector<std::string>& newEntries, const std::vector<std::string>& newEntriesLabels = std::vector<std::string>());
+
 #ifdef OFX_EXTENSIONS_NATRON
         /** @brief whether the menu should be cascading, and each option contains a slash-separated path to the item, defaults to false. */
         void setCascading(const bool v);

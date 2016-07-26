@@ -1118,6 +1118,33 @@ namespace OFX {
 #endif
   }
 
+  /** @brief set to the default value */
+  void ChoiceParamDescriptor::resetOptions(const std::vector<std::string>& newEntries,
+                                           const std::vector<std::string>& newEntriesLabel)
+  {
+    assert(newEntries.size() == newEntriesLabel.size() || newEntriesLabel.empty());
+    if (newEntries.empty() || (newEntries.size() != newEntriesLabel.size() && !newEntriesLabel.empty())) {
+
+      // Invalid parameters or empty newEntries, reset the property
+#ifdef OFX_EXTENSIONS_TUTTLE
+      if (_paramProps.propGetDimension(kOfxParamPropChoiceLabelOption, false) > 0) {
+        _paramProps.propReset(kOfxParamPropChoiceLabelOption);
+      }
+#endif
+      _paramProps.propReset(kOfxParamPropChoiceOption);
+    } else {
+      // Set the new entries
+#ifdef OFX_EXTENSIONS_TUTTLE
+      if (!newEntriesLabel.empty()) {
+        _paramProps.propSetStringN(kOfxParamPropChoiceLabelOption, newEntriesLabel, false);
+      }
+#endif
+      _paramProps.propSetStringN(kOfxParamPropChoiceOption, newEntries);
+    }
+
+  }
+
+
 #ifdef OFX_EXTENSIONS_NATRON
   /** @brief whether the menu should be cascading, and each option contains a slash-separated path to the item, defaults to false. */
   void ChoiceParamDescriptor::setCascading(const bool v)
