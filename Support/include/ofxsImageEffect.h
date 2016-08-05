@@ -1559,7 +1559,7 @@ namespace OFX {
     bool getSupportsTiles(void) const;
 
     /** @brief get plugin file path */
-    const std::string getPluginFilePath(void) { return _effectProps.propGetString(kOfxPluginPropFilePath); }
+    std::string getPluginFilePath(void) { return _effectProps.propGetString(kOfxPluginPropFilePath); }
     
 #ifdef OFX_EXTENSIONS_NUKE
     /** @brief indicate that a plugin or host can handle transform effects */
