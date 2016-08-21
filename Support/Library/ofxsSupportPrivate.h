@@ -129,22 +129,22 @@ namespace OFX {
     
     struct VersionIDKey
     {
-        unsigned int major,minor;
+        unsigned int majorVersion, minorVersion;
         std::string id;
         
-        VersionIDKey(): major(0), minor(0), id() {}
+        VersionIDKey(): majorVersion(0), minorVersion(0), id() {}
         
         bool operator< (const VersionIDKey& rhs) const
         {
             if (id == rhs.id) {
-                if (major == rhs.major) {
-                    if (minor == rhs.minor) {
+                if (majorVersion == rhs.majorVersion) {
+                    if (minorVersion == rhs.minorVersion) {
                         return false;
                     } else {
-                        return minor < rhs.minor;
+                        return minorVersion < rhs.minorVersion;
                     }
                 } else {
-                    return major < rhs.major;
+                    return majorVersion < rhs.majorVersion;
                 }
             } else {
                 return id < rhs.id;

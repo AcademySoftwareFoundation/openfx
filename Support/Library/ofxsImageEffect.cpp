@@ -3190,8 +3190,8 @@ namespace OFX {
       {
         OFX::Private::VersionIDKey key;
         key.id = id;
-        key.major = majorVersion;
-        key.minor = minorVersion;
+        key.majorVersion = majorVersion;
+        key.minorVersion = minorVersion;
         EffectDescriptorMap::iterator it = gEffectDescriptors.find(key);
         EffectContextMap& toBeDeleted = it->second;
         for(EffectContextMap::iterator it2 = toBeDeleted.begin(); it2 != toBeDeleted.end(); ++it2)
@@ -3594,8 +3594,8 @@ namespace OFX {
       // make a roi setter object
       OFX::Private::VersionIDKey key;
       key.id = plugname;
-      key.major = majorVersion;
-      key.minor = minorVersion;
+      key.majorVersion = majorVersion;
+      key.minorVersion = minorVersion;
       ActualROISetter setRoIs(outArgs, gEffectDescriptors[key][effectInstance->getContext()]->getClipROIPropNames());
 
       // and call the plugin client code
@@ -3681,8 +3681,8 @@ namespace OFX {
       // make a roi setter object
       OFX::Private::VersionIDKey key;
       key.id = plugname;
-      key.major = majorVersion;
-      key.minor = minorVersion;
+      key.majorVersion = majorVersion;
+      key.minorVersion = minorVersion;
       ActualSetter setFrames(outArgs, gEffectDescriptors[key][effectInstance->getContext()]->getClipFrameRangePropNames());
 
       // and call the plugin client code
@@ -3777,8 +3777,8 @@ namespace OFX {
       // set up our clip preferences setter
       OFX::Private::VersionIDKey key;
       key.id = plugname;
-      key.major = majorVersion;
-      key.minor = minorVersion;
+      key.majorVersion = majorVersion;
+      key.minorVersion = minorVersion;
       ImageEffectDescriptor* desc = gEffectDescriptors[key][effectInstance->getContext()];
       ClipPreferencesSetter prefs(outArgs, desc->getClipDepthPropNames(), desc->getClipComponentPropNames(), desc->getClipPARPropNames());
 
@@ -3910,8 +3910,8 @@ namespace OFX {
         
         OFX::Private::VersionIDKey key;
         key.id = plugname;
-        key.major = majorVersion;
-        key.minor = minorVersion;
+        key.majorVersion = majorVersion;
+        key.minorVersion = minorVersion;
         ImageEffectDescriptor* desc = gEffectDescriptors[key][effectInstance->getContext()];
         FrameViewsNeededSetter setter(outArgs,desc->getClipFrameViewsPropNames());
         effectInstance->getFrameViewsNeeded(args,setter);
@@ -3932,8 +3932,8 @@ namespace OFX {
         
         OFX::Private::VersionIDKey key;
         key.id = plugname;
-        key.major = majorVersion;
-        key.minor = minorVersion;
+        key.majorVersion = majorVersion;
+        key.minorVersion = minorVersion;
         ImageEffectDescriptor* desc = gEffectDescriptors[key][effectInstance->getContext()];
         ClipComponentsSetter setter(outArgs,desc->getClipPlanesPropNames());
         effectInstance->getClipComponents(args,setter);
@@ -4056,8 +4056,8 @@ namespace OFX {
           // add it to our map
           OFX::Private::VersionIDKey key;
           key.id = it->first;
-          key.major = it->second._plug->pluginVersionMajor;
-          key.minor = it->second._plug->pluginVersionMinor;
+          key.majorVersion = it->second._plug->pluginVersionMajor;
+          key.minorVersion = it->second._plug->pluginVersionMinor;
           gEffectDescriptors[key][eContextNone] = desc;
 
           // got here, must be good
@@ -4082,8 +4082,8 @@ namespace OFX {
           // add it to our map
           OFX::Private::VersionIDKey key;
           key.id = it->first;
-          key.major = it->second._plug->pluginVersionMajor;
-          key.minor = it->second._plug->pluginVersionMinor;
+          key.majorVersion = it->second._plug->pluginVersionMajor;
+          key.minorVersion = it->second._plug->pluginVersionMinor;
           gEffectDescriptors[key][context] = desc;
 
           // got here, must be good
