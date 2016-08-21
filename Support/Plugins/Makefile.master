@@ -85,7 +85,8 @@ VPATH += $(PATHTOROOT)/Library
 all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
 
 install:
-	(cd $(OBJECTPATH); tar cf - $(PLUGINNAME).ofx.bundle) | (cd "$(PLUGINPATH)"; tar xvf -)
+	@mkdir -p $(DESTDIR)$(PLUGINPATH)
+	(cd $(OBJECTPATH); tar cf - $(PLUGINNAME).ofx.bundle) | (cd "$(DESTDIR)$(PLUGINPATH)"; tar xvf -)
 
 uninstall:
 	rm -rf "$(PLUGINPATH)/$(PLUGINNAME).ofx.bundle"
