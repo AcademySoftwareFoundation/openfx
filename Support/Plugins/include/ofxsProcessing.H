@@ -79,25 +79,9 @@ namespace OFX {
         /** @brief overridden from OFX::MultiThread::Processor. This function is called once on each SMP thread by the base class */
         void multiThreadFunction(unsigned int threadId, unsigned int nThreads)
         {
-            // slice the y range into the number of threads it has
-            unsigned int dy = _renderWindow.y2 - _renderWindow.y1;
-            // the following is equivalent to std::ceil(dy/(double)nThreads);
-            unsigned int h = (dy+nThreads-1)/nThreads;
-            if (h == 0) {
-                // there are more threads than lines to process
-                h = 1;
-            }
-            if (threadId * h >= dy) {
-                // empty render subwindow
-                return;
-            }
-            int y1 = _renderWindow.y1 + threadId * h;
-
-            unsigned int step = (threadId + 1) * h;
-            int y2 = _renderWindow.y1 + (step < dy ? step : dy);
-
             OfxRectI win = _renderWindow;
-            win.y1 = y1; win.y2 = y2;
+
+            MultiThread::getThreadRange(threadId, nThreads, _renderWindow.y1, _renderWindow.y2, &win.y1, &win.y2);
 
             // and render that thread on each
             multiThreadProcessImages(win);

@@ -84,6 +84,9 @@ namespace OFX {
     /** @brief The index of the current thread. From 0 to numCPUs() - 1 */
     unsigned int getThreadIndex(void);
 
+    /** @brief Utility function to compute the subrange of a given thread */
+    void getThreadRange(unsigned int threadID, unsigned int nThreads, int ibegin, int iend, int* ibegin_range, int* iend_range);
+
 #ifdef OFX_USE_MULTITHREAD_MUTEX
     /** @brief An OFX mutex */
     class Mutex {
