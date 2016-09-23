@@ -387,6 +387,28 @@ namespace OFX {
   virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context); \
   };
 
+  /** @brief Declare a plugin factory with a template majorVersion parameters.
+   *
+   * Allows an easy definition of multiple versions of the same plugin, for backward compatibility.
+   * Keep in mind that the members of PluginFactoryHelper must be accessed through this->, 
+   * because when a class template derives from a base class template, the base members are
+   * not visible in the derived class template definition. (This makes sense; until you specialize,
+   * there is no class, and so there are no members. Explicit specializations can always change 
+   * the meaning of any given template class.)
+   */
+#define mDeclarePluginFactoryVersioned(CLASS, LOADFUNCDEF, UNLOADFUNCDEF) \
+  template<unsigned int majorVersion> \
+  class CLASS : public OFX::PluginFactoryHelper<CLASS<majorVersion> > \
+  { \
+  public: \
+  CLASS<majorVersion>(const std::string& id, unsigned int verMin):OFX::PluginFactoryHelper<CLASS>(id, majorVersion, verMin){} \
+  virtual void load() LOADFUNCDEF ;\
+  virtual void unload() UNLOADFUNCDEF ;\
+  virtual void describe(OFX::ImageEffectDescriptor &desc); \
+  virtual void describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context); \
+  virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context); \
+  };
+
   typedef std::vector<PluginFactory*> PluginFactoryArray;
   struct PluginFactories {
     static OFX::PluginFactoryArray& plugIDs() {
