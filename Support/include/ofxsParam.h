@@ -282,6 +282,9 @@ namespace OFX {
         /** @brief set the secretness of the param, defaults to false */
         void setIsSecret(bool v);
 
+        /** @brief whether the param is secret and disabled, defaults to false */
+        void setIsSecretAndDisabled(bool v) { setEnabled(!v); setIsSecret(v); }
+
 #ifdef OFX_EXTENSIONS_VEGAS
         /** @brief set the default expanded of the param, defaults to false */
         void setParameterExpanded(bool v);
@@ -1166,6 +1169,9 @@ namespace OFX {
 
         /** @brief set the secretness of the param, defaults to false */
         void setIsSecret(bool v);
+
+        /** @brief whether the param is secret and disabled, defaults to false */
+        void setIsSecretAndDisabled(bool v) { setEnabled(!v); setIsSecret(v); }
 
         /** @brief set the param hint */
         void setHint(const std::string &hint);
