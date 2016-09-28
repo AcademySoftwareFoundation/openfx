@@ -487,6 +487,18 @@ namespace OFX {
     bool supportsDynamicChoices;
     bool supportsCascadingChoices;
     bool supportsChannelSelector;
+
+    struct NativeOverlayHandle
+    {
+      // Uniquely identifies the overlay handle in the host
+      std::string identifier;
+
+      // A vector of parameters, where each parameter contains a pair <parameterHint, parameterType>
+      // The parameterHint is a hint of the host as to what kind of parameter should be used for that role
+      // The parameterType allows the host to contrain which parameter type should be passed to the native overlay handle
+      std::vector<std::pair<std::string,std::string> > parameters;
+    };
+    std::vector<NativeOverlayHandle> nativeInteracts;
 #endif
 
   public:
@@ -750,6 +762,9 @@ namespace OFX {
 
       /*Add a shortcut for the given parameter and set its default value. The host could then display this shortcut in an editor*/
       void setDefaultParamInViewportShortcut(const std::string& paramName, int symbolKey, ShortcutModifierEnum modifiers);
+
+      /* Add a native overlay interact for the given parameters*/
+      void addNativeOverlayInteractForParameters(const std::string& interactType, const std::vector<std::string>& parameterNames);
 #endif
 
     /** @brief Create a clip, only callable from describe in context

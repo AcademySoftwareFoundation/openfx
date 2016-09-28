@@ -502,8 +502,10 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
     - The first time an action is push, the host should not call kOfxActionInstanceChanged on the plug-in since the action has already been redone
     - It is up to the plug-in to merge similar undo/redo actions (e.g: imagine each action being typing a letter, the plug-in could merge them under a single one to delimit words instead of letters whenever the user wants to undo something). The first action of such a merge should always call paramSetValue but if a merge is successful, it should not call it.
  
-  12) kOfxParamPropUseHostOverlayHandle is now deprecated. Instead the new property kNatronOfxPropNativeOverlays is defined on the plug-in image effect descriptor
- and on the host descriptor. See property description for more infos.
+  12) The new property kNatronOfxPropNativeOverlays is defined on the plug-in image effect descriptor and on the host descriptor. 
+ It adds a way for a plug-in to let the host handle overlay interacts.
+ kOfxParamPropUseHostOverlayHandle is no longer needed with this new property.
+ See property description for more infos.
  
  */
 
@@ -532,14 +534,17 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 "NatronNativeOverlayType_CornerPin2D_NatronNativeOverlayParameterHint_TopLeft_NatronNativeOverlayParameterType_OfxParamTypeDouble2D_NatronNativeOverlayParameterHint_TopRight_NatronNativeOverlayParameterType_OfxParamTypeDouble2D_NatronNativeOverlayParameterHint_BottomRIght_NatronNativeOverlayParameterType_OfxParamTypeDouble2D_NatronNativeOverlayParameterHint_BottomLeft_NatronNativeOverlayParameterType_OfxParamTypeDouble2D"
 
  
- On the plug-in side, each string describes which overlay type of the host to use and a number of parameter names which should match the number of parameters and their respective type defined by the host for this type.
+ On the plug-in side, each string describes which overlay type of the host to use and a number of parameter strings.
+ Each parameter string is of the form:
+ 
+ "NatronNativeOverlayParameterName" + '_' + "parameterName"
 
  
  For example:
  
- "NatronNativeOverlayType_Point2D_myPositionParameter"
+ "NatronNativeOverlayType_Point2D_NatronNativeOverlayParameterName_myPositionParameter"
 
- "NatronNativeOverlayType_CornerPin2D_topLeft_topRight_bottomRight_bottomLeft"
+ "NatronNativeOverlayType_CornerPin2D_NatronNativeOverlayParameterName_topLeft_NatronNativeOverlayParameterName_topRight_NatronNativeOverlayParameterName_bottomRight_NatronNativeOverlayParameterName_bottomLeft"
  
 
  **/
@@ -551,6 +556,7 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
 #define kNatronNativeOverlayType "NatronNativeOverlayType"
 #define kNatronNativeOverlayParameterHint "NatronNativeOverlayParameterHint"
 #define kNatronNativeOverlayParameterType "NatronNativeOverlayParameterType"
+#define kNatronNativeOverlayParameterName "NatronNativeOverlayParameterName"
 
 /**
  int property that tells if a hint or description is written in markdown instead of plain text.

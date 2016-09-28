@@ -1145,6 +1145,22 @@ namespace OFX {
     _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutHasAltModifier, (int)(modifiers & eShortcutModifierAlt), n, false);
     _effectProps.propSetInt(kNatronOfxImageEffectPropInViewerContextShortcutHasMetaModifier, (int)(modifiers & eShortcutModifierMeta), n, false);
   }
+
+  void
+  ImageEffectDescriptor::addNativeOverlayInteractForParameters(const std::string& interactType, const std::vector<std::string>& parameterNames)
+  {
+    std::stringstream ss;
+    ss << kNatronNativeOverlayType << '_' << interactType << '_';
+    for (std::size_t i = 0; i < parameterNames.size(); ++i) {
+      ss << kNatronNativeOverlayParameterName << '_';
+      ss << parameterNames[i];
+      if (i < parameterNames.size() - 1) {
+        ss << '_';
+      }
+    }
+    int n = _effectProps.propGetDimension(kNatronOfxPropNativeOverlays, false);
+     _effectProps.propSetString(kNatronOfxPropNativeOverlays, ss.str(), n, false);
+  }
 #endif
 
 #ifdef OFX_EXTENSIONS_VEGAS
@@ -2966,6 +2982,69 @@ namespace OFX {
   /** @brief OFX::Private namespace, for things private to the support library code here generally calls image effect class members */
   namespace Private {
 
+#ifdef OFX_EXTENSIONS_NATRON
+    static
+    bool
+    decodeNativeOverlayHandle(const std::string& str, ImageEffectHostDescription::NativeOverlayHandle& handle)
+    {
+      static const std::string idToken(kNatronNativeOverlayType);
+      static const std::string paramHintToken(kNatronNativeOverlayParameterHint);
+      static const std::string paramTypeToken(kNatronNativeOverlayParameterHint);
+      std::size_t foundName = str.find_first_of(idToken);
+      if (foundName == std::string::npos) {
+        return false;
+      }
+
+      // Position the cursor to the start of the identifier string. +1 to ignore the '_' character.
+      std::size_t identifierStart = foundName + idToken.size() + 1;
+
+      std::size_t foundParamHint = str.find_first_of(paramHintToken);
+      if (foundParamHint == std::string::npos) {
+        return false;
+      }
+
+      std::size_t identifierEnd = foundParamHint - 1;
+      handle.identifier = str.substr(identifierStart, identifierEnd - identifierStart);
+
+      while (foundParamHint != std::string::npos) {
+        // Position the cursor to the start of the first parameter string. +1 to ignore the '_' character.
+        std::size_t paramHintStart = foundParamHint + paramHintToken.size() + 1;
+
+
+        // Find the param type string token
+        std::size_t foundParamType = str.find_first_of(paramTypeToken, paramHintStart);
+
+        // huh badly encoded...
+        if (foundParamType == std::string::npos) {
+          return false;
+        }
+
+        std::size_t paramHintEnd = foundParamType - 1;
+        std::string paramHint = str.substr(paramHintStart, paramHintEnd - paramHintStart);
+
+
+        std::size_t paramTypeStart = foundParamType + paramTypeToken.size() + 1;
+
+        // Find the next parameter description if any
+        foundParamHint = str.find_first_of(paramHintToken, paramTypeStart);
+
+        std::size_t paramTypeEnd;
+        if (foundParamHint != std::string::npos) {
+          // there's a parameter after this one, use it to know where to stop for the type string
+          paramTypeEnd = foundParamHint - 1;
+        } else {
+          // we reached the end!
+          paramTypeEnd = std::string::npos;
+        }
+        std::string paramType = str.substr(paramTypeStart, paramTypeEnd - paramTypeStart);
+        handle.parameters.push_back(std::make_pair(paramHint, paramType));
+
+      }
+
+      return true;
+
+    }
+#endif
     /** @brief Creates the global host description and sets its properties */
     static
     void
@@ -3052,6 +3131,17 @@ namespace OFX {
         gHostDescription.supportsDynamicChoices     = hostProps.propGetInt(kNatronOfxParamHostPropSupportsDynamicChoices, false) != 0;
         gHostDescription.supportsCascadingChoices   = hostProps.propGetInt(kNatronOfxParamPropChoiceCascading, false) != 0;
         gHostDescription.supportsChannelSelector    = hostProps.propGetString(kNatronOfxImageEffectPropChannelSelector, false) == kOfxImageComponentRGBA;
+
+        int nOverlayHandles = hostProps.propGetDimension(kNatronOfxPropNativeOverlays, false);
+        for (int i = 0; i < nOverlayHandles; ++i) {
+          std::string overlayHandleEncoded = hostProps.propGetString(kNatronOfxPropNativeOverlays, i, false);
+          ImageEffectHostDescription::NativeOverlayHandle h;
+          if (decodeNativeOverlayHandle(overlayHandleEncoded, h)) {
+            gHostDescription.nativeInteracts.push_back(h);
+          }
+
+        }
+
 #endif
 
         int numComponents = hostProps.propGetDimension(kOfxImageEffectPropSupportedComponents);

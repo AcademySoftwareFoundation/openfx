@@ -144,6 +144,7 @@ namespace OFX {
         { kNatronOfxImageEffectPropInViewerContextShortcutHasShiftModifier, Property::eInt, 0, true, "" },
         { kNatronOfxImageEffectPropInViewerContextShortcutHasAltModifier, Property::eInt, 0, true, "" },
         { kNatronOfxImageEffectPropInViewerContextShortcutHasMetaModifier, Property::eInt, 0, true, "" },
+        { kNatronOfxPropNativeOverlays, Property::eString, 0, false, ""},
 #endif
         Property::propSpecEnd
       };
@@ -3984,6 +3985,7 @@ namespace OFX {
         { kNatronOfxImageEffectPropHostMixing, Property::eInt, 1, true, "0" },
         { kNatronOfxPropDescriptionIsMarkdown, Property::eInt, 1, true, "0" },
         { kNatronOfxImageEffectPropDefaultCursors, Property::eString, 0, true, "" },
+        { kNatronOfxPropNativeOverlays, Property::eString, 0, true, ""},
 #    endif
         Property::propSpecEnd
       };    
