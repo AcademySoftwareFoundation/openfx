@@ -434,6 +434,8 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
     9) Add a way to show a custom dialog with fields represented as parameters. This is implemented as a property on a group parameter whether its content can be represented as a non-modal dialog or not.
     10) Plug-ins description (kOfxPropPluginDescription) and parameters hint (kOfxParamPropHint) may be written in markdown.
     11) A plug-in might want to be able to access the host undo/redo actions of the Edit menu when doing special actions from within the overlay interact actions not involving parameters.
+    12) Deprecate kOfxParamPropUseHostOverlayHandle, instead add a property on the image effect descriptor indicating group of parameters which altogether control
+ more complex overlays. A host can then provide default overlay interact handling.
 
 1) In the host viewport, parameters can be arranged by widget rows controlled by the kNatronOfxImageEffectPropInViewerContextParamsOrder property.
  This index indicates the order of the parameter in the rows.
@@ -499,8 +501,56 @@ This is a property on parameters of type ::kOfxParamTypeChoice, and tells the ch
     It is up to the plug-in to maintain the actual undo/redo stack of actions. Also note the following:
     - The first time an action is push, the host should not call kOfxActionInstanceChanged on the plug-in since the action has already been redone
     - It is up to the plug-in to merge similar undo/redo actions (e.g: imagine each action being typing a letter, the plug-in could merge them under a single one to delimit words instead of letters whenever the user wants to undo something). The first action of such a merge should always call paramSetValue but if a merge is successful, it should not call it.
+ 
+  12) kOfxParamPropUseHostOverlayHandle is now deprecated. Instead the new property kNatronOfxPropNativeOverlays is defined on the plug-in image effect descriptor
+ and on the host descriptor. See property description for more infos.
+ 
  */
 
+/**
+  string property xN that indicates for a host the supported native overlay interacts and for a plug-in the native overlay interacts requested to the host.
+ 
+ Property set - image effect descriptor (read/write) and host descriptor (read only).
+
+ On the host side, each string describes one type of native overlay interact. Each native overlay interact is of the following form:
+
+ kNatronNativeOverlayType + '_' + "UniqueOverlayName" + '_'
+
+ Followed by an undefined number of strings representing parameters. Each parameter is defined of the following form:
+ 
+ kNatronNativeOverlayParameterHint + '_' + "RoleHint" + kNatronNativeOverlayParameterType + "ParamType"
+ 
+ The type of a parameter is as defined in ofxParam.h such as kOfxParamTypeInteger or kOfxParamTypeDouble2D.
+ Each parameter string is separated by a '_'.
+ 
+ For example:
+
+ "NatronNativeOverlayType_Point2D_kNatronNativeOverlayParameterHint_Position_NatronNativeOverlayParameterType_OfxParamTypeDouble2D"
+ 
+ Or
+
+"NatronNativeOverlayType_CornerPin2D_NatronNativeOverlayParameterHint_TopLeft_NatronNativeOverlayParameterType_OfxParamTypeDouble2D_NatronNativeOverlayParameterHint_TopRight_NatronNativeOverlayParameterType_OfxParamTypeDouble2D_NatronNativeOverlayParameterHint_BottomRIght_NatronNativeOverlayParameterType_OfxParamTypeDouble2D_NatronNativeOverlayParameterHint_BottomLeft_NatronNativeOverlayParameterType_OfxParamTypeDouble2D"
+
+ 
+ On the plug-in side, each string describes which overlay type of the host to use and a number of parameter names which should match the number of parameters and their respective type defined by the host for this type.
+
+ 
+ For example:
+ 
+ "NatronNativeOverlayType_Point2D_myPositionParameter"
+
+ "NatronNativeOverlayType_CornerPin2D_topLeft_topRight_bottomRight_bottomLeft"
+ 
+
+ **/
+#define kNatronOfxPropNativeOverlays "NatronOfxPropNativeOverlays"
+
+/**
+ String used to define native overlay interacts in the kNatronOfxPropNativeOverlays property
+ **/
+#define kNatronNativeOverlayType "NatronNativeOverlayType"
+#define kNatronNativeOverlayParameterHint "NatronNativeOverlayParameterHint"
+#define kNatronNativeOverlayParameterType "NatronNativeOverlayParameterType"
 
 /**
  int property that tells if a hint or description is written in markdown instead of plain text.
