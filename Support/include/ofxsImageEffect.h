@@ -742,29 +742,36 @@ namespace OFX {
 #endif
       
 #ifdef OFX_EXTENSIONS_NATRON
-      /*Indicates if the host may add a mask that will be handled automatically.*/
+      /** @brief Indicates if the host may add a mask that will be handled automatically. */
       void setHostMaskingEnabled(bool enabled);
       
-      /*Indicates if the host may add a "Mix" double parameter that will dissolve
-       between the source image at 0 and the full effect at 1.*/
+      /** @brief Indicates if the host may add a "Mix" double parameter that will dissolve
+        between the source image at 0 and the full effect at 1. */
       void setHostMixingEnabled(bool enabled);
 
-      /*Indicates if the plug-in description is written in markdown or plain-text otherwise */
+      /** @brief Indicates if the plug-in description is written in markdown or plain-text otherwise. */
       void setDescriptionIsMarkdown(bool markdown);
 
-      /*The current selection rectangle drawn by the user on the host viewport.
-       This property is refreshed whenever calling the kOfxActionInstanceChanged action for the parameter kNatronOfxParamSelectionRectangleState to let the plug-in a change to correctly synchronized its selection.
+      /** @brief The current selection rectangle drawn by the user on the host viewport.
+
+       This property is refreshed whenever calling the kOfxActionInstanceChanged action 
+       for the parameter kNatronOfxParamSelectionRectangleState to let the plug-in a change
+       to correctly synchronized its selection.
        */
       OfxRectI getSelectionRectangle();
 
-      /*Add a parameter that will be visible in a toolbar in the viewport of the host application.*/
+      /** @brief Add a parameter that will be visible in a toolbar in the viewport of the host application. */
       void addInViewportParam(const std::string& paramName);
 
-      /*Add a shortcut for the given parameter and set its default value. The host could then display this shortcut in an editor*/
+      /** @brief Add a shortcut for the given parameter and set its default value. The host could then display this shortcut in an editor. */
       void setDefaultParamInViewportShortcut(const std::string& paramName, int symbolKey, ShortcutModifierEnum modifiers);
 
-      /* Add a native overlay interact for the given parameters*/
-      void addNativeOverlayInteractForParameters(const std::string& interactType, const std::vector<std::string>& parameterNames);
+      /** @brief Add a native overlay interact for the given parameters.
+       
+       This should be called in describeInContext().
+       It sets the properties kOfxParamPropUseHostOverlayHandle on each parameter,
+       and kNatronOfxPropNativeOverlays on the effect descriptor. */
+      void addNativeOverlayInteractForParameters(const std::string& interactType, const std::list<ParamDescriptor*>& parameters);
 #endif
 
     /** @brief Create a clip, only callable from describe in context

@@ -1147,19 +1147,17 @@ namespace OFX {
   }
 
   void
-  ImageEffectDescriptor::addNativeOverlayInteractForParameters(const std::string& interactType, const std::vector<std::string>& parameterNames)
+  ImageEffectDescriptor::addNativeOverlayInteractForParameters(const std::string& interactType, const std::list<ParamDescriptor*>& parameters)
   {
     std::stringstream ss;
-    ss << kNatronNativeOverlayType << '_' << interactType << '_';
-    for (std::size_t i = 0; i < parameterNames.size(); ++i) {
-      ss << kNatronNativeOverlayParameterName << '_';
-      ss << parameterNames[i];
-      if (i < parameterNames.size() - 1) {
-        ss << '_';
-      }
+    ss << kNatronNativeOverlayType << '_' << interactType;
+    for (std::list<ParamDescriptor*>::const_iterator it = parameters.begin(); it != parameters.end(); ++it) {
+      ss << '_' << kNatronNativeOverlayParameterName << '_';
+      ss << (*it)->getName();
+      (*it)->setUseHostNativeOverlayHandle(true); // also set the OFX 1.2 property
     }
     int n = _effectProps.propGetDimension(kNatronOfxPropNativeOverlays, false);
-     _effectProps.propSetString(kNatronOfxPropNativeOverlays, ss.str(), n, false);
+    _effectProps.propSetString(kNatronOfxPropNativeOverlays, ss.str(), n, false);
   }
 #endif
 
