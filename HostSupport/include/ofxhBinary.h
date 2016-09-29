@@ -32,9 +32,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <iostream>
 
-#if defined(WIN32) || defined(WIN64)
+#if defined(_WIN32) || defined(_WIN64)
+#define WINDOWS
+#ifdef defined(_WIN64) || defined(__amd64__)
+#define AMD64
+#else
 #define I386
-#elif defined(__linux__) || defined(__FreeBSD__)
+#endif
+#elif defined(__linux__) || defined(__FreeBSD__) || defined( __APPLE__) || defined(unix) || defined(__unix) || defined(_XOPEN_SOURCE) || defined(_POSIX_SOURCE)
 #define UNIX
 #ifdef __i386__
 #define I386
@@ -43,8 +48,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #error cannot detect architecture
 #endif
-#elif defined( __APPLE__)
-#define UNIX
 #else
 #error cannot detect operating system
 #endif
