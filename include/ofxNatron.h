@@ -906,6 +906,6 @@ says:
  The order of the values is x1, y1, x2, y2 where x1 <= x2 and y1 <= y2.
 
  **/
-#define kOfxImageEffectPropFormat "OfxImageEffectPropFormat"
+#define kOfxImageClipPropFormat "OfxImageClipPropFormat"
 
 #endif // #ifndef _ofxNatron_h_

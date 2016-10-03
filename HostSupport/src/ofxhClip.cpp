@@ -251,8 +251,8 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
         { kFnOfxImageEffectPropComponentsPresent, Property::eString, 0, true, kOfxImageComponentNone},
 #endif
-#ifdef OFX_EXNTENSIONS_NATRON
-        { kOfxImageEffectPropFormat, Property::eInt, 4, true, "0"},
+#ifdef OFX_EXTENSIONS_NATRON
+        { kOfxImageClipPropFormat, Property::eInt, 4, true, "0"},
 #endif
         Property::propSpecEnd,
       };
@@ -416,7 +416,7 @@ namespace OFX {
           return getContinuousSamples();
         }
 #ifdef OFX_EXTENSIONS_NATRON
-        else if(name==kOfxImageEffectPropFormat){
+        else if(name==kOfxImageClipPropFormat){
           OfxRectI format = getFormat();
           if (n == 0) {
             return format.x1;
@@ -441,7 +441,7 @@ namespace OFX {
       {
         if(n!=0) throw Property::Exception(kOfxStatErrValue);
 #ifdef OFX_EXTENSIONS_NATRON
-        if(name==kOfxImageEffectPropFormat){
+        if(name==kOfxImageClipPropFormat){
           if (n != 4) {
             throw Property::Exception(kOfxStatErrBadIndex);
           }

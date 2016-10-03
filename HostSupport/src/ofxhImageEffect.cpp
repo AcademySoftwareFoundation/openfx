@@ -2503,7 +2503,7 @@ namespace OFX {
             { kOfxImageClipPropContinuousSamples,    Property::eInt,     1, false,  "0" },
             { kOfxImageEffectFrameVarying,           Property::eInt,     1, false,  "0" },
 #ifdef OFX_EXTENSIONS_NATRON
-            { kOfxImageEffectPropFormat,             Property::eInt,     4, false,   "0"},
+            { kOfxImageClipPropFormat,             Property::eInt,     4, false,   "0"},
 #endif
             Property::propSpecEnd
           };
@@ -2613,7 +2613,7 @@ namespace OFX {
           
         outArgs.setDoubleProperty(kOfxImageEffectPropFrameRate, outputFrameRate);
 #ifdef OFX_EXTENSIONS_NATRON
-        outArgs.setIntPropertyN(kOfxImageEffectPropFormat, (const int*)&outputFormat.x1, 4);
+        outArgs.setIntPropertyN(kOfxImageClipPropFormat, (const int*)&outputFormat.x1, 4);
 #endif
 
       }
