@@ -1568,20 +1568,15 @@ namespace OFX {
     _clipProps.propSetString(kOfxParamPropHint, v, false);
   }
 
-  OfxRectI
-    Clip::getFormat() const
+  void
+    Clip::getFormat(OfxRectI &format) const
   {
-    std::vector<int> values;
-    OfxRectI ret = {0, 0, 0, 0};
+    std::vector<int> values(4); // initializes to 0
     _clipProps.propGetNInt(kOfxImageEffectPropFormat, &values, false);
-    if (values.empty()) {
-      return ret;
-    }
-    ret.x1 = values[0];
-    ret.y1 = values[1];
-    ret.x2 = values[2];
-    ret.y2 = values[3];
-    return ret;
+    format.x1 = values[0];
+    format.y1 = values[1];
+    format.x2 = values[2];
+    format.y2 = values[3];
   }
 #endif
 

@@ -1004,8 +1004,8 @@ namespace OFX {
     /** @brief set the clip hint */
     void setHint(const std::string &hint);
 
-    /* @brief Get the clip format in pixel coordinates*/
-    OfxRectI getFormat() const;
+    /* @brief Get the clip format in pixel coordinates */
+    void getFormat(OfxRectI &format) const;
 #endif
 
     /// get the OFX clip handle
