@@ -350,6 +350,7 @@ namespace OFX {
       // get the virutals for viewport size, pixel scale, background colour
       void ClipInstance::getDoublePropertyN(const std::string &name, double *values, int n) const OFX_EXCEPTION_SPEC
       {
+        if(n<=0) throw Property::Exception(kOfxStatErrValue);
         if(name==kOfxImagePropPixelAspectRatio){
           if(n>1) throw Property::Exception(kOfxStatErrValue);
           *values = getAspectRatio();
@@ -439,7 +440,7 @@ namespace OFX {
       // get the virutals for viewport size, pixel scale, background colour
       void ClipInstance::getIntPropertyN(const std::string &name, int *values, int n) const OFX_EXCEPTION_SPEC
       {
-        if(n!=0) throw Property::Exception(kOfxStatErrValue);
+        if(n<=0) throw Property::Exception(kOfxStatErrValue);
 #ifdef OFX_EXTENSIONS_NATRON
         if(name==kOfxImageClipPropFormat){
           if (n != 4) {
@@ -447,8 +448,8 @@ namespace OFX {
           }
           OfxRectI format = getFormat();
           values[0] = format.x1;
-          values[1] = format.x2;
-          values[2] = format.y1;
+          values[1] = format.y1;
+          values[2] = format.x2;
           values[3] = format.y2;
         } else
 #endif
@@ -496,9 +497,7 @@ namespace OFX {
       // fetch  multiple values in a multi-dimension property
       void ClipInstance::getStringPropertyN(const std::string &name, const char** values, int count) const OFX_EXCEPTION_SPEC
       {
-          if (count == 0) {
-              return;
-          }
+          if (count <= 0) throw Property::Exception(kOfxStatErrValue);
 #ifdef OFX_EXTENSIONS_NUKE
           if (name==kFnOfxImageEffectPropComponentsPresent) {
               const std::vector<std::string>& componentsPresents = getComponentsPresent();
