@@ -237,6 +237,23 @@ namespace OFX {
     if(_gPropLogging > 0) Log::print("Set string property %s[0..%d].",  property, values.size()-1);
   }
 
+  void PropertySet::propSetIntN(const char* property, const std::vector<int> &values, bool throwOnFailure) throw(std::bad_alloc,
+  OFX::Exception::PropertyUnknownToHost,
+  OFX::Exception::PropertyValueIllegalToHost,
+  OFX::Exception::Suite)
+  {
+    assert(_propHandle != 0);
+
+    OfxStatus stat = gPropSuite->propSetIntN(_propHandle, property, (int)values.size(), (const int*)&values[0]);
+    OFX::Log::error(stat != kOfxStatOK, "Failed on setting int property %s[0..%d], host returned status %s;",
+                    property, values.size()-1, mapStatusToString(stat));
+    if(throwOnFailure)
+      throwPropertyException(stat, property);
+
+    if(_gPropLogging > 0) Log::print("Set int property %s[0..%d].",  property, values.size()-1);
+
+  }
+
   /** @brief Get single pointer property */
   void*  PropertySet::propGetPointer(const char* property, int idx, bool throwOnFailure) const throw(std::bad_alloc, 
     OFX::Exception::PropertyUnknownToHost, 
@@ -337,6 +354,28 @@ namespace OFX {
         (*values)[i] = std::string();
       }
     }
+  }
+
+  void PropertySet::propGetNInt(const char* property, std::vector<int>* values, bool throwOnFailure) const throw(std::bad_alloc,
+  OFX::Exception::PropertyUnknownToHost,
+  OFX::Exception::PropertyValueIllegalToHost,
+  OFX::Exception::Suite)
+  {
+    assert(_propHandle != 0);
+    int dimension = propGetDimension(property,throwOnFailure);
+    if (dimension <= 0 || !values) {
+      return;
+    }
+
+    values->resize(dimension);
+    OfxStatus stat = gPropSuite->propGetIntN(_propHandle, property, dimension, &values->front());
+    OFX::Log::error(stat != kOfxStatOK, "Failed on getting int property %s, host returned status %s;",
+                    property, mapStatusToString(stat));
+    if(throwOnFailure)
+      throwPropertyException(stat, property);
+
+    if(_gPropLogging > 0) Log::print("Retrieved int property %s, was given %s.", property, &values->front());
+
   }
 
 };

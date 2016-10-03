@@ -251,6 +251,9 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
         { kFnOfxImageEffectPropComponentsPresent, Property::eString, 0, true, kOfxImageComponentNone},
 #endif
+#ifdef OFX_EXNTENSIONS_NATRON
+        { kOfxImageEffectPropFormat, Property::eInt, 4, true, "0"},
+#endif
         Property::propSpecEnd,
       };
 
@@ -412,15 +415,46 @@ namespace OFX {
         else if(name==kOfxImageClipPropContinuousSamples){
           return getContinuousSamples();
         }
-        else
+#ifdef OFX_EXTENSIONS_NATRON
+        else if(name==kOfxImageEffectPropFormat){
+          OfxRectI format = getFormat();
+          if (n == 0) {
+            return format.x1;
+          } else if (n == 1) {
+            return format.y1;
+          } else if (n == 2) {
+            return format.x2;
+          } else if (n == 3) {
+            return format.y2;
+          } else {
+            throw Property::Exception(kOfxStatErrBadIndex);
+          }
+        }
+#endif
+        else {
           throw Property::Exception(kOfxStatErrValue);
+        }
       }
 
       // get the virutals for viewport size, pixel scale, background colour
       void ClipInstance::getIntPropertyN(const std::string &name, int *values, int n) const OFX_EXCEPTION_SPEC
       {
         if(n!=0) throw Property::Exception(kOfxStatErrValue);
-        *values = getIntProperty(name, 0);
+#ifdef OFX_EXTENSIONS_NATRON
+        if(name==kOfxImageEffectPropFormat){
+          if (n != 4) {
+            throw Property::Exception(kOfxStatErrBadIndex);
+          }
+          OfxRectI format = getFormat();
+          values[0] = format.x1;
+          values[1] = format.x2;
+          values[2] = format.y1;
+          values[3] = format.y2;
+        } else
+#endif
+        {
+          *values = getIntProperty(name, 0);
+        }
       }
 
       // get the virutals for viewport size, pixel scale, background colour

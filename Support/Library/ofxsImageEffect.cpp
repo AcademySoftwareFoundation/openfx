@@ -1567,6 +1567,22 @@ namespace OFX {
   {
     _clipProps.propSetString(kOfxParamPropHint, v, false);
   }
+
+  OfxRectI
+    Clip::getFormat() const
+  {
+    std::vector<int> values;
+    OfxRectI ret = {0, 0, 0, 0};
+    _clipProps.propGetNInt(kOfxImageEffectPropFormat, &values, false);
+    if (values.empty()) {
+      return ret;
+    }
+    ret.x1 = values[0];
+    ret.y1 = values[1];
+    ret.x2 = values[2];
+    ret.y2 = values[3];
+    return ret;
+  }
 #endif
 
   /** @brief fetch the label */
@@ -2930,6 +2946,22 @@ namespace OFX {
     case eFieldDoubled : outArgs_.propSetString(kOfxImageClipPropFieldOrder, kOfxImageFieldDoubled, 0, false); break;
     }
   }
+
+#ifdef OFX_EXTENSIONS_NATRON
+  /** @brief Sets the output format in pixel coordinates.
+   Default to first non optional input clip format
+   */
+  void ClipPreferencesSetter::setOutputFormat(const OfxRectI& format)
+  {
+    doneSomething_ = true;
+    std::vector<int> v(4);
+    v[0] = format.x1;
+    v[1] = format.y1;
+    v[2] = format.x2;
+    v[3] = format.y2;
+    outArgs_.propSetIntN(kOfxImageEffectPropFormat, v, false);
+  }
+#endif
 
   ////////////////////////////////////////////////////////////////////////////////
   /** @brief Class that skins image memory allocation */

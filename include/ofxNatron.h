@@ -893,4 +893,19 @@ says:
  */
 #define kNatronOfxPropPickerColour "NatronOfxPropPickerColour"
 
+
+/** Used to indicate the format size (in pixel coordinates) of the stream that should be displayed in output of this plug-in. It is not necessarily the same as the region of definition.
+
+ Example: User has a project size 2K. The user draws a rectangle which does not cover the full project size, the region of definition is thus smaller than the project size. Think now of a Reformat plug-in appended after the rectangle to perform a scale down to 1K: the region of definition in output of the plug-in should be half the region of the original rectangle and the format should become 1K. Without this property, the Reformat plug-in would be forced to have a region of definition of 1K and render many un-needed pixels.
+
+ - Type - int X4
+ - Property Set - a read/write out argument property of the kOfxImageEffectActionGetClipPreferences and a read only property of a clip instance
+ - Default - Host by default sets the format to the "Source" clip format. If the effect is in the General context, the format is initialized to the first non-optional input clip.
+ If there are no input clips, the format is initialized to the project extent/size.
+
+ The order of the values is x1, y1, x2, y2 where x1 <= x2 and y1 <= y2.
+
+ **/
+#define kOfxImageEffectPropFormat "OfxImageEffectPropFormat"
+
 #endif // #ifndef _ofxNatron_h_

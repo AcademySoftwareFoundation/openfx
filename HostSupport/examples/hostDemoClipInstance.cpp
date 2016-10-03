@@ -273,6 +273,21 @@ namespace MyHost {
     return v;
   }
 
+
+#ifdef OFX_EXTENSIONS_NATRON
+  // Format -
+  // The format of the clip or image (in pixel coordinates)
+  OfxRectI MyClipInstance::getFormat() const
+  {
+    /// our clip is pretending to be progressive PAL SD, so return 0<=x<768, 0<=y<576
+    OfxRectI v;
+    v.x1 = v.y1 = 0;
+    v.x2 = 768;
+    v.y2 = 576;
+    return v;
+  }
+#endif
+
   // Pixel Aspect Ratio -
   //
   //  The pixel aspect ratio of a clip or image.

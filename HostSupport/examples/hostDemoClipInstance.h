@@ -109,7 +109,13 @@ namespace MyHost {
     ///  - kOfxImageFieldLower - the clip material is fielded, with image rows 0,2,4.... occuring first in a frame
     ///  - kOfxImageFieldUpper - the clip material is fielded, with image rows line 1,3,5.... occuring first in a frame
     virtual const std::string &getFieldOrder() const;
-        
+
+#ifdef OFX_EXTENSIONS_NATRON
+    // Format -
+    // The format of the clip or image (in pixel coordinates)
+    virtual OfxRectI getFormat() const;
+#endif
+
     // Connected -
     //
     //  Says whether the clip is actually connected at the moment.

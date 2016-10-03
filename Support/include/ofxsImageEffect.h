@@ -1003,6 +1003,9 @@ namespace OFX {
 
     /** @brief set the clip hint */
     void setHint(const std::string &hint);
+
+    /* @brief Get the clip format in pixel coordinates*/
+    OfxRectI getFormat() const;
 #endif
 
     /// get the OFX clip handle
@@ -1498,6 +1501,13 @@ namespace OFX {
     - eFieldUpper  
     */
     void setOutputFielding(FieldEnum v);
+
+#ifdef OFX_EXTENSIONS_NATRON
+    /** @brief Sets the output format in pixel coordinates.
+     Default to first non optional input clip format
+     */
+    void setOutputFormat(const OfxRectI& format);
+#endif
   };
 
   /** @brief POD data structure passing in the instance changed args */

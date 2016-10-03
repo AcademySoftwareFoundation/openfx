@@ -2502,6 +2502,9 @@ namespace OFX {
             { kOfxImageClipPropFieldOrder,           Property::eString,  1, false,  "" },
             { kOfxImageClipPropContinuousSamples,    Property::eInt,     1, false,  "0" },
             { kOfxImageEffectFrameVarying,           Property::eInt,     1, false,  "0" },
+#ifdef OFX_EXTENSIONS_NATRON
+            { kOfxImageEffectPropFormat,             Property::eInt,     4, false,   "0"},
+#endif
             Property::propSpecEnd
           };
         
@@ -2517,23 +2520,46 @@ namespace OFX {
 
         /// now add the clip gubbins to the out args
         double projectPAR = getProjectPixelAspectRatio();
+
+#ifdef OFX_EXTENSIONS_NATRON
+        double projectExtent[2];
+        double projectOffset[2];
+        getProjectOffset(projectOffset[0], projectOffset[1]);
+        getProjectExtent(projectExtent[0], projectExtent[1]);
+        // Project format is in canonical coordinates, so divide by PAR
+        projectOffset[0] /= projectPAR;
+        projectExtent[0] /= projectPAR;
+        bool outputFormatSet = false;
+        OfxRectI outputFormat = {projectOffset[0], projectOffset[1], projectExtent[0] , projectExtent[1]};
+#endif
+
+
+
+
         bool multipleClipsPAR = supportsMultipleClipPARs();
         /// get the PAR of inputs, if it has different PARs and the effect does not support multiple clips PAR, throw an exception
         double inputPar = 1.;
+
         bool inputParSet = false;
         for (std::map<std::string, ClipInstance*>::iterator it2 = _clips.begin(); it2 != _clips.end(); ++it2) {
           if (!it2->second->isOutput() && it2->second->getConnected()) {
-              if (!inputParSet) {
-                  inputPar = it2->second->getAspectRatio();
-                  inputParSet = true;
-              } else if (!multipleClipsPAR && inputPar != it2->second->getAspectRatio()) {
-                  // We have several inputs with different aspect ratio, which should be forbidden by the host.
-                  throw Property::Exception(kOfxStatErrValue);
-              }
+            if (!inputParSet) {
+              inputPar = it2->second->getAspectRatio();
+              inputParSet = true;
+            } else if (!multipleClipsPAR && inputPar != it2->second->getAspectRatio()) {
+              // We have several inputs with different aspect ratio, which should be forbidden by the host.
+              throw Property::Exception(kOfxStatErrValue);
             }
+#ifdef OFX_EXTENSIONS_NATRON
+            if (!outputFormatSet && !it2->second->isOptional()) {
+              outputFormat = it2->second->getFormat();
+              outputFormatSet = true;
+            }
+#endif
+          }
         }
-  
-          
+
+
         for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
             it!=_clips.end();
             ++it) {
@@ -2586,6 +2612,9 @@ namespace OFX {
         }
           
         outArgs.setDoubleProperty(kOfxImageEffectPropFrameRate, outputFrameRate);
+#ifdef OFX_EXTENSIONS_NATRON
+        outArgs.setIntPropertyN(kOfxImageEffectPropFormat, (const int*)&outputFormat.x1, 4);
+#endif
 
       }
 

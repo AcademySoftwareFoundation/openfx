@@ -265,6 +265,12 @@ namespace OFX {
         //  kOfxImageUnPreMultiplied - the image is unpremultiplied
         virtual const std::string &getPremult() const = 0;
 
+#ifdef OFX_EXTENSIONS_NATRON
+        // Format -
+        // The format of the clip or image (in pixel coordinates)
+        virtual OfxRectI getFormat() const = 0;
+#endif
+
         // Pixel Aspect Ratio -
         //
         //  The pixel aspect ratio of a clip or image.
