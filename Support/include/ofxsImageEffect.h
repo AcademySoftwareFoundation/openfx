@@ -933,6 +933,24 @@ namespace OFX {
     can't know the pixel size to do the work.
     */
     const void *getPixelAddress(int x, int y) const;
+
+    /** @brief return a pixel pointer, returns the nearest pixel if (x,y) is outside the image bounds
+
+    x and y are in pixel coordinates
+
+    If the components are custom, then this will return NULL as the support code
+    can't know the pixel size to do the work.
+    */
+    void *getPixelAddressNearest(int x, int y);
+
+    /** @brief return a pixel pointer, returns the nearest pixel if (x,y) is outside the image bounds
+
+    x and y are in pixel coordinates
+
+    If the components are custom, then this will return NULL as the support code
+    can't know the pixel size to do the work.
+    */
+    const void *getPixelAddressNearest(int x, int y) const;
   };
 
   ////////////////////////////////////////////////////////////////////////////////
