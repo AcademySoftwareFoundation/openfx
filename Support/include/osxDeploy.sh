@@ -121,7 +121,11 @@ alllibs=""
 endl=true
 while $endl; do
     #echo -e "\033[1mLooking for dependencies.\033[0m Round" $a
-    libs="`otool -L $pkglib/* $LIBADD $binary 2>/dev/null | fgrep compatibility | cut -d\( -f1 | grep -e $LOCAL'\\|'$HOMEBREW'\\|'$MACPORTS | sort | uniq`"
+    pkglibs=
+    if compgen -G "$pkglib/*" > /dev/null; then
+        pkglibs=$pkglib/*
+    fi
+    libs="`otool -L $pkglibs $LIBADD $binary 2>/dev/null | fgrep compatibility | cut -d\( -f1 | grep -e $LOCAL'\\|'$HOMEBREW'\\|'$MACPORTS | sort | uniq`"
     if [ -n "$libs" ]; then
         cp -f $libs $pkglib
         alllibs="`ls $alllibs $libs | sort | uniq`"
