@@ -328,20 +328,31 @@ namespace OFX {
       OFX::Exception::Suite);
 
     // set multiple values
-    void propSetDoubleN(const char* property, const double *value, int count, bool throwOnFailure = true) throw(std::bad_alloc,
+    void propSetStringN(const char* property, const std::vector<std::string> &values, bool throwOnFailure = true) throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
+      OFX::Exception::Suite);
+    
+    void propSetDoubleN(const char* property, const std::vector<double> &values, bool throwOnFailure = true) throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
+      OFX::Exception::Suite);
+
+    void propSetDoubleN(const char* property, const double *values, int count, bool throwOnFailure = true) throw(std::bad_alloc,
       OFX::Exception::PropertyUnknownToHost, 
       OFX::Exception::PropertyValueIllegalToHost, 
       OFX::Exception::Suite);
-    
-    void propSetStringN(const char* property, const std::vector<std::string> &values, bool throwOnFailure = true) throw(std::bad_alloc,
-    OFX::Exception::PropertyUnknownToHost,
-    OFX::Exception::PropertyValueIllegalToHost,
-    OFX::Exception::Suite);
 
     void propSetIntN(const char* property, const std::vector<int> &values, bool throwOnFailure = true) throw(std::bad_alloc,
-    OFX::Exception::PropertyUnknownToHost,
-    OFX::Exception::PropertyValueIllegalToHost,
-    OFX::Exception::Suite);
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
+      OFX::Exception::Suite);
+
+    // values is before count to avoid an easy confusion with propSetInt, whet the pointer to values would be cast to bool
+    void propSetIntN(const char* property, const int *values, int count, bool throwOnFailure = true) throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
+      OFX::Exception::Suite);
 
 
     void propSetPointer(const char* property, void *value, bool throwOnFailure = true) throw(std::bad_alloc, 
@@ -380,6 +391,7 @@ namespace OFX {
       OFX::Exception::PropertyUnknownToHost, 
       OFX::Exception::PropertyValueIllegalToHost, 
       OFX::Exception::Suite);
+
     /// get a double property
     double      propGetDouble(const char* property, int idx, bool throwOnFailure = true) const throw(std::bad_alloc, 
       OFX::Exception::PropertyUnknownToHost, 
@@ -428,16 +440,31 @@ namespace OFX {
       return propGetInt(property, 0, throwOnFailure); 
     }
       
-    void propGetNString(const char* property, std::vector<std::string>* values, bool throwOnFailure = true) const throw(std::bad_alloc,
-    OFX::Exception::PropertyUnknownToHost,
-    OFX::Exception::PropertyValueIllegalToHost,
-    OFX::Exception::Suite);
+    void propGetStringN(const char* property, std::vector<std::string>* values, bool throwOnFailure = true) const throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
+      OFX::Exception::Suite);
 
-    void propGetNInt(const char* property, std::vector<int>* values, bool throwOnFailure = true) const throw(std::bad_alloc,
-    OFX::Exception::PropertyUnknownToHost,
-    OFX::Exception::PropertyValueIllegalToHost,
-    OFX::Exception::Suite);
+    void propGetDoubleN(const char* property, std::vector<double>* values, bool throwOnFailure = true) const throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
+      OFX::Exception::Suite);
 
+    // values is before count to avoid an easy confusion with propGetDouble, whet the pointer to values would be cast to bool
+    void propGetDoubleN(const char* property, double* values, int count, bool throwOnFailure = true) const throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
+      OFX::Exception::Suite);
+
+    void propGetIntN(const char* property, std::vector<int>* values, bool throwOnFailure = true) const throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
+      OFX::Exception::Suite);
+
+    void propGetIntN(const char* property, int* values, int count, bool throwOnFailure = true) const throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
+      OFX::Exception::Suite);
 
   };
 

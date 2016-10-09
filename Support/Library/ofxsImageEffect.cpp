@@ -1432,17 +1432,14 @@ namespace OFX {
 
     _uniqueID = _imageProps.propGetString(kOfxImagePropUniqueIdentifier);
 
-    _renderScale.x = _imageProps.propGetDouble(kOfxImageEffectPropRenderScale, 0);
-    _renderScale.y = _imageProps.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+    _imageProps.propGetDoubleN(kOfxImageEffectPropRenderScale, &_renderScale.x, 2);
 #ifdef OFX_EXTENSIONS_NUKE
     std::fill(_transform, _transform + 9, 0.);
     if (_imageProps.propGetDimension(kFnOfxPropMatrix2D, false) == 0) {
       // Host does not support transforms, just ignore
       _transformIsIdentity = true;
     } else {
-      for (int i = 0; i < 9; ++i) {
-        _transform[i] = _imageProps.propGetDouble(kFnOfxPropMatrix2D, i);
-      }
+      _imageProps.propGetDoubleN(kFnOfxPropMatrix2D, _transform, 9);
       // check if the transform is identity (a zero matrix is considered identity)
       _transformIsIdentity = (_transform[1] == 0. && _transform[2] == 0. &&
                               _transform[3] == 0. && _transform[5] == 0. &&
@@ -1591,12 +1588,8 @@ namespace OFX {
   void
     Clip::getFormat(OfxRectI &format) const
   {
-    std::vector<int> values(4); // initializes to 0
-    _clipProps.propGetNInt(kOfxImageClipPropFormat, &values, false);
-    format.x1 = values[0];
-    format.y1 = values[1];
-    format.x2 = values[2];
-    format.y2 = values[3];
+    format.x1 = format.y1 = format.x2 = format.y2 = 0; // default value
+    _clipProps.propGetIntN(kOfxImageClipPropFormat, &format.x1, 4, false);
   }
 #endif
 
@@ -1823,8 +1816,7 @@ namespace OFX {
   OfxRangeD Clip::getFrameRange(void) const
   {
     OfxRangeD v;
-    v.min = _clipProps.propGetDouble(kOfxImageEffectPropFrameRange, 0);
-    v.max = _clipProps.propGetDouble(kOfxImageEffectPropFrameRange, 1);
+    _clipProps.propGetDoubleN(kOfxImageEffectPropFrameRange, &v.min, 2);
     return v;
   }
 
@@ -1838,8 +1830,7 @@ namespace OFX {
   OfxRangeD Clip::getUnmappedFrameRange(void) const
   {
     OfxRangeD v;
-    v.min = _clipProps.propGetDouble(kOfxImageEffectPropUnmappedFrameRange, 0);
-    v.max = _clipProps.propGetDouble(kOfxImageEffectPropUnmappedFrameRange, 1);
+    _clipProps.propGetDoubleN(kOfxImageEffectPropUnmappedFrameRange, &v.min, 2);
     return v;
   }
 
@@ -1998,7 +1989,7 @@ namespace OFX {
     
   void Clip::getComponentsPresent(std::vector<std::string>* components) const
   {
-    _clipProps.propGetNString(kFnOfxImageEffectPropComponentsPresent, components, false);
+    _clipProps.propGetStringN(kFnOfxImageEffectPropComponentsPresent, components, false);
   }
 #endif // OFX_EXTENSIONS_NUKE
 
@@ -2129,8 +2120,7 @@ namespace OFX {
   OfxPointD ImageEffect::getProjectSize(void) const
   {
     OfxPointD v;    
-    v.x = _effectProps.propGetDouble(kOfxImageEffectPropProjectSize, 0);
-    v.y = _effectProps.propGetDouble(kOfxImageEffectPropProjectSize, 1);
+    _effectProps.propGetDoubleN(kOfxImageEffectPropProjectSize, &v.x, 2);
     return v;
   }
 
@@ -2138,8 +2128,7 @@ namespace OFX {
   OfxPointD ImageEffect::getProjectOffset(void) const
   {
     OfxPointD v;    
-    v.x = _effectProps.propGetDouble(kOfxImageEffectPropProjectOffset, 0);
-    v.y = _effectProps.propGetDouble(kOfxImageEffectPropProjectOffset, 1);
+    _effectProps.propGetDoubleN(kOfxImageEffectPropProjectOffset, &v.x, 2);
     return v;
   }
 
@@ -2147,8 +2136,7 @@ namespace OFX {
   OfxPointD ImageEffect::getProjectExtent(void) const
   {
     OfxPointD v;    
-    v.x = _effectProps.propGetDouble(kOfxImageEffectPropProjectExtent, 0);
-    v.y = _effectProps.propGetDouble(kOfxImageEffectPropProjectExtent, 1);
+    _effectProps.propGetDoubleN(kOfxImageEffectPropProjectExtent, &v.x, 2);
     return v;
   }
 
@@ -3413,13 +3401,9 @@ namespace OFX {
     {
       args.time = inArgs.propGetDouble(kOfxPropTime);
 
-      args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
-      args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+      inArgs.propGetDoubleN(kOfxImageEffectPropRenderScale, &args.renderScale.x, 2);
 
-      args.renderWindow.x1 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 0);
-      args.renderWindow.y1 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 1);
-      args.renderWindow.x2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 2);
-      args.renderWindow.y2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 3);
+      inArgs.propGetIntN(kOfxImageEffectPropRenderWindow, &args.renderWindow.x1, 4);
 
 #ifdef OFX_SUPPORTS_OPENGLRENDER
       // Don't throw an exception if the following inArgs are not present.
@@ -3509,13 +3493,11 @@ namespace OFX {
 
       BeginSequenceRenderArguments args;
 
-      args.frameRange.min = inArgs.propGetDouble(kOfxImageEffectPropFrameRange, 0);
-      args.frameRange.max = inArgs.propGetDouble(kOfxImageEffectPropFrameRange, 1);
+      inArgs.propGetDoubleN(kOfxImageEffectPropFrameRange, &args.frameRange.min, 2);
 
       args.frameStep      = inArgs.propGetDouble(kOfxImageEffectPropFrameStep, 0);
 
-      args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
-      args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+      inArgs.propGetDoubleN(kOfxImageEffectPropRenderScale, &args.renderScale.x, 2);
 
 #ifdef OFX_SUPPORTS_OPENGLRENDER
       // Don't throw an exception if the following inArgs are not present.
@@ -3551,8 +3533,7 @@ namespace OFX {
 
       EndSequenceRenderArguments args;
 
-      args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
-      args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+      inArgs.propGetDoubleN(kOfxImageEffectPropRenderScale, &args.renderScale.x, 2);
 
 #ifdef OFX_SUPPORTS_OPENGLRENDER
       // Don't throw an exception if the following inArgs are not present.
@@ -3586,13 +3567,9 @@ namespace OFX {
     {
       args.time = inArgs.propGetDouble(kOfxPropTime);
 
-      args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
-      args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+      inArgs.propGetDoubleN(kOfxImageEffectPropRenderScale, &args.renderScale.x, 2);
 
-      args.renderWindow.x1 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 0);
-      args.renderWindow.y1 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 1);
-      args.renderWindow.x2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 2);
-      args.renderWindow.y2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 3);
+      inArgs.propGetIntN(kOfxImageEffectPropRenderWindow, &args.renderWindow.x1, 4);
 
 #ifdef OFX_EXTENSIONS_NUKE
       args.view = inArgs.propGetInt(kFnOfxImageEffectPropView, 0, false);
@@ -3642,8 +3619,7 @@ namespace OFX {
       ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
       RegionOfDefinitionArguments args;
 
-      args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
-      args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+      inArgs.propGetDoubleN(kOfxImageEffectPropRenderScale, &args.renderScale.x, 2);
 
       args.time = inArgs.propGetDouble(kOfxPropTime);
 
@@ -3656,10 +3632,7 @@ namespace OFX {
       bool v = effectInstance->getRegionOfDefinition(args, rod);
 
       if(v) {
-        outArgs.propSetDouble(kOfxImageEffectPropRegionOfDefinition, rod.x1, 0);
-        outArgs.propSetDouble(kOfxImageEffectPropRegionOfDefinition, rod.y1, 1);
-        outArgs.propSetDouble(kOfxImageEffectPropRegionOfDefinition, rod.x2, 2);
-        outArgs.propSetDouble(kOfxImageEffectPropRegionOfDefinition, rod.y2, 3);
+        outArgs.propSetDoubleN(kOfxImageEffectPropRegionOfDefinition, &rod.x1, 4);
         return true;
       }
       return false;
@@ -3697,10 +3670,7 @@ namespace OFX {
           const std::string& propName = it->second;
 
           // and set it
-          outArgs_.propSetDouble(propName.c_str(), roi.x1, 0);
-          outArgs_.propSetDouble(propName.c_str(), roi.y1, 1);
-          outArgs_.propSetDouble(propName.c_str(), roi.x2, 2);
-          outArgs_.propSetDouble(propName.c_str(), roi.y2, 3);      
+          outArgs_.propSetDoubleN(propName.c_str(), &roi.x1, 4);
 
           // and record the face we have done something
           doneSomething_ = true;
@@ -3712,13 +3682,9 @@ namespace OFX {
       RegionsOfInterestArguments args;
 
       // fetch in arguments from the prop handle
-      args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
-      args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+      inArgs.propGetDoubleN(kOfxImageEffectPropRenderScale, &args.renderScale.x, 2);
 
-      args.regionOfInterest.x1 = inArgs.propGetDouble(kOfxImageEffectPropRegionOfInterest, 0);
-      args.regionOfInterest.y1 = inArgs.propGetDouble(kOfxImageEffectPropRegionOfInterest, 1);
-      args.regionOfInterest.x2 = inArgs.propGetDouble(kOfxImageEffectPropRegionOfInterest, 2);
-      args.regionOfInterest.y2 = inArgs.propGetDouble(kOfxImageEffectPropRegionOfInterest, 3);
+      inArgs.propGetDoubleN(kOfxImageEffectPropRegionOfInterest, &args.regionOfInterest.x1, 4);
 
       args.time = inArgs.propGetDouble(kOfxPropTime);
         
@@ -3852,8 +3818,7 @@ namespace OFX {
       bool v = effectInstance->getTimeDomain(timeDomain);
 
       if(v) {
-        outArgs.propSetDouble(kOfxImageEffectPropFrameRange, timeDomain.min, 0);
-        outArgs.propSetDouble(kOfxImageEffectPropFrameRange, timeDomain.max, 1);
+        outArgs.propSetDoubleN(kOfxImageEffectPropFrameRange, &timeDomain.min, 2);
       }
 
       return v;
@@ -3953,8 +3918,7 @@ namespace OFX {
       std::string reasonStr = inArgs.propGetString(kOfxPropChangeReason);
       args.reason = mapToInstanceChangedReason(reasonStr);
       args.time = inArgs.propGetDouble(kOfxPropTime);
-      args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
-      args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+      inArgs.propGetDoubleN(kOfxImageEffectPropRenderScale, &args.renderScale.x, 2);
 
       // what changed
       std::string changedType = inArgs.propGetString(kOfxPropType);
@@ -4089,8 +4053,7 @@ namespace OFX {
       // get the arguments 
       args.time = inArgs.propGetDouble(kOfxPropTime);
 
-      args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
-      args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+      inArgs.propGetDoubleN(kOfxImageEffectPropRenderScale, &args.renderScale.x, 2);
 
       args.renderView = inArgs.propGetInt(kFnOfxImageEffectPropView, 0, false);
 

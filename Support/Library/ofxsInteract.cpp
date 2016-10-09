@@ -48,8 +48,8 @@ namespace OFX {
   static OfxPointD getPixelScale(const PropertySet &props)
   {
     OfxPointD pixelScale;
-    pixelScale.x = props.propGetDouble(kOfxInteractPropPixelScale, 0);
-    pixelScale.y = props.propGetDouble(kOfxInteractPropPixelScale, 1);
+    props.propGetDoubleN(kOfxInteractPropPixelScale, &pixelScale.x, 2);
+
     return pixelScale;
   }
 
@@ -57,8 +57,8 @@ namespace OFX {
   static OfxPointD getRenderScale(const PropertySet &props)
   {
     OfxPointD v;
-    v.x = props.propGetDouble(kOfxImageEffectPropRenderScale, 0);
-    v.y = props.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+    props.propGetDoubleN(kOfxInteractPropPixelScale, &v.x, 2);
+
     return v;
   }
 
@@ -66,9 +66,8 @@ namespace OFX {
   static OfxRGBColourD getBackgroundColour(const PropertySet &props)
   {
     OfxRGBColourD backGroundColour;
-    backGroundColour.r = props.propGetDouble(kOfxInteractPropBackgroundColour, 0);
-    backGroundColour.g = props.propGetDouble(kOfxInteractPropBackgroundColour, 1);
-    backGroundColour.b = props.propGetDouble(kOfxInteractPropBackgroundColour, 2);
+    props.propGetDoubleN(kOfxInteractPropBackgroundColour, &backGroundColour.r, 3);
+
     return backGroundColour;
   }
 
@@ -130,10 +129,7 @@ namespace OFX {
   OfxPointD 
     Interact::getPixelScale(void) const
   {
-    OfxPointD v;
-    v.x = _interactProperties.propGetDouble(kOfxInteractPropPixelScale, 0);
-    v.y = _interactProperties.propGetDouble(kOfxInteractPropPixelScale, 1);
-    return v;
+    return ::OFX::getPixelScale(_interactProperties);
   }
 
   /** @brief The suggested colour to draw a widget in an interact */
@@ -141,28 +137,10 @@ namespace OFX {
     Interact::getSuggestedColour(OfxRGBColourD &c) const
   {
     // OFX 1.2/1.3 specs say that the host should return kOfxStatReplyDefault if there is no suggested color
-    OfxStatus stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxInteractPropSuggestedColour, 0, &c.r);
+    OfxStatus stat = OFX::Private::gPropSuite->propGetDoubleN(_interactProperties.propSetHandle(), kOfxInteractPropSuggestedColour, 3, &c.r);
 #ifdef OFX_EXTENSIONS_NUKE
     if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
-      stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxPropOverlayColour, 0, &c.r);
-    }
-#endif
-    if (stat != kOfxStatOK) {
-      return false; // host gave no suggestion (replied kOfxStatReplyDefault or property is unknown to host)
-    }
-    stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxInteractPropSuggestedColour, 1, &c.g);
-#ifdef OFX_EXTENSIONS_NUKE
-    if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
-      stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxPropOverlayColour, 1, &c.g);
-    }
-#endif
-    if (stat != kOfxStatOK) {
-      return false; // host gave no suggestion (replied kOfxStatReplyDefault or property is unknown to host)
-    }
-    stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxInteractPropSuggestedColour, 2, &c.b);
-#ifdef OFX_EXTENSIONS_NUKE
-    if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
-      stat = OFX::Private::gPropSuite->propGetDouble(_interactProperties.propSetHandle(), kOfxPropOverlayColour, 2, &c.b);
+      stat = OFX::Private::gPropSuite->propGetDoubleN(_interactProperties.propSetHandle(), kOfxPropOverlayColour, 3, &c.r);
     }
 #endif
     if (stat != kOfxStatOK) {
@@ -357,14 +335,11 @@ namespace OFX {
     view          = props.propGetInt(kFnOfxImageEffectPropView, 0, false);
 #endif
 #ifdef OFX_EXTENSIONS_NATRON
-    if ( !props.propGetDimension(kNatronOfxPropPickerColour, false) ) {
+    if ( !props.propExists(kNatronOfxPropPickerColour) ) {
       pickerColour.r = pickerColour.g = pickerColour.b = pickerColour.a = -1.;
       hasPickerColour = false;
     } else {
-      pickerColour.r = props.propGetDouble(kNatronOfxPropPickerColour, 0);
-      pickerColour.g = props.propGetDouble(kNatronOfxPropPickerColour, 1);
-      pickerColour.b = props.propGetDouble(kNatronOfxPropPickerColour, 2);
-      pickerColour.a = props.propGetDouble(kNatronOfxPropPickerColour, 3);
+      props.propGetDoubleN(kNatronOfxPropPickerColour, &pickerColour.r, 4);
       hasPickerColour = (pickerColour.r != -1. || pickerColour.g != -1. || pickerColour.b != -1. || pickerColour.a != -1.);
     }
 #endif
@@ -375,8 +350,8 @@ namespace OFX {
     : InteractArgs(props)
   {
 #ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
-    viewportSize.x = props.propGetDouble(kOfxInteractPropViewportSize, 0, false);
-    viewportSize.y = props.propGetDouble(kOfxInteractPropViewportSize, 1, false);
+    viewportSize.x = viewportSize.y = 0.;
+    props.propGetDoubleN(kOfxInteractPropViewportSize, &viewportSize.x, 2, false);
 #endif
     backGroundColour = getBackgroundColour(props);
     pixelScale       = getPixelScale(props);
@@ -387,20 +362,17 @@ namespace OFX {
     : InteractArgs(props)
   {
 #ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
-    viewportSize.x = props.propGetDouble(kOfxInteractPropViewportSize, 0, false);
-    viewportSize.y = props.propGetDouble(kOfxInteractPropViewportSize, 1, false);
+    viewportSize.x = viewportSize.y = 0.;
+    props.propGetDoubleN(kOfxInteractPropViewportSize, &viewportSize.x, 2, false);
 #endif
     pixelScale    = getPixelScale(props);
     backGroundColour = getBackgroundColour(props);
-    penPosition.x = props.propGetDouble(kOfxInteractPropPenPosition, 0);
-    penPosition.y = props.propGetDouble(kOfxInteractPropPenPosition, 1);
-    try {
-      penViewportPosition.x = props.propGetInt(kOfxInteractPropPenViewportPosition, 0);
-      penViewportPosition.y = props.propGetInt(kOfxInteractPropPenViewportPosition, 1);
-    } catch (OFX::Exception::PropertyUnknownToHost) {
-      // Introduced in OFX 1.2. Return (-1,-1) if not available
-      penViewportPosition.x = penViewportPosition.y = -1.;
-    }
+    props.propGetDoubleN(kOfxInteractPropPenPosition, &penPosition.x, 2);
+    // Introduced in OFX 1.2. Return (-1,-1) if not available
+    OfxPointI pen = {-1, -1};
+    props.propGetIntN(kOfxInteractPropPenViewportPosition, &pen.x, 2);
+    penViewportPosition.x = pen.x;
+    penViewportPosition.y = pen.y;
     penPressure   = props.propGetDouble(kOfxInteractPropPenPressure);
   }
 
@@ -419,8 +391,8 @@ namespace OFX {
     : InteractArgs(props)
   {
 #ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
-    viewportSize.x = props.propGetDouble(kOfxInteractPropViewportSize, 0, false);
-    viewportSize.y = props.propGetDouble(kOfxInteractPropViewportSize, 1, false);
+    viewportSize.x = viewportSize.y = 0.;
+    props.propGetDoubleN(kOfxInteractPropViewportSize, &viewportSize.x, 2, false);
 #endif
     pixelScale       = getPixelScale(props);
     backGroundColour = getBackgroundColour(props);
@@ -451,14 +423,14 @@ namespace OFX {
 
   void ParamInteractDescriptor::setInteractMinimumSize(int x, int y)
   {
-    _props->propSetDouble(kOfxParamPropInteractMinimumSize, x, 0);
-    _props->propSetDouble(kOfxParamPropInteractMinimumSize, y, 1);
+    double s[2] = {x, y};
+    _props->propSetDoubleN(kOfxParamPropInteractMinimumSize, s, 2);
   }
 
   void ParamInteractDescriptor::setInteractPreferredSize(int x, int y)
   {
-    _props->propSetInt(kOfxParamPropInteractPreferedSize, x, 0);
-    _props->propSetInt(kOfxParamPropInteractPreferedSize, y, 1);
+    int s[2] = {x, y};
+    _props->propSetIntN(kOfxParamPropInteractPreferedSize, s, 2);
   }
 
   ParamInteract::ParamInteract(OfxInteractHandle handle, ImageEffect* effect):Interact(handle), _effect(effect)
@@ -467,8 +439,8 @@ namespace OFX {
   OfxPointI ParamInteract::getInteractSize() const
   {
     OfxPointI ret;
-    ret.x =  _interactProperties.propGetInt(kOfxParamPropInteractSize, 0);
-    ret.y =  _interactProperties.propGetInt(kOfxParamPropInteractSize, 1);
+    _interactProperties.propGetIntN(kOfxParamPropInteractSize, &ret.x, 2);
+
     return ret;
   }
 

@@ -202,22 +202,6 @@ namespace OFX {
     if(_gPropLogging > 0) Log::print("Set int property %s[%d] to be %d.",  property, idx, value);
   }
 
-  /** @brief, Set a multiple dimension double property */
-  void PropertySet::propSetDoubleN(const char* property, const double* values, int count, bool throwOnFailure) throw(std::bad_alloc,
-    OFX::Exception::PropertyUnknownToHost, 
-    OFX::Exception::PropertyValueIllegalToHost,
-    OFX::Exception::Suite)
-  {
-    assert(_propHandle != 0);
-    OfxStatus stat = gPropSuite->propSetDoubleN(_propHandle, property, count, values);
-    OFX::Log::error(stat != kOfxStatOK, "Failed on setting double property %s[0..%d], host returned status %s;",
-      property, count-1, mapStatusToString(stat));
-    if(throwOnFailure)
-      throwPropertyException(stat, property); 
-
-    if(_gPropLogging > 0) Log::print("Set double property %s[0..%d].",  property, count-1);
-  }
-  
   void PropertySet::propSetStringN(const char* property, const std::vector<std::string> &values, bool throwOnFailure) throw(std::bad_alloc,
   OFX::Exception::PropertyUnknownToHost,
   OFX::Exception::PropertyValueIllegalToHost,
@@ -237,20 +221,53 @@ namespace OFX {
     if(_gPropLogging > 0) Log::print("Set string property %s[0..%d].",  property, values.size()-1);
   }
 
+  /** @brief, Set a multiple dimension double property */
+  void PropertySet::propSetDoubleN(const char* property, const std::vector<double> &values, bool throwOnFailure) throw(std::bad_alloc,
+    OFX::Exception::PropertyUnknownToHost, 
+    OFX::Exception::PropertyValueIllegalToHost,
+    OFX::Exception::Suite)
+  {
+    propSetDoubleN(property, &values[0], (int)values.size(), throwOnFailure);
+  }
+  
+  /** @brief, Set a multiple dimension double property */
+  void PropertySet::propSetDoubleN(const char* property, const double* values, int count, bool throwOnFailure) throw(std::bad_alloc,
+    OFX::Exception::PropertyUnknownToHost, 
+    OFX::Exception::PropertyValueIllegalToHost,
+    OFX::Exception::Suite)
+  {
+    assert(_propHandle != 0);
+    OfxStatus stat = gPropSuite->propSetDoubleN(_propHandle, property, count, values);
+    OFX::Log::error(stat != kOfxStatOK, "Failed on setting double property %s[0..%d], host returned status %s;",
+      property, count-1, mapStatusToString(stat));
+    if(throwOnFailure)
+      throwPropertyException(stat, property); 
+
+    if(_gPropLogging > 0) Log::print("Set double property %s[0..%d].",  property, count-1);
+  }
+  
   void PropertySet::propSetIntN(const char* property, const std::vector<int> &values, bool throwOnFailure) throw(std::bad_alloc,
+  OFX::Exception::PropertyUnknownToHost,
+  OFX::Exception::PropertyValueIllegalToHost,
+  OFX::Exception::Suite)
+  {
+    propSetIntN(property, &values[0], (int)values.size(), throwOnFailure);
+  }
+  
+  void PropertySet::propSetIntN(const char* property, const int *values, int count, bool throwOnFailure) throw(std::bad_alloc,
   OFX::Exception::PropertyUnknownToHost,
   OFX::Exception::PropertyValueIllegalToHost,
   OFX::Exception::Suite)
   {
     assert(_propHandle != 0);
 
-    OfxStatus stat = gPropSuite->propSetIntN(_propHandle, property, (int)values.size(), (const int*)&values[0]);
+    OfxStatus stat = gPropSuite->propSetIntN(_propHandle, property, count, values);
     OFX::Log::error(stat != kOfxStatOK, "Failed on setting int property %s[0..%d], host returned status %s;",
-                    property, values.size()-1, mapStatusToString(stat));
+                    property, count-1, mapStatusToString(stat));
     if(throwOnFailure)
       throwPropertyException(stat, property);
 
-    if(_gPropLogging > 0) Log::print("Set int property %s[0..%d].",  property, values.size()-1);
+    if(_gPropLogging > 0) Log::print("Set int property %s[0..%d].",  property, count-1);
 
   }
 
@@ -327,10 +344,10 @@ namespace OFX {
     return value;
   }
     
-  void PropertySet::propGetNString(const char* property, std::vector<std::string>* values, bool throwOnFailure) const throw(std::bad_alloc,
-  OFX::Exception::PropertyUnknownToHost,
-  OFX::Exception::PropertyValueIllegalToHost,
-  OFX::Exception::Suite)
+  void PropertySet::propGetStringN(const char* property, std::vector<std::string>* values, bool throwOnFailure) const throw(std::bad_alloc,
+    OFX::Exception::PropertyUnknownToHost,
+    OFX::Exception::PropertyValueIllegalToHost,
+    OFX::Exception::Suite)
   {
     assert(_propHandle != 0);
     int dimension = propGetDimension(property,throwOnFailure);
@@ -356,10 +373,10 @@ namespace OFX {
     }
   }
 
-  void PropertySet::propGetNInt(const char* property, std::vector<int>* values, bool throwOnFailure) const throw(std::bad_alloc,
-  OFX::Exception::PropertyUnknownToHost,
-  OFX::Exception::PropertyValueIllegalToHost,
-  OFX::Exception::Suite)
+  void PropertySet::propGetDoubleN(const char* property, std::vector<double>* values, bool throwOnFailure) const throw(std::bad_alloc,
+    OFX::Exception::PropertyUnknownToHost,
+    OFX::Exception::PropertyValueIllegalToHost,
+    OFX::Exception::Suite)
   {
     assert(_propHandle != 0);
     int dimension = propGetDimension(property,throwOnFailure);
@@ -368,13 +385,53 @@ namespace OFX {
     }
 
     values->resize(dimension);
-    OfxStatus stat = gPropSuite->propGetIntN(_propHandle, property, dimension, &values->front());
+    propGetDoubleN(property, &values->front(), dimension, throwOnFailure);
+  }
+
+  void PropertySet::propGetDoubleN(const char* property, double* values, int count, bool throwOnFailure) const throw(std::bad_alloc,
+    OFX::Exception::PropertyUnknownToHost,
+    OFX::Exception::PropertyValueIllegalToHost,
+    OFX::Exception::Suite)
+  {
+    assert(_propHandle != 0);
+    OfxStatus stat = gPropSuite->propGetDoubleN(_propHandle, property, count, values);
+    OFX::Log::error(stat != kOfxStatOK, "Failed on getting double property %s, host returned status %s;",
+                    property, mapStatusToString(stat));
+    if(throwOnFailure)
+      throwPropertyException(stat, property);
+
+    if(_gPropLogging > 0) Log::print("Retrieved double property %s, was given %s.", property, values);
+
+  }
+
+  void PropertySet::propGetIntN(const char* property, std::vector<int>* values, bool throwOnFailure) const throw(std::bad_alloc,
+    OFX::Exception::PropertyUnknownToHost,
+    OFX::Exception::PropertyValueIllegalToHost,
+    OFX::Exception::Suite)
+  {
+    assert(_propHandle != 0);
+    int dimension = propGetDimension(property,throwOnFailure);
+    if (dimension <= 0 || !values) {
+      return;
+    }
+
+    values->resize(dimension);
+    propGetIntN(property, &values->front(), dimension, throwOnFailure);
+  }
+
+  void PropertySet::propGetIntN(const char* property, int* values, int count, bool throwOnFailure) const throw(std::bad_alloc,
+    OFX::Exception::PropertyUnknownToHost,
+    OFX::Exception::PropertyValueIllegalToHost,
+    OFX::Exception::Suite)
+  {
+    assert(_propHandle != 0);
+    OfxStatus stat = gPropSuite->propGetIntN(_propHandle, property, count, values);
     OFX::Log::error(stat != kOfxStatOK, "Failed on getting int property %s, host returned status %s;",
                     property, mapStatusToString(stat));
     if(throwOnFailure)
       throwPropertyException(stat, property);
 
-    if(_gPropLogging > 0) Log::print("Retrieved int property %s, was given %s.", property, &values->front());
+    if(_gPropLogging > 0) Log::print("Retrieved int property %s, was given %s.", property, values);
 
   }
 
