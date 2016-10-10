@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(_WIN32) || defined(_WIN64)
 #define WINDOWS
-#ifdef defined(_WIN64) || defined(__amd64__)
+#if defined(_WIN64) || defined(__amd64__)
 #define AMD64
 #else
 #define I386
