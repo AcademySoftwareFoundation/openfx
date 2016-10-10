@@ -76,13 +76,14 @@ namespace OFX {
     return native;
   }
   
-  std::string  wideStringToString(const std::wstring& s)
+  std::string  utf16_to_utf8(const std::wstring& str)
   {
-	size_t sz = s.length();
-    int nd = WideCharToMultiByte(CP_UTF8, 0, &s[0], sz, 0, 0, 0, 0);
-    std::string ret(nd, 0);
-    WideCharToMultiByte(CP_UTF8, 0, &s[0], sz, &ret[0], nd, 0, 0);
-    return ret;
+      std::string utf8;
+
+      utf8.resize(WideCharToMultiByte (CP_UTF8, 0, str.data(), str.length(), NULL, 0, NULL, NULL));
+      WideCharToMultiByte (CP_UTF8, 0, str.data(), str.length(), &utf8[0], (int)utf8.size(), NULL, NULL);
+
+      return utf8;
   }
 # endif
 

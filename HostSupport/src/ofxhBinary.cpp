@@ -34,8 +34,16 @@ using namespace OFX;
 
 Binary::Binary(const std::string &binaryPath): _binaryPath(binaryPath), _invalid(false), _dlHandle(0), _users(0)
 {
+  int statRet;
+#ifdef WINDOWS
+  struct _stat64 sb;
+  std::wstring widePath = OFX::utf8_to_utf16(binaryPath);
+  statRet = _wstat64(widePath.c_str(), &sb);
+#else
   struct stat sb;
-  if (stat(binaryPath.c_str(), &sb) != 0) {
+  statRet = stat(binaryPath.c_str(), &sb);
+#endif
+  if (statRet != 0) {
     _invalid = true;
     _time = 0;
     _size = 0;

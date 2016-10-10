@@ -278,7 +278,7 @@ PluginCache::PluginCache() : _hostSpec(0), _xmlCurrentBinary(0), _xmlCurrentPlug
 #if defined(WINDOWS)
 
   std::wstring wpath = getStdOFXPluginPath();
-  std::string path = OFX::wideStringToString(wpath);
+  std::string path = OFX::utf16_to_utf8(wpath);
 
   _pluginPath.push_back(path);
   _pluginPath.push_back("C:\\Program Files\\Common Files\\OFX\\Plugins");
@@ -294,7 +294,7 @@ PluginCache::PluginCache() : _hostSpec(0), _xmlCurrentBinary(0), _xmlCurrentPlug
 void PluginCache::setPluginHostPath(const std::string &hostId) {
 #if defined(WINDOWS)
   std::wstring wpath = getStdOFXPluginPath(hostId);
-  std::string path = OFX::wideStringToString(wpath);
+  std::string path = OFX::utf16_to_utf8(wpath);
 
   _pluginPath.push_back(path);
   _pluginPath.push_back("C:\\Program Files\\Common Files\\OFX\\" + hostId);
@@ -329,6 +329,7 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
   while (dirent *de = readdir(d))
 #elif defined (WINDOWS)
     {
+
       std::wstring ws = OFX::utf8_to_utf16((dir + "\\*"));
       findHandle = FindFirstFileW(ws.c_str(), &findData);
     }
@@ -345,7 +346,7 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
       bool isdir = true;
 #else
       std::wstring wname = findData.cFileName;
-      std::string name = OFX::wideStringToString(wname);
+      std::string name = OFX::utf16_to_utf8(wname);
 
       bool isdir = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
 #endif
@@ -372,12 +373,13 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
           binpath = binpath_universal;
         }
 #endif
+
         if (_knownBinFiles.find(binpath) == _knownBinFiles.end()) {
 #ifdef CACHE_DEBUG
           printf("found non-cached binary %s\n", binpath.c_str());
 #endif
           _dirty = true;
-          
+
           // the binary was not in the cache
           
           PluginBinary *pb = 0;
