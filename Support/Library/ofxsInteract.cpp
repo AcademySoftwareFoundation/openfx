@@ -57,7 +57,7 @@ namespace OFX {
   static OfxPointD getRenderScale(const PropertySet &props)
   {
     OfxPointD v;
-    props.propGetDoubleN(kOfxInteractPropPixelScale, &v.x, 2);
+    props.propGetDoubleN(kOfxImageEffectPropRenderScale, &v.x, 2);
 
     return v;
   }
@@ -335,11 +335,11 @@ namespace OFX {
     view          = props.propGetInt(kFnOfxImageEffectPropView, 0, false);
 #endif
 #ifdef OFX_EXTENSIONS_NATRON
+    pickerColour.r = pickerColour.g = pickerColour.b = pickerColour.a = -1.;
     if ( !props.propExists(kNatronOfxPropPickerColour) ) {
-      pickerColour.r = pickerColour.g = pickerColour.b = pickerColour.a = -1.;
       hasPickerColour = false;
     } else {
-      props.propGetDoubleN(kNatronOfxPropPickerColour, &pickerColour.r, 4);
+      props.propGetDoubleN(kNatronOfxPropPickerColour, &pickerColour.r, 4, false);
       hasPickerColour = (pickerColour.r != -1. || pickerColour.g != -1. || pickerColour.b != -1. || pickerColour.a != -1.);
     }
 #endif
@@ -367,6 +367,7 @@ namespace OFX {
 #endif
     pixelScale    = getPixelScale(props);
     backGroundColour = getBackgroundColour(props);
+    penPosition.x = penPosition.y = 0;
     props.propGetDoubleN(kOfxInteractPropPenPosition, &penPosition.x, 2);
     // Introduced in OFX 1.2. Return (-1,-1) if not available
     OfxPointI pen = {-1, -1};
