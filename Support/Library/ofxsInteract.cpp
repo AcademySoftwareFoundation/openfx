@@ -47,7 +47,7 @@ namespace OFX {
   /** @brief fetch a pixel scale out of the property set */
   static OfxPointD getPixelScale(const PropertySet &props)
   {
-    OfxPointD pixelScale;
+    OfxPointD pixelScale = {1., 1.};
     props.propGetDoubleN(kOfxInteractPropPixelScale, &pixelScale.x, 2);
 
     return pixelScale;
@@ -56,7 +56,7 @@ namespace OFX {
   /** @brief fetch a render scale out of the property set */
   static OfxPointD getRenderScale(const PropertySet &props)
   {
-    OfxPointD v;
+    OfxPointD v = {1., 1.};
     props.propGetDoubleN(kOfxImageEffectPropRenderScale, &v.x, 2);
 
     return v;
@@ -65,7 +65,7 @@ namespace OFX {
   /** @brief fetch a background colour out of the property set */
   static OfxRGBColourD getBackgroundColour(const PropertySet &props)
   {
-    OfxRGBColourD backGroundColour;
+    OfxRGBColourD backGroundColour = {0., 0., 0.};
     props.propGetDoubleN(kOfxInteractPropBackgroundColour, &backGroundColour.r, 3);
 
     return backGroundColour;
