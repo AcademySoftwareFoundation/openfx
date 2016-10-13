@@ -1311,6 +1311,18 @@ namespace OFX {
     _paramProps.propSetString(kOfxParamPropDimensionLabel, label, id);
   }
 
+  void ParametricParamDescriptor::setDimensionRange(double min, double max, const int id)
+  {
+    _paramProps.propSetDouble(kOfxParamPropMin, min, id, false); // OFX 1.4 spec does not say this parameter exists
+    _paramProps.propSetDouble(kOfxParamPropMax, max, id, false);
+  }
+
+  void ParametricParamDescriptor::setDimensionDisplayRange(double min, double max, const int id)
+  {
+    _paramProps.propSetDouble(kOfxParamPropDisplayMin, min, id, false); // OFX 1.4 spec does not say this parameter exists
+    _paramProps.propSetDouble(kOfxParamPropDisplayMax, max, id, false);
+  }
+
   void ParametricParamDescriptor::setUIColour(const int id, const OfxRGBColourD& color)
   {
     _paramProps.propSetDouble(kOfxParamPropParametricUIColour, color.r, id*3 + 0);

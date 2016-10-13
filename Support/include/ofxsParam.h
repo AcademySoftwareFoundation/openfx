@@ -904,6 +904,10 @@ namespace OFX {
 
         void setDimensionLabel( const std::string& label, const int id );
 
+        void setDimensionRange( double min, double max, const int id );
+
+        void setDimensionDisplayRange( double min, double max, const int id );
+
         void setUIColour( const int id, const OfxRGBColourD& color );
 
         void addControlPoint( const int id, const OfxTime time, const double x, const double y, const bool addKey );
