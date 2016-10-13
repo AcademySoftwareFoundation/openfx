@@ -3577,6 +3577,7 @@ namespace OFX {
       args.renderScale.x = args.renderScale.y = 1.;
       inArgs.propGetDoubleN(kOfxImageEffectPropRenderScale, &args.renderScale.x, 2);
 
+      args.renderWindow.x1 = args.renderWindow.y1 = args.renderWindow.x2 = args.renderWindow.y2 = 0.;
       inArgs.propGetIntN(kOfxImageEffectPropRenderWindow, &args.renderWindow.x1, 4);
 
 #ifdef OFX_EXTENSIONS_NUKE

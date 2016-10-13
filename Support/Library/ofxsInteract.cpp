@@ -439,7 +439,7 @@ namespace OFX {
 
   OfxPointI ParamInteract::getInteractSize() const
   {
-    OfxPointI ret;
+    OfxPointI ret = {0, 0};
     _interactProperties.propGetIntN(kOfxParamPropInteractSize, &ret.x, 2);
 
     return ret;
