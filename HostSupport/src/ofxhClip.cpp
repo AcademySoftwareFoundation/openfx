@@ -409,7 +409,6 @@ namespace OFX {
       // get the virutals for viewport size, pixel scale, background colour
       int ClipInstance::getIntProperty(const std::string &name, int n) const OFX_EXCEPTION_SPEC
       {
-        if(n!=0) throw Property::Exception(kOfxStatErrValue);
         if(name==kOfxImageClipPropConnected){
           return getConnected();
         }
