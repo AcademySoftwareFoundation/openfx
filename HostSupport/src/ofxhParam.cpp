@@ -404,8 +404,8 @@ namespace OFX {
 #       ifdef OFX_SUPPORTS_PARAMETRIC
         if (type == kOfxParamTypeParametric) {
           _properties.addProperties(allParametric);
-          _properties.setDoubleProperty(kOfxParamPropParametricRange, 0., 0);
-          _properties.setDoubleProperty(kOfxParamPropParametricRange, 1., 1);
+          double range[2] = {0., 1.};
+          _properties.setDoublePropertyN(kOfxParamPropParametricRange, range, 2);
         }
 #       endif
 
