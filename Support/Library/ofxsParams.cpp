@@ -1301,6 +1301,11 @@ namespace OFX {
     _paramProps.propSetDoubleN(kOfxParamPropParametricRange, r, 2);
   }
 
+  void ParametricParamDescriptor::setIsPeriodic(bool periodic)
+  {
+    _paramProps.propSetInt(kOfxParamPropParametricIsPeriodic, (int)periodic, 0, false);
+  }
+
   void ParametricParamDescriptor::setDimension(const int dimension)
   {
     _paramProps.propSetInt(kOfxParamPropParametricDimension, dimension);
