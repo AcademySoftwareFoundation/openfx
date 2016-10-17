@@ -1301,10 +1301,17 @@ namespace OFX {
     _paramProps.propSetDoubleN(kOfxParamPropParametricRange, r, 2);
   }
 
-  void ParametricParamDescriptor::setIsPeriodic(bool periodic)
+#ifdef OFX_EXTENSIONS_NATRON
+  bool ParametricParamDescriptor::supportsPeriodic()
   {
-    _paramProps.propSetInt(kOfxParamPropParametricIsPeriodic, (int)periodic, 0, false);
+    return _paramProps.propExists(kNatronOfxParamPropParametricIsPeriodic);
   }
+
+  void ParametricParamDescriptor::setPeriodic(bool periodic)
+  {
+    _paramProps.propSetInt(kNatronOfxParamPropParametricIsPeriodic, (int)periodic, 0, false);
+  }
+#endif
 
   void ParametricParamDescriptor::setDimension(const int dimension)
   {

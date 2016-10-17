@@ -893,6 +893,18 @@ says:
  */
 #define kNatronOfxPropPickerColour "NatronOfxPropPickerColour"
 
+/** @brief Property to indicate the whether the curves in the parametric parametric
+ are considered to be periodic or not. If periodic the first and last control point
+ should be considered equal in the curve and cannot be moved from their parametric position.
+ The host should always evaluate the curve in-between the first and last keyframes.
+
+ - Type - int X 1
+ - Property Set - parametric parameter descriptor (read/write only), and instance (read only)
+ - Default Value - (0)
+ - Valid Values - 1 or 0
+ If 1 the curves are considered to be periodic.
+ */
+#define kNatronOfxParamPropParametricIsPeriodic "OfxParamPropParametricIsPeriodic"
 
 /** Used to indicate the format size (in pixel coordinates) of the stream that should be displayed in output of this plug-in. It is not necessarily the same as the region of definition.
 

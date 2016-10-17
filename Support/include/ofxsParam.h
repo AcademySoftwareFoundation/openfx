@@ -918,8 +918,11 @@ namespace OFX {
         
         void setInteractDescriptor(ParamInteractDescriptor* desc);
 
-        void setIsPeriodic(bool periodic);
+#ifdef OFX_EXTENSIONS_NATRON
+        bool supportsPeriodic();
 
+        void setPeriodic(bool periodic);
+#endif
     };
 
     ////////////////////////////////////////////////////////////////////////////////

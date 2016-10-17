@@ -358,7 +358,9 @@ namespace OFX {
           { kOfxParamPropParametricUIColour,          Property::eDouble,  0,  false, ""  },
           { kOfxParamPropParametricInteractBackground,Property::ePointer, 1,  false, 0   },
           { kOfxParamPropParametricRange,             Property::eDouble,  2,  false, "0" },
-          { kOfxParamPropParametricIsPeriodic,        Property::eInt,     1,  false, "0" },
+#        ifdef OFX_EXTENSIONS_NATRON
+          { kNatronOfxParamPropParametricIsPeriodic,  Property::eInt,     1,  false, "0" },
+#        endif
 #        ifdef OFX_SUPPORTS_PARAMETRIC_V2
           { kOfxParamParametricInterpolationCustomInterpCallbackV1, Property::ePointer, 1,  false, 0  },
 #        endif

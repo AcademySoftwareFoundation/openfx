@@ -300,20 +300,6 @@ typedef struct OfxParametricParameterSuiteV1 {
                                                      int   curveIndex);
  } OfxParametricParameterSuiteV1;
 
-/** @brief Property to indicate the whether the curves in the parametric parametric
- are considered to be periodic or not. If periodic the first and last control point
- should be considered equal in the curve and cannot be moved from their parametric position.
- The host should always evaluate the curve in-between the first and last keyframes.
-  
-- Type - int X 1
-- Property Set - parametric parameter descriptor (read/write only), and instance (read only)
-- Default Value - (0)
-- Valid Values - 1 or 0
- If 1 the curves are considered to be periodic.
-*/
-#define kOfxParamPropParametricIsPeriodic "OfxParamPropParametricIsPeriodic"
-
-
 #ifdef OFX_SUPPORTS_PARAMETRIC_V2
 /** @brief The version 2 of the suite adds support for derivatives on control points. Each control point
  has a left and right derivative which are computed by the host given an interpolation mode set on the control point.
