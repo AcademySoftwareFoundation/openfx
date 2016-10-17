@@ -2082,14 +2082,14 @@ namespace OFX {
   }
 
   /** @brief get value */
-  void IntParam::getValue(int &v)
+  void IntParam::getValue(int &v) const
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &v);
     throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
-  void IntParam::getValueAtTime(double t, int &v)
+  void IntParam::getValueAtTime(double t, int &v) const
   {
     if (t != t) {
       // time is NaN
@@ -2196,14 +2196,14 @@ namespace OFX {
   }
 
   /** @brief get value */
-  void Int2DParam::getValue(int &x, int &y)
+  void Int2DParam::getValue(int &x, int &y) const
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &x, &y);
     throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
-  void Int2DParam::getValueAtTime(double t, int &x, int &y)
+  void Int2DParam::getValueAtTime(double t, int &x, int &y) const
   {
     if (t != t) {
       // time is NaN
@@ -2316,14 +2316,14 @@ namespace OFX {
   }
 
   /** @brief get value */
-  void Int3DParam::getValue(int &x, int &y, int &z)
+  void Int3DParam::getValue(int &x, int &y, int &z) const
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &x, &y, &z);
     throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
-  void Int3DParam::getValueAtTime(double t, int &x, int &y, int &z)
+  void Int3DParam::getValueAtTime(double t, int &x, int &y, int &z) const
   {
     if (t != t) {
       // time is NaN
@@ -2500,14 +2500,14 @@ namespace OFX {
   }
 
   /** @brief get value */
-  void DoubleParam::getValue(double &v)
+  void DoubleParam::getValue(double &v) const
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &v);
     throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
-  void DoubleParam::getValueAtTime(double t, double &v)
+  void DoubleParam::getValueAtTime(double t, double &v) const
   {
     if (t != t) {
       // time is NaN
@@ -2646,14 +2646,14 @@ namespace OFX {
   }
 
   /** @brief get value */
-  void Double2DParam::getValue(double &x, double &y)
+  void Double2DParam::getValue(double &x, double &y) const
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &x, &y);
     throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
-  void Double2DParam::getValueAtTime(double t, double &x, double &y)
+  void Double2DParam::getValueAtTime(double t, double &x, double &y) const
   {
     if (t != t) {
       // time is NaN
@@ -2797,14 +2797,14 @@ namespace OFX {
   }
 
   /** @brief get value */
-  void Double3DParam::getValue(double &x, double &y, double &z)
+  void Double3DParam::getValue(double &x, double &y, double &z) const
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &x, &y, &z);
     throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
-  void Double3DParam::getValueAtTime(double t, double &x, double &y, double &z)
+  void Double3DParam::getValueAtTime(double t, double &x, double &y, double &z) const
   {
     if (t != t) {
       // time is NaN
@@ -2899,14 +2899,14 @@ namespace OFX {
   }
 
   /** @brief get value */
-  void RGBParam::getValue(double &r, double &g, double &b)
+  void RGBParam::getValue(double &r, double &g, double &b) const
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &r, &g, &b);
     throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
-  void RGBParam::getValueAtTime(double t, double &r, double &g, double &b)
+  void RGBParam::getValueAtTime(double t, double &r, double &g, double &b) const
   {
     if (t != t) {
       // time is NaN
@@ -2978,14 +2978,14 @@ namespace OFX {
   }
 
   /** @brief get value */
-  void RGBAParam::getValue(double &r, double &g, double &b, double &a)
+  void RGBAParam::getValue(double &r, double &g, double &b, double &a) const
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &r, &g, &b, &a);
     throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
-  void RGBAParam::getValueAtTime(double t, double &r, double &g, double &b, double &a)
+  void RGBAParam::getValueAtTime(double t, double &r, double &g, double &b, double &a) const
   {
     if (t != t) {
       // time is NaN
@@ -3053,7 +3053,7 @@ namespace OFX {
   }
 
   /** @brief get value */
-  void StringParam::getValue(std::string &v)
+  void StringParam::getValue(std::string &v) const
   {
     char *cStr;
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &cStr);
@@ -3067,7 +3067,7 @@ namespace OFX {
   }
 
   /** @brief get the value at a time */
-  void StringParam::getValueAtTime(double t, std::string &v)
+  void StringParam::getValueAtTime(double t, std::string &v) const
   {
     if (t != t) {
       // time is NaN
@@ -3144,7 +3144,7 @@ namespace OFX {
   }
 
   /** @brief get value */
-  void BooleanParam::getValue(bool &v)
+  void BooleanParam::getValue(bool &v) const
   {
     int iVal;
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &iVal);
@@ -3153,7 +3153,7 @@ namespace OFX {
   }
 
   /** @brief get the value at a time */
-  void BooleanParam::getValueAtTime(double t, bool &v)
+  void BooleanParam::getValueAtTime(double t, bool &v) const
   {
     if (t != t) {
       // time is NaN
@@ -3217,14 +3217,14 @@ namespace OFX {
   }
 
   /** @brief get value */
-  void ChoiceParam::getValue(int &v)
+  void ChoiceParam::getValue(int &v) const
   {
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &v);
     throwSuiteStatusException(stat);
   }
 
   /** @brief get the value at a time */
-  void ChoiceParam::getValueAtTime(double t, int &v)
+  void ChoiceParam::getValueAtTime(double t, int &v) const
   {
     if (t != t) {
       // time is NaN
@@ -3386,7 +3386,7 @@ namespace OFX {
   }
 
   /** @brief get value */
-  void CustomParam::getValue(std::string &v)
+  void CustomParam::getValue(std::string &v) const
   {
     char *cStr;
     OfxStatus stat = OFX::Private::gParamSuite->paramGetValue(_paramHandle, &cStr);
@@ -3395,7 +3395,7 @@ namespace OFX {
   }
 
   /** @brief get the value at a time */
-  void CustomParam::getValueAtTime(double t, std::string &v)
+  void CustomParam::getValueAtTime(double t, std::string &v) const
   {
     if (t != t) {
       // time is NaN
@@ -3537,7 +3537,7 @@ namespace OFX {
   */
   double ParametricParam::getValue(const int curveIndex,
                                     const OfxTime time,
-                                    const double parametricPosition)
+                                    const double parametricPosition) const
   {
     if (time != time) {
       // time is NaN
@@ -3561,7 +3561,7 @@ namespace OFX {
       @returns the integer value is returned
   */
   int ParametricParam::getNControlPoints(const int curveIndex,
-                                          const OfxTime time)
+                                          const OfxTime time) const
   {
     if (time != time) {
       // time is NaN
@@ -3586,7 +3586,7 @@ namespace OFX {
   */
   std::pair<double, double> ParametricParam::getNthControlPoint(const int curveIndex,
                                                                 const OfxTime time,
-                                                                const int nthCtl)
+                                                                const int nthCtl) const
   {
     if (time != time) {
       // time is NaN

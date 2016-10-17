@@ -1326,16 +1326,16 @@ namespace OFX {
         void getDisplayRange(int &min, int &max);
 
         /** @brief get value */
-        void  getValue(int &v);
+        void  getValue(int &v) const;
 
         /** @brief and a nicer one */
-        int getValue(void) {int v; getValue(v); return v;}
+        int getValue(void) const {int v; getValue(v); return v;}
 
         /** @brief get the value at a time */
-        void getValueAtTime(double t, int &v);
+        void getValueAtTime(double t, int &v) const;
 
         /** @brief and a nicer one */
-        int getValueAtTime(double t) {int v; getValueAtTime(t, v); return v;}
+        int getValueAtTime(double t) const {int v; getValueAtTime(t, v); return v;}
 
         /** @brief set value */
         void setValue(int v);
@@ -1389,16 +1389,16 @@ namespace OFX {
                             int &maxX, int &maxY);
 
         /** @brief get value */
-        void getValue(int &x, int &y);
+        void getValue(int &x, int &y) const;
 
         /** @brief get the  value */
-        OfxPointI getValue(void) {OfxPointI v; getValue(v.x, v.y); return v;}
+        OfxPointI getValue(void) const {OfxPointI v; getValue(v.x, v.y); return v;}
 
         /** @brief get the value at a time */
-        void getValueAtTime(double t, int &x, int &y);
+        void getValueAtTime(double t, int &x, int &y) const;
 
         /** @brief get the  value */
-        OfxPointI getValueAtTime(double t) {OfxPointI v; getValueAtTime(t, v.x, v.y); return v;}
+        OfxPointI getValueAtTime(double t) const {OfxPointI v; getValueAtTime(t, v.x, v.y); return v;}
 
         /** @brief set value */
         void setValue(int x, int y);
@@ -1452,10 +1452,16 @@ namespace OFX {
                             int& maxX, int &maxY, int &maxZ);
 
         /** @brief get value */
-        void getValue(int &x, int &y, int &z);
+        void getValue(int &x, int &y, int &z) const;
+
+        /** @brief get the  value */
+        Ofx3DPointI getValue(void) const {Ofx3DPointI v; getValue(v.x, v.y, v.z); return v;}
 
         /** @brief get the value at a time */
-        void getValueAtTime(double t, int &x, int &y, int &z);
+        void getValueAtTime(double t, int &x, int &y, int &z) const;
+
+        /** @brief get the value at a time */
+        Ofx3DPointI getValueAtTime(double t) const {Ofx3DPointI v; getValueAtTime(t, v.x, v.y, v.z); return v;}
 
         /** @brief set value */
         void setValue(int x, int y, int z);
@@ -1537,16 +1543,16 @@ namespace OFX {
         void getDisplayRange(double &min, double &max);
 
         /** @brief get value */
-        void getValue(double &v);
+        void getValue(double &v) const;
 
         /** @brief get value */
-        double getValue(void) {double v; getValue(v); return v;}
+        double getValue(void) const {double v; getValue(v); return v;}
 
         /** @brief get the value at a time */
-        void getValueAtTime(double t, double &v);
+        void getValueAtTime(double t, double &v) const;
 
         /** @brief get value */
-        double getValueAtTime(double t) {double v; getValueAtTime(t, v); return v;}
+        double getValueAtTime(double t) const {double v; getValueAtTime(t, v); return v;}
 
         /** @brief set value */
         void setValue(double v);
@@ -1606,16 +1612,16 @@ namespace OFX {
                             double &maxX, double &maxY);
 
         /** @brief get value */
-        void getValue(double &x, double &y);
+        void getValue(double &x, double &y) const;
 
         /** @brief get value */
-        OfxPointD getValue(void) {OfxPointD v; getValue(v.x, v.y); return v;}
+        OfxPointD getValue(void) const {OfxPointD v; getValue(v.x, v.y); return v;}
 
         /** @brief get the value at a time */
-        void getValueAtTime(double t, double &x, double &y);
+        void getValueAtTime(double t, double &x, double &y) const;
 
         /** @brief get the  value */
-        OfxPointD getValueAtTime(double t) {OfxPointD v; getValueAtTime(t, v.x, v.y); return v;}
+        OfxPointD getValueAtTime(double t) const {OfxPointD v; getValueAtTime(t, v.x, v.y); return v;}
 
         /** @brief set value */
         void setValue(double x, double y);
@@ -1681,10 +1687,16 @@ namespace OFX {
                             double& maxX, double &maxY, double &maxZ);
 
         /** @brief get value */
-        void getValue(double &x, double &y, double &z);
+        void getValue(double &x, double &y, double &z) const;
+
+        /** @brief get the  value */
+        Ofx3DPointD getValue(void) const {Ofx3DPointD v; getValue(v.x, v.y, v.z); return v;}
 
         /** @brief get the value at a time */
-        void getValueAtTime(double t, double &x, double &y, double &z);
+        void getValueAtTime(double t, double &x, double &y, double &z) const;
+
+        /** @brief get the value at a time */
+        Ofx3DPointD getValueAtTime(double t) const {Ofx3DPointD v; getValueAtTime(t, v.x, v.y, v.z); return v;}
 
         /** @brief set value */
         void setValue(double x, double y, double z);
@@ -1728,10 +1740,16 @@ namespace OFX {
         void getDefault(double &r, double &g, double &b);
 
         /** @brief get value */
-        void getValue(double &r, double &g, double &b);
+        void getValue(double &r, double &g, double &b) const;
+
+        /** @brief get value */
+        OfxRGBColourD getValue() const { OfxRGBColourD v; getValue(v.r, v.g, v.b); return v; }
 
         /** @brief get the value at a time */
-        void getValueAtTime(double t, double &r, double &g, double &b);
+        void getValueAtTime(double t, double &r, double &g, double &b) const;
+
+        /** @brief get the value at a time */
+        OfxRGBColourD getValueAtTime(double t) const { OfxRGBColourD v; getValueAtTime(t, v.r, v.g, v.b); return v; }
 
         /** @brief set value */
         void setValue(double r, double g, double b);
@@ -1764,10 +1782,16 @@ namespace OFX {
         void getDefault(double &r, double &g, double &b, double &a);
 
         /** @brief get value */
-        void getValue(double &r, double &g, double &b, double &a);
+        void getValue(double &r, double &g, double &b, double &a) const;
+
+        /** @brief get value */
+        OfxRGBAColourD getValue() const { OfxRGBAColourD v; getValue(v.r, v.g, v.b, v.a); return v; }
 
         /** @brief get the value at a time */
-        void getValueAtTime(double t, double &r, double &g, double &b, double &a);
+        void getValueAtTime(double t, double &r, double &g, double &b, double &a) const;
+
+        /** @brief get the value at a time */
+        OfxRGBAColourD getValueAtTime(double t) const { OfxRGBAColourD v; getValueAtTime(t, v.r, v.g, v.b, v.a); return v; }
 
         /** @brief set value */
         void setValue(double r, double g, double b, double a);
@@ -1800,10 +1824,16 @@ namespace OFX {
         void getDefault(std::string &v);
 
         /** @brief get value */
-        void getValue(std::string &v);
+        void getValue(std::string &v) const;
+
+        /** @brief get value */
+        std::string getValue() const { std::string v; getValue( v ); return v; }
 
         /** @brief get the value at a time */
-        void getValueAtTime(double t, std::string &v);
+        void getValueAtTime(double t, std::string &v) const;
+
+        /** @brief get the value at a time */
+        std::string getValueAtTime( double t ) const { std::string v; getValueAtTime( t, v ); return v; }
 
         /** @brief set value */
         void setValue(const std::string &v);
@@ -1862,16 +1892,16 @@ namespace OFX {
 #endif
 
         /** @brief get value */
-        void getValue(int &v);
+        void getValue(int &v) const;
 
         /** @brief get value */
-        int getValue(void) {int v; getValue(v); return v;}
+        int getValue(void) const {int v; getValue(v); return v;}
 
         /** @brief get the value at a time */
-        void getValueAtTime(double t, int &v);
+        void getValueAtTime(double t, int &v) const;
 
         /** @brief get the value at a time */
-        int getValueAtTime(double t) {int v; getValueAtTime(t, v); return v;}
+        int getValueAtTime(double t) const {int v; getValueAtTime(t, v); return v;}
 
         /** @brief set value */
         void setValue(int v);
@@ -1907,16 +1937,16 @@ namespace OFX {
         bool getDefault(void) {bool v; getDefault(v); return v;}
 
         /** @brief get value */
-        void getValue(bool &v);
+        void getValue(bool &v) const;
 
         /** @brief get value */
-        bool getValue(void) {bool v; getValue(v); return v;}
+        bool getValue(void) const {bool v; getValue(v); return v;}
 
         /** @brief get the value at a time */
-        void getValueAtTime(double t, bool &v);
+        void getValueAtTime(double t, bool &v) const;
 
         /** @brief get value */
-        bool getValueAtTime(double t) {bool v; getValueAtTime(t, v); return v;}
+        bool getValueAtTime(double t) const {bool v; getValueAtTime(t, v); return v;}
 
         /** @brief set value */
         void setValue(bool v);
@@ -1985,10 +2015,16 @@ namespace OFX {
         void getDefault(std::string &v);    
 
         /** @brief get value */
-        void getValue(std::string &v);
+        void getValue(std::string &v) const;
+
+        /** @brief get value */
+        std::string getValue() const { std::string v; getValue( v ); return v; }
 
         /** @brief get the value at a time */
-        void getValueAtTime(double t, std::string &v);
+        void getValueAtTime(double t, std::string &v) const;
+
+        /** @brief get the value at a time */
+        std::string getValueAtTime(double t) const { std::string v; getValueAtTime(t, v); return v; }
 
         /** @brief set value */
         void setValue(const std::string &v);
@@ -2052,14 +2088,14 @@ namespace OFX {
 
         double getValue(int curveIndex,
                         OfxTime time,
-                        double parametricPosition);
+                        double parametricPosition) const;
 
         int getNControlPoints(int curveIndex,
-                              OfxTime time);
+                              OfxTime time) const;
 
         std::pair<double, double> getNthControlPoint(int curveIndex,
                                                      OfxTime time,
-                                                     int nthCtl);
+                                                     int nthCtl) const;
 
         void setNthControlPoints(int curveIndex,
                                  OfxTime time,
