@@ -2034,33 +2034,56 @@ namespace OFX {
         friend class ParamSet;
 
     public:
-        double getValue(const int curveIndex,
-                        const OfxTime time,
-                        const double parametricPosition);
-        int getNControlPoints(const int curveIndex,
-                              const OfxTime time);
-        std::pair<double, double> getNthControlPoint(const int curveIndex,
-                                                     const OfxTime time,
-                                                     const int nthCtl);
-        void setNthControlPoints(const int curveIndex,
-                                 const OfxTime time,
-                                 const int nthCtl,
-                                 const double key,
-                                 const double value,
-                                 const bool addAnimationKey);
-        void setNthControlPoints(const int curveIndex,
-                                 const OfxTime time,
-                                 const int nthCtl,
-                                 const std::pair<double, double> ctrlPoint,
-                                 const bool addAnimationKey);
-        void addControlPoint(const int curveIndex,
-                             const OfxTime time,
-                             const double key,
-                             const double value,
-                             const bool addAnimationKey);
-        void deleteControlPoint(const int curveIndex,
-                                const int nthCtl);
-        void deleteControlPoint(const int curveIndex);
+
+        /** @brief get the parametric range */
+        void getRange(double &min, double &max);
+
+        /** @brief set the hard min/max range, default is -DBL_MAX, DBL_MAX */
+        void setDimensionRange(int curveIndex, double min, double max);
+
+        /** @brief set the display min and max, default is to be the same as the range param */
+        void setDimensionDisplayRange(int curveIndex, double min, double max);
+
+        /** @brief set the hard min/max range, default is -DBL_MAX, DBL_MAX */
+        void getDimensionRange(int curveIndex, double &min, double &max);
+
+        /** @brief set the display min and max, default is to be the same as the range param */
+        void getDimensionDisplayRange(int curveIndex, double &min, double &max);
+
+        double getValue(int curveIndex,
+                        OfxTime time,
+                        double parametricPosition);
+
+        int getNControlPoints(int curveIndex,
+                              OfxTime time);
+
+        std::pair<double, double> getNthControlPoint(int curveIndex,
+                                                     OfxTime time,
+                                                     int nthCtl);
+
+        void setNthControlPoints(int curveIndex,
+                                 OfxTime time,
+                                 int nthCtl,
+                                 double key,
+                                 double value,
+                                 bool addAnimationKey);
+
+        void setNthControlPoints(int curveIndex,
+                                 OfxTime time,
+                                 int nthCtl,
+                                 std::pair<double, double> ctrlPoint,
+                                 bool addAnimationKey);
+
+        void addControlPoint(int curveIndex,
+                             OfxTime time,
+                             double key,
+                             double value,
+                             bool addAnimationKey);
+
+        void deleteControlPoint(int curveIndex,
+                                int nthCtl);
+
+        void deleteControlPoint(int curveIndex);
     };
 
 #ifdef OFX_EXTENSIONS_NUKE

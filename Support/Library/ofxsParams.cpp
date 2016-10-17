@@ -3489,6 +3489,44 @@ namespace OFX {
       : Param(paramSet, name, eParametricParam, handle)
   {}
 
+  void ParametricParam::getRange(double &min, double &max)
+  {
+    double r[2] = {0., 0.};
+    _paramProps.propGetDoubleN(kOfxParamPropParametricRange, r, 2);
+    min = r[0];
+    max = r[1];
+  }
+
+  /** @brief set the hard min/max range, default is -DBL_MAX, DBL_MAX */
+  void ParametricParam::setDimensionRange(int curveIndex, double min, double max)
+  {
+    // don't throw: the OFX 1.4 spec is not clear wether these properties exist
+    _paramProps.propSetDouble(kOfxParamPropMin, min, curveIndex, false);
+    _paramProps.propSetDouble(kOfxParamPropMax, max, curveIndex, false);
+  }
+
+  /** @brief set the display min and max, default is to be the same as the range param */
+  void ParametricParam::setDimensionDisplayRange(int curveIndex, double min, double max)
+  {
+    // don't throw: the OFX 1.4 spec is not clear wether these properties exist
+    _paramProps.propSetDouble(kOfxParamPropDisplayMin, min, curveIndex, false);
+    _paramProps.propSetDouble(kOfxParamPropDisplayMax, max, curveIndex, false);
+  }
+
+  /** @brief set the hard min/max range, default is -DBL_MAX, DBL_MAX */
+  void ParametricParam::getDimensionRange(int curveIndex, double &min, double &max)
+  {
+    min = _paramProps.propGetDouble(kOfxParamPropMin, curveIndex, false);
+    max = _paramProps.propGetDouble(kOfxParamPropMax, curveIndex, false);
+  }
+
+  /** @brief set the display min and max, default is to be the same as the range param */
+  void ParametricParam::getDimensionDisplayRange(int curveIndex, double &min, double &max)
+  {
+    min = _paramProps.propGetDouble(kOfxParamPropDisplayMin, curveIndex, false);
+    max = _paramProps.propGetDouble(kOfxParamPropDisplayMax, curveIndex, false);
+  }
+
   /** @brief Evaluates a parametric parameter
 
       \arg curveIndex            which dimension to evaluate
