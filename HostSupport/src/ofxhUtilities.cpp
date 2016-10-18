@@ -65,7 +65,7 @@ namespace OFX {
   }
 
 # ifdef WINDOWS
-  std::wstring utf8_to_utf16(const std::string& s)
+  std::wstring utf8_to_utf16(const std::string& str)
   {
     std::wstring native;
 
