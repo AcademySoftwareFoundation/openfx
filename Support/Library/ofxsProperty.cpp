@@ -400,7 +400,7 @@ namespace OFX {
     if(throwOnFailure)
       throwPropertyException(stat, property);
 
-    if(_gPropLogging > 0) Log::print("Retrieved double property %s, was given %s.", property, values);
+    if(_gPropLogging > 0) Log::print("Retrieved doublex%d property %s.", count, property);
 
   }
 
@@ -431,7 +431,7 @@ namespace OFX {
     if(throwOnFailure)
       throwPropertyException(stat, property);
 
-    if(_gPropLogging > 0) Log::print("Retrieved int property %s, was given %s.", property, values);
+    if(_gPropLogging > 0) Log::print("Retrieved intx%d property %s.", count, property);
 
   }
 
