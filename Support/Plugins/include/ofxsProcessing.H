@@ -82,9 +82,10 @@ namespace OFX {
             OfxRectI win = _renderWindow;
 
             MultiThread::getThreadRange(threadId, nThreads, _renderWindow.y1, _renderWindow.y2, &win.y1, &win.y2);
-
-            // and render that thread on each
-            multiThreadProcessImages(win);
+            if ( (win.y2 - win.y1) > 0 ) {
+                // and render that thread on each
+                multiThreadProcessImages(win);
+            }
         }
         
         /** @brief called before any MP is done */
