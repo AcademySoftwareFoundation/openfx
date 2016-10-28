@@ -2527,10 +2527,15 @@ namespace OFX {
         getProjectOffset(projectOffset[0], projectOffset[1]);
         getProjectExtent(projectExtent[0], projectExtent[1]);
         // Project format is in canonical coordinates, so divide by PAR
-        projectOffset[0] /= projectPAR;
-        projectExtent[0] /= projectPAR;
+        if (projectPAR != 0.) {
+          projectOffset[0] /= projectPAR;
+          projectExtent[0] /= projectPAR;
+        }
         bool outputFormatSet = false;
-        OfxRectI outputFormat = {projectOffset[0], projectOffset[1], projectExtent[0] , projectExtent[1]};
+        OfxRectI outputFormat = { (int)(projectOffset[0] + 0.5),
+                                  (int)(projectOffset[1] + 0.5),
+                                  (int)(projectOffset[0] + projectExtent[0] + 0.5),
+                                  (int)(projectOffset[1] + projectExtent[1] + 0.5)};
 #endif
 
 
