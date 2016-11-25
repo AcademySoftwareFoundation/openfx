@@ -33,7 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 
 #if defined(_WIN32) || defined(_WIN64)
+#ifndef WINDOWS
 #define WINDOWS
+#endif
 #if defined(_WIN64) || defined(__amd64__)
 #define AMD64
 #else
