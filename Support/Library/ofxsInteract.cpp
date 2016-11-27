@@ -137,7 +137,15 @@ namespace OFX {
     Interact::getSuggestedColour(OfxRGBColourD &c) const
   {
     // OFX 1.2/1.3 specs say that the host should return kOfxStatReplyDefault if there is no suggested color
-    OfxStatus stat = OFX::Private::gPropSuite->propGetDoubleN(_interactProperties.propSetHandle(), kOfxInteractPropSuggestedColour, 3, &c.r);
+    int dim;
+    OfxStatus stat = OFX::Private::gPropSuite->propGetDimension(_interactProperties.propSetHandle(), kOfxInteractPropSuggestedColour, &dim);
+    // host may indicate that there is no suggested color either by returning kOfxStatReplyDefault or by returning dim=0
+    if (stat == kOfxStatReplyDefault || (stat == kOfxStatOK && dim < 3) ) {
+      return false;
+    }
+    if (stat == kOfxStatOK) {
+      stat = OFX::Private::gPropSuite->propGetDoubleN(_interactProperties.propSetHandle(), kOfxInteractPropSuggestedColour, 3, &c.r);
+    }
 #ifdef OFX_EXTENSIONS_NUKE
     if (stat != kOfxStatOK && stat != kOfxStatReplyDefault) {
       stat = OFX::Private::gPropSuite->propGetDoubleN(_interactProperties.propSetHandle(), kOfxPropOverlayColour, 3, &c.r);

@@ -122,9 +122,9 @@ namespace OFX {
         { kOfxInteractPropViewportSize, Property::eDouble, 2, true, "100.0f" },
 #endif
         { kOfxInteractPropSlaveToParam , Property::eString, 0, false, ""},
-        { kOfxInteractPropSuggestedColour , Property::eDouble, 3, true, "1.0f" },
+        { kOfxInteractPropSuggestedColour , Property::eDouble, 0, true, "1.0f" }, // dimension may be 0 or 3
 #ifdef OFX_EXTENSIONS_NUKE
-        { kOfxPropOverlayColour , Property::eDouble, 3, true, "1.0f" },
+        { kOfxPropOverlayColour , Property::eDouble, 0, true, "1.0f" }, // dimension may be 0 or 3
 #endif
 #     ifdef OFX_EXTENSIONS_NATRON
         { kNatronOfxInteractColourPicking, Property::eInt, 1, false, "0" },
@@ -213,7 +213,13 @@ namespace OFX {
                 || name == kOfxPropOverlayColour
 #endif
                 ){
-          return 3;
+          double r, g, b;
+          bool stat = getSuggestedColour(r, g, b);
+          if (stat) {
+            return 3;
+          } else {
+            return 0;
+          }
         }
 #ifdef kOfxInteractPropViewportSize // removed in OFX 1.4
         else if(name == kOfxInteractPropViewportSize){

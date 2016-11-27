@@ -96,7 +96,7 @@ The components are in the order red, green then blue.
 
 /** @brief The suggested colour to draw a widget in an interact, typically for overlays.
  
-    - Type - double X 3
+    - Type - double X 3 if set, else double X 0
     - Property Set - read only on the interact instance
     - Default - 1.0
     - Valid Values - greater than or equal to 0.0
