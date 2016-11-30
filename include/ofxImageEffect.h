@@ -318,7 +318,7 @@ The plugin can be slaved to multiple parameters (setting index 0, then index 1 e
 
 See \ref ImageEffectClipPreferences.
 
-If a clip can be continously sampled, the frame rate will be set to 0.
+If a clip can be continuously sampled, the frame rate will be set to 0.
 */
 #define kOfxImageEffectPropSetableFrameRate "OfxImageEffectPropSetableFrameRate"
 
@@ -535,7 +535,7 @@ then the plugin can detect this via an identifier change and re-evaluate the cac
 */
 #define kOfxImagePropUniqueIdentifier "OfxImagePropUniqueIdentifier"
 
-/** @brief Clip and action argument property which indicates that the clip can be sampled continously
+/** @brief Clip and action argument property which indicates that the clip can be sampled continuously
 
    - Type - int X 1
    - Property Set -  clip instance (read only), as an out argument to ::kOfxImageEffectActionGetClipPreferences action (read/write)

@@ -2923,7 +2923,7 @@ namespace OFX {
     }
   }
 
-  /** @brief Set whether the effect can be continously sampled. */
+  /** @brief Set whether the effect can be continuously sampled. */
   void ClipPreferencesSetter::setOutputHasContinuousSamples(bool v)
   {
     doneSomething_ = true;
