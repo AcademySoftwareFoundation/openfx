@@ -1503,7 +1503,7 @@ namespace OFX {
 
     Defaults to false. 
     */
-    void setOutputHasContinousSamples(bool v);
+    void setOutputHasContinuousSamples(bool v);
 
     /** @brief Sets whether the effect will produce different images in all frames, even if the no params or input images are varying (eg: a noise generator).
 

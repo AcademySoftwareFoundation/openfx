@@ -2924,7 +2924,7 @@ namespace OFX {
   }
 
   /** @brief Set whether the effect can be continously sampled. */
-  void ClipPreferencesSetter::setOutputHasContinousSamples(bool v)
+  void ClipPreferencesSetter::setOutputHasContinuousSamples(bool v)
   {
     doneSomething_ = true;
     outArgs_.propSetInt(kOfxImageClipPropContinuousSamples, int(v));
