@@ -162,7 +162,7 @@ $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle: $(OBJECTPATH)/$(PLUGINNAME).ofx
 	mkdir -p  $@/Contents/$(ARCH)
 	cp  $^  $@/Contents/$(ARCH)
 	cp  Info.plist  $@/Contents/
-	if [ -n "$(RESOURCES)" ]; then mkdir -p $@/Contents/Resources; cp $(RESOURCES)  $@/Contents/Resources; fi
+	if [ -n "$(RESOURCES)" ]; then mkdir -p $@/Contents/Resources; cp -r $(RESOURCES)  $@/Contents/Resources; fi
 	if [ \( $(DEBUGNAME) = "release" -o $(DEBUGNAME) = "relwithdebinfo" \) -a $(ARCH) = "MacOS" ]; then bash $(PATHTOROOT)/include/osxDeploy.sh $@ $(PLUGINNAME).ofx; fi
 
 clean :
