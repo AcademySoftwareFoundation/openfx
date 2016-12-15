@@ -601,7 +601,12 @@ namespace OFX {
 
         /// calculate the default rod for this effect instance
         virtual OfxRectD calcDefaultRegionOfDefinition(OfxTime  time,
-                                                       OfxPointD   renderScale) const;
+                                                       OfxPointD   renderScale
+#                                                      ifdef OFX_EXTENSIONS_NUKE
+                                                       ,
+                                                       int view
+#                                                      endif
+                                                       ) const;
 
         //
         // actions

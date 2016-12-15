@@ -1557,7 +1557,12 @@ namespace OFX {
 
       /// calculate the default rod for this effect instance
       OfxRectD Instance::calcDefaultRegionOfDefinition(OfxTime  time,
-                                                       OfxPointD   /*renderScale*/) const
+                                                       OfxPointD   /*renderScale*/
+#                                                      ifdef OFX_EXTENSIONS_NUKE
+                                                       ,
+                                                       int view
+#                                                      endif
+                                                       ) const
       {
         OfxRectD rod;
         if (time != time) {
@@ -1584,7 +1589,11 @@ namespace OFX {
           // filter and paint default to the input clip
           ClipInstance *clip = getClip(kOfxImageEffectSimpleSourceClipName);
           if(clip) {
+#          ifdef OFX_EXTENSIONS_NUKE
+            rod = clip->getRegionOfDefinition(time, view);
+#          else
             rod = clip->getRegionOfDefinition(time);
+#          endif
           } else {
             throw Property::Exception(kOfxStatFailed);
           }
@@ -1594,8 +1603,13 @@ namespace OFX {
           ClipInstance *clipFrom = getClip(kOfxImageEffectTransitionSourceFromClipName);
           ClipInstance *clipTo = getClip(kOfxImageEffectTransitionSourceToClipName);
           if(clipFrom && clipTo) {
+#          ifdef OFX_EXTENSIONS_NUKE
+            rod = clipFrom->getRegionOfDefinition(time, view);
+            rod = Union(rod, clipTo->getRegionOfDefinition(time, view));
+#          else
             rod = clipFrom->getRegionOfDefinition(time);
             rod = Union(rod, clipTo->getRegionOfDefinition(time));
+#          endif
           } else {
             throw Property::Exception(kOfxStatFailed);
           }
@@ -1612,10 +1626,17 @@ namespace OFX {
               ++it) {
             ClipInstance *clip = it->second;
             if(!clip->isOutput() && (!clip->isOptional() || (clip->getConnected() && clip->getName() == kOfxImageEffectSimpleSourceClipName))) {
+#            ifdef OFX_EXTENSIONS_NUKE
+              if(!gotOne)
+                rod = clip->getRegionOfDefinition(time, view);
+              else
+                rod = Union(rod, clip->getRegionOfDefinition(time, view));
+#            else
               if(!gotOne)
                 rod = clip->getRegionOfDefinition(time);
               else
                 rod = Union(rod, clip->getRegionOfDefinition(time));
+#            endif
               gotOne = true;
             }
           }
@@ -1638,8 +1659,13 @@ namespace OFX {
               if (stat != kOfxStatOK) {
                 throw Property::Exception(stat);
               }
+#            ifdef OFX_EXTENSIONS_NUKE
+              rod = clip->getRegionOfDefinition(floor(srctime), view);
+              rod = Union(rod, clip->getRegionOfDefinition(ceil(srctime), view));
+#            else
               rod = clip->getRegionOfDefinition(floor(srctime));
               rod = Union(rod, clip->getRegionOfDefinition(ceil(srctime)));
+#            endif
             } else {
                 throw Property::Exception(kOfxStatFailed);
             }
@@ -1704,8 +1730,13 @@ namespace OFX {
           outArgs.getDoublePropertyN(kOfxImageEffectPropRegionOfDefinition, &rod.x1, 4);
         }
         else if(stat == kOfxStatReplyDefault) {
-          rod = calcDefaultRegionOfDefinition(time, renderScale);
-        }        
+          rod = calcDefaultRegionOfDefinition(time, renderScale
+#                                             ifdef OFX_EXTENSIONS_NUKE
+                                              ,
+                                              view
+#                                             endif
+                                              );
+        }
 
 
 #       ifdef OFX_DEBUG_ACTIONS
@@ -1749,7 +1780,11 @@ namespace OFX {
                getContext() == kOfxImageEffectContextGenerator) {
               if (it->second->isOutput() || it->second->getConnected()) {// needed to be able to fetch the RoD
 					/// @todo tuttle: how to support size on generators... check if this is correct in all cases.
+#ifdef OFX_EXTENSIONS_NUKE
+                OfxRectD roi = it->second->getRegionOfDefinition(time, view);
+#else
                 OfxRectD roi = it->second->getRegionOfDefinition(time);
+#endif
                 rois[it->second] = roi;
               }
             }
@@ -3353,168 +3388,168 @@ namespace OFX {
 
 #   ifdef OFX_EXTENSIONS_NUKE
         
-    static OfxStatus clipGetImagePlane(OfxImageClipHandle clip,
-                                           OfxTime       time,
-                                           int           view,
-                                           const char   *plane,
-                                           const OfxRectD *region,
-                                           OfxPropertySetHandle   *imageHandle)
-    {
+      static OfxStatus clipGetImagePlane(OfxImageClipHandle clip,
+                                         OfxTime       time,
+                                         int           view,
+                                         const char   *plane,
+                                         const OfxRectD *region,
+                                         OfxPropertySetHandle   *imageHandle)
+      {
         try {
-            if (!imageHandle) {
-                return kOfxStatErrBadHandle;
-            }
-            
-            ClipInstance *clipInstance = reinterpret_cast<ClipInstance*>(clip);
-            if (!clipInstance || !clipInstance->verifyMagic()) {
-                *imageHandle = NULL;
-                return kOfxStatErrBadHandle;
-            }
-            if (time != time) {
-                // time is NaN                *imageHandle = NULL;
+          if (!imageHandle) {
+            return kOfxStatErrBadHandle;
+          }
 
-                return kOfxStatFailed;
-            }
-            Image* image = clipInstance->getImagePlane(time, view, plane, region);
-            if(!image) {
-                *imageHandle = NULL;
-                
-                return kOfxStatFailed;
-            }
-            
-            *imageHandle = image->getPropHandle();
-            
-            return kOfxStatOK;
-            
-            
-        } catch (...) {
+          ClipInstance *clipInstance = reinterpret_cast<ClipInstance*>(clip);
+          if (!clipInstance || !clipInstance->verifyMagic()) {
             *imageHandle = NULL;
             return kOfxStatErrBadHandle;
-        }
-
-    }
-        
-    static OfxStatus clipGetImagePlane(OfxImageClipHandle clip,
-                                       OfxTime       time,
-                                       const char   *plane,
-                                       const OfxRectD *region,
-                                       OfxPropertySetHandle   *imageHandle)
-    {
-        return clipGetImagePlane(clip, time, -1, plane, region, imageHandle);
-    }
-
-    
-        
-        /// get the rod on the given clip at the given time for the given view
-    static OfxStatus clipGetRegionOfDefinition(OfxImageClipHandle clip,
-                                               OfxTime            time,
-                                               int                view,
-                                               OfxRectD           *bounds)
-    {
-        try {
-            if (!bounds) {
-                return kOfxStatErrBadHandle;
-            }
-            
-            ClipInstance *clipInstance = reinterpret_cast<ClipInstance*>(clip);
-            
-            if (!clipInstance || !clipInstance->verifyMagic()) {
-                bounds->x1 = bounds->y1 = bounds->x2 = bounds->y2 = 0.;
-                
-                return kOfxStatErrBadHandle;
-            }
-            
-            if (time != time) {
-                // time is NaN
-                return kOfxStatFailed;
-            }
-            *bounds = clipInstance->getRegionOfDefinition(time,view);
-            if (bounds->x2 < bounds->x1 || bounds->y2 < bounds->y1) {
-                // the RoD is invalid (empty is OK)
-                
-                return kOfxStatFailed;
-            }
-            
-            return kOfxStatOK;
-        } catch (...) {
-            return kOfxStatErrBadHandle;
-        }
-    
-    }
-        
-        /// get the textual representation of the view
-    static OfxStatus getViewName(OfxImageEffectHandle effect,
-                                 int                  view,
-                                 const char         **viewName)
-    {
-          try {
-              if (!viewName) {
-                  return kOfxStatErrBadHandle;
-              }
-              
-              ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(effect);
-              
-              if (!effectBase || !effectBase->verifyMagic()) {
-                  *viewName = 0;
-                  return kOfxStatErrBadHandle;
-              }
-              
-              ImageEffect::Instance *effectInstance = dynamic_cast<ImageEffect::Instance*>(effectBase);
-              if (!effectInstance) {
-                  *viewName = 0;
-                  return kOfxStatErrBadHandle;
-              }
-              
-              effectInstance->getViewName(view, viewName);
-              return kOfxStatOK;
-          } catch (...) {
-              *viewName = 0;
-              return kOfxStatErrBadHandle;
           }
-    }
-        
-        /// get the number of views
-    static OfxStatus getViewCount(OfxImageEffectHandle effect,
-                                  int                 *nViews)
-    {
-        try {
-            if (!nViews) {
-                return kOfxStatErrBadHandle;
-            }
-            
-            ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(effect);
-            
-            if (!effectBase || !effectBase->verifyMagic()) {
-                *nViews = 0;
-                return kOfxStatErrBadHandle;
-            }
-            
-            ImageEffect::Instance *effectInstance = dynamic_cast<ImageEffect::Instance*>(effectBase);
-            if (!effectInstance) {
-                *nViews = 0;
-                return kOfxStatErrBadHandle;
-            }
-            
-            effectInstance->getViewCount(nViews);
-            return kOfxStatOK;
+          if (time != time) {
+            // time is NaN                *imageHandle = NULL;
+
+            return kOfxStatFailed;
+          }
+          Image* image = clipInstance->getImagePlane(time, view, plane, region);
+          if(!image) {
+            *imageHandle = NULL;
+
+            return kOfxStatFailed;
+          }
+
+          *imageHandle = image->getPropHandle();
+
+          return kOfxStatOK;
+
+
         } catch (...) {
+          *imageHandle = NULL;
+          return kOfxStatErrBadHandle;
+        }
+
+      }
+
+      static OfxStatus clipGetImagePlane(OfxImageClipHandle clip,
+                                         OfxTime       time,
+                                         const char   *plane,
+                                         const OfxRectD *region,
+                                         OfxPropertySetHandle   *imageHandle)
+      {
+        return clipGetImagePlane(clip, time, -1, plane, region, imageHandle);
+      }
+
+
+
+      /// get the rod on the given clip at the given time for the given view
+      static OfxStatus clipGetRegionOfDefinition(OfxImageClipHandle clip,
+                                                 OfxTime            time,
+                                                 int                view,
+                                                 OfxRectD           *bounds)
+      {
+        try {
+          if (!bounds) {
+            return kOfxStatErrBadHandle;
+          }
+
+          ClipInstance *clipInstance = reinterpret_cast<ClipInstance*>(clip);
+
+          if (!clipInstance || !clipInstance->verifyMagic()) {
+            bounds->x1 = bounds->y1 = bounds->x2 = bounds->y2 = 0.;
+
+            return kOfxStatErrBadHandle;
+          }
+
+          if (time != time) {
+            // time is NaN
+            return kOfxStatFailed;
+          }
+          *bounds = clipInstance->getRegionOfDefinition(time, view);
+          if (bounds->x2 < bounds->x1 || bounds->y2 < bounds->y1) {
+            // the RoD is invalid (empty is OK)
+
+            return kOfxStatFailed;
+          }
+
+          return kOfxStatOK;
+        } catch (...) {
+          return kOfxStatErrBadHandle;
+        }
+
+      }
+
+      /// get the textual representation of the view
+      static OfxStatus getViewName(OfxImageEffectHandle effect,
+                                   int                  view,
+                                   const char         **viewName)
+      {
+        try {
+          if (!viewName) {
+            return kOfxStatErrBadHandle;
+          }
+
+          ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(effect);
+
+          if (!effectBase || !effectBase->verifyMagic()) {
+            *viewName = 0;
+            return kOfxStatErrBadHandle;
+          }
+
+          ImageEffect::Instance *effectInstance = dynamic_cast<ImageEffect::Instance*>(effectBase);
+          if (!effectInstance) {
+            *viewName = 0;
+            return kOfxStatErrBadHandle;
+          }
+
+          effectInstance->getViewName(view, viewName);
+          return kOfxStatOK;
+        } catch (...) {
+          *viewName = 0;
+          return kOfxStatErrBadHandle;
+        }
+      }
+
+      /// get the number of views
+      static OfxStatus getViewCount(OfxImageEffectHandle effect,
+                                    int                 *nViews)
+      {
+        try {
+          if (!nViews) {
+            return kOfxStatErrBadHandle;
+          }
+
+          ImageEffect::Base *effectBase = reinterpret_cast<ImageEffect::Base*>(effect);
+
+          if (!effectBase || !effectBase->verifyMagic()) {
             *nViews = 0;
             return kOfxStatErrBadHandle;
+          }
+
+          ImageEffect::Instance *effectInstance = dynamic_cast<ImageEffect::Instance*>(effectBase);
+          if (!effectInstance) {
+            *nViews = 0;
+            return kOfxStatErrBadHandle;
+          }
+
+          effectInstance->getViewCount(nViews);
+          return kOfxStatOK;
+        } catch (...) {
+          *nViews = 0;
+          return kOfxStatErrBadHandle;
         }
-    }
-        
-    static const struct FnOfxImageEffectPlaneSuiteV1 gPlaneSuiteV1 = {
+      }
+
+      static const struct FnOfxImageEffectPlaneSuiteV1 gPlaneSuiteV1 = {
         clipGetImagePlane
-    };
-        
-    static const struct FnOfxImageEffectPlaneSuiteV2 gPlaneSuiteV2 = {
+      };
+
+      static const struct FnOfxImageEffectPlaneSuiteV2 gPlaneSuiteV2 = {
         clipGetImagePlane,
         clipGetRegionOfDefinition,
         getViewName,
         getViewCount
-    };
+      };
 #   endif
-        
+
 #   ifdef OFX_SUPPORTS_OPENGLRENDER
       ////////////////////////////////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////////////
