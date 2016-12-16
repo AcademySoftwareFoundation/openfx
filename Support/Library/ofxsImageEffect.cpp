@@ -746,11 +746,11 @@ namespace OFX {
     _clipProps.propSetInt(kOfxImageClipPropIsMask, int(v));
   }
 
-#ifdef OFX_EXTENSIONS_NUKE
+#ifdef OFX_EXTENSIONS_NATRON
   /** @brief say whether this clip may contain images with a transform attached */
-  void ClipDescriptor::setCanTransform(bool v)
+  void ClipDescriptor::setCanDistort(bool v)
   {
-    _clipProps.propSetInt(kFnOfxImageEffectCanTransform, int(v), false);
+    _clipProps.propSetInt(kOfxImageEffectPropCanDistort, int(v), false);
   }
 #endif
 
@@ -1204,15 +1204,7 @@ namespace OFX {
 #endif
 
 #ifdef OFX_EXTENSIONS_NUKE
-  /** @brief indicate that a plugin or host can handle transform effects */
-  void ImageEffectDescriptor::setCanTransform(bool v)
-  {
-    // the header says this property is on the effect instance, but on Nuke it only exists on the effect descriptor
-    if (gHostDescription.canTransform) {
-      _effectProps.propSetInt(kFnOfxImageEffectCanTransform, int(v), false);
-    }
-  }
-    
+
   /** @brief Indicates that a host or plugin can fetch more than a type of image from a clip*/
   void ImageEffectDescriptor::setIsMultiPlanar(bool v)
   {
@@ -1312,6 +1304,17 @@ namespace OFX {
   }
 
 #ifdef OFX_EXTENSIONS_NATRON
+
+  /** @brief indicate that a plugin or host can handle transform effects */
+  void ImageEffectDescriptor::setCanDistort(bool v)
+  {
+    // the header says this property is on the effect instance, but on Nuke it only exists on the effect descriptor
+    if (gHostDescription.canDistort) {
+      _effectProps.propSetInt(kOfxImageEffectPropCanDistort, int(v), false);
+    }
+  }
+
+
   /** @brief indicate if the host may add a channel selector */
   void ImageEffectDescriptor::setChannelSelector(PixelComponentEnum v)
   {
@@ -1434,20 +1437,9 @@ namespace OFX {
 
     _renderScale.x = _renderScale.y = 1.;
     _imageProps.propGetDoubleN(kOfxImageEffectPropRenderScale, &_renderScale.x, 2, false);
-#ifdef OFX_EXTENSIONS_NUKE
-    std::fill(_transform, _transform + 9, 0.);
-    if (_imageProps.propGetDimension(kFnOfxPropMatrix2D, false) == 0) {
-      // Host does not support transforms, just ignore
-      _transformIsIdentity = true;
-    } else {
-      std::fill(_transform, _transform + 9, 0.);
-      _imageProps.propGetDoubleN(kFnOfxPropMatrix2D, _transform, 9);
-      // check if the transform is identity (a zero matrix is considered identity)
-      _transformIsIdentity = (_transform[1] == 0. && _transform[2] == 0. &&
-                              _transform[3] == 0. && _transform[5] == 0. &&
-                              _transform[6] == 0. && _transform[7] == 0. &&
-                              _transform[0] == _transform[2] && _transform[0] == _transform[8]);
-    }
+#ifdef OFX_EXTENSIONS_NATRON
+    _distorsionFunction = (OfxDistorsionFunctionV1)_imageProps.propGetPointer(kOfxPropDistorsionFunction, false);
+    _distorsionFunctionData = _imageProps.propGetPointer(kOfxPropDistorsionFunctionData, false);
 #endif
   }
 
@@ -2190,17 +2182,17 @@ namespace OFX {
     return _effectProps.propGetInt(kOfxImageEffectPropSupportsTiles) != 0;
   }
 
-#ifdef OFX_EXTENSIONS_NUKE
+#ifdef OFX_EXTENSIONS_NATRON
   void
-  ImageEffect::setCanTransform(bool v)
+  ImageEffect::setCanDistort(bool v)
   {
-    _effectProps.propSetInt(kFnOfxImageEffectCanTransform, int(v), false);
+    _effectProps.propSetInt(kOfxImageEffectPropCanDistort, int(v), false);
   }
   
   bool
-  ImageEffect::getCanTransform() const
+  ImageEffect::getCanDistort() const
   {
-    return _effectProps.propGetInt(kFnOfxImageEffectCanTransform, false) != 0;
+    return _effectProps.propGetInt(kOfxImageEffectPropCanDistort, false) != 0;
   }
 #endif
 
@@ -2526,7 +2518,11 @@ namespace OFX {
   }
     
   /** @brief recover a transform matrix from an effect */
-  bool ImageEffect::getTransform(const TransformArguments &/*args*/, Clip * &/*transformClip*/, double /*transformMatrix*/[9])
+  bool ImageEffect::getDistorsion(const DistorsionArguments &/*args*/, Clip * &/*transformClip*/, double /*transformMatrix*/[9],
+                                  OfxDistorsionFunctionV1* /*distorsionFunction*/,
+                                  void** /*distorsionFunctionData*/,
+                                  int* /*distorsionFunctionDataSizeHintInBytes*/,
+                                  OfxDistorsionFreeDataFunctionV1* /*freeDataFunction*/)
   {
     // by default, do the default
     return false;
@@ -3154,7 +3150,6 @@ namespace OFX {
 #endif
 #ifdef OFX_EXTENSIONS_NUKE
         gHostDescription.supportsCameraParameter    = gCameraParameterSuite != 0;
-        gHostDescription.canTransform               = hostProps.propGetInt(kFnOfxImageEffectCanTransform, false) != 0;
         gHostDescription.isMultiPlanar              = hostProps.propGetInt(kFnOfxImageEffectPropMultiPlanar, false) != 0;
 #endif
         gHostDescription.maxParameters              = hostProps.propGetInt(kOfxParamHostPropMaxParameters);
@@ -3163,6 +3158,7 @@ namespace OFX {
         gHostDescription.pageColumnCount            = hostProps.propGetInt(kOfxParamHostPropPageRowColumnCount, 1);
 #ifdef OFX_EXTENSIONS_NATRON
         gHostDescription.isNatron                   = hostProps.propGetInt(kNatronOfxHostIsNatron, false) != 0;
+        gHostDescription.canDistort                 = hostProps.propGetInt(kOfxImageEffectPropCanDistort, false) != 0;
         gHostDescription.supportsDynamicChoices     = hostProps.propGetInt(kNatronOfxParamHostPropSupportsDynamicChoices, false) != 0;
         gHostDescription.supportsCascadingChoices   = hostProps.propGetInt(kNatronOfxParamPropChoiceCascading, false) != 0;
         gHostDescription.supportsChannelSelector    = hostProps.propGetString(kNatronOfxImageEffectPropChannelSelector, false) == kOfxImageComponentRGBA;
@@ -4054,14 +4050,17 @@ namespace OFX {
         }
         return false;
     }
-      
+#endif // OFX_EXTENSIONS_NUKE
+
+#ifdef OFX_EXTENSIONS_NATRON
+
     /** @brief Action called in place of a render to recover a transform matrix from an effect. */
     static
     bool
-      getTransform(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs)
+      getDistorsion(OfxImageEffectHandle handle, OFX::PropertySet inArgs, OFX::PropertySet &outArgs)
     {
       ImageEffect *effectInstance = retrieveImageEffectPointer(handle);
-      TransformArguments args;
+      DistorsionArguments args;
 
       // get the arguments 
       args.time = inArgs.propGetDouble(kOfxPropTime);
@@ -4085,16 +4084,25 @@ namespace OFX {
       // and call the plugin client getTransform code
       Clip *transformClip = 0;
       double transformMatrix[9];
-      bool v = effectInstance->getTransform(args, transformClip, transformMatrix);
+      OfxDistorsionFunctionV1 distorsionFunction = 0;
+      void* distorsionFunctionData = 0;
+      int distorsionFunctionDataSizeHintInBytes = 0;
+      OfxDistorsionFreeDataFunctionV1 freeDataFunction = 0;
+
+      bool v = effectInstance->getDistorsion(args, transformClip, transformMatrix, &distorsionFunction, &distorsionFunctionData, &distorsionFunctionDataSizeHintInBytes, &freeDataFunction);
 
       if(v && transformClip) {
         outArgs.propSetString(kOfxPropName, transformClip->name());
-        outArgs.propSetDoubleN(kFnOfxPropMatrix2D, transformMatrix, 9);
+        outArgs.propSetDoubleN(kOfxPropMatrix3x3, transformMatrix, 9);
+        outArgs.propSetPointer(kOfxPropDistorsionFunction, (void*)distorsionFunction, 0);
+        outArgs.propSetPointer(kOfxPropDistorsionFunctionData, distorsionFunctionData, 0);
+        outArgs.propSetInt(kOfxPropDistorsionFunctionDataSize, distorsionFunctionDataSizeHintInBytes);
+        outArgs.propSetPointer(kOfxPropDistorsionFreeDataFunction, (void*)freeDataFunction, 0);
         return true; // the transfrom and clip name were set and can be used to modify the named image appropriately
       }
       return false; // don't attempt to use the transform matrix, but render the image as per normal
     }
-#endif
+#endif // #ifdef OFX_EXTENSIONS_NATRON
 
     /** @brief The main entry point for the plugin
     */
@@ -4422,11 +4430,13 @@ namespace OFX {
               stat = kOfxStatOK;
           }
         }
-        else if(action == kFnOfxImageEffectActionGetTransform) {
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+        else if(action == kOfxImageEffectActionGetDistorsion) {
           checkMainHandles(actionRaw, handleRaw, inArgsRaw, outArgsRaw, false, false, false);
 
           // call the get transform function
-          if(getTransform(handle, inArgs, outArgs))
+          if(getDistorsion(handle, inArgs, outArgs))
             stat = kOfxStatOK;
         }
 #endif

@@ -466,7 +466,6 @@ namespace OFX {
 #endif
 #ifdef OFX_EXTENSIONS_NUKE
     bool supportsCameraParameter;
-    bool canTransform;
     bool isMultiPlanar;
 #endif
     int maxParameters;
@@ -484,6 +483,7 @@ namespace OFX {
     bool supportsMessageSuiteV2;
 #ifdef OFX_EXTENSIONS_NATRON
     bool isNatron;
+    bool canDistort;
     bool supportsDynamicChoices;
     bool supportsCascadingChoices;
     bool supportsChannelSelector;
@@ -579,9 +579,9 @@ namespace OFX {
     /** @brief say whether this clip is a 'mask', so the host can know to replace with a roto or similar, defaults to false */
     void setIsMask(bool v);
 
-#ifdef OFX_EXTENSIONS_NUKE
+#ifdef OFX_EXTENSIONS_NATRON
     /** @brief say whether this clip may contain images with a transform attached */
-    void setCanTransform(bool v);
+    void setCanDistort(bool v);
 #endif
   };
 
@@ -725,8 +725,7 @@ namespace OFX {
 #endif
 
 #ifdef OFX_EXTENSIONS_NUKE
-      /** @brief indicate that a plugin or host can handle transform effects */
-      void setCanTransform(bool v);
+
       
       /** @brief Indicates that a host or plugin can fetch more than a type of image from a clip*/
       void setIsMultiPlanar(bool v);
@@ -742,6 +741,9 @@ namespace OFX {
 #endif
       
 #ifdef OFX_EXTENSIONS_NATRON
+      /** @brief indicate that a plugin or host can handle transform effects */
+      void setCanDistort(bool v);
+
       /** @brief Indicates if the host may add a mask that will be handled automatically. */
       void setHostMaskingEnabled(bool enabled);
       
@@ -833,9 +835,9 @@ namespace OFX {
     FieldEnum _field;                        /**< @brief which field this represents */
     std::string _uniqueID;                   /**< @brief the unique ID of this image */
     OfxPointD _renderScale;                  /**< @brief any scaling factor applied to the image */
-#ifdef OFX_EXTENSIONS_NUKE
-    double _transform[9];                    /**< @brief a 2D transform to apply to the image */
-    bool _transformIsIdentity;
+#ifdef OFX_EXTENSIONS_NATRON
+    OfxDistorsionFunctionV1 _distorsionFunction;
+    const void* _distorsionFunctionData;
 #endif
 
   public :
@@ -888,12 +890,13 @@ namespace OFX {
     /** @brief the unique ID of this image */
     const std::string& getUniqueIdentifier(void) const { return _uniqueID;}
 
-#ifdef OFX_EXTENSIONS_NUKE
-    /** @brief the 2D transform attached to this image. */
-    void getTransform(double t[9]) const { for (int i = 0; i < 9; ++i) { t[i] = _transform[i]; } }
+#ifdef OFX_EXTENSIONS_NATRON
+    /** @brief the 2D distorsion attached to this image. */
+    OfxDistorsionFunctionV1 getDistorsionFunction(const void** distorsionFunctionData) const {
+      *distorsionFunctionData = _distorsionFunctionData;
+      return _distorsionFunction;
+    }
 
-    /** @brief is the transform identity? */
-    bool getTransformIsIdentity() const { return _transformIsIdentity; }
 #endif
   };
 
@@ -1322,9 +1325,9 @@ namespace OFX {
   };
 #endif
 
-#ifdef OFX_EXTENSIONS_NUKE
-  /** @brief POD struct to pass arguments into @ref OFX::ImageEffect::getTransform */
-  struct TransformArguments {
+#ifdef OFX_EXTENSIONS_NATRON
+  /** @brief POD struct to pass arguments into @ref OFX::ImageEffect::getDistorsion */
+  struct DistorsionArguments {
     double    time;
     OfxPointD renderScale;
     FieldEnum fieldToRender;
@@ -1630,11 +1633,11 @@ namespace OFX {
     /** @brief Have we informed the host we support image tiling ? */
     bool getSupportsTiles(void) const;
     
-#ifdef OFX_EXTENSIONS_NUKE
+#ifdef OFX_EXTENSIONS_NATRON
     /** @brief indicate that a plugin or host can handle transform effects */
-    void setCanTransform(bool v);
+    void setCanDistort(bool v);
     
-    bool getCanTransform() const;
+    bool getCanDistort() const;
 #endif
 
 #ifdef OFX_SUPPORTS_OPENGLRENDER
@@ -1783,8 +1786,24 @@ namespace OFX {
     /** @brief get the frame/views needed for input clips*/
     virtual void getFrameViewsNeeded(const FrameViewsNeededArguments& args, FrameViewsNeededSetter& frameViews);
 
-    /** @brief recover a transform matrix from an effect */
-    virtual bool getTransform(const TransformArguments &args, Clip * &transformClip, double transformMatrix[9]);
+    /** @brief Implement if you effect can apply a 2D distorsion.
+     In the generic form, the distorsion function pointer must be set and a pointer to the data that should be passed back
+     to the function. A free function must also be provided to free the data once the host does not need them any more.
+     This let a chance to the host to concatenate distorsion effects together filter only once.
+     @param distorsionFunctionDataSizeHintInBytes This should indicate the size in bytes of the data held by distorsionFunctionData.
+     Since distorsionFunctionData may contain the result of heavy computations (such as a STMap), the host will attempt to cache these data.
+     However the void* does not indicate much to the host as to "how heavy" these datas are in its cache, so this parameter should hint 
+     the host of the size of these datas in bytes.
+     
+     If the effect distorsion can be represented as a 3x3 matrix, then leave the function pointer to NULL and fill the transform matrix.
+     This will enable the host to better concatenate the distorsion in such cases where 3x3 matrices can be multiplied together instead 
+     of multiplying the transformation matrices for each pixel.
+     */
+    virtual bool getDistorsion(const DistorsionArguments &args, Clip * &transformClip, double transformMatrix[9],
+                               OfxDistorsionFunctionV1* distorsionFunction,
+                               void** distorsionFunctionData,
+                               int* distorsionFunctionDataSizeHintInBytes,
+                               OfxDistorsionFreeDataFunctionV1* freeDataFunction);
       
     /** @brief Returns the textual representation of a view*/
     std::string getViewName(int viewIndex) const;
