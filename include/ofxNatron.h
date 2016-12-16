@@ -943,7 +943,7 @@ says:
 
  This is a property on the descriptor.
  */
-#define kOfxImageEffectCanDistort "OfxImageEffectCanDistort"
+#define kOfxImageEffectPropCanDistort "OfxImageEffectPropCanDistort"
 
 /** @brief Action called in place of a render to recover a distorsion from an effect.
 
@@ -1034,6 +1034,8 @@ the datas pointed to by kOfxPropDistorsionFunctionData
  then an image fetched from this clip *may* receive a pointer to such function.
  In this case, this is a pointer of a function of the host that will call in turn the distorsion function of all concatenated source effects
  and return the final undistorted position.
+ If the effect that called clipGetImage on the clip is also kOfxImageEffectPropCanDistort set to 1, 
+ it's distorsion function is already concatenated in the function pointed to by this property and does not need to be applied after this distorsion function.
  */
 #define kOfxPropDistorsionFunction "OfxPropDistorsionFunction"
 
