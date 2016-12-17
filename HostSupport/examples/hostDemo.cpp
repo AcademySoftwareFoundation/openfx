@@ -32,6 +32,7 @@ modification, are permitted provided that the following conditions are met:
 #include <fstream>
 #include <cassert>
 #include <stdexcept>
+#include <sstream> // stringstream
 
 // ofx
 #include "ofxCore.h"

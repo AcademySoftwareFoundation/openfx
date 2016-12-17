@@ -39,6 +39,7 @@ England
 #include "ofxsSupportPrivate.h"
 #include <algorithm> // for find, min, max
 #include <cstring> // for strlen
+#include <sstream> // stringstream
 #ifdef DEBUG
 #include <iostream>
 #endif

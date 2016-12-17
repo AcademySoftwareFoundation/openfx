@@ -44,7 +44,7 @@ of the direct OFX objects and any library side only functions.
 */
 #include <map>
 #include <string>
-#include <sstream>
+#include <sstream> // stringstream
 #include <memory>
 #include "ofxsParam.h"
 #include "ofxsInteract.h"

@@ -33,7 +33,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <sstream>
+#include <sstream> // stringstream
 #include <stdexcept>
 
 #include <string.h>

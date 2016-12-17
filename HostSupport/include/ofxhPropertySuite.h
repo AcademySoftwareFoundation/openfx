@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <map>
 #include <algorithm>
-#include <sstream>
+#include <sstream> // stringstream
 
 #ifndef WINDOWS
 #define OFX_EXCEPTION_SPEC throw (OFX::Host::Property::Exception)
