@@ -42,6 +42,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhMemory.h"
 #include "ofxhInteract.h"
 
+#ifdef OFX_EXTENSIONS_NATRON
+#include "ofxNatron.h"
+#endif
+
 #ifdef _MSC_VER
 //Use visual studio extension
 #define __PRETTY_FUNCTION__ __FUNCSIG__
@@ -268,6 +272,8 @@ namespace OFX {
 
 #ifdef OFX_EXTENSIONS_NUKE
         /// does this effect handle transform effects
+        // This is deprecated but maintained for compat with older plug-ins.
+        // canDistort should be preferred for newer plug-ins.
         bool canTransform() const;
       
         /// Indicates that a host or plugin can fetch more than a type of image from a clip
@@ -297,6 +303,10 @@ namespace OFX {
 #endif
 
 #ifdef OFX_EXTENSIONS_NATRON
+
+        /// does this effect handle distorsion effects
+        bool canDistort() const;
+
         /// is this effect deprecated
         bool isDeprecated() const;
 
@@ -750,6 +760,8 @@ namespace OFX {
                                           );
 
 #ifdef OFX_EXTENSIONS_NUKE
+        // This is deprecated but maintained for compat with older plug-ins.
+        // getDistorsionAction should be preferred for newer plug-ins.
         virtual OfxStatus getTransformAction(OfxTime time,
                                              const std::string& field,
                                              OfxPointD renderScale,
@@ -758,10 +770,23 @@ namespace OFX {
                                              double transform[9]);
 #endif
 
+#ifdef OFX_EXTENSIONS_NATRON
+        virtual OfxStatus getDistorsionAction(OfxTime time,
+                                              const std::string& field,
+                                              OfxPointD renderScale,
+                                              int view,
+                                              std::string& clip,
+                                              double transform[9],
+                                              OfxDistorsionFunctionV1* distorsionFunc,
+                                              void** distorsionFunctionData,
+                                              int* distorsionFunctionDataSize,
+                                              OfxDistorsionFreeDataFunctionV1* freeDataFunction);
+#endif
+
         /// Call the region of definition action the plugin at the given time
         /// and with the given render scales. The value is returned in rod.
         /// Note that if the plugin does not trap the action the default
-        /// RoD is calculated and returned. 
+        /// RoD is calculated and returned.
         virtual OfxStatus getRegionOfDefinitionAction(OfxTime  time,
                                                       OfxPointD   renderScale,
 #ifdef OFX_EXTENSIONS_NUKE

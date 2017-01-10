@@ -75,7 +75,10 @@ namespace OFX {
         { kOfxImageClipPropFieldExtraction, Property::eString, 1, false, kOfxImageFieldDoubled },
         { kOfxImageEffectPropSupportsTiles,   Property::eInt, 1, false, "1" },
 #ifdef OFX_EXTENSIONS_NUKE
-        { kFnOfxImageEffectCanTransform,   Property::eInt, 1, false, "0" }, // can a kFnOfxPropMatrix2D be attached to images on this clip
+        { kFnOfxImageEffectCanTransform,   Property::eInt, 1, false, "0" }, // can a matrix be attached to images on this clip
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+        { kOfxImageEffectPropCanDistort,   Property::eInt, 1, false, "0" }, // can a distorsion be attached to images on this clip
 #endif
         Property::propSpecEnd,
       };
@@ -192,10 +195,18 @@ namespace OFX {
       }
 
 #ifdef OFX_EXTENSIONS_NUKE
-      /// can a kFnOfxPropMatrix2D be attached to images on this clip
+      /// can a matrix be attached to images on this clip
       bool ClipBase::canTransform() const
       {
         return _properties.getIntProperty(kFnOfxImageEffectCanTransform) != 0;
+      }
+#endif
+
+#ifdef OFX_EXTENSIONS_NATRON
+      /// can a distorsion be attached to images on this clip
+      bool ClipBase::canDistort() const
+      {
+        return _properties.getIntProperty(kOfxImageEffectPropCanDistort) != 0;
       }
 #endif
 
@@ -204,7 +215,7 @@ namespace OFX {
         return _properties;
       }
 
-      Property::Set& ClipBase::getProps() 
+      Property::Set& ClipBase::getProps()
       {
         return _properties;
       }
@@ -651,8 +662,10 @@ namespace OFX {
         { kOfxImagePropRowBytes, Property::eInt, 1, true, "0", },
         { kOfxImagePropField, Property::eString, 1, true, "", },
         { kOfxImagePropUniqueIdentifier, Property::eString, 1, true, "" },
-#ifdef OFX_EXTENSIONS_NUKE
-        { kFnOfxPropMatrix2D, Property::eDouble, 9, true, "0" }, // If the clip descriptor has kFnOfxImageEffectCanTransform set to 1, this property contains a 3x3 matrix corresponding to a transform in pixel coordinate space, going from the source image to the destination, defaults to the identity matrix. A matrix filled with zeroes is considered as the identity matrix (i.e. no transform)
+#ifdef OFX_EXTENSIONS_NATRON
+        { kOfxPropMatrix3x3, Property::eDouble, 9, true, "0" }, // If the clip descriptor has kFnOfxImageEffectCanTransform set to 1, this property contains a 3x3 matrix corresponding to a transform, going from the source image to the destination, defaults to the identity matrix. A matrix filled with zeroes is considered as the identity matrix (i.e. no transform).
+        { kOfxPropDistorsionFunction, Property::ePointer, 1, true, NULL }, // If the clip descriptor has kOfxImageEffectPropCanDistort set to 1, this property contains a pointer to a distorsion function going from the source image to the destination that should be applied on any pixel. If the effect that called clipGetImage on the clip is also kOfxImageEffectPropCanDistort set to 1, it's distorsion function is already concatenated in the function pointed to by this property and does not need to be applied after this distorsion function.
+        { kOfxPropDistorsionFunctionData, Property::ePointer, 1, true, NULL }, // if kOfxPropDistorsionFunction is set, this a pointer to the data that must be passed to the distorsion function
 #endif
         Property::propSpecEnd
       };

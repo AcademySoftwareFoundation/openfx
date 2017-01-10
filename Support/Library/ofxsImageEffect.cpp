@@ -747,6 +747,14 @@ namespace OFX {
     _clipProps.propSetInt(kOfxImageClipPropIsMask, int(v));
   }
 
+#ifdef OFX_EXTENSIONS_NATRON
+  /** @brief say whether this clip may contain images with a transform attached */
+  void ClipDescriptor::setCanDistort(bool v)
+  {
+    _clipProps.propSetInt(kOfxImageEffectPropCanDistort, int(v), false);
+  }
+#endif
+
 #ifdef OFX_EXTENSIONS_NUKE
   /** @brief say whether this clip may contain images with a transform attached */
   void ClipDescriptor::setCanTransform(bool v)
@@ -1313,6 +1321,16 @@ namespace OFX {
   }
 
 #ifdef OFX_EXTENSIONS_NATRON
+
+  /** @brief indicate that a plugin or host can handle transform effects */
+  void ImageEffectDescriptor::setCanDistort(bool v)
+  {
+    // the header says this property is on the effect instance, but on Nuke it only exists on the effect descriptor
+    if (gHostDescription.canDistort) {
+      _effectProps.propSetInt(kOfxImageEffectPropCanDistort, int(v), false);
+    }
+  }
+
   /** @brief indicate if the host may add a channel selector */
   void ImageEffectDescriptor::setChannelSelector(PixelComponentEnum v)
   {
@@ -1435,14 +1453,17 @@ namespace OFX {
 
     _renderScale.x = _renderScale.y = 1.;
     _imageProps.propGetDoubleN(kOfxImageEffectPropRenderScale, &_renderScale.x, 2, false);
-#ifdef OFX_EXTENSIONS_NUKE
+#ifdef OFX_EXTENSIONS_NATRON
+    _distorsionFunction = (OfxDistorsionFunctionV1)_imageProps.propGetPointer(kOfxPropDistorsionFunction, false);
+    _distorsionFunctionData = _imageProps.propGetPointer(kOfxPropDistorsionFunctionData, false);
+
     std::fill(_transform, _transform + 9, 0.);
-    if (_imageProps.propGetDimension(kFnOfxPropMatrix2D, false) == 0) {
+    if (_imageProps.propGetDimension(kOfxPropMatrix3x3, false) == 0) {
       // Host does not support transforms, just ignore
       _transformIsIdentity = true;
     } else {
       std::fill(_transform, _transform + 9, 0.);
-      _imageProps.propGetDoubleN(kFnOfxPropMatrix2D, _transform, 9);
+      _imageProps.propGetDoubleN(kOfxPropMatrix3x3, _transform, 9);
       // check if the transform is identity (a zero matrix is considered identity)
       _transformIsIdentity = (_transform[1] == 0. && _transform[2] == 0. &&
                               _transform[3] == 0. && _transform[5] == 0. &&
@@ -1450,6 +1471,7 @@ namespace OFX {
                               _transform[0] == _transform[2] && _transform[0] == _transform[8]);
     }
 #endif
+
   }
 
   ImageBase::~ImageBase()
@@ -2190,7 +2212,19 @@ namespace OFX {
   {
     return _effectProps.propGetInt(kOfxImageEffectPropSupportsTiles) != 0;
   }
+#ifdef OFX_EXTENSIONS_NATRON
+  void
+  ImageEffect::setCanDistort(bool v)
+  {
+    _effectProps.propSetInt(kOfxImageEffectPropCanDistort, int(v), false);
+  }
 
+  bool
+  ImageEffect::getCanDistort() const
+  {
+    return _effectProps.propGetInt(kOfxImageEffectPropCanDistort, false) != 0;
+  }
+#endif
 #ifdef OFX_EXTENSIONS_NUKE
   void
   ImageEffect::setCanTransform(bool v)
@@ -2513,6 +2547,21 @@ namespace OFX {
     // by default, do nothing
     return false;
   }
+#endif
+
+#ifdef OFX_EXTENSIONS_NATRON
+
+  /** @brief recover a transform matrix from an effect */
+  bool ImageEffect::getDistorsion(const DistorsionArguments &/*args*/, Clip * &/*transformClip*/, double /*transformMatrix*/[9],
+                                  OfxDistorsionFunctionV1* /*distorsionFunction*/,
+                                  void** /*distorsionFunctionData*/,
+                                  int* /*distorsionFunctionDataSizeHintInBytes*/,
+                                  OfxDistorsionFreeDataFunctionV1* /*freeDataFunction*/)
+  {
+    // by default, do the default
+    return false;
+  }
+
 #endif
 
 #ifdef OFX_EXTENSIONS_NUKE

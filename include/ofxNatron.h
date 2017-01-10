@@ -931,6 +931,8 @@ says:
 
 // This implemented the standard change originally proposed at http://openeffects.org/standard_changes/243
 
+
+
 /** @brief Property to indicate that a plugin, clip or host can handle distorsions
 
  - Type - int X 1
@@ -943,7 +945,7 @@ says:
 
  This is a property on the descriptor.
  */
-#define kOfxImageEffectCanDistort "OfxImageEffectCanDistort"
+#define kOfxImageEffectPropCanDistort "OfxImageEffectPropCanDistort"
 
 /** @brief Action called in place of a render to recover a distorsion from an effect.
 
@@ -980,6 +982,15 @@ says:
 
  Note that the render action can still be called if a host so chooses, this action does not
  completely replace the render action of such an effect.
+ 
+ When the plug-in needs to sample a source clip, if the plug-in has flagged the source clip kOfxImageEffectCanDistort to 1
+ then an image fetched from this clip *may* receive a pointer to such function.
+ In this case, this is a pointer of a function of the host that will call in turn the distorsion function of all concatenated source effects
+ and return the final undistorted position. 
+ Note that even if this effect supports returning a distorsion,
+ the concatenation will not include the distorsion provided by this effect, it will have to be applied on top of the concatenation function.
+ If the concatenation can be expressed as a transformation matrix (kOfxPropMatrix3x3), it will be available on the image instance (in pixel coordinates) but the
+ function kOfxPropDistorsionFunction is guaranteed to be present as a fallback if the plug-in does not support matrices.
 
  This action has the following properties on its arguments....
  inargs -
@@ -1030,10 +1041,6 @@ the datas pointed to by kOfxPropDistorsionFunctionData
  - Default - 0
  
  The plug-in returns a pointer of such as function in the kOfxImageEffectActionGetDistorsion action.
- When the host needs to sample a source clip, if the plug-in has flagged the source clip kOfxImageEffectCanDistort to 1
- then an image fetched from this clip *may* receive a pointer to such function.
- In this case, this is a pointer of a function of the host that will call in turn the distorsion function of all concatenated source effects
- and return the final undistorted position.
  */
 #define kOfxPropDistorsionFunction "OfxPropDistorsionFunction"
 

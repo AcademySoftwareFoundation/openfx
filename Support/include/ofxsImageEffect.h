@@ -555,6 +555,9 @@ namespace OFX {
 
     /** @brief set the clip hint */
     void setHint(const std::string &hint);
+
+    /** @brief say whether this clip may contain images with a transform attached */
+    void setCanDistort(bool v);
 #endif
 
     /** @brief set how fielded images are extracted from the clip defaults to eFieldExtractDoubled */
@@ -580,7 +583,9 @@ namespace OFX {
     void setIsMask(bool v);
 
 #ifdef OFX_EXTENSIONS_NUKE
-    /** @brief say whether this clip may contain images with a transform attached */
+    /** @brief say whether this clip may contain images with a transform attached 
+     * This is deprecated, a plug-in should prefer setCanDistort
+     */
     void setCanTransform(bool v);
 #endif
   };
@@ -803,11 +808,15 @@ namespace OFX {
 #endif // #if defined(WIN32) || defined(WIN64)
 #endif
 #ifdef OFX_EXTENSIONS_NATRON
-  /** @brief indicate if the host may add a channel selector */
-  void setChannelSelector(PixelComponentEnum v);
 
-  /** @brief indicate that the plugin is deprecated */
-  void setIsDeprecated(bool v);
+    /** @brief indicate that a plugin or host can handle distorsion effects */
+    void setCanDistort(bool v);
+
+    /** @brief indicate if the host may add a channel selector */
+    void setChannelSelector(PixelComponentEnum v);
+
+    /** @brief indicate that the plugin is deprecated */
+    void setIsDeprecated(bool v);
 #endif
   };
 
@@ -836,6 +845,10 @@ namespace OFX {
 #ifdef OFX_EXTENSIONS_NUKE
     double _transform[9];                    /**< @brief a 2D transform to apply to the image */
     bool _transformIsIdentity;
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+    OfxDistorsionFunctionV1 _distorsionFunction;
+    const void* _distorsionFunctionData;
 #endif
 
   public :
@@ -888,12 +901,24 @@ namespace OFX {
     /** @brief the unique ID of this image */
     const std::string& getUniqueIdentifier(void) const { return _uniqueID;}
 
-#ifdef OFX_EXTENSIONS_NUKE
-    /** @brief the 2D transform attached to this image. */
+#ifdef OFX_EXTENSIONS_NATRON
+
+    /** @brief the 2D transform attached to this image.
+     A plug-in that just flagged kFnOfxImageEffectCanTransform=1 should use this matrix.
+     A plug-in that flagged  kOfxImageEffectPropCanDistort=1 may have a matrix set if the
+     concatenation upstream resulted in a transformation matrix, but in all cases the ditorsion
+     function should be set
+     */
     void getTransform(double t[9]) const { for (int i = 0; i < 9; ++i) { t[i] = _transform[i]; } }
 
     /** @brief is the transform identity? */
     bool getTransformIsIdentity() const { return _transformIsIdentity; }
+    
+    /** @brief the 2D distorsion attached to this image. */
+    OfxDistorsionFunctionV1 getDistorsionFunction(const void** distorsionFunctionData) const {
+      *distorsionFunctionData = _distorsionFunctionData;
+      return _distorsionFunction;
+    }
 #endif
   };
 
@@ -1332,6 +1357,16 @@ namespace OFX {
   };
 #endif
 
+#ifdef OFX_EXTENSIONS_NATRON
+  /** @brief POD struct to pass arguments into @ref OFX::ImageEffect::getTransform */
+  struct DistorsionArguments {
+    double    time;
+    OfxPointD renderScale;
+    FieldEnum fieldToRender;
+    int       renderView;
+  };
+#endif
+
   /** @brief Class used to set regions of interest on a clip in @ref OFX::ImageEffect::getRegionsOfInterest
 
   This is a base class, the actual class is private and you don't need to see the glue involved.
@@ -1631,10 +1666,20 @@ namespace OFX {
     bool getSupportsTiles(void) const;
     
 #ifdef OFX_EXTENSIONS_NUKE
-    /** @brief indicate that a plugin or host can handle transform effects */
+    /** @brief indicate that a plugin or host can handle transform effects 
+     * This is deprecated and setCanDistort should be used instead
+     */
     void setCanTransform(bool v);
     
     bool getCanTransform() const;
+#endif
+
+#ifdef OFX_EXTENSIONS_NATRON
+    /** @brief indicate that a plugin or host can handle distorsion effects
+     */
+    void setCanDistort(bool v);
+
+    bool getCanDistort() const;
 #endif
 
 #ifdef OFX_SUPPORTS_OPENGLRENDER
@@ -1783,7 +1828,9 @@ namespace OFX {
     /** @brief get the frame/views needed for input clips*/
     virtual void getFrameViewsNeeded(const FrameViewsNeededArguments& args, FrameViewsNeededSetter& frameViews);
 
-    /** @brief recover a transform matrix from an effect */
+    /** @brief recover a transform matrix from an effect
+     This is deprecated, a plug-in should use getDistorsion instead
+     */
     virtual bool getTransform(const TransformArguments &args, Clip * &transformClip, double transformMatrix[9]);
       
     /** @brief Returns the textual representation of a view*/
@@ -1791,6 +1838,25 @@ namespace OFX {
     
     /** @brief Returns the number of views*/
     int getViewCount() const;
+
+    /** @brief Implement if you effect can apply a 2D distorsion.
+     In the generic form, the distorsion function pointer must be set and a pointer to the data that should be passed back
+     to the function. A free function must also be provided to free the data once the host does not need them any more.
+     This let a chance to the host to concatenate distorsion effects together filter only once.
+     @param distorsionFunctionDataSizeHintInBytes This should indicate the size in bytes of the data held by distorsionFunctionData.
+     Since distorsionFunctionData may contain the result of heavy computations (such as a STMap), the host will attempt to cache these data.
+     However the void* does not indicate much to the host as to "how heavy" these datas are in its cache, so this parameter should hint
+     the host of the size of these datas in bytes.
+
+     If the effect distorsion can be represented as a 3x3 matrix, then leave the function pointer to NULL and fill the transform matrix.
+     This will enable the host to better concatenate the distorsion in such cases where 3x3 matrices can be multiplied together instead
+     of multiplying the transformation matrices for each pixel.
+     */
+    virtual bool getDistorsion(const DistorsionArguments &args, Clip * &transformClip, double transformMatrix[9],
+                               OfxDistorsionFunctionV1* distorsionFunction,
+                               void** distorsionFunctionData,
+                               int* distorsionFunctionDataSizeHintInBytes,
+                               OfxDistorsionFreeDataFunctionV1* freeDataFunction);
 #endif
 
     /** @brief called when a custom param needs to be interpolated */
