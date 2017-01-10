@@ -42,10 +42,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhMemory.h"
 #include "ofxhInteract.h"
 
-#ifdef OFX_EXTENSIONS_NATRON
-#include <ofxNatron.h>
-#endif
-
 #ifdef _MSC_VER
 //Use visual studio extension
 #define __PRETTY_FUNCTION__ __FUNCSIG__
@@ -270,9 +266,9 @@ namespace OFX {
         /// does the effect support render quality
         bool supportsRenderQuality() const;
 
-#ifdef OFX_EXTENSIONS_NATRON
+#ifdef OFX_EXTENSIONS_NUKE
         /// does this effect handle transform effects
-        bool canDistort() const;
+        bool canTransform() const;
       
         /// Indicates that a host or plugin can fetch more than a type of image from a clip
         bool isMultiPlanar() const;
@@ -753,18 +749,13 @@ namespace OFX {
 #                                       endif
                                           );
 
-
-#ifdef OFX_EXTENSIONS_NATRON
-        virtual OfxStatus getDistorsionAction(OfxTime time,
-                                              const std::string& field,
-                                              OfxPointD renderScale,
-                                              int view,
-                                              std::string& clip,
-                                              double transform[9],
-                                              OfxDistorsionFunctionV1* distorsionFunc,
-                                              void** distorsionFunctionData,
-                                              int* distorsionFunctionDataSize,
-                                              OfxDistorsionFreeDataFunctionV1* freeDataFunction);
+#ifdef OFX_EXTENSIONS_NUKE
+        virtual OfxStatus getTransformAction(OfxTime time,
+                                             const std::string& field,
+                                             OfxPointD renderScale,
+                                             int view,
+                                             std::string& clip,
+                                             double transform[9]);
 #endif
 
         /// Call the region of definition action the plugin at the given time

@@ -52,6 +52,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <float.h>
 #include <limits.h>
 #include <stdarg.h>
+#include <sstream> // stringstream
 
 namespace OFX {
 

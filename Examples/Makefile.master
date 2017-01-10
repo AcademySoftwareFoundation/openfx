@@ -66,9 +66,18 @@ endif
 
 OBJECTPATH = $(OS)-$(BITS)-$(DEBUGNAME)
 
+# the following is inspired by automake's verbosity mechanism. compile with "make V=1" to get verbose output
+V=0
+AM_V_CXX = $(am__v_CXX_$(V))
+am__v_CXX_0 = @echo "  CXX     " $@;
+am__v_CXX_1 = 
+AM_V_CXXLD = $(am__v_CXXLD_$(V))
+am__v_CXXLD_0 = @echo "  CXXLD   " $@;
+am__v_CXXLD_1 = 
+
 $(OBJECTPATH)/%.o : %.cpp
 	mkdir -p $(OBJECTPATH)
-	$(CXX) -c $(CXXFLAGS) $< -o $@
+	$(AM_V_CXX)$(CXX) -c $(CXXFLAGS) $< -o $@
 
 .PHONY: all install uninstall
 
@@ -143,7 +152,7 @@ uninstall:
 
 $(OBJECTPATH)/$(PLUGINNAME).ofx: $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS))
 	mkdir -p $(OBJECTPATH)/
-	$(CXX) $^ $(LINKFLAGS) $(LDFLAGS_ADD) $(LDFLAGS_EXTRA) -o $@
+	$(AM_V_CXXLD)$(CXX) $^ $(LINKFLAGS) $(LDFLAGS_ADD) $(LDFLAGS_EXTRA) -o $@
 
 $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle: $(OBJECTPATH)/$(PLUGINNAME).ofx
 	mkdir -p  $@/Contents/$(ARCH)

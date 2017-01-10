@@ -382,6 +382,7 @@ namespace OFX {
       bool _dirty;
       bool _enablePluginSeek;       ///< Turn off to make all seekPluginFile() calls return an empty string
 
+      static bool _useStdOFXPluginsLocation;
       static PluginCache* gPluginCachePtr; ///< singleton plugin cache
 
     public:
@@ -390,6 +391,9 @@ namespace OFX {
 
       /// dtor
       ~PluginCache();
+
+      /// call this before the first call to getPluginCache() in order to ignore the standard OFX plugin path
+      static void useStdOFXPluginsLocation(bool val) { _useStdOFXPluginsLocation = val; }
 
       /// get our plugin cache
       static PluginCache* getPluginCache();
