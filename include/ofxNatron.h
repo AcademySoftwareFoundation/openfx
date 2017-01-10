@@ -989,8 +989,6 @@ says:
  and return the final undistorted position. 
  Note that even if this effect supports returning a distorsion,
  the concatenation will not include the distorsion provided by this effect, it will have to be applied on top of the concatenation function.
- If the concatenation can be expressed as a transformation matrix (kOfxPropMatrix3x3), it will be available on the image instance (in pixel coordinates) but the
- function kOfxPropDistorsionFunction is guaranteed to be present as a fallback if the plug-in does not support matrices.
 
  This action has the following properties on its arguments....
  inargs -

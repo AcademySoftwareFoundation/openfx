@@ -1457,13 +1457,16 @@ namespace OFX {
     _distorsionFunction = (OfxDistorsionFunctionV1)_imageProps.propGetPointer(kOfxPropDistorsionFunction, false);
     _distorsionFunctionData = _imageProps.propGetPointer(kOfxPropDistorsionFunctionData, false);
 
+#endif
+
+#ifdef OFX_EXTENSIONS_NUKE
     std::fill(_transform, _transform + 9, 0.);
-    if (_imageProps.propGetDimension(kOfxPropMatrix3x3, false) == 0) {
+    if (_imageProps.propGetDimension(kFnOfxPropMatrix2D, false) == 0) {
       // Host does not support transforms, just ignore
       _transformIsIdentity = true;
     } else {
       std::fill(_transform, _transform + 9, 0.);
-      _imageProps.propGetDoubleN(kOfxPropMatrix3x3, _transform, 9);
+      _imageProps.propGetDoubleN(kFnOfxPropMatrix2D, _transform, 9);
       // check if the transform is identity (a zero matrix is considered identity)
       _transformIsIdentity = (_transform[1] == 0. && _transform[2] == 0. &&
                               _transform[3] == 0. && _transform[5] == 0. &&

@@ -662,8 +662,10 @@ namespace OFX {
         { kOfxImagePropRowBytes, Property::eInt, 1, true, "0", },
         { kOfxImagePropField, Property::eString, 1, true, "", },
         { kOfxImagePropUniqueIdentifier, Property::eString, 1, true, "" },
+#ifdef OFX_EXTENSIONS_NUKE
+        { kFnOfxPropMatrix2D, Property::eDouble, 9, true, "0" }, // If the clip descriptor has kFnOfxImageEffectCanTransform set to 1, this property contains a 3x3 matrix corresponding to a transform, going from the source image to the destination, defaults to the identity matrix. A matrix filled with zeroes is considered as the identity matrix (i.e. no transform).
+#endif
 #ifdef OFX_EXTENSIONS_NATRON
-        { kOfxPropMatrix3x3, Property::eDouble, 9, true, "0" }, // If the clip descriptor has kFnOfxImageEffectCanTransform set to 1, this property contains a 3x3 matrix corresponding to a transform, going from the source image to the destination, defaults to the identity matrix. A matrix filled with zeroes is considered as the identity matrix (i.e. no transform).
         { kOfxPropDistorsionFunction, Property::ePointer, 1, true, NULL }, // If the clip descriptor has kOfxImageEffectPropCanDistort set to 1, this property contains a pointer to a distorsion function going from the source image to the destination that should be applied on any pixel. If the effect that called clipGetImage on the clip is also kOfxImageEffectPropCanDistort set to 1, it's distorsion function is already concatenated in the function pointed to by this property and does not need to be applied after this distorsion function.
         { kOfxPropDistorsionFunctionData, Property::ePointer, 1, true, NULL }, // if kOfxPropDistorsionFunction is set, this a pointer to the data that must be passed to the distorsion function
 #endif

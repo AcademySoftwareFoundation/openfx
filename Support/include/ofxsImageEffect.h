@@ -901,19 +901,19 @@ namespace OFX {
     /** @brief the unique ID of this image */
     const std::string& getUniqueIdentifier(void) const { return _uniqueID;}
 
-#ifdef OFX_EXTENSIONS_NATRON
+#ifdef OFX_EXTENSIONS_NUKE
 
     /** @brief the 2D transform attached to this image.
-     A plug-in that just flagged kFnOfxImageEffectCanTransform=1 should use this matrix.
-     A plug-in that flagged  kOfxImageEffectPropCanDistort=1 may have a matrix set if the
-     concatenation upstream resulted in a transformation matrix, but in all cases the ditorsion
-     function should be set
      */
     void getTransform(double t[9]) const { for (int i = 0; i < 9; ++i) { t[i] = _transform[i]; } }
 
     /** @brief is the transform identity? */
     bool getTransformIsIdentity() const { return _transformIsIdentity; }
-    
+
+#endif
+
+#ifdef OFX_EXTENSIONS_NATRON
+
     /** @brief the 2D distorsion attached to this image. */
     OfxDistorsionFunctionV1 getDistorsionFunction(const void** distorsionFunctionData) const {
       *distorsionFunctionData = _distorsionFunctionData;
