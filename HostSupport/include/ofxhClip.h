@@ -107,15 +107,8 @@ namespace OFX {
         bool supportsTiles() const;
 
 #ifdef OFX_EXTENSIONS_NUKE
-        /// can a matrix be attached to images on this clip
-        // This is deprecated but maintained for compat with older plug-ins.
-        // canDistort should be preferred for newer plug-ins.
+        /// can a kFnOfxPropMatrix2D be attached to images on this clip
         bool canTransform() const;
-#endif
-
-#ifdef OFX_EXTENSIONS_NATRON
-        // can a distorsion be attached to images on this clip
-        bool canDistort() const;
 #endif
 
         /// get property set, const version
