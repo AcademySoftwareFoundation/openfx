@@ -104,6 +104,7 @@ static const char *getArchStr()
 #include "shlobj.h"
 #endif
 
+bool OFX::Host::PluginCache::_useStdOFXPluginsLocation = true;
 OFX::Host::PluginCache* OFX::Host::PluginCache::gPluginCachePtr = 0;
 
 // Define this to enable ofx plugin cache debug messages.
@@ -274,7 +275,10 @@ PluginCache::PluginCache() : _hostSpec(0), _xmlCurrentBinary(0), _xmlCurrentPlug
     
     _pluginPath.push_back(path);
   }
-  
+
+  if (!_useStdOFXPluginsLocation)
+    return;
+
 #if defined(WINDOWS)
 
   std::wstring wpath = getStdOFXPluginPath();
