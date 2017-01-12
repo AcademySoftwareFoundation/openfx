@@ -1052,16 +1052,16 @@ namespace OFX {
   }
 
   /** @brief set the default value */
-  void ChoiceParamDescriptor::appendOption(const std::string &v, const std::string& label)
+  void ChoiceParamDescriptor::appendOption(const std::string &optionLabel, const std::string& optionHint, const std::string& optionName)
   {
     int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
-    if(!label.empty()) {
+    if(!optionHint.empty()) {
 #ifdef OFX_EXTENSIONS_TUTTLE
       // Choice label is an ofx extension. If the host doesn't support it,
       // we put this information into the parameter hint.
       // from https://github.com/tuttleofx/TuttleOFX/commit/ae6e14e99f62b5efa89e4de4a3bc33129ac6afd0
       if (_paramProps.propExists(kOfxParamPropChoiceLabelOption)) {
-         _paramProps.propSetString(kOfxParamPropChoiceLabelOption, label, nCurrentValues);
+         _paramProps.propSetString(kOfxParamPropChoiceLabelOption, optionHint, nCurrentValues);
       } else
 #endif
       {
@@ -1074,11 +1074,16 @@ namespace OFX {
             hint += "\n";
           }
         }
-        hint += v + ": " + label;
+        hint += optionLabel + ": " + optionHint;
         _paramProps.propSetString(kOfxParamPropHint, hint);
       }
     }
-    _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
+#ifdef OFX_EXTENSIONS_NATRON
+    if (_paramProps.propExists(kOfxParamPropChoiceOptionName)) {
+      _paramProps.propSetString(kOfxParamPropChoiceOptionName, optionName.empty() ? optionLabel : optionName, nCurrentValues);
+    }
+#endif
+    _paramProps.propSetString(kOfxParamPropChoiceOption, optionLabel, nCurrentValues);
   }
 
   /** @brief set the default value */
@@ -1094,28 +1099,49 @@ namespace OFX {
 
   /** @brief set to the default value */
   void ChoiceParamDescriptor::resetOptions(const std::vector<std::string>& newEntries,
-                                           const std::vector<std::string>& newEntriesLabel)
+                                           const std::vector<std::string>& newEntriesHints,
+                                           const std::vector<std::string>& newEntriesNames)
   {
-    assert(newEntries.size() == newEntriesLabel.size() || newEntriesLabel.empty());
-    if (newEntries.empty() || (newEntries.size() != newEntriesLabel.size() && !newEntriesLabel.empty())) {
+    assert(newEntries.size() == newEntriesHints.size() || newEntriesHints.empty());
+    assert(newEntries.size() == newEntriesNames.size() || newEntriesNames.empty());
 
+    if ((newEntries.size() != newEntriesHints.size() && !newEntriesHints.empty()) ||
+        (newEntries.size() != newEntriesNames.size() && !newEntriesNames.empty())) {
       // Invalid parameters or empty newEntries, reset the property
 #ifdef OFX_EXTENSIONS_TUTTLE
       if (_paramProps.propGetDimension(kOfxParamPropChoiceLabelOption, false) > 0) {
         _paramProps.propReset(kOfxParamPropChoiceLabelOption);
       }
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+      if (_paramProps.propGetDimension(kOfxParamPropChoiceOptionName, false) > 0) {
+        _paramProps.propReset(kOfxParamPropChoiceOptionName);
+      }
+#endif
       _paramProps.propReset(kOfxParamPropChoiceOption);
     } else {
       // Set the new entries
 #ifdef OFX_EXTENSIONS_TUTTLE
-      if (!newEntriesLabel.empty()) {
-        _paramProps.propSetStringN(kOfxParamPropChoiceLabelOption, newEntriesLabel, false);
+      if (_paramProps.propExists(kOfxParamPropChoiceLabelOption)) {
+        if (!newEntriesHints.empty()) {
+          _paramProps.propSetStringN(kOfxParamPropChoiceLabelOption, newEntriesHints, false);
+        } else {
+          _paramProps.propReset(kOfxParamPropChoiceLabelOption);
+        }
+      }
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+      if (_paramProps.propExists(kOfxParamPropChoiceOptionName)) {
+        if (!newEntriesHints.empty()) {
+          _paramProps.propSetStringN(kOfxParamPropChoiceOptionName, newEntriesNames, false);
+        } else {
+          _paramProps.propReset(kOfxParamPropChoiceOptionName);
+        }
       }
 #endif
       _paramProps.propSetStringN(kOfxParamPropChoiceOption, newEntries);
+      
     }
-
   }
 
 
@@ -3260,29 +3286,47 @@ namespace OFX {
   {    
     v = _paramProps.propGetString(kOfxParamPropChoiceOption, ix);
   }
-  
-  void ChoiceParam::getOptions(std::vector<std::string>* options, std::vector<std::string>* labels)
+
+#ifdef OFX_EXTENSIONS_NATRON
+  void ChoiceParam::setOptionName(int item, const std::string &name)
+  {
+    _paramProps.propSetString(kOfxParamPropChoiceOptionName, name, item, false);
+  }
+
+  /** @brief get the option name */
+  void ChoiceParam::getOptionName(int ix, std::string &name)
+  {
+    name = _paramProps.propGetString(kOfxParamPropChoiceOptionName, ix, false);
+  }
+#endif
+
+  void ChoiceParam::getOptions(std::vector<std::string>* options, std::vector<std::string>* optionsHints, std::vector<std::string>* optionsNames)
   {
     _paramProps.propGetStringN(kOfxParamPropChoiceOption, options);
 #ifdef OFX_EXTENSIONS_TUTTLE
-    if (labels) {
-      _paramProps.propGetStringN(kOfxParamPropChoiceLabelOption, labels, false);
+    if (optionsHints) {
+      _paramProps.propGetStringN(kOfxParamPropChoiceLabelOption, optionsHints, false);
+    }
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+    if (optionsNames) {
+      _paramProps.propGetStringN(kOfxParamPropChoiceOptionName, optionsNames, false);
     }
 #endif
   }
 
   /** @brief add another option */
-  void ChoiceParam::appendOption(const std::string &v, const std::string& label)
+  void ChoiceParam::appendOption(const std::string &optionLabel, const std::string& optionHint, const std::string& optionName)
   {
     int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
-    if(!label.empty()) {
+    if(!optionHint.empty()) {
 #ifdef OFX_EXTENSIONS_TUTTLE
       // Choice label is an ofx extension. If the host doesn't support it,
       // we put this information into the parameter hint.
       // from https://github.com/tuttleofx/TuttleOFX/commit/ae6e14e99f62b5efa89e4de4a3bc33129ac6afd0
       try {
         // this property is an optional extension.
-         _paramProps.propSetString(kOfxParamPropChoiceLabelOption, label, nCurrentValues);
+         _paramProps.propSetString(kOfxParamPropChoiceLabelOption, optionHint, nCurrentValues);
       } catch(std::exception&)
 #endif
       {
@@ -3295,11 +3339,16 @@ namespace OFX {
             hint += "\n";
           }
         }
-        hint += v + ": " + label;
+        hint += optionLabel + ": " + optionHint;
         _paramProps.propSetString(kOfxParamPropHint, hint);
       }
     }
-    _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
+#ifdef OFX_EXTENSIONS_NATRON
+    if (_paramProps.propExists(kOfxParamPropChoiceOptionName)) {
+      _paramProps.propSetString(kOfxParamPropChoiceOptionName, optionName.empty() ? optionLabel : optionName, nCurrentValues);
+    }
+#endif
+    _paramProps.propSetString(kOfxParamPropChoiceOption, optionLabel, nCurrentValues);
   }
 
   /** @brief set the string of a specific option */
@@ -3310,28 +3359,49 @@ namespace OFX {
 
   /** @brief set to the default value */
   void ChoiceParam::resetOptions(const std::vector<std::string>& newEntries,
-                                 const std::vector<std::string>& newEntriesLabel)
+                                 const std::vector<std::string>& newEntriesHints,
+                                 const std::vector<std::string>& newEntriesNames)
   {
-    assert(newEntries.size() == newEntriesLabel.size() || newEntriesLabel.empty());
-    if (newEntries.empty() || (newEntries.size() != newEntriesLabel.size() && !newEntriesLabel.empty())) {
-      
+    assert(newEntries.size() == newEntriesHints.size() || newEntriesHints.empty());
+    assert(newEntries.size() == newEntriesNames.size() || newEntriesNames.empty());
+
+    if ((newEntries.size() != newEntriesHints.size() && !newEntriesHints.empty()) ||
+        (newEntries.size() != newEntriesNames.size() && !newEntriesNames.empty())) {
       // Invalid parameters or empty newEntries, reset the property
 #ifdef OFX_EXTENSIONS_TUTTLE
       if (_paramProps.propGetDimension(kOfxParamPropChoiceLabelOption, false) > 0) {
         _paramProps.propReset(kOfxParamPropChoiceLabelOption);
       }
 #endif
+#ifdef OFX_EXTENSIONS_NATRON
+      if (_paramProps.propGetDimension(kOfxParamPropChoiceOptionName, false) > 0) {
+        _paramProps.propReset(kOfxParamPropChoiceOptionName);
+      }
+#endif
       _paramProps.propReset(kOfxParamPropChoiceOption);
     } else {
       // Set the new entries
 #ifdef OFX_EXTENSIONS_TUTTLE
-      if (!newEntriesLabel.empty()) {
-        _paramProps.propSetStringN(kOfxParamPropChoiceLabelOption, newEntriesLabel, false);
+      if (_paramProps.propExists(kOfxParamPropChoiceLabelOption)) {
+        if (!newEntriesHints.empty()) {
+          _paramProps.propSetStringN(kOfxParamPropChoiceLabelOption, newEntriesHints, false);
+        } else {
+          _paramProps.propReset(kOfxParamPropChoiceLabelOption);
+        }
+      }
+#endif
+#ifdef OFX_EXTENSIONS_NATRON
+      if (_paramProps.propExists(kOfxParamPropChoiceOptionName)) {
+        if (!newEntriesHints.empty()) {
+          _paramProps.propSetStringN(kOfxParamPropChoiceOptionName, newEntriesNames, false);
+        } else {
+          _paramProps.propReset(kOfxParamPropChoiceOptionName);
+        }
       }
 #endif
       _paramProps.propSetStringN(kOfxParamPropChoiceOption, newEntries);
-    }
 
+    }
   }
 
   /** @brief delete all keys and set to default value */

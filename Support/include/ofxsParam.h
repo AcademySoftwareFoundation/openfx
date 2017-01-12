@@ -766,8 +766,12 @@ namespace OFX {
         /** @brief set the default value */
         void setDefault(int v);
 
-        /** @brief append an option, default is to have not there */
-        void appendOption(const std::string &v, const std::string& label = "");
+        /** @brief append an option
+         @param label The label of the option as it should appear on the GUI 
+         @param hint A hint for the option that could be displayed by the host in a tooltip
+         @param name The unique identifier for that option. If empty this is by default set to the label.
+         */
+        void appendOption(const std::string &label, const std::string& hint = "", const std::string& name = "");
     
         /** @brief how many options do we have */
         int getNOptions(void);
@@ -776,7 +780,9 @@ namespace OFX {
         void resetOptions(void);
 
         /** @brief clear all the options so as to add some new ones in */
-        void resetOptions(const std::vector<std::string>& newEntries, const std::vector<std::string>& newEntriesLabels = std::vector<std::string>());
+        void resetOptions(const std::vector<std::string>& newEntries,
+                          const std::vector<std::string>& newEntriesLabels = std::vector<std::string>(),
+                          const std::vector<std::string>& newEntriesIDS = std::vector<std::string>());
 
 #ifdef OFX_EXTENSIONS_NATRON
         /** @brief whether the menu should be cascading, and each option contains a slash-separated path to the item, defaults to false. */
@@ -1869,19 +1875,30 @@ namespace OFX {
         int getNOptions(void);
 
         /** @brief append an option, default is to have not there */
-        void appendOption(const std::string &v, const std::string& label = "");
+        void appendOption(const std::string &label, const std::string& hint = "", const std::string& name = "");
 
-        /** @brief set an option */
+        /** @brief set an option label */
         void setOption(int item, const std::string &str);
     
-        /** @brief get the option value */
+        /** @brief get the option label */
         void getOption(int ix, std::string &v);
+
+#ifdef OFX_EXTENSIONS_NATRON
+
+        /** @brief set an option name */
+        void setOptionName(int item, const std::string &name);
+
+        /** @brief get the option name */
+        void getOptionName(int ix, std::string &name);
+#endif
       
         /** @brief get all options at once. Optionally, the label of the options can be retrieved at the same time*/
-        void getOptions(std::vector<std::string>* options,std::vector<std::string>* optionsLabel = 0);
+        void getOptions(std::vector<std::string>* options,std::vector<std::string>* optionsHints = 0, std::vector<std::string>* optionsNames = 0);
 
         /** @brief clear all the options so as to add some new ones in */
-        void resetOptions(const std::vector<std::string>& newEntries = std::vector<std::string>(), const std::vector<std::string>& newEntriesLabels = std::vector<std::string>());
+        void resetOptions(const std::vector<std::string>& newEntries = std::vector<std::string>(),
+                          const std::vector<std::string>& newEntriesHints = std::vector<std::string>(),
+                          const std::vector<std::string>& newEntriesNames = std::vector<std::string>());
 
 #ifdef OFX_EXTENSIONS_NATRON
         /** @brief whether the menu should be cascading, and each option contains a slash-separated path to the item, defaults to false. */

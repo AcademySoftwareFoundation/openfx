@@ -55,6 +55,26 @@ Valid values:
  */
 #define kNatronOfxParamStringSublabelName "NatronOfxParamStringSublabelName"
 
+
+/** @brief Set an option unique identifier in a choice parameter.
+
+ - Type - UTF8 C string X N
+ - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
+ - Default - the property is empty with no options set.
+
+ This allows a plug-in to give an option an identifier that differs from the label displayed
+ on the GUI (kOfxParamPropChoiceOption). 
+
+ Typically a plug-in can in this way modify an option label without invalidating user projects
+ made with a previous version of this plug-in.
+
+ Note that the dimension of this property should either be 0 (indicating that no option at all has an ID)
+ or match exactly the dimension of kOfxParamPropChoiceOption.
+ 
+ If an option does not have an associated ID, then the ID is considered the option itself.
+ */
+#define kOfxParamPropChoiceOptionName "kOfxParamPropChoiceOptionName"
+
 /*
   ----------------------------------------------- -----------------------------------------------------------------
  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
