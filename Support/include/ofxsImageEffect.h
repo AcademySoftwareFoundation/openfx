@@ -1629,6 +1629,9 @@ namespace OFX {
 
     /** @brief Have we informed the host we support image tiling ? */
     bool getSupportsTiles(void) const;
+
+    /** @brief get plugin file path */
+    std::string getPluginFilePath(void) { return _effectProps.propGetString(kOfxPluginPropFilePath); }
     
 #ifdef OFX_EXTENSIONS_NUKE
     /** @brief indicate that a plugin or host can handle transform effects */
