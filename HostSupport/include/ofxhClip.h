@@ -111,6 +111,11 @@ namespace OFX {
         bool canTransform() const;
 #endif
 
+#ifdef OFX_EXTENSIONS_NATRON
+        // can a distortion function be attached to images on this clip
+        bool canDistort() const;
+#endif
+
         /// get property set, const version
         const Property::Set &getProps() const;
 

@@ -41,6 +41,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxhParam.h"
 #include "ofxhMemory.h"
 #include "ofxhInteract.h"
+#ifdef OFX_EXTENSIONS_NATRON
+#include "ofxNatron.h"
+#endif
 
 #ifdef _MSC_VER
 //Use visual studio extension
@@ -297,6 +300,9 @@ namespace OFX {
 #endif
 
 #ifdef OFX_EXTENSIONS_NATRON
+        /// does this effect handle distortion functions
+        bool canDistort() const;
+
         /// is this effect deprecated
         bool isDeprecated() const;
 
@@ -756,6 +762,20 @@ namespace OFX {
                                              int view,
                                              std::string& clip,
                                              double transform[9]);
+#endif
+
+#ifdef OFX_EXTENSIONS_NATRON
+        /// call the get distortion action at the given time
+        virtual OfxStatus getDistortionAction(OfxTime time,
+                                              const std::string& field,
+                                              OfxPointD renderScale,
+                                              int view,
+                                              std::string& clip,
+                                              double transform[9],
+                                              OfxDistortionFunctionV1* distortionFunc,
+                                              void** distortionFunctionData,
+                                              int* distortionFunctionDataSize,
+                                              OfxDistortionFreeDataFunctionV1* freeDataFunction);
 #endif
 
         /// Call the region of definition action the plugin at the given time

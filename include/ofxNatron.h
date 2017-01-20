@@ -945,29 +945,30 @@ says:
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-// Extensions for image effects that can return a distorsion function rather
-// than an image. A distorsion function takes a 2D position in input and outputs
-// another 2D position in canonical coordinates.
+// Extensions for image effects that can return a distortion function rather
+// than an image. A distortion function gost from a 2D distorted position in
+// canonical coordinates in the output distorted image to the undistorted
+// position in canonical coordinates in the source image.
 
 // This implemented the standard change originally proposed at http://openeffects.org/standard_changes/243
 
-/** @brief Property to indicate that a plugin, clip or host can handle distorsions
+/** @brief Property to indicate that a plugin, clip or host can handle distortions
 
  - Type - int X 1
  - Property Set - host descriptor (read only), plugin instance (read/write), clip descriptor (read/write)
  - Default - 0
  - Valid Values - This must be one of
- - 0 if the host or plugin cannot make use of the kOfxImageEffectActionGetDistorsion
- - 1 if the host or plugin can use the kOfxImageEffectActionGetDistorsion, or the clip
- can return images with a distorsion function attached (@see kOfxPropDistorsionFunction)
+ - 0 if the host or plugin cannot make use of the kOfxImageEffectActionGetDistortion
+ - 1 if the host or plugin can use the kOfxImageEffectActionGetDistortion, or the clip
+ can return images with a distortion function attached (@see kOfxPropDistortionFunction)
 
  This is a property on the descriptor.
  */
-#define kOfxImageEffectCanDistort "OfxImageEffectCanDistort"
+#define kOfxImageEffectPropCanDistort "OfxImageEffectPropCanDistort"
 
-/** @brief Action called in place of a render to recover a distorsion from an effect.
+/** @brief Action called in place of a render to recover a distortion from an effect.
 
- Some effects do a simple matrix transform or distorsion on their images, the cleverness in the effect
+ Some effects do a simple matrix transform or distortion on their images, the cleverness in the effect
  is how that transform is arrived at. For example a stabilisation effect which analyses
  it's input clip in user interface and writes key frames to a set of params which represent
  a transform. The render action of such an effect is just a transform by a matrix.
@@ -1001,6 +1002,13 @@ says:
  Note that the render action can still be called if a host so chooses, this action does not
  completely replace the render action of such an effect.
 
+ When the plug-in needs to sample a source clip, if the plug-in has flagged the source clip kOfxImageEffectCanDistort to 1
+ then an image fetched from this clip *may* receive a pointer to such function.
+ In this case, this is a pointer of a function of the host that will call in turn the distortion function of all concatenated source effects
+ and return the final undistorted position. 
+ Note that even if this effect supports returning a distortion,
+ the concatenation will not include the distortion provided by this effect, it will have to be applied on top of the concatenation function.
+
  This action has the following properties on its arguments....
  inargs -
  - kOfxPropTime (double x1)- the time at which to test for identity
@@ -1012,26 +1020,26 @@ says:
  - kOfxPropName (string x1) - this to the name of the input clip that would be transformed by the effect during render
  defaults to "Source". The input clip image will be fetched at the time and view given in the inArgs.
 
- - kOfxPropMatrix3x3 - (double x9) If the output distorsion can be represented as a 3x3 matrix, then prefer this as the
+ - kOfxPropMatrix3x3 - (double x9) If the output distortion can be represented as a 3x3 matrix, then prefer this as the
 host may optimize the concatenation of 3x3 matrix into a single matrix. This is in canonical coordinates space,
  going from the source image to the destination, defaults to the identity matrix.
  
- If however the distorsion cannot be a simple 3x3 matrix, then the following properties should be set in the outArgs:
+ If however the distortion cannot be a simple 3x3 matrix, then the following properties should be set in the outArgs:
  
- -  kOfxPropDistorsionFunction (pointer x1): A pointer to the distorsion function itself that the host should call. 
- The function has the signature described below (OfxDistorsionFunctionV1)
+ -  kOfxPropDistortionFunction (pointer x1): A pointer to the distortion function itself that the host should call. 
+ The function has the signature described below (OfxDistortionFunctionV1)
 
- -  kOfxPropDistorsionFunctionData (pointer x1) : Pointer to datas owned by the plug-in that should be passed back as customData
- to the OfxDistorsionFunctionV1 function. This can contain parameter values or STMaps or anything custom to the plug-in.
- These datas will be freed by the kOfxPropDistorsionFunctionFreeData speficied below once the host does not need them anymore.
+ -  kOfxPropDistortionFunctionData (pointer x1) : Pointer to datas owned by the plug-in that should be passed back as customData
+ to the OfxDistortionFunctionV1 function. This can contain parameter values or STMaps or anything custom to the plug-in.
+ These datas will be freed by the kOfxPropDistortionFunctionFreeData speficied below once the host does not need them anymore.
  Note that the host may cache these datas away and it is important to hint the host about the size these datas holds in the host cache.
 
- - kOfxPropDistorsionFunctionDataSize (int x1): An estimated size in bytes of the memory held by the datas pointed to by kOfxPropDistorsionFunctionData.
+ - kOfxPropDistortionFunctionDataSize (int x1): An estimated size in bytes of the memory held by the datas pointed to by kOfxPropDistortionFunctionData.
  The host may cache these datas away and it is important to hint the host about the size these datas holds in the host cache.
  This should not overflow an integer size.
 
- -  kOfxPropDistorsionFreeDataFunction (pointer x1): Pointer to a function called by the host when the concatenation is done to free
-the datas pointed to by kOfxPropDistorsionFunctionData
+ -  kOfxPropDistortionFreeDataFunction (pointer x1): Pointer to a function called by the host when the concatenation is done to free
+the datas pointed to by kOfxPropDistortionFunctionData
  
 
 
@@ -1041,77 +1049,73 @@ the datas pointed to by kOfxPropDistorsionFunctionData
 
  */
 
-#define kOfxImageEffectActionGetDistorsion "OfxImageEffectActionGetDistorsion"
+#define kOfxImageEffectActionGetDistortion "OfxImageEffectActionGetDistortion"
 
 /*
- @brief Property that holds a pointer to a function of type OfxDistorsionFunctionV1
+ @brief Property that holds a pointer to a function of type OfxDistortionFunctionV1
  - Type - Pointer x1
- - Property Set - outArgs of kOfxImageEffectActionGetDistorsion and image instance (read only)
+ - Property Set - outArgs of kOfxImageEffectActionGetDistortion and image instance (read only)
  - Default - 0
  
- The plug-in returns a pointer of such as function in the kOfxImageEffectActionGetDistorsion action.
- When the host needs to sample a source clip, if the plug-in has flagged the source clip kOfxImageEffectCanDistort to 1
- then an image fetched from this clip *may* receive a pointer to such function.
- In this case, this is a pointer of a function of the host that will call in turn the distorsion function of all concatenated source effects
- and return the final undistorted position.
+ The plug-in returns a pointer of such as function in the kOfxImageEffectActionGetDistortion action.
  */
-#define kOfxPropDistorsionFunction "OfxPropDistorsionFunction"
+#define kOfxPropDistortionFunction "OfxPropDistortionFunction"
 
 /*
- @brief Property that holds a pointer to data used in the function pointed to by kOfxPropDistorsionFunction.
+ @brief Property that holds a pointer to data used in the function pointed to by kOfxPropDistortionFunction.
  - Type - Pointer x1
- - Property Set - outArgs of kOfxImageEffectActionGetDistorsion and image instance (read only)
+ - Property Set - outArgs of kOfxImageEffectActionGetDistortion and image instance (read only)
  - Default - 0
  
- When calling kOfxImageEffectActionGetDistorsion, the plug-in returns these data that should be used by the kOfxPropDistorsionFunction function
+ When calling kOfxImageEffectActionGetDistortion, the plug-in returns these data that should be used by the kOfxPropDistortionFunction function
  passed in the outArgs of the action.
  
- When the property is on the image instance, these are host data the should be passed to the function pointed to by the kOfxPropDistorsionFunction property
+ When the property is on the image instance, these are host data the should be passed to the function pointed to by the kOfxPropDistortionFunction property
  on the same image.
  */
-#define kOfxPropDistorsionFunctionData "OfxPropDistorsionFunctionData"
+#define kOfxPropDistortionFunctionData "OfxPropDistortionFunctionData"
 
 
 /*
-@brief Property that hints the host about the total size of the datas pointed to by kOfxPropDistorsionFunctionData. If these datas contain buffers or images
+@brief Property that hints the host about the total size of the datas pointed to by kOfxPropDistortionFunctionData. If these datas contain buffers or images
  they should be summed up.
  The host may cache these datas away and it is important to hint the host about the size these datas holds in the host cache.
  This should not overflow an integer size.
  
  - Type - Int x1
- - Property Set - outArgs of kOfxImageEffectActionGetDistorsion action
+ - Property Set - outArgs of kOfxImageEffectActionGetDistortion action
  - Default - 0
 
  */
-#define kOfxPropDistorsionFunctionDataSize "OfxPropDistorsionFunctionDataSize"
+#define kOfxPropDistortionFunctionDataSize "OfxPropDistortionFunctionDataSize"
 
 /*
-@brief Property that holds a pointer to a function that can be called to free the data pointed to by kOfxPropDistorsionFunctionData that were passed back
- by a plug-in in the kOfxImageEffectActionGetDistorsion action
+@brief Property that holds a pointer to a function that can be called to free the data pointed to by kOfxPropDistortionFunctionData that were passed back
+ by a plug-in in the kOfxImageEffectActionGetDistortion action
  
  - Type - Pointer x1
- - Property Set - outArgs of the kOfxImageEffectActionGetDistorsion action
+ - Property Set - outArgs of the kOfxImageEffectActionGetDistortion action
  - Default - 0
  */
-#define kOfxPropDistorsionFreeDataFunction "OfxPropDistorsionFreeDataFunction"
+#define kOfxPropDistortionFreeDataFunction "OfxPropDistortionFreeDataFunction"
 
 /**
- @brief Prototype of the distorsion passed to the kOfxPropDistorsionFunction property. It takes in input the distorted position and should output the
+ @brief Prototype of the distortion passed to the kOfxPropDistortionFunction property. It takes in input the distorted position and should output the
  undistorted position, both in canonical coordinates. 
- @param customData These are custom datas that were returned by the plug-in in the kOfxImageEffectActionGetDistorsion action in kOfxPropDistorsionFunctionData
+ @param customData These are custom datas that were returned by the plug-in in the kOfxImageEffectActionGetDistortion action in kOfxPropDistortionFunctionData
  **/
-typedef void (*OfxDistorsionFunctionV1)(double distortedX, double distortedY, const void* customData, double* undistortedX, double* undistortedY);
+typedef void (*OfxDistortionFunctionV1)(double distortedX, double distortedY, const void* customData, double* undistortedX, double* undistortedY);
 
 /*
- * @brief Prototype of the function passed to the kOfxPropDistorsionFreeDataFunction property. It takes in input the kOfxPropDistorsionFunctionData data that
- were returned by the kOfxImageEffectActionGetDistorsion action and should free them.
+ * @brief Prototype of the function passed to the kOfxPropDistortionFreeDataFunction property. It takes in input the kOfxPropDistortionFunctionData data that
+ were returned by the kOfxImageEffectActionGetDistortion action and should free them.
  */
-typedef void (*OfxDistorsionFreeDataFunctionV1)(void* customData);
+typedef void (*OfxDistortionFreeDataFunctionV1)(void* customData);
 
 /** @brief Property that represents a 2D matrix
 
  - Type - double X 9
- - Property Set - out args of kOfxImageEffectActionGetDistorsion, or on an image instance (read only)
+ - Property Set - out args of kOfxImageEffectActionGetDistortion, or on an image instance (read only)
  - Default - the identity matrix
  - Valid Values - any matrix value
 

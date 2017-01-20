@@ -145,6 +145,7 @@ namespace OFX {
         { kNatronOfxImageEffectPropInViewerContextShortcutHasAltModifier, Property::eInt, 0, true, "" },
         { kNatronOfxImageEffectPropInViewerContextShortcutHasMetaModifier, Property::eInt, 0, true, "" },
         { kNatronOfxPropNativeOverlays, Property::eString, 0, false, ""},
+        { kOfxImageEffectPropCanDistort, Property::eInt, 1, true, "0" },
 #endif
         Property::propSpecEnd
       };
@@ -381,6 +382,11 @@ namespace OFX {
 #endif
 
 #ifdef OFX_EXTENSIONS_NATRON
+      bool Base::canDistort() const
+      {
+        return _properties.getIntProperty(kOfxImageEffectPropCanDistort) != 0;
+      }
+
       /// does this effect handle transform effects
       bool Base::isDeprecated() const
       {
@@ -1554,6 +1560,77 @@ namespace OFX {
         return st;
       }
 #endif // OFX_EXTENSIONS_NUKE
+
+#ifdef OFX_EXTENSIONS_NATRON
+      OfxStatus Instance::getDistortionAction(OfxTime time,
+                                              const std::string& field,
+                                              OfxPointD renderScale,
+                                              int view,
+                                              std::string& clip,
+                                              double transform[9],
+                                              OfxDistortionFunctionV1* distortionFunc,
+                                              void** distortionFunctionData,
+                                              int* distortionFunctionDataSize,
+                                              OfxDistortionFreeDataFunctionV1* freeDataFunction)
+      {
+        if (time != time) {
+          // time is NaN
+          return kOfxStatFailed;
+        }
+        static const Property::PropSpec inStuff[] = {
+          { kOfxPropTime, Property::eDouble, 1, true, "0" },
+          { kOfxImageEffectPropFieldToRender, Property::eString, 1, true, "" },
+          { kOfxImageEffectPropRenderScale, Property::eDouble, 2, true, "0" },
+          { kFnOfxImageEffectPropView, Property::eInt, 1, true, "0" },
+          Property::propSpecEnd
+        };
+
+        static const Property::PropSpec outStuff[] = {
+          { kOfxPropName, Property::eString, 1, false, "" },
+          { kOfxPropMatrix3x3, Property::eDouble, 9, false, "0.0" },
+          { kOfxPropDistortionFunction, Property::ePointer, 1, false, NULL },
+          { kOfxPropDistortionFunctionData, Property::ePointer, 1, false, NULL },
+          { kOfxPropDistortionFunctionDataSize, Property::eInt, 1, false, "0" },
+          { kOfxPropDistortionFreeDataFunction, Property::ePointer, 1, false, NULL },
+          Property::propSpecEnd
+        };
+
+        Property::Set inArgs(inStuff);
+        Property::Set outArgs(outStuff);
+
+        inArgs.setStringProperty(kOfxImageEffectPropFieldToRender,field);
+        inArgs.setDoubleProperty(kOfxPropTime,time);
+        inArgs.setDoublePropertyN(kOfxImageEffectPropRenderScale, &renderScale.x, 2);
+        inArgs.setIntProperty(kFnOfxImageEffectPropView, view);
+        for(std::map<std::string, ClipInstance*>::iterator it=_clips.begin();
+            it!=_clips.end();
+            ++it) {
+          it->second->setView(view);
+        }
+
+#       ifdef OFX_DEBUG_ACTIONS
+        OfxPlugin *ofxp = _plugin->getPluginHandle()->getOfxPlugin();
+        const char* id = ofxp->pluginIdentifier;
+        std::cout << "OFX: "<<id<<"("<<(void*)ofxp<<")->"<<kOfxImageEffectActionGetDistortion<<"("<<time<<","<<field<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<view<<")"<<std::endl;
+#       endif
+
+        OfxStatus st = mainEntry(kOfxImageEffectActionGetDistortion,this->getHandle(), &inArgs, &outArgs);
+#       ifdef OFX_DEBUG_ACTIONS
+        std::cout << "OFX: "<<id<<"("<<(void*)ofxp<<")->"<<kOfxImageEffectActionGetDistortion<<"("<<time<<","<<field<<",("<<renderScale.x<<","<<renderScale.y<<"),"<<view<<")->"<<StatStr(st)<<std::endl;
+#       endif
+
+        if (st == kOfxStatOK) {
+          clip = outArgs.getStringProperty(kOfxPropName);
+          outArgs.getDoublePropertyN(kOfxPropMatrix3x3, transform, 9);
+          *distortionFunc = (OfxDistortionFunctionV1)outArgs.getPointerProperty(kOfxPropDistortionFunction);
+          *distortionFunctionData = outArgs.getPointerProperty(kOfxPropDistortionFunctionData);
+          *distortionFunctionDataSize = outArgs.getIntProperty(kOfxPropDistortionFunctionDataSize);
+          *freeDataFunction = (OfxDistortionFreeDataFunctionV1)outArgs.getPointerProperty(kOfxPropDistortionFreeDataFunction);
+        }
+
+        return st;
+      }
+#endif // OFX_EXTENSIONS_NATRON
 
       /// calculate the default rod for this effect instance
       OfxRectD Instance::calcDefaultRegionOfDefinition(OfxTime  time,
@@ -4055,6 +4132,7 @@ namespace OFX {
         { kNatronOfxPropDescriptionIsMarkdown, Property::eInt, 1, true, "0" },
         { kNatronOfxImageEffectPropDefaultCursors, Property::eString, 0, true, "" },
         { kNatronOfxPropNativeOverlays, Property::eString, 0, true, ""},
+        { kOfxImageEffectPropCanDistort, Property::eInt, 1, false, "0" },
 #    endif
         Property::propSpecEnd
       };    
