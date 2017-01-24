@@ -73,7 +73,7 @@ Valid values:
  
  If an option does not have an associated ID, then the ID is considered the option itself.
  */
-#define kOfxParamPropChoiceOptionName "kOfxParamPropChoiceOptionName"
+#define kOfxParamPropChoiceOptionName "OfxParamPropChoiceOptionName"
 
 /*
   ----------------------------------------------- -----------------------------------------------------------------
