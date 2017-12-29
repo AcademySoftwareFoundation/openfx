@@ -2714,6 +2714,7 @@ namespace OFX {
 #endif
         { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" }, // OFX 1.4
         { kOfxImageEffectHostPropNativeOrigin, Property::eString, 0, true, kOfxHostNativeOriginBottomLeft }, // OFX 1.4
+        { kOfxPropHostSupportsNullSuiteFunctionPointers, Property::eInt, 0, true, 0 },
         Property::propSpecEnd
       };    
 
@@ -2757,7 +2758,7 @@ namespace OFX {
       }
 
       /// our suite fetcher
-      const void *Host::fetchSuite(const char *suiteName, int suiteVersion)
+      const void *Host::fetchSuite(const char *suiteName, int suiteVersion,bool allowNullFunctionPointers)
       {
         if (strcmp(suiteName, kOfxImageEffectSuite)==0) {
           if(suiteVersion==1)
@@ -2812,7 +2813,7 @@ namespace OFX {
         }
 #     endif
         else  /// otherwise just grab the base class one, which is props and memory
-          return OFX::Host::Host::fetchSuite(suiteName, suiteVersion);
+          return OFX::Host::Host::fetchSuite(suiteName, suiteVersion,allowNullFunctionPointers);
       }
 
     } // ImageEffect

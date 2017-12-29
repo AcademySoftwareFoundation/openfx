@@ -77,6 +77,18 @@ typedef struct OfxHost {
       \arg \e suiteName     - ASCII string labelling the host supplied API
       \arg \e suiteVersion  - version of that suite to fetch
 
+       \arg \e allowNullFunctionPointers - Boolean Value: Whether the plug-in supports NULL function pointers in the suite fetched from the host.
+       This enable the host to indicate one or more unsupported function in a suite, without the plug-in to have first to call each suite
+       function to determine if which are actually supported.
+
+       Note:
+
+       The plug-in can check if the Host can actually return NULL function pointers in a suite structure by inspecting the kOfxPropHostSupportsNullSuiteFunctionPointers
+       property of the host descriptor.
+       Since inspecting this property requires the kOfxPropertySuite suite to be loaded first, it is expected that the host returns
+       NULL function pointers for unsupported functions of the kOfxPropertySuite and that the plug-in set allowNullFunctionPointers to 1 when fetching
+       this suite.
+
       Any API fetched will be valid while the binary containing the plug-in is loaded.
 
       Repeated calls to fetchSuite with the same parameters will return the same pointer.
@@ -85,7 +97,7 @@ typedef struct OfxHost {
          - NULL if the API is unknown (either the api or the version requested),
 	 - pointer to the relevant API if it was found
   */
-  const void *(*fetchSuite)(OfxPropertySetHandle host, const char *suiteName, int suiteVersion);
+  const void *(*fetchSuite)(OfxPropertySetHandle host, const char *suiteName, int suiteVersion, int allowNullFunctionPointers);
 } OfxHost;
 
 
@@ -433,6 +445,23 @@ the interact instance will have one of these so that the plug-in can connect bac
 Some plug-in vendor want raw OS specific handles back from the host so they can do interesting things with host OS APIs. Typically this is to control windowing properly on Microsoft Windows. This property returns the appropriate 'root' window handle on the current operating system. So on Windows this would be the hWnd of the application main window.
 */
 #define kOfxPropHostOSHandle "OfxPropHostOSHandle"
+
+/** @brief Whether the host can return NULL function pointers in a suite fetched from the fetchSuite function in the OfxHost structure.
+     This enable the host to indicate one or more unsupported function in a suite, without the plug-in to have first to call each suite
+     function to determine if which are actually supported.
+
+     - Type - int X 1
+     - Property Set - host descriptor.
+     - Valid values - 0 or 1
+     - Default Value - 0
+
+     When set to 1, the host may return NULL instead of a function pointer on a suite returned by fetchSuite, only if the plug-in called
+     fetchSuite with the argument allowNullFunctionPointers set to 1
+
+     Hosts without this property or with the property set to 0 are still expected to return suites without any NULL functions,
+     thus forcing the plug-in to inspect the return status of the functions to check if they are supported.
+ */
+#define kOfxPropHostSupportsNullSuiteFunctionPointers "OfxPropHostSupportsNullSuiteFunctionPointers"
 
 /*@}*/
 

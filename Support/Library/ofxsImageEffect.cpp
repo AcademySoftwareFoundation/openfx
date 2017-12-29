@@ -1923,8 +1923,12 @@ namespace OFX {
       if(!gHost) throw OFX::Exception::Suite(kOfxStatErrBadHandle);
 
       if(gLoadCount == 1) {
+        gPropSuite      = (OfxPropertySuiteV1 *)    fetchSuite(kOfxPropertySuite, 1, true /*allowNullSuiteFunctionPointers*/);
+
+        // OK check and fetch host information now that we have access to the property suite
+        fetchHostDescription(gHost);
+
         gEffectSuite    = (OfxImageEffectSuiteV1 *) fetchSuite(kOfxImageEffectSuite, 1);
-        gPropSuite      = (OfxPropertySuiteV1 *)    fetchSuite(kOfxPropertySuite, 1);
         gParamSuite     = (OfxParameterSuiteV1 *)   fetchSuite(kOfxParameterSuite, 1);
         gMemorySuite    = (OfxMemorySuiteV1 *)      fetchSuite(kOfxMemorySuite, 1);
         gThreadSuite    = (OfxMultiThreadSuiteV1 *) fetchSuite(kOfxMultiThreadSuite, 1);
@@ -1938,8 +1942,7 @@ namespace OFX {
         gOpenGLRenderSuite = (OfxImageEffectOpenGLRenderSuiteV1*) fetchSuite(kOfxOpenGLRenderSuite, 1, true);
 #endif
 
-        // OK check and fetch host information
-        fetchHostDescription(gHost);
+
 
         /// and set some dendent flags
         OFX::gHostDescription.supportsMessageSuiteV2 = gMessageSuiteV2 != NULL;
@@ -2943,9 +2946,9 @@ namespace OFX {
   }; // namespace Private
 
   /** @brief Fetch's a suite from the host and logs errors */
-  const void * fetchSuite(const char *suiteName, int suiteVersion, bool optional)
+  const void * fetchSuite(const char *suiteName, int suiteVersion, bool optional, bool allowNullSuiteFunctionPointers)
   {
-    const void *suite = Private::gHost->fetchSuite(Private::gHost->host, suiteName, suiteVersion);
+    const void *suite = Private::gHost->fetchSuite(Private::gHost->host, suiteName, suiteVersion, (int)allowNullSuiteFunctionPointers);
     if(suite==0)
     {
       if(optional)
