@@ -338,7 +338,7 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,
         <programlisting>
 OfxImageEffectSuiteV1 *gEffectSuite = 0;
 OfxPropertySuiteV1    *gPropertySuite = 0;
-
+bool supportsNullSuiteFunctionPointers = false;
 ////////////////////////////////////////////////////////////////////////////////
 // Called at load
 static OfxStatus
@@ -347,8 +347,8 @@ onLoad(void)
     // fetch the host suites out of the global host pointer
     if(!gHost) return kOfxStatErrMissingHostFeature;
     
-    gEffectSuite     = (OfxImageEffectSuiteV1 *) gHost-&gt;fetchSuite(gHost-&gt;host, kOfxImageEffectSuite, 1);
-    gPropertySuite   = (OfxPropertySuiteV1 *)    gHost-&gt;fetchSuite(gHost-&gt;host, kOfxPropertySuite, 1);
+    gEffectSuite     = (OfxImageEffectSuiteV1 *) gHost-&gt;fetchSuite(gHost-&gt;host, kOfxImageEffectSuite, 1, supportsNullSuiteFunctionPointers);
+    gPropertySuite   = (OfxPropertySuiteV1 *)    gHost-&gt;fetchSuite(gHost-&gt;host, kOfxPropertySuite, 1, supportsNullSuiteFunctionPointers);
     if(!gEffectSuite || !gPropertySuite)
         return kOfxStatErrMissingHostFeature;
     return kOfxStatOK;

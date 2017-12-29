@@ -91,14 +91,14 @@ namespace OFX {
       Property::propSpecEnd
     };    
 
-    static const void *fetchSuite(OfxPropertySetHandle hostProps, const char *suiteName, int suiteVersion)
+    static const void *fetchSuite(OfxPropertySetHandle hostProps, const char *suiteName, int suiteVersion, bool allowNullFunctionPointers)
     {      
       Property::Set* properties = reinterpret_cast<Property::Set*>(hostProps);
       
       Host* host = (Host*)properties->getPointerProperty(kOfxHostSupportHostPointer);
       
       if(host)
-        return host->fetchSuite(suiteName,suiteVersion);
+        return host->fetchSuite(suiteName,suiteVersion,allowNullFunctionPointers);
       else
         return 0;
     }
@@ -133,7 +133,7 @@ namespace OFX {
       }
     }
 
-    const void *Host::fetchSuite(const char *suiteName, int suiteVersion)
+    const void *Host::fetchSuite(const char *suiteName, int suiteVersion,bool /*allowNullFunctionPointers*/)
     {
       if (strcmp(suiteName, kOfxPropertySuite)==0  && suiteVersion == 1) {
         return Property::GetSuite(suiteVersion);

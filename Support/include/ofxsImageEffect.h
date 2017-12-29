@@ -251,7 +251,7 @@ namespace OFX {
   All the standard suites are fetched by the support code, you should use this
   to fetch any extra non-standard suites.
   */
-  const void * fetchSuite(const char *suiteName, int suiteVersion, bool optional = false);
+  const void * fetchSuite(const char *suiteName, int suiteVersion, bool optional = false, bool allowNullSuiteFunctionPointers = false);
 
   ////////////////////////////////////////////////////////////////////////////////
   /** @brief A class that lists all the properties of a host */
