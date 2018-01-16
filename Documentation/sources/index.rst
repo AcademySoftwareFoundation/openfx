@@ -1,4 +1,4 @@
-.. Natron documentation master file, created by
+.. OpenFX documentation master file, created by
    sphinx-quickstart on Tue Mar 29 18:02:16 2016.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
@@ -22,7 +22,7 @@ file.
 
 This manual is maintained largely by volunteers.
 
-The `Creative Commons Attribution-ShareAlike 4.0 International License (CC-BY-SA 4.0) <https://creativecommons.org/licenses/by-sa/4.0/>`_ is used for this manual, which is a free and open license. Though there are certain restrictions that come with this license you may in general freely reproduce it and even make changes to it. However, rather than distribute your own version of this manual, we would much prefer if you would send any corrections or changes to the Natron project.
+The `Creative Commons Attribution-ShareAlike 4.0 International License (CC-BY-SA 4.0) <https://creativecommons.org/licenses/by-sa/4.0/>`_ is used for this manual, which is a free and open license. Though there are certain restrictions that come with this license you may in general freely reproduce it and even make changes to it. However, rather than distribute your own version of this manual, we would much prefer if you would send any corrections or changes to the OpenFX association.
 
 .. toctree::
     :maxdepth: 1
