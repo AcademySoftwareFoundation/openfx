@@ -85,7 +85,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'OpenFX'
-copyright = u'2017, ofxa'
+copyright = u'2018, ofxa'
 author = u'ofxa'
 
 # The version info for the project you're documenting, acts as replacement for
