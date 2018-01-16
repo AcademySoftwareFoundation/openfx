@@ -1,0 +1,114 @@
+<chapter id="APIChanges_1_2">
+  <title>Changes to the API for 1.2</title>
+  <section id="APIChanges_1_2_introduction"><title>Introduction</title>
+    <para>
+      This chapter lists the changes and extensions between the 1.1 version of the API and the 1.2 version of the API. The extension are backwards compatible, 
+      so that a 1.2 plugin will run on an earlier version of a host, provided a bit of care is taken. A 1.2 host will easily support a plugin written to 
+      an earlier API.
+    </para>
+  </section>
+
+  <section id="APIChanges_1_2_Packaging"><title>Packaging</title>
+    <para>
+      A new architecture directory was added to the bundle heirarchy to specifically contain Mac OSX 64 bit builds. The current 'MacOS' architecture is a fall back for 32 bit only and/or universal binary builds.
+    </para>
+  </section>
+
+  <section id="APIChanges_1_2_Versioning"><title>Versioning</title>
+    <para>
+      Three new properties are provided to identify and version a plugin and/or host. These are...
+      <itemizedlist>
+         <listitem><link linkend="kOfxPropAPIVersion">kOfxPropAPIVersion</link> a multi-dimensional integer that specifies the version of the API being implemented by a host.</listitem>
+         <listitem><link linkend="kOfxPropVersion">kOfxPropVersion</link> a multi-dimensional integer that provides a version number for host and plugin </listitem>
+         <listitem><link linkend="kOfxPropVersionLabel">kOfxPropVersionLabel</link> - a user readable version label </listitem>
+      </itemizedlist>
+    </para>
+    <para>
+      Before 1.2 there was no way to identify the version of a host application, which a plugin could use to work around known bugs and problems in known versions. <link linkend="kOfxPropVersion">kOfxPropVersion</link> provides a way to do that. 
+    </para>
+  </section>
+
+  <section id="APIChanges_1_2_PluginDescriptions"><title>Plugin Description</title>
+  The new property <link linkend="kOfxPropPluginDescription">kOfxPropPluginDescription</link> allows a plugin to set a string which provides a description to a user.
+  </section>
+
+  <section id="APIChanges_1_2_ParameterGroupAndIcons"><title>Parameter Groups and Icons</title>
+  <para>Group parameters are typically displayed in a hierarchical manner on many applications, with 'twirlies' to open and close the group. The new property <link linkend="kOfxParamPropGroupOpen">kOfxParamPropGroupOpen</link> is used to specify if a group parameter should be initially open or closed.
+  </para>
+  <para>Some applications are able to display icons instead of text when labelling parameters. The new property, <link linkend="kOfxPropIcon">kOfxPropIcon</link>, specifies an SVG file and/or a PNG file to use as an icon in such host applications. 
+  </para>
+  </section>
+
+  <section id="APIChanges_1_2_MessageSuite"><title>New Message Suite</title>
+  <para>
+  A new message suite has been specified, <link linkend="OfxMessageSuiteV2">OfxMessageSuiteV2</link>, this adds two new functions. One to set a persistent message on an effect, 
+  and a second to clear that message. This would typically be used to flag an error on an effects.
+  </para>
+  </section>
+
+  <section id="APIChanges_1_2_ParameterSyncing"><title>New Syncing Property</title>
+  <para>
+  A new property has been added to parameter sets, <link linkend="kOfxPropParamSetNeedsSyncing">kOfxPropParamSetNeedsSyncing</link>. This is used by plugins with internal data structures that need syncing back to parameters for persistance and so on. This property should be set whenever the plugin changes it's internal state to inform the host that a sync will be required before the next serialisation of the plugin. Without this property, the host would have to continually force the plugin to sync it's private data, whether that was a redundant operation or not. For large data sets, this can be a significant overhead.
+  </para>
+  </section>
+
+  <section id="APIChanges_1_2_SequentialRendering"><title>Sequential Rendering</title>
+  <para> Flagging sequential rendering has been slightly modified. The <link linkend="kOfxImageEffectInstancePropSequentialRender"><code>kOfxImageEffectInstancePropSequentialRender</code></link> property has had a third allowed state added, which indicate that a plugin would prefer to be sequentially rendered if possible, but  need not be.
+  </para>
+<para>The <link linkend="kOfxImageEffectInstancePropSequentialRender"><code>kOfxImageEffectInstancePropSequentialRender</code></link> propery has also been added to the host descriptor, to indicate whether the host can support sequential rendering. </para>
+<para>The new property <link linkend="kOfxImageEffectPropSequentialRenderStatus"><code>kOfxImageEffectPropSequentialRenderStatus</code></link> is now passed to the render actions to indicate that a host is currently sequentially rendering or not.</para>
+  </section>
+
+  <section id="APIChanges_1_2_InteractiveRender"><title>Interactive Render Notification</title>
+  <para>
+  A new property has been added to flag a render as being in response to an interactive change by a user, as opposed to a batch render. This is <link linkend="kOfxImageEffectPropInteractiveRenderStatus">kOfxImageEffectPropInteractiveRenderStatus</link>.
+  </para>
+
+  </section>
+  <section id="APIChanges_1_2_HostOSHandle"><title>Host Operating System Handle</title>
+  <para>
+  A new property has been added to allow a plugin to request the host operating system specific application handle (ie: on Windows (tm) this would be the application's root hWnd). This is <link linkend="kOfxPropHostOSHandle"><code>kOfxPropHostOSHandle</code></link>.
+  </para>
+  </section>
+
+  <section id="APIChanges_1_2_SpatialParameters"><title>Non Normalised Spatial Parameters</title>
+  <para>Normalised double parameters have proved to be more of a problem than expected. The major idea was to provide resolution independence for spatial parameters. However, in practice, having to specify parameters as a fraction of a yet to be determined resolution is problematic. For example, if you want to set something to be explicitly '20', there is no way of doing that. The main problem stems from normalised params conflating two separate issues, flagging to the host that a parameter was spatial, and being able to specify defaults in a normalised co-ordinate system. </para>
+  <para>With 1.2 new <link linkend='ParameterPropertiesDoubleTypesSpatial'>spatial double parameter</link> types are defined. These have their values manipulated in cannonical coordinates, however, they have an option to specify their default values in a normalise coordinate system. These are....</para>
+  <para> These new double parameter types are....
+    <itemizedlist>
+	    <listitem><code>kOfxParamDoubleTypeX</code> - a size in the X dimension dimension (1D only), new for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeXAbsolute</code> - a position in the X dimension (1D only), new for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeY</code> - a size in the Y dimension dimension (1D only), new for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeYAbsolute</code> - a position in the X dimension (1D only), new for 1.2 </listitem>
+	    <listitem><code>kOfxParamDoubleTypeXY</code> - a size in the X and Y dimension (2D only), new for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeXYAbsolute</code> - a position in the X and Y dimension (2D only), new for 1.2</listitem>
+    </itemizedlist>
+  </para>
+  
+  <para>These new parameter types can set their defaults in one of two coordinate systems, the property <link linkend="kOfxParamPropDefaultCoordinateSystem"><code>kOfxParamPropDefaultCoordinateSystem</code></link>. Specifies the coordinate system the default value is being specified in.</para>
+ 
+  <para>Plugins can check <link linkend="kOfxPropAPIVersion">kOfxPropAPIVersion</link> to see if these new parameter types are supported</para>
+  </section>
+
+  <section id="APIChanges_1_2_Native_Overlay_Handles"><title>Native Overlay Handles</title>
+    Some applications have their own overlay handles for certain types of parameter (eg: spatial positions). It is often better to rely on those, than have a plugin
+    implement their own overlay handles. Two new parameter, properties are available to do that, one used by the host to indicate if such handles are available. The other by a 
+    plugin telling the host to use such handle.
+    <itemizedlist>
+      <listitem><link linkend="kOfxParamPropHasHostOverlayHandle">kOfxParamPropHasHostOverlayHandle</link> indicates a parameter has an host native overlay handle</listitem>
+      <listitem><link linkend="kOfxParamPropUseHostOverlayHandle">kOfxParamPropUseHostOverlayHandle</link> indicates that a host should use a native overlay handle.</listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="APIChanges_1_2_Interact_Colour_Hint"><title>Interact Colour Hint</title>
+    Some applications allow the user to specify colours of any overlay via a colour picker. Plug-ins can access this via the <link linkend="kOfxInteractPropSuggestedColour">kOfxInteractPropSuggestedColour</link> property.
+  </section>
+
+  <section id="APIChanges_1_2_Interact_Pen_Position"><title>Interact Viewport Pen Position</title>
+  The new property <link linkend="kOfxInteractPropPenViewportPosition">kOfxInteractPropPenViewportPosition</link> is used to pass a pen position in viewport coordinate, rather than a connaonical. This is sometimes much more convenient. It is passed to all actions that <link linkend="kOfxInteractPropPenPosition">kOfxInteractPropPenPosition</link> is passed to.
+  </section>
+  <section id="APIChanges_1_2_Parameteric_Parameters"><title>Parametric Parameters</title>
+  A new optional parameter type, and supporting suite, is introduced, <link linkend="ParametersParametric">parametric parameters.</link>. This allows for the
+  construction of user defined lookup tables and so on.
+  </section>
+</chapter>

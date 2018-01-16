@@ -1,0 +1,31 @@
+SUBDIRS = Example1 Example2 Example3 Example4 Example5
+
+# Determine compiler ABI by invoking it and looking at the logo string
+# Should end with "for 80x86" or "for x64"
+!IF [cl.exe 2<&1 | findstr /E /C:80x86 1>nul]
+!MESSAGE Installing 64 bit (x64)
+ABI=64
+!ELSE
+!MESSAGE Installing 32 bit (x86)
+ABI=32
+!ENDIF
+
+
+default :
+	@ echo making sub projects... $(SUBDIRS)
+	FOR %%D IN ( $(SUBDIRS) ) \
+        DO  \
+	@cd "%%D" & $(MAKE) /F NMakefile /NOLOGO /$(MAKEFLAGS) ABI=$(ABI) & cd ..
+
+install :
+	@ echo making sub projects... $(SUBDIRS)
+	FOR %%D IN ( $(SUBDIRS) ) \
+        DO  \
+	@cd "%%D" & $(MAKE) /F NMakefile /NOLOGO /$(MAKEFLAGS) install ABI=$(ABI) & cd ..
+
+clean :
+	@ echo making sub projects... $(SUBDIRS)
+	FOR %%D IN ( $(SUBDIRS) ) \
+        DO  \
+	@cd "%%D" & $(MAKE) /F NMakefile /NOLOGO /$(MAKEFLAGS) clean ABI=$(ABI) & cd ..
+	-rd /s /q built_plugins

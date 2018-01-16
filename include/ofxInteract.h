@@ -169,40 +169,378 @@ These are the list of actions passed to an interact's entry point function. For 
 */
 /*@{*/
 
-/** @brief Action passed to interacts telling it to redraw, see \ref InteractsActionDraw for more details */
+/** @brief
+
+ This action is the first action passed to an interact. It is
+ where an interact defines how it behaves and the resources it needs to
+ function.
+ If not trapped, the default action is for the host to carry on as normal
+ Note that the handle passed in acts as a descriptor for, rather than an
+ instance of the interact.
+
+ @param  handle handle to the interact descriptor, cast to an \ref OfxInteractHandle
+ @param  inArgs is redundant and is set to NULL
+ @param  outArgs is redundant and is set to NULL
+
+
+ \pre
+     - The plugin has been loaded and the effect described.
+
+ @returns
+     -  \ref kOfxStatOK the action was trapped and all was well
+     -  \ref kOfxStatErrMemory in which case describe may be called again after a memory purge
+     -  \ref kOfxStatFailed something was wrong, the host should ignore the interact
+     -  \ref kOfxStatErrFatal
+ */
+#define kOfxActionDescribeInteract kOfxActionDescribe
+
+
+/** @brief
+
+ This action is the first action passed to an interact instance after its creation.
+ It is there to allow a plugin to create any per-instance data structures it may need.
+
+ @param  handle handle to the interact instance, cast to an \ref OfxInteractHandle
+ @param  inArgs is redundant and is set to NULL
+ @param  outArgs is redundant and is set to NULL
+
+
+ \pre
+     - \ref kOfxActionDescribe has been called on this interact
+
+ \post
+     -  the instance pointer will be valid until the \ref kOfxActionDestroyInstance
+     action is passed to the plug-in with the same instance handle
+
+ @returns
+     -  \ref kOfxStatOK the action was trapped and all was well
+     -  \ref kOfxStatReplyDefault the action was ignored, but all was well anyway
+     -  \ref kOfxStatErrFatal
+     -  \ref kOfxStatErrMemory in which case this may be called again after a memory purge
+     -  \ref kOfxStatFailed in which case the host should ignore this interact
+ */
+#define kOfxActionCreateInstanceInteract kOfxActionCreateInstance
+
+/**@brief
+
+ This action is the last passed to an interact's instance before its
+ destruction. It is there to allow a plugin to destroy any per-instance
+ data structures it may have created.
+
+ @param handle handle to the interact instance, cast to an \ref OfxInteractHandle
+ @param inArgs is redundant and is set to NULL
+ @param outArgs is redundant and is set to NULL
+
+ \pre
+     - \ref kOfxActionCreateInstance
+     has been called on the handle,
+     - the instance has not had any of its members destroyed yet
+
+ \post
+     -  the instance pointer is no longer valid and any operation on it will be undefined
+
+ @returns
+     To some extent, what is returned is moot, a bit like throwing an
+     exception in a C++ destructor, so the host should continue destruction
+     of the instance regardless
+     - \ref kOfxStatOK the action was trapped and all was well
+     - \ref kOfxStatReplyDefault the action was ignored as the effect had nothing to do
+     - \ref kOfxStatErrFatal
+     - \ref kOfxStatFailed something went wrong, but no error code appropriate.
+ */
+#define kOfxActionDestroyInstanceInteract kOfxActionDestroyInstance
+
+/** @brief
+
+ This action is issued to an interact whenever the host needs the plugin
+ to redraw the given interact. The interact should issue any openGL calls
+ it needs at this point.
+
+ Note that the interact may (in the case of custom parameter GUIS) or may
+ not (in the case of image effect overlays) be required to swap buffers,
+ that is up to the kind of interact.
+
+ @param  handle handle to an interact instance, cast to an \ref OfxInteractHandle
+ @param  inArgs has the following properties on an image effect plugin
+     - \ref kOfxPropEffectInstance a handle to the effect for which the interact has been,
+     - \ref kOfxInteractPropPixelScale the scale factor to convert cannonical pixels to screen pixels
+     - \ref kOfxInteractPropBackgroundColour the background colour of the application behind the current view
+     - \ref kOfxPropTime the effect time at which changed occured
+     - \ref kOfxImageEffectPropRenderScale the render scale applied to any image fetched
+
+ @param  outArgs is redundant and is set to NULL
+
+\pre
+     - \ref kOfxActionCreateInstance has been called on the instance handle
+     - the openGL context for this interact has been set
+     -  the projection matrix will correspond to the interact's cannonical view
+
+ @returns
+     - \ref kOfxStatOK the action was trapped and all was well
+     - \ref kOfxStatReplyDefault the action was ignored
+     - \ref kOfxStatErrFatal
+     - \ref kOfxStatFailed something went wrong, the host should ignore this interact in future
+ */
 #define kOfxInteractActionDraw "OfxInteractActionDraw"
 
-/** @brief Action passed to interacts for an interact pen motion , see \ref InteractsActionPen for more details
+/** @brief
+
+ This action is issued whenever the pen moves an the interact's has
+ focus. It should be issued whether the pen is currently up or down.
+ No openGL calls should be issued by the plug-in during this action.
+
+
+ @param  handle handle to an interact instance, cast to an \ref OfxInteractHandle
+ @param  inArgs has the following properties on an image effect plugin
+     - \ref kOfxPropEffectInstance a handle to the effect for which the interact has been,
+     - \ref kOfxInteractPropPixelScale the scale factor to convert cannonical pixels to screen pixels
+     - \ref kOfxInteractPropBackgroundColour the background colour of the application behind the current view
+     - \ref kOfxPropTime the effect time at which changed occured
+     - \ref kOfxImageEffectPropRenderScale the render scale applied to any image fetched
+     - \ref kOfxInteractPropPenPosition postion of the pen in,
+     - \ref kOfxInteractPropPenViewportPosition position of the pen in,
+     - \ref kOfxInteractPropPenPressure the pressure of the pen,
+
+ @param  outArgs is redundant and is set to NULL
+
+\pre
+     - \ref  kOfxActionCreateInstance
+     has been called on the instance handle
+     - the current instance handle has had
+     \ref kOfxInteractActionGainFocus called on it
+
+\post
+     -  if the instance returns \ref kOfxStatOK the host should not
+     pass the pen motion to any other interactive object it may own that
+     shares the same view.
+
+ @returns
+     -  \ref kOfxStatOK the action was trapped and the host should not pass the event to other objects it may own
+     -  \ref kOfxStatReplyDefault the action was not trapped and the host can deal with it if it wants
  */
 #define kOfxInteractActionPenMotion "OfxInteractActionPenMotion"
 
-/**@brief Action passed to interacts for a pen down , see \ref InteractsActionPen for more details
+/**@brief
+
+ This action is issued when a pen transitions for the 'up' to the 'down'
+ state.
+ No openGL calls should be issued by the plug-in during this action.
+
+
+ @param  handle handle to an interact instance, cast to an \ref OfxInteractHandle
+ @param  inArgs has the following properties on an image effect plugin,
+     - \ref kOfxPropEffectInstance a handle to the effect for which the interact has been,
+     - \ref kOfxInteractPropPixelScale the scale factor to convert cannonical pixels to screen pixels
+     - \ref kOfxInteractPropBackgroundColour the background colour of the application behind the current view
+     - \ref kOfxPropTime the effect time at which changed occured
+     - \ref kOfxImageEffectPropRenderScale the render scale applied to any image fetched
+     - \ref kOfxInteractPropPenPosition position of the pen in
+     - \ref kOfxInteractPropPenViewportPosition position of the pen in
+     - \ref kOfxInteractPropPenPressure the pressure of the pen
+
+ @param  outArgs is redundant and is set to NULL
+
+ \pre
+     -  \ref kOfxActionCreateInstance
+     has been called on the instance handle,
+     -  the current instance handle has had
+     \ref kOfxInteractActionGainFocus
+     called on it
+
+\post
+     -  if the instance returns \ref kOfxStatOK, the host should not
+     pass the pen motion to any other interactive object it may own that
+     shares the same view.
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and the host should not pass the event to other objects it may own
+     -  \ref kOfxStatReplyDefault , the action was not trapped and the host can deal with it if it wants
  */
 #define kOfxInteractActionPenDown   "OfxInteractActionPenDown"
 
-/**@brief Action passed to interacts for a pen up, see \ref InteractsActionPen for more details
+/**@brief
+
+ This action is issued when a pen transitions for the 'down' to the 'up'
+ state.
+ No openGL calls should be issued by the plug-in during this action.
+
+ @param  handle handle to an interact instance, cast to an \ref OfxInteractHandle
+ @param  inArgs has the following properties on an image effect plugin,
+ - \ref kOfxPropEffectInstance a handle to the effect for which the interact has been,
+ - \ref kOfxInteractPropPixelScale the scale factor to convert cannonical pixels to screen pixels
+ - \ref kOfxInteractPropBackgroundColour the background colour of the application behind the current view
+ - \ref kOfxPropTime the effect time at which changed occured
+ - \ref kOfxImageEffectPropRenderScale the render scale applied to any image fetched
+ - \ref kOfxInteractPropPenPosition position of the pen in
+ - \ref kOfxInteractPropPenViewportPosition position of the pen in
+ - \ref kOfxInteractPropPenPressure the pressure of the pen
+
+ @param  outArgs is redundant and is set to NULL
+
+ \pre
+     -  \ref kOfxActionCreateInstance
+     has been called on the instance handle,
+     -  the current instance handle has had
+     \ref kOfxInteractActionGainFocus called on it
+
+ \post
+     -  if the instance returns \ref kOfxStatOK, the host should not
+     pass the pen motion to any other interactive object it may own that
+     shares the same view.
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and the host should not pass the event to other objects it may own
+     -  \ref kOfxStatReplyDefault , the action was not trapped and the host can deal with it if it wants
  */
 #define kOfxInteractActionPenUp     "OfxInteractActionPenUp"
 
-/**@brief Action passed to interacts for a key down, see \ref InteractsActionKey for more details
+/**@brief
+
+ This action is issued when a key on the keyboard is depressed.
+ No openGL calls should be issued by the plug-in during this action.
+
+ @param handle handle to an interact instance, cast to an \ref OfxInteractHandle
+ @param inArgs has the following properties on an image effect plugin
+     -  \ref kOfxPropEffectInstance a handle to the effect for which the interact has been,
+     - \ref kOfxPropKeySym single integer value representing the key that was manipulated,
+     this may not have a UTF8 representation (eg: a return key)
+     -  \ref kOfxPropKeyString UTF8 string representing a character key that was pressed, some
+     keys have no UTF8 encoding, in which case this is ""
+     -  \ref kOfxPropTime the effect time at which changed occured
+     - \ref kOfxImageEffectPropRenderScale the render scale applied to any image fetched
+
+ @param  outArgs is redundant and is set to NULL
+
+\pre
+     - \ref kOfxActionCreateInstance
+     has been called on the instance handle,
+     -  the current instance handle has had
+     \ref kOfxInteractActionGainFocus called on it
+
+ \post
+     -  if the instance returns \ref kOfxStatOK, the host should not
+     pass the pen motion to any other interactive object it may own that
+     shares the same focus.
+
+ @returns
+     - \ref kOfxStatOK , the action was trapped and the host should not pass the event to other objects it may own
+     - \ref kOfxStatReplyDefault , the action was not trapped and the host can deal with it if it wants
  */
 #define kOfxInteractActionKeyDown   "OfxInteractActionKeyDown"
 
-/**@brief Action passed to interacts for a key down, see \ref InteractsActionKey for more details
+/**@brief
+ This action is issued when a key on the keyboard is released.
+ No openGL calls should be issued by the plug-in during this action.
 
+ @param handle handle to an interact instance, cast to an \ref OfxInteractHandle
+ @param inArgs has the following properties on an image effect plugin
+     -  \ref kOfxPropEffectInstance a handle to the effect for which the interact has been,
+     - \ref kOfxPropKeySym single integer value representing the key that was manipulated,
+     this may not have a UTF8 representation (eg: a return key)
+     -  \ref kOfxPropKeyString UTF8 string representing a character key that was pressed, some
+     keys have no UTF8 encoding, in which case this is ""
+     -  \ref kOfxPropTime the effect time at which changed occured
+     - \ref kOfxImageEffectPropRenderScale the render scale applied to any image fetched
+
+ @param  outArgs is redundant and is set to NULL
+
+ \pre
+     - \ref kOfxActionCreateInstance
+     has been called on the instance handle,
+     -  the current instance handle has had
+     \ref kOfxInteractActionGainFocus called on it
+
+ \post
+     -  if the instance returns \ref kOfxStatOK, the host should not
+     pass the pen motion to any other interactive object it may own that
+     shares the same focus.
+
+ @returns
+     - \ref kOfxStatOK , the action was trapped and the host should not pass the event to other objects it may own
+     - \ref kOfxStatReplyDefault , the action was not trapped and the host can deal with it if it wants
  */
 #define kOfxInteractActionKeyUp     "OfxInteractActionKeyUp"
 
-/**@brief Action passed to interacts for a key repeat , see \ref InteractsActionKey for more details
+/**@brief
+ This action is issued when a key on the keyboard is repeated.
+ No openGL calls should be issued by the plug-in during this action.
 
+ @param handle handle to an interact instance, cast to an \ref OfxInteractHandle
+ @param inArgs has the following properties on an image effect plugin
+     -  \ref kOfxPropEffectInstance a handle to the effect for which the interact has been,
+     - \ref kOfxPropKeySym single integer value representing the key that was manipulated,
+     this may not have a UTF8 representation (eg: a return key)
+     -  \ref kOfxPropKeyString UTF8 string representing a character key that was pressed, some
+     keys have no UTF8 encoding, in which case this is ""
+     -  \ref kOfxPropTime the effect time at which changed occured
+     - \ref kOfxImageEffectPropRenderScale the render scale applied to any image fetched
+
+ @param  outArgs is redundant and is set to NULL
+
+ \pre
+     - \ref kOfxActionCreateInstance
+     has been called on the instance handle,
+     -  the current instance handle has had
+     \ref kOfxInteractActionGainFocus called on it
+
+ \post
+     -  if the instance returns \ref kOfxStatOK, the host should not
+     pass the pen motion to any other interactive object it may own that
+     shares the same focus.
+
+ @returns
+     - \ref kOfxStatOK , the action was trapped and the host should not pass the event to other objects it may own
+     - \ref kOfxStatReplyDefault , the action was not trapped and the host can deal with it if it wants
  */
 #define kOfxInteractActionKeyRepeat     "OfxInteractActionKeyRepeat"
 
-/**@brief Action passed to interacts for a gain of input focus, see \ref InteractsActionFocus for more details
+/**@brief
+ This action is issued when an interact gains input focus.
+ No openGL calls should be issued by the plug-in during this action.
+
+ @param handle handle to an interact instance, cast to an \ref OfxInteractHandle
+ @param inArgs has the following properties on an image effect plugin
+     - \ref kOfxPropEffectInstance a handle to the effect for which the interact is being used on,
+     - \ref kOfxInteractPropPixelScale the scale factor to convert cannonical pixels to screen pixels,
+     - \ref kOfxInteractPropBackgroundColour the background colour of the application behind the current view
+     - \ref kOfxPropTime the effect time at which changed occured
+     - \ref kOfxImageEffectPropRenderScale the render scale applied to any image fetched
+
+ @param  outArgs is redundant and is set to NULL
+
+ \pre
+     - \ref kOfxActionCreateInstance
+ has been called on the instance handle,
+
+
+ @returns
+     - \ref kOfxStatOK  the action was trapped
+     - \ref kOfxStatReplyDefault  the action was not trapped
  */
 #define kOfxInteractActionGainFocus "OfxInteractActionGainFocus"
 
-/**@brief Action passed to interacts for a loss of input focus, see \ref InteractsActionFocus for more details
+/**@brief
+ This action is issued when an interact loses input focus.
+ No openGL calls should be issued by the plug-in during this action.
+
+ @param handle handle to an interact instance, cast to an \ref OfxInteractHandle
+ @param inArgs has the following properties on an image effect plugin
+     - \ref kOfxPropEffectInstance a handle to the effect for which the interact is being used on,
+     - \ref kOfxInteractPropPixelScale the scale factor to convert cannonical pixels to screen pixels,
+     - \ref kOfxInteractPropBackgroundColour the background colour of the application behind the current view
+     - \ref kOfxPropTime the effect time at which changed occured
+     - \ref kOfxImageEffectPropRenderScale the render scale applied to any image fetched
+
+ @param  outArgs is redundant and is set to NULL
+
+ \pre
+     - \ref kOfxActionCreateInstance
+     has been called on the instance handle,
+
+
+ @returns
+     - \ref kOfxStatOK  the action was trapped
+     - \ref kOfxStatReplyDefault  the action was not trapped
  */
 #define kOfxInteractActionLoseFocus "OfxInteractActionLoseFocus"
 

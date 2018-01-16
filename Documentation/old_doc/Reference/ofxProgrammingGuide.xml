@@ -1,0 +1,1183 @@
+<book>
+  <bookinfo>
+    <title>OpenFX Plug-in API Programming Guide</title>
+
+    <author>
+      <firstname>Bruno</firstname>
+
+      <surname>Nicoletti</surname>
+    </author>
+
+    <copyright>
+      <year>2005-2015</year>
+
+      <holder>The Open Effects Association</holder>
+    </copyright>
+
+    <releaseinfo>Document version 1.4</releaseinfo>
+  </bookinfo>
+
+  <preface>
+    <title>Foreword</title>
+
+    <para>OFX is an open API for writing visual effects plug-ins for a wide
+    variety of applications, such as video editing systems and compositing
+    systems. It seems to have two interchangable names, "OpenFX" and "OFX". I
+    prefer OFX for some reason. This book is actually very broad in scope, as
+    it has to not only define the API, it will need to go into some depth
+    describing concepts behind imaging applications that use it.</para>
+
+    <para>UNFINISHED</para>
+
+    <section>
+      <title>Intended Audience</title>
+
+      <para>Do you write visual effects or image processing software? Do you
+      have an application which deals with moving images and hosts plug-ins or
+      would like to host plug-ins? Then OFX is for you.</para>
+
+      <para>This book assumes you can program in the "C" language and are
+      familiar with the concepts involved in writing visual effects software.
+      You need to understand concepts like pixels, clips, pixel aspect ratios
+      and more. If you don't, I suggest you read further or attempt to soldier
+      on bravely and see how far you go before you get lost.</para>
+    </section>
+
+    <section>
+      <title>What is OFX</title>
+
+      <para>OFX is actually several things. At the lowest level OFX is a
+      generic 'C' based plug-in architecture that can be used to define any
+      kind of plug-in API. You could use this low level architecture to
+      implement any API, however it was originally designed to host our visual
+      effects image processing API. The basic architecture could be re-used to
+      create other higher level APIs such as a sound effects API, a 3D API and
+      more.</para>
+
+      <para>This book describes the basic OFX plug-in architecture and the
+      visual effects plug-in API built on top of it. The visual effects API is
+      very broad and intended to allow visual effects plug-ins to work on a
+      wide range of host applications, including compositing hosts,
+      rotoscopers, encoding applications, colour grading hosts, editing hosts
+      and more I haven't thought of yet. While all these type of applications
+      process images, they often have very different work flows and present
+      effects to a user in incompatible ways. OFX is an attempt to deal with
+      all of these in a clear and consistent manner.</para>
+    </section>
+  </preface>
+
+  <chapter>
+    <title>OFX Overview</title>
+    <section>
+      <para> This chapter provides a brief overview of the basic plug-in architecture and some of the reasoning behind it. It will touch lightly .</para>
+    </section>
+
+    <section>
+       <title>Language</title>
+       <para>The OFX API is specified using the 'C' programming language. The traditional languages used to implement visual effects applications and plug-ins have been C and C++, so we stuck with that school. By making the API C, rather than C++, you remove the whole set of problems around C++ symbol mangling between the host an application.
+       </para>
+    </section>
+
+    <section>
+       <title>API Definition</title>
+       <para>The APIs defined by OFX are defined purely by a set of C header files and the associated documentation. There are no binary libraries to link against.
+       </para>
+    </section>
+
+    <section>
+       <title>Symbolic Dependancies</title>
+       <para>The host relies on two symbols within a plug-in, all other communication is boot strapped from those two symbols. The plug-in has no symbolic dependancies from the host. This minimal symbolic dependancy allows for run-time determination of what features to provide over the API, making implementation much more flexible and less prone to backwards compatibility problems.
+       </para>
+    </section>
+
+    <section>
+       <title>Host to Plugin Communication</title>
+       <para>A host communicates with a plug-in via a 
+       </para>
+    </section>
+
+    <section>
+       <title>Host to Plugin Communication</title>
+       <para>A host communicates with a plug-in via a 
+       </para>
+    </section>
+
+  </chapter>
+
+  <chapter>
+    <title>Introduction To OFX, A Simple Plug-in</title>
+
+    <section>
+      <para>This chapter will describe in detail a fully functioning, but
+      simple OFX image effect plug-in that inverts 8 bit RGBA images. It gives
+      a flavour for how the API operates and some of the components in it. The
+      source will be broken down into sections and each one explained as we go
+      along. The code is actually C++, but it uses the raw OFX API. The code
+      is not meant to be perfectly optimised example of how to write an image
+      processing effect, but rather as an illustrative example of the
+      API.</para>
+    </section>
+
+    <section>
+      <title>Headers</title>
+
+      <informalexample>
+        <programlisting>
+#include &lt;string.h&gt;
+#include "ofxCore.h"
+#include "ofxProperty.h"
+#include "ofxImageEffect.h"</programlisting>
+      </informalexample>
+
+      <para>This section of code shows the headers used by the invert plug-in.
+      It includes three OFX header files (you can tell because they start with
+      "ofx") which are... <itemizedlist>
+          <listitem> <filename>ofxCore.h</filename> which provides definitions for the underlying plug-in loading mechanisms </listitem>
+          <listitem> <filename>ofxProperty.h</filename> which defines the property getting/setting suite </listitem>
+          <listitem> <filename>ofxImageEffect.h</filename> which provides access to the image effect suite </listitem>
+        </itemizedlist> The system include file <filename>string.h</filename>
+      is for use of strcmp as the API passes strings about rather than
+      integers or enums to specify actions and properties.</para>
+    </section>
+
+    <section>
+      <title>The Plug-in Struct and The Two Exported Functions</title>
+
+      <informalexample>
+        <programlisting>
+// forward declaration of two functions needed by the plug-in struct
+static OfxStatus pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs);
+static void setHostFunc(OfxHost *hostStruct);
+
+////////////////////////////////////////////////////////////////////////////////
+// the plugin struct 
+static OfxPlugin pluginStruct = 
+{       
+  kOfxImageEffectPluginApi,
+  1,
+  "net.sf.openfx.OfxInvertExample",
+  1,
+  0,
+  setHostFunc,
+  pluginMain
+};
+   
+// the mandated function to return the nth plug-in
+OfxExport OfxPlugin *
+OfxGetPlugin(int nth)
+{
+  if(nth == 0)
+    return &amp;pluginStruct;
+  return 0;
+}
+ 
+// the mandated function to return the number of plug-ins in this binary
+OfxExport int
+OfxGetNumberOfPlugins(void)
+{       
+  return 1;
+}</programlisting>
+      </informalexample>
+
+      <para>The first thing to note in this section are the two functions
+      <function>OfxGetPlugin</function> and
+      <function>OfxGetNumberOfPlugins</function>. These two functions are the
+      only symbols that a plug-in must export and are there to boot strap the
+      whole plug-in identification and definition process. Note the macro
+      <structname>OfxExport</structname>, which should be inserted before any
+      symbol that needs to be exported from the plug-in.</para>
+
+      <para><function>OfxGetNumberOfPlugins</function> is the first function
+      by a host after a binary is loaded. It returns the number of separate
+      plug-ins contained inside the binary. In this case we have only one
+      plug-in.</para>
+
+      <para><function>OfxGetPlugin</function> is called once for each plug-in
+      inside the binary, and returns an <structname>OfxPlugin</structname>
+      struct. This struct is used to tell the host what kind of plug-in it is,
+      it's name, versioning info and to give the host two functions to use for
+      communications. Our function returns a pointer to the static
+      <varname>pluginStruct</varname>. All such structs should be static to
+      avoid memory allocation issues, otherwise they will not be deleted by
+      the host.</para>
+
+      <para>In order the members of <varname>pluginStruct</varname> tell the
+      host... <orderedlist>
+          <listitem>
+             the kind of plug-in it is, in this case a 
+
+            <literal>kOfxImageEffectPluginApi</literal>
+
+             . Which happens to be an image effect plug-in, 
+          </listitem>
+
+          <listitem>
+             the version of the API the plug-in was written to. In this case version 
+
+            <literal>1</literal>
+
+             , 
+          </listitem>
+
+          <listitem>
+             the unique name of the plug-in. Used only to disambiguate the plug-in from all other plug-ins, not necessarily for human eyes, 
+          </listitem>
+
+          <listitem>
+             the major and minor version of the plug-in, in this case 
+
+            <literal>1.0</literal>
+
+             , which allows for simplified upgrades to the plug-in, 
+          </listitem>
+
+          <listitem>
+             a function used to set an important data structure in the plug-in, 
+          </listitem>
+
+          <listitem>
+             the function which the host uses to send messages to the plug-in 
+          </listitem>
+        </orderedlist></para>
+    </section>
+
+    <section>
+      <title>The Host Struct</title>
+
+      <informalexample>
+        <programlisting>
+// pointer to the host structure passed to us by the host application
+OfxHost   *gHost;
+
+// function called by the host application to set the host structure
+static void
+setHostFunc(OfxHost *hostStruct)
+{
+  gHost = hostStruct;
+}
+</programlisting>
+      </informalexample>
+
+      <para>This section has the structure that holds information about the
+      host application and allows us to fetch <structname>suites</structname>
+      from the host. The <function>setHostFunc</function> is called by the
+      host application to set this pointer and is passed to the host inside
+      the <structname>OfxPlugin</structname> struct.</para>
+    </section>
+
+    <section>
+      <title>The Main Entry Function</title>
+
+      <informalexample>
+        <programlisting>
+// forward declarations
+static OfxStatus render(OfxImageEffectHandle  instance, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs);
+static OfxStatus describe(OfxImageEffectHandle effect);
+static OfxStatus onLoad(void);
+static OfxStatus describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
+
+// The main entry point function
+static OfxStatus
+pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+{
+  // cast to appropriate type
+  OfxImageEffectHandle effect = (OfxImageEffectHandle) handle;
+
+  // called as the very first action before any other
+  if(strcmp(action, kOfxActionLoad) == 0) {
+    return onLoad();
+  }
+  // called to describe the plug-in
+  else if(strcmp(action, kOfxActionDescribe) == 0) {
+    return describe(effect);
+  }
+  // called to describe the plug-in in a given context
+  else if(strcmp(action, kOfxImageEffectActionDescribeInContext) == 0) {
+    return describeInContext(effect, inArgs);
+  }
+  // called to render a frame
+  else if(strcmp(action, kOfxImageEffectActionRender) == 0) {
+    return render(effect, inArgs, outArgs);
+  }    
+    
+  // all other actions return the default value
+  return kOfxStatReplyDefault;
+}
+</programlisting>
+      </informalexample>
+
+      <para>The <function>pluginMain</function> was passed to the host int the
+      <structname>OfxPlugin</structname> struct returned by
+      <function>OfxGetPlugin</function>. This function is where the host tells
+      the plug-in what it needs to do. You will note that the
+      <emphasis>actions</emphasis> passed to the plug-in are encoded as
+      strings. This makes actions easily extensible whilst minimising the
+      chances of name clashing.</para>
+
+      <para>The function also takes a "handle" argument. This handle is the
+      thing the action must be performed on. In this case, as we are an image
+      effect, the handle must be cast to an
+      <structname>OfxImageEffectHandle</structname>, which is simply a blind
+      pointer to some host data representing an image effect.</para>
+
+      <para>The last two parameters <varname>inArgs</varname> and
+      <varname>outArgs</varname> are used to pass in arguments for the
+      specific action. These are encapsulated via blind property sets. The
+      <varname>inArgs</varname> are extra arguments the action will need to do
+      its job, whilst <varname>outArgs</varname> are for things the plug-in
+      will need to set to do its action.</para>
+
+      <para>Our main entry only traps four of the many possible actions. The
+      actual actions will be described below.</para>
+    </section>
+
+    <section>
+      <title>The Load Action</title>
+
+      <informalexample>
+        <programlisting>
+OfxImageEffectSuiteV1 *gEffectSuite = 0;
+OfxPropertySuiteV1    *gPropertySuite = 0;
+
+////////////////////////////////////////////////////////////////////////////////
+// Called at load
+static OfxStatus
+onLoad(void)
+{
+    // fetch the host suites out of the global host pointer
+    if(!gHost) return kOfxStatErrMissingHostFeature;
+    
+    gEffectSuite     = (OfxImageEffectSuiteV1 *) gHost-&gt;fetchSuite(gHost-&gt;host, kOfxImageEffectSuite, 1);
+    gPropertySuite   = (OfxPropertySuiteV1 *)    gHost-&gt;fetchSuite(gHost-&gt;host, kOfxPropertySuite, 1);
+    if(!gEffectSuite || !gPropertySuite)
+        return kOfxStatErrMissingHostFeature;
+    return kOfxStatOK;
+}
+</programlisting>
+      </informalexample>
+
+      <para>The load action is always the first action called after the
+      initial boot-strap phase has happened. By this time the plug-in's
+      <function>setHost</function> function will have been called, so we have
+      access to the host pointer and so the ability to fetch suites.</para>
+
+      <para>What this action does is first to check that the host application
+      has in fact set the <varname>gHost</varname> pointer, it then goes ahead
+      and fetches two <structname>suites</structname> from the host. These
+      suites are simply structs full of function pointers from the host which
+      the plug-in uses to communicate with the host. We are only fetching two
+      suites from the host, the <structname>OfxImageEffectSuiteV1</structname>
+      to give us access to images and more, and the
+      <structname>OfxPropertySuiteV1</structname> which allows us to access
+      values in property sets.</para>
+    </section>
+
+    <section>
+      <title>The Describe Action</title>
+
+      <informalexample>
+        <programlisting>
+// the plug-in's description routine
+static OfxStatus
+describe(OfxImageEffectHandle effect)
+{
+  // get the property handle for the plugin
+  OfxPropertySetHandle effectProps;
+  gEffectSuite-&gt;getPropertySet(effect, &amp;effectProps);
+
+  // say we cannot support multiple pixel depths and let the clip preferences action deal with it all.
+  gPropertySuite-&gt;propSetInt(effectProps, kOfxImageEffectPropSupportsMultipleClipDepths, 0, 0);
+  
+  // set the bit depths the plug-in can handle
+  gPropertySuite-&gt;propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 0, kOfxBitDepthByte);
+
+  // set plug-in label and the group it belongs to
+  gPropertySuite-&gt;propSetString(effectProps, kOfxPropLabel, 0, "OFX Invert Example");
+  gPropertySuite-&gt;propSetString(effectProps, kOfxImageEffectPluginPropGrouping, 0, "OFX Example");
+
+  // define the contexts we can be used in
+  gPropertySuite-&gt;propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 0, kOfxImageEffectContextFilter);
+  
+  return kOfxStatOK;
+}
+</programlisting>
+      </informalexample>
+
+      <para>The purpose of the describe action is to tell the host the overall
+      behaviour of the plug-in. The
+      <structname>OfxImageEffectHandle</structname> passed to the describe
+      action is a <emphasis>descriptor</emphasis> as opposed to an
+      <emphasis>instance</emphasis>. A descriptor is a handle that is used to
+      tell the host how a plug-in should look, whilst an instance is an actual
+      running copy of a plug-in. Descriptors are passed to only two actions,
+      the describe action, and the describe in context action. Most other
+      actions that are passed an instance handle.</para>
+
+      <para>The first thing this function does is to fetch the handle holding
+      the properties used to describe the plug-in. Note how it uses the
+      <varname>gEffectSuite</varname> pointer to do this.</para>
+
+      <para>The next thing the plug-in does is set the integer property
+      <literal>kOfxImageEffectPropSupportsMultipleClipDepths</literal> to be
+      false using the property suite. This tells the host application that the
+      plug-in can only support a single pixel depth at a time, otherwise the
+      host might attempt to have an 8 bit input and a 16 bit output.</para>
+
+      <para>Note how the property setting functions take four arguments. The
+      first is the set of properties to be modified, the second is the name
+      (again a string) of the property in that set they wish to change, the
+      third is the index of the property (as properties can be
+      multi-dimensional) and the last is the value they wish to set.</para>
+
+      <para>The plug-in goes on to set properties that describe it as
+      supporting only images of 8 bits per component, the user visible name of
+      the effect, the grouping the effect should be placed in on any user
+      interface and finally the context it can be used under.</para>
+
+      <para>An image effect context describes the semantics of how a plug-in
+      should be used. In this case we are saying the plug-in is a filter,
+      which means it has to have one input clip called "Source" and one output
+      clip called "Output". Other contexts include transitions, where an image
+      effect has two inputs and a single output and is require to go from one
+      to the other, a general context for tree based compositing systems and
+      several more. A plug-in can say that it works in more than one context,
+      which brings us on to the next function.</para>
+    </section>
+
+    <section>
+      <title>The Describe In Context Action</title>
+
+      <informalexample>
+        <programlisting>
+//  describe the plug-in in context
+static OfxStatus
+describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
+{
+  OfxPropertySetHandle props;
+  // define the single output clip in both contexts
+  gEffectSuite-&gt;clipDefine(effect, "Output", &amp;props);
+
+  // set the component types we can handle on out output
+  gPropertySuite-&gt;propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
+
+  // define the single source clip in both contexts
+  gEffectSuite-&gt;clipDefine(effect, "Source", &amp;props);
+
+  // set the component types we can handle on our main input
+  gPropertySuite-&gt;propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
+
+  return kOfxStatOK;
+}
+</programlisting>
+      </informalexample>
+
+      <para>The describe in context action is called once for each context
+      that a plug-in says it can work in. Here the plug-in must define the
+      clips it will use and any parameters it may need for that context. The
+      set of clips and parameters need not be the same for each context,
+      though typically a core of parameters and some clips will be the same.
+      Note that, as with the describe action, the describe in context action
+      is passed a descriptor rather than an instance.</para>
+
+      <para>The first thing our function does is to define the clip called
+      "Output" which is mandatory for the filter context. This function
+      returns a property set which is used to describe how the effect wants to
+      deal with that clip. In this case the effect says that it will only
+      accept RGBA images on the output. Next it does the same for the mandated
+      "Source" clip. Having defined the two clips needed for this context it
+      returns.</para>
+    </section>
+
+    <section>
+      <title>The Render Action</title>
+
+      <informalexample>
+        <programlisting>
+// look up a pixel in the image, does bounds checking to see if it is in the image rectangle
+inline OfxRGBAColourB *
+pixelAddress(OfxRGBAColourB *img, OfxRectI rect, int x, int y, int bytesPerLine)
+{  
+  if(x &lt; rect.x1 || x &gt;= rect.x2 || y &lt; rect.y1 || y &gt; rect.y2)
+    return 0;
+  OfxRGBAColourB *pix = (OfxRGBAColourB *) (((char *) img) + (y - rect.y1) * bytesPerLine);
+  pix += x - rect.x1;  
+  return pix;
+}
+
+// the process code  that the host sees
+static OfxStatus render(OfxImageEffectHandle  instance,
+                        OfxPropertySetHandle inArgs,
+                        OfxPropertySetHandle outArgs)
+{
+    // get the render window and the time from the inArgs
+    OfxTime time;
+    OfxRectI renderWindow;
+  
+    gPropertySuite-&gt;propGetDouble(inArgs, kOfxPropTime, 0, &amp;time);
+    gPropertySuite-&gt;propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &amp;renderWindow.x1);
+
+    // fetch output clip
+    OfxImageClipHandle outputClip;
+    gEffectSuite-&gt;clipGetHandle(instance, "Output", &amp;outputClip, 0);
+
+    // fetch image to render into from that clip
+    OfxPropertySetHandle outputImg;
+    gEffectSuite-&gt;clipGetImage(outputClip, time, NULL, &amp;outputImg);
+
+    // fetch output image info from that handle
+    int dstRowBytes, dstBitDepth;
+    OfxRectI dstRect;
+    void *dstPtr;
+    gPropertySuite-&gt;propGetInt(outputImg, kOfxImagePropRowBytes, 0, &amp;dstRowBytes);
+    gPropertySuite-&gt;propGetIntN(outputImg, kOfxImagePropBounds, 4, &amp;dstRect.x1);
+    gPropertySuite-&gt;propGetPointer(outputImg, kOfxImagePropData, 0, &amp;dstPtr);
+  
+    // fetch main input clip
+    OfxImageClipHandle sourceClip;
+    gEffectSuite-&gt;clipGetHandle(instance, "Source", &amp;sourceClip, 0);
+
+    // fetch image at render time from that clip
+    OfxPropertySetHandle sourceImg;
+    gEffectSuite-&gt;clipGetImage(sourceClip, time, NULL, &amp;sourceImg);
+
+    // fetch image info out of that handle
+    int srcRowBytes, srcBitDepth;
+    OfxRectI srcRect;
+    void *srcPtr;
+    gPropertySuite-&gt;propGetInt(sourceImg, kOfxImagePropRowBytes, 0, &amp;srcRowBytes);
+    gPropertySuite-&gt;propGetIntN(sourceImg, kOfxImagePropBounds, 4, &amp;srcRect.x1);
+    gPropertySuite-&gt;propGetPointer(sourceImg, kOfxImagePropData, 0, &amp;srcPtr);
+
+    // cast data pointers to 8 bit RGBA
+    OfxRGBAColourB *src = (OfxRGBAColourB *) srcPtr;
+    OfxRGBAColourB *dst = (OfxRGBAColourB *) dstPtr;
+
+    // and do some inverting
+    for(int y = renderWindow.y1; y &lt; renderWindow.y2; y++) {
+        if(gEffectSuite-&gt;abort(instance)) break;
+
+        OfxRGBAColourB *dstPix = pixelAddress(dst, dstRect, renderWindow.x1, y, dstRowBytes);
+
+        for(int x = renderWindow.x1; x &lt; renderWindow.x2; x++) {
+        
+            OfxRGBAColourB *srcPix = pixelAddress(src, srcRect, x, y, srcRowBytes);
+
+            if(srcPix) {
+                dstPix-&gt;r = 255 - srcPix-&gt;r;
+                dstPix-&gt;g = 255 - srcPix-&gt;g;
+                dstPix-&gt;b = 255 - srcPix-&gt;b;
+                dstPix-&gt;a = 255 - srcPix-&gt;a;
+            }
+            else {
+                dstPix-&gt;r = 0;
+                dstPix-&gt;g = 0;
+                dstPix-&gt;b = 0;
+                dstPix-&gt;a = 0;
+            }
+            dstPix++;
+        }
+    }
+
+    // we are finished with the source images so release them
+    gEffectSuite-&gt;clipReleaseImage(sourceImg);
+    gEffectSuite-&gt;clipReleaseImage(outputImg);
+  
+    // if we aborted, then we have failed to produce and image, so say so
+    if(gEffectSuite-&gt;abort(instance)) return kOfxStatFailed;
+
+    // otherwise all was well
+    return kOfxStatOK;
+}
+</programlisting>
+      </informalexample>
+
+      <para>The render action is where a plug-in turns its input images into
+      output images. The first thing to note is that the effect is no longer a
+      descriptor by an. For our simple example, this makes not much
+      difference, however if the plug-in is maintaining private data, it is
+      very important.</para>
+
+      <para>The first thing the render function does is to extract two
+      properties from the <varname>inArgs</varname> property set. These are
+      the time to render at, and the window to render over. Note that the
+      render window is a 4 dimensional integer property.</para>
+
+      <para>Next the function fetches the output clip. A clip is a handle that
+      is accessible by name and represents a sequences of images. The returned
+      handle is valid for the lifetime of the instance, and so does not need
+      releasing or deleting. Next an image is extracted from the clip. An
+      image, unlike a clip, does need to be released when the plug-in is done
+      with it.</para>
+
+      <para>Images are encapsulated as a property set, and so the ordinary
+      property mechanism is used to fetch out information from the image. In
+      this case three properties are needed, the <varname>rowBytes</varname>,
+      or the number of bytes in a scan line (as there may be padding at the
+      end), the image bounds, being the region where there is image data and a
+      pointer to the image data. The source image is fetched in a similar way
+      as the destination image.</para>
+
+      <para>Next the <structname>void *</structname> data pointers are cast to
+      <structname>OfxRGBAColourB</structname> pointers, and we start iterating
+      over the render window filling in output pixels. The render window must
+      always be equal to or less than the bounds on the destination image. The
+      inline function <function>pixelAddress</function> shows how pixel
+      arithmetic is performed. Note the <function>abort</function> function
+      from the image effect suite being called at every scan line to see if
+      the rendering should be halted.</para>
+
+      <para>Finally, once we are done, the images are released and we
+      return.</para>
+    </section>
+
+    <section>
+      <title>In Summary</title>
+
+      <para>Our small working example shows the core mechanisms behind the OFX
+      Image Effect API, but leaves out much of the messy detail. The important
+      things to note are the use of suites to call functions on the host, the
+      use of properties to get and set values in objects and the use of
+      actions to call things on the plug-in.</para>
+
+      <para>There are many more suites which have not been used, as well as
+      actions that have not been trapped, as well as gory bits to do with
+      pixel aspect ratios, interlacing and more. These extra suites and
+      actions add a rich functionality to OFX that give it a great flexibility
+      as well as dealing with the evil little details such as video
+      standards.</para>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>The Generic OFX Plug-in Architecture</title>
+
+    <section>
+      <title>Overview</title>
+
+      <para>As explained in the introduction, OFX is actually several things,
+      <itemizedlist>
+          <listitem>
+             an underlying generic plug-in architecture, 
+          </listitem>
+
+          <listitem>
+             specific plug-in APIs defined using that architecture. 
+          </listitem>
+        </itemizedlist> This chapter concentrates on defining the underlying
+      architecture, including how plug-ins should be identified, defined,
+      versioned, installed and the initial bootstrapping of communication
+      occurs.</para>
+
+      <para>The two OFX include files relevant for this section are
+      <itemizedlist>
+          <listitem>
+             
+
+            <filename>ofxCore.h</filename>
+
+             which defines basic data structures used in loading and identifying plug-ins, 
+          </listitem>
+
+          <listitem>
+             
+
+            <filename>ofxProperty.h</filename>
+
+             which defines the suite used for fetching and setting properties on objects. 
+          </listitem>
+        </itemizedlist></para>
+
+      <para>OFX APIs are all implemented via prototyped "C" header files.
+      There are no OFX specific libraries to link against as the APIs consists
+      solely of sets of header files and their supporting documentation. The
+      API is also designed to minimise symbolic dependencies between the host
+      and the plug-in.</para>
+
+      <para>Certain concepts are at the core of the OFX plug-in architecture,
+      these are <emphasis>APIs</emphasis>, <emphasis>actions</emphasis>,
+      <emphasis>suites</emphasis>, <emphasis>properties</emphasis> and
+      <emphasis>handles</emphasis>. No matter what kind of API is being built
+      on top of the core architecture, it will use these objects.</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>Actions</term>
+
+          <listitem>
+            <para>An action is how a host communicates with a plug-in, e.g.:
+            "render frame 10". Actions are labelled by strings passed to a
+            plug-in's 'mainEntry' function.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Suites</term>
+
+          <listitem>
+            <para>A suite is how a plug-in communicates to a host. Suites are
+            'C' structs filled with pointers to functions, the plug-in calls
+            these functions to perform certain tasks (e.g.: fetch an
+            image).</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Handles</term>
+
+          <listitem>
+            <para>Handles are blind data pointers that are passed back to a
+            plug-in from a host. They represent various types of data (e.g.: a
+            set of properties, an instance of an image effect and so on) and
+            are how objects on the host side are referenced by a plug-in. The
+            data pointers themselves are typed by declaring them as pointers
+            to defined but undeclared C structs.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Properties</term>
+
+          <listitem>
+            <para>Properties are simple data types used to communicate
+            information between a host and a plug-in. They avoid having to
+            pass around C structs and so makes versioning and backwards
+            compatibility easier. They are name/value pairs labelled with a
+            C-string. Properties are accessed using the property suite found
+            in <filename>ofxProperty.h</filename>.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>APIs</term>
+
+          <listitem>
+            <para>An 'API', in the OFX sense, is a named set of suites,
+            actions and supporting objects used to implement a type of
+            plug-in. Currently there is only one API built on the core
+            architecture, this is the OFX Image Effect API, which is labelled
+            by the string <literal>"OfxImageEffectPluginAPI"</literal></para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+
+    <section>
+      <title>Plug-in Binaries and Required Symbols</title>
+
+      <para>OFX plug-ins are distributed as dynamically loadable shared
+      libraries, the exact format is dependant upon the host operating system
+      and is defined below. Each such binary can contain one or more OFX
+      plug-ins .The whole set of OFX APIs bootstrap from two symbols inside a
+      plug-in, these are <function>OfxGetNumberOfPlugins</function> and
+      <function>OfxGetPlugin.</function></para>
+
+      <section>
+        <title>OfxGetNumberOfPlugins</title>
+        <programlisting>int OfxGetNumberOfPlugins(void)</programlisting>
+         This function returns the number of plug-ins inside the given binary. This will be the first function called by a host after initially loading the binary. 
+      </section>
+
+      <section>
+        <title>OfxGetPlugin</title>
+        <programlisting>OfxPlugin * OfxGetPlugin(int nth)</programlisting>
+         This function returns an 
+        <structname>OfxPlugin</structname>
+         struct which defines the 
+        <varname>nth</varname>
+         plug-in to the host. The data structure returned should point to a static chunk of memory in the plug-in, as the host will make no attempt to free the returned data structure when the plug-in is unloaded. Typically this will be the called multiple times by the host, once for each plug-in that the plug-in says it contains. 
+      </section>
+    </section>
+
+    <section>
+      <title>Identifying, Versioning and Defining an OFX Plug-in</title>
+
+      <para>A plug-in's description is bootstrapped by using the required
+      <function>OfxGetPlugin</function> function. This function returns an
+      <structname>OfxPlugin</structname> data structure which gives a basic
+      description of the plug-in.</para>
+
+      &ofxPluginStruct;
+    </section>
+
+    <section>
+      <title>Suites, Hosts and APIs</title>
+
+      <section>
+        <title>Function Suites</title>
+
+        <para>A function suite is simply a struct filled with function
+        pointers. Below is some code from the memory allocation suite found in
+        <filename>ofxMemory.h</filename>.</para>
+
+        <programlisting>
+#define kOfxMemorySuite "OfxMemorySuite"
+
+typedef struct OfxMemorySuiteV1 {
+  OfxStatus (*memoryAlloc)(void *handle, size_t nBytes, void **allocatedData);
+  OfxStatus (*memoryFree)(void *allocatedData);
+ } OfxMemorySuiteV1;
+</programlisting>
+
+        <para>The use is fairly obvious, you call functions through the
+        pointers in the struct. This has the effect of avoiding any symbolic
+        dependencies from the plug-in to the host. Note two other things about
+        this code listing. <itemizedlist>
+            <listitem>
+               the suite has a cstring name associated with it, 
+            </listitem>
+
+            <listitem>
+               the suite is versioned, via the "V1" suffix appended to the struct tag and typedef. 
+            </listitem>
+          </itemizedlist> The explicit naming and versioning of suites is how
+        a plug-in fetches one, by calling the <function>fetchSuite</function>
+        function in the <structname>OfxHost</structname> struct which is
+        passed to it during the boot strapping stage.</para>
+      </section>
+
+      &ofxHostStruct;
+    </section>
+
+    &ofxLoadingSequence;
+
+    <section>
+      <title>Errors, Status Codes and Exceptions</title>
+
+      <para>OFX has a standard set of unsigned integer status codes used to
+      indicate errors and general status. These are returned by most functions
+      in the host suites and by the plug ins' entry points. The error codes
+      returned by functions and actions are documented along side them.</para>
+
+      <para>It is an error to throw a C++ exception across the API, all
+      exceptions should be trapped on either side of the API and an
+      appropriate error code passed instead.</para>
+    </section>
+
+    <section>
+      <title>Packaging OFX Plug-ins</title>
+
+      <para>Where a host application chooses to search for OFX plug ins, what
+      binary format they are in and any directory hierarchy is entirely up to
+      it. However, it is strongly recommended that the following scheme be
+      followed.</para>
+
+      <section>
+        <title>Binary Types</title>
+
+        <para>Plug-ins should be distributed in the following formats,
+        depending on the host operating system.... <itemizedlist>
+            <listitem>
+               Microsoft Windows, as ".dll" dynamically linked libraries, 
+            </listitem>
+
+            <listitem>
+               Apple OSX, as Mach-O binary bundles, 
+            </listitem>
+
+            <listitem>
+               IRIX and LINUX, as ELF dynamic shared objects. 
+            </listitem>
+          </itemizedlist></para>
+      </section>
+
+      <section>
+        <title>Installation Directory Hierarchy</title>
+
+        <para>Each plug-in binary is distributed as a Mac OS X package style
+        directory hierarchy. Note that the there are two distinct meanings of
+        'bundle', one referring to a binary file format, the other to a
+        directory hierarchy used to distribute software. We are distributing
+        binaries in a bundle package, and in the case of OSX, the binary is a
+        binary bundle. All the binaries must end with
+        <literal>".ofx"</literal>, regardless of the host operating
+        system.</para>
+
+        <para>The directory hierarchy is as follows..... <itemizedlist>
+            <listitem>
+               NAME.ofx.bundle 
+
+              <itemizedlist>
+                <listitem>Contents <itemizedlist>
+                    <listitem>Info.plist</listitem>
+
+                    <listitem>Resources <itemizedlist>
+                        <listitem>NAME.xml</listitem>
+
+                        <listitem>PLUGIN_A.png</listitem>
+
+                        <listitem>PLUGIN_B.png</listitem>
+
+                        <listitem>...</listitem>
+
+                        <listitem>PLUGIN_N.png</listitem>
+                      </itemizedlist></listitem>
+
+                    <itemizedlist>
+                      <listitem>ARCHITECTURE_A <itemizedlist>
+                          <listitem>NAME.ofx</listitem>
+                        </itemizedlist></listitem>
+                    </itemizedlist>
+
+                    <itemizedlist>
+                      <listitem>ARCHITECTURE_B <itemizedlist>
+                          <listitem>NAME.ofx</listitem>
+                        </itemizedlist></listitem>
+                    </itemizedlist>
+
+                    <listitem>....</listitem>
+
+                    <listitem>ARCHITECTURE_N <itemizedlist>
+                        <listitem>NAME.ofx</listitem>
+                      </itemizedlist></listitem>
+                  </itemizedlist></listitem>
+              </itemizedlist>
+
+               
+            </listitem>
+          </itemizedlist> Where... <itemizedlist>
+            <listitem>
+               Info.plist is relevant for OSX only and needs to be filled in appropriately, 
+            </listitem>
+
+            <listitem>
+               NAME is the file name you want the installed plug-in to be identified by, 
+            </listitem>
+
+            <listitem>
+               PLUGIN.png - is the image to use as an icon for the plug-in in the binary which has a matching 
+
+              <structfield>pluginIdentifier</structfield>
+
+               field in the 
+
+              <structname>OfxPlugin</structname>
+
+               struct, 
+            </listitem>
+
+            <listitem>
+               ARCHITECTURE is the specific operating system architecture the plug-in was built for, these are currently... 
+
+              <itemizedlist>
+                <listitem>MacOS - for Apple Macintosh OS X (compiled 32
+                bit)</listitem>
+
+                <listitem>Win32 - for Microsoft Windows (compiled 32
+                bit)</listitem>
+
+                <listitem>IRIX - for SGI IRIX plug-ins (compiled 32
+                bit)</listitem>
+
+                <listitem>IRIX64 - for SGI IRIX plug-ins (compiled 64
+                bit)</listitem>
+
+                <listitem>Linux-x86 - for Linux on intel x86 CPUs (compiled 32
+                bit)</listitem>
+
+                <listitem>Linux-x86-64 - for Linux on intel x86 CPUs running
+                AMD's 64 bit extensions</listitem>
+              </itemizedlist>
+
+               
+            </listitem>
+          </itemizedlist> Note that not all the above architectures need be
+        supported, only at least one.</para>
+
+        <para>This structure is necessary on OS X, but it also gives a nice
+        skeleton to hang all other operating systems from in a single install,
+        as well as a clean place to put resources.</para>
+
+        <para>The <filename>Info.plist</filename> is specific to Apple and you
+        should consult the Apple developer's website for more details. It
+        should contain the following keys... <itemizedlist>
+            <listitem>
+               CFBundleExecutable - the name of the binary bundle in the MacOS directory 
+            </listitem>
+
+            <listitem>
+               CFBundlePackageType - to be 'BNDL' 
+            </listitem>
+
+            <listitem>
+               CFBundleInfoDictionaryVersion 
+            </listitem>
+
+            <listitem>
+               CFBundleVersion 
+            </listitem>
+
+            <listitem>
+               CFBundleDevelopmentRegion 
+            </listitem>
+          </itemizedlist></para>
+      </section>
+
+      <section id="ArchitectureInstallingLocation">
+        <title>Installation Location</title>
+
+        <para>Plug ins are searched for in a variety of locations, both
+        default and user specified. All such directories are examined for
+        plug-in bundles and sub directories are also recursively
+        examined.</para>
+
+        <para>A list of directories is supplied in the "OFX_PLUGIN_PATH"
+        environment variable, these are examined, first to last, for plug ins,
+        then the default location is examined.</para>
+
+        <para>On Microsoft Windows machines, the plug ins are searched for in,
+        <orderedlist>
+            <listitem>
+               the ';' separated directory list specified by the environment variable "OFX_PLUGIN_PATH" 
+            </listitem>
+
+            <listitem>
+               the directory "C:\Program Files\Common Files\OFX\Plugins" 
+            </listitem>
+          </orderedlist> On Apple OSX machines, the plug ins are searched for
+        in, <orderedlist>
+            <listitem>
+               the ';' separated directory list specified by the environment variable "OFX_PLUGIN_PATH" 
+            </listitem>
+
+            <listitem>
+               the directory "/Library/OFX/Plugins" 
+            </listitem>
+          </orderedlist> On UNIX, Linux and other UNIX like operating systems,
+        <orderedlist>
+            <listitem>
+               the ':' separated directory specified by the environment variable "OFX_PLUGIN_PATH" 
+            </listitem>
+
+            <listitem>
+               the directory "/usr/OFX/Plugins" 
+            </listitem>
+          </orderedlist></para>
+
+        <para>Any bundle or sub-directory name starting with the character '@'
+        is to be ignored. Such directories or bundles must be skipped.</para>
+
+        <para>Different versions of the same plug-in may be encountered in
+        multiple locations, in which case, only the greatest minor version of
+        each major version should be taken note of. For example: 3.2, 1.4 and
+        2.3 would be noted, but not 3.1, 1.3 or 2.0.</para>
+
+        <para>If two copies of a plug-in with the same major and minor version
+        are encountered, it can be assumed they are duplicates and all but the
+        first one ignored.</para>
+      </section>
+
+      <section>
+        <title>plug-in Icons</title>
+
+        <para>Some hosts may wish to display an icon associated with a plug-in
+        on their interfaces. Any such icon must be in the Portable Network
+        Graphics format (see http://www.libpng.org/) and must contain 32 bits
+        of colour, including an alpha channel. Ideally it should be at least
+        128x128 pixels.</para>
+
+        <para>Host applications should dynamically resize the icon to fit
+        their preferred icon size. The icon should not have it's aspect
+        changed, rather the host should fill with some appropriate colour any
+        blank areas due to aspect mis matches.</para>
+
+        <para>Ideally plug-in developers should not render the plug-in's name
+        into the icon, as this may be changed by the resource file, especially
+        for internationalisation purposes. Hosts should thus present the
+        plug-in's name next to the icon in some way.</para>
+
+        <para>The icon file must be named as the corresponding
+        <structfield>pluginIdentifier</structfield> field from the
+        <structname>OfxPlugin</structname>, post pended with '.png' and be
+        placed in the resources sub-directory.</para>
+      </section>
+
+      <section>
+        <title>Externally Specified Resources</title>
+
+        <para>Some plug-ins may supply an externally specified resource file.
+        Typically this is for tasks such as internationalising interfaces,
+        tweaking user interfaces for specific hosts and so on. These are XML
+        files and have DTD associated with the specific API, for example OFX
+        Image Effect DTD is found in <filename>ofx.dtd</filename>.</para>
+
+        <para>The xml resource file is installed in the
+        <filename>Resources</filename> sub directory of the bundle hierarchy.
+        It's name will be <filename>NAME.xml</filename>, where name is the
+        base name of the bundle folder and the effect binaries.</para>
+      </section>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Visual Effects Architectures</title>
+
+    <para>All applications that perform visual effects have certain basic
+    similarities, unfortunately they also have many differences, and OFX needs
+    to cope with them all. This chapter gives an overview of architectures and
+    the concepts behind them. Feel free to skip it if you have experience of
+    programming for a range of visual effects applications. The concepts are
+    expressed in OFX terminology and may be somewhat different to how other
+    systems express them</para>
+
+    <section>
+       
+
+      <title>Clips</title>
+
+       
+
+      <para>A <emphasis>clip</emphasis> simply a sequences of still images,
+      played back at some <emphasis>frame rate</emphasis> to give the illusion
+      of motion. Thank you Lumiere brothers. All applications that process
+      moving images use clips in one form or another. A clip is typically a
+      single set of images that are logically associated, for example they
+      consist of a single shot from a motion picture.</para>
+
+       bit depth components PAR 
+    </section>
+
+    <section>
+      <title>Images</title>
+
+      <para>An <emphasis>image</emphasis> is a 2D array of
+      <emphasis>pixels</emphasis>. A set of input images are processed by an
+      effect to produce an output image. bit depth components pixel aspect
+      ratio bounds data</para>
+    </section>
+
+    <section>
+      <title>Parameters</title>
+    </section>
+
+    <section>
+      <title>Time</title>
+    </section>
+
+    <section>
+      <title>Effects</title>
+    </section>
+
+    <section>
+      <title>Contexts</title>
+    </section>
+
+    <section id="NormalisedCoordinateSystem">
+      <title>Co-ordinate Systems</title>
+    </section>
+
+    <section>
+      <title>Regions of Definition and Regions of Interest</title>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>OFX Image Effect Plug-ins</title>
+
+    <para>An OFX image effect plug-in is one that uses the OFX Image Effect
+    API to implement a visual effect. To do that it needs</para>
+  </chapter>
+
+  <chapter>
+    <title>Parameters</title>
+  </chapter>
+</book>

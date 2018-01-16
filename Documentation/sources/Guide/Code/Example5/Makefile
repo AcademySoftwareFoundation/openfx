@@ -1,0 +1,3 @@
+NAME = circle
+
+include ../MakefileCommon

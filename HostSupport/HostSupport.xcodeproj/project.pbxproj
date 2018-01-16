@@ -172,28 +172,8 @@
 		1E0832E919A1EC4F00A819A5 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		1E0832EA19A1EC4F00A819A5 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		1E0832EB19A1EC4F00A819A5 /* TTD */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TTD; sourceTree = "<group>"; };
-		1E0832EE19A1ECA600A819A5 /* apiChanges_1_2_Chapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = apiChanges_1_2_Chapter.xml; sourceTree = "<group>"; };
-		1E0832EF19A1ECA600A819A5 /* clipPreferencesChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = clipPreferencesChapter.xml; sourceTree = "<group>"; };
-		1E0832F019A1ECA600A819A5 /* extractPropertyDefinitions.perl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = extractPropertyDefinitions.perl; sourceTree = "<group>"; };
-		1E0832F119A1ECA600A819A5 /* formating.pm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = formating.pm; sourceTree = "<group>"; };
-		1E0832F219A1ECA600A819A5 /* getSuiteReference.perl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = getSuiteReference.perl; sourceTree = "<group>"; };
-		1E0832F319A1ECA600A819A5 /* header.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = header.xml; sourceTree = "<group>"; };
-		1E0832F419A1ECA600A819A5 /* imageEffectActionsChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = imageEffectActionsChapter.xml; sourceTree = "<group>"; };
-		1E0832F519A1ECA600A819A5 /* imageEffectsAPIChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = imageEffectsAPIChapter.xml; sourceTree = "<group>"; };
-		1E0832F619A1ECA600A819A5 /* interactActionsChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = interactActionsChapter.xml; sourceTree = "<group>"; };
-		1E0832F719A1ECA600A819A5 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		1E0832F819A1ECA600A819A5 /* ofxHostStruct.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxHostStruct.xml; sourceTree = "<group>"; };
-		1E0832F919A1ECA600A819A5 /* ofxLoadingSequence.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxLoadingSequence.xml; sourceTree = "<group>"; };
-		1E0832FA19A1ECA600A819A5 /* ofxPackaging.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxPackaging.xml; sourceTree = "<group>"; };
-		1E0832FB19A1ECA600A819A5 /* ofxParameterChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxParameterChapter.xml; sourceTree = "<group>"; };
-		1E0832FC19A1ECA600A819A5 /* ofxPluginStruct.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxPluginStruct.xml; sourceTree = "<group>"; };
-		1E0832FD19A1ECA600A819A5 /* ofxProgrammingGuide.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxProgrammingGuide.xml; sourceTree = "<group>"; };
-		1E0832FE19A1ECA600A819A5 /* ofxProgrammingReference.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxProgrammingReference.xml; sourceTree = "<group>"; };
-		1E0832FF19A1ECA600A819A5 /* ofxPropertiesByObject.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxPropertiesByObject.xml; sourceTree = "<group>"; };
-		1E08330019A1ECA600A819A5 /* ofxStyle.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = ofxStyle.css; sourceTree = "<group>"; };
 		1E08330119A1ECA600A819A5 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		1E08330319A1ECA600A819A5 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html.documentation; path = index.html; sourceTree = "<group>"; };
-		1E08330519A1ECA600A819A5 /* statusCodesChapter.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = statusCodesChapter.xml; sourceTree = "<group>"; };
 		1E1A06981B7D0D0C00ED08EF /* ofxOld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxOld.h; sourceTree = "<group>"; };
 		1E31EC2E17F5CA44004AB554 /* ofxOpenGLRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxOpenGLRender.h; sourceTree = "<group>"; };
 		1E31EC2F17F5CA44004AB554 /* ofxParametricParam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxParametricParam.h; sourceTree = "<group>"; };
@@ -265,6 +245,52 @@
 		1E3CB8C1179935430032B538 /* xmltok.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xmltok.c; sourceTree = "<group>"; };
 		1E742FEA17992CF9007D295B /* libofxHost.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libofxHost.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		1EF4C7081B6D3C4700D6746A /* ofxDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxDialog.h; sourceTree = "<group>"; };
+		ACC09C6C200CAD170054AED3 /* index.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = index.rst; sourceTree = "<group>"; };
+		ACC09C6E200CAD170054AED3 /* conf.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = conf.py; sourceTree = "<group>"; };
+		ACC09C72200CAD170054AED3 /* ofxPluginStruct.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxPluginStruct.rst; sourceTree = "<group>"; };
+		ACC09C73200CAD170054AED3 /* ofxImageEffectContexts.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxImageEffectContexts.rst; sourceTree = "<group>"; };
+		ACC09C74200CAD170054AED3 /* index.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = index.rst; sourceTree = "<group>"; };
+		ACC09C76200CAD170054AED3 /* ofxParameter.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxParameter.rst; sourceTree = "<group>"; };
+		ACC09C77200CAD170054AED3 /* ofxInteractActions.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxInteractActions.rst; sourceTree = "<group>"; };
+		ACC09C78200CAD170054AED3 /* ofxProcessingArch.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxProcessingArch.rst; sourceTree = "<group>"; };
+		ACC09C7A200CAD170054AED3 /* ofxPackaging.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxPackaging.rst; sourceTree = "<group>"; };
+		ACC09C7B200CAD170054AED3 /* ofxImageEffectActions.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxImageEffectActions.rst; sourceTree = "<group>"; };
+		ACC09C7C200CAD170054AED3 /* ofxClipPreferences.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxClipPreferences.rst; sourceTree = "<group>"; };
+		ACC09C7D200CAD170054AED3 /* ofxStatusCodes.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxStatusCodes.rst; sourceTree = "<group>"; };
+		ACC09C80200CAD170054AED3 /* ofxStructure.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxStructure.rst; sourceTree = "<group>"; };
+		ACC09C81200CAD170054AED3 /* ofxCoordSystem.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxCoordSystem.rst; sourceTree = "<group>"; };
+		ACC09C83200CAD170054AED3 /* ofxThreadSafety.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxThreadSafety.rst; sourceTree = "<group>"; };
+		ACC09C86200CAD170054AED3 /* ofxPropertiesReference.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxPropertiesReference.rst; sourceTree = "<group>"; };
+		ACC09C88200CAD170054AED3 /* ofxImageClip.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxImageClip.rst; sourceTree = "<group>"; };
+		ACC09C8B200CAD170054AED3 /* ofxInteracts.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxInteracts.rst; sourceTree = "<group>"; };
+		ACC09C8C200CAD170054AED3 /* ofxPropertiesByObject.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxPropertiesByObject.rst; sourceTree = "<group>"; };
+		ACC09C8D200CAD170054AED3 /* ofxImageEffectAPI.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxImageEffectAPI.rst; sourceTree = "<group>"; };
+		ACC09C8E200CAD170054AED3 /* ofxLoadingSequence.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxLoadingSequence.rst; sourceTree = "<group>"; };
+		ACC09C8F200CAD170054AED3 /* apiChanges_1_2_Chapter.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = apiChanges_1_2_Chapter.rst; sourceTree = "<group>"; };
+		ACC09C91200CAD170054AED3 /* ofxCoreAPI.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxCoreAPI.rst; sourceTree = "<group>"; };
+		ACC09C93200CAD170054AED3 /* ofxHostStruct.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxHostStruct.rst; sourceTree = "<group>"; };
+		ACC09C94200CAD170054AED3 /* ofxRendering.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxRendering.rst; sourceTree = "<group>"; };
+		ACC09C96200CAD230054AED3 /* genPropertiesReference.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = genPropertiesReference.py; sourceTree = "<group>"; };
+		ACC09C98200CAF240054AED3 /* ofxParametricParamReference.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxParametricParamReference.rst; sourceTree = "<group>"; };
+		ACC09C99200CAF240054AED3 /* ofxProgressSuiteReference.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxProgressSuiteReference.rst; sourceTree = "<group>"; };
+		ACC09C9A200CAF240054AED3 /* ofxThreadingSuiteReference.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxThreadingSuiteReference.rst; sourceTree = "<group>"; };
+		ACC09C9B200CAF240054AED3 /* ofxMessageSuiteV2Reference.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxMessageSuiteV2Reference.rst; sourceTree = "<group>"; };
+		ACC09C9C200CAF240054AED3 /* ofxImageEffectSuiteReference.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxImageEffectSuiteReference.rst; sourceTree = "<group>"; };
+		ACC09C9D200CAF240054AED3 /* ofxOpenGLRenderSuiteReference.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxOpenGLRenderSuiteReference.rst; sourceTree = "<group>"; };
+		ACC09C9E200CAF240054AED3 /* ofxMessageSuiteV1Reference.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxMessageSuiteV1Reference.rst; sourceTree = "<group>"; };
+		ACC09C9F200CAF240054AED3 /* ofxPropertySuiteReference.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxPropertySuiteReference.rst; sourceTree = "<group>"; };
+		ACC09CA0200CAF240054AED3 /* ofxParametersSuiteReference.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxParametersSuiteReference.rst; sourceTree = "<group>"; };
+		ACC09CA1200CAF240054AED3 /* ofxInteractSuiteReference.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxInteractSuiteReference.rst; sourceTree = "<group>"; };
+		ACC09CA2200CAF240054AED3 /* ofxSuiteReference.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxSuiteReference.rst; sourceTree = "<group>"; };
+		ACC09CA3200CAF240054AED3 /* ofxTimeLineSuiteReference.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxTimeLineSuiteReference.rst; sourceTree = "<group>"; };
+		ACC09CA4200CAF240054AED3 /* ofxMemorySuiteReference.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxMemorySuiteReference.rst; sourceTree = "<group>"; };
+		ACC09CA6200D0F390054AED3 /* ofxExamples.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxExamples.rst; sourceTree = "<group>"; };
+		ACC09CA9200D0F390054AED3 /* ofxExample2_Invert.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxExample2_Invert.rst; sourceTree = "<group>"; };
+		ACC09CAA200D0F390054AED3 /* ofxExample3_Gain.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxExample3_Gain.rst; sourceTree = "<group>"; };
+		ACC09CAB200D0F390054AED3 /* ofxExample4_Saturation.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxExample4_Saturation.rst; sourceTree = "<group>"; };
+		ACC09CAF200D0F390054AED3 /* ofxExample1_Basics.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxExample1_Basics.rst; sourceTree = "<group>"; };
+		ACC09CB1200D0F390054AED3 /* ofxExample5_Circle.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = ofxExample5_Circle.rst; sourceTree = "<group>"; };
+		ACC09CB2200D0F390054AED3 /* index.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = index.rst; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -307,26 +333,8 @@
 			isa = PBXGroup;
 			children = (
 				1E08330119A1ECA600A819A5 /* README.txt */,
-				1E0832F719A1ECA600A819A5 /* Makefile */,
-				1E08330019A1ECA600A819A5 /* ofxStyle.css */,
-				1E0832EE19A1ECA600A819A5 /* apiChanges_1_2_Chapter.xml */,
-				1E0832EF19A1ECA600A819A5 /* clipPreferencesChapter.xml */,
-				1E0832F019A1ECA600A819A5 /* extractPropertyDefinitions.perl */,
-				1E0832F119A1ECA600A819A5 /* formating.pm */,
-				1E0832F219A1ECA600A819A5 /* getSuiteReference.perl */,
-				1E0832F319A1ECA600A819A5 /* header.xml */,
-				1E0832F419A1ECA600A819A5 /* imageEffectActionsChapter.xml */,
-				1E0832F519A1ECA600A819A5 /* imageEffectsAPIChapter.xml */,
-				1E0832F619A1ECA600A819A5 /* interactActionsChapter.xml */,
-				1E0832F819A1ECA600A819A5 /* ofxHostStruct.xml */,
-				1E0832F919A1ECA600A819A5 /* ofxLoadingSequence.xml */,
-				1E0832FA19A1ECA600A819A5 /* ofxPackaging.xml */,
-				1E0832FB19A1ECA600A819A5 /* ofxParameterChapter.xml */,
-				1E0832FC19A1ECA600A819A5 /* ofxPluginStruct.xml */,
-				1E0832FD19A1ECA600A819A5 /* ofxProgrammingGuide.xml */,
-				1E0832FE19A1ECA600A819A5 /* ofxProgrammingReference.xml */,
-				1E0832FF19A1ECA600A819A5 /* ofxPropertiesByObject.xml */,
-				1E08330519A1ECA600A819A5 /* statusCodesChapter.xml */,
+				ACC09C96200CAD230054AED3 /* genPropertiesReference.py */,
+				ACC09C62200CAD170054AED3 /* sources */,
 				1E08330219A1ECA600A819A5 /* sourceforge */,
 			);
 			name = Documentation;
@@ -476,6 +484,82 @@
 				1E3CB8AF179934420032B538 /* libexpat.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		ACC09C62200CAD170054AED3 /* sources */ = {
+			isa = PBXGroup;
+			children = (
+				ACC09C63200CAD170054AED3 /* Guide */,
+				ACC09C6C200CAD170054AED3 /* index.rst */,
+				ACC09C6E200CAD170054AED3 /* conf.py */,
+				ACC09C70200CAD170054AED3 /* Reference */,
+			);
+			path = sources;
+			sourceTree = "<group>";
+		};
+		ACC09C63200CAD170054AED3 /* Guide */ = {
+			isa = PBXGroup;
+			children = (
+				ACC09CB2200D0F390054AED3 /* index.rst */,
+				ACC09CAF200D0F390054AED3 /* ofxExample1_Basics.rst */,
+				ACC09CA9200D0F390054AED3 /* ofxExample2_Invert.rst */,
+				ACC09CAA200D0F390054AED3 /* ofxExample3_Gain.rst */,
+				ACC09CAB200D0F390054AED3 /* ofxExample4_Saturation.rst */,
+				ACC09CB1200D0F390054AED3 /* ofxExample5_Circle.rst */,
+				ACC09CA6200D0F390054AED3 /* ofxExamples.rst */,
+			);
+			path = Guide;
+			sourceTree = "<group>";
+		};
+		ACC09C70200CAD170054AED3 /* Reference */ = {
+			isa = PBXGroup;
+			children = (
+				ACC09C97200CAF240054AED3 /* suites */,
+				ACC09C74200CAD170054AED3 /* index.rst */,
+				ACC09C72200CAD170054AED3 /* ofxPluginStruct.rst */,
+				ACC09C93200CAD170054AED3 /* ofxHostStruct.rst */,
+				ACC09C80200CAD170054AED3 /* ofxStructure.rst */,
+				ACC09C91200CAD170054AED3 /* ofxCoreAPI.rst */,
+				ACC09C8D200CAD170054AED3 /* ofxImageEffectAPI.rst */,
+				ACC09C78200CAD170054AED3 /* ofxProcessingArch.rst */,
+				ACC09C73200CAD170054AED3 /* ofxImageEffectContexts.rst */,
+				ACC09C83200CAD170054AED3 /* ofxThreadSafety.rst */,
+				ACC09C81200CAD170054AED3 /* ofxCoordSystem.rst */,
+				ACC09C88200CAD170054AED3 /* ofxImageClip.rst */,
+				ACC09C76200CAD170054AED3 /* ofxParameter.rst */,
+				ACC09C94200CAD170054AED3 /* ofxRendering.rst */,
+				ACC09C8B200CAD170054AED3 /* ofxInteracts.rst */,
+				ACC09C7C200CAD170054AED3 /* ofxClipPreferences.rst */,
+				ACC09C7B200CAD170054AED3 /* ofxImageEffectActions.rst */,
+				ACC09C77200CAD170054AED3 /* ofxInteractActions.rst */,
+				ACC09C8C200CAD170054AED3 /* ofxPropertiesByObject.rst */,
+				ACC09C7A200CAD170054AED3 /* ofxPackaging.rst */,
+				ACC09C7D200CAD170054AED3 /* ofxStatusCodes.rst */,
+				ACC09C86200CAD170054AED3 /* ofxPropertiesReference.rst */,
+				ACC09C8E200CAD170054AED3 /* ofxLoadingSequence.rst */,
+				ACC09C8F200CAD170054AED3 /* apiChanges_1_2_Chapter.rst */,
+			);
+			path = Reference;
+			sourceTree = "<group>";
+		};
+		ACC09C97200CAF240054AED3 /* suites */ = {
+			isa = PBXGroup;
+			children = (
+				ACC09C98200CAF240054AED3 /* ofxParametricParamReference.rst */,
+				ACC09C99200CAF240054AED3 /* ofxProgressSuiteReference.rst */,
+				ACC09C9A200CAF240054AED3 /* ofxThreadingSuiteReference.rst */,
+				ACC09C9B200CAF240054AED3 /* ofxMessageSuiteV2Reference.rst */,
+				ACC09C9C200CAF240054AED3 /* ofxImageEffectSuiteReference.rst */,
+				ACC09C9D200CAF240054AED3 /* ofxOpenGLRenderSuiteReference.rst */,
+				ACC09C9E200CAF240054AED3 /* ofxMessageSuiteV1Reference.rst */,
+				ACC09C9F200CAF240054AED3 /* ofxPropertySuiteReference.rst */,
+				ACC09CA0200CAF240054AED3 /* ofxParametersSuiteReference.rst */,
+				ACC09CA1200CAF240054AED3 /* ofxInteractSuiteReference.rst */,
+				ACC09CA2200CAF240054AED3 /* ofxSuiteReference.rst */,
+				ACC09CA3200CAF240054AED3 /* ofxTimeLineSuiteReference.rst */,
+				ACC09CA4200CAF240054AED3 /* ofxMemorySuiteReference.rst */,
+			);
+			path = suites;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -1,0 +1,50 @@
+!MESSAGE making $(NAME)
+OFX_INC_DIR = /I../../../include
+OFX_PLUGIN_DIR = C:\Program Files\Common Files\OFX\Plugins
+
+DEBUG=1
+# uncomment this to get verbose messages from the plugins
+VERBOSE=/DVERBOSE
+
+!IF "$(DEBUG)" == "1"
+OPTIMISE = /Zi /Od /LDd
+LD_OPTIMISE = /DEBUG
+!ELSE
+OPTIMISE = /Zi /O2 /LD
+LD_OPTIMISE =
+!ENDIF
+
+OS_CXXFLAGS = /nologo /Oy- /EHsc /Fd$(NAME).pdb
+OS_LDFLAGS = /NOLOGO /DLL /MANIFEST $(LD_OPTIMISE)
+OS_BUNDLE_DIR = Win$(ABI)	# 32 or 64
+
+# set up flags
+CXXDEFINES=/DWIN32 # OFX includes need this, Windows only auto-defines _WIN32
+CXXFLAGS = $(OFX_INC_DIR) $(CXXDEFINES) $(OPTIMISE) $(OS_CXXFLAGS) $(VERBOSE)
+LDFLAGS = $(LD_OPTIMISE) $(OS_LDFLAGS)
+
+LINK=link
+
+build: $(NAME).ofx
+
+$(NAME).obj: $(NAME).cpp
+	$(CXX) $(CXXFLAGS) %s /c /Fo$@
+
+# make our ofx bundle
+$(NAME).ofx : $(NAME).obj
+	$(LINK) $(LDFLAGS) %s /OUT:$@
+	-md $@.bundle\Contents\$(OS_BUNDLE_DIR)
+	copy $@ $@.bundle\Contents\$(OS_BUNDLE_DIR)\$@
+
+# install it
+install : $(NAME).ofx
+	-md ..\built_plugins
+	xcopy /s /e /i /y $(NAME).ofx.bundle ..\built_plugins\$(NAME).ofx.bundle
+	xcopy /s /e /i /y $(NAME).ofx.bundle "$(OFX_PLUGIN_DIR)\$(NAME).ofx.bundle"
+
+# clean it
+clean :
+	-rd /S /Q $(NAME).ofx.bundle
+	-rd /S /Q "$(OFX_PLUGIN_DIR)\$(NAME).ofx.bundle"
+	-del $(NAME).ofx
+	-del $(NAME).obj $(NAME).pdb $(NAME).ofx.manifest $(NAME).pdb vc100.pdb

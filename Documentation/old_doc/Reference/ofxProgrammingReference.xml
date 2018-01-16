@@ -1,0 +1,2810 @@
+<book>
+  <bookinfo>
+    <title>The OFX Image Effect Plug-in API, 1.4, Programming Reference.</title>
+
+    <author>
+      <firstname>Bruno</firstname>
+      
+      <surname>Nicoletti</surname>
+    </author>
+
+    <copyright>
+      <year>2005-2015</year>
+
+      <holder>The Open Effects Association</holder>
+    </copyright>
+
+    <releaseinfo>Document version 1.4</releaseinfo>
+  </bookinfo>
+
+  <preface>
+    <title>Foreword</title>
+    <para>This is a mostly complete reference guide to the OFX image effect plugin architecture. It is a backwards compatible update to the 1.2 version of the API. The changes to the API are listed in an addendum.
+    </para>
+  </preface>
+  
+  <chapter><title>Structure of The OFX and the Image Effect API</title>
+    <section> <title>The Structure Of The Generic OFX API</title>
+      <para>
+	OFX is actually several things. At its base it is a generic plug-in architecture which can be used to implement a variety of
+	plug-in APIs. The first such API to be implemented on the core architecture is the OFX Image Effect Plug-in API.
+      </para>
+      
+      <para>
+	It is all specified using the 'C' programming language. C and C++ are the languages mainly used to write visual effects applications (the initial target for OFX plug-in APIs) and have a very wide adoption across most operating systems with many available compilers. By making the API C, rather than C++, you remove the whole set of problems around C++ symbol mangling between the host and plug-in.
+      </para>
+
+      <para>
+	APIs are defined in OFX by only a set of C header files and associated documentation. There are no binary libraries for a plug-in or host to link against.
+      </para>
+
+      <para>
+	Hosts rely on two symbols within a plug-in, all other communication is boot strapped from those two symbols. The plug-in has no symbolic dependancies from the host. This minimal symbolic dependancy allows for run-time determination of what features to provide over the API, making implementation much more flexible and less prone to backwards compatibility problems.
+      </para>
+      
+      <para>
+	Plug-ins, via the two exposed symbols, indicate the API they implement, the version of the API, their name, their version and their main entry point.
+      </para>
+
+      <para>
+	A host communicates with a plug-in via sending 'actions' to the plug-in's main entry function. Actions are C strings that indicate the specific operation to be carried out. They are associated with sets of properties, which allows the main entry function to behave as a generic function.
+      </para>
+
+      <para>
+	A plug-in communicates with a host by using sets of function pointers given it by the host. These sets of function pointers, known as 'suites', are named via a C string and a version number. They are returned on request from the host as pointers within a C struct.
+      </para>
+
+      <para>
+	Properties are typed value/name pairs that exist on the various OFX objects and are action argument values to the plug-in's main entry point. They are how a plug-in and host pass individual values back and forth to each other. The property suite, defined inside <filename class="headerfile">ofxProperty.h</filename> is used to do this.
+      </para>
+    </section>
+
+    <section>
+      <title>OFX APIs</title>
+      <para>
+	An OFX plug-in API is a named set of actions, properties and suites to perform some specific set of tasks. The first such API that has been defined on
+	the OFX core is the OFX Image Effect API. The set of actions, properties and suites that constitute the API makes up the major part of this document.
+      </para>
+      
+      <para>
+	Various suites and actions have been defined for the OFX image effect API, however many are actually quite generic and could be 
+	reused by other APIs. 
+	The property suite definitely has to be used by all other APIs, while the memory allocation suite, the parameter
+	suite and several others would propably be useful for all other APIs. For example the paramter suite could be re-used to specify user
+	visible parameters to the other APIs.
+      </para>
+      
+      <para>
+	Several types are common to all OFX APIs, and as such are defined in <filename class="headerfile">ofxCore.h</filename>. Most objects passed back to
+	a plug-in are generally specified by blind data handles, for example the <code>OfxPropertySetHandle</code>. This allows for strong typing on functions
+	but allows the implementation of the object to be hidden from the plug-in.
+	<itemizedlist>
+	  <listitem>
+	    <emphasis>OfxStatus</emphasis> - used to define a set of status codes indicating the sucess or failure of an action or suite function,
+	  </listitem>
+	  <listitem>
+	    <emphasis>OfxPropertySetHandle</emphasis> - a blind handle to a set of properties on an object or action,
+	  </listitem>
+	  <listitem>
+	    <emphasis>OfxHost</emphasis> - a C struct that is used by a plug-in to get access to suites from a host and properties about the host,
+	  </listitem>
+	  <listitem>
+	    <emphasis>OfxPluginEntryPoint</emphasis> - a typedef for functions used as main entry points for a plug-in (and several other objects),
+	  </listitem>
+	  <listitem>
+	    <emphasis>OfxPlugin</emphasis> - a C struct that a plug-in fills in to describe itself to a host.
+	  </listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	Several general assumptions have been made about how hosts and plug-ins communicate, which specific APIs <emphasis>are</emphasis> allowed to break.
+	The main is the distinction between...
+	<itemizedlist>
+	  <listitem>
+	    <emphasis>descriptors</emphasis> - which hosts and plug-ins use to define the general behaviour of an object, e.g. the object used to specify what bit depths an Image Effect Plug-in is willing to accept,
+	  </listitem>
+	  <listitem>
+	    <emphasis>instances</emphasis> - which hosts and plug-ins use to control the behaviour of a specific 'live' object.
+	  </listitem>
+	</itemizedlist>
+	In most APIs descriptors are typically passed from a host to a plug-in during the <link linkEnd="kOfxActionDescribe">kOfxActionDescribe</link> action, whilst all other actions are passed an instance, e.g: the object passed to the <link linkEnd="kOfxActionCreateInstance">kOfxActionCreateInstance</link> action.
+      </para>
+      
+    </section>
+
+    <section>
+      <title>The OFX Image Effect API.</title>
+      <para>
+	The OFX Image Effect Plug-in API is designed for image effect plug-ins for 2D visual effects. This includes such host applications as compositors,
+	editors, rotoscoping tools and colour grading sytems.
+      </para>
+      
+      <para>
+	At heart the image effect API allows a host to send a plug-in a set of images, state the value of a set of parameters and get a resulting image back. 
+	However how it does this is somewhat complicated, as the plug-in and host have to negotiate what kind of images are handled, how they
+	can be processed and much more.
+      </para>
+
+    </section>
+  </chapter>
+  
+  <chapter>
+    <title>The Generic Core API</title>
+    <section>
+      This chapter describes how plug-ins are distributed and the core API for loading and identifying image effect plug-ins, and the methods of communications between plug-in and host.
+    </section>
+    
+    &ofxPackaging;
+
+
+    <section id="Core OFX include files">
+      <title>OFX Include Files</title>
+      <para>
+	The 'C' include files that define an OFX API are all that are needed by a plug-in or host to implement the API. Most include files define a set of independant 'suites' which are used by a plug-in to communicate with a host application. 
+      </para>
+      
+      <para>
+	There are two include files that are used with nearly every derived API. These are...
+	<itemizedlist>
+	  <listitem><filename class="headerfile">ofxCore.h</filename> is used to define the basic communication mechanisms between a host and a plug-in. This includes the way in which a plug-in is defined to a host and how to bootstrap the two way communications. It also has several other basic action and property definitions.
+	  </listitem>
+	  <listitem><filename class="headerfile">ofxProperty.h</filename> specifies the property suite, which is how a plug-in gets and sets values on various objects in a host application.
+	  </listitem>
+	</itemizedlist>
+      </para>
+    </section>
+
+    <section><title>Identifying and Loading Plug-ins</title>
+      <para>Plug-ins must implement two exported functions for a host to identify the plug-ins and to initiate the boot strapping of communication between the two. These functions are...
+	<itemizedlist>
+	  <listitem><code>int OfxGetNumberOfPlugins(void)</code> - identifies how many plug-ins are implemented in the file,</listitem>
+	  <listitem><code>OfxPlugin *OfxGetPlugin(int N)</code> - returns a structure identifying the Nth plug-in in the file.</listitem>
+	</itemizedlist>
+      </para>
+      
+      <section id="OfxGetNumberOfPlugins"><title>OfxGetNumberOfPlugins</title>
+	<blockquote><programlisting>
+#include "ofxCore.h"
+OfxExport int OfxGetNumberOfPlugins(void); </programlisting></blockquote>
+	<para>This function returns the number of
+	  plug-ins contained in the binary. It is the very first function called
+	  by the host after the binary has been loaded.</para>
+	
+	<para>This function <emphasis>must</emphasis> be exported by the
+	  binary that contains OFX plug-ins. The
+	  <structname>OfxExport</structname> defined in
+	  <filename class="headerfile">ofxCore.h</filename> is used as an export declaration for
+	  those compilers that require it.</para>
+      </section>
+      
+      <section id="OfxGetPlugin"><title>OfxGetPlugin</title>
+	<blockquote><programlisting>
+#include "ofxCore.h"
+OfxExport OfxPlugin *OfxGetPlugin(int nth); </programlisting></blockquote>
+	
+        <para>This function returns a pointer to the <varname>nth</varname>
+	  <structname>OfxPlugin</structname> struct in the binary.
+	  <varname>nth</varname> is between 0 and the number returned by
+	  <function>OfxGetNumberOfPlugins</function>, minus one. The returned structure
+	  defines the plug-in to the host.</para>
+	
+        &preconditions;
+        <para>
+          <itemizedlist>
+            <listitem> <function>OfxGetNumberOfPlugins</function> has been previously called, </listitem>
+            <listitem> <varname>nth</varname> is between 0 and the value returned by <function>OfxGetNumberOfPlugins</function>, minus one.
+            </listitem>
+          </itemizedlist>
+        </para>
+	
+        &postconditions;
+        <para>
+          <itemizedlist>
+            <listitem> The returned pointer and pointers in the struct point to valid data whilst the binary is loaded, </listitem>
+            <listitem> The returned pointer and pointers in the struct do not need to be freed in any way by the host. </listitem>
+          </itemizedlist>
+        </para>
+      </section>
+      &ofxPluginStruct;
+    </section>
+        
+    &ofxHostStruct;
+    
+    <section id="mainEntryPoint"><title id="OfxPluginEntryPoint">The Plug-in Main Entry Point And Actions</title>
+      <para>Actions are how a host communicates with a plug-in. They are in effect generic function calls. Actions are issued via a plug-in's <function>mainEntry</function> function pointer found in its <code>OfxPlugin</code> struct. The function signature for the main entry point is...  </para>
+      <blockquote><programlisting>
+#include "ofxCore.h"
+typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs); </programlisting></blockquote>
+      <para> Where,
+	<itemizedlist>
+	  <listitem><code>action</code> is a C string indicating the action to be taken,</listitem>
+	  <listitem><code>handle</code> is a handle to an object appropriate to that action, cast to <code>void *</code>,</listitem>
+	  <listitem><code>inArgs</code> are a set of properties used as arguments to that action,</listitem>
+	  <listitem><code>outArgs</code> are a set of properties the plug-in should modify during the action.</listitem>
+	</itemizedlist>
+      </para>
+      <para>
+	The <code>OfxStatus</code> value returned is dependant upon the action being called, however the value <code>kOfxStatReplyDefault</code> is returned if the plug-in does not trap the action.
+      </para>
+      <para>The exact set of actions passed to a plug-in's entry point are dependent upon the API the plug-in implements. However, there exists a core set of generic actions that most APIs would use.</para>
+    </section>
+    
+    <section><title>Suites</title>
+      <para>Suites are how a plug-in communicates back to the host. A suite is simply a set of function pointers in a C struct. The set of suites a host needs to implement is defined by the API being implemented. A suite is fetched from a host via the <code>OfxHost::fetchSuite</code> function. This returns a pointer (cast to <code>void *</code>) to the named and versioned set of functions. By using this suite fetching mechanism, there is no symbolic dependancy from the plug-in to the host, and APIs can be easily expandable without causing backwards compatability issues.
+      </para>
+      <para>If the host does not implement a requested suite, or the requested version of that suite, then it should return NULL.
+      </para>
+    </section>
+    
+    &ofxLoadingSequence;
+
+    
+    <section><title>Who Owns The Data?</title>
+      <para>
+	Objects are passed back and forth across the API, and in general, it is the thing that passes the data that is
+	responsible for destroying it. For example the property set handle in the <link linkend="OfxHostStruct"><code>OfxHost struct</code></link>
+	is managed by the host.
+      </para>
+
+      <para>
+	There are a few explicit exceptions to this. For example, when an image effect asks for an image from a host
+	it is passed back a property set handle which represents the image. That handle needs to later be disposed of
+	by an effect, by an explicit function call back to the host. These few exceptions are documented with the suite
+	functions that access the object.
+      </para>
+
+      <section id="ArchitectureStrings"><title>Strings</title>
+	<para>
+	  A special case is made for strings. Strings are considered to be of two types, <emphasis>value</emphasis> strings and 
+	  <emphasis>label</emphasis> strings. 
+	  A label string is any string used by OFX to name a property or type. A value string is generally a string value of a property.
+	</para>
+
+	<para>
+	  More specifically, a label string is a string passed across the API as one of the following...
+	  <itemizedlist>
+	    <listitem> a property label (ie: the 'char *property' argument in the property suites)</listitem>
+	    <listitem> a string argument to a suite function which must be one of a set of predefined set of values
+	      eg: <code>paramType</code> argument to <link linkend="OfxParameterSuiteV1_paramDefine">OfxParameterSuiteV1::paramDefine</link>, 
+	      but not the <code>name</code> argument)</listitem>
+	  </itemizedlist>
+	</para>
+	
+	<para>
+	  Label strings are considered to be static constant strings. When passed across the API the host/plug-in receiving the string neither needs to duplicate nor free the string, it can simply retain the orginal pointer passed over and use that in future, as it will not change. A host must be aware that when it unloads a plug-in all such pointers will be invalid, and be prepared to cope with such a situation.
+	</para>
+	
+	<para>
+	  A value string is a string passed across the API as one of the following...
+	  <itemizedlist>
+	    <listitem>all value arguments to any of the property suite calls,</listitem>
+	    <listitem>any other <code>char *</code> argument to any other function.</listitem>
+	  </itemizedlist>
+	</para>
+
+	<para>
+	  Value strings have no assumptions made about them. When one is passed across the
+	  API, the thing that passed the string retains ownership of it. The thing getting the 
+	  string is not responsible for freeing that string. The scope of the string's validity
+	  is until the next OFX API function is called. For example, within a plugin
+	</para>
+
+	<blockquote><programlisting>
+   // pointer to store the returned value of the host name
+   char *returnedHostName;
+
+   // get the host name
+   propSuite->propGetString(hostHandle, kOfxPropName, 0, &amp;returnedHostName);
+
+   // now make a copy of that before the next API call, as it may not be valid after it
+   char *hostName = strdup(returnedHostName);
+
+   paramSuite->getParamValue(instance, "myParam", &amp;value);
+	</programlisting></blockquote>
+      </section>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>The Image Effect API</title>
+    
+    <section> <title>Introduction</title>
+      <para>
+	In general, image effects plug-ins take zero or more input clips and produce an output clip.
+	So far so simple, however there are many devils hiding in the details. Several supporting suites 
+	are required from the host and the plug-in needs to respond to a range of actions to work correctly. 
+	How an effect is intended to be used also complicates the issue, forcing sets of behaviours depending on the context of an effect.
+      </para>
+
+      <para>
+	Plug-ins that implement the image effect API set the <code>pluginApi</code> member of the <code>OfxPlugin struct</code> 
+	returned by the global <code>OfxGetPlugin</code> to be <literal>kOfxImageEffectPluginApi</literal>.
+	The current version of the API is 1. This is enough to label the plug-in as an image effect plug-in.
+      </para>
+    </section>
+
+    <section><title>Image Effect API Header Files</title>
+      <para>
+	The header files used to define the OFX Image Effect API are...
+	<itemizedlist>
+	  <listitem>
+	    <filename class="headerfile">ofxCore.h</filename>
+	    - provides the core definitions of the general OFX architecture that allow the bootstrapping of specific APIs, as well as several core actions,
+	  </listitem>
+	  <listitem>
+	    <filename class="headerfile">ofxProperty.h</filename>
+	    - provides generic property fetching suite used to get and set values about objects in the API, 
+	  </listitem>
+	  <listitem>
+	    <filename class="headerfile">ofxParam.h</filename>
+	    - provides the suite for defining user visible parameters to an effect, 
+	  </listitem>
+	  <listitem>
+	    <filename class="headerfile">ofxMultiThread.h</filename>
+	    - provides the suite for basic multi-threading capabilities, 
+	  </listitem>
+	  <listitem>
+	    <filename class="headerfile">ofxInteract.h</filename>
+	    - provides the suite that allows a plug-in to use OpenGL to draw their own interactive GUI tools, 
+	  </listitem>
+	  <listitem>
+	    <filename class="headerfile">ofxKeySyms.h</filename>
+	    - provides key symbols used by 'Interacts' to represent keyboard events, 
+	  </listitem>
+	  <listitem>
+	    <filename class="headerfile">ofxMemory.h</filename>
+	    - provides a simple memory allocation suite, 
+	  </listitem>
+	  <listitem>
+	    <filename class="headerfile">ofxMessage.h</filename>
+	    - provides a simple messaging suite to communicate with an end user, 
+	  </listitem>
+	  <listitem>
+	    <filename class="headerfile">ofxImageEffect.h</filename>
+	    - defines a suite and set of actions that draws all the above together to create an visual effect plug-in. 
+	  </listitem>
+	</itemizedlist>
+	These contain the suite definitions, property definitions and action definitions that are used by the API.
+      </para>
+    </section>
+
+    <section>
+      <title>Actions Used by the API</title>
+      <para>
+	All image effect plug-ins have a main entry point. This is used to trap all the standard actions used to drive the plug-in. They can also have other optional
+	entry points that allow the plug-in to create custom user interface widgets. These <emphasis>interact</emphasis> entry points are specified during the 
+	two description actions.
+      </para>
+      
+      <para>
+	The following actions can be passed to a plug-in's main entry point...
+	<itemizedlist>
+	  <listitem>
+	    <link linkend="kOfxActionLoad">The Generic Load Action</link> called just after a plug-in is first loaded,
+	    </listitem>
+	  <listitem>
+	    <link linkend="kOfxActionUnload">The Generic Unload Action</link> called just before a plug-in is unloaded,
+	  </listitem>
+      	  <listitem>
+	    <link linkend="kOfxActionDescribe">The Generic Describe Action</link> called to describe a plug-in's behaviour to a host,
+	    </listitem>
+	  <listitem>
+	    <link linkend="kOfxActionCreateInstance">The Generic Create Instance Action</link> called just after an instance is created,
+	    </listitem>
+	  <listitem>
+	    <link linkend="kOfxActionDestroyInstance">The Generic Destroy Instance Action</link> called just before an instance is destroyed,
+	    </listitem>
+	  <listitem>
+	    <link linkend="kOfxActionBeginInstanceChanged">The Generic Begin/End Instance Changed Actions</link>, a pair of actions used to bracket a set of Instance Changed actions,
+	    </listitem>
+	  <listitem>
+	    <link linkend="kOfxActionInstanceChanged">The Generic Instance Changed Action</link> an action used to indicate that a value has changed in a plug-in instance,
+	    </listitem>
+
+	  <listitem>
+	    <link linkend="kOfxActionPurgeCaches">The Generic Purge Caches Action</link> called to have the plug-in delete any temporary private data caches it may have,
+	    </listitem>
+
+	  <listitem>
+	    <link linkend="kOfxActionSyncPrivateData">The Sync Private Data Action</link> called to have the plug-in sync any private state data back to its data set,
+	    </listitem>
+
+	  <listitem>
+	    <link linkend="kOfxActionBeginInstanceEdit">The Generic Begin/End Instance Edit Actions</link> a pair of calls that are used to bracket the fact that a user interface has been opened on an instance and it is being edited,
+	    </listitem>
+
+	  <listitem>
+	    <link linkend="kOfxImageEffectActionBeginSequenceRender">The Begin Sequence Render Action</link> where a plug-in is told that it is about to render a sequence of images,
+	  </listitem>
+	  
+	  <listitem>
+	    <link linkend="kOfxImageEffectActionRender">The Render Action</link> where a plug-in is told that it is to render an output image,
+	  </listitem>
+	  
+	  <listitem>
+	    <link linkend="kOfxImageEffectActionEndSequenceRender">The End Sequence Render Action</link> where a plug-in is told it has finished rendering a sequence of images,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxImageEffectActionDescribeInContext">The Describe In Context Action</link> used to have a plug-in describe itself in a specific context,
+	    </listitem>
+
+	  <listitem>
+	    <link linkend="kOfxImageEffectActionGetRegionOfDefinition">The Get Region of Definition Action</link> where an instance gets to state how big an image it can create,
+	  </listitem>
+	  
+	  <listitem>
+	    <link linkend="kOfxImageEffectActionGetRegionsOfInterest">The Get Regions Of Interest Action</link> where an instance gets to state how much of its input images it needs to create a give output image,
+	  </listitem>
+	  
+	  <listitem>
+	    <link linkend="kOfxImageEffectActionGetFramesNeeded">The Get Frames Needed Action</link> where an instance gets to state how many frames of input it needs on a given clip to generate a single frame of output,
+	  </listitem>
+	  
+	  <listitem>
+	    <link linkend="kOfxImageEffectActionIsIdentity">The Is Identity Action</link> where an instance gets to state that its current state does not affect its inputs, so that the output can be directly copied from an input clip,
+	  </listitem>
+	  
+	  <listitem>
+	    <link linkend="kOfxImageEffectActionGetClipPreferences">The Get Clip Preferences Action</link> where an instance gets to state what data and pixel types it wants on its inputs and will generate on its outputs,
+	  </listitem>
+	  
+	  <listitem>
+	    <link linkend="kOfxImageEffectActionGetTimeDomain">The Get Time Domain Action</link> where a plug-in gets to state how many frames of data it can generate.
+	  </listitem>
+	</itemizedlist>
+      </para>
+
+    </section>
+
+    <section><title>Main Objects Used by the API</title>
+      <para>
+	The image effect API uses a variety of different objects. Some are defined via blind data handles, others via property sets, and some by a combination of the two. These objects are...
+	<itemizedlist>
+	  <listitem>
+	    <emphasis>Host Descriptor</emphasis> - a descriptor object used by a host to describe its behaviour to a plug-in,
+	  </listitem>
+	  <listitem>
+	    <emphasis>Image Effect Descriptor</emphasis> - a descriptor object used by a plug-in to describe its behaviour to a host,
+	  </listitem>
+	  <listitem>
+	    <emphasis>Image Effect Instance</emphasis> - an instance object maintaining state about an image effect,
+	  </listitem>
+	  <listitem>
+	    <emphasis>Clip Descriptor</emphasis> - a descriptor object for a sequence of images used as input or output a plug-in may use,
+	  </listitem>
+	  <listitem>
+	    <emphasis>Clip Instance</emphasis> - a instance object maintaining state about a sequence of images used as input or output to an effect instance,
+	  </listitem>
+	  <listitem>
+	    <emphasis>Parameter Descriptor</emphasis> - a descriptor object used to specify a user visible parameter in an effect descriptor,
+	  </listitem>
+	  <listitem>
+	    <emphasis>Parameter Instance</emphasis> - an instance object that maintains state about a user visible parameter in an effect instance,
+	  </listitem>
+	  <listitem>
+	    <emphasis>Parameter Set Descriptor</emphasis> - a descriptor object used to specify a set of user visible parameters in an effect descriptor,
+	  </listitem>
+	  <listitem>
+	    <emphasis>Parameter Set Instance</emphasis> - an instance object that maintains state about a set of user visible parameters in an effect instance,
+	  </listitem>
+	  <listitem>
+	    <emphasis>Image Instance</emphasis> - a instance object that maintains state about a 2D image being passed to an effect instance.
+	  </listitem>
+	  <listitem>
+	    <emphasis>Interact Descriptor</emphasis> - which describes a custom openGL user interface, for example an overlay over the inputs to an image effect. These have
+	    a separate entry point to an image effect.
+	  </listitem>
+	  <listitem>
+	    <emphasis>Interact Instance</emphasis> - which holds the state on a custom openGL user interface. These have a separate entry point to an image effect.
+	  </listitem>
+	</itemizedlist>
+      </para>
+      
+      <section> <title>Host Descriptors</title>
+	<para>
+	  The host descriptor is represented by the properties found on the <code>host</code> property set handle 
+	  in the <link linkend="OfxHostStruct"><code>OfxHost struct</code></link>. The complete set of read only
+	  properties are found in the section <link linkend="ImageEffectHostProperties">Properties on the Image Effect Host</link>.
+	</para>
+	
+	<para>
+	  These sets of properties are there to describe the capabilities of the host to a plug-in, thus giving a plug-in the ability to modify
+	  its behaviour depending on the capabilities of the host. 
+	</para>
+	
+	<para>
+	  A host descriptor is valid while a plug-in is loaded.
+	</para>
+      </section>
+      
+      <section> <title>Effects</title>
+	<para>
+	  An effect is an object in the OFX Image Effect API that represents an image processing plug-in. It has associated with it
+	  a set of properties, a set of image clips and a set of parameters. These component objects of an effect are defined and used by an effect
+	  to do whatever processing it needs to. A handle to an image effect (instance or descriptor) is passed into a plug-in's  
+	  <link linkend="mainEntryPoint">main entry point</link> <code>handle</code> argument. 
+	</para>
+	
+	<para>
+	  The functions that directly manipulate an image effect handle are specified in the <link linkend="OfxImageEffectSuiteV1">image effect suite</link>
+	  found in the header file <filename class="headerfile">ofxImageEffect.h</filename>. 
+	</para>
+	
+	<section> <title>Effect Descriptors</title>
+	  <para>
+	    An effect descriptor is an object of type <code>OfxImageEffectHandle</code> passed into an effect's <link linkend="mainEntryPoint">main 
+	      entry point</link> <code>handle</code> argument. The two actions
+	    it is passed to are...
+	    <itemizedlist>
+	      <listitem><link linkEnd="kOfxActionDescribe">kOfxActionDescribe</link></listitem>
+	      <listitem><link linkEnd="kOfxImageEffectActionDescribeInContext">kOfxImageEffectActionDescribeInContext</link></listitem>
+	    </itemizedlist>
+	  </para>
+	  
+	  <para>
+	    A effect descriptor does not refer to a 'live' effect, it is a handle which the effect uses to describe itself back to the host. It does
+	    this by setting a variety of properties on an associated property handle, and specifying a variety of objects (such as clips and parameters) using
+	    functions in the available suites.
+	  </para>
+	  
+	  <para>
+	    Once described, a host should cache away the description in some manner so that when an instance is made, it simply looks at the description
+	    and creates the necessary objects needed by that instance. This stops the overhead of having every instance be forced to describe itself over
+	    the API.
+	  </para>
+	  
+	  <para>
+	    Effect descriptors are only valid in a effect for the duration of the instance they were passed into.
+	  </para>
+	  
+	  <para>
+	    The properties on an effect descriptor can be found in the section <link linkend="EffectDescriptorProperties">Properties on an Effect Descriptor</link>.
+	  </para>
+	</section>
+	
+	<section> <title>Effect Instances</title>
+	  <para>
+	    A effect instance is an object of type <code>OfxImageEffectHandle</code> passed into an effect's 
+	    <link linkend="mainEntryPoint">main entry point</link> <code>handle</code> argument. The <code>handle</code> 
+	    argument should be statically cast to this type. It is passed into all actions of an image effect that a
+	    descriptor is not passed into.
+	  </para>
+	  
+	  <para>
+	    The effect instance represents a 'live' instance of an effect. Because an effect has previously been described, via a effect descriptor, 
+	    an instance does not have to respecify the parameters, clips and properties that it needs. These means, that when an instance is passed 
+	    to an effect, all the objects previously described will have been created.
+	  </para>
+	  
+	  <para>
+	    Generally multiple instances of an effect can be in existence at the same time, each with a different set of parameters, clips and properties.
+	  </para>
+	  
+	  <para>
+	    Effect instances are valid between the calls to <link linkend="kOfxActionCreateInstance">kOfxActionCreateInstance</link> and
+	    <link linkend="kOfxActionDestroyInstance">kOfxActionDestroyInstance</link>, for which it is passed as the <code>handle</code> argument.
+	  </para>
+	  
+	  <para>
+	    The properties on an effect instance can be found in the section <link linkend="EffectInstanceProperties">Properties on an Effect Instance</link>.
+	  </para>
+	</section>
+      </section>
+      
+      <section> <title>Clips</title>
+	<para>
+	  A clip is a sequential set of images attached to an effect. They are used to fetch images from a host and to specify how a plug-in wishes
+	  to manage the sequence.
+	</para>
+	
+	<section> <title>Clip Descriptors</title>
+	  <para>
+	    Clip descriptors are returned by the <link linkend="OfxImageEffectSuiteV1_clipDefine"><code>OfxImageEffectSuiteV1::clipDefine</code></link>
+	    function. They are used during the <link linkEnd="kOfxImageEffectActionDescribeInContext">kOfxActionDescribe</link> action by an effect
+	    to indicate the presence of an input or output clip and how that clip behaves.
+	  </para>
+	  
+	  <para>
+	    A clip descriptor is only valid for the duration of the action it was created in.
+	  </para>
+	  
+	  <para>
+	    The properties on a clip descriptor can be found in the section <link linkend="ClipDescriptorProperties">Properties on a Clip Descriptor</link>.
+	  </para>
+	</section>
+	
+	<section> <title>Clip Instances</title>
+	  <para>
+	    Clip instances are returned by the <link linkend="OfxImageEffectSuiteV1_clipGetHandle"><code>OfxImageEffectSuiteV1::clipGetHandle</code></link>
+	    function. They are are used to access images and and manipulate properties on an effect instance's input and output clips. A variety of functions
+	    in the <link linkend="OfxImageEffectSuiteV1"><code>OfxImageEffectSuiteV1</code></link> are used to manipulate them.
+	  </para>
+	  
+	  <para>
+	    A clip instance is valid while the related effect instance is valid.
+	  </para>
+	  
+	  <para>
+	    The properties on a clip instance can be found in the section <link linkend="ClipInstanceProperties">Properties on a Clip Instance</link>.
+	  </para>
+	</section>
+      </section>
+      
+      <section> <title>Parameters</title>
+	<para>
+	  Parameters are user visible objects that an effect uses to specify its state, for example a floating point value used to control the
+	  blur size in a blur effect. Parameters (both descriptors and instances) are represented as blind data handles of type <code>OfxParamHandle</code>.
+	</para>
+	
+	<para>
+	  Parameter sets are the collection of parameters that an effect has associated with it. They are represented by the type <code>OfxParamSetHandle</code>.
+	  The contents of an effect's parameter set are defined during the 
+	  <link linkend="kOfxImageEffectActionDescribeInContext"><code>kOfxImageEffectActionDescribeInContext</code></link> action. Parameters cannot be
+	  dynamically added to, or deleted from an effect instance.
+	</para>
+	
+	<para>
+	  Parameters can be of a wide range of types, each of which have their own unique capabilities and property sets. For example a colour parameter
+	  differs from a boolean parameter.
+	</para>
+	
+	<para>
+	  Parameters and parameter sets are manipulated via the calls and properties in the <link linkend="OfxParameterSuiteV1">parameter suite</link>
+	  specified in <filename class="headerfile">ofxParam.h</filename> header file. The properties on parameter instances and descriptors can
+	  be found in the section <link linkend="ParameterProperties">Properties on Parameter Descriptors and Instances</link>.
+	</para>
+	
+	<section> <title>Parameter Set Descriptors</title>
+	  <para>
+	    Parameter set descriptors are returned by the <link linkend="OfxImageEffectSuiteV1_getParamSet"><code>OfxImageEffectSuiteV1::getParamSet</code></link>
+	    function. This returns a handle associated with an image effect descriptor which can be used by the parameter suite routines to create and describe
+	    parameters to a host.
+	  </para>
+	  
+	  <para>
+	    A parameter set descriptor is valid for the duration of the 
+	    <link linkend="kOfxImageEffectActionDescribeInContext"><code>kOfxImageEffectActionDescribeInContext</code></link> 
+	    action in which it is fetched.
+	  </para>
+	</section>
+	
+	<section> <title>Parameter Descriptors</title>
+	  <para>
+	    Parameter descriptors are returned by the <link linkend="OfxParameterSuiteV1_paramDefine"><code>OfxParameterSuiteV1::paramDefine</code></link>
+	    function. They are used to define the existence of a parameter to the host, and to set the various attributes of that parameter. Later,
+	    when an effect instance is created, an instance of the described parameter will also be created.
+	  </para>
+	  
+	  <para>
+	    A parameter descriptor is valid for the duration of the 
+	    <link linkend="kOfxImageEffectActionDescribeInContext"><code>kOfxImageEffectActionDescribeInContext</code></link> 
+	    action in which it is created.
+	  </para>
+	</section>
+	
+	<section> <title>Parameter Set Instances</title>
+	  <para>
+	    Parameter set instances are returned by the <link linkend="OfxImageEffectSuiteV1_getParamSet"><code>OfxImageEffectSuiteV1::getParamSet</code></link>
+	    function. This returns a handle associated with an image effect instance which can be used by the parameter suite routines to fetch and describe
+	    parameters to a host.
+	  </para>
+	  
+	  <para>
+	    A parameter set handle instance is valid while the associated effect instance remains valid.
+	  </para>
+	</section>
+	
+	<section> <title>Parameter Instances</title>
+	  <para>
+	    Parameter instances are returned by the <link linkend="OfxParameterSuiteV1_paramGetHandle"><code>OfxParameterSuiteV1::paramGetHandle</code></link>
+	    function. This function fetches a previously described parameter back from the parameter set. The handle can then be passed back to the
+	    various functions in the <link linkend="OfxParameterSuiteV1"><code>OfxParameterSuite1V</code></link> to manipulate it.
+	  </para>
+	  
+	  <para>
+	    A parameter instance handle remains valid while the associated effect instance remains valid.
+	  </para>
+	  
+	</section>
+	
+	<section> <title>Image Instances</title>
+	  <para>
+	    An image instance is an object returned by the <link linkend="OfxImageEffectSuiteV1_clipGetImage"><code>OfxImageEffectSuiteV1::clipGetImage</code></link>
+	    function. This fetches an image out of a clip and returns it as a property set to the plugin. The image can be accessed by looking up the property
+	    values in that set, which includes the data pointer to the image.
+	  </para>
+	  
+	  <para>
+	    An image instance is valid until the effect calls
+	    <link linkend="OfxImageEffectSuiteV1_clipReleaseImage"><code>OfxImageEffectSuiteV1::clipReleaseImage</code></link> on the property handle. The effect
+	    <emphasis>must</emphasis> release all fetched images before it returns from the action.
+	  </para>
+
+	  <para>
+	    The set of properties that make up an image can be found in the section 
+	    <link linkend="ImageProperties">Properties on an Image</link>.
+	  </para>
+	  
+	</section>
+      </section>
+      
+      <section> <title>Interacts</title>
+	<para>
+	  An interact is an OFX object that is used to draw custom user interface elements, for example overlays on top of a host's image viewer
+	  or custom parameter widgets. Interacts have their own <link linkend="mainEntryPoint">main entry point</link>, which is separate to the
+	  effect's main entry point. Typically an interact's main entry point is specified as a pointer property on an OFX object, for example
+	  the <link linkend="kOfxImageEffectPluginPropOverlayInteractV1"><code>kOfxImageEffectPluginPropOverlayInteractV1</code></link>
+	  property on an effect descriptor.
+	</para>
+	
+	<para>
+	  The functions that directly manipulate interacts are in the <link linkend="OfxInteractSuiteV1">interact suite</link>
+	  found in the header file <filename class="headerfile">ofxInteract.h</filename>, as well as the properties and
+	  specific actions that apply to interacts.
+	</para>
+	
+	<section> <title>Interact Descriptors</title>
+	  <para>
+	    Interact descriptors are blind handles passed to the <link linkend="kOfxActionDescribeInteract">describe action</link> sent to 
+	    an interact's separate main entry point. They should be cast to the type <code>OfxInteractHandle</code>.
+	  </para>
+	  
+	  <para>
+	    The properties found on a descriptor are found in section <link linkend="InteractDescriptorProperties">Properties on Interact Descriptors</link>.
+	  </para>
+	  
+	</section>
+	
+	<section> <title>Interact Instances</title>
+	  <para>
+	    Interact instances are blind handles passed to all actions but the <link linkend="kOfxActionDescribeInteract">describe action</link> sent to 
+	    an interact's separate main entry point. They should be cast to the type <code>OfxInteractHandle</code>.
+	  </para>
+	  
+	  <para>
+	    The properties found on an instance are found in section <link linkend="InteractInstanceProperties">Properties on Interact Instance</link>.
+	  </para>
+	</section>
+      </section>
+    </section>
+  </chapter>
+
+
+  <chapter id="ImageEffectArchitectures"><title>Image Processing Architectures</title>
+    <para>
+      OFX supports a range of image processing architectures. The simpler ones being special cases of
+      the most complex one. Levels of support, in both plug-in and host, are signalled by setting appropriate
+      properties in the plugin and host.
+    </para>
+
+    <para>
+      This chapter describes the most general architecture that OFX can support, with simpler cases just being specialisations
+      of the general case.      
+    </para>
+
+    <section><title>The Image Plane</title>
+      <para>
+	At it's most generalised, OFX allows for a complex imaging architecture based around an infinite 2D plane on which we are filling in pixels.
+      </para>
+
+      <para>
+	Firstly, there is some subsection of this infinite plane that the user wants to be the end result of their work, call this the project extent. 
+	The project extent is always rooted, on its bottom left, at the origin of the image plane. The project extent defines the upper right hand corner 
+	of the project window. For example a PAL sized project spans (0, 0) to (768, 576) on the image plane. 
+      </para>
+
+      <para>
+	We define an image effect as something that can fill in a rectangle of pixels in this infinite plane, possibly using images defined at other locations
+	on this image plane.
+      </para>
+
+    </section>
+
+    <section><title>Regions of Definition</title>
+    
+      <para>
+	An effect has a "Region of Definition" (RoD), this is is the maximum area of the plane that the effect can fill in. 
+	for example: a 'read source media' effect would only be able to fill an area as big as it's source media. An effect's 
+	RoD may need to be based on the RoD of its inputs, for example: the RoD of a contrast/brightness colour corrector would 
+	generally be the RoD of it's input, while the RoD of a rotation effect would be bigger than that of it's input image.
+      </para>
+
+      <para>
+	The purpose of the <link linkend="kOfxImageEffectActionGetRegionOfDefinition"><code>kOfxImageEffectActionGetRegionOfDefinition</code></link>
+	action is for the host to ask an effect what its region of definition is. An effect calculates this by looking at its input clips and the
+	values of its current parameters.
+      </para>
+
+      <para>
+	Hosts are not obliged to render all an effects RoD, as it may have fixed frame sizes, or any number of other issues.
+      </para>
+
+      <section><title>Infinite RoDs</title>
+	<para>
+	  Infinite RoDs are used to indicate an effect can fill pixels in anywhere on the image plane it is asked to. For example
+	  a no-input noise generator that generates random colours on a per pixel basis.
+	  An infinite RoD is flagged by setting the minimums to be <code>kOfxFlagInfiniteMin</code>
+	  and the maxmimums to be <code>kOfxFlagInfiniteMax</code>,
+	  for both double and integer rects.
+	  Hosts and plug-ins need to be infinite RoD aware. Hosts need to clip such RoDs to an appropriate rectangle, typically the
+	  project extent. Plug-ins need to check for infinite RoDs when asking input clips for them and to pass them through unless
+	  they explictly clamp them. To indicate an infinite RoD set it as indicated in the following code snippet.
+	</para>
+	
+	<blockquote><programlisting>
+	  outputRoD.x1 = kOfxFlagInfiniteMin;
+	  outputRoD.y1 = kOfxFlagInfiniteMin;
+	  outputRoD.x2 = kOfxFlagInfiniteMax;
+	  outputRoD.y2 = kOfxFlagInfiniteMax;
+	</programlisting></blockquote>
+      </section>
+
+      <para>
+	PICTURES
+      </para>
+    </section>
+
+    <section><title>Regions Of Interest</title>
+      <para>
+	An effect will be asked to fill in some region of this infinite plane. The section it is being asked
+	to fill in is called the "Region of Interest" (RoI). 
+      </para>
+	
+      <para>
+	Before an effect has been asked to process a given RoI, it will be asked to specify the area of each input clip 
+	it will need to process that area. For example: a simple colour correction effect only needs as much input as it
+	does output, while a blur will need an area that is larger than the specified RoI by a border of the same width
+	as the blur radius.
+      </para>
+
+      <para>
+	The purpose of the <link linkend="kOfxImageEffectActionGetRegionsOfInterest"><code>kOfxImageEffectActionGetRegionsOfInterest</code></link>
+	action is for the host to ask an effect what areas it needs from each input clip, to render a specific output region. An effect needs
+	to examine its set of parameters and the region it has been asked to render to determine how much of <emphasis>each</emphasis> input
+	clip it needs.
+      </para>
+      <para>
+	PICTURES
+      </para>
+    </section>
+
+
+    <section><title>Tiled Rendering</title>
+      <para>
+	Tiling is the ability of an effect to manage images that are less than full frame (or in our current nomenclature, less
+	than the full Region of Definition). By tiling the images it renders, a host will render an effect in several passes, 
+	say by doing the bottom half, then the top half.
+      </para>
+
+      <para>
+	Hosts may tile rendering for a variety of reasons. Usually it is in an attempt to reduce memory demands or to distribute
+	rendering of an effect to several different CPUs or computers.
+      </para>
+
+      <para>
+	Effects that in effect only perform per pixel calculations (for example a simple colour gain effect) tile very easily.
+	However in the most general case for effects, tiling may be self defeating, as an effect, in order to render a tile,
+	may need significantly more from its input clips than the tile in question. For example, an effect that performs an
+	2D transform on its input image, may need to sample all that image even when rendering a very small tile on output, as 
+	the input image may have been scaled down so that it only covers a few pixels on output.
+      </para>
+
+      <para>
+	PICTURES
+      </para>
+    </section>
+
+    <section><title>Tree Based Architectures</title>
+      <para>
+	The most general compositing hosts allow images to be of any size at any location on our image plane. They also plumb the output
+	of effects into other effects, to create effect trees.
+	When evaluating this tree of effects, a general host will want to render the minimum number of pixels it needs to fill in the
+	final desired image. Typically the top level of this compositing tree is being rendered at a certain project size, for example 
+	PAL SD, 2K film and so on. This is where the RoD/RoI calls come in handy.
+      </para>
+
+      <para>
+	The host asks the top effect how much picture information it can produce, which in turn asks
+	effects below it their RoDs and so on until leaf effects are reached, which report back up the tree 
+	until the top effect calculates its RoD and reports back to the host. The host typically clips that
+	RoD to its project size.
+      </para>
+
+      <para>
+	Having determined in this way the window it wants rendered at the top effect, the host asks the top
+	node the regions of interest on each of it's inputs. This again propagates down the effect tree
+	until leaf nodes are encountered. These regions of interest are cached at effect for later use.
+      </para>
+
+      <para>
+	At this point the host can start rendering, from the bottom of the tree upwards, by asking each
+	effect to fill in the region of interest that was previously specified in the RoI walk. These regions
+	are then passed to the next level up to render and so on.
+      </para>
+
+      <para>
+	Another complication is tiling. If a host tiles, it will need to walk the tree and perform the RoI calculation 
+	for each tile that it renders.
+      </para>
+
+      <para>
+	The details may differ on specific hosts, but this is more or less the most generic way compositing hosts
+	currently work.
+      </para>
+
+      <para>
+	PICTURES
+      </para>
+    </section>
+
+    <section><title>Simpler Architectures</title>
+      <para>
+	The above architecture is quite complex, as the inputs supplied can lie anywhere on the image plane,
+	as can the output, and they can be subsections of the 'complete' image. Not all hosts work in this way,
+	generally it is only the more advance compositing systems working on large resolution images. 
+      </para>
+      
+      <para>
+	Some other systems allow for images to be anywhere on the image plane, but always pass around full RoD images, 
+	never tiles.
+      </para>
+
+      <para>
+	The simplest systems, don't have any of of the above complexity. The RoDs, RoIs, images and project sizes in such 
+	systems are exactly the same, always. Often these are editting, as opposed to compositing, systems.
+      </para>
+
+      <para>
+	Similarly, some plugin effects cannot handle sub RoD images, or even images not rooted at the origin.
+      </para>
+
+      <para>
+	The OFX architecture is meant to support all of them. Assuming a plugin supports the most general architecture,
+	it will trivially run on hosts with simpler architectures. However, if a plugin does not support tiled, or 
+	arbitarily positioned images, they may not run cleanly on hosts that expect them to do so.
+      </para>
+
+      <para>
+	To this end, two properties are provided that flag the capabilities of a plugin or host...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxImageEffectPropSupportsMultiResolution"><code>kOfxImageEffectPropSupportsMultiResolution</code></link> - which indicates support for images of differing sizes not centred on the origin,</listitem>
+	  <listitem><link linkend="kOfxImageEffectPropSupportsTiles"><code>kOfxImageEffectPropSupportsTiles</code></link>- which indicates support for images that contain less than full frame pixel data</listitem>
+	  </itemizedlist>
+      </para>
+      
+      <para>
+	A plug-in should flag these appropriately, so that hosts know how to deal with the effect. A host can either choose to refuse
+	to load a plugin, or, preferentially, pad images with an appropriate amount of black/transparent pixels to enable them to work.
+      </para>
+
+      <para>
+	The <code>kOfxImageEffectActionGetRegionsOfInterest</code> is redundant for plugins that do not support tiled rendering, 
+	as the plugin is asking that it be given the full Region of Definition of all its inputs. A host may have 
+	difficulty doing this (for example with an input that is attached to an effect that can create infinite images
+	such as a random noise generator), if so, it should clamp images to some a size in some manner.
+      </para>
+
+      <para>
+	The RoD/RoI actions are potentially redundant on simpler hosts. For example fixed frame size hosts. If a host has no need to
+	call these actions, it simply should not.
+      </para>
+    </section>
+  </chapter>
+
+  <chapter id="ImageEffectContexts"><title>Image Effect Contexts</title>
+    <para>
+      How an image effect is used by an end user affects how it should interact with a host application. 
+      For example an effect that is to be used as a transition between two clips works differently to an effect that 
+      is a simple filter. One must have two inputs and know how much to mix between the two input clips, the other has 
+      fewer constraints on it. Within OFX we have standardised several different uses and have called them <emphasis>contexts</emphasis>.
+    </para>
+
+    <para>
+      More specifically, a context mandates certain behaviours from an effect when it is described or instantiated in that 
+      context. The major issue is the number of input clips it takes, and how it can interact with those input clips.
+    </para>
+
+    <para>
+      All OFX contexts have a single output clip and zero or more input clips. The current contexts defined in OFX
+      are..
+      <itemizedlist>
+	<listitem><emphasis>generator</emphasis>
+	  <itemizedlist>
+	    <listitem>no compulsory input clips</listitem>
+	    <listitem>used by a host to create imagery from scratch, eg: a noise generator,</listitem>
+	  </itemizedlist>
+	</listitem>
+	<listitem><emphasis>filter</emphasis>
+	  <itemizedlist>
+	    <listitem>a single compulsory input clip</listitem>
+	    <listitem>a traditional 'filter effect' that transforms a single input in some way, eg: a simple blur</listitem>
+	  </itemizedlist>
+	</listitem>
+	<listitem><emphasis>transition</emphasis>
+	  <itemizedlist>
+	    <listitem>two compulsory input clips and a compulsory 'Transition' double parameter</listitem>
+	    <listitem>used to perform transitions between clips, typically in editing applications, eg: a cross dissolve,</listitem>
+	  </itemizedlist>
+	</listitem>
+	<listitem><emphasis>paint effect</emphasis>
+	  <itemizedlist>
+	    <listitem>two compulsory input clips, one image to paint onto, the other a mask to control where the effect happens,</listitem>
+	    <listitem>used by hosts to use an effect under a paint brush,</listitem>
+	  </itemizedlist>
+	</listitem>
+	<listitem><emphasis>retimer</emphasis>
+	  <itemizedlist>
+	    <listitem>a single compulsory input clip, and a compulsory 'SourceTime' double parameter,</listitem>
+	    <listitem>used by a host to change the playback speed of a clip,</listitem>
+	  </itemizedlist>
+	</listitem>
+	<listitem><emphasis>general effect</emphasis>
+	  <itemizedlist>
+	    <listitem>an arbitrary number of inputs,</listitem>
+	    <listitem>generally used in a 'tree' compositing environment,</listitem>
+	    <listitem>a catch all context.</listitem>
+	  </itemizedlist>
+	</listitem>
+      </itemizedlist>
+    </para>
+    
+    <para>
+      A host or plug-in need not support all contexts. For example a host that does not have any paint facility within it
+      should not need to support the paint context, or a simple blur effect need not support the retimer context.
+    </para>
+
+    <para>
+      An effect may say that it can be used in more than one context, for example a blur effect that acts as a filter, with a single input to blur,
+      and a general effect, with an input to blur and an optional input to act as a mask to attenuate the blur. In such cases a host should choose
+      the most appropriate context for the way that host's architecture. With our blur example, a tree based compositing host should 
+      simply ignore the filter context and always use it in the general context. 
+    </para>
+
+    <para>
+      Plugins and hosts inform each other what contexts they work in via the multidimensional
+      <link linkend="kOfxImageEffectPropSupportedContexts"><code>kOfxImageEffectPropSupportedContexts</code></link> property. 
+      It must be set to at least one of the following values...
+      <itemizedlist>
+	<listitem><code>kOfxImageEffectContextGenerator</code></listitem>
+	<listitem><code>kOfxImageEffectContextFilter</code></listitem>
+	<listitem><code>kOfxImageEffectContextTransition</code></listitem>
+	<listitem><code>kOfxImageEffectContextPaint</code></listitem>
+	<listitem><code>kOfxImageEffectContextGeneral</code></listitem>
+	<listitem><code>kOfxImageEffectContextRetimer</code></listitem>
+      </itemizedlist>
+    </para>
+    
+    <para>
+      A host indicates which contexts it supports by setting the <code>kOfxImageEffectPropSupportedContexts</code> property in
+      the global host descriptor. A plugin indicates which contexts it supports by setting this on the effect descriptor passed to
+      the <link linkend="kOfxActionDescribe"><code>kOfxActionDescribe</code></link> action.
+    </para>
+    
+    <para>
+      Because a plugin can work in different ways, it needs the ability to describe itself to the host in different ways. This
+      is the purpose of the <link linkend="kOfxImageEffectActionDescribeInContext"><code>kOfxImageEffectActionDescribeInContext</code></link>
+      action. This action is called once for each context that the effect supports, and the effect gets to describe the input clips and
+      parameters appropriate to that context. This means that an effect can have different sets of parameters and clips in different contexts,
+      though it will most likely have a core set of parameters that it uses in all contexts. From our blur example, both the filter and general
+      contexts would have a 'blur radius' parameter, but the general context might have an 'invert matte' parameter.
+    </para>
+
+    <para>
+      During the <code>kOfxImageEffectActionDescribeInContext</code> action, an effect must describe all clips and parameters that it 
+      intends to use. This includes the mandated clips and parameters for that context.
+    </para>
+
+    <para>
+      A plugin instance is created in a specific contex which will not changed over the lifetime of that instance. The context
+      can be retrieved from the instance via the <link linkend="kOfxImageEffectPropContext"><code>kOfxImageEffectPropContext</code></link> 
+      property on the instance handle.
+    </para>
+
+    <section id="kOfxImageEffectContextGenerator"><title>The Generator Context</title>
+      <para>
+	A generator context is for cases where a plugin can create images without any input clips, eg: a colour bar generator.
+      </para>
+      
+      <para>
+	In this context, a plugin has the following mandated clips,
+	<itemizedlist>
+	  <listitem>an output clip named 'Output'</listitem>
+	</itemizedlist>
+      </para>
+      
+      <para>
+	Any input clips that are specified must be optional.
+      </para>
+
+      <para>
+	A host is responsible for setting the initial preferences of the output clip, it must do this in a manner that is 
+	transparent to the plugin. So the pixel depths, components, fielding, frame rate and pixel aspect ratio are under the
+	control of the host. How it arrives at these is a matter for the host, but as a plugin specifies what components it 
+	can produce on output, as well as the pixel depths it supports, the host must choose one of these. 
+      </para>
+
+      <para>
+	Generators still have Regions of Definition. This should generally be,
+	<itemizedlist>
+	  <listitem>based on the project size eg: an effect that renders a 3D sky simulation,</listitem>
+	  <listitem>based on parameter settings eg: an effect that renders a circle in an arbitrary location,</listitem>
+	  <listitem>infinite, which implies the effect can generate output anywhere on the image plane.</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	The pixel preferences action is constrained in this context by the following,
+	<itemizedlist>
+	  <listitem>a plugin cannot change the component type of the 'Output' clip,</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+
+    <section id="kOfxImageEffectContextFilter"><title>The Filter Context</title>
+      <para>
+	A filter effect is the ordinary way most effects are used with a single input. They allow track or layer based
+	hosts that cannot present extra input to use an effect.
+      </para>
+
+      <para>
+	In this context, a plugin has the following mandated objects...
+	<itemizedlist>
+	  <listitem>an input clip named 'Source'</listitem>
+	  <listitem>an output clip named 'Output'</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	Other input clips may be described, which must all be optional. However there is no way to guarantee
+	that all hosts will be able to wire in such clips, so it is suggested that in cases where effects
+	can take single or multiple inputs, they expose themselves in the filter context with a single input
+	and the general context with multiple inputs.
+      </para>
+
+      <para>
+	The pixel preferences action is constrained in this context by the following,
+	<itemizedlist>
+	  <listitem>a plugin cannot change the component type of the 'Output' clip, it will always be the same as the 'Source' clip,</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+
+
+    <section id="kOfxImageEffectContextTransition"><title>The Transition Context</title>
+      <para>
+	Transitions are effects that blend from one clip to another over time, eg: a wipe or a cross dissolve.
+      </para>
+
+      <para>
+	In this context, a plugin has the following mandated objects...
+	<itemizedlist>
+	  <listitem>an input clip names 'SourceFrom'</listitem>
+	  <listitem>an input clip names 'SourceTo'</listitem>
+	  <listitem>an output clip named 'Output'</listitem>
+	  <listitem>a single double parameter called 'Transition' (see <link linkend="ImageEffectContextMandatedParameters">Mandated Parameters</link>)</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	Any other input clips that are specified must be optional. Though it is suggested for simplicity's sake that only the two
+	mandated clips be used.
+      </para>
+
+      <para>
+	The 'Transition' parameter cannot be labelled, positioned or controlled by the plug-in in anyway, it can only have it's value read, 
+	which will have a number returned between the value of 0 and 1. This number indicates how far through the transition the effect
+	is, at 0 it should output all of 'SourceFrom', at 1 it should output all of 'SourceTo', in the middle some appropriate blend.
+      </para>
+
+      <para>
+	The pixel preferences action is constrained in this context by the following,
+	<itemizedlist>
+	  <listitem>the component types of the "SourceFrom", "SourceTo" and "Output" clips will always be the same,</listitem>
+	  <listitem>the pixel depths of the "SourceFrom", "SourceTo" and "Output" clips will always be the same,</listitem>
+	  <listitem>a plugin cannot change any of the pixel preferences of any of the clips.</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+
+    <section id="kOfxImageEffectContextPaint"><title>The Paint Context</title>
+      <para>
+	Paint effects are effects used inside digital painting system, where the effect is limited to a small
+	area of the source image via  a masking image. Perhaps 'brush' would have been a better choice for
+	the name of the context.
+      </para>
+      
+      <para>
+	In this context, a plugin has the following mandated objects...
+	<itemizedlist>
+	  <listitem>an input clip names 'Source',</listitem>
+	  <listitem>an input clip names 'Brush', the only component type it supports is 'alpha',</listitem>
+	  <listitem>an output clip named 'Output'.</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	Any other input clips that are specified must be optional.
+      </para>
+
+      <para>
+	The masking images consists of pixels from 0 to the white point of the pixel depth.
+	Where the mask is zero the effect should not occur, where the effect is whitepoint 
+	the effect should be 'full on', where it is grey the effect should blend with the source in some manner.
+      </para>
+
+      <para>
+	The masking image may be smaller than the source image, even if the effect states that it cannot support multi-resolution images.
+      </para>
+
+      <para>
+	The pixel preferences action is constrained in this context by the following,
+	<itemizedlist>
+	  <listitem>the pixel depths of the "Source", "Brush" and "Output" clips will always be the same,</listitem>
+	  <listitem>the component type of "Source" and "Output" will always be the same,</listitem>
+	  <listitem>a plugin cannot change any of the pixel preferences of any of the clips.</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+
+    <section id="kOfxImageEffectContextRetimer"><title>The Retimer Context</title>
+      <para>
+	The retimer context is for effects that change the length of a clip by interpolating frames 
+	from the source clip to create an inbetween output frame.
+      </para>
+
+      <para>
+	In this context, a plugin has the following mandated objects...
+	<itemizedlist>
+	  <listitem>an input clip names 'Source'</listitem>
+	  <listitem>an output clip named 'Output'</listitem>
+	  <listitem>a 1D double parameter named 'SourceTime' (see <link linkend="ImageEffectContextMandatedParameters">Mandated Parameters</link>)</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	Any other input clips that are specified must be optional.
+      </para>
+
+      <para>
+	The 'SourceTime' parameter cannot be labelled, positioned or controlled by the plug-in in anyway,
+	it can only have it's value read. Its value is how the source time to maps to the output time. So if the output time 
+	is '3' and the 'SourceTime' parameter returns 8.5 at this time, the resulting image should be an interpolated
+	between source frames 8 and 9.
+      </para>
+
+      <para>
+	The pixel preferences action is constrained in this context by the following,
+	<itemizedlist>
+	  <listitem>the pixel depths of the "Source" and "Output" clips will always be the same,</listitem>
+	  <listitem>the component type of "Source" and "Output" will always be the same,</listitem>
+	  <listitem>a plugin cannot change any of the pixel preferences of any of the clips.</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+
+    
+    <section id="GeneralContext"><title>The General Context</title>
+      <para>
+	The general context is to some extent a catch all context, but is generally how a 'tree' 
+	effect should be instantiated. It has no constraints on its input clips, nor on the pixel preferences actions.
+      </para>
+
+      <para>
+	In this context, has the following mandated objects...
+	<itemizedlist>
+	  <listitem> an output clip named "Output"</listitem>
+	</itemizedlist>
+      </para>
+    </section>
+
+    <section id="ImageEffectContextMandatedParameters"><title>Parameters Mandated In A Context</title>
+      <para>
+	The retimer and transition context both mandate a parameter be declared, the double params 'SourceTime' and 'Transition'. 
+	The purpose of these parameters is for the host to communicate with the plug-in, they are <emphasis>not</emphasis> meant
+	to be treated as normal parameters, exposed on the user plug-in's user interface.
+      </para>
+
+      <para>
+	For example, the purpose of a transition effect is to dissolve in some interesting way between two separate clips,
+	under control of the host application. Typically this is done on systems that edit. The mandated 'Transition' double
+	pseudo-parameter is not a normal one exposed on the plug-in UI, rather it is the way the host indicates how far through 
+	the transition the effect is. For example, think about two clips on a time line based editor with a transition between them,
+	the host would set the value value of the 'Transition' parameter implicitly by how far the frame being rendered is from 
+	the start of the transition, something along the lines of...
+      </para>
+      
+      <blockquote><programlisting>
+	Transition = (currrentFrame - startOfTransition)/lengthOfTransition;</programlisting></blockquote>
+      
+      
+      <para>
+	This means that the host is completely responsible for any user interface for that parameter, either implicit
+	(as in the above editing example) or explicit (with a curve). 
+      </para>
+      
+      <para>
+	Similarly with the 'SourceTime' double parameter in the retimer context. It is up to the host to provide a
+	UI for this, either implicitly (say by stretching a clip's length on the time line) or via an explicit curve.
+	Note that the host is not limitted to using a UI that exposes the 'SourceTime' as a curve, alternately it 
+	could present a 'speed' parameter, and integrate that to derive a value for 'SourceTime'.
+      </para>
+    </section>
+  </chapter>
+
+  <chapter><title>Thread and Recursion Safety</title>
+    <para>
+      Hosts are generally multi-threaded, those with a GUI will most likely have an interactive 
+      thread and a rendering thread, while any host running on a multi-CPU machine may have a render 
+      thread per CPU. Host may batch effects off to a render farm, where the same effect has separate
+      frames rendered on completely different machines. OFX needs to address all these situations.
+    </para>
+
+    <para>
+      Threads in the host application can be broken into two categories...
+      <itemizedlist>
+	<listitem><emphasis>main theaads</emphasis>, where any action may be called</listitem>
+	<listitem><emphasis>render threads</emphasis> where only a subset of actions may be called.</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      For a given effect instance, there can be only one main thread and zero or more render threads. 
+      An instance must be able to handle simultaneous actions called on the main and render threads. 
+      A plugin can control the number of simultaneous render threads via the 
+      <link linkend="kOfxImageEffectPluginRenderThreadSafety"><code>kOfxImageEffectPluginRenderThreadSafety</code></link> 
+      effect descriptor property.
+    </para>
+
+    <para>
+      The only actions that can be called on a render thread are...
+      <itemizedlist>
+	<listitem><link linkend="kOfxImageEffectActionBeginSequenceRender"><code>kOfxImageEffectActionBeginSequenceRender</code></link></listitem>
+	<listitem><link linkend="kOfxImageEffectActionRender"><code>kOfxImageEffectActionRender</code></link></listitem>
+	<listitem><link linkend="kOfxImageEffectActionEndSequenceRender"><code>kOfxImageEffectActionEndSequenceRender</code></link></listitem>
+	<listitem><link linkend="kOfxImageEffectActionIsIdentity"><code>kOfxImageEffectActionIsIdentity</code></link></listitem>
+	<listitem><link linkend="kOfxImageEffectActionGetFramesNeeded"><code>kOfxImageEffectActionGetFramesNeeded</code></link></listitem>
+	<listitem><link linkend="kOfxImageEffectActionGetRegionOfDefinition"><code>kOfxImageEffectActionGetRegionOfDefinition</code></link></listitem>
+	<listitem><link linkend="kOfxImageEffectActionGetRegionsOfInterest"><code>kOfxImageEffectActionGetRegionsOfInterest</code></link></listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      If a plugin cannot support this multi-threading behaviour, it will need to perform explicit locking itself,
+      using the locking mechanisms in the suites defined in ofxMultiThread.h
+    </para>
+
+    <para>
+      This will also mean that the host may need to perform locking on the various function calls over the API.
+      For example, a main and render thread may both simultaneously attempt to access a parameter from a single effect
+      instance. The locking should...
+      <itemizedlist>
+	<listitem>block write/read access</listitem>
+	<listitem>not block on read/read access</listitem>
+	<listitem>be fine grained at the level of individual function calls,</listitem>
+	<listitem>be transparent to the plugin, so it will block until the call succeeds.</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      For example, a render thread will only cause a parameter to lock out writes only for the duration of 
+      the call that reads the parameter, not for the duration of the whole render action. This will allow a
+      main thread to continue writing to the parameter during a render. This is especially important if you
+      have a custom interactive GUI that you want to keep working during a render call.
+    </para>
+
+    <para>
+      Note that a main thread should generally issue an abort to any linked render thread when a
+      parameter or other value affecting the effect (eg: time) has been changed by the user. A re-render
+      should then be issued so that a correct frame is created.
+    </para>
+
+    <para>
+      How an effect handles simulanteous calls to render is dealt with in \ref ImageEffectsMultiThreadingRendering.
+    </para>
+    
+    <para>
+      Many hosts get around the problem of sharing a single instance in a UI thread and a render thread by
+      having two instances, one for the user to interact with and a render only one that shadows the
+      UI instance. 
+    </para>
+      
+    <section><title>Recursive Actions</title>
+
+      <para>
+	When running on a main thread, some actions may end up being called recursively. A plug-in 
+	must be able to deal with this.
+	For example consider the following sequence of events in a plugin...
+	<orderedlist>
+	  <listitem>user sets parameter A in a GUI</listitem>
+	  <listitem>host issues <link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link> action</listitem>
+	  <listitem>
+	    plugin traps that and sets parameter B
+	    <orderedlist>
+	      <listitem>host issues a new <link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link> 
+		action for parameter B</listitem>
+	      <listitem>
+		plugin traps that and changes some internal private state and requests the overlay redraw itself
+		<orderedlist>
+		  <listitem><link linkend="kOfxInteractActionDraw"><code>kOfxInteractActionDraw</code></link> issued to the effect's overlay</listitem>
+		  <listitem>plugin draws overlay</listitem>
+		  <listitem><link linkend="kOfxInteractActionDraw"><code>kOfxInteractActionDraw</code></link> returns</listitem>
+		</orderedlist>
+	      </listitem>
+	      <listitem><link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link> action for parameter B returns</listitem>
+	  </orderedlist>
+	  </listitem>
+	  <listitem><link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link> action returns</listitem>
+	</orderedlist>
+      </para>
+
+      <para>
+	The image effect actions which may trigger a recursive action call on a single instance are...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxActionBeginInstanceChanged"><code>kOfxActionBeginInstanceChanged</code></link></listitem>
+	  <listitem><link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link></listitem>
+	  <listitem><link linkend="kOfxActionEndInstanceChanged"><code>kOfxActionEndInstanceChanged</code></link></listitem>
+	  <listitem><link linkend="kOfxActionSyncPrivateData"><code>kOfxActionSyncPrivateData</code></link></listitem>
+	</itemizedlist>
+      </para>
+      
+      <para>
+	The interact actions which may trigger a recursive action to be called on the associated plugin instance are...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxInteractActionGainFocus"><code>kOfxInteractActionGainFocus</code></link></listitem>
+	  <listitem><link linkend="kOfxInteractActionKeyDown"><code>kOfxInteractActionKeyDown</code></link></listitem>
+	  <listitem><link linkend="kOfxInteractActionKeyRepeat"><code>kOfxInteractActionKeyRepeat</code></link></listitem>
+	  <listitem><link linkend="kOfxInteractActionKeyUp"><code>kOfxInteractActionKeyUp</code></link></listitem>
+	  <listitem><link linkend="kOfxInteractActionLoseFocus"><code>kOfxInteractActionLoseFocus</code></link></listitem>
+	  <listitem><link linkend="kOfxInteractActionPenDown"><code>kOfxInteractActionPenDown</code></link></listitem>
+	  <listitem><link linkend="kOfxInteractActionPenMotion"><code>kOfxInteractActionPenMotion</code></link></listitem>
+	  <listitem><link linkend="kOfxInteractActionPenUp"><code>kOfxInteractActionPenUp</code></link></listitem>
+	</itemizedlist>
+      </para>
+      
+      <para>
+	The image effect actions which may be called recursively are...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxActionBeginInstanceChanged"><code>kOfxActionBeginInstanceChanged</code></link></listitem>
+	  <listitem><link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link></listitem>
+	  <listitem><link linkend="kOfxActionEndInstanceChanged"><code>kOfxActionEndInstanceChanged</code></link></listitem>
+	  <listitem><link linkend="kOfxImageEffectActionGetClipPreferences"><code>kOfxImageEffectActionGetClipPreferences</code></link></listitem>
+	  <listitem><link linkend="kOfxImageEffectActionGetRegionOfDefinition"><code>kOfxImageEffectActionGetRegionOfDefinition</code></link> (as a result of calling <link linkend="OfxImageEffectSuiteV1_clipGetImage"><code>OfxImageEffectSuiteV1::clipGetImage</code></link> from <link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link>)</listitem>
+	  <listitem><link linkend="kOfxImageEffectActionGetRegionsOfInterest"><code>kOfxImageEffectActionGetRegionsOfInterest</code></link> (as a result of calling <link linkend="OfxImageEffectSuiteV1_clipGetImage"><code>OfxImageEffectSuiteV1::clipGetImage</code></link> from <link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link>)</listitem>
+	</itemizedlist>
+      </para>
+	
+      <para>
+	The interact actions which may be called recursively are...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxInteractActionDraw"><code>kOfxInteractActionDraw</code></link></listitem>
+	</itemizedlist>
+      </para>
+    </section>
+
+  </chapter>
+
+  <chapter id="CoordinateSystems"><title>Coordinate Systems</title>
+    <section><title>Spatial Coordinates</title>
+      <para>
+	All OFX spatial coordinate systems have the positive Y axis pointing up, and the positive X axis pointing right.
+      </para>
+      
+      <para>
+	As stated above, images are simply some rectangle in a potentially infinite plane of pixels.
+	However, this is an idealisation of what really goes on, as images composed of real pixels have to 
+	take into account pixel aspect ratios and proxy render scales, 
+	as such they will <emphasis>not</emphasis> be in the same space as the image plane. To deal with
+	this, OFX has three spatial coordinate systems
+	<itemizedlist>
+	  <listitem><emphasis>The Canonical Coordinate System</emphasis> which describes the idealised image plane</listitem>
+	  <listitem><emphasis>The Pixel Coordinate System</emphasis> which describes coordinates in addressable pixels</listitem>
+	  <listitem><emphasis>The Normalised Canonical Coordinate System</emphasis> which allows for resolution independant description of parameters</listitem>
+	</itemizedlist>
+      </para>
+
+      <section id="CanonicalCoordinates"><title>Canonical Coordinates</title>
+	<para>
+	  The idealised image plane is always in a coordinate system of square unscaled pixels.
+	  For example a PAL D1 frame occupies (0,0) to (768,576). We call this the <emphasis>Canonical Coordinate System</emphasis>.
+	</para>
+
+	<para>
+	  Many operations take place in canonical coordinates, parameter values are expressed in them while the and RoD and RoI actions
+	  report their values back in them.
+	</para>
+
+	<para>
+	  The Canonical coordinate system is always referenced by double floating point values, generally via a <code>OfxRectD</code> structure.
+	</para>
+      </section>
+
+      <section id="PixelCoordinates"><title>Pixel Coordinates</title>
+	<para>
+	  'Real' images, where we have to deal with addressable pixels in memory, 
+	  are in a coordinate system of non-square proxy scaled integer values. 
+	  So a PAL D1 image, being renderred as a half resolution proxy would be (0,0) to (360, 288), 
+	  which takes into account both the pixel aspect ratio of 1.067 and a scale factor of 0.5f. 
+	  We call this the <emphasis>Pixel Coordinate System</emphasis>.
+	</para>
+	<para>
+	  The Pixel coordinate system is always referenced by integer values, generally via a OfxRectI structure.
+	  It is used when refering to operations on actual pixels, and so is how the bounds of images are described
+	  and the render window passed to the render action.
+	</para>
+      </section>
+
+      <section id="MappingCoordinates"><title>Mapping Between The Spatial Coordinate Systems</title>
+	<para>
+	  To map between the two the pixel aspect ratio and the render scale need to be known, and it is a simple case of multiplication and rounding. More specifically,  given...
+	  <itemizedlist>
+	    <listitem>pixel aspect ratio, <emphasis>PAR</emphasis>, found on the image property <link linkend="kOfxImagePropPixelAspectRatio"><code>kOfxImagePropPixelAspectRatio</code></link></listitem>
+	    <listitem>render scale in X <emphasis>SX</emphasis>, found on the first dimension of the effect property <link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link></listitem>
+	    <listitem>render scale in Y <emphasis>SY</emphasis>, found on the second dimension of the effect property <link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link></listitem>
+	    <listitem>field scale in Y <emphasis>FS</emphasis>, this is 
+	      <itemizedlist>
+		<listitem>0.5 if the image property <link linkend="kOfxImagePropField"><code>kOfxImagePropField</code></link> is <code>kOfxImageFieldLower</code> or <code>kOfxImageFieldUpper</code></listitem>
+		<listitem>1.0 otherwise.</listitem>
+	      </itemizedlist>
+	    </listitem>
+	  </itemizedlist>
+	</para>
+
+	<para>
+	To map an X and Y coordinates from Pixel coordinates to Canonical coordinates, we perform the following multiplications...
+	</para>
+	<blockquote><programlisting>
+  X' = (X * PAR)/SX
+  Y' = Y/(SY * FS)
+	</programlisting></blockquote>
+
+	<para>
+	To map an X and Y coordinates from Canonical coordinates to Pixel coordinates, we perform the following multiplications...
+	</para>
+	<blockquote><programlisting>
+	  X' = (X * SX)/PAR
+	  Y' = Y * SY * FS
+	</programlisting></blockquote>
+      </section>
+
+      <section id="NormalisedCoordinateSystem"><title>The Normalized Coordinate System</title>
+  <para>Note, normalised parameters and the normalised coordinate system are being deprecated in favour of <link linkend='ParameterPropertiesDoubleTypesSpatial'>spatial parameters</link> which can handle the project rescaling without the problems of converting to/from normalised coordinates.</para>
+	<para>
+	  On most editing an compositing systems projects can be moved on resolutions, for example a
+	  project may be set up at high definition then have several versions rendered out at different sizes, say a
+	  PAL SD version, an NTSC SD version and an HD 720p version.
+	</para>
+
+	<para>
+	  This causes problems with parameters that describe spatial coordinates. If they are expressed as absolute 
+	  positions, the values will be incorrect as the project is moved from resolution to resolution.
+	  For example, a circle drawn at (384,288) in PAL SD canonical coordinates will be in the centre of the 
+	  output. Re-render that at 2K film, it will be in  the bottom left hand corner, which is probably not the correct
+	  spot.
+	</para>
+	
+	<para>
+	  To get around this, OFX allows parameters to be flagged as <emphasis>normalised</emphasis>, which is a resolution
+	  independant method of representing spatial coordinates. In this coordinate system, a point expressed as (0.5, 0.5)
+	  will appear in the centre of the screen, always.
+	</para>
+      
+	<para>
+	  To transform between normalised and canonical coordinates a simple linear equation is required. What that is
+	  requires a certain degree of explanation. It involves three two dimensional values...
+	  <itemizedlist>
+	    <listitem><emphasis>the project extent</emphasis> the resolution of the project, eg: PAL SD</listitem>
+	    <listitem><emphasis>the project size</emphasis> how much of that is used by imagery, eg: the letter box area in a 16:9 PAL SD project</listitem>
+	    <listitem><emphasis>the project offset</emphasis> the bottom left corner of the extent being used, eg: the BL corner of a 16:9 PAL SD project</listitem>
+	  </itemizedlist>
+	</para>
+
+	<para>
+	  As described above, the project extent is the section of the image plane that is coverred
+	  by an image that is the desired output of the project, so for a PAL SD project you get an extent of 0,0 to 768,576. 
+	  As the project is always rooted at the origin, so the extent is actually a size.
+	</para>
+	
+	<para>
+	  Project sizes and offsets are a bit less obvious. Consider a project that is going to be output as PAL D1 imagery,
+	  the extent will be 0,0 to 768,576. However our example is a letter box 16:9 project, which leaves a strip of black at
+	  bottom and top. The size of the letter box is 768 by 432, while the bottom left of the letter box is offset from the
+	  origin by 0,77. The ASCII art below shows the details.....
+	</para>
+	<blockquote><programlisting>
+                                                (768,576) 
+             ---------------------------------------
+             |                                     |
+             |                BLACK                |
+             |.....................................| (768, 504)
+             |                                     |
+             |                                     |
+             |        LETTER BOXED IMAGERY         |
+             |                                     |
+             |                                     |
+      (0,72) |.....................................|
+             |                                     |
+             |                BLACK                |
+             |                                     |
+             ---------------------------------------
+	   (0,0)
+	</programlisting></blockquote>
+        
+	<para>
+	  So in this example...
+	  <itemizedlist>
+	    <listitem>the <emphasis>extent</emphasis> of the project is the full size of the output image, which is 768x576,</listitem>
+	    <listitem>the <emphasis>size</emphasis> of the project is the size of the letter box section, which is 768x432,</listitem>
+	    <listitem>the <emphasis>offset</emphasis> of the project is the bottom left corner of the project window, which is 0,72.</listitem>
+	  </itemizedlist>
+	</para>
+	
+	<para>
+	  The properties on an effect instance handle allow you to fetch these values...
+	  <itemizedlist>
+	    <listitem><link linkend="kOfxImageEffectPropProjectExtent"><code>kOfxImageEffectPropProjectExtent</code></link> for the extent of the current project,</listitem>
+	    <listitem><link linkend="kOfxImageEffectPropProjectSize"><code>kOfxImageEffectPropProjectSize</code></link> for the size of the current project,</listitem>
+	    <listitem><link linkend="kOfxImageEffectPropProjectOffset"><code>kOfxImageEffectPropProjectOffset</code></link> for the offset of the current project.</listitem>
+	  </itemizedlist>
+	</para>
+
+	<para>
+	  So to map from normalised coordinates to canonical coordinates, you use the project size and offset...
+	  <itemizedlist>
+	    <listitem>for values that represent a size simply multiply the normalised coordinate by the project size</listitem>
+	    <listitem>for values that represent an absolute position, multiply the normalised coordinate by the project size then add the project origin</listitem>
+	  </itemizedlist>
+	</para>
+
+	<para>
+	  To flag to the host that a parameter as normalised, we use the
+	  <link linkend="kOfxParamPropDoubleType"><code>kOfxParamPropDoubleType</code></link> property. Parameters
+	  that are so flagged have values set and retrieved by an effect in normalized coordinates. However a host
+	  can choose to represent them to the user in whatever space it chooses. The values that this property can
+	  take are...
+	  <itemizedlist>
+	    <listitem><code>kOfxParamDoubleTypeX</code> - a size in the X dimension dimension (1D only), new for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeXAbsolute</code> - a position in the X dimension (1D only), new for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeY</code> - a size in the Y dimension dimension (1D only), new for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeYAbsolute</code> - a position in the X dimension (1D only), new for 1.2 </listitem>
+	    <listitem><code>kOfxParamDoubleTypeXY</code> - a size in the X and Y dimension (2D only), new for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeXYAbsolute</code> - a position in the X and Y dimension (2D only), new for 1.2</listitem>
+
+	    <listitem><code>kOfxParamDoubleTypeNormalisedX</code> - normalised size with respect to the project's X dimension (1D only), deprecated for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeNormalisedXAbsolute</code> - normalised absolute position on the X axis (1D only), deprecated for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeNormalisedY</code> - normalised size wrt to the project's Y dimension (1D only), deprecated for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeNormalisedYAbsolute</code> - normalised absolute position on the Y axis (1D only), deprecated for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeNormalisedXY</code> - normalised to the project's X and Y size (2D only), deprecated for 1.2</listitem>
+	    <listitem><code>kOfxParamDoubleTypeNormalisedXYAbsolute</code> - normalised to the projects X and Y size, and is an absolute position on the image plane, deprecated for 1.2.</listitem>
+	  </itemizedlist>
+	</para>
+
+	<para> 
+	  For example, we have an effect that draws a circle. It has two parameters a 1D double radius parametere and a 2D double position parameter. 
+	  It would flag the radius to be <code>kOfxParamDoubleTypeNormalisedX</code>, fetch the value and scale that by the project size before we render the circle. The host should present such normalised parameters to the user in a 'sensible' range. So for a PAL project, it would be from 0..768, where the plug-in sees 0..1. 
+	</para>
+	<para>
+	  The position can be handled by the <code>kOfxParamDoubleTypeNormalisedXYAbsolute</code> case. In which case the plugin must scale the parameter's value by the project size and add in the project offset. This will allow the positional parameter to be moved between projects transparently.  
+	</para>
+      </section>
+    </section>
+
+        
+    <section><title>Temporal Coordinates</title>
+      <para>
+	Within OFX Image Effects, there is only one temporal coordinate system, this is in output frames 
+	referenced to the start of the effect (so the first affected frame = 0). All times within the API are in that coordinate system.
+      </para>
+
+      <para>
+	All clip instances have a property that indicates the frames for which they can generate image data. 
+	This is <link linkend="kOfxImageEffectPropFrameRange"><code>kOfxImageEffectPropFrameRange</code></link>, a 2D 
+	double property, with the first dimension being the first, and 
+	the second being last the time at which the clip will generate data.
+      </para>
+
+      <para>
+	Consider the example below, it is showing an effect of 10 frames duration applied to a clip lasting 20 frames.
+	The first frame of the effect is infact the 5th frame of the clip. Both the input and output have the same frame rate.
+      </para>
+
+      <blockquote><programlisting>
+Effect               0  1  2  3  4  5  6  7  8  9
+Source   0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19
+      </programlisting></blockquote>
+
+      <para>
+	In this example, if the effect asks for the source image at time '4', the host will actually return the 9th image of that clip. 
+	When queried the output and source clip instances would report the following...
+      </para>
+      <blockquote><programlisting>
+           range[0]     range[1]    FPS
+Output     0            9           25
+Source    -4            15          25
+      </programlisting></blockquote>
+
+      <para>
+	Consider the slightly more complex example below, where the output has a frame rate twice the input's
+      </para>
+      <blockquote><programlisting>
+Effect         0  1  2  3  4  5  6  7  8  9
+Source   0     1     2     3     4     5     6     7
+      </programlisting></blockquote>
+
+      <para>
+	When  queried the output and source clips would report the following.
+      </para>
+      <blockquote><programlisting>
+           range[0]     range[1]    FPS
+Output     0            9           50
+Source    -2            12          25
+      </programlisting></blockquote>
+
+      <para>
+	Using simple arithmetic, any effect that needs to access a specific frame of an input, can do so with the formula...
+      </para>
+
+      <blockquote><programlisting>
+	f' = (f - range[0]) * srcFPS/outFPS
+      </programlisting></blockquote>
+    </section>
+  </chapter>
+  
+  <chapter><title>Images and Clips</title>
+
+    <section id="ImageEffectsImagesAndClipsIntro"><title>What Is An Image?</title>
+      <para>
+	Image Effects process images (funny that), this chapeter describes images and clips of images, 
+	how they behave and how to deal with them. 
+      </para>
+
+      <para>
+	Firstly some definitions...
+	<itemizedlist>
+	  <listitem>an <emphasis>image</emphasis> is a rectangular array of addressable pixels,</listitem>
+	  <listitem>a <emphasis>clip</emphasis> is a contiguous sequence of images that vary over time.</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	Images and clips contain pixels, these pixels can currently be of the following types...
+	<itemizedlist>
+	  <listitem>a colour pixel with red, green, blue, alpha components</listitem>
+	  <listitem>a colour pixel with red, green and blue components</listitem>
+	  <listitem>single component 'alpha' images</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	The components of the pixels can be of the following types...
+	<itemizedlist>
+	  <listitem>8 bit unsigned byte, with the nominal black and white points at 0 and 255 respectively,</listitem>
+	  <listitem>16 bit unsigned short, with the nominal black and white points at 0 and 65535 respectively,</listitem>
+	  <listitem>32 bit float, with the nominal black and white points at 0.0f and 1.0f respectively, component values are 
+	    <emphasis>not</emphasis> clipped to 0.0f and 1.0f.</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	Components are packed per pixel in the following manner...
+	<itemizedlist>
+	  <listitem>RGBA pixels as R, G, B, A</listitem>
+	  <listitem>RGB pixels as R, G, B</listitem>
+	  </itemizedlist>
+      </para>
+
+      <para>
+	There are several structs for pixel types in ofxCore.h that can be used for raw pixels in OFX.
+      </para>
+
+      <para>
+	Images are always left to right, bottom to top, with the pixel data pointer being at the bottom left of the image.
+	The pixels in a scan line are contiguously packed.
+      </para>
+
+      <para>
+	Scanlines need <emphasis>not</emphasis> be contiguously packed. The number of <emphasis>bytes</emphasis> between between a pixel in 
+	the same column, but separated by a scan line is known as the  <emphasis>rowbytes</emphasis> of an image. Rowbytes can be negative, 
+	allowing for compositing systems with a native top to bottom scanline order to trivially support bottom to top images.
+      </para>
+
+      <para>
+	Clips and images also have a <emphasis>pixel aspect ratio</emphasis>, this is how much an actual addressable pixel
+	must be stretched by in X to be square. For example PAL SD images have a pixel aspect ratio of 1.06666. 
+      </para>
+
+      <para>
+	Images are rectangular, whose integral bounds are in Pixel coordinates, with the image being X1 &lt;= X &lt; X2 and Y1 &lt;= Y &lt; Y2,
+	ie: exclusive on the top and right. The bounds represent the amount of data present in the image, which may be larger, 
+	smaller or equal to the Region of Definition of the image, depending on the architecture supported by the plugin.
+	The <link linkend="kOfxImagePropBounds"><code>kOfxImagePropBounds</code></link> property on an image holds this information. 
+      </para>
+      
+      <para>
+	An image also contains it's RoD in image coordinates, 
+	in the <link linkend="kOfxImagePropRegionOfDefinition"><code>kOfxImagePropRegionOfDefinition</code></link> property. The RoD is the maximum area that an image may have pixels in, t
+	he bounds are the actual addressable pixels present in an image. This allows for tiled rendering an so on.
+      </para>
+	
+      <para>
+	Clips have a frame rate, which is the number of frames per second they are to be displayed at.
+	Some clips may be continously samplable (for example, if they are connected to animating geometry 
+	that can be rendered at arbitrary times), if this is so, the frame rate for these clips is set to 0.
+      </para>
+
+      <para>
+	Images may be composed of full frames, two fields or a single field, depending on its source and how the effect
+	requests the image be processed. Clips are either full frame sequences or fielded sequences.
+      </para>
+
+      <para>
+	Images and clips also have a premultiplication state, this represents how the alpha component and the
+	RGB/YUV components may have interacted.
+      </para>
+
+    </section>
+
+    <section id="ImageEffectsImagesAndClipsDefiningClips"><title>Defining Clips</title>
+      <para>
+	During an the effect's describe in context action an effect <emphasis>must</emphasis> define the clips mandated for
+	that context, it can also define extra  clips that it may need for that context. It does this using the 
+	<link linkend="OfxImageEffectSuiteV1_clipDefine"><code>OfxImageEffectSuiteV1::clipDefine</code></link> function, the property handle returned by this function is purely for definition 
+	purposes only. It has not persistance outside the describe in context action and is distinct to the clip property handles
+	used by instances. The <emphasis>name</emphasis> parameter is how you can later access that clip in a plugin instance via the 
+	<link linkend="OfxImageEffectSuiteV1_clipGetHandle"><code>OfxImageEffectSuiteV1::clipGetHandle</code></link> function. 
+      </para>
+
+      <para>
+	During the describe in context action, the plugin sets properties on a clip to control its use.
+	The properties that can be set during a describe in context call are...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxPropLabel"><code>kOfxPropLabel</code></link> to give a user readable name to the clip (the host need not use this, for example in a transition it is redundant),</listitem>
+	  <listitem><link linkend="kOfxImageEffectPropSupportedComponents"><code>kOfxImageEffectPropSupportedComponents</code></link> to specify which components it is willing to accept on that clip,</listitem>
+	  <listitem><link linkend="kOfxImageClipPropOptional"><code>kOfxImageClipPropOptional</code></link> to specify if the clip is optional,</listitem>
+	  <listitem><link linkend="kOfxImageClipPropFieldExtraction"><code>kOfxImageClipPropFieldExtraction</code></link> specifies how to extract fielded images from a clip, see \ref ImageEffectsFieldRendering for more details on field and field rendering,</listitem>
+	  <listitem><link linkend="kOfxImageEffectPropTemporalClipAccess"><code>kOfxImageEffectPropTemporalClipAccess</code></link> whether the effect wants to access images from the clip at times other that the frame being renderred.</listitem>
+	</itemizedlist>
+      </para>
+      
+      <para>
+	Plugins <emphasis>must</emphasis> indicate which pixel depths they can process by setting the 
+	<link linkend="kOfxImageEffectPropSupportedPixelDepths"><code>kOfxImageEffectPropSupportedPixelDepths</code></link> on the plugin handle during the describe action.
+      </para>
+
+      <para>
+	Pixel Aspect Ratios, frame rates, fielding, components and pixel depths are constant for the duration of a clip,
+	they cannot changed from frame to frame.
+      </para>
+
+      &note;
+      <itemizedlist>
+	<listitem> Note:</listitem>
+	<listitem>it is an error not to set the <link linkend="kOfxImageEffectPropSupportedPixelDepths"><code>kOfxImageEffectPropSupportedPixelDepths</code></link> plugin property during its describe action</listitem>
+	<listitem>it is an error not to define a mandated input clip during the describe in context action</listitem>
+	<listitem>it is an error not to set the <link linkend="kOfxImageEffectPropSupportedComponents"><code>kOfxImageEffectPropSupportedComponents</code></link> on an input clip during describe in context</listitem>
+      </itemizedlist>
+    </section>
+
+    <section id="ImageEffectsImagesAndClipsUsingClips"><title>Getting Images From Clips</title>
+
+      <para>
+	Clips in instances are retrieved via the <link linkend="OfxImageEffectSuiteV1_clipGetHandle"><code>OfxImageEffectSuiteV1::clipGetHandle</code></link> function. 
+	This returns a property handle for the clip in a specific instance. This handle is valid 
+	for the duration of the instance.
+      </para>
+
+      <para>
+	Images are fetched from a clip via the <link linkend="OfxImageEffectSuiteV1_clipGetImage"><code>OfxImageEffectSuiteV1::clipGetImage</code></link> function. This 
+	takes a time and an optional region to extract an image at from a given clip. This returns, 
+	in a property handle, an image fetched from the clip at a specfic time. The handle contains 
+	all the information relevant to dealing with that image.
+      </para>
+
+      <para>
+	Once fetched, an image must be released via the <link linkend="OfxImageEffectSuiteV1_clipReleaseImage"><code>OfxImageEffectSuiteV1::clipReleaseImage</code></link> 
+	function. All images must be released within the action they were fetched in. You cannot retain an 
+	image after an action has returned.
+      </para>
+
+      <para>
+	Images may be fetched from an attached clip in the following situations...
+	<itemizedlist>
+	  <listitem>in the <link linkend="kOfxImageEffectActionRender"><code>kOfxImageEffectActionRender</code></link> action</listitem>
+	  <listitem>in the <link linkend="kOfxActionInstanceChanged"><code>kOfxActionInstanceChanged</code></link> and <link linkend="kOfxActionEndInstanceChanged"><code>kOfxActionEndInstanceChanged</code></link> actions with a <link linkend="kOfxPropChangeReason"><code>kOfxPropChangeReason</code></link> of <code>kOfxChangeUserEdited</code></listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	A host may not be able to support random temporal access, it flags its ability to do so via the 
+	<link linkend="kOfxImageEffectPropTemporalClipAccess"><code>kOfxImageEffectPropTemporalClipAccess</code></link> property. A plugin that wishes to perform random temporal 
+	access must set a property of that name on the plugin handle and the clip it wishes to perform random access from.
+      </para>	
+
+      &note;
+      <itemizedlist>
+	<listitem>it is an error for a plugin to attempt random temporal image access if the host does not support it</listitem>
+	<listitem>it is an error for a plugin to attempt random temporal image access if it has not flagged that it wishes to do so and the clip it wishes to do so from.</listitem>
+      </itemizedlist>
+    </section>
+
+    <section id="ImageEffectsPremultiplication"><title>Premultiplication And Alpha</title>
+      <para>
+	All images and clips have a premultiplication state. This is used to indicate how the image should interpret RGB (or YUV) pixels, with respect to alpha. The premultiplication state can be...
+	<itemizedlist>
+	  <listitem><code>kOfxImageOpaque</code>          - the image is opaque and so has no premultiplication state, but the alpha component in all pixels is set to the white point,</listitem>
+	  <listitem><code>kOfxImagePreMultiplied</code>   - the image is premultiplied by it's alpha,</listitem>
+	  <listitem><code>kOfxImageUnPreMultiplied</code> - the image is unpremultiplied.</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	This document won't go into the details of premultiplication, but will simply state that OFX takes notice
+	of it and flags images and clips accordingly.
+      </para>
+
+      <para>
+	The premultiplication state of a clip is constant over the entire duration of that clip.
+      </para>
+    </section>
+    
+    <section id="ImageEffectsPixelAspectRatios"><title>Clips and Pixel Aspect Ratios</title>
+
+      <para>
+	All clips and images have a pixel aspect ratio, this is how much a 'real' pixel must be stretched by 
+	in X to be square. For example PAL D1 images have a pixel aspect ratio of 1.06666. 
+      </para>
+
+      <para>
+	The property <link linkend="kOfxImageEffectPropSupportsMultipleClipPARs"><code>kOfxImageEffectPropSupportsMultipleClipPARs</code></link> is used to control how a plugin deals with 
+	pixel aspect ratios. This is both a host and plugin property. For a host it can be set to...
+	<itemizedlist>
+	  <listitem>0 - the host only supports a single pixel aspect ratio for all clips, input or output, to an effect,</listitem>
+	  <listitem>1 - the host can support differing pixel aspect ratios for inputs and outputs</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	For a plugin it can be set to...
+	<itemizedlist>
+	  <listitem>0 - the plugin expects all pixel aspect ratios to be the same on all clips, input or output</listitem>
+	  <listitem>1 - the plugin will accept clips of differing pixel aspect ratio.</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	If a plugin does not accept clips of differing PARs, then the host must resample all images fed to that
+	effect to agree with the output's PAR.
+      </para>
+
+      <para>
+	If a plugin does accept clips of differing PARs, it will need to specify the output clip's PAR in the
+	<link linkend="kOfxImageEffectActionGetClipPreferences"><code>kOfxImageEffectActionGetClipPreferences</code></link> action.
+      </para>
+
+    </section>
+
+    <section id="ImageEffectsMemoryAllocation"><title>Allocating Your Own Images</title>
+      <para>
+	Under OFX, the  images you fetch from the host have already had their memory allocated. 
+	If a plug-in needs to define its owns temporary images buffers during processing, or to cache 
+	images between actions, then the plug-in should use the image memory allocation routines
+	declared in OfxImageEffectSuiteV1. The reason for this is that many host have special 
+	purpose memory pools they manage to optimise memory usage as images can chew up memory 
+	very rapidly (eg: a 2K RGBA floating point film plate is 48 MBytes).
+      </para>
+      
+      <para>
+	For general purpose (as in less than a megabyte) memory allocation, you should use the memory suite in ofxMemory.h
+      </para>	
+
+      <para>
+	OFX provides four functions to deal with image memory. These are,
+	<itemizedlist>
+	  <listitem><link linkend="OfxImageEffectSuiteV1_imageMemoryAlloc"><code>OfxImageEffectSuiteV1::imageMemoryAlloc</code></link></listitem>
+	  <listitem><link linkend="OfxImageEffectSuiteV1_imageMemoryFree"><code>OfxImageEffectSuiteV1::imageMemoryFree</code></link></listitem>
+	  <listitem><link linkend="OfxImageEffectSuiteV1_imageMemoryLock"><code>OfxImageEffectSuiteV1::imageMemoryLock</code></link></listitem>
+	  <listitem><link linkend="OfxImageEffectSuiteV1_imageMemoryUnlock"><code>OfxImageEffectSuiteV1::imageMemoryUnlock</code></link></listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	A host needs to be able defragment its image memory pool, potentially moving the contents
+	of the memory you have allocated to another address, even saving it to disk under its own
+	virtual memory caching scheme. Because of this when you request a block of memory, you are 
+	actually returned a handle to the memory, not the memory itself. To use the memory you must
+	first lock the memory via the imageMemoryLock call, which will then return a pointer to the 
+	locked block of memory.
+      </para>
+
+      <para>
+	During an single action, there is generally no need to lock/unlock any temporary buffers you 
+	may have allocated via this mechanism. However image memory that is cached between actions 
+	should always be unlocked while it is not actually being used. This allows a host to do what 
+	it needs to do to optimise memory usage.
+      </para>
+
+      <para>
+	Note that locks and unlocks nest. This implies that there is a lock count kept on 
+	the memory handle, also not that this lock count cannot be negative. So unlocking a completely unlocked handle has no effect.
+      </para>
+
+      <para>
+      An example is below....
+      </para>
+      <blockquote><programlisting>
+  // get a memory handle
+  OfxImageMemoryHandle memHandle;
+  gEffectSuite->imageMemoryAlloc(0, imageSize, &amp;memHandle);
+
+  // lock the handle and get a pointer
+  void *memPtr;
+  gEffectSuite->imageMemoryLock(memHandle, &amp;memPtr);
+  
+  ... // do stuff with our pointer
+
+  // now unlock it
+  gEffectSuite->imageMemoryUnlock(memHandle);
+
+  
+  // lock it again, note that this may give a completely different address to the last lock
+  gEffectSuite->imageMemoryLock(memHandle, &amp;memPtr);
+  
+  ... // do more stuff
+
+  // unlock it again
+  gEffectSuite->imageMemoryUnlock(memHandle);
+
+  // delete it all
+  gEffectSuite->imageMemoryFree(memHandle);</programlisting></blockquote>
+    </section>
+  </chapter>
+
+  &parametersChapter;
+
+  <chapter id="RenderingEffects"><title>Rendering</title>
+    <para>
+      The <link linkend="kOfxImageEffectActionRender"><code>kOfxImageEffectActionRender</code></link> action is 
+      passed to plugins, when the host requires them to render an output frame.
+    </para>
+    <para>
+      All calls to the <link linkend="kOfxImageEffectActionRender"><code>kOfxImageEffectActionRender</code></link> 
+      are bracketed by a pair of 
+      <link linkend="kOfxImageEffectActionBeginSequenceRender"><code>kOfxImageEffectActionBeginSequenceRender</code></link> 
+      and <link linkend="kOfxImageEffectActionEndSequenceRender"><code>kOfxImageEffectActionEndSequenceRender</code></link> 
+      actions. This is to allow plugins to prepare themselves for rendering long sequences by setting up any tables etc.. it may need.
+    </para>
+    <para>
+      The <link linkend="kOfxImageEffectActionBeginSequenceRender"><code>kOfxImageEffectActionBeginSequenceRender</code></link> will
+      indicate the frame range that is to be renderred, and whether this is purely a single frame render due to interactive feedback
+      from a user in a GUI.
+    </para>
+
+    <para>
+      The render action is used in conjunction with the optional 
+    </para>
+
+    <section><title>Identity Effects</title>
+      <para>
+	If an effect does nothing to its input clips (for example a blur with blur size set to '0') it can indicate 
+	that it is an identity function via the <link linkend="kOfxImageEffectActionIsIdentity"><code>kOfxImageEffectActionIsIdentity</code></link>
+	action. The plugin indicates which input the host should use for the region in question. This allows a host to short circuit 
+	the processing of an effect.
+      </para>
+    </section>
+
+
+    <section><title>Rendering and The Get Region Actions</title>
+
+      <para>
+	Many hosts attempt to minimise the areas that they render by using regions of interest and regions of 
+	definition, while some of the simpler hosts do not attempt to do so. In general the order of actions,
+	per frame rendered, is something along the lines of....
+      </para>
+
+      <itemizedlist>
+	<listitem>ask the effect for it's region of definition,</listitem>
+	<listitem>clip the render window against that</listitem>
+	<listitem>ask the effect for the regions of interest of each of it's inputs against the clipped render window,</listitem>
+	<listitem>clip those regions of interest against the region of definition of each of those inputs,</listitem>
+	<listitem>render and cache each of those inputs,</listitem>
+	<listitem>render the effect against it's clipped render window.</listitem>
+      </itemizedlist>
+
+      <para>
+	A host can ask an effect to render an arbitrary window of pixels, generally these should be clipped 
+	to an effect's region of definition, however, depending on the host, they may not be. The actual region 
+	to render is indicated by the <link linkend="kOfxImageEffectPropRenderWindow"><code>kOfxImageEffectPropRenderWindow</code></link>
+	render action argument. If an effect is asked to render outside of its region of definition, it should fill those pixels
+	in with black transparent pixels.
+      </para>
+
+      <para>
+	Note thate <link linkend="OfxImageEffectSuiteV1_clipGetImage"><code>OfxImageEffectSuiteV1::clipGetImage</code></link> function 
+	takes an optional <emphasis>region</emphasis> parameter. This is a region, in Canonical coordinates, that the effect would like on 
+	that input clip.
+	If not used in a render action, then the image returned should be based on the previous get region of interest action. If used,
+	then the image returned will be based on this (usually be clipped to the input's region of definition). Generally a plugin should
+	not use the <emphasis>region</emphasis> parameter in the render action, but should leave it to the 'default' region.
+      </para>
+    </section>
+
+    <section id="ImageEffectsMultiThreadingRendering"><title>Multi-threaded Rendering</title>
+      <para>
+	Multiple render actions may be passed to an effect at the same time. A plug-in states it's level of render thread
+	safety by setting the <link linkend="kOfxImageEffectPluginRenderThreadSafety"><code>kOfxImageEffectPluginRenderThreadSafety</code></link>
+	string property. This can be set to one of three states....
+	<itemizedlist>
+	  <listitem><code>kOfxImageEffectRenderUnsafe</code>       - indicating that only a single 'render' action can be made at any time amoung all instances,</listitem>
+	  <listitem><code>kOfxImageEffectRenderInstanceSafe</code> - indicating that any instance can have a single 'render' action at any one time,</listitem>
+	  <listitem><code>kOfxImageEffectRenderFullySafe</code>    - indicating that any instance of a plugin can have multiple renders running simultaneously</listitem>
+	</itemizedlist>
+      </para>
+
+      <section id="ImageEffectsSMPRendering"><title>Rendering in a Symetric Multi Processing Enviroment</title>
+	<para>
+	  When rendering on computers that have more that once CPU (or this new-fangled hyperthreading), hosts and
+	  effects will want to take advantage of all that extra CPU goodness to speed up rendering. This means 
+	  multi-threading of the render function in some way. 
+	</para>
+	
+	<para>
+	  If the plugin has set <link linkend="kOfxImageEffectPluginRenderThreadSafety"><code>kOfxImageEffectPluginRenderThreadSafety</code></link>
+	  to <code>kOfxImageEffectRenderFullySafe</code>, the host may choose to render a
+	  single frame across multiple CPUs by having each CPU render a different window. However, the plugin may wish to remain in charge of 
+	  multithreading a single frame. The plugin set property 
+	  <link linkend="kOfxImageEffectPluginPropHostFrameThreading"><code>kOfxImageEffectPluginPropHostFrameThreading</code></link> 
+	  informs the host as to whether the host should perform SMP on the effect. It can be set to either...
+	  <itemizedlist>
+	    <listitem>1, in which case the host will attempt to multithread an effect instance by calling it's render function called simultaneously, each call will be with a different renderWindow, but be at the same frame</listitem>
+	    <listitem>0, in which case the host only ever calls the render function once per frame. If the effect wants to multithread it must use the OfxMultiThreadSuite API.</listitem>
+	  </itemizedlist>
+	</para>
+
+	<para>
+	  A host may have a render farm of computers. Depending exactly how the host works with it's render farm, it may have multiple 
+	  copies on an instance spread over the farm rendering separate frame ranges, 1-100 on station A, 101 to 200 on station B and so on...
+	</para>
+      </section>
+      
+      <section id="ImageEffectsSequentialRendering"><title>Rendering Sequential Effects</title>
+      <para>
+	  Some plugins need the output of the previous frame to render the next, typically they cache some information about the last render and use that 
+    somehow on the next frame. Some temporally averaging degraining algorithms work that way. Such effects cannot render correctly unless they are 
+    strictly rendered in order, from first to last frame, on a single instance.
+      </para>
+    <para>
+Other plugins are able to render correctly when called in an arbitrary frame order, but render much more efficiently if rendered in order. For example a particle system which mantains the state of the particle system in an instance would simply increment the simulation by a frame if rendering in-order, but would need to restart the particle system from scratch if the frame jumped backwards.
+</para>
+    <para>
+    Most plug-ins do not have any sequential dependence. For example, a simple gain operation has no dependence on the previous frame.
+    </para>
+    <para>
+    Similarly, host applications, due to their architectures, may or may not be able to guarantee that a plugin can be rendered strictly in-order. Node based applications 
+    typically have much more difficulty in guaranteeing such behaviour. 
+    </para>
+
+    <para> To indicate whether a plugin needs to be rendered in a strictly sequential order, and to indicate whether a host supports such behaviour we have a property, 
+   <link linkend="kOfxImageEffectInstancePropSequentialRender"><code>kOfxImageEffectInstancePropSequentialRender</code></link>. For plug-ins this can be one of three values...
+	  <itemizedlist>
+	    <listitem>0, in which case the host can render an instance over arbitrary frame ranges on an arbitrary number of computers without any problem (default),</listitem>
+	    <listitem>1, in which case the host must render an instance on a single computer over it's entire frame range, from first to last.</listitem>
+	    <listitem>2, in which case the effect is more efficiently rendered in frame order, but can compute the correct result irregardless of render order.</listitem>
+	  </itemizedlist>
+	</para>	
+
+  <para> For hosts, this property takes three values...
+	  <itemizedlist>
+	    <listitem>0, which indicates thet the host can never guarantee sequential rendering,</listitem>
+	    <listitem>1, which indicates thet the host can guarantee sequential rendering for plugins that request it,</listitem>
+	    <listitem>2, which indicates thet the host can sometimes perform sequential rendering.</listitem>
+	  </itemizedlist>
+	</para>
+	
+  <para> When rendering, a host will set the in args property on <link linkend="kOfxImageEffectPropSequentialRenderStatus"><code>kOfxImageEffectPropSequentialRenderStatus</code></link> to indicate whether the host is currently supporting sequential renders. This will be passed to the following actions,
+    <itemizedlist>
+      <listitem><link linkend="kOfxImageEffectActionBeginSequenceRender">the begin sequence render action</link></listitem>
+      <listitem><link linkend="kOfxImageEffectActionRender">the sequence render action</link></listitem>
+      <listitem><link linkend="kOfxImageEffectActionEndSequenceRender">the end sequence render action</link></listitem>
+	  </itemizedlist>
+  </para>
+
+	<para>
+	  Hosts may still render sequential effects with random frame access in interactive sessions, for example when the user 
+	  scrubs the current frame on the timeline and the host asks an effect to render a preview frame. In such cases, 
+	  the plugin can detect that the instance is being interactively manipulated via the <link linkend="kOfxImageEffectPropInteractiveRenderStatus"><code>kOfxImageEffectPropInteractiveRenderStatus</code></link> property and hack an approximation together for UI purposes.
+	  If eventually rendering the sequence, the host <emphasis>must</emphasis> ignore all frames rendered out of order and not cache them 
+	  for use in the final result.
+	</para>
+
+  <para> A host may set the in args property <link linkend="kOfxImageEffectPropRenderQualityDraft"><code>kOfxImageEffectPropRenderQualityDraft</code></link> in <link linkend="kOfxImageEffectActionRender">the sequence render action</link> to asj for a render in Draft/Preview mode. This is useful for applications that must support fast scrubbing. These allow a plug-in to take short-cuts for improved performance when the situation allows and it makes sense, for example to generate thumbnails with effects applied.
+For example switch to a cheaper interpolation type or rendering mode. A plugin should expect frames rendered in this manner that will not be stucked in host cache unless the cache is only used in the same draft situations.
+  </para>
+
+      </section>
+    </section>
+
+    <section id="ImageEffectsFieldRendering"><title>OFX : Fields and Field Rendering</title>
+
+      <para>
+	Fields are evil, but until the world decides to adopt sensible video standard and casts the current ones into the same
+	pit as 2 inch video tape, we are stuck with them.
+      </para>
+
+      <para>
+	Before we start, some nomenclature. The Y-Axis is considerred to be up, so in a fielded image,
+	<itemizedlist>
+	  <listitem>even scan lines 0,2,4,6,... are collectively referred to as the lower field,</listitem>
+	  <listitem>odd scan lines 1,3,5,7... are collective referred to as the upper field.</listitem>
+	</itemizedlist>
+      </para>
+      
+      <para>
+	We don't call them odd and even, so as to avoid confusion with video standard, which have scanline 0 at the top, 
+	and so have the opposite sense of our 'odd' and 'even'.
+      </para>
+
+      <para>
+	Clips and images from those clips are flagged as to whether they are fielded or not, and if so what is the
+	spatial/temporal ordering of the fields in that image. The
+	<link linkend="kOfxImageClipPropFieldOrder"><code>kOfxImageClipPropFieldOrder</code></link> clip and image instance property can be...
+	<itemizedlist>
+	  <listitem><code>kOfxImageFieldNone</code>  - the material is unfielded</listitem>
+	  <listitem><code>kOfxImageFieldLower</code> - the material is fielded, with scan line 0,2,4.... occuring first in a frame</listitem>
+	  <listitem><code>kOfxImageFieldUpper</code> - the material is fielded, with scan line 1,3,5.... occuring first in a frame</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	Images extracted from a clip flag what their fieldedness is with the property 
+	<link linkend="kOfxImagePropField"><code>kOfxImagePropField</code></link>, this can be....
+	<itemizedlist>
+	  <listitem><code>kOfxImageFieldNone</code>  - the image is an unfielded frame</listitem>
+	  <listitem><code>kOfxImageFieldBoth</code>  - the image is fielded and contains both interlaced fields </listitem>
+	  <listitem><code>kOfxImageFieldLower</code> - the image is fielded and contains a single field, being the lower field (lines 0,2,4...)</listitem>
+	  <listitem><code>kOfxImageFieldUpper</code> - the image is fielded and contains a single field, being the upper field (lines 1,3,5...)</listitem>
+	</itemizedlist>
+      </para>
+
+
+      <para>
+	The plugin specifies how it deals with fielded imagery by setting the 
+	<link linkend="kOfxImageEffectPluginPropFieldRenderTwiceAlways"><code>kOfxImageEffectPluginPropFieldRenderTwiceAlways</code></link> 
+	property. This can be,
+	<itemizedlist>
+	  <listitem>0 - the plugin is to have it's render function called twice only if there is animation in any of it's parameters</listitem>
+	  <listitem>1 - the plugin is to have it's render function called twice always (default) </listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	The reason for this is an optimisation. Imagine a text generator with no animation being asked to render into a 
+	fielded output clip, it can treat an interlaced fielded image as an unfielded frame. So the host can get the 
+	effect to render both fields in one hit and save on the overhead required to do the rendering in two passes.
+      </para>
+
+      <para>
+	If called twice per frame, the time passed to the render action will be frame and frame+0.5. So 0.0 0.5 1.0 1.5 etc...
+      </para>
+      
+      <para>
+	When rendering unfielded footage, the host will only ever call the effect's render action once per frame,
+	with the time being at the integers, 0.0, 1.0, 2.0 and so on.
+      </para>
+
+      <para>
+	The render action's argument property
+	<link linkend="kOfxImageEffectPropFieldToRender"><code>kOfxImageEffectPropFieldToRender</code></link>
+	tells the effect which field it should render, this can be one of...
+	<itemizedlist>
+	  <listitem><code>kOfxImageFieldNone</code>  - there are no fields to deal with, the image is full frame</listitem>
+	  <listitem><code>kOfxImageFieldBoth</code>  - the imagery is fielded and both scan lines should be renderred</listitem>
+	  <listitem><code>kOfxImageFieldLower</code> - the lower field is being rendered (lines 0,2,4...)</listitem>
+	  <listitem><code>kOfxImageFieldUpper</code> - the upper field is being rendered (lines 1,3,5...)</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>&note;
+	<link linkend="kOfxImageEffectPropFieldToRender"><code>kOfxImageEffectPropFieldToRender</code></link> will be set
+	to <code>kOfxImageFieldBoth</code> if
+	<link linkend="kOfxImageEffectPluginPropFieldRenderTwiceAlways"><code>kOfxImageEffectPluginPropFieldRenderTwiceAlways</code></link> 
+	is set to 0 on the plugin,
+      </para>
+
+      <para>
+	A plugin can specify how it wishes fielded footage to be fetched from a clip via the clip descriptor property
+	<link linkend="kOfxImageClipPropFieldExtraction"><code>kOfxImageClipPropFieldExtraction</code></link>. This can be one of...
+	<itemizedlist>
+	  <listitem><code>kOfxImageFieldBoth</code> fetch a full frame interlaced image</listitem>
+	  <listitem><code>kOfxImageFieldSingle</code> fetch a single field, making a half height image</listitem>
+	  <listitem><code>kOfxImageFieldDoubled</code> fetch a single field, but doubling each line and so making a full height image (default)</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	If fetching a single field, the actual field fetched from the source frame is...
+	<itemizedlist>
+	  <listitem>the first temporal field if the time passed to clipGetImage has a fractional part of 0.0 &lt;= f &lt; 0.5</listitem>
+	  <listitem>the second temporal field otherwise,</listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	To illustrate this last behaviour, the two examples below show an output with twice the frame rate of 
+	the input and how clipGetImage maps to the input. The .0 and .5 mean first and second temporal fields.
+      </para>
+      <blockquote>
+	<programlisting>Behaviour with unfielded footage
+
+output 0       1       2       3
+source 0       0       1       1
+	</programlisting>
+
+
+	<programlisting>Behaviour with fielded footage
+
+output 0.0 0.5 1.0 1.5 2.0 2.5 3.0 3.5            
+source 0.0 0.0 0.5 0.5 1.0 1.0 1.5 1.5
+	</programlisting>
+      </blockquote>
+      <para> &note;
+	<itemizedlist>
+	  <listitem>while some rarely used video standards can have odd number of scan-lines, under OFX, both fields <emphasis>always</emphasis> consist of the same number of lines. Pad with black where needed.</listitem>
+	  <listitem>host developers, for single field extracted images, you don't need to do any buffer copies, you just need to set the row bytes property of the returned image to twice the normal value, and maybe tweak the start address by a scanline.</listitem>
+	</itemizedlist>
+      </para>
+      
+    </section>
+
+    <section id="ImageEffectsRenderingAndGUIS"><title>Rendering In An Interactive Environment</title>
+      <para>
+	Any host with an interface will most likely have an interactive thread and a rendering thread. This allows
+	an effect to be manipulated while having renders batched off to a background thread. This will mean that some 
+	degree of locking will go on to prevent simultaneous read/writes occuring, see \ref ImageEffectsThreadSafety
+	for more on thread safety.
+      </para>
+
+      <para>
+	A host may need to abort a backgrounded render, typically in response to a user changing a parameter value.
+	An effect should occasionally poll the <link linkend="OfxImageEffectSuiteV1_abort"><code>OfxImageEffectSuiteV1::abort</code></link>
+	function to see if it should give up on rendering.
+      </para>
+    </section>
+  </chapter>
+
+  <chapter id="CustomInteracts"><title>Interacts</title>
+    <para>
+      When a host presents a graphical user interface to an image effect, it may optionally
+      give it the chance to draw its own custom GUI tools and to be able to interact with pen and 
+      keyboard input. In OFX this is done via the OfxInteract suite, which is found in the file
+      <filename class="headerfile">ofxInteract.h</filename>.
+    </para>
+
+    <para>
+      OFX interacts rely on openGL to perform all drawing in interacts, due to its portabilty, robustness
+      and wide implementation.
+    </para>
+
+    <para>
+      Each object that can have their own interact a pointer property in it which should point to a separate
+      <link linkend="mainEntryPoint">main entry point</link>. This entry point is <emphasis>not</emphasis> the 
+      same as the one in the OfxPlugin struct, 
+      as it needs to respond to a different set of actions to the effect.
+    </para>
+
+    <para>
+      There are two things in an image effect can have their own interact, these are...
+      <itemizedlist>
+	<listitem>as on overlay on the image being currently viewed in any image viewer, set via the effect descriptor's <link linkend="kOfxImageEffectPluginPropOverlayInteractV1"><code>kOfxImageEffectPluginPropOverlayInteractV1</code></link> property</listitem>
+	<listitem>as a replacement for any parameter's standard GUI object, set this via the parameter descriptor's <link linkend="kOfxParamPropInteractV1"><code>kOfxParamPropInteractV1</code></link> property</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      Hosts might not be able to support interacts, to indicate this, two properties exist on the host descriptor which 
+      an effect should examine at description time so as to determine its own behaviour. These are...
+      <itemizedlist>
+	<listitem><link linkend="kOfxImageEffectPropSupportsOverlays"><code>kOfxImageEffectPropSupportsOverlays</code></link></listitem>
+	<listitem><link linkend="kOfxParamHostPropSupportsCustomInteract"><code>kOfxParamHostPropSupportsCustomInteract</code></link></listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      Interacts are separate objects to the effect they are associated with,
+      they have their own descriptor and instance handles
+      passed into their separate <link linkend="mainEntryPoint"><code>main entry point</code></link>.
+    </para>
+
+    <para>
+      An interact instance cannot exist without a plugin instance, an interact's instance, once created, is bound to a single instance of a plugin until the interact instance is destroyed.
+    </para>
+      
+    <para>
+      All interacts of the same type share openGL display lists, even if they are in different openGL contexts.
+    </para>
+
+    <para>
+      All interacts of the same type will have the same pixel types (this is a side effect of the last point), this will 
+      always be double buffered with at least RGB components. Alpha and the exact bit depth is left to the implementation.
+    </para>
+
+    <para>
+      So for example, all image effect overlays share the same display lists and have the same pixel depth, 
+      and all custom parameter GUIs share the same display list and have the same pixel depth, but overlays 
+      and custom parameter GUIs do not necassarily share the same display list/pixel depths.
+    </para>
+
+    <para>
+      An interact instance may be used in more than one view. Consider an image effect overlay interact in a
+      host that supports multiple viewers to an effect instance. The same interact instance will be used in all 
+      views, the relevant properties controlling the view being changed before any action is passed to the interact.
+      In this example, the draw action would be called once for each view open on the instance, with the projection, 
+      viewport and pixel scale being set appropriately for the view before each action.  
+    </para>
+
+    <section id="ImageEffectOverlays"><title>Overlay Interacts</title>
+      <para>
+	Hosts will generally display images (both input and output) in user their interfaces.
+	A plugin can put an interact in this display by setting the effect descriptor <link linkend="kOfxImageEffectPluginPropOverlayInteractV1"><code>kOfxImageEffectPluginPropOverlayInteractV1</code></link> 
+	property to point to a main entry.
+      </para>
+
+      <para>
+	The viewport for such interacts will depend completely on the host.
+      </para>
+ 
+      <para>
+	The GL_PROJECTION matrix will be set up so that it maps openGL coordinates to canonical image coordinates.
+      </para>
+
+      <para>
+	The GL_MODELVIEW matrix will be the identity matrix.
+      </para>
+      <para>
+	An overlay's interact draw action should assume that it is sharing the openGL context and viewport
+	with other objects that belong to the host. It should not blank the background and it
+	should never swap buffers, that is for the host to do.
+      </para>
+    </section>
+
+    <section id="ParametersInteracts"><title>Parameter Interacts</title>
+      <para>
+	All parameters, except for custom parameters, have some default interface that the host creates for them. 
+	Be it a numeric slider, colour swatch etc... Effects can override the default interface 
+	(or set an interface for a custom parameter) by setting the <link linkend="kOfxParamPropInteractV1"><code>kOfxParamPropInteractV1</code></link>.
+	This will completely replace the parameters default user interface in the 'paged' and 'hierarchical'
+	interfaces, but it will not replace the parameter's interface in any animation sheet.
+      </para>
+
+      <para>
+	Properties affecting custom interacts for parameters are...
+	<itemizedlist>
+	  <listitem><link linkend="kOfxParamPropInteractSizeAspect"><code>kOfxParamPropInteractSizeAspect</code></link></listitem>
+	  <listitem><link linkend="kOfxParamPropInteractMinimumSize"><code>kOfxParamPropInteractMinimumSize</code></link></listitem>
+	  <listitem><link linkend="kOfxParamPropInteractPreferedSize"><code>kOfxParamPropInteractPreferedSize</code></link></listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	The viewport for such interacts will be dependant upon the various properties above, and possibly a per
+	host override in any XML resource file.
+      </para>
+ 
+      <para>
+	The GL_PROJECTION matrix will be an orthographic 2D view with -0.5,-0.5 at the bottom left and viewport width-0.5,
+	viewport height-0.5 at the top right. 
+      </para>
+
+      <para>
+	The GL_MODELVIEW matrix will be the identity matrix.
+      </para>
+
+      <para>
+	The bit depth will be double buffered 24 bit RGB.
+      </para>
+      
+      <para>
+	A parameter's interact draw function will have full responsibility for drawing the interact, including 
+	clearing the background and swapping buffers.
+      </para>
+    </section>
+
+    <section><title>Interact Actions</title>
+      <para>	
+	The following actions are passed to any interact entry point in an image effect plug-in.
+	<itemizedlist>
+      	  <listitem>
+	    <link linkend="kOfxActionDescribeInteract">The Generic Describe Action</link> called to describe the specific <emphasis>interact</emphasis>,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxActionCreateInstanceInteract">The Create Instance Action</link> called just after an instance of the <emphasis>interact</emphasis> is created,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxActionDestroyInstanceInteract">The Generic Destroy Instance Action</link> called just before of the <emphasis>interact</emphasis> is destroyed,
+	    </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionDraw">The Draw Action</link> called to have the interact draw itself,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionPenMotion">kOfxInteractActionPenMotion</link> called whenever the interact has the input focus and the pen has moved, regardless of whether the pen is up or down,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionPenDown">kOfxInteractActionPenDown</link> called whenever the interact has the input focus and the pen has changed state to 'down',
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionPenUp"> kOfxInteractActionPenUp</link> called whenever the interact has the input focus and the pen has changed state to 'up,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionKeyDown"> kOfxInteractActionKeyDown</link> called whenever the interact has the input focus and a key has gone down,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionKeyUp"> kOfxInteractActionKeyUp</link> called whenever the interact has the input focus and a key has gone up,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionKeyRepeat"> kOfxInteractActionKeyRepeat</link> called whenever the interact has the input focus and a key has gone down and a repeat key sequence has been sent,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionGainFocus"> kOfxInteractActionGainFocus</link> called whenever the interact gains input focus,
+	  </listitem>
+	  <listitem>
+	    <link linkend="kOfxInteractActionLoseFocus"> kOfxInteractActionLoseFocus</link> called whenever the interact loses input focus,
+	  </listitem>
+	</itemizedlist>
+      </para>
+
+      <para> 
+	An interact cannot be described until an effect has been described.
+      </para>
+
+      <para>
+	An interact instance must always be associated with an effect instance. So it gets created after an effect and destroyed before one.
+      </para>
+
+      <para>
+	An interact instance should be issued a gain focus action before any key or pen actions are issued, and a lose focus action when
+	it goes.
+      </para>
+    </section>
+  </chapter>
+
+  &clipPreferencesChapter;
+
+  &imageEffectActionsChapter;
+
+  &interactActionsChapter;
+
+  <chapter id="SuiteReference">
+    <title>Suite Reference</title>
+  <section id="PropertySuiteReference">
+    <title>Property Suite</title>
+    <para>The files <filename class="headerfile">ofxCore.h</filename> and <filename class="headerfile">ofxProperty.h</filename> contain the basic definitions for the property suite. </para>
+    <para>The property suite is the most basic and important suite in OFX, it is used to get and set the values of various objects defined by other suites. 
+    </para>
+    <para>A property is a named value of a specific data type, such values can be multi-dimensional, but is typically of one dimension. The name 
+      is a 'C' string literal, typically #defined in one of the various OFX header files. For example, the property labeled by the string literal <constant>"OfxPropName"</constant> is a 'C' string which holds the name of some object.
+    </para>
+    <para>Properties are not accessed in isolation, but are grouped and accessed through a property set handle. The number and types of properties on a specific property set handle are currently strictly defined by the API that the properties are being used for. There is no scope to add new properties.
+    </para>
+    <para>There is a naming convention for property labels and the macros #defined to them. The scheme is,
+      <itemizedlist>
+        <listitem>generic properties names start with <constant>"OfxProp"</constant> + name of the property, e.g. "OfxPropTime".</listitem>
+        <listitem>properties pertaining to a specific object with <constant>"Ofx"</constant> + object name + <constant>"Prop"</constant> + name of the property, e.g. "OfxParamPropAnimates".</listitem>
+        <listitem>the C preprocessor #define used to define the string literal is the same as the string literal, but with 
+          <constant>"k"</constant> prepended to the name. For example, <constant> #define kOfxPropLabel "OfxPropLabel" </constant> </listitem>
+      </itemizedlist>
+      
+    </para>
+    
+    <refentry id="OfxPropertySetHandle">
+      <refmeta>
+        <refentrytitle><type>OfxPropertySetHandle</type></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><type>OfxPropertySetHandle</type></refname>
+	
+        <refpurpose>Blind data type used to hold sets of properties</refpurpose>
+      </refnamediv>
+      
+      <refsynopsisdiv>
+        <blockquote><programlisting>
+#include "ofxCore.h"
+typedef struct OfxPropertySetStruct *OfxPropertySetHandle; </programlisting></blockquote>
+      </refsynopsisdiv>
+      
+      <refsect1>
+        <title>Description</title>
+        <para>
+	  Properties are not accessed on their own, nor do they exist on their own. They are grouped and manipulated via an OfxPropertySetHandle.</para>
+        <para>Any object that has properties can be made to return it's property set handle via some call on the relevant suite. Individual properties are then manipulated with the property suite through that handle.
+        </para>
+      </refsect1>
+    </refentry>
+    
+    &ofxPropertySuiteReference;
+  </section>
+  
+  <section id="ImageEffectSuite">
+    <title>Image Effect Suite</title>
+    &ofxImageEffectSuiteReference;
+  </section>
+  
+  <section id="ProgressSuite">
+    <title>Progress Suite</title>
+    &ofxProgressSuiteReference;
+  </section>
+
+  <section id="TimeLineSuite">
+    <title>Timeline Suite</title>
+    &ofxTimeLineSuiteReference;
+  </section>
+
+  <section id="ParametersSuite">
+    <title>Parameters Suite</title>
+    &ofxParametersSuiteReference;
+
+
+    <refentry id="OfxCustomParamInterpFuncV1">
+      <refmeta>
+        <refentrytitle><type>OfxCustomParamInterpFuncV1</type></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><type>OfxCustomParamInterpFuncV1</type></refname>
+	
+        <refpurpose>Typedef for functions set as the ::kOfxParamPropCustomInterpCallbackV1 on custom params.</refpurpose>
+      </refnamediv>
+      
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxParam.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef>typedef <typename>OfxStatus</typename><function>(OfxCustomParamInterpFuncV1)</function></funcdef>
+              <paramdef>OfxParamSetHandle <parameter>instance</parameter></paramdef>
+              <paramdef>OfxPropertySetHandle <parameter>inArgs</parameter></paramdef>
+              <paramdef>OfxPropertySetHandle <parameter>outArgs</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+      
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+<listitem>instance -  the plugin instance that the custom parameter being interpolated occurs in
+</listitem>
+<listitem>inArgs - property handle holding the following properties...
+   <itemizedlist>
+    <listitem>kOfxPropName - the name of the custom parameter to interpolate</listitem>
+    <listitem>kOfxPropTime - absolute time the interpolation is ocurring at</listitem>
+    <listitem>kOfxParamPropCustomValue - string property that gives the value of the two keyframes to interpolate, in this case 2D</listitem>
+    <listitem>kOfxParamPropInterpolationTime - 2D double property that gives the time of the two keyframes we are interpolating</listitem>
+    <listitem>kOfxParamPropInterpolationAmount - 1D double property indicating how much to interpolate between the two keyframes</listitem>
+</itemizedlist>
+</listitem>
+<listitem>outargs - property handle holding the following properties...
+   <itemizedlist>
+    <listitem>kOfxParamPropCustomValue - the value of the interpolated custom parameter, in this case 1D</listitem>
+   </itemizedlist>
+</listitem>
+    </itemizedlist>
+  </refsect2>
+
+      <refsect2>
+        <title>Description</title>
+        <para>
+This function allows custom parameters to animate by performing interpolation between keys.</para>
+<para>
+The plugin needs to parse the two strings encoding keyframes on either side of the time 
+we need a value for. It should then interpolate a new value for it, encode it into a string and set
+the <link linkend="kOfxParamPropCustomValue"><code>kOfxParamPropCustomValue</code></link> property with this on the outArgs handle.
+</para>
+<para> The interp value is a linear interpolation amount, however his may be derived from a cubic (or other) curve.</para>
+      </refsect2>
+    </refentry>
+
+  </section>
+  
+  <section id="ParametricParamSuite">
+    <title>Parametric Parameters Suite</title>
+    &ofxParametricParamSuiteReference;
+  </section>
+
+  <section id="MemorySuite">
+    <title>Memory Suite</title>
+    &ofxMemorySuiteReference;
+  </section>
+  
+  <section id="MultiThreadingSuite">
+    <title>Multi Threading Suite</title>
+    <para>
+    This chapter describes the multithreading suite designed for simple SMP multi-processing.
+    </para>
+
+    <refentry id="OfxThreadFunctionV1">
+      <refmeta>
+        <refentrytitle><type>OfxThreadFunctionV1</type></refentrytitle>
+      </refmeta>
+      
+      <refnamediv>
+        <refname><type>OfxThreadFunctionV1</type></refname>
+	
+        <refpurpose>Typedef for functions passed to the multithreading suite</refpurpose>
+      </refnamediv>
+      
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxMultiThread.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef>typedef <typename>OfxStatus</typename><function>(OfxThreadFunctionV1)</function></funcdef>
+              <paramdef>unsigned int<parameter>threadIndex</parameter></paramdef>
+              <paramdef>unsigned int<parameter>threadMax</parameter></paramdef>
+              <paramdef>void *<parameter>customArg</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+      
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>threadIndex -  unique index of this thread, will be between 0 and threadMax
+</listitem>
+<listitem>threadMax - to total number of threads executing this function
+</listitem>
+<listitem>customArg - the argument passed into <link linkend="OfxMultiThreadSuiteV1_multiThread"><code>OfxMultiThreadSuiteV1::multiThread</code></link>
+</listitem>
+    </itemizedlist>
+  </refsect2>
+
+      <refsect2>
+        <title>Description</title>
+        <para>
+	      Typedef for functions that are used to spawn SMP threads must have this function signature. Such functions are passed to
+<link linkend="OfxMultiThreadSuiteV1_multiThread"><code>OfxMultiThreadSuiteV1::multiThread</code></link>.
+        </para>
+      </refsect2>
+    </refentry>
+    
+    &ofxThreadingSuiteReference;
+  </section>
+  
+  <section id="InteractSuite">
+    <title>Interact Suite</title>
+    &ofxInteractSuiteReference;
+  </section>
+    
+  <section id="MessageSuiteV2">
+    <title>Message Suite V2</title>
+    <para>
+    Version 2 of the message suite is a backwards compatible replacement for the V1 message suite. It extends V1 by adding support for persistent users messages, typically to indicate a plugin is in an error state.
+    </para>
+    &ofxMessageSuiteV2Reference;
+  </section>
+  
+  <section id="OpenGLRenderSuite">
+    <title>OpenGL Render Suite</title>
+    <para>
+    The OpenGL Render Suite is used to transfer images between host and plug-in using OpenGL.
+    This speeds processing when the host and plug-in can both process on the GPU.
+    </para>
+    &ofxOpenGLRenderSuiteReference;
+  </section>
+
+  </chapter>
+  
+  <chapter id="PropertiesByObject">
+    <title>Properties By Object</title>
+    <para>This chapter lists all the properties on each OFX object.</para>
+    &propertiesByObject; 
+  </chapter>
+  
+  <chapter id="PropertiesByName">
+    <title>Properties By Name</title>
+    <para>
+       This chapter lists each property in the OFX Image Effect API by name.
+    </para>
+    &propertiesReference; 
+  </chapter>
+  
+   &statusCodesChapter;
+   &apiChanges_1_2_Chapter;
+</book>
