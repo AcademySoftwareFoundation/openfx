@@ -20,13 +20,32 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-import subprocess, os
+import subprocess, os, shutil
 
 read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
 
 if read_the_docs_build:
     subprocess.call('python ../genPropertiesReference.py -r -i ../../include -o Reference/ofxPropertiesReference.rst', shell=True)
     subprocess.call('cd ../../include ; doxygen ofx.doxy', shell=True)
+
+# Get the current git branch and update the links in index.rst to point to the correct documentation pdf and html zip files.
+gitsub = subprocess.Popen(["git", "rev-parse","--abbrev-ref","HEAD"], stdout=subprocess.PIPE)
+branch_name, err = gitsub.communicate()
+branch_name=branch_name.rstrip()
+
+# Modify index.rst
+with open('index.rst.tmp','w') as fo:
+    with open('index.rst') as f:
+        lines = f.readlines()
+        for l in lines:
+            if 'readthedocs.' in l and 'openfx' in l:
+                l = l.replace('master',branch_name)
+            fo.write(l)
+
+# Copy back
+os.remove('index.rst')
+shutil.copyfile('index.rst.tmp','index.rst')
+os.remove('index.rst.tmp')
 
 # -- General configuration ------------------------------------------------
 
