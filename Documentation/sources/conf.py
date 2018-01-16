@@ -20,6 +20,13 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+import subprocess, os
+
+read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
+
+if read_the_docs_build:
+    subprocess.call('python ../genPropertiesReference.py -r -i ../../include -o Reference/ofxPropertiesReference.rst', shell=True)
+    subprocess.call('cd ../../include ; doxygen ofx.doxy', shell=True)
 
 # -- General configuration ------------------------------------------------
 
