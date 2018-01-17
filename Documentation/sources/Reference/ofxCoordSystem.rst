@@ -22,7 +22,7 @@ has three spatial coordinate systems
 -  The Normalised Canonical Coordinate System
    which allows for resolution independant description of parameters
 
-.. CanonicalCoordinates:
+.. _CanonicalCoordinates:
 Canonical Coordinates
 ~~~~~~~~~~~~~~~~~~~~~
 

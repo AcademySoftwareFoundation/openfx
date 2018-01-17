@@ -701,7 +701,11 @@ The default value of a spatial parameter can be set in either a
 normalised coordinate system or the canonical coordinate system. This is
 controlled by the
 :c:macro:`kOfxParamPropDefaultCoordinateSystem`
-on the parameter descriptor.
+on the parameter descriptor with one of the following value:
+
+.. doxygendefine:: kOfxParamCoordinatesCanonical
+
+.. doxygendefine:: kOfxParamCoordinatesNormalised
 
 Parameters can choose to be spatial in several ways...
 

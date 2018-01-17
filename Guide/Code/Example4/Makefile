@@ -1,3 +1,0 @@
-NAME = saturation
-
-include ../MakefileCommon

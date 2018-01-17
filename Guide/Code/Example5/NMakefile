@@ -1,3 +1,0 @@
-NAME = circle
-
-!include ../NMakefileCommon
