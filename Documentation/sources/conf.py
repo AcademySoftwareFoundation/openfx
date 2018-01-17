@@ -27,24 +27,23 @@ read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
 if read_the_docs_build:
     subprocess.call('python ../genPropertiesReference.py -r -i ../../include -o Reference/ofxPropertiesReference.rst', shell=True)
     subprocess.call('cd ../../include ; doxygen ofx.doxy', shell=True)
+    ps = subprocess.Popen("git rev-parse HEAD | git ls-remote --heads origin | grep $(git rev-parse HEAD) | cut -d / -f 3",shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+    branch_name=ps.communicate()[0]
+    branch_name=branch_name.rstrip()
+    print "Current branch is:", branch_name
+    # Modify index.rst
+    with open('index.rst.tmp','w') as fo:
+        with open('index.rst') as f:
+            lines = f.readlines()
+            for l in lines:
+                if 'readthedocs.' in l and 'openfx' in l:
+                    l = l.replace('master',branch_name)
+                fo.write(l)
 
-ps = subprocess.Popen("git rev-parse HEAD | git ls-remote --heads origin | grep $(git rev-parse HEAD) | cut -d / -f 3",shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-branch_name=ps.communicate()[0]
-branch_name=branch_name.rstrip()
-print "Current branch is:", branch_name
-# Modify index.rst
-with open('index.rst.tmp','w') as fo:
-    with open('index.rst') as f:
-        lines = f.readlines()
-        for l in lines:
-            if 'readthedocs.' in l and 'openfx' in l:
-                l = l.replace('master',branch_name)
-            fo.write(l)
-
-# Copy back
-os.remove('index.rst')
-shutil.copyfile('index.rst.tmp','index.rst')
-os.remove('index.rst.tmp')
+    # Copy back
+    os.remove('index.rst')
+    shutil.copyfile('index.rst.tmp','index.rst')
+    os.remove('index.rst.tmp')
 
 # -- General configuration ------------------------------------------------
 
