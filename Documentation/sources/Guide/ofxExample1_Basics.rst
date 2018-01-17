@@ -83,7 +83,7 @@ wants to keep them.
 
 From our example, we have the following…
 
-**basics.cpp.**
+`basics.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L343>`_
 
 .. code:: c++
 
@@ -134,7 +134,7 @@ identify the plugin, what it does, and what version it is. These are:
 
 Our example plugin’s ``OfxPlugin`` struct looks like…
 
-**basics.cpp.**
+`basics.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L326>`_
 
 .. code:: c++
 
@@ -184,22 +184,12 @@ literal string that names the suite. A host will pass a set of suites to
 a plugin, each suite having the set of function pointers filled
 appropriately.
 
-For example, look in the file ofxMemory.h for the suite used to perform
-memory allocation…
+For example, look in the file `ofxMemory.h <https://github.com/ofxa/openfx/blob/master/include/ofxMemory.h>`_ for the suite used to perform
+memory allocation:
 
-**ofxMemory.h.**
+`ofxMemory.h <https://github.com/ofxa/openfx/blob/master/include/ofxMemory.h#L48>`_
 
-.. code:: c++
-
-    #define kOfxMemorySuite "OfxMemorySuite"
-
-    typedef struct OfxMemorySuiteV1 {
-      OfxStatus (*memoryAlloc)(void *handle,
-                               size_t nBytes,
-                               void **allocatedData);
-
-      OfxStatus (*memoryFree)(void *allocatedData);
-    } OfxMemorySuiteV1;
+.. doxygenstruct:: OfxMemorySuiteV1
 
 Notice also, the version number built into the name of the memory suite.
 If we ever needed to change the memory suite for some reason,
@@ -232,7 +222,7 @@ called, but notice what it does…
 
 .. _LoadActionExample:
 
-**basics.cpp.**
+`basics.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L99>`_
 
 .. code:: c++
 
@@ -292,7 +282,7 @@ Properties can be of the following fundamental types…
 
 So for in our example we have….
 
-**basics.cpp.**
+`basics.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L160>`_
 
 .. code:: c++
 
@@ -341,17 +331,17 @@ Actions are how a host tells a plugin what to do. The :ref:`mainEntry<mainEntryP
 function pointer in the :ref:`OfxPlugin<OfxPlugin>` structure is the what accepts
 actions to do whatever is being requested.
 
-Where...
+Where:
 
 -  ``action`` is a C string that specifies what is to be done by the
-   plugin, e.g. "OfxImageEffectActionRender" tells an image effect
-   plugin to render a frame,
+   plugin, e.g. ``OfxImageEffectActionRender`` tells an image effect
+   plugin to render a frame
 
 -  ``handle`` is the thing that is being operated on, and needs to be
-   downcast appropriately, what this is will depend on the action,
+   downcast appropriately, what this is will depend on the action
 
 -  ``inArgs`` is a well defined property set that are the arguments to
-   the action,
+   the action
 
 -  ``outArgs`` is a well defined property set where a plugin can return
    values as needed.
@@ -362,9 +352,9 @@ subset, and if it doesn’t need to trap the action, it can just return
 the status :c:macro:`kOfxStatReplyDefault` to have the host carry out the
 well defined default for that action.
 
-So looking at our example we can see its main entry point...
+So looking at our example we can see its main entry point:
 
-**basics.cpp.**
+`basics.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L259>`_
 
 .. code:: c++
 
@@ -480,7 +470,7 @@ describe itself. This is done with the :c:macro:`kOfxActionDescribe` action. Fro
 our example plugin, here is the function called by our main entry point
 in response to the describe action.
 
-**basics.cpp.**
+`basics.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L149>`_
 
 .. code:: c++
 
@@ -546,7 +536,7 @@ in context action…
     them to show up in the same plugin group  [4]_ in the user
     interface.
 
-**basics.cpp.**
+`basics.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L171>`_
 
 .. code:: c++
 
@@ -634,7 +624,7 @@ typically a hook to deeper plugin side data structures.
     that wants to write to the instance data after instance creation do
     so in a safe manner (e.g. by semaphore lock).
 
-**basics.cpp.**
+`basics.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L202>`_
 
 .. code:: c++
 
@@ -673,8 +663,6 @@ typically a hook to deeper plugin side data structures.
         return kOfxStatOK;
       }
 
-..
-
 .. note::
 
     :c:macro:`kOfxActionDestroyInstance` should always be called when an instance
@@ -688,15 +676,15 @@ What About The Image Processing?
 
 This plugin is pretty much a *hello world* OFX example, it doesn’t
 actually process any images. Normally a host application would call the
-:c:macro:`kOfxImageEffectActionRender* action when it wants the plugin to
+:c:macro:`kOfxImageEffectActionRender` action when it wants the plugin to
 render a frame. Our simple plugin gets around processing any images by
 trapping the :c:macro:`kOfxImageEffectActionIsIdentity` action. This action
 lets the plugin tell the host application that it currently does nothing
 to its inputs, for example a blur effect with the blur size of zero. In
 such a case the host can simply ignore the plugin and use its source
-images directly. And here is the code that does that...
+images directly. And here is the code that does that:
 
-**basics.cpp.**
+`basics.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L238>`_
 
 .. code:: c++
 

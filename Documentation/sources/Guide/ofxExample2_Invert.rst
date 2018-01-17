@@ -20,7 +20,7 @@ total  [1]_ and set very few switches.
 From the source, here is the main entry routine that traps those
 actions...
 
-**invert.cpp Main entry function trapping actions..**
+`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L416>`_
 
 .. code:: c++
 
@@ -69,7 +69,7 @@ Describing Our Plugin
 
 We have the standard two step description process for this plugin.
 
-**invert.cpp Describing The Plugin.**
+`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L117>`_
 
 .. code:: c++
 
@@ -171,7 +171,7 @@ output image. If not set, it is up to the plugin to launch the
 appropriate number of threads and divide the processing appropriately
 across them.
 
-**invert.cpp.**
+`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L171>`_
 
 .. code:: c++
 
@@ -251,9 +251,9 @@ plus an associated property set.
 
 Depending on the context, you will have to describe some mandated number
 of clips with specific names. For example the filter effect has two and
-only two clips you must describe "Source" and "Output", a **transition**
-effect has three and only three clips "SourceFrom", "SourceTo" and
-"Output" while a **general** effect has to have one clip called "Output"
+only two clips you must describe *Source* and *Output*, a **transition**
+effect has three and only three clips *SourceFrom*, *SourceTo* and
+*Output* while a **general** effect has to have one clip called *Output*
 but as many other input clips as we want. There are ``**#defines**`` for
 these in the various OFX header files. The Programming Reference has
 more information on other contexts, and we will use more in later
@@ -345,7 +345,7 @@ Pixel Address Calculation
 So, given a coordinate on the image plane how do you calculate the
 address of a pixel in the image? Well you use the following information:
 
--  a ``**void * **`` pointer to the bottom left corner of the image
+-  a ``void*`` pointer to the bottom left corner of the image
 
 -  four integers that define the **bounds** of the image for which there
    is data
@@ -360,7 +360,7 @@ address of a pixel in the image? Well you use the following information:
 The code snippet below shows you how to use all that to find the address
 of a pixel whose coordinates are on the image plane.
 
-**invert.cpp Calculating a pixel address..**
+`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L216>`_
 
 .. code:: c++
 
@@ -429,7 +429,7 @@ hosts and plugins.
 Anyway, here is code from our example using the property mechanism to
 get the required data from an image…
 
-**invert.cpp, Images As Property Sets.**
+`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L242>`_
 
 .. code:: c++
 
@@ -482,7 +482,7 @@ As stated above, the render action is the one used to get a plugin to
 actually process images. I’ll go through it in stages rather than have
 one big listing.
 
-**invert.cpp: Rendering snippet 1.**
+`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L310>`_
 
 .. code:: c++
 
@@ -527,7 +527,7 @@ render window to fill in of the larger output image.
     that the plugin does not rely on any implicit state, such as time,
     everything is explicit.
 
-**invert.cpp: Rendering snippet 2.**
+`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L323>`_
 
 .. code:: c++
 
@@ -542,7 +542,7 @@ render window to fill in of the larger output image.
 This next snippet fetches two clip handles by name from the instance,
 using the image effect suite.  [2]_
 
-**invert.cpp: Rendering snippet 3.**
+`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L331>`_
 
 .. code:: c++
 
@@ -570,7 +570,7 @@ We will be given back two property set handles which represent our
 images. If the call failed (which could be for a variety of good
 reasons) we give up with a ``throw``.
 
-**invert.cpp: Rendering snippet 4.**
+`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L345>`_
 
 .. code:: c++
 
@@ -601,7 +601,7 @@ and output images will always have the same number of components and the
 same data types. Which is why we aren’t checking for the source for its
 pixel information.
 
-**invert.cpp: Rendering snippet 5.**
+`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L365>`_
 
 .. code:: c++
 
@@ -629,7 +629,7 @@ correctly instantiate our templated function which will do the grunt
 work of iterating over pixels. Note also that it is passing the nominal
 maximum value of the data type as a template argument.
 
-**invert.cpp: Rendering snippet 6.**
+`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L383>`_
 
 .. code:: c++
 
@@ -675,7 +675,7 @@ status.
 
 Now for our pixel pushing code. [3]_
 
-**invert.cpp: Rendering snippet 7.**
+`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L242>`_
 
 .. code:: c++
 
@@ -720,7 +720,7 @@ The first thing it does is to pull out the bounds, rowbytes and
 destination pointer of our two images. We can now iterate over the
 render window and set pixels in the output image.
 
-**invert.cpp: Rendering snippet 8.**
+`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L273>`_
 
 .. code:: c++
 
