@@ -28,18 +28,10 @@ if read_the_docs_build:
     subprocess.call('python ../genPropertiesReference.py -r -i ../../include -o Reference/ofxPropertiesReference.rst', shell=True)
     subprocess.call('cd ../../include ; doxygen ofx.doxy', shell=True)
 
-# Get the current git branch and update the links in index.rst to point to the correct documentation pdf and html zip files.
-g1 = subprocess.Popen(["git", "branch"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,universal_newlines=True)
-g1out, g1err = g1.communicate()
-g2 = subprocess.Popen(["grep", "*"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,universal_newlines=True)
-g2out, g2err = g2.communicate(input=g1out)
-g3 = subprocess.Popen(["awk", "{print $2}"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,universal_newlines=True)
-g3out, g3err = g3.communicate(input=g2out)
-#gitsub = subprocess.Popen(["git", "rev-parse","--abbrev-ref","HEAD"], stdout=subprocess.PIPE)
-#branch_name, err = gitsub.communicate()
-branch_name=g3out
+ps = subprocess.Popen("git rev-parse HEAD | git ls-remote --heads origin | grep $(git rev-parse HEAD) | cut -d / -f 3",shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+branch_name=ps.communicate()[0]
 branch_name=branch_name.rstrip()
-print branch_name
+print "Current branch is:", branch_name
 # Modify index.rst
 with open('index.rst.tmp','w') as fo:
     with open('index.rst') as f:
