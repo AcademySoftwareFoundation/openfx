@@ -1,7 +1,8 @@
 .. _circleExample:
 
 This guide will introduce the spatial coordinate system used by OFX and
-will illustrate that with a simple circle drawing plugin. Its source can
+will illustrate that with a simple circle drawing plugin.
+Its source can be found in the source code file
 `circle.cpp <https://github.com/ofxa/openfx/blob/master/Guide/Code/Example5/circle.cpp>`_.
 This plugin takes a clip and draws a circle over it. The colour, size and position
 of the circle are controlled by several parameters.
@@ -11,8 +12,8 @@ of the circle are controlled by several parameters.
 Spatial Coordinate Systems
 ==========================
 
-There are two main coordinate systems in OFX, these are the **pixel
-coordinate system** and the **canonical coordinate system**. I’ll
+There are two main coordinate systems in OFX, these are the :ref:`pixel
+coordinates<PixelCoordinates>` system and the :ref:`canonical coordinates<CanonicalCoordinates>` system. I’ll
 describe them both, but first a slight digression.
 
 .. _pixel_aspect_ratios:
@@ -72,7 +73,8 @@ Coordinate Systems
 ------------------
 
 We call the coordinate system which allows us to index honest to
-goodness pixels in memory, the **pixel coordinate system**. It is
+goodness pixels in memory, the :ref:`pixel
+coordinates<PixelCoordinates>` system. It is
 usually represented with integers. For example the **bounds** of our
 image data are in pixel coordinates.
 
@@ -86,7 +88,7 @@ ratio. Circles won’t be round.
 A similar problem applies to render scales, when you say something is at
 a position, it has to be independent of the renderscale.
 
-To get around this, we have the **canonical coordinate system**. This is
+To get around this, we have the :ref:`canonical coordinates<CanonicalCoordinates>` system. This is
 on an idealised image plane, where all pixels are square and we have no
 scales applied to any data. Canonical coordinates are typically
 represented by doubles.
@@ -98,49 +100,19 @@ the canonical coordinate system to express render scale and PAR
 invariant data. This is the coordinate system we express spatial
 parameters in.
 
-There was a third coordinate system, the **Normalised Coordinate
-System**, but in practice this proved to be problematic and has been
-deprecated.
+There was a third coordinate system, the :ref:`Normalised Coordinates<NormalisedCoordinateSystem>` System,
+but in practice this proved to be problematic and has been deprecated.
 
 .. _mapping_between_coordinate_systems:
 
 Mapping Between Coordinate Systems
 ----------------------------------
 
-Obviously on render you will need to map parameters from Canonical
-Coordinates to the required Pixel Coordinates, or vice versa. That is
+Obviously on render you will need to map parameters from :ref:`canonical coordinates<CanonicalCoordinates>`
+to the required :ref:`pixel coordinates<PixelCoordinates>`, or vice versa. That is
 fortunately very easy, you just need to do a bit of multiplying via the
 pixel aspect ratio and the renderscale.
-
-Now, given…
-
--  the pixel aspect ratio as *PAR*, which is available on the
-    :c:macro`kOfxImagePropPixelAspectRatio` double property on images and
-   clips,
-
--  the renderscale, as *SX* and *SY* , which is passed with in
-   ``inArgs`` to a variety of actions in the 2D double property
-   :c:macro`kOfxImageEffectPropRenderScale`,
-
-.. _mapping_from_canonical_coordinates_to_pixel_coordinate:
-
-Mapping from Canonical Coordinates to Pixel Coordinate
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-::
-
-    x' = x * SX/PAR;
-    y' = y * SY;
-
-.. _mapping_from_pixel_coordinate_to_canonical_coordinates:
-
-Mapping from Pixel Coordinate to Canonical Coordinates
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-::
-
-    x' = x * PAR/SX;
-    y' = y/SY;
+:ref:`See reference for more details.<MappingCoordinates>`
 
 .. _loading_our_plugin:
 
@@ -154,7 +126,7 @@ depending on what the host says it can do.
 
 Here is the source for the load action…
 
-**circle.cpp.**
+`circle.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L348>`_
 
 .. code:: c++
 
@@ -191,7 +163,7 @@ Here is the source for the load action…
       }
 
 It fetches three suites then it checks to see if the
-:c:macro`kOfxPropAPIVersion` property exists on the host, if it does it then
+:c:macro:`kOfxPropAPIVersion` property exists on the host, if it does it then
 checks that the version is at least "1.2", as we later rely on features
 only available in that version of the API.
 
@@ -218,7 +190,7 @@ Note, we are relying on a parameter type that is only available with the
 1.2 version of OFX. Our plugin checks for this version of the API the
 host supports and will fail gracefully during the load action.
 
-**circle.cpp.**
+`circle.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L471>`_
 
 .. code:: c++
 
@@ -265,7 +237,7 @@ host supports and will fail gracefully during the load action.
 
 Here we are defining the parameter that controls the radius of our
 circle we will draw. It’s a double param, and the type of double param
-is :c:macro`kOfxParamDoubleTypeX`,  [2]_ which says to the host, this
+is :c:macro:`kOfxParamDoubleTypeX`,  [2]_ which says to the host, this
 represents a size in X in canonical coordinates. The host can display
 that however it like, but to the API, it needs to pass values back in
 canonical coordinates.
@@ -273,13 +245,13 @@ canonical coordinates.
 The other thing we do is to set up the default value. Which is 0.25,
 which seems to be a mighty small circle, as is the display maximum value
 of 2.0. However, note the property
-:c:macro`kOfxParamPropDefaultCoordinateSystem` being set to
-:c:macro`kOfxParamCoordinatesNormalised`, this says that defaults/mins/maxes
+:c:macro:`kOfxParamPropDefaultCoordinateSystem` being set to
+:c:macro:`kOfxParamCoordinatesNormalised`, this says that defaults/mins/maxes
 are being described relative to the project size. So our circle’s radius
 will default to be a quarter of the nominal project size’s x dimension.
 For a 1080 HD project, this would be a value of 480.
 
-**circle.cpp.**
+`circle.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L513>`_
 
 .. code:: c++
 
@@ -321,7 +293,7 @@ for such parameters to let you simply drag such positions around. We are
 also setting the default values relative to the project size, and in
 this case (0.5, 0.5), it should appear in the centre of the final image.
 
-**circle.cpp.**
+`circle.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L543>`_
 
 .. code:: c++
 
@@ -352,7 +324,7 @@ when you get and set the colour, you need to scale the values up to the
 nominal white point of your image, which is implicitly defined by the
 data type of the image.
 
-**circle.cpp.**
+`circle.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L564>`_
 
 .. code:: c++
 
@@ -407,10 +379,10 @@ parameter which is conditionally defined in the describe in context
 action.
 
 To set the output rod, we need to trap the
-:c:macro`kOfxImageEffectActionGetRegionOfDefinition` action. Our MainEntry
+:c:macro:`kOfxImageEffectActionGetRegionOfDefinition` action. Our MainEntry
 function now has an extra conditional in there….
 
-**circle.cpp.**
+`circle.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L978>`_
 
 .. code:: c++
 
@@ -423,9 +395,9 @@ function now has an extra conditional in there….
 Note that we dont trap this on hosts that aren’t multi-resolution, as by
 definition on those hosts RoDs are fixed.
 
-The code for the action itself is quite simple…
+The code for the action itself is quite simple:
 
-**circle.cpp.**
+`circle.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L844>`_
 
 ::
 
@@ -484,7 +456,7 @@ We check our *growRoD* parameter to see if we are going to actually
 modify the RoD. If we do, we find out, in canonical coordinates, where
 we are drawing our circle. We then fetch the region of definition and
 make a union of those two regions. We then set the
-:c:macro`kOfxImageEffectPropRegionOfDefinition` return property on **outArgs**
+:c:macro:`kOfxImageEffectPropRegionOfDefinition` return property on **outArgs**
 and say that we trapped the action.
 
 All fairly easy.
@@ -507,7 +479,7 @@ The action code is fairly boiler plate, it fetches parameter values and
 images from clips before calling the templated PixelProcessing function.
 Which is below:
 
-**circle.cpp.**
+`circle.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L670>`_
 
 ::
 

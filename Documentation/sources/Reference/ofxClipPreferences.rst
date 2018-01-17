@@ -91,7 +91,7 @@ property set in the clip preferences action. By default this is false.
     Implicitly, all retimers effects can be continuously sampled.
 
 Specifying Pixel Depths
----------------------
+-----------------------
 
 Hosts and plugins flag whether whether they can deal with input/output
 clips of differing pixel depths via the
@@ -116,6 +116,18 @@ the
 specify how the host is to map each clip, including the output clip.
 Note that this is the only case where a plugin may set the output depth.
 
+The bitdepth must be one of:
+
+* .. doxygendefine:: kOfxBitDepthByte
+
+* .. doxygendefine:: kOfxBitDepthShort
+
+* .. doxygendefine:: kOfxBitDepthHalf
+
+* .. doxygendefine:: kOfxBitDepthFloat
+
+* .. doxygendefine:: kOfxBitDepthNone
+
 Specifying Pixel Components
 ---------------------
 
@@ -124,7 +136,15 @@ the
 :c:macro:`kOfxImageEffectPropSupportedComponents`
 on the clip's descriptor during the
 :c:macro:`kOfxImageEffectActionDescribeInContext`
-This is one or more of RGBA, YUVA and A.
+This is one or more of:
+
+* .. doxygendefine:: kOfxImageComponentRGBA
+
+* .. doxygendefine:: kOfxImageComponentRGB
+
+* .. doxygendefine:: kOfxImageComponentAlpha
+
+* .. doxygendefine:: kOfxImageComponentNone
 
 If an effect has multiple inputs, and each can be a range of component
 types, the effect may end up with component types that are incompatible
