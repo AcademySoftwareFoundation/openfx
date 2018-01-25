@@ -1,0 +1,437 @@
+
+<refentry id="OfxParametricParameterSuiteV1">
+  <refmeta>
+    <refentrytitle><type>OfxParametricParameterSuiteV1</type></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxParametricParameterSuiteV1</function></refname>
+    <refpurpose>The OFX suite used to define and manipulate 'parametric' parameters.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+     <blockquote><programlisting>
+#include "ofxParametricParam.h"
+typedef struct OfxParametricParameterSuiteV1 {
+  OfxStatus (*parametricParamGetValue)(OfxParamHandle param,
+                                       int   curveIndex,
+                                       OfxTime time,
+                                       double parametricPosition,
+                                       double *returnValue);
+  OfxStatus (*parametricParamGetNControlPoints)(OfxParamHandle param,
+                                                int   curveIndex,
+                                                double time,
+                                                int *returnValue);
+  OfxStatus (*parametricParamGetNthControlPoint)(OfxParamHandle param,
+                                                 int    curveIndex,
+                                                 double time,
+                                                 int    nthCtl,
+                                                 double *key,
+                                                 double *value);
+  OfxStatus (*parametricParamSetNthControlPoint)(OfxParamHandle param,
+                                                 int   curveIndex,
+                                                 double time,
+                                                 int   nthCtl,
+                                                 double key,
+                                                 double value,
+                                                 bool addAnimationKey);
+  OfxStatus (*parametricParamAddControlPoint)(OfxParamHandle param,
+                                              int   curveIndex,
+                                              double time,
+                                              double key,
+                                              double value,
+                                              bool addAnimationKey);
+  OfxStatus (*parametricParamDeleteControlPoint)(OfxParamHandle param,
+                                                 int   curveIndex,
+                                                 int   nthCtl);
+  OfxStatus (*parametricParamDeleteAllControlPoints)(OfxParamHandle param,
+                                                     int   curveIndex);
+ } OfxParametricParameterSuiteV1;
+
+</programlisting></blockquote>
+     </refsynopsisdiv>
+    <refsect1>
+      <title>Description</title><para>
+This is an optional suite.
+</para>
+<para>
+Parametric parameters are in effect 'functions' a plug-in can ask a host to arbitrarily 
+evaluate for some value 'x'. A classic use case would be for constructing look-up tables, 
+a plug-in would ask the host to evaluate one at multiple values from 0 to 1 and use that 
+to fill an array.
+</para>
+<para>
+A host would probably represent this to a user as a cubic curve in a standard curve editor 
+interface, or possibly through scripting. The user would then use this to define the 'shape'
+of the parameter.
+</para>
+<para>
+The evaluation of such params is not the same as animation, they are returning values based 
+on some arbitrary argument orthogonal to time, so to evaluate such a param, you need to pass
+a parametric position and time.
+</para>
+<para>
+Often, you would want such a parametric parameter to be multi-dimensional, for example, a
+colour look-up table might want three values, one for red, green and blue. Rather than 
+declare three separate parametric parameters, it would be better to have one such parameter 
+with multiple values in it.
+</para>
+<para>
+The major complication with these parameters is how to allow a plug-in to set values, and 
+defaults. The default default value of a parametric curve is to be an identity lookup. If
+a plugin wishes to set a different default value for a curve, it can use the suite to set
+key/value pairs on the <emphasis> m</emphasis> descriptor of the param. When a new instance is made, it will
+have these curve values as a default.
+</para>
+    </refsect1>
+</refentry>
+
+<refentry id="OfxParametricParameterSuiteV1_parametricParamGetValue">
+  <refmeta>
+    <refentrytitle><function>OfxParametricParameterSuiteV1::parametricParamGetValue</function></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxParametricParameterSuiteV1::parametricParamGetValue</function></refname>
+       <refpurpose>Evaluates a parametric parameter</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxParametricParam.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef><typename>OfxStatus</typename><function>(*parametricParamGetValue)</function></funcdef>
+              <paramdef>OfxParamHandle<parameter>param</parameter></paramdef>
+              <paramdef>int  <parameter>curveIndex</parameter></paramdef>
+              <paramdef>OfxTime<parameter>time</parameter></paramdef>
+              <paramdef>double<parameter>parametricPosition</parameter></paramdef>
+              <paramdef>double *<parameter>returnValue</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>param - handle to the parametric parameter
+</listitem>
+<listitem>curveIndex - which dimension to evaluate
+</listitem>
+<listitem>time - the time to evaluate to the parametric param at
+</listitem>
+<listitem>parametricPosition - the position to evaluate the parametric param at
+</listitem>
+<listitem>returnValue - pointer to a double where a value is returned
+</listitem>
+    </itemizedlist>
+  </refsect2>
+  <refsect2>
+    <title>Returns</title>
+      <para>
+
+<itemizedlist>
+  <listitem><link linkend="kOfxStatOK"><code>kOfxStatOK</code></link>            - all was fine </listitem>
+  <listitem><link linkend="kOfxStatErrBadHandle"><code>kOfxStatErrBadHandle</code></link>  - if the paramter handle was invalid</listitem>
+  <listitem><link linkend="kOfxStatErrBadIndex"><code>kOfxStatErrBadIndex</code></link>   - the curve index was invalid</listitem>
+</itemizedlist>
+</para>
+
+  </refsect2>
+</refentry>
+
+<refentry id="OfxParametricParameterSuiteV1_parametricParamGetNControlPoints">
+  <refmeta>
+    <refentrytitle><function>OfxParametricParameterSuiteV1::parametricParamGetNControlPoints</function></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxParametricParameterSuiteV1::parametricParamGetNControlPoints</function></refname>
+       <refpurpose>Returns the number of control points in the parametric param.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxParametricParam.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef><typename>OfxStatus</typename><function>(*parametricParamGetNControlPoints)</function></funcdef>
+              <paramdef>OfxParamHandle<parameter>param</parameter></paramdef>
+              <paramdef>int  <parameter>curveIndex</parameter></paramdef>
+              <paramdef>double<parameter>time</parameter></paramdef>
+              <paramdef>int *<parameter>returnValue</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>param - handle to the parametric parameter
+</listitem>
+<listitem>curveIndex - which dimension to check
+</listitem>
+<listitem>time - the time to check
+</listitem>
+<listitem>returnValue - pointer to an integer where the value is returned.
+</listitem>
+    </itemizedlist>
+  </refsect2>
+  <refsect2>
+    <title>Returns</title>
+      <para>
+
+<itemizedlist>
+  <listitem><link linkend="kOfxStatOK"><code>kOfxStatOK</code></link>            - all was fine </listitem>
+  <listitem><link linkend="kOfxStatErrBadHandle"><code>kOfxStatErrBadHandle</code></link>  - if the paramter handle was invalid</listitem>
+  <listitem><link linkend="kOfxStatErrBadIndex"><code>kOfxStatErrBadIndex</code></link>   - the curve index was invalid</listitem>
+</itemizedlist>
+</para>
+
+  </refsect2>
+</refentry>
+
+<refentry id="OfxParametricParameterSuiteV1_parametricParamGetNthControlPoint">
+  <refmeta>
+    <refentrytitle><function>OfxParametricParameterSuiteV1::parametricParamGetNthControlPoint</function></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxParametricParameterSuiteV1::parametricParamGetNthControlPoint</function></refname>
+       <refpurpose>Returns the key/value pair of the nth control point.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxParametricParam.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef><typename>OfxStatus</typename><function>(*parametricParamGetNthControlPoint)</function></funcdef>
+              <paramdef>OfxParamHandle<parameter>param</parameter></paramdef>
+              <paramdef>int   <parameter>curveIndex</parameter></paramdef>
+              <paramdef>double<parameter>time</parameter></paramdef>
+              <paramdef>int   <parameter>nthCtl</parameter></paramdef>
+              <paramdef>double *<parameter>key</parameter></paramdef>
+              <paramdef>double *<parameter>value</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>param - handle to the parametric parameter
+</listitem>
+<listitem>curveIndex - which dimension to check
+</listitem>
+<listitem>time - the time to check
+</listitem>
+<listitem>nthCtl - the nth control point to get the value of
+</listitem>
+<listitem>key - pointer to a double where the key will be returned
+</listitem>
+<listitem>value - pointer to a double where the value will be returned 
+</listitem>
+    </itemizedlist>
+  </refsect2>
+  <refsect2>
+    <title>Returns</title>
+      <para>
+
+<itemizedlist>
+  <listitem><link linkend="kOfxStatOK"><code>kOfxStatOK</code></link>            - all was fine </listitem>
+  <listitem><link linkend="kOfxStatErrBadHandle"><code>kOfxStatErrBadHandle</code></link>  - if the paramter handle was invalid</listitem>
+  <listitem><link linkend="kOfxStatErrUnknown"><code>kOfxStatErrUnknown</code></link>    - if the type is unknown</listitem>
+</itemizedlist>
+</para>
+
+  </refsect2>
+</refentry>
+
+<refentry id="OfxParametricParameterSuiteV1_parametricParamSetNthControlPoint">
+  <refmeta>
+    <refentrytitle><function>OfxParametricParameterSuiteV1::parametricParamSetNthControlPoint</function></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxParametricParameterSuiteV1::parametricParamSetNthControlPoint</function></refname>
+       <refpurpose>Modifies an existing control point on a curve</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxParametricParam.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef><typename>OfxStatus</typename><function>(*parametricParamSetNthControlPoint)</function></funcdef>
+              <paramdef>OfxParamHandle<parameter>param</parameter></paramdef>
+              <paramdef>int  <parameter>curveIndex</parameter></paramdef>
+              <paramdef>double<parameter>time</parameter></paramdef>
+              <paramdef>int  <parameter>nthCtl</parameter></paramdef>
+              <paramdef>double<parameter>key</parameter></paramdef>
+              <paramdef>double<parameter>value</parameter></paramdef>
+              <paramdef>bool<parameter>addAnimationKey</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>param - handle to the parametric parameter
+</listitem>
+<listitem>curveIndex - which dimension to set
+</listitem>
+<listitem>time - the time to set the value at 
+</listitem>
+<listitem>nthCtl - the control point to modify
+</listitem>
+<listitem>key - key of the control point
+</listitem>
+<listitem>value - value of the control point
+</listitem>
+<listitem>addAnimationKey - if the param is an animatable, setting this to true will 
+force an animation keyframe to be set as well as a curve key,
+otherwise if false, a key will only be added if the curve is already
+animating.
+</listitem>
+    </itemizedlist>
+  </refsect2>
+  <refsect2>
+    <title>Description</title>
+      <para>
+This modifies an existing control point. Note that by changing key, the order of the
+control point may be modified (as you may move it before or after anther point). So be
+careful when iterating over a curves control points and you change a key.
+</para>
+
+  </refsect2>
+
+  <refsect2>
+    <title>Returns</title>
+      <para>
+
+<itemizedlist>
+  <listitem><link linkend="kOfxStatOK"><code>kOfxStatOK</code></link>            - all was fine </listitem>
+  <listitem><link linkend="kOfxStatErrBadHandle"><code>kOfxStatErrBadHandle</code></link>  - if the paramter handle was invalid</listitem>
+  <listitem><link linkend="kOfxStatErrUnknown"><code>kOfxStatErrUnknown</code></link>    - if the type is unknown</listitem>
+</itemizedlist>
+</para>
+
+  </refsect2>
+</refentry>
+
+<refentry id="OfxParametricParameterSuiteV1_parametricParamAddControlPoint">
+  <refmeta>
+    <refentrytitle><function>OfxParametricParameterSuiteV1::parametricParamAddControlPoint</function></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxParametricParameterSuiteV1::parametricParamAddControlPoint</function></refname>
+       <refpurpose>Adds a control point to the curve.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxParametricParam.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef><typename>OfxStatus</typename><function>(*parametricParamAddControlPoint)</function></funcdef>
+              <paramdef>OfxParamHandle<parameter>param</parameter></paramdef>
+              <paramdef>int  <parameter>curveIndex</parameter></paramdef>
+              <paramdef>double<parameter>time</parameter></paramdef>
+              <paramdef>double<parameter>key</parameter></paramdef>
+              <paramdef>double<parameter>value</parameter></paramdef>
+              <paramdef>bool<parameter>addAnimationKey</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>param - handle to the parametric parameter
+</listitem>
+<listitem>curveIndex - which dimension to set
+</listitem>
+<listitem>time - the time to set the value at
+</listitem>
+<listitem>key - key of the control point
+</listitem>
+<listitem>value - value of the control point
+</listitem>
+<listitem>addAnimationKey - if the param is an animatable, setting this to true will 
+force an animation keyframe to be set as well as a curve key,
+otherwise if false, a key will only be added if the curve is already
+animating.
+</listitem>
+    </itemizedlist>
+  </refsect2>
+  <refsect2>
+    <title>Description</title>
+      <para>
+This will add a new control point to the given dimension of a parametric parameter. If a key exists
+sufficiently close to 'key', then it will be set to the indicated control point.
+</para>
+
+  </refsect2>
+
+  <refsect2>
+    <title>Returns</title>
+      <para>
+
+<itemizedlist>
+  <listitem><link linkend="kOfxStatOK"><code>kOfxStatOK</code></link>            - all was fine </listitem>
+  <listitem><link linkend="kOfxStatErrBadHandle"><code>kOfxStatErrBadHandle</code></link>  - if the paramter handle was invalid</listitem>
+  <listitem><link linkend="kOfxStatErrUnknown"><code>kOfxStatErrUnknown</code></link>    - if the type is unknown</listitem>
+</itemizedlist>
+</para>
+
+  </refsect2>
+</refentry>
+
+<refentry id="OfxParametricParameterSuiteV1_parametricParamDeleteControlPoint">
+  <refmeta>
+    <refentrytitle><function>OfxParametricParameterSuiteV1::parametricParamDeleteControlPoint</function></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxParametricParameterSuiteV1::parametricParamDeleteControlPoint</function></refname>
+       <refpurpose>Deletes the nth control point from a parametric param.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxParametricParam.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef><typename>OfxStatus</typename><function>(*parametricParamDeleteControlPoint)</function></funcdef>
+              <paramdef>OfxParamHandle<parameter>param</parameter></paramdef>
+              <paramdef>int  <parameter>curveIndex</parameter></paramdef>
+              <paramdef>int  <parameter>nthCtl</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>param - handle to the parametric parameter
+</listitem>
+<listitem>curveIndex - which dimension to delete
+</listitem>
+<listitem>nthCtl - the control point to delete
+</listitem>
+    </itemizedlist>
+  </refsect2>
+</refentry>
+
+<refentry id="OfxParametricParameterSuiteV1_parametricParamDeleteAllControlPoints">
+  <refmeta>
+    <refentrytitle><function>OfxParametricParameterSuiteV1::parametricParamDeleteAllControlPoints</function></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxParametricParameterSuiteV1::parametricParamDeleteAllControlPoints</function></refname>
+       <refpurpose>Delete all curve control points on the given param.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxParametricParam.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef><typename>OfxStatus</typename><function>(*parametricParamDeleteAllControlPoints)</function></funcdef>
+              <paramdef>OfxParamHandle<parameter>param</parameter></paramdef>
+              <paramdef>int  <parameter>curveIndex</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>param - handle to the parametric parameter
+</listitem>
+<listitem>curveIndex - which dimension to clear
+</listitem>
+    </itemizedlist>
+  </refsect2>
+</refentry>
