@@ -7,6 +7,12 @@ function(get_ofx_architecture OFX_ARCH)
         if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
             set(OFX_ARCH "Win64" PARENT_SCOPE)
         endif()
+    # Visual Studio    
+    elseif(MSVC)
+        set(OFX_ARCH "Win32" PARENT_SCOPE)
+        if((${CMAKE_SYSTEM_PROCESSOR} STREQUAL "IA64") OR (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "AMD64"))
+            set(OFX_ARCH "Win64" PARENT_SCOPE)
+        endif()
     # FreeBSD
     elseif(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
         set(OFX_ARCH "FreeBSD-x86" PARENT_SCOPE)
