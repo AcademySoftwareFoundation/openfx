@@ -198,7 +198,7 @@ These are the actions passed to a plug-in's 'main' function
  -  \ref kOfxStatReplyDefault, the action was ignored,
  -  \ref kOfxStatFailed, the load action failed, no further actions will be passed to the plug-in.
  Interpret if possible  kOfxStatFailed as plug-in indicating it does not want to load 
- Do not create an entry in your UI for plug-in then.  
+ Do not create an entry in the host's UI for plug-in then.  
  Plug-in also has the option to return 0 for OfxGetNumberOfPlugins or kOfxStatFailed if host supports OfxSetHost in which case kOfxActionLoad will never be called.
  -  \ref kOfxStatErrFatal, fatal error in the plug-in.
  */
