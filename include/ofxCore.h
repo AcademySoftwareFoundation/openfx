@@ -239,7 +239,7 @@ These are the actions passed to a plug-in's 'main' function
      -  \ref kOfxImageEffectActionDescribeInContext
      will be called once for each context that the host and plug-in
      mutually support.  If a plug-in does not report to support any context supported by host, 
-	 do not display an entry in host UI.   *
+	 host should not enable the plug-in.
 
  @returns
      -  \ref kOfxStatOK, the action was trapped and all was well
@@ -590,8 +590,8 @@ OfxExport int OfxGetNumberOfPlugins(void);
 * This host call is not specified in earlier implementation of the API.
 * Therefore host must check if the plugin implemented it and not assume symbol exists.
 * The order of calls is then:  1) OfxGetHost, 2) OfxGetNumberOfPlugins, 3) OfxGetPlugin
-* This pointer is only assumed valid until OfxGetPlugin where it might get reset.
-* Plug-in can return kOfxStatFailed to indicate it has nothing to do here, it's not for this Host and it should be skipped silently..
+* The host pointer is only assumed valid until OfxGetPlugin where it might get reset.
+* Plug-in can return kOfxStatFailed to indicate it has nothing to do here, it's not for this Host and it should be skipped silently.
 */
 
 OfxExport  OfxStatus OfxSetHost(const OfxHost *host);
@@ -917,7 +917,7 @@ General status codes start at 1 and continue until 999
 /** @brief Status code indicating all was fine */
 #define kOfxStatOK 0
 
-/** @brief Status error code for a failed operation. During kOfxActionLoad if possible can you assume returning kOfxStatFailed is done silently and is to be interpreted as plug-in is explicitetly not supporting this Host.Version as opposed to an actual error */
+/** @brief Status error code for a failed operation. */
 #define kOfxStatFailed  ((int)1)
 
 /** @brief Status error code for a fatal error
