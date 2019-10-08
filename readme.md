@@ -27,6 +27,10 @@ An application which allows you to manipulate a video timeline by adding, removi
 ### Compositor
 An application which allows you build a video clip by layering video clips, still images, and effects.
 
+## Contributing
+
+Please read the [Contribution Guidelines](https://github.com/ofxa/openfx/wiki/Extending-OpenFX-Guidelines) for how to submit pull requests for fixes and changes to the standard.
+
 ## About the Open Effects Association
 
 The Open Effects Association (OFX), a non-profit organization, develops and promotes open standards across the visual effects community. The founding members come from Assimilate, Autodesk, Digieffects, FilmLight, The Foundry, GenArts and RE:Vision FX. These are companies which have helped artists create ground-breaking VFX shots on nearly every blockbuster movie.
