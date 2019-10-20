@@ -4,7 +4,7 @@
 /*
 Software License :
 
-Copyright (c) 2003-2015, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2003-2019, The Open Effects Association Ltd. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -992,6 +992,21 @@ See the documentation on clip preferences for more details on how this is used w
 /** Used to flag an image as unpremultiplied */
 #define kOfxImageUnPreMultiplied "OfxImageAlphaUnPremultiplied"
 
+/** @brief Indicates whether an effect should premultiply or not on output.
+This provides clarification for generators or effect where input is kOfxImageOpaque.
+
+- Type - string X 1
+- Property Set - a plugin  instance (read only)
+- Default - 0
+Valid Values - This must be one of
+
+- kOfxImagePreMultiplied   - the image is premultiplied by its alpha
+- kOfxImageUnPreMultiplied - the image is unpremultiplied
+
+This Property defines an host level policy.
+*/
+
+#define kOfxImageEffectHostDesiredPremult "OfxImageEffectHostDesiredPremult"
 
 /** @brief Indicates the bit depths support by a plug-in or host
     
