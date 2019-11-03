@@ -2,6 +2,7 @@ Please ask questions ("how do I...?") on the [forum](https://groups.google.com/f
 
 Read the contribution [guidelines](https://github.com/ofxa/openfx/wiki/Extending-OpenFX-Guidelines#submit-a-proposal-or-bug-report-to-review) first.
 
+If you're proposing a change to the standard, please use the [standard-change issue template](http://github.com/ofxa/openfx/issues/new?template=standard-change.md) instead of this template.
 
 ### Problem
 
