@@ -935,7 +935,8 @@ then the plugin can detect this via an identifier change and re-evaluate the cac
    - Property Set -  clip instance (read only)
    - Default - 0
 
-This value should be added to the internal frame number when displayed in a plugin user interface
+Plugins should add this value to internal OFX frame numbers when displayed in a plugin user interface, so the user will see the
+same frame numbers as they see in the host's UI.
 */
 #define kOfxImageClipPropDisplayTimeOffset "kOfxImageClipPropDisplayTimeOffset"
 
