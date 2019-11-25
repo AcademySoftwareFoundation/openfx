@@ -594,7 +594,7 @@ OfxExport int OfxGetNumberOfPlugins(void);
 * Plug-in can return kOfxStatFailed to indicate it has nothing to do here, it's not for this Host and it should be skipped silently.
 */
 
-OfxExport  OfxStatus OfxSetHost(const OfxHost *host);
+OfxExport  OfxStatus OfxGetHost(const OfxHost *host);
 
 /**
    \defgroup PropertiesAll Ofx Properties
