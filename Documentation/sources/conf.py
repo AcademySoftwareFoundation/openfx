@@ -29,8 +29,8 @@ if read_the_docs_build:
     subprocess.call('cd ../../include ; doxygen ofx.doxy', shell=True)
     ps = subprocess.Popen("git rev-parse HEAD | git ls-remote --heads origin | grep $(git rev-parse HEAD) | cut -d / -f 3",shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
     branch_name=ps.communicate()[0]
-    branch_name=branch_name.rstrip()
-    print "Current branch is:", branch_name
+    branch_name=branch_name.rstrip().decode('utf-8')
+    print(f'Current branch is: {branch_name}')
     # Modify index.rst
     with open('index.rst.tmp','w') as fo:
         with open('index.rst') as f:
@@ -83,7 +83,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'OpenFX'
-copyright = u'2018, ofxa'
+copyright = u'2019, ofxa'
 author = u'ofxa'
 
 # The version info for the project you're documenting, acts as replacement for
