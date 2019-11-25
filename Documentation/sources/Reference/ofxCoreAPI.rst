@@ -42,12 +42,12 @@ the two.
 
 .. doxygenfunction:: OfxGetPlugin
 
-.. _OfxSetHost:
+.. _OfxGetHost:
 
 .. doxygenfunction:: OfxSetHost
 
 
-``OfxSetHost`` is the very first function called by the host after the binary has been loaded. Then ``OfxGetNumberOfPlugins`` is called. The returned pointer to OfxGetPlugin and pointers in the struct do not need to be freed in any way by the host. Older applications might not support OfxSetHost, make sure to verify it exists. 
+``OfxGetHost`` is the very first function called by the host after the binary has been loaded. Then ``OfxGetNumberOfPlugins`` is called. The returned pointer to OfxGetPlugin and pointers in the struct do not need to be freed in any way by the host. Older applications might not support OfxGetHost, make sure to verify it exists. 
    
 
 .. _mainEntryPoint:
