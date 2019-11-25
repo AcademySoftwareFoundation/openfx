@@ -176,9 +176,10 @@ including an alpha channel. Ideally it should be at least 128x128
 pixels.
 
 Note that a single plug-in binary may define more than one effect,
-when ``OfxGetNumberOfPlugins`` returns a value greater than 1. These
-icons are specific to each effect within the plug-in, and are named
-according to what is returned from ``OfxGetPlugin``.
+when :ref:`OfxGetNumberOfPlugins<OfxGetNumberOfPlugins>` returns a
+value greater than 1. These icons are specific to each effect within
+the plug-in, and are named according to what is returned from
+:ref:`OfxGetPlugin<OfxGetPlugin>`.
 
 Host applications should dynamically resize the icon to fit their
 preferred icon size. The icon should not have its aspect changed,
