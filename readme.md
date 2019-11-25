@@ -36,3 +36,33 @@ Please read the [Contribution Guidelines](https://github.com/ofxa/openfx/wiki/Ex
 The Open Effects Association (OFX), a non-profit organization, develops and promotes open standards across the visual effects community. The founding members come from Assimilate, Autodesk, Digieffects, FilmLight, The Foundry, GenArts and RE:Vision FX. These are companies which have helped artists create ground-breaking VFX shots on nearly every blockbuster movie.
 
 The Association's initial focus is to improve the OpenFX image processing plug-in standard. This goal of this standard is to reduce development effort and support needed for plug-ins across different compositing and editing host platforms.
+
+# Building Docs
+
+Buildthedocs.io will auto-build whenever changes are pushed to master.
+But to build the docs yourself, e.g. to check that your updates look
+right, you can do your own doc build.
+
+Right now building the docs is somewhat manual. The below assumes
+Linux, but Mac is similar.
+
+## Prerequisites
+
+* Install doxygen (Linux: `sudo apt install doxygen`)
+* Create a python3 virtualenv: `python -mvenv ofx-docgen`
+* Activate it: `source ofx-docgen/bin/activate`
+* Install the python requirements in that virtualenv: `pip install -r Documentation/pipreq.txt`
+
+(Virtualenv is recommended, but not required; you could install the reqs into your
+system python if you like.)
+
+## Build:
+
+* Make sure your virtualenv above is activated: `source ofx-docgen/bin/activate`
+* Build the doxygen docs: `cd include; doxygen ofx.doxy; cd -` (you'll see
+  some warnings)
+* Build the sphinx docs:
+  `cd Documentation; sphinx-build -b html sources build`
+* Now open
+  file:///path/to/your/ofx/openfx/Documentation/build/index.html in
+  your browser; your changes should be there.
