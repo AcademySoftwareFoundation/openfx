@@ -13,19 +13,25 @@ def getPropertiesFromDir(sourcePath, recursive, props):
             else:
                 getPropertiesFromDir(absF,recursive,props)
     elif os.path.isfile(sourcePath):
-        with open(sourcePath) as f:
-            lines = f.readlines()
-            for l in lines:
-                # Detect lines that correspond to a property definition, e.g:
-                # #define kOfxPropLala "OfxPropLala"
-                splits=l.split(' ')
-                if len(splits) != 3:
-                    continue
-                if splits[0] != '#define':
-                    continue
-                if 'Prop' in splits[1] and splits[1] != 'kOfxPropertySuite':
-                    #if l.startswith('#define kOfx') and 'Prop' in l:
-                    props.append(splits[1])
+        ext = os.path.splitext(sourcePath)[1]
+        if ext.lower() in ('.c', '.cxx', '.cpp', '.h', '.hxx', '.hpp'):
+            with open(sourcePath) as f:
+                try:
+                    lines = f.readlines()
+                except UnicodeDecodeError as e:
+                    print('WARNING: error in', sourcePath, ':')
+                    raise e
+                for l in lines:
+                    # Detect lines that correspond to a property definition, e.g:
+                    # #define kOfxPropLala "OfxPropLala"
+                    splits=l.split(' ')
+                    if len(splits) != 3:
+                        continue
+                    if splits[0] != '#define':
+                        continue
+                    if 'Prop' in splits[1] and splits[1] != 'kOfxPropertySuite':
+                        #if l.startswith('#define kOfx') and 'Prop' in l:
+                        props.append(splits[1])
     else:
         raise ValueError('No such file or directory: %s' % sourcePath)
 

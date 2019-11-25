@@ -61,6 +61,8 @@ system python if you like.)
 ## Build:
 
 * Make sure your virtualenv above is activated: `source ofx-docgen/bin/activate`
+* Generate references:
+  `python Documentation/genPropertiesReference.py -i include -o Documentation/sources/Reference/ofxPropertiesReference.rst -r`
 * Build the doxygen docs: `cd include; doxygen ofx.doxy; cd -` (you'll see
   some warnings)
 * Build the sphinx docs:
