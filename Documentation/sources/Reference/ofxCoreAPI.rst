@@ -42,7 +42,7 @@ Plug-ins must implement two exported functions for a host to identify the plug-i
 
 .. _OfxGetHost:
 
-.. doxygenfunction:: OfxSetHost
+.. doxygenfunction:: OfxGetHost
 
 
 ``OfxGetHost`` is the very first function called by the host after the binary has been loaded. Then ``OfxGetNumberOfPlugins`` is called. The returned pointer to OfxGetPlugin and pointers in the struct do not need to be freed in any way by the host. Older applications might not support OfxGetHost, plug-ins must make sure to verify it exists if they depend on it and Hosts are not guaranteed it exists in the dynamic library.  
