@@ -13,8 +13,7 @@ Please read the contribution [guidelines](https://github.com/ofxa/openfx/wiki/Ex
 - [ ] Identify subcommittee: at least one plug-in vendor, and at least one host
 - [ ] Discuss the idea in this issue
 - [ ] Write new or updated code and doc
-- [ ] Publish updates as a pull request on a `feature/PROPOSAL-NAME` branch (branch is optional but keeps things
-  clean)
+- [ ] Publish updates as a pull request (ideally on a `feature/PROPOSAL-NAME` branch)
    - [ ] Make sure that PR references this issue number to keep them in sync
    - [ ] Discuss and review code in the PR
    - [ ] Meet all requirements below for accepting PR
@@ -30,6 +29,14 @@ Please read the contribution [guidelines](https://github.com/ofxa/openfx/wiki/Ex
 - [ ] At least two members sign off
 - [ ] No further changes requested from membership
 
+## Summary
+
+Describe the change succintly in one or two sentences.
+
+## Motivation
+
+Why is this change proposed?
+
 ## Problem
 
 What problem does this proposed change solve? Be specific, concise, and clear.
@@ -43,6 +50,12 @@ change?
 How will hosts and plugins negotiate use of this change? Show how it works when a host implements 
 it but not plugin and vice versa.
 
+## Documentation Impact
+
+What changes to the docs are needed for this change?
+
 ## Stakeholders
 
 Who will benefit from this proposed change? Plug-ins, hosts, or both? Specific types of hosts?
+
+## Discussion
