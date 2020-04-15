@@ -13,16 +13,36 @@ Please read the contribution [guidelines](https://github.com/ofxa/openfx/wiki/Ex
 - [ ] Tag this issue with `standard change` tag
 - [ ] Identify subcommittee: at least one plug-in vendor, and at least one host
 - [ ] Discuss the idea in this issue
-- [ ] Write new or updated code
-- [ ] Publish updates as a pull request on a `feature/PROPOSAL-NAME` branch
+- [ ] Write new or updated code and doc
+- [ ] Publish updates as a pull request on a `feature/PROPOSAL-NAME` branch (branch is optional but keeps things
+  clean)
    - [ ] Make sure that PR references this issue number to keep them in sync
    - [ ] Discuss and review code in the PR
+   - [ ] Meet all requirements below for accepting PR
 - [ ] When subcommittee signs off and other members don't have any further review comments, 
       maintainer merges PR to master which closes PR and issue
+
+## Requirements for accepting a standard change:
+- [ ] Header files updated
+- [ ] Documentation updated
+- [ ] Release notes added
+- [ ] Compatibility review completed
+- [ ] Working code demonstrated with at least one host and one plugin
+- [ ] At least two members sign off
+- [ ] No further changes requested from membership
 
 ## Problem
 
 What problem does this proposed change solve? Be specific, concise, and clear.
+
+## Impact
+
+Is this a new feature (no compatibility impact), a change to an existing function suite (version
+the suite to avoid compatibility issues), a change to an existing property, or a documentation
+change?
+
+How will hosts and plugins negotiate use of this change? Show how it works when a host implements 
+it but not plugin and vice versa.
 
 ## Stakeholders
 
