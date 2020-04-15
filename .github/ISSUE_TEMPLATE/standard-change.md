@@ -1,8 +1,7 @@
 ---
 name: Standard Change Proposal
 about: Use this template to propose a change to the OFX Standard
-title: ''
-labels: standard-change
+labels: standard change
 ---
 # Open Effects Proposal for Standard Change
 
