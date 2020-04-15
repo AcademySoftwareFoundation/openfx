@@ -1,3 +1,9 @@
+---
+name: Standard Change Proposal
+about: Use this template to propose a change to the OFX Standard
+title: ''
+labels: standard-change
+---
 # Open Effects Proposal for Standard Change
 
 Please read the contribution [guidelines](https://github.com/ofxa/openfx/wiki/Extending-OpenFX-Guidelines#submit-a-proposal-or-bug-report-to-review) first.
