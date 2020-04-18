@@ -30,9 +30,7 @@ These are...
 Identifying and Loading Plug-ins
 --------------------------------
 
-Plug-ins must implement two exported functions for a host to identify
-the plug-ins and to initiate the boot strapping of communication between
-the two. 
+Plug-ins must implement two exported functions for a host to identify the plug-ins and to initiate the boot strapping of communication between the two. 
 
 .. _OfxGetNumberOfPlugins:
 
@@ -42,11 +40,12 @@ the two.
 
 .. doxygenfunction:: OfxGetPlugin
 
+.. _OfxGetHost:
+
+.. doxygenfunction:: OfxGetHost
 
 
-``OfxGetNumberOfPlugins`` is the very first function called by the host after the binary has been
-loaded.
-The returned pointer to OfxGetPlugin and pointers in the struct do not need to be freed in any way by the host.
+``OfxGetHost`` is the very first function called by the host after the binary has been loaded. Then ``OfxGetNumberOfPlugins`` is called. The returned pointer to OfxGetPlugin and pointers in the struct do not need to be freed in any way by the host. Older applications might not support OfxGetHost, plug-ins must make sure to verify it exists if they depend on it and Hosts are not guaranteed it exists in the dynamic library.  
    
 
 .. _mainEntryPoint:
@@ -54,17 +53,12 @@ The returned pointer to OfxGetPlugin and pointers in the struct do not need to b
 The Plug-in Main Entry Point And Actions
 ----------------------------------------
 
-Actions are how a host communicates with a plug-in. They are in effect
-generic function calls. Actions are issued via a plug-in's ``mainEntry``
-function pointer found in its :ref:`OfxPlugin struct<OfxPlugin>`. The function
-signature for the main entry point is
+Actions are how a host communicates with a plug-in. They are in effect generic function calls. Actions are issued via a plug-in's ``mainEntry``function pointer found in its :ref:`OfxPlugin struct<OfxPlugin>`. The function signature for the main entry point is
 
 .. doxygentypedef:: OfxPluginEntryPoint
 
 
-The :ref:`OfxStatus<statusCodes>` value returned is dependant upon the action being
-called, however the value :c:macro:`kOfxStatReplyDefault` is returned if the
-plug-in does not trap the action.
+The :ref:`OfxStatus<statusCodes>` value returned is dependant upon the action being called, however the value :c:macro:`kOfxStatReplyDefault` is returned if the plug-in does not trap the action.
 
 The exact set of actions passed to a plug-in's entry point are dependent
 upon the API the plug-in implements. However, there exists a core set of
