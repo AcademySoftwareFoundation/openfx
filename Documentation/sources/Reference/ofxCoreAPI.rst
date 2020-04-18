@@ -30,7 +30,12 @@ These are...
 Identifying and Loading Plug-ins
 --------------------------------
 
-Plug-ins must implement two exported functions for a host to identify the plug-ins and to initiate the boot strapping of communication between the two. 
+Plug-ins must implement at least two, and normally three, exported functions for a host to identify
+the plug-ins and to initiate the bootstrapping of communication between the two. 
+
+.. _OfxSetHost:
+
+.. doxygenfunction:: OfxSetHost
 
 .. _OfxGetNumberOfPlugins:
 
@@ -40,12 +45,15 @@ Plug-ins must implement two exported functions for a host to identify the plug-i
 
 .. doxygenfunction:: OfxGetPlugin
 
-.. _OfxGetHost:
 
-.. doxygenfunction:: OfxGetHost
+``OfxSetHost`` is the very first function called by the host after the binary has been
+loaded, if it is implemented by the plugin. It passes an :ref:`ofxHost` struct to the plugin
+to enable the plugin to decide which effects to expose to the host. 
+COMPAT: this call was introduced in 2020; some hosts and/or plugins may not implement it.
 
-
-``OfxGetHost`` is the very first function called by the host after the binary has been loaded. Then ``OfxGetNumberOfPlugins`` is called. The returned pointer to OfxGetPlugin and pointers in the struct do not need to be freed in any way by the host. Older applications might not support OfxGetHost, plug-ins must make sure to verify it exists if they depend on it and Hosts are not guaranteed it exists in the dynamic library.  
+``OfxGetNumberOfPlugins`` is the next function called by the host after the binary has been
+loaded and ``OFXSetHost`` has been called.
+The returned pointer to OfxGetPlugin and pointers in the struct do not need to be freed in any way by the host.
    
 
 .. _mainEntryPoint:
