@@ -587,9 +587,9 @@ OfxExport int OfxGetNumberOfPlugins(void);
 
 /** @brief First thing host should call
 *
-* This host call is not specified in earlier implementation of the API.
+* This host call, added in 2020, is not specified in earlier implementation of the API.
 * Therefore host must check if the plugin implemented it and not assume symbol exists.
-* The order of calls is then:  1) OfxGetHost, 2) OfxGetNumberOfPlugins, 3) OfxGetPlugin
+* The order of calls is then:  1) OfxSetHost, 2) OfxGetNumberOfPlugins, 3) OfxGetPlugin
 * The host pointer is only assumed valid until OfxGetPlugin where it might get reset.
 * Plug-in can return kOfxStatFailed to indicate it has nothing to do here, it's not for this Host and it should be skipped silently.
 */
