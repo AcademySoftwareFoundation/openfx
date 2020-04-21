@@ -6,46 +6,46 @@ Image Effect Clip Preferences
 The
 :c:macro:`kOfxImageEffectActionGetClipPreferences`
 action is passed to an effect to allow a plugin to specify how it wishes
-to deal with it's input clips and to set properties in it's output clip.
-This is especially important when there are multiple inputs of which my
-have differing properties, eg; pixel depth.
+to deal with its input clips and to set properties in its output clip.
+This is especially important when there are multiple inputs which may
+have differing properties such as pixel depth and number of channels.
 
 More specifically, there are six properties that can be set during the
 clip preferences action, some on the input clip, some on the output
-clip, some on both. These are...
+clip, some on both. These are:
 
--  the depth of a clip's pixels, input or output clip,
--  the components of a clip's pixels, input or output clip,
--  the pixel aspect ratio of a clip, input or output clip,
--  the frame rate of the output clip,
--  the fielding of the output clip,
--  the premultiplication state of the output clip,
+-  the depth of a clip's pixels, input or output clip
+-  the components of a clip's pixels, input or output clip
+-  the pixel aspect ratio of a clip, input or output clip
+-  the frame rate of the output clip
+-  the fielding of the output clip
+-  the premultiplication state of the output clip
 -  whether the output clip varys from frame to frame, even if no
-   paramerters or input images change over time,
+   paramerters or input images change over time
 -  whether the output clip can be sampled at sub-frame times and produce
-   different images.
+   different images
 
 The behaviour specified by OFX means that a host may need to cast images
 from their native data format into one suitable for the plugin. It is
-better that the host do any of this pixel shuffling because,
+better that the host do any of this pixel shuffling because:
 
--  the behaviour is orthogonal for all plugins on that host,
--  the code is not replicated in all plugins,
+-  the behaviour is orthogonal for all plugins on that host
+-  the code is not replicated in all plugins
 -  the host can optimise the pixel shuffling in one pass with any other
-   data grooming it may need to do.
+   data grooming it may need to do
 
 A plugin gets to assert its clip preferences in several situations.
 Firstly whenever a clip is attached to a plugin, secondly whenever one
 of the parameters in the plugin property
 :c:macro:`kOfxImageEffectPropClipPreferencesSlaveParam`
 has its value changed. The clip preferences action is never called until
-all non optional clips have been attached to the plugin.
+all non-optional clips have been attached to the plugin.
 
 .. note::
 
     -  these properties cannot animate over the duration of an effect
     -  that the ability to set input and output clip preferences is restricted by the context of an effect
-    -  optional input clips do not have any context specific restrictions on plugin set preferences.
+    -  optional input clips do not have any context specific restrictions on plugin set preferences
 
 .. _ImageEffectClipPreferencesFrameVarying:
 Frame Varying Effects
@@ -56,13 +56,13 @@ even if no parameters animate or no input images change. The
 :c:macro:`kOfxImageEffectFrameVarying`
 property set in the clip preferences action is used to flag this.
 
-A counter example is a solid colour generator. If it has no animating
+A counterexample is a solid colour generator. If it has no animating
 parameters, the image generated at frame 0 will be the same as the image
-generated at any other frame. Intellegent hosts can render a single
+generated at any other frame. Intelligent hosts can render a single
 frame and cache that for use at all other times.
 
-On the other hand, a plugin that generates random noise at each frame,
-and seeds its random number generator with the render time, will create
+On the other hand, a plugin that generates random noise at each frame
+and seeds its random number generator with the render time will create
 different images at different times. The host cannot render a single
 frame and cache that for use at subsequent times.
 
@@ -76,15 +76,15 @@ input images or parameters vary. The default value is 0.
 Continuously Sampled Effects
 ----------------------------
 
-Some effects can generate images at non frame boundaries, even if the
-inputs to the effect are frame based and there is no animation.
+Some effects can generate images at non frame-time boundaries, even if
+the inputs to the effect are frame based and there is no animation.
 
 For example a fractal cloud generator whose pattern evolves with a speed
 parameter can be rendered at arbitrary times, not just on frame
-boundaries. Hosts that are interested in sub frame rendering can
-determine this by behaviour by examining the
+boundaries. Hosts that are interested in sub-frame rendering can
+determine that the plugin supports this behaviour by examining the
 :c:macro:`kOfxImageClipPropContinuousSamples`
-property set in the clip preferences action. By default this is false.
+property set in the clip preferences action. By default this is ``false``.
 
 .. note ::
 
@@ -106,7 +106,7 @@ of an effect's input and output clips to a single depth, even if the
 actual clips are of differing depths.
 In the above two cases, the common component depth chosen will be the
 deepest depth of any input clip mapped to a depth the plugin supports
-that loses the least precision. eg: if a plugin supported 8 bit and
+that loses the least precision. E.g.: if a plugin supported 8 bit and
 float images, but the deepest clip attached to it was 16 bit, the host
 would transparently map all clips to float.
 
@@ -169,7 +169,7 @@ there are no inputs.
 
 .. note::
 
-    It a host implementation detail as to how a host actually attaches real
+    It is a host implementation detail as to how a host actually attaches real
     clips to a plugin. For instance, a host may allow a YUVA clip to be
     wired to an input that asks for RGBA only. However it must map the clip
     to RGBA in a manner that is transparent to the plugin. Similarly for any
@@ -217,7 +217,7 @@ then a plugin may do so during the
 :c:macro:`kOfxImageEffectActionGetClipPreferences`
 by setting the property
 :c:macro:`kOfxImageClipPropFieldOrder` in
-the out args argumment of the action. For example a defielding plugin
+the out args argument of the action. For example a defielding plugin
 will want to indicate that the output is frame based rather than
 fielded.
 
@@ -229,14 +229,14 @@ The
 host property indicates if a plugin is able to change the frame rate of
 the output clip from the default.
 
-The default value of the output clip's frame rate is host dependant, but
-in general, it will be based on the input clips frame rates.
+The default value of the output clip's frame rate is host dependent, but
+in general, it will be based on the input clips' frame rates.
 
 If the host allows a plugin to specify the frame rate of the output
 clip, then a plugin may do so during the
 :c:macro:`kOfxImageEffectActionGetClipPreferences`.
 For example a deinterlace plugin that separates both fields from fielded
-footage will want to do double the frame rate of the output clip.
+footage will want to double the frame rate of the output clip.
 
 If a plugin changes the frame rate, it is effectively changing the
 number of frames in the output clip. If our hypothetical deinterlace
@@ -247,19 +247,19 @@ frames on output.
 
 ::
 
-       FIELDED SOURCE      0.0 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 ....
-       DEINTELACED OUTPUT  0   1   2   3   4   5   6   7   8   9 
+       FIELDED SOURCE       0.0 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 ....
+       DEINTERLACED OUTPUT  0   1   2   3   4   5   6   7   8   9
 
-The maping of the number of output frames is...
+The mapping of the number of output frames is:
 
 ::
 
-        nFrames' = nFrames * FPS' / FPS 
+        nFrames' = nFrames * FPS' / FPS
 
--  nFrames is the default number of frames,
--  nFrames' is the new number of output frames,
--  FPS is the default frame rate,
--  FPS' is the new frame rate specified by a plugin.
+-  ``nFrames`` is the default number of frames,
+-  ``nFrames'`` is the new number of output frames,
+-  ``FPS`` is the default frame rate,
+-  ``FPS'`` is the new frame rate specified by a plugin.
 
 Specifying Premultiplication
 ----------------------------
@@ -268,10 +268,12 @@ All clips have a premultiplication state (see `this <http://www.teamten.com/lawr
 for a nice explanation).
 An effect cannot map the premultiplication state of the
 input clips, but it can specify the premultiplication state of the
-output clip.
+output clip via
+:c:macro:`kOfxImageEffectPropPreMultiplication`, setting that to
+:c:macro:`kOfxImagePreMultiplied` or :c:macro:`kOfxImageUnPreMultiplied`.
 
 The output's default premultiplication state is...
 
--  premultiplied if any of the inputs are premultiplied,
--  otherwise unpremultiplied if any of the inputs are unpremultiplied,
--  otherwise opaque.
+-  premultiplied if any of the inputs are premultiplied
+-  otherwise unpremultiplied if any of the inputs are unpremultiplied
+-  otherwise opaque
