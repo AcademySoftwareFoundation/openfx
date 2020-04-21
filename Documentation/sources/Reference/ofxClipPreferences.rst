@@ -162,16 +162,16 @@ cannot have their component types remapped, nor can the output. Optional
 input clips can always have their component types remapped.
 
 In the general context, all input clips may be remapped, as can the
-output clip. The output clip has it's default components set to be, -
-RGBA if any of the inputs is RGBA, - otherwise YUVA if any of the inputs
-is YUVA, - otherwise A if the effect has any inputs, - otherwise RGBA if
-there are no inputs.
+output clip. The output clip has its default components set to be:
+
+- RGBA if any of the inputs is RGBA
+- otherwise A if the effect has any inputs
+- otherwise RGBA if there are no inputs.
 
 .. note::
 
     It is a host implementation detail as to how a host actually attaches real
-    clips to a plugin. For instance, a host may allow a YUVA clip to be
-    wired to an input that asks for RGBA only. However it must map the clip
+    clips to a plugin. However it must map the clip
     to RGBA in a manner that is transparent to the plugin. Similarly for any
     other component types that the plugin does not support on an input.
 
