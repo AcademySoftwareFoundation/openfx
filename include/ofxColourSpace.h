@@ -121,9 +121,15 @@ extern "C" {
 
 - Type - double X 1
 - Default: 1.0  - linear
-- Valid Values - can be any positive value, usual suspects are 2.2, 2.4, 2.6
+- Property:  Read-Only
+- Valid Values - can be any positive value, usual suspects are 1.0, 2.2, 2.4, 2.6
 
-	This property is slightly orthogonal to the other ones in this property set. The main purpose is for a plug-in to internally linearize and delinearize non-destructively in a less arbitrary way.
+	This property is slightly orthogonal to the other properties in this set. The Host only provides the info. 
+	The main purpose is for a plug-in to internally linearize and delinearize non-destructively in a less arbitrary way.
+	This does not change what the plug-in gets or what the plugin returns to the host.
+	An host might have at project level a UI switch allowing users to work linear or color managed. This reduce the chances that such thing breaks a user setup.
+	A plugin might have a library that is assuming a gamma value (even if 1.0), this provides a way for plugin to linearize or delinearize based on information provided by host.
+	
 */
 #define kOfxImageEffectPropColourSpaceApproximateGamma "kOfxImageEffectPropColourApproximateGamma"
 
