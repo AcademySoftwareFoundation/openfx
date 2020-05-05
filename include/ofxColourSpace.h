@@ -4,7 +4,7 @@
 /*
 Software License :
 
-Copyright (c) 2003-2019, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2003-2020, The Open Effects Association Ltd. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -117,6 +117,15 @@ extern "C" {
 
 #define kOfxImageClipPropColourSpace "OfxImageClipPropColourSpace"
 
+/** @brief The approximate gamma value
+
+- Type - double X 1
+- Default: 1.0  - linear
+- Valid Values - can be any positive value, usual suspects are 2.2, 2.4, 2.6
+
+	This property is slightly orthogonal to the other ones in this property set. The main purpose is for a plug-in to internally linearize and delinearize non-destructively in a less arbitrary way.
+*/
+#define kOfxImageEffectPropColourSpaceApproximateGamma "kOfxImageEffectPropColourApproximateGamma"
 
 
 ifdef __cplusplus
