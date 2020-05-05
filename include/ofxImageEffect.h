@@ -994,20 +994,27 @@ version 1.5 and over:  See kOfxImageEffectHostDesiredPremult and how it interact
 #define kOfxImageUnPreMultiplied "OfxImageAlphaUnPremultiplied"
 
 /** @brief Indicates whether an effect should premultiply or not on output.
-Added in version 1.5: This provides clarification for generators or effect where input is kOfxImageOpaque.
+Added in version 1.5: This provides clarification for generators or effect when input is kOfxImageOpaque.
 
 - Type - string X 1
-- Property Set - a plugin  instance (read only). Ideally this information should already be available at parameter creation stage.
-Valid Values - This must be one of
+- Property Set - a plugin  instance (read only). 
 
+Valid Values - This must be one of
 - kOfxImagePreMultiplied   - the image is premultiplied by its alpha
 - kOfxImageUnPreMultiplied - the image is unpremultiplied
 
-This Property defines an host level policy. It is for practical purposes considered global in the scope of a Project.
+This Property defines an host level policy. We assume an host is either one of the two options.
+This information should already be available at parameter creation stage.
 
-Recommended Interpretation: If an host adds support for OfxImageEffectHostDesiredPremult, the host should set on the output the same value on output clip kOfxImageEffectPropPreMultiplication preference 
-::kOfxImageEffectActionGetClipPreference. A plugin that does not touch the alpha channel can reset output to kOfxImageOpaque when input was that or the effect fills completely the alpha channel. 
-This guarantees that the host knows that the kOfxImageOpaque property is reliable.
+@returns
+- ::kOfxStatOK			- the property set was found and returned
+- ::kOfxStatErrUnsupported- if the property is not supported
+
+Expected Interpretation: If an host adds support for the OfxImageEffectHostDesiredPremult property, that host should set the kOfxImageEffectPropPreMultiplication property on
+the output of ::kOfxImageEffectActionGetClipPreference to the desired premultiplication value. 
+Then a plugin that does not touch the alpha channel can reset the clip preference output to kOfxImageOpaque when the input clip was set to kOfxImageOpaque or the effect fills completely opaque the alpha channel. 
+This guarantees that the host knows that the kOfxImageOpaque property is reliable outside of the context of a direct connection to source footage. 
+This should be queryable during parameter creation for effects that currently have a parameter for that so they can hide it or remove it when this property is supported.
 */
 
 #define kOfxImageEffectHostDesiredPremult "OfxImageEffectHostDesiredPremult"
