@@ -94,15 +94,20 @@ typedef enum OfxDrawLineStipplePattern
 } OfxDrawLineStipplePattern;
 	
 /** @brief Defines valid values for OfxDrawSuiteV1::draw */
+
 typedef enum OfxDrawPrimitive
 {
 	kOfxDrawPrimitiveLines,
 	kOfxDrawPrimitiveLineStrip,
 	kOfxDrawPrimitiveLineLoop,
-	kOfxDrawPrimitiveRectangles,
+	kOfxDrawPrimitiveRectangle, /* 2 points*/
 	kOfxDrawPrimitivePolygon,
 	kOfxDrawPrimitiveEllipse
 } OfxDrawPrimitive;
+
+#if 0  // temp for hosts who have pre-official release in the wild
+#define kOfxDrawPrimitiveRectangles kOfxDrawPrimitiveRectangle
+#endif
 
 /** @brief Defines text alignment values for OfxDrawSuiteV1::drawText */
 enum
