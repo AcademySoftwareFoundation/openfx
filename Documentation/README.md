@@ -14,9 +14,9 @@ Linux, but Mac is similar.
 ## Prerequisites
 
 * Install doxygen (Linux: `sudo apt install doxygen`)
-* Create a python3 virtualenv: `python -mvenv ofx-docgen`
+* Create a python3 virtualenv: `python -mvenv ofx-docgen` (may need to do `apt install python3.8-venv` first)
 * Activate it: `source ofx-docgen/bin/activate`
-* Install the python requirements in that virtualenv: `pip install -r Documentation/pipreq.txt`
+* Install the python requirements in that virtualenv (e.g. Sphinx): `pip install -r Documentation/pipreq.txt`
 
 (Virtualenv is recommended, but not required; you could install the reqs into your
 system python if you like.)
@@ -30,6 +30,7 @@ system python if you like.)
   some warnings)
 * Build the sphinx docs:
   `cd Documentation; sphinx-build -b html sources build`
+* Note that you can do all the above using the build script in `Documentation/build.sh`.
 * Now open
   file:///path/to/your/ofx/openfx/Documentation/build/index.html in
   your browser; your changes should be there.
