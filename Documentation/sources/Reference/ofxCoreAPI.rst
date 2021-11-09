@@ -12,7 +12,7 @@ OFX Include Files
 
 The *C* include files that define an OFX API are all that are needed by
 a plug-in or host to implement the API. Most include files define a set
-of independant *suites* which are used by a plug-in to communicate with
+of independent *suites* which are used by a plug-in to communicate with
 a host application.
 
 There are two include files that are used with nearly every derived API.
@@ -31,7 +31,7 @@ Identifying and Loading Plug-ins
 --------------------------------
 
 Plug-ins must implement at least two, and normally three, exported functions for a host to identify
-the plug-ins and to initiate the bootstrapping of communication between the two. 
+the plug-ins and to initiate the bootstrapping of communication between the two.
 
 .. _OfxSetHost:
 
@@ -48,13 +48,13 @@ the plug-ins and to initiate the bootstrapping of communication between the two.
 
 ``OfxSetHost`` is the very first function called by the host after the binary has been
 loaded, if it is implemented by the plugin. It passes an :ref:`ofxHost` struct to the plugin
-to enable the plugin to decide which effects to expose to the host. 
+to enable the plugin to decide which effects to expose to the host.
 COMPAT: this call was introduced in 2020; some hosts and/or plugins may not implement it.
 
 ``OfxGetNumberOfPlugins`` is the next function called by the host after the binary has been
 loaded and ``OFXSetHost`` has been called.
 The returned pointer to OfxGetPlugin and pointers in the struct do not need to be freed in any way by the host.
-   
+
 
 .. _mainEntryPoint:
 
@@ -66,7 +66,9 @@ Actions are how a host communicates with a plug-in. They are in effect generic f
 .. doxygentypedef:: OfxPluginEntryPoint
 
 
-The :ref:`OfxStatus<statusCodes>` value returned is dependant upon the action being called, however the value :c:macro:`kOfxStatReplyDefault` is returned if the plug-in does not trap the action.
+The :ref:`OfxStatus<statusCodes>` value returned is dependent upon the action being
+called; however the value :c:macro:`kOfxStatReplyDefault` is returned if the
+plug-in does not trap the action.
 
 The exact set of actions passed to a plug-in's entry point are dependent
 upon the API the plug-in implements. However, there exists a core set of
@@ -81,8 +83,8 @@ host needs to implement is defined by the API being implemented. A suite
 is fetched from a host via the :cpp:func:`OfxHost::fetchSuite` function. This
 returns a pointer (cast to ``void *``) to the named and versioned set of
 functions. By using this suite fetching mechanism, there is no symbolic
-dependancy from the plug-in to the host, and APIs can be easily
-expandable without causing backwards compatability issues.
+dependency from the plug-in to the host, and APIs can be easily
+expandable without causing backwards compatibility issues.
 
 If the host does not implement a requested suite, or the requested
 version of that suite, then it should return NULL.
@@ -130,7 +132,7 @@ one of the following...
 
 Label strings are considered to be static constant strings. When passed
 across the API the host/plug-in receiving the string neither needs to
-duplicate nor free the string, it can simply retain the orginal pointer
+duplicate nor free the string, it can simply retain the original pointer
 passed over and use that in future, as it will not change. A host must
 be aware that when it unloads a plug-in all such pointers will be
 invalid, and be prepared to cope with such a situation.
@@ -159,4 +161,3 @@ function is called. For example, within a plugin
            char *hostName = strdup(returnedHostName);
 
            paramSuite->getParamValue(instance, "myParam", &value);
-            
