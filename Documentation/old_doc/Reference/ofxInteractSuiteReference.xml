@@ -1,0 +1,104 @@
+
+<refentry id="OfxInteractSuiteV1">
+  <refmeta>
+    <refentrytitle><type>OfxInteractSuiteV1</type></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxInteractSuiteV1</function></refname>
+    <refpurpose>OFX suite that allows an effect to interact with an openGL window so as to provide custom interfaces.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+     <blockquote><programlisting>
+#include "ofxInteract.h"
+typedef struct OfxInteractSuiteV1 {	
+  OfxStatus (*interactSwapBuffers)(OfxInteractHandle interactInstance);
+  OfxStatus (*interactRedraw)(OfxInteractHandle interactInstance);
+  OfxStatus (*interactGetPropertySet)(OfxInteractHandle interactInstance,
+				      OfxPropertySetHandle *property);
+} OfxInteractSuiteV1;
+
+</programlisting></blockquote>
+     </refsynopsisdiv>
+    <refsect1>
+      <title>Description</title>    </refsect1>
+</refentry>
+
+<refentry id="OfxInteractSuiteV1_interactSwapBuffers">
+  <refmeta>
+    <refentrytitle><function>OfxInteractSuiteV1::interactSwapBuffers</function></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxInteractSuiteV1::interactSwapBuffers</function></refname>
+       <refpurpose>Requests an openGL buffer swap on the interact instance </refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxInteract.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef><typename>OfxStatus</typename><function>(*interactSwapBuffers)</function></funcdef>
+              <paramdef>OfxInteractHandle<parameter>interactInstance</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>interactInstance - </listitem>
+    </itemizedlist>
+  </refsect2>
+</refentry>
+
+<refentry id="OfxInteractSuiteV1_interactRedraw">
+  <refmeta>
+    <refentrytitle><function>OfxInteractSuiteV1::interactRedraw</function></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxInteractSuiteV1::interactRedraw</function></refname>
+       <refpurpose>Requests a redraw of the interact instance </refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxInteract.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef><typename>OfxStatus</typename><function>(*interactRedraw)</function></funcdef>
+              <paramdef>OfxInteractHandle<parameter>interactInstance</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>interactInstance - </listitem>
+    </itemizedlist>
+  </refsect2>
+</refentry>
+
+<refentry id="OfxInteractSuiteV1_interactGetPropertySet">
+  <refmeta>
+    <refentrytitle><function>OfxInteractSuiteV1::interactGetPropertySet</function></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxInteractSuiteV1::interactGetPropertySet</function></refname>
+       <refpurpose>Gets the property set handle for this interact handle </refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxInteract.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef><typename>OfxStatus</typename><function>(*interactGetPropertySet)</function></funcdef>
+              <paramdef>OfxInteractHandle<parameter>interactInstance</parameter></paramdef>
+              <paramdef>OfxPropertySetHandle *<parameter>property</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>interactInstance - </listitem>
+<listitem>property - </listitem>
+    </itemizedlist>
+  </refsect2>
+</refentry>

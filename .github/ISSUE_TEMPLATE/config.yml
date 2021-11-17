@@ -1,0 +1,15 @@
+blank_issues_enabled: false
+contact_links:
+ - name: OFX Forum
+   url: https://groups.google.com/forum/#!forum/ofx-discussion
+   about: Please ask questions here rather than filing issues.
+ - name: Contribution Guidelines
+   url: https://github.com/ofxa/openfx/wiki/Extending-OpenFX-Guidelines#submit-a-proposal-or-bug-report-to-review
+   about: Please read the contribution guidelines before submitting an issue.
+# - name: Standard Change Proposal
+#   url: https://github.com/ofxa/openfx/.github/ISSUE_TEMPLATE/standard-change.md
+#   about: Create a proposal for a change to the OFX Standard
+# - name: File an Issue
+#   url: https://github.com/ofxa/openfx/wiki/Extending-OpenFX-Guidelines#submit-a-proposal-or-bug-report-to-review
+#   about: Please read the contribution guidelines before submitting an issue.
+

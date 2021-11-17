@@ -1,0 +1,201 @@
+
+<refentry id="OfxMessageSuiteV2">
+  <refmeta>
+    <refentrytitle><type>OfxMessageSuiteV2</type></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxMessageSuiteV2</function></refname>
+    <refpurpose>The OFX suite that allows a plug-in to pass messages back to a user.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+     <blockquote><programlisting>
+#include "ofxMessage.h"
+typedef struct OfxMessageSuiteV2 {
+  OfxStatus (*message)(void *handle,
+		       const char *messageType,
+		       const char *messageId,
+		       const char *format,
+		       ...);
+  OfxStatus (*setPersistentMessage)(void *handle,
+                                    const char *messageType,
+                                    const char *messageId,
+                                    const char *format,
+                                    ...);
+  OfxStatus (*clearPersistentMessage)(void *handle);
+} OfxMessageSuiteV2;
+
+</programlisting></blockquote>
+     </refsynopsisdiv>
+    <refsect1>
+      <title>Description</title><para>
+This extends OfxMessageSuiteV1, and should be considered a replacement to version 1. 
+</para>
+<para>
+Note that this suite has been extended in backwards compatible manner, so that a host can return this struct
+for both V1 and V2.
+</para>
+    </refsect1>
+</refentry>
+
+<refentry id="OfxMessageSuiteV2_message">
+  <refmeta>
+    <refentrytitle><function>OfxMessageSuiteV2::message</function></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxMessageSuiteV2::message</function></refname>
+       <refpurpose>Post a transient message on the host, using printf style varargs. Same as the V1 message suite call.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxMessage.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef><typename>OfxStatus</typename><function>(*message)</function></funcdef>
+              <paramdef>void *<parameter>handle</parameter></paramdef>
+              <paramdef>const char *<parameter>messageType</parameter></paramdef>
+              <paramdef>const char *<parameter>messageId</parameter></paramdef>
+              <paramdef>const char *<parameter>format</parameter></paramdef>
+              <paramdef><parameter>...</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>handle - effect handle (descriptor or instance) the message should be associated with, may be null
+</listitem>
+<listitem>messageType - string describing the kind of message to post, one of the kOfxMessageType constants
+</listitem>
+<listitem>messageId - plugin specified id to associate with this message. If overriding the message in XML resource, the message is identified with this, this may be NULL, or "", in which case no override will occur,
+</listitem>
+<listitem>format - printf style format string
+</listitem>
+<listitem>... - printf style varargs list to print
+</listitem>
+    </itemizedlist>
+  </refsect2>
+  <refsect2>
+    <title>Description</title>
+      <para>
+\returns 
+
+<itemizedlist>
+  <listitem><link linkend="kOfxStatOK"><code>kOfxStatOK</code></link> - if the message was sucessfully posted </listitem>
+  <listitem><link linkend="kOfxStatReplyYes"><code>kOfxStatReplyYes</code></link> - if the message was of type  kOfxMessageQuestion and the user reply yes</listitem>
+  <listitem><link linkend="kOfxStatReplyNo"><code>kOfxStatReplyNo</code></link> - if the message was of type kOfxMessageQuestion and the user reply no</listitem>
+  <listitem><link linkend="kOfxStatFailed"><code>kOfxStatFailed</code></link> - if the message could not be posted for some reason</listitem>
+</itemizedlist>
+</para>
+
+  </refsect2>
+
+</refentry>
+
+<refentry id="OfxMessageSuiteV2_setPersistentMessage">
+  <refmeta>
+    <refentrytitle><function>OfxMessageSuiteV2::setPersistentMessage</function></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxMessageSuiteV2::setPersistentMessage</function></refname>
+       <refpurpose>Post a persistent message on an effect, using printf style varargs, and set error states. New for V2 message suite.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxMessage.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef><typename>OfxStatus</typename><function>(*setPersistentMessage)</function></funcdef>
+              <paramdef>void *<parameter>handle</parameter></paramdef>
+              <paramdef>const char *<parameter>messageType</parameter></paramdef>
+              <paramdef>const char *<parameter>messageId</parameter></paramdef>
+              <paramdef>const char *<parameter>format</parameter></paramdef>
+              <paramdef><parameter>...</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>handle - effect instance handle the message should be associated with, may NOT be null,
+</listitem>
+<listitem>messageType - string describing the kind of message to post, should be one of...
+
+<itemizedlist>
+  <listitem>kOfxMessageError</listitem>
+  <listitem>kOfxMessageWarning</listitem>
+  <listitem>kOfxMessageMessage            </listitem>
+</itemizedlist>
+</listitem>
+<listitem>messageId - plugin specified id to associate with this message. If overriding the message in XML resource, the message is identified with this, this may be NULL, or "", in which case no override will occur,
+</listitem>
+<listitem>format - printf style format string
+</listitem>
+<listitem>... - printf style varargs list to print
+</listitem>
+    </itemizedlist>
+  </refsect2>
+  <refsect2>
+    <title>Description</title>
+      <para>
+\returns 
+
+<itemizedlist>
+  <listitem><link linkend="kOfxStatOK"><code>kOfxStatOK</code></link> - if the message was sucessfully posted </listitem>
+  <listitem><link linkend="kOfxStatErrBadHandle"><code>kOfxStatErrBadHandle</code></link> - the handle was rubbish</listitem>
+  <listitem><link linkend="kOfxStatFailed"><code>kOfxStatFailed</code></link> - if the message could not be posted for some reason</listitem>
+</itemizedlist>
+</para>
+<para>
+Persistent messages are associated with an effect handle until explicitly cleared by an effect. So if an error message is posted the error state, and associated message will persist and be displayed on the effect appropriately. (eg: draw a node in red on a node based compostor and display the message when clicked on).
+</para>
+<para>
+If <emphasis> messageType</emphasis> is error or warning, associated error states should be flagged on host applications. Posting an error message implies that the host cannot proceeed, a warning allows the host to proceed, whilst a simple message should have no stop anything.
+</para>
+
+  </refsect2>
+
+</refentry>
+
+<refentry id="OfxMessageSuiteV2_clearPersistentMessage">
+  <refmeta>
+    <refentrytitle><function>OfxMessageSuiteV2::clearPersistentMessage</function></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxMessageSuiteV2::clearPersistentMessage</function></refname>
+       <refpurpose>Clears any persistent message on an effect handle that was set by <link linkend="OfxMessageSuiteV2_setPersistentMessage"><code>OfxMessageSuiteV2::setPersistentMessage</code></link>. New for V2 message suite.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxMessage.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef><typename>OfxStatus</typename><function>(*clearPersistentMessage)</function></funcdef>
+              <paramdef>void *<parameter>handle</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>handle - effect handle (descriptor or instance) 
+</listitem>
+    </itemizedlist>
+  </refsect2>
+  <refsect2>
+    <title>Description</title>
+      <para>
+\returns 
+
+<itemizedlist>
+  <listitem><link linkend="kOfxStatOK"><code>kOfxStatOK</code></link> - if the message was sucessfully cleared</listitem>
+  <listitem><link linkend="kOfxStatErrBadHandle"><code>kOfxStatErrBadHandle</code></link> - the handle was rubbish</listitem>
+  <listitem><link linkend="kOfxStatFailed"><code>kOfxStatFailed</code></link> - if the message could not be cleared for some reason</listitem>
+</itemizedlist>
+</para>
+<para>
+Clearing a message will clear any associated error state.
+</para>
+
+  </refsect2>
+
+</refentry>

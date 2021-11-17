@@ -1,0 +1,132 @@
+
+<refentry id="OfxMemorySuiteV1">
+  <refmeta>
+    <refentrytitle><type>OfxMemorySuiteV1</type></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxMemorySuiteV1</function></refname>
+    <refpurpose>The OFX suite that implements general purpose memory management.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+     <blockquote><programlisting>
+#include "ofxMemory.h"
+typedef struct OfxMemorySuiteV1 {
+  OfxStatus (*memoryAlloc)(void *handle, 
+			   size_t nBytes,
+			   void **allocatedData);
+  OfxStatus (*memoryFree)(void *allocatedData);
+ } OfxMemorySuiteV1;
+
+</programlisting></blockquote>
+     </refsynopsisdiv>
+    <refsect1>
+      <title>Description</title><para>
+Use this suite for ordinary memory management functions, where you would normally use malloc/free or new/delete on ordinary objects.
+</para>
+<para>
+For images, you should use the memory allocation functions in the image effect suite, as many hosts have specific image memory pools.
+</para>
+<para>
+\note C++ plugin developers will need to redefine new and delete as skins ontop of this suite.
+</para>
+    </refsect1>
+</refentry>
+
+<refentry id="OfxMemorySuiteV1_memoryAlloc">
+  <refmeta>
+    <refentrytitle><function>OfxMemorySuiteV1::memoryAlloc</function></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxMemorySuiteV1::memoryAlloc</function></refname>
+       <refpurpose>Allocate memory.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxMemory.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef><typename>OfxStatus</typename><function>(*memoryAlloc)</function></funcdef>
+              <paramdef>void *<parameter>handle</parameter></paramdef>
+              <paramdef>size_t<parameter>nBytes</parameter></paramdef>
+              <paramdef>void **<parameter>allocatedData</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>handle - effect instance to assosciate with this memory allocation, or NULL.
+</listitem>
+<listitem>nBytes - the number of bytes to allocate
+</listitem>
+<listitem>allocatedData - a pointer to the return value. Allocated memory will be alligned for any use.
+</listitem>
+    </itemizedlist>
+  </refsect2>
+  <refsect2>
+    <title>Description</title>
+      <para>
+This function has the host allocate memory using its own memory resources
+and returns that to the plugin.
+</para>
+
+  </refsect2>
+
+  <refsect2>
+    <title>Returns</title>
+      <para>
+
+<itemizedlist>
+  <listitem><link linkend="kOfxStatOK"><code>kOfxStatOK</code></link> the memory was sucessfully allocated</listitem>
+  <listitem><link linkend="kOfxStatErrMemory"><code>kOfxStatErrMemory</code></link> the request could not be met and no memory was allocated</listitem>
+</itemizedlist>
+</para>
+
+  </refsect2>
+</refentry>
+
+<refentry id="OfxMemorySuiteV1_memoryFree">
+  <refmeta>
+    <refentrytitle><function>OfxMemorySuiteV1::memoryFree</function></refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><function>OfxMemorySuiteV1::memoryFree</function></refname>
+       <refpurpose>Frees memory.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcsynopsisinfo>#include "ofxMemory.h" </funcsynopsisinfo>
+      <funcprototype>
+        <funcdef><typename>OfxStatus</typename><function>(*memoryFree)</function></funcdef>
+              <paramdef>void *<parameter>allocatedData</parameter></paramdef>
+        </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+  <refsect2>
+   <title>Arguments</title>
+   <itemizedlist>
+
+<listitem>allocatedData - pointer to memory previously returned by <link linkend="OfxMemorySuiteV1_memoryAlloc"><code>OfxMemorySuiteV1::memoryAlloc</code></link>
+</listitem>
+    </itemizedlist>
+  </refsect2>
+  <refsect2>
+    <title>Description</title>
+      <para>
+This function frees any memory that was previously allocated via <link linkend="OfxMemorySuiteV1_memoryAlloc"><code>OfxMemorySuiteV1::memoryAlloc</code></link>.
+</para>
+
+  </refsect2>
+
+  <refsect2>
+    <title>Returns</title>
+      <para>
+
+<itemizedlist>
+  <listitem><link linkend="kOfxStatOK"><code>kOfxStatOK</code></link> the memory was sucessfully freed</listitem>
+  <listitem><link linkend="kOfxStatErrBadHandle"><code>kOfxStatErrBadHandle</code></link> <emphasis> allocatedData</emphasis> was not a valid pointer returned by <link linkend="OfxMemorySuiteV1_memoryAlloc"><code>OfxMemorySuiteV1::memoryAlloc</code></link></listitem>
+</itemizedlist>
+</para>
+
+  </refsect2>
+</refentry>

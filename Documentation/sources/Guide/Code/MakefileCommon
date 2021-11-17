@@ -1,0 +1,39 @@
+# where are our OFX headers
+OFX_INC_DIR = -I../../../../../include
+
+# by default we don't optimise
+OPTIMISE = -g
+
+# figure out our system specific variables
+UNAME := $(shell uname)
+ifeq ($(UNAME), Darwin)
+  OS_CXXFLAGS = -fvisibility=hidden
+  OS_LDFLAGS = -bundle -fvisibility=hidden
+  OS_BUNDLE_DIR = MacOS
+else ifeq ($(UNAME), Linux)
+  OS_CXXFLAGS = -fPIC -fvisibility=hidden
+  OS_LDFLAGS = -shared -fvisibility=hidden
+  OS_BUNDLE_DIR = Linux-x86-64
+endif
+
+# set up C++ flags
+CXXFLAGS = $(OFX_INC_DIR) $(OPTIMISE) $(OS_CXXFLAGS)
+
+.PHONY: clean install
+
+# make our ofx bundle
+$(NAME).ofx : $(NAME).o
+	$(CXX) $(OS_LDFLAGS) $< -o $@
+	mkdir -p $@.bundle/Contents/$(OS_BUNDLE_DIR)/
+	cp $@ $@.bundle/Contents/$(OS_BUNDLE_DIR)/
+
+# install it
+install : $(NAME).ofx
+	mkdir -p ../built_plugins
+	cp -r $(NAME).ofx.bundle ../built_plugins
+
+# clean it
+clean :
+	rm -rf $(NAME).ofx.bundle
+	rm -rf $(NAME).ofx
+	rm -rf $(NAME).o

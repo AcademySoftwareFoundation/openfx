@@ -122,34 +122,452 @@ These are the list of actions passed to an image effect plugin's main function. 
 */
 /*@{*/
 
-/** @brief Action called to get the region of definition of an effect */
+/** @brief
+
+ The region of definition for an image effect is the rectangular section
+ of the 2D image plane that it is capable of filling, given the state of
+ its input clips and parameters. This action is used to calculate the RoD
+ for a plugin instance at a given frame. For more details on regions of
+ definition see \ref ImageEffectArchitectures "Image Effect Architectures"
+
+ Note that hosts that have constant sized imagery need not call this
+ action, only hosts that allow image sizes to vary need call this.
+
+ @param  handle handle to the instance, cast to an \ref OfxImageEffectHandle
+
+ @param  inArgs has the following properties
+     - \ref kOfxPropTime the effect time for which a region of definition is being
+     requested
+     - \ref kOfxImageEffectPropRenderScale the render scale that should be used in any calculations in this
+     action
+
+ @param  outArgs has the following property which the plug-in may set
+     - \ref kOfxImageEffectPropRegionOfDefinition  the calculated region of definition, initially set by the host
+     to the default RoD (see below), in Canonical Coordinates.
+
+
+ If the effect did not trap this, it means the host should use the
+ default RoD instead, which depends on the context. This is...
+
+ -  generator context - defaults to the project window,
+ -  filter and paint contexts - defaults to the RoD of the 'Source' input
+ clip at the given time,
+ -  transition context - defaults to the union of the RoDs of the
+ 'SourceFrom' and 'SourceTo' input clips at the given time,
+ -  general context - defaults to the union of the RoDs of all the non
+ optional input clips and the 'Source' input clip (if it exists and it
+ is connected) at the given time, if none exist, then it is the
+ project window
+ -  retimer context - defaults to the union of the RoD of the 'Source'
+ input clip at the frame directly preceding the value of the
+ 'SourceTime' double parameter and the frame directly after it
+
+@returns
+     -  \ref kOfxStatOK  the action was trapped and the RoD was set in the outArgs property set
+     -  \ref kOfxStatReplyDefault, the action was not trapped and the host should use the default values
+     -  \ref kOfxStatErrMemory, in which case the action may be called again after a memory purge
+     -  \ref kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message
+     -  \ref kOfxStatErrFatal
+
+ */
 #define kOfxImageEffectActionGetRegionOfDefinition        "OfxImageEffectActionGetRegionOfDefinition"
 
-/** @brief Action called to get the regions of interest of an effect */
+/** @brief
+
+ This action allows a host to ask an effect, given a region I want to
+ render, what region do you need from each of your input clips. In that
+ way, depending on the host architecture, a host can fetch the minimal
+ amount of the image needed as input. Note that there is a region of
+ interest to be set in ``outArgs`` for each input clip that exists on the
+ effect. For more details see \ref ImageEffectArchitectures "Image Effect
+ Architectures"
+
+
+ The default RoI is simply the value passed in on the
+ \ref kOfxImageEffectPropRegionOfInterest
+ ``inArgs`` property set. All the RoIs in the ``outArgs`` property set
+ must initialised to this value before the action is called.
+
+
+ @param  handle handle to the instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs has the following properties
+     - \ref kOfxPropTime the effect time for which a region of definition is being requested
+     - \ref kOfxImageEffectPropRenderScale the render scale that should be used in any calculations in this action
+     - \ref kOfxImageEffectPropRegionOfInterest the region to be rendered in the output image, in Canonical Coordinates.
+
+ @param  outArgs has a set of 4 dimensional double properties, one for each of the input clips to the effect.
+ The properties are each named ``OfxImageClipPropRoI_`` with the clip name post pended, for example
+ ``OfxImageClipPropRoI_Source``. These are initialised to the default RoI.
+
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and at least one RoI was set in the outArgs property set
+     -  \ref kOfxStatReplyDefault, the action was not trapped and the host should use the default values
+     -  \ref kOfxStatErrMemory, in which case the action may be called again after a memory purge
+     -  \ref kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message
+     -  \ref kOfxStatErrFatal
+
+
+ */
 #define kOfxImageEffectActionGetRegionsOfInterest         "OfxImageEffectActionGetRegionsOfInterest"
 
-/** @brief Action called to get the temporal domain of an effect */
+/** @brief
+ This action allows a host to ask an effect what range of frames it can
+ produce images over. Only effects instantiated in the \ref generalContext "General
+ Context" can have this called on them. In all other
+ the host is in strict control over the temporal duration of the effect.
+
+ The default is:
+
+ -  the union of all the frame ranges of the non optional input clips,
+ -  infinite if there are no non optional input clips.
+
+ @param  handle handle to the instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs is redundant and is null
+ @param  outArgs has the following property
+     - \ref kOfxImageEffectPropFrameRange the frame range an effect can produce images for
+
+
+ \pre
+     -  \ref kOfxActionCreateInstance has been called on the instance
+     -  the effect instance has been created in the general effect context
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and the \ref kOfxImageEffectPropFrameRange was set in the outArgs property set
+     -  \ref kOfxStatReplyDefault, the action was not trapped and the host should use the default value
+     -  \ref kOfxStatErrMemory, in which case the action may be called again after a memory purge
+     -  \ref kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message
+     -  \ref kOfxStatErrFatal
+
+
+
+ */
 #define kOfxImageEffectActionGetTimeDomain                "OfxImageEffectActionGetTimeDomain"
 
-/** @brief Action called to get the frame ranged needed on an input clip to render a single frame */
+/** @brief
+
+ This action lets the host ask the effect what frames are needed from
+ each input clip to process a given frame. For example a temporal based
+ degrainer may need several frames around the frame to render to do its
+ work.
+
+ This action need only ever be called if the plugin has set the
+ \ref kOfxImageEffectPropTemporalClipAccess
+ property on the plugin descriptor to be true. Otherwise the host assumes
+ that the only frame needed from the inputs is the current one and this
+ action is not called.
+
+ Note that each clip can have it's required frame range specified, and
+ that you can specify discontinuous sets of ranges for each clip, for
+ example
+
+ \code{.cpp}
+
+     // The effect always needs the initial frame of the source as well as the previous and current frame
+     double rangeSource[4];
+
+     // required ranges on the source
+     rangeSource[0] = 0; // we always need frame 0 of the source
+     rangeSource[1] = 0;
+     rangeSource[2] = currentFrame - 1; // we also need the previous and current frame on the source
+     rangeSource[3] = currentFrame;
+
+     gPropHost->propSetDoubleN(outArgs, "OfxImageClipPropFrameRange_Source", 4, rangeSource);
+
+ \endcode
+
+     Which sets two discontinuous range of frames from the 'Source' clip
+     required as input.
+
+
+ The default frame range is simply the single frame,
+ kOfxPropTime..kOfxPropTime, found on the ``inArgs`` property set. All
+ the frame ranges in the ``outArgs`` property set must initialised to
+ this value before the action is called.
+
+ @param  handle handle to the instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs has the following property
+     - \ref kOfxPropTime the effect time for which we need to calculate the frames needed on input
+     - \ref outArgs has a set of properties, one for each input clip, named
+     ``OfxImageClipPropFrameRange_`` with the name of the clip post-pended.
+     For example ``OfxImageClipPropFrameRange_Source``. All these properties
+     are multi-dimensional doubles, with the dimension is a multiple of
+     two. Each pair of values indicates a continuous range of frames that
+     is needed on the given input. They are all initalised to the default value.
+
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and at least one frame range in the outArgs property set
+     -  \ref kOfxStatReplyDefault, the action was not trapped and the host should use the default values
+     -  \ref kOfxStatErrMemory, in which case the action may be called again after a memory purge
+     -  \ref kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message
+     -  \ref kOfxStatErrFatal
+ */
 #define kOfxImageEffectActionGetFramesNeeded              "OfxImageEffectActionGetFramesNeeded"
 
-/** @brief Action called to have a plug-in define input an output clip preferences */
+/** @brief
+
+ This action allows a plugin to dynamically specify its preferences for
+ input and output clips. Please see \ref ImageEffectClipPreferences "Image Effect Clip Preferences" for more details on the
+ behaviour. Clip preferences are constant for the duration of an effect,
+ so this action need only be called once per clip, not once per frame.
+
+ This should be called once after creation of an instance, each time an
+ input clip is changed, and whenever a parameter named in the
+ \ref kOfxImageEffectPropClipPreferencesSlaveParam
+ has its value changed.
+
+ @param handle handle to the instance, cast to an \ref OfxImageEffectHandle
+ @param inArgs is redundant and is set to NULL
+ @param  outArgs has the following properties which the plugin can set
+     -  a set of char \* X 1 properties, one for each of the input clips
+     currently attached and the output clip, labelled with
+     ``OfxImageClipPropComponents_`` post pended with the clip's name.
+     This must be set to one of the component types which the host
+     supports and the effect stated it can accept on that input
+
+     -  a set of char \* X 1 properties, one for each of the input clips
+     currently attached and the output clip, labelled with
+     ``OfxImageClipPropDepth_`` post pended with the clip's name. This
+     must be set to one of the pixel depths both the host and plugin
+     supports
+
+     -  a set of double X 1 properties, one for each of the input clips
+     currently attached and the output clip, labelled with
+     ``OfxImageClipPropPAR_`` post pended with the clip's name. This is
+     the pixel aspect ratio of the input and output clips. This must be
+     set to a positive non zero double value,
+
+     - \ref kOfxImageEffectPropFrameRate the frame rate of the output clip, this must be set to a positive non zero double value
+     - \ref kOfxImageClipPropFieldOrder the fielding of the output clip
+     - \ref kOfxImageEffectPropPreMultiplication the premultiplication of the output clip
+     - \ref kOfxImageClipPropContinuousSamples whether the output clip can produce different images at non-frame intervals, defaults to false,
+     - \ref kOfxImageEffectFrameVarying whether the output clip can produces different images at
+     different times, even if all parameters and inputs are constant,
+     defaults to false.
+
+@returns
+     -  \ref kOfxStatOK, the action was trapped and at least one of the properties in the outArgs
+     was changed from its default value
+     -  \ref kOfxStatReplyDefault, the action was not trapped and the host should
+     use the default values
+     -  \ref kOfxStatErrMemory, in which case the action may be called again after
+     a memory purge
+     -  \ref kOfxStatFailed, something wrong, but no error code appropriate,
+     plugin to post message
+     -  \ref kOfxStatErrFatal
+ */
 #define kOfxImageEffectActionGetClipPreferences       "OfxImageEffectActionGetClipPreferences"
 
-/** @brief Action called to have a plug-in say if it is an identity transform */
+/** @brief
+
+ Sometimes an effect can pass through an input uprocessed, for example a
+ blur effect with a blur size of 0. This action can be called by a host
+ before it attempts to render an effect to determine if it can simply
+ copy input directly to output without having to call the render action
+ on the effect.
+
+ If the effect does not need to process any pixels, it should set the
+ value of the \ref kOfxPropName to the clip that the host should us as the
+ output instead, and the \ref kOfxPropTime property on ``outArgs`` to be
+ the time at which the frame should be fetched from a clip.
+
+ The default action is to call the render action on the effect.
+
+
+ @param  handle handle to the instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs has the following properties
+     - \ref kOfxPropTime the time at which to test for identity
+     - \ref kOfxImageEffectPropFieldToRender the field to test for identity
+     - \ref kOfxImageEffectPropRenderWindow the window (in \\ref PixelCoordinates) to test for identity under
+     - \ref kOfxImageEffectPropRenderScale the scale factor being applied to the images being renderred
+
+ @param  outArgs has the following properties which the plugin can set
+     - \ref kOfxPropName
+     this to the name of the clip that should be used if the effect is
+     an identity transform, defaults to the empty string
+     - \ref kOfxPropTime
+     the time to use from the indicated source clip as an identity
+     image (allowing time slips to happen), defaults to the value in
+     \ref kOfxPropTime in inArgs
+
+
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and the effect should not have its
+     render action called, the values in outArgs
+     indicate what frame from which clip to use instead
+     -  \ref kOfxStatReplyDefault, the action was not trapped and the host should
+     call the render action
+     -  \ref kOfxStatErrMemory, in which case the action may be called again after
+     a memory purge
+     -  \ref kOfxStatFailed, something wrong, but no error code appropriate,
+     plugin to post message
+     -  \ref kOfxStatErrFatal
+
+ */
 #define kOfxImageEffectActionIsIdentity            "OfxImageEffectActionIsIdentity"
 
-/** @brief Action to render an image */
+/** @brief
+
+ This action is where an effect gets to push pixels and turn its input
+ clips and parameter set into an output image. This is possibly quite
+ complicated and covered in the \ref RenderingEffects "Rendering Image Effects" chapter.
+
+ The render action *must* be trapped by the plug-in, it cannot return
+ \ref kOfxStatReplyDefault. The pixels needs be pushed I'm afraid.
+
+ @param  handle handle to the instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs has the following properties
+     -  \ref kOfxPropTime the time at which to render
+     -  \ref kOfxImageEffectPropFieldToRender the field to render
+     -  \ref kOfxImageEffectPropRenderWindow the window (in \\ref PixelCoordinates) to render
+     -  \ref kOfxImageEffectPropRenderScale the scale factor being applied to the images being renderred
+     -  \ref kOfxImageEffectPropSequentialRenderStatus whether the effect is currently being rendered in strict frame order on a single instance
+     -  \ref kOfxImageEffectPropInteractiveRenderStatus if the render is in response to a user modifying the effect in an interactive session
+     -  \ref kOfxImageEffectPropRenderQualityDraft if the render should be done in draft mode (e.g. for faster scrubbing)
+
+ @param  outArgs is redundant and should be set to NULL
+
+\pre
+     -  \ref kOfxActionCreateInstance has been called on the instance
+     -  \ref kOfxImageEffectActionBeginSequenceRender has been called on the
+     instance
+
+ \post
+     -  \ref kOfxImageEffectActionEndSequenceRender action will be called on the
+     instance
+
+ @returns
+     -  \ref kOfxStatOK, the effect rendered happily
+     -  \ref kOfxStatErrMemory, in which case the action may be called again after
+     a memory purge
+     -  \ref kOfxStatFailed, something wrong, but no error code appropriate,
+     plugin to post message
+     -  \ref kOfxStatErrFatal
+
+ */
 #define kOfxImageEffectActionRender                "OfxImageEffectActionRender"
 
-/** @brief Action indicating a series of render calls are about to happen */
+/** @brief
+
+ This action is passed to an image effect before it renders a range of
+ frames. It is there to allow an effect to set things up for a long
+ sequence of frames. Note that this is still called, even if only a
+ single frame is being rendered in an interactive environment.
+
+ @param  handle handle to the instance, cast to an \ref OfxImageEffectHandle
+
+ @param  inArgs has the following properties
+     - \ref kOfxImageEffectPropFrameRange the range of frames (inclusive) that will be renderred
+     - \ref kOfxImageEffectPropFrameStep what is the step between frames, generally set to 1 (for full frame renders) or 0.5 (for fielded renders)
+     - \ref kOfxPropIsInteractive is this a single frame render due to user interaction in a GUI, or a proper full sequence render.
+     - \ref kOfxImageEffectPropRenderScale the scale factor to apply to images for this call
+     - \ref kOfxImageEffectPropSequentialRenderStatus whether the effect is currently being rendered in strict frame order on a single instance
+     - \ref kOfxImageEffectPropInteractiveRenderStatus if the render is in response to a user modifying the effect in an interactive session
+
+ @param  outArgs is redundant and is set to NULL
+
+ \pre
+     - \ref kOfxActionCreateInstance has been called on the instance
+
+ \post
+     - \ref  kOfxImageEffectActionRender action will be called at least once on the instance
+     - \ref  kOfxImageEffectActionEndSequenceRender action will be called on the
+ instance
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and handled cleanly by the effect,
+     -  \ref kOfxStatReplyDefault, the action was not trapped, but all is well
+     anyway,
+     -  \ref kOfxStatErrMemory, in which case the action may be called again after
+     a memory purge,
+     -  \ref kOfxStatFailed, something wrong, but no error code appropriate,
+     plugin to post message,
+     -  \ref kOfxStatErrFatal
+ */
 #define kOfxImageEffectActionBeginSequenceRender   "OfxImageEffectActionBeginSequenceRender"
 
-/** @brief Action to render a series of render calls have completed */
+/** @brief
+
+ This action is passed to an image effect after is has rendered a range
+ of frames. It is there to allow an effect to free resources after a long
+ sequence of frame renders. Note that this is still called, even if only
+ a single frame is being rendered in an interactive environment.
+
+ @param  handle handle to the instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs has the following properties
+     - \ref kOfxImageEffectPropFrameRange the range of frames (inclusive) that will be rendered
+     - \ref kOfxImageEffectPropFrameStep what is the step between frames, generally set to 1 (for full frame renders) or 0.5 (for fielded renders),
+     - \ref kOfxPropIsInteractive
+     - \ref is this a single frame render due to user interaction in a GUI, or a proper full sequence render.
+     - \ref kOfxImageEffectPropRenderScale
+     - \ref the scale factor to apply to images for this call
+     - \ref kOfxImageEffectPropSequentialRenderStatus
+     - \ref whether the effect is currently being rendered in strict frame order on a single instance
+     - \ref kOfxImageEffectPropInteractiveRenderStatus
+     - \ref if the render is in response to a user modifying the effect in an interactive session
+
+ @param  outArgs is redundant and is set to NULL
+
+ \pre
+     -  \ref kOfxActionCreateInstance has been called on the instance
+     -  \ref kOfxImageEffectActionEndSequenceRender action was called on the
+     instance
+     -  \ref kOfxImageEffectActionRender action was called at least once on the
+     instance
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and handled cleanly by the effect,
+     -  \ref kOfxStatReplyDefault, the action was not trapped, but all is well
+     anyway,
+     -  \ref kOfxStatErrMemory, in which case the action may be called again after
+     a memory purge,
+     -  \ref kOfxStatFailed, something wrong, but no error code appropriate,
+     plugin to post message,
+     -  \ref kOfxStatErrFatal
+
+ */
 #define kOfxImageEffectActionEndSequenceRender      "OfxImageEffectActionEndSequenceRender"
 
-/** @brief Action to describe an image effect in a specific context */
+/** @brief
+
+ This action is unique to OFX Image Effect plug-ins. Because a plugin is
+ able to exhibit different behaviour depending on the context of use,
+ each separate context will need to be described individually. It is
+ within this action that image effects describe which parameters and
+ input clips it requires.
+
+ This action will be called multiple times, one for each of the contexts
+ the plugin says it is capable of implementing. If a host does not
+ support a certain context, then it need not call
+ \ref kOfxImageEffectActionDescribeInContext for that context.
+
+ This action *must* be trapped, it is not optional.
+
+ @param  handle handle to the context descriptor, cast to an \ref OfxImageEffectHandle
+ this may or may not be the same as passed to \ref kOfxActionDescribe
+
+ @param  inArgs has the following property:
+     - \ref kOfxImageEffectPropContext the context being described
+
+ @param  outArgs is redundant and is set to NULL
+
+\pre
+     - \ref kOfxActionDescribe has been called on the descriptor handle,
+     - \ref kOfxActionCreateInstance has not been called
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and all was well
+     -  \ref kOfxStatErrMissingHostFeature, in which the context will be ignored
+     by the host, the plugin may post a message
+     -  \ref kOfxStatErrMemory, in which case the action may be called again after
+     a memory purge
+     -  \ref kOfxStatFailed, something wrong, but no error code appropriate,
+     plugin to post message
+     -  \ref kOfxStatErrFatal
+
+ */
 #define kOfxImageEffectActionDescribeInContext     "OfxImageEffectActionDescribeInContext"
 
 /*@}*/

@@ -175,40 +175,397 @@ These are the actions passed to a plug-in's 'main' function
 */
 /*@{*/
 
-/** @brief Action called just after a plug-in has been loaded, for more details see \ref ArchitectureMainFunction and \ref ActionsGeneralLoad */
+/** @brief
+
+ This action is the first action passed to a plug-in after the
+ binary containing the plug-in has been loaded. It is there to allow a
+ plug-in to create any global data structures it may need and is also
+ when the plug-in should fetch suites from the host.
+
+ The \ref handle, \ref inArgs and \ref outArgs arguments to the \ref mainEntry
+ are redundant and should be set to NULL.
+
+ 
+
+ \pre
+ - The plugin's \ref OfxPlugin::setHost function has been called
+
+ \post
+ This action will not be called again while the binary containing the plug-in remains loaded.
+
+ @returns
+ -  \ref kOfxStatOK, the action was trapped and all was well,
+ -  \ref kOfxStatReplyDefault, the action was ignored,
+ -  \ref kOfxStatFailed, the load action failed, no further actions will be passed to the plug-in.
+ Interpret if possible  kOfxStatFailed as plug-in indicating it does not want to load 
+ Do not create an entry in the host's UI for plug-in then.  
+ Plug-in also has the option to return 0 for OfxGetNumberOfPlugins or kOfxStatFailed if host supports OfxSetHost in which case kOfxActionLoad will never be called.
+ -  \ref kOfxStatErrFatal, fatal error in the plug-in.
+ */
 #define  kOfxActionLoad "OfxActionLoad"
 
-/** @brief Action called to have a plug-in describe itself to the host, for more details see \ref ArchitectureMainFunction and \ref ActionsGeneralDescribe */
+/** @brief
+
+ The kOfxActionDescribe is the second action passed to a plug-in. It is
+ where a plugin defines how it behaves and the resources it needs to
+ function.
+
+ Note that the handle passed in acts as a descriptor for, rather than an
+ instance of the plugin. The handle is global and unique. The plug-in is
+ at liberty to cache the handle away for future reference until the
+ plug-in is unloaded.
+
+ Most importantly, the effect must set what image effect contexts it is
+ capable of working in.
+
+ This action *must* be trapped, it is not optional.
+
+
+ @param handle handle to the plug-in descriptor, cast to an \ref OfxImageEffectHandle
+ @param inArgs is redundant and is set to NULL
+ @param outArgs is redundant and is set to NULL
+
+ \pre
+     - \ref kOfxActionLoad has been called
+
+ \post
+     -  \ref kOfxActionDescribe will not be called again, unless it fails and
+     returns one of the error codes where the host is allowed to attempt
+     the action again
+     -  the handle argument, being the global plug-in description handle, is
+     a valid handle from the end of a sucessful describe action until the
+     end of the \ref kOfxActionUnload action (ie: the plug-in can cache it away
+     without worrying about it changing between actions).
+     -  \ref kOfxImageEffectActionDescribeInContext
+     will be called once for each context that the host and plug-in
+     mutually support.  If a plug-in does not report to support any context supported by host, 
+	 host should not enable the plug-in.
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and all was well
+     -  \ref kOfxStatErrMissingHostFeature, in which the plugin will be unloaded
+     and ignored, plugin may post message
+     -  \ref kOfxStatErrMemory, in which case describe may be called again after a
+     memory purge
+     -  \ref kOfxStatFailed, something wrong, but no error code appropriate,
+     plugin to post message
+     -  \ref kOfxStatErrFatal
+
+ */
 #define kOfxActionDescribe "OfxActionDescribe"
 
-/** @brief Action called just before a plug-in is unloaded, for more details see \ref ArchitectureMainFunction and \ref ActionsGeneralUnload */
+/** @brief
+
+ This action is the last action passed to the plug-in before the
+ binary containing the plug-in is unloaded. It is there to allow a
+ plug-in to destroy any global data structures it may have created.
+
+ The handle, inArgs and outArgs arguments to the main entry
+ are redundant and should be set to NULL.
+
+ \pref
+     -  the \ref kOfxActionLoad action has been called
+     -  all instances of a plugin have been destroyed
+
+ \post
+     - No other actions will be called.
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped all was well
+     -  \ref kOfxStatReplyDefault, the action was ignored
+     -  \ref kOfxStatErrFatal, in which case we the program will be forced to quit
+
+ */
 #define kOfxActionUnload "OfxActionUnload"
 
-/** @brief Action called to have a plug-in purge any temporary caches it may have allocated \ref ArchitectureMainFunction and \ref ActionsGeneralPurgeCaches */
+/** @brief
+
+ This action is an action that may be passed to a plug-in
+ instance from time to time in low memory situations. Instances recieving
+ this action should destroy any data structures they may have and release
+ the associated memory, they can later reconstruct this from the effect's
+ parameter set and associated information.
+
+ For Image Effects, it is generally a bad idea to call this after each
+ render, but rather it should be called after
+ \ref kOfxImageEffectActionEndSequenceRender
+ Some effects, typically those flagged with the
+ \ref kOfxImageEffectInstancePropSequentialRender
+ property, may need to cache information from previously rendered frames
+ to function correctly, or have data structures that are expensive to
+ reconstruct at each frame (eg: a particle system). Ideally, such effect
+ should free such structures during the
+ \ref kOfxImageEffectActionEndSequenceRender action.
+
+ @param  handle handle to the plug-in instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs is redundant and is set to NULL
+ @param  outArgs is redundant and is set to NULL
+
+ \pre
+     -  \ref kOfxActionCreateInstance has been called on the instance handle,
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and all was well
+     -  \ref kOfxStatReplyDefault, the action was ignored
+     -  \ref kOfxStatErrFatal,
+     -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
+     the plugin should to post a message
+ */
 #define kOfxActionPurgeCaches                 "OfxActionPurgeCaches"
 
-/** @brief Action called to have a plug-in sync any internal data structures into custom parameters */
+/** @brief
+
+ This action is called when a plugin should synchronise any private data
+ structures to its parameter set. This generally occurs when an effect is
+ about to be saved or copied, but it could occur in other situations as
+ well.
+
+ @param  handle handle to the plug-in instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs is redundant and is set to NULL
+ @param  outArgs is redundant and is set to NULL
+
+ \pre
+     - \ref kOfxActionCreateInstance has been called on the instance handle,
+
+ \post
+     -  Any private state data can be reconstructed from the parameter set,
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and all was well
+     -  \ref kOfxStatReplyDefault, the action was ignored
+     -  \ref kOfxStatErrFatal,
+     -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
+     the plugin should to post a message
+ */
 #define kOfxActionSyncPrivateData                 "OfxActionSyncPrivateData"
 
-/** @brief Action called just after an instance has been created \ref ArchitectureMainFunction and \ref ActionsGeneralCreateInstance  */
+/** @brief
+
+ This action is the first action passed to a plug-in's
+ instance after its creation. It is there to allow a plugin to create any
+ per-instance data structures it may need.
+
+ @param  handle handle to the plug-in instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs is redundant and is set to NULL
+ @param  outArgs is redundant and is set to NULL
+
+ \pref
+     -  \ref kOfxActionDescribe has been called
+     -  the instance is fully constructed, with all objects requested in the
+     describe actions (eg, parameters and clips) have been constructed and
+     have had their initial values set. This means that if the values are
+     being loaded from an old setup, that load should have taken place
+     before the create instance action is called.
+
+ \post
+     -  the instance pointer will be valid until the
+     \ref kOfxActionDestroyInstance
+     action is passed to the plug-in with the same instance handle
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and all was well
+     -  \ref kOfxStatReplyDefault, the action was ignored, but all was well anyway
+     -  \ref kOfxStatErrFatal
+     -  \ref kOfxStatErrMemory, in which case this may be called again after a
+     memory purge
+     -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
+     the plugin should to post a message if possible and the host should
+     destroy the instanace handle and not attempt to proceed further
+ */
 #define kOfxActionCreateInstance        "OfxActionCreateInstance"
 
-/** @brief Action called just before an instance is destroyed and \ref ActionsGeneralDestroyInstance */
+/** @brief
+
+
+ This action is the last passed to a plug-in's instance before its
+ destruction. It is there to allow a plugin to destroy any per-instance
+ data structures it may have created.
+
+ @param  handle
+ handle to the plug-in instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs is redundant and is set to NULL
+ @param  outArgs is redundant and is set to NULL
+
+ \pre
+     -  \ref kOfxActionCreateInstance
+     has been called on the handle,
+     -  the instance has not had any of its members destroyed yet,
+
+ \post
+     -  the instance pointer is no longer valid and any operation on it will
+     be undefined
+
+ @returns
+     To some extent, what is returned is moot, a bit like throwing an
+     exception in a C++ destructor, so the host should continue destruction
+     of the instance regardless.
+
+     -  \ref kOfxStatOK, the action was trapped and all was well,
+     -  \ref kOfxStatReplyDefault, the action was ignored as the effect had nothing
+     to do,
+     -  \ref kOfxStatErrFatal,
+     -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
+     the plugin should to post a message.
+
+ */
 #define kOfxActionDestroyInstance       "OfxActionDestroyInstance"
 
-/** @brief Action indicating something in the instance has been changed, see \ref ActionsGeneralInstanceChanged */
+/** @brief
+
+ This action signals that something has changed in a plugin's instance,
+ either by user action, the host or the plugin itself. All change actions
+ are bracketed by a pair of \ref kOfxActionBeginInstanceChanged and
+ \ref kOfxActionEndInstanceChanged actions. The ``inArgs`` property set is
+ used to determine what was the thing inside the instance that was
+ changed.
+
+ @param  handle handle to the plug-in instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs has the following properties
+     - \ref  kOfxPropType The type of the thing that changed which will be one of..
+
+     - \ref kOfxTypeParameter Indicating a parameter's value has changed
+     in some way
+     -  \ref kOfxTypeClip A clip to an image effect has changed in some
+     way (for Image Effect Plugins only)
+
+     -  \ref kOfxPropName the name of the thing that was changed in the instance
+     -  \ref kOfxPropChangeReason what triggered the change, which will be one of...
+
+     -  \ref kOfxChangeUserEdited - the user or host changed the instance
+     somehow and caused a change to something, this includes
+     undo/redos, resets and loading values from files or presets,
+
+     -  \ref kOfxChangePluginEdited - the plugin itself has changed the
+     value of the instance in some action
+     -  \ref kOfxChangeTime - the time has changed and this has affected the
+     value of the object because it varies over time
+
+     -  \ref kOfxPropTime
+     - the effect time at which the chang occured (for Image Effect Plugins only)
+     -  \ref kOfxImageEffectPropRenderScale
+     - the render scale currently being applied to any image fetched
+     from a clip (for Image Effect Plugins only)
+
+ @param  outArgs is redundant and is set to NULL
+
+ \pre
+     -  \ref kOfxActionCreateInstance has been called on the instance handle,
+     -  \ref kOfxActionBeginInstanceChanged has been called on the instance
+     handle.
+
+ \post
+     -  \ref kOfxActionEndInstanceChanged will be called on the instance handle.
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and all was well
+     -  \ref kOfxStatReplyDefault, the action was ignored
+     -  \ref kOfxStatErrFatal,
+     -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
+     the plugin should to post a message
+
+ */
 #define kOfxActionInstanceChanged "OfxActionInstanceChanged"
 
-/** @brief Action called before the start of a set of kOfxActionEndInstanceChanged actions, used with ::kOfxActionEndInstanceChanged to bracket a grouped set of changes, see \ref ActionsGeneralInstanceChangedBeginEnd */
+/** @brief
+
+ The \ref kOfxActionBeginInstanceChanged and \ref kOfxActionEndInstanceChanged actions
+ are used to bracket all \ref kOfxActionInstanceChanged actions, whether a
+ single change or multiple changes. Some changes to a plugin instance can
+ be grouped logically (eg: a 'reset all' button resetting all the
+ instance's parameters), the begin/end instance changed actions allow a
+ plugin to respond appropriately to a large set of changes. For example,
+ a plugin that maintains a complex internal state can delay any changes
+ to that state until all parameter changes have completed.
+
+ @param  handle
+ handle to the plug-in instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs has the following properties
+     -  \ref kOfxPropChangeReason what triggered the change, which will be one of...
+     -  \ref kOfxChangeUserEdited - the user or host changed the instance
+     somehow and caused a change to something, this includes
+     undo/redos, resets and loading values from files or presets,
+     -  \ref kOfxChangePluginEdited - the plugin itself has changed the
+     value of the instance in some action
+     -  \ref kOfxChangeTime - the time has changed and this has affected the
+     value of the object because it varies over time
+
+ @param  outArgs is redundant and is set to NULL
+
+ \post
+     - For \ref kOfxActionBeginInstanceChanged , \ref kOfxActionCreateInstance has been called on the instance handle.
+     - For \ref kOfxActionEndInstanceChanged , \ref kOfxActionBeginInstanceChanged has been called on the instance handle.
+     - \ref kOfxActionCreateInstance has been called on the instance handle.
+
+ \post
+     - For \ref kOfxActionBeginInstanceChanged, \ref kOfxActionInstanceChanged will be called at least once on the instance handle.
+     - \ref kOfxActionEndInstanceChanged will be called on the instance handle.
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and all was well
+     -  \ref kOfxStatReplyDefault, the action was ignored
+     -  \ref kOfxStatErrFatal,
+     -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
+     the plugin should to post a message
+*/
 #define kOfxActionBeginInstanceChanged "OfxActionBeginInstanceChanged"
 
-/** @brief Action called after the end of a set of kOfxActionEndInstanceChanged actions, used with ::kOfxActionBeginInstanceChanged to bracket a grouped set of changes,  see \ref ActionsGeneralInstanceChangedBeginEnd*/
+/** @brief Action called after the end of a set of \ref kOfxActionEndInstanceChanged actions, used with ::kOfxActionBeginInstanceChanged to bracket a grouped set of changes,  see \ref kOfxActionBeginInstanceChanged*/
 #define kOfxActionEndInstanceChanged "OfxActionEndInstanceChanged"
 
-/** @brief Action called when an instance has the first editor opened for it */
+/** @brief
+
+ This is called when an instance is *first* actively edited by a user,
+ ie: and interface is open and parameter values and input clips can be
+ modified. It is there so that effects can create private user interface
+ structures when necassary. Note that some hosts can have multiple
+ editors open on the same effect instance simulateously.
+
+
+ @param  handle handle to the plug-in instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs is redundant and is set to NULL
+ @param  outArgs is redundant and is set to NULL
+
+ \pre
+     -  \ref kOfxActionCreateInstance has been called on the instance handle,
+
+ \post
+     -  \ref kOfxActionEndInstanceEdit will be called when the last editor is
+     closed on the instance
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and all was well
+     -  \ref kOfxStatReplyDefault, the action was ignored
+     -  \ref kOfxStatErrFatal,
+     -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
+     the plugin should to post a message
+ */
 #define kOfxActionBeginInstanceEdit "OfxActionBeginInstanceEdit"
 
-/** @brief Action called when an instance has the last editor closed */
+/** @brief
+
+ This is called when the *last* user interface on an instance closed. It
+ is there so that effects can destroy private user interface structures
+ when necassary. Note that some hosts can have multiple editors open on
+ the same effect instance simulateously, this will only be called when
+ the last of those editors are closed.
+
+ @param  handle handle to the plug-in instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs is redundant and is set to NULL
+ @param  outArgs is redundant and is set to NULL
+
+ \pre
+     -  \ref kOfxActionBeginInstanceEdit has been called on the instance handle,
+
+ \post
+     -  no user interface is open on the instance
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and all was well
+     -  \ref kOfxStatReplyDefault, the action was ignored
+     -  \ref kOfxStatErrFatal,
+     -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
+     the plugin should to post a message
+ */
 #define kOfxActionEndInstanceEdit "OfxActionEndInstanceEdit"
 
 /*@}*/
@@ -227,6 +584,17 @@ OfxExport OfxPlugin *OfxGetPlugin(int nth);
  * must be implemented in and exported from each plug-in binary.
  */
 OfxExport int OfxGetNumberOfPlugins(void);
+
+/** @brief First thing host should call
+*
+* This host call, added in 2020, is not specified in earlier implementation of the API.
+* Therefore host must check if the plugin implemented it and not assume symbol exists.
+* The order of calls is then:  1) OfxSetHost, 2) OfxGetNumberOfPlugins, 3) OfxGetPlugin
+* The host pointer is only assumed valid until OfxGetPlugin where it might get reset.
+* Plug-in can return kOfxStatFailed to indicate it has nothing to do here, it's not for this Host and it should be skipped silently.
+*/
+
+OfxExport  OfxStatus OfxSetHost(const OfxHost *host);
 
 /**
    \defgroup PropertiesAll Ofx Properties
@@ -487,10 +855,10 @@ This is effectively INT_MIN
 Regions are x1 <= x < x2
 
 Infinite regions are flagged by setting
-- x1 = kOfxFlagInfiniteMin
-- y1 = kOfxFlagInfiniteMin
-- x2 = kOfxFlagInfiniteMax
-- y2 = kOfxFlagInfiniteMax
+- x1 = \ref kOfxFlagInfiniteMin
+- y1 = \ref kOfxFlagInfiniteMin
+- x2 = \ref kOfxFlagInfiniteMax
+- y2 = \ref kOfxFlagInfiniteMax
 
  */
 typedef struct OfxRectI {
@@ -502,10 +870,10 @@ typedef struct OfxRectI {
 Regions are x1 <= x < x2
 
 Infinite regions are flagged by setting
-- x1 = kOfxFlagInfiniteMin
-- y1 = kOfxFlagInfiniteMin
-- x2 = kOfxFlagInfiniteMax
-- y2 = kOfxFlagInfiniteMax
+- x1 = \ref kOfxFlagInfiniteMin
+- y1 = \ref kOfxFlagInfiniteMin
+- x2 = \ref kOfxFlagInfiniteMax
+- y2 = \ref kOfxFlagInfiniteMax
 
  */
 typedef struct OfxRectD {
@@ -549,7 +917,7 @@ General status codes start at 1 and continue until 999
 /** @brief Status code indicating all was fine */
 #define kOfxStatOK 0
 
-/** @brief Status error code for a failed operation */
+/** @brief Status error code for a failed operation. */
 #define kOfxStatFailed  ((int)1)
 
 /** @brief Status error code for a fatal error

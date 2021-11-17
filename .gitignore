@@ -1,5 +1,4 @@
 # Ignore the documentation folder
-/Documentation
 /doc
 Support/PropTester/Darwin-64-debug/PropTester.ofx.bundle/Contents/Info.plist
 Support/*/*/Darwin-*-debug
@@ -8,6 +7,7 @@ Examples/*/*.bundle
 *.ofx
 *.a
 *~
+ofx-docgen
 
 build
 
@@ -42,5 +42,7 @@ Documentation/ofxPropertiesReference.xml
 Documentation/ofxPropertySuiteReference.xml
 Documentation/ofxThreadingSuiteReference.xml
 Documentation/ofxTimeLineSuiteReference.xml
+Documentation/build
+Documentation/doxygen_build
 
 xizvuaie.fcz.txt
