@@ -105,18 +105,15 @@ typedef enum OfxDrawPrimitive
 	kOfxDrawPrimitiveEllipse
 } OfxDrawPrimitive;
 
-#if 0  // temp for hosts who have pre-official release in the wild
-#define kOfxDrawPrimitiveRectangles kOfxDrawPrimitiveRectangle
-#endif
-
 /** @brief Defines text alignment values for OfxDrawSuiteV1::drawText */
+
 enum
 {
-	kOfxDrawTextAlignmentLeft = 0x0001,
-	kOfxDrawTextAlignmentRight = 0x0002,
-	kOfxDrawTextAlignmentTop = 0x0004,
-	kOfxDrawTextAlignmentBottom = 0x008,
-	kOfxDrawTextAlignmentBaseline = 0x010,
+	kOfxDrawTextAlignmentLeft     = 0x0001,
+	kOfxDrawTextAlignmentRight    = 0x0002,
+	kOfxDrawTextAlignmentTop      = 0x0004,
+	kOfxDrawTextAlignmentBottom   = 0x0008,
+	kOfxDrawTextAlignmentBaseline = 0x0010,
 	kOfxDrawTextAlignmentCenterH = (kOfxDrawTextAlignmentLeft | kOfxDrawTextAlignmentRight),
 	kOfxDrawTextAlignmentCenterV = (kOfxDrawTextAlignmentTop | kOfxDrawTextAlignmentBaseline)
 };
