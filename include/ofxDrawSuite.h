@@ -182,7 +182,7 @@ typedef struct OfxDrawSuiteV1 {
 	 - ::kOfxStatOK - the pattern was changed
 	 - ::kOfxStatErrValue - point_count was not valid
 	 */
-  OfxStatus (*draw)(OfxDrawContextHandle context, OfxDrawPrimitive primitive, const OfxPointF *points, int point_count);
+  OfxStatus (*draw)(OfxDrawContextHandle context, OfxDrawPrimitive primitive, const OfxPointD *points, int point_count);
 
 	
 	/** @brief Draws text at the specified position in the current font size
@@ -198,7 +198,7 @@ typedef struct OfxDrawSuiteV1 {
 	 - ::kOfxStatOK - the text was drawn
 	 - ::kOfxStatErrValue - text or pos were not defined
 	 */
-  OfxStatus (*drawText)(OfxDrawContextHandle context, const char *text, const OfxPointF *pos, int alignment);
+  OfxStatus (*drawText)(OfxDrawContextHandle context, const char *text, const OfxPointD *pos, int alignment);
 	
 } OfxDrawSuiteV1;
 
