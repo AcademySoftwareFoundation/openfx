@@ -39,6 +39,8 @@ Properties Reference
 
 .. doxygendefine:: kOfxPropHostOSHandle
 
+.. doxygendefine:: kOfxInteractPropDrawContext
+
 .. doxygendefine:: kOfxImageEffectPropSupportedContexts
 
 .. doxygendefine:: kOfxImageEffectPropPluginHandle
