@@ -11,7 +11,21 @@ Documentation and more info can be found at:
 * [OFX API Programming Reference](http://openeffects.org/documentation/reference)
 * [OFX Discussion Google Group](https://groups.google.com/forum/#!forum/ofx-discussion)
 
-# Release Notes
+# Release Notes - 1.5 (upcoming)
+
+This is version 1.5 of the OFX API.
+Significant additions include the OfxDrawSuite for drawing overlays without
+requiring OpenGL.
+
+## Deprecations
+
+None
+
+## Detailed List of Changes
+
+- Add OfxDrawSuite for drawing image overlays without use of OpenGL
+
+# Release Notes - 1.4
 
 This is version 1.4 of the OFX API.  Significant additions include a
 Dialog Suite for plugins to request the host to allow them to put up a
@@ -32,7 +46,7 @@ previous releases have now been moved to a new header file, `include/oldOfx.h`.
 To continue to support those old tags, whether as a plugin or a host,
 you'll need to include oldOfx.h.
 
-# Detailed List of Changes
+## Detailed List of Changes
 
 * _removed_ = final stage of deprecation: moved to oldOfx.h
 * _added_ = new property or tag
