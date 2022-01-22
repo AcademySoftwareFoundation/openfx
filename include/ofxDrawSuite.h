@@ -17,7 +17,7 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name The Open Effects Association Ltd, nor the names of its 
+    * Neither the name The Open Effects Association Ltd, nor the names of its
       contributors may be used to endorse or promote products derived from this
       software without specific prior written permission.
 
@@ -38,8 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C" {
 #endif
 
-/** @file ofxDraw.h
-Contains the API for host-independent drawing.
+/** @file ofxDrawSuite.h
+Contains the API for host-independent drawing. Added for OFX 1.5, Jan 2022.
 */
 
 
@@ -48,28 +48,15 @@ Contains the API for host-independent drawing.
 
 /** @brief Blind declaration of an OFX drawing context
  */
-typedef struct OfxDrawContext *OfxDrawContextHandle;	
-
-/**
- \addtogroup PropertiesAll
- */
-/*@{*/
-/**
- \defgroup PropertiesInteract Interact Property Definitions
- 
- These are the list of properties used by the Interact API documented in \ref CustomInteractionPage.
- */
-/*@{*/
+typedef struct OfxDrawContext *OfxDrawContextHandle;
 
 /** @brief The Draw Context handle
- 
+
  - Type - pointer X 1
  - Property Set - read only property on the inArgs of the following actions...
  - ::kOfxInteractActionDraw
  */
 #define kOfxInteractPropDrawContext "OfxInteractPropDrawContext"
-
-/*@{*/
 
 /** @brief Defines valid values for OfxDrawSuiteV1::getColour */
 typedef enum OfxStandardColour
@@ -92,7 +79,7 @@ typedef enum OfxDrawLineStipplePattern
 	kOfxDrawLineStipplePatternAltDash,	//  - - -
 	kOfxDrawLineStipplePatternDotDash	// .-.-.-
 } OfxDrawLineStipplePattern;
-	
+
 /** @brief Defines valid values for OfxDrawSuiteV1::draw */
 
 typedef enum OfxDrawPrimitive
@@ -105,12 +92,8 @@ typedef enum OfxDrawPrimitive
 	kOfxDrawPrimitiveEllipse
 } OfxDrawPrimitive;
 
-#if 0  // temp for hosts who have pre-official release in the wild
-#define kOfxDrawPrimitiveRectangles kOfxDrawPrimitiveRectangle
-#endif
-
 /** @brief Defines text alignment values for OfxDrawSuiteV1::drawText */
-enum
+typedef enum OfxDrawTextAligment
 {
 	kOfxDrawTextAlignmentLeft = 0x0001,
 	kOfxDrawTextAlignmentRight = 0x0002,
@@ -126,50 +109,50 @@ enum
 */
 typedef struct OfxDrawSuiteV1 {
 	/** @brief Retrieves the host's desired draw colour for
-	 
+
 	 \arg context  - the draw context
 	 \arg std_colour - the desired colour type
 	 \arg colour      - the returned RGBA colour
-	 
+
 	 @returns
 	 - ::kOfxStatOK - the colour was returned
 	 */
 	OfxStatus (*getColour)(OfxDrawContextHandle context, OfxStandardColour std_colour, OfxRGBAColourF *colour);
-	
+
   /** @brief Sets the current draw colour for future drawing operations
 
 	\arg context  - the draw context
 	\arg colour      - the RGBA colour
-	
+
 	@returns
 	- ::kOfxStatOK - the colour was changed
    */
   OfxStatus (*setColour)(OfxDrawContextHandle context, const OfxRGBAColourF *colour);
 
 	/** @brief Sets the current draw colour for future drawing operations
-	 
+
 	 \arg context  - the draw context
 	 \arg width     - the line width - use 0 for a single pixel line or non-zero for a smooth line of the desired width
-	 
+
 	 The host should adjust for screen density.
-	 
+
 	 @returns
 	 - ::kOfxStatOK - the width was changed
 	 */
   OfxStatus (*setLineWidth)(OfxDrawContextHandle context, float width);
 
 	/** @brief Sets the current line stipple pattern
-	 
+
 	 \arg context  - the draw context
 	 \arg pattern  - the desired stipple pattern
-	 
+
 	 @returns
 	 - ::kOfxStatOK - the pattern was changed
 	 */
   OfxStatus (*setLineStipple)(OfxDrawContextHandle context, OfxDrawLineStipplePattern pattern);
 
 	/** @brief Draws a primitive of the desired type
-	 
+
 	 \arg context  - the draw context
 	 \arg primitive  - the desired primitive
 	 \arg points  - the array of points in the primitive
@@ -184,22 +167,22 @@ typedef struct OfxDrawSuiteV1 {
 	 */
   OfxStatus (*draw)(OfxDrawContextHandle context, OfxDrawPrimitive primitive, const OfxPointD *points, int point_count);
 
-	
+
 	/** @brief Draws text at the specified position in the current font size
-	 
+
 	 \arg context  - the draw context
 	 \arg text  - the text to draw (UTF-8 encoded)
 	 \arg pos  - the position of the lower-left corner of the text baseline
 	 \arg alignment  - the text alignment flags (see kOfxDrawTextAlignment*)
 
 	 The text font face and size are determined by the host.
-	 
+
 	 @returns
 	 - ::kOfxStatOK - the text was drawn
 	 - ::kOfxStatErrValue - text or pos were not defined
 	 */
   OfxStatus (*drawText)(OfxDrawContextHandle context, const char *text, const OfxPointD *pos, int alignment);
-	
+
 } OfxDrawSuiteV1;
 
 #ifdef __cplusplus
