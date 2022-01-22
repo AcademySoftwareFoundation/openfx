@@ -9,12 +9,12 @@ See the source at `ofxDrawSuite.h <https://github.com/ofxa/openfx/blob/master/in
 .. doxygenstruct:: OfxDrawSuiteV1
 
 #defines
-========
+--------
 
 .. doxygendefine:: kOfxInteractPropDrawContext
 
 Enums
-=====
+-----
 .. doxygenenum:: OfxStandardColour
 .. doxygenenum:: OfxDrawLineStipplePattern
 .. doxygenenum:: OfxDrawPrimitive
