@@ -35,16 +35,18 @@ The header files used to define the OFX Image Effect API are...
    effect
 -  `ofxMultiThread.h <https://github.com/ofxa/openfx/blob/master/include/ofxMultiThread.h>`_
    Provides the suite for basic multi-threading capabilities
--  `ofxInteract.h <https://github.com/ofxa/openfx/blob/master/include/ofxInteract.h>`_ 
+-  `ofxInteract.h <https://github.com/ofxa/openfx/blob/master/include/ofxInteract.h>`_
    Provides the suite that allows a plug-in to use OpenGL to draw their own interactive GUI tools
--  `ofxKeySyms.h <https://github.com/ofxa/openfx/blob/master/include/ofxKeySyms.h>`_ 
+-  `ofxKeySyms.h <https://github.com/ofxa/openfx/blob/master/include/ofxKeySyms.h>`_
    Provides key symbols used by 'Interacts' to represent keyboard events
 -  `ofxMemory.h <https://github.com/ofxa/openfx/blob/master/include/ofxMemory.h>`_
    Provides a simple memory allocation suite,
 -  `ofxMessage.h <https://github.com/ofxa/openfx/blob/master/include/ofxMessage.h>`_
    Provides a simple messaging suite to communicate with an end user
--  `ofxImageEffect.h <https://github.com/ofxa/openfx/blob/master/include/ofxImageEffect.h>`_ 
+-  `ofxImageEffect.h <https://github.com/ofxa/openfx/blob/master/include/ofxImageEffect.h>`_
    Defines a suite and set of actions that draws all the above together to create an visual effect plug-in.
+-  `ofxDrawSuite.h <https://github.com/ofxa/openfx/blob/master/include/ofxDrawSuite.h>`_
+   Provides an optional suite that allows a plug-in to draw their own interactive GUI tools without using OpenGL
 
 These contain the suite definitions, property definitions and action
 definitions that are used by the API.
