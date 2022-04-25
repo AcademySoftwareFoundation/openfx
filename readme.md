@@ -2,6 +2,7 @@
 
 The authoritative source for information about OFX is http://openeffects.org/
 
+* [OFX Build](https://github.com/ofxa/openfx/blob/master/install.md)
 * [OFX Documentation](https://openfx.readthedocs.io/en/master) - start here
 * [OFX Documentation: Reference](https://openfx.readthedocs.io/en/master/Reference)
 * [OFX Programming Guide By Example (github)](https://github.com/ofxa/openfx/tree/master/Documentation/old_doc/Guide)
