@@ -12,7 +12,7 @@ this list of conditions and the following disclaimer.
 * Redistributions in binary form must reproduce the above copyright notice,
 this list of conditions and the following disclaimer in the documentation
 and/or other materials provided with the distribution.
-* Neither the name The Open Effects Association Ltd, nor the names of its 
+* Neither the name The Open Effects Association Ltd, nor the names of its
 contributors may be used to endorse or promote products derived from this
 software without specific prior written permission.
 
@@ -42,7 +42,7 @@ England
 
 #include "../include/ofxsProcessing.H"
 
-#include "randomGenerator.H"
+#include <random>
 
 ////////////////////////////////////////////////////////////////////////////////
 // base class for the noise
@@ -58,11 +58,11 @@ public :
     : OFX::ImageProcessor(instance)
     , _noiseLevel(0.5f)
     , _seed(0)
-  {        
+  {
   }
 
   /** @brief set the scale */
-  void setNoiseLevel(float v) {_noiseLevel = v;}    
+  void setNoiseLevel(float v) {_noiseLevel = v;}
 
   /** @brief the seed to use */
   void setSeed(uint32_t v) {_seed = v;}
@@ -73,7 +73,7 @@ template <class PIX, int nComponents, int max>
 class NoiseGenerator : public NoiseGeneratorBase {
 public :
   // ctor
-  NoiseGenerator(OFX::ImageEffect &instance) 
+  NoiseGenerator(OFX::ImageEffect &instance)
     : NoiseGeneratorBase(instance)
   {}
 
@@ -82,8 +82,12 @@ public :
   {
     float noiseLevel = _noiseLevel;
 
-    // set up a random number generator and set the seed
-    RandomGenerator randy(_seed + procWindow.y1);
+    // set up a random number generator
+    // Distribution is from 0 to pixel max level times noise level
+    std::random_device rd;
+    std::mt19937_64 mt(rd());
+    mt.seed(_seed + procWindow.y1);
+    std::uniform_real_distribution<double> dist(0.0, max * noiseLevel);
 
     // push pixels
     for(int y = procWindow.y1; y < procWindow.y2; y++) {
@@ -93,8 +97,7 @@ public :
 
       for(int x = procWindow.x1; x < procWindow.x2; x++) {
         for(int c = 0; c < nComponents; c++) {
-          // get the random value out of it, scale up by the pixel max level and the noise level
-          double randValue = max * noiseLevel * randy.random();
+          double randValue = dist(mt);
 
           if(max == 1) // implies floating point, so don't clamp
             dstPix[c] = PIX(randValue);
@@ -176,14 +179,14 @@ NoisePlugin::setupAndProcess(NoiseGeneratorBase &processor, const OFX::RenderArg
 }
 
 /* Override the clip preferences, we need to say we are setting the frame varying flag */
-void 
+void
 NoisePlugin::getClipPreferences(OFX::ClipPreferencesSetter &clipPreferences)
 {
   clipPreferences.setOutputFrameVarying(true);
 }
 
 /** @brief The get RoD action.  We flag an infinite rod */
-bool 
+bool
 NoisePlugin::getRegionOfDefinition(const OFX::RegionOfDefinitionArguments &/*args*/, OfxRectD &rod)
 {
   // we can generate noise anywhere on the image plan, so set our RoD to be infinite
@@ -202,22 +205,22 @@ NoisePlugin::render(const OFX::RenderArguments &args)
 
   // do the rendering
   if(dstComponents == OFX::ePixelComponentRGBA) {
-    switch(dstBitDepth) 
+    switch(dstBitDepth)
     {
-    case OFX::eBitDepthUByte : {      
+    case OFX::eBitDepthUByte : {
       NoiseGenerator<unsigned char, 4, 255> fred(*this);
       setupAndProcess(fred, args);
                                }
                                break;
 
-    case OFX::eBitDepthUShort : 
+    case OFX::eBitDepthUShort :
       {
         NoiseGenerator<unsigned short, 4, 65535> fred(*this);
         setupAndProcess(fred, args);
-      }                          
+      }
       break;
 
-    case OFX::eBitDepthFloat : 
+    case OFX::eBitDepthFloat :
       {
         NoiseGenerator<float, 4, 1> fred(*this);
         setupAndProcess(fred, args);
@@ -228,39 +231,39 @@ NoisePlugin::render(const OFX::RenderArguments &args)
     }
   }
   else {
-    switch(dstBitDepth) 
+    switch(dstBitDepth)
     {
-    case OFX::eBitDepthUByte : 
+    case OFX::eBitDepthUByte :
       {
         NoiseGenerator<unsigned char, 1, 255> fred(*this);
         setupAndProcess(fred, args);
       }
       break;
 
-    case OFX::eBitDepthUShort : 
+    case OFX::eBitDepthUShort :
       {
         NoiseGenerator<unsigned short, 1, 65535> fred(*this);
         setupAndProcess(fred, args);
-      }                          
+      }
       break;
 
-    case OFX::eBitDepthFloat : 
+    case OFX::eBitDepthFloat :
       {
         NoiseGenerator<float, 1, 1> fred(*this);
         setupAndProcess(fred, args);
-      }                          
+      }
       break;
     default :
       OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
-  } 
+  }
 }
 
 mDeclarePluginFactory(NoiseExamplePluginFactory, {}, {});
 
 using namespace OFX;
 
-void NoiseExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc) 
+void NoiseExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 {
   desc.setLabels("Noise", "Noise", "Noise");
   desc.setPluginGrouping("OFX");
@@ -277,7 +280,7 @@ void NoiseExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.setRenderTwiceAlways(false);
   desc.setSupportsMultipleClipPARs(false);
   desc.setRenderTwiceAlways(false);
-}        
+}
 
 void NoiseExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum /*context*/)
 {
