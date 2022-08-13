@@ -1,12 +1,15 @@
-# OpenFX Project Roles and Responsibilities
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+<!-- Copyright Contributors to the OpenFX Project. -->
 
-OpenFX is a project of the Academy Software Foundation and relies on
-the ASWF governance policies, supported by the Linux Foundation.
+# OpenFX Project Governance
+
+OpenFX is a project of the Academy Software Foundation and relies on the ASWF
+governance policies, supported by the Linux Foundation.
 
 There are three primary project roles: Contributors submit code to the
-project; Committers approve code to be included into the project; and
-the Technical Steering Committee (TSC) provides overall high-level
-project guidance.
+project; Committers approve code to be included into the project; and the
+Technical Steering Committee (TSC) provides overall high-level project
+guidance.
 
 * [Contributors](#Contributors)
 * [Committers](#Committers)
@@ -14,14 +17,13 @@ project guidance.
 
 ## Contributors
 
-The OpenFX project grows and thrives from assistance from
-Contributors.  Contributors include anyone in the community that
-submits code, documentation, or other technical artifacts to the
-project. However, such contributions must be approved by a project
-Committer before they become a part of the project.
+The OpenFX project grows and thrives from assistance from Contributors.
+Contributors include anyone in the community who contributes code,
+documentation, or other technical artifacts that have been incorporated into
+the project's repository.
 
-Anyone can be a Contributor. You need no formal approval from the
-project, beyond the legal forms.
+Anyone can be a Contributor. You need no formal approval from the project,
+beyond the legal forms.
 
 ### How to Become a Contributor
 
@@ -42,15 +44,14 @@ Typical activities of a Committer include:
 * Helping users and novice contributors.
 
 * Ensuring a response to questions posted to the
-  openfx-discussion@lists.aswf.io mailing list.
+  [openfx-discussion developer mail list](https://lists.aswf.io/g/openfx-discussion)
 
-* Contributing code and documentation changes that improve the
-  project.
+* Contributing code and documentation changes that improve the project.
 
 * Reviewing and commenting on issues and pull requests.
 
-* Ensuring that changes and new code meet acceptable standards and are
-  in the long-term interest of the project.
+* Ensuring that changes and new code meet acceptable standards and are in
+  the long-term interest of the project.
 
 * Participation in working groups.
 
@@ -58,50 +59,67 @@ Typical activities of a Committer include:
 
 ### How to Become a Committer
 
-Any existing Committer can nominate an individual making significant
-and valuable contributions to the OpenFX project to become a new
-Committer.  New committers are approved by vote of the TSC.
+Any member of the OpenFX community (though typically an existing Committer or
+TSC member) may nominate an individual making significant and valuable
+contributions to the OpenFX project to become a new Committer. To nominate a
+new Committer, open an issue in the OpenFX repository, send mail to the TSC
+mailing list, or raise the issue at a TSC meeting.
 
-If you are interested in becoming a Committer, contact the TSC at
-XXX@YYY.ZZZ
+The TSC may periodically review the Committer list to identify inactive
+Committers. Past Committers are typically given Emeritus status. Emeriti may
+request that the TSC restore them to active Committer status.
 
 ## Technical Steering Committee
 
-The Technical Steering Committee (TSC) oversees the overall technical
-direction of OpenFX, as defined in the project
-[charter](ASWF/charter/OpenFX-Technical-Charter.md).  This
-charter defines the TSC member terms and succession policies.
+The Technical Steering Committee (TSC) has final authority over this
+project. As defined in the project charter, TSC responsibilities include,
+but are not limited to:
 
-The responsibilities of the TSC include:
-
-* Coordinating technical direction of the project.
+* Coordinating technical direction of the Project.
 
 * Project governance and contribution policy.
 
-* Managing changes to the OpenFX Standard
-
 * GitHub repository administration.
 
-* Maintaining the list of additional Committers.
+* Maintaining the list of additional Committers
 
 * Appointing representatives to work with other open source or open
   standards communities.
 
-* Discussions, seeking consensus, and where necessary, voting on
-  technical matters relating to the code base that affect multiple
-  projects.
+* Discussions, seeking consensus, and where necessary, voting on technical
+  matters relating to the code base that affect multiple projects.
 
 * Coordinating any marketing, events, or communications regarding the
   project.
 
-The TSC elects a Chair person, who acts as the project manager,
-organizing meetings and providing oversight to project
-administration. The Chair is elected by the TSC.  The Chair also
-serves as the OpenFX representative on the Academy Software
-Foundation (ASWF) Technical Advisory Council (TAC). The chair
-represents the project at ASWF TAC meetings.
+Within the TSC are two elected leadership roles to be held by its members
+and voted on annually. Any TSC member can express interest in serving in a
+role, or nominate another member to serve. There are no term limits, and one
+person may hold multiple roles simultaneously. Should a TSC member resign
+from a leadership role before their term is complete, a successor shall be
+elected through the standard nomination and voting process to complete the
+remainder of the term. The leadership roles are:
 
-### Current TSC Members
+* **Chair**: This position acts as the project manager, organizing meetings
+  and providing oversight to project administration.
+
+* **Chief Architect**: This position makes all the final calls on design and
+  technical decisions, and is responsible for avoiding "design by committee"
+  pitfalls.
+
+The chair role is assumed to rotate annually (though there are no term
+limits, so the TSC may reelect an existing chair). The chief architect
+position should be a source of stability and coherent design vision, so the
+TSC is encouraged to choose an architect who can serve for many years and
+only change architects when it is necessary for the health of the project
+and its community.
+
+At the time of election, the TSC will also agree upon which of these two
+leaders will serve as the OpenFX ASWF (Academy Software Foundation) TAC
+(Technical Advisory Council) representative for the term. This member
+represents the project at all ASWF TAC meetings.
+
+z### TSC Members
 
 * Gary Oberbrunner (chair) - Dark Star Systems
 * Pierre Jasmin - RE:Vision Effects
@@ -111,38 +129,69 @@ represents the project at ASWF TAC meetings.
 * Peter Huisma - Assimilate BV
 * John Mertic - The Linux Foundation
 
+### TSC Nomination and Succession
+
+Any proposal for additional members of the TSC may be submitted by
+Committers, TSC members, or other major stakeholders of the OpenFX community by
+opening an issue outlining their case or raising the issue at a TSC meeting.
+New TSC members are accepted or rejected by majority vote of the TSC.
+
+If a TSC member is for an extended period not regularly participating or
+performing the responsibilities expected of TSC members, the TSC may by
+majority vote request an alternate TSC member be submitted by that
+organization, or remove the inactive member from the TSC.
+
+A voting member of the TSC may nominate a successor in the event that such
+voting member decides to leave the TSC, and the TSC, including the departing
+member, shall confirm or reject such nomination by a vote. In the event that
+the departing member's nomination for successor is rejected by vote of the
+TSC, the departing member shall be entitled to continue nominating
+successors until one such successor is confirmed by vote of the TSC. If the
+departing member fails or is unable to nominate a successor, the TSC may
+nominate one on the departing member's behalf.
+
+TSC membership is presumed to be retained by the individual even if they
+change employers. The TSC may take action to ensure that organizational
+stakeholder representation not become severely disproportionate, for example
+by urging an organization that loses its sole TSC representative to nominate
+a new member, or to limit the total number of voting members from any one
+organization if too many members all move to the same organization.
+
 ### TSC Meetings
 
-All meetings of the TSC are open to participation by any member of the
-OpenFX community. Meeting times are listed in the [ASWF technical
-community calendar](https://lists.aswf.io/g/tac/calendar).  The TSC
-Chair moderates the meeting, or appoints another TSC member to
-moderate in his or her absence.
+Any meetings of the TSC are intended to be open to the public, except where
+there is a reasonable need for privacy. The TSC meets regularly in a voice
+conference call, at a cadence deemed appropriate by the TSC. The TSC Chair
+moderates the meeting, or appoints another TSC member to moderate in his or
+her absence. Meetings may also be streamed online where appropriate;
+connection details will be posted to the openfx-discussion mail list in advance of the
+scheduled meeting.
 
-Items are added to the TSC agenda which are considered contentious or
-are modifications of governance, contribution policy, TSC membership,
-or release process, in addition to topics involving the high-level
-technical direction of the project and approving changes to the OpenFX
-Standard (see [Standard Process](STANDARD_PROCESS.md))
+Items are added to the TSC agenda which are considered contentious or are
+modifications of governance, contribution policy, TSC membership, or release
+process, in addition to topics involving the high-level technical direction
+of the project.
 
-The intention of the agenda is not to approve or review all
-patches. That should happen continuously on GitHub and be handled by
-the larger group of Committers.
+The intention of the agenda is not to approve or review all patches. That
+should happen continuously on GitHub and be handled by the larger group of
+Committers.
 
-Any community member or Contributor can ask that something be reviewed
-by the TSC at the meeting by logging a GitHub issue. Any Committer,
-TSC member, or the meeting chair can bring the issue to the TSC's
-attention by applying the `TSC` label.
+Any community member or Contributor can ask that something be reviewed by
+the TSC at the meeting by logging a GitHub issue. Any Committer, TSC member,
+or the meeting chair can bring the issue to the TSC's attention by applying
+the `TSC` label.
 
-Prior to each TSC meeting, the meeting chair will share the agenda with members
-of the TSC. TSC members can also add items to the agenda at the beginning of
-each meeting. The meeting chair and the TSC cannot veto or remove items.
+Prior to each TSC meeting, the meeting chair will share the agenda with
+members of the TSC. TSC members can also add items to the agenda at the
+beginning of each meeting. The meeting chair and the TSC cannot veto or
+remove items.
 
-The TSC may invite additional persons to participate in a non-voting capacity.
+The TSC may invite additional persons to participate in a non-voting
+capacity.
 
-The meeting chair is responsible for archiving the minutes, stored at
-https://wiki.aswf.io/display/OFX/TSC+Meetings
+The meeting chair is responsible for ensuring that minutes are taken
+and archived at https://wiki.aswf.io/display/OFX/TSC+Meetings .
 
-Due to the challenges of scheduling a global meeting with participants
-in several time zones, the TSC will seek to resolve as many agenda
-items as possible outside of meetings on the public mailing list.
+Due to the challenges of scheduling a global meeting with participants in
+several time zones, the TSC will seek to resolve as many agenda items as
+possible outside of meetings on the public mailing list.

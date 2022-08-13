@@ -1,14 +1,9 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+<!-- Copyright Contributors to the OpenFX Project. -->
 # Contributing to OpenFX
 
 Thank you for your interest in contributing to OpenFX. This document
-explains our contribution process and procedures:
-
-* [Getting Information](#Getting-Information)
-* [Legal Requirements](#Legal-Requirements)
-* [Development Workflow](#Development-Workflow)
-* [Coding Style](#Coding-Style)
-* [Versioning Policy](#Versioning-Policy)
-* [Creating a Release](#Creating-a-Release)
+explains our contribution process and procedures.
 
 For a description of the roles and responsibilities of the various
 members of the OpenFX community, see [GOVERNANCE](GOVERNANCE.md), and
