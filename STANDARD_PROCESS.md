@@ -32,7 +32,9 @@ community, ideally presented at a TSC meeting.
 
 The implementation does not have to be in a fully released version of
 the two sides, but they must be using the exact header files in the
-github PR.
+github PR. The plug-in and host should be from different source trees
+or organizations, to better demonstrate the utility of the change for
+the entire community.
 
 ## Documentation
 
