@@ -103,21 +103,12 @@ remainder of the term. The leadership roles are:
 * **Chair**: This position acts as the project manager, organizing meetings
   and providing oversight to project administration.
 
-* **Chief Architect**: This position makes all the final calls on design and
-  technical decisions, and is responsible for avoiding "design by committee"
-  pitfalls.
+The chair role is assumed to rotate annually, although there are no
+term limits, so the TSC may reelect an existing chair.
 
-The chair role is assumed to rotate annually (though there are no term
-limits, so the TSC may reelect an existing chair). The chief architect
-position should be a source of stability and coherent design vision, so the
-TSC is encouraged to choose an architect who can serve for many years and
-only change architects when it is necessary for the health of the project
-and its community.
-
-At the time of election, the TSC will also agree upon which of these two
-leaders will serve as the OpenFX ASWF (Academy Software Foundation) TAC
-(Technical Advisory Council) representative for the term. This member
-represents the project at all ASWF TAC meetings.
+The chair will serve as the OpenFX ASWF (Academy Software Foundation)
+TAC (Technical Advisory Council) representative for the term, or may
+delegate this responsibility as needed.
 
 z### TSC Members
 
