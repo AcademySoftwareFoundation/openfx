@@ -110,12 +110,12 @@ The chair will serve as the OpenFX ASWF (Academy Software Foundation)
 TAC (Technical Advisory Council) representative for the term, or may
 delegate this responsibility as needed.
 
-z### TSC Members
+### TSC Members
 
 * Gary Oberbrunner (chair) - Dark Star Systems
 * Pierre Jasmin - RE:Vision Effects
 * John-Paul Smith - Boris FX
-* Dennis Adams - Sony
+* Dennis Adams - Sony Creative Software Inc.
 * Phil Barrett - FilmLight
 * Peter Huisma - Assimilate BV
 * John Mertic - The Linux Foundation
