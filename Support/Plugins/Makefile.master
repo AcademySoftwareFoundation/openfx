@@ -10,7 +10,7 @@
 #     * Redistributions in binary form must reproduce the above copyright notice,
 #       this list of conditions and the following disclaimer in the documentation
 #       and/or other materials provided with the distribution.
-#     * Neither the name The Open Effects Association Ltd, nor the names of its 
+#     * Neither the name The Open Effects Association Ltd, nor the names of its
 #       contributors may be used to endorse or promote products derived from this
 #       software without specific prior written permission.
 #
@@ -62,7 +62,7 @@ SUPPORTOBJECTS = $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsMultiThread.o \
 		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsCore.o \
 		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsPropertyValidation.o \
 		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsImageEffect.o \
-		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsParams.o 
+		 $(PATHTOROOT)/Library/$(OBJECTPATH)/ofxsParams.o
 
 
 all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
@@ -97,11 +97,11 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
       ARCH = FreeBSD-x86-64
     endif
     LINKFLAGS := $(LINKFLAGS) $(BITSFLAG)
-  endif 
-  ifeq ($(OS),Darwin) 
+  endif
+  ifeq ($(OS),Darwin)
     ifeq ($(BITS), Universal)
-      # Universal 32/64 is useful only on OSX 10.4 (i386/ppc), 10.5 (i386/ppc) and 10.6 (i386/x86_64).
-      # OSX 10.6 (Snow Leopard) or later, build for i386/x86_64
+      # Universal x86_64/arm64 is for MacOS versions circa 2022 (e.g. 12.3, Monterey)
+      # Universal 32/64 is useful only on ancient OSX 10.4 (i386/ppc), 10.5 (i386/ppc) and 10.6 (i386/x86_64).
       MACOSX := 10.6
       MACOSXSDK := 10.6
       ARCHFLAGS=-arch i386 -arch x86_64
@@ -110,14 +110,21 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
         MACOSX := 10.4
         MACOSXSDK := 10.4u
         ARCHFLAGS=-arch i386 -arch ppc
+        BITSFLAG = -isysroot /Developer/SDKs/MacOSX$(MACOSX).sdk $(ARCHFLAGS) -mmacosx-version-min=$(MACOSX) -fPIC
       endif
       ifeq ($(shell uname -r | sed 's/^\(.*\)\..*\..*/\1/'), 9)
         # OSX 10.5 (Leopard)
         MACOSX := 10.5
         MACOSXSDK := 10.5
         ARCHFLAGS=-arch i386 -arch ppc
+        BITSFLAG = -isysroot /Developer/SDKs/MacOSX$(MACOSX).sdk $(ARCHFLAGS) -mmacosx-version-min=$(MACOSX) -fPIC
       endif
-      BITSFLAG = -isysroot /Developer/SDKs/MacOSX$(MACOSX).sdk $(ARCHFLAGS) -mmacosx-version-min=$(MACOSX) -fPIC
+      ifeq ($(shell uname -r | sed 's/^\(.*\)\..*\..*/\1/'), 21)
+        # e.g. OSX 12.3 (Monterey)
+        MACOSX := 12.3
+        ARCHFLAGS=-arch arm64 -arch x86_64
+        BITSFLAG = $(ARCHFLAGS) -mmacosx-version-min=$(MACOSX) -fPIC
+      endif
     endif
     LINKFLAGS = $(BITSFLAG) -bundle -fvisibility=hidden -exported_symbols_list $(PATHTOROOT)/include/osxSymbols -framework OpenGL -Wl,-rpath,@loader_path/../Frameworks -Wl,-rpath,@loader_path/../Libraries
     ARCH = MacOS
@@ -137,8 +144,7 @@ $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle: $(OBJECTPATH)/$(PLUGINNAME).ofx
 	if [ $(DEBUGNAME) = "release" -a $(ARCH) = "MacOS" ]; then bash $(PATHTOROOT)/include/osxDeploy.sh $@ $(PLUGINNAME).ofx; fi
 
 clean :
-	rm -rf $(SUPPORTOBJECTS) $(OBJECTPATH)/ $(PATHTOROOT)/Library/$(OBJECTPATH)/ 
+	rm -rf $(SUPPORTOBJECTS) $(OBJECTPATH)/ $(PATHTOROOT)/Library/$(OBJECTPATH)/
 
 release :
 	make DEBUGFLAG=-O3
-
