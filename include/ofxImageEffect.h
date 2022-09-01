@@ -827,6 +827,19 @@ The entry point pointed to must be one that handles custom interaction actions.
 */
 #define kOfxImageEffectPluginPropOverlayInteractV1 "OfxImageEffectPluginPropOverlayInteractV1"
 
+/** @brief Sets the entry for an effect's overlay interaction. Unlike
+ kOfxImageEffectPluginPropOverlayInteractV1, the overlay interact in the plug-in is expected
+ to implement the kOfxInteractActionDraw using the OfxDrawSuiteV1.
+ 
+   - Type - pointer X 1
+   - Property Set - plugin descriptor (read/write)
+   - Default - NULL
+   - Valid Values - must point to an ::OfxPluginEntryPoint
+
+The entry point pointed to must be one that handles custom interaction actions.
+*/
+#define kOfxImageEffectPluginPropOverlayInteractV2 "OfxImageEffectPluginPropOverlayInteractV2"
+
 /** @brief Indicates whether a plugin or host support multiple resolution images.
 
    - Type - int X 1
