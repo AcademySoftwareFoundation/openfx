@@ -59,7 +59,7 @@ typedef struct OfxDrawContext *OfxDrawContextHandle;
 #define kOfxInteractPropDrawContext "OfxInteractPropDrawContext"
 
 /** @brief Defines valid values for OfxDrawSuiteV1::getColour */
-typedef enum OfxStandardColour
+enum OfxStandardColour
 {
 	kOfxStandardColourOverlayBackground,
 	kOfxStandardColourOverlayActive,
@@ -68,21 +68,21 @@ typedef enum OfxStandardColour
 	kOfxStandardColourOverlayMarqueeFG,
 	kOfxStandardColourOverlayMarqueeBG,
 	kOfxStandardColourOverlayText
-} OfxStandardColour;
+};
 
 /** @brief Defines valid values for OfxDrawSuiteV1::setLineStipple */
-typedef enum OfxDrawLineStipplePattern
+enum OfxDrawLineStipplePattern
 {
 	kOfxDrawLineStipplePatternSolid,	// -----
 	kOfxDrawLineStipplePatternDot,		// .....
 	kOfxDrawLineStipplePatternDash,		// - - -
 	kOfxDrawLineStipplePatternAltDash,	//  - - -
 	kOfxDrawLineStipplePatternDotDash	// .-.-.-
-} OfxDrawLineStipplePattern;
+};
 
 /** @brief Defines valid values for OfxDrawSuiteV1::draw */
 
-typedef enum OfxDrawPrimitive
+enum OfxDrawPrimitive
 {
 	kOfxDrawPrimitiveLines,
 	kOfxDrawPrimitiveLineStrip,
@@ -90,10 +90,10 @@ typedef enum OfxDrawPrimitive
 	kOfxDrawPrimitiveRectangle, /* 2 points*/
 	kOfxDrawPrimitivePolygon,
 	kOfxDrawPrimitiveEllipse
-} OfxDrawPrimitive;
+};
 
 /** @brief Defines text alignment values for OfxDrawSuiteV1::drawText */
-typedef enum OfxDrawTextAligment
+enum OfxDrawTextAligment
 {
 	kOfxDrawTextAlignmentLeft = 0x0001,
 	kOfxDrawTextAlignmentRight = 0x0002,
@@ -107,7 +107,7 @@ typedef enum OfxDrawTextAligment
 /** @brief OFX suite that allows an effect to draw to a host-defined display context.
 
 */
-typedef struct OfxDrawSuiteV1 {
+struct OfxDrawSuiteV1 {
 	/** @brief Retrieves the host's desired draw colour for
 
 	 \arg context  - the draw context
@@ -183,7 +183,7 @@ typedef struct OfxDrawSuiteV1 {
 	 */
   OfxStatus (*drawText)(OfxDrawContextHandle context, const char *text, const OfxPointD *pos, int alignment);
 
-} OfxDrawSuiteV1;
+};
 
 #ifdef __cplusplus
 }
