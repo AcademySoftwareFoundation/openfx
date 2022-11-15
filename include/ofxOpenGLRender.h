@@ -303,7 +303,7 @@ clipLoadTexture
   /** @brief Request the host to minimize its GPU resource load
 
   When a plugin fails to allocate GPU resources, it can call this function to
-  request the host to flush it's GPU resources if it holds any.
+  request the host to flush its GPU resources if it holds any.
   After the function the plugin can try again to allocate resources which then
   might succeed if the host actually has released anything.
 
@@ -390,9 +390,9 @@ The OfxOpenGLRenderSuite allows image effects to use OpenGL commands
 (hopefully backed by a GPU) to accelerate rendering
 of their outputs. The basic scheme is simple....
   - An effect indicates it wants to use OpenGL acceleration by setting the
-    ::kOfxImageEffectOpenGLRenderSupported flag on it's descriptor
+    ::kOfxImageEffectPropOpenGLRenderSupported flag on its descriptor
   - A host indicates it supports OpenGL acceleration by setting
-    ::kOfxImageEffectOpenGLRenderSupported on it's descriptor
+    ::kOfxImageEffectPropOpenGLRenderSupported on its descriptor
   - In an effect's ::kOfxImageEffectActionGetClipPreferences action, an
     effect indicates what clips it will be loading images from onto the GPU's
     memory during an effect's ::kOfxImageEffectActionRender action.
@@ -400,22 +400,22 @@ of their outputs. The basic scheme is simple....
 @section ofxOpenGLRenderHouseKeeping OpenGL House Keeping
 
 If a host supports OpenGL rendering then it flags this with the string
-property ::kOfxImageEffectOpenGLRenderSupported on its descriptor property
+property ::kOfxImageEffectPropOpenGLRenderSupported on its descriptor property
 set. Effects that cannot run without OpenGL support should examine this in
 ::kOfxActionDescribe action and return a ::kOfxStatErrMissingHostFeature
 status flag if it is not set to "true".
 
 Effects flag to a host that they support OpenGL rendering by setting the
-string property ::kOfxImageEffectOpenGLRenderSupported on their effect
+string property ::kOfxImageEffectPropOpenGLRenderSupported on their effect
 descriptor during the ::kOfxActionDescribe action. Effects can work in three
 ways....
   - purely on CPUs without any OpenGL support at all, in which case they
-    should set ::kOfxImageEffectOpenGLRenderSupported to be "false" (the
+    should set ::kOfxImageEffectPropOpenGLRenderSupported to be "false" (the
     default),
   - on CPUs but with optional OpenGL support, in which case they should set
-    ::kOfxImageEffectOpenGLRenderSupported to be "true",
+    ::kOfxImageEffectPropOpenGLRenderSupported to be "true",
   - only with OpenGL support, in which case they should set
-    ::kOfxImageEffectOpenGLRenderSupported to be "needed".
+    ::kOfxImageEffectPropOpenGLRenderSupported to be "needed".
 
 Hosts can examine this flag and respond to it appropriately.
 
