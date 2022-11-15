@@ -580,6 +580,11 @@ namespace OFX {
           if(fetchTypedProperty(property, prop)) {
             prop->setValue(value, index);
           }
+          else {
+#           ifdef OFX_DEBUG_PROPERTIES
+            std::cout << "OFX: setProperty " << property << "[" << index << "] ignored because host property not defined" << std::endl;
+#           endif
+          }
         }
         catch(...) {}
       }
@@ -591,6 +596,11 @@ namespace OFX {
           PropertyTemplate<T> *prop = 0;
           if(fetchTypedProperty(property, prop)) {
             prop->setValueN(value, count);
+          }
+          else {
+#           ifdef OFX_DEBUG_PROPERTIES
+            std::cout << "OFX: setPropertyN " << property << " ignored because host property not defined" << std::endl;
+#           endif
           }
         }
         catch(...) {}
@@ -792,6 +802,7 @@ namespace OFX {
           PropertyTemplate<T> *prop = 0;
           if(!thisSet->fetchTypedProperty(property, prop, false)) {
 #           ifdef OFX_DEBUG_PROPERTIES
+            std::cout << "OFX: propSet " << property << "[" << index << "] ignored because effect property not defined" << std::endl;
             std::cout << ' ' << StatStr(kOfxStatErrUnknown) << std::endl;
 #           endif
             return kOfxStatErrUnknown;
@@ -839,6 +850,7 @@ namespace OFX {
           PropertyTemplate<T> *prop = 0;
           if(!thisSet->fetchTypedProperty(property, prop, false)) {
 #           ifdef OFX_DEBUG_PROPERTIES
+            std::cout << "OFX: propSetN " << property << " ignored because effect property not defined" << std::endl;
             std::cout << ' ' << StatStr(kOfxStatErrUnknown) << std::endl;
 #           endif
             return kOfxStatErrUnknown;
