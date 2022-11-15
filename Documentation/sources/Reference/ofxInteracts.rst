@@ -6,8 +6,11 @@ may optionally give it the chance to draw its own custom GUI tools and
 to be able to interact with pen and keyboard input. In OFX this is done
 via the OfxInteract suite, which is found in the file `ofxInteract.h <https://github.com/ofxa/openfx/blob/master/include/ofxInteract.h>`_.
 
-OFX interacts rely on openGL to perform all drawing in interacts, due to
-its portabilty, robustness and wide implementation.
+OFX interacts by default use openGL to perform all drawing in
+interacts, due to its portabilty, robustness and wide implementation.
+As of 2022, some systems are moving away from OpenGL support in favor
+of more modern graphics drawing APIs. So as of OFX 1.5, effects may
+use the :cpp:class:`OfxDrawSuiteV1` instead of OpenGL if the host supports it.
 
 Each object that can have their own interact a pointer property in it
 which should point to a separate `main entry point <#mainEntryPoint>`__.

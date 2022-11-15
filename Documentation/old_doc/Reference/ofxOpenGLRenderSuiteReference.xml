@@ -1,306 +1,0 @@
-
-<refentry id="OfxImageEffectOpenGLRenderSuiteV1">
-  <refmeta>
-    <refentrytitle><type>OfxImageEffectOpenGLRenderSuiteV1</type></refentrytitle>
-  </refmeta>
-  <refnamediv>
-    <refname><function>OfxImageEffectOpenGLRenderSuiteV1</function></refname>
-    <refpurpose>OFX suite that provides image to texture conversion for OpenGL</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-     <blockquote><programlisting>
-#include "ofxOpenGLRender.h"
-typedef struct OfxImageEffectOpenGLRenderSuiteV1
-{
-  OfxStatus (*clipLoadTexture)(OfxImageClipHandle clip,
-                               OfxTime       time,
-                               const char   *format,
-                               const OfxRectD     *region,
-                               OfxPropertySetHandle   *textureHandle);
-  OfxStatus (*clipFreeTexture)(OfxPropertySetHandle   textureHandle);
-  OfxStatus (*flushResources)( );
-} OfxImageEffectOpenGLRenderSuiteV1;
-
-</programlisting></blockquote>
-     </refsynopsisdiv>
-    <refsect1>
-      <title>Description</title><para>
-processing
-</para>
-    </refsect1>
-</refentry>
-
-<refentry id="OfxImageEffectOpenGLRenderSuiteV1_clipLoadTexture">
-  <refmeta>
-    <refentrytitle><function>OfxImageEffectOpenGLRenderSuiteV1::clipLoadTexture</function></refentrytitle>
-  </refmeta>
-  <refnamediv>
-    <refname><function>OfxImageEffectOpenGLRenderSuiteV1::clipLoadTexture</function></refname>
-       <refpurpose>loads an image from an OFX clip as a texture into OpenGL</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <funcsynopsis>
-      <funcsynopsisinfo>#include "ofxOpenGLRender.h" </funcsynopsisinfo>
-      <funcprototype>
-        <funcdef><typename>OfxStatus</typename><function>(*clipLoadTexture)</function></funcdef>
-              <paramdef>OfxImageClipHandle<parameter>clip</parameter></paramdef>
-              <paramdef>OfxTime      <parameter>time</parameter></paramdef>
-              <paramdef>const char   *<parameter>format</parameter></paramdef>
-              <paramdef>const OfxRectD     *<parameter>region</parameter></paramdef>
-              <paramdef>OfxPropertySetHandle   *<parameter>textureHandle</parameter></paramdef>
-        </funcprototype>
-    </funcsynopsis>
-  </refsynopsisdiv>
-  <refsect2>
-   <title>Arguments</title>
-   <itemizedlist>
-
-<listitem>clip - the clip to load the image from
-</listitem>
-<listitem>time - effect time to load the image from
-</listitem>
-<listitem>format - the requested texture format (As in
-none,byte,word,half,float, etc..)
-When set to NULL, the host decides the format based on the
-plug-in's <link linkend="kOfxOpenGLPropPixelDepth"><code>kOfxOpenGLPropPixelDepth</code></link> setting.
-</listitem>
-<listitem>region - region of the image to load (optional, set to NULL to
-get a 'default' region)
-this is in the <link linkend="CanonicalCoordinates">CanonicalCoordinates</link>.
-</listitem>
-<listitem>textureHandle - a property set containing information about the
-texture
-</listitem>
-    </itemizedlist>
-  </refsect2>
-  <refsect2>
-    <title>Description</title>
-      <para>
-An image is fetched from a clip at the indicated time for the given region
-and loaded into an OpenGL texture. When a specific format is requested, the
-host ensures it gives the requested format.
-When the clip specified is the "Output" clip, the format is ignored and
-the host must bind the resulting texture as the current color buffer
-(render target). This may also be done prior to calling the
-<link linkend="kOfxImageEffectActionRender"><code>kOfxImageEffectActionRender</code></link> action.
-If the <emphasis> m</emphasis> region parameter is set to non-NULL, then it will be clipped to
-the clip's Region of Definition for the given time.
-The returned image will be <emphasis> m</emphasis> at <emphasis> m</emphasis> least as big as this region.
-If the region parameter is not set or is NULL, then the region fetched will be at
-least the Region of Interest the effect has previously specified, clipped to
-the clip's Region of Definition.
-Information about the texture, including the texture index, is returned in
-the <emphasis> m</emphasis> textureHandle argument.
-The properties on this handle will be...
-
-<itemizedlist>
-  <listitem><link linkend="kOfxImageEffectPropOpenGLTextureIndex"><code>kOfxImageEffectPropOpenGLTextureIndex</code></link></listitem>
-  <listitem><link linkend="kOfxImageEffectPropOpenGLTextureTarget"><code>kOfxImageEffectPropOpenGLTextureTarget</code></link></listitem>
-  <listitem><link linkend="kOfxImageEffectPropPixelDepth"><code>kOfxImageEffectPropPixelDepth</code></link></listitem>
-  <listitem><link linkend="kOfxImageEffectPropComponents"><code>kOfxImageEffectPropComponents</code></link></listitem>
-  <listitem><link linkend="kOfxImageEffectPropPreMultiplication"><code>kOfxImageEffectPropPreMultiplication</code></link></listitem>
-  <listitem><link linkend="kOfxImageEffectPropRenderScale"><code>kOfxImageEffectPropRenderScale</code></link></listitem>
-  <listitem><link linkend="kOfxImagePropPixelAspectRatio"><code>kOfxImagePropPixelAspectRatio</code></link></listitem>
-  <listitem><link linkend="kOfxImagePropBounds"><code>kOfxImagePropBounds</code></link></listitem>
-  <listitem><link linkend="kOfxImagePropRegionOfDefinition"><code>kOfxImagePropRegionOfDefinition</code></link></listitem>
-  <listitem><link linkend="kOfxImagePropRowBytes"><code>kOfxImagePropRowBytes</code></link></listitem>
-  <listitem><link linkend="kOfxImagePropField"><code>kOfxImagePropField</code></link></listitem>
-  <listitem><link linkend="kOfxImagePropUniqueIdentifier"><code>kOfxImagePropUniqueIdentifier</code></link></listitem>
-</itemizedlist>
-</para>
-<para>
-With the exception of the OpenGL specifics, these properties are the same
-as the properties in an image handle returned by clipGetImage in the image
-effect suite.
-\pre
-
-<itemizedlist>
-  <listitem>clip was returned by clipGetHandle</listitem>
-  <listitem>Format property in the texture handle</listitem>
-</itemizedlist>
-</para>
-<para>
-\post
-
-<itemizedlist>
-  <listitem>texture handle to be disposed of by clipFreeTexture before the action</listitem>
-</itemizedlist>
-returns
-
-<itemizedlist>
-  <listitem>when the clip specified is the "Output" clip, the format is ignored and</listitem>
-</itemizedlist>
-the host must bind the resulting texture as the current color buffer
-(render target).
-This may also be done prior to calling the render action.
-</para>
-<para>
-\note
-
-<itemizedlist>
-  <listitem>this is the OpenGL equivalent of clipGetImage from OfxImageEffectSuiteV1</listitem>
-</itemizedlist>
-</para>
-
-  </refsect2>
-
-  <refsect2>
-    <title>Returns</title>
-      <para>
-
-<itemizedlist>
-  <listitem><link linkend="kOfxStatOK"><code>kOfxStatOK</code></link>           - the image was successfully fetched and returned</listitem>
-</itemizedlist>
-in the handle,
-
-<itemizedlist>
-  <listitem><link linkend="kOfxStatFailed"><code>kOfxStatFailed</code></link>       - the image could not be fetched because it does</listitem>
-</itemizedlist>
-not exist in the clip at the indicated
-time and/or region, the plugin should continue
-operation, but assume the image was black and
-transparent.
-
-<itemizedlist>
-  <listitem><link linkend="kOfxStatErrBadHandle"><code>kOfxStatErrBadHandle</code></link> - the clip handle was invalid,</listitem>
-  <listitem><link linkend="kOfxStatErrMemory"><code>kOfxStatErrMemory</code></link>    - not enough OpenGL memory was available for the</listitem>
-</itemizedlist>
-effect to load the texture.
-The plugin should abort the GL render and
-return <link linkend="kOfxStatErrMemory"><code>kOfxStatErrMemory</code></link>, after which the host can
-decide to retry the operation with CPU based processing.
-</para>
-
-  </refsect2>
-</refentry>
-
-<refentry id="OfxImageEffectOpenGLRenderSuiteV1_clipFreeTexture">
-  <refmeta>
-    <refentrytitle><function>OfxImageEffectOpenGLRenderSuiteV1::clipFreeTexture</function></refentrytitle>
-  </refmeta>
-  <refnamediv>
-    <refname><function>OfxImageEffectOpenGLRenderSuiteV1::clipFreeTexture</function></refname>
-       <refpurpose>Releases the texture handle previously returned by</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <funcsynopsis>
-      <funcsynopsisinfo>#include "ofxOpenGLRender.h" </funcsynopsisinfo>
-      <funcprototype>
-        <funcdef><typename>OfxStatus</typename><function>(*clipFreeTexture)</function></funcdef>
-              <paramdef>OfxPropertySetHandle  <parameter>textureHandle</parameter></paramdef>
-        </funcprototype>
-    </funcsynopsis>
-  </refsynopsisdiv>
-  <refsect2>
-   <title>Arguments</title>
-   <itemizedlist>
-
-<listitem>textureHandle - </listitem>
-    </itemizedlist>
-  </refsect2>
-  <refsect2>
-    <title>Description</title>
-      <para>
-clipLoadTexture
-</para>
-<para>
-For input clips, this also deletes the texture from OpenGL.
-This should also be called on the output clip; for the Output
-clip, it just releases the handle but does not delete the
-texture (since the host will need to read it).
-</para>
-<para>
-\pre
-
-<itemizedlist>
-  <listitem>textureHandle was returned by clipGetImage</listitem>
-</itemizedlist>
-</para>
-<para>
-\post
-
-<itemizedlist>
-  <listitem>all operations on textureHandle will be invalid, and the OpenGL texture</listitem>
-</itemizedlist>
-it referred to has been deleted (for source clips)
-</para>
-
-  </refsect2>
-
-  <refsect2>
-    <title>Returns</title>
-      <para>
-
-<itemizedlist>
-  <listitem><link linkend="kOfxStatOK"><code>kOfxStatOK</code></link> - the image was successfully fetched and returned in the</listitem>
-</itemizedlist>
-handle,
-
-<itemizedlist>
-  <listitem><link linkend="kOfxStatFailed"><code>kOfxStatFailed</code></link> - general failure for some reason,</listitem>
-  <listitem><link linkend="kOfxStatErrBadHandle"><code>kOfxStatErrBadHandle</code></link> - the image handle was invalid,</listitem>
-</itemizedlist>
-</para>
-
-  </refsect2>
-</refentry>
-
-<refentry id="OfxImageEffectOpenGLRenderSuiteV1_flushResources">
-  <refmeta>
-    <refentrytitle><function>OfxImageEffectOpenGLRenderSuiteV1::flushResources</function></refentrytitle>
-  </refmeta>
-  <refnamediv>
-    <refname><function>OfxImageEffectOpenGLRenderSuiteV1::flushResources</function></refname>
-       <refpurpose>Request the host to minimize its GPU resource load</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <funcsynopsis>
-      <funcsynopsisinfo>#include "ofxOpenGLRender.h" </funcsynopsisinfo>
-      <funcprototype>
-        <funcdef><typename>OfxStatus</typename><function>(*flushResources)</function></funcdef>
-              <paramdef> <parameter></parameter></paramdef>
-        </funcprototype>
-    </funcsynopsis>
-  </refsynopsisdiv>
-  <refsect2>
-   <title>Arguments</title>
-   <itemizedlist>
-
-<listitem> - </listitem>
-    </itemizedlist>
-  </refsect2>
-  <refsect2>
-    <title>Description</title>
-      <para>
-When a plugin fails to allocate GPU resources, it can call this function to
-request the host to flush it's GPU resources if it holds any.
-After the function the plugin can try again to allocate resources which then
-might succeed if the host actually has released anything.
-</para>
-<para>
-\pre
-\post
-
-<itemizedlist>
-  <listitem>No changes to the plugin GL state should have been made.</listitem>
-</itemizedlist>
-</para>
-
-  </refsect2>
-
-  <refsect2>
-    <title>Returns</title>
-      <para>
-
-<itemizedlist>
-  <listitem><link linkend="kOfxStatOK"><code>kOfxStatOK</code></link>           - the host has actually released some</listitem>
-</itemizedlist>
-resources,
-
-<itemizedlist>
-  <listitem><link linkend="kOfxStatReplyDefault"><code>kOfxStatReplyDefault</code></link> - nothing the host could do..</listitem>
-</itemizedlist>
-</para>
-
-  </refsect2>
-</refentry>
