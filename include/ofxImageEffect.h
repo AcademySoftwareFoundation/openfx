@@ -1252,9 +1252,15 @@ This contains the duration of the plug-in effect, in frames.
 /**  @brief The pixel data pointer of an image.
 
     - Type - pointer X 1
-    - Property Set - an image  instance (read only)
+    - Property Set - an image instance (read only)
 
-This property contains a pointer to memory that is the lower left hand corner of an image.
+This property contains one of:
+  - a pointer to memory that is the lower left hand corner of an image
+  - a pointer to Cuda memory, if the Render action arguments includes kOfxImageEffectPropCudaEnabled=1
+  - an id<MTLBuffer>, if the Render action arguments includes kOfxImageEffectPropMetalEnabled=1
+  - a cl_mem, if the Render action arguments includes kOfxImageEffectPropOpenCLEnabled=1
+
+See \ref kOfxImageEffectPropCudaEnabled, \ref kOfxImageEffectPropMetalEnabled and \ref kOfxImageEffectPropOpenCLEnabled
 */
 #define kOfxImagePropData "OfxImagePropData"
 
@@ -1300,7 +1306,7 @@ For various alignment reasons, a row of pixels may need to be padded at the end 
 This property indicates the number of bytes in a row of pixels. This will be at least sizeof(PIXEL) * (bounds.x2-bounds.x1). Where bounds
 is fetched from the ::kOfxImagePropBounds property.
 
-Note that row bytes can be negative, which allows hosts with a native top down row order to pass image into OFX without having to repack pixels.
+Note that (for CPU images only, not Cuda/Metal/OpenCL buffers, nor textures accessed via the OpenGL Render Suite) row bytes can be negative, which allows hosts with a native top down row order to pass image into OFX without having to repack pixels.
  */
 #define kOfxImagePropRowBytes "OfxImagePropRowBytes"
 
@@ -1394,6 +1400,168 @@ This will be in \ref PixelCoordinates
  */
 #define kOfxImageEffectPropRenderWindow "OfxImageEffectPropRenderWindow"
 
+/** @brief Indicates whether a host or plugin can support Cuda render
+
+    - Type - string X 1
+    - Property Set - plugin descriptor (read/write), host descriptor (read only)
+    - Default - "false"
+    - Valid Values - This must be one of
+      - "false"  - the host or plugin does not support Cuda render
+      - "true"   - the host or plugin can support Cuda render
+ */
+#define kOfxImageEffectPropCudaRenderSupported "OfxImageEffectPropCudaRenderSupported"
+
+/** @brief Indicates that an image effect SHOULD use Cuda render in
+the current action
+
+   If a plugin and host have both set
+   kOfxImageEffectPropCudaRenderSupported="true" then the host MAY set
+   this property to indicate that it is passing images as Cuda memory
+   pointers.
+
+   - Type - int X 1
+   - Property Set - inArgs property set of the kOfxImageEffectActionRender action
+   - Valid Values
+      - 0 indicates that the kOfxImagePropData of each image of each clip
+          is a CPU memory pointer.
+      - 1 indicates that the kOfxImagePropData of each image of each clip
+	  is a Cuda memory pointer.
+*/
+#define kOfxImageEffectPropCudaEnabled "OfxImageEffectPropCudaEnabled"
+
+/**  @brief Indicates whether a host or plugin can support Cuda streams
+
+    - Type - string X 1
+    - Property Set - plugin descriptor (read/write), host descriptor (read only)
+    - Default - "false"
+    - Valid Values - This must be one of
+      - "false"  - in which case the host or plugin does not support Cuda streams
+      - "true"   - which means a host or plugin can support Cuda streams
+
+*/
+#define kOfxImageEffectPropCudaStreamSupported "OfxImageEffectPropCudaStreamSupported"
+
+/**  @brief The Cuda stream to be used for rendering
+
+    - Type - pointer X 1
+    - Property Set - inArgs property set of the kOfxImageEffectActionRender action
+
+This property will only be set if the host and plugin both support Cuda streams.
+
+If set:
+
+- this property contains a pointer to the stream of Cuda render (cudaStream_t).
+  In order to use it, reinterpret_cast<cudaStream_t>(pointer) is needed.
+
+- the plugin SHOULD ensure that its render action enqueues any
+  asynchronous Cuda operations onto the supplied queue.
+
+- the plugin SHOULD NOT wait for final asynchronous operations to
+  complete before returning from the render action, and SHOULD NOT
+  call cudaDeviceSynchronize() at any time.
+
+If not set:
+
+- the plugin SHOULD ensure that any asynchronous operations it
+  enqueues have completed before returning from the render action.
+*/
+#define kOfxImageEffectPropCudaStream "OfxImageEffectPropCudaStream"
+
+/** @brief Indicates whether a host or plugin can support Metal render
+
+    - Type - string X 1
+    - Property Set - plugin descriptor (read/write), host descriptor (read only)
+    - Default - "false"
+    - Valid Values - This must be one of
+      - "false"  - the host or plugin does not support Metal render
+      - "true"   - the host or plugin can support Metal render
+ */
+
+#define kOfxImageEffectPropMetalRenderSupported "OfxImageEffectPropMetalRenderSupported"
+
+/** @brief Indicates that an image effect SHOULD use Metal render in
+the current action
+
+   If a plugin and host have both set
+   kOfxImageEffectPropMetalRenderSupported="true" then the host MAY
+   set this property to indicate that it is passing images as Metal
+   buffers.
+
+   - Type - int X 1
+   - Property Set - inArgs property set of the kOfxImageEffectActionRender action
+   - Valid Values
+      - 0 indicates that the kOfxImagePropData of each image of each clip
+          is a CPU memory pointer.
+      - 1 indicates that the kOfxImagePropData of each image of each clip
+	  is a Metal id<MTLBuffer>.
+*/
+#define kOfxImageEffectPropMetalEnabled "OfxImageEffectPropMetalEnabled"
+
+/**  @brief The command queue of Metal render
+
+    - Type - pointer X 1
+    - Property Set - inArgs property set of the kOfxImageEffectActionRender action
+
+This property contains a pointer to the command queue to be used for
+Metal rendering (id<MTLCommandQueue>). In order to use it,
+reinterpret_cast<id<MTLCommandQueue>>(pointer) is needed.
+
+The plugin SHOULD ensure that its render action enqueues any
+asynchronous Metal operations onto the supplied queue.
+
+The plugin SHOULD NOT wait for final asynchronous operations to
+complete before returning from the render action.
+*/
+#define kOfxImageEffectPropMetalCommandQueue "OfxImageEffectPropMetalCommandQueue"
+
+/** @brief Indicates whether a host or plugin can support OpenCL render
+
+    - Type - string X 1
+    - Property Set - plugin descriptor (read/write), host descriptor (read only)
+    - Default - "false"
+    - Valid Values - This must be one of
+      - "false"  - the host or plugin does not support OpenCL render
+      - "true"   - the host or plugin can support OpenCL render
+ */
+
+#define kOfxImageEffectPropOpenCLRenderSupported "OfxImageEffectPropOpenCLRenderSupported"
+
+/** @brief Indicates that an image effect SHOULD use OpenCL render in
+the current action
+
+   If a plugin and host have both set
+   kOfxImageEffectPropOpenCLRenderSupported="true" then the host MAY
+   set this property to indicate that it is passing images as OpenCL
+   buffers.
+
+   - Type - int X 1
+   - Property Set - inArgs property set of the kOfxImageEffectActionRender action
+   - Valid Values
+      - 0 indicates that the kOfxImagePropData of each image of each clip
+          is a CPU memory pointer.
+      - 1 indicates that the kOfxImagePropData of each image of each clip
+	  is a cl_mem.
+*/
+#define kOfxImageEffectPropOpenCLEnabled "OfxImageEffectPropOpenCLEnabled"
+
+/**  @brief The command queue of OpenCL render
+
+    - Type - pointer X 1
+    - Property Set - inArgs property set of the kOfxImageEffectActionRender action
+
+This property contains a pointer to the command queue to be used for
+Metal rendering (cl_command_queue). In order to use it,
+reinterpret_cast<cl_command_queue>(pointer) is needed.
+
+The plugin SHOULD ensure that its render action enqueues any
+asynchronous OpenCL operations onto the supplied queue.
+
+The plugin SHOULD NOT wait for final asynchronous operations to
+complete before returning from the render action.
+*/
+#define kOfxImageEffectPropOpenCLCommandQueue "OfxImageEffectPropOpenCLCommandQueue"
+
+    
 
 /** String used to label imagery as having no fields */
 #define kOfxImageFieldNone "OfxFieldNone"
