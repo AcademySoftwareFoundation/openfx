@@ -91,6 +91,11 @@ namespace OFX {
 #ifdef OFX_SUPPORTS_OPENGLRENDER
         { kOfxImageEffectPropOpenGLRenderSupported, Property::eString, 1, false, "false"}, // OFX 1.3
 #endif
+	{ kOfxImageEffectPropCudaRenderSupported, Property::eString, 1, false, "false" },
+	{ kOfxImageEffectPropCudaStreamSupported, Property::eString, 1, false, "false" },
+	{ kOfxImageEffectPropMetalRenderSupported, Property::eString, 1, false, "false" },
+	{ kOfxImageEffectPropOpenCLRenderSupported, Property::eString, 1, false, "false" },
+
         Property::propSpecEnd
       };
 
@@ -342,6 +347,10 @@ namespace OFX {
 #ifdef OFX_SUPPORTS_OPENGLRENDER
         { kOfxImageEffectPropOpenGLRenderSupported, Property::eString, 1, false, "false"}, // OFX 1.4
 #endif
+	{ kOfxImageEffectPropCudaRenderSupported, Property::eString, 1, false, "false" },
+	{ kOfxImageEffectPropCudaStreamSupported, Property::eString, 1, false, "false" },
+	{ kOfxImageEffectPropMetalRenderSupported, Property::eString, 1, false, "false" },
+	{ kOfxImageEffectPropOpenCLRenderSupported, Property::eString, 1, false, "false" },
         Property::propSpecEnd
       };
 
@@ -2714,6 +2723,10 @@ namespace OFX {
 #endif
         { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" }, // OFX 1.4
         { kOfxImageEffectHostPropNativeOrigin, Property::eString, 0, true, kOfxHostNativeOriginBottomLeft }, // OFX 1.4
+	{ kOfxImageEffectPropCudaRenderSupported, Property::eString, 1, false, "false" },
+	{ kOfxImageEffectPropCudaStreamSupported, Property::eString, 1, false, "false" },
+	{ kOfxImageEffectPropMetalRenderSupported, Property::eString, 1, false, "false" },
+	{ kOfxImageEffectPropOpenCLRenderSupported, Property::eString, 1, false, "false" },
         Property::propSpecEnd
       };    
 
