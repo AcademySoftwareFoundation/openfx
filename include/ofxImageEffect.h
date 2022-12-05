@@ -1036,7 +1036,56 @@ This property acts as a hint to hosts indicating that they could feed the effect
 */
 #define kOfxImageClipPropIsMask "OfxImageClipPropIsMask"
 
+/** @brief The path to the OCIO config used for this clip
 
+   - Type - string X 1
+   - Property Set - clip descriptor (read/write)
+   - Valid Values - Filesystem path to the config
+
+Hosts should set this property on any clips which are color managed by OCIO.
+*/
+#define kOfxImageClipPropOCIOConfig "OfxImageClipPropOCIOConfig"
+
+/** @brief The OCIO colourspace used for this clip
+
+   - Type - string X 1
+   - Property Set - clip descriptor (read/write)
+   - Valid Values - colourspace that is present in the config
+
+Hosts should set this property on any clips which are color managed by OCIO. Typically it will be set to the working colourspace of the host.
+*/
+#define kOfxImageClipPropOCIOColourspace "OfxImageClipPropOCIOColourspace"
+
+/** @brief The OCIO display used to show this clip
+
+   - Type - string X 1
+   - Property Set - clip descriptor (read/write)
+   - Valid Values - OCIO display that is present in the config
+
+Hosts should set this property on any clips which are color managed by OCIO. The property should match the display used in the host's viewer.
+*/
+#define kOfxImageClipPropOCIODisplay "OfxImageClipPropOCIODisplay"
+
+/** @brief The OCIO display view used to show this clip
+
+   - Type - string X 1
+   - Property Set - clip descriptor (read/write)
+   - Valid Values - OCIO view that is present in the config
+
+Hosts should set this property on any clips which are color managed by OCIO. The property should match the view used in the host's viewer.
+*/
+#define kOfxImageClipPropOCIODisplayView "OfxImageClipPropOCIODisplayView"
+
+/** @brief The OCIO look used to show this clip
+
+   - Type - string X 1
+   - Property Set - clip descriptor (read/write)
+   - Valid Values - OCIO look that is present in the config
+
+Hosts should set this property on any clips which are color managed by OCIO and a look has been selected in the host's viewer.
+*/
+#define kOfxImageClipPropOCIOLook "OfxPropOCIOLook"
+   
 /** @brief The pixel aspect ratio of a clip or image.
 
    - Type - double X 1
