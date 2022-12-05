@@ -1049,7 +1049,7 @@ Hosts should set this property on any clips which are color managed by OCIO.
 /** @brief The OCIO colourspace used for this clip
 
    - Type - string X 1
-   - Property Set - clip descriptor (read/write)
+   - Property Set - clip descriptor (read only)
    - Valid Values - colourspace that is present in the config
 
 Hosts should set this property on any clips which are color managed by OCIO. Typically it will be set to the working colourspace of the host.
@@ -1059,7 +1059,7 @@ Hosts should set this property on any clips which are color managed by OCIO. Typ
 /** @brief The OCIO display used to show this clip
 
    - Type - string X 1
-   - Property Set - clip descriptor (read/write)
+   - Property Set - clip descriptor (read only)
    - Valid Values - OCIO display that is present in the config
 
 Hosts should set this property on any clips which are color managed by OCIO. The property should match the display used in the host's viewer.
@@ -1069,7 +1069,7 @@ Hosts should set this property on any clips which are color managed by OCIO. The
 /** @brief The OCIO display view used to show this clip
 
    - Type - string X 1
-   - Property Set - clip descriptor (read/write)
+   - Property Set - clip descriptor (read only)
    - Valid Values - OCIO view that is present in the config
 
 Hosts should set this property on any clips which are color managed by OCIO. The property should match the view used in the host's viewer.
@@ -1079,7 +1079,7 @@ Hosts should set this property on any clips which are color managed by OCIO. The
 /** @brief The OCIO look used to show this clip
 
    - Type - string X 1
-   - Property Set - clip descriptor (read/write)
+   - Property Set - clip descriptor (read only)
    - Valid Values - OCIO look that is present in the config
 
 Hosts should set this property on any clips which are color managed by OCIO and a look has been selected in the host's viewer.
