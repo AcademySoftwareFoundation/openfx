@@ -93,7 +93,7 @@ typedef enum OfxDrawPrimitive
 } OfxDrawPrimitive;
 
 /** @brief Defines text alignment values for OfxDrawSuiteV1::drawText */
-typedef enum OfxDrawTextAligment
+typedef enum OfxDrawTextAlignment
 {
 	kOfxDrawTextAlignmentLeft = 0x0001,
 	kOfxDrawTextAlignmentRight = 0x0002,
@@ -102,7 +102,7 @@ typedef enum OfxDrawTextAligment
 	kOfxDrawTextAlignmentBaseline = 0x010,
 	kOfxDrawTextAlignmentCenterH = (kOfxDrawTextAlignmentLeft | kOfxDrawTextAlignmentRight),
 	kOfxDrawTextAlignmentCenterV = (kOfxDrawTextAlignmentTop | kOfxDrawTextAlignmentBaseline)
-} OfxDrawTextAligment;
+} OfxDrawTextAlignment;
 
 /** @brief OFX suite that allows an effect to draw to a host-defined display context.
 
