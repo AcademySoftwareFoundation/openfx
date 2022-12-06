@@ -59,7 +59,7 @@ typedef struct OfxDrawContext *OfxDrawContextHandle;
 #define kOfxInteractPropDrawContext "OfxInteractPropDrawContext"
 
 /** @brief Defines valid values for OfxDrawSuiteV1::getColour */
-enum OfxStandardColour
+typedef enum OfxStandardColour
 {
 	kOfxStandardColourOverlayBackground,
 	kOfxStandardColourOverlayActive,
@@ -68,21 +68,21 @@ enum OfxStandardColour
 	kOfxStandardColourOverlayMarqueeFG,
 	kOfxStandardColourOverlayMarqueeBG,
 	kOfxStandardColourOverlayText
-};
+} OfxStandardColour;
 
 /** @brief Defines valid values for OfxDrawSuiteV1::setLineStipple */
-enum OfxDrawLineStipplePattern
+typedef enum OfxDrawLineStipplePattern
 {
 	kOfxDrawLineStipplePatternSolid,	// -----
 	kOfxDrawLineStipplePatternDot,		// .....
 	kOfxDrawLineStipplePatternDash,		// - - -
 	kOfxDrawLineStipplePatternAltDash,	//  - - -
 	kOfxDrawLineStipplePatternDotDash	// .-.-.-
-};
+} OfxDrawLineStipplePattern;
 
 /** @brief Defines valid values for OfxDrawSuiteV1::draw */
 
-enum OfxDrawPrimitive
+typedef enum OfxDrawPrimitive
 {
 	kOfxDrawPrimitiveLines,
 	kOfxDrawPrimitiveLineStrip,
@@ -90,10 +90,10 @@ enum OfxDrawPrimitive
 	kOfxDrawPrimitiveRectangle, /* 2 points*/
 	kOfxDrawPrimitivePolygon,
 	kOfxDrawPrimitiveEllipse
-};
+} OfxDrawPrimitive;
 
 /** @brief Defines text alignment values for OfxDrawSuiteV1::drawText */
-enum OfxDrawTextAligment
+typedef enum OfxDrawTextAligment
 {
 	kOfxDrawTextAlignmentLeft = 0x0001,
 	kOfxDrawTextAlignmentRight = 0x0002,
@@ -102,12 +102,12 @@ enum OfxDrawTextAligment
 	kOfxDrawTextAlignmentBaseline = 0x010,
 	kOfxDrawTextAlignmentCenterH = (kOfxDrawTextAlignmentLeft | kOfxDrawTextAlignmentRight),
 	kOfxDrawTextAlignmentCenterV = (kOfxDrawTextAlignmentTop | kOfxDrawTextAlignmentBaseline)
-};
+} OfxDrawTextAligment;
 
 /** @brief OFX suite that allows an effect to draw to a host-defined display context.
 
 */
-struct OfxDrawSuiteV1 {
+typedef struct OfxDrawSuiteV1 {
 	/** @brief Retrieves the host's desired draw colour for
 
 	 \arg context  - the draw context
@@ -183,7 +183,7 @@ struct OfxDrawSuiteV1 {
 	 */
   OfxStatus (*drawText)(OfxDrawContextHandle context, const char *text, const OfxPointD *pos, int alignment);
 
-};
+} OfxDrawSuiteV1;
 
 #ifdef __cplusplus
 }
