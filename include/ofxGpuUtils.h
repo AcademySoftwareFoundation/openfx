@@ -4,7 +4,7 @@
 /*
 Software License :
 
-Copyright (c) 2003-2019, The Open Effects Association Ltd. All rights reserved.
+Copyright (c) 2003-2022, The Open Effects Association Ltd. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -37,6 +37,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C" {
 #endif
 
+/** brief GpuUtilsPropEffectCanSwitchRunon  to register a plugin may request to switch what it wants to run on
+
+	- Type - int X 1
+	- Property Set - host (read) and plugin only (write) -> plugin can change in Instance Changed action.
+	- Valid Values - This must be one of :
+	0: Only allows plugin plugin to switch this value in Description
+	1: Allows plugin to change dynamically
+
+	Default: 1
+
+	This is to match OpenGL suite expected behavior. Allows a plug-in (their users) to opt-out of initial declared support.
+	 
+*/
+#define kOfxGpuUtilsPropEffectCanSwitchRunon "OfxGpuUtilsPropEffectCanSwitchRunon"
+
+
 /** brief GpuUtilsPropCPUEffectUsesGPU  to reguster a CPU-based effect is using GPU ressources
 	
 	- Type - int X 1
@@ -53,7 +69,7 @@ extern "C" {
 */
 #define kOfxGpuUtilsPropCPUEffectUsesGPU "OfxGpuUtilsPropCPUEffectUsesGPU"
 
-/** brief GpuUtilsPropCPUEffectUsesGPU  to reguster a CPU-based effect is using GPU ressources
+/** brief GpuUtilsEffectProducesSameResultCPUorGPU  to reguster it is safe to switch from CPU to GPU to CPU 
 	- Type - int X 1
 	- Property Set - plugin only (write), plugin can change in Instance Changed action.
 	- Valid Values - This must be one of :
@@ -79,7 +95,7 @@ extern "C" {
 	If host says yes, the effect can return an out of memory error and expect the host to retry.
 	see ofxGpuUtilsEffectMemoryNeeded
 */
-#define kOfxGpuUtilsSupportsAllGPUNotTheSameModel "OfxGpuUtilsSupportsAllGPUNotTheSameModel"
+#define kOfxGpuUtilsHostTracksMemoryUsage "OfxGpuUtilsHostTracksMemoryUsage"
 
 /** brief GpuUtilsHSupportsAllGPUNotTheSameBrandModel    
 	- Type - int X 1
@@ -121,18 +137,23 @@ extern "C" {
 */
 #define kOfxGpuUtilsMemoryManagementHintCache "OfxGpuUtilsMemoryManagementHintCache"
 
-/** brief GpuUtilsMemoryManagementMemoryNeeded in Bytes
-	- Type - int X 1
-	- Property Set - plugin only(read - write) must request before render actions
-	- Valid Values - Up to max VRAM available? 
- 	Default : 0  // effect has not set
+/** @name StatusReturnValues
+OfxStatus returns indicating that a OpenGL render error has occurred:
 
-	UNRESOLVED: Implies a mechanism to retry defined providing additional memory amount needed(recursive until effect can run or host is out of available VRAM)
+ - If a plug-in returns ::kOfxGpuUtilsStatOutOfMemory, the host should retry the
+   render with OpenGL rendering disabled.
+
+ - If a plug-in returns ::kOfxxGpuUtilsStatRenderFailed, the host may choose to free
+   resources on the GPU and retry the OpenGL render, rather than immediately
+   falling back to CPU rendering.
+
+  Uses same define as OpenGL suite
 
 */
 
 /** @brief render ran out of memory, note same error number as kOfxStatGLOutOfMemory */
 #define kOfxGpuUtilsStatOutOfMemory  ((int) 1001)
+#define kOfxxGpuUtilsStatRenderFailed ((int) 1002)
 
 /** brief GpuUtilsMemoryManagementMemoryNeeded in Bytes
 	- Type - int X 1
@@ -147,7 +168,7 @@ extern "C" {
 #define kOfxGpuUtilsMemoryManagementMemoryNeeded "OfxGpuUtilsMemoryManagementMemoryNeeded"
 
 
-/** brief GpuUtilsMemoryManagementMemoryNeeded in Bytes
+/** brief GpuUtilsRunOnGpuIndex
 - Type - int X 1
 - Property Set - host
 - Valid Values - Up to max GPU in system
@@ -156,6 +177,7 @@ Default : 0  // effect has not set ?
 	UNRESOLVED: Implies a universal GPU enumeration for a particular machine independent of driver, API.
 	In practice as host might be internally running whatever OpenGL, Cuda, OpenCL, Dx, Metal, Vulkan,... 
 	For example I don't think CUDA would assign a GPUid to Integrated Graphucs.
+	Might not work with OpenGL suite on Windows with GTX cards?
 */
 #define kOfxGpuUtilsRunOnGpuIndex "OfxGpuUtilsRunOnGpuIndex"
 
