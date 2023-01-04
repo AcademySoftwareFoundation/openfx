@@ -144,6 +144,9 @@ These are the list of properties used by the parameters suite.
     - Type - int X 1
     - Property Set - host descriptor (read only)
     - Valid Values - 0 or 1
+
+Currently custom interacts for parameters can only be drawn using OpenGL.
+APIs will be added later to support using the new Draw Suite.
 */
 #define kOfxParamHostPropSupportsCustomInteract "OfxParamHostPropSupportsCustomInteract"
 
@@ -200,6 +203,9 @@ See \ref ParametersInterfacesPagedLayouts for more details.
     - Valid Values -  must point to a OfxPluginEntryPoint
 
 If set, the parameter's normal interface is replaced completely by the interact gui.
+
+Currently custom interacts for parameters can only be drawn using OpenGL.
+APIs will be added later to support using the new Draw Suite.
 */
 #define kOfxParamPropInteractV1 "OfxParamPropInteractV1"
 
