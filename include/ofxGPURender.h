@@ -188,9 +188,11 @@ OfxStatus returns indicating that a OpenGL render error has occurred:
  */
 /** @{ */
 /** @brief render ran out of memory */
-#define kOfxStatGLOutOfMemory  ((int) 1001)
+#define kOfxStatGPUOutOfMemory  ((int) 1001)
+#define kOfxStatGLOutOfMemory  ((int) 1001) /* for backward compatibility */
 /** @brief render failed in a non-memory-related way */
-#define kOfxStatGLRenderFailed ((int) 1002)
+#define kOfxStatGPURenderFailed ((int) 1002)
+#define kOfxStatGLRenderFailed ((int) 1002) /* for backward compatibility */
 /** @} */
 
 /** @brief OFX suite that provides image to texture conversion for OpenGL
