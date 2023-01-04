@@ -41,6 +41,36 @@ Properties Reference
 
 .. doxygendefine:: kOfxInteractPropDrawContext
 
+.. doxygendefine:: kOfxImageEffectPropOpenGLRenderSupported
+
+.. doxygendefine:: kOfxOpenGLPropPixelDepth
+
+.. doxygendefine:: kOfxImageEffectPropOpenGLEnabled
+
+.. doxygendefine:: kOfxImageEffectPropOpenGLTextureIndex
+
+.. doxygendefine:: kOfxImageEffectPropOpenGLTextureTarget
+
+.. doxygendefine:: kOfxImageEffectPropCudaRenderSupported
+
+.. doxygendefine:: kOfxImageEffectPropCudaEnabled
+
+.. doxygendefine:: kOfxImageEffectPropCudaStreamSupported
+
+.. doxygendefine:: kOfxImageEffectPropCudaStream
+
+.. doxygendefine:: kOfxImageEffectPropMetalRenderSupported
+
+.. doxygendefine:: kOfxImageEffectPropMetalEnabled
+
+.. doxygendefine:: kOfxImageEffectPropMetalCommandQueue
+
+.. doxygendefine:: kOfxImageEffectPropOpenCLRenderSupported
+
+.. doxygendefine:: kOfxImageEffectPropOpenCLEnabled
+
+.. doxygendefine:: kOfxImageEffectPropOpenCLCommandQueue
+
 .. doxygendefine:: kOfxImageEffectPropSupportedContexts
 
 .. doxygendefine:: kOfxImageEffectPropPluginHandle
@@ -72,6 +102,8 @@ Properties Reference
 .. doxygendefine:: kOfxImageEffectPropSupportsOverlays
 
 .. doxygendefine:: kOfxImageEffectPluginPropOverlayInteractV1
+
+.. doxygendefine:: kOfxImageEffectPluginPropOverlayInteractV2
 
 .. doxygendefine:: kOfxImageEffectPropSupportsMultiResolution
 
@@ -180,16 +212,6 @@ Properties Reference
 .. doxygendefine:: kOfxImageEffectPropInAnalysis
 
 .. doxygendefine:: kOfxInteractPropViewportSize
-
-.. doxygendefine:: kOfxImageEffectPropOpenGLRenderSupported
-
-.. doxygendefine:: kOfxOpenGLPropPixelDepth
-
-.. doxygendefine:: kOfxImageEffectPropOpenGLEnabled
-
-.. doxygendefine:: kOfxImageEffectPropOpenGLTextureIndex
-
-.. doxygendefine:: kOfxImageEffectPropOpenGLTextureTarget
 
 .. doxygendefine:: kOfxParamHostPropSupportsCustomAnimation
 

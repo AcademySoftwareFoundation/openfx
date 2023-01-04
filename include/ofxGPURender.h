@@ -47,7 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C" {
 #endif
 
-/** @defgroup OpenGLRenderSuite
+/** @defgroup OpenGLRenderSuite OpenGL Render Suite
  * @{
  */
 
@@ -186,19 +186,22 @@ OfxStatus returns indicating that a OpenGL render error has occurred:
    resources on the GPU and retry the OpenGL render, rather than immediately
    falling back to CPU rendering.
  */
-/** @{ */
-/** @brief render ran out of memory */
+/**
+ * @{
+ */
+/** @brief GPU render ran out of memory */
 #define kOfxStatGPUOutOfMemory  ((int) 1001)
-#define kOfxStatGLOutOfMemory  ((int) 1001) /* for backward compatibility */
-/** @brief render failed in a non-memory-related way */
+/** @brief OpenGL render ran out of memory (same as ``kOfxStatGPUOutOfMemory``) */
+#define kOfxStatGLOutOfMemory  ((int) 1001)
+/** @brief GPU render failed in a non-memory-related way */
 #define kOfxStatGPURenderFailed ((int) 1002)
+/** @brief OpenGL render failed in a non-memory-related way (same as ``kOfxStatGPURenderFailed``) */
 #define kOfxStatGLRenderFailed ((int) 1002) /* for backward compatibility */
 /** @} */
 
 /** @brief OFX suite that provides image to texture conversion for OpenGL
     processing
  */
-
 typedef struct OfxImageEffectOpenGLRenderSuiteV1
 {
   /** @brief loads an image from an OFX clip as a texture into OpenGL
@@ -543,7 +546,7 @@ current for other OFX calls, such as ::kOfxImageEffectActionDescribeInContext.
 /** @}*/ // end of OpenGLRender doc group
 
 /**
- * @defgroup CudaRender
+ * @defgroup CudaRender CUDA Rendering
  * @{
  */
 /** @brief Indicates whether a host or plugin can support Cuda render
@@ -613,6 +616,12 @@ If not set:
 */
 #define kOfxImageEffectPropCudaStream "OfxImageEffectPropCudaStream"
 
+/** @}*/ // end CudaRender doc group
+
+/**
+ * @defgroup MetalRender Apple Metal Rendering
+ * @{
+ */
 /** @brief Indicates whether a host or plugin can support Metal render
 
     - Type - string X 1
@@ -621,12 +630,6 @@ If not set:
     - Valid Values - This must be one of
       - "false"  - the host or plugin does not support Metal render
       - "true"   - the host or plugin can support Metal render
- */
-/** @}*/ // end CudaRender doc group
-
-/**
- * @defgroup MetalRender
- * @{
  */
 #define kOfxImageEffectPropMetalRenderSupported "OfxImageEffectPropMetalRenderSupported"
 
@@ -667,7 +670,7 @@ complete before returning from the render action.
 /** @}*/ // end MetalRender doc group
 
 /**
- * @defgroup OpenClRender
+ * @defgroup OpenClRender OpenCL Rendering
  * @{
  */
 /** @brief Indicates whether a host or plugin can support OpenCL render
