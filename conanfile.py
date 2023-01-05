@@ -3,14 +3,14 @@ from conans import ConanFile, CMake
 class openfx(ConanFile):
 	name = "openfx"
 	version = "1.4.0"
-	license = "LICENCE"
-	url = "https://github.com/ofxa/openfx"
-	description = "OpenFX image processing plug-in standard."
+	license = "BSD-3-Clause"
+	url = "https://github.com/AcademySoftwareFoundation/openfx"
+	description = "OpenFX image processing plug-in standard"
 
 	generators = "cmake"
 	requires = (
 		"opengl/system",
-		"expat/2.4.8"
+		"expat/2.4.8"   # for HostSupport
 	)
 	exports_sources = (
 		"cmake/*",
@@ -39,9 +39,9 @@ class openfx(ConanFile):
 		self.copy("cmake/*")
 		self.copy("LICENSE, README.md, INSTALL.md")
 		self.copy("*.h", src="include", dst="include")
-		self.copy("*.h", src="HostSupport/include", dst="include")
-		self.copy("*.h", src="Support/include", dst="include")
-		self.copy("*.h", src="Support/Plugins/include", dst="include")
+		self.copy("*.h", src="HostSupport/include", dst="HostSupport/include")
+		self.copy("*.h", src="Support/include", dst="Support/include")
+		self.copy("*.h", src="Support/Plugins/include", dst="Support/Plugins/include")
 		self.copy("*.a", dst="lib", keep_path=False)
 		self.copy("*.lib", dst="lib", keep_path=False)
 		self.copy("*.ofx", dst="bin", keep_path=False)
