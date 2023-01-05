@@ -1,6 +1,5 @@
 // Copyright Contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
-// https://github.com/AcademySoftwareFoundation/OpenFx
     
 ////////////////////////////////////////////////////////////////////////////////
 /// This example shows basic plugin cache management.

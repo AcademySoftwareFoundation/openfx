@@ -2,7 +2,6 @@
 #define _ofxsImageEffect_H_
 // Copyright Contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
-// https://github.com/AcademySoftwareFoundation/OpenFx
 
 /** @file This file contains core code that wraps OFX 'objects' with C++ classes.
 

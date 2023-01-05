@@ -1,6 +1,5 @@
 // Copyright Contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
-// https://github.com/AcademySoftwareFoundation/OpenFx
 
 #ifndef _ofxTimeLine_h_
 #define _ofxTimeLine_h_

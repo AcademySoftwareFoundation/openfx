@@ -1,6 +1,5 @@
 // Copyright Contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
-// https://github.com/AcademySoftwareFoundation/OpenFx
 
 
 /** @file testProperties.cpp Ofx host testing plug-in which logs all the needed properties
