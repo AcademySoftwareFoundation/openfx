@@ -12,7 +12,7 @@ this list of conditions and the following disclaimer.
 * Redistributions in binary form must reproduce the above copyright notice,
 this list of conditions and the following disclaimer in the documentation
 and/or other materials provided with the distribution.
-* Neither the name The Open Effects Association Ltd, nor the names of its 
+* Neither the name The Open Effects Association Ltd, nor the names of its
 contributors may be used to endorse or promote products derived from this
 software without specific prior written permission.
 
@@ -33,33 +33,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace OFX {
 
-  namespace Host {
+namespace Host {
 
-    namespace Memory {
+namespace Memory {
 
-      class Instance {
-      public:
-        Instance();
+class Instance {
+ public:
+  Instance();
 
-        virtual ~Instance();        
-        virtual bool alloc(size_t nBytes);
-        virtual OfxImageMemoryHandle getHandle();
-        virtual void freeMem();
-        virtual void* getPtr();
-        virtual void lock();
-        virtual void unlock();
+  virtual ~Instance();
+  virtual bool alloc(size_t nBytes);
+  virtual OfxImageMemoryHandle getHandle();
+  virtual void freeMem();
+  virtual void* getPtr();
+  virtual void lock();
+  virtual void unlock();
 
-        virtual bool verifyMagic() { return true; }
+  virtual bool verifyMagic() { return true; }
 
-      protected:
-        char*   _ptr;
-        int     _locked;
-      };
+ protected:
+  char* _ptr;
+  int _locked;
+};
 
-    } // Memory
+}  // namespace Memory
 
-  } // Host
+}  // namespace Host
 
-} // OFX
+}  // namespace OFX
 
-#endif // OFX_MEMORY_H
+#endif  // OFX_MEMORY_H

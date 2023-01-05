@@ -12,7 +12,7 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name The Open Effects Association Ltd, nor the names of its 
+    * Neither the name The Open Effects Association Ltd, nor the names of its
       contributors may be used to endorse or promote products derived from this
       software without specific prior written permission.
 
@@ -34,28 +34,28 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxTimeLine.h"
 
 namespace OFX {
-  namespace Host {
-    namespace TimeLine {
-      
-      /// Things that implement timeline controls derive from this ABC and implement the following
-      /// functions.
-      class TimeLineI {
-      public :
-        virtual ~TimeLineI() {}
+namespace Host {
+namespace TimeLine {
 
-        /// get the current time on the timeline. This is not necessarily the same
-        /// time as being passed to an action (eg render)
-        virtual double timeLineGetTime() = 0;
+/// Things that implement timeline controls derive from this ABC and implement the
+/// following functions.
+class TimeLineI {
+ public:
+  virtual ~TimeLineI() {}
 
-        /// set the timeline to a specific time
-        virtual void timeLineGotoTime(double t) = 0;
+  /// get the current time on the timeline. This is not necessarily the same
+  /// time as being passed to an action (eg render)
+  virtual double timeLineGetTime() = 0;
 
-        /// get the first and last times available on the effect's timeline
-        virtual void timeLineGetBounds(double &t1, double &t2) = 0;        
-      };
+  /// set the timeline to a specific time
+  virtual void timeLineGotoTime(double t) = 0;
 
-    } // namespace progress
-  } // namespace Host
-} // namespace OFX
+  /// get the first and last times available on the effect's timeline
+  virtual void timeLineGetBounds(double &t1, double &t2) = 0;
+};
+
+}  // namespace TimeLine
+}  // namespace Host
+}  // namespace OFX
 
 #endif

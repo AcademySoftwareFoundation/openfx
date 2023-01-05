@@ -11,7 +11,7 @@ this list of conditions and the following disclaimer.
 * Redistributions in binary form must reproduce the above copyright notice,
 this list of conditions and the following disclaimer in the documentation
 and/or other materials provided with the distribution.
-* Neither the name The Open Effects Association Ltd, nor the names of its 
+* Neither the name The Open Effects Association Ltd, nor the names of its
 contributors may be used to endorse or promote products derived from this
 software without specific prior written permission.
 
@@ -31,49 +31,44 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace OFX;
 
-Binary::Binary(const std::string &binaryPath): _binaryPath(binaryPath), _invalid(false), _dlHandle(0), _users(0)
-{
+Binary::Binary(const std::string &binaryPath)
+    : _binaryPath(binaryPath), _invalid(false), _dlHandle(0), _users(0) {
   struct stat sb;
   if (stat(binaryPath.c_str(), &sb) != 0) {
     _invalid = true;
     _time = 0;
     _size = 0;
-  } 
-  else {
+  } else {
     _time = sb.st_mtime;
     _size = sb.st_size;
   }
 }
 
-
 // actually open the binary.
-void Binary::load() 
-{
-  if(_invalid)
+void Binary::load() {
+  if (_invalid)
     return;
 
-#if defined (UNIX)
-  _dlHandle = dlopen(_binaryPath.c_str(), RTLD_LAZY|RTLD_LOCAL);
+#if defined(UNIX)
+  _dlHandle = dlopen(_binaryPath.c_str(), RTLD_LAZY | RTLD_LOCAL);
 #else
   _dlHandle = LoadLibrary(_binaryPath.c_str());
 #endif
   if (_dlHandle == 0) {
-#if defined (UNIX)
-    std::cerr << "couldn't open library " << _binaryPath << " because " << dlerror() << std::endl;
+#if defined(UNIX)
+    std::cerr << "couldn't open library " << _binaryPath << " because " << dlerror()
+              << std::endl;
 #else
     LPVOID lpMsgBuf = NULL;
     DWORD err = GetLastError();
 
-    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
-      FORMAT_MESSAGE_FROM_SYSTEM |
-      FORMAT_MESSAGE_IGNORE_INSERTS,
-      NULL,
-      err,
-      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-      (LPTSTR) &lpMsgBuf,
-      0, NULL);
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
+                      FORMAT_MESSAGE_IGNORE_INSERTS,
+                  NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf,
+                  0, NULL);
 
-    std::cerr << "couldn't open library " << _binaryPath << " because " << (char*)lpMsgBuf << " was returned" << std::endl;
+    std::cerr << "couldn't open library " << _binaryPath << " because "
+              << (char *)lpMsgBuf << " was returned" << std::endl;
     if (lpMsgBuf != NULL) {
       LocalFree(lpMsgBuf);
     }
@@ -85,9 +80,9 @@ void Binary::load()
 /// close the binary
 void Binary::unload() {
   if (_dlHandle != 0) {
-#if defined (UNIX)
+#if defined(UNIX)
     dlclose(_dlHandle);
-#elif defined (WINDOWS)
+#elif defined(WINDOWS)
     FreeLibrary(_dlHandle);
 #endif
     _dlHandle = 0;
@@ -100,25 +95,22 @@ void *Binary::findSymbol(const std::string &symbol) {
   if (_dlHandle != 0) {
 #if defined(UNIX)
     return dlsym(_dlHandle, symbol.c_str());
-#elif defined (WINDOWS)
-    return (void*)GetProcAddress(_dlHandle, symbol.c_str());
+#elif defined(WINDOWS)
+    return (void *)GetProcAddress(_dlHandle, symbol.c_str());
 #endif
   } else {
     return 0;
   }
 }
 
-
-void Binary::ref()
-{
+void Binary::ref() {
   if (_users == 0) {
     load();
   }
   _users++;
 }
 
-void Binary::unref()
-{
+void Binary::unref() {
   _users--;
   if (_users == 0) {
     unload();
@@ -127,5 +119,3 @@ void Binary::unref()
     _users = 0;
   }
 }
-
-

@@ -11,10 +11,10 @@ modification, are permitted provided that the following conditions are met:
    * Redistributions in binary form must reproduce the above copyright notice,
    this list of conditions and the following disclaimer in the documentation
    and/or other materials provided with the distribution.
-   * Neither the name The Open Effects Association Ltd, nor the names of its 
+   * Neither the name The Open Effects Association Ltd, nor the names of its
    contributors may be used to endorse or promote products derived from this
    software without specific prior written permission.
-   
+
    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,10 +27,9 @@ modification, are permitted provided that the following conditions are met:
    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
-#include <iostream>
-#include <fstream>
 #include <cassert>
+#include <fstream>
+#include <iostream>
 
 // ofx
 #include "ofxCore.h"
@@ -39,21 +38,21 @@ modification, are permitted provided that the following conditions are met:
 
 // ofx host
 #include "ofxhBinary.h"
-#include "ofxhPropertySuite.h"
 #include "ofxhClip.h"
-#include "ofxhParam.h"
-#include "ofxhMemory.h"
+#include "ofxhHost.h"
 #include "ofxhImageEffect.h"
+#include "ofxhImageEffectAPI.h"
+#include "ofxhMemory.h"
+#include "ofxhParam.h"
 #include "ofxhPluginAPICache.h"
 #include "ofxhPluginCache.h"
-#include "ofxhHost.h"
-#include "ofxhImageEffectAPI.h"
+#include "ofxhPropertySuite.h"
 
 // my host
-#include "hostDemoHostDescriptor.h"
-#include "hostDemoEffectInstance.h"
 #include "hostDemoClipInstance.h"
-   
+#include "hostDemoEffectInstance.h"
+#include "hostDemoHostDescriptor.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 // This example code can only work with the example 'invert' plugin built
 // with the OFX C++ support library. With some programming you may be able to
@@ -62,7 +61,7 @@ modification, are permitted provided that the following conditions are met:
 //
 // It's job is purely to show you what functions you need to fill in to provide
 // an OFX image effect plugin host. It is (as we say in England) a 'noddy' example.
-// 
+//
 // Run this in a debugger and step through to see what it does. Also be sure to
 // build the invert example and set OFX_PLUGIN_PATH so that it can see it.
 //
@@ -71,21 +70,19 @@ modification, are permitted provided that the following conditions are met:
 //
 // There is no file io to work with this.
 
-void exportToPPM(const std::string& fname, MyHost::MyImage* im)
-{
+void exportToPPM(const std::string& fname, MyHost::MyImage* im) {
   std::ofstream op(fname.c_str());
   OfxRectI rod = im->getROD();
-  op << "P3" << "\t# FORMAT" << std::endl;
+  op << "P3"
+     << "\t# FORMAT" << std::endl;
   op << rod.x2 - rod.x1 << "\t#WIDTH" << std::endl;
-  op << rod.y2 - rod.y1 << "\t#HEIGHT" <<std::endl;
-  //This assumes 8-bit.
+  op << rod.y2 - rod.y1 << "\t#HEIGHT" << std::endl;
+  // This assumes 8-bit.
   op << "255" << std::endl;
-  for (int y = rod.y1; y< rod.y2; ++y)
-  {
-    for (int x = rod.x1; x < rod.x2; ++x)
-    {
-      OfxRGBAColourB* pix = im->pixel(x,y);
-      if(pix)
+  for (int y = rod.y1; y < rod.y2; ++y) {
+    for (int x = rod.x1; x < rod.x2; ++x) {
+      OfxRGBAColourB* pix = im->pixel(x, y);
+      if (pix)
         op << (int)pix->r << " " << (int)pix->g << " " << (int)pix->b << " " << std::endl;
       else
         op << "0 0 0" << std::endl;
@@ -93,11 +90,10 @@ void exportToPPM(const std::string& fname, MyHost::MyImage* im)
   }
 }
 
-int main(int argc, char **argv) 
-{
+int main(int argc, char** argv) {
   //_CrtSetBreakAlloc(3168);
 #ifdef _WIN32
-  _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
   // set the version label in the global cache
   OFX::Host::PluginCache::getPluginCache()->setCacheVersion("hostDemoV1");
@@ -126,61 +122,64 @@ int main(int argc, char **argv)
   of.close();
 
   // get the invert example plugin which uses the OFX C++ support code
-  OFX::Host::ImageEffect::ImageEffectPlugin* plugin = imageEffectPluginCache.getPluginById("net.sf.openfx:invertPlugin");
+  OFX::Host::ImageEffect::ImageEffectPlugin* plugin =
+      imageEffectPluginCache.getPluginById("net.sf.openfx:invertPlugin");
 
   imageEffectPluginCache.dumpToStdOut();
 
-  if(plugin) {
+  if (plugin) {
     // create an instance of it as a filter
-    // the first arg is the context, the second is client data we are allowed to pass down the call chain
+    // the first arg is the context, the second is client data we are allowed to pass down
+    // the call chain
 
-    std::auto_ptr<OFX::Host::ImageEffect::Instance> instance(plugin->createInstance(kOfxImageEffectContextFilter, NULL));
+    std::auto_ptr<OFX::Host::ImageEffect::Instance> instance(
+        plugin->createInstance(kOfxImageEffectContextFilter, NULL));
 
-    if(instance.get())
-    {
-        OfxStatus stat;
+    if (instance.get()) {
+      OfxStatus stat;
 
-      // now we need to call the create instance action. Only call this once you have initialised all the params
-      // and clips to their correct values. So if you are loading a saved plugin state, set up your params from
-      // that state, _then_ call create instance.
+      // now we need to call the create instance action. Only call this once you have
+      // initialised all the params and clips to their correct values. So if you are
+      // loading a saved plugin state, set up your params from that state, _then_ call
+      // create instance.
       stat = instance->createInstanceAction();
       assert(stat == kOfxStatOK || stat == kOfxStatReplyDefault);
 
-      // now we need to to call getClipPreferences on the instance so that it does the clip component/depth
-      // logic and caches away the components and depth on each clip.
+      // now we need to to call getClipPreferences on the instance so that it does the
+      // clip component/depth logic and caches away the components and depth on each clip.
       bool ok = instance->getClipPreferences();
       assert(ok);
-      
+
       // current render scale of 1
       OfxPointD renderScale;
       renderScale.x = renderScale.y = 1.0;
 
       // The render window is in pixel coordinates
       // ie: render scale and a PAR of not 1
-      OfxRectI  renderWindow;
+      OfxRectI renderWindow;
       renderWindow.x1 = renderWindow.y1 = 0;
       renderWindow.x2 = 720;
       renderWindow.y2 = 576;
 
-      /// RoI is in canonical coords, 
-      OfxRectD  regionOfInterest;
+      /// RoI is in canonical coords,
+      OfxRectD regionOfInterest;
       regionOfInterest.x1 = regionOfInterest.y1 = 0;
       regionOfInterest.x2 = renderWindow.x2 * instance->getProjectPixelAspectRatio();
       regionOfInterest.y2 = 576;
-      
+
       int numFramesToRender = OFXHOSTDEMOCLIPLENGTH;
 
-      // say we are about to render a bunch of frames 
-      stat = instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale, /*sequential=*/true, /*interactive=*/false
-                                         );
+      // say we are about to render a bunch of frames
+      stat = instance->beginRenderAction(0, numFramesToRender, 1.0, false, renderScale,
+                                         /*sequential=*/true, /*interactive=*/false);
       assert(stat == kOfxStatOK || stat == kOfxStatReplyDefault);
 
       // get the output clip
-      MyHost::MyClipInstance* outputClip = dynamic_cast<MyHost::MyClipInstance*>(instance->getClip("Output"));
+      MyHost::MyClipInstance* outputClip =
+          dynamic_cast<MyHost::MyClipInstance*>(instance->getClip("Output"));
       assert(outputClip);
 
-      for(int t = 0; t <= numFramesToRender; ++t) 
-      {
+      for (int t = 0; t <= numFramesToRender; ++t) {
         // call get region of interest on each of the inputs
         OfxTime frame = t;
 
@@ -190,25 +189,27 @@ int main(int argc, char **argv)
         // effect needs to render a given frame (clipped to the RoD).
         //
         // In our example we are doing full frame fetches regardless.
-        std::map<OFX::Host::ImageEffect::ClipInstance *, OfxRectD> rois;
-        stat = instance->getRegionOfInterestAction(frame, renderScale,
-                                                   regionOfInterest, rois);
+        std::map<OFX::Host::ImageEffect::ClipInstance*, OfxRectD> rois;
+        stat = instance->getRegionOfInterestAction(frame, renderScale, regionOfInterest,
+                                                   rois);
         assert(stat == kOfxStatOK || stat == kOfxStatReplyDefault);
 
         // render a frame
-        stat = instance->renderAction(t,kOfxImageFieldBoth,renderWindow, renderScale, /*sequential=*/true, /*interactive=*/false, /*draft=*/false);
+        stat = instance->renderAction(t, kOfxImageFieldBoth, renderWindow, renderScale,
+                                      /*sequential=*/true, /*interactive=*/false,
+                                      /*draft=*/false);
         assert(stat == kOfxStatOK);
 
         // get the output image buffer
-        MyHost::MyImage *outputImage = outputClip->getOutputImage();
+        MyHost::MyImage* outputImage = outputClip->getOutputImage();
 
         std::ostringstream ss;
         ss << "Output." << t << ".ppm";
         exportToPPM(ss.str(), outputImage);
       }
 
-      instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale, /*sequential=*/true, /*interactive=*/false
-                                );
+      instance->endRenderAction(0, numFramesToRender, 1.0, false, renderScale,
+                                /*sequential=*/true, /*interactive=*/false);
     }
   }
   OFX::Host::PluginCache::clearPluginCache();

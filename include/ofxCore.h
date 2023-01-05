@@ -30,18 +30,17 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
-#include "stddef.h" // for size_t
-#include <limits.h> // for INT_MIN & INT_MAX
+#include <limits.h>  // for INT_MIN & INT_MAX
+#include "stddef.h"  // for size_t
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /** @file ofxCore.h
-Contains the core OFX architectural struct and function definitions. For more details on the basic OFX architecture, see \ref Architecture.
+Contains the core OFX architectural struct and function definitions. For more details on
+the basic OFX architecture, see \ref Architecture.
 */
-
 
 /** @brief Platform independent export macro.
  *
@@ -49,9 +48,9 @@ Contains the core OFX architectural struct and function definitions. For more de
  * exported from a plug-in. This is OS/compiler dependent.
  */
 #if defined(WIN32) || defined(WIN64)
-	#define OfxExport extern __declspec(dllexport)
+#  define OfxExport extern __declspec(dllexport)
 #else
-	#define OfxExport extern
+#  define OfxExport extern
 #endif
 
 /** @brief Blind data structure to manipulate sets of properties through */
@@ -73,9 +72,10 @@ typedef struct OfxHost {
 
   /** @brief The function which the plug-in uses to fetch suites from the host.
 
-      \arg \e host          - the host the suite is being fetched from this \em must be the \e host member of the OfxHost struct containing fetchSuite.
-      \arg \e suiteName     - ASCII string labelling the host supplied API
-      \arg \e suiteVersion  - version of that suite to fetch
+      \arg \e host          - the host the suite is being fetched from this \em must be
+     the \e host member of the OfxHost struct containing fetchSuite. \arg \e suiteName -
+     ASCII string labelling the host supplied API \arg \e suiteVersion  - version of that
+     suite to fetch
 
       Any API fetched will be valid while the binary containing the plug-in is loaded.
 
@@ -83,26 +83,31 @@ typedef struct OfxHost {
 
       returns
          - NULL if the API is unknown (either the api or the version requested),
-	 - pointer to the relevant API if it was found
+         - pointer to the relevant API if it was found
   */
-  const void *(*fetchSuite)(OfxPropertySetHandle host, const char *suiteName, int suiteVersion);
+  const void *(*fetchSuite)(OfxPropertySetHandle host, const char *suiteName,
+                            int suiteVersion);
 } OfxHost;
-
 
 /** @brief Entry point for plug-ins
 
   \arg \e action   - ASCII c string indicating which action to take
-  \arg \e instance - object to which action should be applied, this will need to be cast to the appropriate blind data type depending on the \e action
-  \arg \e inData   - handle that contains action specific properties
-  \arg \e outData  - handle where the plug-in should set various action specific properties
+  \arg \e instance - object to which action should be applied, this will need to be cast
+  to the appropriate blind data type depending on the \e action \arg \e inData   - handle
+  that contains action specific properties \arg \e outData  - handle where the plug-in
+  should set various action specific properties
 
-  This is how the host generally communicates with a plug-in. Entry points are used to pass messages
-  to various objects used within OFX. The main use is within the OfxPlugin struct.
+  This is how the host generally communicates with a plug-in. Entry points are used to
+  pass messages to various objects used within OFX. The main use is within the OfxPlugin
+  struct.
 
-  The exact set of actions is determined by the plug-in API that is being implemented, however all plug-ins
-  can perform several actions. For the list of actions consult \ref ActionsAll.
+  The exact set of actions is determined by the plug-in API that is being implemented,
+  however all plug-ins can perform several actions. For the list of actions consult \ref
+  ActionsAll.
  */
-typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs);
+typedef OfxStatus(OfxPluginEntryPoint)(const char *action, const void *handle,
+                                       OfxPropertySetHandle inArgs,
+                                       OfxPropertySetHandle outArgs);
 
 /** @brief The structure that defines a plug-in to a host.
  *
@@ -115,29 +120,29 @@ typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle,
  *
  */
 typedef struct OfxPlugin {
-  /** Defines the type of the plug-in, this will tell the host what the plug-in does. e.g.: an image
-      effects plug-in would be a "OfxImageEffectPlugin"
+  /** Defines the type of the plug-in, this will tell the host what the plug-in does.
+     e.g.: an image effects plug-in would be a "OfxImageEffectPlugin"
    */
-  const char		*pluginApi;
+  const char *pluginApi;
 
   /** Defines the version of the pluginApi that this plug-in implements */
-  int            apiVersion;
+  int apiVersion;
 
   /** String that uniquely labels the plug-in among all plug-ins that implement an API.
       It need not necessarily be human sensible, however the preference is to use reverse
-      internet domain name of the developer, followed by a '.' then by a name that represents
-      the plug-in.. It must be a legal ASCII string and have no whitespace in the
-      name and no non printing chars.
-      For example "uk.co.somesoftwarehouse.myPlugin"
+      internet domain name of the developer, followed by a '.' then by a name that
+     represents the plug-in.. It must be a legal ASCII string and have no whitespace in
+     the name and no non printing chars. For example "uk.co.somesoftwarehouse.myPlugin"
   */
-  const char 		*pluginIdentifier;
+  const char *pluginIdentifier;
 
-  /** Major version of this plug-in, this gets incremented when backwards compatibility is broken. */
-  unsigned int 	 pluginVersionMajor;
+  /** Major version of this plug-in, this gets incremented when backwards compatibility is
+   * broken. */
+  unsigned int pluginVersionMajor;
 
   /**  Major version of this plug-in, this gets incremented when software is changed,
        but does not break backwards compatibility. */
-  unsigned int   pluginVersionMinor;
+  unsigned int pluginVersionMinor;
 
   /** @brief Function the host uses to connect the plug-in to the host's api fetcher
 
@@ -145,7 +150,8 @@ typedef struct OfxPlugin {
 
       Mandatory function.
 
-      The very first function called in a plug-in. The plug-in \em must \em not call any OFX functions within this, it must only set its local copy of the host pointer.
+      The very first function called in a plug-in. The plug-in \em must \em not call any
+     OFX functions within this, it must only set its local copy of the host pointer.
 
       \pre
         - nothing else has been called
@@ -153,14 +159,15 @@ typedef struct OfxPlugin {
       \post
         - the pointer suite is valid until the plug-in is unloaded
   */
-  void     (*setHost)(OfxHost *host);
+  void (*setHost)(OfxHost *host);
 
   /** @brief Main entry point for plug-ins
 
   Mandatory function.
 
-  The exact set of actions is determined by the plug-in API that is being implemented, however all plug-ins
-  can perform several actions. For the list of actions consult \ref ActionsAll.
+  The exact set of actions is determined by the plug-in API that is being implemented,
+  however all plug-ins can perform several actions. For the list of actions consult \ref
+  ActionsAll.
 
    Preconditions
       - setHost has been called
@@ -185,24 +192,26 @@ These are the actions passed to a plug-in's 'main' function
  The \ref handle, \ref inArgs and \ref outArgs arguments to the \ref mainEntry
  are redundant and should be set to NULL.
 
- 
+
 
  \pre
  - The plugin's \ref OfxPlugin::setHost function has been called
 
  \post
- This action will not be called again while the binary containing the plug-in remains loaded.
+ This action will not be called again while the binary containing the plug-in remains
+ loaded.
 
  @returns
  -  \ref kOfxStatOK, the action was trapped and all was well,
  -  \ref kOfxStatReplyDefault, the action was ignored,
- -  \ref kOfxStatFailed, the load action failed, no further actions will be passed to the plug-in.
- Interpret if possible  kOfxStatFailed as plug-in indicating it does not want to load 
- Do not create an entry in the host's UI for plug-in then.  
- Plug-in also has the option to return 0 for OfxGetNumberOfPlugins or kOfxStatFailed if host supports OfxSetHost in which case kOfxActionLoad will never be called.
+ -  \ref kOfxStatFailed, the load action failed, no further actions will be passed to the
+ plug-in. Interpret if possible  kOfxStatFailed as plug-in indicating it does not want to
+ load Do not create an entry in the host's UI for plug-in then. Plug-in also has the
+ option to return 0 for OfxGetNumberOfPlugins or kOfxStatFailed if host supports
+ OfxSetHost in which case kOfxActionLoad will never be called.
  -  \ref kOfxStatErrFatal, fatal error in the plug-in.
  */
-#define  kOfxActionLoad "OfxActionLoad"
+#define kOfxActionLoad "OfxActionLoad"
 
 /** @brief
 
@@ -238,8 +247,8 @@ These are the actions passed to a plug-in's 'main' function
      without worrying about it changing between actions).
      -  \ref kOfxImageEffectActionDescribeInContext
      will be called once for each context that the host and plug-in
-     mutually support.  If a plug-in does not report to support any context supported by host, 
-	 host should not enable the plug-in.
+     mutually support.  If a plug-in does not report to support any context supported by
+ host, host should not enable the plug-in.
 
  @returns
      -  \ref kOfxStatOK, the action was trapped and all was well
@@ -311,7 +320,7 @@ These are the actions passed to a plug-in's 'main' function
      -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
      the plugin should to post a message
  */
-#define kOfxActionPurgeCaches                 "OfxActionPurgeCaches"
+#define kOfxActionPurgeCaches "OfxActionPurgeCaches"
 
 /** @brief
 
@@ -337,7 +346,7 @@ These are the actions passed to a plug-in's 'main' function
      -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
      the plugin should to post a message
  */
-#define kOfxActionSyncPrivateData                 "OfxActionSyncPrivateData"
+#define kOfxActionSyncPrivateData "OfxActionSyncPrivateData"
 
 /** @brief
 
@@ -372,7 +381,7 @@ These are the actions passed to a plug-in's 'main' function
      the plugin should to post a message if possible and the host should
      destroy the instanace handle and not attempt to proceed further
  */
-#define kOfxActionCreateInstance        "OfxActionCreateInstance"
+#define kOfxActionCreateInstance "OfxActionCreateInstance"
 
 /** @brief
 
@@ -408,7 +417,7 @@ These are the actions passed to a plug-in's 'main' function
      the plugin should to post a message.
 
  */
-#define kOfxActionDestroyInstance       "OfxActionDestroyInstance"
+#define kOfxActionDestroyInstance "OfxActionDestroyInstance"
 
 /** @brief
 
@@ -492,12 +501,15 @@ These are the actions passed to a plug-in's 'main' function
  @param  outArgs is redundant and is set to NULL
 
  \post
-     - For \ref kOfxActionBeginInstanceChanged , \ref kOfxActionCreateInstance has been called on the instance handle.
-     - For \ref kOfxActionEndInstanceChanged , \ref kOfxActionBeginInstanceChanged has been called on the instance handle.
+     - For \ref kOfxActionBeginInstanceChanged , \ref kOfxActionCreateInstance has been
+ called on the instance handle.
+     - For \ref kOfxActionEndInstanceChanged , \ref kOfxActionBeginInstanceChanged has
+ been called on the instance handle.
      - \ref kOfxActionCreateInstance has been called on the instance handle.
 
  \post
-     - For \ref kOfxActionBeginInstanceChanged, \ref kOfxActionInstanceChanged will be called at least once on the instance handle.
+     - For \ref kOfxActionBeginInstanceChanged, \ref kOfxActionInstanceChanged will be
+ called at least once on the instance handle.
      - \ref kOfxActionEndInstanceChanged will be called on the instance handle.
 
  @returns
@@ -509,7 +521,9 @@ These are the actions passed to a plug-in's 'main' function
 */
 #define kOfxActionBeginInstanceChanged "OfxActionBeginInstanceChanged"
 
-/** @brief Action called after the end of a set of \ref kOfxActionEndInstanceChanged actions, used with ::kOfxActionBeginInstanceChanged to bracket a grouped set of changes,  see \ref kOfxActionBeginInstanceChanged*/
+/** @brief Action called after the end of a set of \ref kOfxActionEndInstanceChanged
+ * actions, used with ::kOfxActionBeginInstanceChanged to bracket a grouped set of
+ * changes,  see \ref kOfxActionBeginInstanceChanged*/
 #define kOfxActionEndInstanceChanged "OfxActionEndInstanceChanged"
 
 /** @brief
@@ -572,8 +586,8 @@ These are the actions passed to a plug-in's 'main' function
 
 /** @brief Returns the 'nth' plug-in implemented inside a binary
  *
- * Returns a pointer to the 'nth' plug-in implemented in the binary. A function of this type
- * must be implemented in and exported from each plug-in binary.
+ * Returns a pointer to the 'nth' plug-in implemented in the binary. A function of this
+ * type must be implemented in and exported from each plug-in binary.
  */
 OfxExport OfxPlugin *OfxGetPlugin(int nth);
 
@@ -586,20 +600,22 @@ OfxExport OfxPlugin *OfxGetPlugin(int nth);
 OfxExport int OfxGetNumberOfPlugins(void);
 
 /** @brief First thing host should call
-*
-* This host call, added in 2020, is not specified in earlier implementation of the API.
-* Therefore host must check if the plugin implemented it and not assume symbol exists.
-* The order of calls is then:  1) OfxSetHost, 2) OfxGetNumberOfPlugins, 3) OfxGetPlugin
-* The host pointer is only assumed valid until OfxGetPlugin where it might get reset.
-* Plug-in can return kOfxStatFailed to indicate it has nothing to do here, it's not for this Host and it should be skipped silently.
-*/
+ *
+ * This host call, added in 2020, is not specified in earlier implementation of the API.
+ * Therefore host must check if the plugin implemented it and not assume symbol exists.
+ * The order of calls is then:  1) OfxSetHost, 2) OfxGetNumberOfPlugins, 3) OfxGetPlugin
+ * The host pointer is only assumed valid until OfxGetPlugin where it might get reset.
+ * Plug-in can return kOfxStatFailed to indicate it has nothing to do here, it's not for
+ * this Host and it should be skipped silently.
+ */
 
-OfxExport  OfxStatus OfxSetHost(const OfxHost *host);
+OfxExport OfxStatus OfxSetHost(const OfxHost *host);
 
 /**
    \defgroup PropertiesAll Ofx Properties
 
-These strings are used to identify properties within OFX, they are broken up by the host suite or API they relate to.
+These strings are used to identify properties within OFX, they are broken up by the host
+suite or API they relate to.
 */
 /*@{*/
 
@@ -610,13 +626,14 @@ These properties are general properties and  apply to may objects across OFX
 */
 /*@{*/
 
-/** @brief Property on the host descriptor, saying what API version of the API is being implemented
+/** @brief Property on the host descriptor, saying what API version of the API is being
+implemented
 
     - Type - int X N
     - Property Set - host descriptor.
 
-This is a version string that will specify which version of the API is being implemented by a host. It
-can have multiple values. For example "1.0", "1.2.4" etc.....
+This is a version string that will specify which version of the API is being implemented
+by a host. It can have multiple values. For example "1.0", "1.2.4" etc.....
 
 If this is not present, it is safe to assume that the version of the API is "1.0".
 */
@@ -636,9 +653,14 @@ If this is not present, it is safe to assume that the version of the API is "1.0
     - Property Set - effect instance (read only)
     - Valid Values - 0 or 1
 
-If false the effect currently has no interface, however this may be because the effect is loaded in a background render host, or it may be loaded on an interactive host that has not yet opened an editor for the effect.
+If false the effect currently has no interface, however this may be because the effect is
+loaded in a background render host, or it may be loaded on an interactive host that has
+not yet opened an editor for the effect.
 
-The output of an effect should only ever depend on the state of its parameters, not on the interactive flag. The interactive flag is more a courtesy flag to let a plugin know that it has an interace. If a plugin want's to have its behaviour dependant on the interactive flag, it can always make a secret parameter which shadows the state if the flag.
+The output of an effect should only ever depend on the state of its parameters, not on the
+interactive flag. The interactive flag is more a courtesy flag to let a plugin know that
+it has an interace. If a plugin want's to have its behaviour dependant on the interactive
+flag, it can always make a secret parameter which shadows the state if the flag.
 */
 #define kOfxPropIsInteractive "OfxPropIsInteractive"
 
@@ -647,8 +669,9 @@ The output of an effect should only ever depend on the state of its parameters, 
     - Type - C string X 1
     - Property Set - effect descriptor (read only)
 
-This is a string that indicates the file path where the plug-in was found by the host. The path is in the native
-path format for the host OS (eg:  UNIX directory separators are forward slashes, Windows ones are backslashes).
+This is a string that indicates the file path where the plug-in was found by the host. The
+path is in the native path format for the host OS (eg:  UNIX directory separators are
+forward slashes, Windows ones are backslashes).
 
 The path is to the bundle location, see \ref InstallationLocation.
 eg:  '/usr/OFX/Plugins/AcmePlugins/AcmeFantasticPlugin.ofx.bundle'
@@ -661,7 +684,8 @@ eg:  '/usr/OFX/Plugins/AcmePlugins/AcmeFantasticPlugin.ofx.bundle'
     - Property Set - plugin instance (read/write),
     - Default - NULL
 
-This data pointer is unique to each plug-in instance, so two instances of the same plug-in do not share the same data pointer. Use it to hang any needed private data structures.
+This data pointer is unique to each plug-in instance, so two instances of the same plug-in
+do not share the same data pointer. Use it to hang any needed private data structures.
 */
 #define kOfxPropInstanceData "OfxPropInstanceData"
 
@@ -683,9 +707,11 @@ This data pointer is unique to each plug-in instance, so two instances of the sa
 /** @brief Unique name of an object.
 
     - Type - ASCII C string X 1
-    - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject (read only)
+    - Property Set - on many objects (descriptors and instances), see \ref
+PropertiesByObject (read only)
 
-This property is used to label objects uniquely amoung objects of that type. It is typically set when a plugin creates a new object with a function that takes a name.
+This property is used to label objects uniquely amoung objects of that type. It is
+typically set when a plugin creates a new object with a function that takes a name.
 */
 #define kOfxPropName "OfxPropName"
 
@@ -696,9 +722,14 @@ This property is used to label objects uniquely amoung objects of that type. It 
     - Default - "0"
     - Valid Values - positive integers
 
-This is a multi dimensional integer property that represents the version of a host (host descriptor), or plugin (plugin descriptor). These represent a version number of the form '1.2.3.4', with each dimension adding another 'dot' on the right.
+This is a multi dimensional integer property that represents the version of a host (host
+descriptor), or plugin (plugin descriptor). These represent a version number of the form
+'1.2.3.4', with each dimension adding another 'dot' on the right.
 
-A version is considered to be more recent than another if its ordered set of values is lexicographically greater than another, reading left to right. (ie: 1.2.4 is smaller than 1.2.6). Also, if the number of dimensions is different, then the values of the missing dimensions are considered to be zero (so 1.2.4 is greater than 1.2).
+A version is considered to be more recent than another if its ordered set of values is
+lexicographically greater than another, reading left to right. (ie: 1.2.4 is smaller
+than 1.2.6). Also, if the number of dimensions is different, then the values of the
+missing dimensions are considered to be zero (so 1.2.4 is greater than 1.2).
 */
 #define kOfxPropVersion "OfxPropVersion"
 
@@ -709,8 +740,8 @@ A version is considered to be more recent than another if its ordered set of val
     - Default - none, the host needs to set this
     - Valid Values - ASCII string
 
-This is purely for user feedback, a plugin or host should use ::kOfxPropVersion if they need
-to check for specific versions.
+This is purely for user feedback, a plugin or host should use ::kOfxPropVersion if they
+need to check for specific versions.
 */
 #define kOfxPropVersionLabel "OfxPropVersionLabel"
 
@@ -728,7 +759,8 @@ This is a string giving a potentially verbose description of the effect.
 /** @brief User visible name of an object.
 
     - Type - UTF8 C string X 1
-    - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject. Typically readable and writable in most cases.
+    - Property Set - on many objects (descriptors and instances), see \ref
+PropertiesByObject. Typically readable and writable in most cases.
     - Default - the ::kOfxPropName the object was created with.
 
 The label is what a user sees on any interface in place of the object's name.
@@ -737,14 +769,16 @@ Note that resetting this will also reset ::kOfxPropShortLabel and ::kOfxPropLong
 */
 #define kOfxPropLabel "OfxPropLabel"
 
-/** @brief If set this tells the host to use an icon instead of a label for some object in the interface.
+/** @brief If set this tells the host to use an icon instead of a label for some object in
+the interface.
 
     - Type - string X 2
     - Property Set - various descriptors in the API
     - Default - ""
     - Valid Values - ASCII string
 
-The value is a path is defined relative to the Resource folder that points to an SVG or PNG file containing the icon.
+The value is a path is defined relative to the Resource folder that points to an SVG or
+PNG file containing the icon.
 
 The first dimension, if set, will the name of and SVG file, the second a PNG file.
 */
@@ -753,20 +787,24 @@ The first dimension, if set, will the name of and SVG file, the second a PNG fil
 /** @brief Short user visible name of an object.
 
     - Type - UTF8 C string X 1
-    - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject. Typically readable and writable in most cases.
+    - Property Set - on many objects (descriptors and instances), see \ref
+PropertiesByObject. Typically readable and writable in most cases.
     - Default - initially ::kOfxPropName, but will be reset if ::kOfxPropLabel is changed.
 
-This is a shorter version of the label, typically 13 character glyphs or less. Hosts should use this if they have limitted display space for their object labels.
+This is a shorter version of the label, typically 13 character glyphs or less. Hosts
+should use this if they have limitted display space for their object labels.
 */
 #define kOfxPropShortLabel "OfxPropShortLabel"
 
 /** @brief Long user visible name of an object.
 
     - Type - UTF8 C string X 1
-    - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject. Typically readable and writable in most cases.
+    - Property Set - on many objects (descriptors and instances), see \ref
+PropertiesByObject. Typically readable and writable in most cases.
     - Default - initially ::kOfxPropName, but will be reset if ::kOfxPropLabel is changed.
 
-This is a longer version of the label, typically 32 character glyphs or so. Hosts should use this if they have mucg display space for their object labels.
+This is a longer version of the label, typically 32 character glyphs or so. Hosts should
+use this if they have mucg display space for their object labels.
 */
 #define kOfxPropLongLabel "OfxPropLongLabel"
 
@@ -775,9 +813,12 @@ This is a longer version of the label, typically 32 character glyphs or so. Host
     - Type - ASCII C string X 1
     - Property Set - inArgs parameter on the ::kOfxActionInstanceChanged action.
     - Valid Values - this can be...
-       - ::kOfxChangeUserEdited - the user directly edited the instance somehow and caused a change to something, this includes undo/redos and resets
-       - ::kOfxChangePluginEdited - the plug-in itself has changed the value of the object in some action
-       - ::kOfxChangeTime - the time has changed and this has affected the value of the object because it varies over time
+       - ::kOfxChangeUserEdited - the user directly edited the instance somehow and caused
+a change to something, this includes undo/redos and resets
+       - ::kOfxChangePluginEdited - the plug-in itself has changed the value of the object
+in some action
+       - ::kOfxChangeTime - the time has changed and this has affected the value of the
+object because it varies over time
 
 Argument property for the ::kOfxActionInstanceChanged action.
 */
@@ -788,8 +829,9 @@ Argument property for the ::kOfxActionInstanceChanged action.
     - Type - pointer X 1
     - Property Set - on an interact instance (read only)
 
-This property is used to link an object to the effect. For example if the plug-in supplies an openGL overlay for an image effect,
-the interact instance will have one of these so that the plug-in can connect back to the effect the GUI links to.
+This property is used to link an object to the effect. For example if the plug-in supplies
+an openGL overlay for an image effect, the interact instance will have one of these so
+that the plug-in can connect back to the effect the GUI links to.
 */
 #define kOfxPropEffectInstance "OfxPropEffectInstance"
 
@@ -798,7 +840,11 @@ the interact instance will have one of these so that the plug-in can connect bac
     - Type - pointer X 1
     - Property Set - host descriptor.
 
-Some plug-in vendor want raw OS specific handles back from the host so they can do interesting things with host OS APIs. Typically this is to control windowing properly on Microsoft Windows. This property returns the appropriate 'root' window handle on the current operating system. So on Windows this would be the hWnd of the application main window.
+Some plug-in vendor want raw OS specific handles back from the host so they can do
+interesting things with host OS APIs. Typically this is to control windowing properly on
+Microsoft Windows. This property returns the appropriate 'root' window handle on the
+current operating system. So on Windows this would be the hWnd of the application main
+window.
 */
 #define kOfxPropHostOSHandle "OfxPropHostOSHandle"
 
@@ -806,13 +852,16 @@ Some plug-in vendor want raw OS specific handles back from the host so they can 
 
 /*@}*/
 
-/** @brief String used as a value to ::kOfxPropChangeReason to indicate a user has changed something */
+/** @brief String used as a value to ::kOfxPropChangeReason to indicate a user has changed
+ * something */
 #define kOfxChangeUserEdited "OfxChangeUserEdited"
 
-/** @brief String used as a value to ::kOfxPropChangeReason to indicate the plug-in itself has changed something */
+/** @brief String used as a value to ::kOfxPropChangeReason to indicate the plug-in itself
+ * has changed something */
 #define kOfxChangePluginEdited "OfxChangePluginEdited"
 
-/** @brief String used as a value to ::kOfxPropChangeReason to a time varying object has changed due to a time change */
+/** @brief String used as a value to ::kOfxPropChangeReason to a time varying object has
+ * changed due to a time change */
 #define kOfxChangeTime "OfxChangeTime"
 
 /** @brief How time is specified within the OFX API */
@@ -918,52 +967,56 @@ General status codes start at 1 and continue until 999
 #define kOfxStatOK 0
 
 /** @brief Status error code for a failed operation. */
-#define kOfxStatFailed  ((int)1)
+#define kOfxStatFailed ((int)1)
 
 /** @brief Status error code for a fatal error
 
-  Only returned in the case where the plug-in or host cannot continue to function and needs to be restarted.
+  Only returned in the case where the plug-in or host cannot continue to function and
+  needs to be restarted.
  */
 #define kOfxStatErrFatal ((int)2)
 
 /** @brief Status error code for an operation on or request for an unknown object */
 #define kOfxStatErrUnknown ((int)3)
 
-/** @brief Status error code returned by plug-ins when they are missing host functionality, either an API or some optional functionality (eg: custom params).
+/** @brief Status error code returned by plug-ins when they are missing host
+   functionality, either an API or some optional functionality (eg: custom params).
 
-    Plug-Ins returning this should post an appropriate error message stating what they are missing.
+    Plug-Ins returning this should post an appropriate error message stating what they are
+   missing.
  */
-#define kOfxStatErrMissingHostFeature ((int) 4)
+#define kOfxStatErrMissingHostFeature ((int)4)
 
 /** @brief Status error code for an unsupported feature/operation */
-#define kOfxStatErrUnsupported ((int) 5)
+#define kOfxStatErrUnsupported ((int)5)
 
-/** @brief Status error code for an operation attempting to create something that exists */
-#define kOfxStatErrExists  ((int) 6)
+/** @brief Status error code for an operation attempting to create something that exists
+ */
+#define kOfxStatErrExists ((int)6)
 
 /** @brief Status error code for an incorrect format */
-#define kOfxStatErrFormat ((int) 7)
+#define kOfxStatErrFormat ((int)7)
 
 /** @brief Status error code indicating that something failed due to memory shortage */
-#define kOfxStatErrMemory  ((int) 8)
+#define kOfxStatErrMemory ((int)8)
 
 /** @brief Status error code for an operation on a bad handle */
-#define kOfxStatErrBadHandle ((int) 9)
+#define kOfxStatErrBadHandle ((int)9)
 
 /** @brief Status error code indicating that a given index was invalid or unavailable */
 #define kOfxStatErrBadIndex ((int)10)
 
 /** @brief Status error code indicating that something failed due an illegal value */
-#define kOfxStatErrValue ((int) 11)
+#define kOfxStatErrValue ((int)11)
 
 /** @brief OfxStatus returned indicating a 'yes' */
-#define kOfxStatReplyYes ((int) 12)
+#define kOfxStatReplyYes ((int)12)
 
 /** @brief OfxStatus returned indicating a 'no' */
-#define kOfxStatReplyNo ((int) 13)
+#define kOfxStatReplyNo ((int)13)
 
 /** @brief OfxStatus returned indicating that a default action should be performed */
-#define kOfxStatReplyDefault ((int) 14)
+#define kOfxStatReplyDefault ((int)14)
 
 /*@}*/
 
@@ -975,7 +1028,11 @@ General status codes start at 1 and continue until 999
 
 /** @mainpage OFX : Open Plug-Ins For Special Effects
 
-This page represents the automatically extracted HTML documentation of the source headers for the OFX Image Effect API. The documentation was extracted by doxygen (http://www.doxygen.org). It breaks documentation into sets of pages, use the links at the top of this page (marked 'Modules', 'Compound List' and especially 'File List' etcc) to browse through the OFX doc.
+This page represents the automatically extracted HTML documentation of the source headers
+for the OFX Image Effect API. The documentation was extracted by doxygen
+(http://www.doxygen.org). It breaks documentation into sets of pages, use the links at the
+top of this page (marked 'Modules', 'Compound List' and especially 'File List' etcc) to
+browse through the OFX doc.
 
 A more complete reference manual is http://openfx.sourceforge.net .
 

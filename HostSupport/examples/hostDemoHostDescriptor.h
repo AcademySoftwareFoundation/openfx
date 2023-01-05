@@ -11,7 +11,7 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name The Open Effects Association Ltd, nor the names of its 
+    * Neither the name The Open Effects Association Ltd, nor the names of its
       contributors may be used to endorse or promote products derived from this
       software without specific prior written permission.
 
@@ -31,66 +31,62 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace MyHost {
 
-  /// a host combines several things...
-  ///    - a factory to create a new instance of your plugin
-  ///      - it also gets to filter some calls during in the
-  ///        API to check for validity and perform custom
-  ///        operations (eg: add extra properties).
-  ///    - it provides a description of the host application
-  ///      which is passed back to the plugin.
-  class Host : public OFX::Host::ImageEffect::Host
-  {
-  public:    
-    Host();
+/// a host combines several things...
+///    - a factory to create a new instance of your plugin
+///      - it also gets to filter some calls during in the
+///        API to check for validity and perform custom
+///        operations (eg: add extra properties).
+///    - it provides a description of the host application
+///      which is passed back to the plugin.
+class Host : public OFX::Host::ImageEffect::Host {
+ public:
+  Host();
 
-    /// Create a new instance of an image effect plug-in.
-    ///
-    /// It is called by ImageEffectPlugin::createInstance which the
-    /// client code calls when it wants to make a new instance.
-    /// 
-    ///   \arg clientData - the clientData passed into the ImageEffectPlugin::createInstance
-    ///   \arg plugin - the plugin being created
-    ///   \arg desc - the descriptor for that plugin
-    ///   \arg context - the context to be created in
-    virtual OFX::Host::ImageEffect::Instance* newInstance(void* clientData,
-                                                          OFX::Host::ImageEffect::ImageEffectPlugin* plugin,
-                                                          OFX::Host::ImageEffect::Descriptor& desc,
-                                                          const std::string& context);
+  /// Create a new instance of an image effect plug-in.
+  ///
+  /// It is called by ImageEffectPlugin::createInstance which the
+  /// client code calls when it wants to make a new instance.
+  ///
+  ///   \arg clientData - the clientData passed into the ImageEffectPlugin::createInstance
+  ///   \arg plugin - the plugin being created
+  ///   \arg desc - the descriptor for that plugin
+  ///   \arg context - the context to be created in
+  virtual OFX::Host::ImageEffect::Instance* newInstance(
+      void* clientData, OFX::Host::ImageEffect::ImageEffectPlugin* plugin,
+      OFX::Host::ImageEffect::Descriptor& desc, const std::string& context);
 
-    /// Override this to create a descriptor, this makes the 'root' descriptor
-    virtual OFX::Host::ImageEffect::Descriptor *makeDescriptor(OFX::Host::ImageEffect::ImageEffectPlugin* plugin);
+  /// Override this to create a descriptor, this makes the 'root' descriptor
+  virtual OFX::Host::ImageEffect::Descriptor* makeDescriptor(
+      OFX::Host::ImageEffect::ImageEffectPlugin* plugin);
 
-    /// used to construct a context description, rootContext is the main context
-    virtual OFX::Host::ImageEffect::Descriptor *makeDescriptor(const OFX::Host::ImageEffect::Descriptor &rootContext, 
-                                                               OFX::Host::ImageEffect::ImageEffectPlugin *plug);        
+  /// used to construct a context description, rootContext is the main context
+  virtual OFX::Host::ImageEffect::Descriptor* makeDescriptor(
+      const OFX::Host::ImageEffect::Descriptor& rootContext,
+      OFX::Host::ImageEffect::ImageEffectPlugin* plug);
 
-    /// used to construct populate the cache
-    virtual OFX::Host::ImageEffect::Descriptor *makeDescriptor(const std::string &bundlePath, 
-                                                               OFX::Host::ImageEffect::ImageEffectPlugin *plug);
+  /// used to construct populate the cache
+  virtual OFX::Host::ImageEffect::Descriptor* makeDescriptor(
+      const std::string& bundlePath, OFX::Host::ImageEffect::ImageEffectPlugin* plug);
 
-    /// vmessage
-    virtual OfxStatus vmessage(const char* type,
-                               const char* id,
-                               const char* format,
-                               va_list args);
+  /// vmessage
+  virtual OfxStatus vmessage(const char* type, const char* id, const char* format,
+                             va_list args);
 
-    /// vmessage
-    virtual OfxStatus setPersistentMessage(const char* type,
-                                           const char* id,
-                                           const char* format,
-                                           va_list args);
-    /// vmessage
-    virtual OfxStatus clearPersistentMessage();
+  /// vmessage
+  virtual OfxStatus setPersistentMessage(const char* type, const char* id,
+                                         const char* format, va_list args);
+  /// vmessage
+  virtual OfxStatus clearPersistentMessage();
 
 #ifdef OFX_SUPPORTS_OPENGLRENDER
-    /// @see OfxImageEffectOpenGLRenderSuiteV1.flushResources()
-    virtual OfxStatus flushOpenGLResources() const { return kOfxStatFailed; };
+  /// @see OfxImageEffectOpenGLRenderSuiteV1.flushResources()
+  virtual OfxStatus flushOpenGLResources() const { return kOfxStatFailed; };
 #endif
-  };
+};
 
-  // my ofx host object
-  extern Host gOfxHost;
+// my ofx host object
+extern Host gOfxHost;
 
-}
+}  // namespace MyHost
 
-#endif // HOST_DEMO_HOST_DESCRIPTOR_H
+#endif  // HOST_DEMO_HOST_DESCRIPTOR_H

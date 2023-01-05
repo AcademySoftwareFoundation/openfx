@@ -54,32 +54,32 @@ actions needed. (Like lowering its priority etc..)
 /** @brief The name of the Dialog suite, used to fetch from a host via
     OfxHost::fetchSuite
  */
-#define kOfxDialogSuite		"OfxDialogSuite"
+#define kOfxDialogSuite "OfxDialogSuite"
 
 /** @brief Action called after a dialog has requested a 'Dialog'
          The arguments to the action are:
           \arg user_data - Pointer which was provided when the plugin requested the Dialog
 
-	   When the plugin receives this action it is safe to popup a dialog.
-	   It runs in the host's UI thread, which may differ from the main OFX processing thread.
-	   Plugin should return from this action when all Dialog interactions are done.
-	   At that point the host will continue again.
-	   The host will not send any other messages asynchronous to this one.
+           When the plugin receives this action it is safe to popup a dialog.
+           It runs in the host's UI thread, which may differ from the main OFX processing
+   thread. Plugin should return from this action when all Dialog interactions are done. At
+   that point the host will continue again. The host will not send any other messages
+   asynchronous to this one.
 */
-#define  kOfxActionDialog	"OfxActionDialog"
+#define kOfxActionDialog "OfxActionDialog"
 
-typedef struct OfxDialogSuiteV1
-{
+typedef struct OfxDialogSuiteV1 {
   /** @brief Request the host to send a kOfxActionDialog to the plugin from its UI thread.
   \pre
     - user_data: A pointer to any user data
   \post
   @returns
     - ::kOfxStatOK - The host has queued the request and will send an 'OfxActionDialog'
-    - ::kOfxStatFailed - The host has no provisio for this or can not deal with it currently.
+    - ::kOfxStatFailed - The host has no provisio for this or can not deal with it
+  currently.
   */
-  OfxStatus (*RequestDialog)( void *user_data );
-  
+  OfxStatus (*RequestDialog)(void *user_data);
+
   /** @brief Inform the host of redraw event so it can redraw itself
       If the host runs fullscreen in OpenGL, it would otherwise not receive
 redraw event when a dialog in front would catch all events.
@@ -88,15 +88,11 @@ redraw event when a dialog in front would catch all events.
   @returns
     - ::kOfxStatReplyDefault
   */
-  OfxStatus (*NotifyRedrawPending)( void );
+  OfxStatus (*NotifyRedrawPending)(void);
 } OfxDialogSuiteV1;
-
-
 
 #ifdef __cplusplus
 }
 #endif
 
-
 #endif
-

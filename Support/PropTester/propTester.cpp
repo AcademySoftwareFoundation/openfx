@@ -11,7 +11,7 @@ this list of conditions and the following disclaimer.
 * Redistributions in binary form must reproduce the above copyright notice,
 this list of conditions and the following disclaimer in the documentation
 and/or other materials provided with the distribution.
-* Neither the name The Open Effects Association Ltd, nor the names of its 
+* Neither the name The Open Effects Association Ltd, nor the names of its
 contributors may be used to endorse or promote products derived from this
 software without specific prior written permission.
 
@@ -34,60 +34,53 @@ England
 
 */
 #ifdef _WINDOWS
-#include <windows.h>
+#  include <windows.h>
 #endif
 
 #ifdef __APPLE__
-#include <OpenGL/gl.h>
+#  include <OpenGL/gl.h>
 #else
-#include <GL/gl.h>
+#  include <GL/gl.h>
 #endif
 
 #include <stdio.h>
 #include "ofxsImageEffect.h"
 
-class ColourInteract : public OFX::ParamInteract
-{
-protected:
-  enum State
-  {
-    eDefault,
-    ePoised,
-    eDragging
-  };
+class ColourInteract : public OFX::ParamInteract {
+ protected:
+  enum State { eDefault, ePoised, eDragging };
   State _state;
   double _radius;
-    
-public:
-  ColourInteract(OfxInteractHandle handle, OFX::ImageEffect* effect, const std::string& paramName):
-      OFX::ParamInteract(handle, effect), _state(eDefault), _radius(5.0)
-  {
-     _param = effect->fetchRGBParam(paramName);
+
+ public:
+  ColourInteract(OfxInteractHandle handle, OFX::ImageEffect *effect,
+                 const std::string &paramName)
+      : OFX::ParamInteract(handle, effect), _state(eDefault), _radius(5.0) {
+    _param = effect->fetchRGBParam(paramName);
   }
-  virtual bool draw(const OFX::DrawArgs &args)
-  {
+  virtual bool draw(const OFX::DrawArgs &args) {
     OfxPointI size = getInteractSize();
-    glBegin (GL_POLYGON);
-    
-    glColor3f (0.0f, 0.0f, 0.0f);
-    glVertex2f (-0.5f, -0.5f);
+    glBegin(GL_POLYGON);
 
-    glColor3f (1.0f, 0.0f, 0.0f);
-    glVertex2f (-0.5f, size.y-0.5f);
+    glColor3f(0.0f, 0.0f, 0.0f);
+    glVertex2f(-0.5f, -0.5f);
 
-    glColor3f (0.0f, 1.0f, 0.0f);
-    glVertex2f (size.x - 0.5f, size.y - 0.5f);
-    
-    glColor3f (0.0f, 0.0f, 1.0f);
-    glVertex2f (size.x - 0.5f, -0.5f);
-    
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glVertex2f(-0.5f, size.y - 0.5f);
+
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glVertex2f(size.x - 0.5f, size.y - 0.5f);
+
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glVertex2f(size.x - 0.5f, -0.5f);
+
     glEnd();
 
-    double r,g,b,x,y;
+    double r, g, b, x, y;
     _param->getValueAtTime(args.time, r, g, b);
     positionFromColour(r, g, b, x, y);
     glColor3f(1.0f, 1.0f, 1.0f);
-    if(_state==ePoised)
+    if (_state == ePoised)
       glColor3f(0.5f, 0.5f, 0.5f);
 
     glBegin(GL_POLYGON);
@@ -99,47 +92,37 @@ public:
 
     return true;
   }
-  bool hitTest(double posx, double posy, double time) const
-  {
-    double r,g,b,x,y;
+  bool hitTest(double posx, double posy, double time) const {
+    double r, g, b, x, y;
     _param->getValueAtTime(time, r, g, b);
     positionFromColour(r, g, b, x, y);
-    if(posx > x - _radius &&
-       posy > y - _radius &&
-       posx < x + _radius &&
-       posy < y + _radius)
-       return true;
+    if (posx > x - _radius && posy > y - _radius && posx < x + _radius &&
+        posy < y + _radius)
+      return true;
     return false;
   }
-  void positionFromColour(double r, double g, double b, double& x, double& y) const
-  {
-    x = (b/(g+b)) * 100.0 - 0.5;
-    y = (r/(g+r)) * 100.0 - 0.5;
+  void positionFromColour(double r, double g, double b, double &x, double &y) const {
+    x = (b / (g + b)) * 100.0 - 0.5;
+    y = (r / (g + r)) * 100.0 - 0.5;
   }
-  void colourFromPosition(double x, double y, double& r, double& g, double& b) const
-  {
+  void colourFromPosition(double x, double y, double &r, double &g, double &b) const {
     x += 0.5;
     y += 0.5;
-    x = x*0.01;
-    y = y*0.01;
-    r = y * ( 1.0 - x);
-    b = x * ( 1.0 - y);
+    x = x * 0.01;
+    y = y * 0.01;
+    r = y * (1.0 - x);
+    b = x * (1.0 - y);
     g = (1.0 - x) * (1.0 - y);
   }
-  virtual bool penMotion(const OFX::PenArgs &args)
-  {
-    if(_state != eDragging)
-    {
-      if(hitTest(args.penPosition.x, args.penPosition.y, args.time))
-      {
+  virtual bool penMotion(const OFX::PenArgs &args) {
+    if (_state != eDragging) {
+      if (hitTest(args.penPosition.x, args.penPosition.y, args.time)) {
         _state = ePoised;
         requestRedraw();
         return true;
       }
-    }
-    else
-    {
-      double r,g,b;
+    } else {
+      double r, g, b;
       colourFromPosition(args.penPosition.x, args.penPosition.y, r, g, b);
       _param->setValueAtTime(args.time, r, g, b);
       requestRedraw();
@@ -149,70 +132,65 @@ public:
     requestRedraw();
     return false;
   }
-  virtual bool penDown(const OFX::PenArgs &args)
-  {
-    if(hitTest(args.penPosition.x, args.penPosition.y, args.time))
-    {
+  virtual bool penDown(const OFX::PenArgs &args) {
+    if (hitTest(args.penPosition.x, args.penPosition.y, args.time)) {
       _state = eDragging;
       return true;
     }
     return false;
   }
-  virtual bool penUp(const OFX::PenArgs &/*args*/)
-  {
+  virtual bool penUp(const OFX::PenArgs & /*args*/) {
     _state = ePoised;
     requestRedraw();
     return true;
   }
-  virtual ~ColourInteract(){}
-protected:
-  OFX::RGBParam* _param;
+  virtual ~ColourInteract() {}
+
+ protected:
+  OFX::RGBParam *_param;
 };
 
-//Need an instance count as a template parameter in order to generate a different mainEntry point for each instance.
-// Hopefully this will be fixed in the next iteration of the OFX standard.
-template<int INSTANCECOUNT>
-class ColourInteractDescriptor : public OFX::DefaultParamInteractDescriptor<ColourInteractDescriptor<INSTANCECOUNT>, ColourInteract>
-{
-public:
-  using OFX::DefaultParamInteractDescriptor<ColourInteractDescriptor<INSTANCECOUNT>,ColourInteract>::setInteractSizeAspect;
-  using OFX::DefaultParamInteractDescriptor<ColourInteractDescriptor<INSTANCECOUNT>,ColourInteract>::setInteractMinimumSize;
-  using OFX::DefaultParamInteractDescriptor<ColourInteractDescriptor<INSTANCECOUNT>,ColourInteract>::setInteractPreferredSize;
-  virtual void describe()
-  {
+// Need an instance count as a template parameter in order to generate a different
+// mainEntry point for each instance.
+//  Hopefully this will be fixed in the next iteration of the OFX standard.
+template <int INSTANCECOUNT>
+class ColourInteractDescriptor
+    : public OFX::DefaultParamInteractDescriptor<ColourInteractDescriptor<INSTANCECOUNT>,
+                                                 ColourInteract> {
+ public:
+  using OFX::DefaultParamInteractDescriptor<ColourInteractDescriptor<INSTANCECOUNT>,
+                                            ColourInteract>::setInteractSizeAspect;
+  using OFX::DefaultParamInteractDescriptor<ColourInteractDescriptor<INSTANCECOUNT>,
+                                            ColourInteract>::setInteractMinimumSize;
+  using OFX::DefaultParamInteractDescriptor<ColourInteractDescriptor<INSTANCECOUNT>,
+                                            ColourInteract>::setInteractPreferredSize;
+  virtual void describe() {
     setInteractSizeAspect(1.0);
     setInteractMinimumSize(50, 50);
     setInteractPreferredSize(100, 100);
   }
 };
 
-
 ////////////////////////////////////////////////////////////////////////////////
 /** @brief base class of the plugin */
 class BasePlugin : public OFX::ImageEffect {
-protected :
+ protected:
   // do not need to delete this, the ImageEffect is managing them for us
   OFX::Clip *dstClip_;
 
-public :
+ public:
   /** @brief ctor */
-  BasePlugin(OfxImageEffectHandle handle)
-    : ImageEffect(handle)
-    , dstClip_(0)
-  {
+  BasePlugin(OfxImageEffectHandle handle) : ImageEffect(handle), dstClip_(0) {
     dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
   }
-
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 /** @brief generator effect version of the plugin */
 class GeneratorPlugin : public BasePlugin {
-public :
+ public:
   /** @brief ctor */
-  GeneratorPlugin(OfxImageEffectHandle handle)
-    : BasePlugin(handle)
-  {}
+  GeneratorPlugin(OfxImageEffectHandle handle) : BasePlugin(handle) {}
 
   /** @brief client render function, this is one of the few that must be set */
   virtual void render(const OFX::RenderArguments &args);
@@ -221,16 +199,13 @@ public :
 ////////////////////////////////////////////////////////////////////////////////
 /** @brief filter version of the plugin */
 class FilterPlugin : public BasePlugin {
-protected :
+ protected:
   // do not need to delete this, the ImageEffect is managing them for us
   OFX::Clip *srcClip_;
 
-public :
+ public:
   /** @brief ctor */
-  FilterPlugin(OfxImageEffectHandle handle)
-    : BasePlugin(handle)
-    , srcClip_(0)
-  {
+  FilterPlugin(OfxImageEffectHandle handle) : BasePlugin(handle), srcClip_(0) {
     srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
   }
 
@@ -238,49 +213,44 @@ public :
   virtual void render(const OFX::RenderArguments &args);
 };
 
-
 ////////////////////////////////////////////////////////////////////////////////
 /** @brief filter version of the plugin */
 class GeneralPlugin : public FilterPlugin {
-protected :
+ protected:
   // do not need to delete this, the ImageEffect is managing them for us
   OFX::Clip *extraClip_;
 
-public :
+ public:
   /** @brief ctor */
-  GeneralPlugin(OfxImageEffectHandle handle)
-    : FilterPlugin(handle)
-    , extraClip_(0)
-  {
+  GeneralPlugin(OfxImageEffectHandle handle) : FilterPlugin(handle), extraClip_(0) {
     extraClip_ = fetchClip("Extra");
   }
 };
 
 using namespace OFX;
 
-class PropTesterPluginFactory : public OFX::PluginFactoryHelper<PropTesterPluginFactory>
-{
-public:
-  PropTesterPluginFactory():OFX::PluginFactoryHelper<PropTesterPluginFactory>("net.sf.openfx.propertyTester", 1, 0){}
+class PropTesterPluginFactory : public OFX::PluginFactoryHelper<PropTesterPluginFactory> {
+ public:
+  PropTesterPluginFactory()
+      : OFX::PluginFactoryHelper<PropTesterPluginFactory>("net.sf.openfx.propertyTester",
+                                                          1, 0) {}
   virtual void describe(OFX::ImageEffectDescriptor &desc);
-  virtual void describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context);
-  virtual OFX::ImageEffect* createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context);
+  virtual void describeInContext(OFX::ImageEffectDescriptor &desc,
+                                 OFX::ContextEnum context);
+  virtual OFX::ImageEffect *createInstance(OfxImageEffectHandle handle,
+                                           OFX::ContextEnum context);
 };
 
-namespace OFX 
-{
-  namespace Plugin 
-  {
-    void getPluginIDs(OFX::PluginFactoryArray &ids)
-    {
-      static PropTesterPluginFactory p;
-      ids.push_back(&p);
-    }
-  }
+namespace OFX {
+namespace Plugin {
+void getPluginIDs(OFX::PluginFactoryArray &ids) {
+  static PropTesterPluginFactory p;
+  ids.push_back(&p);
 }
+}  // namespace Plugin
+}  // namespace OFX
 
-void PropTesterPluginFactory::describe(OFX::ImageEffectDescriptor &desc) 
-{
+void PropTesterPluginFactory::describe(OFX::ImageEffectDescriptor &desc) {
   // basic labels
   desc.setLabels("Prop Tester", "Prop Tester", "Property Tester");
   desc.setPluginGrouping("OFX Test");
@@ -289,7 +259,6 @@ void PropTesterPluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.addSupportedContext(eContextGenerator);
   desc.addSupportedContext(eContextFilter);
   desc.addSupportedContext(eContextGeneral);
-
 
   // add supported pixel depths
   desc.addSupportedBitDepth(eBitDepthUByte);
@@ -307,9 +276,8 @@ void PropTesterPluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 }
 
 /** @brief describe a string param with the given name and type */
-static
-void describeStringParam(OFX::ImageEffectDescriptor &desc, const std::string &name, StringTypeEnum strType, PageParamDescriptor *page)
-{
+static void describeStringParam(OFX::ImageEffectDescriptor &desc, const std::string &name,
+                                StringTypeEnum strType, PageParamDescriptor *page) {
   StringParamDescriptor *param = desc.defineStringParam(name);
   param->setDefault(name);
   param->setScriptName(name);
@@ -320,10 +288,9 @@ void describeStringParam(OFX::ImageEffectDescriptor &desc, const std::string &na
 }
 
 /** @brief describe a double param */
-static
-void describeDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &name, DoubleTypeEnum doubleType,
-                         double min, double max, PageParamDescriptor *page)
-{
+static void describeDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &name,
+                                DoubleTypeEnum doubleType, double min, double max,
+                                PageParamDescriptor *page) {
   DoubleParamDescriptor *param = desc.defineDoubleParam(name);
   param->setLabels(name, name, name);
   param->setScriptName(name);
@@ -336,10 +303,9 @@ void describeDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &na
 }
 
 /** @brief describe a double param */
-static
-void describe2DDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &name, DoubleTypeEnum doubleType,
-                           double min, double max, PageParamDescriptor *page)
-{
+static void describe2DDoubleParam(OFX::ImageEffectDescriptor &desc,
+                                  const std::string &name, DoubleTypeEnum doubleType,
+                                  double min, double max, PageParamDescriptor *page) {
   Double2DParamDescriptor *param = desc.defineDouble2DParam(name);
   param->setLabels(name, name, name);
   param->setScriptName(name);
@@ -352,10 +318,9 @@ void describe2DDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &
 }
 
 /** @brief describe a double param */
-static
-void describe3DDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &name, DoubleTypeEnum doubleType,
-                           double min, double max, PageParamDescriptor *page)
-{
+static void describe3DDoubleParam(OFX::ImageEffectDescriptor &desc,
+                                  const std::string &name, DoubleTypeEnum doubleType,
+                                  double min, double max, PageParamDescriptor *page) {
   Double3DParamDescriptor *param = desc.defineDouble3DParam(name);
   param->setLabels(name, name, name);
   param->setScriptName(name);
@@ -368,10 +333,10 @@ void describe3DDoubleParam(OFX::ImageEffectDescriptor &desc, const std::string &
 }
 
 /** @brief The describe in context function, passed a plugin descriptor and a context */
-void PropTesterPluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, ContextEnum context) 
-{
+void PropTesterPluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc,
+                                                ContextEnum context) {
   // Source clip only in the filter context
-  if(context == eContextGeneral) {
+  if (context == eContextGeneral) {
     // create the mandated source clip
     ClipDescriptor *srcClip = desc.defineClip("Extra");
     srcClip->addSupportedComponent(ePixelComponentRGBA);
@@ -382,12 +347,12 @@ void PropTesterPluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   }
 
   // Source clip only in the filter context
-  if(context == eContextFilter || context == eContextGeneral) {
+  if (context == eContextFilter || context == eContextGeneral) {
     // create the mandated source clip
     ClipDescriptor *srcClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
     srcClip->addSupportedComponent(ePixelComponentRGBA);
     srcClip->setTemporalClipAccess(false);
-    //srcClip->setOptional(false);
+    // srcClip->setOptional(false);
     srcClip->setSupportsTiles(true);
     srcClip->setIsMask(false);
   }
@@ -396,12 +361,11 @@ void PropTesterPluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   ClipDescriptor *dstClip = desc.defineClip(kOfxImageEffectOutputClipName);
   dstClip->addSupportedComponent(ePixelComponentRGBA);
   dstClip->setTemporalClipAccess(false);
-  //dstClip->setOptional(false);
+  // dstClip->setOptional(false);
   dstClip->setSupportsTiles(true);
   dstClip->setIsMask(false);
 
-
-  // make some pages and to things in 
+  // make some pages and to things in
   PageParamDescriptor *page1 = desc.definePageParam("page1");
   PageParamDescriptor *page2 = desc.definePageParam("page2");
   PageParamDescriptor *page3 = desc.definePageParam("page3");
@@ -448,7 +412,7 @@ void PropTesterPluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
 
   page1->addChild(*boolean);
 
-  // choice 
+  // choice
   ChoiceParamDescriptor *choice = desc.defineChoiceParam("choice");
   choice->setLabels("choice", "choice", "choice");
   choice->appendOption("This", "This");
@@ -534,31 +498,26 @@ void PropTesterPluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc
   describeStringParam(desc, "filePath", eStringTypeFilePath, page3);
   describeStringParam(desc, "dirPath", eStringTypeDirectoryPath, page3);
   describeStringParam(desc, "label", eStringTypeLabel, page3);
-
 }
 
-/** @brief The create instance function, the plugin must return an object derived from the \ref OFX::ImageEffect class */
-ImageEffect* PropTesterPluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum context)
-{
-  if(context == eContextFilter) 
+/** @brief The create instance function, the plugin must return an object derived from the
+ * \ref OFX::ImageEffect class */
+ImageEffect *PropTesterPluginFactory::createInstance(OfxImageEffectHandle handle,
+                                                     ContextEnum context) {
+  if (context == eContextFilter)
     return new FilterPlugin(handle);
-  else if(context == eContextGenerator) 
+  else if (context == eContextGenerator)
     return new GeneratorPlugin(handle);
-  else if(context == eContextGeneral) 
+  else if (context == eContextGeneral)
     return new GeneralPlugin(handle);
 
-
   // HACK!!! Throw something here!
-  return NULL; // to shut the warning up
+  return NULL;  // to shut the warning up
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 /** @brief render for the generator */
-void
-GeneratorPlugin::render(const OFX::RenderArguments &args)
-{
+void GeneratorPlugin::render(const OFX::RenderArguments &args) {
   OFX::Image *dst = 0;
 
   try {
@@ -571,7 +530,7 @@ GeneratorPlugin::render(const OFX::RenderArguments &args)
     // blah;
   }
 
-  catch(...) {
+  catch (...) {
     delete dst;
     throw;
   }
@@ -582,9 +541,7 @@ GeneratorPlugin::render(const OFX::RenderArguments &args)
 
 ////////////////////////////////////////////////////////////////////////////////
 /** @brief render for the filter */
-void
-FilterPlugin::render(const OFX::RenderArguments &args)
-{
+void FilterPlugin::render(const OFX::RenderArguments &args) {
   OFX::Image *src = 0, *dst = 0;
 
   try {
@@ -600,7 +557,7 @@ FilterPlugin::render(const OFX::RenderArguments &args)
     // blah;
   }
 
-  catch(...) {
+  catch (...) {
     delete src;
     delete dst;
     throw;

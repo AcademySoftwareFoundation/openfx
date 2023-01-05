@@ -27,27 +27,26 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 /*
    Direct GPU processing using OpenGL
  */
+#include <cstdarg>
 #include <cstdio>
 #include <cstring>
-#include <cstdarg>
 #ifdef __APPLE__
-#include <OpenGL/gl.h>
+#  include <OpenGL/gl.h>
 #else
-#include <GL/gl.h>
+#  include <GL/gl.h>
 #endif
-#include <stdexcept>
 #include <new>
+#include <stdexcept>
 
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
 #include "ofxOpenGLRender.h"
 
-#include "../include/ofxUtilities.H" // example support utils
+#include "../include/ofxUtilities.H"  // example support utils
 
 #if defined __APPLE__ || defined linux || defined __FreeBSD__
 #  define EXPORT __attribute__((visibility("default")))
@@ -58,14 +57,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 // pointers64 to various bits of the host
-OfxHost               *gHost;
+OfxHost *gHost;
 OfxImageEffectSuiteV1 *gEffectHost = 0;
-OfxPropertySuiteV1    *gPropHost = 0;
-OfxParameterSuiteV1   *gParamHost = 0;
-OfxMemorySuiteV1      *gMemoryHost = 0;
+OfxPropertySuiteV1 *gPropHost = 0;
+OfxParameterSuiteV1 *gParamHost = 0;
+OfxMemorySuiteV1 *gMemoryHost = 0;
 OfxMultiThreadSuiteV1 *gThreadHost = 0;
-OfxMessageSuiteV1     *gMessageSuite = 0;
-OfxInteractSuiteV1    *gInteractHost = 0;
+OfxMessageSuiteV1 *gMessageSuite = 0;
+OfxInteractSuiteV1 *gInteractHost = 0;
 OfxImageEffectOpenGLRenderSuiteV1 *gOpenGLSuite = 0;
 
 // some flags about the host's behaviour
@@ -80,14 +79,13 @@ check_status_fun(int status, int expected, const char *name)
 {
   if (status != expected) {
     fprintf(stderr, "OFX error in %s: expected status %d, got %d\n",
-	    name, expected, status);
+            name, expected, status);
   }
 }
 */
 
 #define DPRINT(args) print_dbg args
-void print_dbg(const char *fmt, ...)
-{
+void print_dbg(const char *fmt, ...) {
   char msg[1024];
   va_list ap;
 
@@ -116,40 +114,26 @@ struct MyInstanceData {
 
 /* mandatory function to set up the host structures */
 
-
 // Convenience wrapper to get private data
-static MyInstanceData *
-getMyInstanceData( OfxImageEffectHandle effect)
-{
+static MyInstanceData *getMyInstanceData(OfxImageEffectHandle effect) {
   // get the property handle for the plugin
   OfxPropertySetHandle effectProps;
   gEffectHost->getPropertySet(effect, &effectProps);
 
   // get my data pointer out of that
   MyInstanceData *myData = 0;
-  gPropHost->propGetPointer(effectProps,  kOfxPropInstanceData, 0,
-			    (void **) &myData);
+  gPropHost->propGetPointer(effectProps, kOfxPropInstanceData, 0, (void **)&myData);
   return myData;
 }
 
 /** @brief Called at load */
-static OfxStatus
-onLoad(void)
-{
-  return kOfxStatOK;
-}
+static OfxStatus onLoad(void) { return kOfxStatOK; }
 
 /** @brief Called before unload */
-static OfxStatus
-onUnLoad(void)
-{
-  return kOfxStatOK;
-}
+static OfxStatus onUnLoad(void) { return kOfxStatOK; }
 
 //  instance construction
-static OfxStatus
-createInstance( OfxImageEffectHandle effect)
-{
+static OfxStatus createInstance(OfxImageEffectHandle effect) {
   // get a pointer to the effect properties
   OfxPropertySetHandle effectProps;
   gEffectHost->getPropertySet(effect, &effectProps);
@@ -163,40 +147,40 @@ createInstance( OfxImageEffectHandle effect)
   char *context = 0;
 
   // is this instance a general effect ?
-  gPropHost->propGetString(effectProps, kOfxImageEffectPropContext, 0,  &context);
-  myData->isGeneralEffect = context && (strcmp(context, kOfxImageEffectContextGeneral) == 0);
+  gPropHost->propGetString(effectProps, kOfxImageEffectPropContext, 0, &context);
+  myData->isGeneralEffect =
+      context && (strcmp(context, kOfxImageEffectContextGeneral) == 0);
 
   // cache away our param handles
   gParamHost->paramGetHandle(paramSet, "scale", &myData->scaleParam, 0);
   gParamHost->paramGetHandle(paramSet, "source_scale", &myData->sourceScaleParam, 0);
 
   // cache away our clip handles
-  gEffectHost->clipGetHandle(effect, kOfxImageEffectSimpleSourceClipName, &myData->sourceClip, 0);
-  gEffectHost->clipGetHandle(effect, kOfxImageEffectOutputClipName, &myData->outputClip, 0);
+  gEffectHost->clipGetHandle(effect, kOfxImageEffectSimpleSourceClipName,
+                             &myData->sourceClip, 0);
+  gEffectHost->clipGetHandle(effect, kOfxImageEffectOutputClipName, &myData->outputClip,
+                             0);
 
   // set my private instance data
-  gPropHost->propSetPointer(effectProps, kOfxPropInstanceData, 0, (void *) myData);
+  gPropHost->propSetPointer(effectProps, kOfxPropInstanceData, 0, (void *)myData);
 
   return kOfxStatOK;
 }
 
 // instance destruction
-static OfxStatus
-destroyInstance( OfxImageEffectHandle  effect)
-{
+static OfxStatus destroyInstance(OfxImageEffectHandle effect) {
   // get my instance data
   MyInstanceData *myData = getMyInstanceData(effect);
 
   // and delete it
-  if(myData)
+  if (myData)
     delete myData;
   return kOfxStatOK;
 }
 
 // tells the host what region we are capable of filling
-OfxStatus
-getSpatialRoD( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
-{
+OfxStatus getSpatialRoD(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs,
+                        OfxPropertySetHandle outArgs) {
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
 
@@ -214,9 +198,8 @@ getSpatialRoD( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxP
 }
 
 // tells the host how much of the input we need to fill the given window
-OfxStatus
-getSpatialRoI( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
-{
+OfxStatus getSpatialRoI(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs,
+                        OfxPropertySetHandle outArgs) {
   // get the RoI the effect is interested in from inArgs
   OfxRectD roi;
   gPropHost->propGetDoubleN(inArgs, kOfxImageEffectPropRegionOfInterest, 4, &roi.x1);
@@ -234,15 +217,15 @@ getSpatialRoI( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxP
 // Tells the host how many frames we can fill, only called in the general context.
 // This is actually redundant as this is the default behaviour, but for illustrative
 // purposes.
-OfxStatus
-getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle outArgs)
-{
+OfxStatus getTemporalDomain(OfxImageEffectHandle effect, OfxPropertySetHandle /*inArgs*/,
+                            OfxPropertySetHandle outArgs) {
   MyInstanceData *myData = getMyInstanceData(effect);
 
   double sourceRange[2];
 
   // get the frame range of the source clip
-  OfxPropertySetHandle props; gEffectHost->clipGetPropertySet(myData->sourceClip, &props);
+  OfxPropertySetHandle props;
+  gEffectHost->clipGetPropertySet(myData->sourceClip, &props);
   gPropHost->propGetDoubleN(props, kOfxImageEffectPropFrameRange, 2, sourceRange);
 
   // set it on the out args
@@ -251,48 +234,46 @@ getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs*
   return kOfxStatOK;
 }
 
-
 // Set our clip preferences
-static OfxStatus
-getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle outArgs)
-{
+static OfxStatus getClipPreferences(OfxImageEffectHandle effect,
+                                    OfxPropertySetHandle /*inArgs*/,
+                                    OfxPropertySetHandle outArgs) {
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
 
   // get the component type and bit depth of our main input
-  int  bitDepth;
+  int bitDepth;
   bool isRGBA;
-  ofxuClipGetFormat(myData->sourceClip, bitDepth, isRGBA, true); // get the unmapped clip component
+  ofxuClipGetFormat(myData->sourceClip, bitDepth, isRGBA,
+                    true);  // get the unmapped clip component
 
   // get the strings used to label the various bit depths
-  const char *bitDepthStr = bitDepth == 8 ? kOfxBitDepthByte : (bitDepth == 16 ? kOfxBitDepthShort : kOfxBitDepthFloat);
+  const char *bitDepthStr =
+      bitDepth == 8 ? kOfxBitDepthByte
+                    : (bitDepth == 16 ? kOfxBitDepthShort : kOfxBitDepthFloat);
   const char *componentStr = isRGBA ? kOfxImageComponentRGBA : kOfxImageComponentAlpha;
 
   // set out output to be the same same as the input, component and bitdepth
   gPropHost->propSetString(outArgs, "OfxImageClipPropComponents_Output", 0, componentStr);
-  if(gHostSupportsMultipleBitDepths)
+  if (gHostSupportsMultipleBitDepths)
     gPropHost->propSetString(outArgs, "OfxImageClipPropDepth_Output", 0, bitDepthStr);
 
   return kOfxStatOK;
 }
 
 // are the settings of the effect performing an identity operation
-static OfxStatus
-isIdentity( OfxImageEffectHandle  /*effect*/,
-	    OfxPropertySetHandle /*inArgs*/,
-	    OfxPropertySetHandle /*outArgs*/)
-{
+static OfxStatus isIdentity(OfxImageEffectHandle /*effect*/,
+                            OfxPropertySetHandle /*inArgs*/,
+                            OfxPropertySetHandle /*outArgs*/) {
   // In this case do the default, which in this case is to render
   return kOfxStatReplyDefault;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // function called when the instance has been changed by anything
-static OfxStatus
-instanceChanged( OfxImageEffectHandle  /*effect*/,
-		 OfxPropertySetHandle /*inArgs*/,
-		 OfxPropertySetHandle /*outArgs*/)
-{
+static OfxStatus instanceChanged(OfxImageEffectHandle /*effect*/,
+                                 OfxPropertySetHandle /*inArgs*/,
+                                 OfxPropertySetHandle /*outArgs*/) {
   // don't trap any others
   return kOfxStatReplyDefault;
 }
@@ -306,18 +287,17 @@ static bool image_is_texture(OfxPropertySetHandle image)
 {
   int tmp;
   return (gOpenGLSuite != NULL) &&
-    (gPropHost->propGetInt(image, kOfxImageEffectPropOpenGLTextureIndex, 0, &tmp) == kOfxStatOK);
+    (gPropHost->propGetInt(image, kOfxImageEffectPropOpenGLTextureIndex, 0, &tmp) ==
+kOfxStatOK);
 }
 */
 
-// Render to texture: see http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-14-render-to-texture/
-
+// Render to texture: see
+// http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-14-render-to-texture/
 
 // the process code  that the host sees
-static OfxStatus render( OfxImageEffectHandle  instance,
-                         OfxPropertySetHandle inArgs,
-                         OfxPropertySetHandle /*outArgs*/)
-{
+static OfxStatus render(OfxImageEffectHandle instance, OfxPropertySetHandle inArgs,
+                        OfxPropertySetHandle /*outArgs*/) {
   // get the render window and the time from the inArgs
   OfxTime time;
   OfxRectI renderWindow;
@@ -341,9 +321,8 @@ static OfxStatus render( OfxImageEffectHandle  instance,
     gPropHost->propGetInt(inArgs, kOfxImageEffectPropOpenGLEnabled, 0, &gl_enabled);
     DPRINT(("render: openGL rendering %s\n", gl_enabled ? "enabled" : "DISABLED"));
   }
-  DPRINT(("Render: window = [%d, %d - %d, %d]\n",
-	  renderWindow.x1, renderWindow.y1,
-	  renderWindow.x2, renderWindow.y2));
+  DPRINT(("Render: window = [%d, %d - %d, %d]\n", renderWindow.x1, renderWindow.y1,
+          renderWindow.x2, renderWindow.y2));
 
   // For this test, we only process in OpenGL mode.
   if (!gl_enabled) {
@@ -351,18 +330,19 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   }
 
   // get the output image texture
-  status = gOpenGLSuite->clipLoadTexture(myData->outputClip, time, NULL, NULL, &outputImg);
+  status =
+      gOpenGLSuite->clipLoadTexture(myData->outputClip, time, NULL, NULL, &outputImg);
   DPRINT(("openGL: clipLoadTexture (output) returns status %d\n", status));
   if (status != kOfxStatOK) {
     return status;
   }
-  status = gPropHost->propGetInt(outputImg, kOfxImageEffectPropOpenGLTextureIndex,
-				 0, &output_texture_index);
+  status = gPropHost->propGetInt(outputImg, kOfxImageEffectPropOpenGLTextureIndex, 0,
+                                 &output_texture_index);
   if (status != kOfxStatOK) {
     return status;
   }
-  status = gPropHost->propGetInt(outputImg, kOfxImageEffectPropOpenGLTextureTarget,
-				 0, &output_texture_target);
+  status = gPropHost->propGetInt(outputImg, kOfxImageEffectPropOpenGLTextureTarget, 0,
+                                 &output_texture_target);
   if (status != kOfxStatOK) {
     return status;
   }
@@ -370,22 +350,23 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   if (status != kOfxStatOK) {
     return status;
   }
-  DPRINT(("openGL: output texture index %d, target %d, depth %s\n",
-	  output_texture_index, output_texture_target, tmps));
+  DPRINT(("openGL: output texture index %d, target %d, depth %s\n", output_texture_index,
+          output_texture_target, tmps));
 
-  status = gOpenGLSuite->clipLoadTexture(myData->sourceClip, time, NULL, NULL, &sourceImg);
+  status =
+      gOpenGLSuite->clipLoadTexture(myData->sourceClip, time, NULL, NULL, &sourceImg);
   DPRINT(("openGL: clipLoadTexture (source) returns status %d\n", status));
   if (status != kOfxStatOK) {
     return status;
   }
 
-  status = gPropHost->propGetInt(sourceImg, kOfxImageEffectPropOpenGLTextureIndex,
-				 0, &source_texture_index);
+  status = gPropHost->propGetInt(sourceImg, kOfxImageEffectPropOpenGLTextureIndex, 0,
+                                 &source_texture_index);
   if (status != kOfxStatOK) {
     return status;
   }
-  status = gPropHost->propGetInt(sourceImg, kOfxImageEffectPropOpenGLTextureTarget,
-				 0, &source_texture_target);
+  status = gPropHost->propGetInt(sourceImg, kOfxImageEffectPropOpenGLTextureTarget, 0,
+                                 &source_texture_target);
   if (status != kOfxStatOK) {
     return status;
   }
@@ -393,8 +374,8 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   if (status != kOfxStatOK) {
     return status;
   }
-  DPRINT(("openGL: source texture index %d, target %d, depth %s\n",
-	  source_texture_index, source_texture_target, tmps));
+  DPRINT(("openGL: source texture index %d, target %d, depth %s\n", source_texture_index,
+          source_texture_target, tmps));
   // XXX: check status for errors
 
   // get the scale parameter
@@ -411,7 +392,7 @@ static OfxStatus render( OfxImageEffectHandle  instance,
 
   // Draw black into dest to start
   glBegin(GL_QUADS);
-  glColor4f(0, 0, 0, 1); //Set the colour to opaque black
+  glColor4f(0, 0, 0, 1);  // Set the colour to opaque black
   glVertex2f(0, 0);
   glVertex2f(0, h);
   glVertex2f(w, h);
@@ -438,24 +419,24 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   // now draw the textured quad containing the source
   glBegin(GL_QUADS);
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-  glBegin (GL_QUADS);
-  glTexCoord2f (0, tymin);
-  glVertex2f   (0, 0);
-  glTexCoord2f (1.0, tymin);
-  glVertex2f   (w * source_scale, 0);
-  glTexCoord2f (1.0, tymax);
-  glVertex2f   (w * source_scale, h * source_scale);
-  glTexCoord2f (0, tymax);
-  glVertex2f   (0, h * source_scale);
-  glEnd ();
+  glBegin(GL_QUADS);
+  glTexCoord2f(0, tymin);
+  glVertex2f(0, 0);
+  glTexCoord2f(1.0, tymin);
+  glVertex2f(w * source_scale, 0);
+  glTexCoord2f(1.0, tymax);
+  glVertex2f(w * source_scale, h * source_scale);
+  glTexCoord2f(0, tymax);
+  glVertex2f(0, h * source_scale);
+  glEnd();
 
   glDisable(source_texture_target);
 
   // Now draw some stuff on top of it to show we really did something
-#define WIDTH 200
+#define WIDTH  200
 #define HEIGHT 100
   glBegin(GL_QUADS);
-  glColor3f(1.0f, 0, 0); //Set the colour to red
+  glColor3f(1.0f, 0, 0);  // Set the colour to red
   glVertex2f(10, 10);
   glVertex2f(10, HEIGHT * scale);
   glVertex2f(WIDTH * scale, HEIGHT * scale);
@@ -466,23 +447,18 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   glPopAttrib();
 
   // release the data pointers
-  if(sourceImg)
+  if (sourceImg)
     gOpenGLSuite->clipFreeTexture(sourceImg);
-  if(outputImg)
+  if (outputImg)
     gOpenGLSuite->clipFreeTexture(outputImg);
 
   return status;
 }
 
 // convenience function to define parameters
-static void
-defineParam( OfxParamSetHandle effectParams,
-	     const char *name,
-	     const char *label,
-	     const char *scriptName,
-	     const char *hint,
-	     const char *parent)
-{
+static void defineParam(OfxParamSetHandle effectParams, const char *name,
+                        const char *label, const char *scriptName, const char *hint,
+                        const char *parent) {
   OfxPropertySetHandle props;
   gParamHost->paramDefine(effectParams, kOfxParamTypeDouble, name, &props);
 
@@ -491,38 +467,41 @@ defineParam( OfxParamSetHandle effectParams,
   gPropHost->propSetDouble(props, kOfxParamPropDefault, 0, 1.0);
   gPropHost->propSetDouble(props, kOfxParamPropMin, 0, 0.0);
   gPropHost->propSetDouble(props, kOfxParamPropDisplayMin, 0, 0.0);
-  //gPropHost->propSetDouble(props, kOfxParamPropDisplayMax, 0, 100.0);
+  // gPropHost->propSetDouble(props, kOfxParamPropDisplayMax, 0, 100.0);
   gPropHost->propSetDouble(props, kOfxParamPropIncrement, 0, 0.01);
   gPropHost->propSetString(props, kOfxParamPropHint, 0, hint);
   gPropHost->propSetString(props, kOfxParamPropScriptName, 0, scriptName);
   gPropHost->propSetString(props, kOfxPropLabel, 0, label);
-  if(parent)
+  if (parent)
     gPropHost->propSetString(props, kOfxParamPropParent, 0, parent);
 }
 
 //  describe the plugin in context
-static OfxStatus
-describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
-{
+static OfxStatus describeInContext(OfxImageEffectHandle effect,
+                                   OfxPropertySetHandle inArgs) {
   // get the context from the inArgs handle
   char *context;
   gPropHost->propGetString(inArgs, kOfxImageEffectPropContext, 0, &context);
-  //bool isGeneralContext = strcmp(context, kOfxImageEffectContextGeneral) == 0;
+  // bool isGeneralContext = strcmp(context, kOfxImageEffectContextGeneral) == 0;
 
   OfxPropertySetHandle props;
   // define the single output clip in both contexts
   gEffectHost->clipDefine(effect, kOfxImageEffectOutputClipName, &props);
 
   // set the component types we can handle on out output
-  gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
-  gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
+  gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0,
+                           kOfxImageComponentRGBA);
+  gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 1,
+                           kOfxImageComponentAlpha);
 
   // define the single source clip in both contexts
   gEffectHost->clipDefine(effect, kOfxImageEffectSimpleSourceClipName, &props);
 
   // set the component types we can handle on our main input
-  gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
-  gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
+  gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0,
+                           kOfxImageComponentRGBA);
+  gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 1,
+                           kOfxImageComponentAlpha);
 
   ////////////////////////////////////////////////////////////////////////////////
   // define the parameters for this context
@@ -531,10 +510,9 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
   gEffectHost->getParamSet(effect, &paramSet);
 
   // overall scale param
-  defineParam(paramSet, "scale", "scale", "scale",
-	      "Scales the red rect", 0);
+  defineParam(paramSet, "scale", "scale", "scale", "Scales the red rect", 0);
   defineParam(paramSet, "source_scale", "source_scale", "source_scale",
-	      "Scales the source image", 0);
+              "Scales the source image", 0);
 
   // make a page of controls and add my parameters to it
   gParamHost->paramDefine(paramSet, kOfxParamTypePage, "Main", &props);
@@ -545,19 +523,18 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
 
 ////////////////////////////////////////////////////////////////////////////////
 // the plugin's description routine
-static OfxStatus
-describe(OfxImageEffectHandle  effect)
-{
+static OfxStatus describe(OfxImageEffectHandle effect) {
   // first fetch the host APIs, this cannot be done before this call
   OfxStatus stat;
-  if((stat = ofxuFetchHostSuites()) != kOfxStatOK)
+  if ((stat = ofxuFetchHostSuites()) != kOfxStatOK)
     return stat;
 
-  gOpenGLSuite =
-    (OfxImageEffectOpenGLRenderSuiteV1 *)gHost->fetchSuite(gHost->host, kOfxOpenGLRenderSuite, 1);
+  gOpenGLSuite = (OfxImageEffectOpenGLRenderSuiteV1 *)gHost->fetchSuite(
+      gHost->host, kOfxOpenGLRenderSuite, 1);
 
   // record a few host features
-  gPropHost->propGetInt(gHost->host, kOfxImageEffectPropSupportsMultipleClipDepths, 0, &gHostSupportsMultipleBitDepths);
+  gPropHost->propGetInt(gHost->host, kOfxImageEffectPropSupportsMultipleClipDepths, 0,
+                        &gHostSupportsMultipleBitDepths);
 
   // get the property handle for the plugin
   OfxPropertySetHandle effectProps;
@@ -565,30 +542,40 @@ describe(OfxImageEffectHandle  effect)
 
   // We can render both fields in a fielded images in one hit if there is no animation
   // So set the flag that allows us to do this
-  gPropHost->propSetInt(effectProps, kOfxImageEffectPluginPropFieldRenderTwiceAlways, 0, 0);
+  gPropHost->propSetInt(effectProps, kOfxImageEffectPluginPropFieldRenderTwiceAlways, 0,
+                        0);
 
-  // say we can support multiple pixel depths and let the clip preferences action deal with it all.
+  // say we can support multiple pixel depths and let the clip preferences action deal
+  // with it all.
   gPropHost->propSetInt(effectProps, kOfxImageEffectPropSupportsMultipleClipDepths, 0, 1);
 
   // set the bit depths the plugin can handle
-  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 0, kOfxBitDepthByte);
-  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 1, kOfxBitDepthShort);
-  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 2, kOfxBitDepthFloat);
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 0,
+                           kOfxBitDepthByte);
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 1,
+                           kOfxBitDepthShort);
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 2,
+                           kOfxBitDepthFloat);
 
   // set some labels and the group it belongs to
   gPropHost->propSetString(effectProps, kOfxPropLabel, 0, "OFX OpenGL Example");
-  gPropHost->propSetString(effectProps, kOfxImageEffectPluginPropGrouping, 0, "OFX Example");
+  gPropHost->propSetString(effectProps, kOfxImageEffectPluginPropGrouping, 0,
+                           "OFX Example");
 
   // define the contexts we can be used in
-  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 0, kOfxImageEffectContextFilter);
-  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 1, kOfxImageEffectContextGeneral);
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 0,
+                           kOfxImageEffectContextFilter);
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 1,
+                           kOfxImageEffectContextGeneral);
 
   // we support OpenGL rendering (could also say "needed" here)
-  gPropHost->propSetString(effectProps, kOfxImageEffectPropOpenGLRenderSupported, 0, "true");
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropOpenGLRenderSupported, 0,
+                           "true");
 
   {
     char *s = NULL;
-    stat = gPropHost->propGetString(gHost->host, kOfxImageEffectPropOpenGLRenderSupported, 0, &s);
+    stat = gPropHost->propGetString(gHost->host, kOfxImageEffectPropOpenGLRenderSupported,
+                                    0, &s);
     DPRINT(("Host has OpenGL render support: %s (stat=%d)\n", s, stat));
     gHostSupportsOpenGL = stat == 0 && !strcmp(s, "true");
   }
@@ -603,66 +590,53 @@ describe(OfxImageEffectHandle  effect)
 
 ////////////////////////////////////////////////////////////////////////////////
 // The main function
-static OfxStatus
-pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
-{
+static OfxStatus pluginMain(const char *action, const void *handle,
+                            OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs) {
   try {
-  // cast to appropriate type
-  OfxImageEffectHandle effect = (OfxImageEffectHandle) handle;
+    // cast to appropriate type
+    OfxImageEffectHandle effect = (OfxImageEffectHandle)handle;
 
-  if(strcmp(action, kOfxActionDescribe) == 0) {
-    return describe(effect);
-  }
-  else if(strcmp(action, kOfxImageEffectActionDescribeInContext) == 0) {
-    return describeInContext(effect, inArgs);
-  }
-  else if(strcmp(action, kOfxActionLoad) == 0) {
-    return onLoad();
-  }
-  else if(strcmp(action, kOfxActionUnload) == 0) {
-    return onUnLoad();
-  }
-  else if(strcmp(action, kOfxActionCreateInstance) == 0) {
-    return createInstance(effect);
-  }
-  else if(strcmp(action, kOfxActionDestroyInstance) == 0) {
-    return destroyInstance(effect);
-  }
-  else if(strcmp(action, kOfxImageEffectActionIsIdentity) == 0) {
-    return isIdentity(effect, inArgs, outArgs);
-  }
-  else if(strcmp(action, kOfxImageEffectActionRender) == 0) {
-    return render(effect, inArgs, outArgs);
-  }
-  else if(strcmp(action, kOfxImageEffectActionGetRegionOfDefinition) == 0) {
-    return getSpatialRoD(effect, inArgs, outArgs);
-  }
-  else if(strcmp(action, kOfxImageEffectActionGetRegionsOfInterest) == 0) {
-    return getSpatialRoI(effect, inArgs, outArgs);
-  }
-  else if(strcmp(action, kOfxImageEffectActionGetClipPreferences) == 0) {
-    return getClipPreferences(effect, inArgs, outArgs);
-  }
-  else if(strcmp(action, kOfxActionInstanceChanged) == 0) {
-    return instanceChanged(effect, inArgs, outArgs);
-  }
-  else if(strcmp(action, kOfxImageEffectActionGetTimeDomain) == 0) {
-    return getTemporalDomain(effect, inArgs, outArgs);
-  }
+    if (strcmp(action, kOfxActionDescribe) == 0) {
+      return describe(effect);
+    } else if (strcmp(action, kOfxImageEffectActionDescribeInContext) == 0) {
+      return describeInContext(effect, inArgs);
+    } else if (strcmp(action, kOfxActionLoad) == 0) {
+      return onLoad();
+    } else if (strcmp(action, kOfxActionUnload) == 0) {
+      return onUnLoad();
+    } else if (strcmp(action, kOfxActionCreateInstance) == 0) {
+      return createInstance(effect);
+    } else if (strcmp(action, kOfxActionDestroyInstance) == 0) {
+      return destroyInstance(effect);
+    } else if (strcmp(action, kOfxImageEffectActionIsIdentity) == 0) {
+      return isIdentity(effect, inArgs, outArgs);
+    } else if (strcmp(action, kOfxImageEffectActionRender) == 0) {
+      return render(effect, inArgs, outArgs);
+    } else if (strcmp(action, kOfxImageEffectActionGetRegionOfDefinition) == 0) {
+      return getSpatialRoD(effect, inArgs, outArgs);
+    } else if (strcmp(action, kOfxImageEffectActionGetRegionsOfInterest) == 0) {
+      return getSpatialRoI(effect, inArgs, outArgs);
+    } else if (strcmp(action, kOfxImageEffectActionGetClipPreferences) == 0) {
+      return getClipPreferences(effect, inArgs, outArgs);
+    } else if (strcmp(action, kOfxActionInstanceChanged) == 0) {
+      return instanceChanged(effect, inArgs, outArgs);
+    } else if (strcmp(action, kOfxImageEffectActionGetTimeDomain) == 0) {
+      return getTemporalDomain(effect, inArgs, outArgs);
+    }
   } catch (std::bad_alloc) {
     // catch memory
-    //std::cout << "OFX Plugin Memory error." << std::endl;
+    // std::cout << "OFX Plugin Memory error." << std::endl;
     return kOfxStatErrMemory;
-  } catch ( const std::exception& e ) {
+  } catch (const std::exception &e) {
     // standard exceptions
-    //std::cout << "OFX Plugin error: " << e.what() << std::endl;
+    // std::cout << "OFX Plugin error: " << e.what() << std::endl;
     return kOfxStatErrUnknown;
   } catch (int err) {
     // ho hum, gone wrong somehow
     return err;
-  } catch ( ... ) {
+  } catch (...) {
     // everything else
-    //std::cout << "OFX Plugin error" << std::endl;
+    // std::cout << "OFX Plugin error" << std::endl;
     return kOfxStatErrUnknown;
   }
 
@@ -671,36 +645,23 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,
 }
 
 // function to set the host structure
-static void
-setHostFunc(OfxHost *hostStruct)
-{
-  gHost         = hostStruct;
-}
+static void setHostFunc(OfxHost *hostStruct) { gHost = hostStruct; }
 
 ////////////////////////////////////////////////////////////////////////////////
 // the plugin struct
-static OfxPlugin basicPlugin =
-{
-  kOfxImageEffectPluginApi,
-  1,
-  "com.genarts:OpenGLSamplePlugin",
-  1,
-  0,
-  setHostFunc,
-  pluginMain
-};
+static OfxPlugin basicPlugin = {kOfxImageEffectPluginApi,
+                                1,
+                                "com.genarts:OpenGLSamplePlugin",
+                                1,
+                                0,
+                                setHostFunc,
+                                pluginMain};
 
 // the two mandated functions
-EXPORT OfxPlugin *
-OfxGetPlugin(int nth)
-{
-  if(nth == 0)
+EXPORT OfxPlugin *OfxGetPlugin(int nth) {
+  if (nth == 0)
     return &basicPlugin;
   return 0;
 }
 
-EXPORT int
-OfxGetNumberOfPlugins(void)
-{
-  return 1;
-}
+EXPORT int OfxGetNumberOfPlugins(void) { return 1; }

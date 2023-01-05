@@ -1,5 +1,6 @@
 /*
-OFX GenericTest Example plugin, a plugin that illustrates the use of the OFX Support library.
+OFX GenericTest Example plugin, a plugin that illustrates the use of the OFX Support
+library.
 
 Copyright (C) 2007 The Open Effects Association Ltd
 Author Bruno Nicoletti bruno@thefoundry.co.uk
@@ -12,7 +13,7 @@ this list of conditions and the following disclaimer.
 * Redistributions in binary form must reproduce the above copyright notice,
 this list of conditions and the following disclaimer in the documentation
 and/or other materials provided with the distribution.
-* Neither the name The Open Effects Association Ltd, nor the names of its 
+* Neither the name The Open Effects Association Ltd, nor the names of its
 contributors may be used to endorse or promote products derived from this
 software without specific prior written permission.
 
@@ -36,46 +37,44 @@ England
 */
 
 #ifdef _WINDOWS
-#include <windows.h>
+#  include <windows.h>
 #endif
 
 #ifdef __APPLE__
-#include <OpenGL/gl.h>
+#  include <OpenGL/gl.h>
 #else
-#include <GL/gl.h>
+#  include <GL/gl.h>
 #endif
 
 #include <stdio.h>
 #include "ofxsImageEffect.h"
-#include "ofxsMultiThread.h"
 #include "ofxsInteract.h"
+#include "ofxsMultiThread.h"
 
 #include "../include/ofxsProcessing.H"
 
 static const OfxPointD kBoxSize = {5, 5};
 
-template <class T> 
-inline T Minimum(T a, T b) {    return (a < b) ? a : b;}
+template <class T>
+inline T Minimum(T a, T b) {
+  return (a < b) ? a : b;
+}
 
-template <class T> 
-inline T Absolute(T a) { return (a < 0) ? -a : a;}
+template <class T>
+inline T Absolute(T a) {
+  return (a < 0) ? -a : a;
+}
 
-class PositionInteract : public OFX::OverlayInteract 
-{
-protected :
-  enum StateEnum {
-    eInActive,
-    ePoised,
-    ePicked
-  };
+class PositionInteract : public OFX::OverlayInteract {
+ protected:
+  enum StateEnum { eInActive, ePoised, ePicked };
 
   StateEnum _state;
-  OFX::Double2DParam* _position;
-public :
-  PositionInteract(OfxInteractHandle handle, OFX::ImageEffect* effect) 
-    : OFX::OverlayInteract(handle)
-    , _state(eInActive)
-  {
+  OFX::Double2DParam *_position;
+
+ public:
+  PositionInteract(OfxInteractHandle handle, OFX::ImageEffect *effect)
+      : OFX::OverlayInteract(handle), _state(eInActive) {
     _position = effect->fetchDouble2DParam("widgetPos");
   }
 
@@ -84,26 +83,28 @@ public :
   virtual bool penMotion(const OFX::PenArgs &args);
   virtual bool penDown(const OFX::PenArgs &args);
   virtual bool penUp(const OFX::PenArgs &args);
-  OfxPointD getCanonicalPosition(double time) const
-  {
+  OfxPointD getCanonicalPosition(double time) const {
     OfxPointD retVal;
     _position->getValueAtTime(time, retVal.x, retVal.y);
-    return retVal; 
+    return retVal;
   }
-  void setCanonicalPosition(double x, double y, double time)
-  {
+  void setCanonicalPosition(double x, double y, double time) {
     _position->setValueAtTime(time, x, y);
   }
 };
 
-bool PositionInteract::draw(const OFX::DrawArgs &args)
-{
+bool PositionInteract::draw(const OFX::DrawArgs &args) {
   OfxRGBColourF col;
-  switch(_state) 
-  {
-  case eInActive : col.r = col.g = col.b = 0.0f; break;
-  case ePoised   : col.r = col.g = col.b = 0.5f; break;
-  case ePicked   : col.r = col.g = col.b = 1.0f; break;
+  switch (_state) {
+    case eInActive:
+      col.r = col.g = col.b = 0.0f;
+      break;
+    case ePoised:
+      col.r = col.g = col.b = 0.5f;
+      break;
+    case ePicked:
+      col.r = col.g = col.b = 1.0f;
+      break;
   }
 
   // make the box a constant size on screen by scaling by the pixel scale
@@ -119,9 +120,9 @@ bool PositionInteract::draw(const OFX::DrawArgs &args)
   glTranslated(pos.x, pos.y, 0);
   glBegin(GL_POLYGON);
   glVertex2f(-dx, -dy);
-  glVertex2f(-dx,  dy);
-  glVertex2f( dx,  dy);
-  glVertex2f( dx, -dy);
+  glVertex2f(-dx, dy);
+  glVertex2f(dx, dy);
+  glVertex2f(dx, -dy);
   glEnd();
   glPopMatrix();
 
@@ -131,9 +132,9 @@ bool PositionInteract::draw(const OFX::DrawArgs &args)
   glTranslated(pos.x, pos.y, 0);
   glBegin(GL_LINE_LOOP);
   glVertex2f(-dx, -dy);
-  glVertex2f(-dx,  dy);
-  glVertex2f( dx,  dy);
-  glVertex2f( dx, -dy);
+  glVertex2f(-dx, dy);
+  glVertex2f(dx, dy);
+  glVertex2f(dx, -dy);
   glEnd();
   glPopMatrix();
 
@@ -141,8 +142,7 @@ bool PositionInteract::draw(const OFX::DrawArgs &args)
 }
 
 // overridden functions from OFX::Interact to do things
-bool PositionInteract::penMotion(const OFX::PenArgs &args)
-{
+bool PositionInteract::penMotion(const OFX::PenArgs &args) {
   // figure the size of the box in cannonical coords
   float dx = (float)(kBoxSize.x / args.pixelScale.x);
   float dy = (float)(kBoxSize.y / args.pixelScale.y);
@@ -152,44 +152,36 @@ bool PositionInteract::penMotion(const OFX::PenArgs &args)
   // pen position is in cannonical coords
   OfxPointD penPos = args.penPosition;
 
-  switch(_state) 
-  {
-  case eInActive : 
-  case ePoised   : 
-    {
+  switch (_state) {
+    case eInActive:
+    case ePoised: {
       // are we in the box, become 'poised'
       StateEnum newState;
       penPos.x -= pos.x;
       penPos.y -= pos.y;
-      if(Absolute(penPos.x) < dx &&
-        Absolute(penPos.y) < dy) {
-          newState = ePoised;
-      }
-      else {
+      if (Absolute(penPos.x) < dx && Absolute(penPos.y) < dy) {
+        newState = ePoised;
+      } else {
         newState = eInActive;
       }
 
-      if(_state != newState) {
+      if (_state != newState) {
         _state = newState;
         _effect->redrawOverlays();
       }
-    }
-    break;
+    } break;
 
-  case ePicked   : 
-    {
+    case ePicked: {
       setCanonicalPosition(penPos.x, penPos.y, args.time);
       _effect->redrawOverlays();
-    }
-    break;
+    } break;
   }
   return _state != eInActive;
 }
 
-bool PositionInteract::penDown(const OFX::PenArgs &args)
-{
+bool PositionInteract::penDown(const OFX::PenArgs &args) {
   penMotion(args);
-  if(_state == ePoised) {
+  if (_state == ePoised) {
     _state = ePicked;
     setCanonicalPosition(args.penPosition.x, args.penPosition.y, args.time);
     _effect->redrawOverlays();
@@ -198,10 +190,8 @@ bool PositionInteract::penDown(const OFX::PenArgs &args)
   return _state == ePicked;
 }
 
-bool PositionInteract::penUp(const OFX::PenArgs &args)
-{
-  if(_state == ePicked) 
-  {
+bool PositionInteract::penUp(const OFX::PenArgs &args) {
+  if (_state == ePicked) {
     _state = ePoised;
     penMotion(args);
     _effect->redrawOverlays();
@@ -211,39 +201,30 @@ bool PositionInteract::penUp(const OFX::PenArgs &args)
 }
 
 class GenericTestBase : public OFX::ImageProcessor {
-protected :
+ protected:
   OFX::Image *_srcImg;
-public :
-  GenericTestBase(OFX::ImageEffect &instance): OFX::ImageProcessor(instance), _srcImg(0)
-  {        
-  }
-  void setSrcImg(OFX::Image *v) {_srcImg = v;}
+
+ public:
+  GenericTestBase(OFX::ImageEffect &instance)
+      : OFX::ImageProcessor(instance), _srcImg(0) {}
+  void setSrcImg(OFX::Image *v) { _srcImg = v; }
 };
 
 template <class PIX, int nComponents, int max>
-class ImageGenericTester : public GenericTestBase 
-{
-public :
-  ImageGenericTester(OFX::ImageEffect &instance) : GenericTestBase(instance){}
-  void multiThreadProcessImages(OfxRectI procWindow)
-  {
-    for(int y = procWindow.y1; y < procWindow.y2; y++) 
-    {
-      if(_effect.abort()) 
+class ImageGenericTester : public GenericTestBase {
+ public:
+  ImageGenericTester(OFX::ImageEffect &instance) : GenericTestBase(instance) {}
+  void multiThreadProcessImages(OfxRectI procWindow) {
+    for (int y = procWindow.y1; y < procWindow.y2; y++) {
+      if (_effect.abort())
         break;
-      PIX *dstPix = (PIX *) _dstImg->getPixelAddress(procWindow.x1, y);
-      for(int x = procWindow.x1; x < procWindow.x2; x++) 
-      {
-        PIX *srcPix = (PIX *)  (_srcImg ? _srcImg->getPixelAddress(x, y) : 0);
-        if(srcPix) 
-        {
-          for(int c = 0; c < nComponents; c++)
-            dstPix[c] = max - srcPix[c];
-        }
-        else 
-        {
-          for(int c = 0; c < nComponents; c++)
-            dstPix[c] = 0;
+      PIX *dstPix = (PIX *)_dstImg->getPixelAddress(procWindow.x1, y);
+      for (int x = procWindow.x1; x < procWindow.x2; x++) {
+        PIX *srcPix = (PIX *)(_srcImg ? _srcImg->getPixelAddress(x, y) : 0);
+        if (srcPix) {
+          for (int c = 0; c < nComponents; c++) dstPix[c] = max - srcPix[c];
+        } else {
+          for (int c = 0; c < nComponents; c++) dstPix[c] = 0;
         }
         dstPix += nComponents;
       }
@@ -251,17 +232,12 @@ public :
   }
 };
 
-
-
-template<class TypeCarrier, int kComponents, int kMax>
-class Analyser
-{
-public:
-  Analyser(OFX::Clip* srcClip, OFX::DoubleParam* dbl)
-  {
+template <class TypeCarrier, int kComponents, int kMax>
+class Analyser {
+ public:
+  Analyser(OFX::Clip *srcClip, OFX::DoubleParam *dbl) {
     OfxRangeD range = srcClip->getFrameRange();
-    for(double d = range.min; d< range.max; ++d)
-    {
+    for (double d = range.min; d < range.max; ++d) {
       std::auto_ptr<OFX::Image> src(srcClip->fetchImage(d));
       dbl->setValueAtTime(d, d);
     }
@@ -270,111 +246,89 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 /** @brief The plugin that does our work */
-class GenericTestPlugin : public OFX::ImageEffect 
-{
-protected :
+class GenericTestPlugin : public OFX::ImageEffect {
+ protected:
   OFX::Clip *dstClip_;
   OFX::Clip *srcClip_;
 
-public :
-  GenericTestPlugin(OfxImageEffectHandle handle) : ImageEffect(handle), dstClip_(0), srcClip_(0)
-  {
+ public:
+  GenericTestPlugin(OfxImageEffectHandle handle)
+      : ImageEffect(handle), dstClip_(0), srcClip_(0) {
     dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
     srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
   }
 
   virtual void render(const OFX::RenderArguments &args);
   void setupAndProcess(GenericTestBase &, const OFX::RenderArguments &args);
-  void changedParam(const OFX::InstanceChangedArgs &args, const std::string &paramName)
-  {
-    if(paramName=="enableTest")
-    {
-      OFX::ChoiceParam* choice  = fetchChoiceParam("enableTest");
-      OFX::DoubleParam* dbl = fetchDoubleParam("enableDbl");
+  void changedParam(const OFX::InstanceChangedArgs &args, const std::string &paramName) {
+    if (paramName == "enableTest") {
+      OFX::ChoiceParam *choice = fetchChoiceParam("enableTest");
+      OFX::DoubleParam *dbl = fetchDoubleParam("enableDbl");
       int value = 0;
       choice->getValueAtTime(args.time, value);
-      dbl->setEnabled(value ==0 );
-    }
-    else if(paramName=="pbButton")
-    {
+      dbl->setEnabled(value == 0);
+    } else if (paramName == "pbButton") {
       sendMessage(OFX::Message::eMessageMessage, "", "Push Button Pressed - TestPassed!");
-    }
-    else if(paramName=="widgetPos")
-    {
+    } else if (paramName == "widgetPos") {
       redrawOverlays();
-    }
-    else if(paramName == "analyseButton")
-    {
-      OFX::BitDepthEnum       dstBitDepth    = srcClip_->getPixelDepth();
-      OFX::PixelComponentEnum dstComponents  = srcClip_->getPixelComponents();
-      OFX::DoubleParam* dbl = fetchDoubleParam("analysisParam");
+    } else if (paramName == "analyseButton") {
+      OFX::BitDepthEnum dstBitDepth = srcClip_->getPixelDepth();
+      OFX::PixelComponentEnum dstComponents = srcClip_->getPixelComponents();
+      OFX::DoubleParam *dbl = fetchDoubleParam("analysisParam");
 
-      if(dstComponents == OFX::ePixelComponentRGBA) 
-      {
-        switch(dstBitDepth) 
-        {
-        case OFX::eBitDepthUByte : 
-          {
+      if (dstComponents == OFX::ePixelComponentRGBA) {
+        switch (dstBitDepth) {
+          case OFX::eBitDepthUByte: {
             Analyser<unsigned char, 4, 255> analyse(srcClip_, dbl);
             break;
           }
-        case OFX::eBitDepthUShort :
-          {
+          case OFX::eBitDepthUShort: {
             Analyser<unsigned short, 4, 65535> analyse(srcClip_, dbl);
             break;
           }
-        case OFX::eBitDepthFloat :
-          {
+          case OFX::eBitDepthFloat: {
             Analyser<float, 4, 1> analyse(srcClip_, dbl);
             break;
           }
-        default :
-          OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
+          default:
+            OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
         }
-      }
-      else 
-      {
-        switch(dstBitDepth) 
-        {
-        case OFX::eBitDepthUByte :
-          {
+      } else {
+        switch (dstBitDepth) {
+          case OFX::eBitDepthUByte: {
             Analyser<unsigned char, 1, 255> analyse(srcClip_, dbl);
             break;
           }
-        case OFX::eBitDepthUShort :
-          {
+          case OFX::eBitDepthUShort: {
             Analyser<unsigned short, 1, 65535> analyse(srcClip_, dbl);
             break;
           }
-        case OFX::eBitDepthFloat : 
-          {
+          case OFX::eBitDepthFloat: {
             Analyser<float, 1, 1> analyse(srcClip_, dbl);
             break;
           }
-        default :
-          OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
+          default:
+            OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
         }
       }
     }
   }
 };
 
-
-void GenericTestPlugin::setupAndProcess(GenericTestBase &processor, const OFX::RenderArguments &args)
-{
+void GenericTestPlugin::setupAndProcess(GenericTestBase &processor,
+                                        const OFX::RenderArguments &args) {
   std::auto_ptr<OFX::Image> dst(dstClip_->fetchImage(args.time));
-  OFX::BitDepthEnum dstBitDepth       = dst->getPixelDepth();
-  OFX::PixelComponentEnum dstComponents  = dst->getPixelComponents();
+  OFX::BitDepthEnum dstBitDepth = dst->getPixelDepth();
+  OFX::PixelComponentEnum dstComponents = dst->getPixelComponents();
   std::auto_ptr<OFX::Image> src(srcClip_->fetchImage(args.time));
 
-  if(src.get()) 
-  {
-    OFX::BitDepthEnum    srcBitDepth      = src->getPixelDepth();
+  if (src.get()) {
+    OFX::BitDepthEnum srcBitDepth = src->getPixelDepth();
     OFX::PixelComponentEnum srcComponents = src->getPixelComponents();
 
     // see if they have the same depths and bytes and all
-    if(srcBitDepth != dstBitDepth || srcComponents != dstComponents)
-      throw int(1); // HACK!! need to throw an sensible exception here!
+    if (srcBitDepth != dstBitDepth || srcComponents != dstComponents)
+      throw int(1);  // HACK!! need to throw an sensible exception here!
   }
 
   processor.setDstImg(dst.get());
@@ -383,76 +337,59 @@ void GenericTestPlugin::setupAndProcess(GenericTestBase &processor, const OFX::R
   processor.process();
 }
 
+void GenericTestPlugin::render(const OFX::RenderArguments &args) {
+  OFX::BitDepthEnum dstBitDepth = dstClip_->getPixelDepth();
+  OFX::PixelComponentEnum dstComponents = dstClip_->getPixelComponents();
 
-void GenericTestPlugin::render(const OFX::RenderArguments &args)
-{
-  OFX::BitDepthEnum       dstBitDepth    = dstClip_->getPixelDepth();
-  OFX::PixelComponentEnum dstComponents  = dstClip_->getPixelComponents();
-
-  if(dstComponents == OFX::ePixelComponentRGBA) 
-  {
-    switch(dstBitDepth) 
-    {
-    case OFX::eBitDepthUByte : 
-      {      
+  if (dstComponents == OFX::ePixelComponentRGBA) {
+    switch (dstBitDepth) {
+      case OFX::eBitDepthUByte: {
         ImageGenericTester<unsigned char, 4, 255> fred(*this);
         setupAndProcess(fred, args);
-      }
-      break;
+      } break;
 
-    case OFX::eBitDepthUShort : 
-      {
+      case OFX::eBitDepthUShort: {
         ImageGenericTester<unsigned short, 4, 65535> fred(*this);
         setupAndProcess(fred, args);
-      }                          
-      break;
+      } break;
 
-    case OFX::eBitDepthFloat : 
-      {
+      case OFX::eBitDepthFloat: {
         ImageGenericTester<float, 4, 1> fred(*this);
         setupAndProcess(fred, args);
-      }
-      break;
-    default :
-      OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
+      } break;
+      default:
+        OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
-  }
-  else {
-    switch(dstBitDepth) 
-    {
-    case OFX::eBitDepthUByte : 
-      {
+  } else {
+    switch (dstBitDepth) {
+      case OFX::eBitDepthUByte: {
         ImageGenericTester<unsigned char, 1, 255> fred(*this);
         setupAndProcess(fred, args);
-      }
-      break;
+      } break;
 
-    case OFX::eBitDepthUShort : 
-      {
+      case OFX::eBitDepthUShort: {
         ImageGenericTester<unsigned short, 1, 65535> fred(*this);
         setupAndProcess(fred, args);
-      }                          
-      break;
+      } break;
 
-    case OFX::eBitDepthFloat : 
-      {
+      case OFX::eBitDepthFloat: {
         ImageGenericTester<float, 1, 1> fred(*this);
         setupAndProcess(fred, args);
-      }                          
-      break;
-    default :
-      OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
+      } break;
+      default:
+        OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
     }
-  } 
+  }
 }
 
-class PositionOverlayDescriptor : public OFX::DefaultEffectOverlayDescriptor<PositionOverlayDescriptor, PositionInteract> {};
+class PositionOverlayDescriptor
+    : public OFX::DefaultEffectOverlayDescriptor<PositionOverlayDescriptor,
+                                                 PositionInteract> {};
 
 mDeclarePluginFactory(GenericTestExamplePluginFactory, {}, {});
 
 using namespace OFX;
-void GenericTestExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
-{
+void GenericTestExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc) {
   desc.setLabels("GenericTest", "GenericTest", "GenericTest");
   desc.setPluginGrouping("OFX");
   desc.addSupportedContext(eContextFilter);
@@ -468,11 +405,11 @@ void GenericTestExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
   desc.setRenderTwiceAlways(false);
   desc.setSupportsMultipleClipPARs(false);
 
-  desc.setOverlayInteractDescriptor( new PositionOverlayDescriptor);
+  desc.setOverlayInteractDescriptor(new PositionOverlayDescriptor);
 }
 
-void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum /*context*/)
-{
+void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &desc,
+                                                        OFX::ContextEnum /*context*/) {
   ClipDescriptor *srcClip = desc.defineClip(kOfxImageEffectSimpleSourceClipName);
   srcClip->addSupportedComponent(ePixelComponentRGBA);
   srcClip->addSupportedComponent(ePixelComponentAlpha);
@@ -494,7 +431,7 @@ void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescript
   param1->setDisplayRange(-1000, 1000);
   param1->setDoubleType(eDoubleTypePlain);
 
-  ChoiceParamDescriptor* param2 = desc.defineChoiceParam("enableTest");
+  ChoiceParamDescriptor *param2 = desc.defineChoiceParam("enableTest");
   param2->setLabels("Enabler", "Enabler", "Enabler");
   param2->appendOption("Enable parameter", "Enable parameter");
   param2->appendOption("Disable parameter", "Disable parameter");
@@ -502,22 +439,21 @@ void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescript
   DoubleParamDescriptor *param3 = desc.defineDoubleParam("enableDbl");
   param3->setLabels("Enabled by Enabler", "Enabled by Enabler", "Enabled by Enabler");
 
-
-  BooleanParamDescriptor* bparam = desc.defineBooleanParam("Insignificant");
+  BooleanParamDescriptor *bparam = desc.defineBooleanParam("Insignificant");
   bparam->setLabels("Insignificant", "Insignificant", "Insignificant");
   bparam->setHint("Shouldn't cause a re-render.");
   bparam->setEvaluateOnChange(false);
 
-  BooleanParamDescriptor* bparam2 = desc.defineBooleanParam("secretTest");
+  BooleanParamDescriptor *bparam2 = desc.defineBooleanParam("secretTest");
   bparam2->setLabels("SECRET!", "SECRET!", "SECRET!");
   bparam2->setIsSecret(true);
   bparam2->setHint("Shouldn't be shown in the user interface.");
 
-  BooleanParamDescriptor* bparam3 = desc.defineBooleanParam("nonPersistant");
+  BooleanParamDescriptor *bparam3 = desc.defineBooleanParam("nonPersistant");
   bparam3->setLabels("Non-persistant", "Non-persistant", "Non-persistant");
   bparam3->setHint("Shouldn't be saved in the plugin description.");
   bparam3->setIsPersistant(false);
-    
+
   DoubleParamDescriptor *param5 = desc.defineDoubleParam("animateDbl");
   param5->setLabels("No Animation", "No Animation", "No Animation");
   param5->setAnimates(false);
@@ -528,16 +464,16 @@ void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescript
   param6->setHint("An angle parameter.");
   param6->setDoubleType(eDoubleTypeAngle);
 
-  PushButtonParamDescriptor* pb = desc.definePushButtonParam("pbButton");
+  PushButtonParamDescriptor *pb = desc.definePushButtonParam("pbButton");
   pb->setLabels("Push Me", "Push Me", "Push Me");
 
-  PushButtonParamDescriptor* pb2 = desc.definePushButtonParam("analyseButton");
+  PushButtonParamDescriptor *pb2 = desc.definePushButtonParam("analyseButton");
   pb2->setLabels("Analyse", "Analyse", "Analyse");
 
   DoubleParamDescriptor *param7 = desc.defineDoubleParam("analysisParam");
   param7->setLabels("Analysis Slave", "Analysis Slave", "Analysis Slave");
 
-  Double2DParamDescriptor* widgetPos = desc.defineDouble2DParam("widgetPos");
+  Double2DParamDescriptor *widgetPos = desc.defineDouble2DParam("widgetPos");
   widgetPos->setLabels("Widget Position", "Widget Position", "Widget Position");
   widgetPos->setDoubleType(OFX::eDoubleTypeXYAbsolute);
   widgetPos->setDefaultCoordinateSystem(eCoordinatesNormalised);
@@ -545,19 +481,16 @@ void GenericTestExamplePluginFactory::describeInContext(OFX::ImageEffectDescript
   widgetPos->setDefault(0.5, 0.5);
 }
 
-OFX::ImageEffect* GenericTestExamplePluginFactory::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum /*context*/)
-{
+OFX::ImageEffect *GenericTestExamplePluginFactory::createInstance(
+    OfxImageEffectHandle handle, OFX::ContextEnum /*context*/) {
   return new GenericTestPlugin(handle);
 }
 
-namespace OFX 
-{
-  namespace Plugin 
-  {  
-    void getPluginIDs(OFX::PluginFactoryArray &ids)
-    {
-      static GenericTestExamplePluginFactory p("net.sf.openfx.GenericTestPlugin", 1, 0);
-      ids.push_back(&p);
-    }
-  }
+namespace OFX {
+namespace Plugin {
+void getPluginIDs(OFX::PluginFactoryArray &ids) {
+  static GenericTestExamplePluginFactory p("net.sf.openfx.GenericTestPlugin", 1, 0);
+  ids.push_back(&p);
 }
+}  // namespace Plugin
+}  // namespace OFX

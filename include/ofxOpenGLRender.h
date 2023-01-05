@@ -31,29 +31,27 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /** @file ofxOpenGLRender.h
 
-	This file contains an optional suite for performing OpenGL accelerated
-	rendering of OpenFX Image Effect Plug-ins.  For details see
+        This file contains an optional suite for performing OpenGL accelerated
+        rendering of OpenFX Image Effect Plug-ins.  For details see
         \ref ofxOpenGLRender.
 */
 
 /** @brief The name of the OpenGL render suite, used to fetch from a host
 via OfxHost::fetchSuite
 */
-#define kOfxOpenGLRenderSuite			"OfxImageEffectOpenGLRenderSuite"
-//#define kOfxOpenGLRenderSuite_ext		"OfxImageEffectOpenGLRenderSuite_ext"
-
+#define kOfxOpenGLRenderSuite "OfxImageEffectOpenGLRenderSuite"
+// #define kOfxOpenGLRenderSuite_ext		"OfxImageEffectOpenGLRenderSuite_ext"
 
 #ifndef kOfxBitDepthHalf
 /** @brief String used to label the OpenGL half float (16 bit floating
 point) sample format */
-  #define kOfxBitDepthHalf "OfxBitDepthHalf"
+#  define kOfxBitDepthHalf "OfxBitDepthHalf"
 #endif
 
 /** @brief Indicates whether a host or plugin can support OpenGL accelerated
@@ -72,11 +70,11 @@ only) - plugin instance change (read/write)
      - "needed" - only for plug-ins, this means that an effect has to have
                   OpenGL support, without which it cannot work.
 
-V1.4: It is now expected from host reporting v1.4 that the plugin can during instance change switch from true to false and false to true.
+V1.4: It is now expected from host reporting v1.4 that the plugin can during instance
+change switch from true to false and false to true.
 
 */
 #define kOfxImageEffectPropOpenGLRenderSupported "OfxImageEffectPropOpenGLRenderSupported"
-
 
 /** @brief Indicates the bit depths supported by a plug-in during OpenGL renders.
 
@@ -104,7 +102,6 @@ V1.4: It is now expected from host reporting v1.4 that the plugin can during ins
 */
 #define kOfxOpenGLPropPixelDepth "OfxOpenGLPropPixelDepth"
 
-
 /** @brief Indicates that an image effect SHOULD use OpenGL acceleration in
 the current action
 
@@ -127,11 +124,11 @@ the current action
 use OpenGL, so the effect SHOULD access all its images through the
 OpenGL suite.
 
-v1.4:  kOfxImageEffectPropOpenGLEnabled should probably be checked in Instance Changed prior to try to read image via clipLoadTexture
+v1.4:  kOfxImageEffectPropOpenGLEnabled should probably be checked in Instance Changed
+prior to try to read image via clipLoadTexture
 
 */
 #define kOfxImageEffectPropOpenGLEnabled "OfxImageEffectPropOpenGLEnabled"
-
 
 /** @brief Indicates the texture index of an image turned into an OpenGL
 texture by the host
@@ -140,7 +137,7 @@ texture by the host
    - Property Set - texture handle returned by
 `        OfxImageEffectOpenGLRenderSuiteV1::clipLoadTexture (read only)
 
-	This value should be cast to a GLuint and used as the texture index when
+        This value should be cast to a GLuint and used as the texture index when
         performing OpenGL texture operations.
 
    The property set of the following actions should contain this property:
@@ -150,15 +147,14 @@ texture by the host
 */
 #define kOfxImageEffectPropOpenGLTextureIndex "OfxImageEffectPropOpenGLTextureIndex"
 
-
 /** @brief Indicates the texture target enumerator of an image turned into
     an OpenGL texture by the host
 
    - Type - int X 1
    - Property Set - texture handle returned by
         OfxImageEffectOpenGLRenderSuiteV1::clipLoadTexture (read only)
-	This value should be cast to a GLenum and used as the texture target
-	when performing OpenGL texture operations.
+        This value should be cast to a GLenum and used as the texture target
+        when performing OpenGL texture operations.
 
    The property set of the following actions should contain this property:
       - ::kOfxImageEffectActionRender
@@ -166,7 +162,6 @@ texture by the host
       - ::kOfxImageEffectActionEndSequenceRender
 */
 #define kOfxImageEffectPropOpenGLTextureTarget "OfxImageEffectPropOpenGLTextureTarget"
-
 
 /** @name StatusReturnValues
 OfxStatus returns indicating that a OpenGL render error has occurred:
@@ -180,17 +175,16 @@ OfxStatus returns indicating that a OpenGL render error has occurred:
  */
 /** @{ */
 /** @brief render ran out of memory */
-#define kOfxStatGLOutOfMemory  ((int) 1001)
+#define kOfxStatGLOutOfMemory ((int)1001)
 /** @brief render failed in a non-memory-related way */
-#define kOfxStatGLRenderFailed ((int) 1002)
+#define kOfxStatGLRenderFailed ((int)1002)
 /** @} */
 
 /** @brief OFX suite that provides image to texture conversion for OpenGL
     processing
  */
 
-typedef struct OfxImageEffectOpenGLRenderSuiteV1
-{
+typedef struct OfxImageEffectOpenGLRenderSuiteV1 {
   /** @brief loads an image from an OFX clip as a texture into OpenGL
 
       \arg clip   - the clip to load the image from
@@ -198,10 +192,10 @@ typedef struct OfxImageEffectOpenGLRenderSuiteV1
       \arg format - the requested texture format (As in
             none,byte,word,half,float, etc..)
             When set to NULL, the host decides the format based on the
-	    plug-in's ::kOfxOpenGLPropPixelDepth setting.
+            plug-in's ::kOfxOpenGLPropPixelDepth setting.
       \arg region - region of the image to load (optional, set to NULL to
             get a 'default' region)
-	    this is in the \ref CanonicalCoordinates.
+            this is in the \ref CanonicalCoordinates.
       \arg textureHandle - a property set containing information about the
             texture
 
@@ -256,13 +250,13 @@ returns
                              not exist in the clip at the indicated
                              time and/or region, the plugin should continue
                              operation, but assume the image was black and
-			     transparent.
+                             transparent.
   - ::kOfxStatErrBadHandle - the clip handle was invalid,
   - ::kOfxStatErrMemory    - not enough OpenGL memory was available for the
                              effect to load the texture.
                              The plugin should abort the GL render and
-			     return ::kOfxStatErrMemory, after which the host can
-			     decide to retry the operation with CPU based processing.
+                             return ::kOfxStatErrMemory, after which the host can
+                             decide to retry the operation with CPU based processing.
 
 \note
   - this is the OpenGL equivalent of clipGetImage from OfxImageEffectSuiteV1
@@ -270,11 +264,9 @@ returns
 
 */
 
-  OfxStatus (*clipLoadTexture)(OfxImageClipHandle clip,
-                               OfxTime       time,
-                               const char   *format,
-                               const OfxRectD     *region,
-                               OfxPropertySetHandle   *textureHandle);
+  OfxStatus (*clipLoadTexture)(OfxImageClipHandle clip, OfxTime time, const char *format,
+                               const OfxRectD *region,
+                               OfxPropertySetHandle *textureHandle);
 
   /** @brief Releases the texture handle previously returned by
 clipLoadTexture
@@ -297,8 +289,7 @@ clipLoadTexture
     - ::kOfxStatFailed - general failure for some reason,
     - ::kOfxStatErrBadHandle - the image handle was invalid,
 */
-  OfxStatus (*clipFreeTexture)(OfxPropertySetHandle   textureHandle);
-
+  OfxStatus (*clipFreeTexture)(OfxPropertySetHandle textureHandle);
 
   /** @brief Request the host to minimize its GPU resource load
 
@@ -316,10 +307,9 @@ clipLoadTexture
 resources,
     - ::kOfxStatReplyDefault - nothing the host could do..
  */
-  OfxStatus (*flushResources)( );
+  OfxStatus (*flushResources)();
 
 } OfxImageEffectOpenGLRenderSuiteV1;
-
 
 /** @brief Action called when an effect has just been attached to an OpenGL
 context.
@@ -380,7 +370,6 @@ A plugin can return...
     attempt to run the plugin in OpenGL render mode.
 */
 #define kOfxActionOpenGLContextDetached "kOfxActionOpenGLContextDetached"
-
 
 /** @page ofxOpenGLRender OpenGL Acceleration of Rendering
 
@@ -533,6 +522,5 @@ current for other OFX calls, such as ::kOfxImageEffectActionDescribeInContext.
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif

@@ -12,7 +12,7 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name The Open Effects Association Ltd, nor the names of its 
+    * Neither the name The Open Effects Association Ltd, nor the names of its
       contributors may be used to endorse or promote products derived from this
       software without specific prior written permission.
 
@@ -34,28 +34,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ofxProgress.h"
 
 namespace OFX {
-  namespace Host {
-    namespace Progress {
-      
-      /// Things that display progress derive from this ABC and implement the following
-      /// functions.
-      class ProgressI {
-      public :
-        virtual ~ProgressI() {}
+namespace Host {
+namespace Progress {
 
-        /// Start doing progress. 
-        virtual void progressStart(const std::string &message, const std::string &messageid) = 0;
+/// Things that display progress derive from this ABC and implement the following
+/// functions.
+class ProgressI {
+ public:
+  virtual ~ProgressI() {}
 
-        /// finish yer progress
-        virtual void progressEnd() = 0;
+  /// Start doing progress.
+  virtual void progressStart(const std::string &message,
+                             const std::string &messageid) = 0;
 
-        /// set the progress to some level of completion, returns
-        /// false if you should abandon processing, true to continue
-        virtual bool progressUpdate(double t) = 0;        
-      };
+  /// finish yer progress
+  virtual void progressEnd() = 0;
 
-    } // namespace progress
-  } // namespace Host
-} // namespace OFX
+  /// set the progress to some level of completion, returns
+  /// false if you should abandon processing, true to continue
+  virtual bool progressUpdate(double t) = 0;
+};
+
+}  // namespace Progress
+}  // namespace Host
+}  // namespace OFX
 
 #endif

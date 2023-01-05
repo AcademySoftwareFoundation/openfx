@@ -11,7 +11,7 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name The Open Effects Association Ltd, nor the names of its 
+    * Neither the name The Open Effects Association Ltd, nor the names of its
       contributors may be used to endorse or promote products derived from this
       software without specific prior written permission.
 
@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _ofxOLD_h_
 #define _ofxOLD_h_
 
- 
 /** @brief String to label images with YUVA components
 --ofxImageEffects.h
 @deprecated - removed in v1.4. Note, this has been deprecated in v1.3
@@ -50,25 +49,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #define kOfxImageEffectPropInAnalysis "OfxImageEffectPropInAnalysis"
 
-
-/** @brief Defines an 8 bit per component YUVA pixel 
+/** @brief Defines an 8 bit per component YUVA pixel
 -- ofxPixels.h
 Deprecated in 1.3, removed in 1.4
 */
 
 typedef struct OfxYUVAColourB {
   unsigned char y, u, v, a;
-}OfxYUVAColourB;
+} OfxYUVAColourB;
 
-
-/** @brief Defines an 16 bit per component YUVA pixel 
+/** @brief Defines an 16 bit per component YUVA pixel
 -- ofxPixels.h
 @deprecated -  Deprecated in 1.3, removed in 1.4
 */
 
 typedef struct OfxYUVAColourS {
   unsigned short y, u, v, a;
-}OfxYUVAColourS;
+} OfxYUVAColourS;
 
 /** @brief Defines an floating point component YUVA pixel
 -- ofxPixels.h
@@ -76,62 +73,66 @@ typedef struct OfxYUVAColourS {
  */
 typedef struct OfxYUVAColourF {
   float y, u, v, a;
-}OfxYUVAColourF;
-
+} OfxYUVAColourF;
 
 /** @brief The size of an interact's openGL viewport
 -- ofxInteract.h
-    - Type - int X 2 
-    - Property Set - read only property on the interact instance and in argument to all the interact actions.
+    - Type - int X 2
+    - Property Set - read only property on the interact instance and in argument to all
+the interact actions.
 
-@deprecated - V1.3: This property is the redundant and its use will be deprecated in future releases.
-V1.4: Removed
+@deprecated - V1.3: This property is the redundant and its use will be deprecated in
+future releases. V1.4: Removed
  */
 #define kOfxInteractPropViewportSize "OfxInteractPropViewport"
 
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating a size normalised to the X dimension. See \ref ::kOfxParamPropDoubleType.
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating a size normalised
+to the X dimension. See \ref ::kOfxParamPropDoubleType.
 -- ofxParam.h
 @deprecated - V1.3: Deprecated in favour of ::OfxParamDoubleTypeX
 V1.4: Removed
  */
-#define kOfxParamDoubleTypeNormalisedX  "OfxParamDoubleTypeNormalisedX"
+#define kOfxParamDoubleTypeNormalisedX "OfxParamDoubleTypeNormalisedX"
 
-
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating a size normalised to the Y dimension. See \ref ::kOfxParamPropDoubleType.
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating a size normalised
+to the Y dimension. See \ref ::kOfxParamPropDoubleType.
 -- ofxParam.h
 @deprecated - V1.3: Deprecated in favour of ::OfxParamDoubleTypeY
 V1.4: Removed
  */
-#define kOfxParamDoubleTypeNormalisedY  "OfxParamDoubleTypeNormalisedY"
+#define kOfxParamDoubleTypeNormalisedY "OfxParamDoubleTypeNormalisedY"
 
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating an absolute position normalised to the X dimension. See \ref ::kOfxParamPropDoubleType. 
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating an absolute
+position normalised to the X dimension. See \ref ::kOfxParamPropDoubleType.
 -- ofxParam.h
 @deprecated - V1.3: Deprecated in favour of ::OfxParamDoubleTypeXAbsolute
 V1.4: Removed
  */
-#define kOfxParamDoubleTypeNormalisedXAbsolute  "OfxParamDoubleTypeNormalisedXAbsolute"
+#define kOfxParamDoubleTypeNormalisedXAbsolute "OfxParamDoubleTypeNormalisedXAbsolute"
 
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating an absolute position  normalised to the Y dimension. See \ref ::kOfxParamPropDoubleType.
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating an absolute
+position  normalised to the Y dimension. See \ref ::kOfxParamPropDoubleType.
 -- ofxParam.h
 @deprecated - V1.3: Deprecated in favour of ::OfxParamDoubleTypeYAbsolute
 V1.4: Removed
  */
-#define kOfxParamDoubleTypeNormalisedYAbsolute  "OfxParamDoubleTypeNormalisedYAbsolute"
+#define kOfxParamDoubleTypeNormalisedYAbsolute "OfxParamDoubleTypeNormalisedYAbsolute"
 
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to the X and Y dimension for 2D params. See \ref ::kOfxParamPropDoubleType. 
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to
+the X and Y dimension for 2D params. See \ref ::kOfxParamPropDoubleType.
 -- ofxParam.h
 @deprecated - V1.3: Deprecated in favour of ::OfxParamDoubleTypeXY
 V1.4: Removed
  */
-#define kOfxParamDoubleTypeNormalisedXY  "OfxParamDoubleTypeNormalisedXY"
+#define kOfxParamDoubleTypeNormalisedXY "OfxParamDoubleTypeNormalisedXY"
 
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to the X and Y dimension for a 2D param that can be interpretted as an absolute spatial position. See \ref ::kOfxParamPropDoubleType. 
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to
+the X and Y dimension for a 2D param that can be interpretted as an absolute spatial
+position. See \ref ::kOfxParamPropDoubleType.
 -- ofxParam.h
-@deprecated - V1.3: Deprecated in favour of ::kOfxParamDoubleTypeXYAbsolute 
+@deprecated - V1.3: Deprecated in favour of ::kOfxParamDoubleTypeXYAbsolute
 V1.4: Removed
  */
-#define kOfxParamDoubleTypeNormalisedXYAbsolute  "OfxParamDoubleTypeNormalisedXYAbsolute"
-
-
+#define kOfxParamDoubleTypeNormalisedXYAbsolute "OfxParamDoubleTypeNormalisedXYAbsolute"
 
 #endif

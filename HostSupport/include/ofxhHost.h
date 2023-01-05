@@ -14,7 +14,7 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name The Open Effects Association Ltd, nor the names of its 
+    * Neither the name The Open Effects Association Ltd, nor the names of its
       contributors may be used to endorse or promote products derived from this
       software without specific prior written permission.
 
@@ -30,9 +30,9 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <cstdarg>
 #include <map>
 #include <string>
-#include <cstdarg>
 
 #include "ofxCore.h"
 #include "ofxImageEffect.h"
@@ -41,69 +41,60 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace OFX {
 
-  namespace Host {
+namespace Host {
 
-    /// a plugin what we use
-    class Plugin;
-   
-    /// a param descriptor 
-    namespace Param {
-      class Descriptor;
-    }
-    
-    /// Base class for all objects passed to a plugin by the 'setHost' function 
-    /// passed back by any plug-in.
-    class Host {
-    protected :
-      OfxHost       _host;
-      Property::Set _properties;
+/// a plugin what we use
+class Plugin;
 
-    public:
-      Host();
-      virtual ~Host() {}
-
-      
-      /// get the props on this host
-      Property::Set &getProperties() {return _properties; }
-
-      /// fetch a suite
-      /// The base class returns the following suites
-      ///    PropertySuite
-      ///    MemorySuite
-      virtual const void *fetchSuite(const char *suiteName, int suiteVersion);
-      
-      /// get the C API handle that is passed across the API to represent this host
-      OfxHost *getHandle();
-
-      /// override this to handle do post-construction initialisation on a Param::Descriptor
-      virtual void initParamDescriptor(Param::Descriptor *) { }
-
-      /// is my magic number valid?
-      bool verifyMagic() { return true; }
-
-      /// message (called when an exception occurs, calls vmessage)
-      OfxStatus message(const char* type,
-                        const char* id,
-                        const char* format,
-                        ...);
-
-      /// vmessage
-      virtual OfxStatus vmessage(const char* type,
-                                 const char* id,
-                                 const char* format,
-                                 va_list args) = 0;
-
-      /// setPersistentMessage
-      virtual OfxStatus setPersistentMessage(const char* type,
-                                             const char* id,
-                                             const char* format,
-                                             va_list args) = 0;
-      /// clearPersistentMessage
-      virtual OfxStatus clearPersistentMessage() = 0;
-    };
-    
-  }
+/// a param descriptor
+namespace Param {
+class Descriptor;
 }
 
-#endif
+/// Base class for all objects passed to a plugin by the 'setHost' function
+/// passed back by any plug-in.
+class Host {
+ protected:
+  OfxHost _host;
+  Property::Set _properties;
 
+ public:
+  Host();
+  virtual ~Host() {}
+
+  /// get the props on this host
+  Property::Set& getProperties() { return _properties; }
+
+  /// fetch a suite
+  /// The base class returns the following suites
+  ///    PropertySuite
+  ///    MemorySuite
+  virtual const void* fetchSuite(const char* suiteName, int suiteVersion);
+
+  /// get the C API handle that is passed across the API to represent this host
+  OfxHost* getHandle();
+
+  /// override this to handle do post-construction initialisation on a Param::Descriptor
+  virtual void initParamDescriptor(Param::Descriptor*) {}
+
+  /// is my magic number valid?
+  bool verifyMagic() { return true; }
+
+  /// message (called when an exception occurs, calls vmessage)
+  OfxStatus message(const char* type, const char* id, const char* format, ...);
+
+  /// vmessage
+  virtual OfxStatus vmessage(const char* type, const char* id, const char* format,
+                             va_list args) = 0;
+
+  /// setPersistentMessage
+  virtual OfxStatus setPersistentMessage(const char* type, const char* id,
+                                         const char* format, va_list args) = 0;
+  /// clearPersistentMessage
+  virtual OfxStatus clearPersistentMessage() = 0;
+};
+
+}  // namespace Host
+}  // namespace OFX
+
+#endif

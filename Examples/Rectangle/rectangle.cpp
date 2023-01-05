@@ -11,7 +11,7 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name The Open Effects Association Ltd, nor the names of its 
+    * Neither the name The Open Effects Association Ltd, nor the names of its
       contributors may be used to endorse or promote products derived from this
       software without specific prior written permission.
 
@@ -27,10 +27,9 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 /*
-  Ofx Example plugin that show a plugin that can work as a generator, filter and 
-  generic plugin. 
+  Ofx Example plugin that show a plugin that can work as a generator, filter and
+  generic plugin.
 
   It draws a rectangle over a background (or just a rectangle if a generator).
 
@@ -43,13 +42,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     - premultiplication
  */
 #include <cstring>
-#include <stdexcept>
 #include <new>
+#include <stdexcept>
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
 
-#include "../include/ofxUtilities.H" // example support utils
+#include "../include/ofxUtilities.H"  // example support utils
 
 #if defined __APPLE__ || defined linux || defined __FreeBSD__
 #  define EXPORT __attribute__((visibility("default")))
@@ -59,28 +58,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #  error Not building on your operating system quite yet
 #endif
 
-template <class T> inline T Maximum(T a, T b) {return a > b ? a : b;}
-template <class T> inline T Minimum(T a, T b) {return a < b ? a : b;}
-
+template <class T>
+inline T Maximum(T a, T b) {
+  return a > b ? a : b;
+}
+template <class T>
+inline T Minimum(T a, T b) {
+  return a < b ? a : b;
+}
 
 // pointers64 to various bits of the host
-OfxHost                 *gHost;
+OfxHost *gHost;
 OfxImageEffectSuiteV1 *gEffectHost = 0;
-OfxPropertySuiteV1    *gPropHost = 0;
-OfxParameterSuiteV1   *gParamHost = 0;
-OfxMemorySuiteV1      *gMemoryHost = 0;
+OfxPropertySuiteV1 *gPropHost = 0;
+OfxParameterSuiteV1 *gParamHost = 0;
+OfxMemorySuiteV1 *gMemoryHost = 0;
 OfxMultiThreadSuiteV1 *gThreadHost = 0;
 OfxMessageSuiteV1 *gMessageSuite = 0;
-OfxInteractSuiteV1    *gInteractHost = 0;
+OfxInteractSuiteV1 *gInteractHost = 0;
 
 // some flags about the host's behaviour
 int gHostSupportsMultipleBitDepths = false;
 
-enum ContextEnum {
-    eIsGenerator,
-    eIsFilter,
-    eIsGeneral
-};
+enum ContextEnum { eIsGenerator, eIsFilter, eIsGeneral };
 // private instance data type
 struct MyInstanceData {
   ContextEnum context;
@@ -97,22 +97,16 @@ struct MyInstanceData {
 
 /* mandatory function to set up the host structures */
 
-
-// Convenience wrapper to get private data 
-static MyInstanceData *
-getMyInstanceData(OfxImageEffectHandle effect)
-{
-  MyInstanceData *myData = (MyInstanceData *) ofxuGetEffectInstanceData(effect);
+// Convenience wrapper to get private data
+static MyInstanceData *getMyInstanceData(OfxImageEffectHandle effect) {
+  MyInstanceData *myData = (MyInstanceData *)ofxuGetEffectInstanceData(effect);
   return myData;
 }
-
 
 /** @brief Called at load */
 
 //  instance construction
-static OfxStatus
-createInstance(OfxImageEffectHandle effect)
-{
+static OfxStatus createInstance(OfxImageEffectHandle effect) {
   // get a pointer to the effect properties
   OfxPropertySetHandle effectProps;
   gEffectHost->getPropertySet(effect, &effectProps);
@@ -126,14 +120,12 @@ createInstance(OfxImageEffectHandle effect)
   char *context = 0;
 
   // is this instance a general effect ?
-  gPropHost->propGetString(effectProps, kOfxImageEffectPropContext, 0,  &context);
-  if(strcmp(context, kOfxImageEffectContextGenerator) == 0) {
+  gPropHost->propGetString(effectProps, kOfxImageEffectPropContext, 0, &context);
+  if (strcmp(context, kOfxImageEffectContextGenerator) == 0) {
     myData->context = eIsGenerator;
-  }
-  else if(strcmp(context, kOfxImageEffectContextFilter) == 0) {
+  } else if (strcmp(context, kOfxImageEffectContextFilter) == 0) {
     myData->context = eIsFilter;
-  }
-  else {
+  } else {
     myData->context = eIsGeneral;
   }
 
@@ -143,40 +135,38 @@ createInstance(OfxImageEffectHandle effect)
   gParamHost->paramGetHandle(paramSet, "colour", &myData->colourParam, 0);
 
   // cache away clip handles
-  if( myData->context  != eIsGenerator)
-    gEffectHost->clipGetHandle(effect, kOfxImageEffectSimpleSourceClipName, &myData->sourceClip, 0);
-  gEffectHost->clipGetHandle(effect, kOfxImageEffectOutputClipName, &myData->outputClip, 0);
-  
+  if (myData->context != eIsGenerator)
+    gEffectHost->clipGetHandle(effect, kOfxImageEffectSimpleSourceClipName,
+                               &myData->sourceClip, 0);
+  gEffectHost->clipGetHandle(effect, kOfxImageEffectOutputClipName, &myData->outputClip,
+                             0);
+
   // set my private instance data
-  gPropHost->propSetPointer(effectProps, kOfxPropInstanceData, 0, (void *) myData);
+  gPropHost->propSetPointer(effectProps, kOfxPropInstanceData, 0, (void *)myData);
 
   return kOfxStatOK;
 }
 
 // instance destruction
-static OfxStatus
-destroyInstance(OfxImageEffectHandle effect)
-{
+static OfxStatus destroyInstance(OfxImageEffectHandle effect) {
   // get my instance data
   MyInstanceData *myData = getMyInstanceData(effect);
 
   // and delete it
-  if(myData)
+  if (myData)
     delete myData;
   return kOfxStatOK;
 }
 
 // function that gets the corners params in the canonical coordinate system
-static void
-getCannonicalRect(OfxImageEffectHandle effect, double time, OfxRectD &rect)
-{
+static void getCannonicalRect(OfxImageEffectHandle effect, double time, OfxRectD &rect) {
   MyInstanceData *myData = getMyInstanceData(effect);
-  
+
   // get  my parameter values
   OfxPointD c1, c2;
   gParamHost->paramGetValueAtTime(myData->corner1Param, time, &c1.x, &c1.y);
   gParamHost->paramGetValueAtTime(myData->corner2Param, time, &c2.x, &c2.y);
-  
+
   // and min/max 'em into the rect
   rect.x1 = Minimum(c1.x, c2.x);
   rect.y1 = Minimum(c1.y, c2.y);
@@ -185,9 +175,8 @@ getCannonicalRect(OfxImageEffectHandle effect, double time, OfxRectD &rect)
 }
 
 // tells the host what region we are capable of filling
-OfxStatus 
-getSpatialRoD(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs)
-{
+OfxStatus getSpatialRoD(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs,
+                        OfxPropertySetHandle outArgs) {
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
 
@@ -198,28 +187,26 @@ getSpatialRoD(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs, OfxPrope
   OfxRectD rod;
   getCannonicalRect(effect, time, rod);
 
-  if(myData->context != eIsGenerator){ 
+  if (myData->context != eIsGenerator) {
     // or this with the input RoD
     OfxRectD sourceRoD;
     gEffectHost->clipGetRegionOfDefinition(myData->sourceClip, time, &sourceRoD);
-    
+
     // check to see if the source RoD is infinite in X
-    if(ofxuInfiniteRectInX(sourceRoD)) {
+    if (ofxuInfiniteRectInX(sourceRoD)) {
       rod.x1 = kOfxFlagInfiniteMin;
       rod.x2 = kOfxFlagInfiniteMax;
-    }
-    else {
+    } else {
       // find the union of the clip rod and our geometry
       rod.x1 = Minimum(rod.x1, sourceRoD.x1);
       rod.x2 = Maximum(rod.x2, sourceRoD.x2);
     }
 
     // check to see if the source RoD is infinite in Y
-    if(ofxuInfiniteRectInY(sourceRoD)) {
+    if (ofxuInfiniteRectInY(sourceRoD)) {
       rod.y1 = kOfxFlagInfiniteMin;
       rod.y2 = kOfxFlagInfiniteMax;
-    } 
-    else {
+    } else {
       // find the union of the clip rod and our geometry
       rod.y1 = Minimum(rod.y1, sourceRoD.y1);
       rod.y2 = Maximum(rod.y2, sourceRoD.y2);
@@ -233,42 +220,36 @@ getSpatialRoD(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs, OfxPrope
 }
 
 // tells the host how much of the input we need to fill the given window
-OfxStatus 
-getSpatialRoI(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs)
-{
+OfxStatus getSpatialRoI(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs,
+                        OfxPropertySetHandle outArgs) {
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
 
-  if(myData->context != eIsGenerator){ 
+  if (myData->context != eIsGenerator) {
     // get the RoI the effect is interested in from inArgs
     OfxRectD roi;
     gPropHost->propGetDoubleN(inArgs, kOfxImageEffectPropRegionOfInterest, 4, &roi.x1);
 
     // the input needed is the same as this, so set that on the source clip
     gPropHost->propSetDoubleN(outArgs, "OfxImageClipPropRoI_Source", 4, &roi.x1);
-    
+
     return kOfxStatOK;
-  }
-  else // we are a generator, return the default
-    return  kOfxStatReplyDefault;
+  } else  // we are a generator, return the default
+    return kOfxStatReplyDefault;
 }
 
 // are the settings of the effect performing an identity operation
-static OfxStatus
-isIdentity(OfxImageEffectHandle effect,
-	   OfxPropertySetHandle inArgs,
-	   OfxPropertySetHandle outArgs)
-{
+static OfxStatus isIdentity(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs,
+                            OfxPropertySetHandle outArgs) {
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
-  
-  // we should not be called on a generator
-  if(myData->context != eIsGenerator){ 
 
+  // we should not be called on a generator
+  if (myData->context != eIsGenerator) {
     // get the render window and the time from the inArgs
     OfxTime time;
     OfxRectI renderWindow;
-  
+
     gPropHost->propGetDouble(inArgs, kOfxPropTime, 0, &time);
     gPropHost->propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &renderWindow.x1);
 
@@ -277,13 +258,16 @@ isIdentity(OfxImageEffectHandle effect,
     getCannonicalRect(effect, time, rect);
 
     OfxRGBAColourD col;
-    gParamHost->paramGetValueAtTime(myData->colourParam, time, &col.r, &col.g, &col.b, &col.a);
+    gParamHost->paramGetValueAtTime(myData->colourParam, time, &col.r, &col.g, &col.b,
+                                    &col.a);
 
-    // if the rectangle is transparent or out of the window, then we can do a pass through on to the source clip
-    if(col.a <= 0.0 || rect.x1 > renderWindow.x2 ||  rect.y1 > renderWindow.y2 || 
-       rect.x2 < renderWindow.x1 ||  rect.y2 < renderWindow.y1) {
+    // if the rectangle is transparent or out of the window, then we can do a pass through
+    // on to the source clip
+    if (col.a <= 0.0 || rect.x1 > renderWindow.x2 || rect.y1 > renderWindow.y2 ||
+        rect.x2 < renderWindow.x1 || rect.y2 < renderWindow.y1) {
       // set the property in the out args indicating which is the identity clip
-      gPropHost->propSetString(outArgs, kOfxPropName, 0, kOfxImageEffectSimpleSourceClipName);
+      gPropHost->propSetString(outArgs, kOfxPropName, 0,
+                               kOfxImageEffectSimpleSourceClipName);
       return kOfxStatOK;
     }
   }
@@ -294,127 +278,96 @@ isIdentity(OfxImageEffectHandle effect,
 
 ////////////////////////////////////////////////////////////////////////////////
 // rendering routines
-template <class T> inline T 
-Clamp(T v, int min, int max)
-{
-  if(v < T(min)) return T(min);
-  if(v > T(max)) return T(max);
+template <class T>
+inline T Clamp(T v, int min, int max) {
+  if (v < T(min))
+    return T(min);
+  if (v > T(max))
+    return T(max);
   return v;
 }
 
-static inline int
-Lerp(int a, int b, float v)
-{
-  return int(a + (b - a) * v);
-}
+static inline int Lerp(int a, int b, float v) { return int(a + (b - a) * v); }
 
-static inline float
-Lerp(float a, float b, float v)
-{
-  return float(a + (b - a) * v);
-}
+static inline float Lerp(float a, float b, float v) { return float(a + (b - a) * v); }
 
-// look up a pixel in the image, does bounds checking to see if it is in the image rectangle
-template <class PIX> inline PIX *
-pixelAddress(PIX *img, OfxRectI rect, int x, int y, int bytesPerLine)
-{  
-  if(x < rect.x1 || x >= rect.x2 || y < rect.y1 || y > rect.y2)
+// look up a pixel in the image, does bounds checking to see if it is in the image
+// rectangle
+template <class PIX>
+inline PIX *pixelAddress(PIX *img, OfxRectI rect, int x, int y, int bytesPerLine) {
+  if (x < rect.x1 || x >= rect.x2 || y < rect.y1 || y > rect.y2)
     return 0;
-  PIX *pix = (PIX *) (((char *) img) + (y - rect.y1) * bytesPerLine);
-  pix += x - rect.x1;  
+  PIX *pix = (PIX *)(((char *)img) + (y - rect.y1) * bytesPerLine);
+  pix += x - rect.x1;
   return pix;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // base class to process images with
 class Processor {
-protected :
+ protected:
   OfxImageEffectHandle effect;
   OfxRGBAColourD colour;
-  OfxRectI       position;
-  bool           unpremultiplied;
-  void *srcV, *dstV; 
+  OfxRectI position;
+  bool unpremultiplied;
+  void *srcV, *dstV;
   OfxRectI srcRect, dstRect;
-  OfxRectI  window;
+  OfxRectI window;
   int srcBytesPerLine, dstBytesPerLine;
 
-public :
-  Processor(OfxImageEffectHandle eff,
-	    OfxRectI pos,
-	    OfxRGBAColourD col,
-	    bool unpremult,
-            void *src, OfxRectI sRect, int sBytesPerLine,
-            void *dst, OfxRectI dRect, int dBytesPerLine,
-            OfxRectI  win)
-    : effect(eff)
-    , colour(col)
-    , position(pos)
-    , unpremultiplied(unpremult)
-    , srcV(src)
-    , dstV(dst)
-    , srcRect(sRect)
-    , dstRect(dRect)
-    , window(win)
-    , srcBytesPerLine(sBytesPerLine)
-    , dstBytesPerLine(dBytesPerLine)
-  {}
+ public:
+  Processor(OfxImageEffectHandle eff, OfxRectI pos, OfxRGBAColourD col, bool unpremult,
+            void *src, OfxRectI sRect, int sBytesPerLine, void *dst, OfxRectI dRect,
+            int dBytesPerLine, OfxRectI win)
+      : effect(eff), colour(col), position(pos), unpremultiplied(unpremult), srcV(src),
+        dstV(dst), srcRect(sRect), dstRect(dRect), window(win),
+        srcBytesPerLine(sBytesPerLine), dstBytesPerLine(dBytesPerLine) {}
 
-  static void multiThreadProcessing(unsigned int threadId, unsigned int nThreads, void *arg);
+  static void multiThreadProcessing(unsigned int threadId, unsigned int nThreads,
+                                    void *arg);
   virtual void doProcessing(OfxRectI window) = 0;
   void process(void);
 };
 
 // function call once for each thread by the host
-void
-Processor::multiThreadProcessing(unsigned int threadId, unsigned int nThreads, void *arg)
-{	
-  Processor *proc = (Processor *) arg;
+void Processor::multiThreadProcessing(unsigned int threadId, unsigned int nThreads,
+                                      void *arg) {
+  Processor *proc = (Processor *)arg;
 
   // slice the y range into the number of threads it has
   unsigned int dy = proc->window.y2 - proc->window.y1;
-  
-  unsigned int y1 = proc->window.y1 + threadId * dy/nThreads;
-  unsigned int y2 = proc->window.y1 + Minimum((threadId + 1) * dy/nThreads, dy);
+
+  unsigned int y1 = proc->window.y1 + threadId * dy / nThreads;
+  unsigned int y2 = proc->window.y1 + Minimum((threadId + 1) * dy / nThreads, dy);
 
   OfxRectI win = proc->window;
-  win.y1 = y1; win.y2 = y2;
+  win.y1 = y1;
+  win.y2 = y2;
 
   // and render that thread on each
-  proc->doProcessing(win);  
+  proc->doProcessing(win);
 }
 
 // function to kick off rendering across multiple CPUs
-void
-Processor::process(void)
-{
+void Processor::process(void) {
   unsigned int nThreads;
   gThreadHost->multiThreadNumCPUs(&nThreads);
-  gThreadHost->multiThread(multiThreadProcessing, nThreads, (void *) this);
+  gThreadHost->multiThread(multiThreadProcessing, nThreads, (void *)this);
 }
 
 // template to do the RGBA processing
 template <class PIX, int max, int isFloat>
-class ProcessRGBA : public Processor{
-public :
-  ProcessRGBA(OfxImageEffectHandle eff,
-              OfxRectI pos,
-              OfxRGBAColourD col,
-              bool unpremult,
-              void *src, OfxRectI sRect, int sBytesPerLine,
-              void *dst, OfxRectI dRect, int dBytesPerLine,
-              OfxRectI  win)
-    : Processor(eff,
-                pos, col, unpremult,
-                src,  sRect,  sBytesPerLine,
-                dst,  dRect,  dBytesPerLine,
-                win)
-  {
-  }
+class ProcessRGBA : public Processor {
+ public:
+  ProcessRGBA(OfxImageEffectHandle eff, OfxRectI pos, OfxRGBAColourD col, bool unpremult,
+              void *src, OfxRectI sRect, int sBytesPerLine, void *dst, OfxRectI dRect,
+              int dBytesPerLine, OfxRectI win)
+      : Processor(eff, pos, col, unpremult, src, sRect, sBytesPerLine, dst, dRect,
+                  dBytesPerLine, win) {}
 
-  void doProcessing(OfxRectI procWindow)
-  {
-    PIX *src = (PIX *) srcV;
-    PIX *dst = (PIX *) dstV;
+  void doProcessing(OfxRectI procWindow) {
+    PIX *src = (PIX *)srcV;
+    PIX *dst = (PIX *)dstV;
 
     // black pixel for the default back ground
     PIX black;
@@ -422,7 +375,7 @@ public :
 
     // value and premulitplied of the colour scaled up to quantisation space
     PIX value, premultValue;
-    if(isFloat) {
+    if (isFloat) {
       // no need to clamp
       value.r = colour.r * max;
       value.g = colour.g * max;
@@ -433,8 +386,7 @@ public :
       premultValue.g = colour.g * max * colour.a;
       premultValue.b = colour.b * max * colour.a;
       premultValue.a = colour.a * max * colour.a;
-    }
-    else {
+    } else {
       // we have to clamp
       value.r = Clamp(colour.r * max, 0, max);
       value.g = Clamp(colour.g * max, 0, max);
@@ -447,75 +399,70 @@ public :
       premultValue.a = Clamp(colour.a * max * colour.a, 0, max);
     }
 
-    for(int y = procWindow.y1; y < procWindow.y2; y++) {
-      if(gEffectHost->abort(effect)) break;
+    for (int y = procWindow.y1; y < procWindow.y2; y++) {
+      if (gEffectHost->abort(effect))
+        break;
 
       PIX *dstPix = pixelAddress(dst, dstRect, procWindow.x1, y, dstBytesPerLine);
 
-      for(int x = procWindow.x1; x < procWindow.x2; x++) {
-        
+      for (int x = procWindow.x1; x < procWindow.x2; x++) {
         // if a generator, we have no source
         PIX *srcPix = 0;
-        if(src)
-          srcPix = pixelAddress(src, srcRect, x, y, srcBytesPerLine);        
-        
-        if(x < position.x1 || x >= position.x2 || y < position.y1 || y >= position.y2) {
+        if (src)
+          srcPix = pixelAddress(src, srcRect, x, y, srcBytesPerLine);
+
+        if (x < position.x1 || x >= position.x2 || y < position.y1 || y >= position.y2) {
           // we are outside the rectangle
           *dstPix = srcPix ? *srcPix : black;
-          if(srcPix)
+          if (srcPix)
             srcPix++;
-        }
-        else {
+        } else {
           // we are inside the rectangle, composite it over the source image
-          if(srcPix) {
-            if(unpremultiplied) {	
+          if (srcPix) {
+            if (unpremultiplied) {
               // we have to premultiply, then unpremultiply the composite
-              float a = srcPix->a + value.a - (srcPix->a * value.a)/max;
+              float a = srcPix->a + value.a - (srcPix->a * value.a) / max;
               float r, g, b;
-              if(srcPix->a == 0) {
+              if (srcPix->a == 0) {
                 r = g = b = 0;
-              }
-              else {
-                r = Lerp(srcPix->r * max/srcPix->a, value.r, colour.a) * a/max;
-                g = Lerp(srcPix->g * max/srcPix->a, value.g, colour.a) * a/max;
-                b = Lerp(srcPix->b * max/srcPix->a, value.b, colour.a) * a/max;
+              } else {
+                r = Lerp(srcPix->r * max / srcPix->a, value.r, colour.a) * a / max;
+                g = Lerp(srcPix->g * max / srcPix->a, value.g, colour.a) * a / max;
+                b = Lerp(srcPix->b * max / srcPix->a, value.b, colour.a) * a / max;
               }
 
               // clamp or not depending on if it is floating
-              if(isFloat) {
+              if (isFloat) {
                 dstPix->r = r;
                 dstPix->g = g;
                 dstPix->b = b;
                 dstPix->a = a;
-              }
-              else {
+              } else {
                 dstPix->r = Clamp(r, 0, max);
                 dstPix->g = Clamp(g, 0, max);
                 dstPix->b = Clamp(b, 0, max);
                 dstPix->a = Clamp(a, 0, max);
               }
-            }
-            else {
+            } else {
               // source is premultiplied, easier composite
-              if(isFloat) {
+              if (isFloat) {
                 dstPix->r = Lerp(srcPix->r, value.r, colour.a);
                 dstPix->g = Lerp(srcPix->g, value.g, colour.a);
                 dstPix->b = Lerp(srcPix->b, value.b, colour.a);
-                dstPix->a = srcPix->a + value.a - (srcPix->a * value.a)/max;
-              }
-              else {
+                dstPix->a = srcPix->a + value.a - (srcPix->a * value.a) / max;
+              } else {
                 dstPix->r = Clamp(int(Lerp(srcPix->r, value.r, colour.a)), 0, max);
                 dstPix->g = Clamp(int(Lerp(srcPix->g, value.g, colour.a)), 0, max);
                 dstPix->b = Clamp(int(Lerp(srcPix->b, value.b, colour.a)), 0, max);
-                dstPix->a = Clamp(int(srcPix->a + value.a - (srcPix->a * value.a)/max), 0, max);
+                dstPix->a =
+                    Clamp(int(srcPix->a + value.a - (srcPix->a * value.a) / max), 0, max);
               }
             }
 
             srcPix++;
-          }
-          else {
+          } else {
             // no src pixel, just set it
-            if(unpremultiplied)
+            if (unpremultiplied)
               *dstPix = premultValue;
             else
               *dstPix = value;
@@ -530,65 +477,52 @@ public :
 // template to do the Alpha processing
 template <class PIX, int max, int isFloat>
 class ProcessAlpha : public Processor {
- public :
-  ProcessAlpha(OfxImageEffectHandle inst,
-	       OfxRectI pos,
-	       OfxRGBAColourD col,
-	       void *src, OfxRectI sRect, int sBytesPerLine,
-	       void *dst, OfxRectI dRect, int dBytesPerLine,
-	       OfxRectI  win)
-    : Processor(inst,
-		pos, col, 1,
-                src,  sRect,  sBytesPerLine,
-                dst,  dRect,  dBytesPerLine,
-                win)
-  {
-  }
+ public:
+  ProcessAlpha(OfxImageEffectHandle inst, OfxRectI pos, OfxRGBAColourD col, void *src,
+               OfxRectI sRect, int sBytesPerLine, void *dst, OfxRectI dRect,
+               int dBytesPerLine, OfxRectI win)
+      : Processor(inst, pos, col, 1, src, sRect, sBytesPerLine, dst, dRect, dBytesPerLine,
+                  win) {}
 
-  void doProcessing(OfxRectI procWindow)
-  {
-    PIX *src = (PIX *) srcV;
-    PIX *dst = (PIX *) dstV;
+  void doProcessing(OfxRectI procWindow) {
+    PIX *src = (PIX *)srcV;
+    PIX *dst = (PIX *)dstV;
 
     PIX value;
-    if(isFloat) {
+    if (isFloat) {
       value = colour.a * max;
-    }
-    else {
+    } else {
       value = Clamp(colour.a * max, 0, max);
     }
-    
-    for(int y = procWindow.y1; y < procWindow.y2; y++) {
-      if(gEffectHost->abort(effect)) break;
+
+    for (int y = procWindow.y1; y < procWindow.y2; y++) {
+      if (gEffectHost->abort(effect))
+        break;
 
       PIX *dstPix = pixelAddress(dst, dstRect, procWindow.x1, y, dstBytesPerLine);
 
-      for(int x = procWindow.x1; x < procWindow.x2; x++) {
-        
+      for (int x = procWindow.x1; x < procWindow.x2; x++) {
         // if a generator, we have no source
         PIX *srcPix = 0;
-        if(src)
-          srcPix = pixelAddress(src, srcRect, x, y, srcBytesPerLine);        
-        
-        if(x < position.x1 || x >= position.x2 || y < position.y1 || y >= position.y2) {
+        if (src)
+          srcPix = pixelAddress(src, srcRect, x, y, srcBytesPerLine);
+
+        if (x < position.x1 || x >= position.x2 || y < position.y1 || y >= position.y2) {
           // we are outside the rectangle we are drawing?
           *dstPix = srcPix ? *srcPix : 0;
-          if(srcPix)
+          if (srcPix)
             srcPix++;
-        }
-        else {
+        } else {
           // we are inside the rectangle, set it to the alpha of the colour
-          if(srcPix) {
+          if (srcPix) {
             // switch will be compiled out
-            if(isFloat) {
+            if (isFloat) {
               *dstPix = *srcPix + value - *srcPix * value;
-            }
-            else {
+            } else {
               *dstPix = Clamp(int(*srcPix + value - *srcPix * value), 0, max);
             }
             srcPix++;
-          }
-          else {
+          } else {
             *dstPix = value;
           }
         }
@@ -599,15 +533,13 @@ class ProcessAlpha : public Processor {
 };
 
 // the process code  that the host sees
-static OfxStatus render(OfxImageEffectHandle effect,
-                        OfxPropertySetHandle inArgs,
-                        OfxPropertySetHandle /*outArgs*/)
-{
+static OfxStatus render(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs,
+                        OfxPropertySetHandle /*outArgs*/) {
   // get the render window and the time from the inArgs
   OfxTime time;
   OfxRectI renderWindow;
   OfxStatus status = kOfxStatOK;
-  
+
   gPropHost->propGetDouble(inArgs, kOfxPropTime, 0, &time);
   gPropHost->propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &renderWindow.x1);
 
@@ -621,21 +553,24 @@ static OfxStatus render(OfxImageEffectHandle effect,
   bool srcIsAlpha, dstIsAlpha;
   OfxRectI dstRect, srcRect = {0};
   void *src = NULL, *dst;
-  
+
   // by default we are premultiplied
   bool unpremultiplied = false;
-  
+
   try {
-    outputImg = ofxuGetImage(myData->outputClip, time, dstRowBytes, dstBitDepth, dstIsAlpha, dstRect, dst);
-    if(outputImg == NULL) throw OfxuNoImageException();
+    outputImg = ofxuGetImage(myData->outputClip, time, dstRowBytes, dstBitDepth,
+                             dstIsAlpha, dstRect, dst);
+    if (outputImg == NULL)
+      throw OfxuNoImageException();
 
-
-    if(myData->context != eIsGenerator) {
-      sourceImg = ofxuGetImage(myData->sourceClip, time, srcRowBytes, srcBitDepth, srcIsAlpha, srcRect, src);
-      if(sourceImg == NULL) throw OfxuNoImageException();
+    if (myData->context != eIsGenerator) {
+      sourceImg = ofxuGetImage(myData->sourceClip, time, srcRowBytes, srcBitDepth,
+                               srcIsAlpha, srcRect, src);
+      if (sourceImg == NULL)
+        throw OfxuNoImageException();
       unpremultiplied = ofxuIsUnPremultiplied(myData->sourceClip);
     }
-    
+
     // get the render scale
     OfxPointD renderScale;
     gPropHost->propGetDoubleN(inArgs, kOfxImageEffectPropRenderScale, 2, &renderScale.x);
@@ -644,17 +579,19 @@ static OfxStatus render(OfxImageEffectHandle effect,
     double fieldScale = 1.0;
     char *field;
     gPropHost->propGetString(outputImg, kOfxImagePropField, 0, &field);
-    if(strcmp(field, kOfxImageFieldLower) == 0 || strcmp(field, kOfxImageFieldUpper) == 0)
+    if (strcmp(field, kOfxImageFieldLower) == 0 ||
+        strcmp(field, kOfxImageFieldUpper) == 0)
       fieldScale = 0.5;
 
     // get the pixel aspect ratio from the image
     double pixelAspectRatio;
-    gPropHost->propGetDouble(outputImg, kOfxImagePropPixelAspectRatio, 0, &pixelAspectRatio);
+    gPropHost->propGetDouble(outputImg, kOfxImagePropPixelAspectRatio, 0,
+                             &pixelAspectRatio);
 
-    // get the rect in canonical coordinates  
+    // get the rect in canonical coordinates
     OfxRectD rect;
     getCannonicalRect(effect, time, rect);
-  
+
     // Turn that into pixel coordinates
     OfxRectI rectI;
     rectI.x1 = int(rect.x1 * renderScale.x / pixelAspectRatio);
@@ -664,105 +601,93 @@ static OfxStatus render(OfxImageEffectHandle effect,
 
     // get the colour of it
     OfxRGBAColourD colour;
-    gParamHost->paramGetValueAtTime(myData->colourParam, time, &colour.r, &colour.g, &colour.b, &colour.a);
+    gParamHost->paramGetValueAtTime(myData->colourParam, time, &colour.r, &colour.g,
+                                    &colour.b, &colour.a);
 
     // do the rendering
-    if(!dstIsAlpha) {
-      switch(dstBitDepth) {
-      case 8 : {      
-        ProcessRGBA<OfxRGBAColourB, 255, 0> fred(effect, rectI, colour, unpremultiplied,
-                                                 src, srcRect, srcRowBytes,
-                                                 dst, dstRect, dstRowBytes,
-                                                 renderWindow);
-        fred.process();                                          
-      }
-        break;
+    if (!dstIsAlpha) {
+      switch (dstBitDepth) {
+        case 8: {
+          ProcessRGBA<OfxRGBAColourB, 255, 0> fred(effect, rectI, colour, unpremultiplied,
+                                                   src, srcRect, srcRowBytes, dst,
+                                                   dstRect, dstRowBytes, renderWindow);
+          fred.process();
+        } break;
 
-      case 16 : {
-        ProcessRGBA<OfxRGBAColourS, 65535, 0> fred(effect, rectI, colour, unpremultiplied,
-                                                   src, srcRect, srcRowBytes,
-                                                   dst, dstRect, dstRowBytes,
+        case 16: {
+          ProcessRGBA<OfxRGBAColourS, 65535, 0> fred(
+              effect, rectI, colour, unpremultiplied, src, srcRect, srcRowBytes, dst,
+              dstRect, dstRowBytes, renderWindow);
+          fred.process();
+        } break;
+
+        case 32: {
+          ProcessRGBA<OfxRGBAColourF, 1, 1> fred(effect, rectI, colour, unpremultiplied,
+                                                 src, srcRect, srcRowBytes, dst, dstRect,
+                                                 dstRowBytes, renderWindow);
+          fred.process();
+          break;
+        }
+      }
+    } else {
+      switch (dstBitDepth) {
+        case 8: {
+          ProcessAlpha<unsigned char, 255, 0> fred(effect, rectI, colour, src, srcRect,
+                                                   srcRowBytes, dst, dstRect, dstRowBytes,
                                                    renderWindow);
-        fred.process();           
-      }                          
-        break;
+          fred.process();
+        } break;
 
-      case 32 : {
-        ProcessRGBA<OfxRGBAColourF, 1, 1> fred(effect, rectI, colour, unpremultiplied,
-                                               src, srcRect, srcRowBytes,
-                                               dst, dstRect, dstRowBytes,
-                                               renderWindow);
-        fred.process();                                          
-        break;
-      }
+        case 16: {
+          ProcessAlpha<unsigned short, 65535, 0> fred(effect, rectI, colour, src, srcRect,
+                                                      srcRowBytes, dst, dstRect,
+                                                      dstRowBytes, renderWindow);
+          fred.process();
+        } break;
+
+        case 32: {
+          ProcessAlpha<float, 1, 1> fred(effect, rectI, colour, src, srcRect, srcRowBytes,
+                                         dst, dstRect, dstRowBytes, renderWindow);
+          fred.process();
+        } break;
       }
     }
-    else {
-      switch(dstBitDepth) {
-      case 8 : {
-        ProcessAlpha<unsigned char, 255, 0> fred(effect, rectI, colour, 
-                                                 src, srcRect, srcRowBytes,
-                                                 dst, dstRect, dstRowBytes,
-                                                 renderWindow);
-        fred.process();                                                                                  
-      }
-        break;
-
-      case 16 : {
-        ProcessAlpha<unsigned short, 65535, 0> fred(effect, rectI, colour, 
-                                                    src, srcRect, srcRowBytes,
-                                                    dst, dstRect, dstRowBytes,
-                                                    renderWindow);
-        fred.process();           
-      }                          
-        break;
-
-      case 32 : {
-        ProcessAlpha<float, 1, 1> fred(effect, rectI, colour,
-                                       src, srcRect, srcRowBytes,
-                                       dst, dstRect, dstRowBytes,
-                                       renderWindow);
-        fred.process();           
-      }                          
-        break;
-      }
-    }
-  }
-  catch(OfxuNoImageException &ex) {
+  } catch (OfxuNoImageException &ex) {
     // if we were interrupted, the failed fetch is fine, just return kOfxStatOK
     // otherwise, something weird happened
-    if(!gEffectHost->abort(effect)) {
+    if (!gEffectHost->abort(effect)) {
       status = kOfxStatFailed;
     }
   }
 
   // release the data pointers
-  if(sourceImg)
+  if (sourceImg)
     gEffectHost->clipReleaseImage(sourceImg);
-  if(outputImg)
+  if (outputImg)
     gEffectHost->clipReleaseImage(outputImg);
-  
+
   return status;
 }
 
-// Set our clip preferences 
-static OfxStatus 
-getClipPreferences(OfxImageEffectHandle effect, OfxPropertySetHandle /*inArgs*/, OfxPropertySetHandle outArgs)
-{
+// Set our clip preferences
+static OfxStatus getClipPreferences(OfxImageEffectHandle effect,
+                                    OfxPropertySetHandle /*inArgs*/,
+                                    OfxPropertySetHandle outArgs) {
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
-  
-  if(myData->context == eIsGenerator) {
+
+  if (myData->context == eIsGenerator) {
     // as a generator we create premultiplied output
-    gPropHost->propSetString(outArgs, kOfxImageEffectPropPreMultiplication, 0, kOfxImagePreMultiplied);
-  }
-  else {
+    gPropHost->propSetString(outArgs, kOfxImageEffectPropPreMultiplication, 0,
+                             kOfxImagePreMultiplied);
+  } else {
     OfxPropertySetHandle clipProps;
     gEffectHost->clipGetPropertySet(myData->sourceClip, &clipProps);
 
     //  premultiplication is the same as the source
     char *premult;
-    gPropHost->propGetString(clipProps, kOfxImageEffectPropPreMultiplication, 0, &premult);
+    gPropHost->propGetString(clipProps, kOfxImageEffectPropPreMultiplication, 0,
+                             &premult);
 
     gPropHost->propSetString(outArgs, kOfxImageEffectPropPreMultiplication, 0, premult);
   }
@@ -771,9 +696,8 @@ getClipPreferences(OfxImageEffectHandle effect, OfxPropertySetHandle /*inArgs*/,
 }
 
 //  describe the plugin in context
-static OfxStatus
-describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
-{
+static OfxStatus describeInContext(OfxImageEffectHandle effect,
+                                   OfxPropertySetHandle inArgs) {
   // get the context from the inArgs handle
   char *context;
   gPropHost->propGetString(inArgs, kOfxImageEffectPropContext, 0, &context);
@@ -784,23 +708,29 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
   gEffectHost->clipDefine(effect, kOfxImageEffectOutputClipName, &clipProps);
 
   // set the component types we can handle on out output
-  gPropHost->propSetString(clipProps, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
-  gPropHost->propSetString(clipProps, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
-  gPropHost->propSetString(clipProps, kOfxImageClipPropFieldExtraction, 0, kOfxImageFieldSingle);
+  gPropHost->propSetString(clipProps, kOfxImageEffectPropSupportedComponents, 0,
+                           kOfxImageComponentRGBA);
+  gPropHost->propSetString(clipProps, kOfxImageEffectPropSupportedComponents, 1,
+                           kOfxImageComponentAlpha);
+  gPropHost->propSetString(clipProps, kOfxImageClipPropFieldExtraction, 0,
+                           kOfxImageFieldSingle);
 
-  if(!isGeneratorContext) {
+  if (!isGeneratorContext) {
     // define the single source clip in filter and general contexts
     gEffectHost->clipDefine(effect, kOfxImageEffectSimpleSourceClipName, &clipProps);
 
     // set the component types we can handle on our main input
-    gPropHost->propSetString(clipProps, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
-    gPropHost->propSetString(clipProps, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
-    gPropHost->propSetString(clipProps, kOfxImageClipPropFieldExtraction, 0, kOfxImageFieldSingle);
+    gPropHost->propSetString(clipProps, kOfxImageEffectPropSupportedComponents, 0,
+                             kOfxImageComponentRGBA);
+    gPropHost->propSetString(clipProps, kOfxImageEffectPropSupportedComponents, 1,
+                             kOfxImageComponentAlpha);
+    gPropHost->propSetString(clipProps, kOfxImageClipPropFieldExtraction, 0,
+                             kOfxImageFieldSingle);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
   // define the parameters for this context
-  
+
   // get a pointer to the effect's parameter set
   OfxParamSetHandle paramSet;
   gEffectHost->getParamSet(effect, &paramSet);
@@ -809,19 +739,25 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
   OfxPropertySetHandle paramProps;
 
   gParamHost->paramDefine(paramSet, kOfxParamTypeDouble2D, "corner1", &paramProps);
-  gPropHost->propSetString(paramProps, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeXYAbsolute);
-  gPropHost->propSetString(paramProps, kOfxParamPropDefaultCoordinateSystem, 0, kOfxParamCoordinatesNormalised);
+  gPropHost->propSetString(paramProps, kOfxParamPropDoubleType, 0,
+                           kOfxParamDoubleTypeXYAbsolute);
+  gPropHost->propSetString(paramProps, kOfxParamPropDefaultCoordinateSystem, 0,
+                           kOfxParamCoordinatesNormalised);
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 0, 0.4);
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 1, 0.4);
-  gPropHost->propSetString(paramProps, kOfxParamPropHint, 0, "A corner of the rectangle to draw");
+  gPropHost->propSetString(paramProps, kOfxParamPropHint, 0,
+                           "A corner of the rectangle to draw");
   gPropHost->propSetString(paramProps, kOfxPropLabel, 0, "Corner 1");
-  
+
   gParamHost->paramDefine(paramSet, kOfxParamTypeDouble2D, "corner2", &paramProps);
-  gPropHost->propSetString(paramProps, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeXYAbsolute);
-  gPropHost->propSetString(paramProps, kOfxParamPropDefaultCoordinateSystem, 0, kOfxParamCoordinatesNormalised);
+  gPropHost->propSetString(paramProps, kOfxParamPropDoubleType, 0,
+                           kOfxParamDoubleTypeXYAbsolute);
+  gPropHost->propSetString(paramProps, kOfxParamPropDefaultCoordinateSystem, 0,
+                           kOfxParamCoordinatesNormalised);
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 0, 0.6);
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 1, 0.6);
-  gPropHost->propSetString(paramProps, kOfxParamPropHint, 0, "A corner of the rectangle to draw");
+  gPropHost->propSetString(paramProps, kOfxParamPropHint, 0,
+                           "A corner of the rectangle to draw");
   gPropHost->propSetString(paramProps, kOfxPropLabel, 0, "Corner 2");
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 0, 0);
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 1, 0);
@@ -830,141 +766,124 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
 
   // make an rgba colour parameter
   gParamHost->paramDefine(paramSet, kOfxParamTypeRGBA, "colour", &paramProps);
-  gPropHost->propSetString(paramProps, kOfxParamPropHint, 0, "The colour of the rectangle");
+  gPropHost->propSetString(paramProps, kOfxParamPropHint, 0,
+                           "The colour of the rectangle");
   gPropHost->propSetString(paramProps, kOfxParamPropScriptName, 0, "colour");
   gPropHost->propSetString(paramProps, kOfxPropLabel, 0, "Colour");
-
 
   return kOfxStatOK;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // the plugin's description routine
-static OfxStatus
-describe(OfxImageEffectHandle effect)
-{
+static OfxStatus describe(OfxImageEffectHandle effect) {
   // first fetch the host APIs, this cannot be done before this call
   OfxStatus stat;
-  if((stat = ofxuFetchHostSuites()) != kOfxStatOK)
+  if ((stat = ofxuFetchHostSuites()) != kOfxStatOK)
     return stat;
-  
+
   // get a pointer to the effect's set of properties
   OfxPropertySetHandle effectProps;
   gEffectHost->getPropertySet(effect, &effectProps);
 
-
   // We can render both fields in a fielded image in one hit if there is no animation
   // So set the flag that allows us to do this
-  gPropHost->propSetInt(effectProps, kOfxImageEffectPluginPropFieldRenderTwiceAlways, 0, 0);
+  gPropHost->propSetInt(effectProps, kOfxImageEffectPluginPropFieldRenderTwiceAlways, 0,
+                        0);
 
   // say we cannot support multiple pixel depths on in and out
   gPropHost->propSetInt(effectProps, kOfxImageEffectPropSupportsMultipleClipDepths, 0, 0);
-  
+
   // set the bit depths the plugin can handle
-  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 0, kOfxBitDepthByte);
-  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 1, kOfxBitDepthShort);
-  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 2, kOfxBitDepthFloat);
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 0,
+                           kOfxBitDepthByte);
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 1,
+                           kOfxBitDepthShort);
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 2,
+                           kOfxBitDepthFloat);
 
   // set some labels and the group it belongs to
   gPropHost->propSetString(effectProps, kOfxPropLabel, 0, "OFX Rectangle");
-  gPropHost->propSetString(effectProps, kOfxImageEffectPluginPropGrouping, 0, "OFX Example");
+  gPropHost->propSetString(effectProps, kOfxImageEffectPluginPropGrouping, 0,
+                           "OFX Example");
 
   // define the contexts we can be used in
-  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 0, kOfxImageEffectContextGenerator);
-  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 1, kOfxImageEffectContextFilter);
-  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 2, kOfxImageEffectContextGeneral);
-  
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 0,
+                           kOfxImageEffectContextGenerator);
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 1,
+                           kOfxImageEffectContextFilter);
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 2,
+                           kOfxImageEffectContextGeneral);
+
   return kOfxStatOK;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // The main function
-static OfxStatus
-pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs)
-{
+static OfxStatus pluginMain(const char *action, const void *handle,
+                            OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs) {
   try {
-  // cast to appropriate type
-  OfxImageEffectHandle effect = (OfxImageEffectHandle ) handle;
+    // cast to appropriate type
+    OfxImageEffectHandle effect = (OfxImageEffectHandle)handle;
 
-  if(strcmp(action, kOfxActionDescribe) == 0) {
-    return describe(effect);
-  }
-  else if(strcmp(action, kOfxImageEffectActionDescribeInContext) == 0) {
-    return describeInContext(effect, inArgs);
-  }
-  else if(strcmp(action, kOfxActionCreateInstance) == 0) {
-    return createInstance(effect);
-  } 
-  else if(strcmp(action, kOfxActionDestroyInstance) == 0) {
-    return destroyInstance(effect);
-  } 
-  else if(strcmp(action, kOfxImageEffectActionIsIdentity) == 0) {
-    return isIdentity(effect, inArgs, outArgs);
-  }    
-  else if(strcmp(action, kOfxImageEffectActionRender) == 0) {
-    return render(effect, inArgs, outArgs);
-  }    
-  else if(strcmp(action, kOfxImageEffectActionGetRegionOfDefinition) == 0) {
-    return getSpatialRoD(effect, inArgs, outArgs);
-  }  
-  else if(strcmp(action, kOfxImageEffectActionGetRegionsOfInterest) == 0) {
-    return getSpatialRoI(effect, inArgs, outArgs);
-  }  
-  else if(strcmp(action, kOfxImageEffectActionGetClipPreferences) == 0) {
-    return getClipPreferences(effect, inArgs, outArgs);
-  }  
+    if (strcmp(action, kOfxActionDescribe) == 0) {
+      return describe(effect);
+    } else if (strcmp(action, kOfxImageEffectActionDescribeInContext) == 0) {
+      return describeInContext(effect, inArgs);
+    } else if (strcmp(action, kOfxActionCreateInstance) == 0) {
+      return createInstance(effect);
+    } else if (strcmp(action, kOfxActionDestroyInstance) == 0) {
+      return destroyInstance(effect);
+    } else if (strcmp(action, kOfxImageEffectActionIsIdentity) == 0) {
+      return isIdentity(effect, inArgs, outArgs);
+    } else if (strcmp(action, kOfxImageEffectActionRender) == 0) {
+      return render(effect, inArgs, outArgs);
+    } else if (strcmp(action, kOfxImageEffectActionGetRegionOfDefinition) == 0) {
+      return getSpatialRoD(effect, inArgs, outArgs);
+    } else if (strcmp(action, kOfxImageEffectActionGetRegionsOfInterest) == 0) {
+      return getSpatialRoI(effect, inArgs, outArgs);
+    } else if (strcmp(action, kOfxImageEffectActionGetClipPreferences) == 0) {
+      return getClipPreferences(effect, inArgs, outArgs);
+    }
   } catch (std::bad_alloc) {
     // catch memory
-    //std::cout << "OFX Plugin Memory error." << std::endl;
+    // std::cout << "OFX Plugin Memory error." << std::endl;
     return kOfxStatErrMemory;
-  } catch ( const std::exception& e ) {
+  } catch (const std::exception &e) {
     // standard exceptions
-    //std::cout << "OFX Plugin error: " << e.what() << std::endl;
+    // std::cout << "OFX Plugin error: " << e.what() << std::endl;
     return kOfxStatErrUnknown;
   } catch (int err) {
     // ho hum, gone wrong somehow
     return err;
-  } catch ( ... ) {
+  } catch (...) {
     // everything else
-    //std::cout << "OFX Plugin error" << std::endl;
+    // std::cout << "OFX Plugin error" << std::endl;
     return kOfxStatErrUnknown;
   }
-    
+
   // other actions to take the default value
   return kOfxStatReplyDefault;
 }
 
 // function to set the host structure
-static void
-setHostFunc(OfxHost *hostStruct)
-{
-  gHost         = hostStruct;
-}
+static void setHostFunc(OfxHost *hostStruct) { gHost = hostStruct; }
 
 ////////////////////////////////////////////////////////////////////////////////
-// the plugin struct 
-static OfxPlugin basicPlugin = 
-{       
-  kOfxImageEffectPluginApi,
-  1,
-  "uk.co.thefoundry.GeneratorExample",
-  1,
-  0,
-  setHostFunc,
-  pluginMain
-};
-   
+// the plugin struct
+static OfxPlugin basicPlugin = {kOfxImageEffectPluginApi,
+                                1,
+                                "uk.co.thefoundry.GeneratorExample",
+                                1,
+                                0,
+                                setHostFunc,
+                                pluginMain};
+
 // the two mandated functions
-EXPORT OfxPlugin *
-OfxGetPlugin(int nth)
-{
-  if(nth == 0)
+EXPORT OfxPlugin *OfxGetPlugin(int nth) {
+  if (nth == 0)
     return &basicPlugin;
   return 0;
 }
- 
-EXPORT int
-OfxGetNumberOfPlugins(void)
-{       
-  return 1;
-}
+
+EXPORT int OfxGetNumberOfPlugins(void) { return 1; }

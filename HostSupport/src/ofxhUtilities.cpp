@@ -11,7 +11,7 @@ this list of conditions and the following disclaimer.
 * Redistributions in binary form must reproduce the above copyright notice,
 this list of conditions and the following disclaimer in the documentation
 and/or other materials provided with the distribution.
-* Neither the name The Open Effects Association Ltd, nor the names of its 
+* Neither the name The Open Effects Association Ltd, nor the names of its
 contributors may be used to endorse or promote products derived from this
 software without specific prior written permission.
 
@@ -27,38 +27,32 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "ofxCore.h"
 #include "ofxhUtilities.h"
+#include "ofxCore.h"
 
 namespace OFX {
 
-  /// get me deepest bit depth 
-  std::string FindDeepestBitDepth(const std::string &s1, const std::string &s2)
-  {
-    if(s1 == kOfxBitDepthNone) {
+/// get me deepest bit depth
+std::string FindDeepestBitDepth(const std::string &s1, const std::string &s2) {
+  if (s1 == kOfxBitDepthNone) {
+    return s2;
+  } else if (s1 == kOfxBitDepthByte) {
+    if (s2 == kOfxBitDepthShort || s2 == kOfxBitDepthFloat)
       return s2;
-    }
-    else if(s1 == kOfxBitDepthByte) {
-      if(s2 == kOfxBitDepthShort || s2 == kOfxBitDepthFloat)
-        return s2;
-      return s1;
-    }
-    else if(s1 == kOfxBitDepthShort) {
-      if(s2 == kOfxBitDepthFloat)
-        return s2;
-      return s1;
-    }
-    else if(s1 == kOfxBitDepthHalf) {
-      if(s2 == kOfxBitDepthFloat)
-        return s2;
-      return s1;
-    }
-    else if(s1 == kOfxBitDepthFloat) {
-      return s1;
-    }
-    else {
-      return s2; // oooh this might be bad dad.
-    }
+    return s1;
+  } else if (s1 == kOfxBitDepthShort) {
+    if (s2 == kOfxBitDepthFloat)
+      return s2;
+    return s1;
+  } else if (s1 == kOfxBitDepthHalf) {
+    if (s2 == kOfxBitDepthFloat)
+      return s2;
+    return s1;
+  } else if (s1 == kOfxBitDepthFloat) {
+    return s1;
+  } else {
+    return s2;  // oooh this might be bad dad.
   }
-
 }
+
+}  // namespace OFX

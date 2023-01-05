@@ -13,7 +13,7 @@ this list of conditions and the following disclaimer.
 * Redistributions in binary form must reproduce the above copyright notice,
 this list of conditions and the following disclaimer in the documentation
 and/or other materials provided with the distribution.
-* Neither the name The Open Effects Association Ltd, nor the names of its 
+* Neither the name The Open Effects Association Ltd, nor the names of its
 contributors may be used to endorse or promote products derived from this
 software without specific prior written permission.
 
@@ -37,41 +37,42 @@ England
 
 */
 
-/** @file This file contains core code that wraps the ofx memory allocator with C++ functions.
+/** @file This file contains core code that wraps the ofx memory allocator with C++
+functions.
 
 This file only holds code that is visible to a plugin implementation, and so hides much
 of the direct OFX objects and any library side only functions.
 */
 
-/** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries.
-*/
+/** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for
+ * these are defined in the common support libraries.
+ */
 namespace OFX {
 
-  // forward declaration of class
-  class ImageEffect;
+// forward declaration of class
+class ImageEffect;
 
-  /** @brief Namespace for general purpose memory allocation */
-  namespace Memory {
-    /** @brief Allocate memory.
+/** @brief Namespace for general purpose memory allocation */
+namespace Memory {
+/** @brief Allocate memory.
 
-    \arg \e nBytes        - the number of bytes to allocate
-    \arg \e handle	      - effect instance to assosciate with this memory allocation, or NULL
+\arg \e nBytes        - the number of bytes to allocate
+\arg \e handle	      - effect instance to assosciate with this memory allocation, or NULL
 
-    This function has the host allocate memory using it's own memory resources
-    and returns that to the plugin. This memory is distinct to any image memory allocation.
+This function has the host allocate memory using it's own memory resources
+and returns that to the plugin. This memory is distinct to any image memory allocation.
 
-    Suceeds or throws std::bad_alloc
-    */   
-    void *allocate(size_t nBytes,
-      ImageEffect *handle = 0) throw(std::bad_alloc);
+Suceeds or throws std::bad_alloc
+*/
+void *allocate(size_t nBytes, ImageEffect *handle = 0) throw(std::bad_alloc);
 
-    /** @brief release memory
+/** @brief release memory
 
-    \arg \e ptr	      - pointer previously returned by OFX::Memory::allocate
-    */
-    void free(void *ptr) throw();
-  };
+\arg \e ptr	      - pointer previously returned by OFX::Memory::allocate
+*/
+void free(void *ptr) throw();
+};  // namespace Memory
 
-};
+};  // namespace OFX
 
 #endif

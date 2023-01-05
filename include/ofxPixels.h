@@ -14,7 +14,7 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name The Open Effects Association Ltd, nor the names of its 
+    * Neither the name The Open Effects Association Ltd, nor the names of its
       contributors may be used to endorse or promote products derived from this
       software without specific prior written permission.
 
@@ -30,7 +30,6 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -42,44 +41,42 @@ Contains pixel struct definitions
 /** @brief Defines an 8 bit per component RGBA pixel */
 typedef struct OfxRGBAColourB {
   unsigned char r, g, b, a;
-}OfxRGBAColourB;
+} OfxRGBAColourB;
 
 /** @brief Defines a 16 bit per component RGBA pixel */
 typedef struct OfxRGBAColourS {
   unsigned short r, g, b, a;
-}OfxRGBAColourS;
+} OfxRGBAColourS;
 
 /** @brief Defines a floating point component RGBA pixel */
 typedef struct OfxRGBAColourF {
   float r, g, b, a;
-}OfxRGBAColourF;
-
+} OfxRGBAColourF;
 
 /** @brief Defines a double precision floating point component RGBA pixel */
 typedef struct OfxRGBAColourD {
   double r, g, b, a;
-}OfxRGBAColourD;
-
+} OfxRGBAColourD;
 
 /** @brief Defines an 8 bit per component RGB pixel */
 typedef struct OfxRGBColourB {
   unsigned char r, g, b;
-}OfxRGBColourB;
+} OfxRGBColourB;
 
 /** @brief Defines a 16 bit per component RGB pixel */
 typedef struct OfxRGBColourS {
   unsigned short r, g, b;
-}OfxRGBColourS;
+} OfxRGBColourS;
 
 /** @brief Defines a floating point component RGB pixel */
 typedef struct OfxRGBColourF {
   float r, g, b;
-}OfxRGBColourF;
+} OfxRGBColourF;
 
 /** @brief Defines a double precision floating point component RGB pixel */
 typedef struct OfxRGBColourD {
   double r, g, b;
-}OfxRGBColourD;
+} OfxRGBColourD;
 
 #ifdef __cplusplus
 }
