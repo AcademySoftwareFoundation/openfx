@@ -8,12 +8,12 @@ OFX Support Library
 ********************************************************************************
 Copyright and License
 
-     The library is copyright 2004 The Open Effects Association Ltd, and was
+     The library is copyright Contributors to the OpenFX project, and was
      written by Bruno Nicoletti (bruno@thefoundry.co.uk).
 
      It was originally released under the GNU Lesser General Public License.
 
-     It has subsequently been released under a 'BSD' style license. See the
+     It has subsequently been released under a 'BSD-3-Clause' license. See the
      file 'LICENSE' for details.
 
 ********************************************************************************
@@ -22,7 +22,7 @@ Structure
         - Library    - contains the code that implements the support library.
         - PropTester - contains code for a plugin that performs extensive property testing.
 	- Plugins    - contains a set of example plugins using the support library.
-    
+
 ********************************************************************************
 Building
       Plug-ins and library have OSX makefiles and windows MSDEV project files. They build and link and load happily on compliant hosts.
@@ -41,13 +41,13 @@ Release Notes
 31-1-2005
 	All accessor functions have had 'get' prepended to their name.
 	Added integrate and differentiate functions to 2D and 3D double parameters.
-	The generic memory allocator takes an option ImageEffect pointer, not a void * handle.	
+	The generic memory allocator takes an option ImageEffect pointer, not a void * handle.
 	Refactored plugins to use new member names.
 	Added a root makefile to the plugins directory.
 	Added a 'clean' target to the plugin makefiles.
 
 13-01-2005 Version 0.2
-	   
+
 	   Skinned everything except message suite and parameter interacts custom GUIS,
 	   Skinned overlays,
 	   Build enviromnments for OSX and MSDEV,
@@ -63,11 +63,11 @@ Release Notes
 		 more testing.
 
 15-12-2004 Version 0.1
-	   
-	   Implemented most of the basic classes, need to do more work on clip instances and image effect instances.     
+
+	   Implemented most of the basic classes, need to do more work on clip instances and image effect instances.
            Library builds fine on OSX 10.3, not fully tested yet.
            No where near finsihed yet,
            	   Need to finish off the actions.
-                   Need to do a cleaner set of exception classes. 
+                   Need to do a cleaner set of exception classes.
                    Need to test somewhat more (hey they do compile though!).
                    Need to build on more machines too (OSX 10.3 fine) and come up with make files for the appropriates

@@ -1,41 +1,8 @@
 #ifndef _ofxsCore_H_
 #define _ofxsCore_H_
-/*
-OFX Support Library, a library that skins the OFX plug-in API with C++ classes.
-Copyright (C) 2004-2005 The Open Effects Association Ltd
-Author Bruno Nicoletti bruno@thefoundry.co.uk
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-* Neither the name The Open Effects Association Ltd, nor the names of its 
-contributors may be used to endorse or promote products derived from this
-software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-The Open Effects Association Ltd
-1 Wardour St
-London W1D 6PA
-England
-
-
-
-*/
+// Copyright Contributors to the OpenFX project.
+// SPDX-License-Identifier: BSD-3-Clause
+// https://github.com/AcademySoftwareFoundation/OpenFx
 
 
 /** @mainpage OFX Support Library
@@ -56,9 +23,9 @@ This support library skins the raw OFX C API with a set of C++ classes and funct
 - called after the plug-in is first loaded, and before any instance has been made,
 - void OFX::Plugin::unloadAction(void)
 - called before the plug-in is unloaded, and all instances have been destroyed,
-- void OFX::Plugin::describe(OFX::ImageEffectDescriptor &desc) 
+- void OFX::Plugin::describe(OFX::ImageEffectDescriptor &desc)
 - called to describe the plugin to the host
-- void OFX::Plugin::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context) 
+- void OFX::Plugin::describeInContext(OFX::ImageEffectDescriptor &desc, OFX::ContextEnum context)
 - called to describe the plugin to the host for a context reported in OFX::Plugin::describe
 -  OFX::ImageEffect * OFX::Plugin::createInstance(OfxImageEffectHandle handle, OFX::ContextEnum context)
 - called when a new instance of a plug-in needs to be created. You need to derive a class from ImageEffect, new it and return it.
@@ -69,10 +36,10 @@ The OFX::ImageEffect class has a set of members you can override to do various t
 
 @section license Copyright and License
 
-The library is copyright 2004-2005, The Open Effects Association Ltd, and was
+The library is Copyright Contributors to the OpenFX project, and was
 written by Bruno Nicoletti (bruno@thefoundry.co.uk).
 
-It has been released under the GNU Lesser General Public License, see the 
+It has been released under the GNU Lesser General Public License, see the
 top of any source file for details.
 
 */
@@ -130,7 +97,7 @@ struct Ofx3DPointD {
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
 #define mDeclareProtectedAssignAndCC(CLASS) \
   CLASS &operator=(const CLASS &) {assert(false); return *this;}	\
-  CLASS(const CLASS &) {assert(false); } 
+  CLASS(const CLASS &) {assert(false); }
 
 /** @brief The core 'OFX Support' namespace, used by plugin implementations. All code for these are defined in the common support libraries.
 */
@@ -159,7 +126,7 @@ namespace OFX {
   /** @brief namespace for OFX support lib exceptions, all derive from std::exception, calling it */
   namespace Exception {
 
-    /** @brief thrown when a suite returns a dud status code 
+    /** @brief thrown when a suite returns a dud status code
     */
     class Suite : public std::exception {
     protected :
@@ -223,7 +190,7 @@ namespace OFX {
 
     ////////////////////////////////////////////////////////////////////////////////
     // These exceptions are to be thrown by the plugin if it hits a problem, the
-    // code managing the main entry will trap the exception and return a suitable 
+    // code managing the main entry will trap the exception and return a suitable
     // status code to the host.
 
     /** @brief exception indicating a required host feature is missing */
@@ -244,15 +211,15 @@ namespace OFX {
   }; // end of Exception namespace
 
   /** @brief Throws an @ref OFX::Exception::Suite depending on the status flag passed in */
-  void 
-    throwSuiteStatusException(OfxStatus stat) 
+  void
+    throwSuiteStatusException(OfxStatus stat)
     throw(OFX::Exception::Suite, std::bad_alloc);
 
-  void 
-    throwHostMissingSuiteException(std::string name) 
+  void
+    throwHostMissingSuiteException(std::string name)
     throw(OFX::Exception::Suite);
 
-  /** @brief This struct is used to return an identifier for the plugin by the function @ref OFX:Plugin::getPlugin. 
+  /** @brief This struct is used to return an identifier for the plugin by the function @ref OFX:Plugin::getPlugin.
   The members correspond to those in the OfxPlugin struct defined in ofxCore.h.
   */
 
@@ -294,123 +261,123 @@ namespace OFX {
     /** @brief return the handle for this property set */
     OfxPropertySetHandle propSetHandle(void) const {return _propHandle;}
 
-    int  propGetDimension(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    int  propGetDimension(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite);
-    void propReset(const char* property) throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
+    void propReset(const char* property) throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
       OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite);
 
     // set single values
-    void propSetPointer(const char* property, void *value, int idx, bool throwOnFailure = true) throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    void propSetPointer(const char* property, void *value, int idx, bool throwOnFailure = true) throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite);
-    void propSetString(const char* property, const std::string &value, int idx, bool throwOnFailure = true) throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    void propSetString(const char* property, const std::string &value, int idx, bool throwOnFailure = true) throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite);
-    void propSetDouble(const char* property, double value, int idx, bool throwOnFailure = true) throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    void propSetDouble(const char* property, double value, int idx, bool throwOnFailure = true) throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite);
-    void propSetInt(const char* property, int value, int idx, bool throwOnFailure = true) throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    void propSetInt(const char* property, int value, int idx, bool throwOnFailure = true) throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite);
 
     // set multiple values
     void propSetDoubleN(const char* property, const double *value, int count, bool throwOnFailure = true) throw(std::bad_alloc,
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite);
 
-    void propSetPointer(const char* property, void *value, bool throwOnFailure = true) throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    void propSetPointer(const char* property, void *value, bool throwOnFailure = true) throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite)
     {propSetPointer(property, value, 0, throwOnFailure);}
 
-    void propSetString(const char* property, const std::string &value, bool throwOnFailure = true) throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    void propSetString(const char* property, const std::string &value, bool throwOnFailure = true) throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite)
     {propSetString(property, value, 0, throwOnFailure);}
 
-    void propSetDouble(const char* property, double value, bool throwOnFailure = true) throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    void propSetDouble(const char* property, double value, bool throwOnFailure = true) throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite)
     {propSetDouble(property, value, 0, throwOnFailure);}
 
-    void propSetInt(const char* property, int value, bool throwOnFailure = true) throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    void propSetInt(const char* property, int value, bool throwOnFailure = true) throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite)
     {propSetInt(property, value, 0, throwOnFailure);}
 
 
     /// get a pointer property
-    void       *propGetPointer(const char* property, int idx, bool throwOnFailure = true) const throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    void       *propGetPointer(const char* property, int idx, bool throwOnFailure = true) const throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite);
 
     /// get a string property
-    std::string propGetString(const char* property, int idx, bool throwOnFailure = true) const throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    std::string propGetString(const char* property, int idx, bool throwOnFailure = true) const throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite);
     /// get a double property
-    double      propGetDouble(const char* property, int idx, bool throwOnFailure = true) const throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    double      propGetDouble(const char* property, int idx, bool throwOnFailure = true) const throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite);
 
     /// get an int property
-    int propGetInt(const char* property, int idx, bool throwOnFailure = true) const throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    int propGetInt(const char* property, int idx, bool throwOnFailure = true) const throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite);
 
     /// get a pointer property with index 0
-    void* propGetPointer(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    void* propGetPointer(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite)
     {
-      return propGetPointer(property, 0, throwOnFailure); 
+      return propGetPointer(property, 0, throwOnFailure);
     }
 
     /// get a string property with index 0
-    std::string propGetString(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    std::string propGetString(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite)
     {
-      return propGetString(property, 0, throwOnFailure); 
+      return propGetString(property, 0, throwOnFailure);
     }
 
     /// get a double property with index 0
-    double propGetDouble(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    double propGetDouble(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite)
     {
-      return propGetDouble(property, 0, throwOnFailure); 
+      return propGetDouble(property, 0, throwOnFailure);
     }
 
     /// get an int property with index 0
-    int propGetInt(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc, 
-      OFX::Exception::PropertyUnknownToHost, 
-      OFX::Exception::PropertyValueIllegalToHost, 
+    int propGetInt(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc,
+      OFX::Exception::PropertyUnknownToHost,
+      OFX::Exception::PropertyValueIllegalToHost,
       OFX::Exception::Suite)
     {
-      return propGetInt(property, 0, throwOnFailure); 
+      return propGetInt(property, 0, throwOnFailure);
     }
-      
+
     std::list<std::string> propGetNString(const char* property, bool throwOnFailure = true) const throw(std::bad_alloc,
     OFX::Exception::PropertyUnknownToHost,
     OFX::Exception::PropertyValueIllegalToHost,

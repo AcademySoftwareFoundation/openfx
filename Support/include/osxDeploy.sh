@@ -2,7 +2,8 @@
 
 # Software License :
 #
-# Copyright (c) 2003-2015, The Open Effects Association Ltd. All rights reserved.
+# Copyright Contributors to the OpenFX project.
+# SPDX-License-Identifier: BSD-3-Clause
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -12,7 +13,7 @@
 #     * Redistributions in binary form must reproduce the above copyright notice,
 #       this list of conditions and the following disclaimer in the documentation
 #       and/or other materials provided with the distribution.
-#     * Neither the name The Open Effects Association Ltd, nor the names of its 
+#     * Neither the name The Open Effects Association Ltd, nor the names of its
 #       contributors may be used to endorse or promote products derived from this
 #       software without specific prior written permission.
 #
@@ -32,7 +33,7 @@
 #
 # Author: Frederic Devernay <frederic.devernay@m4x.org>
 #
-# This script copies the .so, .la and .xml files needed to redistribute a mac application 
+# This script copies the .so, .la and .xml files needed to redistribute a mac application
 # This file is strongly inspired from the osx-app.sh script from the Inkscape source code
 #
 # In the XCode project, the "Runtime search paths" of your binaries should be set to
@@ -132,7 +133,7 @@ while $endl; do
           cp -f $libs $pkglib
 	  alllibs="`ls $alllibs $libs | sort | uniq`"
 	fi
-	let "a+=1"	
+	let "a+=1"
 	nnfiles=`ls $pkglib | wc -l`
 	if [ $nnfiles = $nfiles ]; then
 		endl=false

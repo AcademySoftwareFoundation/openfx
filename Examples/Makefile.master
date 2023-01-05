@@ -1,6 +1,7 @@
 # Software License :
 #
-# Copyright (c) 2003-2015, The Open Effects Association Ltd. All rights reserved.
+# Copyright Contributors to the OpenFX project.
+# SPDX-License-Identifier: BSD-3-Clause
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -10,7 +11,7 @@
 #     * Redistributions in binary form must reproduce the above copyright notice,
 #       this list of conditions and the following disclaimer in the documentation
 #       and/or other materials provided with the distribution.
-#     * Neither the name The Open Effects Association Ltd, nor the names of its 
+#     * Neither the name The Open Effects Association Ltd, nor the names of its
 #       contributors may be used to endorse or promote products derived from this
 #       software without specific prior written permission.
 #
@@ -123,8 +124,7 @@ $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle: $(OBJECTPATH)/$(PLUGINNAME).ofx
 	if [ $(DEBUGNAME) = "release" -a $(ARCH) = "MacOS" ]; then bash $(PATHTOROOT)/include/osxDeploy.sh $@ $(PLUGINNAME).ofx; fi
 
 clean:
-	rm -rf $(OBJECTPATH)/ $(PATHTOROOT)/Library/$(OBJECTPATH)/ 
+	rm -rf $(OBJECTPATH)/ $(PATHTOROOT)/Library/$(OBJECTPATH)/
 
 release:
 	make DEBUGFLAG=-O3
-

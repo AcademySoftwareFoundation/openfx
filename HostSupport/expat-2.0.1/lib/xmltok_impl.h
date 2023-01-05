@@ -1,7 +1,6 @@
-/*
-Copyright (c) 1998, 1999 Thai Open Source Software Center Ltd
-See the file COPYING for copying permission.
-*/
+// Copyright Contributors to the OpenFX project.
+// SPDX-License-Identifier: BSD-3-Clause
+// https://github.com/AcademySoftwareFoundation/OpenFx
 
 enum {
   BT_NONXML,
