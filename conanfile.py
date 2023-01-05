@@ -7,7 +7,7 @@ class openfx(ConanFile):
 	url = "https://github.com/AcademySoftwareFoundation/openfx"
 	description = "OpenFX image processing plug-in standard"
 
-	generators = "cmake"
+	generators = "cmake_find_package"
 	requires = (
 		"opengl/system",
 		"expat/2.4.8"   # for HostSupport
@@ -27,8 +27,6 @@ class openfx(ConanFile):
 	)
 
 	settings = "os", "arch", "compiler", "build_type"
-	options = {"OFX_EXAMPLE_PLUGINS": [True, False]}
-	default_options  = {"OFX_EXAMPLE_PLUGINS": False}
 
 	def build(self):
 		cmake = CMake(self)

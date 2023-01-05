@@ -10,6 +10,8 @@ Examples/*/*.bundle
 ofx-docgen
 
 build*/
+build.log
+.cache/
 
 xcuserdata
 
