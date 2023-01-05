@@ -643,7 +643,7 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   OfxPropertySetHandle sourceImg = NULL, outputImg = NULL, maskImg = NULL;
   int srcRowBytes, srcBitDepth, dstRowBytes, dstBitDepth, maskRowBytes = 0, maskBitDepth;
   bool srcIsAlpha, dstIsAlpha, maskIsAlpha = false;
-  OfxRectI dstRect, srcRect, maskRect = {0};
+  OfxRectI dstRect, srcRect, maskRect = {0, 0, 0, 0};
   void *src, *dst, *mask = NULL;
 
   try {

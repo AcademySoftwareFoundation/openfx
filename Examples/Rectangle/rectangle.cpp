@@ -593,7 +593,7 @@ static OfxStatus render(OfxImageEffectHandle effect,
   OfxPropertySetHandle sourceImg = NULL, outputImg = NULL;
   int srcRowBytes = 0, srcBitDepth, dstRowBytes, dstBitDepth;
   bool srcIsAlpha, dstIsAlpha;
-  OfxRectI dstRect, srcRect = {0};
+  OfxRectI dstRect, srcRect = {0, 0, 0, 0};
   void *src = NULL, *dst;
   
   // by default we are premultiplied
