@@ -1,6 +1,5 @@
 // Copyright Contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
-// https://github.com/AcademySoftwareFoundation/OpenFx
 
 /** @file This file contains the body of functions used for logging ofx problems etc...
 

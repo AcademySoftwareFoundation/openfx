@@ -1,7 +1,6 @@
 
 // Copyright Contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
-// https://github.com/AcademySoftwareFoundation/OpenFx
 
 #ifndef OFX_INTERACT_H
 #define OFX_INTERACT_H

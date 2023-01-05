@@ -1,6 +1,5 @@
 // Copyright Contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
-// https://github.com/AcademySoftwareFoundation/OpenFx
 
 /*
   Ofx Example plugin that shows how an overlay is drawn and interacted with.

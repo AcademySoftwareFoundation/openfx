@@ -10,7 +10,6 @@ print(oldcopyright[0:20])
 
 newcopyright = b"""// Copyright Contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
-// https://github.com/AcademySoftwareFoundation/OpenFx
 """
 
 copyright_re=re.compile(oldcopyright, re.MULTILINE | re.DOTALL)

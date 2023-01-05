@@ -1,6 +1,5 @@
 // Copyright Contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
-// https://github.com/AcademySoftwareFoundation/OpenFx
 
 #ifndef HOST_DEMO_EFFECT_INSTANCE_H
 #define HOST_DEMO_EFFECT_INSTANCE_H
