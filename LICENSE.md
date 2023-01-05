@@ -1,7 +1,8 @@
 This software is distributed under the "3-Clause BSD License".
 ===
 
-Copyright 2021, The Open Effects Association
+Copyright Contributors to the OpenFX project.
+SPDX-License-Identifier: BSD-3-Clause
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
