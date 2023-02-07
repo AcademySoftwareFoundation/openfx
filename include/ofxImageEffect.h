@@ -1036,55 +1036,105 @@ This property acts as a hint to hosts indicating that they could feed the effect
 */
 #define kOfxImageClipPropIsMask "OfxImageClipPropIsMask"
 
-/** @brief The path to the OCIO config used for this clip
+/** @brief Does a host or plug-in support OCIO?
+
+   - Type - int X 1
+   - Property Set - host descriptor (read only), plugin descriptor (read/write)
+   - Default - 0
+   - Valid Values - This must be one of 0 or 1
+
+Hosts should set this property if they will provide OCIO configuration 
+information to plug-ins.
+Plug-ins should set this property if they can use host-provided OCIO 
+configuration. A host might not natively use OCIO but could provide a 
+compatibility config purely the purposes of communicating colour information 
+to plug-ins. As this may incur a cost for the host, plug-ins should only 
+set this property to 1 if they will actually benefit from colour information.
+*/
+#define kOfxImageEffectPropSupportsOCIO "OfxImageEffectPropSupportsOCIO"
+
+/** @brief The path to the OCIO config used for this instance
 
    - Type - string X 1
-   - Property Set - clip descriptor (read/write)
+   - Property Set - image effect instance (read only)
    - Valid Values - Filesystem path to the config
 
-Hosts should set this property on any clips which are color managed by OCIO.
+Hosts should set this property on any effect instances which it would like to colour manage using OCIO.
 */
-#define kOfxImageClipPropOCIOConfig "OfxImageClipPropOCIOConfig"
+#define kOfxImageEffectPropOCIOConfig "OfxImageEffectPropOCIOConfig"
 
 /** @brief The OCIO colourspace used for this clip
 
    - Type - string X 1
-   - Property Set - clip descriptor (read only)
+   - Property Set - clip instance (read/write)
    - Valid Values - colourspace that is present in the config
 
-Hosts should set this property on any clips which are color managed by OCIO. Typically it will be set to the working colourspace of the host.
+Hosts should set this property to the colourspace of the input clip. Typically 
+it will be set to the working colourspace of the host but could be any valid 
+colourspace from the config.
+Plug-ins may set this property on an output clip to a valid colourspace from 
+the host-supplied config.
+Both host and plug-in should use the value of 
+kOfxImageClipPropOCIOPreferredColourspace where reasonable.
 */
 #define kOfxImageClipPropOCIOColourspace "OfxImageClipPropOCIOColourspace"
 
-/** @brief The OCIO display used to show this clip
+/** @brief The preferred OCIO colourspace used for this clip
 
    - Type - string X 1
-   - Property Set - clip descriptor (read only)
+   - Property Set - clip descriptor (read/write)
+   - Valid Values - colourspace that is present in the config
+
+Plug-ins may set this property on an input clip to request the image in a 
+certain colourspace. Hosts may optionally convert input images into this 
+colourspace, but must always set kOfxImageClipPropOCIOColourspace to the 
+actual colourspace used.
+Hosts may set this on an output clip, which could be helpful in a generator 
+context.
+*/
+#define kOfxImageClipPropOCIOPreferredColourspace "OfxImageClipPropOCIOPreferredColourspace"
+
+/** @brief The OCIO display used in the plug-in's viewport
+
+   - Type - string X 1
+   - Property Set - image effect instance (read only)
    - Valid Values - OCIO display that is present in the config
 
-Hosts should set this property on any clips which are color managed by OCIO. The property should match the display used in the host's viewer.
+This property is relevant for plug-ins which have their own viewport in a 
+custom window.
+Hosts should set this property to a display from the config which the plug-in 
+should use for any image display in its own viewport. For a host which uses 
+OCIO natively, this would typically match the display used in its own viewport. 
 */
-#define kOfxImageClipPropOCIODisplay "OfxImageClipPropOCIODisplay"
+#define kOfxImageEffectPropOCIODisplay "OfxImageEffectPropOCIODisplay"
 
-/** @brief The OCIO display view used to show this clip
+/** @brief The OCIO display view used in the plug-in's viewport
 
    - Type - string X 1
-   - Property Set - clip descriptor (read only)
+   - Property Set - image effect instance (read only)
    - Valid Values - OCIO view that is present in the config
 
-Hosts should set this property on any clips which are color managed by OCIO. The property should match the view used in the host's viewer.
+This property is relevant for plug-ins which have their own viewport in a 
+custom window.
+Hosts should set this property to a view from the config which the plug-in 
+should use for any image display in its own viewport. For a host which uses 
+OCIO natively, this would typically match the view used in its own viewport. 
 */
-#define kOfxImageClipPropOCIODisplayView "OfxImageClipPropOCIODisplayView"
+#define kOfxImageEffectPropOCIODisplayView "OfxImageEffectPropOCIODisplayView"
 
-/** @brief The OCIO look used to show this clip
+/** @brief The OCIO look used in the plug-in's viewport
 
    - Type - string X 1
-   - Property Set - clip descriptor (read only)
+   - Property Set - image effect instance (read only)
    - Valid Values - OCIO look that is present in the config
 
-Hosts should set this property on any clips which are color managed by OCIO and a look has been selected in the host's viewer.
+This property is relevant for plug-ins which have their own viewport in a 
+custom window.
+Hosts should set this property to a look from the config which the plug-in 
+should use for any image display in its own viewport. For a host which uses 
+OCIO natively, this would typically match the look used in its own viewport.
 */
-#define kOfxImageClipPropOCIOLook "OfxPropOCIOLook"
+#define kOfxImageEffectPropOCIOLook "OfxImageEffectPropOCIOLook"
    
 /** @brief The pixel aspect ratio of a clip or image.
 
