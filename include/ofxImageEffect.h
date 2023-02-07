@@ -1082,13 +1082,13 @@ kOfxImageClipPropOCIOPreferredColourspace where reasonable.
 /** @brief The preferred OCIO colourspace used for this clip
 
    - Type - string X 1
-   - Property Set - clip descriptor (read/write)
+   - Property Set - clip instance (read only) and ::kOfxImageEffectActionGetClipPreferences action out args property (read/write)
    - Valid Values - colourspace that is present in the config
 
-Plug-ins may set this property on an input clip to request the image in a 
-certain colourspace. Hosts may optionally convert input images into this 
-colourspace, but must always set kOfxImageClipPropOCIOColourspace to the 
-actual colourspace used.
+Plug-ins may set this property during kOfxImageEffectActionGetClipPreferences 
+to request the image in a certain colourspace. Hosts may optionally provide 
+input images in this colourspace, but must always set 
+kOfxImageClipPropOCIOColourspace to the actual colourspace used.
 Hosts may set this on an output clip, which could be helpful in a generator 
 context.
 */
@@ -1101,7 +1101,8 @@ context.
    - Valid Values - OCIO display that is present in the config
 
 This property is relevant for plug-ins which have their own viewport in a 
-custom window.
+custom window. Plug-ins should not expect this to be available during a render 
+event.
 Hosts should set this property to a display from the config which the plug-in 
 should use for any image display in its own viewport. For a host which uses 
 OCIO natively, this would typically match the display used in its own viewport. 
@@ -1115,7 +1116,8 @@ OCIO natively, this would typically match the display used in its own viewport.
    - Valid Values - OCIO view that is present in the config
 
 This property is relevant for plug-ins which have their own viewport in a 
-custom window.
+custom window. Plug-ins should not expect this to be available during a render 
+event.
 Hosts should set this property to a view from the config which the plug-in 
 should use for any image display in its own viewport. For a host which uses 
 OCIO natively, this would typically match the view used in its own viewport. 
@@ -1129,7 +1131,8 @@ OCIO natively, this would typically match the view used in its own viewport.
    - Valid Values - OCIO look that is present in the config
 
 This property is relevant for plug-ins which have their own viewport in a 
-custom window.
+custom window. Plug-ins should not expect this to be available during a render 
+event.
 Hosts should set this property to a look from the config which the plug-in 
 should use for any image display in its own viewport. For a host which uses 
 OCIO natively, this would typically match the look used in its own viewport.
