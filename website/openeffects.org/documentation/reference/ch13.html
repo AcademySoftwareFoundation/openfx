@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Chapter 13. Actions Passed to An Image Effect</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="prev" href="/documentation/reference/ch12s08.html" title="Specifying Premultiplication"></link>
+      <link rel="next" href="/documentation/reference/ch13s02.html" title="The Generic Unload Action"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Chapter 13. Actions Passed to An Image Effect</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch12s08.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center"> </th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch13s02.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="chapter">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h1 class="title">
+                        <a id="ImageEffectActions"></a>
+                        Chapter 13. Actions Passed to An Image Effect
+                     </h1>
+                  </div>
+               </div>
+            </div>
+            <p>
+    Actions passed to an OFX Image Effect's plug-in main entry point are from two categories...
+    </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     actions that could potentially be issued to any kind of plug in, not just image effects, known as generic actions, found in
+                     <code class="filename">ofxCore.h</code>
+                  </li>
+                  <li class="listitem">
+                     actions that are only applicable purely to image effects, found in
+                     <code class="filename">ofxImageEffect.h</code>
+                  </li>
+               </ul>
+            </div>
+            <p>
+  </p>
+            <p>
+               For generic actions, the
+               <code class="code">handle</code>
+               passed to to main entry point will depend on the API being impemented, for all generic actions passed to an OFX Image Effect plug-in, it will nearly alway be an
+               <code class="code">OfxImageEffectHandle</code>
+               .
+            </p>
+            <p>
+    Because interacts are a special case, they are dealt with in a separate chapter, this chapter will deal with actions issued to an image effect plug-ins main entry point.
+  </p>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">
+                           <a id="kOfxActionLoad"></a>
+                           The Generic Load Action
+                        </h2>
+                     </div>
+                  </div>
+               </div>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">
+	#include "ofxCore.h"
+	#define  kOfxActionLoad "OfxActionLoad" </pre>
+                  </blockquote>
+               </div>
+               <h5>
+                  <a id="idp12543184"></a>
+                  Arguments
+               </h5>
+               <p>
+                  The
+                  <code class="code">handle</code>
+                  ,
+                  <code class="code">inArgs</code>
+                  and
+                  <code class="code">outArgs</code>
+                  arguments to the main entry are redundant and should be set to NULL.
+               </p>
+               <h5>
+                  <a id="idp12545440"></a>
+                  Description
+               </h5>
+               <p>
+                  <code class="code">kOfxActionLoad</code>
+                  is the first action passed to a plug-in after the binary containing the plug-in has been loaded. It is there to allow a plug-in to create any global data structures it may need and is also when the plug-in should fetch suites from the host.
+               </p>
+               <h5>
+                  <a id="idp12544432"></a>
+                  Preconditions
+               </h5>
+               <p>
+      The plugin's OfxPlugin::setHost function has been called
+    </p>
+               <h5>
+                  <a id="idp12546048"></a>
+                  Postconditions
+               </h5>
+               <p>
+      This action will not be called again while the binary containing the plug-in remains loaded.
+    </p>
+               <h5>
+                  <a id="idp12549136"></a>
+                  Return Values
+               </h5>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">kOfxStatOK, the action was trapped and all was well,</li>
+                     <li class="listitem">kOfxStatReplyDefault, the action was ignored,</li>
+                     <li class="listitem">kOfxStatFailed, the load action failed, no further actions will be passed to the plug-in,</li>
+                     <li class="listitem">kOfxStatErrFatal, fatal error in the plug-in.</li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch12s08.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center"> </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch13s02.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Specifying Premultiplication </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> The Generic Unload Action</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

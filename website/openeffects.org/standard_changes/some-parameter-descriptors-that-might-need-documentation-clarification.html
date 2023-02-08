@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes Some Parameter Descriptors That Might Need Documentation Clarification |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="tEBCNsj/+roJgQ5whpXw43bV5PGJzuk4o7rqMSiouWaaWiqFbsv3lbxeTJ3yp0s3I/WQtNCzz9ptu/5cPfm4XQ==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+<form role="form" class="navbar-form navbar-right form-inline" action="/users/sign_in" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="PHdXGvdO8C4FHE9rD22wJXKr4PSnq0yuNC+nwctCF8ESbT+pUXr9AbDDDYZ7XwvxJ4uUsf7Wakz6LrOs3hMW+g==" />
+<div class='form-group'>
+<input type="text" name="user[email]" id="user_email" class="form-control input-xs" placeholder="Email" />
+</div>
+<div class='form-group'>
+<input type="password" name="user[password]" id="user_password" class="form-control input-xs" placeholder="Password" />
+</div>
+<button class='btn btn-sm btn-primary' type='submit'>Sign in</button>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='row'>
+<div class='col-md-offset-2 col-md-8'>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-warning'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+Some Parameter Descriptors that might need documentation clarification
+<span class='pull-right'>Proposed</span>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Standard version:</b>
+2.0
+</p>
+<p>
+<b>Major Change</b>
+</p>
+<label>Subcommittee</label>
+<p></p>
+<label>Overview</label>
+<p>This is complement to:&nbsp;kOfxParamPropModifiable proposal</p>
+<p>http://openeffects.org/standard_changes/property-to-hint-that-parameter-properties-can-be-dynamically-changed</p>
+<p>The purpose is to list possible ambiguities in API regarding parameters</p>
+<p>1) Apparently we do not specify that we expect Boolean and Choice to be "step" animation (as opposed to linearly interpolated as if they were regular int) &nbsp;so where option = 1 @ t=1 and option = 3 @ t = 100 ,&nbsp; so&nbsp; @t=99,&nbsp; option should still be equal to 1</p>
+<p>I am not quite clear what string animation is interpreted (seems it would be swap at KF too) - currently these parameter types are affected.</p>
+<div class="itemizedlist">
+<ul class="itemizedlist">
+<li class="listitem"><code class="code">kOfxParamTypeString</code></li>
+<li class="listitem"><code class="code">kOfxParamTypeBoolean</code></li>
+<li class="listitem"><code class="code">kOfxParamTypeChoice</code></li>
+</ul>
+</div>
+<p>&nbsp;</p>
+<p>2) Removed discussion&nbsp;about&nbsp;<strong>kOfxParamDoubleTypeAngle</strong></p>
+<p>The doc (not the header file) says it's in degrees so it's always 360 degrees basis for an host that would implement a UI rotation widget - the wors that can happen is the widget points the wrong way (-180 to 180 vs 0 to 360...).</p>
+<p>3) I am not quite sure what this means in context of UI versus render thread...</p>
+<table class="highlight tab-size js-file-line-container" data-tab-size="8">
+<tbody>
+<tr>
+<td id="LC613" class="blob-code blob-code-inner js-file-line"><span><span>/*</span>* @brief A private data pointer that the plug-in can store its own data behind.</span></td>
+</tr>
+</tbody>
+</table>
+<table class="highlight tab-size js-file-line-container" data-tab-size="8">
+<tbody>
+<tr>
+<td id="LC614" class="blob-code blob-code-inner js-file-line">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table class="highlight tab-size js-file-line-container" data-tab-size="8">
+<tbody>
+<tr>
+<td id="LC615" class="blob-code blob-code-inner js-file-line"><span> - Type - pointer X 1</span></td>
+</tr>
+</tbody>
+</table>
+<table class="highlight tab-size js-file-line-container" data-tab-size="8">
+<tbody>
+<tr>
+<td id="LC616" class="blob-code blob-code-inner js-file-line"><span> - Property Set - plugin parameter instance (read/write),</span></td>
+</tr>
+</tbody>
+</table>
+<table class="highlight tab-size js-file-line-container" data-tab-size="8">
+<tbody>
+<tr>
+<td id="LC617" class="blob-code blob-code-inner js-file-line"><span> - Default - NULL</span></td>
+</tr>
+</tbody>
+</table>
+<table class="highlight tab-size js-file-line-container" data-tab-size="8">
+<tbody>
+<tr>
+<td id="LC618" class="blob-code blob-code-inner js-file-line">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table class="highlight tab-size js-file-line-container" data-tab-size="8">
+<tbody>
+<tr>
+<td id="LC619" class="blob-code blob-code-inner js-file-line"><span>This data pointer is unique to each parameter instance, so two instances of the same parameter do not share the same data pointer. Use it to hang any needed private data structures.</span></td>
+</tr>
+</tbody>
+</table>
+<table class="highlight tab-size js-file-line-container" data-tab-size="8">
+<tbody>
+<tr>
+<td id="LC620" class="blob-code blob-code-inner js-file-line"><span> <span>*/</span></span></td>
+</tr>
+</tbody>
+</table>
+<p>#<span>define</span> <span>kOfxParamPropDataPtr</span> <span><span>"</span>OfxParamPropDataPtr<span>"</span></span></p>
+<p>&nbsp;</p>
+<label>Solution</label>
+
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-default'>
+<div class='panel-body'>
+<h4 class='text-primary'>Discussion</h4>
+<p>No comments on this change yet</p>
+</div>
+</div>
+
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

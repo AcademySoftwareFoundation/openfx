@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>OfxImageEffectSuiteV1::imageMemoryAlloc</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch15s02.html" title="Image Effect Suite"></link>
+      <link rel="prev" href="/documentation/reference/re30.html" title="OfxImageEffectSuiteV1::abort"></link>
+      <link rel="next" href="/documentation/reference/re32.html" title="OfxImageEffectSuiteV1::imageMemoryFree"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">
+                     <code class="function">OfxImageEffectSuiteV1::imageMemoryAlloc</code>
+                  </th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re30.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Image Effect Suite</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re32.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="refentry">
+            <a id="OfxImageEffectSuiteV1_imageMemoryAlloc"></a>
+            <div class="titlepage"></div>
+            <div class="refnamediv">
+               <h2>Name</h2>
+               <p>
+                  <code class="function">OfxImageEffectSuiteV1::imageMemoryAlloc</code>
+                  — Allocate memory from the host's image memory pool
+               </p>
+            </div>
+            <div class="refsynopsisdiv">
+               <h2>Synopsis</h2>
+               <div class="funcsynopsis">
+                  <pre class="funcsynopsisinfo">#include "ofxImageEffect.h" </pre>
+                  <table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;">
+                     <tr>
+                        <td>
+                           <code class="funcdef">
+                              OfxStatus
+                              <strong class="fsfunc">(*imageMemoryAlloc)</strong>
+                              (
+                           </code>
+                        </td>
+                        <td>
+                           OfxImageEffectHandle
+                           <var class="pdparam">instanceHandle</var>
+                           ,
+                        </td>
+                     </tr>
+                     <tr>
+                        <td> </td>
+                        <td>
+                           size_t
+                           <var class="pdparam">nBytes</var>
+                           ,
+                        </td>
+                     </tr>
+                     <tr>
+                        <td> </td>
+                        <td>
+                           OfxImageMemoryHandle *
+                           <var class="pdparam">memoryHandle</var>
+                           <code>)</code>
+                           ;
+                        </td>
+                     </tr>
+                  </table>
+                  <div class="funcprototype-spacer"> </div>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp14830256"></a>
+               <h3>Arguments</h3>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">instanceHandle - effect instance to associate with this memory allocation, may be NULL.
+</li>
+                     <li class="listitem">nBytes - the number of bytes to allocate
+</li>
+                     <li class="listitem">memoryHandle - pointer to the memory handle where a return value is placed
+</li>
+                  </ul>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp14832800"></a>
+               <h3>Description</h3>
+               <p>
+                  Memory handles allocated by this should be freed by
+                  <a class="link" href="/documentation/reference/re32.html" title="OfxImageEffectSuiteV1::imageMemoryFree">
+                     <code class="code">OfxImageEffectSuiteV1::imageMemoryFree</code>
+                  </a>
+                  . To access the memory behind the handle you need to call
+                  <a class="link" href="/documentation/reference/re33.html" title="OfxImageEffectSuiteV1::imageMemoryLock">
+                     <code class="code">OfxImageEffectSuiteV1::imageMemoryLock</code>
+                  </a>
+                  .
+               </p>
+               <p>
+                  See
+                  <a class="link" href="/documentation/reference/ch08s06.html" title="Allocating Your Own Images">ImageEffectsMemoryAllocation</a>
+                  .
+               </p>
+            </div>
+            <div class="refsect2">
+               <a id="idp14837344"></a>
+               <h3>Returns</h3>
+               <p>
+
+</p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        kOfxStatOK if all went well, a valid memory handle is placed in
+                        <span class="emphasis">
+                           <em> memoryHandle</em>
+                        </span>
+                     </li>
+                     <li class="listitem">kOfxStatErrBadHandle if instanceHandle is not valid, memoryHandle is set to NULL</li>
+                     <li class="listitem">kOfxStatErrMemory if there was not enough memory to satisfy the call, memoryHandle is set to NULL</li>
+                  </ul>
+               </div>
+               <p>
+</p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re30.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch15s02.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re32.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">
+                     <code class="function">OfxImageEffectSuiteV1::abort</code>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top">
+                      
+                     <code class="function">OfxImageEffectSuiteV1::imageMemoryFree</code>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

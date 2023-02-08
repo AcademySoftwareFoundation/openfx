@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>The Describe Action</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.77.1"></meta>
+      <link rel="home" href="/documentation/guide/index.html" title="OpenFX Plug-in API Programming Guide"></link>
+      <link rel="up" href="/documentation/guide/ch02.html" title="Chapter 2. Introduction To OFX, A Simple Plug-in"></link>
+      <link rel="prev" href="/documentation/guide/ch02s06.html" title="The Load Action"></link>
+      <link rel="next" href="/documentation/guide/ch02s08.html" title="The Describe In Context Action"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <table>
+            <tr>
+               <td>
+                  <ul>
+                     <li>
+                        <a href="/">
+                           <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+                        </a>
+                     </li>
+                     <li>
+                        <a href="/">
+                           Back to Main Site
+                           <span class="glyph"></span>
+                        </a>
+                     </li>
+                     <li>
+                        <a href="/documentation/guide">Programming Guide</a>
+                     </li>
+                     <li>
+                        <a href="/documentation/reference">Programming Reference</a>
+                     </li>
+                     <li>
+                        <a href="/documentation/api_doc">API Reference</a>
+                     </li>
+                  </ul>
+               </td>
+            </tr>
+         </table>
+      </div>
+      <div class="wrapper" id="guide">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">The Describe Action</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/guide/ch02s06.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 2. Introduction To OFX, A Simple Plug-in</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/guide/ch02s08.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="idp140729791750336"></a>
+                        The Describe Action
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <div class="informalexample">
+               <pre class="programlisting">
+// the plug-in's description routine
+static OfxStatus
+describe(OfxImageEffectHandle effect)
+{
+  // get the property handle for the plugin
+  OfxPropertySetHandle effectProps;
+  gEffectSuite-&gt;getPropertySet(effect, &amp;effectProps);
+
+  // say we cannot support multiple pixel depths and let the clip preferences action deal with it all.
+  gPropertySuite-&gt;propSetInt(effectProps, kOfxImageEffectPropSupportsMultipleClipDepths, 0, 0);
+  
+  // set the bit depths the plug-in can handle
+  gPropertySuite-&gt;propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 0, kOfxBitDepthByte);
+
+  // set plug-in label and the group it belongs to
+  gPropertySuite-&gt;propSetString(effectProps, kOfxPropLabel, 0, "OFX Invert Example");
+  gPropertySuite-&gt;propSetString(effectProps, kOfxImageEffectPluginPropGrouping, 0, "OFX Example");
+
+  // define the contexts we can be used in
+  gPropertySuite-&gt;propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 0, kOfxImageEffectContextFilter);
+  
+  return kOfxStatOK;
+}
+</pre>
+            </div>
+            <p>
+               The purpose of the describe action is to tell the host the overall behaviour of the plug-in. The
+               <span class="structname">OfxImageEffectHandle</span>
+               passed to the describe action is a
+               <span class="emphasis">
+                  <em>descriptor</em>
+               </span>
+               as opposed to an
+               <span class="emphasis">
+                  <em>instance</em>
+               </span>
+               . A descriptor is a handle that is used to tell the host how a plug-in should look, whilst an instance is an actual running copy of a plug-in. Descriptors are passed to only two actions, the describe action, and the describe in context action. Most other actions that are passed an instance handle.
+            </p>
+            <p>
+               The first thing this function does is to fetch the handle holding the properties used to describe the plug-in. Note how it uses the
+               <code class="varname">gEffectSuite</code>
+               pointer to do this.
+            </p>
+            <p>
+               The next thing the plug-in does is set the integer property
+               <code class="literal">kOfxImageEffectPropSupportsMultipleClipDepths</code>
+               to be false using the property suite. This tells the host application that the plug-in can only support a single pixel depth at a time, otherwise the host might attempt to have an 8 bit input and a 16 bit output.
+            </p>
+            <p>Note how the property setting functions take four arguments. The
+      first is the set of properties to be modified, the second is the name
+      (again a string) of the property in that set they wish to change, the
+      third is the index of the property (as properties can be
+      multi-dimensional) and the last is the value they wish to set.</p>
+            <p>The plug-in goes on to set properties that describe it as
+      supporting only images of 8 bits per component, the user visible name of
+      the effect, the grouping the effect should be placed in on any user
+      interface and finally the context it can be used under.</p>
+            <p>An image effect context describes the semantics of how a plug-in
+      should be used. In this case we are saying the plug-in is a filter,
+      which means it has to have one input clip called "Source" and one output
+      clip called "Output". Other contexts include transitions, where an image
+      effect has two inputs and a single output and is require to go from one
+      to the other, a general context for tree based compositing systems and
+      several more. A plug-in can say that it works in more than one context,
+      which brings us on to the next function.</p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/guide/ch02s06.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/guide/ch02.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/guide/ch02s08.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">The Load Action </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/guide/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> The Describe In Context Action</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

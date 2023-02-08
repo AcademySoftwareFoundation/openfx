@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>OfxImageEffectSuiteV1::clipGetRegionOfDefinition</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch15s02.html" title="Image Effect Suite"></link>
+      <link rel="prev" href="/documentation/reference/re28.html" title="OfxImageEffectSuiteV1::clipReleaseImage"></link>
+      <link rel="next" href="/documentation/reference/re30.html" title="OfxImageEffectSuiteV1::abort"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">
+                     <code class="function">OfxImageEffectSuiteV1::clipGetRegionOfDefinition</code>
+                  </th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re28.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Image Effect Suite</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re30.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="refentry">
+            <a id="OfxImageEffectSuiteV1_clipGetRegionOfDefinition"></a>
+            <div class="titlepage"></div>
+            <div class="refnamediv">
+               <h2>Name</h2>
+               <p>
+                  <code class="function">OfxImageEffectSuiteV1::clipGetRegionOfDefinition</code>
+                  — Returns the spatial region of definition of the clip at the given time
+               </p>
+            </div>
+            <div class="refsynopsisdiv">
+               <h2>Synopsis</h2>
+               <div class="funcsynopsis">
+                  <pre class="funcsynopsisinfo">#include "ofxImageEffect.h" </pre>
+                  <table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;">
+                     <tr>
+                        <td>
+                           <code class="funcdef">
+                              OfxStatus
+                              <strong class="fsfunc">(*clipGetRegionOfDefinition)</strong>
+                              (
+                           </code>
+                        </td>
+                        <td>
+                           OfxImageClipHandle
+                           <var class="pdparam">clip</var>
+                           ,
+                        </td>
+                     </tr>
+                     <tr>
+                        <td> </td>
+                        <td>
+                           OfxTime
+                           <var class="pdparam">time</var>
+                           ,
+                        </td>
+                     </tr>
+                     <tr>
+                        <td> </td>
+                        <td>
+                           OfxRectD *
+                           <var class="pdparam">bounds</var>
+                           <code>)</code>
+                           ;
+                        </td>
+                     </tr>
+                  </table>
+                  <div class="funcprototype-spacer"> </div>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp14792896"></a>
+               <h3>Arguments</h3>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">clip - </li>
+                     <li class="listitem">time - time to fetch the image at
+</li>
+                     <li class="listitem">bounds - </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp14795248"></a>
+               <h3>Description</h3>
+               <p>
+An image is fetched from a clip at the indicated time for the given region and returned in the imageHandle.
+</p>
+               <p>
+                  If the
+                  <span class="emphasis">
+                     <em> region</em>
+                  </span>
+                  parameter is not set to NULL, then it will be clipped to the clip's Region of Definition for the given time. The returned image will be
+                  <span class="emphasis">
+                     <em> m</em>
+                  </span>
+                  at
+                  <span class="emphasis">
+                     <em> m</em>
+                  </span>
+                  least as big as this region. If the region parameter is not set, then the region fetched will be at least the Region of Interest the effect has previously specified, clipped the clip's Region of Definition.
+               </p>
+               <p>
+\pre
+
+</p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">clipHandle was returned by clipGetHandle</li>
+                  </ul>
+               </div>
+               <p>
+</p>
+               <p>
+\post
+
+</p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">bounds will be filled the RoD of the clip at the indicated time</li>
+                  </ul>
+               </div>
+               <p>
+</p>
+            </div>
+            <div class="refsect2">
+               <a id="idp14800928"></a>
+               <h3>Returns</h3>
+               <p>
+
+</p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re248.html" title="kOfxStatOK">
+                           <code class="code">kOfxStatOK</code>
+                        </a>
+                        - the image was successfully fetched and returned in the handle,
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re249.html" title="kOfxStatFailed">
+                           <code class="code">kOfxStatFailed</code>
+                        </a>
+                        - the image could not be fetched because it does not exist in the clip at the indicated time, the plugin
+                     </li>
+                  </ul>
+               </div>
+               <p>
+should continue operation, but assume the image was black and transparent.
+
+</p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re257.html" title="kOfxStatErrBadHandle">
+                           <code class="code">kOfxStatErrBadHandle</code>
+                        </a>
+                        - the clip handle was invalid,
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re256.html" title="kOfxStatErrMemory">
+                           <code class="code">kOfxStatErrMemory</code>
+                        </a>
+                        - the host had not enough memory to complete the operation, plugin should abort whatever it was doing.
+                     </li>
+                  </ul>
+               </div>
+               <p>
+</p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re28.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch15s02.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re30.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">
+                     <code class="function">OfxImageEffectSuiteV1::clipReleaseImage</code>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top">
+                      
+                     <code class="function">OfxImageEffectSuiteV1::abort</code>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

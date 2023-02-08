@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes Dynamic Parameter Creation |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="vKJ6b0s3P1F7ByS2A2GGXthE07YawTsc0SH32i8Drn6SuBLc7QMyfs7YZlt3Uz2KjWSn80O8Hf4fIOO3OlKvRQ==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+<form role="form" class="navbar-form navbar-right form-inline" action="/users/sign_in" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="eAr/mUs8gzoZERtuBBzBbEmV4kVkrBAIQahRENA9H11WEJcq7QiOFazOWYNwLnq4HLWWAD3RNuqPqUV9xWweZg==" />
+<div class='form-group'>
+<input type="text" name="user[email]" id="user_email" class="form-control input-xs" placeholder="Email" />
+</div>
+<div class='form-group'>
+<input type="password" name="user[password]" id="user_password" class="form-control input-xs" placeholder="Password" />
+</div>
+<button class='btn btn-sm btn-primary' type='submit'>Sign in</button>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='row'>
+<div class='col-md-offset-2 col-md-8'>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-warning'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+Dynamic Parameter Creation
+<span class='pull-right'>Proposed</span>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Standard version:</b>
+2.0
+</p>
+<p>
+<b>Major Change</b>
+</p>
+<label>Subcommittee</label>
+<p></p>
+<label>Overview</label>
+<p>Being able to amend the parameter set on a plugin instance after creation would be a useful feature for many plugin developers. In response to user initiated action (eg: a button press), a plugin should be&nbsp;able to both define new parameters or destroy existing parameters on the given instance.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<label>Solution</label>
+<p>We need a new 1D int property on the host and plugin descriptors,&nbsp;<em>kOfxPropHasDynamicParams. </em>This takes two values zero (false) or 1 (true), which indicate...</p>
+<ul>
+<li>for a host, that it supports dynamic parameter creation,</li>
+<li>for a plugin, that it wants to perfrom dynamic parameter creation.</li>
+</ul>
+<p>We need to ammend the parameter suite so that we have the following functions added....</p>
+<ul>
+<li><em>OfxParameterSuiteV2::paramSetEditBegin&nbsp;</em>- which indicates the plugin is about to start adding or removing params from its&nbsp;parameter set</li>
+<li><em>OfxParameterSuiteV2::paramSetEditEnd&nbsp;</em><span>-&nbsp;<span>which indicates&nbsp;the plugin has finished&nbsp;adding or removing params from its&nbsp;parameter set</span></span></li>
+<li><span><span><em>OfxParameterSuiteV2::paramDestroy -&nbsp;</em>which destroys a given parameter in the param set.</span></span></li>
+</ul>
+<p>For hosts that support dynamic parameter creation, you can edit the parameter set in the same actions as you could set a parameter's values. A plugin must first call&nbsp;<em>OfxParameterSuiteV1::paramSetEditBegin</em>, it can then call <em>paramDefine</em> as if it were in the describe action to create new parameters. It can also destroy parameters via&nbsp;<em>OfxParameterSuiteV2::paramDestroy</em>. Once done, a plugin should call&nbsp;<em>OfxParameterSuiteV2::paramSetEditEnd.</em></p>
+<p>During the param set editing process, a parameter's descriptor is being manipulated, just as in the describe action. Once&nbsp;<em>OfxParameterSuiteV2::paramSetEditEnd</em> is called, you would need to fetch the parameter instance out of the param set to access and modify its value.</p>
+<p>All parameters, whether dynamically created or not, need a unique name.</p>
+<p><strong>Note:</strong> Parameters that are declared in the initial&nbsp;<em>kOfxActionDescribe</em> action cannot be destroyed</p>
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-default'>
+<div class='panel-body'>
+<h4 class='text-primary'>Discussion</h4>
+<h5>Comments</h5>
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-244'>
+<div class='content'>
+<p>(Pierre Jasmin):&nbsp; In an application like Fusion for native plugins it already works like that. I am not sure it needs to wait for v2 to be supported. An alternative scheme would be like we were able to add dynamic parameters in Combustion (within AE plugin framework). Essentially static parameter were declared as usual and additional parameters could later be added. This would have for the static parameters no effect on the plugin.&nbsp; A similar scheme could work here. Rather than making this ParameterSuiteV2, it could be DynamicParameterSuiteV1. This would make it simple to know when creating Parameters if DynamicParams are supported...</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  3:41 pm,   6 Jun 2015
+</div>
+</div>
+
+</div>
+</div>
+
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

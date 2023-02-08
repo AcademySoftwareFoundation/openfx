@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes Render Quality |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="z1E7wiiwnFprRKQSbfTZ8qSJ4p5eP0+ycqQTSsUAB27hS1NxjoSRdd6b5v8ZxmIm8amW2wdCaVC8pQcn0FEGVQ==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+<form role="form" class="navbar-form navbar-right form-inline" action="/users/sign_in" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="fyGrc9BYs0jQedVnGKT7sq3/eYl67FZPtgM/jx+1nKhRO8PAdmy+Z2Wml4pslkBm+N8NzCORcK14AiviCuSdkw==" />
+<div class='form-group'>
+<input type="text" name="user[email]" id="user_email" class="form-control input-xs" placeholder="Email" />
+</div>
+<div class='form-group'>
+<input type="password" name="user[password]" id="user_password" class="form-control input-xs" placeholder="Password" />
+</div>
+<button class='btn btn-sm btn-primary' type='submit'>Sign in</button>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='row'>
+<div class='col-md-offset-2 col-md-8'>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-warning'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+Render Quality
+<span class='pull-right'>Proposed</span>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Standard version:</b>
+1.4
+</p>
+<p>
+<b>Minor Change</b>
+</p>
+<label>Subcommittee</label>
+<p></p>
+<label>Overview</label>
+<p>Render action InArgs property. Draft/Preview is typical for scrubbing, Best&nbsp;is typical for render. These allow a plug-in to take short-cuts for improved performance when the situation allows.</p>
+<label>Solution</label>
+<p>#define kOfxImageEffectPropRenderQuality &ldquo;OfxImageEffectPropRenderQuality&rdquo;</p>
+<p>#define kOfxImageEffectPropRenderQualityDraft &ldquo;OfxImageEffectPropRenderQualityDraft&rdquo;</p>
+<p><span>#define kOfxImageEffectPropRenderQualityBest &ldquo;OfxImageEffectPropRenderQualityBest&rdquo;</span></p>
+<p>&nbsp;For now a single alternative version is supported - QualityDraft is a good thing for example to call if your application draw thumbnails of a clip (different frames over time) in a manner that causes plugin processing. The hope is also that this can speed up scrubbing and such interaction. &nbsp;Plugin is guaranteed here that the render results will not be saved in some persistant cache.</p>
+<p>Original submission by Dennis Adams below - &nbsp;See Final Status in next box.</p>
+<p>&nbsp;</p>
+<p>/** @brief Indicates the quality level of the render</p>
+<ol>
+<li>Type - string x 1</li>
+</ol><ol>
+<li>Property Set - Render In Args (read only)</li>
+</ol><ol>
+<li>Valid Values - see below&hellip; (Draft, Preview, Good, Best)</li>
+</ol>
+<p>*/</p>
+<p>#define kOfxImageEffectPropRenderQuality &ldquo;OfxImageEffectPropRenderQuality&rdquo;</p>
+<p>#define kOfxImageEffectPropRenderQualityDraft &ldquo;OfxImageEffectPropRenderQualityDraft&rdquo;</p>
+<p>#define kOfxImageEffectPropRenderQualityPreview &ldquo;OfxImageEffectPropRenderQualityPreview&rdquo;</p>
+<p>#define kOfxImageEffectPropRenderQualityGood &ldquo;OfxImageEffectPropRenderQualityGood&rdquo;</p>
+<p>#define kOfxImageEffectPropRenderQualityBest &ldquo;OfxImageEffectPropRenderQualityBest&rdquo;</p>
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-default'>
+<div class='panel-body'>
+<h4 class='text-primary'>Discussion</h4>
+<h5>Comments</h5>
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-257'>
+<div class='content'>
+<p>Also earlier I said it might be preferable here to have only one Draft quality boolean if that option is supported. I guess the goal here is visual hints while scrubbing the timeline and things like that. An effect might then expect this will have no caching, and set internally a special render mode (e.g. no anti-aliasing, wireframe, etc) - whatever is enough to preview in such context and from host side assume they can for example use change their abort strategy (so this becomes as well probably something refinable per host in practice - some support downgrades to smaller render scale and some don't...). This setup could also be used for thumbnail generation and equivalent.</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  5:22 pm,  13 Jun 2015
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-32' id='cid-237'>
+<div class='content'>
+<p>How would this interact with the current renderscale property passed to a render?</p>
+</div>
+</div>
+<div class='author text-muted'>
+Bruno Nicoletti |  7:06 am,   2 Mar 2015
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-0' id='cid-211'>
+<div class='content'>
+<ul><li> Pierre Jasmin :  We had such discussion back then. At first glance this looks too detailed (too many options). Other comments: Some applications degrade resolution for similar purpose during interaction and set renderScale.</li></ul>
+</div>
+</div>
+<div class='author text-muted'>
+unattributed |  9:49 am,   8 Mar 2014
+</div>
+</div>
+
+</div>
+</div>
+
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

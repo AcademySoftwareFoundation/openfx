@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes Roto Splines |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="/aSHGFyaIk0oJ9mPAO0TzP7KzG3W/fZe/TCwDUceAvnTvu+r+q4vYp34m2J036gYq+q4KI+A0LwzMaRgUk8Dwg==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+<form role="form" class="navbar-form navbar-right form-inline" action="/users/sign_in" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="pHweLaU7uq20yy3L/GdwtX7LdH4jWbLsjvkyg2aoSkmKZnaeAw+3ggEUbyaIVcthK+sAO3oklA5A+Cbuc/lLcg==" />
+<div class='form-group'>
+<input type="text" name="user[email]" id="user_email" class="form-control input-xs" placeholder="Email" />
+</div>
+<div class='form-group'>
+<input type="password" name="user[password]" id="user_password" class="form-control input-xs" placeholder="Password" />
+</div>
+<button class='btn btn-sm btn-primary' type='submit'>Sign in</button>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='row'>
+<div class='col-md-offset-2 col-md-8'>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-warning'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+Roto-Splines
+<span class='pull-right'>Proposed</span>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Standard version:</b>
+1.5
+</p>
+<p>
+<b>Major Change</b>
+</p>
+<label>Subcommittee</label>
+<p></p>
+<label>Overview</label>
+<p>I think RE:Vision and Foundry via API email thread had a reasonable compromise. Paste in our discussion as reference. Imagineer has offered interest in such suite. This is an old discussion at this point, might have changed my mind and some of the supporting visuals are gone. I repaste anyway as reference. (Sorry for formatting)<br /><br />&nbsp;<br />Essentially we need a single shape parameter and a dynamic list one (with parameters per shape).</p>
+<p>&nbsp;</p>
+<p>(Bruno said:)<br />&nbsp;<br />Cool,<br /><br /><br />we have stopped banging our heads together on this one then<br /><br />&nbsp;<br /><br />b<br /><br />&nbsp;<br /><br />On 28 Jun 2006, at 23:04, Pierre Jasmin wrote:<br /><br />&nbsp;<br /><br />It could be as I think you suggest: a param array container [item<br /><br />1,2,3...] and a single spline param<br /><br />I could intoxicate the list with tons of details, in the end it only<br /><br />matters if one host wants to do it<br /><br />This generates a tons of notifies and however it is it would need<br /><br />to be patched with the engineers of the product anyway<br /><br />&nbsp;<br /><br />Pierre<br /><br />&nbsp;<br /><br />Bruno Nicoletti wrote:<br /><br />&nbsp;<br /><br />Hi Pierre,<br /><br />&nbsp;<br /><br />I am interested in a single roto spline per named roto param, which I<br /><br />can access and change the points on. The UI is totally up to the<br /><br />host, I just want to be able to say 'give me the roto named "fred"'<br /><br />and do what I need to do.<br /><br />&nbsp;<br /><br />You are after something more complex than that, having a variable<br /><br />number of rotos + a set of params associated with each roto. This<br /><br />sort of comes back to the discussion we had before, about a params<br /><br />being able to vary in number via the API. We could attempt to do<br /><br />that , but it means revving the param suite.<br /><br />&nbsp;<br /><br />Would something like this work for you....<br /><br />- being able to specify params as being variable in number, in<br /><br />effect such params can be a variable length array of values, so<br /><br />rather than getting param 'fred' you need to param 'fred[i]'<br /><br />- the user gets to 'add/delete' these via some host<br /><br />specific UI<br /><br />- callbacks to the effect stating when things have been<br /><br />added/clobbered<br /><br />- if a group param is variable in number, then all the groups<br /><br />members are variable in length, but manipulated and logically<br /><br />grouped together on the interface,<br /><br />- adding deleting works on the group as a whole,<br /><br />- you can't have variable length params inside variable length<br /><br />groups (?)<br /><br />- suite to all plugin to add/delete members of variable length<br /><br />params<br /><br />&nbsp;<br /><br />Plug-ins and hosts flag whether that need/support this kind of<br /><br />behaviour, allowing fallbacks behaviour on those that don't.<br /><br />&nbsp;<br /><br />Pete and Pierre, if we then have a roto param, which represents a<br /><br />single shape (as in my suggestion), and allow that to be of variable<br /><br />size (so you can ask for the ith roto named 'fred'), along with the<br /><br />above behaviour, would that work for you? As you could make variable<br /><br />length groups that contain a roto + whatever else you need.<br /><br />&nbsp;<br /><br />Host folks, how hard would any of the above be?<br /><br />&nbsp;<br /><br />Finally, Pierre, could you describe in more detail the functionality<br /><br />you want from each of the functions you mention below? I'm not quite<br /><br />sure what they all do.<br /><br />&nbsp;<br /><br />b<br /><br />&nbsp;<br /><br />On 24 Jun 2006, at 01:41, Pierre Jasmin wrote:<br /><br />&nbsp;<br /><br />Bruno Nicoletti wrote:<br /><br />&nbsp;<br /><br />Hi All,<br /><br />&nbsp;<br /><br />re-opening a can of worms. I'd like to define a roto param,<br /><br />which is closed or open bezier curve which is defined along the same<br /><br />lines as all the other params.<br /><br />&nbsp;<br /><br />//////////////////<br /><br />&nbsp;<br /><br />Bruno, I am not quite sure what this parameter you describe<br /><br />defines-collects: a set of splines (a container with a list of<br /><br />rotosplines) or a one spline - one parameter mapping, or something<br /><br />that defines an input outside the editing scope of the effect?<br /><br />&nbsp;<br /><br />What I am interested in is something that in the end is a suite of a<br /><br />dozen+callbacks. That suite would look like the list that<br /><br />follows, and Bezier only is fine. [in my own language that would be a checklist parameter which is of type rotobezier]<br /><br />&nbsp;<br /><br />Actually if there is an host interested, I am not sure when but we<br /><br />probably could beta-develop-test such Roto Suite in ofx context<br /><br />given that we understand I think a lot of the gotchas at this point<br /><br />(supporting collecting similar data from 6 apps right now, where<br /><br />one is ourselves (in discreet systems where the main problem is cannot<br /><br />declare enough parameters) and another one (in xsi) where we are not<br /><br />embedded but "connected" via a scripted operator which is a complete kludge to pipe curves data although if you use your effect as what you put as the camera rotoplane background you eventually get a visual<br /><br />feedback). The others we support like that now (with their own personality, Shake, Fusion, Combustion and AE) allow us to more or less do what ends up being something like this.<br /><br />&nbsp;<br /><br />createShape // eg: this is a callback, for example in<br /><br />Combustion we use that to assign our spline coloring scheme<br /><br />addShapeParams<br /><br />endShapeEdit // switch to the "arrow" mode<br /><br />deleteShape<br /><br />showShape, hideShape<br /><br />getShape // some attributes like opened/closed and the set of<br /><br />points<br /><br />getShapeParam // then use the standard param call but shape num<br /><br />must<br /><br />be passed<br /><br />getNumShapes<br /><br />getVertex<br /><br />setVertex<br /><br />deleteVertex<br /><br />insertVertex<br /><br />&nbsp;<br /><br />This is separate then roto for generating a matte sort of thing,<br /><br />Which could be if one is interested something that "super-suites" this. So<br /><br />there is no concept of fill, linewidth and fill modes and feathering and what not. This is simply a Bezier shape editor abstraction<br /><br />(including support for single points). This is also separate from the issue of making your own bezier curve editor (which then would imply concept<br /><br />such as collecting display viewport, events, overlay drawing...).<br /><br />&nbsp;<br /><br />Here's some real world visuals outside of OFX context ( The image<br /><br />is a few thousand pixels wide)<br /><br />&nbsp;<br /><br />&nbsp;<br /><br />On the right (Fusion 5), you see the box below Add and Delete<br /><br />(This is standard sort of checklist container model in Fusion 5 SDK, "Add" an item in the checklist is part of the host SDK, it you apply their<br /><br />Tracker you will see the same Add and Delete and checklist box etc).<br /><br />User press Add to add a spline. Note there is the spline control-<br /><br />Editing icons in the viewer (much like Shake when you embed a roto but more elaborate) AND below the spline checklist selection box there are some parameters, these are per spline parameters, so when a user selects a different spline we can change the displayed parameter content to reflect the values associated to that spline (for example the "Use"<br /><br />animated boolean -- that's plugin defined. In the case of warping<br /><br />etc which require shape pairing, we are able to detect an insert or<br /><br />delete point event in a shape and apply it to the other shape... so manage<br /><br />all this by ourselves. Note it does not have to "look" like that, in the<br /><br />left i n image in Combustion it shows up in the Timeline as per<br /><br />shape twirlies, that's just the host presenting data the way it wants to users.<br /><br />&nbsp;<br /><br />That's somehow how it should work I think. This statement has two<br /><br />meanings: 1) it's how it should work for rotosplines AND 2) it's a<br /><br />method of doing that could be abstracted to support other data<br /><br />types.(Bruno, wouldn't that be a good way to contain a bunch of trackers?)<br /><br />&nbsp;<br /><br />Pierre<br /><br />&nbsp;<br /><br />&nbsp;<br /><br />// Some parameter arithmetics for who does not realize how many<br /><br />parameters we are talking about<br /><br />&nbsp;<br /><br />One reason to rely on host is basic elegance. When you start to work<br /><br />with 20 splines with a bunch of controls etc... it quickly becomes a<br /><br />mess of parameters so the host is in a better place to know where it<br /><br />should go.<br /><br />&nbsp;<br /><br />Using the Combustion Per Spline as an illustration example:<br /><br />Per rotoshape: 6 plugin defined params, a transform with 7 values +<br /><br />group title, and 6 values inside of each point + group title<br /><br />So let's say you have 10 embedded shapes with 10 points per shape<br /><br />That's 6+8+(10x7) = 84 params per shape X 10 shapes + 10 shapes<br /><br />group = 850 params for the embedded roto part of the plugin for only 10<br /><br />Shapes if I was to drop this as regular control params (and do it<br /><br />myself) --and it's a typical problem for hosts so I imagine they have their own way of handling that so it's navigatable as well and I want to be as much as the host as can be for this sort of things. Another<br /><br />reason for that (although not universally expected to be true) is cut and paste,inheriting of host service such as bake or link a point to a<br /><br />rotomask vertex.<br /><br />&nbsp;<br /><br />paramSuite-&gt;paramDefine(paramSet, kOfxParamTypeRoto, "myRoto",<br /><br />&amp;propHandle);<br /><br />&nbsp;<br /><br />A separate suite would be needed to ask about the roto (number of<br /><br />points, open/closed, get/set points) via a blind OfxRotoHandle.<br /><br />Values would be fetched and set as per other params...<br /><br />&nbsp;<br /><br />OfxRotoHandle rotoValue;<br /><br />paramSuite-&gt;paramGetValue(rotoParamHandle, &amp;rotoValue);<br /><br />//// do stuff<br /><br />rotoSuite-&gt;rotoRelease(rotoValue); // done with it<br /><br />&nbsp;<br /><br />or to set a value<br /><br />&nbsp;<br /><br />OfxRotoHandle rotoValue;<br /><br />rotoSuite-&gt;rotoInitialise(&amp;rotoValue);<br /><br />/// do stuff<br /><br />paramSuite-&gt;paramSetValue(rotoParamHandle, rotoValue);<br /><br />rotoSuite-&gt;rotoRelease(rotoValue); // done with it<br /><br />&nbsp;<br /><br />OFX host folks, how hard for you?<br /><br />&nbsp;<br /><br />Also, do your rotos allow the number of points to vary over time<br /><br />(yukky)?<br /><br />&nbsp;<br /><br />some hosts in the universe do, because of that we have to support a<br /><br />checkbox that says "match vertices [x]"<br /><br />&nbsp;<br /><br />we also assume that when you insert a point on a shape. it's<br /><br />added tothe whole sequence at the same relative position between two<br /><br />vertices etc...<br /><br />&nbsp;<br /><br />&nbsp;<br /><br />&nbsp;<br /><br /><br /></p>
+<label>Solution</label>
+
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-default'>
+<div class='panel-body'>
+<h4 class='text-primary'>Discussion</h4>
+<p>No comments on this change yet</p>
+</div>
+</div>
+
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

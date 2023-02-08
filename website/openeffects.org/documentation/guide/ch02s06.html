@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>The Load Action</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.77.1"></meta>
+      <link rel="home" href="/documentation/guide/index.html" title="OpenFX Plug-in API Programming Guide"></link>
+      <link rel="up" href="/documentation/guide/ch02.html" title="Chapter 2. Introduction To OFX, A Simple Plug-in"></link>
+      <link rel="prev" href="/documentation/guide/ch02s05.html" title="The Main Entry Function"></link>
+      <link rel="next" href="/documentation/guide/ch02s07.html" title="The Describe Action"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <table>
+            <tr>
+               <td>
+                  <ul>
+                     <li>
+                        <a href="/">
+                           <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+                        </a>
+                     </li>
+                     <li>
+                        <a href="/">
+                           Back to Main Site
+                           <span class="glyph"></span>
+                        </a>
+                     </li>
+                     <li>
+                        <a href="/documentation/guide">Programming Guide</a>
+                     </li>
+                     <li>
+                        <a href="/documentation/reference">Programming Reference</a>
+                     </li>
+                     <li>
+                        <a href="/documentation/api_doc">API Reference</a>
+                     </li>
+                  </ul>
+               </td>
+            </tr>
+         </table>
+      </div>
+      <div class="wrapper" id="guide">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">The Load Action</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/guide/ch02s05.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 2. Introduction To OFX, A Simple Plug-in</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/guide/ch02s07.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="idp140729791744560"></a>
+                        The Load Action
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <div class="informalexample">
+               <pre class="programlisting">
+OfxImageEffectSuiteV1 *gEffectSuite = 0;
+OfxPropertySuiteV1    *gPropertySuite = 0;
+
+////////////////////////////////////////////////////////////////////////////////
+// Called at load
+static OfxStatus
+onLoad(void)
+{
+    // fetch the host suites out of the global host pointer
+    if(!gHost) return kOfxStatErrMissingHostFeature;
+    
+    gEffectSuite     = (OfxImageEffectSuiteV1 *) gHost-&gt;fetchSuite(gHost-&gt;host, kOfxImageEffectSuite, 1);
+    gPropertySuite   = (OfxPropertySuiteV1 *)    gHost-&gt;fetchSuite(gHost-&gt;host, kOfxPropertySuite, 1);
+    if(!gEffectSuite || !gPropertySuite)
+        return kOfxStatErrMissingHostFeature;
+    return kOfxStatOK;
+}
+</pre>
+            </div>
+            <p>
+               The load action is always the first action called after the initial boot-strap phase has happened. By this time the plug-in's
+               <code class="function">setHost</code>
+               function will have been called, so we have access to the host pointer and so the ability to fetch suites.
+            </p>
+            <p>
+               What this action does is first to check that the host application has in fact set the
+               <code class="varname">gHost</code>
+               pointer, it then goes ahead and fetches two
+               <span class="structname">suites</span>
+               from the host. These suites are simply structs full of function pointers from the host which the plug-in uses to communicate with the host. We are only fetching two suites from the host, the
+               <span class="structname">OfxImageEffectSuiteV1</span>
+               to give us access to images and more, and the
+               <span class="structname">OfxPropertySuiteV1</span>
+               which allows us to access values in property sets.
+            </p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/guide/ch02s05.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/guide/ch02.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/guide/ch02s07.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">The Main Entry Function </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/guide/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> The Describe Action</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Multi-threaded Rendering</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch10.html" title="Chapter 10. Rendering"></link>
+      <link rel="prev" href="/documentation/reference/ch10s02.html" title="Rendering and The Get Region Actions"></link>
+      <link rel="next" href="/documentation/reference/ch10s04.html" title="OFX : Fields and Field Rendering"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Multi-threaded Rendering</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch10s02.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 10. Rendering</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch10s04.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="ImageEffectsMultiThreadingRendering"></a>
+                        Multi-threaded Rendering
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+               Multiple render actions may be passed to an effect at the same time. A plug-in states it's level of render thread safety by setting the
+               <a class="link" href="/documentation/reference/re115.html" title="kOfxImageEffectPluginRenderThreadSafety">
+                  <code class="code">kOfxImageEffectPluginRenderThreadSafety</code>
+               </a>
+               string property. This can be set to one of three states....
+            </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <code class="code">kOfxImageEffectRenderUnsafe</code>
+                     - indicating that only a single 'render' action can be made at any time amoung all instances,
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxImageEffectRenderInstanceSafe</code>
+                     - indicating that any instance can have a single 'render' action at any one time,
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxImageEffectRenderFullySafe</code>
+                     - indicating that any instance of a plugin can have multiple renders running simultaneously
+                  </li>
+               </ul>
+            </div>
+            <p>
+      </p>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="ImageEffectsSMPRendering"></a>
+                           Rendering in a Symetric Multi Processing Enviroment
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+	  When rendering on computers that have more that once CPU (or this new-fangled hyperthreading), hosts and
+	  effects will want to take advantage of all that extra CPU goodness to speed up rendering. This means 
+	  multi-threading of the render function in some way. 
+	</p>
+               <p>
+                  If the plugin has set
+                  <a class="link" href="/documentation/reference/re115.html" title="kOfxImageEffectPluginRenderThreadSafety">
+                     <code class="code">kOfxImageEffectPluginRenderThreadSafety</code>
+                  </a>
+                  to
+                  <code class="code">kOfxImageEffectRenderFullySafe</code>
+                  , the host may choose to render a single frame across multiple CPUs by having each CPU render a different window. However, the plugin may wish to remain in charge of multithreading a single frame. The plugin set property
+                  <a class="link" href="/documentation/reference/re112.html" title="kOfxImageEffectPluginPropHostFrameThreading">
+                     <code class="code">kOfxImageEffectPluginPropHostFrameThreading</code>
+                  </a>
+                  informs the host as to whether the host should perform SMP on the effect. It can be set to either...
+               </p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">1, in which case the host will attempt to multithread an effect instance by calling it's render function called simultaneously, each call will be with a different renderWindow, but be at the same frame</li>
+                     <li class="listitem">0, in which case the host only ever calls the render function once per frame. If the effect wants to multithread it must use the OfxMultiThreadSuite API.</li>
+                  </ul>
+               </div>
+               <p>
+	</p>
+               <p>
+	  A host may have a render farm of computers. Depending exactly how the host works with it's render farm, it may have multiple 
+	  copies on an instance spread over the farm rendering separate frame ranges, 1-100 on station A, 101 to 200 on station B and so on...
+	</p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="ImageEffectsSequentialRendering"></a>
+                           Rendering Sequential Effects
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+	  Some plugins need the output of the previous frame to render the next, typically they cache some information about the last render and use that 
+    somehow on the next frame. Some temporally averaging degraining algorithms work that way. Such effects cannot render correctly unless they are 
+    strictly rendered in order, from first to last frame, on a single instance.
+      </p>
+               <p>
+Other plugins are able to render correctly when called in an arbitrary frame order, but render much more efficiently if rendered in order. For example a particle system which mantains the state of the particle system in an instance would simply increment the simulation by a frame if rendering in-order, but would need to restart the particle system from scratch if the frame jumped backwards.
+</p>
+               <p>
+    Most plug-ins do not have any sequential dependence. For example, a simple gain operation has no dependence on the previous frame.
+    </p>
+               <p>
+    Similarly, host applications, due to their architectures, may or may not be able to guarantee that a plugin can be rendered strictly in-order. Node based applications 
+    typically have much more difficulty in guaranteeing such behaviour. 
+    </p>
+               <p>
+                  To indicate whether a plugin needs to be rendered in a strictly sequential order, and to indicate whether a host supports such behaviour we have a property,
+                  <a class="link" href="/documentation/reference/re109.html" title="kOfxImageEffectInstancePropSequentialRender">
+                     <code class="code">kOfxImageEffectInstancePropSequentialRender</code>
+                  </a>
+                  . For plug-ins this can be one of three values...
+               </p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">0, in which case the host can render an instance over arbitrary frame ranges on an arbitrary number of computers without any problem (default),</li>
+                     <li class="listitem">1, in which case the host must render an instance on a single computer over it's entire frame range, from first to last.</li>
+                     <li class="listitem">2, in which case the effect is more efficiently rendered in frame order, but can compute the correct result irregardless of render order.</li>
+                  </ul>
+               </div>
+               <p>
+	</p>
+               <p> For hosts, this property takes three values...
+	  </p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">0, which indicates thet the host can never guarantee sequential rendering,</li>
+                     <li class="listitem">1, which indicates thet the host can guarantee sequential rendering for plugins that request it,</li>
+                     <li class="listitem">2, which indicates thet the host can sometimes perform sequential rendering.</li>
+                  </ul>
+               </div>
+               <p>
+	</p>
+               <p>
+                  When rendering, a host will set the in args property on
+                  <a class="link" href="/documentation/reference/re140.html" title="kOfxImageEffectPropSequentialRenderStatus">
+                     <code class="code">kOfxImageEffectPropSequentialRenderStatus</code>
+                  </a>
+                  to indicate whether the host is currently supporting sequential renders. This will be passed to the following actions,
+               </p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/ch13s18.html" title="The Begin Sequence Render Action">the begin sequence render action</a>
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/ch13s17.html" title="The Render Action">the sequence render action</a>
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/ch13s19.html" title="The End Sequence Render Action">the end sequence render action</a>
+                     </li>
+                  </ul>
+               </div>
+               <p>
+  </p>
+               <p>
+                  Hosts may still render sequential effects with random frame access in interactive sessions, for example when the user scrubs the current frame on the timeline and the host asks an effect to render a preview frame. In such cases, the plugin can detect that the instance is being interactively manipulated via the
+                  <a class="link" href="/documentation/reference/re123.html" title="kOfxImageEffectPropInteractiveRenderStatus">
+                     <code class="code">kOfxImageEffectPropInteractiveRenderStatus</code>
+                  </a>
+                  property and hack an approximation together for UI purposes. If eventually rendering the sequence, the host
+                  <span class="emphasis">
+                     <em>must</em>
+                  </span>
+                  ignore all frames rendered out of order and not cache them for use in the final result.
+               </p>
+               <p>
+                  A host may set the in args property
+                  <a class="link" href="/documentation/reference/re137.html" title="kOfxImageEffectPropRenderQualityDraft">
+                     <code class="code">kOfxImageEffectPropRenderQualityDraft</code>
+                  </a>
+                  in
+                  <a class="link" href="/documentation/reference/ch13s17.html" title="The Render Action">the sequence render action</a>
+                  to asj for a render in Draft/Preview mode. This is useful for applications that must support fast scrubbing. These allow a plug-in to take short-cuts for improved performance when the situation allows and it makes sense, for example to generate thumbnails with effects applied. For example switch to a cheaper interpolation type or rendering mode. A plugin should expect frames rendered in this manner that will not be stucked in host cache unless the cache is only used in the same draft situations.
+               </p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch10s02.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch10.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch10s04.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Rendering and The Get Region Actions </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> OFX : Fields and Field Rendering</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

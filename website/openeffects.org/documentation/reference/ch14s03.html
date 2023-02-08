@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>The Destroy Instance Action</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch14.html" title="Chapter 14. Actions Passed to an Interact"></link>
+      <link rel="prev" href="/documentation/reference/ch14s02.html" title="The Create Instance Action"></link>
+      <link rel="next" href="/documentation/reference/ch14s04.html" title="The Draw Action"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">The Destroy Instance Action</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch14s02.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 14. Actions Passed to an Interact</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch14s04.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="kOfxActionDestroyInstanceInteract"></a>
+                        The Destroy Instance Action
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <div class="blockquote">
+               <blockquote class="blockquote">
+                  <pre class="programlisting">
+	#include "ofxCore.h"
+	#define kOfxActionDestroyInstance       "OfxActionDestroyInstance" </pre>
+               </blockquote>
+            </div>
+            <h5>
+               <a id="idp13373648"></a>
+               Arguments
+            </h5>
+            <p>
+      </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <code class="code">handle</code>
+                     handle to the interact instance, cast to an
+                     <code class="code">OfxInteractHandle</code>
+                  </li>
+                  <li class="listitem">
+                     <code class="code">inArgs</code>
+                     is redundant and is set to NULL,
+                  </li>
+                  <li class="listitem">
+                     <code class="code">outArgs</code>
+                     is redundant and is set to NULL.
+                  </li>
+               </ul>
+            </div>
+            <p>
+    </p>
+            <h5>
+               <a id="idp13377552"></a>
+               Description
+            </h5>
+            <p>
+      This action is the last passed to an interact's instance before its destruction. It is there to allow a plugin to destroy
+      any per-instance data structures it may have created.
+    </p>
+            <h5>
+               <a id="idp13378800"></a>
+               Preconditions
+            </h5>
+            <p>
+      </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <code class="code">kOfxActionCreateInstance</code>
+                     has been called on the handle,
+                  </li>
+                  <li class="listitem">the instance has not had any of its members destroyed yet, </li>
+               </ul>
+            </div>
+            <p>
+    </p>
+            <h5>
+               <a id="idp13381376"></a>
+               Postconditions
+            </h5>
+            <p>
+      </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">the instance pointer is no longer valid and any operation on it will be undefined</li>
+               </ul>
+            </div>
+            <p>
+    </p>
+            <h5>
+               <a id="idp13383280"></a>
+               Return Values
+            </h5>
+            <p>
+      To some extent, what is returned is moot, a bit like throwing an exception in a C++ destructor, so the host should 
+      continue destruction of the instance regardless. However...
+      </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re248.html" title="kOfxStatOK">
+                        <code class="code">kOfxStatOK</code>
+                     </a>
+                     , the action was trapped and all was well,
+                  </li>
+                  <li class="listitem">OfxStatReplyDefault, the action was ignored as the effect had nothing to do, </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re250.html" title="kOfxStatErrFatal">
+                        <code class="code">kOfxStatErrFatal</code>
+                     </a>
+                     ,
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re249.html" title="kOfxStatFailed">
+                        <code class="code">kOfxStatFailed</code>
+                     </a>
+                     , something went wrong, but no error code appropriate.
+                  </li>
+               </ul>
+            </div>
+            <p>
+    </p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch14s02.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch14.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch14s04.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">The Create Instance Action </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> The Draw Action</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

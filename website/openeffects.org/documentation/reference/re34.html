@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>OfxImageEffectSuiteV1::imageMemoryUnlock</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch15s02.html" title="Image Effect Suite"></link>
+      <link rel="prev" href="/documentation/reference/re33.html" title="OfxImageEffectSuiteV1::imageMemoryLock"></link>
+      <link rel="next" href="/documentation/reference/ch15s03.html" title="Progress Suite"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">
+                     <code class="function">OfxImageEffectSuiteV1::imageMemoryUnlock</code>
+                  </th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re33.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Image Effect Suite</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch15s03.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="refentry">
+            <a id="OfxImageEffectSuiteV1_imageMemoryUnlock"></a>
+            <div class="titlepage"></div>
+            <div class="refnamediv">
+               <h2>Name</h2>
+               <p>
+                  <code class="function">OfxImageEffectSuiteV1::imageMemoryUnlock</code>
+                  — Unlock allocated image data
+               </p>
+            </div>
+            <div class="refsynopsisdiv">
+               <h2>Synopsis</h2>
+               <div class="funcsynopsis">
+                  <pre class="funcsynopsisinfo">#include "ofxImageEffect.h" </pre>
+                  <table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;">
+                     <tr>
+                        <td>
+                           <code class="funcdef">
+                              OfxStatus
+                              <strong class="fsfunc">(*imageMemoryUnlock)</strong>
+                              (
+                           </code>
+                        </td>
+                        <td>
+                           OfxImageMemoryHandle
+                           <var class="pdparam">memoryHandle</var>
+                           <code>)</code>
+                           ;
+                        </td>
+                     </tr>
+                  </table>
+                  <div class="funcprototype-spacer"> </div>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp14885632"></a>
+               <h3>Arguments</h3>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">memoryHandle - </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp14887200"></a>
+               <h3>Description</h3>
+               <p>
+This function unlocks a previously locked memory handle. Once completely unlocked, memory associated with a memoryHandle is no longer available for use. Attempting to use it results in undefined behaviour.
+</p>
+               <p>
+Note that locks and unlocks nest, and to fully unlock memory you need to match the count of locks placed upon it. 
+</p>
+               <p>
+Also note, if you unlock a completely unlocked handle, it has no effect (ie: the lock count can't be negative).
+</p>
+               <p>
+If unlocked, then relocked, the memory associated with a memory handle may be at a different address, however the contents will remain the same.
+</p>
+               <p>
+                  See also
+                  <a class="link" href="/documentation/reference/re33.html" title="OfxImageEffectSuiteV1::imageMemoryLock">
+                     <code class="code">OfxImageEffectSuiteV1::imageMemoryLock</code>
+                  </a>
+                  and
+                  <a class="link" href="/documentation/reference/ch08s06.html" title="Allocating Your Own Images">ImageEffectsMemoryAllocation</a>
+                  .
+               </p>
+            </div>
+            <div class="refsect2">
+               <a id="idp14892304"></a>
+               <h3>Returns</h3>
+               <p>
+
+</p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">kOfxStatOK if the memory was unlocked cleanly,</li>
+                     <li class="listitem">
+                        kOfxStatErrBadHandle if the value of
+                        <span class="emphasis">
+                           <em> memoryHandle</em>
+                        </span>
+                        was not a valid pointer returned by
+                        <a class="link" href="/documentation/reference/re31.html" title="OfxImageEffectSuiteV1::imageMemoryAlloc">
+                           <code class="code">OfxImageEffectSuiteV1::imageMemoryAlloc</code>
+                        </a>
+                        , null is placed in
+                        <span class="emphasis">
+                           <em> returnedPtr</em>
+                        </span>
+                     </li>
+                  </ul>
+               </div>
+               <p>
+</p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re33.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch15s02.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch15s03.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">
+                     <code class="function">OfxImageEffectSuiteV1::imageMemoryLock</code>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Progress Suite</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

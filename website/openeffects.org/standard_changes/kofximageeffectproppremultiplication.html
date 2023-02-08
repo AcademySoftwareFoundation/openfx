@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes Kofximageeffectproppremultiplication |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="M3nUqVfGbMGws71AN0kzLrq+uti9d/euiEXTSKqvZacdY7wa8fJh7gVs/61De4j6757OneQK0UxGRMclv/5knA==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+<form role="form" class="navbar-form navbar-right form-inline" action="/users/sign_in" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="dEJm8rnHbp81Q3TE52pGm+AUzJTTxzV6ejaNPCzXqR1aWA5BH/NjsICcNimTWP1PtTS40Yq6E5i0N5lROYaoJg==" />
+<div class='form-group'>
+<input type="text" name="user[email]" id="user_email" class="form-control input-xs" placeholder="Email" />
+</div>
+<div class='form-group'>
+<input type="password" name="user[password]" id="user_password" class="form-control input-xs" placeholder="Password" />
+</div>
+<button class='btn btn-sm btn-primary' type='submit'>Sign in</button>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='row'>
+<div class='col-md-offset-2 col-md-8'>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-warning'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+ kOfxImageEffectPropPreMultiplication
+<span class='pull-right'>Proposed</span>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Standard version:</b>
+1.4.1
+</p>
+<p>
+<b>Minor Change</b>
+</p>
+<label>Subcommittee</label>
+<p><p>Entered by Pierre Jasmin</p></p>
+<label>Overview</label>
+<p>In V 1.2: &nbsp;We reviewed if&nbsp;<span>kOfxImageEffectPropPreMultiplication should be deprecated - this was withdrawn</span></p>
+<p>Bruno Nicoletti asked: "<span>Is the kOfxImageEffectPropPreMultiplication flag used by anyone to do anything useful with? If not should we just kill it?"<br />GaryO, PierreJ, and ShinK said NO, so we kept it. However all that was resolved is not deprecating.<br /><br /></span></p>
+<p><span>The short form is GaryO thought&nbsp;<span>kOfxImageOpaque was useful and PierreJ said we need to know that because some hosts are Straight (including historically the first host RE:Vision supported "Toxik").</span></span></p>
+<p><span><span>In retrospect this should probably have been that Premult or UnPremult should have been a Project Property. &nbsp;And Opaque a Clip Property.&nbsp;</span></span></p>
+<p><span><span>Historical Note: I believe it became a Clip Property because someone like 11 years ago mentioned that such host is possible (e.g. someone mentioned Cyborg - that would be life before Assimilate and SpeedSix for those that were not born yet). &nbsp;</span></span></p>
+<p><span><span>Practical Issue: Let's say one passes you&nbsp;<span>kOfxImageOpaque and you are a keyer, are you supposed to premult or not the output... More examples can be provided but that might do. Net effect is for tools&nbsp;including any spatial transform, warp that reveals the source frame edges we need to add a checkbox at the end [x] HostIsPremult which defaults to true for unknown hosts as it's the dominant state.</span></span></span></p>
+<p><span><span><span>Pragmatic Issue: &nbsp;Although in theory we could fix this by splitting it, it might be easier to edit that property instead of breaking it in two.</span></span></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<label>Solution</label>
+<p>Current options for this:</p>
+<ul>
+<li class="listitem">kOfxImageOpaque - the image is opaque and so has no premultiplication state</li>
+<li class="listitem">kOfxImagePreMultiplied - the image is premultiplied by it's alpha</li>
+<li class="listitem">kOfxImageUnPreMultiplied - the image is unpremultiplied</li>
+</ul>
+<p>(revised feb 1, 2017): current proposal</p>
+<p dir="ltr">-&gt; Proposal: DescribeInContext property so plug-in can say what premult states is supports. kOfxPreMultiplicationSupported (multi-dimensional string, can return kOfxImagePreMultiplied and/or kOfxImageUnPreMultiplied). RGB-only plugins don&rsquo;t need to set this.</p>
+<p dir="ltr">-&gt; Proposal: DescribeInContext integer property so plug-in can say whether it can generate alpha. kOfxCanGenerateAlpha, 0=No, 1=Yes.</p>
+<p>-&gt; For plug-ins that generate alpha and input clip is Opaque, they need a way to find out what host premult is desired. Proposal is a new string property set on a plug-in instance: kOfxImageEffectHostDesiredPremult (value can be kOfxImagePreMultiplied or kOfxImageUnPreMultiplied).</p>
+<p>&nbsp;</p>
+<p>//</p>
+<p>Revised: (jan 10, 2017)</p>
+<p>Option 1: &nbsp;Define a Project Property (the word project is used but from the stand-point of effect it's no difference if the host defines this at a comp, sequence or whatever organisational structure they may use). This only inform plugin of host preference.&nbsp;</p>
+<p>Option 2: &nbsp;Document that host sets Output clip to Premult or Unmult by default, and plugin who receives Opaque can always set that back to Opaque if they don't deal with alpha. To not set Opaque has very tiny performance effect and no effect on image down the line.</p>
+<p>Option 2 has the advantage of not adding anything other than documenting expected behavior. And allowing an host to do more fine-grain management if they so desire.&nbsp;</p>
+<p>Options not mutually exclusive, but one of them seems necessary as it's ambiguous right now.</p>
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-default'>
+<div class='panel-body'>
+<h4 class='text-primary'>Discussion</h4>
+<h5>Comments</h5>
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-309'>
+<div class='content'>
+<p>(june 2017): &nbsp;Just a comment here. After playing supporting 2 more hosts here, I wished we had a distinction between Opaque and Transparent. Opaque is A = 1.0 and transparent is A = 0.0 (or undefined also). &nbsp;Currently there is at least 3 hosts that return zero alpha with Opaque flag...&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin | 12:43 pm,  25 Jun 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-304'>
+<div class='content'>
+<p>This could qualify for 1.4.1 - I did not yet because I think we are missing to specify expected behavior for&nbsp;<span>kOfxPreMultiplicationSupported &nbsp;- if an host is Straight/Unmult internally - i.e. &nbsp;is the host supposed to :</span></p>
+<p><span>A. Not load you<br />B. Report to user on first application about that?<br />etc</span></p>
+<p>&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  5:39 pm,   5 Feb 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-283'>
+<div class='content'>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Popup to problem statement:</p>
+<p>Silhouette FX is a new host and is UnMult workflow. And Paul,&nbsp; I like the word Workflow here as this is about a Preference in this case not a Property (I know it's called Clip Preferences in doc, but at that level it's really a Property).&nbsp; Internally I don't know that host, right now if I have a tool that rotates the image 45 degrees I don't know if I have to return an edge UnMult or PreMult.</p>
+<p>The only options I can think of are:&nbsp; </p>
+<p>1) I create a parameter so user can turn [x] HostIsPremult on or off.&nbsp; <br /> <br /> &nbsp;&nbsp;&nbsp; - Not a bad solution if host has a sort of Preset so user can set that once.</p>
+<p>2) I do an on-disk config file per host a la GenArts&nbsp; </p>
+<p>&nbsp;&nbsp;&nbsp; - Not going to happen here</p>
+<p>3) I just output PreMult all the time for UnKnowns and user each time it applies effect has to add an UnMult node</p>
+<p>&nbsp;&nbsp;&nbsp; - Terrible for users</p>
+<p>4) I set the Output to PreMult and assume host internally will UnMult if necessary</p>
+<p>&nbsp;&nbsp;&nbsp; - Not as great as it sounds for at least 8 bit images workflow as it creates banding / quantization in non-full alpha areas.</p>
+<p><br /> Well behaved plugin: Am I supposed to set the Output Clip Property to PreMult or UnMult when input is tagged Opaque? (Is anyone really tracking this? Most probably not much aside perhaps when input is a Read Node itself ) -- <br /> <br /> Possible Solution: Add a Project Preferences for<span> Alpha Interpretation Workflow</span> and leave the current clip property as is. Internally I could then from hosts supporting v1.5 or over hide the HostIsPremult boolean parameter and set it to Project Preferences reported by Host. </p>
+<p>P.S.: &nbsp;We don't like people who provide Alpha all 0 when promoting to RGBA :) -&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  2:31 pm,  14 Dec 2016
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-43' id='cid-282'>
+<div class='content'>
+<p>In Natron we&nbsp;set this property where needed (Readers, Premult/unpremult effects, etc...)&nbsp;</p>
+<p>Then any effect can have a Unpremult boolean param that is checked automatically if the source&nbsp;clip premultiplication is premultiplied. User may always choose to uncheck it even if input is premultiplied.&nbsp;</p>
+<p>Opaque is set&nbsp;only if&nbsp;pixel components is RGB, and I can't seem where you would need to care about alpha in this case.</p>
+<p>If your are a keyer and input clip is RGB , then&nbsp;in the getClipPreferences action you may just request that in input you receive a RGBA clip instead. The host will most likely then tag the image premultiplied or unpremultiplied depending on its premultiplication policy and whether it is filling in&nbsp;alpha channel with 1s or 0s.</p>
+<p>&nbsp;</p>
+<p>The code in the c++ library HostSupport on the Github repo already handles that (with a few fixes we brought on our fork).</p>
+<p>On host side it may be useful to track the premultiplication state for various reasons</p>
+</div>
+</div>
+<div class='author text-muted'>
+Alexandre | 10:46 am,  14 Dec 2016
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-29' id='cid-279'>
+<div class='content'>
+<p>FYI - Silhouette v6 is a new OFX host and has a straight alpha workflow, though it can mix and match straight and premul as it technically doesn't care what's in the alpha. If it knows an input is RGB only it'll fill the alpha and mark it as opaque, otherwise it doesn't know&nbsp;whether the image&nbsp;is straight or premul.&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Paul Miller | 10:27 am,  14 Dec 2016
+</div>
+</div>
+
+</div>
+</div>
+
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Parameter Interacts</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch11.html" title="Chapter 11. Interacts"></link>
+      <link rel="prev" href="/documentation/reference/ch11.html" title="Chapter 11. Interacts"></link>
+      <link rel="next" href="/documentation/reference/ch11s03.html" title="Interact Actions"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Parameter Interacts</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch11.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 11. Interacts</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch11s03.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="ParametersInteracts"></a>
+                        Parameter Interacts
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+               All parameters, except for custom parameters, have some default interface that the host creates for them. Be it a numeric slider, colour swatch etc... Effects can override the default interface (or set an interface for a custom parameter) by setting the
+               <a class="link" href="/documentation/reference/re204.html" title="kOfxParamPropInteractV1">
+                  <code class="code">kOfxParamPropInteractV1</code>
+               </a>
+               . This will completely replace the parameters default user interface in the 'paged' and 'hierarchical' interfaces, but it will not replace the parameter's interface in any animation sheet.
+            </p>
+            <p>
+	Properties affecting custom interacts for parameters are...
+	</p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re203.html" title="kOfxParamPropInteractSizeAspect">
+                        <code class="code">kOfxParamPropInteractSizeAspect</code>
+                     </a>
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re200.html" title="kOfxParamPropInteractMinimumSize">
+                        <code class="code">kOfxParamPropInteractMinimumSize</code>
+                     </a>
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re201.html" title="kOfxParamPropInteractPreferedSize">
+                        <code class="code">kOfxParamPropInteractPreferedSize</code>
+                     </a>
+                  </li>
+               </ul>
+            </div>
+            <p>
+      </p>
+            <p>
+	The viewport for such interacts will be dependant upon the various properties above, and possibly a per
+	host override in any XML resource file.
+      </p>
+            <p>
+	The GL_PROJECTION matrix will be an orthographic 2D view with -0.5,-0.5 at the bottom left and viewport width-0.5,
+	viewport height-0.5 at the top right. 
+      </p>
+            <p>
+	The GL_MODELVIEW matrix will be the identity matrix.
+      </p>
+            <p>
+	The bit depth will be double buffered 24 bit RGB.
+      </p>
+            <p>
+	A parameter's interact draw function will have full responsibility for drawing the interact, including 
+	clearing the background and swapping buffers.
+      </p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch11.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch11.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch11s03.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Chapter 11. Interacts </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Interact Actions</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

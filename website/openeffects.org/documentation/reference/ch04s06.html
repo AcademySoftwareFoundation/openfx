@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Simpler Architectures</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch04.html" title="Chapter 4. Image Processing Architectures"></link>
+      <link rel="prev" href="/documentation/reference/ch04s05.html" title="Tree Based Architectures"></link>
+      <link rel="next" href="/documentation/reference/ch05.html" title="Chapter 5. Image Effect Contexts"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Simpler Architectures</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch04s05.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 4. Image Processing Architectures</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch05.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="idp11531360"></a>
+                        Simpler Architectures
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+	The above architecture is quite complex, as the inputs supplied can lie anywhere on the image plane,
+	as can the output, and they can be subsections of the 'complete' image. Not all hosts work in this way,
+	generally it is only the more advance compositing systems working on large resolution images. 
+      </p>
+            <p>
+	Some other systems allow for images to be anywhere on the image plane, but always pass around full RoD images, 
+	never tiles.
+      </p>
+            <p>
+	The simplest systems, don't have any of of the above complexity. The RoDs, RoIs, images and project sizes in such 
+	systems are exactly the same, always. Often these are editting, as opposed to compositing, systems.
+      </p>
+            <p>
+	Similarly, some plugin effects cannot handle sub RoD images, or even images not rooted at the origin.
+      </p>
+            <p>
+	The OFX architecture is meant to support all of them. Assuming a plugin supports the most general architecture,
+	it will trivially run on hosts with simpler architectures. However, if a plugin does not support tiled, or 
+	arbitarily positioned images, they may not run cleanly on hosts that expect them to do so.
+      </p>
+            <p>
+	To this end, two properties are provided that flag the capabilities of a plugin or host...
+	</p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re146.html" title="kOfxImageEffectPropSupportsMultiResolution">
+                        <code class="code">kOfxImageEffectPropSupportsMultiResolution</code>
+                     </a>
+                     - which indicates support for images of differing sizes not centred on the origin,
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re150.html" title="kOfxImageEffectPropSupportsTiles">
+                        <code class="code">kOfxImageEffectPropSupportsTiles</code>
+                     </a>
+                     - which indicates support for images that contain less than full frame pixel data
+                  </li>
+               </ul>
+            </div>
+            <p>
+      </p>
+            <p>
+	A plug-in should flag these appropriately, so that hosts know how to deal with the effect. A host can either choose to refuse
+	to load a plugin, or, preferentially, pad images with an appropriate amount of black/transparent pixels to enable them to work.
+      </p>
+            <p>
+               The
+               <code class="code">kOfxImageEffectActionGetRegionsOfInterest</code>
+               is redundant for plugins that do not support tiled rendering, as the plugin is asking that it be given the full Region of Definition of all its inputs. A host may have difficulty doing this (for example with an input that is attached to an effect that can create infinite images such as a random noise generator), if so, it should clamp images to some a size in some manner.
+            </p>
+            <p>
+	The RoD/RoI actions are potentially redundant on simpler hosts. For example fixed frame size hosts. If a host has no need to
+	call these actions, it simply should not.
+      </p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch04s05.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch04.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch05.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Tree Based Architectures </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Chapter 5. Image Effect Contexts</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

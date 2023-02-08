@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes Deep Images Multi Plane |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="pT+V0FHA5FY6YX6TKQaL8mJyFD3t9czAvQLyH6Ce62KLJf1j9/TpeY++PH5dNDAmN1JgeLSI6iJzA+Zytc/qWQ==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+<form role="form" class="navbar-form navbar-right form-inline" action="/users/sign_in" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="zw412szAFQ53pNdk0GT6pgMCkeveWEwWg1WPWTMmCQrhFF1pavQYIcJ7lYmkVkFyViLlroclavRNVJs0JncIMQ==" />
+<div class='form-group'>
+<input type="text" name="user[email]" id="user_email" class="form-control input-xs" placeholder="Email" />
+</div>
+<div class='form-group'>
+<input type="password" name="user[password]" id="user_password" class="form-control input-xs" placeholder="Password" />
+</div>
+<button class='btn btn-sm btn-primary' type='submit'>Sign in</button>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='row'>
+<div class='col-md-offset-2 col-md-8'>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-warning'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+Deep Images / Multi-Plane
+<span class='pull-right'>Proposed</span>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Standard version:</b>
+1.5
+</p>
+<p>
+<b>Major Change</b>
+</p>
+<label>Subcommittee</label>
+<p></p>
+<label>Overview</label>
+<p>(september 23, 2016): This is to be merged with Multi-View </p>
+<p>A recent trend is to embed multiple image types in the same image stream, for example depth information as well as colour data. The current version 1.4 OFX Image Effect API only presents a single colour image buffer from any clip, either input or output. This prevents hosts with rich image streams from passing such data to plug-ins that could take advantage of it.</p>
+<p>The Foundry has implemented an unpublished extension to the OFX API in its Nuke compositing application that allows support for deep image buffers. They are proposing cleaned up versions of these extensions to the OFX 1.5 Committee for adoption in the Image Effect API.</p>
+<p>To do this we need to add a new concept to OFX, a plane, which plane represents a single typed image data buffer, for example colour, depth, motion vectors and so on.</p>
+<p>The basic idea behind this extensions is that it is orthogonal to time, so when an effect fetches image data from the host it would specify the frame time and the image plane to fetch, eg: the source clip's the colour plane of frame 10.</p>
+<p>The extensions will need supporting machinery, so that plug-ins advertise what planes/views they process and need to render an output and so on.</p>
+<p>It is proposed that the OFX API be updated to include deep image buffers for version 1.5.0.</p>
+<p>&nbsp;</p>
+<label>Solution</label>
+<p>&nbsp;</p>
+<p>A plane is a single image buffer of a specific type. The API defines the types of planes available via #defining a set of string literals, for example&hellip;</p>
+<ul>
+<li><strong>kOfxImagePlaneColour</strong></li>
+<li><strong>kOfxImagePlaneDepth</strong></li>
+<li><strong>kOfxImagePlaneBackwardMotionVector</strong></li>
+</ul>
+<p>The data types of the corresponding planes are sometimes strongly defined, for example depth would always be a one component floating point image, colour images could still be of variant data type and 3 or 4 components.</p>
+<p>The full set of image planes has yet to be determined, but the initial types should include&hellip;.</p>
+<ul>
+<li>colour,</li>
+<li>depth,</li>
+<li>forward motion vectors,</li>
+<li>backwards motion vectors,</li>
+<li>mask.</li>
+</ul>
+<p>Note that some planes come in pairs, for example a forwards motion vector plane cannot exists without a backwards motion vector plane.</p>
+<h3 id="supported_planes_on_a_host">Supported Planes On A Host</h3>
+<p>Not all hosts will support all image plane types. To manage this the multidimensional string property kOfxImageEffectPropPlanesAvailable is set on host descriptors.</p>
+<p>This property is the set of planes that a host may present on a clip. All hosts must advertise kOfxImagePlaneColour, the other planes are optional.</p>
+<h3 id="a_plugin_s_rendered_planes">A Plugin's Rendered Planes</h3>
+<p>Plugins need to indicate to the host what planes it will process on output, it to, uses the kOfxImageEffectPropPlanesAvailable property on it's descriptor.</p>
+<p>This is the set of planes a plugin instance may be able to render. The actual planes rendered by an instance are indicated by the new Get Clip Planes action (see below).</p>
+<p>If a host does not support the planes a plugin renders, a host should ignore that plugin.</p>
+<p>A plugin may break the coherence between planes available on its input clips. This is typically because it is doing a spatial or temporal transformation on the subset of planes being processed. In such a case, it should indicate to the host that the non-processed planes should not be passed through.</p>
+<p>To do this a new plugin descriptor property is required. kOfxImageEffectPropPassThroughPlanes. This is a one dimensional integer property, if set to zero it indicates that non processed planes should not be passed through to output by the host, if set to not zero, then the host should pass through un-rendered planes to the node's output.</p>
+<h3 id="advertising_available_planes_on_a_clip_instance">Advertising Available Planes On A Clip Instance</h3>
+<p>A host advertises the planes available to be fetched from a specific clip instance by the property kOfxImageEffectPropPlanesAvailable on the clip's corresponding property handle.</p>
+<h3 id="fetching_specific_planes_from_a_clip">Fetching Specific Planes From a Clip</h3>
+<p>When fetching an image from a clip instance, a plugin will need to specify the plane as well as the frame. To do this the signature of the clipGetImagePlane function in the OfxImageEffectSuite needs to be modified in the next version of that suite so that it looks like&hellip;</p>
+<pre>               OfxStatus
+               (
+               *
+               clipGetImagePlane
+               )
+               (
+               OfxImageClipHandle clip
+               ,
+               OfxTime
+               <a href="http://www.opengroup.org/onlinepubs/009695399/functions/time.html">time</a>
+               ,
+               const
+               char
+               *
+               plane
+               ,
+               OfxRectD
+               *
+               region
+               ,
+               OfxPropertySetHandle
+               *
+               imageHandle
+               )
+               ;
+            </pre>
+<p>The new plane argument to the function being one of the predefined string literals that define a plane.</p>
+<h3 id="the_get_clip_planes_action">The Get Clip Planes Action</h3>
+<p>A plugin's descriptor indicates the planes it may render on output via the kOfxImageEffectPropPlanesAvailable property. Depending on instance parameter values and available input planes, an instance needs to indicate what planes it will actually render prior to rendering.</p>
+<p>A plug-in instance will also need to tell the host what planes it will fetch from each input clip to produce it's given output.</p>
+<p>Finally, if the plane has enabled passthrough of non rendered planes, it needs to indicate indicate what frame time at what clip the host should get those planes from.</p>
+<p>To do this a new action is required, kOfxImageEffectActionGetClipPlanes. This action has a single 'inarg', being the time that a render will subsequently be called for.</p>
+<p>It has the following 'outargs'&hellip;.</p>
+<ul>
+<li>for each clip (in and out), a property that is starts with &ldquo;OfxNeededPlane_&rdquo; post-pended by the clip's name (e.g. OfxNeededPlane_Output&rdquo;) which represents,if an input, the planes needed by the effect, if an output, the planes produced by the effect. These are all char * X N properties, which must be one of the planes supported by the host.</li>
+<li><strong>kOfxImageEffectPropPassThroughClip</strong>&nbsp;- clip to use as a pass through for all non rendered planes</li>
+<li><strong>kOfxImageEffectPropPassThroughTime</strong>&nbsp;- time on that clip to pass through,</li>
+</ul>
+<h3 id="modification_needed_for_the_render_action">Modification Needed For the Render Action</h3>
+<p>When a host calls the render action on a plug-in instance, it needs to indicate which set of planes it wants the plugin to fill in. This will be a subset of the planes that the plugin has specified in the Get Clip Planes action. To do this, the render actions 'inArgs' needs an extra property, being the kOfxImageEffectPropPlanesAvailable property specified above.</p>
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-default'>
+<div class='panel-body'>
+<h4 class='text-primary'>Discussion</h4>
+<h5>Comments</h5>
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-291'>
+<div class='content'>
+<p>Complementary notes</p>
+<p>1. There is a proposal to review and discussion here (that can be continued):<br />see above</p>
+<p><br />2. We discussed support for output write by effect to this (as a mechanisnm to support multiple output).</p>
+<p><br />3. An host can support stereo without supporting additional image channels. (the initial reference was Sony suite). That suite used int iview, it was agreed that we could use strings so it matches the Nuke multi-plane suite.</p>
+<p><br />4. I think we need a naming convention but one that is not as flat as a single string. When in doubt I think we can revert to parameter convention for types, number of dimension...(more below).</p>
+<p><br />A. We do need to agree how we call this: What is a view - stereo is a good example of obviously a view, by extention each view could have multiple additional components. Does this need to address multi-cam grouping? Is a cubic map (e.g. 6 camereas 90 degrees apart from each others) a multi-view item? In which case Dennis was saying we need to have angle/rotation etc as part of view definition.</p>
+<p><br />B. Do we need a simple convention for naming, to absorb effect generated output image channels - so their next effect can find it (the example by Paul Miller was to carry the residual noise produced by an effect into another effect). Do we need a startup registration for that so it can appear in the host UI?</p>
+<p><br />C. We do need to agree about how we call the individual image channels: Are they planes, components,... And are all these channels the same width and height?</p>
+<p><br />D. Is the data colorimetric or linear math? (subjected to colorspace management or expected linear). We have a similar issue with meta-data I think, separate discussion.</p>
+<p><br />E. For symmetry across the API, let's take surface normals, 3 rotations. We have a double parameter of type Angle. Presumably a 3D parameter of that type is like a 3D rotation. Now the definition for Angle parameter says the Angle is in Radians as opposed to in degrees or normalized -PI to PI to 0 to 1 or -1 to 1... It's not totally clear. At least we have a way to specify parameters that are position, scale and rotate. Normals is obviously 3D rotate. I don't really care if things are -1 to 1 or 0 to 1, however as you know there is no such thing as -1 to 1 outside of 32b float images (sub-question to we need to support 16 bit image channels?), however I would like to know. Add to this that from a 3D system, the 3D rot might be tangential (to camera plane, therefore hemispherical, e.g. for bump mapping) or a full 3D spherical space normal (often implies you have a 3D camera somewhere to use). It took me a while to get there and thinking about meta-data led me to thinking like this (initially I objected to too hard coded naming).</p>
+<p><br />[OPT_EXT_WHO]_[NORMALS/ROTATE_string]_[XYZ]_[0,1]_[Optional: Tangent]_[Basis]<br />This long string is not for end-user consumption. For example Fusion use the label X Normal, Y Normal, Z Normal, I don't expect they would change how to label that. Only that from API stand-point we could define this as 3D rotate. This then provides a simple way for effect to filter candidate image channels. So in that example [OPT_EXT_WHO] is just Normal maybe and since it's the host provided image channels, there is no need to prefix something else for them.</p>
+<p><br />From there taking Paul Miller residual noise image.</p>
+<p>[OPT_EXT_WHO]: SDFX (some owner), Residual Noise (some name)<br />[TYPE]: 32b float RGB (could also be single channel), Scaler <br />[XYZ]: how components are labeled - is it always RGB or XYZ (if RGB subject to colorspace). E.g. UVW.<br />[0-1]: Is the data additive noise or difference to smoothed image (thus -1 to 1 maybe)<br />[Optional]: Additional Info - not sure how this translates to UI, could even have version number or whatever one wants to add as tidbit<br />[Basis]: This is not clear with this particular example, some data is relative to something else (e.g. forward (+1) and inverse (-1) - next time sample or previous time sample, or even to other frame in case of stereo)</p>
+<p>&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  7:59 pm,  22 Jan 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-43' id='cid-268'>
+<div class='content'>
+<p>While implementing this for Natron, here are the notes I gathered as to how it is&nbsp;working in Nuke, and what we needed to modify to correctly make it work with the existing&nbsp;kOfxImageEffectActionGetClipPreferences action:</p>
+<p>&nbsp;</p>
+<p><span>/*</span></p>
+<p><span>&nbsp; ----------------------------------------------- -----------------------------------------------------------------</span></p>
+<p><span>&nbsp;////////////////////////////////////////////////////////////////////////////////////////////////////////////////</span></p>
+<p><span>&nbsp;Natron multi-plane definitions and extensions brought to Nuke multi-plane extensions defined in fnOfxExtensions.h:</span></p>
+<p><span>&nbsp;////////////////////////////////////////////////////////////////////////////////////////////////////////////////</span></p>
+<p><span>&nbsp;----------------------------------------------- -----------------------------------------------------------------</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;Definitions:</span></p>
+<p><span>&nbsp;------------</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;- Layer: Corresponds to 1 image plane and has a unique name</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;- Components: The "type" of data (i.e: the number of channels) contained by a Layer. This may be equal to any of the default</span></p>
+<p><span>&nbsp;components defined by OpenFX (e.g: kOfxImageComponentRGBA) but also to the one added by fnOfxExtensions.h (namely&nbsp;</span></p>
+<p><span>&nbsp;kFnOfxImagePlaneForwardMotionVector or kFnOfxImagePlaneBackwardMotionVector) and finally to the custom planes extension</span></p>
+<p><span>&nbsp;defined by Natron.</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;----------------------------------------------- -----------------------------------------------------------------</span></p>
+<p>&nbsp;</p>
+<p><span>The Foundry multi-plane suite:</span></p>
+<p><span>------------------------------</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;- In The Foundry specification, some layers are paired and can be requested at the same time:</span></p>
+<p><span>&nbsp;this is the (kFnOfxImagePlaneBackwardMotionVector, kFnOfxImagePlaneForwardMotionVector) and (kFnOfxImagePlaneStereoDisparityLeft, kFnOfxImagePlaneStereoDisparityRight) layers. A pair means both layers have the same components type and are generally rendered together.</span></p>
+<p><span>&nbsp;These layers are the only one added by this extension.</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;- The color layer (kFnOfxImagePlaneColour) can have the default OpenFX types.</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;- The only plug-ins to support The Foundry multi-plane suite are the Furnace ones (among potentially others) and the only (known) hosts to support it are Natron and Nuke.</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;- In The Foundry multi-plane suite, the plug-in specify that it wants to operate on a motion vector plane or disparity plane by setting kFnOfxImageComponentMotionVectors or kFnOfxImageComponentStereoDisparity on the clip components during the getClipPreferences action. They do not support other planes.</span></p>
+<p>&nbsp;</p>
+<p><span>&nbsp;- The getClipComponents action is unused by Nuke.</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;- If the clip components are set to kFnOfxImageComponentMotionVectors or kFnOfxImageComponentStereoDisparity it is expected that the following render actions are called on both paired planes (the plug-in will attempt to fetch both from the render action).</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>Natron modifications:</span></p>
+<p><span>---------------------</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;- Some file formats (OpenEXR, TIFF) allow multiple arbitrary image layers (= planes) to be embedded in a single file.</span></p>
+<p><span>&nbsp;In the same way, a host application may want/need to use multiple arbitrary image layers into the same image stream c</span>oming from a clip.</p>
+<p><span>&nbsp;The multi-plane extension defined in fnOfxExtensions.h by The Foundry has nothing set in this regard and we had to come-up&nbsp;</span>with one.</p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;A custom Layer (or plane) is defined as follows:</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;- A unique name, e.g: "RenderLayer"</span></p>
+<p><span>&nbsp;- A set of 1 to 4 channels represented by strings, e.g: ["R","G","B","A"]</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;Typically it would be presented like this to the user in a choice parameter:</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;RenderLayer.RGBA</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;Internally instead of passing this string and parsing it, we encode the layer as such:</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;kNatronOfxImageComponentsPlane + layerName + kNatronOfxImageComponentsPlaneChannel + channel1Name + kNatronOfxImageComponentsPlaneChannel + channel2Name + kNatronOfxImageComponentsPlaneChannel + channel3Name</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;e.g: kNatronOfxImageComponentsPlane + "Position" + kNatronOfxImageComponentsPlaneChannel + "X" + kNatronOfxImageComponentsPlaneChannel + "Y" + kNatronOfxImageComponentsPlaneChannel + "Z"</span></p>
+<p><span>&nbsp;</span></p>
+<p>&nbsp;</p>
+<p><span>&nbsp;Natron custom layers can be passed wherever layers are used (clipGetImage,render action) or components are used: getClipComponents. They may not be used</span>&nbsp;in getClipPreferences.</p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;- Multi-plane effects (kFnOfxImageEffectPropMultiPlanar=1) request their layers via the getClipComponents action</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;- getClipPreferences has not changed and may only be used to specify the type of components onto which the color layer (kFnOfxImagePlaneColour) will be mapped</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;- Multi-plane effects (kFnOfxImageEffectPropMultiPlanar=1) are expected to support arbitrary component types and should not rely on the components set during getClipPreferences except for the kFnOfxImagePlaneColour layer.</span></p>
+<p>&nbsp;</p>
+<p><span>&nbsp;- OpenFX didn't allow to pass 2-channel image natively through a clip, even for plug-ins that are not multi-plane.</span></p>
+<p><span>&nbsp;The color layer (kFnOfxImagePlaneColour) can now have the default OpenFX types of components as well as kNatronOfxImageComponentXY to specify 2-channel images.</span></p>
+<p><span>&nbsp;kNatronOfxImageComponentXY may be specified wherever default OpenFX components types are used.&nbsp;</span></p>
+<p><span>&nbsp;</span></p>
+<p>&nbsp;</p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>Notes:</span></p>
+<p><span>------</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;- Layers are what is passed to the render action and clipGetImage function whereas components are what is used for getClipComponents and getClipPreferences</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;- In the getClipComponents action, the plug-in passes OpenFX components.</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp;*/</span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span>/** @brief string property to indicate the presence of custom components on a clip in or out.</span></p>
+<p><span>&nbsp; The string should be formed as such:</span></p>
+<p><span>&nbsp; kNatronOfxImageComponentsPlane + planeName + kNatronOfxImageComponentsPlaneChannel + channel1Name + kNatronOfxImageComponentsPlaneChannel + channel2Name + kNatronOfxImageComponentsPlaneChannel + channel3Name</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp; e.g: kNatronOfxImageComponentsPlane + "Position" + kNatronOfxImageComponentsPlaneChannel + "X" + kNatronOfxImageComponentsPlaneChannel + "Y" + kNatronOfxImageComponentsPlaneChannel + "Z"</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp; This indicates to the host in which plane should the given components appear and how many pixel channels it contains.</span></p>
+<p><span>&nbsp; It can be used at any place where kOfxImageComponentAlpha, kOfxImageComponentRGB, kOfxImageComponentRGBA, kOfxImageComponentNone (etc...) is</span></p>
+<p><span>&nbsp; given.</span></p>
+<p><span>&nbsp;*/</span></p>
+<p><span>#define kNatronOfxImageComponentsPlane&nbsp; </span><span>"NatronOfxImageComponentsPlane_"</span></p>
+<p><span>#define kNatronOfxImageComponentsPlaneChannel &nbsp; </span><span>"_Channel_"</span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span>/** @brief String to label images with 2 components. If the plug-in supports this then the host can attempt to send to the plug-in</span></p>
+<p><span>&nbsp;planes with 2 components.*/</span></p>
+<p><span>#define kNatronOfxImageComponentXY </span><span>"NatronOfxImageComponentXY"</span></p>
+<p>&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Alexandre |  4:18 am,  14 Apr 2016
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-242'>
+<div class='content'>
+<p>(Pierre Jasmin):&nbsp; As usual I have no difficulty with the gist of this until we get down to the details - e.g. "Note that some planes come in pairs, for example a forwards motion vector plane cannot exists without a backwards motion vector plane."&nbsp; - eg. try to render bi-directional MV from a 3D renderer...</p>
+<p>I am currently happy with the way the OFX example 4 (Saturation) works, when a single channel is requested it provides a submenu for sub-channels. This bypasses the base need for that (including naming things differently than host does elsewhere). What could be better (CBB) in Nuke is to only display what is actually filled.</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  3:26 pm,   6 Jun 2015
+</div>
+</div>
+
+</div>
+</div>
+
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

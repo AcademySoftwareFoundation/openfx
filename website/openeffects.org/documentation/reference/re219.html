@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>kOfxParamPropScriptName</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch17.html" title="Chapter 17. Properties By Name"></link>
+      <link rel="prev" href="/documentation/reference/re218.html" title="kOfxParamPropPluginMayWrite"></link>
+      <link rel="next" href="/documentation/reference/re220.html" title="kOfxParamPropSecret"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">
+                     <code class="literal">kOfxParamPropScriptName</code>
+                  </th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re218.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 17. Properties By Name</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re220.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="refentry">
+            <a id="kOfxParamPropScriptName"></a>
+            <div class="titlepage"></div>
+            <div class="refnamediv">
+               <h2>Name</h2>
+               <p>
+                  <code class="literal">kOfxParamPropScriptName</code>
+                  — The value to be used as the id of the parameter in a host scripting language.
+               </p>
+            </div>
+            <div class="refsynopsisdiv">
+               <h2>Synopsis</h2>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">
+#include "/ofxParam.h"
+#define kOfxParamPropScriptName "OfxParamPropScriptName"
+</pre>
+                  </blockquote>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp19185888"></a>
+               <h3>Type</h3>
+               <p>
+                  <code class="literal">kOfxParamPropScriptName</code>
+                  is of type
+                  <span class="type">ASCII C string</span>
+                  , and has only a single dimension.
+               </p>
+            </div>
+            <div class="refsect2">
+               <a id="idp19188048"></a>
+               <h3>Property Set</h3>
+               <p> This is a property that belongs to the plugin parameter descriptor (read/write) and instance (read only),.
+</p>
+            </div>
+            <div class="refsect2">
+               <a id="idp19189200"></a>
+               <h3>Default</h3>
+               <p>
+The default value is the unique name the parameter was created with..
+</p>
+            </div>
+            <div class="refsect2">
+               <a id="idp19190320"></a>
+               <h3>Valid Values</h3>
+               <p>
+ASCII string unique to all parameters in the plug-in.
+</p>
+            </div>
+            <div class="refsect2">
+               <a id="idp19191424"></a>
+               <h3>Description</h3>
+               <p>
+The value to be used as the id of the parameter in a host scripting language.
+</p>
+               <p>
+Many hosts have a scripting language that they use to set values of parameters and more. If so, this is the name of a parameter in such scripts.
+</p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re218.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch17.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re220.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">
+                     <code class="literal">kOfxParamPropPluginMayWrite</code>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top">
+                      
+                     <code class="literal">kOfxParamPropSecret</code>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

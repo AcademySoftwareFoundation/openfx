@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>OfxProgressSuiteV1</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch15s03.html" title="Progress Suite"></link>
+      <link rel="prev" href="/documentation/reference/ch15s03.html" title="Progress Suite"></link>
+      <link rel="next" href="/documentation/reference/re36.html" title="OfxProgressSuiteV1::progressStart"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">
+                     <span class="type">OfxProgressSuiteV1</span>
+                  </th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch15s03.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Progress Suite</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re36.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="refentry">
+            <a id="OfxProgressSuiteV1"></a>
+            <div class="titlepage"></div>
+            <div class="refnamediv">
+               <h2>Name</h2>
+               <p>
+                  <code class="function">OfxProgressSuiteV1</code>
+                  — A suite that provides progress feedback from a plugin to an application
+               </p>
+            </div>
+            <div class="refsynopsisdiv">
+               <h2>Synopsis</h2>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">
+#include "ofxProgress.h"
+typedef struct OfxProgressSuiteV1 {
+  OfxStatus (*progressStart)(void *effectInstance,
+                             const char *label);
+  OfxStatus (*progressUpdate)(void *effectInstance, double progress);
+  OfxStatus (*progressEnd)(void *effectInstance);
+} OfxProgressSuiteV1 ;
+
+</pre>
+                  </blockquote>
+               </div>
+            </div>
+            <div class="refsect1">
+               <a id="idp15169760"></a>
+               <h2>Description</h2>
+               <p>
+A plugin instance can initiate, update and close a progress indicator with
+this suite.
+</p>
+               <p>
+This is an optional suite in the Image Effect API.
+</p>
+               <p>
+API V1.4: Amends the documentation of progress suite V1 so that it is
+expected that it can be raised in a modal manner and have a "cancel"
+button when invoked in instanceChanged. Plugins that perform analysis
+post an appropriate message, raise the progress monitor in a modal manner
+and should poll to see if processing has been aborted. Any cancellation
+should be handled gracefully by the plugin (eg: reset analysis parameters
+to default values), clear allocated memory...
+</p>
+               <p>
+Many hosts already operate as described above. kOfxStatReplyNo should be
+returned to the plugin during progressUpdate when the user presses
+cancel.
+</p>
+               <p>
+Suite V2: Adds an ID that can be looked up for internationalisation and
+so on. When a new version is introduced, because plug-ins need to support
+old versions, and plug-in's new releases are not necessary in synch with
+hosts (or users don't immediately update), best practice is to support
+the 2 suite versions. That is, the plugin should check if V2 exists; if
+not then check if V1 exists. This way a graceful transition is
+guaranteed.  So plugin should fetchSuite passing 2,
+(OfxProgressSuiteV2) fetchSuite(mHost-&gt;mHost-&gt;host, kOfxProgressSuite,2);
+and if no success pass (OfxProgressSuiteV1)
+fetchSuite(mHost-&gt;mHost-&gt;host, kOfxProgressSuite,1);
+</p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch15s03.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch15s03.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re36.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Progress Suite </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top">
+                      
+                     <code class="function">OfxProgressSuiteV1::progressStart</code>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

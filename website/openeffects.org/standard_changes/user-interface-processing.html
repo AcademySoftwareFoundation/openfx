@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes User Interface Processing |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="EW5vFNHwFaMHCL2gWaaRhn6Znu0VhNjjmbSskR/EEMY/dAend8QYjLLX/00tlCpSK7nqqEz5/gFXtbj8CpUR/Q==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+<form role="form" class="navbar-form navbar-right form-inline" action="/users/sign_in" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="ENTUX22b1IC6jJsny/YCOZirUg6mqZhebG6NwUj1GOA+zrzsy6/Zrw9T2cq/xLntzYsmS//Uvryib5msXaQZ2w==" />
+<div class='form-group'>
+<input type="text" name="user[email]" id="user_email" class="form-control input-xs" placeholder="Email" />
+</div>
+<div class='form-group'>
+<input type="password" name="user[password]" id="user_password" class="form-control input-xs" placeholder="Password" />
+</div>
+<button class='btn btn-sm btn-primary' type='submit'>Sign in</button>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='row'>
+<div class='col-md-offset-2 col-md-8'>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-warning'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+User Interface Processing
+<span class='pull-right'>Proposed</span>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Standard version:</b>
+1.4
+</p>
+<p>
+<b>Minor Change</b>
+</p>
+<label>Subcommittee</label>
+<p><p>Gary at Genarts is looking for host that wants to implement to write example/better doc.</p></p>
+<label>Overview</label>
+<p>Note (by Pierre Jasmin): &nbsp;Gary from Genarts was saying this need to be changed. Not the proper way to do this.</p>
+<p>Gary (2015-04-30): Consulting with the team here, I now think the API functions are OK, but need better documentation of what's supposed to be passed where and when. &nbsp;I'll work on an update. &nbsp;Need an interested host partner to implement. (Assimilate has a version but we've identified some issues that could use work.)</p>
+<p>Some plug-ins perform heavy processing in response to UI interaction. This is typically some sort of analysis of images to shove into parameters to be used in a later render call. For example, a stabilisation plug-in might analyse all frames of an input clip for motion and write parameter keyframes representing that motion. During render, those values are fetched and used to stabilise the image.</p>
+<p>This heavy weight processing can lock up the UI thread on many hosts, and can be distinctly user hostile. A way around this is needed, so that the plug-in can report to the host it is going to lock up processing, or even some way of batching that to a background thread.</p>
+<label>Solution</label>
+<p dir="ltr">This is a suite - Suite don't have the same insertion cycles as the rest.</p>
+<p dir="ltr">This suite can be supported by any host that support 1.4 &nbsp;- There is a volunteer (Gary at Genarts) to support that. There has been a variation of this implemented by Assimilate and Genarts but it is an _EXT right now (not in shipping version).</p>
+<p><span>&nbsp;</span></p>
+<p>&nbsp;</p>
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-default'>
+<div class='panel-body'>
+<h4 class='text-primary'>Discussion</h4>
+<h5>Comments</h5>
+<div class='well well-sm'>
+<div class='comment user-0' id='cid-213'>
+<div class='content'>
+<p>(pierre):  Gary, at NAB you discussed some dialog extention, I believe for when you popup your UI panel that you don't become hidden under the host UI&#8230; There was already a request (by Bruno, and we also had that problem) under User Interface Processing where if we popup a fancy panel to indicate what is going on to user during some analysis something similar can easily happen.  That request right now has no specifications, maybe what you discussed you had to do with Gerk can be extended for that purpose as well&#8230;</p>
+<p>(gary) Here is what we are using with Scratch now (minus some introductory comments etc.):</p>
+<pre>/** @file ofxDialog.h
+
+This file contains an optional suite which should be used to popup a native OS dialog
+from a host parameter changed action.
+
+When a host uses a fullscreen window and is running the OFX plugins in another thread
+it can lead to a lot of conflicts if that plugin will try to open its own window.
+
+This suite will provide the functionality for a plugin to request running its dialog
+in the UI thread, and informing the host it will do this so it can take the appropriate
+actions needed. (Like lowering its priority etc..)
+*/
+
+/** @brief The name of the Dialog suite, used to fetch from a host via
+    OfxHost::fetchSuite
+ */
+#define kOfxDialogSuite		"OfxDialogSuite"
+
+/** @brief Action called after a dialog has requested a 'Dialog'
+         The arguments to the action are:
+          \arg user_data - Pointer which was provided when the plugin requested the Dialog
+
+	   When the plugin receives this action it is safe to popup a dialog.
+	   It runs in the host's UI thread, which may differ from the main OFX processing thread.
+	   Plugin should return from this action when all Dialog interactions are done.
+	   At that point the host will continue again.
+	   The host will not send any other messages asynchronous to this one.
+*/
+#define  kOfxActionDialog	"OfxActionDialog"
+
+typedef struct OfxDialogSuiteV1
+{
+  /** @brief Request the host to send a kOfxActionDialog to the plugin from its UI thread.
+  \pre
+    - user_data: A pointer to any user data
+  \post
+  @returns
+    - ::kOfxStatOK - The host has queued the request and will send an 'OfxActionDialog'
+    - ::kOfxStatFailed - The host has no provisio for this or can not deal with it currently.
+  */
+  OfxStatus (*RequestDialog)( void *user_data );
+  
+  /** @brief Inform the host of redraw event so it can redraw itself
+      If the host runs fullscreen in OpenGL, it would otherwise not receive
+redraw event when a dialog in front would catch all events.
+  \pre
+  \post
+  @returns
+    - ::kOfxStatReplyDefault
+  */
+  OfxStatus (*NotifyRedrawPending)( void );
+} OfxDialogSuiteV1;</pre>
+<p>(pierre): I think that will do for us. One of our application is popping a dialog when analyzing long sequences to store data (store stuff in memory or in parameters), and our dialog includes things like Stop and Progress reports (stats&#8230;).  What we have seen in this universe doing things like that is sometimes moving the mouse outside the popup dialog brings the host back in focus, can move the dialog under the host UI out of user sight&#8230;</p>
+<p>(dennis): We do exactly this kind of blocking analysis in our Stabilize plug-in, but we use the OfxProgressSuite to report percentage done and monitor the Cancel button. Works great for that. How is this different?</p>
+<p>(pierre):  It's probably not in the way you use it then the my example. But there is no popup dialog in OFX and we have seen elsewhere that it's easy for a user to push the dialog under the app.</p>
+</div>
+</div>
+<div class='author text-muted'>
+unattributed |  9:49 am,   8 Mar 2014
+</div>
+</div>
+
+</div>
+</div>
+
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

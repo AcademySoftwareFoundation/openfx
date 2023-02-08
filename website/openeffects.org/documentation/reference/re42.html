@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>OfxTimeLineSuiteV1::getTimeBounds</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch15s04.html" title="Timeline Suite"></link>
+      <link rel="prev" href="/documentation/reference/re41.html" title="OfxTimeLineSuiteV1::gotoTime"></link>
+      <link rel="next" href="/documentation/reference/ch15s05.html" title="Parameters Suite"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">
+                     <code class="function">OfxTimeLineSuiteV1::getTimeBounds</code>
+                  </th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re41.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Timeline Suite</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch15s05.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="refentry">
+            <a id="OfxTimeLineSuiteV1_getTimeBounds"></a>
+            <div class="titlepage"></div>
+            <div class="refnamediv">
+               <h2>Name</h2>
+               <p>
+                  <code class="function">OfxTimeLineSuiteV1::getTimeBounds</code>
+                  — Get the current bounds on a timeline
+               </p>
+            </div>
+            <div class="refsynopsisdiv">
+               <h2>Synopsis</h2>
+               <div class="funcsynopsis">
+                  <pre class="funcsynopsisinfo">#include "ofxTimeLine.h" </pre>
+                  <table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;">
+                     <tr>
+                        <td>
+                           <code class="funcdef">
+                              OfxStatus
+                              <strong class="fsfunc">(*getTimeBounds)</strong>
+                              (
+                           </code>
+                        </td>
+                        <td>
+                           void *
+                           <var class="pdparam">instance</var>
+                           ,
+                        </td>
+                     </tr>
+                     <tr>
+                        <td> </td>
+                        <td>
+                           double *
+                           <var class="pdparam">firstTime</var>
+                           ,
+                        </td>
+                     </tr>
+                     <tr>
+                        <td> </td>
+                        <td>
+                           double *
+                           <var class="pdparam">lastTime</var>
+                           <code>)</code>
+                           ;
+                        </td>
+                     </tr>
+                  </table>
+                  <div class="funcprototype-spacer"> </div>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp15326400"></a>
+               <h3>Arguments</h3>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">instance - is the instance of the effect changing the timeline, cast to a void 
+</li>
+                     <li class="listitem">firstTime - is the first time on the timeline. This is in the temporal coordinate system of the effect.
+</li>
+                     <li class="listitem">lastTime - is last time on the timeline. This is in the temporal coordinate system of the effect.
+</li>
+                  </ul>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp15329040"></a>
+               <h3>Description</h3>
+               <p>
+This function
+</p>
+            </div>
+            <div class="refsect2">
+               <a id="idp15330224"></a>
+               <h3>Returns</h3>
+               <p>
+
+</p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re248.html" title="kOfxStatOK">
+                           <code class="code">kOfxStatOK</code>
+                        </a>
+                        - the time enquiry was sucessful
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re249.html" title="kOfxStatFailed">
+                           <code class="code">kOfxStatFailed</code>
+                        </a>
+                        - the enquiry failed for some host specific reason
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re257.html" title="kOfxStatErrBadHandle">
+                           <code class="code">kOfxStatErrBadHandle</code>
+                        </a>
+                        - the effect handle was invalid
+                     </li>
+                  </ul>
+               </div>
+               <p>
+</p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re41.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch15s04.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch15s05.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">
+                     <code class="function">OfxTimeLineSuiteV1::gotoTime</code>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Parameters Suite</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

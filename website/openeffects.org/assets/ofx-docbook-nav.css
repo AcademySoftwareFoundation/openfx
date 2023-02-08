@@ -1,0 +1,75 @@
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url("/assets/bootstrap/glyphicons-halflings-regular.eot");
+  src: url("/assets/bootstrap/glyphicons-halflings-regular.eot?#iefix") format('embedded-opentype'),
+       url("/assets/bootstrap/glyphicons-halflings-regular.woff") format('woff'),
+       url("/assets/bootstrap/glyphicons-halflings-regular.ttf") format('truetype'),
+       url("/assets/bootstrap/glyphicons-halflings-regular.svg#glyphicons-halflings-regular") format('svg');
+}
+@font-face {
+    font-family: "persan";
+    font-style: normal;
+    font-weight: normal;
+    src: url("/assets/persans-webfont.eot?#iefix") format("embedded-opentype"), url("/assets/persans-webfont.woff") format("woff"), url("/assets/persans-webfont.ttf") format("truetype"), url("/assets/persans-webfont.svg#persan") format("svg");
+}
+body {
+  margin:0;
+  padding: 0;
+}
+.wrapper {
+    background-color: #E9EEFF;
+    border: 1px solid #AAAAAA;
+    font-family: Helvetica,Arial,sans-serif;
+    line-height: 1.5;
+    margin: 40px 10%;
+    padding: 20px 40px;
+}
+/* OFX Top level nav */
+.glyph:before {
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: "\e132";
+  width: 30px;
+}
+#ofx-main-nav {
+  font-family: 'persan';
+}
+#ofx-main-nav {
+  font-size: 13px;
+  background-color: #222;
+  border-color: #080808;
+  padding: 6px 0 8px 20px;
+}
+#ofx-main-nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding-left: 0;
+}
+#ofx-main-nav ul li {
+  display: inline-block;
+  padding: 0 10px 0 10px;
+  margin-left: 0;
+}
+#ofx-main-nav ul img {
+  vertical-align: middle;
+}
+#ofx-main-nav ul a {
+  color: #999;
+  text-decoration: none;
+}
+#ofx-main-nav ul a:hover {
+  color: #fff;
+  background-color: #000;
+}
+
+/* Wrapper for programming guide and reference */
+#reference {
+  background-color: #e0f3f8;
+}
+#guide {
+  background-color: #e5f4f2;
+}

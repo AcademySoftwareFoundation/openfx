@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>OfxPropertySuiteV1::propSetPointer</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="ch15.html#PropertySuiteReference" title="Property Suite"></link>
+      <link rel="prev" href="/documentation/reference/re02.html" title="OfxPropertySuiteV1"></link>
+      <link rel="next" href="/documentation/reference/re04.html" title="OfxPropertySuiteV1::propSetString"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">
+                     <code class="function">OfxPropertySuiteV1::propSetPointer</code>
+                  </th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re02.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Property Suite</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re04.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="refentry">
+            <a id="OfxPropertySuiteV1_propSetPointer"></a>
+            <div class="titlepage"></div>
+            <div class="refnamediv">
+               <h2>Name</h2>
+               <p>
+                  <code class="function">OfxPropertySuiteV1::propSetPointer</code>
+                  — Set a single value in a pointer property
+               </p>
+            </div>
+            <div class="refsynopsisdiv">
+               <h2>Synopsis</h2>
+               <div class="funcsynopsis">
+                  <pre class="funcsynopsisinfo">#include "ofxProperty.h" </pre>
+                  <table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;">
+                     <tr>
+                        <td>
+                           <code class="funcdef">
+                              OfxStatus
+                              <strong class="fsfunc">(*propSetPointer)</strong>
+                              (
+                           </code>
+                        </td>
+                        <td>
+                           OfxPropertySetHandle
+                           <var class="pdparam">properties</var>
+                           ,
+                        </td>
+                     </tr>
+                     <tr>
+                        <td> </td>
+                        <td>
+                           const char *
+                           <var class="pdparam">property</var>
+                           ,
+                        </td>
+                     </tr>
+                     <tr>
+                        <td> </td>
+                        <td>
+                           int
+                           <var class="pdparam">index</var>
+                           ,
+                        </td>
+                     </tr>
+                     <tr>
+                        <td> </td>
+                        <td>
+                           void *
+                           <var class="pdparam">value</var>
+                           <code>)</code>
+                           ;
+                        </td>
+                     </tr>
+                  </table>
+                  <div class="funcprototype-spacer"> </div>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp13947728"></a>
+               <h3>Arguments</h3>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">properties - is the handle of the thing holding the property
+</li>
+                     <li class="listitem">property - is the string labelling the property
+</li>
+                     <li class="listitem">index - is for multidimenstional properties and is dimension of the one we are setting
+</li>
+                     <li class="listitem">value - is the value of the property we are setting
+</li>
+                  </ul>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp13950720"></a>
+               <h3>Returns</h3>
+               <p>
+
+</p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re248.html" title="kOfxStatOK">
+                           <code class="code">kOfxStatOK</code>
+                        </a>
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re257.html" title="kOfxStatErrBadHandle">
+                           <code class="code">kOfxStatErrBadHandle</code>
+                        </a>
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re251.html" title="kOfxStatErrUnknown">
+                           <code class="code">kOfxStatErrUnknown</code>
+                        </a>
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re258.html" title="kOfxStatErrBadIndex">
+                           <code class="code">kOfxStatErrBadIndex</code>
+                        </a>
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re259.html" title="kOfxStatErrValue">
+                           <code class="code">kOfxStatErrValue</code>
+                        </a>
+                     </li>
+                  </ul>
+               </div>
+               <p>
+</p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re02.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="ch15.html#PropertySuiteReference">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re04.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">
+                     <span class="type">OfxPropertySuiteV1</span>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top">
+                      
+                     <code class="function">OfxPropertySuiteV1::propSetString</code>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

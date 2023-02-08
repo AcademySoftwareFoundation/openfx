@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>OfxParametricParameterSuiteV1</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch15s06.html" title="Parametric Parameters Suite"></link>
+      <link rel="prev" href="/documentation/reference/ch15s06.html" title="Parametric Parameters Suite"></link>
+      <link rel="next" href="/documentation/reference/re64.html" title="OfxParametricParameterSuiteV1::parametricParamGetValue"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">
+                     <span class="type">OfxParametricParameterSuiteV1</span>
+                  </th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch15s06.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Parametric Parameters Suite</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re64.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="refentry">
+            <a id="OfxParametricParameterSuiteV1"></a>
+            <div class="titlepage"></div>
+            <div class="refnamediv">
+               <h2>Name</h2>
+               <p>
+                  <code class="function">OfxParametricParameterSuiteV1</code>
+                  — The OFX suite used to define and manipulate 'parametric' parameters.
+               </p>
+            </div>
+            <div class="refsynopsisdiv">
+               <h2>Synopsis</h2>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">
+#include "ofxParametricParam.h"
+typedef struct OfxParametricParameterSuiteV1 {
+  OfxStatus (*parametricParamGetValue)(OfxParamHandle param,
+                                       int   curveIndex,
+                                       OfxTime time,
+                                       double parametricPosition,
+                                       double *returnValue);
+  OfxStatus (*parametricParamGetNControlPoints)(OfxParamHandle param,
+                                                int   curveIndex,
+                                                double time,
+                                                int *returnValue);
+  OfxStatus (*parametricParamGetNthControlPoint)(OfxParamHandle param,
+                                                 int    curveIndex,
+                                                 double time,
+                                                 int    nthCtl,
+                                                 double *key,
+                                                 double *value);
+  OfxStatus (*parametricParamSetNthControlPoint)(OfxParamHandle param,
+                                                 int   curveIndex,
+                                                 double time,
+                                                 int   nthCtl,
+                                                 double key,
+                                                 double value,
+                                                 bool addAnimationKey);
+  OfxStatus (*parametricParamAddControlPoint)(OfxParamHandle param,
+                                              int   curveIndex,
+                                              double time,
+                                              double key,
+                                              double value,
+                                              bool addAnimationKey);
+  OfxStatus (*parametricParamDeleteControlPoint)(OfxParamHandle param,
+                                                 int   curveIndex,
+                                                 int   nthCtl);
+  OfxStatus (*parametricParamDeleteAllControlPoints)(OfxParamHandle param,
+                                                     int   curveIndex);
+ } OfxParametricParameterSuiteV1;
+
+</pre>
+                  </blockquote>
+               </div>
+            </div>
+            <div class="refsect1">
+               <a id="idp16104400"></a>
+               <h2>Description</h2>
+               <p>
+This is an optional suite.
+</p>
+               <p>
+Parametric parameters are in effect 'functions' a plug-in can ask a host to arbitrarily 
+evaluate for some value 'x'. A classic use case would be for constructing look-up tables, 
+a plug-in would ask the host to evaluate one at multiple values from 0 to 1 and use that 
+to fill an array.
+</p>
+               <p>
+A host would probably represent this to a user as a cubic curve in a standard curve editor 
+interface, or possibly through scripting. The user would then use this to define the 'shape'
+of the parameter.
+</p>
+               <p>
+The evaluation of such params is not the same as animation, they are returning values based 
+on some arbitrary argument orthogonal to time, so to evaluate such a param, you need to pass
+a parametric position and time.
+</p>
+               <p>
+Often, you would want such a parametric parameter to be multi-dimensional, for example, a
+colour look-up table might want three values, one for red, green and blue. Rather than 
+declare three separate parametric parameters, it would be better to have one such parameter 
+with multiple values in it.
+</p>
+               <p>
+                  The major complication with these parameters is how to allow a plug-in to set values, and defaults. The default default value of a parametric curve is to be an identity lookup. If a plugin wishes to set a different default value for a curve, it can use the suite to set key/value pairs on the
+                  <span class="emphasis">
+                     <em> m</em>
+                  </span>
+                  descriptor of the param. When a new instance is made, it will have these curve values as a default.
+               </p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch15s06.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch15s06.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re64.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Parametric Parameters Suite </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top">
+                      
+                     <code class="function">OfxParametricParameterSuiteV1::parametricParamGetValue</code>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

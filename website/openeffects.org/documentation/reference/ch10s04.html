@@ -1,0 +1,319 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>OFX : Fields and Field Rendering</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch10.html" title="Chapter 10. Rendering"></link>
+      <link rel="prev" href="/documentation/reference/ch10s03.html" title="Multi-threaded Rendering"></link>
+      <link rel="next" href="/documentation/reference/ch10s05.html" title="Rendering In An Interactive Environment"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">OFX : Fields and Field Rendering</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch10s03.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 10. Rendering</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch10s05.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="ImageEffectsFieldRendering"></a>
+                        OFX : Fields and Field Rendering
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+	Fields are evil, but until the world decides to adopt sensible video standard and casts the current ones into the same
+	pit as 2 inch video tape, we are stuck with them.
+      </p>
+            <p>
+	Before we start, some nomenclature. The Y-Axis is considerred to be up, so in a fielded image,
+	</p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">even scan lines 0,2,4,6,... are collectively referred to as the lower field,</li>
+                  <li class="listitem">odd scan lines 1,3,5,7... are collective referred to as the upper field.</li>
+               </ul>
+            </div>
+            <p>
+      </p>
+            <p>
+	We don't call them odd and even, so as to avoid confusion with video standard, which have scanline 0 at the top, 
+	and so have the opposite sense of our 'odd' and 'even'.
+      </p>
+            <p>
+               Clips and images from those clips are flagged as to whether they are fielded or not, and if so what is the spatial/temporal ordering of the fields in that image. The
+               <a class="link" href="/documentation/reference/re100.html" title="kOfxImageClipPropFieldOrder">
+                  <code class="code">kOfxImageClipPropFieldOrder</code>
+               </a>
+               clip and image instance property can be...
+            </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <code class="code">kOfxImageFieldNone</code>
+                     - the material is unfielded
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxImageFieldLower</code>
+                     - the material is fielded, with scan line 0,2,4.... occuring first in a frame
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxImageFieldUpper</code>
+                     - the material is fielded, with scan line 1,3,5.... occuring first in a frame
+                  </li>
+               </ul>
+            </div>
+            <p>
+      </p>
+            <p>
+               Images extracted from a clip flag what their fieldedness is with the property
+               <a class="link" href="/documentation/reference/re156.html" title="kOfxImagePropField">
+                  <code class="code">kOfxImagePropField</code>
+               </a>
+               , this can be....
+            </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <code class="code">kOfxImageFieldNone</code>
+                     - the image is an unfielded frame
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxImageFieldBoth</code>
+                     - the image is fielded and contains both interlaced fields
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxImageFieldLower</code>
+                     - the image is fielded and contains a single field, being the lower field (lines 0,2,4...)
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxImageFieldUpper</code>
+                     - the image is fielded and contains a single field, being the upper field (lines 1,3,5...)
+                  </li>
+               </ul>
+            </div>
+            <p>
+      </p>
+            <p>
+               The plugin specifies how it deals with fielded imagery by setting the
+               <a class="link" href="/documentation/reference/re110.html" title="kOfxImageEffectPluginPropFieldRenderTwiceAlways">
+                  <code class="code">kOfxImageEffectPluginPropFieldRenderTwiceAlways</code>
+               </a>
+               property. This can be,
+            </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">0 - the plugin is to have it's render function called twice only if there is animation in any of it's parameters</li>
+                  <li class="listitem">1 - the plugin is to have it's render function called twice always (default) </li>
+               </ul>
+            </div>
+            <p>
+      </p>
+            <p>
+	The reason for this is an optimisation. Imagine a text generator with no animation being asked to render into a 
+	fielded output clip, it can treat an interlaced fielded image as an unfielded frame. So the host can get the 
+	effect to render both fields in one hit and save on the overhead required to do the rendering in two passes.
+      </p>
+            <p>
+	If called twice per frame, the time passed to the render action will be frame and frame+0.5. So 0.0 0.5 1.0 1.5 etc...
+      </p>
+            <p>
+	When rendering unfielded footage, the host will only ever call the effect's render action once per frame,
+	with the time being at the integers, 0.0, 1.0, 2.0 and so on.
+      </p>
+            <p>
+               The render action's argument property
+               <a class="link" href="/documentation/reference/re119.html" title="kOfxImageEffectPropFieldToRender">
+                  <code class="code">kOfxImageEffectPropFieldToRender</code>
+               </a>
+               tells the effect which field it should render, this can be one of...
+            </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <code class="code">kOfxImageFieldNone</code>
+                     - there are no fields to deal with, the image is full frame
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxImageFieldBoth</code>
+                     - the imagery is fielded and both scan lines should be renderred
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxImageFieldLower</code>
+                     - the lower field is being rendered (lines 0,2,4...)
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxImageFieldUpper</code>
+                     - the upper field is being rendered (lines 1,3,5...)
+                  </li>
+               </ul>
+            </div>
+            <p>
+      </p>
+            <h5>
+               <a id="idp12353504"></a>
+               Note
+            </h5>
+            <p>
+               <a class="link" href="/documentation/reference/re119.html" title="kOfxImageEffectPropFieldToRender">
+                  <code class="code">kOfxImageEffectPropFieldToRender</code>
+               </a>
+               will be set to
+               <code class="code">kOfxImageFieldBoth</code>
+               if
+               <a class="link" href="/documentation/reference/re110.html" title="kOfxImageEffectPluginPropFieldRenderTwiceAlways">
+                  <code class="code">kOfxImageEffectPluginPropFieldRenderTwiceAlways</code>
+               </a>
+               is set to 0 on the plugin,
+            </p>
+            <p>
+               A plugin can specify how it wishes fielded footage to be fetched from a clip via the clip descriptor property
+               <a class="link" href="/documentation/reference/re99.html" title="kOfxImageClipPropFieldExtraction">
+                  <code class="code">kOfxImageClipPropFieldExtraction</code>
+               </a>
+               . This can be one of...
+            </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <code class="code">kOfxImageFieldBoth</code>
+                     fetch a full frame interlaced image
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxImageFieldSingle</code>
+                     fetch a single field, making a half height image
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxImageFieldDoubled</code>
+                     fetch a single field, but doubling each line and so making a full height image (default)
+                  </li>
+               </ul>
+            </div>
+            <p>
+      </p>
+            <p>
+	If fetching a single field, the actual field fetched from the source frame is...
+	</p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">the first temporal field if the time passed to clipGetImage has a fractional part of 0.0 &lt;= f &lt; 0.5</li>
+                  <li class="listitem">the second temporal field otherwise,</li>
+               </ul>
+            </div>
+            <p>
+      </p>
+            <p>
+	To illustrate this last behaviour, the two examples below show an output with twice the frame rate of 
+	the input and how clipGetImage maps to the input. The .0 and .5 mean first and second temporal fields.
+      </p>
+            <div class="blockquote">
+               <blockquote class="blockquote">
+                  <pre class="programlisting">Behaviour with unfielded footage
+
+output 0       1       2       3
+source 0       0       1       1
+	</pre>
+                  <pre class="programlisting">Behaviour with fielded footage
+
+output 0.0 0.5 1.0 1.5 2.0 2.5 3.0 3.5            
+source 0.0 0.0 0.5 0.5 1.0 1.0 1.5 1.5
+	</pre>
+               </blockquote>
+            </div>
+            <p> </p>
+            <h5>
+               <a id="idp12364336"></a>
+               Note
+            </h5>
+            <p>
+	</p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     while some rarely used video standards can have odd number of scan-lines, under OFX, both fields
+                     <span class="emphasis">
+                        <em>always</em>
+                     </span>
+                     consist of the same number of lines. Pad with black where needed.
+                  </li>
+                  <li class="listitem">host developers, for single field extracted images, you don't need to do any buffer copies, you just need to set the row bytes property of the returned image to twice the normal value, and maybe tweak the start address by a scanline.</li>
+               </ul>
+            </div>
+            <p>
+      </p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch10s03.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch10.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch10s05.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Multi-threaded Rendering </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Rendering In An Interactive Environment</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

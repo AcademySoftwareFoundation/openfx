@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>kOfxImageEffectPropRenderQualityDraft</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch17.html" title="Chapter 17. Properties By Name"></link>
+      <link rel="prev" href="/documentation/reference/re136.html" title="kOfxImageEffectPropRegionOfInterest"></link>
+      <link rel="next" href="/documentation/reference/re138.html" title="kOfxImageEffectPropRenderScale"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">
+                     <code class="literal">kOfxImageEffectPropRenderQualityDraft</code>
+                  </th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re136.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 17. Properties By Name</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re138.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="refentry">
+            <a id="kOfxImageEffectPropRenderQualityDraft"></a>
+            <div class="titlepage"></div>
+            <div class="refnamediv">
+               <h2>Name</h2>
+               <p>
+                  <code class="literal">kOfxImageEffectPropRenderQualityDraft</code>
+                  — Indicates whether an effect can take quality shortcuts to improve speed.
+               </p>
+            </div>
+            <div class="refsynopsisdiv">
+               <h2>Synopsis</h2>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">
+#include "/ofxImageEffect.h"
+#define kOfxImageEffectPropRenderQualityDraft "OfxImageEffectPropRenderQualityDraft"
+</pre>
+                  </blockquote>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp18152576"></a>
+               <h3>Type</h3>
+               <p>
+                  <code class="literal">kOfxImageEffectPropRenderQualityDraft</code>
+                  is of type
+                  <span class="type">int</span>
+                  , and has only a single dimension.
+               </p>
+            </div>
+            <div class="refsect2">
+               <a id="idp18154736"></a>
+               <h3>Property Set</h3>
+               <p> This is a property that belongs to the render calls, host (read-only).
+</p>
+            </div>
+            <div class="refsect2">
+               <a id="idp18155856"></a>
+               <h3>Default</h3>
+               <p>
+The default value is 0  - 0: Best Quality (1: Draft).
+</p>
+            </div>
+            <div class="refsect2">
+               <a id="idp18156960"></a>
+               <h3>Valid Values</h3>
+               <p>
+This must be one of 0 or 1
+</p>
+            </div>
+            <div class="refsect2">
+               <a id="idp18158032"></a>
+               <h3>Description</h3>
+               <p>
+Indicates whether an effect can take quality shortcuts to improve speed.
+</p>
+               <p>
+This property indicates that the host provides the plug-in the option to render in Draft/Preview mode. This is useful for applications that must support fast scrubbing. These allow a plug-in to take short-cuts for improved performance when the situation allows and it makes sense, for example to generate thumbnails with effects applied. 
+For example switch to a cheaper interpolation type or rendering mode. A plugin should expect frames rendered in this manner that will not be stucked in host cache unless the cache is only used in the same draft situations.
+If an host does not support that property a value of 0 is assumed.
+Also note that some hosts do implement kOfxImageEffectPropRenderScale - these two properties can be used independently. 
+</p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re136.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch17.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re138.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">
+                     <code class="literal">kOfxImageEffectPropRegionOfInterest</code>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top">
+                      
+                     <code class="literal">kOfxImageEffectPropRenderScale</code>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Chapter 10. Rendering</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="prev" href="/documentation/reference/ch09s11.html" title="Setting Parameters"></link>
+      <link rel="next" href="/documentation/reference/ch10s02.html" title="Rendering and The Get Region Actions"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Chapter 10. Rendering</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch09s11.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center"> </th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch10s02.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="chapter">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h1 class="title">
+                        <a id="RenderingEffects"></a>
+                        Chapter 10. Rendering
+                     </h1>
+                  </div>
+               </div>
+            </div>
+            <p>
+               The
+               <a class="link" href="/documentation/reference/ch13s17.html" title="The Render Action">
+                  <code class="code">kOfxImageEffectActionRender</code>
+               </a>
+               action is passed to plugins, when the host requires them to render an output frame.
+            </p>
+            <p>
+               All calls to the
+               <a class="link" href="/documentation/reference/ch13s17.html" title="The Render Action">
+                  <code class="code">kOfxImageEffectActionRender</code>
+               </a>
+               are bracketed by a pair of
+               <a class="link" href="/documentation/reference/ch13s18.html" title="The Begin Sequence Render Action">
+                  <code class="code">kOfxImageEffectActionBeginSequenceRender</code>
+               </a>
+               and
+               <a class="link" href="/documentation/reference/ch13s19.html" title="The End Sequence Render Action">
+                  <code class="code">kOfxImageEffectActionEndSequenceRender</code>
+               </a>
+               actions. This is to allow plugins to prepare themselves for rendering long sequences by setting up any tables etc.. it may need.
+            </p>
+            <p>
+               The
+               <a class="link" href="/documentation/reference/ch13s18.html" title="The Begin Sequence Render Action">
+                  <code class="code">kOfxImageEffectActionBeginSequenceRender</code>
+               </a>
+               will indicate the frame range that is to be renderred, and whether this is purely a single frame render due to interactive feedback from a user in a GUI.
+            </p>
+            <p>
+      The render action is used in conjunction with the optional 
+    </p>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">
+                           <a id="idp12293920"></a>
+                           Identity Effects
+                        </h2>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  If an effect does nothing to its input clips (for example a blur with blur size set to '0') it can indicate that it is an identity function via the
+                  <a class="link" href="/documentation/reference/ch13s16.html" title="The Is Identity Action">
+                     <code class="code">kOfxImageEffectActionIsIdentity</code>
+                  </a>
+                  action. The plugin indicates which input the host should use for the region in question. This allows a host to short circuit the processing of an effect.
+               </p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch09s11.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center"> </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch10s02.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Setting Parameters </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Rendering and The Get Region Actions</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

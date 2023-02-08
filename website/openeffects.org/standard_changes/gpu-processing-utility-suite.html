@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes Gpu Processing Utility Suite |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="L4E6/mp8kp5BASgDnhBRwlB/YtK6z5VGNxvmIKsToa4Bm1JNzEifsfTeau7qIuoWBV8Wl+Oys6T5GvJNvkKglQ==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+<form role="form" class="navbar-form navbar-right form-inline" action="/users/sign_in" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="UOmjK3NFk9chrLai2f5nXZ9JyAZCbfOqJdLAs2M+wUB+88uY1XGe+JRz9E+tzNyJymm8QxsQ1Ujr09Tedm/Aew==" />
+<div class='form-group'>
+<input type="text" name="user[email]" id="user_email" class="form-control input-xs" placeholder="Email" />
+</div>
+<div class='form-group'>
+<input type="password" name="user[password]" id="user_password" class="form-control input-xs" placeholder="Password" />
+</div>
+<button class='btn btn-sm btn-primary' type='submit'>Sign in</button>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='row'>
+<div class='col-md-offset-2 col-md-8'>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-warning'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+GPU Processing Utility Suite
+<span class='pull-right'>Proposed</span>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Standard version:</b>
+1.5
+</p>
+<p>
+<b>Major Change</b>
+</p>
+<label>Subcommittee</label>
+<p><p>Phil Barrett (Filmlight), Peter Litwinowicz (RE:Vision Effects), Dennis Adams (Sony)</p></p>
+<label>Overview</label>
+<p>Below is 5 different topics that can be considered. It does not have to end up all in one suite but it should maybe be discussed at same time.</p>
+<p>&nbsp;</p>
+<p>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>CPU based effect registering GPU ressource usage</strong></p>
+<p>&nbsp;</p>
+<p>Host that render multiple frames at once and switch GPU per frame, could report the GPUid so we don't load the same GPU making it easier on the host in terms of memory ressouces used. Similarly host using 2 GPU, one for UI and display, and the other for rendering, could assign to processing/rendering the correct GPU and hosts that need to fallback to write back to RAM to support an extention could also assing a different GPU than they would for OpenCL and Cuda suites. However this might only be possible via passing an OpenGL context from which one can map to OpenCL and Cuda device index.</p>
+<p>Question: do we need a different ThreadSafety than the 3 we have to set a different value for all on CPU versus GPU receiving RAM images? Currently ThreadSafety might be a Descriptor only setup.</p>
+<p>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Fallback advertising (hand shake)</strong></p>
+<p>useful info: there might be other ones</p>
+<p style="padding-left: 30px;">Boolean (0,1) ofxGpuUtil<strong>EffectProducesSameResultCPUorGPU</strong>: (w plugin at description time) - If effect says YES, then host can fallback to CPU without expected issues. If effect says NO, host cannot fallback to CPU at least not without flushing the whole sequence cache maybe. Same result is a choice made by effect.</p>
+<p style="padding-left: 30px;">Boolean <span>ofxGpuUtil</span><strong>TracksMemoryUsage</strong>: &nbsp;(rw host-plugin at description time) - If host says yes, the effect can return an out of memory error and expect the host to retry. There has to be a protocol defined to stop that recursion in case Host is really out of memory. This could be an Instance Change Prop Reason for example. Else the effect in interactive mode might return a solid color to hint the user there is not enough GPU and during render return Failed to interrupt render.</p>
+<p style="padding-left: 30px;">Boolean <span>ofxGpuUtil</span><strong>SupportsAllGPUNotTheSameBrandModel</strong>: &nbsp;(rw write host &amp; effects) defaults to false which is most common I think.</p>
+<p>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>GPU settings</strong></p>
+<p style="padding-left: 30px;">Host might have their own GPU settings global to application and an effect might have a menu to let users decide to use GPU or not on a particular instance (this is also a poor man way to manage GPU memory from an end-user perspective). Effects could support slaving to host parameters for GPU as well. This includes even &ndash;gpu switch on a background processing render. For Cuda and OpenCL suite we are assuming the device index can be consulted for which GPU to run on. &nbsp;</p>
+<p>-&nbsp;&nbsp;&nbsp;&nbsp; <strong>Memory management hints </strong></p>
+<p>So far it has been suggested (Phil from Baselight) that an effect before any VRAM is allocated in the Render action provides an hint in bits (or something) to allow host to clear memory ahead. This could maybe be of the form (try bitsamount, tryagain incrementamount)- two parameters so it can be set before render action as it might be hard for effect to be precise enough. The second argument would prevent plugin having to do book-keeping of we are at right now and assume host can retain what worked for subsequent frames in the image sequence. Since an host can be running CUDA and an effect OpenCL this has to be within a separate suite, as we cannot like RAM memory simply have indirection to&nbsp;host via Memory suite to do allocation book-keeping. Currently the OpenGL suite has a simple flusing() method - which is maybe OK on a tiny VRAM card but the trend is for more and more GB (e.g. Quadro has a 24 GB model, one would probably not want to flush everything).</p>
+<p>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Caching</strong></p>
+<p>It has been suggested by Paul Miller (DFT) and Dennis Adams (Sony) that we could provide a way to allow effect to ask the host to retain some GPU memory. A proposal for that needs to be presented. This is likely most important for effect where a user can spend a lot of time on a single frame (e.g. paint, roto, warping). This is a subset of the general caching discussion that applies to GPU.&nbsp;</p>
+<label>Solution</label>
+
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-default'>
+<div class='panel-body'>
+<h4 class='text-primary'>Discussion</h4>
+<p>No comments on this change yet</p>
+</div>
+</div>
+
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

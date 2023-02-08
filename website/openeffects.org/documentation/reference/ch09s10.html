@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Parametric Parameters</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch09.html" title="Chapter 9. Effect Parameters"></link>
+      <link rel="prev" href="/documentation/reference/ch09s09.html" title="Types of Double Parameters"></link>
+      <link rel="next" href="/documentation/reference/ch09s11.html" title="Setting Parameters"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Parametric Parameters</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch09s09.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 9. Effect Parameters</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch09s11.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="ParametersParametric"></a>
+                        Parametric Parameters
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="ParametersParametricIntro"></a>
+                           Introduction
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  Parametric params are new for 1.2 and are optinally supported by host applications. They are specified via the
+                  <code class="code">kOfxParamTypeParametric</code>
+                  identifier passed into
+                  <a class="link" href="/documentation/reference/re44.html" title="OfxParameterSuiteV1::paramDefine">
+                     <code class="code">OfxParameterSuiteV1::paramDefine</code>
+                  </a>
+                  .
+               </p>
+               <p>
+                  These parameters are somewhat more complex than normal parameters and require their own set of functions to manage and manipulate them. The new
+                  <a class="link" href="/documentation/reference/re63.html" title="OfxParametricParameterSuiteV1">OfxParametricParameterSuiteV1</a>
+                  is there to do that.
+               </p>
+               <p>
+                  All the defines and suite definitions for parameteric parameters are defined in the file
+                  <code class="code">ofxParametricParam.h</code>
+               </p>
+               <p> 
+       Parametric parameters are in effect 'functions' a plug-in can ask a host to arbitrarily evaluate for some value 'x'. A classic use
+       case would be for constructing look-up tables, a plug-in would ask the host to evaluate one at multiple values from 0 to 1 and use that to fill an array.
+    </p>
+               <p>
+       A host would probably represent this to a user as a cubic curve in a standard curve editor interface, or possibly through scripting. 
+       The user would then use this to define the 'shape' of the parameter.
+    </p>
+               <p>
+      The evaluation of such params is not the same as animation, they are returning values based on some arbitrary argument 
+      orthogonal to time, so to evaluate such a param, you need to pass a parametric position and time.
+    </p>
+               <p>
+      Often, you would want such a parametric parameter to be multi-dimensional, for example, a colour look-up table might want 
+      three values, one for red, green and blue. Rather than declare three separate parametric parameters, so a parametric parameter can be multi-dimensional.
+    </p>
+               <p>
+                  Due to the nature of the underlying data, you
+                  <span class="emphasis">
+                     <em>cannot</em>
+                  </span>
+                  call certain functions in the ordinary parameter suite when manipulating a parametric parameter. All functions in the standard parameter suite are valid when called on a parametric parameter, with the exception of the following....
+               </p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">OfxParameterSuiteV1::paramGetValue</li>
+                     <li class="listitem">OfxParameterSuiteV1::paramGetValueAtTime</li>
+                     <li class="listitem">OfxParameterSuiteV1::paramGetDerivative</li>
+                     <li class="listitem">OfxParameterSuiteV1::paramGetIntegral</li>
+                     <li class="listitem">OfxParameterSuiteV1::paramSetValue</li>
+                     <li class="listitem">OfxParameterSuiteV1::paramSetValueAtTime</li>
+                  </ul>
+               </div>
+               <p>        
+    </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp12027824"></a>
+                           Defining Parametric Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               Parametric parameters are defined using the standard parameter suite function
+               <a class="link" href="/documentation/reference/re44.html" title="OfxParameterSuiteV1::paramDefine">
+                  <code class="code">OfxParameterSuiteV1::paramDefine</code>
+               </a>
+               . The descriptor returned by this call have several non standard parameter properties available. These are
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">kOfxParamPropParametricDimension - the dimension of the parametric parameter,</li>
+                     <li class="listitem">kOfxParamPropParametricUIColour - the colour of the curves of a parametric parameter in any user interface</li>
+                     <li class="listitem">kOfxParamPropParametricInteractBackground - a pointer to an interact entry point, which will be used to draw a background under any user interface,</li>
+                     <li class="listitem">kOfxParamPropParametricRange - the min and max value that the parameter will be evaluated over.</li>
+                  </ul>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp12033664"></a>
+                           Animating Parametric Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               Animation is an optional host feature for parametric parameters. Hosts flag whether they support this feature by setting the host descriptor property kOfxParamHostPropSupportsParametricAnimation.
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp12035200"></a>
+                           Getting and Setting Values on a Parametric Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+      Seeing as we need to pass in the parametric position and dimenstion to evaluate, parametric parameters need a new evaluation mechanism.
+      They do this with the OfxParametricParameterSuiteV1::parametricParamGetValue
+      function. This function returns the value of the parameter at the given time, for the given dimension, adt the given parametric position,.</p>
+               <p>
+      Parametric parameters are effectively interfaces to some sort of host based curve library. To get/set/delete points in the curve that
+      represents a parameter, the new suite has several functions available to manipulate control points of the underlying curve.
+    </p>
+               <p>
+                  To set the default value of a parametric parameter to anything but the identity, you use the control point setting functions in the new suite to set up a curve on the
+                  <span class="emphasis">
+                     <em>descriptor</em>
+                  </span>
+                  returned by
+                  <a class="link" href="/documentation/reference/re44.html" title="OfxParameterSuiteV1::paramDefine">
+                     <code class="code">OfxParameterSuiteV1::paramDefine</code>
+                  </a>
+                  . Any instances later created, will have that curve as a default.
+               </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp12039936"></a>
+                           Example
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>This simple example defines a colour lookup table, defines a default, and show how to evaluate the curve</p>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">// describe our parameter in 
+static OfxStatus
+describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
+{
+  ....
+  // define it
+  OfxPropertySetHandle props;
+  gParamHost-&gt;paramDefine(paramSet, kOfxParamTypeParametric, "lookupTable", &amp; props);
+
+  // set standard names and labeles
+  gPropHost-&gt;propSetString(props, kOfxParamPropHint, 0, "Colour lookup table");
+  gPropHost-&gt;propSetString(props, kOfxParamPropScriptName, 0, "lookupTable");
+  gPropHost-&gt;propSetString(props, kOfxPropLabel, 0, "Lookup Table");
+
+  // define it as three dimensional
+  gPropHost-&gt;propSetInt(props, kOfxParamPropParametricDimension, 0, 3);
+
+  // label our dimensions are r/g/b
+  gPropHost-&gt;propSetString(props, kOfxParamPropDimensionLabel, 0, "red");
+  gPropHost-&gt;propSetString(props, kOfxParamPropDimensionLabel, 1, "green");
+  gPropHost-&gt;propSetString(props, kOfxParamPropDimensionLabel, 2, "blue");
+
+  // set the UI colour for each dimension
+  for(int component = 0; component &lt; 3; ++component) {
+     gPropHost-&gt;propSetDouble(props, kOfxParamPropParametricUIColour, component * 3 + 0, component % 3 == 0 ? 1 : 0);
+     gPropHost-&gt;propSetDouble(props, kOfxParamPropParametricUIColour, component * 3 + 1, component % 3 == 1 ? 1 : 0);
+     gPropHost-&gt;propSetDouble(props, kOfxParamPropParametricUIColour, component * 3 + 2, component % 3 == 2 ? 1 : 0);
+  }
+
+  // set the min/max parametric range to 0..1
+  gPropHost-&gt;propSetDouble(props, kOfxParamPropParametricRange, 0, 0.0);
+  gPropHost-&gt;propSetDouble(props, kOfxParamPropParametricRange, 1, 1.0);
+ 
+  // set a default curve, this example sets an invert 
+  OfxParamHandle descriptor;
+  gParamHost-&gt;paramGetHandle(paramSet, "lookupTable", &amp;descriptor, NULL);
+  for(int component = 0; component &lt; 3; ++component) {
+    // add a control point at 0, value is 1
+    gParametricParamHost-&gt;parametricParamAddControlPoint(descriptor,
+                                                          component, // curve to set 
+                                                          0.0,   // time, ignored in this case, as we are not adding a ket
+                                                          0.0,   // parametric position, zero
+                                                          1.0,   // value to be, 1
+                                                          false);   // don't add a key
+    // add a control point at 1, value is 0
+    gParametricParamHost-&gt;parametricParamAddControlPoint(descriptor, component, 0.0, 1.0, 0.0, false);
+  }
+ 
+  ...
+}
+
+void render8Bits(double currentFrame, otherStuff...)
+{
+   ...
+
+   // make three luts from our curves   
+   unsigned char lut[3][256];
+
+  OfxParamHandle param;
+  gParamHost-&gt;paramGetHandle(paramSet, "lookupTable", &amp;param, NULL);
+  for(int component = 0; component &lt; 3; ++component) {
+    for(int position = 0; position &lt; 256; ++position) {
+      // position to evaluate the param at
+      float parametricPos = float(position)/255.0f;
+       
+      // evaluate the parametric param
+      float value;
+      gParametricParamHost-&gt;parametricParamGetValue(param, component, currentFrame, parametricPos, &amp;value);
+      value = value * 255;
+      value = clamp(value, 0, 255);
+
+      // set that in the lut
+      lut[dimension][position] = (unsigned char)value;
+    }
+  }
+  ...
+}
+
+</pre>
+                  </blockquote>
+               </div>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch09s09.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch09.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch09s11.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Types of Double Parameters </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Setting Parameters</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes Metadata |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="8SboKAQmASekb6DQZgDj23rkJgob46ZMVEwUXDdosD/fPICbohIMCBGw4j0SMlgPL8RST0KegK6aTQAxIjmxBA==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+<form role="form" class="navbar-form navbar-right form-inline" action="/users/sign_in" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="muql2Jo0M5QDxczIKLab2V6C4v53vBsyvDk9MsP/A9+08M1rPAA+u7YajiVchCANC6KWuy7BPdByOClf1q4C5A==" />
+<div class='form-group'>
+<input type="text" name="user[email]" id="user_email" class="form-control input-xs" placeholder="Email" />
+</div>
+<div class='form-group'>
+<input type="password" name="user[password]" id="user_password" class="form-control input-xs" placeholder="Password" />
+</div>
+<button class='btn btn-sm btn-primary' type='submit'>Sign in</button>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='row'>
+<div class='col-md-offset-2 col-md-8'>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-warning'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+Metadata
+<span class='pull-right'>Proposed</span>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Standard version:</b>
+1.5
+</p>
+<p>
+<b>Major Change</b>
+</p>
+<label>Subcommittee</label>
+<p></p>
+<label>Overview</label>
+<p dir="ltr">With modern VFX systems, arbitrary extra metadata is available on the clips passed to an effect, such as camera shot on, colour space, and much much more. Some of this data is very useful to effects and they may need to transform the metadata that is presented on output. Currently OFX does not support metadata, and it should.</p>
+<p>(jan 22, 2017, Pierre Jasmin): &nbsp;Adding some notes,&nbsp;</p>
+<p>We have been struggling with this one for a while. After a lot of thinking (including about successful implementation in the past). Meta data is often available but the path to effects is often not there and practical use case until recently of vague success. For example researching this I saw Cooke Optics did a big announcement about it a few years ago collaborating with PFTrack on capturing all that meta-data goodness (e.g. zoom values over time). The first thing people did is grab the gyro data and try to use it in tracking and realize it's not working better than tracking without it. Of course, perhaps the point is to have access to that data when you don't need to collect stabilization data over time... Maybe actually having a target would help the developers using this API to lead such industry assimilation in a data-rich context.</p>
+<p><br />After looking at a bunch of meta-data capture devices, and given here we are effects not handling the Image Clip IO part per se (so no discussion here about using a blob like JSON/XML for that, a 'track' in an mp4 or even an EXIF per frame. Although on this, I note a big error Red I think did when they introduced storing gyro 6 values in the R3D file is save only one value per frame (e.g. you have to shoot higher frame rate to get more gyro samples) and since a lot of people shoot 24P - even if their gyro could spit 150 Hz (&gt;) one would need to shoot 150 FPS to get the full readout.<br />That said: The meta-data can probably be decomposed into two basic things. What is related to colorimetry (have a better word?) - to mean even ISO and what not, for example if you have AWB - perhaps a 3X3 color matrix would be useful for time-lapse deflickering.... There is another discussion about that but as part of our thinking about meta-data the "Color" case was "CDL". The other type of metadata is transformational (photogrammetric - have a better word?). The basic structure here is probably a 3X3 matrix if my extention it could support simple scaler (e.g. depth gauge reading for underwater video or temperature readout when parachuting with a POV camera on your head - these might have only application for motion graphics overlay - but this is still something we should support). <br />So we have two types of values (Color or Not). We have a number of dimensions associated to a stream (1,2,3) sharing a name (e.g. accelerometor XYZ). And we have data that is static or dynamic. The dynamic data has two potential form: A regular sampling rate (e.g. 400 Hz) completely orthogonal to FPS or a less regular stream which requires values to be associated to time of sample.</p>
+<p><br />Thinking about this, we already have parameters that support key-frames (with a way to get next keyframes, number of keyframes). So we already have a way to drop somewhere (parameters) such streams (- with again the UI issue that some host might not be elegant with 400 KFs per second on a 30 FPS timeline). Note this data is rarely directly to be used (edited) by end-users, the idea is we already have a format for that which includes a storage mechanism and a data type association (and labeling...).</p>
+<p><br />This brings a new issue which is right now we adapted frame time as our integer sampling basis. So does this means the meta-data has to be passed to effects in frame time. I think so.</p>
+<p><br />The other API abstraction simplification we could do is to describe a suite as a set of parameters. Then it sorts of become just an include. Then missing is the discussion on the Transform suite, i.e. an image callback in the suite itself. So for generalization if we transpose this to our CDL example. CDL has let's say 10 defined parameters with specific names. We have image inputs and image outputs. Where are these values displayed to the users? For output this can make sense for this to show up in the effects controls UI. What if there are more than one color suite an effect can support? Does that mean this becomes a menu with options (populated by host). If so a good model for other applications (e.g. the roto param extention into a suite) is a bit like Combustion allowed via allowing after param description support for this and that (with for people familiar with AE callback to Completely General command - to for example if I have a gamma parameter it now becomes the Power values of that meta-data, that is I can disable or hide it). The parameters would show up only if an effect supported that sub color suite and user selected the color suite option menu... I am not going to have an opinion about image input and such suite, is this similar to asking custom instead of linear (or simply gamma 1, if gamma 1, gamma 2.2 is precise enough for many effects). That is for input is it enough to essentially have a metadata param that essentially encapsulate the getImage...</p>
+<label>Solution</label>
+<p dir="ltr">Meta data is basically a collection of key/value pairs of known data types. This is close to how OFX properties currently behave. I suggest we do the following&hellip;</p>
+<ol>
+<li dir="ltr">
+<p dir="ltr">rev the PropertySuite up to 2.0 so that&hellip;</p>
+</li>
+<ol>
+<li dir="ltr">
+<p dir="ltr">we can enquire about the contained properties and iterate over them</p>
+</li>
+<ol>
+<li dir="ltr">
+<p dir="ltr">information includes name, index, type and r/w status</p>
+</li>
+</ol>
+<li dir="ltr">
+<p dir="ltr">be able to add/delete properties dynamically</p>
+</li>
+<li dir="ltr">
+<p dir="ltr">have a new property type, which is another property set (so property sets can be contained in property sets)</p>
+</li>
+</ol>
+<li dir="ltr">
+<p dir="ltr">present a new property on all input clips and images kOfxPropMetaData, this is a separate property set</p>
+</li>
+<li dir="ltr">
+<p dir="ltr">have an action kOfxImageEffectActionGetMetaData, where a plugin gets to populate the metadata on its output</p>
+</li>
+</ol>
+<p dir="ltr">We probably need well named meta-data keys for a variety of things. eg: CDL</p>
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-default'>
+<div class='panel-body'>
+<h4 class='text-primary'>Discussion</h4>
+<h5>Comments</h5>
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-296'>
+<div class='content'>
+<p><span>"</span></p>
+<p>-&nbsp;To me it is not interesting to let the getClipPreferences live any longer because if we use it then for time invariant metadatas, its going to have a misleading name and documentation.&nbsp;</p>
+<p>If a host is going to implement the metadata suite anyway, I don't see why they couldn't call the getTimeInvariant action instead of getClipPreferences for plug-ins that support it (it's just a if/else case)."</p>
+<p>&nbsp;</p>
+<p>What you are saying I think is: If an host says it supports MetaData action and plugin says it wants to use it. Then instead of&nbsp;kOfxImageEffectActionGetClipPreferences action the MetaData action would be the one called by host. &nbsp;For that I think you are correct that is possibly not too destructive. &nbsp;</p>
+<p>And then what I am saying I think is propHandle for OfxImageEffectSuiteV1 &nbsp;for clipGetPropertySet and clipGetHandle is the worry. &nbsp;There is also&nbsp; kOfxImageEffectPropClipPreferencesSlaveParam. Net&nbsp;fair amount of code not just an if/else for plugins. I would like we get the same clip property set from the same interface, but perhaps a transition solution would be to simply add the functional equivalent of *extra prop to bridge this? Maybe&nbsp;something like you get the property set from either&nbsp;<span>clipGetPropertySet or&nbsp;<span>clipGetHandle and you pass it back to MetaData suite to get the extra goodness. ?</span></span></p>
+<p><span><span>Then once such mechanism is in place, something like&nbsp;&nbsp;OfxImageEffectSuiteV2 is a lot less a worry, and that could receive an handle that is directly in that form ("PropV2", assuming the Clip Preferences props are declared to be (by clip accessed) metadata).&nbsp;</span></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin | 12:19 pm,  26 Jan 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-43' id='cid-295'>
+<div class='content'>
+<p>Pierre,&nbsp;</p>
+<p>-&nbsp;To me it is not interesting to let the getClipPreferences live any longer because if we use it then for time invariant metadatas, its going to have a misleading name and documentation.&nbsp;</p>
+<p>If a host is going to implement the metadata suite anyway, I don't see why they couldn't call the getTimeInvariant action instead of getClipPreferences for plug-ins that support it (it's just a if/else case).&nbsp;</p>
+<p>I agree the name all in all is just the name, but the important part is that each party very well understand that there are 2 types of metadata: time variant and time invariant and they serve a very different purpose. It is also important to mention&nbsp;the instanceChanged call recursively downstream for&nbsp;metadata slave (previously clip preferences slave) parameters because I think it is omitted from the spec&nbsp;and that would lean towards a more unified behavior for all hosts.&nbsp;</p>
+<p>We could introduce a&nbsp;FPS metadata in seconds aswell and the change of action should enable hosts to implement that correctly.</p>
+<p>Regarding recursive PropertySet, to me it could wait a PropertySuiteV3 because it's just a very different implementation for the host and requires major changes, whereas the proposal that I made below does not require the host to implement much.</p>
+<p>Who is recursive ProperySets going to benifit ?&nbsp;If it's for a user interface point of view,&nbsp;we could specify groups in metadata names by introducing a separator "/", e.g: "ASC/CDL/Power/R"&nbsp;</p>
+<p>This is just a matter of formating property names, and it doesn't require extra work for any&nbsp;host implementations.</p>
+<p>&nbsp;</p>
+<p>Lastly, to me it is very important that we introduce binary properties as mentionned in my proposal because it allows plug-ins to communicate arbitrary data types, if not more complicated data structures such as Audio or anything else other than images:</p>
+<p>A plug-in could create&nbsp;the metadata "Audio" and another plug-in could receive it in it's render action.&nbsp;</p>
+<p>This is a generic way to pass arbitrary data. This is less optimized than the whole getRegionsOfInterest/getFramesNeeded pipeline because the plug-in will receive the "full" metadata (it can be a very big chunk of data) whereas for images it can just ask for a chunk of it, but it at least enables to pass arbitrary data.</p>
+</div>
+</div>
+<div class='author text-muted'>
+Alexandre |  2:40 am,  26 Jan 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-294'>
+<div class='content'>
+<p>Just another comment Alexandre, to simply set that Clip Preferences is Clip Property static (time invariant) meta-data is very good way to close the loop... On a longer term horizon, I can see how once v1.5 is in place, that then imageEffectV2 becomes more evolutionary safe if v1.5 Clip Preferences become the default and defined clip meta-data properties and easier for an host to continue supporting imageEffectV1 compiled plugins...</p>
+<p>Question: &nbsp;Would creating a timeLineSuiteV2 be a way to create an explicit behavior expectation for OFX Frame time to and from Clock Time (seconds)?&nbsp;</p>
+<p>In theory one should be able to use FPS to convert OFX Frame time into seconds but in practice support for FPS is all over the place.&nbsp;</p>
+<p>&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  7:38 pm,  25 Jan 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-293'>
+<div class='content'>
+<p>Thanks Alexandre,</p>
+<p>A few more notes to be clear we are on same page&nbsp;</p>
+<p>1) OK not writable in render thread.&nbsp;</p>
+<p>2) I am thinking we need a registration process for effects at Param Creation stage OR after for effects supporting meta-data creation, no? &nbsp;Actually to be better maybe something else later. By analogy, one issue with Nuke implementation of the Saturation effect example in Programming guide is it displays all the image channels supported by Nuke - as opposed to the one that actually exist from the input clip POV. For example if someone had a 3D tracker, and an option to create a Camera as Meta-Data. As creating the camera might involve a few UI steps etc - we probably want to make meta-data shown as available when there is actually some metadata as opposed to potential support if it existed for it. &nbsp;</p>
+<p>3) I understand that this model could make Clip Preferences redundant but prefer to avoid discussion about imageEffectV2 etc at this stage</p>
+<p>4) Although in the end it's just name - value pairs, there can be an implicit data hierarchy (to keep same example target, it has a 3 gamma values (Power.R, Power.G, Power.B): &nbsp; ASC_CDL, &nbsp;power, RGB &nbsp;(even if flattened as a simple key name to ASC_CDL_power_R etc or even OFX_CDL_Power_R if a provided meta data)...</p>
+<p>5) Also in terms of objectives I understand in life a number of things could support that abstraction (point cloud per frame, associated audio track files, etc) however as a v1.5 objective maybe the objective is to simply deal with data streams that would typically be reasonable to save in a parameter stream (even if the implementation does not necessarily specify it must).</p>
+<p>6) Time model:</p>
+<p>From an API perspective, we have two established models:&nbsp; Clip Preferences (clip properties) and Parameters. Clips at least in specs have FPS value (where 1/FPS = a fraction of second in theory though as many don't report that in a fashion that enables to convert OFX frame time to second) and Parameters work in OFX frame time, but have an additional time variant ability which is to be able to find next key-frame time.&nbsp;</p>
+<p>&nbsp;</p>
+<p>SO, as another example from there:&nbsp; Let's say I have drone video and there is an associated GPS log file that is 15 Hz (for this discussion it does not matter where that log is: JSON/XMP/as a track in the MP4, as a separate CSV file...).&nbsp; The video is captured at 50P.&nbsp; As part of process of ingesting meta-data goodness to forward to effects is this to be converted in frame time once in OFX world? &nbsp;(Also I understand a simple application is to tag TC to an element but then there is no such thing as timecode in SMPTE sense for a 200 Hz stream of data...).&nbsp;</p>
+<p>So&nbsp;another simple example: Let's say I shoot a 45 minutes video continuous, and while shooting I have the option of clicking a button once in a while to mark good frame.... So I clicked the button 7 times over 45 minutes, and this would be available as meta data:&nbsp; In this case I would probably want to open the meta-data, collect the 7 values, and write them as key-frames in my effect as marker and then close the meta-data.&nbsp; (This is a bit what lifetime means in Alexadre write-up - so the host then&nbsp;does not have to keep open all that for the whole session).&nbsp;</p>
+<p>So transposing to "color" meta-data.As meta-data it would be associated to a clip (at least the output clip). However clip properties are not dynamic (which is OK). So if some day one provided say a 3x3 AWB data stream (or something else perhaps today collectable using EXIF for timelapse image sequences) it would then need for the effect to have capacity to use the parameter channels collection mechanism I believe. There is still an association to clip for accessing the data from the effects POV.&nbsp;</p>
+<p>&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  8:28 pm,  24 Jan 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-43' id='cid-292'>
+<div class='content'>
+<p>Pierre, before getting into the specifics (and I agree too that this should be implemented using the property suite) we need to clarify what metadatas are:</p><p>&nbsp;</p><p>- A metadata is a key/value pair, where the value must be encodable in the current property set supported formats (int, double, string)</p><p>- A metadata key is a unique identifier: 2 meta-datas cannot have the same key</p><p>- A string metadata should be able to encode binary data</p><p>- There can be temporal metadata (e.g: timecode) and time invariant metadata (e.g: pixel aspect ratio)</p><p>- We already have a kOfxImageEffectActionGetClipPreferences action which returns some metadatas, though they are all time invariant</p><p>- Metadatas need to be fetched on a clip instance, much like we do today with the clipGetImage function</p><p>- We need to think about metadatas lifetime: we do not want each effect to have a copy of the input clips metadata. <br>Therefore, the host needs to be able to cache temporarily one metadata out of the others,<br> and the host needs to be able to ask for a single meta-data by giving its key, or fetching it all at once by not specying any key:</p><p>If a plug-in just needs to inquire about the "timecode" in a source clip,</p><p>the host should only need to only fetch the "timecode" metadata from upstream effects and not everything else.</p><p>&nbsp;</p><p>The way I see it:</p><p>&nbsp;</p><p>- A property on an imageEffect descriptor and host descriptor indicating whether a host/plug-in supports the suite below:</p><p>kOfxImageEffectPropSupportsMetaData int x1 property<br>Valid values: 0 if the host/plug-in does not support it, 1 otherwise.<br>Default value: 0<br></p><p>- A new suite OfxMetaDataSuiteV1 or OfxImageEffectSuiteV2, including the following functions:</p><p><br> /* @brief Get the time-invariant metadata property set corresponding to the given key.<br> @param inArgs The current action inArgs that were passed by the host to avoid lost<br> of context by the host.<br> @param clip The clip on which to get the metadata from<br> @param key The name of the metadata. If NULL, the host must return a property set<br> containing all metadatas available on the clip.<br> <br> @returns kOfxStatOK - The metadata property set was successfully fetched and returned<br> in the handle<br> kOfxStatFailed - The metadata property set could not be fetched because<br> no metadata matches the corresponding key<br> kOfxStatErrBadHandle - The inArgs handle or clip handle was invalid<br> kOfxStatErrMemory - The host had not enough memory to complete the operation<br> plug-in should abort whatever it was doing<br> */<br> OfxStatus clipGetMetadata(OfxPropertySetHandle inArgs,<br> OfxImageClipHandle clip, <br> const char* key,<br> OfxPropertySetHandle* propertySetHandle);<br> <br> /* @brief Get the time-variant metadata property set corresponding to the given key.<br> @param inArgs The current action inArgs that were passed by the host to avoid lost<br> of context by the host.<br> @param clip The clip on which to get the metadata from<br> @param time The time at which to sample the metadata<br> @param view The view on which to sample the metadata (to support the multi-view suite)<br> @param key The name of the metadata. If NULL, the host must return a property set<br> containing all metadatas available on the clip.<br> <br> @returns kOfxStatOK - The metadata property set was successfully fetched and returned<br> in the handle<br> kOfxStatFailed - The metadata property set could not be fetched because<br> no metadata matches the corresponding key<br> kOfxStatErrBadHandle - The inArgs handle or clip handle was invalid<br> kOfxStatErrMemory - The host had not enough memory to complete the operation<br> plug-in should abort whatever it was doing<br> */<br> OfxStatus clipGetMetadataAtTime(OfxPropertySetHandle inArgs,<br> OfxImageClipHandle clip, <br> OfxTime time,<br> int view,<br> const char* key,<br> OfxPropertySetHandle* propertySetHandle);<br></p><p>To me it should make more sense to include this in ImageEffectSuiteV2, but we would also need<br>to rev-up all other function, passing them a OfxPropertySetHandle inArgs so we can deal with<br>host lost of context in the meantime.</p><p><br>- kOfxImageClipPropTimeInvariantMetadataPresent string xN property<br> on a clip instance indicating a list of time invariant metadata keys available on the given clip.</p><p>The host should in-turn return the time invariant metadata keys from the corresponding effect <br>by calling the kOfxImageEffectActionGetTimeInvariantMetadata action</p><p>- kOfxImageClipPropTimeVariantMetadataPresent string xN property<br> on a clip instance indicating a list of time/view variant metadata keys available on the given clip.</p><p>The host should in-turn return the time variant meta-data key from the corresponding effect <br>by calling the kOfxImageEffectActionGetTimeVariantMetadata action<br></p><p>- The kOfxImageEffectActionGetTimeInvariantMetadata action:</p><p>* inArgs: <br> — kOfxImageEffectPropMetadataKey string x1 property, indicating the key of the metadata to return. <br> If empty, the plug-in should return all available time invariant metadata.<br> Note that the plug-in may disregard the key and return all available metadatas anyway:<br> it is just here so it can be optimized by the host when it only needs to fetch a single metadata.</p><p><br> * outArgs:<br> A property set where the plug-in can create properties of type int, double or string:<br> these properties are the metadatas encoded by the plug-in.</p><p>A string property may contain binary data, so it should be handled correctly by the host and the plug-in.<br> The property suite has been modified accordingly.</p><p>The effect may only return time invariant metadata from this action.</p><p>- The kOfxImageEffectPropPassThroughMetadata property of type string x N is already created <br> in the outArgs and the plug-in may indicate into it the kOfxImageEffectPropMetadataKey of all<br> metadata inherited from a source clip. <br> The source clip itself is mentioned in the following property:</p><p>- The kOfxImageEffectPropMetadataPassThroughClip property of type string x1 already created in the outArgs: <br>the plug-in may indicate the name of the clip from which to pass-through properties<br> indicated in the kOfxImageEffectPropInheritedMetadata property.</p><p>&nbsp;</p><p>- The kOfxImageEffectActionGetTimeVariantMetadata action:</p><p>It is the same as the action above, except that the effect may only return time/view variant <br>metadatas from this action, such as a timecode.</p><p>The inArgs take these additional properties…</p><p>— kOfxPropTime double x1, The time at which to sample the metadata</p><p>— To support Nuke multi-view extension, we also add the kFnOfxImageEffectPropView int x1<br> property indicating the view on which to sample the metadata.<br></p><p>Maybe the 2 actions above could be a single action, however there needs to be a way to indicate<br>to the host which metadata are time invariant and which are not.<br>This would require the outArgs property set to contain 2 sub property sets, which is not feasible currently.<br>Since both actions serve a very different purpose, I think this is best to isolate them.</p><p>Note that these 2 actions can be called on a render thread as well as the main thread.</p><p><br>A plug-in may want to control its metadatas with parameters but it wouldn't be able to <br>update them directly from the get metadata action since it may be called on a render thread.</p><p>To enable this, a new property is added on a plug-in parameter descriptor:</p><p>- kOfxParamPropMetadataSlave int x1 <br>Valid values - 0 or 1<br>Default value - 0<br>Indicates whether a change to this parameter involves a change to the metadatas.<br>If set to 1, the host should not only call the kOfxActionInstanceChanged action but also<br>call this action with a type kOfxTypeClip recursively downstream on all effects.</p><p>This enables a plug-in to update its parameters when a metadata is changed upstream.</p><p><br>In order to implement the 2 actions above we need to add some modifications to the property suite, <br>as mentioned by Pierre:</p><p><br>- Add the following functions to the PropertySuite:</p><p>/* @brief Creates a int property with the given dimension.<br>The property will have by default the values pointed to by the defaultValue array.<br>*/<br>OfxStatus createProperty(OfxPropertySetHandle properties, const char* property, int dimension, int* defaultValue)</p><p>OfxStatus createProperty(OfxPropertySetHandle properties, const char* property, int dimension, double* defaultValue)</p><p>// Same as above, except that it also takes a nBytes array of size 'dimension' indicating for each string its size in bytes.<br>OfxStatus createProperty(OfxPropertySetHandle properties, const char* property, int dimension, int *nBytes, const char** defaultValue)</p><p><br>I don’t think we need to add a version for pointer properties since it then brings issues <br>for the lifetime of the pointer itself.</p><p><br>To properly handle binary metadata, we need to add the following functions:</p><p>/* @brief Set a single value in a string property being plain binary data.<br> @param properties is the handle of the thing holding the property<br> @param property is the string labelling the property<br> @param index is for multidimenstional properties and is dimension of the one we are setting<br> @param nBytes The number of bytes to copy from the "value" buffer.<br> @param value is the buffer we are setting. The host should make a copy of this buffer.<br> <br> */<br>OfxStatus propSetBytes(OfxPropertySetHandle properties, const char* property, int index, int nBytes, const char* value);</p><p><br>/* @brief Set a single value in a string property being plain binary data.<br> @param properties is the handle of the thing holding the property<br> @param property is the string labelling the property<br> @param index is for multidimenstional properties and is dimension of the one we are setting<br> @param nBytes The number of bytes to copy onto the "value" buffer.<br> @param value is the buffer we are getting. The buffer should already be allocated of nBytes.<br> The host should make a copy to this buffer.<br> <br> */<br>OfxStatus propGetBytes(OfxPropertySetHandle properties, const char* property, int index, int nBytes, char** value);</p><p><br>/* @brief Getting the number of bytes in a single dimension of a string property.<br> @param properties is the handle of the thing holding the property<br> @param property is the string labelling the property<br> @param index is for multidimenstional properties and is dimension of the one we are setting<br> @param nBytes The number of bytes in the buffer.<br> This enables the plug-in to call propGetBytes with an appropriate number of bytes.<br> */<br>OfxStatus propGetNumBytes(OfxPropertySetHandle properties, const char* property, int index, int *nBytes);</p><p>/* @brief Set all values at once in a string property being plain binary data.<br> @param properties is the handle of the thing holding the property<br> @param property is the string labelling the property<br> @param count is for multidimensional properties and is number of dimensions of the property<br> @param nBytes The number of bytes to copy from the "value" buffer. This is an array of size "count" containing<br> for each dimension the size in bytes of the corresponding buffer in "value".<br> @param value is an array of size "count" containing for each dimension<br> the buffer we are setting. The host should make a copy of this buffer.<br> <br> */<br>OfxStatus propSetBytesN(OfxPropertySetHandle properties, const char* property, int count, int *nBytes, const char** value);</p><p><br>/* @brief Set all values at once in a string property being plain binary data.<br> @param properties is the handle of the thing holding the property<br> @param property is the string labelling the property<br> @param count is for multidimensional properties and is number of dimensions of the property<br> @param nBytes The number of bytes to copy to the "value" buffer. This is an array of size "count" containing<br> for each dimension the size in bytes of the corresponding buffer in "value".<br> @param value is an array of size "count" containing for each dimension<br> the buffer we are setting. Each buffer is already allocated of at least nBytes. <br> The host should make a copy to this buffer.<br> <br> */<br>OfxStatus propGetBytesN(OfxPropertySetHandle properties, const char* property, int count, int *nBytes, char*** value);</p><p>/* @brief Getting the number of bytes in a single dimension of a string property.<br> @param properties is the handle of the thing holding the property<br> @param property is the string labelling the property<br> @param count is for multidimensional properties and is number of dimensions of the property<br> @param nBytes The number of bytes for each dimension.<br> This enables the plug-in to call propGetBytes with an appropriate number of bytes.<br> */<br>OfxStatus propGetNumBytesN(OfxPropertySetHandle properties, const char* property, int count, int **nBytes);</p><p>&nbsp;</p><p>To enable the plug-in to iterate over available metadatas, we need to introduce these 2 functions:</p><p>/** @brief Get the number of properties in a property set.<br> @param numProperties In output, this is the number of properties in the set.<br> @returns - kOfxStatFailed The host did not manage to figure out the number of properties<br> in the set or does not want the plug-in to be able to iterate over the properties.<br> - kOfxStatOk The host successfully returned the number of properties in the property set.<br> - kOfxStatErrBadHandle The properties handle is invalid<br>*/<br>OfxStatus propGetNumProperties(OfxPropertySetHandle properties, int* numProperties);</p><p>/** @brief Get the name of a property in a property set <br> @param index The index of the property to fetch in the set. This must be a number ranging<br> from 0 to the number of properties returned by the propGetNumProperties function.<br> @param property In output, a UTF-8 encoded c-string containing the name of the property. <br> This name can be used to call any other function of the property suite. The string is <br> valid until the action ends.<br> @returns - kOfxStatFailed The host did not manage to figure out the property name<br> in the set or does not want the plug-in to be able to iterate over the properties.<br> - kOfxStatOk The host successfully returned the property name<br> - kOfxStatErrBadIndex The index is invalid<br> - kOfxStatErrBadHandle The properties handle is invalid<br>*/<br>OfxStatus propGetPropertyName(OfxPropertySetHandle properties, int index, char** property);</p><p>It is clear that with these additions, the kOfxImageEffectActionGetClipPreferences action is made obsolete.</p><p>Plug-ins marked with kOfxImageEffectPropSupportsMetadata=1 do not have to implement the<br>kOfxImageEffectActionGetClipPreferences action for a host that is also marked kOfxImageEffectPropSupportsMetadata=1 <br>and may specify the properties in outArgs of the kOfxImageEffectActionGetClipPreferences in outArgs of the<br>kOfxImageEffectActionGetTimeInvariantMetadata action instead. <br>These are the following properties:<br>- kOfxImageEffectPropFrameRate<br>- kOfxImageEffectPropFieldOrder<br>- kOfxImageEffectPropPreMultiplication<br>- kOfxImageEffectPropContinuousSamples <br>- kOfxImageEffectPropFrameVarying.</p><p><br>If they are unspecified, they will be assigned their default values as specified by the kOfxImageEffectActionGetClipPreferences spec.</p><p>If the host is kOfxImageEffectPropSupportsMetadata=1 it should still call kOfxImageEffectActionGetClipPreferences<br> for plug-ins that are kOfxImageEffectPropSupportsMetadata=0 <br> <br> This suite also fixes the following proposal http://openeffects.org/standard_changes/238<br> and proposes an implementation to fix it.<br> <br> <br> Standard metadata:<br> -------------------<br> <br> I did not specify any standard metadata, however we could specify some common metadata<br> in the same way that we did for the kOfxImageEffectActionGetClipPreferences action.<br> <br> This would allow plug-ins to communicate non-yet standard piece of data, without forcing<br> a host to change its implementation.<br> <br> <br> Caching:<br> --------<br> <br>The host may cache the properties of a plug-in, by copying the content of the properties <br>to a local cache.<br>Binary meta-data must then ensure not to contain pointers to external data structures outside<br>of that buffer region.</p><p>This draft also provides a standard way to cache piece of data and proposes an implementation<br>for http://openeffects.org/standard_changes/caching</p><p>&nbsp;</p><p></p><p></p><p></p>
+</div>
+</div>
+<div class='author text-muted'>
+Alexandre |  3:52 am,  23 Jan 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-287'>
+<div class='content'>
+<p>Here's some additional thoughts -</p>
+<p>I looked a bit more (inertial sensors, motion control system, drone API, stand-alone attachement) and one thing that should be part of design is:</p>
+<p>1) Such data channel have a sampling rate that might be different than FPS (e.g. gyro might be 150 Hz and GPS 15 Hz and whatever the video capture FPS is).<br /> It's almost like a data channel that is dynamic should have a similar structure to a clip?</p>
+<p>Since time in OFX is typically in double frame time, does that imply channel sampling rate to be normalized to frame time (e.g. next value is at +0.00333).</p>
+<p>2) Data channel like aux Image Channels tend to be grouped ( e.g. 3 Rotations) - the same channel&nbsp; grouping for this and Image Channels might mimic each others.</p>
+<p>Naming is a challenge as we probably all name similar things slightly different. We might consider part of a string to be following some predefined names so we have at effects level opportunity to filter list of available channels???</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  8:04 pm,  11 Jan 2017
+</div>
+</div>
+
+</div>
+</div>
+
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes Documenting Expected Behavior When An Effect Does Not Want To Get Loaded In An Host Version |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="OQRv/z9ZVE6pt5IX59wKJBDl3Em6hM50mGmiR1kMR+kXHgdMmW1ZYRxo0PqT7rHwRcWoDOP56JZWaLYqTF1G0g==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+<form role="form" class="navbar-form navbar-right form-inline" action="/users/sign_in" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="7CznGY1dHKN6g4ZbujNP2cuF1VyF2jeZNSJQlg7Wd8TCNo+qK2kRjM9cxLbOAfQNnqWhGdynEXv7I0T7G4d2/w==" />
+<div class='form-group'>
+<input type="text" name="user[email]" id="user_email" class="form-control input-xs" placeholder="Email" />
+</div>
+<div class='form-group'>
+<input type="password" name="user[password]" id="user_password" class="form-control input-xs" placeholder="Password" />
+</div>
+<button class='btn btn-sm btn-primary' type='submit'>Sign in</button>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='row'>
+<div class='col-md-offset-2 col-md-8'>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-warning'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+Documenting Expected Behavior when an effect does not want to get loaded in an host.version
+<span class='pull-right'>Proposed</span>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Standard version:</b>
+1.4.1
+</p>
+<p>
+<b>Minor Change</b>
+</p>
+<label>Subcommittee</label>
+<p><p>Stephen Bash (Genarts), seconded by Pierre Jasmin (RE:Vision Effects)</p></p>
+<label>Overview</label>
+<p>There can be multiple reasons for a plugin not wanting to get loaded in an host.version. For example the plugin might depend on a feature not supported by an host (e.g. a camera suite)</p>
+<p>It is suggested that the OFFICIAL way of doing this would be to simply not support any context and return StatDefault.</p>
+<p>This needs to be clearly documented somewhere so effect developers are aware of this.</p>
+<label>Solution</label>
+<p><span><span>Document clarification: to make</span><span><strong> kOfxStatErrUnsupported</strong> what to document to return when you cannot or don&rsquo;t want to load a particular plugin in an host.&nbsp;</span></span></p>
+<p>&nbsp;</p>
+<p><span><span>-&gt; Proposal is to add to documentation that returning </span><span>kOfxStatErrUnsupported</span><span> from </span><span>DescribeOnContext</span><span> means to silently not use the plug-in. We could also clarify that if a host does not support any of the contexts that the plug-in offers then it also would not use the plug-in.</span></span></p>
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-default'>
+<div class='panel-body'>
+<h4 class='text-primary'>Discussion</h4>
+<h5>Comments</h5>
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-301'>
+<div class='content'>
+<p><span>I am OK with documenting kOfxStatErrUnsupported as the chosen one</span></p>
+<p>&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  2:22 pm,  31 Jan 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-9' id='cid-300'>
+<div class='content'>
+<p>Pierre,&nbsp;just to be clear, these are errors that the plugin can return to the host from&nbsp;kOfxImageEffectActionDescribeInContext, right? I don't think it matters what error codes are used; the host shouldn't care (it won't do anything differently).&nbsp;So standardizing on&nbsp;<span>kOfxStatErrUnsupported for this case makes the most sense to me.</span></p>
+</div>
+</div>
+<div class='author text-muted'>
+Gary Oberbrunner |  2:16 pm,  31 Jan 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-299'>
+<div class='content'>
+<p>We could document a list of valid error messages during initialization:</p>
+<p>kOfxStatErrMissingHostFeature<br /><span>kOfxStatErrUnsupported</span></p>
+<p>which should prompt no host action (not load plugin, not report to users it could not load, not pretend it did not happen...)</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  1:40 pm,  31 Jan 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-278'>
+<div class='content'>
+<p>Another solution would be from v1.5 to state that a plugin could simply whatever we decide is the right error message (e.g.&nbsp;kOfxStatErrUnsupported) and document the safe way and backward compatible way is to implement support for no context.</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  7:24 pm,   9 Nov 2016
+</div>
+</div>
+
+</div>
+</div>
+
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

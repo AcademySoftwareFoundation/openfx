@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Rendering and The Get Region Actions</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch10.html" title="Chapter 10. Rendering"></link>
+      <link rel="prev" href="/documentation/reference/ch10.html" title="Chapter 10. Rendering"></link>
+      <link rel="next" href="/documentation/reference/ch10s03.html" title="Multi-threaded Rendering"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Rendering and The Get Region Actions</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch10.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 10. Rendering</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch10s03.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="idp12296016"></a>
+                        Rendering and The Get Region Actions
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+	Many hosts attempt to minimise the areas that they render by using regions of interest and regions of 
+	definition, while some of the simpler hosts do not attempt to do so. In general the order of actions,
+	per frame rendered, is something along the lines of....
+      </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">ask the effect for it's region of definition,</li>
+                  <li class="listitem">clip the render window against that</li>
+                  <li class="listitem">ask the effect for the regions of interest of each of it's inputs against the clipped render window,</li>
+                  <li class="listitem">clip those regions of interest against the region of definition of each of those inputs,</li>
+                  <li class="listitem">render and cache each of those inputs,</li>
+                  <li class="listitem">render the effect against it's clipped render window.</li>
+               </ul>
+            </div>
+            <p>
+               A host can ask an effect to render an arbitrary window of pixels, generally these should be clipped to an effect's region of definition, however, depending on the host, they may not be. The actual region to render is indicated by the
+               <a class="link" href="/documentation/reference/re139.html" title="kOfxImageEffectPropRenderWindow">
+                  <code class="code">kOfxImageEffectPropRenderWindow</code>
+               </a>
+               render action argument. If an effect is asked to render outside of its region of definition, it should fill those pixels in with black transparent pixels.
+            </p>
+            <p>
+               Note thate
+               <a class="link" href="/documentation/reference/re27.html" title="OfxImageEffectSuiteV1::clipGetImage">
+                  <code class="code">OfxImageEffectSuiteV1::clipGetImage</code>
+               </a>
+               function takes an optional
+               <span class="emphasis">
+                  <em>region</em>
+               </span>
+               parameter. This is a region, in Canonical coordinates, that the effect would like on that input clip. If not used in a render action, then the image returned should be based on the previous get region of interest action. If used, then the image returned will be based on this (usually be clipped to the input's region of definition). Generally a plugin should not use the
+               <span class="emphasis">
+                  <em>region</em>
+               </span>
+               parameter in the render action, but should leave it to the 'default' region.
+            </p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch10.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch10.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch10s03.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Chapter 10. Rendering </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Multi-threaded Rendering</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

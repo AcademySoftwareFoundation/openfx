@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>OfxParameterSuiteV1::paramDefine</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch15s05.html" title="Parameters Suite"></link>
+      <link rel="prev" href="/documentation/reference/re43.html" title="OfxParameterSuiteV1"></link>
+      <link rel="next" href="/documentation/reference/re45.html" title="OfxParameterSuiteV1::paramGetHandle"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">
+                     <code class="function">OfxParameterSuiteV1::paramDefine</code>
+                  </th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re43.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Parameters Suite</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re45.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="refentry">
+            <a id="OfxParameterSuiteV1_paramDefine"></a>
+            <div class="titlepage"></div>
+            <div class="refnamediv">
+               <h2>Name</h2>
+               <p>
+                  <code class="function">OfxParameterSuiteV1::paramDefine</code>
+                  — Defines a new parameter of the given type in a describe action
+               </p>
+            </div>
+            <div class="refsynopsisdiv">
+               <h2>Synopsis</h2>
+               <div class="funcsynopsis">
+                  <pre class="funcsynopsisinfo">#include "ofxParam.h" </pre>
+                  <table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;">
+                     <tr>
+                        <td>
+                           <code class="funcdef">
+                              OfxStatus
+                              <strong class="fsfunc">(*paramDefine)</strong>
+                              (
+                           </code>
+                        </td>
+                        <td>
+                           OfxParamSetHandle
+                           <var class="pdparam">paramSet</var>
+                           ,
+                        </td>
+                     </tr>
+                     <tr>
+                        <td> </td>
+                        <td>
+                           const char *
+                           <var class="pdparam">paramType</var>
+                           ,
+                        </td>
+                     </tr>
+                     <tr>
+                        <td> </td>
+                        <td>
+                           const char *
+                           <var class="pdparam">name</var>
+                           ,
+                        </td>
+                     </tr>
+                     <tr>
+                        <td> </td>
+                        <td>
+                           OfxPropertySetHandle *
+                           <var class="pdparam">propertySet</var>
+                           <code>)</code>
+                           ;
+                        </td>
+                     </tr>
+                  </table>
+                  <div class="funcprototype-spacer"> </div>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp15412064"></a>
+               <h3>Arguments</h3>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">paramSet - handle to the parameter set descriptor that will hold this parameter
+</li>
+                     <li class="listitem">paramType - type of the parameter to create, one of the kOfxParamType #defines
+</li>
+                     <li class="listitem">name - unique name of the parameter
+</li>
+                     <li class="listitem">propertySet - if not null, a pointer to the parameter descriptor's property set will be placed here.
+</li>
+                  </ul>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp15415104"></a>
+               <h3>Description</h3>
+               <p>
+This function defines a parameter in a parameter set and returns a property set which is used to describe that parameter.
+</p>
+               <p>
+This function does not actually create a parameter, it only says that one should exist in any subsequent instances. To fetch an
+parameter instance paramGetHandle must be called on an instance.
+</p>
+               <p>
+This function can always be called in one of a plug-in's "describe" functions which defines the parameter sets common to all instances of a plugin.
+</p>
+            </div>
+            <div class="refsect2">
+               <a id="idp15417536"></a>
+               <h3>Returns</h3>
+               <p>
+
+</p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re248.html" title="kOfxStatOK">
+                           <code class="code">kOfxStatOK</code>
+                        </a>
+                        - the parameter was created correctly
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re257.html" title="kOfxStatErrBadHandle">
+                           <code class="code">kOfxStatErrBadHandle</code>
+                        </a>
+                        - if the plugin handle was invalid
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re254.html" title="kOfxStatErrExists">
+                           <code class="code">kOfxStatErrExists</code>
+                        </a>
+                        - if a parameter of that name exists already in this plugin
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re251.html" title="kOfxStatErrUnknown">
+                           <code class="code">kOfxStatErrUnknown</code>
+                        </a>
+                        - if the type is unknown
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re253.html" title="kOfxStatErrUnsupported">
+                           <code class="code">kOfxStatErrUnsupported</code>
+                        </a>
+                        - if the type is known but unsupported
+                     </li>
+                  </ul>
+               </div>
+               <p>
+</p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re43.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch15s05.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re45.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">
+                     <span class="type">OfxParameterSuiteV1</span>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top">
+                      
+                     <code class="function">OfxParameterSuiteV1::paramGetHandle</code>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

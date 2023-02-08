@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>The Generic Begin/End Instance Changed Actions</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch13.html" title="Chapter 13. Actions Passed to An Image Effect"></link>
+      <link rel="prev" href="/documentation/reference/ch13s05.html" title="The Generic Destroy Instance Action"></link>
+      <link rel="next" href="/documentation/reference/ch13s07.html" title="The Generic Instance Changed Action"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">The Generic Begin/End Instance Changed Actions</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch13s05.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 13. Actions Passed to An Image Effect</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch13s07.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="kOfxActionBeginInstanceChanged"></a>
+                        The Generic Begin/End Instance Changed Actions
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <div class="blockquote">
+               <blockquote class="blockquote">
+                  <pre class="programlisting">
+	#include "ofxCore.h"
+	#define kOfxActionBeginInstanceChanged "OfxActionBeginInstanceChanged" 
+	#define kOfxActionEndInstanceChanged "OfxActionEndInstanceChanged" </pre>
+               </blockquote>
+            </div>
+            <h5>
+               <a id="idp12611488"></a>
+               Arguments
+            </h5>
+            <p>
+      </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <code class="code">handle</code>
+                     handle to the plug-in instance, cast to an
+                     <code class="code">OfxImageEffectHandle</code>
+                  </li>
+                  <li class="listitem">
+                     <code class="code">inArgs</code>
+                     has the following properties...
+                     <div class="itemizedlist">
+                        <ul class="itemizedlist" style="list-style-type: circle; ">
+                           <li class="listitem">
+                              <a class="link" href="/documentation/reference/re229.html" title="kOfxPropChangeReason">kOfxPropChangeReason</a>
+                              - what triggered the change, which will be one of...
+                              <div class="itemizedlist">
+                                 <ul class="itemizedlist" style="list-style-type: square; ">
+                                    <li class="listitem">kOfxChangeUserEdited - the user or host changed the instance somehow and caused a change to something, this includes undo/redos, resets and loading values from files or presets,</li>
+                                    <li class="listitem">kOfxChangePluginEdited - the plugin itself has changed the value of the instance in some action</li>
+                                    <li class="listitem">kOfxChangeTime         - the time has changed and this has affected the value of the object because it varies over time</li>
+                                 </ul>
+                              </div>
+                           </li>
+                        </ul>
+                     </div>
+                  </li>
+                  <li class="listitem">
+                     <code class="code">outArgs</code>
+                     is redundant and is set to NULL.
+                  </li>
+               </ul>
+            </div>
+            <p>
+    </p>
+            <h5>
+               <a id="idp12618752"></a>
+               Description
+            </h5>
+            <p>
+               <code class="code">kOfxActionBeginInstanceChanged</code>
+               and
+               <code class="code">kOfxActionEndInstanceChanged</code>
+               are used to bracket all
+               <code class="code">kOfxActionInstanceChanged</code>
+               actions, whether a single change or multiple changes. Some changes to a plugin instance can be grouped logically (eg: a 'reset all' button resetting all the instance's parameters), the begin/end instance changed actions allow a plugin to respond appropriately to a large set of changes. For example, a plugin that maintains a complex internal state can delay any changes to that state until all parameter changes have completed.
+            </p>
+            <h5>
+               <a id="idp12621472"></a>
+               Preconditions
+            </h5>
+            <p>
+      For kOfxActionBeginInstanceChanged,
+      </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">kOfxActionCreateInstance has been called on the instance handle.</li>
+               </ul>
+            </div>
+            <p>
+      For kOfxActionEndInstanceChanged,
+      </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">kOfxActionBeginInstanceChanged has been called on the instance handle.</li>
+                  <li class="listitem">kOfxActionCreateInstance has been called on the instance handle.</li>
+               </ul>
+            </div>
+            <p>
+    </p>
+            <h5>
+               <a id="idp12624736"></a>
+               Postconditions
+            </h5>
+            <p>
+      For kOfxActionBeginInstanceChanged,
+      </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">kOfxActionInstanceChanged will be called at least once on the instance handle.</li>
+                  <li class="listitem">kOfxActionEndInstanceChanged will be called on the instance handle.</li>
+               </ul>
+            </div>
+            <p>
+    </p>
+            <h5>
+               <a id="idp12627104"></a>
+               Return Values
+            </h5>
+            <p>
+      </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">kOfxStatOK, the action was trapped and all was well</li>
+                  <li class="listitem">kOfxStatReplyDefault, the action was ignored</li>
+                  <li class="listitem">kOfxStatErrFatal, </li>
+                  <li class="listitem">kOfxStatFailed, something went wrong, but no error code appropriate, the plugin should to post a message</li>
+               </ul>
+            </div>
+            <p>
+    </p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch13s05.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch13.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch13s07.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">The Generic Destroy Instance Action </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> The Generic Instance Changed Action</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

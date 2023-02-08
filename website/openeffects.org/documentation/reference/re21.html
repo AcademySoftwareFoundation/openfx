@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>OfxImageEffectSuiteV1</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch15s02.html" title="Image Effect Suite"></link>
+      <link rel="prev" href="/documentation/reference/ch15s02.html" title="Image Effect Suite"></link>
+      <link rel="next" href="/documentation/reference/re22.html" title="OfxImageEffectSuiteV1::getPropertySet"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">
+                     <span class="type">OfxImageEffectSuiteV1</span>
+                  </th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch15s02.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Image Effect Suite</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re22.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="refentry">
+            <a id="OfxImageEffectSuiteV1"></a>
+            <div class="titlepage"></div>
+            <div class="refnamediv">
+               <h2>Name</h2>
+               <p>
+                  <code class="function">OfxImageEffectSuiteV1</code>
+                  — The OFX suite for image effects
+               </p>
+            </div>
+            <div class="refsynopsisdiv">
+               <h2>Synopsis</h2>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">
+#include "ofxImageEffect.h"
+typedef struct OfxImageEffectSuiteV1 {  
+  OfxStatus (*getPropertySet)(OfxImageEffectHandle imageEffect,
+			      OfxPropertySetHandle *propHandle);
+  OfxStatus (*getParamSet)(OfxImageEffectHandle imageEffect,
+			   OfxParamSetHandle *paramSet);
+  OfxStatus (*clipDefine)(OfxImageEffectHandle imageEffect,
+			  const char *name,	 
+			  OfxPropertySetHandle *propertySet);
+  OfxStatus (*clipGetHandle)(OfxImageEffectHandle imageEffect,
+			     const char *name,
+			     OfxImageClipHandle *clip,
+			     OfxPropertySetHandle *propertySet);
+  OfxStatus (*clipGetPropertySet)(OfxImageClipHandle clip,
+				  OfxPropertySetHandle *propHandle);
+  OfxStatus (*clipGetImage)(OfxImageClipHandle clip,
+			    OfxTime       time,
+			    const OfxRectD     *region,
+			    OfxPropertySetHandle   *imageHandle);
+  OfxStatus (*clipReleaseImage)(OfxPropertySetHandle imageHandle);
+  OfxStatus (*clipGetRegionOfDefinition)(OfxImageClipHandle clip,
+					 OfxTime time,
+					 OfxRectD *bounds);
+  int (*abort)(OfxImageEffectHandle imageEffect);
+  OfxStatus (*imageMemoryAlloc)(OfxImageEffectHandle instanceHandle, 
+				size_t nBytes,
+				OfxImageMemoryHandle *memoryHandle);
+  OfxStatus (*imageMemoryFree)(OfxImageMemoryHandle memoryHandle);
+  OfxStatus (*imageMemoryLock)(OfxImageMemoryHandle memoryHandle,
+			       void **returnedPtr);
+  OfxStatus (*imageMemoryUnlock)(OfxImageMemoryHandle memoryHandle);
+} OfxImageEffectSuiteV1;
+
+</pre>
+                  </blockquote>
+               </div>
+            </div>
+            <div class="refsect1">
+               <a id="idp14653584"></a>
+               <h2>Description</h2>
+               <p>
+This suite provides the functions needed by a plugin to defined and use an image effect plugin.
+</p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch15s02.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch15s02.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re22.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Image Effect Suite </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top">
+                      
+                     <code class="function">OfxImageEffectSuiteV1::getPropertySet</code>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

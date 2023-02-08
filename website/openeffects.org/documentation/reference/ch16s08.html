@@ -1,0 +1,574 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Properties on Parameter Descriptors and Instances</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch16.html" title="Chapter 16. Properties By Object"></link>
+      <link rel="prev" href="/documentation/reference/ch16s07.html" title="Properties on Parameter Set Instances"></link>
+      <link rel="next" href="/documentation/reference/ch16s09.html" title="Properties on Interact Descriptors"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Properties on Parameter Descriptors and Instances</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch16s07.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 16. Properties By Object</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch16s09.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="ParameterProperties"></a>
+                        Properties on Parameter Descriptors and Instances
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp17314320"></a>
+                           Properties Common to All Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               The following properties are common to all parameters....
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re244.html" title="kOfxPropType">kOfxPropType</a>
+                        , which will always be
+                        <code class="literal">kOfxTypeParameter</code>
+                        (read only)
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re239.html" title="kOfxPropName">kOfxPropName</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re237.html" title="kOfxPropLabel">kOfxPropLabel</a>
+                        read/write in the descriptor and instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re242.html" title="kOfxPropShortLabel">kOfxPropShortLabel</a>
+                        read/write in the descriptor and instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re238.html" title="kOfxPropLongLabel">kOfxPropLongLabel</a>
+                        read/write in the descriptor and instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re224.html" title="kOfxParamPropType">kOfxParamPropType</a>
+                        read only in the descriptor and instance, the value is set on construction
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re220.html" title="kOfxParamPropSecret">kOfxParamPropSecret</a>
+                        read/write in the descriptor and instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re198.html" title="kOfxParamPropHint">kOfxParamPropHint</a>
+                        read/write in the descriptor and instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re219.html" title="kOfxParamPropScriptName">kOfxParamPropScriptName</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re216.html" title="kOfxParamPropParent">kOfxParamPropParent</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re194.html" title="kOfxParamPropEnabled">kOfxParamPropEnabled</a>
+                        read/write in the descriptor and instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re186.html" title="kOfxParamPropDataPtr">kOfxParamPropDataPtr</a>
+                        read/write in the descriptor and instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re232.html" title="kOfxPropIcon">kOfxPropIcon</a>
+                        , read/write on a descriptor, read only on an instance
+                     </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp17330960"></a>
+                           Properties On Group Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re196.html" title="kOfxParamPropGroupOpen">kOfxParamPropGroupOpen</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp17333184"></a>
+                           Properties Common to All But Group and Page Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re204.html" title="kOfxParamPropInteractV1">kOfxParamPropInteractV1</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re202.html" title="kOfxParamPropInteractSize">kOfxParamPropInteractSize</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re203.html" title="kOfxParamPropInteractSizeAspect">kOfxParamPropInteractSizeAspect</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re200.html" title="kOfxParamPropInteractMinimumSize">kOfxParamPropInteractMinimumSize</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re201.html" title="kOfxParamPropInteractPreferedSize">kOfxParamPropInteractPreferedSize</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re197.html" title="kOfxParamPropHasHostOverlayHandle">kOfxParamPropHasHostOverlayHandle</a>
+                        read only in the descriptor and instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re225.html" title="kOfxParamPropUseHostOverlayHandle">kOfxParamPropUseHostOverlayHandle</a>
+                        read/write in the descriptor and read only in the instance
+                     </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp17342400"></a>
+                           Properties Common to All Parameters That Hold Values
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re187.html" title="kOfxParamPropDefault">kOfxParamPropDefault</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re180.html" title="kOfxParamPropAnimates">kOfxParamPropAnimates</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re207.html" title="kOfxParamPropIsAnimating">kOfxParamPropIsAnimating</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re208.html" title="kOfxParamPropIsAutoKeying">kOfxParamPropIsAutoKeying</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re217.html" title="kOfxParamPropPersistant">kOfxParamPropPersistant</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re195.html" title="kOfxParamPropEvaluateOnChange">kOfxParamPropEvaluateOnChange</a>
+                        read/write in the descriptor and instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re218.html" title="kOfxParamPropPluginMayWrite">kOfxParamPropPluginMayWrite</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re181.html" title="kOfxParamPropCacheInvalidation">kOfxParamPropCacheInvalidation</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re182.html" title="kOfxParamPropCanUndo">kOfxParamPropCanUndo</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp17354192"></a>
+                           Properties Common to All Numeric Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re210.html" title="kOfxParamPropMin">kOfxParamPropMin</a>
+                        read/write in the descriptor and instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re209.html" title="kOfxParamPropMax">kOfxParamPropMax</a>
+                        read/write in the descriptor and instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re192.html" title="kOfxParamPropDisplayMin">kOfxParamPropDisplayMin</a>
+                        read/write in the descriptor and instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re191.html" title="kOfxParamPropDisplayMax">kOfxParamPropDisplayMax</a>
+                        read/write in the descriptor and instance
+                     </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp17360016"></a>
+                           Properties Common to All Double Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re199.html" title="kOfxParamPropIncrement">kOfxParamPropIncrement</a>
+                        read/write in the descriptor and instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re189.html" title="kOfxParamPropDigits">kOfxParamPropDigits</a>
+                        read/write in the descriptor and instance
+                     </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp17363504"></a>
+                           Properties On 1D Double Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re221.html" title="kOfxParamPropShowTimeMarker">kOfxParamPropShowTimeMarker</a>
+                        read/write in the descriptor and instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re193.html" title="kOfxParamPropDoubleType">kOfxParamPropDoubleType</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp17366864"></a>
+                           Properties On 2D and 3D Double Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re193.html" title="kOfxParamPropDoubleType">kOfxParamPropDoubleType</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp17369040"></a>
+                           Properties On Non Normalised Spatial Double Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re188.html" title="kOfxParamPropDefaultCoordinateSystem">kOfxParamPropDefaultCoordinateSystem</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp17371280"></a>
+                           Properties On 2D and 3D Integer Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re190.html" title="kOfxParamPropDimensionLabel">kOfxParamPropDimensionLabel</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp17373568"></a>
+                           Properties On String Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re223.html" title="kOfxParamPropStringMode">kOfxParamPropStringMode</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re222.html" title="kOfxParamPropStringFilePathExists">kOfxParamPropStringFilePathExists</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp17376944"></a>
+                           Properties On Choice Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re183.html" title="kOfxParamPropChoiceOption">kOfxParamPropChoiceOption</a>
+                        read/write in the descriptor and instance
+                     </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp17379088"></a>
+                           Properties On Custom Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re184.html" title="kOfxParamPropCustomInterpCallbackV1">kOfxParamPropCustomInterpCallbackV1</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp17381296"></a>
+                           Properties On Page Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re211.html" title="kOfxParamPropPageChild">kOfxParamPropPageChild</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp17383456"></a>
+                           On Parametric Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re180.html" title="kOfxParamPropAnimates">kOfxParamPropAnimates</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re207.html" title="kOfxParamPropIsAnimating">kOfxParamPropIsAnimating</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re208.html" title="kOfxParamPropIsAutoKeying">kOfxParamPropIsAutoKeying</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re217.html" title="kOfxParamPropPersistant">kOfxParamPropPersistant</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re195.html" title="kOfxParamPropEvaluateOnChange">kOfxParamPropEvaluateOnChange</a>
+                        read/write in the descriptor and instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re218.html" title="kOfxParamPropPluginMayWrite">kOfxParamPropPluginMayWrite</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re181.html" title="kOfxParamPropCacheInvalidation">kOfxParamPropCacheInvalidation</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re182.html" title="kOfxParamPropCanUndo">kOfxParamPropCanUndo</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re212.html" title="kOfxParamPropParametricDimension">kOfxParamPropParametricDimension</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re215.html" title="kOfxParamPropParametricUIColour">kOfxParamPropParametricUIColour</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re213.html" title="kOfxParamPropParametricInteractBackground">kOfxParamPropParametricInteractBackground</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re214.html" title="kOfxParamPropParametricRange">kOfxParamPropParametricRange</a>
+                        read/write in the descriptor, read only on an instance
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch16s07.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch16.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch16s09.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Properties on Parameter Set Instances </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Properties on Interact Descriptors</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

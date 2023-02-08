@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>kOfxPropKeyString</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch17.html" title="Chapter 17. Properties By Name"></link>
+      <link rel="prev" href="/documentation/reference/re234.html" title="kOfxPropIsInteractive"></link>
+      <link rel="next" href="/documentation/reference/re236.html" title="kOfxPropKeySym"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">
+                     <code class="literal">kOfxPropKeyString</code>
+                  </th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re234.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 17. Properties By Name</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re236.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="refentry">
+            <a id="kOfxPropKeyString"></a>
+            <div class="titlepage"></div>
+            <div class="refnamediv">
+               <h2>Name</h2>
+               <p>
+                  <code class="literal">kOfxPropKeyString</code>
+                  — This property encodes a single keypresses that generates a unicode code point. The value is stored as a UTF8 string.
+               </p>
+            </div>
+            <div class="refsynopsisdiv">
+               <h2>Synopsis</h2>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">
+#include "/ofxKeySyms.h"
+#define kOfxPropKeyString "kOfxPropKeyString"
+</pre>
+                  </blockquote>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp19388992"></a>
+               <h3>Type</h3>
+               <p>
+                  <code class="literal">kOfxPropKeyString</code>
+                  is of type
+                  <span class="type">C string</span>
+                  , and has only a single dimension.
+               </p>
+            </div>
+            <div class="refsect2">
+               <a id="idp19391152"></a>
+               <h3>Property Set</h3>
+               <p>
+                  This is a property that belongs to the an read only in argument for the actions
+                  <a class="link" href="/documentation/reference/ch14s08.html" title="kOfxInteractActionKeyDown">
+                     <code class="code">kOfxInteractActionKeyDown</code>
+                  </a>
+                  ,
+                  <a class="link" href="/documentation/reference/ch14s09.html" title="kOfxInteractActionKeyUp">
+                     <code class="code">kOfxInteractActionKeyUp</code>
+                  </a>
+                  and
+                  <a class="link" href="/documentation/reference/ch14s10.html" title="kOfxInteractActionKeyRepeat">
+                     <code class="code">kOfxInteractActionKeyRepeat</code>
+                  </a>
+                  ..
+               </p>
+            </div>
+            <div class="refsect2">
+               <a id="idp19395040"></a>
+               <h3>Valid Values</h3>
+               <p>
+a UTF8 string representing a single character, or the empty string.
+</p>
+            </div>
+            <div class="refsect2">
+               <a id="idp19396160"></a>
+               <h3>Description</h3>
+               <p>
+This property encodes a single keypresses that generates a unicode code point. The value is stored as a UTF8 string. 
+</p>
+               <p>
+This property represents the UTF8 encode value of a single key press by a user in an OFX interact.
+</p>
+               <p>
+                  This property is associated with a
+                  <code class="code">kOfxPropKeySym</code>
+                  which represents an integer value for the key press. Some keys (for example arrow keys) have no UTF8 equivalant, in which case this is set to the empty string "", and the associate
+                  <code class="code">kOfxPropKeySym</code>
+                  is set to the equivilant raw key press.
+               </p>
+               <p>
+                  Some keys, especially on non-english language systems, may have a UTF8 value, but
+                  <span class="emphasis">
+                     <em> m</em>
+                  </span>
+                  not a keysym values, in these cases, the keysym will have a value of kOfxKey_Unknown, but the
+                  <code class="code">kOfxPropKeyString</code>
+                  property will still be set with the UTF8 value.
+               </p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re234.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch17.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re236.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">
+                     <code class="literal">kOfxPropIsInteractive</code>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top">
+                      
+                     <code class="literal">kOfxPropKeySym</code>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

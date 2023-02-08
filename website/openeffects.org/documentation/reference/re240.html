@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>kOfxPropParamSetNeedsSyncing</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch17.html" title="Chapter 17. Properties By Name"></link>
+      <link rel="prev" href="/documentation/reference/re239.html" title="kOfxPropName"></link>
+      <link rel="next" href="/documentation/reference/re241.html" title="kOfxPropPluginDescription"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">
+                     <code class="literal">kOfxPropParamSetNeedsSyncing</code>
+                  </th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re239.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 17. Properties By Name</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re241.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="refentry">
+            <a id="kOfxPropParamSetNeedsSyncing"></a>
+            <div class="titlepage"></div>
+            <div class="refnamediv">
+               <h2>Name</h2>
+               <p>
+                  <code class="literal">kOfxPropParamSetNeedsSyncing</code>
+                  — States whether the plugin needs to resync its private data
+               </p>
+            </div>
+            <div class="refsynopsisdiv">
+               <h2>Synopsis</h2>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">
+#include "/ofxParam.h"
+#define kOfxPropParamSetNeedsSyncing "OfxPropParamSetNeedsSyncing"
+</pre>
+                  </blockquote>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp19458560"></a>
+               <h3>Type</h3>
+               <p>
+                  <code class="literal">kOfxPropParamSetNeedsSyncing</code>
+                  is of type
+                  <span class="type">int</span>
+                  , and has only a single dimension.
+               </p>
+            </div>
+            <div class="refsect2">
+               <a id="idp19460704"></a>
+               <h3>Property Set</h3>
+               <p> This is a property that belongs to the param set instance (read/write).
+</p>
+            </div>
+            <div class="refsect2">
+               <a id="idp19461824"></a>
+               <h3>Default</h3>
+               <p>
+The default value is 0.
+</p>
+            </div>
+            <div class="refsect2">
+               <a id="idp19462896"></a>
+               <h3>Valid Values</h3>
+               <p>
+
+</p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">0 - no need to sync</li>
+                     <li class="listitem">1 - paramset is not synced</li>
+                  </ul>
+               </div>
+               <p>
+</p>
+            </div>
+            <div class="refsect2">
+               <a id="idp19465152"></a>
+               <h3>Description</h3>
+               <p>
+States whether the plugin needs to resync its private data
+</p>
+               <p>
+The plugin should set this flag to true whenever any internal state has not
+been flushed to the set of params.
+</p>
+               <p>
+The host will examine this property each time it does a copy or save
+operation on the instance.
+If it is set to 1, the host will call SyncPrivateData and then set
+it to zero before doing the copy/save.
+If it is set to 0, the host will assume that the param data
+correctly represents the private state, and will not call
+SyncPrivateData before copying/saving.
+If this property is not set, the host will always call
+SyncPrivateData before copying or saving the effect (as if the
+property were set to 1 -- but the host will not create or
+modify the property).
+</p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re239.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch17.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re241.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">
+                     <code class="literal">kOfxPropName</code>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top">
+                      
+                     <code class="literal">kOfxPropPluginDescription</code>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

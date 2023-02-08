@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes Threading Api Issues |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="bLxUqauEt0QbOAqN4L4y1vGPzYCkiKxdmZTY9nvM7ERCpjwaDbC6a67nSGCUjIkCpK+5xf31ir9Xlcybbp3tfw==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+<form role="form" class="navbar-form navbar-right form-inline" action="/users/sign_in" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="ExgYuJ960oa+eijfSq2VWkTUX1d0rDQ5xrzWKYL0Oc89AnALOU7fqQulajI+ny6OEfQrEi3REtsIvcJEl6U49A==" />
+<div class='form-group'>
+<input type="text" name="user[email]" id="user_email" class="form-control input-xs" placeholder="Email" />
+</div>
+<div class='form-group'>
+<input type="password" name="user[password]" id="user_password" class="form-control input-xs" placeholder="Password" />
+</div>
+<button class='btn btn-sm btn-primary' type='submit'>Sign in</button>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='row'>
+<div class='col-md-offset-2 col-md-8'>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-warning'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+Threading API Issues
+<span class='pull-right'>Proposed</span>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Standard version:</b>
+1.5
+</p>
+<p>
+<b>Minor Change</b>
+</p>
+<label>Subcommittee</label>
+<p></p>
+<label>Overview</label>
+<p>It has been suggested that the threading API needs to be extended radically or deprecated entirely and replaced with host OS threading. There are pros and cons to each option.</p>
+<p>In case of deprecation, the plug-in should be informed of the maximum number of threads it should be using by the host application.</p>
+<label>Solution</label>
+
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-default'>
+<div class='panel-body'>
+<h4 class='text-primary'>Discussion</h4>
+<h5>Comments</h5>
+<div class='well well-sm'>
+<div class='comment user-32' id='cid-235'>
+<div class='content'>
+<p>In response to Pierre. The idea was to deprecate the suite entirely and just allow a plugin to use the native host APIs to spawn threads. However, the host still needs to say how many threads the plugin can use to do whatever it is it is doing. In that way you can stop a plugin over subscribing the number of cores available.</p>
+<p>So each action would have a new property on the <em>inArgs,&nbsp;<span><span>kOfxPropNumberThreadsAllowed</span></span></em>, which would be the total number of threads the plugin could launch.</p>
+<p>The only problem I can see with this is cost of continual thread spawn/destruction. As you suggest, we could have a rev of the threading API, which is slightly tidier than the current one, which allows access to that thread pool. The host still needs to tell the plugin, on a per action basis, how many threads it is allowed to use.</p>
+<p>&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Bruno Nicoletti |  7:55 am,  24 Feb 2015
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-0' id='cid-219'>
+<div class='content'>
+<ul><li>
+                  Pierre Jasmin: I think V1 is just fine for now. Using
+                  <abbr title="Operating System">OS</abbr>
+                  can be bad particularly when the host renders multiple frames at once. Also some hosts allow you to limit how many CPU you run on, so ignoring what hosts tells you will cause trouble. Also using host provided threads has proved in other apps to render faster. In the case of one OFX host here we did have to revert to
+                  <abbr title="Operating System">OS</abbr>
+                  as there was somehow a significant performance degradation. In light of next gen processors (16/24/32 cores), it would probably be indicated for plugin to tell to host that I tested this and I good until 8, or 1 if I am not multi-threaded&#8230;.
+                  <ul>
+<li> Bruno Nicoletti : as it stands the plug-in itself can choose to use as many threads as the host allows it</li>
+<li> Pierre Jasmin : Actually would be useful to know how many frames at once an app is currently multiprocesing&#8230; </li>
+</ul>
+               </li></ul>
+<p>OfxStatus (*multiProcessingThreads)(unsigned int *nFramesAtOnce);</p>
+<p>Is the proposal to create a different suite:  e.g. kOfxMultiThreadSimpleSuiteV1 and kOfxMultiThreadSuiteV2  ?  Basically where kOfxMultiThreadSimpleSuiteV1 does not have the mutex calls&#8230; and plugin just uses OS calls. Or simply keep kOfxMultiThreadSuiteV1 as is and if host does not support OfxMultiThreadSuiteV1 he must support kOfxMultiThreadSimpleSuiteV1 &#8230;</p>
+<ul><li>
+                  Pierre Jasmin: (a year later) - New idea is perhaps what we need is an additional and different suite ofxMultiProcess whose purpose is for the host to educate the plugin about what is going on right now. The original ofxMultiThread suite was in a way sort of based on Shake explicit requirement to control the threading&#8230; and it probably still has value for easily tileable operations (for plugins that support tiling flag so they don't multithread in such context for example). Also I am seeing that background processing will become more popular as the number of cores grow, so to just use the
+                  <abbr title="Operating System">OS</abbr>
+                  system info might not hold as it would not allow an host in a 2 processors context to set to a child affinity of just the CPU of a processor etc&#8230; to prevent the background process to take over the system&#8230; Another example could be what if I want to use the GPU to do sorting while I process something else on the CPU.
+               </li></ul>
+</div>
+</div>
+<div class='author text-muted'>
+unattributed |  9:49 am,   8 Mar 2014
+</div>
+</div>
+
+</div>
+</div>
+
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

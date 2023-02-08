@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Specifying Pixel Aspect Ratios</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch12.html" title="Chapter 12. Image Effect Clip Preferences"></link>
+      <link rel="prev" href="/documentation/reference/ch12s04.html" title="Specifying Pixel Components"></link>
+      <link rel="next" href="/documentation/reference/ch12s06.html" title="Specifying Fielding"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Specifying Pixel Aspect Ratios</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch12s04.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 12. Image Effect Clip Preferences</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch12s06.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="idp12451136"></a>
+                        Specifying Pixel Aspect Ratios
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+               Hosts and plugins flag whether whether they can deal with input/output clips of differing pixel aspect ratios via the
+               <a class="link" href="/documentation/reference/re148.html" title="kOfxImageEffectPropSupportsMultipleClipPARs">
+                  <code class="code">kOfxImageEffectPropSupportsMultipleClipPARs</code>
+               </a>
+               property.
+            </p>
+            <p>
+If the host sets this to 0, then all effect's input and output clips will always have the same pixel aspect ratio, and the plugin may not remap them.
+      </p>
+            <p>
+If the plugin sets this to 0, then the host will transparently map all of an effect's input and output clips to a single pixel aspect ratio, even if the actual clips are of differring PARs.
+      </p>
+            <p>
+In the above two cases, the common pixel aspect ratio chosen will be the smallest on all the inputs, as this preserves image data.
+      </p>
+            <p>
+               If
+               <span class="emphasis">
+                  <em>both</em>
+               </span>
+               the plugin and host set this to 1, then the plugin can, during
+               <a class="link" href="/documentation/reference/ch13s20.html" title="The Get Clip Preferences Action">
+                  <code class="code">kOfxImageEffectActionGetClipPreferences</code>
+               </a>
+               , specify how the host is to map each clip, including the output clip.
+            </p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch12s04.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch12.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch12s06.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Specifying Pixel Components </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Specifying Fielding</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

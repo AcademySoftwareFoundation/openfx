@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="1BPJhIxOzONi/epXD+mB3b8hGazC6/dxQ3uycB6zsif6CaE3KnrBzNciqLp72zoJ6gFt6ZuW0ZONeqYdC+KzHA==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_index' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+<form role="form" class="navbar-form navbar-right form-inline" action="/users/sign_in" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="caQZJQpzLBLyrf7QkvMTOP2x/ELsvgCiXteASHhKkj9fvnGWrEchPUdyvD3mwajsqJGIB7XDJkCQ1pQlbRuTBA==" />
+<div class='form-group'>
+<input type="text" name="user[email]" id="user_email" class="form-control input-xs" placeholder="Email" />
+</div>
+<div class='form-group'>
+<input type="password" name="user[password]" id="user_password" class="form-control input-xs" placeholder="Password" />
+</div>
+<button class='btn btn-sm btn-primary' type='submit'>Sign in</button>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<h1>Standard Changes</h1>
+<div class='row'>
+<div class='col-md-2'>
+<div class='form-group'>
+<select name="status" id="status" class="status form-control input-small"><option value="all">Any status</option>
+<option value="approved">Approved</option>
+<option selected="selected" value="proposed">Proposed</option>
+<option value="withdrawn">Withdrawn</option>
+<option value="deprecated">Deprecated</option></select>
+</div>
+</div>
+<div class='col-md-2'>
+<div class='form-group'>
+<select name="version" id="version" class="version form-control input-small"><option value="all">All versions</option>
+<option value="v20">2.0</option>
+<option value="v15">1.5</option>
+<option value="v141">1.4.1</option>
+<option value="v14">1.4</option>
+<option value="v13">1.3</option>
+<option value="v12">1.2</option></select>
+</div>
+</div>
+<div class='col-md-6'>
+<span class='sc-key bg-info'>Proposed</span>
+&nbsp;&nbsp;&nbsp;
+<span class='sc-key bg-success'>Approved</span>
+&nbsp;&nbsp;&nbsp;
+<span class='sc-key bg-danger'>Withdrawn or Deprecated</span>
+</div>
+</div>
+<div class='table-responsive'>
+<table class='table'>
+<tr>
+<th>Version</th>
+<th>Title</th>
+<th>Overview</th>
+<th>Activity</th>
+<th>Type</th>
+<th>Status</th>
+</tr>
+<tr class='v20 proposed info'>
+<td class=''>2.0</td>
+<td>
+<b>
+Clip Preferences and Temporal Invariance
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/238">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>Several aspects of the API were, in their original conception, perceived to be fixed for the whole temporal duration of an effect, and generally under the control of the application. This, unfortunately, is not true, and has caused problems for various plug-in hosts and developers.</p> <p>Initially this consisted of what pixel formats and data types were present on input clips and how they should be...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br /> 2 Mar '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />25 Aug '16
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v20 proposed info'>
+<td class=''>2.0</td>
+<td>
+<b>
+Distortion/Transform Effects
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/243">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>Some effects are continuous distortions of an image (eg: a lens correction tool), the simplest case being an effect that performs a simple matrix based transform (eg: a stablisation tool).</p> <p>A user often applies a series of such effects in a row, and if each effect processes the image, you end up with a significantly degraded image, as each effect will separately filter the image.</p> <p>If an effect...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br /> 2 Sep '16
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />29 Jan '17
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v20 proposed info'>
+<td class=''>2.0</td>
+<td>
+<b>
+Dynamic Number of Input Clips
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/variable-number-of-input-clips">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>Some plug-in developers wish to have a variable number of input clips to their effects. At run time a user would be able to keep wiring more and more input to the effect. Not all hosts could support this, but many could.</p> <p>To do this you would need to have properties indicating whether the host was capable of doing this, and whether the plug-in wanted such behaviour.</p> <p>Given the current 'fetch by...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br /> 2 Mar '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br /> 6 Jun '15
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v20 proposed info'>
+<td class=''>2.0</td>
+<td>
+<b>
+Dynamic Parameter Creation
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/dynamic-parameter-creation">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>Being able to amend the parameter set on a plugin instance after creation would be a useful feature for many plugin developers. In response to user initiated action (eg: a button press), a plugin should be&nbsp;able to both define new parameters or destroy existing parameters on the given instance.</p> <p>&nbsp;</p> <p>&nbsp;</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br /> 4 Mar '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br /> 6 Jun '15
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v20 proposed info'>
+<td class=''>2.0</td>
+<td>
+<b>
+Entry Point Dispatch
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/entry-point-dispatch">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>Currently, entry points need to be unique. For example, multiple plug-ins in the same binary cannot use the same main entry point. Similarly, any custom parameter interact, each parameter needs it's own entry point. This makes it difficult to wrap the plugin API with generic support code.</p> <p>The reason for this is that there is no information passed back to a plug-in from the host, which allows it...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />24 Sep '16
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />never
+</em>
+</td>
+<td>minor</td>
+<td>proposed</td>
+</tr>
+<tr class='v20 proposed info'>
+<td class=''>2.0</td>
+<td>
+<b>
+Output clip constraints
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/output-clip-constraints">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>The current ImageEffect architecture abstracts what comes out of the effect as the output clip.&nbsp;</p> <p>Thus the A.P.I makes&nbsp;multiple assumptions that are not clearly indicated as to&nbsp;which&nbsp;functions a plug-in may call on the output clip and when.</p> <p>For instance:</p> <p>- The clipGetImage function on the output clip takes the same parameters&nbsp;as if it were called on&nbsp;a source clip,...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />10 Feb '17
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />13 Feb '17
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v20 proposed info'>
+<td class=''>2.0</td>
+<td>
+<b>
+Parameter Interpolation Type
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/parameter-interpolation-type">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>There is no way to set Parameter Interpolation Type in OFX</p> <p>Example: &nbsp;In Nuke (example of an host that does not support animated popup menus), we need to make an animated menu create an associated integer parameter that we set when user change the popup. &nbsp;However the expected behavior would be Constant_Step, now the integer is interpolated, so somewhere between menu 3 and 1 we get menu...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />30 Sep '17
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />never
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v20 proposed info'>
+<td class=''>2.0</td>
+<td>
+<b>
+Parameter Suite -  paramEditBeginWrite
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/parameter-suite-parameditbeginwrite">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>I was under the impression that paramEditBegin would be interpreted by host not just in terms of grouping parameters for undo but as well as indicator that we are about to write a bunch of key-frames. &nbsp;So tested in Nuke, Fusion and Natron and same, even within EditBegin-End each time we add a key-frame within InstanceChanged which is what happens during a sequence analysis, InstanceChanged...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />11 Feb '17
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />13 Feb '17
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v20 proposed info'>
+<td class=''>2.0</td>
+<td>
+<b>
+Private Data Management
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/private-data-management">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p dir="ltr">Private data is parameter data a plugin keeps in its own data structures. These are for large or complex data types that can't be represented with the current parameter set. For example a custom roto-spline parameter. For persistance, and possibly animation, private data needs to be synced back into a plugin's actual parameter set at some point so the host can deal with the data appropriately....</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br /> 4 Mar '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br /> 6 Jun '15
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v20 proposed info'>
+<td class=''>2.0</td>
+<td>
+<b>
+Properties that are doubles canonical but should really be ints in pixels space
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/properties-that-are-doubles-canonical-but-should-really-be-ints-in-pixels-space">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p dir="ltr"><span>A range of spatial values, which refer to regions on the image plane or pixels in the UI, are specified as doubles rather than ints. These are are both properties on several actions&rsquo; in and out args, as well as a returned value from a function in a suite.</span></p> <p dir="ltr"><span>The following properties should have been integers rather than doubles&hellip;.</span></p> <ul> <li dir="ltr"> <p dir="ltr"><span>kOfxImageEffectPropRegionOfDefinition</span></p> </li> <li dir="ltr"> <p dir="ltr"><span>...</span></p></li></ul>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br /> 5 Feb '17
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />16 Sep '16
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v20 proposed info'>
+<td class=''>2.0</td>
+<td>
+<b>
+Some Parameter Descriptors that might need documentation clarification
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/some-parameter-descriptors-that-might-need-documentation-clarification">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>This is complement to:&nbsp;kOfxParamPropModifiable proposal</p> <p>http://openeffects.org/standard_changes/property-to-hint-that-parameter-properties-can-be-dynamically-changed</p> <p>The purpose is to list possible ambiguities in API regarding parameters</p> <p>1) Apparently we do not specify that we expect Boolean and Choice to be "step" animation (as opposed to linearly interpolated as if they were regular int)...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />23 Jan '17
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />never
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info new-version-row'>
+<td class=''>1.5</td>
+<td>
+<b>
+abort() - What error message to return
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/abort-what-error-message-to-return">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>It's not clearly stated what a plugin should and could return upon abort().&nbsp;</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />18 Sep '17
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />never
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+Binary Custom Params
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/binary-custom-params">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p dir="ltr"><span>Plugins with private data currently save their values into custom params, which are simply strings. It would be more efficient to allow plugins to encode/decode serialised data with a binary blob.</span></p> <p><span>&nbsp;</span></p> <p>&nbsp;</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />19 Jul '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br /> 6 Jun '15
+</em>
+</td>
+<td>minor</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+Caching
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/caching">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>There is a need for a suite that allows a plug-in to cache internal data during render calls for retrieval in a subsequent render call, e.g. retimer caching motion vectors. This is especially important if we split off separate render object from the persistent instance.</p> <p dir="ltr"><span>A new Caching Suite should be created, that allows plugins to use host side data caching. Basically a giant key/value pair...</span></p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />19 Jul '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />never
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+Clone For Render
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/clone-for-render">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>(sept 23, 2016) - this is to be simultaneously addressed with caching and multi-processing.</p> <p>Currently only one kind of plug-in instance is recognised, this is used for everything, interface, caching state, rendering etc&hellip; Many host applications have severe problems with this model, as they typically have separate render objects that are either lightweight special purpose render objects,...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />24 Sep '16
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />19 Apr '17
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+Colour Space handling
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/colour-space-handling">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>There is little to no information about the colour space (tone curve and RGB chromaticities) in which image sample values are to be interpreted.</p> <p>Historically there has been some assumption that the tone curve is probably linear, with a nominal black point at 0.0 and nominal white point at 1.0, but this is not specified and is often not the case.</p> <p>Depending on the host, unmodified images...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />30 Aug '17
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br /> 5 Feb '17
+</em>
+</td>
+<td>minor</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+Cuda API
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/cuda-api">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>See OpenCL notes (should be similar)</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />19 Jul '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br /> 6 Jun '15
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+Deep Images / Multi-Plane
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/deep-images-multi-plane">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>(september 23, 2016): This is to be merged with Multi-View </p> <p>A recent trend is to embed multiple image types in the same image stream, for example depth information as well as colour data. The current version 1.4 OFX Image Effect API only presents a single colour image buffer from any clip, either input or output. This prevents hosts with rich image streams from passing such data to plug-ins...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />24 Sep '16
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />22 Jan '17
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+Fix Broken Generator Context
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/broken-generator-context-edited">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>(sept 23, 2016): This to be co-addressed with Spatial Formats are broken</p> <p>Generators, as conceived, are not very good. They need to be broken into two types&hellip;..</p> <ul> <li>generators that determine their own formats, e.g. a file&nbsp;reading plug-in</li> <li>generators that leave format determination to the host application, eg: a spatial noise generator that can make noise anywhere on the image plane.</li> </ul> <p>...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />24 Sep '16
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br /> 6 Jun '15
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+GPU Processing Utility Suite
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/gpu-processing-utility-suite">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>Below is 5 different topics that can be considered. It does not have to end up all in one suite but it should maybe be discussed at same time.</p> <p>&nbsp;</p> <p>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>CPU based effect registering GPU ressource usage</strong></p> <p>&nbsp;</p> <p>Host that render multiple frames at once and switch GPU per frame, could report the GPUid so we don't load the same GPU making it easier on the host in...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />28 Sep '16
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />never
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+kOfxImageEffectPropFrameRange And Trim Points - add-on needed
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/kofximageeffectpropframerange-and-trim-points-doc-add-on-needed">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>I think for host that have in and out trim points in their user interface, it should be documented what the host should then.</p> <p>And because this is essentially what it does and there is no API to capture that.</p> <p>We need to maintain&nbsp;the integrity of the OFX time regarding the source clip (e.g. changing the trim in-point does not affect then where a particular frame is in OFX Frame time - so...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />30 Aug '17
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />never
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+Metadata
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/metadata">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p dir="ltr">With modern VFX systems, arbitrary extra metadata is available on the clips passed to an effect, such as camera shot on, colour space, and much much more. Some of this data is very useful to effects and they may need to transform the metadata that is presented on output. Currently OFX does not support metadata, and it should.</p> <p>(jan 22, 2017, Pierre Jasmin): &nbsp;Adding some notes,&nbsp;</p> <p>We have...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />22 Jan '17
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />26 Jan '17
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+Multi View Effects
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/multi-view-effects">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>Stereo motion pictures are now common, and various visual effects applications have been updated to include a stereo work flow. Typically this is done by embedding multiple views within an image stream.</p> <p>The Foundry has implemented an unpublished extension to the OFX API in its Nuke compositing application to deal with multiple views within a clip. We are proposing cleaned up versions of these...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />19 Jul '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br /> 8 Mar '14
+</em>
+</td>
+<td>minor</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+Multiple output clips
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/multiple-output-clips">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>(sept 23, 2016) - this has been merged in multi-view/ multi-plane discussion</p> <p>It would be useful for some plugins to be able to produce multiple outputs, such as a Degrain plugin that can produce a degrained image and a grain map that could be added later by a matching Regrain plugin. Currently there is no way for a plugin to tell the host that it has more than one output, since clips are...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />24 Sep '16
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />11 Mar '16
+</em>
+</td>
+<td>minor</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+OpenCL Version of the OpenGL Suite
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/opencl-version-of-the-opengl-suite">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>For hosts and plug-ins that support OpenCL rendering, it would be good to have an OpenCL equivalent of the OpenGL rendering suite. This would remove performance issues with pushing data needlessly into OpenGL.</p> <p>Given OpenCL and OpenGL suites, it would be good to make sure both are compatible and are capable of resource sharing where needed.</p> <p>&nbsp;</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />19 Jul '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />never
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+OpenGL suite V2
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/opengl-suite-v2">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>1) Flushing in current V1 suite is likely to be addressed via GPU utility suite.&nbsp; It has become not sufficient in an age where a GPU can have 24 GB of VRAM.</p> <p>2) The currently suggested fallback in documentation are likely to be superseeded by a GPU utility suite fallback hand shake</p> <p>3) Option to disable/enable suite in Instance Changed action is not well documented in v1.4</p> <p>4) Multi-Threading...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />24 Sep '16
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />never
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+Property Testing Suite
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/property-to-hint-that-parameter-properties-can-be-dynamically-changed">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p dir="ltr"><strong>This was formely </strong>Property to hint that parameter properties can be dynamically changed and has now been superseded to include other properties.</p> <p dir="ltr">Overview to redo, new proposed solution is to have a PropTesting suite - &nbsp;INFO only &nbsp;- which allows us to check<br />1) If host supports that (anything with Prop in name basically)&nbsp;<br />2) In case of parameters this extends to write-able properties,...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />30 Aug '17
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />never
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+Roto-Splines
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/roto-splines">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>I think RE:Vision and Foundry via API email thread had a reasonable compromise. Paste in our discussion as reference. Imagineer has offered interest in such suite. This is an old discussion at this point, might have changed my mind and some of the supporting visuals are gone. I repaste anyway as reference. (Sorry for formatting)<br /><br />&nbsp;<br />Essentially we need a single shape parameter and a dynamic...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br /> 6 Jun '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />never
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+Spatial Formats Are Broken, Replace with New Properties and a new Action
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/spatial-formats-are-broken-replace-with-new-properties-and-a-new-action">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p dir="ltr">Regions of definition are well defined concepts within OFX, the &lsquo;format&rsquo; of a clip is not. For example a clip may be HD, 4K, SD etc&hellip; while the RoD need not be congruent to the &lsquo;format&rsquo; at all. Furthermore, effects have no way of changing the spatial format. For example an effect that up scales images from SD to 4K would want to flag the change in format as well as...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />20 Sep '16
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />31 Aug '16
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+Support for Camera and Lighting
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/support-for-camera-and-lighting">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>Some hosts support 3d compositing with cameras and lights. AE even has this. The OFX API could allow plug-ins to use the host's camera and lighting information, where available, to create interesting effects.</p> <p>Nuke has a private suite for Camera already.</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />20 Sep '16
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />11 Jan '17
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v15 proposed info'>
+<td class=''>1.5</td>
+<td>
+<b>
+Threading API Issues
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/threading-api-issues">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>It has been suggested that the threading API needs to be extended radically or deprecated entirely and replaced with host OS threading. There are pros and cons to each option.</p> <p>In case of deprecation, the plug-in should be informed of the maximum number of threads it should be using by the host application.</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />19 Jul '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />24 Feb '15
+</em>
+</td>
+<td>minor</td>
+<td>proposed</td>
+</tr>
+<tr class='v141 proposed info new-version-row'>
+<td class=''>1.4.1</td>
+<td>
+<b>
+ kOfxImageEffectPropPreMultiplication
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/kofximageeffectproppremultiplication">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>In V 1.2: &nbsp;We reviewed if&nbsp;<span>kOfxImageEffectPropPreMultiplication should be deprecated - this was withdrawn</span></p> <p>Bruno Nicoletti asked: "<span>Is the kOfxImageEffectPropPreMultiplication flag used by anyone to do anything useful with? If not should we just kill it?"<br />GaryO, PierreJ, and ShinK said NO, so we kept it. However all that was resolved is not deprecating.<br /><br /></span></p> <p><span>The short form is GaryO...</span></p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />25 Jun '17
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />25 Jun '17
+</em>
+</td>
+<td>minor</td>
+<td>proposed</td>
+</tr>
+<tr class='v141 proposed info'>
+<td class=''>1.4.1</td>
+<td>
+<b>
+Documenting Expected Behavior when an effect does not want to get loaded in an host.version
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/documenting-expected-behavior-when-an-effect-does-not-want-to-get-loaded-in-an-host-version">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>There can be multiple reasons for a plugin not wanting to get loaded in an host.version. For example the plugin might depend on a feature not supported by an host (e.g. a camera suite)</p> <p>It is suggested that the OFFICIAL way of doing this would be to simply not support any context and return StatDefault.</p> <p>This needs to be clearly documented somewhere so effect developers are aware of this.</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br /> 5 Feb '17
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />31 Jan '17
+</em>
+</td>
+<td>minor</td>
+<td>proposed</td>
+</tr>
+<tr class='v141 proposed info'>
+<td class=''>1.4.1</td>
+<td>
+<b>
+Loss of host calling context on all suite calls.
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/loss-of-host-calling-context-on-all-suite-calls">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>The API is meant to be called in a parallel manner, so that a host application may call actions on a plugin from any number of threads and have the API work. The only constraint on a&nbsp;plugin is that any calls back to the host via a suite must be from the thread the initial action was invoked from.&nbsp;</p> <p>This problem arises when a host calls actions in parallel. It may have some private data...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br /> 5 Feb '17
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />15 Sep '15
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v14 proposed info new-version-row'>
+<td class='current'>1.4</td>
+<td>
+<b>
+Deprecate PluginMayWrite Property On Parameters
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/deprecate-pluginmaywrite-property-on-parameters">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p><span><span>The </span><span>kOfxParamPropPluginMayWrite</span><span> is redundant and not used in practice.&nbsp;</span></span></p> <p><span><span>However it was mentioned that it was not clear where parameters can be writen. In general, parameters are read-only everywhere except in descriptor and instance changed.</span></span></p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />19 Jul '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br /> 6 Jun '15
+</em>
+</td>
+<td>minor</td>
+<td>proposed</td>
+</tr>
+<tr class='v14 proposed info'>
+<td class='current'>1.4</td>
+<td>
+<b>
+Host Origin Hints
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/host-origin-hints">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p dir="ltr"><span>renamed for consistency:</span></p> <p dir="ltr"><span>kOfxImageEffectHostPropNativeOrigin</span></p> <p dir="ltr">&nbsp;</p> <p dir="ltr"><span>Sometimes it is good for a plugin to know where the native origin of the host is and whether the coordinate system is Y-Up or Y-Down. This is strictly a UI hint to plugin.</span></p> <p>It's good we have a simple base image / frame buffer model (lower-left, RGBA, rowbytes...) - however some applications are natively not lower-left which...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />27 Jul '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />19 Jul '15
+</em>
+</td>
+<td>minor</td>
+<td>proposed</td>
+</tr>
+<tr class='v14 proposed info'>
+<td class='current'>1.4</td>
+<td>
+<b>
+Internationalising the Progress Suite
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/internationalising-the-progress-suite">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p dir="ltr"><span>The Message Suite takes a unique messageID with each message posted, along with a text string. That messageID can be used to lookup alternate text strings in a companion XML file for use instead. This can be used to present internationalised messages and so on. The progress suite does not do this, it takes a hard coded string and so we can't internationalise any progress message.</span></p> <p><span>&nbsp;</span></p> <p>&nbsp;</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />19 Jul '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />never
+</em>
+</td>
+<td>minor</td>
+<td>proposed</td>
+</tr>
+<tr class='v14 proposed info'>
+<td class='current'>1.4</td>
+<td>
+<b>
+Last second additions while merging - kOfxParamPropInteractMinimumSize, kOfxBitDepthHalf
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/still-to-do">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>This is just a reminder</p> <p>Aside a few minor doc things t (like good programming notes&nbsp;for example that&nbsp;paramGetValue without time is an issue for some hosts with multiple render threads so it's safer not to use in render calls..)&nbsp;&nbsp;and&nbsp;PropRenderScale is probably missing note about Interact Callbacks&nbsp;</p> <p><a class="issue-title-link js-navigation-open" href="https://github.com/ofxa/openfx/issues/26">kOfxParamPropInteractMinimumSize</a>&nbsp; is now a double like...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />31 Aug '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />never
+</em>
+</td>
+<td>minor</td>
+<td>proposed</td>
+</tr>
+<tr class='v14 proposed info'>
+<td class='current'>1.4</td>
+<td>
+<b>
+Modifying Plugin Properties After Description
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/modifying-plugin-properties-after-description">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p dir="ltr">&nbsp;</p> <p><strong>Suggested Solution For Plugin Instances</strong></p> <p dir="ltr"><span>The following properties, currently only settable in the describe actions, should be dynamically setable in an instance. </span></p> <ul> <li dir="ltr"> <p dir="ltr"><span>kOfxImageEffectPropSupportsTiles</span></p> </li> <li dir="ltr"><span>kOfxImageEffectOpenGLRenderSupported</span></li> </ul> <p>&nbsp;</p> <p>For example a plugin might support tiles in CPU but not in GPU</p> <p>For example an host might be GPU centric but a driver comes up and break plug-in...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />25 Jul '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />never
+</em>
+</td>
+<td>minor</td>
+<td>proposed</td>
+</tr>
+<tr class='v14 proposed info'>
+<td class='current'>1.4</td>
+<td>
+<b>
+Progress Suite - Documentation to be added
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/progress-suite-document-to-be-added">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>We amend the documentation of progress suite so that it is expected that it can be raised in a modal manner and have a &lsquo;cancel&rsquo; button. Plugins that perform analysis post an appropriate message, raise the progress monitor in a modal manner and should poll to see if processing has been aborted. Any cancellation should be handled gracefully by the plugin (eg: reset analysis parameters...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />19 Jul '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />never
+</em>
+</td>
+<td>major</td>
+<td>proposed</td>
+</tr>
+<tr class='v14 proposed info'>
+<td class='current'>1.4</td>
+<td>
+<b>
+Remove Analysis Pass Cruft
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/analysis-pass-cruft">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p dir="ltr"><span>We removed the concept of analysis pass early on, but the property </span><em>kOfxImageEffectPropInAnalysis</em><span> is still specified, and the documentation still mentions it.</span></p> <p><span>&nbsp;</span></p> <p>&nbsp;</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />19 Jul '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />13 Jun '15
+</em>
+</td>
+<td>minor</td>
+<td>proposed</td>
+</tr>
+<tr class='v14 proposed info'>
+<td class='current'>1.4</td>
+<td>
+<b>
+Render Quality
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/render-quality">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>Render action InArgs property. Draft/Preview is typical for scrubbing, Best&nbsp;is typical for render. These allow a plug-in to take short-cuts for improved performance when the situation allows.</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />19 Jul '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br />13 Jun '15
+</em>
+</td>
+<td>minor</td>
+<td>proposed</td>
+</tr>
+<tr class='v14 proposed info'>
+<td class='current'>1.4</td>
+<td>
+<b>
+User Interface Processing
+</b>
+<br>
+<br>
+<div class='btn-group'>
+<a class="btn btn-xs btn-default" href="/standard_changes/user-interface-processing">View</a>
+</div>
+
+<br>
+<br>
+</td>
+<td class='overview'>
+<p>Note (by Pierre Jasmin): &nbsp;Gary from Genarts was saying this need to be changed. Not the proper way to do this.</p> <p>Gary (2015-04-30): Consulting with the team here, I now think the API functions are OK, but need better documentation of what's supposed to be passed where and when. &nbsp;I'll work on an update. &nbsp;Need an interested host partner to implement. (Assimilate has a version but...</p>
+</td>
+<td>
+<em>
+Last&nbsp;updated:<br />19 Jul '15
+</em>
+<br>
+<em>
+Last&nbsp;commented:<br /> 8 Mar '14
+</em>
+</td>
+<td>minor</td>
+<td>proposed</td>
+</tr>
+</table>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>
