@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Defining Parameters</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch09.html" title="Chapter 9. Effect Parameters"></link>
+      <link rel="prev" href="/documentation/reference/ch09.html" title="Chapter 9. Effect Parameters"></link>
+      <link rel="next" href="/documentation/reference/ch09s03.html" title="Parameter Types"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Defining Parameters</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch09.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 9. Effect Parameters</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch09s03.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="ParametersDefining"></a>
+                        Defining Parameters
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+               A plugin needs to define it's parameters during a describe action. It does this with the
+               <a class="link" href="/documentation/reference/re44.html" title="OfxParameterSuiteV1::paramDefine">
+                  <code class="code">OfxParameterSuiteV1::paramDefine</code>
+               </a>
+               function, which returns a handle to a parameter
+               <span class="emphasis">
+                  <em>description</em>
+               </span>
+               . Parameters cannot currently be defined outside of the plugins describe actions.
+            </p>
+            <p>
+      Parameters are uniquely labelled within a plugin with an ASCII null terminated C-string. This name is not necassarily meant to be end-user readable, various properties are provided to set the user visible labels on the param.
+    </p>
+            <p>
+      All parameters hold properties, though the exact set of properties on a parameter is dependant on the type of the parameter. 
+    </p>
+            <p>
+      A parameter's handle comes in two slightly different flavours. The handle returned inside a plugin's describe action is not an actual instance of a parameter, it is there for the purpose description only. You can only set properties on that handle (eg: label, min/max value, default ...), you cannot get values from it or set values in it. The parameters defined in the describe action will common to all instances of a plugin.
+    </p>
+            <p>
+               The handle returned by
+               <a class="link" href="/documentation/reference/re45.html" title="OfxParameterSuiteV1::paramGetHandle">
+                  <code class="code">OfxParameterSuiteV1::paramGetHandle</code>
+               </a>
+               outside of a describe action will be a working instance of a parameter, you can still set (some) properties of the parameter, and all the get/set value functions are now useable.
+            </p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch09.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch09.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch09s03.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Chapter 9. Effect Parameters </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Parameter Types</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Tree Based Architectures</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch04.html" title="Chapter 4. Image Processing Architectures"></link>
+      <link rel="prev" href="/documentation/reference/ch04s04.html" title="Tiled Rendering"></link>
+      <link rel="next" href="/documentation/reference/ch04s06.html" title="Simpler Architectures"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Tree Based Architectures</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch04s04.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 4. Image Processing Architectures</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch04s06.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="idp11526288"></a>
+                        Tree Based Architectures
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+	The most general compositing hosts allow images to be of any size at any location on our image plane. They also plumb the output
+	of effects into other effects, to create effect trees.
+	When evaluating this tree of effects, a general host will want to render the minimum number of pixels it needs to fill in the
+	final desired image. Typically the top level of this compositing tree is being rendered at a certain project size, for example 
+	PAL SD, 2K film and so on. This is where the RoD/RoI calls come in handy.
+      </p>
+            <p>
+	The host asks the top effect how much picture information it can produce, which in turn asks
+	effects below it their RoDs and so on until leaf effects are reached, which report back up the tree 
+	until the top effect calculates its RoD and reports back to the host. The host typically clips that
+	RoD to its project size.
+      </p>
+            <p>
+	Having determined in this way the window it wants rendered at the top effect, the host asks the top
+	node the regions of interest on each of it's inputs. This again propagates down the effect tree
+	until leaf nodes are encountered. These regions of interest are cached at effect for later use.
+      </p>
+            <p>
+	At this point the host can start rendering, from the bottom of the tree upwards, by asking each
+	effect to fill in the region of interest that was previously specified in the RoI walk. These regions
+	are then passed to the next level up to render and so on.
+      </p>
+            <p>
+	Another complication is tiling. If a host tiles, it will need to walk the tree and perform the RoI calculation 
+	for each tile that it renders.
+      </p>
+            <p>
+	The details may differ on specific hosts, but this is more or less the most generic way compositing hosts
+	currently work.
+      </p>
+            <p>
+	PICTURES
+      </p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch04s04.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch04.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch04s06.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Tiled Rendering </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Simpler Architectures</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

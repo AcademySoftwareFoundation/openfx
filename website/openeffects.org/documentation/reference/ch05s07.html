@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Parameters Mandated In A Context</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch05.html" title="Chapter 5. Image Effect Contexts"></link>
+      <link rel="prev" href="/documentation/reference/ch05s06.html" title="The General Context"></link>
+      <link rel="next" href="/documentation/reference/ch06.html" title="Chapter 6. Thread and Recursion Safety"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Parameters Mandated In A Context</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch05s06.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 5. Image Effect Contexts</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch06.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="ImageEffectContextMandatedParameters"></a>
+                        Parameters Mandated In A Context
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+               The retimer and transition context both mandate a parameter be declared, the double params 'SourceTime' and 'Transition'. The purpose of these parameters is for the host to communicate with the plug-in, they are
+               <span class="emphasis">
+                  <em>not</em>
+               </span>
+               meant to be treated as normal parameters, exposed on the user plug-in's user interface.
+            </p>
+            <p>
+	For example, the purpose of a transition effect is to dissolve in some interesting way between two separate clips,
+	under control of the host application. Typically this is done on systems that edit. The mandated 'Transition' double
+	pseudo-parameter is not a normal one exposed on the plug-in UI, rather it is the way the host indicates how far through 
+	the transition the effect is. For example, think about two clips on a time line based editor with a transition between them,
+	the host would set the value value of the 'Transition' parameter implicitly by how far the frame being rendered is from 
+	the start of the transition, something along the lines of...
+      </p>
+            <div class="blockquote">
+               <blockquote class="blockquote">
+                  <pre class="programlisting">
+	Transition = (currrentFrame - startOfTransition)/lengthOfTransition;</pre>
+               </blockquote>
+            </div>
+            <p>
+	This means that the host is completely responsible for any user interface for that parameter, either implicit
+	(as in the above editing example) or explicit (with a curve). 
+      </p>
+            <p>
+	Similarly with the 'SourceTime' double parameter in the retimer context. It is up to the host to provide a
+	UI for this, either implicitly (say by stretching a clip's length on the time line) or via an explicit curve.
+	Note that the host is not limitted to using a UI that exposes the 'SourceTime' as a curve, alternately it 
+	could present a 'speed' parameter, and integrate that to derive a value for 'SourceTime'.
+      </p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch05s06.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch05.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch06.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">The General Context </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Chapter 6. Thread and Recursion Safety</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes Colour Space Handling |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="1YQUdkBbAMegYqLW94swjaJBd1fd/oGwmbLslL8/JC37nnzF5m8N6BW94DuDuYtZ92EDEoSDp1JXs/j5qm4lFg==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='row'>
+<div class='col-md-offset-2 col-md-8'>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-warning'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+Colour Space handling
+<span class='pull-right'>Proposed</span>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Standard version:</b>
+1.5
+</p>
+<p>
+<b>Minor Change</b>
+</p>
+<label>Subcommittee</label>
+<p><p>Dennis Adams, Phil Barrett<br />- Has been discussed</p></p>
+<label>Overview</label>
+<p>There is little to no information about the colour space (tone curve and RGB chromaticities) in which image sample values are to be interpreted.</p>
+<p>Historically there has been some assumption that the tone curve is probably linear, with a nominal black point at 0.0 and nominal white point at 1.0, but this is not specified and is often not the case.</p>
+<p>Depending on the host, unmodified images presented to plugins may be linear, or "video" (typically Rec.1886, or a simple gamma curve), or "log" (e.g. Cineon log, or a modern log curve such as ARRI LogC), or "HDR" (e.g. Rec.2020) or any number of other curves. The primaries may be Rec.1886, or a larger gamut such as Rec.2020 or ARRI WideGamut. Plugins have no way of knowing what the numbers in the image represent. Similarly hosts have no way of knowing in which colour space(s) (if any) a plugin would like its inputs, nor the colour space of its output image.</p>
+<p>Some plugins won't care what space the images are in. Some however need to know in order to make sense of the data. A lens flare, for example, needs to&nbsp;behave very differently (a) when the input data is linear with highlights well above 1.0 (b) when&nbsp;the input data is log-like with highlights preserved but much lower in the range, (c) when the input data is in a display-referred colour space where highlights have been rolled off to fit under 1.0.</p>
+<p>It may be that some plugins and/or hosts prefer to work with non-RGB primaries, e.g. X'Y'Z'. A mechanism to specify colour spaces could support this.</p>
+<label>Solution</label>
+<p>At first glance I'd suggest</p>
+<ul>
+<li>Define strings to identify well-defined&nbsp;tone curves, and well-defined sets of primary chromaticities. This is necessarily vague since without defining tone curves using&nbsp;formulae we can't offer general support. Chromaticites could be identified precisely as three (x,y) coordinates but that might be too much?</li>
+<li>Add <tt>kOfxImageClipPropToneCurve</tt> and <tt>kOfxImageClipPropPrimaries</tt> properties to clip property sets to identify the colour space of the clip, if known</li>
+<li>Add <tt>kOfxImagePropToneCurve</tt> and <tt>kOfxImagePropPrimaries</tt> properties to image property sets to identify the colour space of the data, if known</li>
+<li>Hosts set these properties where they know the colour space of input clips</li>
+<li>Define a protocol so plugins can request that input clips&nbsp;are converted by the host&nbsp;into a specific colour space</li>
+<li>Define a protocol so plugins can identify&nbsp;the colour space of their output image (during setup time, before rendering)</li>
+</ul>
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-default'>
+<div class='panel-body'>
+<h4 class='text-primary'>Discussion</h4>
+<h5>Comments</h5>
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-305'>
+<div class='content'>
+<p dir="ltr"><span>Here's notes from last meeting -&nbsp;</span></p>
+<p dir="ltr"><span>-&gt; Some &ldquo;simple&rdquo; color space enumeration clip properties could be immediately useful (Log-like [e.g., S-Log, ACEScc], Gamma-like [e.g., Rec.709, Rec.2020], linear 0-1 [needed?], linear HDR [e.g., ACES]).</span></p>
+<p dir="ltr"><span>-&gt; Some &ldquo;detailed&rdquo; color space clip properties could be useful down the road (named gamut [e.g, &ldquo;Rec.709&rdquo;, &ldquo;Rec.2020&rdquo;, &ldquo;ACEScc&rdquo;), named curve [e.g., &ldquo;Rec.709 gamma&rdquo;, &ldquo;HLG&rdquo;, &ldquo;PQ&rdquo;]). Perhaps even primaries coordinates, optional white point. Hard to pass curve definition math though.</span></p>
+<p dir="ltr"><span>-&gt; It would be useful for a plug-in to indicate which simple color spaces it can work in, and hosts converts if possible (e.g., Lift/Gamma/Gain color corrector prefers Log-like or Gamma-like curve and cannot work in Linear). Alternatively, this could be indicated in getClipImage like some other clip properties are. In either case, it is optional and the host does not have to do this conversion.</span></p>
+<p dir="ltr"><span>-&gt; Can a plug-in change the color space of an output clip? Many hosts would not be able to deal with this; can we table for now?</span></p>
+<p><span><span>(Pierre&nbsp;and Fabien add): there is also the topic of color picker - color parameter relation to that </span></span></p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  5:49 pm,   5 Feb 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-9' id='cid-303'>
+<div class='content'>
+<p>I'm no expert on this, but there are very well-defined ways to specify color space now, thanks to OpenColorIO profiles (for example). It seems to me we could piggyback on a standard open profile spec. Input clips would be tagged with their color profile, and the host would specify the desired output profile. Yes, this is very detailed, but anything less isn't really useful IMHO.</p>
+<p>I'm agnostic about whether the spec should provide negotiation between host and plugin for color space. On one hand, if the plugin is colorspace-aware, it can (and should) just convert from/to the host's declared space. On the other hand, if the host is already converting from its format to OFX format, converting colorspace at the same time is more efficient. If the hosts convert, plugins are easier to write ;-) But performance (minimizing conversions) is important.</p>
+</div>
+</div>
+<div class='author text-muted'>
+Gary Oberbrunner |  9:30 am,   1 Feb 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-15' id='cid-302'>
+<div class='content'>
+<p>Thanks for the comments! Unfortunately it looks like I won't be able to join the discussion this evening. But I'd like to respond to some of the comments that have been made so far.</p>
+<p>Pierre says "colourspace is ambiguous". I tried to be unambigious. I shall try again. By "colour space" I specifically mean</p>
+<ol>
+<li>a defined <strong>tone curve</strong> (explicitly or implicitly&nbsp;as two&nbsp;formulae to convert to and from linear)</li>
+<li>and ideally three defined <strong>primary chromaticities</strong> (x,y)</li>
+<li>and possibly a defined <strong>white point</strong> (x,y), e.g. D65</li>
+</ol>
+<p>The tone curve definition encodes the <strong>black and white points</strong> by defining the mapping to/from linear 0.0 and 1.0. This includes&nbsp;<strong>legal-ranging</strong> if that is in effect, by squashing and offsetting.</p>
+<p>The tone curve definition is <strong>independent of the bit depth</strong> of integer image formats, and expresses values scaled so that the maximum code value (255, 1023, 65535 etc) is treated as 1.0.</p>
+<p>I specifically did not use the word "<strong>gamma</strong>" since that is just one way of defining one class of tone curves, and is often inaccurately used.</p>
+<p>As an example of a complete definition, here is a Baselight&nbsp;colour space which has the ST 2084 (a.k.a. Dolby PQ) tone curve, Rec.2020 primaries and a D65 white point. We define it as</p>
+<ul>
+<li>Tone curve formulae (ST 2084):</li>
+</ul>
+<pre style="font-family: Courier, monospace; margin: 10px; background-color: #f3f3d8; border: 1px solid #006600; padding: 20px;">float convertToLinear(float val)
+{
+    float f = max(pow(abs(val), 1.0/78.84375), 0.8359375);
+    return sign(val)*pow((f-0.8359375)/(18.8515625-18.6875*f),6.277394636);
+}
+
+float convertFromLinear(float val)
+{
+    float f = pow(abs(val), 1.0/6.277394636);
+    return sign(val)*pow((18.8515625*f + 0.8359375)/(1.0 + 18.6875*f), 78.84375);
+}
+</pre>
+<p>&nbsp;</p>
+<ul>
+<li>Primaries (Rec.2020): (0.708,0.292), (0.170,0.797), (0.131,0.046)</li>
+<li>White point (D65): (0.3127,0.3290)</li>
+</ul>
+<p>I am not suggesting that OFX need necessarily go this far, and I am certainly not suggesting that we define OFX constants for a large number of supported tone curves, but this should give an indication of the depth of information that is available from some hosts.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>This proposal does not&nbsp;include any mention of <strong>colour correction</strong> descriptions (e.g. CDL, lift/gamma/gain etc), and I would strongly argue that it should not. The proposal is just about definining the colour space of image data passing through OFX plugins.</p>
+<p>"Do we need to start this discussion by [asking] <strong>Is Linear the reference space of OFX?</strong>" - yes I think that would be a great starting question. Baselight assumes this and converts images to linear for OFX, but I would far rather this was made explicit, and/or plugins could have a way to request this behaviour.</p>
+<p>"<strong>Host native LOG</strong> (e.g. FilmLight)" - Baselight is not "natively log". Baselight has a generalised colour space handling mechanism which means that images being processed can be in <em>any</em>&nbsp;defined colour space. That's why we have a&nbsp;deep understanding of this domain and why I have raised this proposal.</p>
+<p>Defining the colour space of <strong>colour parameters</strong> is definitely an issue, and indeed it's something we're only now starting to address in our applications.</p>
+<p>Defining the handling of the <strong>alpha channel</strong> in an RGBA image would be good. I suggest that&nbsp;the only sensible path is to say it is always linear with 0=transparent and 1=opaque.</p>
+<p>Yes this needs to apply to OpenGL <strong>textures</strong> (and any future extensions to OpenCL, CUDA etc as well) as well as to CPU images.</p>
+</div>
+</div>
+<div class='author text-muted'>
+Phil Barrett |  5:18 am,   1 Feb 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-298'>
+<div class='content'>
+<p>&nbsp;&nbsp;<strong>So for Color </strong>discussion item net before this meeting (and I stay out of this one as we have on this list FilmLight, Assimilate, BlackMagic and Sony here - and the last 2 even make cameras). Although as a reminder this started with Phil asking my host is natively LOG, in what color space do I give you images?</p>
+<p>Also thanks to Alexandre, thinking about meta-data,&nbsp; the latest in the parallel world of OFX Meta-Data discussion is Clip Preferences Properties are basically clip associated (or indexed by clip) time-invariant meta-data. Clip Preferences Props happened to be the clip metadata that are defined in the API (given a name). So this becomes how to associate to a clip additional color meta-data with the particularity that this imply a way to set request to have clips converted to a specific color space. So a particular case (like we have for clips versus parameters) that does not fit the meta-data suite model, which I think means that it needs to be a suite where the first purpose of the Color suite is to pass back the ColorSpace wanted&nbsp;to affect the clipGetImage...&nbsp;</p>
+<p>So if a ColorManaged image/clip could have an associated "ColorSpace MetaData collection"&nbsp; (so meta-data added to the base Clip Properties).&nbsp; And by collection I imply that it can be described by a set of values without callbacks.&nbsp; Once you see the world like that, there could be only one clip property ColorManaged or RAW (to mean here ColorManaged = false) in the Clip Preferences Prop. And the Clip Preferences action be a place to set the active ColorSpace MetaData collection (even if this is not a Clip Preferences Property per se). And unlike other types of meta-data I think only the host can populate supported "ColorSpace MetaData Collections" as it would probably be a bad idea for hosts to depend on an effect to convert images for another effect...</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; Something Gary reminded us earlier is this has to work with clipLoadTexture not just clipGetImage. And Pierre (me) adds: &nbsp; OfxStatus (* clipGetImagePlane) in multi-plane suite should also be following this as well on a sub-image basis (e.g reflection.r, reflection.g, reflection.b is of type colour so should I think follow same logic, while a depth image plane would not -or if you like would be tag as gamma 1). </p>
+<p>&nbsp;In Phil's proposal (<a href="colour-space-handling">http://openeffects.org/standard_changes/colour-space-handling</a> )&nbsp; :</p>
+<div>
+<ul>
+<li>Define a protocol so plugins can request that input clips&nbsp;are converted by the host&nbsp;into a specific colour space</li>
+<li>Define a protocol so plugins can identify&nbsp;the colour space of their output image (during setup time, before rendering)</li>
+</ul>
+</div>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; Now the word colorspace is ambiguous to start with (color space as LAB, YUV, XYZ, RGB,&nbsp;&nbsp; color space as "color profile" - sRGB, Adobe RGB, rec 2020,&nbsp;&nbsp; or color space as in Log versus Linear (and by extention linear with gamma - perhaps even with Levels handles for black and white points...).&nbsp; </p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; So before we go too deep here the obvious:</p>
+<blockquote>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; There is not much point in adding a CYMK colorspace.&nbsp; By the absurb if I just said to host just give me all the colorspaces you support as option and I will let user decide - it's likely not to be very productive. <br /> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Most of the time an effect will not care whether an image is in gamma 2.2, sRGB, rec 709,... you have to be a pretty specialized plugin to worry about these distinctions but one might so it's good to support such distinction (yes there can be effects that need to understand color gamut...).&nbsp;<br /> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; To be in gamma 2.2 ballpark or linear(darker) or log(flat) however starts to matter to a lot more to effects. It matters more then to users in the sense that the user might be looking at the LOG file with an sRGB viewer so he does not even see the image as flat. The presence of white and black point only more matters when this as for consequence to remap e.g. 64 to 941&nbsp; to 0-1023 in my back sort of things. Then it has conversion to LOG like effect. </p>
+<p>Follows from that, we are not discussing here color correction&nbsp; etc but a time-invariant property set that affects the clip pixels we will receive. Yes?<br /> In that sense we sort of have variations of lift/gamma/gain (e.g. like CDL, or black point - white point, gamma)... we have typically device dependant Curves with strongly defined chromacities/white points and maybe LUT. I might have the breakdown wrong, but let me try - the goal in that list is to define what type of colorspace for what - not to say there is the equivalent of 4 supported ColorSpace MetaData Collection.</p>
+<p>1. Do we need to start this discussion by Is Linear the reference space of OFX?&nbsp; Is Linear gamma = 1.0 (what is ColorManaged=false) - with black point at 0.0 and white point at 1.0. Isn't it fair to say that most effects if they care, only care about gamma space. So the first collection to support maybe is gamma space and it has one value: gamma. Not lift/gamma/gain...&nbsp; just GammaSpace. In this mode the effect is ignorant of black and white point (64 and 941 in 10 bit basis in example above). If I select this mode I don't expect host to stretch 64-941 to 0-1023.&nbsp; Similarly if I say ColorManaged = false I mean it - that is if I draw a vertical greyscale ramp of 0 to 1023 in an image that is 1024 pixels high, the next effect will get 0-1023 (as opposed to get a color transform in my back because the host thinks it's in gamma 2.2 color space or something and assumed because I said ColorManaged=false that I must be linear and need to be converted. </p>
+<p>2. This does not address 2 basic things:&nbsp; Host native LOG (e.g. FilmLight) who would want to support that and to give another example, in Sony Vegas one can work in 32b Video levels or 0 to 1.0.&nbsp; I am not sure if these two things can be combined in a Cineon/DPX like model...&nbsp; (except LOG to LOG, LOG to Gamma Space, Gamma Space to LOG, Gamma Space to Gamma Space maybe?) - this adds black and white point support to the Color Image Meta Data. This could also have more descriptors (so be like lift/gamma/gain or CDL (same operators in different order - not commutative?)). Not my job to desnarl but obviously we are still somewhere where all this can be described by a small set of parameters. This does not have to be one MetaData ColorSpace collection, I am just defining an example category of ColorSpace. Now I am &nbsp;throwing ASC CDL and LOG in same sentence (A reference color correction versus a technical descriptor about the image).In the regular metadata suite scenario there could be a CDL thing but it would not ask the host to modify how it gets image to effect etc, it's just meta-data.<span><br /> </span></p>
+<p>3. Then there is a whole space of nuances (what personally I call normally color profiles ). Now we are in domain of specifics like Adobe RGB, sRGB, rec 601, rec 709, etc.&nbsp; Assuming all this is in RGB(A), then shouldn't this be a mode that has an associated option menu. Unless you write the NTSC color safe plugin sort of thing it's not always needed, we have reached a level of specialized usage. This already becomes complicated, does a plugin need to collect a list from host and filter out the ones they know...&nbsp;</p>
+<p>4. And then we can have an even more dense thing. This might include not working in RGB(A) and the chromacities, tonal curves / "roll off" and what not become critical. This is about my pay grade here :)&nbsp; --&nbsp; ACES etc</p>
+</blockquote>
+<p><span>&nbsp;</span></p>
+<p>Additional Notes:</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Unlike other "metadata" types, because there is an implied getImage converted,&nbsp; in this case I can't imagine someone else than the host populating that. So that tells us that this maybe does not fit with the MetaData suite, is it's own suite.</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Under that hypothesis, such&nbsp;suite would do the following work:</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; - At description time indicate (hand-shake) support for ColorSpace suite</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; - Pre-Render associate a particular ColorSpace collection by name to a clip (default clip property is RAW==NULL or hosts populate a Project preference?). There is only one clip property, color managed or not and there is ColorSuite passing back ClipHandle with the ColorSpace MetaData Collection set? </p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; - As for implementation, would an host populate the Effects Controls somehow with an option menu for input clips I said are color manageable?&nbsp; Or it the effect responsible for that and then once we introduced color profiles and actual color spaces does this assume the effect can consult a "dictionary" of host supported ColorSpace/Profile Image MetaData Collections?&nbsp; So then a need to walk through all ColorSpace available.</p>
+<p>Does effect need to create parameters and slave them to a ColorSpace MetaData set?&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; - If I create a color parameter and host provides a color picker as a bonus do I always get RGB values internally from my color parameter and are they transformed by host or we need the pixel level equivalent getPixel instead of getImage sort of thing? That is what value do I get if my input is linear and my output is sRGB.</p>
+<p>*: Sidecar question as I never used that feature, is if the Parametric Parameter a place to store LUTs.?</p>
+<p><br /> *: Just discussing Image Colors, there might be all kinds of meta-data that are related to color, example someone might figure a nice way to forward to me exposure entry in an EXIF or something. But then it's not an Image conversion/transform, it's just a or like a parameter (often something you could capture and write as parameter in the effect). So it does not fit this-here.</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  3:39 am,  31 Jan 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-277'>
+<div class='content'>
+<p>Some more&nbsp;notes- &nbsp;in general here we only care to have an approximation of gamma, for example linear, sRGB/gamma 2.2, log. &nbsp;So we would be care a bit but not that much.</p>
+<p>The exception is our color matching tools, that would benefit a lot if the two clips could be automatically brought by host&nbsp;in same basis (example matching an h264 to a SLog)...&nbsp;</p>
+<p>Color parameters would benefit from an additional hint so the values are in right space (thinking about host that display a color picker also).</p>
+<p>Color space properties could perhaps be a parameter populated by host, a bit like in Spatial Format - the example of Nuke Spatial Format parameter. This way an host can populate that with what it supports instead of plugins understanding what it means.</p>
+<p>I would think that maybe we might&nbsp;need a suite that has conversion methods abstracted to: &nbsp;e.g. Gamma 1.0 (linear) to ColorFormat (for example rec2020 selected in for example in a color space property menu). &nbsp;Like this effect can ask linear for inputs and pass result through host supplied conversion so everything stays in same colorspace on host side and plugin does not need to know about every possible Color Format, just call toColorFormat.&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  1:02 pm,  28 Sep 2016
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-14' id='cid-276'>
+<div class='content'>
+<p><span>Great proposal, well thought-out.</span></p>
+<p><span>Long ago at an OFXA meeting someone (Gary @ GenArts?) brought up adding a color space property for images and my first comment was "no way it could work because there are so many and no host and plug-in could understand all of them" so the request got refined to "we'd at least like to know the primaries and if the tone curve is log-like (log or gamma with neutral gray near-ish to 0.5) or linear (neutral gray around 0.18)" which is really quite reasonable. Today I'd even expand "linear-like" to be SDR (mostly within 0.0 to 1.0) or HDR (can go much above 1.0 for HDR). You could get more specific (Gamma value, Cineon, S-Log, PQ, REDgamma4) using a secondary property for those host/plug-ins that really know. Note that hosts that let the user apply arbitrary LUTs really don't know what color space they are processing plug-ins in. That covers the tone curve side of things. Then add a &ldquo;primaries&rdquo; property, which could be &ldquo;rec709&rdquo;, &ldquo;rec2020&rdquo;, &ldquo;dcip3&rdquo;, &ldquo;acesap1&rdquo;, &ldquo;sgamut3cine&rdquo;, &ldquo;DRAGONcolor&rdquo;, etc. Again, perhaps more than most hosts and plug-ins could agree upon. Would they be better as CIE xy coordinates or something much simpler (a kind of S,M,L,XL range like &ldquo;SD&rdquo;, &ldquo;HD&rdquo;, &ldquo;UHD&rdquo;, &ldquo;ACES&rdquo;)? What exactly would plug-ins be doing with the primaries indication? We probably also need to think about color space for color-based parameters (which most hosts expose as color pickers) &ndash; traditionally they have been sRGB but maybe they need some kind of color space handling as well (or at least understood to be in the same color space as the images?).</span></p>
+<p><span>In addition to a property indicating what color space images are in, we&rsquo;d like a way for a plug-in to indicate that it can or can&rsquo;t handle HDR (not sure if this should be opt-in or opt-out). Then the host can do range reduction (typically by converting to a log curve) to bring things into SDR range. For example, we have an HSL Adjust plug-in that hates HDR. Another example is a Lift/Gamma/Gain color corrector &ndash; they are meant to be run on images with a log-like tone curve. If all we had was an image property saying these were HDR then the plug-in could apply a log curve before and inversely after processing, but the host really knows more about what to do than a plug-in. A specific example: if the host is doing ACES it would convert to ACESproxy.</span></p>
+<p>In any case, Sony is interested in this extension.</p>
+</div>
+</div>
+<div class='author text-muted'>
+Dennis Adams | 10:07 am,  28 Sep 2016
+</div>
+</div>
+
+</div>
+</div>
+
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

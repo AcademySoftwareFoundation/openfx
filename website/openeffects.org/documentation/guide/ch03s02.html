@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Plug-in Binaries and Required Symbols</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.77.1"></meta>
+      <link rel="home" href="/documentation/guide/index.html" title="OpenFX Plug-in API Programming Guide"></link>
+      <link rel="up" href="/documentation/guide/ch03.html" title="Chapter 3. The Generic OFX Plug-in Architecture"></link>
+      <link rel="prev" href="/documentation/guide/ch03.html" title="Chapter 3. The Generic OFX Plug-in Architecture"></link>
+      <link rel="next" href="/documentation/guide/ch03s03.html" title="Identifying, Versioning and Defining an OFX Plug-in"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <table>
+            <tr>
+               <td>
+                  <ul>
+                     <li>
+                        <a href="/">
+                           <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+                        </a>
+                     </li>
+                     <li>
+                        <a href="/">
+                           Back to Main Site
+                           <span class="glyph"></span>
+                        </a>
+                     </li>
+                     <li>
+                        <a href="/documentation/guide">Programming Guide</a>
+                     </li>
+                     <li>
+                        <a href="/documentation/reference">Programming Reference</a>
+                     </li>
+                     <li>
+                        <a href="/documentation/api_doc">API Reference</a>
+                     </li>
+                  </ul>
+               </td>
+            </tr>
+         </table>
+      </div>
+      <div class="wrapper" id="guide">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Plug-in Binaries and Required Symbols</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/guide/ch03.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 3. The Generic OFX Plug-in Architecture</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/guide/ch03s03.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="idp140729791792112"></a>
+                        Plug-in Binaries and Required Symbols
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+               OFX plug-ins are distributed as dynamically loadable shared libraries, the exact format is dependant upon the host operating system and is defined below. Each such binary can contain one or more OFX plug-ins .The whole set of OFX APIs bootstrap from two symbols inside a plug-in, these are
+               <code class="function">OfxGetNumberOfPlugins</code>
+               and
+               <code class="function">OfxGetPlugin.</code>
+            </p>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp140729791794352"></a>
+                           OfxGetNumberOfPlugins
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <pre class="programlisting">int OfxGetNumberOfPlugins(void)</pre>
+               This function returns the number of plug-ins inside the given binary. This will be the first function called by a host after initially loading the binary.
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp140729791795808"></a>
+                           OfxGetPlugin
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <pre class="programlisting">OfxPlugin * OfxGetPlugin(int nth)</pre>
+               This function returns an
+               <span class="structname">OfxPlugin</span>
+               struct which defines the
+               <code class="varname">nth</code>
+               plug-in to the host. The data structure returned should point to a static chunk of memory in the plug-in, as the host will make no attempt to free the returned data structure when the plug-in is unloaded. Typically this will be the called multiple times by the host, once for each plug-in that the plug-in says it contains.
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/guide/ch03.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/guide/ch03.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/guide/ch03s03.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Chapter 3. The Generic OFX Plug-in Architecture </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/guide/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Identifying, Versioning and Defining an OFX Plug-in</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

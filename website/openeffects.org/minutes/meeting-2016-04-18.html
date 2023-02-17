@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Minutes Meeting 2016 04 18 |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="NaVlN/Ek2X+Znz/hL040wHY9AjmCvdRNF2HrL0l4NLgbvw2EVxDUUCxAfQxbfI8UIx12fNvA8q/ZYP9CXCk1gw==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_minutes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='panel panel-default'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+Association General Meeting
+<div class='pull-right'>
+UNPUBLISHED
+</div>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Date:</b>
+2016-04-18
+</p>
+<p>
+<b>Location:</b>
+Las Vegas Convention Center, Las Vegas NV
+</p>
+<label>Members Attending</label>
+<p><p>Boris Yamnitsky - Boris</p>
+<p>Hiew Litt Teen - Blackmagic Design</p>
+<p>Jan-Paul Smith - Imagineer Systems</p>
+<p>Jim Tierney - Digital Anarchy</p>
+<p>Peter Huisma - Assimilate</p>
+<p>Peter Litwinowicz - RE:Vision Effects&nbsp;&nbsp;&nbsp;</p>
+<p>Pierre Jasmin - RE:Vision Effects</p>
+<p>Rohit Gupta - Blackmagic Design</p>
+<p>Stephen Bash - GenArts</p>
+<p>Vivek Vedagiri - Blackmagic Design</p></p>
+<h3>Minutes</h3>
+<hr>
+<p><p>Discussion of holding a technical meeting at IBC with online component. Some were concerned IBC is a busy time and might not be conducive to technical discussions. Agreed anyway to try setting something up and send out invitation emails before IBC.</p>
+<p>Discussion of implementing reference host and reference plugins. Concerns were raised regarding validating reference implementations, but some pointed out well targeted (and documented) sample code should be validated by inspection.&nbsp; Much of the remaining discussion focused on sample plugins, with the recommendation that member organizations should donate examples that demonstrate problems they have run into in the past.&nbsp; Code samples should also include a discussion of the behavior they are trying to test.&nbsp; The existing example plugins hosted on GitHub were discussed and the observation made that it can be difficult to contribute to that repository. Black Magic offered to provide example plug-ins for publishing on the website of the Association.</p>
+<p>Discussion of creating a certification process. It was pointed out certification has been proposed and dismissed in the past.&nbsp; Rather than a rigorous certification process, the concept of host support matrices (similar to HTML5 browser support tables) was brought up (see e.g. http://caniuse.com/#feat=canvas ). A plug-in vendor could create a sample plug-in and test that against each host.</p>
+<p>It was pointed out that publishing new content on the website / Github of the Association is rather hard. We need to make publishing simpler. No explicit action item.</p>
+<p>Vote to continue current directors was unanimous.</p>
+<p>Pierre Jasmin took an action to audit Google Group Membership list to make sure meeting announcements reach all member organizations.</p>
+<p>Discussion of possibly making membership dues optional. It was pointed out that two open source OFX hosts are already non-paying members.</p></p>
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/minutes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to minute list</a>
+</div>
+
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

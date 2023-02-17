@@ -1,0 +1,482 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Types of Double Parameters</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch09.html" title="Chapter 9. Effect Parameters"></link>
+      <link rel="prev" href="/documentation/reference/ch09s08.html" title="Parameter Properties Whose Type Vary"></link>
+      <link rel="next" href="/documentation/reference/ch09s10.html" title="Parametric Parameters"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Types of Double Parameters</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch09s08.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 9. Effect Parameters</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch09s10.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="ParameterPropertiesDoubleTypes"></a>
+                        Types of Double Parameters
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+               Double parameters can be used to represent a variety of data, by flagging what a double parameter is representing, a plug-in allows a host to represent to the user a more appropriate interface than a raw numerical value. Double parameters have the
+               <a class="link" href="/documentation/reference/re193.html" title="kOfxParamPropDoubleType">
+                  <code class="code">kOfxParamPropDoubleType</code>
+               </a>
+               property, which gives some meaning to the value. This can be one of...
+            </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypePlain</code>
+                     - parameter has no special interpretation,
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypeAngle</code>
+                     - parameter is to be interpretted as an angle,
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypeScale</code>
+                     - parameter is to be interpretted as a scale factor,
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypeTime</code>
+                     - parameter represents a time value (1D only),
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypeAbsoluteTime</code>
+                     - parameter represents an absolute time value (1D only),
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypeX</code>
+                     - size in the X dimension, in canonical coords (1D double only),
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypeXAbsolute</code>
+                     - positing in the X axis, in canonical coords (1D double only)
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypeY</code>
+                     - size in the Y dimension, in canonical coords (1D double only),
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypeYAbsolute</code>
+                     - positing in the Y axis, in canonical coords (1D double only)
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypeXY</code>
+                     - 2D size, in canonical coords (2D double only),
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypeXYAbsolute</code>
+                     - 2D position, in canonical coords. (2D double only)
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypeNormalisedX</code>
+                     - normalised size with respect to the project's X dimension (1D only),
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypeNormalisedXAbsolute</code>
+                     - normalised absolute position on the X axis (1D only)
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypeNormalisedY</code>
+                     - normalised size wrt to the project's Y dimension(1D only),
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypeNormalisedYAbsolute</code>
+                     - normalised absolute position on the Y axis (1D only)
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypeNormalisedXY</code>
+                     - normalised to the project's X and Y size (2D only),
+                  </li>
+                  <li class="listitem">
+                     <code class="code">kOfxParamDoubleTypeNormalisedXYAbsolute</code>
+                     - normalised to the projects X and Y size, and is an absolute position on the image plane.
+                  </li>
+               </ul>
+            </div>
+            <p>
+    </p>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="kOfxParamDoubleTypePlain"></a>
+                           Plain Double Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  Double parameters with their
+                  <a class="link" href="/documentation/reference/re193.html" title="kOfxParamPropDoubleType">
+                     <code class="code">kOfxParamPropDoubleType</code>
+                  </a>
+                  property set to
+                  <code class="code">kOfxParamDoubleTypePlain</code>
+                  are uninterpretted. The values represented to the user are what is reported back to the effect when values are retrieved. 1, 2 and 3D parameters can be flagged as
+                  <code class="code">kOfxParamDoubleTypePlain</code>
+                  , which is the default.
+               </p>
+               <p>
+      For example a physical simulation plugin might have a 'mass' double parameter, which is in kilograms, which should be displayed and used as a raw value.
+    </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="kOfxParamDoubleTypeAngle"></a>
+                           Angle Double Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  Double parameters with their
+                  <a class="link" href="/documentation/reference/re193.html" title="kOfxParamPropDoubleType">
+                     <code class="code">kOfxParamPropDoubleType</code>
+                  </a>
+                  property set to
+                  <code class="code">kOfxParamDoubleTypeAngle</code>
+                  are interpretted as angles. The host could use some fancy angle widget in it's interface, representing degrees, angles mils whatever. However, the values returned to a plugin are always in degrees. Applicable to 1, 2 and 3D parameters.
+               </p>
+               <p>
+      For example a plugin that rotates an image in 3D would declare a 3D double parameter and flag that as an angle parameter and use the values as Euler angles for the rotation.
+    </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="kOfxParamDoubleTypeScale"></a>
+                           Scale Double Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  Double parameters with their
+                  <a class="link" href="/documentation/reference/re193.html" title="kOfxParamPropDoubleType">
+                     <code class="code">kOfxParamPropDoubleType</code>
+                  </a>
+                  property set to
+                  <code class="code">kOfxParamDoubleTypeScale</code>
+                  are interpretted as scale factors. The host can represent these as 1..100 percentages, 0..1 scale factors, fractions or whatever is appropriate for its interface. However, the plugin sees these as a straight scale factor, in the 0..1 range. Applicable to 1, 2 and 3D parameters.
+               </p>
+               <p>
+      For example a plugin that scales the size of an image would declare a 'image scale' parameter and use the raw value of that to scale the image.
+    </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="kOfxParamDoubleTypeTime"></a>
+                           Time Double Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  Double parameters with their
+                  <a class="link" href="/documentation/reference/re193.html" title="kOfxParamPropDoubleType">
+                     <code class="code">kOfxParamPropDoubleType</code>
+                  </a>
+                  property set to
+                  <code class="code">kOfxParamDoubleTypeTime</code>
+                  are interpretted as a time. The host can represent these as frames, seconds, milliseconds, millenia or whatever it feels is appropriate. However, a visual effect plugin sees such values in 'frames'. Applicable only to 1D double parameters. It is an error to set this on any other type of double parameter.
+               </p>
+               <p>
+      For example a plugin that does motion blur would have a 'shutter time' parameter and flags that as a time parameter. The value returned would be used as the length of the shutter, in frames.</p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="kOfxParamDoubleTypeAbsoluteTime"></a>
+                           Absolute Time Double Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  Double parameters with their
+                  <a class="link" href="/documentation/reference/re193.html" title="kOfxParamPropDoubleType">
+                     <code class="code">kOfxParamPropDoubleType</code>
+                  </a>
+                  property set to
+                  <code class="code">kOfxParamDoubleTypeAbsoluteTime</code>
+                  are interpretted as an absolute time from the begining of the effect. The host can represent these as frames, seconds, milliseconds, millenia or whatever it feels is appropriate. However, a plugin sees such values in 'frames' from the beginning of a clip. Applicable only to 1D double parameters. It is an error to set this on any other type of double parameter.
+               </p>
+               <p>
+      For example a plugin that stabalises all the images in a clip to a specific frame would have a 'reference frame' parameter and declare that as an absolute time parameter and use its value to fetch a frame to stablise against.
+    </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="ParameterPropertiesDoubleTypesSpatial"></a>
+                           Spatial Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  Parameters that can represent a size or position are essential. To that end there are several values of the
+                  <a class="link" href="/documentation/reference/re193.html" title="kOfxParamPropDoubleType">
+                     <code class="code">kOfxParamPropDoubleType</code>
+                  </a>
+                  that say it should be interpretted as a size or position, in either one or two dimensions.
+               </p>
+               <p>
+                  The original OFX API only specifed
+                  <a class="link" href="ch09s09.html#ParameterPropertiesDoubleTypesNormalised" title="Spatial Normalised Double Parameters">normalised</a>
+                  parameters, this proved to be somewhat more of a problem than expected. With the 1.2 version of the API,
+                  <a class="link" href="ch09s09.html#ParameterPropertiesDoubleTypesStrictlySpatial" title="Spatial Double Parameters">spatial</a>
+                  parameters were introduced. Ideally these should be used and the normalised parameter types should be deprecated.
+               </p>
+               <p>
+                  Plugins can check
+                  <a class="link" href="/documentation/reference/re228.html" title="kOfxPropAPIVersion">kOfxPropAPIVersion</a>
+                  to see if these new parameter types are supported, in hosts with version 1.2 or greater they will be.
+               </p>
+               <p>
+                  See the section on
+                  <a class="link" href="/documentation/reference/ch07.html" title="Chapter 7. Coordinate Systems">coordinate systems</a>
+                  to understand some of the terms being discussed.
+               </p>
+               <div class="section">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h4 class="title">
+                              <a id="ParameterPropertiesDoubleTypesStrictlySpatial"></a>
+                              Spatial Double Parameters
+                           </h4>
+                        </div>
+                     </div>
+                  </div>
+                  <p>
+                     These parameter types represent a size or position in one or two dimensions in
+                     <a class="link" href="ch07.html#CanonicalCoordinates" title="Canonical Coordinates">Canonical Coordinate</a>
+                     . The host and plug-in get and set values in this coordinate system. Scaling to
+                     <a class="link" href="ch07.html#PixelCoordinates" title="Pixel Coordinates">Pixel Coordinate</a>
+                     is the reponsibility of the effect.
+                  </p>
+                  <p>
+                     The default value of a spatial parameter can be set in either a normalised coordinate system or the canonical coordinate system. This is controlled by the
+                     <a class="link" href="/documentation/reference/re188.html" title="kOfxParamPropDefaultCoordinateSystem">kOfxParamPropDefaultCoordinateSystem</a>
+                     on the parameter descriptor.
+                  </p>
+                  <p>
+      Parameters can choose to be spatial in several ways...
+      </p>
+                  <div class="itemizedlist">
+                     <ul class="itemizedlist" style="list-style-type: disc; ">
+                        <li class="listitem">
+                           <code class="code">kOfxParamDoubleTypeX</code>
+                           - size in the X dimension, in canonical coords (1D double only),
+                        </li>
+                        <li class="listitem">
+                           <code class="code">kOfxParamDoubleTypeXAbsolute</code>
+                           - positing in the X axis, in canonical coords (1D double only)
+                        </li>
+                        <li class="listitem">
+                           <code class="code">kOfxParamDoubleTypeY</code>
+                           - size in the Y dimension, in canonical coords (1D double only),
+                        </li>
+                        <li class="listitem">
+                           <code class="code">kOfxParamDoubleTypeYAbsolute</code>
+                           - positing in the Y axis, in canonical coords (1D double only)
+                        </li>
+                        <li class="listitem">
+                           <code class="code">kOfxParamDoubleTypeXY</code>
+                           - 2D size, in canonical coords (2D double only),
+                        </li>
+                        <li class="listitem">
+                           <code class="code">kOfxParamDoubleTypeXYAbsolute</code>
+                           - 2D position, in canonical coords. (2D double only).
+                        </li>
+                     </ul>
+                  </div>
+                  <p>
+    </p>
+               </div>
+               <div class="section">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h4 class="title">
+                              <a id="ParameterPropertiesDoubleTypesNormalised"></a>
+                              Spatial Normalised Double Parameters
+                           </h4>
+                        </div>
+                     </div>
+                  </div>
+                  <p>
+                     Ideally, normalised parameters should be deprecated and no longer used if
+                     <a class="link" href="ch09s09.html#ParameterPropertiesDoubleTypesSpatial" title="Spatial Parameters">spatial</a>
+                     parameters are available.
+                  </p>
+                  <p>
+                     There are several values of the
+                     <a class="link" href="/documentation/reference/re193.html" title="kOfxParamPropDoubleType">
+                        <code class="code">kOfxParamPropDoubleType</code>
+                     </a>
+                     that say it should be interpretted as a size or position. These are expressed and proportional to the current project's size. This will allow the parameter to scale cleanly with project size changes and to be represented to the user in an appropriate range.
+                  </p>
+                  <p>
+      For example, the sensible X range of a visual effect plugin is the project's width, say 768 pixels
+      for a PAL D1 definition video project. The user sees the parameter as 0..768, the effect sees it as 0..1. So if
+      the plug-in wanted to set the default value of an effect to be the centre of the image, it would flag a 2D 
+      parameter as normalised and set the defaults to be 0.5. The user would see this in the centre of the
+      image, no matter the resolution of the project in question. The plugin would retrieve the parameter as 0..1 and scale
+      it up to the project size to size to use.
+    </p>
+                  <p>
+      Parameters can choose to be normalised in several ways...
+      </p>
+                  <div class="itemizedlist">
+                     <ul class="itemizedlist" style="list-style-type: disc; ">
+                        <li class="listitem">
+                           <code class="code">kOfxParamDoubleTypeNormalisedX</code>
+                           - normalised size wrt to the project's X dimension (1D only),
+                        </li>
+                        <li class="listitem">
+                           <code class="code">kOfxParamDoubleTypeNormalisedXAbsolute</code>
+                           - normalised absolute position on the X axis (1D only)
+                        </li>
+                        <li class="listitem">
+                           <code class="code">kOfxParamDoubleTypeNormalisedY</code>
+                           - normalised size wrt to the project's Y dimension(1D only),
+                        </li>
+                        <li class="listitem">
+                           <code class="code">kOfxParamDoubleTypeNormalisedYAbsolute</code>
+                           - normalised absolute position on the Y axis (1D only)
+                        </li>
+                        <li class="listitem">
+                           <code class="code">kOfxParamDoubleTypeNormalisedXY</code>
+                           - normalised to the project's X and Y size (2D only),
+                        </li>
+                        <li class="listitem">
+                           <code class="code">kOfxParamDoubleTypeNormalisedXYAbsolute</code>
+                           - normalised to the projects X and Y size, and is an absolute position on the image plane.
+                        </li>
+                     </ul>
+                  </div>
+                  <p>
+    </p>
+                  <p>
+                     See the section on
+                     <a class="link" href="/documentation/reference/ch07.html" title="Chapter 7. Coordinate Systems">coordinate systems</a>
+                     on how to scale between normalised, cannonical and pixel coordinates.
+                  </p>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="ParameterPropertiesDoubleTypesDefaultsAndAll"></a>
+                           Double Parameters Defaults, Increments, Mins and Maxs
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+      In all cases double parameters' defaults, minimums and maximums are specified in the same space as the parameter, as is the increment in all cases but normalised parameters.
+    </p>
+               <p>
+      Normalised parameters specify thier increments in cannonical coordinates, rather than in normalised coordinates. So an increment of '1' means 1 pixel, not '1 project width', otherwise sliders would be a bit wild.
+    </p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch09s08.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch09.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch09s10.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Parameter Properties Whose Type Vary </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Parametric Parameters</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes 238 |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="XYL/bBDIkEhzxrV3SDwAGwPHVOBN32UmWs0jSB77ZUxzmJfftvydZ8YZ95o8DrvPVucgpRSiQ8SUzDclC6pkdw==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='row'>
+<div class='col-md-offset-2 col-md-8'>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-warning'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+Clip Preferences and Temporal Invariance
+<span class='pull-right'>Proposed</span>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Standard version:</b>
+2.0
+</p>
+<p>
+<b>Major Change</b>
+</p>
+<label>Subcommittee</label>
+<p></p>
+<label>Overview</label>
+<p>Several aspects of the API were, in their original conception, perceived to be fixed for the whole temporal duration of an effect, and generally under the control of the application. This, unfortunately, is not true, and has caused problems for various plug-in hosts and developers.</p>
+<p>Initially this consisted of what pixel formats and data types were present on input clips and how they should be munged for the plugin, thus the the clip preferences action. Various other properties that were thought to be temporally invariant were added to the action.</p>
+<p>The changes suggested here would lead to the death of the clip preferences action.</p>
+<h3 id="data_formats">Data Formats</h3>
+<p>A plug-in still needs to specify the data format on it accepts data in and what it outputs. To this end. This should be done by a new kOfxImageEffectActionGetPixelFormats action. This would be similar to the current kOfxImageEffectActionGetClipPreferences action, except that&#8230;.</p>
+<ul>
+<li> it can be called per frame</li>
+<li> the inargs include the effect time to calculate the data format at,</li>
+<li> the out args only consist of the properties to indicate pixel type and component type.</li>
+</ul>
+<p>This needs to be worked in with the suggested plane extensions in a consistent way.</p>
+<p>A corresponding call is needed in the image effect suite, that reports the data format of a clip at a specific time, something like clipGetPixelFormats</p>
+<p>A property should be available on plug-in and host indicating if they support per frame data formats. If not, the behaviour is the equivalent of the old API.</p>
+<p>Note that, as they can now vary with time, we should then remove the following properties from clip, as they need to be fetched at a time via the clipGetPixelFormats,</p>
+<ul>
+<li> kOfxImageEffectPropComponents</li>
+<li> kOfxImageEffectPropPixelDepth</li>
+<li> kOfxImageClipPropUnmappedPixelDepth</li>
+<li> kOfxImageClipPropUnmappedComponents</li>
+</ul>
+<h3 id="temporally_invariant_attributes">Temporally Invariant Attributes</h3>
+<p>Some effect attributes are temporally invariant, these are the remainder of the properties of the clip preferences argument, being&#8230;.</p>
+<ul>
+<li> the frame rate,</li>
+<li> the field order,</li>
+<li> whether the effect can be continuously sampled,</li>
+<li> whether the effect is frame varying.</li>
+</ul>
+<p>This could be done in one of two ways, either by another action, which the host calls when it needs to, or by having properties on the effect instance that are set by the plug-in in response to parameter changes.</p>
+<label>Solution</label>
+
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-default'>
+<div class='panel-body'>
+<h4 class='text-primary'>Discussion</h4>
+<h5>Comments</h5>
+<div class='well well-sm'>
+<div class='comment user-14' id='cid-270'>
+<div class='content'>
+<p>"munged"? Do you mean "managed"? I hope not munged: http://whatis.techtarget.com/definition/munge</p>
+</div>
+</div>
+<div class='author text-muted'>
+Dennis Adams | 11:49 am,  25 Aug 2016
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-43' id='cid-269'>
+<div class='content'>
+<p><strong>There is no mention about the pixel aspect ratio. Some image sequences may contain in rare cases images with&nbsp;varying pixel aspect ratio</strong></p>
+</div>
+</div>
+<div class='author text-muted'>
+Alexandre | 11:28 am,  25 Aug 2016
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-241'>
+<div class='content'>
+<p>(Pierre Jasmin):&nbsp; I can conceive a system that supports for example dropping an effects for the duration of a video track that is made of different clips with different properties. As a result the attributes including temporal ones could be changing over time. Is there really a need for per frame evaluation here or we only have to deal with "cuts" in terms of Attributes? If it's only cuts seems the individual cuts should return time in local effects time (starting at 0) and the Timeline suite support returning time in timeline domain. No?</p>
+<p>to do: Need an example of "per frame" potential&nbsp; meaning</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  3:13 pm,   6 Jun 2015
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-0' id='cid-223'>
+<div class='content'>
+<ul>
+<li> Pierre Jasmin : Give me an example where the pixel depth, components,&#8230; would need to vary over time</li>
+<li> Bruno Nicoletti : It's not a case about needing to, it is whether the host behaves that way. For example in Nuke, you can easily have a node with different sets of image data available at different times. I believe that Fusion is similar.</li>
+<li> Pierre Jasmin : In some app it's possible to have effective frame rate vary over time (e.g. after effects api - local time step vs time step)</li>
+<li> Bruno Nicoletti : not all aspects of all applications need to be replicated, a variable frame rate is probably applicable to only a very few apps, but I could be wrong.</li>
+</ul>
+</div>
+</div>
+<div class='author text-muted'>
+unattributed |  9:49 am,   8 Mar 2014
+</div>
+</div>
+
+</div>
+</div>
+
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

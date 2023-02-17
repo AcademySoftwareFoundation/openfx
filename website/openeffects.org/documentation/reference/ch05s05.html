@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>The Retimer Context</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch05.html" title="Chapter 5. Image Effect Contexts"></link>
+      <link rel="prev" href="/documentation/reference/ch05s04.html" title="The Paint Context"></link>
+      <link rel="next" href="/documentation/reference/ch05s06.html" title="The General Context"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">The Retimer Context</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch05s04.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 5. Image Effect Contexts</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch05s06.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="kOfxImageEffectContextRetimer"></a>
+                        The Retimer Context
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+	The retimer context is for effects that change the length of a clip by interpolating frames 
+	from the source clip to create an inbetween output frame.
+      </p>
+            <p>
+	In this context, a plugin has the following mandated objects...
+	</p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">an input clip names 'Source'</li>
+                  <li class="listitem">an output clip named 'Output'</li>
+                  <li class="listitem">
+                     a 1D double parameter named 'SourceTime' (see
+                     <a class="link" href="/documentation/reference/ch05s07.html" title="Parameters Mandated In A Context">Mandated Parameters</a>
+                     )
+                  </li>
+               </ul>
+            </div>
+            <p>
+      </p>
+            <p>
+	Any other input clips that are specified must be optional.
+      </p>
+            <p>
+	The 'SourceTime' parameter cannot be labelled, positioned or controlled by the plug-in in anyway,
+	it can only have it's value read. Its value is how the source time to maps to the output time. So if the output time 
+	is '3' and the 'SourceTime' parameter returns 8.5 at this time, the resulting image should be an interpolated
+	between source frames 8 and 9.
+      </p>
+            <p>
+	The pixel preferences action is constrained in this context by the following,
+	</p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">the pixel depths of the "Source" and "Output" clips will always be the same,</li>
+                  <li class="listitem">the component type of "Source" and "Output" will always be the same,</li>
+                  <li class="listitem">a plugin cannot change any of the pixel preferences of any of the clips.</li>
+               </ul>
+            </div>
+            <p>
+      </p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch05s04.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch05.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch05s06.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">The Paint Context </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> The General Context</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

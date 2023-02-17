@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>OfxParameterSuiteV1</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch15s05.html" title="Parameters Suite"></link>
+      <link rel="prev" href="/documentation/reference/ch15s05.html" title="Parameters Suite"></link>
+      <link rel="next" href="/documentation/reference/re44.html" title="OfxParameterSuiteV1::paramDefine"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">
+                     <span class="type">OfxParameterSuiteV1</span>
+                  </th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch15s05.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Parameters Suite</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re44.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="refentry">
+            <a id="OfxParameterSuiteV1"></a>
+            <div class="titlepage"></div>
+            <div class="refnamediv">
+               <h2>Name</h2>
+               <p>
+                  <code class="function">OfxParameterSuiteV1</code>
+                  — The OFX suite used to define and manipulate user visible parameters
+               </p>
+            </div>
+            <div class="refsynopsisdiv">
+               <h2>Synopsis</h2>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">
+#include "ofxParam.h"
+typedef struct OfxParameterSuiteV1 {
+  OfxStatus (*paramDefine)(OfxParamSetHandle paramSet,
+			   const char *paramType,
+			   const char *name,
+			   OfxPropertySetHandle *propertySet);
+  OfxStatus (*paramGetHandle)(OfxParamSetHandle paramSet,
+			      const char *name,
+			      OfxParamHandle *param,
+			      OfxPropertySetHandle *propertySet);
+  OfxStatus (*paramSetGetPropertySet)(OfxParamSetHandle paramSet,
+				      OfxPropertySetHandle *propHandle);
+  OfxStatus (*paramGetPropertySet)(OfxParamHandle param,
+				   OfxPropertySetHandle *propHandle);
+  OfxStatus (*paramGetValue)(OfxParamHandle  paramHandle,
+			     ...);
+  OfxStatus (*paramGetValueAtTime)(OfxParamHandle  paramHandle,
+				   OfxTime time,
+				   ...);
+  OfxStatus (*paramGetDerivative)(OfxParamHandle  paramHandle,
+				  OfxTime time,
+				  ...);
+  OfxStatus (*paramGetIntegral)(OfxParamHandle  paramHandle,
+				OfxTime time1, OfxTime time2,
+				...);
+  OfxStatus (*paramSetValue)(OfxParamHandle  paramHandle,
+			     ...);
+  OfxStatus (*paramSetValueAtTime)(OfxParamHandle  paramHandle,
+				   OfxTime time,  // time in frames
+				   ...);
+  OfxStatus (*paramGetNumKeys)(OfxParamHandle  paramHandle,
+			       unsigned int  *numberOfKeys);
+  OfxStatus (*paramGetKeyTime)(OfxParamHandle  paramHandle,
+			       unsigned int nthKey,
+			       OfxTime *time);
+  OfxStatus (*paramGetKeyIndex)(OfxParamHandle  paramHandle,
+				OfxTime time,
+				int     direction,
+				int    *index);
+  OfxStatus (*paramDeleteKey)(OfxParamHandle  paramHandle,
+			      OfxTime time);
+  OfxStatus (*paramDeleteAllKeys)(OfxParamHandle  paramHandle);
+  OfxStatus (*paramCopy)(OfxParamHandle  paramTo, OfxParamHandle  paramFrom, OfxTime dstOffset, const OfxRangeD *frameRange);
+  OfxStatus (*paramEditBegin)(OfxParamSetHandle paramSet, const char *name); 
+  OfxStatus (*paramEditEnd)(OfxParamSetHandle paramSet);
+ } OfxParameterSuiteV1;
+
+</pre>
+                  </blockquote>
+               </div>
+            </div>
+            <div class="refsect1">
+               <a id="idp15401168"></a>
+               <h2>Description</h2>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch15s05.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch15s05.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re44.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Parameters Suite </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top">
+                      
+                     <code class="function">OfxParameterSuiteV1::paramDefine</code>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

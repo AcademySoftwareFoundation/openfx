@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes Loss Of Host Calling Context On All Suite Calls |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="uaCK99rBC/mjjGo1j2SjiEbUY+R0SvOEw5/++uZHnAuXuuJEfPUG1hZTKNj7VhhcE/QXoS031WYNnuqX8xadMA==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='row'>
+<div class='col-md-offset-2 col-md-8'>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-warning'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+Loss of host calling context on all suite calls.
+<span class='pull-right'>Proposed</span>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Standard version:</b>
+1.4.1
+</p>
+<p>
+<b>Major Change</b>
+</p>
+<label>Subcommittee</label>
+<p></p>
+<label>Overview</label>
+<p>The API is meant to be called in a parallel manner, so that a host application may call actions on a plugin from any number of threads and have the API work. The only constraint on a&nbsp;plugin is that any calls back to the host via a suite must be from the thread the initial action was invoked from.&nbsp;</p>
+<p>This problem arises when a host calls actions in parallel. It may have some private data specific to the context if the action it called the plugin in. Without that context specific data, the call back to the host is impossible to compute.</p>
+<p>Given the calling constraint on a plug-in, the only way a host can pass itself back any private data is to place it in thread local storage. This is somewhat painful, especially as the suite function&nbsp;called may trigger recursive actions back to the plugin.</p>
+<label>Solution</label>
+<p>We amend the function signatures of a subset of&nbsp;suite calls to take an extra argument. This would be the&nbsp;<em>inargs&nbsp;</em>property set handle passed into the action. The host can decorate the underlying host-side structure behind that&nbsp;handle with the context specific data it needs, so when the plugin passes back the <em>inargs</em>&nbsp;via one of those suite calls, the host&nbsp;can access it's needed private&nbsp;data and determine what it needs to do.</p>
+<p>This would possibly remove the constraint on plugins as to which thread they can call suite functions on.</p>
+<p>&nbsp;</p>
+<p>(sept 23, 2016):&nbsp; This is near approved (approved enough for all new suites and versions to follow).</p>
+<p>Note: It might not be important for MessageSuite and ImageEffect suite itself might be more a basket than the other suites and it would be occasion to fix incorrectly typed variables &ndash; which makes it even more a basket. Versioning ImageEffect suite itself, brings the next topic as well since it would probably only make sense if that suite was incremented.</p>
+<p><a href="properties-that-are-doubles-canonical-but-should-really-be-ints-in-pixels-space">http://openeffects.org/standard_changes/properties-that-are-doubles-canonical-but-should-really-be-ints-in-pixels-space</a></p>
+<p>Mini action item: We probably need a volunteer to think about how we would change type to what they should be without causing too much harm, as it implies versioning some #define&hellip; so the consequences can be evaluated..</p>
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-default'>
+<div class='panel-body'>
+<h4 class='text-primary'>Discussion</h4>
+<h5>Comments</h5>
+<div class='well well-sm'>
+<div class='comment user-9' id='cid-264'>
+<div class='content'>
+<p>DialogSuite seems to be another example of this. &nbsp;There is a DialogSuiteV2 proposal being discussed on the members mailing list that could include this arg.</p>
+</div>
+</div>
+<div class='author text-muted'>
+Gary Oberbrunner |  1:44 pm,  15 Sep 2015
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-263'>
+<div class='content'>
+<p><span>About:&nbsp;Analysis pass case</span></p>
+<p>Just a note -- Analysis action is now gone. The equivalent within InstanceChanged can be handled via the Progress Suite Cancel button.</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  2:21 pm,   4 Sep 2015
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-43' id='cid-261'>
+<div class='content'>
+<p>As an example on the host-side, the&nbsp;function "abort" is crucial: it is meant to be faster and checked very often. Unfortunately it requires the host to keep Thread-Local-Storage (TLS) to know the state of the thread and to identify which render it belongs to.</p>
+<p>Basically&nbsp;there are different types of renders:&nbsp;</p>
+<p>-&nbsp;Playback (or background) renders, where multiple frames can (could) be computed in parallel</p>
+<p>- "Single frame" renders where the goal is to&nbsp;render a specific frame the fastest possible (typically after modifying a parameter, seeking the timeline to a particular point etc...)</p>
+<p>- Analysis pass</p>
+<p>Depending of the situation you may want to abort differently: In the case of the "Single frame" render, any newer interaction from the user should in most cases abort the - now useless - render. But for "Playback" renders you may for instance want to abort&nbsp;only once a button has been pressed.</p>
+<p>For an analysis pass you may also want a different policy for aborting...</p>
+<p>All these small bits needed to identify a render must be kept local to a thread and may be expensive to retrieve and copy onto each spawned thread, whilst we could in fact just hold it in&nbsp;a struct&nbsp;behind a hidden property in the inArgs.&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Alexandre |  3:12 am,   4 Sep 2015
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-246'>
+<div class='content'>
+<p>(Pierre Jasmin): Another related area were this seems true is Overlay callbacks. (when you have two plugins that use OGL overlays)...&nbsp;&nbsp;</p>
+<p>Can't an host simply create unique 2D int for each EffectHandle instance internally and pass example effect 29.2 inside opaque handler.&nbsp; Also if the plan was to allow an effect to be at different time in two viewers. For example host could on interact instance creation embed effect instance ID,...&nbsp; ???&nbsp; - this obviously needs host chiming in :)</p>
+<p>&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  4:20 pm,   6 Jun 2015
+</div>
+</div>
+
+</div>
+</div>
+
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

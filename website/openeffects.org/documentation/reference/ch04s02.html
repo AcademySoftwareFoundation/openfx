@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Regions of Definition</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch04.html" title="Chapter 4. Image Processing Architectures"></link>
+      <link rel="prev" href="/documentation/reference/ch04.html" title="Chapter 4. Image Processing Architectures"></link>
+      <link rel="next" href="/documentation/reference/ch04s03.html" title="Regions Of Interest"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Regions of Definition</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch04.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 4. Image Processing Architectures</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch04s03.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="idp11511824"></a>
+                        Regions of Definition
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+	An effect has a "Region of Definition" (RoD), this is is the maximum area of the plane that the effect can fill in. 
+	for example: a 'read source media' effect would only be able to fill an area as big as it's source media. An effect's 
+	RoD may need to be based on the RoD of its inputs, for example: the RoD of a contrast/brightness colour corrector would 
+	generally be the RoD of it's input, while the RoD of a rotation effect would be bigger than that of it's input image.
+      </p>
+            <p>
+               The purpose of the
+               <a class="link" href="/documentation/reference/ch13s13.html" title="The Get Region of Definition Action">
+                  <code class="code">kOfxImageEffectActionGetRegionOfDefinition</code>
+               </a>
+               action is for the host to ask an effect what its region of definition is. An effect calculates this by looking at its input clips and the values of its current parameters.
+            </p>
+            <p>
+	Hosts are not obliged to render all an effects RoD, as it may have fixed frame sizes, or any number of other issues.
+      </p>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp11515040"></a>
+                           Infinite RoDs
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  Infinite RoDs are used to indicate an effect can fill pixels in anywhere on the image plane it is asked to. For example a no-input noise generator that generates random colours on a per pixel basis. An infinite RoD is flagged by setting the minimums to be
+                  <code class="code">kOfxFlagInfiniteMin</code>
+                  and the maxmimums to be
+                  <code class="code">kOfxFlagInfiniteMax</code>
+                  , for both double and integer rects. Hosts and plug-ins need to be infinite RoD aware. Hosts need to clip such RoDs to an appropriate rectangle, typically the project extent. Plug-ins need to check for infinite RoDs when asking input clips for them and to pass them through unless they explictly clamp them. To indicate an infinite RoD set it as indicated in the following code snippet.
+               </p>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">
+	  outputRoD.x1 = kOfxFlagInfiniteMin;
+	  outputRoD.y1 = kOfxFlagInfiniteMin;
+	  outputRoD.x2 = kOfxFlagInfiniteMax;
+	  outputRoD.y2 = kOfxFlagInfiniteMax;
+	</pre>
+                  </blockquote>
+               </div>
+            </div>
+            <p>
+	PICTURES
+      </p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch04.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch04.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch04s03.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Chapter 4. Image Processing Architectures </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Regions Of Interest</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

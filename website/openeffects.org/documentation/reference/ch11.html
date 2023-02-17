@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Chapter 11. Interacts</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="prev" href="/documentation/reference/ch10s05.html" title="Rendering In An Interactive Environment"></link>
+      <link rel="next" href="/documentation/reference/ch11s02.html" title="Parameter Interacts"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Chapter 11. Interacts</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch10s05.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center"> </th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch11s02.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="chapter">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h1 class="title">
+                        <a id="CustomInteracts"></a>
+                        Chapter 11. Interacts
+                     </h1>
+                  </div>
+               </div>
+            </div>
+            <p>
+               When a host presents a graphical user interface to an image effect, it may optionally give it the chance to draw its own custom GUI tools and to be able to interact with pen and keyboard input. In OFX this is done via the OfxInteract suite, which is found in the file
+               <code class="filename">ofxInteract.h</code>
+               .
+            </p>
+            <p>
+      OFX interacts rely on openGL to perform all drawing in interacts, due to its portabilty, robustness
+      and wide implementation.
+    </p>
+            <p>
+               Each object that can have their own interact a pointer property in it which should point to a separate
+               <a class="link" href="/documentation/reference/ch02s06.html" title="The Plug-in Main Entry Point And Actions">main entry point</a>
+               . This entry point is
+               <span class="emphasis">
+                  <em>not</em>
+               </span>
+               the same as the one in the OfxPlugin struct, as it needs to respond to a different set of actions to the effect.
+            </p>
+            <p>
+      There are two things in an image effect can have their own interact, these are...
+      </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     as on overlay on the image being currently viewed in any image viewer, set via the effect descriptor's
+                     <a class="link" href="/documentation/reference/re113.html" title="kOfxImageEffectPluginPropOverlayInteractV1">
+                        <code class="code">kOfxImageEffectPluginPropOverlayInteractV1</code>
+                     </a>
+                     property
+                  </li>
+                  <li class="listitem">
+                     as a replacement for any parameter's standard GUI object, set this via the parameter descriptor's
+                     <a class="link" href="/documentation/reference/re204.html" title="kOfxParamPropInteractV1">
+                        <code class="code">kOfxParamPropInteractV1</code>
+                     </a>
+                     property
+                  </li>
+               </ul>
+            </div>
+            <p>
+    </p>
+            <p>
+      Hosts might not be able to support interacts, to indicate this, two properties exist on the host descriptor which 
+      an effect should examine at description time so as to determine its own behaviour. These are...
+      </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re149.html" title="kOfxImageEffectPropSupportsOverlays">
+                        <code class="code">kOfxImageEffectPropSupportsOverlays</code>
+                     </a>
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re177.html" title="kOfxParamHostPropSupportsCustomInteract">
+                        <code class="code">kOfxParamHostPropSupportsCustomInteract</code>
+                     </a>
+                  </li>
+               </ul>
+            </div>
+            <p>
+    </p>
+            <p>
+               Interacts are separate objects to the effect they are associated with, they have their own descriptor and instance handles passed into their separate
+               <a class="link" href="/documentation/reference/ch02s06.html" title="The Plug-in Main Entry Point And Actions">
+                  <code class="code">main entry point</code>
+               </a>
+               .
+            </p>
+            <p>
+      An interact instance cannot exist without a plugin instance, an interact's instance, once created, is bound to a single instance of a plugin until the interact instance is destroyed.
+    </p>
+            <p>
+      All interacts of the same type share openGL display lists, even if they are in different openGL contexts.
+    </p>
+            <p>
+      All interacts of the same type will have the same pixel types (this is a side effect of the last point), this will 
+      always be double buffered with at least RGB components. Alpha and the exact bit depth is left to the implementation.
+    </p>
+            <p>
+      So for example, all image effect overlays share the same display lists and have the same pixel depth, 
+      and all custom parameter GUIs share the same display list and have the same pixel depth, but overlays 
+      and custom parameter GUIs do not necassarily share the same display list/pixel depths.
+    </p>
+            <p>
+      An interact instance may be used in more than one view. Consider an image effect overlay interact in a
+      host that supports multiple viewers to an effect instance. The same interact instance will be used in all 
+      views, the relevant properties controlling the view being changed before any action is passed to the interact.
+      In this example, the draw action would be called once for each view open on the instance, with the projection, 
+      viewport and pixel scale being set appropriately for the view before each action.  
+    </p>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">
+                           <a id="ImageEffectOverlays"></a>
+                           Overlay Interacts
+                        </h2>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  Hosts will generally display images (both input and output) in user their interfaces. A plugin can put an interact in this display by setting the effect descriptor
+                  <a class="link" href="/documentation/reference/re113.html" title="kOfxImageEffectPluginPropOverlayInteractV1">
+                     <code class="code">kOfxImageEffectPluginPropOverlayInteractV1</code>
+                  </a>
+                  property to point to a main entry.
+               </p>
+               <p>
+	The viewport for such interacts will depend completely on the host.
+      </p>
+               <p>
+	The GL_PROJECTION matrix will be set up so that it maps openGL coordinates to canonical image coordinates.
+      </p>
+               <p>
+	The GL_MODELVIEW matrix will be the identity matrix.
+      </p>
+               <p>
+	An overlay's interact draw action should assume that it is sharing the openGL context and viewport
+	with other objects that belong to the host. It should not blank the background and it
+	should never swap buffers, that is for the host to do.
+      </p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch10s05.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center"> </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch11s02.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Rendering In An Interactive Environment </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Parameter Interacts</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

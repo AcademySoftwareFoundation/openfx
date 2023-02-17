@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>kOfxParamPropDoubleType</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch17.html" title="Chapter 17. Properties By Name"></link>
+      <link rel="prev" href="/documentation/reference/re192.html" title="kOfxParamPropDisplayMin"></link>
+      <link rel="next" href="/documentation/reference/re194.html" title="kOfxParamPropEnabled"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">
+                     <code class="literal">kOfxParamPropDoubleType</code>
+                  </th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re192.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 17. Properties By Name</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re194.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="refentry">
+            <a id="kOfxParamPropDoubleType"></a>
+            <div class="titlepage"></div>
+            <div class="refnamediv">
+               <h2>Name</h2>
+               <p>
+                  <code class="literal">kOfxParamPropDoubleType</code>
+                  — Describes how the double parameter should be interpreted by a host.
+               </p>
+            </div>
+            <div class="refsynopsisdiv">
+               <h2>Synopsis</h2>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">
+#include "/ofxParam.h"
+#define kOfxParamPropDoubleType "OfxParamPropDoubleType"
+</pre>
+                  </blockquote>
+               </div>
+            </div>
+            <div class="refsect2">
+               <a id="idp18871936"></a>
+               <h3>Type</h3>
+               <p>
+                  <code class="literal">kOfxParamPropDoubleType</code>
+                  is of type
+                  <span class="type">C string</span>
+                  , and has only a single dimension.
+               </p>
+            </div>
+            <div class="refsect2">
+               <a id="idp18874096"></a>
+               <h3>Property Set</h3>
+               <p> This is a property that belongs to the 1D, 2D and 3D float plugin parameter descriptor (read/write) and instance (read only),.
+</p>
+            </div>
+            <div class="refsect2">
+               <a id="idp18875280"></a>
+               <h3>Default</h3>
+               <p>
+                  The default value is
+                  <code class="code">kOfxParamDoubleTypePlain</code>
+                  .
+               </p>
+            </div>
+            <div class="refsect2">
+               <a id="idp18876768"></a>
+               <h3>Valid Values</h3>
+               <p>
+This must be one of
+
+</p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <code class="code">kOfxParamDoubleTypePlain</code>
+                        - parameter has no special interpretation,
+                     </li>
+                     <li class="listitem">
+                        <code class="code">kOfxParamDoubleTypeAngle</code>
+                        - parameter is to be interpretted as an angle,
+                     </li>
+                     <li class="listitem">
+                        <code class="code">kOfxParamDoubleTypeScale</code>
+                        - parameter is to be interpretted as a scale factor,
+                     </li>
+                     <li class="listitem">
+                        <code class="code">kOfxParamDoubleTypeTime</code>
+                        - parameter represents a time value (1D only),
+                     </li>
+                     <li class="listitem">
+                        <code class="code">kOfxParamDoubleTypeAbsoluteTime</code>
+                        - parameter represents an absolute time value (1D only),
+                     </li>
+                  </ul>
+               </div>
+               <p>
+</p>
+            </div>
+            <div class="refsect2">
+               <a id="idp18881872"></a>
+               <h3>Description</h3>
+               <p>
+Describes how the double parameter should be interpreted by a host. 
+
+</p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="">
+                           <code class="code">kOfxParamDoubleTypeX</code>
+                        </a>
+                        - size wrt to the project's X dimension (1D only), in canonical coordinates,
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="">
+                           <code class="code">kOfxParamDoubleTypeXAbsolute</code>
+                        </a>
+                        - absolute position on the X axis (1D only), in canonical coordinates,
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="">
+                           <code class="code">kOfxParamDoubleTypeY</code>
+                        </a>
+                        - size wrt to the project's Y dimension(1D only), in canonical coordinates,
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="">
+                           <code class="code">kOfxParamDoubleTypeYAbsolute</code>
+                        </a>
+                        - absolute position on the Y axis (1D only), in canonical coordinates,
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="">
+                           <code class="code">kOfxParamDoubleTypeXY</code>
+                        </a>
+                        - size in 2D (2D only), in canonical coordinates,
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="">
+                           <code class="code">kOfxParamDoubleTypeXYAbsolute</code>
+                        </a>
+                        - an absolute position on the image plane, in canonical coordinates.
+                     </li>
+                  </ul>
+               </div>
+               <p>
+</p>
+               <p>
+Double parameters can be interpreted in several different ways, this property tells the host how to do so and thus gives hints
+as to the interface of the parameter.
+</p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re192.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch17.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re194.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">
+                     <code class="literal">kOfxParamPropDisplayMin</code>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top">
+                      
+                     <code class="literal">kOfxParamPropEnabled</code>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

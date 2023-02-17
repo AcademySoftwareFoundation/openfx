@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Properties on an Effect Descriptor</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch16.html" title="Chapter 16. Properties By Object"></link>
+      <link rel="prev" href="/documentation/reference/ch16.html" title="Chapter 16. Properties By Object"></link>
+      <link rel="next" href="/documentation/reference/ch16s03.html" title="Properties on an Effect Instance"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Properties on an Effect Descriptor</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch16.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 16. Properties By Object</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch16s03.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="EffectDescriptorProperties"></a>
+                        Properties on an Effect Descriptor
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            An image effect plugin (ie: that thing passed to the initial 'describe' action) has the following properties, these can only be set inside the 'describe' actions ...
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re244.html" title="kOfxPropType">kOfxPropType</a>
+                     - (read only)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re237.html" title="kOfxPropLabel">kOfxPropLabel</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re242.html" title="kOfxPropShortLabel">kOfxPropShortLabel</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re238.html" title="kOfxPropLongLabel">kOfxPropLongLabel</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re245.html" title="kOfxPropVersion">kOfxPropVersion</a>
+                     - (read only) the version number of the plugin
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re246.html" title="kOfxPropVersionLabel">kOfxPropVersionLabel</a>
+                     - (read only) a user readable version label
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re241.html" title="kOfxPropPluginDescription">kOfxPropPluginDescription</a>
+                     - (read/write), a short description of the plugin
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re144.html" title="kOfxImageEffectPropSupportedContexts">kOfxImageEffectPropSupportedContexts</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re111.html" title="kOfxImageEffectPluginPropGrouping">kOfxImageEffectPluginPropGrouping</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re114.html" title="kOfxImageEffectPluginPropSingleInstance">kOfxImageEffectPluginPropSingleInstance</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re115.html" title="kOfxImageEffectPluginRenderThreadSafety">kOfxImageEffectPluginRenderThreadSafety</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re112.html" title="kOfxImageEffectPluginPropHostFrameThreading">kOfxImageEffectPluginPropHostFrameThreading</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re113.html" title="kOfxImageEffectPluginPropOverlayInteractV1">kOfxImageEffectPluginPropOverlayInteractV1</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re146.html" title="kOfxImageEffectPropSupportsMultiResolution">kOfxImageEffectPropSupportsMultiResolution</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re150.html" title="kOfxImageEffectPropSupportsTiles">kOfxImageEffectPropSupportsTiles</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re151.html" title="kOfxImageEffectPropTemporalClipAccess">kOfxImageEffectPropTemporalClipAccess</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re145.html" title="kOfxImageEffectPropSupportedPixelDepths">kOfxImageEffectPropSupportedPixelDepths</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re110.html" title="kOfxImageEffectPluginPropFieldRenderTwiceAlways">kOfxImageEffectPluginPropFieldRenderTwiceAlways</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re147.html" title="kOfxImageEffectPropSupportsMultipleClipDepths">kOfxImageEffectPropSupportsMultipleClipDepths</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re148.html" title="kOfxImageEffectPropSupportsMultipleClipPARs">kOfxImageEffectPropSupportsMultipleClipPARs</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re115.html" title="kOfxImageEffectPluginRenderThreadSafety">kOfxImageEffectPluginRenderThreadSafety</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re116.html" title="kOfxImageEffectPropClipPreferencesSlaveParam">kOfxImageEffectPropClipPreferencesSlaveParam</a>
+                     - (read/write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re125.html" title="kOfxImageEffectPropOpenGLRenderSupported">kOfxImageEffectPropOpenGLRenderSupported</a>
+                     - (read and write)
+                  </li>
+                  <li class="listitem">
+                     <a class="link" href="/documentation/reference/re226.html" title="kOfxPluginPropFilePath">kOfxPluginPropFilePath</a>
+                     (read only)
+                  </li>
+               </ul>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch16.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch16.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch16s03.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Chapter 16. Properties By Object </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Properties on an Effect Instance</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

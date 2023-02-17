@@ -1,0 +1,406 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>OpenFX Plug-in API Programming Guide</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.77.1"></meta>
+      <link rel="home" href="/documentation/guide/index.html" title="OpenFX Plug-in API Programming Guide"></link>
+      <link rel="next" href="/documentation/guide/pr01.html" title="Foreword"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <table>
+            <tr>
+               <td>
+                  <ul>
+                     <li>
+                        <a href="/">
+                           <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+                        </a>
+                     </li>
+                     <li>
+                        <a href="/">
+                           Back to Main Site
+                           <span class="glyph"></span>
+                        </a>
+                     </li>
+                     <li>
+                        <a href="/documentation/guide">Programming Guide</a>
+                     </li>
+                     <li>
+                        <a href="/documentation/reference">Programming Reference</a>
+                     </li>
+                     <li>
+                        <a href="/documentation/api_doc">API Reference</a>
+                     </li>
+                  </ul>
+               </td>
+            </tr>
+         </table>
+      </div>
+      <div class="wrapper" id="guide">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">OpenFX Plug-in API Programming Guide</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left"> </td>
+                  <th width="60%" align="center"> </th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/guide/pr01.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="book">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h1 class="title">
+                        <a id="idp140729789095200"></a>
+                        OpenFX Plug-in API Programming Guide
+                     </h1>
+                  </div>
+                  <div>
+                     <div class="author">
+                        <h3 class="author">
+                           <span class="firstname">Bruno</span>
+                           <span class="surname">Nicoletti</span>
+                        </h3>
+                     </div>
+                  </div>
+                  <div>
+                     <p class="releaseinfo">Document version 1.3</p>
+                  </div>
+                  <div>
+                     <p class="copyright">Copyright © 2005-2012 The Open Effects Association</p>
+                  </div>
+               </div>
+               <hr></hr>
+            </div>
+            <div class="toc">
+               <p>
+                  <strong>Table of Contents</strong>
+               </p>
+               <dl>
+                  <dt>
+                     <span class="preface">
+                        <a href="/documentation/guide/pr01.html">Foreword</a>
+                     </span>
+                  </dt>
+                  <dd>
+                     <dl>
+                        <dt>
+                           <span class="section">
+                              <a href="pr01.html#idp140729791699552">Intended Audience</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/pr01s02.html">What is OFX</a>
+                           </span>
+                        </dt>
+                     </dl>
+                  </dd>
+                  <dt>
+                     <span class="chapter">
+                        <a href="/documentation/guide/ch01.html">1. OFX Overview</a>
+                     </span>
+                  </dt>
+                  <dd>
+                     <dl>
+                        <dt>
+                           <span class="section">
+                              <a href="ch01.html#idp140729791705088"></a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch01s02.html">Language</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch01s03.html">API Definition</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch01s04.html">Symbolic Dependancies</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch01s05.html">Host to Plugin Communication</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch01s06.html">Host to Plugin Communication</a>
+                           </span>
+                        </dt>
+                     </dl>
+                  </dd>
+                  <dt>
+                     <span class="chapter">
+                        <a href="/documentation/guide/ch02.html">2. Introduction To OFX, A Simple Plug-in</a>
+                     </span>
+                  </dt>
+                  <dd>
+                     <dl>
+                        <dt>
+                           <span class="section">
+                              <a href="ch02.html#idp140729791713424"></a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch02s02.html">Headers</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch02s03.html">The Plug-in Struct and The Two Exported Functions</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch02s04.html">The Host Struct</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch02s05.html">The Main Entry Function</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch02s06.html">The Load Action</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch02s07.html">The Describe Action</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch02s08.html">The Describe In Context Action</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch02s09.html">The Render Action</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch02s10.html">In Summary</a>
+                           </span>
+                        </dt>
+                     </dl>
+                  </dd>
+                  <dt>
+                     <span class="chapter">
+                        <a href="/documentation/guide/ch03.html">3. The Generic OFX Plug-in Architecture</a>
+                     </span>
+                  </dt>
+                  <dd>
+                     <dl>
+                        <dt>
+                           <span class="section">
+                              <a href="ch03.html#idp140729791773408">Overview</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch03s02.html">Plug-in Binaries and Required Symbols</a>
+                           </span>
+                        </dt>
+                        <dd>
+                           <dl>
+                              <dt>
+                                 <span class="section">
+                                    <a href="ch03s02.html#idp140729791794352">OfxGetNumberOfPlugins</a>
+                                 </span>
+                              </dt>
+                              <dt>
+                                 <span class="section">
+                                    <a href="ch03s02.html#idp140729791795808">OfxGetPlugin</a>
+                                 </span>
+                              </dt>
+                           </dl>
+                        </dd>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch03s03.html">Identifying, Versioning and Defining an OFX Plug-in</a>
+                           </span>
+                        </dt>
+                        <dd>
+                           <dl>
+                              <dt>
+                                 <span class="section">
+                                    <a href="ch03s03.html#idp140729791802352">The OfxPlugin Struct</a>
+                                 </span>
+                              </dt>
+                              <dt>
+                                 <span class="section">
+                                    <a href="ch03s03.html#idp140729791817296">Interpreting the OfxPlugin Struct</a>
+                                 </span>
+                              </dt>
+                           </dl>
+                        </dd>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch03s04.html">Suites, Hosts and APIs</a>
+                           </span>
+                        </dt>
+                        <dd>
+                           <dl>
+                              <dt>
+                                 <span class="section">
+                                    <a href="ch03s04.html#idp140729791857728">Function Suites</a>
+                                 </span>
+                              </dt>
+                              <dt>
+                                 <span class="section">
+                                    <a href="ch03s04.html#OfxHostStruct">The OfxHost Struct</a>
+                                 </span>
+                              </dt>
+                           </dl>
+                        </dd>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch03s05.html">Sequences of Operations Required to Load a Plug-in</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch03s06.html">Errors, Status Codes and Exceptions</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch03s07.html">Packaging OFX Plug-ins</a>
+                           </span>
+                        </dt>
+                        <dd>
+                           <dl>
+                              <dt>
+                                 <span class="section">
+                                    <a href="ch03s07.html#idp140729791906288">Binary Types</a>
+                                 </span>
+                              </dt>
+                              <dt>
+                                 <span class="section">
+                                    <a href="ch03s07.html#idp140729791908848">Installation Directory Hierarchy</a>
+                                 </span>
+                              </dt>
+                              <dt>
+                                 <span class="section">
+                                    <a href="ch03s07.html#ArchitectureInstallingLocation">Installation Location</a>
+                                 </span>
+                              </dt>
+                              <dt>
+                                 <span class="section">
+                                    <a href="ch03s07.html#idp140729791939088">plug-in Icons</a>
+                                 </span>
+                              </dt>
+                              <dt>
+                                 <span class="section">
+                                    <a href="ch03s07.html#idp140729791943024">Externally Specified Resources</a>
+                                 </span>
+                              </dt>
+                           </dl>
+                        </dd>
+                     </dl>
+                  </dd>
+                  <dt>
+                     <span class="chapter">
+                        <a href="/documentation/guide/ch04.html">4. Visual Effects Architectures</a>
+                     </span>
+                  </dt>
+                  <dd>
+                     <dl>
+                        <dt>
+                           <span class="section">
+                              <a href="ch04.html#idp140729791948192">Clips</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch04s02.html">Images</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch04s03.html">Parameters</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch04s04.html">Time</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch04s05.html">Effects</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch04s06.html">Contexts</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch04s07.html">Co-ordinate Systems</a>
+                           </span>
+                        </dt>
+                        <dt>
+                           <span class="section">
+                              <a href="/documentation/guide/ch04s08.html">Regions of Definition and Regions of Interest</a>
+                           </span>
+                        </dt>
+                     </dl>
+                  </dd>
+                  <dt>
+                     <span class="chapter">
+                        <a href="/documentation/guide/ch05.html">5. OFX Image Effect Plug-ins</a>
+                     </span>
+                  </dt>
+                  <dt>
+                     <span class="chapter">
+                        <a href="/documentation/guide/ch06.html">6. Parameters</a>
+                     </span>
+                  </dt>
+               </dl>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left"> </td>
+                  <td width="20%" align="center"> </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/guide/pr01.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top"> </td>
+                  <td width="20%" align="center"> </td>
+                  <td width="40%" align="right" valign="top"> Foreword</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

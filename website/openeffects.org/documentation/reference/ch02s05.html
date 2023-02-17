@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>The OfxHost Struct</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch02.html" title="Chapter 2. The Generic Core API"></link>
+      <link rel="prev" href="/documentation/reference/ch02s04.html" title="Identifying and Loading Plug-ins"></link>
+      <link rel="next" href="/documentation/reference/ch02s06.html" title="The Plug-in Main Entry Point And Actions"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">The OfxHost Struct</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch02s04.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 2. The Generic Core API</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch02s06.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="OfxHostStruct"></a>
+                        The OfxHost Struct
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+               The
+               <span class="structname">OfxHost</span>
+               struct is how a host provides plug-ins with access to the various suites that make up the API they implement, as well as a host property set handle which a plug-in can ask questions of. The
+               <code class="function">setHost</code>
+               function in the
+               <span class="structname">OfxPlugin</span>
+               struct is passed a pointer to an
+               <span class="structname">OfxHost</span>
+               as the first thing to boot-strapping plug-in/host communication. The struct looks like...
+            </p>
+            <div class="blockquote">
+               <blockquote class="blockquote">
+                  <pre class="programlisting">
+typedef struct OfxHost {
+  OfxPropertySetHandle host;
+  void *(*fetchSuite)(OfxPropertySetHandle host, const char *suiteName, int suiteVersion);
+} OfxHost;
+  </pre>
+               </blockquote>
+            </div>
+            <p>
+               The
+               <span class="structname">OfxHost</span>
+               contains two elements,
+            </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <em class="structfield">
+                        <code>host</code>
+                     </em>
+                     - a property set handle that holds a set of properties which describe the host for the plug-in's API
+                  </li>
+                  <li class="listitem">
+                     <em class="structfield">
+                        <code>fetchSuite</code>
+                     </em>
+                     - a function handle used to fetch function suites from the host that implement the plug-in's API
+                  </li>
+               </ul>
+            </div>
+            <p>
+  </p>
+            <p>
+               The
+               <em class="structfield">
+                  <code>host</code>
+               </em>
+               property set handle in the
+               <span class="structname">OfxHost</span>
+               is not global across all plug-ins defined in the binary. It is only applicable for the plug-in whose 'setHost' function was called. Use this handle to fetch things like host application names, host capabilities and so on. The set of properties on an OFX Image Effect host is found in the section
+               <a class="link" href="ch16.html#ImageEffectHostProperties" title="Properties on the Image Effect Host">Properties on the Image Effect Host</a>
+            </p>
+            <p>
+               The
+               <code class="function">fetchSuite</code>
+               function is how a plug-in gets a suite from the host. It asks for a suite by giving the C string corresponding to that suite and the version of that suite. The host will return a pointer to that suite, or NULL if it does not support it. Please note that a suite cannot be fetched until the very first action is called on the plug-in, which is the load action.
+            </p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch02s04.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch02.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch02s06.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Identifying and Loading Plug-ins </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> The Plug-in Main Entry Point And Actions</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>The Render Action</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.77.1"></meta>
+      <link rel="home" href="/documentation/guide/index.html" title="OpenFX Plug-in API Programming Guide"></link>
+      <link rel="up" href="/documentation/guide/ch02.html" title="Chapter 2. Introduction To OFX, A Simple Plug-in"></link>
+      <link rel="prev" href="/documentation/guide/ch02s08.html" title="The Describe In Context Action"></link>
+      <link rel="next" href="/documentation/guide/ch02s10.html" title="In Summary"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <table>
+            <tr>
+               <td>
+                  <ul>
+                     <li>
+                        <a href="/">
+                           <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+                        </a>
+                     </li>
+                     <li>
+                        <a href="/">
+                           Back to Main Site
+                           <span class="glyph"></span>
+                        </a>
+                     </li>
+                     <li>
+                        <a href="/documentation/guide">Programming Guide</a>
+                     </li>
+                     <li>
+                        <a href="/documentation/reference">Programming Reference</a>
+                     </li>
+                     <li>
+                        <a href="/documentation/api_doc">API Reference</a>
+                     </li>
+                  </ul>
+               </td>
+            </tr>
+         </table>
+      </div>
+      <div class="wrapper" id="guide">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">The Render Action</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/guide/ch02s08.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 2. Introduction To OFX, A Simple Plug-in</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/guide/ch02s10.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="idp140729791762224"></a>
+                        The Render Action
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <div class="informalexample">
+               <pre class="programlisting">
+// look up a pixel in the image, does bounds checking to see if it is in the image rectangle
+inline OfxRGBAColourB *
+pixelAddress(OfxRGBAColourB *img, OfxRectI rect, int x, int y, int bytesPerLine)
+{  
+  if(x &lt; rect.x1 || x &gt;= rect.x2 || y &lt; rect.y1 || y &gt; rect.y2)
+    return 0;
+  OfxRGBAColourB *pix = (OfxRGBAColourB *) (((char *) img) + (y - rect.y1) * bytesPerLine);
+  pix += x - rect.x1;  
+  return pix;
+}
+
+// the process code  that the host sees
+static OfxStatus render(OfxImageEffectHandle  instance,
+                        OfxPropertySetHandle inArgs,
+                        OfxPropertySetHandle outArgs)
+{
+    // get the render window and the time from the inArgs
+    OfxTime time;
+    OfxRectI renderWindow;
+  
+    gPropertySuite-&gt;propGetDouble(inArgs, kOfxPropTime, 0, &amp;time);
+    gPropertySuite-&gt;propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &amp;renderWindow.x1);
+
+    // fetch output clip
+    OfxImageClipHandle outputClip;
+    gEffectSuite-&gt;clipGetHandle(instance, "Output", &amp;outputClip, 0);
+
+    // fetch image to render into from that clip
+    OfxPropertySetHandle outputImg;
+    gEffectSuite-&gt;clipGetImage(outputClip, time, NULL, &amp;outputImg);
+
+    // fetch output image info from that handle
+    int dstRowBytes, dstBitDepth;
+    OfxRectI dstRect;
+    void *dstPtr;
+    gPropertySuite-&gt;propGetInt(outputImg, kOfxImagePropRowBytes, 0, &amp;dstRowBytes);
+    gPropertySuite-&gt;propGetIntN(outputImg, kOfxImagePropBounds, 4, &amp;dstRect.x1);
+    gPropertySuite-&gt;propGetPointer(outputImg, kOfxImagePropData, 0, &amp;dstPtr);
+  
+    // fetch main input clip
+    OfxImageClipHandle sourceClip;
+    gEffectSuite-&gt;clipGetHandle(instance, "Source", &amp;sourceClip, 0);
+
+    // fetch image at render time from that clip
+    OfxPropertySetHandle sourceImg;
+    gEffectSuite-&gt;clipGetImage(sourceClip, time, NULL, &amp;sourceImg);
+
+    // fetch image info out of that handle
+    int srcRowBytes, srcBitDepth;
+    OfxRectI srcRect;
+    void *srcPtr;
+    gPropertySuite-&gt;propGetInt(sourceImg, kOfxImagePropRowBytes, 0, &amp;srcRowBytes);
+    gPropertySuite-&gt;propGetIntN(sourceImg, kOfxImagePropBounds, 4, &amp;srcRect.x1);
+    gPropertySuite-&gt;propGetPointer(sourceImg, kOfxImagePropData, 0, &amp;srcPtr);
+
+    // cast data pointers to 8 bit RGBA
+    OfxRGBAColourB *src = (OfxRGBAColourB *) srcPtr;
+    OfxRGBAColourB *dst = (OfxRGBAColourB *) dstPtr;
+
+    // and do some inverting
+    for(int y = renderWindow.y1; y &lt; renderWindow.y2; y++) {
+        if(gEffectSuite-&gt;abort(instance)) break;
+
+        OfxRGBAColourB *dstPix = pixelAddress(dst, dstRect, renderWindow.x1, y, dstRowBytes);
+
+        for(int x = renderWindow.x1; x &lt; renderWindow.x2; x++) {
+        
+            OfxRGBAColourB *srcPix = pixelAddress(src, srcRect, x, y, srcRowBytes);
+
+            if(srcPix) {
+                dstPix-&gt;r = 255 - srcPix-&gt;r;
+                dstPix-&gt;g = 255 - srcPix-&gt;g;
+                dstPix-&gt;b = 255 - srcPix-&gt;b;
+                dstPix-&gt;a = 255 - srcPix-&gt;a;
+            }
+            else {
+                dstPix-&gt;r = 0;
+                dstPix-&gt;g = 0;
+                dstPix-&gt;b = 0;
+                dstPix-&gt;a = 0;
+            }
+            dstPix++;
+        }
+    }
+
+    // we are finished with the source images so release them
+    gEffectSuite-&gt;clipReleaseImage(sourceImg);
+    gEffectSuite-&gt;clipReleaseImage(outputImg);
+  
+    // if we aborted, then we have failed to produce and image, so say so
+    if(gEffectSuite-&gt;abort(instance)) return kOfxStatFailed;
+
+    // otherwise all was well
+    return kOfxStatOK;
+}
+</pre>
+            </div>
+            <p>The render action is where a plug-in turns its input images into
+      output images. The first thing to note is that the effect is no longer a
+      descriptor by an. For our simple example, this makes not much
+      difference, however if the plug-in is maintaining private data, it is
+      very important.</p>
+            <p>
+               The first thing the render function does is to extract two properties from the
+               <code class="varname">inArgs</code>
+               property set. These are the time to render at, and the window to render over. Note that the render window is a 4 dimensional integer property.
+            </p>
+            <p>Next the function fetches the output clip. A clip is a handle that
+      is accessible by name and represents a sequences of images. The returned
+      handle is valid for the lifetime of the instance, and so does not need
+      releasing or deleting. Next an image is extracted from the clip. An
+      image, unlike a clip, does need to be released when the plug-in is done
+      with it.</p>
+            <p>
+               Images are encapsulated as a property set, and so the ordinary property mechanism is used to fetch out information from the image. In this case three properties are needed, the
+               <code class="varname">rowBytes</code>
+               , or the number of bytes in a scan line (as there may be padding at the end), the image bounds, being the region where there is image data and a pointer to the image data. The source image is fetched in a similar way as the destination image.
+            </p>
+            <p>
+               Next the
+               <span class="structname">void *</span>
+               data pointers are cast to
+               <span class="structname">OfxRGBAColourB</span>
+               pointers, and we start iterating over the render window filling in output pixels. The render window must always be equal to or less than the bounds on the destination image. The inline function
+               <code class="function">pixelAddress</code>
+               shows how pixel arithmetic is performed. Note the
+               <code class="function">abort</code>
+               function from the image effect suite being called at every scan line to see if the rendering should be halted.
+            </p>
+            <p>Finally, once we are done, the images are released and we
+      return.</p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/guide/ch02s08.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/guide/ch02.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/guide/ch02s10.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">The Describe In Context Action </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/guide/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> In Summary</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Parameter Types</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch09.html" title="Chapter 9. Effect Parameters"></link>
+      <link rel="prev" href="/documentation/reference/ch09s02.html" title="Defining Parameters"></link>
+      <link rel="next" href="/documentation/reference/ch09s04.html" title="Animation"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Parameter Types</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch09s02.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 9. Effect Parameters</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch09s04.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="ParametersTypes"></a>
+                        Parameter Types
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+      There are seventeen types of parameter. These are 
+      </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">integers, 1, 2 and 3 dimensional</li>
+                  <li class="listitem">doubles, 1, 2 and 3 dimensional</li>
+                  <li class="listitem">colour, RGB and RGB + Alpha</li>
+                  <li class="listitem">booleans</li>
+                  <li class="listitem">choice </li>
+                  <li class="listitem">string</li>
+                  <li class="listitem">custom</li>
+                  <li class="listitem">push button</li>
+                  <li class="listitem">group</li>
+                  <li class="listitem">page</li>
+                  <li class="listitem">parametric</li>
+               </ul>
+            </div>
+            <p>
+    </p>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="ParametersMultiDimensional"></a>
+                           Multidimensional Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+	Some parameter types are multi dimensional, these are...
+	</p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <code class="code">kOfxParamTypeDouble2D</code>
+                        - 2 doubles
+                     </li>
+                     <li class="listitem">
+                        <code class="code">kOfxParamTypeInteger2D</code>
+                        - int X 2
+                     </li>
+                     <li class="listitem">
+                        <code class="code">kOfxParamTypeDouble3D</code>
+                        - double X 3
+                     </li>
+                     <li class="listitem">
+                        <code class="code">kOfxParamTypeInteger3D</code>
+                        - int X 3
+                     </li>
+                     <li class="listitem">
+                        <code class="code">kOfxParamTypeRGB</code>
+                        - double X 3
+                     </li>
+                     <li class="listitem">
+                        <code class="code">kOfxParamTypeRGBA</code>
+                        - double X 4
+                     </li>
+                     <li class="listitem">
+                        <code class="code">kOfxParamTypeParametric</code>
+                        - variable dimension
+                     </li>
+                  </ul>
+               </div>
+               <p>
+      </p>
+               <p>
+	These parameters are treated in an atomic manner, so that all dimensions are set/retrieved simultaneously. This applies to keyframes as well.
+      </p>
+               <p>
+	The non colour parameters have an implicit 'X', 'Y' and 'Z' dimension, and any interface should display them with such labels.
+      </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="ParametersInteger"></a>
+                           Integer Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  These are typed by
+                  <code class="code">kOfxParamTypeInteger</code>
+                  ,
+                  <code class="code">kOfxParamTypeInteger2D</code>
+                  and
+                  <code class="code">kOfxParamTypeInteger3D</code>
+                  .
+               </p>
+               <p>
+	Integer parameters are of 1, 2 and 3D varieties and contain integer values, between INT_MIN and INT_MAX. 
+      </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="ParametersDouble"></a>
+                           Double Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  These are typed by
+                  <code class="code">kOfxParamTypeDouble</code>
+                  ,
+                  <code class="code">kOfxParamTypeDouble2D</code>
+                  and
+                  <code class="code">kOfxParamTypeDouble3D</code>
+                  .
+               </p>
+               <p>
+	Double parameters are of 1, 2 and 3D varieties and contain double precision floating point values. 
+      </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="ParametersColour"></a>
+                           Colour Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  These are typed by
+                  <code class="code">kOfxParamTypeRGB</code>
+                  and
+                  <code class="code">kOfxParamTypeRGBA</code>
+                  .
+               </p>
+               <p>
+	Colour parameters are 3 or 4 dimensional double precision floating point parameters. They are displayed using the host's appropriate interface for a colour. Values are always normalised in the range [0 .. 1], with 0 being the nominal black point and 1 being the white point.
+      </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="kOfxParamTypeBoolean"></a>
+                           Boolean Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  This is typed by
+                  <code class="code">kOfxParamTypeBoolean</code>
+                  .
+               </p>
+               <p>
+	Boolean parameters are integer values that can have only one of two values, 0 or 1. 
+      </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="kOfxParamTypeChoice"></a>
+                           Choice Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  This is typed by
+                  <code class="code">kOfxParamTypeChoice</code>
+                  .
+               </p>
+               <p>
+	Choice parameters are integer values from 0 to N-1, which correspond to N labeled options. 
+      </p>
+               <p>
+                  Choice parameters have their individual options set via the
+                  <a class="link" href="/documentation/reference/re183.html" title="kOfxParamPropChoiceOption">
+                     <code class="code">kOfxParamPropChoiceOption</code>
+                  </a>
+                  property, for example
+               </p>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">gPropHost-&gt;propSetString(myChoiceParam, kOfxParamPropChoiceOption, 0, "1st Choice");
+gPropHost-&gt;propSetString(myChoiceParam, kOfxParamPropChoiceOption, 1, "2nd Choice");
+gPropHost-&gt;propSetString(myChoiceParam, kOfxParamPropChoiceOption, 2, "3nd Choice");
+...
+gPropHost-&gt;propSetString(myChoiceParam, kOfxParamPropChoiceOption, n, "nth Choice");</pre>
+                  </blockquote>
+               </div>
+               <p>
+	It is an error to have gaps in the choices after the describe action has returned.
+      </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="kOfxParamTypeString"></a>
+                           String Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  This is typed by
+                  <code class="code">kOfxParamTypeString</code>
+                  .
+               </p>
+               <p>
+                  String parameters contain null terminated
+                  <code class="code">char *</code>
+                  UTF8 C strings. They can be of several different variants, which is controlled by the
+                  <a class="link" href="/documentation/reference/re223.html" title="kOfxParamPropStringMode">
+                     <code class="code">kOfxParamPropStringMode</code>
+                  </a>
+                  property, these are
+               </p>
+               <p>
+	</p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <code class="code">kOfxParamStringIsSingleLine</code>
+                        - single line string
+                     </li>
+                     <li class="listitem">
+                        <code class="code">kOfxParamStringIsMultiLine</code>
+                        - multi line string
+                     </li>
+                     <li class="listitem">
+                        <code class="code">kOfxParamStringIsFilePath</code>
+                        - single line string interpretted as a file path on the computer this should have appropriate file browser UIs available
+                     </li>
+                     <li class="listitem">
+                        <code class="code">kOfxParamStringIsDirectoryPath</code>
+                        - similar to the above, but refers to a directory rather than a file
+                     </li>
+                     <li class="listitem">
+                        <code class="code">kOfxParamStringIsLabel</code>
+                        - string behaves as a pseudo parameter and acts as a label on the interface in this case the string is not editable by the user
+                     </li>
+                  </ul>
+               </div>
+               <p>
+      </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="kOfxParamTypeGroup"></a>
+                           Group Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  This is typed by
+                  <code class="code">kOfxParamTypeGroup</code>
+                  .
+               </p>
+               <p>
+	Group parameters allow all parameters to be arranged in a tree hierarchy. They have no value, they are purely a grouping element.
+      </p>
+               <p>
+                  All parameters have a
+                  <a class="link" href="/documentation/reference/re216.html" title="kOfxParamPropParent">
+                     <code class="code">kOfxParamPropParent</code>
+                  </a>
+                  property, which is a string property naming the group parameter which is its parent.
+               </p>
+               <p>
+	The empty string "" is used to label the root of the parameter hierarchy, which is the default parent for all parameters.
+      </p>
+               <p>
+	Parameters inside a group are ordered by their order of addition to that group, which implies parameters in the root group are added in order of definition.
+      </p>
+               <p>
+	Any host based hierarchical GUI should use this hierarchy to order parameters (eg: animation sheets).
+      </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="kOfxParamTypePage"></a>
+                           Page Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  This is typed by
+                  <code class="code">kOfxParamTypePage</code>
+                  .
+               </p>
+               <p>
+                  Page parameters are covered in detail in their own
+                  <a class="link" href="ch09s05.html#ParametersInterfacesPagedLayouts" title="Paged Parameter Editors">section.</a>
+                  .
+               </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="kOfxParamTypeCustom"></a>
+                           Custom Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  This is typed by
+                  <code class="code">kOfxParamTypeCustom</code>
+                  .
+               </p>
+               <p>
+	Custom parameters contain null terminated char * C strings, and may animate. They are designed to provide plugins with a way of storing data that is too complicated or impossible to store in a set of ordinary parameters. 
+      </p>
+               <p>
+                  If a custom parameter animates, it must set its
+                  <a class="link" href="/documentation/reference/re184.html" title="kOfxParamPropCustomInterpCallbackV1">
+                     <code class="code">kOfxParamPropCustomInterpCallbackV1</code>
+                  </a>
+                  property, which points to a OfxCustomParamInterpFuncV1 function. This function is used to interpolate keyframes in custom params.
+               </p>
+               <p>
+	Custom parameters have no interface by default. However,
+      </p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">if they animate, the host's animation sheet/editor should present a keyframe/curve representation to allow positioning of keys and control of interpolation. The 'normal' (ie: paged or hierarchical) interface should not show any gui.</li>
+                     <li class="listitem">
+                        if the custom param sets its
+                        <a class="link" href="/documentation/reference/re204.html" title="kOfxParamPropInteractV1">
+                           <code class="code">kOfxParamPropInteractV1</code>
+                        </a>
+                        property, this should be used by the host in any normal (ie: paged or hierarchical) interface for the parameter.
+                     </li>
+                  </ul>
+               </div>
+               <p>
+	Custom parameters are mandatory, as they are simply ASCII C strings. However, animation of custom parameters an support for an in editor interact is optional.
+      </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="kOfxParamTypePushButton"></a>
+                           Push Button Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  This is typed by
+                  <code class="code">kOfxParamTypePushButton</code>
+                  .
+               </p>
+               <p>
+                  Push button parameters have no value, they are there so a plugin can detect if they have been pressed and perform some action. If pressed, a
+                  <a class="link" href="/documentation/reference/ch13s07.html" title="The Generic Instance Changed Action">
+                     <code class="code">kOfxActionInstanceChanged</code>
+                  </a>
+                  action will be issued on the parameter with a
+                  <a class="link" href="/documentation/reference/re229.html" title="kOfxPropChangeReason">
+                     <code class="code">kOfxPropChangeReason</code>
+                  </a>
+                  of
+                  <code class="code">kOfxChangeUserEdited</code>
+                  .
+               </p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch09s02.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch09.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch09s04.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Defining Parameters </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Animation</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

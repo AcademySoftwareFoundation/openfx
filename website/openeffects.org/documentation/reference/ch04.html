@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Chapter 4. Image Processing Architectures</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="prev" href="/documentation/reference/ch03s04.html" title="Main Objects Used by the API"></link>
+      <link rel="next" href="/documentation/reference/ch04s02.html" title="Regions of Definition"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Chapter 4. Image Processing Architectures</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch03s04.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center"> </th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch04s02.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="chapter">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h1 class="title">
+                        <a id="ImageEffectArchitectures"></a>
+                        Chapter 4. Image Processing Architectures
+                     </h1>
+                  </div>
+               </div>
+            </div>
+            <p>
+      OFX supports a range of image processing architectures. The simpler ones being special cases of
+      the most complex one. Levels of support, in both plug-in and host, are signalled by setting appropriate
+      properties in the plugin and host.
+    </p>
+            <p>
+      This chapter describes the most general architecture that OFX can support, with simpler cases just being specialisations
+      of the general case.      
+    </p>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">
+                           <a id="idp11509264"></a>
+                           The Image Plane
+                        </h2>
+                     </div>
+                  </div>
+               </div>
+               <p>
+	At it's most generalised, OFX allows for a complex imaging architecture based around an infinite 2D plane on which we are filling in pixels.
+      </p>
+               <p>
+	Firstly, there is some subsection of this infinite plane that the user wants to be the end result of their work, call this the project extent. 
+	The project extent is always rooted, on its bottom left, at the origin of the image plane. The project extent defines the upper right hand corner 
+	of the project window. For example a PAL sized project spans (0, 0) to (768, 576) on the image plane. 
+      </p>
+               <p>
+	We define an image effect as something that can fill in a rectangle of pixels in this infinite plane, possibly using images defined at other locations
+	on this image plane.
+      </p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch03s04.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center"> </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch04s02.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Main Objects Used by the API </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Regions of Definition</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

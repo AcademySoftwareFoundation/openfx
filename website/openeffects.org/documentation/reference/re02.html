@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>OfxPropertySuiteV1</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="ch15.html#PropertySuiteReference" title="Property Suite"></link>
+      <link rel="prev" href="/documentation/reference/re01.html" title="OfxPropertySetHandle"></link>
+      <link rel="next" href="/documentation/reference/re03.html" title="OfxPropertySuiteV1::propSetPointer"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">
+                     <span class="type">OfxPropertySuiteV1</span>
+                  </th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re01.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Property Suite</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re03.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="refentry">
+            <a id="OfxPropertySuiteV1"></a>
+            <div class="titlepage"></div>
+            <div class="refnamediv">
+               <h2>Name</h2>
+               <p>
+                  <code class="function">OfxPropertySuiteV1</code>
+                  — The OFX suite used to access properties on OFX objects.
+               </p>
+            </div>
+            <div class="refsynopsisdiv">
+               <h2>Synopsis</h2>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">
+#include "ofxProperty.h"
+typedef struct OfxPropertySuiteV1 {
+  OfxStatus (*propSetPointer)(OfxPropertySetHandle properties, const char *property, int index, void *value);
+  OfxStatus (*propSetString) (OfxPropertySetHandle properties, const char *property, int index, const char *value);
+  OfxStatus (*propSetDouble) (OfxPropertySetHandle properties, const char *property, int index, double value);
+  OfxStatus (*propSetInt)    (OfxPropertySetHandle properties, const char *property, int index, int value);
+  OfxStatus (*propSetPointerN)(OfxPropertySetHandle properties, const char *property, int count, void *const*value);
+  OfxStatus (*propSetStringN) (OfxPropertySetHandle properties, const char *property, int count, const char *const*value);
+  OfxStatus (*propSetDoubleN) (OfxPropertySetHandle properties, const char *property, int count, const double *value);
+  OfxStatus (*propSetIntN)    (OfxPropertySetHandle properties, const char *property, int count, const int *value);
+  OfxStatus (*propGetPointer)(OfxPropertySetHandle properties, const char *property, int index, void **value);
+  OfxStatus (*propGetString) (OfxPropertySetHandle properties, const char *property, int index, char **value);
+  OfxStatus (*propGetDouble) (OfxPropertySetHandle properties, const char *property, int index, double *value);
+  OfxStatus (*propGetInt)    (OfxPropertySetHandle properties, const char *property, int index, int *value);
+  OfxStatus (*propGetPointerN)(OfxPropertySetHandle properties, const char *property, int count, void **value);
+  OfxStatus (*propGetStringN) (OfxPropertySetHandle properties, const char *property, int count, char **value);
+  OfxStatus (*propGetDoubleN) (OfxPropertySetHandle properties, const char *property, int count, double *value);
+  OfxStatus (*propGetIntN)    (OfxPropertySetHandle properties, const char *property, int count, int *value);
+  OfxStatus (*propReset)    (OfxPropertySetHandle properties, const char *property);
+  OfxStatus (*propGetDimension)  (OfxPropertySetHandle properties, const char *property, int *count);
+} OfxPropertySuiteV1;
+
+</pre>
+                  </blockquote>
+               </div>
+            </div>
+            <div class="refsect1">
+               <a id="idp13936800"></a>
+               <h2>Description</h2>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/re01.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="ch15.html#PropertySuiteReference">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/re03.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">
+                     <span class="type">OfxPropertySetHandle</span>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top">
+                      
+                     <code class="function">OfxPropertySuiteV1::propSetPointer</code>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

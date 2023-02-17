@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Rendering In An Interactive Environment</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch10.html" title="Chapter 10. Rendering"></link>
+      <link rel="prev" href="/documentation/reference/ch10s04.html" title="OFX : Fields and Field Rendering"></link>
+      <link rel="next" href="/documentation/reference/ch11.html" title="Chapter 11. Interacts"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Rendering In An Interactive Environment</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch10s04.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 10. Rendering</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch11.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="ImageEffectsRenderingAndGUIS"></a>
+                        Rendering In An Interactive Environment
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+	Any host with an interface will most likely have an interactive thread and a rendering thread. This allows
+	an effect to be manipulated while having renders batched off to a background thread. This will mean that some 
+	degree of locking will go on to prevent simultaneous read/writes occuring, see \ref ImageEffectsThreadSafety
+	for more on thread safety.
+      </p>
+            <p>
+               A host may need to abort a backgrounded render, typically in response to a user changing a parameter value. An effect should occasionally poll the
+               <a class="link" href="/documentation/reference/re30.html" title="OfxImageEffectSuiteV1::abort">
+                  <code class="code">OfxImageEffectSuiteV1::abort</code>
+               </a>
+               function to see if it should give up on rendering.
+            </p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch10s04.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch10.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch11.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">OFX : Fields and Field Rendering </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Chapter 11. Interacts</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes 243 |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="KycdK+5eL6C9yVRhZx2ARmjEdXzlRt2JWo11ZuH96E8FPXWYSGoijwgWFowTLzuSPeQBObw7+2uUjGEL9KzpdA==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='row'>
+<div class='col-md-offset-2 col-md-8'>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-warning'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+Distortion/Transform Effects
+<span class='pull-right'>Proposed</span>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Standard version:</b>
+2.0
+</p>
+<p>
+<b>Major Change</b>
+</p>
+<label>Subcommittee</label>
+<p></p>
+<label>Overview</label>
+<p>Some effects are continuous distortions of an image (eg: a lens correction tool), the simplest case being an effect that performs a simple matrix based transform (eg: a stablisation tool).</p>
+<p>A user often applies a series of such effects in a row, and if each effect processes the image, you end up with a significantly degraded image, as each effect will separately filter the image.</p>
+<p>If an effect could report it's transformation to the host, the host could concatenate such multiple distortions and only filter the image being transformed once. This would also be a speed optimisation as only a single pass over the image would be performed.</p>
+<label>Solution</label>
+<p>We have two types of effects, a distortion effect, and a transform effect. Plug-ins advertise (probably via a context?) that they can behave as a distortion or transform.</p>
+<p>Rather than a render action being called on such effects, an action is called to either return a function pointer (for distortion effects) or a homogeneous matrix (for transform effects). These are used by the host application to perform rendering as it sees fit.</p>
+<p>The function would, in essence, take a point in output pixel co-ordinates, and back transform that to the input pixel co-ordinates.</p>
+<p>The matrix would represent a transform a vector (x, y, 0, 1) from output to input.</p>
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-default'>
+<div class='panel-body'>
+<h4 class='text-primary'>Discussion</h4>
+<h5>Comments</h5>
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-297'>
+<div class='content'>
+<p>Frederic,</p>
+<p>This link is interesting (although in domain of scripting)</p>
+<p><a href="http://helga-docs.readthedocs.io/_modules/helga/nuke/reconstruction/sceneReconstructVRay/lib/reconstruct_camera_from_vray_exr.html">http://helga-docs.readthedocs.io/_modules/helga/nuke/reconstruction/sceneReconstructVRay/lib/reconstruct_camera_from_vray_exr.html</a></p>
+<p>&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  1:46 pm,  29 Jan 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-286'>
+<div class='content'>
+<p>Fred,</p>
+<p>Is this something many hosts could do and is it desirable?</p>
+<p>1) The transform matrix -&nbsp;</p>
+<p>to complement this - would be cool if we somehow could access inertial sensor motion data even if not a lot of normal camera spit that out yet (aside phone cameras - latest goPro, garmin, and other action cameras and some video dash cams do spit out relevant data).&nbsp;</p>
+<p>https://developer.android.com/guide/topics/sensors/sensors_motion.html</p>
+<p>https://developer.apple.com/library/content/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/motion_event_basics/motion_event_basics.html</p>
+<p>Already difficulty one - it's a motion matrix or a normal spatial transform matrix, is the source fisheye, rectilinear or equirectangular... &nbsp;is it a 2D matrix, a 3D matrix, a projection matrix? (3x3,4x4,...).&nbsp;</p>
+<p>2) In general I like suite format for revision purposes (so #define don't need to be versioned themselves).&nbsp;</p>
+<p>3) Image Pixel Transform - shouldn't that reside in multi-channel image model? &nbsp;I am worried of too many image callback buried in different places personally.&nbsp;</p>
+<p>&nbsp;</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin | 12:13 am,   4 Jan 2017
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-43' id='cid-285'>
+<div class='content'>
+<p>We proposed a specification for this in the following commit in our fork of the OpenFX repository:</p>
+<p>https://github.com/devernay/openfx/commit/eceec67c21a4ced1b7021217af7102fedc8efaf8</p>
+<p>This is going to be implemented very soon in Natron</p>
+</div>
+</div>
+<div class='author text-muted'>
+Alexandre |  5:04 am,  16 Dec 2016
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-64' id='cid-284'>
+<div class='content'>
+<p>I like the idea of generic distortion function. This could simply be a property on the OfxImage (because it may be time-varying) containing either:</p>
+<ul>
+<li>a transformation matrix</li>
+</ul>
+<p>or:</p>
+<ul>
+<li>a pointer to a distortion function</li>
+<li>+ a pointer to distortion data, to be passed as the first arg to the distortion function (this is opaque, and the underlying data may be simple function parameters, or even a STMap if the transform is very complicated and requires a long computation, but this doesn't have to be any kind of standard ofx type since it's handled by the plugin that created it)</li>
+<li>+ a pointer to a function to free the data (so that proper destructors can be called)</li>
+</ul>
+<p>Distortions can easily be concatenated by the host: the host can easily build a composite function that calls the successive transforms, and pass it through these 3 pointers. If there are matrix transforms in the chain, they can be concatenated by the host too.</p>
+</div>
+</div>
+<div class='author text-muted'>
+Frédéric Devernay |  3:34 am,  15 Dec 2016
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-0' id='cid-228'>
+<div class='content'>
+<ul>
+<li> Pierre Jasmin : in some application this sort of happens in expression space if you like. (Shouldn't this be Matrix parameter(s)?). I forget is there a way for effect to turn off render internally so it's bypassed.</li>
+<li>
+                  Peter Litwinowicz : What about a warping effect that is not based on a matrix or function (like a lens distortion function), how do you report the transformation? Do you report a 2D image of displacement vectors?
+                  <ul><li> Bruno Nicoletti : to Peter, if you can't efficiently return a vector from a function (eg: something based around motion vectors), then returning a displacement image is the way to go, but that needs some sort of deep image format. That is probably a different discussion to this one, as you would still need some sort of render pass to calculate them. This is for the simpler case.</li></ul>
+               </li>
+<li>
+                  Phil Barret : A matrix would be handled correctly and efficiently in Baselight. Need to discuss how we signal to the effect that the input images have already been transformed, and clarify what spaces the ROIs are then in.
+                  <ul><li>
+                        Bruno Nicoletti : I'm not sure what you mean by
+                        <em>already been transformed</em>
+                        ? The whole point is we avoid the render call and the effect doesn't get to see the image at all, so how does it need to know about a transformed image. RoIs are in the co-ordinate system of the effect, however, you wouldn't need to call getRoI on the effect if you have the matrix, as you can calculate it directly.
+                     </li></ul>
+               </li>
+</ul>
+</div>
+</div>
+<div class='author text-muted'>
+unattributed |  9:49 am,   8 Mar 2014
+</div>
+</div>
+
+</div>
+</div>
+
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

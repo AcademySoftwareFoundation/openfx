@@ -1,0 +1,417 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Identifying and Loading Plug-ins</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch02.html" title="Chapter 2. The Generic Core API"></link>
+      <link rel="prev" href="/documentation/reference/ch02s03.html" title="OFX Include Files"></link>
+      <link rel="next" href="/documentation/reference/ch02s05.html" title="The OfxHost Struct"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Identifying and Loading Plug-ins</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch02s03.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 2. The Generic Core API</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch02s05.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="idp11237888"></a>
+                        Identifying and Loading Plug-ins
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>Plug-ins must implement two exported functions for a host to identify the plug-ins and to initiate the boot strapping of communication between the two. These functions are...
+	</p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <code class="code">int OfxGetNumberOfPlugins(void)</code>
+                     - identifies how many plug-ins are implemented in the file,
+                  </li>
+                  <li class="listitem">
+                     <code class="code">OfxPlugin *OfxGetPlugin(int N)</code>
+                     - returns a structure identifying the Nth plug-in in the file.
+                  </li>
+               </ul>
+            </div>
+            <p>
+      </p>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="OfxGetNumberOfPlugins"></a>
+                           OfxGetNumberOfPlugins
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">
+#include "ofxCore.h"
+OfxExport int OfxGetNumberOfPlugins(void); </pre>
+                  </blockquote>
+               </div>
+               <p>This function returns the number of
+	  plug-ins contained in the binary. It is the very first function called
+	  by the host after the binary has been loaded.</p>
+               <p>
+                  This function
+                  <span class="emphasis">
+                     <em>must</em>
+                  </span>
+                  be exported by the binary that contains OFX plug-ins. The
+                  <span class="structname">OfxExport</span>
+                  defined in
+                  <code class="filename">ofxCore.h</code>
+                  is used as an export declaration for those compilers that require it.
+               </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="OfxGetPlugin"></a>
+                           OfxGetPlugin
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">
+#include "ofxCore.h"
+OfxExport OfxPlugin *OfxGetPlugin(int nth); </pre>
+                  </blockquote>
+               </div>
+               <p>
+                  This function returns a pointer to the
+                  <code class="varname">nth</code>
+                  <span class="structname">OfxPlugin</span>
+                  struct in the binary.
+                  <code class="varname">nth</code>
+                  is between 0 and the number returned by
+                  <code class="function">OfxGetNumberOfPlugins</code>
+                  , minus one. The returned structure defines the plug-in to the host.
+               </p>
+               <h5>
+                  <a id="idp11250816"></a>
+                  Preconditions
+               </h5>
+               <p>
+          </p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <code class="function">OfxGetNumberOfPlugins</code>
+                        has been previously called,
+                     </li>
+                     <li class="listitem">
+                        <code class="varname">nth</code>
+                        is between 0 and the value returned by
+                        <code class="function">OfxGetNumberOfPlugins</code>
+                        , minus one.
+                     </li>
+                  </ul>
+               </div>
+               <p>
+        </p>
+               <h5>
+                  <a id="idp11254576"></a>
+                  Postconditions
+               </h5>
+               <p>
+          </p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem"> The returned pointer and pointers in the struct point to valid data whilst the binary is loaded, </li>
+                     <li class="listitem"> The returned pointer and pointers in the struct do not need to be freed in any way by the host. </li>
+                  </ul>
+               </div>
+               <p>
+        </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp11257312"></a>
+                           The OfxPlugin Struct
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>This structure is returned by a plugin to identify itself to the host.</p>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">
+typedef struct OfxPlugin {
+   const char        *pluginApi;
+   int                apiVersion;
+   const char        *pluginIdentifier; 
+   unsigned int       pluginVersionMajor;
+   unsigned int       pluginVersionMinor;
+   void               (*setHost)(OfxHost *host);
+   OfxPluginEntryPoint *mainEntry;
+} OfxPlugin;
+</pre>
+                  </blockquote>
+               </div>
+               <div class="variablelist">
+                  <dl class="variablelist">
+                     <dt>
+                        <span class="term">
+                           <em class="structfield">
+                              <code>pluginApi</code>
+                           </em>
+                        </span>
+                     </dt>
+                     <dd>
+                        <p>This C string tells the host what API the plug-in
+              implements.</p>
+                     </dd>
+                     <dt>
+                        <span class="term">
+                           <em class="structfield">
+                              <code>apiVersion</code>
+                           </em>
+                        </span>
+                     </dt>
+                     <dd>
+                        <p>This integer tells the host which version of its API the
+              plug-in implements.</p>
+                     </dd>
+                     <dt>
+                        <span class="term">
+                           <em class="structfield">
+                              <code>pluginIdentifier</code>
+                           </em>
+                        </span>
+                     </dt>
+                     <dd>
+                        <p>This is the globally unique name for the plug-in.</p>
+                     </dd>
+                     <dt>
+                        <span class="term">
+                           <em class="structfield">
+                              <code>pluginVersionMajor</code>
+                           </em>
+                        </span>
+                     </dt>
+                     <dd>
+                        <p>Major version of this plug-in, this gets incremented
+              whenever software is changed and breaks backwards
+              compatibility.</p>
+                     </dd>
+                     <dt>
+                        <span class="term">
+                           <em class="structfield">
+                              <code>pluginVersionMinor</code>
+                           </em>
+                        </span>
+                     </dt>
+                     <dd>
+                        <p>Minor version of this plug-in, this gets incremented when
+              software is changed, but does not break backwards
+              compatibility.</p>
+                     </dd>
+                     <dt>
+                        <span class="term">
+                           <em class="structfield">
+                              <code>setHost</code>
+                           </em>
+                        </span>
+                     </dt>
+                     <dd>
+                        <p>Function used to set the host pointer (see below) which
+              allows the plug-in to fetch suites associated with the API it
+              implements.</p>
+                     </dd>
+                     <dt>
+                        <span class="term">
+                           <em class="structfield">
+                              <code>mainEntry</code>
+                           </em>
+                        </span>
+                     </dt>
+                     <dd>
+                        <p>The plug-in function that takes messages from the host
+              telling it to do things.</p>
+                     </dd>
+                  </dl>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="idp11272768"></a>
+                           Interpreting the OfxPlugin Struct
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  When a host gets a pointer back from OfxGetPlugin, it examines the string
+                  <em class="structfield">
+                     <code>pluginApi</code>
+                  </em>
+                  . This identifies what kind of plug-in it is. Currently there is only one publicly specified API that uses the OFX mechanism, this is
+                  <code class="literal">"OfxImageEffectPluginAPI"</code>
+                  , which is the image effect API being discussed by this book. More APIs may be created at a future date, for example "OfxImageImportPluginAPI". Knowing the type of plug-in, the host then knows what suites and host handles are required for that plug-in and what functions the plug-in itself will have. The host passes a
+                  <span class="structname">OfxHost</span>
+                  structure appropriate to that plug-in via its
+                  <code class="function">setHost</code>
+                  function. This allows for the same basic architecture to support different plug-in types trivially.
+               </p>
+               <p>
+                  OFX explicitly versions plug-in APIs. By examining the
+                  <em class="structfield">
+                     <code>apiVersion</code>
+                  </em>
+                  , the host knows exactly what set of functions the plug-in is going to supply and what version of what suites it will need to provide. This also allows plug-ins to implement several versions of themselves in the same binary, so it can take advantages of new features in a V2 API, but present a V1 plug-in to older hosts that only support V1.
+               </p>
+               <p>If a host does not support the given plug-in type, or it does
+        not support the given version it should simply ignore that
+        plug-in.</p>
+               <p>
+                  A plug-in needs to uniquely identify itself to a host. This is the job of
+                  <em class="structfield">
+                     <code>pluginIdentifier</code>
+                  </em>
+                  . This null terminated ASCII C string should be unique among all plug-ins, it is not necessarily meant to convey a sensible name to an end user. The recommended format is the reverse domain name format of the developer, for example "uk.co.thefoundry", followed by the developer's unique name for the plug-in. e.g. "uk.co.thefoundry.F_Kronos".
+               </p>
+               <p>
+                  A plug-in (as opposed to the API it implements) is versioned with two separate integers in the
+                  <span class="structname">OfxPlugin</span>
+                  struct. They serve two separate functions and are,
+               </p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <em class="structfield">
+                           <code>pluginVersionMajor</code>
+                        </em>
+                        flags the functionality contained within a plug-in. Incrementing this number means that you have broken backwards compatibility of the plug-in. More specifically, this means a setup from an earlier version, when loaded into this version, will not yield the same result.
+                     </li>
+                     <li class="listitem">
+                        <em class="structfield">
+                           <code>pluginVersionMinor</code>
+                        </em>
+                        flags the release of a plug-in that does not break backwards compatibility, but otherwise enhances that plug-in. For example, increment this when you have fixed a bug or made it faster.
+                     </li>
+                  </ul>
+               </div>
+               <p>If a host encounters multiple versions of the same plug-in it
+        should, </p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+               when creating a brand new instance, always use the version of a plug-in with the greatest major and minor version numbers, 
+            </li>
+                     <li class="listitem">
+               when loading a setup, always use the plug-in with the major version that matches the setup, but has the greatest minor number. 
+            </li>
+                  </ul>
+               </div>
+               <p>As a more concrete example of versioning: the plug-in identified by
+        "org.wibble:Fred" is initially released as 1.0, However a few months
+        later, wibble.org figure out how to make it faster and release it as
+        1.1. A year later, Fred can now do automatically what a user once
+        needed to set up five parameters to do, thus making it much simpler to
+        use. However this breaks backwards compatibility as the effect can no
+        longer produce the same output as before, so wibble.org then release
+        this as v2.0.</p>
+               <p>A user's host might now have three versions of the Fred plug-in
+        on it, v1.0, v1.1 and v2.0. When creating a new instance of the
+        plug-in, the host should always use v2.0. When loading an old project
+        which has a setup from a v1.x plug-in, it should always use the
+        latest, in this case being v1.1.</p>
+               <p>Note that plug-ins can change the set of parameters between
+        minor version releases. If a plug-in does so, it should do so in a
+        backwards compatible manner, such that the default value of any new
+        parameter would yield the same results as previously. See the chapter
+        below about parameters.</p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch02s03.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch02.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch02s05.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">OFX Include Files </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> The OfxHost Struct</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

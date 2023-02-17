@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Standard Changes Binary Custom Params |  The Open Effects Association</title>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/ofx_favicon-c6cb586c0f8efbaeff3167d1fd7cfca2.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-8fbc3aa4b380a52e15d414a59177d3a2.css" />
+<script src="/assets/application-f474998312dbf9d63cf3d555583ac5a1.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="Z5DULDg2iCSECooC4tedaL2xilZZZD6ZSt7NelptBrpJiryfngKFCzHVyO+W5Sa86JH+EwAZGHuE39kXTzwHgQ==" />
+<meta content='IE=edge' http_equiv='X-UA-Compatible'>
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+<script src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+</head>
+<body class='c_standard_changes a_show' data-spy='scroll' data-target='.navbar-top' role='document'>
+<div class='modal fade' id='terminal'>
+<div class='modal-dialog modal-lg'>
+<div class='modal-content'>
+<div class='modal-header'>
+<div aria-hidden='true' class='button close' data-dismiss='modal' type='button'>&times;</div>
+<h4 class='modal-title'>Terminal Output</h4>
+</div>
+<div class='modal-body'>
+<div class='window'></div>
+</div>
+</div>
+</div>
+</div>
+<div class='wrapper'>
+<div class='navbar navbar-inverse navbar-fixed-top' role='components'>
+<div class='container'>
+<div class='navbar-header'>
+<button class='navbar-toggle' data-target='.navbar-collapse' data-toggle='collapse' type='button'>
+<span class='sr-only'>Toggle components</span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+<span class='icon-bar'></span>
+</button>
+</div>
+<div class='navbar-collapse collapse'>
+<div class='row'>
+<div class='navbar-left'>
+<div class='navbar-top'>
+<div class='mobile'>
+<ul class='nav navbar-nav'>
+<li><a href="/">Welcome</a></li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+<div class='desktop'>
+<ul class='nav navbar-nav'>
+<li class='nav-logo'>
+<a class="navbar-link" href="/"><img src="/assets/OFX_small-41bc647075217376f758003aebeacf15.png" alt="Ofx small" /></a>
+</li>
+<li class='dropdown'>
+<a href="/">Welcome <span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" href="#standard">Why a Standard?</a>
+</li>
+<li>
+<a class="navbar-link" href="#implementers">For Implementers</a>
+</li>
+<li>
+<a class="navbar-link" href="#organization">Association Business</a>
+</li>
+</ul>
+</li>
+<li class='dropdown api'>
+<a class='navbar-link'>API Documentation <span class="glyphicon glyphicon-circle-arrow-down"></span></a>
+<ul class='dropdown-menu inverse-dropdown'>
+<li>
+<a class="navbar-link" target="_blank" href="/documentation/api_doc">API Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Reference/index.html">Programming Reference</a>
+</li>
+<li>
+<a class="navbar-link" target="_blank" href="https://openfx.readthedocs.io/en/doc/Guide/index.html">Programming Guide</a>
+</li>
+</ul>
+</li>
+<li><a class="navbar-link" href="/standard_changes">Standards Discussion</a></li>
+<li><a class="navbar-link" href="/contact_form">Contact</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='desktop'>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class='container' role='main'>
+</div>
+<div class='container'>
+<div class='row'>
+<div class='col-md-offset-2 col-md-8'>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-warning'>
+<div class='panel-heading'>
+<h3 class='panel-title'>
+Binary Custom Params
+<span class='pull-right'>Proposed</span>
+</h3>
+</div>
+<div class='panel-body'>
+<p>
+<b>Standard version:</b>
+1.5
+</p>
+<p>
+<b>Minor Change</b>
+</p>
+<label>Subcommittee</label>
+<p></p>
+<label>Overview</label>
+<p dir="ltr"><span>Plugins with private data currently save their values into custom params, which are simply strings. It would be more efficient to allow plugins to encode/decode serialised data with a binary blob.</span></p>
+<p><span>&nbsp;</span></p>
+<p>&nbsp;</p>
+<label>Solution</label>
+<p dir="ltr"><span>We add another param type, </span><span>kOfxParamTypeBinaryBlob</span><span>, which can be used to store binary data. &nbsp;Such params have the following properties&hellip;.</span></p>
+<ul>
+<li dir="ltr">
+<p dir="ltr"><em>kOfxPropDataSize</em><span> - 64 bit unsigned integer indicating the size of the blob</span></p>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p><strong>Question?</strong></p>
+<p>Do we&nbsp;need another suite to manage binary data blobs, basically allocating and freeing the things. Or should we just use the memory suite and allow allocation from that?</p>
+<p>&nbsp;</p>
+</div>
+</div>
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+<br>
+<br>
+<div class='panel panel-default'>
+<div class='panel-body'>
+<h4 class='text-primary'>Discussion</h4>
+<h5>Comments</h5>
+<div class='well well-sm'>
+<div class='comment user-11' id='cid-251'>
+<div class='content'>
+<p>(Pierre Jasmin): This needs more general discussion. To recap we have an FR for signing customData (so it does not need to generate excessive synch data - which should be just to save to disk and similar). We have transient data (internal cache) that can be frame dependent (e.g. a cache per input frame time requested) - by transient we mean is not to be stored in project. This can be a way to speed up interaction for example. It's not necesary image buffers.&nbsp; And we have internal database structures that are not necessarily fully saved as parameters (or savable as). This (or something) should be writable during render call for the render multiple frames at once type of scenario.</p>
+<p>I think this could be useful&nbsp; - but perhaps if I could lock this during UI to update and force an abort during render (so the same pointer is passed to render thread(s)). Right now in render thread abort() is something the host requests, there is not a designated return message to force rerender. What I am describing could be an indirect way for us to deal with hosts that don't implement abort as well. ?</p>
+<p>To answer Paul,&nbsp; I don't think right now (although it's not documented you can't) we can write to InstanceData in render call for example. This is known to have no effect in some hosts of course.</p>
+</div>
+</div>
+<div class='author text-muted'>
+Pierre Jasmin |  5:48 pm,   6 Jun 2015
+</div>
+</div>
+
+<div class='well well-sm'>
+<div class='comment user-29' id='cid-236'>
+<div class='content'>
+<p>Are you suggesting the blobs would handle&nbsp;ownership of memory allocated by the plugin, to avoid copying? I'm not sure if the added complexity of this is better than&nbsp;a simple copy on write,&nbsp;assuming read&nbsp;could be just passing a pointer back.</p>
+</div>
+</div>
+<div class='author text-muted'>
+Paul Miller |  8:51 am,  24 Feb 2015
+</div>
+</div>
+
+</div>
+</div>
+
+<div class='btn-group'>
+<a type="button" class="btn btn-default" href="/standard_changes"><span class='glyphicon glyphicon-circle-arrow-left'></span> Back to standard change list</a>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class='push'></div>
+</div>
+<footer>
+<ul class='footer-link-group'>
+<li>
+<a target="_blank" class="footer-link" href="https://github.com/ofxa/openfx">OFX @ Github</a>
+</li>
+<li>
+<a title="Association details" class="footer-link" href="/contents/page/association_information">Association Information</a>
+</li>
+</ul>
+<br>
+Copyright  &copy;2023 The Open Effects Association
+</footer>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Chapter 1. Structure of The OFX and the Image Effect API</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="prev" href="/documentation/reference/pr01.html" title="Foreword"></link>
+      <link rel="next" href="/documentation/reference/ch01s02.html" title="OFX APIs"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Chapter 1. Structure of The OFX and the Image Effect API</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/pr01.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center"> </th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch01s02.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="chapter">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h1 class="title">
+                        <a id="idp11120672"></a>
+                        Chapter 1. Structure of The OFX and the Image Effect API
+                     </h1>
+                  </div>
+               </div>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">
+                           <a id="idp11121184"></a>
+                           The Structure Of The Generic OFX API
+                        </h2>
+                     </div>
+                  </div>
+               </div>
+               <p>
+	OFX is actually several things. At its base it is a generic plug-in architecture which can be used to implement a variety of
+	plug-in APIs. The first such API to be implemented on the core architecture is the OFX Image Effect Plug-in API.
+      </p>
+               <p>
+	It is all specified using the 'C' programming language. C and C++ are the languages mainly used to write visual effects applications (the initial target for OFX plug-in APIs) and have a very wide adoption across most operating systems with many available compilers. By making the API C, rather than C++, you remove the whole set of problems around C++ symbol mangling between the host and plug-in.
+      </p>
+               <p>
+	APIs are defined in OFX by only a set of C header files and associated documentation. There are no binary libraries for a plug-in or host to link against.
+      </p>
+               <p>
+	Hosts rely on two symbols within a plug-in, all other communication is boot strapped from those two symbols. The plug-in has no symbolic dependancies from the host. This minimal symbolic dependancy allows for run-time determination of what features to provide over the API, making implementation much more flexible and less prone to backwards compatibility problems.
+      </p>
+               <p>
+	Plug-ins, via the two exposed symbols, indicate the API they implement, the version of the API, their name, their version and their main entry point.
+      </p>
+               <p>
+	A host communicates with a plug-in via sending 'actions' to the plug-in's main entry function. Actions are C strings that indicate the specific operation to be carried out. They are associated with sets of properties, which allows the main entry function to behave as a generic function.
+      </p>
+               <p>
+	A plug-in communicates with a host by using sets of function pointers given it by the host. These sets of function pointers, known as 'suites', are named via a C string and a version number. They are returned on request from the host as pointers within a C struct.
+      </p>
+               <p>
+                  Properties are typed value/name pairs that exist on the various OFX objects and are action argument values to the plug-in's main entry point. They are how a plug-in and host pass individual values back and forth to each other. The property suite, defined inside
+                  <code class="filename">ofxProperty.h</code>
+                  is used to do this.
+               </p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/pr01.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center"> </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch01s02.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Foreword </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> OFX APIs</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

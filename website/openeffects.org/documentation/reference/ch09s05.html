@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>Parameter Interfaces</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch09.html" title="Chapter 9. Effect Parameters"></link>
+      <link rel="prev" href="/documentation/reference/ch09s04.html" title="Animation"></link>
+      <link rel="next" href="/documentation/reference/ch09s06.html" title="XML Resource Specification for Parameters"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">Parameter Interfaces</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch09s04.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 9. Effect Parameters</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch09s06.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="ParametersInterfaces"></a>
+                        Parameter Interfaces
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+      Parameters will be presented to the user in some form of interface. Typically on most host systems, this comes in three varieties...
+      </p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">a paged layout, with parameters spread over multiple controls pages (eg: the FLAME control pages)</li>
+                  <li class="listitem">a hierarchical layout, with parameters presented in a grouped tree (eg: the After Effects 'effects' window)</li>
+                  <li class="listitem">an animation sheet, showing animation curves and key frames. Typically this is hierarchical.</li>
+               </ul>
+            </div>
+            <p>
+    </p>
+            <p>
+      Most systems have an animation sheet and present one of either the paged or the hierarchical layouts. 
+    </p>
+            <p>
+      Because a hierarchy of controls is explicitly set during plugin definition, the case of the animation sheet and hierarchial GUIs are taken care of explicitly.
+    </p>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="ParametersInterfacesPagedLayouts"></a>
+                           Paged Parameter Editors
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+                  A paged layout of controls is difficult to standardise, as the size of the page and controls, how the controls are positioned on the page, how many controls appear on a page etc... depend very much upon the host implementation. A paged layout is ideally best described in the .XML resource supplied by the plugin, however a fallback page layout can be specified in OFX via the
+                  <code class="code">kOfxParamTypePage</code>
+                  parameter type.
+               </p>
+               <p>
+	Several host properties are associated with paged layouts, these are...
+	</p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re171.html" title="kOfxParamHostPropMaxPages">
+                           <code class="code">kOfxParamHostPropMaxPages</code>
+                        </a>
+                        - the maximum number of pages you may use, 0 implies an unpaged layout
+                     </li>
+                     <li class="listitem">
+                        <a class="link" href="/documentation/reference/re173.html" title="kOfxParamHostPropPageRowColumnCount">
+                           <code class="code">kOfxParamHostPropPageRowColumnCount</code>
+                        </a>
+                        - the number of rows and columns for parameters in the paged layout.
+                     </li>
+                  </ul>
+               </div>
+               <p>
+      </p>
+               <p>
+                  Each page parameter represents a page of controls. The controls in that page are set by the plugin using the
+                  <a class="link" href="/documentation/reference/re211.html" title="kOfxParamPropPageChild">
+                     <code class="code">kOfxParamPropPageChild</code>
+                  </a>
+                  multi-dimensional string. For example...
+               </p>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">OfxParamHandle  page;
+gHost-&gt;paramDefine(plugin, kOfxParamTypePage, "Main", &amp;page);
+	  
+propHost-&gt;propSetString(page, kOfxParamPropPageChild, 0, "size");      // add the size parameter to the top left of the page
+propHost-&gt;propSetString(page, kOfxParamPropPageChild, 1, kOfxParamPageSkipRow); // skip a row
+propHost-&gt;propSetString(page, kOfxParamPropPageChild, 2, "centre");    // add the centre parameter
+propHost-&gt;propSetString(page, kOfxParamPropPageChild, 3, kOfxParamPageSkipColumn); // skip a column, we are now at the top of the next column
+propHost-&gt;propSetString(page, kOfxParamPropPageChild, 4, "colour"); // add the colour parameter </pre>
+                  </blockquote>
+               </div>
+               <p>
+	The host then places the parameters on that page in the order they were added, starting at the top left and going down columns, then across rows as they fill.
+      </p>
+               <p>
+                  Note that there are two pseudo parameters names used to help control layout, the
+                  <code class="code">kOfxParamPageSkipRow</code>
+                  and
+                  <code class="code">kOfxParamPageSkipColumn</code>
+                  . These will help control how parameters are added to a page, allowing vertical or horizontal slots to be skipped.
+               </p>
+               <p>
+                  A host sets the order of pages by using the instance's
+                  <a class="link" href="/documentation/reference/re227.html" title="kOfxPluginPropParamPageOrder">
+                     <code class="code">kOfxPluginPropParamPageOrder</code>
+                  </a>
+                  property. Note that this property can vary from context to context, so you can exclude pages in contexts they are not useful in. For example...
+               </p>
+               <div class="blockquote">
+                  <blockquote class="blockquote">
+                     <pre class="programlisting">OfxStatus describeInContext(OfxImageEffectHandle plugin)
+{
+...
+    // order our pages of controls
+    propHost-&gt;propSetString(paramSetProp, kOfxPluginPropParamPageOrder, 0, "Main");
+    propHost-&gt;propSetString(paramSetProp, kOfxPluginPropParamPageOrder, 1, "Sampling");
+    propHost-&gt;propSetString(paramSetProp, kOfxPluginPropParamPageOrder, 2, "Colour Correction");
+    if(isGeneralContext)
+       propHost-&gt;propSetString(paramSetProp, kOfxPluginPropParamPageOrder, 3, "Dance! Dance! Dance!");
+...
+} </pre>
+                  </blockquote>
+               </div>
+               <h5>
+                  <a id="idp11907008"></a>
+                  Note
+               </h5>
+               <p>
+	</p>
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+                        parameters
+                        <span class="emphasis">
+                           <em>can</em>
+                        </span>
+                        be placed on more than a single page (this is often useful),
+                     </li>
+                     <li class="listitem">group parameters cannot be added to a page,</li>
+                     <li class="listitem">page parameters cannot be added to a page or group.</li>
+                  </ul>
+               </div>
+               <p>
+      </p>
+            </div>
+            <div class="section">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title">
+                           <a id="ParametersInterfacesUndoRedo"></a>
+                           Parameter Undo/Redo
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p>
+	Hosts usually retain an undo/redo stack, so users can undo changes they make to a parameter. Often undos and redos are grouped together into an undo/redo block, where multiple parameters are dealt with as a single undo/redo event. Plugins need to be able to deal with this cleanly. 
+      </p>
+               <p>
+                  Parameters can be excluded from being undone/redone if they set the
+                  <a class="link" href="/documentation/reference/re182.html" title="kOfxParamPropCanUndo">
+                     <code class="code">kOfxParamPropCanUndo</code>
+                  </a>
+                  property to 0.
+               </p>
+               <p>
+                  If the plugin changes parameters' values by calling the get and set value functions, they will ordinarily be put on the undo stack, one event per parameter that is changed. If the plugin wants to group sets of parameter changes into a single undo block and label that block, it should use the
+                  <a class="link" href="/documentation/reference/re60.html" title="OfxParameterSuiteV1::paramEditBegin">
+                     <code class="code">OfxParameterSuiteV1::paramEditBegin</code>
+                  </a>
+                  and
+                  <a class="link" href="/documentation/reference/re61.html" title="OfxParameterSuiteV1::paramEditEnd">
+                     <code class="code">OfxParameterSuiteV1::paramEditEnd</code>
+                  </a>
+                  functions.
+               </p>
+               <p>
+                  An example would be a 'preset' choice parameter in a sky simulation whose job is to set other parameters to values that achieve certain looks, eg "Dusk", "Midday", "Stormy", "Night" etc... This parameter has a value change callback which looks for
+                  <code class="code">kOfxParamEventUserEdited</code>
+                  then sets other parameters, sky colour, cloud density, sun position etc.... It also resets itself to the first choice, which says "Example Skys...".
+               </p>
+               <p>
+                  Rather than have many undo events appear on the undo stack for each individual parameter change, the effect groups them via the paramEditBegin/paramEditEnd and gets a single undo event. The 'preset' parameter would also not want to be undoable as it such an event is redunant. Note that as the 'preset' has been changed it will be sent another instance changed action, however it will have a reason of
+                  <code class="code">kOfxChangePluginEdited</code>
+                  , which it ignores and so stops an infinite loop occuring.
+               </p>
+            </div>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch09s04.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch09.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch09s06.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">Animation </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> XML Resource Specification for Parameters</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

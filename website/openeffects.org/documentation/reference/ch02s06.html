@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+      <title>The Plug-in Main Entry Point And Actions</title>
+      <link rel="stylesheet" type="text/css" href="/assets/ofxStyle.css"></link>
+      <meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></meta>
+      <link rel="home" href="/documentation/reference/index.html" title="The OFX Image Effect Plug-in API, 1.4, Programming Reference."></link>
+      <link rel="up" href="/documentation/reference/ch02.html" title="Chapter 2. The Generic Core API"></link>
+      <link rel="prev" href="/documentation/reference/ch02s05.html" title="The OfxHost Struct"></link>
+      <link rel="next" href="/documentation/reference/ch02s07.html" title="Suites"></link>
+      <link rel="stylesheet" type="text/css" href="/assets/ofx-docbook-nav.css"></link>
+   </head>
+   <body>
+      <div id="ofx-main-nav">
+         <ul>
+            <li>
+               <a href="/">
+                  <img alt="Ofx small" src="/assets/OFX_small.png"></img>
+               </a>
+            </li>
+            <li>
+               <a href="/">
+                  Back to Main Site
+                  <span class="glyph"></span>
+               </a>
+            </li>
+            <li>
+               <a href="/documentation/api_doc">API Reference</a>
+            </li>
+            <li>
+               <a href="/documentation/reference">Programming Reference</a>
+            </li>
+            <li>
+               <a href="https://github.com/ofxa/openfx/blob/master/Guide/Doc/ofxProgrammingGuide.adoc">Programming Guide</a>
+            </li>
+         </ul>
+      </div>
+      <div class="wrapper" id="reference">
+         <div class="navheader">
+            <table width="100%" summary="Navigation header">
+               <tr>
+                  <th colspan="3" align="center">The Plug-in Main Entry Point And Actions</th>
+               </tr>
+               <tr>
+                  <td width="20%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch02s05.html">Prev</a>
+                      
+                  </td>
+                  <th width="60%" align="center">Chapter 2. The Generic Core API</th>
+                  <td width="20%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch02s07.html">Next</a>
+                  </td>
+               </tr>
+            </table>
+            <hr></hr>
+         </div>
+         <div class="section">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both">
+                        <a id="mainEntryPoint"></a>
+                        The Plug-in Main Entry Point And Actions
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p>
+               Actions are how a host communicates with a plug-in. They are in effect generic function calls. Actions are issued via a plug-in's
+               <code class="function">mainEntry</code>
+               function pointer found in its
+               <code class="code">OfxPlugin</code>
+               struct. The function signature for the main entry point is...
+            </p>
+            <div class="blockquote">
+               <blockquote class="blockquote">
+                  <pre class="programlisting">
+#include "ofxCore.h"
+typedef  OfxStatus (OfxPluginEntryPoint)(const char *action, const void *handle, OfxPropertySetHandle inArgs, OfxPropertySetHandle outArgs); </pre>
+               </blockquote>
+            </div>
+            <p> Where,
+	</p>
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+                     <code class="code">action</code>
+                     is a C string indicating the action to be taken,
+                  </li>
+                  <li class="listitem">
+                     <code class="code">handle</code>
+                     is a handle to an object appropriate to that action, cast to
+                     <code class="code">void *</code>
+                     ,
+                  </li>
+                  <li class="listitem">
+                     <code class="code">inArgs</code>
+                     are a set of properties used as arguments to that action,
+                  </li>
+                  <li class="listitem">
+                     <code class="code">outArgs</code>
+                     are a set of properties the plug-in should modify during the action.
+                  </li>
+               </ul>
+            </div>
+            <p>
+      </p>
+            <p>
+               The
+               <code class="code">OfxStatus</code>
+               value returned is dependant upon the action being called, however the value
+               <code class="code">kOfxStatReplyDefault</code>
+               is returned if the plug-in does not trap the action.
+            </p>
+            <p>The exact set of actions passed to a plug-in's entry point are dependent upon the API the plug-in implements. However, there exists a core set of generic actions that most APIs would use.</p>
+         </div>
+         <div class="navfooter">
+            <hr></hr>
+            <table width="100%" summary="Navigation footer">
+               <tr>
+                  <td width="40%" align="left">
+                     <a accesskey="p" href="/documentation/reference/ch02s05.html">Prev</a>
+                      
+                  </td>
+                  <td width="20%" align="center">
+                     <a accesskey="u" href="/documentation/reference/ch02.html">Up</a>
+                  </td>
+                  <td width="40%" align="right">
+                      
+                     <a accesskey="n" href="/documentation/reference/ch02s07.html">Next</a>
+                  </td>
+               </tr>
+               <tr>
+                  <td width="40%" align="left" valign="top">The OfxHost Struct </td>
+                  <td width="20%" align="center">
+                     <a accesskey="h" href="/documentation/reference/index.html">Home</a>
+                  </td>
+                  <td width="40%" align="right" valign="top"> Suites</td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>
