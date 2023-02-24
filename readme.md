@@ -46,12 +46,14 @@ You can build the examples, support lib, and host support lib using Conan and CM
 
 ## Prerequisites
 
-Install conan and cmake:
-- Mac: `brew install cmake conan`
-- Windows: `choco install cmake conan`
-- Linux: `apt install cmake conan`
+Install cmake:
+- Mac: `brew install cmake`
+- Windows: `choco install cmake`
+- Linux: `apt install cmake`
 
-On all OSes, you can instead install conan using `pip3 install conan` if you have python3 installed. Either should work.
+Install conan using pip (and python3) -- we still require conan v1, although conan v2 has been released:
+- `pip3 install conan==1.59.0`
+
 
 ## Build
 
@@ -59,7 +61,7 @@ On all OSes, use the same process:
 
 ```sh
 # Install dependencies from conanfile.py
-% conan install -if Build .
+% conan install -if Build --build=missing .
 # Configure cmake to build into Build folder, and build example plugins
 % cmake -S . -B Build -DBUILD_EXAMPLE_PLUGINS=1
 # Do the build
