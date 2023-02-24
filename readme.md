@@ -40,6 +40,34 @@ The Open Effects Association (OFX), a non-profit organization, develops and prom
 
 The Association's initial focus is to improve the OpenFX image processing plug-in standard. This goal of this standard is to reduce development effort and support needed for plug-ins across different compositing and editing host platforms.
 
+# Building
+
+You can build the examples, support lib, and host support lib using Conan and CMake
+
+## Prerequisites
+
+Install conan and cmake:
+- Mac: `brew install cmake conan`
+- Windows: `choco install cmake conan`
+- Linux: `apt install cmake conan`
+For all OSes, you can instead install conan using `pip3 install conan` if you have python3 installed.
+
+## Build
+
+On all OSes, use the same process:
+
+```sh
+% conan install . # install dependencies from conanfile.py
+% cmake -S . -B Build # configure cmake to build into Build folder
+% cmake --build Build
+```
+
+This should build with the default Visual Studio on Windows and
+Makefiles with gcc on Linux and Mac. You can use alternative build
+systems supported by CMake like `ninja` if you want (not covered
+here).
+
+
 # Building Docs
 
 See instructions in Documentation/README.md.
