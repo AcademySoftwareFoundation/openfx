@@ -50,15 +50,19 @@ Install conan and cmake:
 - Mac: `brew install cmake conan`
 - Windows: `choco install cmake conan`
 - Linux: `apt install cmake conan`
-For all OSes, you can instead install conan using `pip3 install conan` if you have python3 installed.
+
+On all OSes, you can instead install conan using `pip3 install conan` if you have python3 installed. Either should work.
 
 ## Build
 
 On all OSes, use the same process:
 
 ```sh
-% conan install -if Build . # install dependencies from conanfile.py
-% cmake -S . -B Build -DBUILD_EXAMPLE_PLUGINS=1 # configure cmake to build into Build folder
+# Install dependencies from conanfile.py
+% conan install -if Build .
+# Configure cmake to build into Build folder, and build example plugins
+% cmake -S . -B Build -DBUILD_EXAMPLE_PLUGINS=1
+# Do the build
 % cmake --build Build
 ```
 
