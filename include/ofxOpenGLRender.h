@@ -2,7 +2,7 @@
 #ifndef _ofxOpenGLRender_h_
 #define _ofxOpenGLRender_h_
 
-// Copyright Contributors to the OpenFX project.
+// Copyright OpenFX and Contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
 
 #ifdef __cplusplus

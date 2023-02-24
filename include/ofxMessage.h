@@ -3,7 +3,7 @@
 
 #include "ofxCore.h"
 
-// Copyright Contributors to the OpenFX project.
+// Copyright OpenFX and contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
 
 

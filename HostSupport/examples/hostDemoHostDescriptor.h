@@ -1,4 +1,4 @@
-// Copyright Contributors to the OpenFX project.
+// Copyright OpenFX and contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
 #ifndef HOST_DEMO_HOST_DESCRIPTOR_H
 #define HOST_DEMO_HOST_DESCRIPTOR_H

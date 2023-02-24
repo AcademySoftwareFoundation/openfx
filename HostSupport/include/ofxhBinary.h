@@ -1,7 +1,7 @@
 #ifndef OFX_BINARY_H
 #define OFX_BINARY_H
 
-// Copyright Contributors to the OpenFX project.
+// Copyright OpenFX and contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
 #include <string>
 #include <iostream>

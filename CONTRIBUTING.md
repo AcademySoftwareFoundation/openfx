@@ -1,5 +1,5 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
-<!-- Copyright Contributors to the OpenFX Project. -->
+<!-- Copyright OpenFX and contributors to the OpenFX project. -->
 # Contributing to OpenFX
 
 Thank you for your interest in contributing to OpenFX. This document

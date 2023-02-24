@@ -1,6 +1,6 @@
 #ifndef _ofxsMultiThread_H_
 #define _ofxsMultiThread_H_
-// Copyright Contributors to the OpenFX project.
+// Copyright OpenFX and contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
 
 /** @file This file contains core code that wraps OFX 'objects' with C++ classes.

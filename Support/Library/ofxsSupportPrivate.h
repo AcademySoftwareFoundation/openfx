@@ -1,4 +1,4 @@
-// Copyright Contributors to the OpenFX project.
+// Copyright OpenFX and contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
 
 #ifndef _ofxsSupportPrivate_H_

@@ -1,7 +1,7 @@
 #ifndef OFX_XML_H
 #define OFX_XML_H
 
-// Copyright Contributors to the OpenFX project.
+// Copyright OpenFX and contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
 
 namespace OFX {
