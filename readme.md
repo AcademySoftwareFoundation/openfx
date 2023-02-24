@@ -57,8 +57,8 @@ For all OSes, you can instead install conan using `pip3 install conan` if you ha
 On all OSes, use the same process:
 
 ```sh
-% conan install . # install dependencies from conanfile.py
-% cmake -S . -B Build # configure cmake to build into Build folder
+% conan install -if Build . # install dependencies from conanfile.py
+% cmake -S . -B Build -DBUILD_EXAMPLE_PLUGINS=1 # configure cmake to build into Build folder
 % cmake --build Build
 ```
 
