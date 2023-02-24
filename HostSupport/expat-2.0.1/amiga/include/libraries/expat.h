@@ -1,7 +1,7 @@
 #ifndef LIBRARIES_EXPAT_H
 #define LIBRARIES_EXPAT_H
 
-// Copyright Contributors to the OpenFX project.
+// Copyright OpenFX and contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
 
 

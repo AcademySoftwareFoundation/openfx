@@ -8,7 +8,7 @@ oldcopyright = rb"""/\*
 
 print(oldcopyright[0:20])
 
-newcopyright = b"""// Copyright Contributors to the OpenFX project.
+newcopyright = b"""// Copyright OpenFX and contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
 """
 

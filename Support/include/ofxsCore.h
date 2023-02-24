@@ -1,6 +1,6 @@
 #ifndef _ofxsCore_H_
 #define _ofxsCore_H_
-// Copyright Contributors to the OpenFX project.
+// Copyright OpenFX and contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
 
 
@@ -35,7 +35,7 @@ The OFX::ImageEffect class has a set of members you can override to do various t
 
 @section license Copyright and License
 
-The library is Copyright Contributors to the OpenFX project, and was
+The library is Copyright OpenFX and contributors to the OpenFX project. and was
 written by Bruno Nicoletti (bruno@thefoundry.co.uk).
 
 It has been released under the GNU Lesser General Public License, see the
