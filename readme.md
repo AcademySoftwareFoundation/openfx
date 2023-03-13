@@ -52,7 +52,7 @@ Install cmake:
 - Linux: `apt install cmake`
 
 Install conan using pip (and python3) -- we still require conan v1, although conan v2 has been released:
-- `pip3 install conan==1.59.0`
+- `pip3 install conan<2.0.0`
 
 
 ## Build
@@ -61,11 +61,13 @@ On all OSes, use the same process:
 
 ```sh
 # Install dependencies from conanfile.py
-% conan install -if Build --build=missing .
+% conan install -s build_type=Release --build=missing .
 # Configure cmake to build into Build folder, and build example plugins
-% cmake -S . -B Build -DBUILD_EXAMPLE_PLUGINS=1
+# Note: The preset name is platform and conan version dependent. The preset name for your specific platform will be printed by the "conan install" command.
+% cmake --preset default -DBUILD_EXAMPLE_PLUGINS=TRUE
 # Do the build
-% cmake --build Build
+# Note: The build directory is also generator specific. If the preset name is something like "release", then you'll likely need to use "--build build/Release" instead of "--build build"
+% cmake --build build --config Release
 ```
 
 This should build with the default Visual Studio on Windows and

@@ -18,4 +18,5 @@ target_link_libraries(OfxHost PUBLIC ${CONAN_LIBS})
 
 target_include_directories(OfxHost PUBLIC
 	${OFX_HEADER_DIR}
-	${OFX_HOSTSUPPORT_HEADER_DIR})
+	${OFX_HOSTSUPPORT_HEADER_DIR}
+	${expat_INCLUDE_DIR})

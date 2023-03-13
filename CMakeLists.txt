@@ -12,8 +12,8 @@ endif()
 option(BUILD_EXAMPLE_PLUGINS "Build example plugins" OFF)
 
 # Flags
-if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWINDOWS -DNOMINMAX")
+if(MSVC OR MSYS OR MINGW)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWINDOWS -DWIN32 -DNOMINMAX")
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations")
 endif()
