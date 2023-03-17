@@ -18,14 +18,14 @@ endif()
 function(add_ofx_plugin TARGET)
 	if(${ARGC} GREATER 1)
 	  set(DIR ${ARGN})
-        else()
+	else()
 	  set(DIR ${TARGET})
-        endif()
-        if(APPLE)
-        	add_library(${TARGET} MODULE) # build as an OSX bundle
-        else()
-        	add_library(${TARGET} SHARED) # build as shared lib/DLL
-        endif()
+	endif()
+	if(APPLE)
+	  add_library(${TARGET} MODULE) # build as an OSX bundle
+	else()
+	  add_library(${TARGET} SHARED) # build as shared lib/DLL
+	endif()
 	set_target_properties(${TARGET} PROPERTIES SUFFIX ".ofx" PREFIX "")
 
 	if(NOT DEFINED OFX_SUPPORT_SYMBOLS_DIR)
