@@ -624,7 +624,7 @@ namespace OFX {
       }
 
       /// overridden from Property::NotifyHook
-      void Instance::notify(const std::string &name, bool /*single*/, int /*num*/) OFX_EXCEPTION_SPEC
+      void Instance::notify(const std::string &name, bool /*single*/, int /*num*/)
       {
         if (name == kOfxPropLabel) {
           setLabel();
@@ -783,7 +783,7 @@ namespace OFX {
       }
       
       /// overridden from Instance
-      void ChoiceInstance::notify(const std::string &name, bool single, int num) OFX_EXCEPTION_SPEC
+      void ChoiceInstance::notify(const std::string &name, bool single, int num)
       {
         Instance::notify(name, single, num);
         if (name == kOfxParamPropChoiceOption) {

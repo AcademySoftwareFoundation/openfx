@@ -13,7 +13,7 @@
 
 namespace OFX {
   /** @brief Throws an @ref OFX::Exception depending on the status flag passed in */
-  void throwSuiteStatusException(OfxStatus stat) throw(OFX::Exception::Suite, std::bad_alloc)
+  void throwSuiteStatusException(OfxStatus stat)
   {
     switch (stat) 
     {
@@ -43,7 +43,7 @@ namespace OFX {
     }
   }
 
-  void throwHostMissingSuiteException(std::string name) throw(OFX::Exception::Suite)
+  void throwHostMissingSuiteException(std::string name)
   {
 #  ifdef DEBUG
     std::cout << "Threw suite exception! Host missing '" << name << "' suite." << std::endl;
@@ -90,7 +90,7 @@ namespace OFX {
   /** @brief namespace for memory allocation that is done via wrapping the ofx memory suite */
   namespace Memory {
     /** @brief allocate n bytes, returns a pointer to it */
-    void *allocate(size_t nBytes, ImageEffect *effect) throw(std::bad_alloc)
+    void *allocate(size_t nBytes, ImageEffect *effect)
     {
       void *data = 0;
       OfxStatus stat = OFX::Private::gMemorySuite->memoryAlloc((void *)(effect ? effect->getHandle() : 0), nBytes, &data);

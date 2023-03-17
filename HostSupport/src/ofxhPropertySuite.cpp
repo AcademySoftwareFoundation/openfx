@@ -25,56 +25,56 @@ namespace OFX {
       const char *gTypeNames[] = {"int", "double", "string", "pointer" };
 
       /// this does some magic so that it calls get string/int/double/pointer appropriately
-      template<> int GetHook::getProperty<IntValue>(const std::string &name, int index) const OFX_EXCEPTION_SPEC
+      template<> int GetHook::getProperty<IntValue>(const std::string &name, int index) const
       {
         return getIntProperty(name, index);
       }
 
       /// this does some magic so that it calls get string/int/double/pointer appropriately
-      template<> double GetHook::getProperty<DoubleValue>(const std::string &name, int index) const OFX_EXCEPTION_SPEC
+      template<> double GetHook::getProperty<DoubleValue>(const std::string &name, int index) const
       {
         return getDoubleProperty(name, index);
       }
       
       /// this does some magic so that it calls get string/int/double/pointer appropriately
-      template<> void *GetHook::getProperty<PointerValue>(const std::string &name, int index) const OFX_EXCEPTION_SPEC
+      template<> void *GetHook::getProperty<PointerValue>(const std::string &name, int index) const
       {
         return getPointerProperty(name, index);
       }
 
       /// this does some magic so that it calls get string/int/double/pointer appropriately
-      template<> const std::string &GetHook::getProperty<StringValue>(const std::string &name, int index) const OFX_EXCEPTION_SPEC
+      template<> const std::string &GetHook::getProperty<StringValue>(const std::string &name, int index) const
       {
         return getStringProperty(name, index);
       }
             
       /// this does some magic so that it calls get string/int/double/pointer appropriately
-      template<> void GetHook::getPropertyN<IntValue>(const std::string &name, int *values, int count) const OFX_EXCEPTION_SPEC
+      template<> void GetHook::getPropertyN<IntValue>(const std::string &name, int *values, int count) const
       {
         getIntPropertyN(name, values, count);
       }
 
       /// this does some magic so that it calls get string/int/double/pointer appropriately
-      template<> void GetHook::getPropertyN<DoubleValue>(const std::string &name, double *values, int count) const OFX_EXCEPTION_SPEC
+      template<> void GetHook::getPropertyN<DoubleValue>(const std::string &name, double *values, int count) const
       {
         getDoublePropertyN(name, values, count);
       }
       
       /// this does some magic so that it calls get string/int/double/pointer appropriately
-      template<> void GetHook::getPropertyN<PointerValue>(const std::string &name, void **values, int count) const OFX_EXCEPTION_SPEC
+      template<> void GetHook::getPropertyN<PointerValue>(const std::string &name, void **values, int count) const
       {
         getPointerPropertyN(name, values, count);
       }
         
       /// this does some magic so that it calls get string/int/double/pointer appropriately
-      template<> void GetHook::getPropertyN<StringValue>(const std::string &name, const char **values, int count) const OFX_EXCEPTION_SPEC
+      template<> void GetHook::getPropertyN<StringValue>(const std::string &name, const char **values, int count) const
       {
         getStringPropertyN(name, values, count);
       }
 
 
       /// override this to get a single value at the given index.
-      const std::string &GetHook::getStringProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
+      const std::string &GetHook::getStringProperty(const std::string &/*name*/, int /*index*/) const
       {        
 #       ifdef OFX_DEBUG_PROPERTIES
         std::cout << "OFX: Calling un-overriden GetHook::getStringProperty!!!! " << std::endl;
@@ -83,7 +83,7 @@ namespace OFX {
       }
        
        /// override this function to optimize multiple-string properties fetching
-      void GetHook::getStringPropertyN(const std::string &name, const char** values, int count) const OFX_EXCEPTION_SPEC
+      void GetHook::getStringPropertyN(const std::string &name, const char** values, int count) const
       {
         for (int i = 0; i < count; ++i) {
           values[i] = getStringProperty(name, i).c_str();
@@ -91,7 +91,7 @@ namespace OFX {
       }
       
       /// override this to fetch a single value at the given index.
-      int GetHook::getIntProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
+      int GetHook::getIntProperty(const std::string &/*name*/, int /*index*/) const
       {
 #       ifdef OFX_DEBUG_PROPERTIES
         std::cout << "OFX: Calling un-overriden GetHook::getIntProperty!!!! " << std::endl;
@@ -100,7 +100,7 @@ namespace OFX {
       }
       
       /// override this to fetch a single value at the given index.
-      double GetHook::getDoubleProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
+      double GetHook::getDoubleProperty(const std::string &/*name*/, int /*index*/) const
       {
 #       ifdef OFX_DEBUG_PROPERTIES
         std::cout << "OFX: Calling un-overriden GetHook::getDoubleProperty!!!! " << std::endl;
@@ -109,7 +109,7 @@ namespace OFX {
       }
       
       /// override this to fetch a single value at the given index.
-      void *GetHook::getPointerProperty(const std::string &/*name*/, int /*index*/) const OFX_EXCEPTION_SPEC
+      void *GetHook::getPointerProperty(const std::string &/*name*/, int /*index*/) const
       {
 #       ifdef OFX_DEBUG_PROPERTIES
         std::cout << "OFX: Calling un-overriden GetHook::getPointerProperty!!!! " << std::endl;
@@ -118,7 +118,7 @@ namespace OFX {
       }
       
       /// override this to fetch a multiple values in a multi-dimension property
-      void GetHook::getDoublePropertyN(const std::string &/*name*/, double *values, int count) const OFX_EXCEPTION_SPEC
+      void GetHook::getDoublePropertyN(const std::string &/*name*/, double *values, int count) const
       {
 #       ifdef OFX_DEBUG_PROPERTIES
         std::cout << "OFX: Calling un-overriden GetHook::getDoublePropertyN!!!! " << std::endl;
@@ -127,7 +127,7 @@ namespace OFX {
       }
 
       /// override this to fetch a multiple values in a multi-dimension property
-      void GetHook::getIntPropertyN(const std::string &/*name*/, int *values, int count) const OFX_EXCEPTION_SPEC
+      void GetHook::getIntPropertyN(const std::string &/*name*/, int *values, int count) const
       {
 #       ifdef OFX_DEBUG_PROPERTIES
         std::cout << "OFX: Calling un-overriden GetHook::getIntPropertyN!!!! " << std::endl;
@@ -136,7 +136,7 @@ namespace OFX {
       }
 
       /// override this to fetch a multiple values in a multi-dimension property
-      void GetHook::getPointerPropertyN(const std::string &/*name*/, void **values, int count) const OFX_EXCEPTION_SPEC
+      void GetHook::getPointerPropertyN(const std::string &/*name*/, void **values, int count) const
       {
 #       ifdef OFX_DEBUG_PROPERTIES
         std::cout << "OFX: Calling un-overriden GetHook::getPointerPropertyN!!!! " << std::endl;
@@ -146,7 +146,7 @@ namespace OFX {
 
 
       /// override this to fetch the dimension size.
-      int GetHook::getDimension(const std::string &/*name*/) const OFX_EXCEPTION_SPEC
+      int GetHook::getDimension(const std::string &/*name*/) const
       {
 #       ifdef OFX_DEBUG_PROPERTIES
         std::cout << "OFX: Calling un-overriden GetHook::getDimension!!!! " << std::endl;
@@ -155,7 +155,7 @@ namespace OFX {
       }
       
       /// override this to handle a reset(). 
-      void GetHook::reset(const std::string &/*name*/) OFX_EXCEPTION_SPEC
+      void GetHook::reset(const std::string &/*name*/)
       {
 #       ifdef OFX_DEBUG_PROPERTIES
         std::cout << "OFX: Calling un-overriden GetHook::reset!!!! " << std::endl;
@@ -229,7 +229,7 @@ namespace OFX {
 #endif
       /// get one value
       template<class T> 
-      const typename T::ReturnType PropertyTemplate<T>::getValue(int index) const OFX_EXCEPTION_SPEC 
+      const typename T::ReturnType PropertyTemplate<T>::getValue(int index) const 
       {
         if (_getHook) {
           return _getHook->getProperty<T>(_name, index);
@@ -243,7 +243,7 @@ namespace OFX {
 #endif
       // get multiple values
       template<class T> 
-      void PropertyTemplate<T>::getValueN(typename T::APIType *values, int count) const OFX_EXCEPTION_SPEC {
+      void PropertyTemplate<T>::getValueN(typename T::APIType *values, int count) const {
         if (_getHook) {
           _getHook->getPropertyN<T>(_name, values, count);
         } 
@@ -257,7 +257,7 @@ namespace OFX {
 #endif
       /// get one value, without going through the getHook
       template<class T> 
-      const typename T::ReturnType PropertyTemplate<T>::getValueRaw(int index) const OFX_EXCEPTION_SPEC
+      const typename T::ReturnType PropertyTemplate<T>::getValueRaw(int index) const
       {
         if (index < 0 || ((size_t)index >= _value.size())) {
           throw Exception(kOfxStatErrBadIndex);
@@ -269,7 +269,7 @@ namespace OFX {
 #endif      
       // get multiple values, without going through the getHook
       template<class T> 
-      void PropertyTemplate<T>::getValueNRaw(APIType *value, int count) const OFX_EXCEPTION_SPEC
+      void PropertyTemplate<T>::getValueNRaw(APIType *value, int count) const
       {
         size_t size = count;
         if (size > _value.size()) {
@@ -282,7 +282,7 @@ namespace OFX {
       }
 
       /// set one value
-      template<class T> void PropertyTemplate<T>::setValue(const typename T::Type &value, int index) OFX_EXCEPTION_SPEC 
+      template<class T> void PropertyTemplate<T>::setValue(const typename T::Type &value, int index) 
       {
         if (index < 0 || ((size_t)index > _value.size() && _dimension)) {
           throw Exception(kOfxStatErrBadIndex);
@@ -297,7 +297,7 @@ namespace OFX {
       }
 
       /// set multiple values
-      template<class T> void PropertyTemplate<T>::setValueN(const typename T::APIType *value, int count) OFX_EXCEPTION_SPEC
+      template<class T> void PropertyTemplate<T>::setValueN(const typename T::APIType *value, int count)
       {
         if (_dimension && ((size_t)count > _value.size())) {
           throw Exception(kOfxStatErrBadIndex);              
@@ -313,7 +313,7 @@ namespace OFX {
       }
         
       /// get the dimension of the property
-      template <class T> int PropertyTemplate<T>::getDimension() const OFX_EXCEPTION_SPEC {
+      template <class T> int PropertyTemplate<T>::getDimension() const {
         if (_dimension != 0) {
           return _dimension;
         } 
@@ -328,7 +328,7 @@ namespace OFX {
         }
       }
 
-      template <class T> void PropertyTemplate<T>::reset() OFX_EXCEPTION_SPEC 
+      template <class T> void PropertyTemplate<T>::reset() 
       {
         if (_getHook) {
           _getHook->reset(_name);

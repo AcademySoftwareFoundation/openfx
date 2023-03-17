@@ -143,16 +143,16 @@ namespace OFX {
         virtual void getSlaveToParam(std::vector<std::string>& params) const;
 
         // do nothing
-        virtual int  getDimension(const std::string &name) const OFX_EXCEPTION_SPEC;
+        virtual int  getDimension(const std::string &name) const;
         
         // don't know what to do
-        virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC;
+        virtual void reset(const std::string &name);
 
         /// the gethook virutals for  pixel scale, background colour
-        virtual double getDoubleProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC;
+        virtual double getDoubleProperty(const std::string &name, int index) const;
 
         /// for pixel scale and background colour
-        virtual void getDoublePropertyN(const std::string &name, double *first, int n) const OFX_EXCEPTION_SPEC;
+        virtual void getDoublePropertyN(const std::string &name, double *first, int n) const;
 
         /// call create instance
         virtual OfxStatus createInstanceAction();

@@ -231,7 +231,7 @@ namespace OFX {
         virtual OfxStatus integrateV(OfxTime time1, OfxTime time2, va_list arg);
 
         /// overridden from Property::NotifyHook
-        virtual void notify(const std::string &name, bool single, int num) OFX_EXCEPTION_SPEC;
+        virtual void notify(const std::string &name, bool single, int num);
       };
 
       class KeyframeParam {
@@ -323,7 +323,7 @@ namespace OFX {
         virtual OfxStatus setV(OfxTime time, va_list arg);
 
         /// overridden from Instance
-        virtual void notify(const std::string &name, bool single, int num) OFX_EXCEPTION_SPEC;
+        virtual void notify(const std::string &name, bool single, int num);
       };
 
       class DoubleInstance : public Instance, public KeyframeParam {

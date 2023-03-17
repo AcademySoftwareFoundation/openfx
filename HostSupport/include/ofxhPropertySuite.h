@@ -10,12 +10,6 @@
 #include <algorithm>
 #include <sstream>
 
-#ifndef WINDOWS
-#define OFX_EXCEPTION_SPEC throw (OFX::Host::Property::Exception)
-#else
-#define OFX_EXCEPTION_SPEC 
-#endif
-
 namespace OFX {
   namespace Host {
     namespace Property {
@@ -126,41 +120,41 @@ namespace OFX {
 
         /// We specialise this to do some magic so that it calls get string/int/double/pointer appropriately
         /// this is what is called by the propertytemplate code to fetch values out of a hook.
-        template<class T> typename T::ReturnType getProperty(const std::string &name, int index=0) const OFX_EXCEPTION_SPEC;
+        template<class T> typename T::ReturnType getProperty(const std::string &name, int index=0) const;
 
         /// We specialise this to do some magic so that it calls get int/double/pointer appropriately
         /// this is what is called by the propertytemplate code to fetch values out of a hook.
-        template<class T> void getPropertyN(const std::string &name, typename T::APIType *values, int count) const OFX_EXCEPTION_SPEC;
+        template<class T> void getPropertyN(const std::string &name, typename T::APIType *values, int count) const;
 
         /// override this to fetch a single value at the given index.
-        virtual const std::string& getStringProperty(const std::string &name, int index = 0) const OFX_EXCEPTION_SPEC;
+        virtual const std::string& getStringProperty(const std::string &name, int index = 0) const;
           
         /// override this to fetch a multiple values in a multi-dimension property
-        virtual void getStringPropertyN(const std::string &name, const char** values, int count) const OFX_EXCEPTION_SPEC;
+        virtual void getStringPropertyN(const std::string &name, const char** values, int count) const;
 
         /// override this to fetch a single value at the given index.
-        virtual int getIntProperty(const std::string &name, int index = 0) const OFX_EXCEPTION_SPEC;
+        virtual int getIntProperty(const std::string &name, int index = 0) const;
 
         /// override this to fetch a multiple values in a multi-dimension property
-        virtual void getIntPropertyN(const std::string &name, int *values, int count) const OFX_EXCEPTION_SPEC;
+        virtual void getIntPropertyN(const std::string &name, int *values, int count) const;
 
         /// override this to fetch a single value at the given index.
-        virtual double getDoubleProperty(const std::string &name, int index = 0) const OFX_EXCEPTION_SPEC;
+        virtual double getDoubleProperty(const std::string &name, int index = 0) const;
 
         /// override this to fetch a multiple values in a multi-dimension property
-        virtual void getDoublePropertyN(const std::string &name, double *values, int count) const OFX_EXCEPTION_SPEC;
+        virtual void getDoublePropertyN(const std::string &name, double *values, int count) const;
 
         /// override this to fetch a single value at the given index.
-        virtual void *getPointerProperty(const std::string &name, int index = 0) const OFX_EXCEPTION_SPEC;
+        virtual void *getPointerProperty(const std::string &name, int index = 0) const;
         
         /// override this to fetch a multiple values in a multi-dimension property
-        virtual void getPointerPropertyN(const std::string &name, void **values, int count) const OFX_EXCEPTION_SPEC;
+        virtual void getPointerPropertyN(const std::string &name, void **values, int count) const;
 
         /// override this to fetch the dimension size.
-        virtual int getDimension(const std::string &name) const OFX_EXCEPTION_SPEC;
+        virtual int getDimension(const std::string &name) const;
 
         /// override this to handle a reset(). 
-        virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC;
+        virtual void reset(const std::string &name);
       };
 
       /// Sits on a property and is called when the local property is being set.
@@ -178,7 +172,7 @@ namespace OFX {
         /// \arg name is the name of the property just set
         /// \arg singleValue is whether setProperty on a single index was call, otherwise N properties were set
         /// \arg indexOrN is the index if single value is true, or the count if singleValue is false
-        virtual void notify(const std::string &name, bool singleValue, int indexOrN) OFX_EXCEPTION_SPEC = 0;
+        virtual void notify(const std::string &name, bool singleValue, int indexOrN) = 0;
       };
 
       /// base class for all properties
@@ -309,34 +303,34 @@ namespace OFX {
         }
 
         // get multiple values
-        void getValueN(APIType *value, int count) const OFX_EXCEPTION_SPEC;
+        void getValueN(APIType *value, int count) const;
 
 #ifdef WINDOWS
 #pragma warning( disable : 4181 )	
 #endif		
         /// get one value
-        const ReturnType getValue(int index=0) const OFX_EXCEPTION_SPEC;
+        const ReturnType getValue(int index=0) const;
 
         /// get one value, without going through the getHook
-        const ReturnType getValueRaw(int index=0) const OFX_EXCEPTION_SPEC;
+        const ReturnType getValueRaw(int index=0) const;
 
 #ifdef WINDOWS
 #pragma warning( default : 4181 )	
 #endif				
         // get multiple values, without going through the getHook
-        void getValueNRaw(APIType *value, int count) const OFX_EXCEPTION_SPEC;
+        void getValueNRaw(APIType *value, int count) const;
 
         /// set one value
-        void setValue(const Type &value, int index=0) OFX_EXCEPTION_SPEC;
+        void setValue(const Type &value, int index=0);
 
         /// set multiple values
-        void setValueN(const APIType *value, int count) OFX_EXCEPTION_SPEC;
+        void setValueN(const APIType *value, int count);
 
         /// reset 
-        void reset() OFX_EXCEPTION_SPEC;
+        void reset();
         
         /// get the size of the vector
-        int getDimension() const OFX_EXCEPTION_SPEC;
+        int getDimension() const;
         
         /// return the value as a string
         inline std::string getStringValue(int idx) {

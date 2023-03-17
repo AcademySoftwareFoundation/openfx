@@ -1369,7 +1369,7 @@ namespace OFX {
 
   /** @brief get the time of the nth key, nth must be between 0 and getNumKeys-1 */
   double 
-    ValueParam::getKeyTime(int nthKey) throw(OFX::Exception::Suite, std::out_of_range)
+    ValueParam::getKeyTime(int nthKey)
   {
     if(!OFX::Private::gParamSuite->paramGetKeyTime) throwHostMissingSuiteException("paramGetKeyTime");
     double v = 0;

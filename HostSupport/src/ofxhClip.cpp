@@ -214,7 +214,7 @@ namespace OFX {
       }
 
       // do nothing
-      int ClipInstance::getDimension(const std::string &name) const OFX_EXCEPTION_SPEC 
+      int ClipInstance::getDimension(const std::string &name) const 
       {
         if(name == kOfxImageEffectPropUnmappedFrameRange || name == kOfxImageEffectPropFrameRange)
           return 2;
@@ -222,7 +222,7 @@ namespace OFX {
       }
 
       // don't know what to do
-      void ClipInstance::reset(const std::string &/*name*/) OFX_EXCEPTION_SPEC {
+      void ClipInstance::reset(const std::string &/*name*/) {
         //printf("failing in %s\n", __PRETTY_FUNCTION__);
         throw Property::Exception(kOfxStatErrMissingHostFeature);
       }
@@ -240,7 +240,7 @@ namespace OFX {
       }
        
       // get the virutals for viewport size, pixel scale, background colour
-      void ClipInstance::getDoublePropertyN(const std::string &name, double *values, int n) const OFX_EXCEPTION_SPEC
+      void ClipInstance::getDoublePropertyN(const std::string &name, double *values, int n) const
       {
         if(name==kOfxImagePropPixelAspectRatio){
           if(n>1) throw Property::Exception(kOfxStatErrValue);
@@ -267,7 +267,7 @@ namespace OFX {
       }
 
       // get the virutals for viewport size, pixel scale, background colour
-      double ClipInstance::getDoubleProperty(const std::string &name, int n) const OFX_EXCEPTION_SPEC
+      double ClipInstance::getDoubleProperty(const std::string &name, int n) const
       {
         if(name==kOfxImagePropPixelAspectRatio){
           if(n!=0) throw Property::Exception(kOfxStatErrValue);
@@ -298,7 +298,7 @@ namespace OFX {
       }
 
       // get the virutals for viewport size, pixel scale, background colour
-      int ClipInstance::getIntProperty(const std::string &name, int n) const OFX_EXCEPTION_SPEC
+      int ClipInstance::getIntProperty(const std::string &name, int n) const
       {
         if(n!=0) throw Property::Exception(kOfxStatErrValue);
         if(name==kOfxImageClipPropConnected){
@@ -312,14 +312,14 @@ namespace OFX {
       }
 
       // get the virutals for viewport size, pixel scale, background colour
-      void ClipInstance::getIntPropertyN(const std::string &name, int *values, int n) const OFX_EXCEPTION_SPEC
+      void ClipInstance::getIntPropertyN(const std::string &name, int *values, int n) const
       {
         if(n!=0) throw Property::Exception(kOfxStatErrValue);
         *values = getIntProperty(name, 0);
       }
 
       // get the virutals for viewport size, pixel scale, background colour
-      const std::string &ClipInstance::getStringProperty(const std::string &name, int n) const OFX_EXCEPTION_SPEC
+      const std::string &ClipInstance::getStringProperty(const std::string &name, int n) const
       {
         if(n!=0) throw Property::Exception(kOfxStatErrValue);
         if(name==kOfxImageEffectPropPixelDepth){
@@ -345,7 +345,7 @@ namespace OFX {
       }
        
       // fetch  multiple values in a multi-dimension property
-      void ClipInstance::getStringPropertyN(const std::string &name, const char** values, int count) const OFX_EXCEPTION_SPEC
+      void ClipInstance::getStringPropertyN(const std::string &name, const char** values, int count) const
       {
           if (count == 0) {
               return;
@@ -374,7 +374,7 @@ namespace OFX {
       }
 
       // notify override properties
-      void ClipInstance::notify(const std::string &/*name*/, bool /*isSingle*/, int /*indexOrN*/)  OFX_EXCEPTION_SPEC
+      void ClipInstance::notify(const std::string &/*name*/, bool /*isSingle*/, int /*indexOrN*/) 
       {
       }
 

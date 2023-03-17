@@ -939,7 +939,7 @@ namespace OFX {
         unsigned int getNumKeys(void);
 
         /** @brief get the time of the nth key, nth must be between 0 and getNumKeys-1 */
-        double getKeyTime(int nthKey) throw(OFX::Exception::Suite, std::out_of_range);
+        double getKeyTime(int nthKey);
 
         /** @brief find the index of a key by a time */
         int getKeyIndex(double time, 
