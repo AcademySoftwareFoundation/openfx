@@ -456,7 +456,7 @@ namespace OFX {
       }
 
       // do nothing
-      int Instance::getDimension(const std::string &name) const OFX_EXCEPTION_SPEC {
+      int Instance::getDimension(const std::string &name) const {
         printf("failing in %s with name=%s\n", __PRETTY_FUNCTION__, name.c_str());
         throw Property::Exception(kOfxStatErrMissingHostFeature);
       }
@@ -465,19 +465,19 @@ namespace OFX {
         return _properties.getDimension(name);
       }
 
-      void Instance::notify(const std::string &/*name*/, bool /*singleValue*/, int /*indexOrN*/) OFX_EXCEPTION_SPEC
+      void Instance::notify(const std::string &/*name*/, bool /*singleValue*/, int /*indexOrN*/)
       { 
         printf("failing in %s\n", __PRETTY_FUNCTION__);
       }
 
       // don't know what to do
-      void Instance::reset(const std::string &/*name*/) OFX_EXCEPTION_SPEC {
+      void Instance::reset(const std::string &/*name*/) {
         printf("failing in %s\n", __PRETTY_FUNCTION__);
         throw Property::Exception(kOfxStatErrMissingHostFeature);
       }
 
       // get the virutals for viewport size, pixel scale, background colour
-      double Instance::getDoubleProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC
+      double Instance::getDoubleProperty(const std::string &name, int index) const
       {
         if(name==kOfxImageEffectPropProjectSize){
           if(index>=2) throw Property::Exception(kOfxStatErrBadIndex);
@@ -513,7 +513,7 @@ namespace OFX {
           throw Property::Exception(kOfxStatErrUnknown);        
       }
 
-      void Instance::getDoublePropertyN(const std::string &name, double* first, int n) const OFX_EXCEPTION_SPEC
+      void Instance::getDoublePropertyN(const std::string &name, double* first, int n) const
       {
         if(name==kOfxImageEffectPropProjectSize){
           if(n>2) throw Property::Exception(kOfxStatErrBadIndex);
@@ -2175,7 +2175,7 @@ namespace OFX {
           *memoryHandle = NULL;
           return kOfxStatErrMemory;
         }
-        } catch (std::bad_alloc) {
+        } catch (std::bad_alloc&) {
           *memoryHandle = NULL;
           return kOfxStatErrMemory;
         } catch (...) {

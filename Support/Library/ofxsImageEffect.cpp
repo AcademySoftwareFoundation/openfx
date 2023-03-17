@@ -133,7 +133,7 @@ namespace OFX {
   };
 
   /** @brief map a std::string to a context */
-  ContextEnum mapToContextEnum(const std::string &s) throw(std::invalid_argument)
+  ContextEnum mapToContextEnum(const std::string &s)
   {
     if(s == kOfxImageEffectContextGenerator) return eContextGenerator;
     if(s == kOfxImageEffectContextFilter) return eContextFilter;
@@ -145,7 +145,7 @@ namespace OFX {
     throw std::invalid_argument(s);
   }
 
-  const char* mapContextEnumToStr(ContextEnum context) throw(std::invalid_argument)
+  const char* mapContextEnumToStr(ContextEnum context)
   {
     switch (context) {
       case eContextGenerator:
@@ -199,7 +199,7 @@ namespace OFX {
   }
 
   /** @brief map a std::string to a context */
-  InstanceChangeReason mapToInstanceChangedReason(const std::string &s) throw(std::invalid_argument)
+  InstanceChangeReason mapToInstanceChangedReason(const std::string &s)
   {
     if(s == kOfxChangePluginEdited) return eChangePluginEdit;
     if(s == kOfxChangeUserEdited) return eChangeUserEdit;
@@ -209,7 +209,7 @@ namespace OFX {
   }
 
   /** @brief turns a bit depth string into and enum */
-  BitDepthEnum mapStrToBitDepthEnum(const std::string &str) throw(std::invalid_argument)
+  BitDepthEnum mapStrToBitDepthEnum(const std::string &str)
   {
     if(str == kOfxBitDepthByte) {
       return eBitDepthUByte;
@@ -232,7 +232,7 @@ namespace OFX {
   }
 
   /** @brief turns a bit depth string into and enum */
-  const char* mapBitDepthEnumToStr(BitDepthEnum bitDepth) throw(std::invalid_argument)
+  const char* mapBitDepthEnumToStr(BitDepthEnum bitDepth)
   {
     switch (bitDepth) {
       case eBitDepthUByte:
@@ -254,7 +254,7 @@ namespace OFX {
   }
 
   /** @brief turns a pixel component string into and enum */
-  PixelComponentEnum mapStrToPixelComponentEnum(const std::string &str) throw(std::invalid_argument)
+  PixelComponentEnum mapStrToPixelComponentEnum(const std::string &str)
   {
     if(str == kOfxImageComponentRGBA) {
       return ePixelComponentRGBA;
@@ -274,7 +274,7 @@ namespace OFX {
   }
 
   /** @brief turns a pixel component string into and enum */
-  const char* mapPixelComponentEnumToStr(PixelComponentEnum pixelComponent) throw(std::invalid_argument)
+  const char* mapPixelComponentEnumToStr(PixelComponentEnum pixelComponent)
   {
     switch (pixelComponent) {
       case ePixelComponentRGBA:
@@ -292,7 +292,7 @@ namespace OFX {
   }
 
   /** @brief turns a premultiplication string into and enum */
-  static PreMultiplicationEnum mapStrToPreMultiplicationEnum(const std::string &str) throw(std::invalid_argument)
+  static PreMultiplicationEnum mapStrToPreMultiplicationEnum(const std::string &str)
   {
     if(str == kOfxImageOpaque) {
       return eImageOpaque;
@@ -309,7 +309,7 @@ namespace OFX {
   }
 
   /** @brief turns a field string into and enum */
-  FieldEnum mapStrToFieldEnum(const std::string &str)  throw(std::invalid_argument)
+  FieldEnum mapStrToFieldEnum(const std::string &str)
   {
     if(str == kOfxImageFieldNone) {
       return eFieldNone;
@@ -917,7 +917,7 @@ namespace OFX {
       }
     }
     // gone wrong ?
-    catch(std::invalid_argument) {
+    catch(std::invalid_argument&) {
       OFX::Log::error(true, "Unknown pixel depth property '%s' reported on clip '%s'", str.c_str(), _clipName.c_str());
       e = eBitDepthNone;
     }
@@ -936,7 +936,7 @@ namespace OFX {
       }
     }
     // gone wrong ?
-    catch(std::invalid_argument) {
+    catch(std::invalid_argument&) {
       OFX::Log::error(true, "Unknown  pixel component type '%s' reported on clip '%s'", str.c_str(), _clipName.c_str());
       e = ePixelComponentNone;
     }
@@ -955,7 +955,7 @@ namespace OFX {
       }
     }
     // gone wrong ?
-    catch(std::invalid_argument) {
+    catch(std::invalid_argument&) {
       OFX::Log::error(true, "Unknown  pixel component type '%s' reported on clip '%s'", str.c_str(), _clipName.c_str());
       e = ePixelComponentNone;
     }
@@ -987,7 +987,7 @@ namespace OFX {
       }
     }
     // gone wrong ?
-    catch(std::invalid_argument) {
+    catch(std::invalid_argument&) {
       OFX::Log::error(true, "Unknown unmapped pixel depth property '%s' reported on clip '%s'", str.c_str(), _clipName.c_str());
       e = eBitDepthNone;
     }
@@ -1006,7 +1006,7 @@ namespace OFX {
       }
     }
     // gone wrong ?
-    catch(std::invalid_argument) {
+    catch(std::invalid_argument&) {
       OFX::Log::error(true, "Unknown unmapped pixel component type '%s' reported on clip '%s'", str.c_str(), _clipName.c_str());
       e = ePixelComponentNone;
     }
@@ -1022,7 +1022,7 @@ namespace OFX {
       e = mapStrToPreMultiplicationEnum(str);
     }
     // gone wrong ?
-    catch(std::invalid_argument) {
+    catch(std::invalid_argument&) {
       OFX::Log::error(true, "Unknown premultiplication type '%s' reported on clip %s!", str.c_str(), _clipName.c_str());
       e = eImageOpaque;
     }
@@ -1040,7 +1040,7 @@ namespace OFX {
         "Field order '%s' reported on a clip %s is invalid, it must be none, lower or upper.", str.c_str(), _clipName.c_str());
     }
     // gone wrong ?
-    catch(std::invalid_argument) {
+    catch(std::invalid_argument&) {
       OFX::Log::error(true, "Unknown field order '%s' reported on a clip %s.", str.c_str(), _clipName.c_str());
       e = eFieldNone;
     }
@@ -2061,7 +2061,7 @@ namespace OFX {
       try {
         args.fieldToRender = mapStrToFieldEnum(str);
       }
-      catch (std::invalid_argument) {
+      catch (std::invalid_argument&) {
         // dud field?
         OFX::Log::error(true, "Unknown field to render '%s'", str.c_str());
 
@@ -2162,7 +2162,7 @@ namespace OFX {
       try {
         args.fieldToRender = mapStrToFieldEnum(str);
       }
-      catch (std::invalid_argument) {
+      catch (std::invalid_argument&) {
         // dud field?
         OFX::Log::error(true, "Unknown field to render '%s'", str.c_str());
 
@@ -2777,7 +2777,7 @@ namespace OFX {
       }
 
       // catch memory
-      catch (std::bad_alloc)
+      catch (std::bad_alloc&)
       {
         stat = kOfxStatErrMemory;
       }
@@ -2857,7 +2857,7 @@ namespace OFX {
       }
 
       // catch host inadequate exceptions
-      catch (OFX::Exception::HostInadequate)
+      catch (OFX::Exception::HostInadequate&)
       {
 #      ifdef DEBUG
         std::cout << "Caught OFX::Exception::HostInadequate" << std::endl;
@@ -2866,7 +2866,7 @@ namespace OFX {
       }
 
       // catch exception due to a property being unknown to the host, implies something wrong with host if not caught further down
-      catch (OFX::Exception::PropertyUnknownToHost)
+      catch (OFX::Exception::PropertyUnknownToHost&)
       {
 #      ifdef DEBUG
         std::cout << "Caught OFX::Exception::PropertyUnknownToHost" << std::endl;
@@ -2875,7 +2875,7 @@ namespace OFX {
       }
 
       // catch memory
-      catch (std::bad_alloc)
+      catch (std::bad_alloc&)
       {
         stat = kOfxStatErrMemory;
       }

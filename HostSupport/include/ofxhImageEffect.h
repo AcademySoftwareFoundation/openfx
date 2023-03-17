@@ -408,19 +408,19 @@ namespace OFX {
         int upperGetDimension(const std::string &name);
 
         /// overridden from Property::Notify
-        virtual void notify(const std::string &name, bool singleValue, int indexOrN) OFX_EXCEPTION_SPEC;
+        virtual void notify(const std::string &name, bool singleValue, int indexOrN);
 
         /// overridden from gethook,  get the virutals for viewport size, pixel scale, background colour
-        virtual double getDoubleProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC;
+        virtual double getDoubleProperty(const std::string &name, int index) const;
 
         /// overridden from gethook,  get the virutals for viewport size, pixel scale, background colour
-        virtual void getDoublePropertyN(const std::string &name, double *values, int count) const OFX_EXCEPTION_SPEC;
+        virtual void getDoublePropertyN(const std::string &name, double *values, int count) const;
         
         /// overridden from gethook, don't know what to do
-        virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC;
+        virtual void reset(const std::string &name);
 
         //// overridden from gethook
-        virtual int getDimension(const std::string &name)  const OFX_EXCEPTION_SPEC;
+        virtual int getDimension(const std::string &name)  const;
 
         //
         // live parameters

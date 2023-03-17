@@ -116,31 +116,31 @@ namespace OFX {
         bool isOutput() const {return  _isOutput;}
 
         /// notify override properties
-        virtual void notify(const std::string &name, bool isSingle, int indexOrN)  OFX_EXCEPTION_SPEC;
+        virtual void notify(const std::string &name, bool isSingle, int indexOrN);
         
         /// get hook override
-        virtual void reset(const std::string &name) OFX_EXCEPTION_SPEC;
+        virtual void reset(const std::string &name);
 
         // get the virtuals for viewport size, pixel scale, background colour
-        virtual double getDoubleProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC;
+        virtual double getDoubleProperty(const std::string &name, int index) const;
 
         // get the virtuals for viewport size, pixel scale, background colour
-        virtual void getDoublePropertyN(const std::string &name, double *values, int count) const  OFX_EXCEPTION_SPEC;
+        virtual void getDoublePropertyN(const std::string &name, double *values, int count) const;
 
         // get the virtuals for viewport size, pixel scale, background colour
-        virtual int getIntProperty(const std::string &name, int index) const  OFX_EXCEPTION_SPEC;
+        virtual int getIntProperty(const std::string &name, int index) const;
 
         // get the virtuals for viewport size, pixel scale, background colour
-        virtual void getIntPropertyN(const std::string &name, int *values, int count) const  OFX_EXCEPTION_SPEC;
+        virtual void getIntPropertyN(const std::string &name, int *values, int count) const;
 
         // get the virtuals for viewport size, pixel scale, background colour
-        virtual const std::string &getStringProperty(const std::string &name, int index) const  OFX_EXCEPTION_SPEC;
+        virtual const std::string &getStringProperty(const std::string &name, int index) const;
                              
         // fetch  multiple values in a multi-dimension property
-        virtual void getStringPropertyN(const std::string &name, const char** values, int count) const OFX_EXCEPTION_SPEC;
+        virtual void getStringPropertyN(const std::string &name, const char** values, int count) const;
 
         // get hook virtuals
-        virtual int  getDimension(const std::string &name) const OFX_EXCEPTION_SPEC;
+        virtual int  getDimension(const std::string &name) const;
 
         // instance changed action
         OfxStatus instanceChangedAction(const std::string &why,

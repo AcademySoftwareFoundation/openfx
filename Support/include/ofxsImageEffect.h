@@ -117,27 +117,27 @@ namespace OFX {
   };
 
   /** @brief turns a field string into and enum */
-  FieldEnum mapStrToFieldEnum(const std::string &str)  throw(std::invalid_argument);
+  FieldEnum mapStrToFieldEnum(const std::string &str);
 
   ////////////////////////////////////////////////////////////////////////////////
   /** @brief map a std::string to a context enum */
-  ContextEnum mapToContextEnum(const std::string &s) throw(std::invalid_argument);
+  ContextEnum mapToContextEnum(const std::string &s);
 
-  const char* mapContextEnumToStr(ContextEnum context) throw(std::invalid_argument);
+  const char* mapContextEnumToStr(ContextEnum context);
 
   const char* mapMessageTypeEnumToStr(OFX::Message::MessageTypeEnum type);
 
   OFX::Message::MessageReplyEnum mapToMessageReplyEnum(OfxStatus stat);
 
-  InstanceChangeReason mapToInstanceChangedReason(const std::string &s) throw(std::invalid_argument);
+  InstanceChangeReason mapToInstanceChangedReason(const std::string &s);
 
-  BitDepthEnum mapStrToBitDepthEnum(const std::string &str) throw(std::invalid_argument);
+  BitDepthEnum mapStrToBitDepthEnum(const std::string &str);
 
-  const char* mapBitDepthEnumToStr(BitDepthEnum bitDepth) throw(std::invalid_argument);
+  const char* mapBitDepthEnumToStr(BitDepthEnum bitDepth);
 
-  PixelComponentEnum mapStrToPixelComponentEnum(const std::string &str) throw(std::invalid_argument);
+  PixelComponentEnum mapStrToPixelComponentEnum(const std::string &str);
 
-  const char* mapPixelComponentEnumToStr(PixelComponentEnum pixelComponent) throw(std::invalid_argument);
+  const char* mapPixelComponentEnumToStr(PixelComponentEnum pixelComponent);
 
   class PluginFactory
   {

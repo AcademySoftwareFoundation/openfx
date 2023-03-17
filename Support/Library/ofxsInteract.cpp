@@ -324,7 +324,7 @@ namespace OFX {
     try {
       penViewportPosition.x = props.propGetInt(kOfxInteractPropPenViewportPosition, 0);
       penViewportPosition.y = props.propGetInt(kOfxInteractPropPenViewportPosition, 1);
-    } catch (OFX::Exception::PropertyUnknownToHost) {
+    } catch (OFX::Exception::PropertyUnknownToHost&) {
       // Introduced in OFX 1.2. Return (-1,-1) if not available
       penViewportPosition.x = penViewportPosition.y = -1.;
     }

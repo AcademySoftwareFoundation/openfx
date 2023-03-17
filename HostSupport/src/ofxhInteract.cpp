@@ -149,7 +149,7 @@ namespace OFX {
       }
       
       // do nothing
-      int Instance::getDimension(const std::string &name) const OFX_EXCEPTION_SPEC
+      int Instance::getDimension(const std::string &name) const
       {
         if(name == kOfxInteractPropPixelScale){
           return 2;
@@ -171,12 +171,12 @@ namespace OFX {
       }
         
       // do nothing function
-      void Instance::reset(const std::string &/*name*/) OFX_EXCEPTION_SPEC
+      void Instance::reset(const std::string &/*name*/)
       {
         // no-op
       }
 
-      double Instance::getDoubleProperty(const std::string &name, int index) const OFX_EXCEPTION_SPEC
+      double Instance::getDoubleProperty(const std::string &name, int index) const
       {   
         if(name == kOfxInteractPropPixelScale){
           if(index>=2) throw Property::Exception(kOfxStatErrBadIndex);
@@ -210,7 +210,7 @@ namespace OFX {
           throw Property::Exception(kOfxStatErrUnknown);
       }
 
-      void Instance::getDoublePropertyN(const std::string &name, double *first, int n) const OFX_EXCEPTION_SPEC
+      void Instance::getDoublePropertyN(const std::string &name, double *first, int n) const
       {
         if(name == kOfxInteractPropPixelScale){
           if(n>2) throw Property::Exception(kOfxStatErrBadIndex);
