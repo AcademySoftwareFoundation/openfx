@@ -71,13 +71,13 @@ void
 CrossFadePlugin::setupAndProcess(OFX::ImageBlenderBase &processor, const OFX::RenderArguments &args)
 {
   // get a dst image
-  std::auto_ptr<OFX::Image>  dst(dstClip_->fetchImage(args.time));
+  std::unique_ptr<OFX::Image>  dst(dstClip_->fetchImage(args.time));
   OFX::BitDepthEnum          dstBitDepth    = dst->getPixelDepth();
   OFX::PixelComponentEnum    dstComponents  = dst->getPixelComponents();
 
   // fetch the two source images
-  std::auto_ptr<OFX::Image> fromImg(fromClip_->fetchImage(args.time));
-  std::auto_ptr<OFX::Image> toImg(toClip_->fetchImage(args.time));
+  std::unique_ptr<OFX::Image> fromImg(fromClip_->fetchImage(args.time));
+  std::unique_ptr<OFX::Image> toImg(toClip_->fetchImage(args.time));
 
   // make sure bit depths are sane
   if(fromImg.get()) checkComponents(*fromImg, dstBitDepth, dstComponents);

@@ -146,7 +146,7 @@ void DotExamplePlugin::getPositionInPixels(double& x, double& y, const ARGS& arg
 
 void DotExamplePlugin::setupAndProcess(DotGeneratorBase &processor, const OFX::RenderArguments &args)
 {
-  std::auto_ptr<OFX::Image>  dst(dstClip_->fetchImage(args.time));
+  std::unique_ptr<OFX::Image>  dst(dstClip_->fetchImage(args.time));
   //OFX::BitDepthEnum         dstBitDepth    = dst->getPixelDepth();
   //OFX::PixelComponentEnum   dstComponents  = dst->getPixelComponents();
   double rad = radius_->getValueAtTime(args.time);

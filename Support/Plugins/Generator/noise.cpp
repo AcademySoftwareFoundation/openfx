@@ -124,7 +124,7 @@ void
 NoisePlugin::setupAndProcess(NoiseGeneratorBase &processor, const OFX::RenderArguments &args)
 {
   // get a dst image
-  std::auto_ptr<OFX::Image>  dst(dstClip_->fetchImage(args.time));
+  std::unique_ptr<OFX::Image>  dst(dstClip_->fetchImage(args.time));
   //OFX::BitDepthEnum         dstBitDepth    = dst->getPixelDepth();
   //OFX::PixelComponentEnum   dstComponents  = dst->getPixelComponents();
 
