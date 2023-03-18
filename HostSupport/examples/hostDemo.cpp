@@ -108,9 +108,9 @@ int main(int argc, char **argv)
     // create an instance of it as a filter
     // the first arg is the context, the second is client data we are allowed to pass down the call chain
 
-    std::auto_ptr<OFX::Host::ImageEffect::Instance> instance(plugin->createInstance(kOfxImageEffectContextFilter, NULL));
+    std::unique_ptr<OFX::Host::ImageEffect::Instance> instance(plugin->createInstance(kOfxImageEffectContextFilter, NULL));
 
-    if(instance.get())
+    if(instance)
     {
         OfxStatus stat;
 

@@ -177,10 +177,10 @@ public :
 
 void GammaPlugin::setupAndProcess(ImageScalerBase &processor, const OFX::RenderArguments &args)
 {
-  std::auto_ptr<OFX::Image> dst(dstClip_->fetchImage(args.time));
+  std::unique_ptr<OFX::Image> dst(dstClip_->fetchImage(args.time));
   OFX::BitDepthEnum dstBitDepth       = dst->getPixelDepth();
   OFX::PixelComponentEnum dstComponents  = dst->getPixelComponents();
-  std::auto_ptr<OFX::Image> src(srcClip_->fetchImage(args.time));
+  std::unique_ptr<OFX::Image> src(srcClip_->fetchImage(args.time));
   if(src.get()) 
   {
     OFX::BitDepthEnum    srcBitDepth      = src->getPixelDepth();
@@ -188,9 +188,10 @@ void GammaPlugin::setupAndProcess(ImageScalerBase &processor, const OFX::RenderA
     if(srcBitDepth != dstBitDepth || srcComponents != dstComponents)
       throw int(1);
   }
-  std::auto_ptr<OFX::Image> mask(getContext() != OFX::eContextFilter ? maskClip_->fetchImage(args.time) : 0);
+  std::unique_ptr<OFX::Image> mask;
   if(getContext() != OFX::eContextFilter) 
   {
+    mask.reset(maskClip_->fetchImage(args.time));
     processor.doMasking(true);
     processor.setMaskImg(mask.get());
   }

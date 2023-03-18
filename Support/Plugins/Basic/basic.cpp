@@ -262,12 +262,12 @@ void
 BasicPlugin::setupAndProcess(ImageScalerBase &processor, const OFX::RenderArguments &args)
 {
   // get a dst image
-  std::auto_ptr<OFX::Image> dst(dstClip_->fetchImage(args.time));
+  std::unique_ptr<OFX::Image> dst(dstClip_->fetchImage(args.time));
   OFX::BitDepthEnum dstBitDepth       = dst->getPixelDepth();
   OFX::PixelComponentEnum dstComponents  = dst->getPixelComponents();
 
   // fetch main input image
-  std::auto_ptr<OFX::Image> src(srcClip_->fetchImage(args.time));
+  std::unique_ptr<OFX::Image> src(srcClip_->fetchImage(args.time));
 
   // make sure bit depths are sane
   if(src.get()) {
@@ -279,13 +279,11 @@ BasicPlugin::setupAndProcess(ImageScalerBase &processor, const OFX::RenderArgume
       throw int(1); // HACK!! need to throw an sensible exception here!
   }
 
-  // auto ptr for the mask.
-  // Should do this inside the if statement below but the MS compiler I have doesn't have
-  // a 'reset' function on the auto_ptr class
-  std::auto_ptr<OFX::Image> mask(getContext() != OFX::eContextFilter ? maskClip_->fetchImage(args.time) : 0);
+  std::unique_ptr<OFX::Image> mask;
 
   // do we do masking
   if(getContext() != OFX::eContextFilter) {
+    mask.reset(maskClip_->fetchImage(args.time));
     // say we are masking
     processor.doMasking(true);
 

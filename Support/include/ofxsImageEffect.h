@@ -364,7 +364,7 @@ namespace OFX {
     std::map<std::string, std::string> _clipROIPropNames;
     std::map<std::string, std::string> _clipFrameRangePropNames;
 
-    std::auto_ptr<EffectOverlayDescriptor> _overlayDescriptor;
+    std::unique_ptr<EffectOverlayDescriptor> _overlayDescriptor;
   public :
     /** @brief ctor */
     ImageEffectDescriptor(OfxImageEffectHandle handle);

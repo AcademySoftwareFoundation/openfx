@@ -34,12 +34,12 @@ namespace OFX {
         Descriptor *_baseDescriptor; /// NEEDS TO BE MADE WITH A FACTORY FUNCTION ON THE HOST!!!!!!
         
         /// map to store contexts in
-        std::map<std::string, Descriptor *> _contexts;
+        std::map<std::string, std::unique_ptr<Descriptor>> _contexts;
 
         mutable std::set<std::string> _knownContexts;
         mutable bool _madeKnownContexts;
 
-        std::auto_ptr<PluginHandle> _pluginHandle;
+        std::unique_ptr<PluginHandle> _pluginHandle;
 
         void addContextInternal(const std::string &context) const;
 
@@ -72,7 +72,7 @@ namespace OFX {
         Descriptor *getContext(const std::string &context);
 
         void addContext(const std::string &context);
-        void addContext(const std::string &context, Descriptor *ied);
+        void addContext(const std::string &context, std::unique_ptr<Descriptor> ied);
 
         virtual void saveXML(std::ostream &os);
 

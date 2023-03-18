@@ -228,7 +228,7 @@ public:
     OfxRangeD range = srcClip->getFrameRange();
     for(double d = range.min; d< range.max; ++d)
     {
-      std::auto_ptr<OFX::Image> src(srcClip->fetchImage(d));
+      std::unique_ptr<OFX::Image> src(srcClip->fetchImage(d));
       dbl->setValueAtTime(d, d);
     }
   }
@@ -328,10 +328,10 @@ public :
 
 void GenericTestPlugin::setupAndProcess(GenericTestBase &processor, const OFX::RenderArguments &args)
 {
-  std::auto_ptr<OFX::Image> dst(dstClip_->fetchImage(args.time));
+  std::unique_ptr<OFX::Image> dst(dstClip_->fetchImage(args.time));
   OFX::BitDepthEnum dstBitDepth       = dst->getPixelDepth();
   OFX::PixelComponentEnum dstComponents  = dst->getPixelComponents();
-  std::auto_ptr<OFX::Image> src(srcClip_->fetchImage(args.time));
+  std::unique_ptr<OFX::Image> src(srcClip_->fetchImage(args.time));
 
   if(src.get()) 
   {

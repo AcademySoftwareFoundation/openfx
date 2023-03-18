@@ -51,10 +51,10 @@ namespace OFX {
   //Put it all into a map, so we know when to delete what!
   struct OfxPlugInfo
   {
-    OfxPlugInfo():_factory(0), _plug(0){}
-    OfxPlugInfo(OFX::PluginFactory* f, OfxPlugin* p):_factory(f), _plug(p){}
-    OFX::PluginFactory* _factory;
-    OfxPlugin* _plug;
+    OfxPlugInfo() = default;
+    OfxPlugInfo(OFX::PluginFactory* f, std::unique_ptr<OfxPlugin> p):_factory(f), _plug(std::move(p)){}
+    OFX::PluginFactory* _factory = nullptr;
+    std::unique_ptr<OfxPlugin> _plug;
   };
   typedef std::map<std::string, OfxPlugInfo> OfxPlugInfoMap;
   OfxPlugInfoMap plugInfoMap;
@@ -1962,12 +1962,11 @@ namespace OFX {
       }
       { 
         OFX::OfxPlugInfoMap::iterator it = OFX::plugInfoMap.find(id);
-        OfxPlugin* plug = it->second._plug;
-        OFX::OfxPluginArray::iterator it2 = std::find(ofxPlugs.begin(), ofxPlugs.end(), plug);
+        OFX::OfxPluginArray::iterator it2 = std::find(ofxPlugs.begin(), ofxPlugs.end(), it->second._plug.get());
         if (it2 != ofxPlugs.end()) {
-          (*it2) = 0;
+          (*it2) = nullptr;
         }
-        delete plug;
+        OFX::plugInfoMap.erase(it);
       }
     }
 
@@ -2930,7 +2929,7 @@ static
 OFX::OfxPlugInfo generatePlugInfo(OFX::PluginFactory* factory, std::string& newID)
 {
   newID = factory->getUID();
-  std::auto_ptr<OfxPlugin> ofxPlugin(new OfxPlugin());
+  std::unique_ptr<OfxPlugin> ofxPlugin(new OfxPlugin());
   ofxPlugin->pluginApi  = kOfxImageEffectPluginApi;
   ofxPlugin->apiVersion = 1;
   ofxPlugin->pluginIdentifier   = factory->getID().c_str();
@@ -2938,7 +2937,7 @@ OFX::OfxPlugInfo generatePlugInfo(OFX::PluginFactory* factory, std::string& newI
   ofxPlugin->pluginVersionMinor = factory->getMinorVersion();
   ofxPlugin->setHost    = OFX::Private::setHost;
   ofxPlugin->mainEntry  = factory->getMainEntry();
-  return OFX::OfxPlugInfo(factory, ofxPlugin.release());
+  return OFX::OfxPlugInfo(factory, std::move(ofxPlugin));
 }
 
 bool gHasInit = false;
@@ -2958,8 +2957,8 @@ void init()
   {
     std::string newID;
     OFX::OfxPlugInfo info = generatePlugInfo(*it, newID);
-    OFX::plugInfoMap[newID] = info;
-    OFX::ofxPlugs[counter] = info._plug;
+    OFX::ofxPlugs[counter] = info._plug.get();
+    OFX::plugInfoMap[newID] = std::move(info);
   }
   gHasInit = true;
 }
@@ -2981,12 +2980,12 @@ EXPORT OfxPlugin* OfxGetPlugin(int nth)
   init();
   int numPlugs = (int)OFX::plugInfoMap.size();
   OFX::Log::error(nth >= numPlugs, "Host attempted to get plugin %d, when there is only %d plugin(s), so it should have asked for 0.", nth, numPlugs);
-  if(OFX::ofxPlugs[nth] == 0)
+  if(OFX::ofxPlugs[nth] == nullptr)
   {
     std::string newID;
     OFX::OfxPlugInfo info = generatePlugInfo(OFX::plugIDs[nth], newID);
-    OFX::plugInfoMap[newID] = info;
-    OFX::ofxPlugs[nth] = info._plug;
+    OFX::ofxPlugs[nth] = info._plug.get();
+    OFX::plugInfoMap[newID] = std::move(info);
   }
   return OFX::ofxPlugs[nth];
 }
