@@ -57,7 +57,7 @@ Install conan using pip (and python3) -- we still require conan v1, although con
 
 ## Build
 
-On all OSes, use the same process:
+On all OSes, you should be able to use `scripts/build-cmake.sh` which does something like this:
 
 ```sh
 # Install dependencies from conanfile.py
