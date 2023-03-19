@@ -14,8 +14,9 @@ if(NOT MSVC)
 	set_target_properties(OfxHost PROPERTIES COMPILE_FLAGS "-fPIC")
 endif()
 
-target_link_libraries(OfxHost PUBLIC ${CONAN_LIBS})
+target_link_libraries(OfxHost PUBLIC expat::expat)
 
 target_include_directories(OfxHost PUBLIC
 	${OFX_HEADER_DIR}
-	${OFX_HOSTSUPPORT_HEADER_DIR})
+	${OFX_HOSTSUPPORT_HEADER_DIR}
+	${expat_INCLUDE_DIR})

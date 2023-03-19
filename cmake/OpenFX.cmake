@@ -1,6 +1,6 @@
 if(APPLE)
   set(PLUGINDIR "/Library/OFX/Plugins")
-  set(ARCHDIR "MacOS-x86-64")
+  set(ARCHDIR "MacOS")
 elseif(WIN32)
   set(PLUGINDIR "C:/Program Files (x86)/Common Files/OFX/Plugins")
   set(ARCHDIR "Win64")
@@ -18,14 +18,14 @@ endif()
 function(add_ofx_plugin TARGET)
 	if(${ARGC} GREATER 1)
 	  set(DIR ${ARGN})
-        else()
+	else()
 	  set(DIR ${TARGET})
-        endif()
-        if(APPLE)
-        	add_library(${TARGET} MODULE) # build as an OSX bundle
-        else()
-        	add_library(${TARGET} SHARED) # build as shared lib/DLL
-        endif()
+	endif()
+	if(APPLE)
+	  add_library(${TARGET} MODULE) # build as an OSX bundle
+	else()
+	  add_library(${TARGET} SHARED) # build as shared lib/DLL
+	endif()
 	set_target_properties(${TARGET} PROPERTIES SUFFIX ".ofx" PREFIX "")
 
 	if(NOT DEFINED OFX_SUPPORT_SYMBOLS_DIR)
@@ -40,8 +40,13 @@ function(add_ofx_plugin TARGET)
 		set_target_properties(${TARGET} PROPERTIES
                   LINK_FLAGS "-fvisibility=hidden -exported_symbols_list,${OFX_SUPPORT_SYMBOLS_DIR}/osx.symbols")
 	elseif(WIN32)
-		set_target_properties(${TARGET} PROPERTIES
-                  LINK_FLAGS "/def:${OFX_SUPPORT_SYMBOLS_DIR}/windows.symbols")
+		if (MSVC)
+			set_target_properties(${TARGET} PROPERTIES
+                    LINK_FLAGS "/def:${OFX_SUPPORT_SYMBOLS_DIR}/windows.symbols")
+    elseif(MINGW OR MSYS)
+      set_target_properties(${TARGET} PROPERTIES
+                    LINK_FLAGS "-Wl,-fvisibility=hidden,--version-script=${OFX_SUPPORT_SYMBOLS_DIR}/mingw.symbols")
+    endif()
 	else()
 		set_target_properties(${TARGET} PROPERTIES
                   LINK_FLAGS "-Wl,-fvisibility=hidden,--version-script=${OFX_SUPPORT_SYMBOLS_DIR}/linux.symbols")
