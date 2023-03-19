@@ -29,7 +29,7 @@ OS=$(uname -s)
 if [[ ${OS:0:5} == "MINGW" && ${GENERATOR,,} != "ninja" ]]; then
     PRESET_BASE_NAME=default
 else
-    PRESET_BASE_NAME=${BUILDTYPE,,}
+    PRESET_BASE_NAME=$(tr 'A-Z' 'a-z' <<< $BUILDTYPE)
     CMAKE_BUILD_DIR=${CMAKE_BUILD_DIR}/${BUILDTYPE}
 fi
 
