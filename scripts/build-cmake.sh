@@ -45,13 +45,20 @@ fi
 set -x
 
 # Install dependencies, set up build dir, and generate build files.
-conan install ${GENERATOR_OPTION} -s build_type=$BUILDTYPE --build=missing .
+echo === Running conan to install dependencies
+conan install ${GENERATOR_OPTION} -s build_type=$BUILDTYPE -pr:b=default --build=missing .
 
+echo === Running cmake
 # Generate the build files
 cmake --preset ${PRESET_NAME} -DBUILD_EXAMPLE_PLUGINS=TRUE
 
-# Do the build
+echo === Building plugins and support libs
 cmake --build ${CMAKE_BUILD_DIR} --config $BUILDTYPE $VERBOSE
 
-# install (or you could just do "cmake --build $BUILDDIR --config $BUILDTYPE --target install")
-#cmake --install build/ --config $BUILDTYPE
+set +x
+echo "=== Build complete."
+echo "  Sample Plugins are in ${CMAKE_BUILD_DIR}/Examples/*/${BUILDTYPE}"
+echo "  Plugin support lib and examples are in ${CMAKE_BUILD_DIR}/Support/{Library,Plugins}"
+echo "  Host lib is in ${CMAKE_BUILD_DIR}/HostSupport/${BUILDTYPE}"
+echo "=== To install the sample plugins to your OFX plugins folder, become root and then do:"
+echo "  cmake --install ${CMAKE_BUILD_DIR} --config $BUILDTYPE"
