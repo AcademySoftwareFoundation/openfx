@@ -45,6 +45,7 @@ def print_name(name):
    print(f'{define_base}{camel_name(name)} "{name}"')
 
 def print_role(role):
+   print(f'\n// {role[0]}')
    print(f'{define_base}Role{camel_name(role[0])} "{role[0]}"')
    print(f'{define_base}Role{camel_name(role[0])}Colourspace "{role[1]}"')
    role_map = '{ "' + role[0] + '", "' + role[1] + '" }'
