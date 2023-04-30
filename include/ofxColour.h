@@ -19,33 +19,28 @@ Contains the API for colourspace data exchange.
    - Default - kOfxImageEffectPropColourManagementStyleNone
    - Valid Values - This must be one of
      - ::kOfxImageEffectPropColourManagementNone - no colour management
-     - ::kOfxImageEffectPropColourManagementACESCG - colourspaces from the OCIO built-in ACES CG config are available
-     - ::kOfxImageEffectPropColourManagementACES - colourspaces from the OCIO built-in ACES Studio config are available
+     - ::kOfxImageEffectPropColourManagementNative - colourspaces from the OCIO built-in ACES Studio config are available (see ofxColourspaceList.h)
      - ::kOfxImageEffectPropColourManagementOCIO - any OCIO config may be used (implies use of the OCIO library)
 
 Hosts should set this property if they will provide colourspace information 
 to plug-ins.
 Plug-ins should set this property if they can use host-provided colourspace 
 information. OCIO is used as the reference for the colour management API, but 
-is not required to implement the ACESCG or ACES styles.
+is not required to implement the Native style.
 
-The colourspace strings used in the ACESCG style are from:
-https://github.com/AcademySoftwareFoundation/OpenColorIO-Config-ACES/releases/download/v1.0.0/cg-config-v1.0.0_aces-v1.3_ocio-v2.1.ocio
-
-The colourspace strings used in the ACES style are from:
+The colourspace strings used in the Native style are from:
 https://github.com/AcademySoftwareFoundation/OpenColorIO-Config-ACES/releases/download/v1.0.0/studio-config-v1.0.0_aces-v1.3_ocio-v2.1.ocio
+and stored for OFX purposes in ofxColourspaceList.h.
 
-The assumption is that OCIO > ACES > ACESCG so the highest style supported by 
+The assumption is that OCIO > Native so the highest style supported by 
 both host and plug-in will be chosen.
 */
 #define kOfxImageEffectPropColourManagementStyle "OfxImageEffectPropColourManagementStyle"
 
 /* String used to indicate that no colour management is available. */
 #define kOfxImageEffectPropColourManagementNone "OfxImageEffectPropColourManagementNone"
-/* String used to indicate that basic colour management is available. */
-#define kOfxImageEffectPropColourManagementACESCG "OfxImageEffectPropColourManagementACESCG"
-/* String used to indicate that ACES colour management is available. */
-#define kOfxImageEffectPropColourManagementACES "OfxImageEffectPropColourManagementACES"
+/* String used to indicate that Native colour management is available. */
+#define kOfxImageEffectPropColourManagementNative "OfxImageEffectPropColourManagementNative"
 /* String used to indicate that OCIO colour management is available. */
 #define kOfxImageEffectPropColourManagementOCIO "OfxImageEffectPropColourManagementOCIO"
 
@@ -80,18 +75,32 @@ kOfxImageClipPropPreferredColourspace where reasonable.
 
 /** @brief The preferred colourspace for this clip
 
-   - Type - string X 1
+   - Type - string X N
    - Property Set - clip instance (read only) and ::kOfxImageEffectActionGetClipPreferences action out args property (read/write)
    - Valid Values - colourspace that is permitted under the style in use. 
-                    For ACESCG and ACES, this a any colourspace from the colorspaces or roles section of the relevant config.
+                    For Native, this any scene colourspace or role from ofxColourspaceList.h.
                     For OCIO, this could be any string acceptable to Config::getColorSpace().
 
 Plug-ins may set this property during kOfxImageEffectActionGetClipPreferences 
-to request the image in a certain colourspace. Hosts may optionally provide 
-input images in this colourspace, but must always set 
-kOfxImageClipPropColourspace to the actual colourspace used.
-Hosts may set this on an output clip, which could be helpful in a generator 
-context.
+to request images in a colourspace which is convenient for them. The
+property is an ordered set of colourspace identifiers, which may be any of the
+names or aliases supported by the colour management style in use. If plug-ins
+prefer more esoteric colourspaces, they are encouraged to also include generic
+roles as a fallback. For example a colour grading plug-in which supports a
+specific camera and expects a log colourspace might list:
+
+"arri_logc4", "arri_logc3_ei800", "ACEScct", "color_timing"
+
+The host should provide input images in the first mutually agreeable
+colourspace, and set kOfxImageClipPropColourspace to tell the plug-in which
+colourspace has been selected. In the event that the host cannot supply images
+in a requested colourspace, it may supply images in any valid colourspace.
+Plug-ins must check kOfxImageClipPropColourspace to see if their request was
+satisfied.
+
+Hosts may set this on an output clip, which could be helpful in a generator
+context, and plug-ins should follow the same logic as hosts when deciding
+which colourspace to use.
 
 It might be much less costly for a host to perform a conversion 
 than a plug-in, so in the example of a plug-in which performs all internal 
@@ -99,16 +108,22 @@ processing in scene linear, it is sensible for the plug-in to universally
 assert that preference and the host to honour it if possible. However, if a 
 plug-in is capable of adapting to any input colourspace, it should not set 
 this preference.
+
+If a plug-in has inputs which contain motion vectors, depth values or other
+non-colour channels, it should set the preferred colourspace to "data".
+Similarly, if a host requests outputs in a typical scene colourspace, but the
+plug-in is producing motion vectors, it should ignore the request and set
+kOfxImageClipPropColourspace to "data".
 */
-#define kOfxImageClipPropPreferredColourspace "OfxImageClipPropPreferredColourspace"
+#define kOfxImageClipPropPreferredColourspaces "OfxImageClipPropPreferredColourspaces"
 
 /** @brief The display colourspace used in the plug-in's viewport
 
    - Type - string X 1
    - Property Set - image effect instance (read only)
-   - Valid Values - colourspace from the display_colorspaces section of the relevant ACES OCIO config
+   - Valid Values - colourspace from the Display Colorspaces section of ofxColourspaceList.h
 
-Used with the ACESCG or ACES colour management styles, this property is relevant 
+Used with the Native colour management style, this property is relevant 
 for plug-ins which have their own viewport in a custom window. Plug-ins should 
 not expect this to be available during a render event.
 Hosts should set this property to a display colourspace which matches that 
