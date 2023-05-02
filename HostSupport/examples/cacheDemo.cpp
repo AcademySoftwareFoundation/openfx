@@ -4,9 +4,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// This example shows basic plugin cache management.
 
+#include <cstring>
 #include <iostream>
 #include <fstream>
-    
+
+#ifdef _WIN32
+#include <crtdbg.h>
+#endif
+
 #include "ofxhPluginCache.h"
 #include "ofxhPropertySuite.h"
 #include "ofxhImageEffectAPI.h"

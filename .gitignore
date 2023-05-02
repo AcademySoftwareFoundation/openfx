@@ -9,7 +9,9 @@ Examples/*/*.bundle
 *~
 ofx-docgen
 
-build
+build*/
+build.log
+.cache/
 
 xcuserdata
 

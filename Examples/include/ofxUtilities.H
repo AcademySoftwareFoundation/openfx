@@ -122,7 +122,7 @@ ofxuGetImageData(OfxPropertySetHandle imageHandle)
 inline OfxRectI
 ofxuGetImageBounds(OfxPropertySetHandle imageHandle)
 {
-  OfxRectI r = {0};
+  OfxRectI r = {0, 0, 0, 0};
   gPropHost->propGetIntN(imageHandle, kOfxImagePropBounds, 4, &r.x1);
   return r;
 }

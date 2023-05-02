@@ -2,6 +2,7 @@
 
 The authoritative source for information about OFX is http://openeffects.org/
 
+* [OFX Build](https://github.com/ofxa/openfx/blob/master/install.md)
 * [OFX Documentation](https://openfx.readthedocs.io/en/master) - start here
 * [OFX Documentation: Reference](https://openfx.readthedocs.io/en/master/Reference)
 * [OFX Programming Guide By Example (github)](https://github.com/ofxa/openfx/tree/master/Documentation/old_doc/Guide)
@@ -42,6 +43,42 @@ Please read the [Contribution Guidelines](https://github.com/ofxa/openfx/wiki/Ex
 The Open Effects Association (OFX), a non-profit organization, develops and promotes open standards across the visual effects community. The founding members come from Assimilate, Autodesk, Digieffects, FilmLight, The Foundry, GenArts and RE:Vision FX. These are companies which have helped artists create ground-breaking VFX shots on nearly every blockbuster movie.
 
 The Association's initial focus is to improve the OpenFX image processing plug-in standard. This goal of this standard is to reduce development effort and support needed for plug-ins across different compositing and editing host platforms.
+
+# Building
+
+You can build the examples, support lib, and host support lib using Conan and CMake
+
+## Prerequisites
+
+Install cmake:
+- Mac: `brew install cmake`
+- Windows: `choco install cmake`
+- Linux: `apt install cmake`
+
+Install conan using pip (and python3) -- we still require conan v1, although conan v2 has been released:
+- `pip3 install conan<2.0.0`
+
+
+## Build
+
+On all OSes, you should be able to use `scripts/build-cmake.sh` which does something like this:
+
+```sh
+# Install dependencies from conanfile.py
+% conan install -s build_type=Release --build=missing .
+# Configure cmake to build into Build folder, and build example plugins
+# Note: The preset name is platform and conan version dependent. The preset name for your specific platform will be printed by the "conan install" command.
+% cmake --preset default -DBUILD_EXAMPLE_PLUGINS=TRUE
+# Do the build
+# Note: The build directory is also generator specific. If the preset name is something like "release", then you'll likely need to use "--build build/Release" instead of "--build build"
+% cmake --build build --config Release
+```
+
+This should build with the default Visual Studio on Windows and
+Makefiles with gcc on Linux and Mac. You can use alternative build
+systems supported by CMake like `ninja` if you want (not covered
+here).
+
 
 # Building Docs
 

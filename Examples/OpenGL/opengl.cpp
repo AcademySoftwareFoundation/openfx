@@ -11,6 +11,9 @@
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
+#if defined(WINDOWS)
+#include <windows.h>
+#endif
 #include <GL/gl.h>
 #endif
 #include <stdexcept>
