@@ -65,6 +65,7 @@ config = OCIO.GetCurrentConfig()
 def print_colourspace(spc):
    name = spc.getName()
    print(f'\n// {name}\n//', '\n// '.join(spc.getDescription().split('\n')).replace('\n// \n', '\n'))
+   print_name(name)
    name_list = [name]
    for alias in spc.getAliases():
       name_list.append(alias)
