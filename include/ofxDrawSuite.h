@@ -61,7 +61,7 @@ typedef enum OfxDrawPrimitive
 	kOfxDrawPrimitiveLines,
 	kOfxDrawPrimitiveLineStrip,
 	kOfxDrawPrimitiveLineLoop,
-	kOfxDrawPrimitiveRectangle, /* 2 points*/
+	kOfxDrawPrimitiveRectangle,
 	kOfxDrawPrimitivePolygon,
 	kOfxDrawPrimitiveEllipse
 } OfxDrawPrimitive;
@@ -69,13 +69,13 @@ typedef enum OfxDrawPrimitive
 /** @brief Defines text alignment values for OfxDrawSuiteV1::drawText */
 typedef enum OfxDrawTextAlignment
 {
-	kOfxDrawTextAlignmentLeft = 0x0001,
-	kOfxDrawTextAlignmentRight = 0x0002,
-	kOfxDrawTextAlignmentTop = 0x0004,
-	kOfxDrawTextAlignmentBottom = 0x008,
-	kOfxDrawTextAlignmentBaseline = 0x010,
-	kOfxDrawTextAlignmentCenterH = (kOfxDrawTextAlignmentLeft | kOfxDrawTextAlignmentRight),
-	kOfxDrawTextAlignmentCenterV = (kOfxDrawTextAlignmentTop | kOfxDrawTextAlignmentBaseline)
+	kOfxDrawTextAlignmentLeft     = 0x0001,
+	kOfxDrawTextAlignmentRight    = 0x0002,
+	kOfxDrawTextAlignmentTop      = 0x0004,
+	kOfxDrawTextAlignmentBottom   = 0x0008,
+	kOfxDrawTextAlignmentBaseline = 0x0010,
+	kOfxDrawTextAlignmentCenterH  = (kOfxDrawTextAlignmentLeft | kOfxDrawTextAlignmentRight),
+	kOfxDrawTextAlignmentCenterV  = (kOfxDrawTextAlignmentTop | kOfxDrawTextAlignmentBaseline)
 } OfxDrawTextAlignment;
 
 /** @brief OFX suite that allows an effect to draw to a host-defined display context.
@@ -90,40 +90,50 @@ typedef struct OfxDrawSuiteV1 {
 
 	 @returns
 	 - ::kOfxStatOK - the colour was returned
+	 - ::kOfxStatErrValue - std_colour was invalid
+	 - ::kOfxStatFailed - failure, e.g. if function is called outside kOfxInteractActionDraw
 	 */
 	OfxStatus (*getColour)(OfxDrawContextHandle context, OfxStandardColour std_colour, OfxRGBAColourF *colour);
 
-  /** @brief Sets the current draw colour for future drawing operations
-
-	\arg context  - the draw context
-	\arg colour      - the RGBA colour
-
-	@returns
-	- ::kOfxStatOK - the colour was changed
-   */
-  OfxStatus (*setColour)(OfxDrawContextHandle context, const OfxRGBAColourF *colour);
-
-	/** @brief Sets the current draw colour for future drawing operations
+	/** @brief Sets the colour for future drawing operations (lines, filled shapes and text)
 
 	 \arg context  - the draw context
-	 \arg width     - the line width - use 0 for a single pixel line or non-zero for a smooth line of the desired width
+	 \arg colour      - the RGBA colour
+
+	 The host should use "over" compositing when using a non-opaque colour.
+	
+	 @returns
+	 - ::kOfxStatOK - the colour was changed
+	 - ::kOfxStatFailed - failure, e.g. if function is called outside kOfxInteractActionDraw
+	 */
+	OfxStatus (*setColour)(OfxDrawContextHandle context, const OfxRGBAColourF *colour);
+
+	/** @brief Sets the line width for future line drawing operations
+
+	 \arg context  - the draw context
+	 \arg width     - the line width
+
+	 Use width 0 for a single pixel line or non-zero for a smooth line of the desired width
 
 	 The host should adjust for screen density.
 
 	 @returns
 	 - ::kOfxStatOK - the width was changed
+	 - ::kOfxStatFailed - failure, e.g. if function is called outside kOfxInteractActionDraw
 	 */
-  OfxStatus (*setLineWidth)(OfxDrawContextHandle context, float width);
+	OfxStatus (*setLineWidth)(OfxDrawContextHandle context, float width);
 
-	/** @brief Sets the current line stipple pattern
+	/** @brief Sets the stipple pattern for future line drawing operations
 
 	 \arg context  - the draw context
 	 \arg pattern  - the desired stipple pattern
 
 	 @returns
 	 - ::kOfxStatOK - the pattern was changed
+	 - ::kOfxStatErrValue - pattern was not valid
+	 - ::kOfxStatFailed - failure, e.g. if function is called outside kOfxInteractActionDraw
 	 */
-  OfxStatus (*setLineStipple)(OfxDrawContextHandle context, OfxDrawLineStipplePattern pattern);
+	OfxStatus (*setLineStipple)(OfxDrawContextHandle context, OfxDrawLineStipplePattern pattern);
 
 	/** @brief Draws a primitive of the desired type
 
@@ -132,21 +142,26 @@ typedef struct OfxDrawSuiteV1 {
 	 \arg points  - the array of points in the primitive
 	 \arg point_count  - the number of points in the array
 
-	 The number of points required matches the equivalent OpenGL primitives.
-	 For an ellipse, point_count should be 2, and points should form the top-left and bottom-right of a rectangle to draw the ellipse inside
+	 kOfxDrawPrimitiveLines - like GL_LINES, n points draws n/2 separated lines
+	 kOfxDrawPrimitiveLineStrip - like GL_LINE_STRIP, n points draws n-1 connected lines
+	 kOfxDrawPrimitiveLineLoop - like GL_LINE_LOOP, n points draws n connected lines
+	 kOfxDrawPrimitiveRectangle - draws an axis-aligned filled rectangle defined by 2 opposite corner points
+	 kOfxDrawPrimitivePolygon - like GL_POLYGON, draws a filled n-sided polygon
+	 kOfxDrawPrimitiveEllipse - draws a axis-aligned elliptical line (not filled) within the rectangle defined by 2 opposite corner points
 
 	 @returns
-	 - ::kOfxStatOK - the pattern was changed
-	 - ::kOfxStatErrValue - point_count was not valid
+	 - ::kOfxStatOK - the draw was completed
+	 - ::kOfxStatErrValue - invalid primitive, or point_count not valid for primitive
+	 - ::kOfxStatFailed - failure, e.g. if function is called outside kOfxInteractActionDraw
 	 */
-  OfxStatus (*draw)(OfxDrawContextHandle context, OfxDrawPrimitive primitive, const OfxPointD *points, int point_count);
+	OfxStatus (*draw)(OfxDrawContextHandle context, OfxDrawPrimitive primitive, const OfxPointD *points, int point_count);
 
 
-	/** @brief Draws text at the specified position in the current font size
+	/** @brief Draws text at the specified position
 
 	 \arg context  - the draw context
 	 \arg text  - the text to draw (UTF-8 encoded)
-	 \arg pos  - the position of the lower-left corner of the text baseline
+	 \arg pos  - the position at which to align the text
 	 \arg alignment  - the text alignment flags (see kOfxDrawTextAlignment*)
 
 	 The text font face and size are determined by the host.
@@ -154,8 +169,9 @@ typedef struct OfxDrawSuiteV1 {
 	 @returns
 	 - ::kOfxStatOK - the text was drawn
 	 - ::kOfxStatErrValue - text or pos were not defined
+	 - ::kOfxStatFailed - failure, e.g. if function is called outside kOfxInteractActionDraw
 	 */
-  OfxStatus (*drawText)(OfxDrawContextHandle context, const char *text, const OfxPointD *pos, int alignment);
+	OfxStatus (*drawText)(OfxDrawContextHandle context, const char *text, const OfxPointD *pos, int alignment);
 
 } OfxDrawSuiteV1;
 

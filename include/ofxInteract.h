@@ -227,8 +227,13 @@ These are the list of actions passed to an interact's entry point function. For 
 /** @brief
 
  This action is issued to an interact whenever the host needs the plugin
- to redraw the given interact. The interact should issue any openGL calls
- it needs at this point.
+ to redraw the given interact.
+
+ The interact should either issue OpenGL calls to draw itself, or use DrawSuite calls.
+
+ If this is called via kOfxImageEffectPluginPropOverlayInteractV2, drawing MUST use DrawSuite.
+ 
+ If this is called via kOfxImageEffectPluginPropOverlayInteractV1, drawing SHOULD use OpenGL. Some existing plugins may use DrawSuite via kOfxImageEffectPluginPropOverlayInteractV1 if it's supported by the host, but this is discouraged.  
 
  Note that the interact may (in the case of custom parameter GUIS) or may
  not (in the case of image effect overlays) be required to swap buffers,
