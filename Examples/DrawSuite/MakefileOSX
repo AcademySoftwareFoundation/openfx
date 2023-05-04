@@ -1,0 +1,7 @@
+CXXFLAGS = -I../../include
+OPTIMIZER = -g
+
+drawsuite.ofx : drawsuite.o
+	$(CXX) -bundle drawsuite.o -o drawsuite.ofx -framework OpenGL
+	mkdir -p drawsuite.ofx.bundle/Contents/MacOS/
+	cp drawsuite.ofx drawsuite.ofx.bundle/Contents/MacOS/
