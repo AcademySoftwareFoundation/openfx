@@ -1,0 +1,112 @@
+name: Build OpenFX libs and examples
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        buildtype: [Release]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        conan_version: [1.59.0, 2.0.4]
+        cmake_version: [3.26.3]
+        exclude:                # keep things simple while working on this script
+          - conan_version: 1.59.0
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: setup env vars
+        run: |
+          BUILDTYPE_LC=$(echo '${{ matrix.buildtype }}'|tr [:upper:] [:lower:])
+          echo "BUILDTYPE_LC=$BUILDTYPE_LC" >> $GITHUB_ENV
+          echo "OSNAME=$(echo '${{ matrix.os }}'|sed 's/-.*//')" >> $GITHUB_ENV
+          echo "GIT_COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          # Conan on Windows always uses "conan-default" preset
+          if [[ ${{ matrix.os }} = windows-latest ]]; then
+            echo "CONAN_PRESET=conan-default" >> $GITHUB_ENV
+            echo BUILD_DIR=build >> $GITHUB_ENV
+          else
+            echo "CONAN_PRESET=conan-$BUILDTYPE_LC" >> $GITHUB_ENV
+            echo BUILD_DIR=build/${{ matrix.buildtype }} >> $GITHUB_ENV
+          fi
+
+      - name: Install Conan
+        id: conan
+        uses: turtlebrowser/get-conan@main
+        with:
+          version: ${{ matrix.conan_version }}
+
+      - name: Set up conan
+        run: |
+          conan profile detect
+
+
+      - name: Install system dependencies
+        uses: ConorMacBride/install-package@v1
+        with:
+          apt: libgl-dev libgl1-mesa-dev
+          brew:
+          brew-cask:
+          choco:
+
+      - name: Install dependencies
+        run: |
+          conan install -s build_type=${{ matrix.buildtype }} -pr:b=default --build=missing .
+
+      - name: Configure project with cmake
+        run: |
+          cmake --preset $CONAN_PRESET -DBUILD_EXAMPLE_PLUGINS=TRUE .
+
+      - name: Build with cmake
+        run: |
+          cmake --build $BUILD_DIR --config ${{ matrix.buildtype }} --verbose
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        if: env.OSNAME != 'windows'
+        with:
+          name: openfx-${{ env.OSNAME }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
+          path: |
+            include
+            !include/DocSrc
+            !include/*.png
+            !include/*.doxy
+            !include/*.dtd
+            Support/include
+            HostSupport/include
+            ${{ env.BUILD_DIR }}/Examples/*.ofx
+            ${{ env.BUILD_DIR }}/Support/Library/lib*
+            ${{ env.BUILD_DIR }}/Support/Plugins/*.ofx
+            ${{ env.BUILD_DIR }}/Support/PropTester/*.ofx
+            ${{ env.BUILD_DIR }}/HostSupport/lib*
+
+      - name: Archive production artifacts (Windows)
+        uses: actions/upload-artifact@v3
+        if: env.OSNAME == 'windows'
+        with:
+          name: openfx-${{ env.OSNAME }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
+          path: |
+            include
+            !include/DocSrc
+            !include/*.png
+            !include/*.doxy
+            !include/*.dtd
+            Support/include
+            HostSupport/include
+            ${{ env.BUILD_DIR }}/Examples/${{ matrix.buildtype }}/*.ofx
+            ${{ env.BUILD_DIR }}/Support/Library/${{ matrix.buildtype }}/lib*
+            ${{ env.BUILD_DIR }}/Support/Plugins/${{ matrix.buildtype }}/*.ofx
+            ${{ env.BUILD_DIR }}/Support/PropTester/${{ matrix.buildtype }}/*.ofx
+            ${{ env.BUILD_DIR }}/HostSupport/${{ matrix.buildtype }}/lib*
+
+      # - name: Archive build
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: openfx-${{ env.OSNAME }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}-build
+      #     path: |
+      #       .
