@@ -3,19 +3,130 @@ name: Build OpenFX libs and examples
 on: [push, pull_request]
 
 jobs:
-  build:
+  linux-vfx:
+    name: 'Linux CentOS 7 VFX CY${{ matrix.vfx-cy }}
+      <config=${{ matrix.buildtype }}>'
+    # Avoid duplicated checks when a pull_request is opened from a local branch.
+    if: |
+      github.event_name == 'push' ||
+      github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ${{ matrix.os }}
+    container:
+      # DockerHub: https://hub.docker.com/u/aswf
+      # Source: https://github.com/AcademySoftwareFoundation/aswf-docker
+      image: aswf/ci-base:${{ matrix.vfx-cy }}
+    strategy:
+      matrix:
+        build: [2022, 2021] # build on a reasonable selection of ASWF VFX Reference Platforms
+        # TODO: build with clang and gcc, and c++ std 17 and 11
+        # (see compiler & standard keywords below, unused so far)
+        include:
+          - build: 2022
+            buildtype: Release
+            os: ubuntu-latest
+            conan_version: 2.0.4
+            cxx-standard: 17
+            cxx-compiler: clang++
+            cc-compiler: clang
+            compiler-desc: Clang
+            vfx-cy: 2022
+          - build: 2021
+            buildtype: Release
+            os: ubuntu-latest
+            conan_version: 2.0.4
+            cxx-standard: 17
+            cxx-compiler: clang++
+            cc-compiler: clang
+            compiler-desc: Clang
+            vfx-cy: 2021
+          # No python3. TODO: install conan using python2 or standalone
+          # - build: 2018
+          #   buildtype: Release
+          #   os: ubuntu-latest
+          #   conan_version: 2.0.4
+          #   cxx-standard: 11
+          #   cxx-compiler: g++
+          #   cc-compiler: gcc
+          #   compiler-desc: GCC
+          #   vfx-cy: 2018
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: setup env vars
+        run: |
+          BUILDTYPE_LC=$(echo '${{ matrix.buildtype }}'|tr [:upper:] [:lower:])
+          echo "BUILDTYPE_LC=$BUILDTYPE_LC" >> $GITHUB_ENV
+          echo "OSNAME=$(echo '${{ matrix.os }}'|sed 's/-.*//')" >> $GITHUB_ENV
+          echo "GIT_COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          # Conan on Windows always uses "conan-default" preset
+          if [[ ${{ matrix.os }} = windows-latest ]]; then
+            echo "CONAN_PRESET=conan-default" >> $GITHUB_ENV
+            echo BUILD_DIR=build >> $GITHUB_ENV
+          else
+            echo "CONAN_PRESET=conan-$BUILDTYPE_LC" >> $GITHUB_ENV
+            echo BUILD_DIR=build/${{ matrix.buildtype }} >> $GITHUB_ENV
+          fi
+
+      - name: Install Conan
+        id: conan
+        uses: turtlebrowser/get-conan@main
+        with:
+          version: ${{ matrix.conan_version }}
+
+      - name: Set up conan
+        run: |
+          conan profile detect
+
+      - name: Install dependencies
+        run: |
+          conan install -s build_type=${{ matrix.buildtype }} -pr:b=default --build=missing .
+
+      - name: Configure project with cmake
+        run: |
+          # VFX ref platforms 2022 & earlier have only cmake 3.19.
+          # Older cmake (<3.23) does not support presets, so invoke with explicit args.
+          cmake . -G "Unix Makefiles" \
+            -DCMAKE_TOOLCHAIN_FILE=$(pwd)/build/${{ matrix.buildtype }}/generators/conan_toolchain.cmake \
+            -DCMAKE_POLICY_DEFAULT_CMP0091=NEW \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_EXAMPLE_PLUGINS=TRUE
+
+      - name: Build with cmake
+        run: |
+          cmake --build .
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: openfx-linux_vfx${{ matrix.vfx-cy }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
+          path: |
+            include
+            !include/DocSrc
+            !include/*.png
+            !include/*.doxy
+            !include/*.dtd
+            Support/include
+            HostSupport/include
+            ${{ env.BUILD_DIR }}/Examples/*.ofx
+            ${{ env.BUILD_DIR }}/Support/Library/lib*
+            ${{ env.BUILD_DIR }}/Support/Plugins/*.ofx
+            ${{ env.BUILD_DIR }}/Support/PropTester/*.ofx
+            ${{ env.BUILD_DIR }}/HostSupport/lib*
+
+  linux-ubuntu:
+    if: |
+      github.event_name == 'push' ||
+      github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        buildtype: [Release]
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        conan_version: [1.59.0, 2.0.4]
-        cmake_version: [3.26.3]
-        exclude:                # keep things simple while working on this script
-          - conan_version: 1.59.0
-    defaults:
-      run:
-        shell: bash
+        build: [1]
+        include:
+          - build: 1
+            buildtype: Release
+            os: ubuntu-latest
+            conan_version: 2.0.4
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -64,11 +175,10 @@ jobs:
 
       - name: Build with cmake
         run: |
-          cmake --build $BUILD_DIR --config ${{ matrix.buildtype }} --verbose
+          cmake --build $BUILD_DIR --config ${{ matrix.buildtype }}
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
-        if: env.OSNAME != 'windows'
         with:
           name: openfx-${{ env.OSNAME }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
           path: |
@@ -85,9 +195,137 @@ jobs:
             ${{ env.BUILD_DIR }}/Support/PropTester/*.ofx
             ${{ env.BUILD_DIR }}/HostSupport/lib*
 
+  mac:
+    if: |
+      github.event_name == 'push' ||
+      github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        build: [1]
+        include:
+          - build: 1
+            buildtype: Release
+            os: macos-latest
+            conan_version: 2.0.4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: setup env vars
+        run: |
+          BUILDTYPE_LC=$(echo '${{ matrix.buildtype }}'|tr [:upper:] [:lower:])
+          echo "BUILDTYPE_LC=$BUILDTYPE_LC" >> $GITHUB_ENV
+          echo "OSNAME=$(echo '${{ matrix.os }}'|sed 's/-.*//')" >> $GITHUB_ENV
+          echo "GIT_COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          # Conan on Windows always uses "conan-default" preset
+          if [[ ${{ matrix.os }} = windows-latest ]]; then
+            echo "CONAN_PRESET=conan-default" >> $GITHUB_ENV
+            echo BUILD_DIR=build >> $GITHUB_ENV
+          else
+            echo "CONAN_PRESET=conan-$BUILDTYPE_LC" >> $GITHUB_ENV
+            echo BUILD_DIR=build/${{ matrix.buildtype }} >> $GITHUB_ENV
+          fi
+
+      - name: Install Conan
+        id: conan
+        uses: turtlebrowser/get-conan@main
+        with:
+          version: ${{ matrix.conan_version }}
+
+      - name: Set up conan
+        run: |
+          conan profile detect
+
+      - name: Install dependencies
+        run: |
+          conan install -s build_type=${{ matrix.buildtype }} -pr:b=default --build=missing .
+
+      - name: Configure project with cmake
+        run: |
+          cmake --preset $CONAN_PRESET -DBUILD_EXAMPLE_PLUGINS=TRUE .
+
+      - name: Build with cmake
+        run: |
+          cmake --build $BUILD_DIR --config ${{ matrix.buildtype }}
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: openfx-${{ env.OSNAME }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
+          path: |
+            include
+            !include/DocSrc
+            !include/*.png
+            !include/*.doxy
+            !include/*.dtd
+            Support/include
+            HostSupport/include
+            ${{ env.BUILD_DIR }}/Examples/*.ofx
+            ${{ env.BUILD_DIR }}/Support/Library/lib*
+            ${{ env.BUILD_DIR }}/Support/Plugins/*.ofx
+            ${{ env.BUILD_DIR }}/Support/PropTester/*.ofx
+            ${{ env.BUILD_DIR }}/HostSupport/lib*
+
+  windows:
+    if: |
+      github.event_name == 'push' ||
+      github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        build: [1]
+        include:
+          - build: 1
+            buildtype: Release
+            os: windows-latest
+            conan_version: 2.0.4
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: setup env vars
+        run: |
+          BUILDTYPE_LC=$(echo '${{ matrix.buildtype }}'|tr [:upper:] [:lower:])
+          echo "BUILDTYPE_LC=$BUILDTYPE_LC" >> $GITHUB_ENV
+          echo "OSNAME=$(echo '${{ matrix.os }}'|sed 's/-.*//')" >> $GITHUB_ENV
+          echo "GIT_COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          # Conan on Windows always uses "conan-default" preset
+          if [[ ${{ matrix.os }} = windows-latest ]]; then
+            echo "CONAN_PRESET=conan-default" >> $GITHUB_ENV
+            echo BUILD_DIR=build >> $GITHUB_ENV
+          else
+            echo "CONAN_PRESET=conan-$BUILDTYPE_LC" >> $GITHUB_ENV
+            echo BUILD_DIR=build/${{ matrix.buildtype }} >> $GITHUB_ENV
+          fi
+
+      - name: Install Conan
+        id: conan
+        uses: turtlebrowser/get-conan@main
+        with:
+          version: ${{ matrix.conan_version }}
+
+      - name: Set up conan
+        run: |
+          conan profile detect
+
+      - name: Install dependencies
+        run: |
+          conan install -s build_type=${{ matrix.buildtype }} -pr:b=default --build=missing .
+
+      - name: Configure project with cmake
+        run: |
+          cmake --preset $CONAN_PRESET -DBUILD_EXAMPLE_PLUGINS=TRUE .
+
+      - name: Build with cmake
+        run: |
+          cmake --build $BUILD_DIR --config ${{ matrix.buildtype }}
+
       - name: Archive production artifacts (Windows)
         uses: actions/upload-artifact@v3
-        if: env.OSNAME == 'windows'
         with:
           name: openfx-${{ env.OSNAME }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
           path: |
@@ -103,10 +341,3 @@ jobs:
             ${{ env.BUILD_DIR }}/Support/Plugins/${{ matrix.buildtype }}/*.ofx
             ${{ env.BUILD_DIR }}/Support/PropTester/${{ matrix.buildtype }}/*.ofx
             ${{ env.BUILD_DIR }}/HostSupport/${{ matrix.buildtype }}/lib*
-
-      # - name: Archive build
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: openfx-${{ env.OSNAME }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}-build
-      #     path: |
-      #       .
