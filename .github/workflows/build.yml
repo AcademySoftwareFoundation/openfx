@@ -145,7 +145,11 @@ jobs:
 
       - name: Build with cmake
         run: |
-          cmake --build $BUILD_DIR --parallel
+          if [[ ${{ matrix.ostype }} = windows ]]; then
+            cmake --build $BUILD_DIR --config Release --parallel
+          else
+            cmake --build $BUILD_DIR --parallel
+          fi
 
       - name: Copy includes into build folder for installation
         run: |
