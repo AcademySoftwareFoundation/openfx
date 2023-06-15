@@ -147,47 +147,30 @@ jobs:
         run: |
           cmake --build $BUILD_DIR --parallel
 
-      - name: Archive production artifacts (Linux/Mac)
+      - name: Copy includes into build folder for installation
+        run: |
+          cp -R include ${{ env.BUILD_DIR }}/include
+          cp -R Support/include ${{ env.BUILD_DIR }}/Support/include
+          cp -R HostSupport/include ${{ env.BUILD_DIR }}/HostSupport/include
+
+      - name: Archive libs, plugins, and header files to artifact
         uses: actions/upload-artifact@v3
-        if: ${{ matrix.ostype == 'linux' || matrix.ostype == 'mac' }}
         with:
           name: openfx-${{ matrix.release_prefix }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
           path: |
-            include
-            !include/DocSrc
-            !include/*.png
-            !include/*.doxy
-            !include/*.dtd
-            Support/include
-            HostSupport/include
-            ${{ env.BUILD_DIR }}/Examples/*.ofx
-            ${{ env.BUILD_DIR }}/Support/Library/lib*
-            ${{ env.BUILD_DIR }}/Support/Plugins/*.ofx
-            ${{ env.BUILD_DIR }}/Support/PropTester/*.ofx
-            ${{ env.BUILD_DIR }}/HostSupport/lib*
+            ${{ env.BUILD_DIR }}/include
+            !${{ env.BUILD_DIR }}/include/DocSrc
+            !${{ env.BUILD_DIR }}/include/*.png
+            !${{ env.BUILD_DIR }}/include/*.doxy
+            !${{ env.BUILD_DIR }}/include/*.dtd
+            ${{ env.BUILD_DIR }}/Support/include
+            ${{ env.BUILD_DIR }}/HostSupport/include
+            ${{ env.BUILD_DIR }}/**/*.ofx
+            ${{ env.BUILD_DIR }}/**/lib*
 
-      - name: Archive production artifacts (Windows)
-        uses: actions/upload-artifact@v3
-        if: ${{ matrix.ostype == 'windows' }}
-        with:
-          name: openfx-${{ matrix.release_prefix }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
-          path: |
-            include
-            !include/DocSrc
-            !include/*.png
-            !include/*.doxy
-            !include/*.dtd
-            Support/include
-            HostSupport/include
-            ${{ env.BUILD_DIR }}/Examples/${{ matrix.buildtype }}/*.ofx
-            ${{ env.BUILD_DIR }}/Support/Library/${{ matrix.buildtype }}/lib*
-            ${{ env.BUILD_DIR }}/Support/Plugins/${{ matrix.buildtype }}/*.ofx
-            ${{ env.BUILD_DIR }}/Support/PropTester/${{ matrix.buildtype }}/*.ofx
-            ${{ env.BUILD_DIR }}/HostSupport/${{ matrix.buildtype }}/lib*
-
-      - name: Archive build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: openfx-build-${{ matrix.release_prefix }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
-          path: |
-            .
+      # - name: Archive all build artifacts (for debugging CI)
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: openfx-build-${{ matrix.release_prefix }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
+      #     path: |
+      #       .
