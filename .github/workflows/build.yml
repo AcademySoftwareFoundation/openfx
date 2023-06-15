@@ -165,11 +165,12 @@ jobs:
             cmake --build $BUILD_DIR --parallel
           fi
 
-      - name: Copy includes into build folder for installation
+      - name: Copy includes and symbols into build folder for installation
         run: |
           cp -R include ${{ env.BUILD_DIR }}/include
           cp -R Support/include ${{ env.BUILD_DIR }}/Support/include
           cp -R HostSupport/include ${{ env.BUILD_DIR }}/HostSupport/include
+          cp -R symbols ${{ env.BUILD_DIR }}/symbols
 
       - name: Archive libs, plugins, and header files to artifact
         uses: actions/upload-artifact@v3
@@ -181,6 +182,7 @@ jobs:
             !${{ env.BUILD_DIR }}/include/*.png
             !${{ env.BUILD_DIR }}/include/*.doxy
             !${{ env.BUILD_DIR }}/include/*.dtd
+            ${{ env.BUILD_DIR }}/symbols
             ${{ env.BUILD_DIR }}/Support/include
             ${{ env.BUILD_DIR }}/HostSupport/include
             ${{ env.BUILD_DIR }}/**/*.ofx
