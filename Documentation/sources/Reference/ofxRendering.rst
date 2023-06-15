@@ -338,15 +338,15 @@ input. The .0 and .5 mean first and second temporal fields.
 
         output 0       1       2       3
         source 0       0       1       1
-            
+
 
     ::
 
         Behaviour with fielded footage
 
-        output 0.0 0.5 1.0 1.5 2.0 2.5 3.0 3.5            
+        output 0.0 0.5 1.0 1.5 2.0 2.5 3.0 3.5
         source 0.0 0.0 0.5 0.5 1.0 1.0 1.5 1.5
-            
+
 
 NOTE
 
@@ -374,3 +374,8 @@ A host may need to abort a backgrounded render, typically in response to
 a user changing a parameter value. An effect should occasionally poll
 the :cpp:func:`OfxImageEffectSuiteV1::abort`
 function to see if it should give up on rendering.
+
+Rendering on GPU
+----------------
+
+.. doxygenfile:: ofxGPURender.h

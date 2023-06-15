@@ -23,7 +23,7 @@
 #include "ofxhParametricParam.h"
 #endif
 #ifdef OFX_SUPPORTS_OPENGLRENDER
-#include "ofxOpenGLRender.h"
+#include "ofxGPURender.h"
 #endif
 #include "ofxOld.h" // old plugins may rely on deprecated properties being present
 

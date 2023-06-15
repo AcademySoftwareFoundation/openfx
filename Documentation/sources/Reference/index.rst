@@ -1,4 +1,4 @@
-OpenFX reference 
+OpenFX reference
 ================
 
 This is a mostly complete reference guide to the OFX image effect plugin
@@ -21,7 +21,7 @@ the API. The changes to the API are listed in an addendum.
     ofxCoordSystem
     ofxImageClip
     ofxParameter
-    ofxRendering 
+    ofxRendering
     ofxInteracts
     ofxClipPreferences
     ofxImageEffectActions
