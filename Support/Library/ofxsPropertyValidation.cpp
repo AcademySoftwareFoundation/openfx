@@ -10,7 +10,7 @@ This file contains headers for classes that are used to validate property sets a
 #include "ofxsSupportPrivate.h"
 #include <stdarg.h>
 #ifdef OFX_SUPPORTS_OPENGLRENDER
-#include "ofxOpenGLRender.h"
+#include "ofxGPURender.h"
 #endif
 
 /** @brief Null pointer definition */

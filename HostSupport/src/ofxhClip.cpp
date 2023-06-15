@@ -12,7 +12,7 @@
 #include "ofxhClip.h"
 #include "ofxhImageEffect.h"
 #ifdef OFX_SUPPORTS_OPENGLRENDER
-#include "ofxOpenGLRender.h"
+#include "ofxGPURender.h"
 #endif
 
 namespace OFX {

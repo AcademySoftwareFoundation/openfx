@@ -10,6 +10,7 @@ if(APPLE)
 endif()
 
 option(BUILD_EXAMPLE_PLUGINS "Build example plugins" OFF)
+option(OFX_SUPPORTS_OPENGLRENDER "Build with support for GPU rendering (OpenGL/CUDA/Metal/OpenCL)" ON)
 
 # Flags
 if(!MSVC)
@@ -30,6 +31,11 @@ set_property(GLOBAL PROPERTY OFX_PROJECT_SOURCE_DIR "${PROJECT_SOURCE_DIR}")
 # C Headers
 set(OFX_HEADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 file(GLOB_RECURSE OFX_HEADER_FILES "${OFX_HEADER_DIR}/*.h")
+
+# Defines
+if(OFX_SUPPORTS_OPENGLRENDER)
+  add_compile_definitions(OFX_SUPPORTS_OPENGLRENDER)
+endif()
 
 # Build
 add_subdirectory(HostSupport)

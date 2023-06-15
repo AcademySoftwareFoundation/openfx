@@ -11,7 +11,7 @@
 #endif
 #include <stdexcept>
 #ifdef OFX_SUPPORTS_OPENGLRENDER
-#include "ofxOpenGLRender.h"
+#include "ofxGPURender.h"
 #endif
 #include "ofxsCore.h"
 

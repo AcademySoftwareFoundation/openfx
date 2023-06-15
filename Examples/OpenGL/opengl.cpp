@@ -22,7 +22,7 @@
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
-#include "ofxOpenGLRender.h"
+#include "ofxGPURender.h"
 
 #include "../include/ofxUtilities.H" // example support utils
 

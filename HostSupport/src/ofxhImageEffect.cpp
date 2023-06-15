@@ -64,11 +64,11 @@ namespace OFX {
         { kOfxPluginPropFilePath, Property::eString, 1, true, ""},
 #ifdef OFX_SUPPORTS_OPENGLRENDER
         { kOfxImageEffectPropOpenGLRenderSupported, Property::eString, 1, false, "false"}, // OFX 1.3
-#endif
 	{ kOfxImageEffectPropCudaRenderSupported, Property::eString, 1, false, "false" },
 	{ kOfxImageEffectPropCudaStreamSupported, Property::eString, 1, false, "false" },
 	{ kOfxImageEffectPropMetalRenderSupported, Property::eString, 1, false, "false" },
 	{ kOfxImageEffectPropOpenCLRenderSupported, Property::eString, 1, false, "false" },
+#endif
 
         Property::propSpecEnd
       };
@@ -320,18 +320,18 @@ namespace OFX {
         { kOfxImageEffectPropSupportsTiles,     Property::eInt,        1, false, "1" }, // OFX 1.4
 #ifdef OFX_SUPPORTS_OPENGLRENDER
         { kOfxImageEffectPropOpenGLRenderSupported, Property::eString, 1, false, "false"}, // OFX 1.4
-#endif
 	{ kOfxImageEffectPropCudaRenderSupported, Property::eString, 1, false, "false" },
 	{ kOfxImageEffectPropCudaStreamSupported, Property::eString, 1, false, "false" },
 	{ kOfxImageEffectPropMetalRenderSupported, Property::eString, 1, false, "false" },
 	{ kOfxImageEffectPropOpenCLRenderSupported, Property::eString, 1, false, "false" },
+#endif
         Property::propSpecEnd
       };
 
       Instance::Instance(ImageEffectPlugin* plugin,
-                         Descriptor         &other, 
+                         Descriptor         &other,
                          const std::string  &context,
-                         bool               interactive) 
+                         bool               interactive)
         : Base(effectInstanceStuff)
         , _plugin(plugin)
         , _context(context)
@@ -2694,18 +2694,18 @@ namespace OFX {
         { kOfxImageEffectInstancePropSequentialRender, Property::eInt, 1, true, "0" }, // OFX 1.2
 #ifdef OFX_SUPPORTS_OPENGLRENDER
         { kOfxImageEffectPropOpenGLRenderSupported, Property::eString, 1, true, "false"}, // OFX 1.3
-#endif
-        { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" }, // OFX 1.4
-        { kOfxImageEffectHostPropNativeOrigin, Property::eString, 0, true, kOfxHostNativeOriginBottomLeft }, // OFX 1.4
 	{ kOfxImageEffectPropCudaRenderSupported, Property::eString, 1, false, "false" },
 	{ kOfxImageEffectPropCudaStreamSupported, Property::eString, 1, false, "false" },
 	{ kOfxImageEffectPropMetalRenderSupported, Property::eString, 1, false, "false" },
 	{ kOfxImageEffectPropOpenCLRenderSupported, Property::eString, 1, false, "false" },
+#endif
+        { kOfxImageEffectPropRenderQualityDraft, Property::eInt, 1, true, "0" }, // OFX 1.4
+        { kOfxImageEffectHostPropNativeOrigin, Property::eString, 0, true, kOfxHostNativeOriginBottomLeft }, // OFX 1.4
         Property::propSpecEnd
-      };    
+      };
 
       /// ctor
-      Host::Host() 
+      Host::Host()
       {
         /// add the properties for an image effect host, derived classs to set most of them
         _properties.addProperties(hostStuffs);
