@@ -43,6 +43,20 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+          - name_prefix: Linux CentOS 7 VFX CY2023
+            release_prefix: linux-vfx2023
+            ostype: linux
+            distro: centos7
+            os: ubuntu-latest
+            container: aswf/ci-base:2023
+            vfx-cy: 2023
+            has_cmake_presets: false
+            buildtype: Release
+            conan_version: 2.0.4
+            cxx-standard: 17
+            cxx-compiler: clang++
+            cc-compiler: clang
+            compiler-desc: Clang
           - name_prefix: Linux Ubuntu
             release_prefix: linux-ubuntu
             ostype: linux
