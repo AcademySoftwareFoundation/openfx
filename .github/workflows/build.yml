@@ -18,7 +18,7 @@ jobs:
           - name_prefix: Linux CentOS 7 VFX CY2021
             release_prefix: linux-vfx2021
             ostype: linux
-            distro: centos7
+            aswfdockerbuild: true
             os: ubuntu-latest
             container: aswf/ci-base:2021
             vfx-cy: 2021
@@ -32,7 +32,7 @@ jobs:
           - name_prefix: Linux CentOS 7 VFX CY2022
             release_prefix: linux-vfx2022
             ostype: linux
-            distro: centos7
+            aswfdockerbuild: true
             os: ubuntu-latest
             container: aswf/ci-base:2022
             vfx-cy: 2022
@@ -43,10 +43,10 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
-          - name_prefix: Linux CentOS 7 VFX CY2023
+          - name_prefix: Linux Rocky 8 VFX CY2023
             release_prefix: linux-vfx2023
             ostype: linux
-            distro: centos7
+            aswfdockerbuild: true
             os: ubuntu-latest
             container: aswf/ci-base:2023
             vfx-cy: 2023
@@ -60,7 +60,7 @@ jobs:
           - name_prefix: Linux Ubuntu
             release_prefix: linux-ubuntu
             ostype: linux
-            distro: ubuntu
+            aswfdockerbuild: false
             os: ubuntu-latest
             container: null
             has_cmake_presets: true
@@ -126,9 +126,9 @@ jobs:
         run: |
           conan profile detect
 
-      - name: Install system dependencies
+      - name: Install system dependencies if needed
         uses: ConorMacBride/install-package@v1
-        if: ${{ matrix.distro == 'ubuntu' }}
+        if: ${{ matrix.aswfdockerbuild == false }}
         with:
           apt: libgl-dev libgl1-mesa-dev
           brew:
