@@ -1,4 +1,4 @@
-CXXFLAGS = -I../../include
+CXXFLAGS = -I../../include --std=gnu++14
 OPTIMIZER = -g
 
 drawsuite.ofx : drawsuite.o

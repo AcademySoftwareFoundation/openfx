@@ -1,8 +1,7 @@
-CXXFLAGS = -I../../include 
+CXXFLAGS = -I../../include -DGL_SILENCE_DEPRECATION
 OPTIMIZER = -g
 
 custom.ofx : custom.o
-	$(CXX) -bundle custom.o -o custom.ofx -framework OpenGL
+	$(CXX) -DGL_SILENCE_DEPRECATION -bundle custom.o -o custom.ofx -framework OpenGL
 	mkdir -p custom.ofx.bundle/Contents/MacOS/
 	cp custom.ofx custom.ofx.bundle/Contents/MacOS/
-

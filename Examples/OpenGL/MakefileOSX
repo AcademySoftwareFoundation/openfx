@@ -1,4 +1,4 @@
-CXXFLAGS = -I../../include
+CXXFLAGS = -I../../include -DGL_SILENCE_DEPRECATION
 OPTIMIZER = -g
 
 opengl.ofx : opengl.o

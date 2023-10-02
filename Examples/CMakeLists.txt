@@ -9,6 +9,7 @@ set(PLUGINS
 	OpenGL
 	Rectangle
 	Test
+        DrawSuite
 	)
 
 foreach(PLUGIN IN LISTS PLUGINS)
