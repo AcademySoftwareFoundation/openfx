@@ -108,8 +108,8 @@ distinction between...
    
 *  Instances
    
-    Which hosts and plug-ins use to control the behaviour of a specific
-    **live** object.
+   Which hosts and plug-ins use to control the behaviour of a specific
+   **live** object.
    
 
 In most APIs descriptors are typically passed from a host to a plug-in

@@ -83,8 +83,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'OpenFX'
-copyright = u'2019, ofxa'
-author = u'ofxa'
+copyright = u'2023, OpenFX and contributors to the OpenFX project'
+author = u'OpenFX and contributors to the OpenFX Project'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -177,7 +177,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'OpenFX.tex', u'OpenFX Documentation',
-     u'ofxa', 'manual'),
+     [author], 'manual'),
 ]
 
 
@@ -198,7 +198,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'OpenFX', u'OpenFX Documentation',
-     author, 'OpenFX', 'One line description of project.',
+     author, 'OpenFX', 'OpenFX Project',
      'Miscellaneous'),
 ]
 

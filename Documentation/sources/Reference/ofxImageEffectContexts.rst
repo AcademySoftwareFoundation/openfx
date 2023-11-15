@@ -31,7 +31,7 @@ The current contexts defined in OFX are:
 
    Two compulsory input clips and a compulsory 'Transition' double parameter
    Used to perform transitions between clips, typically in editing
-      applications, eg: a cross dissolve,
+   applications, eg: a cross dissolve,
 
 -  :c:macro:`kOfxImageEffectContextPaint`
 

@@ -40,8 +40,7 @@ to them. The scheme is,
 
 OfxPropertySetHandle
 OfxPropertySetHandle
-Blind data type used to hold sets of properties
-    ::
+Blind data type used to hold sets of properties::
 
         #include "ofxCore.h"
         typedef struct OfxPropertySetStruct *OfxPropertySetHandle; 

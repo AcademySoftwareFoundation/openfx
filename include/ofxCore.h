@@ -237,7 +237,7 @@ These are the actions passed to a plug-in's 'main' function
  The handle, inArgs and outArgs arguments to the main entry
  are redundant and should be set to NULL.
 
- \pref
+ \pre
      -  the \ref kOfxActionLoad action has been called
      -  all instances of a plugin have been destroyed
 
@@ -323,7 +323,7 @@ These are the actions passed to a plug-in's 'main' function
  @param  inArgs is redundant and is set to NULL
  @param  outArgs is redundant and is set to NULL
 
- \pref
+ \pre
      -  \ref kOfxActionDescribe has been called
      -  the instance is fully constructed, with all objects requested in the
      describe actions (eg, parameters and clips) have been constructed and
