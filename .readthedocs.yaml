@@ -15,6 +15,8 @@ build:
 sphinx:
   configuration: Documentation/sources/conf.py
 
+formats: all
+
 python:
   install:
-    requirements: Documentation/pipreq.txt
+    - requirements: Documentation/pipreq.txt
