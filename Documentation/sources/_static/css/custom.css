@@ -1,0 +1,4 @@
+/* fix for theme */
+.navbar .navbar-nav li a {
+    margin: 12.5px 12px 12.5px 12px !important;
+}
