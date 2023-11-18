@@ -18,8 +18,11 @@ read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 if read_the_docs_build:
+    # cwd here is Documentation/sources, i.e. the dir of this source file
     subprocess.call('python ../genPropertiesReference.py -r -i ../../include -o Reference/ofxPropertiesReference.rst', shell=True)
     subprocess.call('cd ../../include ; doxygen ofx.doxy', shell=True)
+    print(f'Generating API doc')
+    subprocess.call('python -m breathe.apidoc -p ofx_reference -o Reference/api ../doxygen_build/xml', shell=True)
     ps = subprocess.Popen("git rev-parse HEAD | git ls-remote --heads origin | grep $(git rev-parse HEAD) | cut -d / -f 3",shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
     branch_name=ps.communicate()[0]
     branch_name=branch_name.rstrip().decode('utf-8')

@@ -44,6 +44,11 @@ doxygen ofx.doxy > /tmp/ofx-doc-build.out 2>&1
 egrep -v "$EXPECTED_ERRS" /tmp/ofx-doc-build.out || true
 cd -
 
+# Use breathe.apidoc to collect the Doxygen API docs
+rm -rf sources/Reference/api
+python -m breathe.apidoc -p 'ofx_reference' -m --force -g class,interface,struct,union,file,namespace,group -o sources/Reference/api doxygen_build/xml
+
+
 # Build the Sphinx docs
 EXPECTED_ERRS="Explicit markup ends without|Duplicate declaration|cpp:func targets a member|undefined label"
 sphinx-build -b html sources build > /tmp/ofx-doc-build.out 2>&1
