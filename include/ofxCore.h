@@ -949,9 +949,9 @@ General status codes start at 1 and continue until 999
 
 /** @mainpage OFX : Open Plug-Ins For Special Effects
 
-This page represents the automatically extracted HTML documentation of the source headers for the OFX Image Effect API. The documentation was extracted by doxygen (http://www.doxygen.org). It breaks documentation into sets of pages, use the links at the top of this page (marked 'Modules', 'Compound List' and especially 'File List' etcc) to browse through the OFX doc.
-
-A more complete reference manual is http://openfx.sourceforge.net .
+This page represents the automatically extracted HTML documentation of the source headers for the OFX Image Effect API.
+The documentation was extracted by doxygen (http://www.doxygen.org).
+A more complete reference manual is https://openfx.readthedocs.io .
 
 */
 

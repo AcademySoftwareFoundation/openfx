@@ -1,37 +1,293 @@
 .. _propertiesReference:
 Properties Reference
 =====================
+.. doxygendefine:: kOfxImageClipPropConnected
+
+.. doxygendefine:: kOfxImageClipPropContinuousSamples
+
+.. doxygendefine:: kOfxImageClipPropFieldExtraction
+
+.. doxygendefine:: kOfxImageClipPropFieldOrder
+
+.. doxygendefine:: kOfxImageClipPropIsMask
+
+.. doxygendefine:: kOfxImageClipPropOptional
+
+.. doxygendefine:: kOfxImageClipPropUnmappedComponents
+
+.. doxygendefine:: kOfxImageClipPropUnmappedPixelDepth
+
 .. doxygendefine:: kOfxImageEffectFrameVarying
+
+.. doxygendefine:: kOfxImageEffectHostPropIsBackground
+
+.. doxygendefine:: kOfxImageEffectInstancePropEffectDuration
+
+.. doxygendefine:: kOfxImageEffectInstancePropSequentialRender
+
+.. doxygendefine:: kOfxImageEffectPluginPropFieldRenderTwiceAlways
+
+.. doxygendefine:: kOfxImageEffectPluginPropGrouping
+
+.. doxygendefine:: kOfxImageEffectPluginPropHostFrameThreading
+
+.. doxygendefine:: kOfxImageEffectPluginPropOverlayInteractV1
+
+.. doxygendefine:: kOfxImageEffectPluginPropOverlayInteractV2
+
+.. doxygendefine:: kOfxImageEffectPluginPropSingleInstance
 
 .. doxygendefine:: kOfxImageEffectPluginRenderThreadSafety
 
-.. doxygendefine:: kOfxPropAPIVersion
+.. doxygendefine:: kOfxImageEffectPropClipPreferencesSlaveParam
 
-.. doxygendefine:: kOfxPropTime
+.. doxygendefine:: kOfxImageEffectPropComponents
 
-.. doxygendefine:: kOfxPropIsInteractive
+.. doxygendefine:: kOfxImageEffectPropContext
+
+.. doxygendefine:: kOfxImageEffectPropCudaEnabled
+
+.. doxygendefine:: kOfxImageEffectPropCudaRenderSupported
+
+.. doxygendefine:: kOfxImageEffectPropCudaStream
+
+.. doxygendefine:: kOfxImageEffectPropCudaStreamSupported
+
+.. doxygendefine:: kOfxImageEffectPropFieldToRender
+
+.. doxygendefine:: kOfxImageEffectPropFrameRange
+
+.. doxygendefine:: kOfxImageEffectPropFrameRate
+
+.. doxygendefine:: kOfxImageEffectPropFrameStep
+
+.. doxygendefine:: kOfxImageEffectPropInAnalysis
+
+.. doxygendefine:: kOfxImageEffectPropInteractiveRenderStatus
+
+.. doxygendefine:: kOfxImageEffectPropMetalCommandQueue
+
+.. doxygendefine:: kOfxImageEffectPropMetalEnabled
+
+.. doxygendefine:: kOfxImageEffectPropMetalRenderSupported
+
+.. doxygendefine:: kOfxImageEffectPropOpenCLCommandQueue
+
+.. doxygendefine:: kOfxImageEffectPropOpenCLEnabled
+
+.. doxygendefine:: kOfxImageEffectPropOpenCLRenderSupported
+
+.. doxygendefine:: kOfxImageEffectPropOpenGLEnabled
+
+.. doxygendefine:: kOfxImageEffectPropOpenGLRenderSupported
+
+.. doxygendefine:: kOfxImageEffectPropOpenGLTextureIndex
+
+.. doxygendefine:: kOfxImageEffectPropOpenGLTextureTarget
+
+.. doxygendefine:: kOfxImageEffectPropPixelDepth
+
+.. doxygendefine:: kOfxImageEffectPropPluginHandle
+
+.. doxygendefine:: kOfxImageEffectPropPreMultiplication
+
+.. doxygendefine:: kOfxImageEffectPropProjectExtent
+
+.. doxygendefine:: kOfxImageEffectPropProjectOffset
+
+.. doxygendefine:: kOfxImageEffectPropProjectPixelAspectRatio
+
+.. doxygendefine:: kOfxImageEffectPropProjectSize
+
+.. doxygendefine:: kOfxImageEffectPropRegionOfDefinition
+
+.. doxygendefine:: kOfxImageEffectPropRegionOfInterest
+
+.. doxygendefine:: kOfxImageEffectPropRenderQualityDraft
+
+.. doxygendefine:: kOfxImageEffectPropRenderScale
+
+.. doxygendefine:: kOfxImageEffectPropRenderWindow
+
+.. doxygendefine:: kOfxImageEffectPropSequentialRenderStatus
+
+.. doxygendefine:: kOfxImageEffectPropSetableFielding
+
+.. doxygendefine:: kOfxImageEffectPropSetableFrameRate
+
+.. doxygendefine:: kOfxImageEffectPropSupportedComponents
+
+.. doxygendefine:: kOfxImageEffectPropSupportedContexts
+
+.. doxygendefine:: kOfxImageEffectPropSupportedPixelDepths
+
+.. doxygendefine:: kOfxImageEffectPropSupportsMultiResolution
+
+.. doxygendefine:: kOfxImageEffectPropSupportsMultipleClipDepths
+
+.. doxygendefine:: kOfxImageEffectPropSupportsMultipleClipPARs
+
+.. doxygendefine:: kOfxImageEffectPropSupportsOverlays
+
+.. doxygendefine:: kOfxImageEffectPropSupportsTiles
+
+.. doxygendefine:: kOfxImageEffectPropTemporalClipAccess
+
+.. doxygendefine:: kOfxImageEffectPropUnmappedFrameRange
+
+.. doxygendefine:: kOfxImageEffectPropUnmappedFrameRate
+
+.. doxygendefine:: kOfxImagePropBounds
+
+.. doxygendefine:: kOfxImagePropData
+
+.. doxygendefine:: kOfxImagePropField
+
+.. doxygendefine:: kOfxImagePropPixelAspectRatio
+
+.. doxygendefine:: kOfxImagePropRegionOfDefinition
+
+.. doxygendefine:: kOfxImagePropRowBytes
+
+.. doxygendefine:: kOfxImagePropUniqueIdentifier
+
+.. doxygendefine:: kOfxInteractPropBackgroundColour
+
+.. doxygendefine:: kOfxInteractPropBitDepth
+
+.. doxygendefine:: kOfxInteractPropDrawContext
+
+.. doxygendefine:: kOfxInteractPropHasAlpha
+
+.. doxygendefine:: kOfxInteractPropPenPosition
+
+.. doxygendefine:: kOfxInteractPropPenPressure
+
+.. doxygendefine:: kOfxInteractPropPenViewportPosition
+
+.. doxygendefine:: kOfxInteractPropPixelScale
+
+.. doxygendefine:: kOfxInteractPropSlaveToParam
+
+.. doxygendefine:: kOfxInteractPropSuggestedColour
+
+.. doxygendefine:: kOfxInteractPropViewportSize
+
+.. doxygendefine:: kOfxOpenGLPropPixelDepth
+
+.. doxygendefine:: kOfxParamHostPropMaxPages
+
+.. doxygendefine:: kOfxParamHostPropMaxParameters
+
+.. doxygendefine:: kOfxParamHostPropPageRowColumnCount
+
+.. doxygendefine:: kOfxParamHostPropSupportsBooleanAnimation
+
+.. doxygendefine:: kOfxParamHostPropSupportsChoiceAnimation
+
+.. doxygendefine:: kOfxParamHostPropSupportsCustomAnimation
+
+.. doxygendefine:: kOfxParamHostPropSupportsCustomInteract
+
+.. doxygendefine:: kOfxParamHostPropSupportsParametricAnimation
+
+.. doxygendefine:: kOfxParamHostPropSupportsStringAnimation
+
+.. doxygendefine:: kOfxParamPropAnimates
+
+.. doxygendefine:: kOfxParamPropCacheInvalidation
+
+.. doxygendefine:: kOfxParamPropCanUndo
+
+.. doxygendefine:: kOfxParamPropChoiceOption
+
+.. doxygendefine:: kOfxParamPropCustomInterpCallbackV1
+
+.. doxygendefine:: kOfxParamPropCustomValue
+
+.. doxygendefine:: kOfxParamPropDataPtr
+
+.. doxygendefine:: kOfxParamPropDefault
+
+.. doxygendefine:: kOfxParamPropDefaultCoordinateSystem
+
+.. doxygendefine:: kOfxParamPropDigits
+
+.. doxygendefine:: kOfxParamPropDimensionLabel
+
+.. doxygendefine:: kOfxParamPropDisplayMax
+
+.. doxygendefine:: kOfxParamPropDisplayMin
+
+.. doxygendefine:: kOfxParamPropDoubleType
+
+.. doxygendefine:: kOfxParamPropEnabled
+
+.. doxygendefine:: kOfxParamPropEvaluateOnChange
+
+.. doxygendefine:: kOfxParamPropGroupOpen
+
+.. doxygendefine:: kOfxParamPropHasHostOverlayHandle
+
+.. doxygendefine:: kOfxParamPropHint
+
+.. doxygendefine:: kOfxParamPropIncrement
+
+.. doxygendefine:: kOfxParamPropInteractMinimumSize
+
+.. doxygendefine:: kOfxParamPropInteractPreferedSize
+
+.. doxygendefine:: kOfxParamPropInteractSize
+
+.. doxygendefine:: kOfxParamPropInteractSizeAspect
+
+.. doxygendefine:: kOfxParamPropInteractV1
+
+.. doxygendefine:: kOfxParamPropInterpolationAmount
+
+.. doxygendefine:: kOfxParamPropInterpolationTime
+
+.. doxygendefine:: kOfxParamPropIsAnimating
+
+.. doxygendefine:: kOfxParamPropIsAutoKeying
+
+.. doxygendefine:: kOfxParamPropMax
+
+.. doxygendefine:: kOfxParamPropMin
+
+.. doxygendefine:: kOfxParamPropPageChild
+
+.. doxygendefine:: kOfxParamPropParametricDimension
+
+.. doxygendefine:: kOfxParamPropParametricInteractBackground
+
+.. doxygendefine:: kOfxParamPropParametricRange
+
+.. doxygendefine:: kOfxParamPropParametricUIColour
+
+.. doxygendefine:: kOfxParamPropParent
+
+.. doxygendefine:: kOfxParamPropPersistant
+
+.. doxygendefine:: kOfxParamPropPluginMayWrite
+
+.. doxygendefine:: kOfxParamPropScriptName
+
+.. doxygendefine:: kOfxParamPropSecret
+
+.. doxygendefine:: kOfxParamPropShowTimeMarker
+
+.. doxygendefine:: kOfxParamPropStringMode
+
+.. doxygendefine:: kOfxParamPropType
+
+.. doxygendefine:: kOfxParamPropUseHostOverlayHandle
 
 .. doxygendefine:: kOfxPluginPropFilePath
 
-.. doxygendefine:: kOfxPropInstanceData
+.. doxygendefine:: kOfxPluginPropParamPageOrder
 
-.. doxygendefine:: kOfxPropType
-
-.. doxygendefine:: kOfxPropName
-
-.. doxygendefine:: kOfxPropVersion
-
-.. doxygendefine:: kOfxPropVersionLabel
-
-.. doxygendefine:: kOfxPropPluginDescription
-
-.. doxygendefine:: kOfxPropLabel
-
-.. doxygendefine:: kOfxPropIcon
-
-.. doxygendefine:: kOfxPropShortLabel
-
-.. doxygendefine:: kOfxPropLongLabel
+.. doxygendefine:: kOfxPropAPIVersion
 
 .. doxygendefine:: kOfxPropChangeReason
 
@@ -39,289 +295,33 @@ Properties Reference
 
 .. doxygendefine:: kOfxPropHostOSHandle
 
-.. doxygendefine:: kOfxInteractPropDrawContext
+.. doxygendefine:: kOfxPropIcon
 
-.. doxygendefine:: kOfxImageEffectPropOpenGLRenderSupported
+.. doxygendefine:: kOfxPropInstanceData
 
-.. doxygendefine:: kOfxOpenGLPropPixelDepth
-
-.. doxygendefine:: kOfxImageEffectPropOpenGLEnabled
-
-.. doxygendefine:: kOfxImageEffectPropOpenGLTextureIndex
-
-.. doxygendefine:: kOfxImageEffectPropOpenGLTextureTarget
-
-.. doxygendefine:: kOfxImageEffectPropCudaRenderSupported
-
-.. doxygendefine:: kOfxImageEffectPropCudaEnabled
-
-.. doxygendefine:: kOfxImageEffectPropCudaStreamSupported
-
-.. doxygendefine:: kOfxImageEffectPropCudaStream
-
-.. doxygendefine:: kOfxImageEffectPropMetalRenderSupported
-
-.. doxygendefine:: kOfxImageEffectPropMetalEnabled
-
-.. doxygendefine:: kOfxImageEffectPropMetalCommandQueue
-
-.. doxygendefine:: kOfxImageEffectPropOpenCLRenderSupported
-
-.. doxygendefine:: kOfxImageEffectPropOpenCLEnabled
-
-.. doxygendefine:: kOfxImageEffectPropOpenCLCommandQueue
-
-.. doxygendefine:: kOfxImageEffectPropSupportedContexts
-
-.. doxygendefine:: kOfxImageEffectPropPluginHandle
-
-.. doxygendefine:: kOfxImageEffectHostPropIsBackground
-
-.. doxygendefine:: kOfxImageEffectPluginPropSingleInstance
-
-.. doxygendefine:: kOfxImageEffectPluginPropHostFrameThreading
-
-.. doxygendefine:: kOfxImageEffectPropSupportsMultipleClipDepths
-
-.. doxygendefine:: kOfxImageEffectPropSupportsMultipleClipPARs
-
-.. doxygendefine:: kOfxImageEffectPropClipPreferencesSlaveParam
-
-.. doxygendefine:: kOfxImageEffectPropSetableFrameRate
-
-.. doxygendefine:: kOfxImageEffectPropSetableFielding
-
-.. doxygendefine:: kOfxImageEffectInstancePropSequentialRender
-
-.. doxygendefine:: kOfxImageEffectPropSequentialRenderStatus
-
-.. doxygendefine:: kOfxImageEffectPropInteractiveRenderStatus
-
-.. doxygendefine:: kOfxImageEffectPluginPropGrouping
-
-.. doxygendefine:: kOfxImageEffectPropSupportsOverlays
-
-.. doxygendefine:: kOfxImageEffectPluginPropOverlayInteractV1
-
-.. doxygendefine:: kOfxImageEffectPluginPropOverlayInteractV2
-
-.. doxygendefine:: kOfxImageEffectPropSupportsMultiResolution
-
-.. doxygendefine:: kOfxImageEffectPropSupportsTiles
-
-.. doxygendefine:: kOfxImageEffectPropTemporalClipAccess
-
-.. doxygendefine:: kOfxImageEffectPropContext
-
-.. doxygendefine:: kOfxImageEffectPropPixelDepth
-
-.. doxygendefine:: kOfxImageEffectPropComponents
-
-.. doxygendefine:: kOfxImagePropUniqueIdentifier
-
-.. doxygendefine:: kOfxImageClipPropContinuousSamples
-
-.. doxygendefine:: kOfxImageClipPropUnmappedPixelDepth
-
-.. doxygendefine:: kOfxImageClipPropUnmappedComponents
-
-.. doxygendefine:: kOfxImageEffectPropPreMultiplication
-
-.. doxygendefine:: kOfxImageEffectPropSupportedPixelDepths
-
-.. doxygendefine:: kOfxImageEffectPropSupportedComponents
-
-.. doxygendefine:: kOfxImageClipPropOptional
-
-.. doxygendefine:: kOfxImageClipPropIsMask
-
-.. doxygendefine:: kOfxImagePropPixelAspectRatio
-
-.. doxygendefine:: kOfxImageEffectPropFrameRate
-
-.. doxygendefine:: kOfxImageEffectPropUnmappedFrameRate
-
-.. doxygendefine:: kOfxImageEffectPropFrameStep
-
-.. doxygendefine:: kOfxImageEffectPropFrameRange
-
-.. doxygendefine:: kOfxImageEffectPropUnmappedFrameRange
-
-.. doxygendefine:: kOfxImageClipPropConnected
-
-.. doxygendefine:: kOfxImageEffectPropRenderScale
-
-.. doxygendefine:: kOfxImageEffectPropRenderQualityDraft
-
-.. doxygendefine:: kOfxImageEffectPropProjectExtent
-
-.. doxygendefine:: kOfxImageEffectPropProjectSize
-
-.. doxygendefine:: kOfxImageEffectPropProjectOffset
-
-.. doxygendefine:: kOfxImageEffectPropProjectPixelAspectRatio
-
-.. doxygendefine:: kOfxImageEffectInstancePropEffectDuration
-
-.. doxygendefine:: kOfxImageClipPropFieldOrder
-
-.. doxygendefine:: kOfxImagePropData
-
-.. doxygendefine:: kOfxImagePropBounds
-
-.. doxygendefine:: kOfxImagePropRegionOfDefinition
-
-.. doxygendefine:: kOfxImagePropRowBytes
-
-.. doxygendefine:: kOfxImagePropField
-
-.. doxygendefine:: kOfxImageEffectPluginPropFieldRenderTwiceAlways
-
-.. doxygendefine:: kOfxImageClipPropFieldExtraction
-
-.. doxygendefine:: kOfxImageEffectPropFieldToRender
-
-.. doxygendefine:: kOfxImageEffectPropRegionOfDefinition
-
-.. doxygendefine:: kOfxImageEffectPropRegionOfInterest
-
-.. doxygendefine:: kOfxImageEffectPropRenderWindow
-
-.. doxygendefine:: kOfxInteractPropSlaveToParam
-
-.. doxygendefine:: kOfxInteractPropPixelScale
-
-.. doxygendefine:: kOfxInteractPropBackgroundColour
-
-.. doxygendefine:: kOfxInteractPropSuggestedColour
-
-.. doxygendefine:: kOfxInteractPropPenPosition
-
-.. doxygendefine:: kOfxInteractPropPenViewportPosition
-
-.. doxygendefine:: kOfxInteractPropPenPressure
-
-.. doxygendefine:: kOfxInteractPropBitDepth
-
-.. doxygendefine:: kOfxInteractPropHasAlpha
-
-.. doxygendefine:: kOfxPropKeySym
+.. doxygendefine:: kOfxPropIsInteractive
 
 .. doxygendefine:: kOfxPropKeyString
 
-.. doxygendefine:: kOfxImageEffectPropInAnalysis
+.. doxygendefine:: kOfxPropKeySym
 
-.. doxygendefine:: kOfxInteractPropViewportSize
+.. doxygendefine:: kOfxPropLabel
 
-.. doxygendefine:: kOfxParamHostPropSupportsCustomAnimation
+.. doxygendefine:: kOfxPropLongLabel
 
-.. doxygendefine:: kOfxParamHostPropSupportsStringAnimation
-
-.. doxygendefine:: kOfxParamHostPropSupportsBooleanAnimation
-
-.. doxygendefine:: kOfxParamHostPropSupportsChoiceAnimation
-
-.. doxygendefine:: kOfxParamHostPropSupportsCustomInteract
-
-.. doxygendefine:: kOfxParamHostPropMaxParameters
-
-.. doxygendefine:: kOfxParamHostPropMaxPages
-
-.. doxygendefine:: kOfxParamHostPropPageRowColumnCount
-
-.. doxygendefine:: kOfxParamPropInteractV1
-
-.. doxygendefine:: kOfxParamPropInteractSize
-
-.. doxygendefine:: kOfxParamPropInteractSizeAspect
-
-.. doxygendefine:: kOfxParamPropInteractMinimumSize
-
-.. doxygendefine:: kOfxParamPropInteractPreferedSize
-
-.. doxygendefine:: kOfxParamPropType
-
-.. doxygendefine:: kOfxParamPropAnimates
-
-.. doxygendefine:: kOfxParamPropCanUndo
+.. doxygendefine:: kOfxPropName
 
 .. doxygendefine:: kOfxPropParamSetNeedsSyncing
 
-.. doxygendefine:: kOfxParamPropIsAnimating
+.. doxygendefine:: kOfxPropPluginDescription
 
-.. doxygendefine:: kOfxParamPropPluginMayWrite
+.. doxygendefine:: kOfxPropShortLabel
 
-.. doxygendefine:: kOfxParamPropPersistant
+.. doxygendefine:: kOfxPropTime
 
-.. doxygendefine:: kOfxParamPropEvaluateOnChange
+.. doxygendefine:: kOfxPropType
 
-.. doxygendefine:: kOfxParamPropSecret
+.. doxygendefine:: kOfxPropVersion
 
-.. doxygendefine:: kOfxParamPropScriptName
-
-.. doxygendefine:: kOfxParamPropCacheInvalidation
-
-.. doxygendefine:: kOfxParamPropHint
-
-.. doxygendefine:: kOfxParamPropDefault
-
-.. doxygendefine:: kOfxParamPropDoubleType
-
-.. doxygendefine:: kOfxParamPropDefaultCoordinateSystem
-
-.. doxygendefine:: kOfxParamPropHasHostOverlayHandle
-
-.. doxygendefine:: kOfxParamPropUseHostOverlayHandle
-
-.. doxygendefine:: kOfxParamPropShowTimeMarker
-
-.. doxygendefine:: kOfxPluginPropParamPageOrder
-
-.. doxygendefine:: kOfxParamPropPageChild
-
-.. doxygendefine:: kOfxParamPropParent
-
-.. doxygendefine:: kOfxParamPropGroupOpen
-
-.. doxygendefine:: kOfxParamPropEnabled
-
-.. doxygendefine:: kOfxParamPropDataPtr
-
-.. doxygendefine:: kOfxParamPropChoiceOption
-
-.. doxygendefine:: kOfxParamPropMin
-
-.. doxygendefine:: kOfxParamPropMax
-
-.. doxygendefine:: kOfxParamPropDisplayMin
-
-.. doxygendefine:: kOfxParamPropDisplayMax
-
-.. doxygendefine:: kOfxParamPropIncrement
-
-.. doxygendefine:: kOfxParamPropDigits
-
-.. doxygendefine:: kOfxParamPropDimensionLabel
-
-.. doxygendefine:: kOfxParamPropIsAutoKeying
-
-.. doxygendefine:: kOfxParamPropCustomInterpCallbackV1
-
-.. doxygendefine:: kOfxParamPropStringMode
-
-.. doxygendefine:: kOfxParamPropCustomValue
-
-.. doxygendefine:: kOfxParamPropInterpolationTime
-
-.. doxygendefine:: kOfxParamPropInterpolationAmount
-
-.. doxygendefine:: kOfxParamPropParametricDimension
-
-.. doxygendefine:: kOfxParamPropParametricUIColour
-
-.. doxygendefine:: kOfxParamPropParametricInteractBackground
-
-.. doxygendefine:: kOfxParamHostPropSupportsParametricAnimation
-
-.. doxygendefine:: kOfxParamPropParametricRange
+.. doxygendefine:: kOfxPropVersionLabel
 

@@ -61,6 +61,7 @@ def main(argv):
         f.write('.. _propertiesReference:\n')
         f.write('Properties Reference\n')
         f.write('=====================\n')
+        props.sort()
         for p in props:
             f.write('.. doxygendefine:: ' + p + '\n\n')
 
