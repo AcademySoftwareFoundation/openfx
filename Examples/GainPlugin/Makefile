@@ -1,6 +1,6 @@
 UNAME_SYSTEM := $(shell uname -s)
 
-CXXFLAGS = -fvisibility=hidden -I../OpenFX-1.4/include -I../Support/include
+CXXFLAGS = --std=c++20 -fvisibility=hidden -I../../include -I../../Support/include -I../../Support/Plugins/include
 
 ifeq ($(UNAME_SYSTEM), Linux)
 	AMDAPP_PATH ?= /opt/AMDAPP

@@ -12,14 +12,14 @@
 		3DF51C6E1CB741110070CA48 /* GainPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GainPlugin.h; sourceTree = "<group>"; };
 		3DF51C701CB741110070CA48 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		3DF51C711CB741110070CA48 /* OpenCLKernel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenCLKernel.cpp; sourceTree = "<group>"; };
-		3DF51C721CB7413B0070CA48 /* ofxsCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsCore.cpp; path = ../Support/Library/ofxsCore.cpp; sourceTree = "<group>"; };
-		3DF51C731CB7413B0070CA48 /* ofxsImageEffect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsImageEffect.cpp; path = ../Support/Library/ofxsImageEffect.cpp; sourceTree = "<group>"; };
-		3DF51C741CB7413B0070CA48 /* ofxsInteract.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsInteract.cpp; path = ../Support/Library/ofxsInteract.cpp; sourceTree = "<group>"; };
-		3DF51C751CB7413B0070CA48 /* ofxsLog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsLog.cpp; path = ../Support/Library/ofxsLog.cpp; sourceTree = "<group>"; };
-		3DF51C761CB7413B0070CA48 /* ofxsMultiThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsMultiThread.cpp; path = ../Support/Library/ofxsMultiThread.cpp; sourceTree = "<group>"; };
-		3DF51C771CB7413B0070CA48 /* ofxsParams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsParams.cpp; path = ../Support/Library/ofxsParams.cpp; sourceTree = "<group>"; };
-		3DF51C781CB7413B0070CA48 /* ofxsProperty.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsProperty.cpp; path = ../Support/Library/ofxsProperty.cpp; sourceTree = "<group>"; };
-		3DF51C791CB7413B0070CA48 /* ofxsPropertyValidation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsPropertyValidation.cpp; path = ../Support/Library/ofxsPropertyValidation.cpp; sourceTree = "<group>"; };
+		3DF51C721CB7413B0070CA48 /* ofxsCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsCore.cpp; path = ../../Support/Library/ofxsCore.cpp; sourceTree = "<group>"; };
+		3DF51C731CB7413B0070CA48 /* ofxsImageEffect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsImageEffect.cpp; path = ../../Support/Library/ofxsImageEffect.cpp; sourceTree = "<group>"; };
+		3DF51C741CB7413B0070CA48 /* ofxsInteract.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsInteract.cpp; path = ../../Support/Library/ofxsInteract.cpp; sourceTree = "<group>"; };
+		3DF51C751CB7413B0070CA48 /* ofxsLog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsLog.cpp; path = ../../Support/Library/ofxsLog.cpp; sourceTree = "<group>"; };
+		3DF51C761CB7413B0070CA48 /* ofxsMultiThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsMultiThread.cpp; path = ../../Support/Library/ofxsMultiThread.cpp; sourceTree = "<group>"; };
+		3DF51C771CB7413B0070CA48 /* ofxsParams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsParams.cpp; path = ../../Support/Library/ofxsParams.cpp; sourceTree = "<group>"; };
+		3DF51C781CB7413B0070CA48 /* ofxsProperty.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsProperty.cpp; path = ../../Support/Library/ofxsProperty.cpp; sourceTree = "<group>"; };
+		3DF51C791CB7413B0070CA48 /* ofxsPropertyValidation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsPropertyValidation.cpp; path = ../../Support/Library/ofxsPropertyValidation.cpp; sourceTree = "<group>"; };
 		4F799E1E1EC4662F00E46226 /* MetalKernel.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MetalKernel.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -87,6 +87,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 3DF51C611CB740BF0070CA48;
