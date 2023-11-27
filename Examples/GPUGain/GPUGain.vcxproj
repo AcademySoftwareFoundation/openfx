@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{88405F0E-918E-4523-8627-1380BC83A605}</ProjectGuid>
-    <RootNamespace>GainPlugin</RootNamespace>
+    <RootNamespace>GPUGain</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -81,9 +81,9 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating bundle...</Message>
-      <Command>if not exist "$(OutDir)GainPlugin.ofx.bundle\Contents\Resources" mkdir "$(OutDir)GainPlugin.ofx.bundle\Contents\Resources"
-if not exist "$(OutDir)GainPlugin.ofx.bundle\Contents\Win64" mkdir "$(OutDir)GainPlugin.ofx.bundle\Contents\Win64"
-copy /Y "$(TargetPath)" /B "$(OutDir)GainPlugin.ofx.bundle\Contents\Win64\GainPlugin.ofx" /B
+      <Command>if not exist "$(OutDir)GPUGain.ofx.bundle\Contents\Resources" mkdir "$(OutDir)GPUGain.ofx.bundle\Contents\Resources"
+if not exist "$(OutDir)GPUGain.ofx.bundle\Contents\Win64" mkdir "$(OutDir)GPUGain.ofx.bundle\Contents\Win64"
+copy /Y "$(TargetPath)" /B "$(OutDir)GPUGain.ofx.bundle\Contents\Win64\GPUGain.ofx" /B
 </Command>
     </PostBuildEvent>
     <CudaCompile>
@@ -112,9 +112,9 @@ copy /Y "$(TargetPath)" /B "$(OutDir)GainPlugin.ofx.bundle\Contents\Win64\GainPl
     </Link>
     <PostBuildEvent>
       <Message>Creating bundle...</Message>
-      <Command>if not exist "$(OutDir)GainPlugin.ofx.bundle\Contents\Resources" mkdir "$(OutDir)GainPlugin.ofx.bundle\Contents\Resources"
-if not exist "$(OutDir)GainPlugin.ofx.bundle\Contents\Win64" mkdir "$(OutDir)GainPlugin.ofx.bundle\Contents\Win64"
-copy /Y "$(TargetPath)" /B "$(OutDir)GainPlugin.ofx.bundle\Contents\Win64\GainPlugin.ofx" /B
+      <Command>if not exist "$(OutDir)GPUGain.ofx.bundle\Contents\Resources" mkdir "$(OutDir)GPUGain.ofx.bundle\Contents\Resources"
+if not exist "$(OutDir)GPUGain.ofx.bundle\Contents\Win64" mkdir "$(OutDir)GPUGain.ofx.bundle\Contents\Win64"
+copy /Y "$(TargetPath)" /B "$(OutDir)GPUGain.ofx.bundle\Contents\Win64\GPUGain.ofx" /B
 </Command>
     </PostBuildEvent>
     <CudaCompile>
@@ -130,7 +130,7 @@ copy /Y "$(TargetPath)" /B "$(OutDir)GainPlugin.ofx.bundle\Contents\Win64\GainPl
     <ClCompile Include="..\Support\Library\ofxsParams.cpp" />
     <ClCompile Include="..\Support\Library\ofxsProperty.cpp" />
     <ClCompile Include="..\Support\Library\ofxsPropertyValidation.cpp" />
-    <ClCompile Include="GainPlugin.cpp" />
+    <ClCompile Include="GPUGain.cpp" />
     <ClCompile Include="OpenCLKernel.cpp" />
   </ItemGroup>
   <ItemGroup>

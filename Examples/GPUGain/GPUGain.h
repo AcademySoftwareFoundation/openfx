@@ -2,10 +2,10 @@
 
 #include "ofxsImageEffect.h"
 
-class GainPluginFactory : public OFX::PluginFactoryHelper<GainPluginFactory>
+class GPUGainFactory : public OFX::PluginFactoryHelper<GPUGainFactory>
 {
 public:
-    GainPluginFactory();
+    GPUGainFactory();
     virtual void load() {}
     virtual void unload() {}
     virtual void describe(OFX::ImageEffectDescriptor& p_Desc);

@@ -8,8 +8,8 @@
 
 /* Begin PBXFileReference section */
 		3DF51C6C1CB741110070CA48 /* CudaKernel.cu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CudaKernel.cu; sourceTree = "<group>"; };
-		3DF51C6D1CB741110070CA48 /* GainPlugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GainPlugin.cpp; sourceTree = "<group>"; };
-		3DF51C6E1CB741110070CA48 /* GainPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GainPlugin.h; sourceTree = "<group>"; };
+		3DF51C6D1CB741110070CA48 /* GPUGain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GPUGain.cpp; sourceTree = "<group>"; };
+		3DF51C6E1CB741110070CA48 /* GPUGain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUGain.h; sourceTree = "<group>"; };
 		3DF51C701CB741110070CA48 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		3DF51C711CB741110070CA48 /* OpenCLKernel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenCLKernel.cpp; sourceTree = "<group>"; };
 		3DF51C721CB7413B0070CA48 /* ofxsCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxsCore.cpp; path = ../../Support/Library/ofxsCore.cpp; sourceTree = "<group>"; };
@@ -44,8 +44,8 @@
 			children = (
 				3D2F26961CBB8F6B00FC8803 /* Support */,
 				3DF51C6C1CB741110070CA48 /* CudaKernel.cu */,
-				3DF51C6D1CB741110070CA48 /* GainPlugin.cpp */,
-				3DF51C6E1CB741110070CA48 /* GainPlugin.h */,
+				3DF51C6D1CB741110070CA48 /* GPUGain.cpp */,
+				3DF51C6E1CB741110070CA48 /* GPUGain.h */,
 				3DF51C701CB741110070CA48 /* Makefile */,
 				3DF51C711CB741110070CA48 /* OpenCLKernel.cpp */,
 				4F799E1E1EC4662F00E46226 /* MetalKernel.mm */,
@@ -55,18 +55,18 @@
 /* End PBXGroup section */
 
 /* Begin PBXLegacyTarget section */
-		3DF51C661CB740BF0070CA48 /* GainPlugin */ = {
+		3DF51C661CB740BF0070CA48 /* GPUGain */ = {
 			isa = PBXLegacyTarget;
 			buildArgumentsString = "$(ACTION)";
-			buildConfigurationList = 3DF51C691CB740BF0070CA48 /* Build configuration list for PBXLegacyTarget "GainPlugin" */;
+			buildConfigurationList = 3DF51C691CB740BF0070CA48 /* Build configuration list for PBXLegacyTarget "GPUGain" */;
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
 			dependencies = (
 			);
-			name = GainPlugin;
+			name = GPUGain;
 			passBuildSettingsInEnvironment = 1;
-			productName = GainPlugin;
+			productName = GPUGain;
 		};
 /* End PBXLegacyTarget section */
 
@@ -82,7 +82,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 3DF51C651CB740BF0070CA48 /* Build configuration list for PBXProject "GainPlugin" */;
+			buildConfigurationList = 3DF51C651CB740BF0070CA48 /* Build configuration list for PBXProject "GPUGain" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -94,7 +94,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3DF51C661CB740BF0070CA48 /* GainPlugin */,
+				3DF51C661CB740BF0070CA48 /* GPUGain */,
 			);
 		};
 /* End PBXProject section */
@@ -201,7 +201,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3DF51C651CB740BF0070CA48 /* Build configuration list for PBXProject "GainPlugin" */ = {
+		3DF51C651CB740BF0070CA48 /* Build configuration list for PBXProject "GPUGain" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3DF51C671CB740BF0070CA48 /* Debug */,
@@ -210,7 +210,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3DF51C691CB740BF0070CA48 /* Build configuration list for PBXLegacyTarget "GainPlugin" */ = {
+		3DF51C691CB740BF0070CA48 /* Build configuration list for PBXLegacyTarget "GPUGain" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3DF51C6A1CB740BF0070CA48 /* Debug */,

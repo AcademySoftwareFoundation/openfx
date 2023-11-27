@@ -10,21 +10,21 @@ ifeq ($(UNAME_SYSTEM), Linux)
 	NVCC = ${CUDAPATH}/bin/nvcc
 	NVCCFLAGS = --compiler-options="-fPIC"
 	LDFLAGS = -shared -fvisibility=hidden -L${CUDAPATH}/lib64 -lcuda -lcudart_static
-	BUNDLE_DIR = GainPlugin.ofx.bundle/Contents/Linux-x86-64/
+	BUNDLE_DIR = GPUGain.ofx.bundle/Contents/Linux-x86-64/
 	CUDA_OBJ = CudaKernel.o
 else
 	ARCH_FLAGS = -arch arm64 -arch x86_64
 	CXXFLAGS += ${ARCH_FLAGS}
 	LDFLAGS = -bundle -fvisibility=hidden -F/Library/Frameworks -framework OpenCL -framework Metal -framework AppKit
 	LDFLAGS += ${ARCH_FLAGS}
-	BUNDLE_DIR = GainPlugin.ofx.bundle/Contents/MacOS/
+	BUNDLE_DIR = GPUGain.ofx.bundle/Contents/MacOS/
 	METAL_OBJ = MetalKernel.o
 endif
 
-GainPlugin.ofx: GainPlugin.o ${CUDA_OBJ} $(METAL_OBJ) OpenCLKernel.o ofxsCore.o ofxsImageEffect.o ofxsInteract.o ofxsLog.o ofxsMultiThread.o ofxsParams.o ofxsProperty.o ofxsPropertyValidation.o
+GPUGain.ofx: GPUGain.o ${CUDA_OBJ} $(METAL_OBJ) OpenCLKernel.o ofxsCore.o ofxsImageEffect.o ofxsInteract.o ofxsLog.o ofxsMultiThread.o ofxsParams.o ofxsProperty.o ofxsPropertyValidation.o
 	$(CXX) $^ -o $@ $(LDFLAGS)
 	mkdir -p $(BUNDLE_DIR)
-	cp GainPlugin.ofx $(BUNDLE_DIR)
+	cp GPUGain.ofx $(BUNDLE_DIR)
 
 CudaKernel.o: CudaKernel.cu
 	${NVCC} -c $< $(NVCCFLAGS)
@@ -37,7 +37,7 @@ MetalKernel.o: MetalKernel.mm
 
 clean:
 	rm -f *.o *.ofx
-	rm -fr GainPlugin.ofx.bundle
+	rm -fr GPUGain.ofx.bundle
 
-install: GainPlugin.ofx
-	cp -fr GainPlugin.ofx.bundle /Library/OFX/Plugins
+install: GPUGain.ofx
+	cp -fr GPUGain.ofx.bundle /Library/OFX/Plugins

@@ -1,4 +1,4 @@
-#include "GainPlugin.h"
+#include "GPUGain.h"
 
 #include <stdio.h>
 
@@ -143,10 +143,10 @@ void GainExample::setScales(float p_ScaleR, float p_ScaleG, float p_ScaleB, floa
 
 ////////////////////////////////////////////////////////////////////////////////
 /** @brief The plugin that does our work */
-class GainPlugin : public OFX::ImageEffect
+class GPUGain : public OFX::ImageEffect
 {
 public:
-    explicit GainPlugin(OfxImageEffectHandle p_Handle);
+    explicit GPUGain(OfxImageEffectHandle p_Handle);
 
     /* Override the render */
     virtual void render(const OFX::RenderArguments& p_Args);
@@ -179,7 +179,7 @@ private:
     OFX::BooleanParam* m_ComponentScalesEnabled;
 };
 
-GainPlugin::GainPlugin(OfxImageEffectHandle p_Handle)
+GPUGain::GPUGain(OfxImageEffectHandle p_Handle)
     : ImageEffect(p_Handle)
 {
     m_DstClip = fetchClip(kOfxImageEffectOutputClipName);
@@ -196,7 +196,7 @@ GainPlugin::GainPlugin(OfxImageEffectHandle p_Handle)
     setEnabledness();
 }
 
-void GainPlugin::render(const OFX::RenderArguments& p_Args)
+void GPUGain::render(const OFX::RenderArguments& p_Args)
 {
     if ((m_DstClip->getPixelDepth() == OFX::eBitDepthFloat) && (m_DstClip->getPixelComponents() == OFX::ePixelComponentRGBA))
     {
@@ -209,7 +209,7 @@ void GainPlugin::render(const OFX::RenderArguments& p_Args)
     }
 }
 
-bool GainPlugin::isIdentity(const OFX::IsIdentityArguments& p_Args, OFX::Clip*& p_IdentityClip, double& p_IdentityTime)
+bool GPUGain::isIdentity(const OFX::IsIdentityArguments& p_Args, OFX::Clip*& p_IdentityClip, double& p_IdentityTime)
 {
     double rScale = 1.0, gScale = 1.0, bScale = 1.0, aScale = 1.0;
 
@@ -236,7 +236,7 @@ bool GainPlugin::isIdentity(const OFX::IsIdentityArguments& p_Args, OFX::Clip*& 
     return false;
 }
 
-void GainPlugin::changedParam(const OFX::InstanceChangedArgs& p_Args, const std::string& p_ParamName)
+void GPUGain::changedParam(const OFX::InstanceChangedArgs& p_Args, const std::string& p_ParamName)
 {
     if (p_ParamName == "scaleComponents")
     {
@@ -244,7 +244,7 @@ void GainPlugin::changedParam(const OFX::InstanceChangedArgs& p_Args, const std:
     }
 }
 
-void GainPlugin::changedClip(const OFX::InstanceChangedArgs& p_Args, const std::string& p_ClipName)
+void GPUGain::changedClip(const OFX::InstanceChangedArgs& p_Args, const std::string& p_ClipName)
 {
     if (p_ClipName == kOfxImageEffectSimpleSourceClipName)
     {
@@ -252,7 +252,7 @@ void GainPlugin::changedClip(const OFX::InstanceChangedArgs& p_Args, const std::
     }
 }
 
-void GainPlugin::setEnabledness()
+void GPUGain::setEnabledness()
 {
     // the component enabledness depends on the clip being RGBA and the param being true
     const bool enable = (m_ComponentScalesEnabled->getValue() && (m_SrcClip->getPixelComponents() == OFX::ePixelComponentRGBA));
@@ -263,7 +263,7 @@ void GainPlugin::setEnabledness()
     m_ScaleA->setEnabled(enable);
 }
 
-void GainPlugin::setupAndProcess(GainExample& p_GainExample, const OFX::RenderArguments& p_Args)
+void GPUGain::setupAndProcess(GainExample& p_GainExample, const OFX::RenderArguments& p_Args)
 {
     // Get the dst image
     std::unique_ptr<OFX::Image> dst(m_DstClip->fetchImage(p_Args.time));
@@ -317,12 +317,12 @@ void GainPlugin::setupAndProcess(GainExample& p_GainExample, const OFX::RenderAr
 
 using namespace OFX;
 
-GainPluginFactory::GainPluginFactory()
-    : OFX::PluginFactoryHelper<GainPluginFactory>(kPluginIdentifier, kPluginVersionMajor, kPluginVersionMinor)
+GPUGainFactory::GPUGainFactory()
+    : OFX::PluginFactoryHelper<GPUGainFactory>(kPluginIdentifier, kPluginVersionMajor, kPluginVersionMinor)
 {
 }
 
-void GainPluginFactory::describe(OFX::ImageEffectDescriptor& p_Desc)
+void GPUGainFactory::describe(OFX::ImageEffectDescriptor& p_Desc)
 {
     // Basic labels
     p_Desc.setLabels(kPluginName, kPluginName, kPluginName);
@@ -382,7 +382,7 @@ static DoubleParamDescriptor* defineScaleParam(OFX::ImageEffectDescriptor& p_Des
 }
 
 
-void GainPluginFactory::describeInContext(OFX::ImageEffectDescriptor& p_Desc, OFX::ContextEnum /*p_Context*/)
+void GPUGainFactory::describeInContext(OFX::ImageEffectDescriptor& p_Desc, OFX::ContextEnum /*p_Context*/)
 {
     // Source clip only in the filter context
     // Create the mandated source clip
@@ -432,13 +432,13 @@ void GainPluginFactory::describeInContext(OFX::ImageEffectDescriptor& p_Desc, OF
     page->addChild(*param);
 }
 
-ImageEffect* GainPluginFactory::createInstance(OfxImageEffectHandle p_Handle, ContextEnum /*p_Context*/)
+ImageEffect* GPUGainFactory::createInstance(OfxImageEffectHandle p_Handle, ContextEnum /*p_Context*/)
 {
-    return new GainPlugin(p_Handle);
+    return new GPUGain(p_Handle);
 }
 
 void OFX::Plugin::getPluginIDs(PluginFactoryArray& p_FactoryArray)
 {
-    static GainPluginFactory gainPlugin;
+    static GPUGainFactory gainPlugin;
     p_FactoryArray.push_back(&gainPlugin);
 }
