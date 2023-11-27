@@ -1,6 +1,7 @@
 UNAME_SYSTEM := $(shell uname -s)
 
-CXXFLAGS = --std=c++20 -fvisibility=hidden -I../../include -I../../Support/include -I../../Support/Plugins/include
+# Note: Add -DDEBUG to turn on logging
+CXXFLAGS = --std=c++20 -fvisibility=hidden -I../../include -I../../Support/include -I../../Support/Plugins/include -DOFX_SUPPORTS_OPENGLRENDER
 
 ifeq ($(UNAME_SYSTEM), Linux)
 	AMDAPP_PATH ?= /opt/AMDAPP
@@ -31,7 +32,7 @@ CudaKernel.o: CudaKernel.cu
 MetalKernel.o: MetalKernel.mm
 	$(CXX) -c $< $(CXXFLAGS)
 
-%.o: ../Support/Library/%.cpp
+%.o: ../../Support/Library/%.cpp
 	$(CXX) -c $< $(CXXFLAGS)
 
 clean:

@@ -7,10 +7,10 @@
 #include "ofxsProcessing.h"
 #include "ofxsLog.h"
 
-#define kPluginName "Gain"
+#define kPluginName "GPU Gain"
 #define kPluginGrouping "OpenFX Sample"
-#define kPluginDescription "Apply seperate RGB gain adjustments to each channels"
-#define kPluginIdentifier "com.OpenFXSample.Gain"
+#define kPluginDescription "Apply separate RGB gain adjustments to each channels; CUDA/OpenCL/Metal"
+#define kPluginIdentifier "com.OpenFXSample.GPUGain"
 #define kPluginVersionMajor 1
 #define kPluginVersionMinor 0
 
@@ -20,10 +20,10 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class ImageScaler : public OFX::ImageProcessor
+class GainExample : public OFX::ImageProcessor
 {
 public:
-    explicit ImageScaler(OFX::ImageEffect& p_Instance);
+    explicit GainExample(OFX::ImageEffect& p_Instance);
 
     virtual void processImagesCUDA();
     virtual void processImagesOpenCL();
@@ -38,7 +38,7 @@ private:
     float _scales[4];
 };
 
-ImageScaler::ImageScaler(OFX::ImageEffect& p_Instance)
+GainExample::GainExample(OFX::ImageEffect& p_Instance)
     : OFX::ImageProcessor(p_Instance)
 {
 }
@@ -47,7 +47,7 @@ ImageScaler::ImageScaler(OFX::ImageEffect& p_Instance)
 extern void RunCudaKernel(void* p_Stream, int p_Width, int p_Height, float* p_Gain, const float* p_Input, float* p_Output);
 #endif
 
-void ImageScaler::processImagesCUDA()
+void GainExample::processImagesCUDA()
 {
 #ifndef __APPLE__
     const OfxRectI& bounds = _srcImg->getBounds();
@@ -65,7 +65,7 @@ void ImageScaler::processImagesCUDA()
 extern void RunMetalKernel(void* p_CmdQ, int p_Width, int p_Height, float* p_Gain, const float* p_Input, float* p_Output);
 #endif
 
-void ImageScaler::processImagesMetal()
+void GainExample::processImagesMetal()
 {
 #ifdef __APPLE__
     const OfxRectI& bounds = _srcImg->getBounds();
@@ -81,7 +81,7 @@ void ImageScaler::processImagesMetal()
 
 extern void RunOpenCLKernel(void* p_CmdQ, int p_Width, int p_Height, float* p_Gain, const float* p_Input, float* p_Output);
 
-void ImageScaler::processImagesOpenCL()
+void GainExample::processImagesOpenCL()
 {
     const OfxRectI& bounds = _srcImg->getBounds();
     const int width = bounds.x2 - bounds.x1;
@@ -93,7 +93,7 @@ void ImageScaler::processImagesOpenCL()
     RunOpenCLKernel(_pOpenCLCmdQ, width, height, _scales, input, output);
 }
 
-void ImageScaler::multiThreadProcessImages(OfxRectI p_ProcWindow)
+void GainExample::multiThreadProcessImages(OfxRectI p_ProcWindow)
 {
     for (int y = p_ProcWindow.y1; y < p_ProcWindow.y2; ++y)
     {
@@ -128,12 +128,12 @@ void ImageScaler::multiThreadProcessImages(OfxRectI p_ProcWindow)
     }
 }
 
-void ImageScaler::setSrcImg(OFX::Image* p_SrcImg)
+void GainExample::setSrcImg(OFX::Image* p_SrcImg)
 {
     _srcImg = p_SrcImg;
 }
 
-void ImageScaler::setScales(float p_ScaleR, float p_ScaleG, float p_ScaleB, float p_ScaleA)
+void GainExample::setScales(float p_ScaleR, float p_ScaleG, float p_ScaleB, float p_ScaleA)
 {
     _scales[0] = p_ScaleR;
     _scales[1] = p_ScaleG;
@@ -164,7 +164,7 @@ public:
     void setEnabledness();
 
     /* Set up and run a processor */
-    void setupAndProcess(ImageScaler &p_ImageScaler, const OFX::RenderArguments& p_Args);
+    void setupAndProcess(GainExample &p_GainExample, const OFX::RenderArguments& p_Args);
 
 private:
     // Does not own the following pointers
@@ -200,7 +200,7 @@ void GainPlugin::render(const OFX::RenderArguments& p_Args)
 {
     if ((m_DstClip->getPixelDepth() == OFX::eBitDepthFloat) && (m_DstClip->getPixelComponents() == OFX::ePixelComponentRGBA))
     {
-        ImageScaler imageScaler(*this);
+        GainExample imageScaler(*this);
         setupAndProcess(imageScaler, p_Args);
     }
     else
@@ -263,15 +263,15 @@ void GainPlugin::setEnabledness()
     m_ScaleA->setEnabled(enable);
 }
 
-void GainPlugin::setupAndProcess(ImageScaler& p_ImageScaler, const OFX::RenderArguments& p_Args)
+void GainPlugin::setupAndProcess(GainExample& p_GainExample, const OFX::RenderArguments& p_Args)
 {
     // Get the dst image
-    std::auto_ptr<OFX::Image> dst(m_DstClip->fetchImage(p_Args.time));
+    std::unique_ptr<OFX::Image> dst(m_DstClip->fetchImage(p_Args.time));
     OFX::BitDepthEnum dstBitDepth = dst->getPixelDepth();
     OFX::PixelComponentEnum dstComponents = dst->getPixelComponents();
 
     // Get the src image
-    std::auto_ptr<OFX::Image> src(m_SrcClip->fetchImage(p_Args.time));
+    std::unique_ptr<OFX::Image> src(m_SrcClip->fetchImage(p_Args.time));
     OFX::BitDepthEnum srcBitDepth = src->getPixelDepth();
     OFX::PixelComponentEnum srcComponents = src->getPixelComponents();
 
@@ -297,20 +297,20 @@ void GainPlugin::setupAndProcess(ImageScaler& p_ImageScaler, const OFX::RenderAr
     bScale *= scale;
 
     // Set the images
-    p_ImageScaler.setDstImg(dst.get());
-    p_ImageScaler.setSrcImg(src.get());
+    p_GainExample.setDstImg(dst.get());
+    p_GainExample.setSrcImg(src.get());
 
     // Setup OpenCL and CUDA Render arguments
-    p_ImageScaler.setGPURenderArgs(p_Args);
+    p_GainExample.setGPURenderArgs(p_Args);
 
     // Set the render window
-    p_ImageScaler.setRenderWindow(p_Args.renderWindow);
+    p_GainExample.setRenderWindow(p_Args.renderWindow);
 
     // Set the scales
-    p_ImageScaler.setScales(rScale, gScale, bScale, aScale);
+    p_GainExample.setScales(rScale, gScale, bScale, aScale);
 
     // Call the base class process member, this will call the derived templated process code
-    p_ImageScaler.process();
+    p_GainExample.process();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -358,10 +358,6 @@ void GainPluginFactory::describe(OFX::ImageEffectDescriptor& p_Desc)
 #ifdef __APPLE__
     p_Desc.setSupportsMetalRender(true);
 #endif
-
-    // Indicates that the plugin output does not depend on location or neighbours of a given pixel.
-    // Therefore, this plugin could be executed during LUT generation.
-    p_Desc.setNoSpatialAwareness(true);
 }
 
 static DoubleParamDescriptor* defineScaleParam(OFX::ImageEffectDescriptor& p_Desc, const std::string& p_Name, const std::string& p_Label,

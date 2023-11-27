@@ -691,12 +691,6 @@ namespace OFX {
       _effectProps.propSetString(kOfxImageEffectPropMetalRenderSupported, (v ? "true" : "false"));
   }
 
-  /** @brief Does the plugin have no spatial awaareness */
-  void ImageEffectDescriptor::setNoSpatialAwareness(bool v)
-  {
-      _effectProps.propSetString(kOfxImageEffectPropNoSpatialAwareness, (v ? "true" : "false"));
-  }
-
 #ifdef OFX_SUPPORTS_OPENGLRENDER
   /** @brief Does the plugin support OpenGL accelerated rendering (but is also capable of CPU rendering) ? */
   void ImageEffectDescriptor::setSupportsOpenGLRender(bool v) {

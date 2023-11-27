@@ -446,9 +446,6 @@ namespace OFX {
     /** @brief Does the plugin support Metal Render, defaults to false */
     void setSupportsMetalRender(bool v);
 
-    /** @brief Does the plugin have no spatial awareness, defaults to false */
-    void setNoSpatialAwareness(bool v);
-
 #ifdef OFX_SUPPORTS_OPENGLRENDER
     /** @brief Does the plugin support OpenGL accelerated rendering (but is also capable of CPU rendering) ? */
     void setSupportsOpenGLRender(bool v);
