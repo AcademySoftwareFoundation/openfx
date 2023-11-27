@@ -1,3 +1,6 @@
+// Copyright OpenFX and contributors to the OpenFX project.
+// SPDX-License-Identifier: BSD-3-Clause
+
 #ifdef _WIN64
 #include <Windows.h>
 #else

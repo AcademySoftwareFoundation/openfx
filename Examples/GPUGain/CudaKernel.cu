@@ -1,3 +1,6 @@
+// Copyright OpenFX and contributors to the OpenFX project.
+// SPDX-License-Identifier: BSD-3-Clause
+
 __global__ void GainAdjustKernel(int p_Width, int p_Height, float p_GainR, float p_GainG, float p_GainB, float p_GainA, const float* p_Input, float* p_Output)
 {
    const int x = blockIdx.x * blockDim.x + threadIdx.x;

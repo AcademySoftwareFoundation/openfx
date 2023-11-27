@@ -1,3 +1,6 @@
+# Copyright OpenFX and contributors to the OpenFX project.
+# SPDX-License-Identifier: BSD-3-Clause
+
 UNAME_SYSTEM := $(shell uname -s)
 
 # Note: Add -DDEBUG to turn on logging
