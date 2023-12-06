@@ -747,7 +747,7 @@ namespace OFX {
     return nCurrentValues;
   }
 
-  /** @brief set the default value */
+  /** @brief append an option to the choice param */
   void ChoiceParamDescriptor::appendOption(const std::string &v, const std::string& label)
   {
     int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
@@ -769,7 +769,7 @@ namespace OFX {
     }
   }
 
-  /** @brief set the default value */
+  /** @brief reset all options */
   void ChoiceParamDescriptor::resetOptions(void)
   {
     _paramProps.propReset(kOfxParamPropChoiceOption);

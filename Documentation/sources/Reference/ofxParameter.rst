@@ -166,8 +166,9 @@ Choice Parameters
 
 This is typed by :c:macro:`kOfxParamTypeChoice`.
 
-Choice parameters are integer values from 0 to N-1, which correspond to
-N labeled options.
+Choice parameters are integer values from 0 to N-1, which correspond
+to N labeled options, but see :c:macro:`kOfxParamPropChoiceValue` and
+the section below this for how to change that.
 
 Choice parameters have their individual options set via the
 :c:macro:`kOfxParamPropChoiceOption` property,
@@ -183,6 +184,55 @@ for example
 
 It is an error to have gaps in the choices after the describe action has
 returned.
+
+Setting Choice Param Values
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+As of OFX v1.5, plugins can optionally specify the value the host
+should store and return for each choice option, using
+:c:macro:`kOfxParamPropChoiceValue`.
+
+This property contains the set of values to be stored when the user
+chooses the corresponding (same-index) option for the choice
+parameter.
+
+This property is useful when changing order of choice param options, or adding new options in the middle,
+in a new version of the plugin.
+
+    ::
+
+       // Plugin v1:
+       Option = {"OptA", "OptB", "OptC"}
+       Value = {0, 1, 2}
+
+       // Plugin v2:
+       Option = {"OptA", "OptB", "NewOpt", "OptC"}
+       Value = {0, 1, 4, 2}
+
+In this case if the user had selected "OptC" in v1, and then loaded the
+project in v2, "OptC" will still be selected even though it is now the 4th
+option, and the plugin will get the param value 2, as it did in its previous
+version.
+
+The default, if unspecified, is ordinal integers starting from zero.
+
+Values may be arbitrary 32-bit integers. The same value must not occur
+more than once in the values list; behavior is undefined if the same
+value occurs twice in the list. The values list must contain the
+default value as specified by :c:macro:`kOfxParamPropDefault`;
+behavior is unspecified if it does not.
+
+To query whether a host supports this, just attempt to set the
+property and check the return status. If the host does not support
+:c:macro:`kOfxParamPropChoiceValue`, a plugin should not insert new
+values into the middle of the options list, nor reorder the options,
+in a new version, otherwise old projects will not load properly.
+
+Note: this property does not help if a plugin wants to *remove* an option. One way to
+handle that case is to define a new choice param in v2 and hide the old v1 param, then use some
+custom logic to populate the v2 param appropriately.
+
+Available since 1.5.
 
 
 String Parameters
@@ -204,6 +254,8 @@ these are
 -  .. doxygendefine:: kOfxParamStringIsDirectoryPath
 
 -  .. doxygendefine:: kOfxParamStringIsLabel
+
+-  .. doxygendefine:: kOfxParamStringIsRichTextFormat
 
 Group Parameters
 ----------------

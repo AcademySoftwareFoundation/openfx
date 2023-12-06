@@ -600,15 +600,51 @@ This data pointer is unique to each parameter instance, so two instances of the 
  */
 #define kOfxParamPropDataPtr "OfxParamPropDataPtr"
 
-/** @brief Set an option in a choice parameter.
+/** @brief Set options of a choice parameter.
 
     - Type - UTF8 C string X N
     - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
     - Default - the property is empty with no options set.
 
-This property contains the set of options that will be presented to a user from a choice parameter. See @ref ParametersChoice for more details. 
+This property contains the set of options that will be presented to a user
+from a choice parameter. See @ref ParametersChoice for more details.
 */
 #define kOfxParamPropChoiceOption "OfxParamPropChoiceOption"
+
+/** @brief Set values the host should store for a choice parameter.
+
+    - Type - int X N
+    - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
+    - Default - Zero-based ordinal list of same length as `OfxParamPropChoiceOption`
+
+This property contains the set of values to be stored when the user chooses the corresponding
+(same-index) option for the choice parameter. See @ref "Choice Parameters" for more details.
+This property is optional; if not set, the host will store the zero-based integer index
+of the chosen ::kOfxParamPropChoiceOption.
+This property is useful when changing order of choice param options, or adding new options in the middle,
+in a new version of the plugin.
+
+  @verbatim
+  Plugin v1:
+  Option = {"OptA", "OptB", "OptC"}
+  Value = {1, 2, 3}
+
+  Plugin v2:
+  Option = {"OptA", "OptB", "NewOpt", "OptC"}
+  Value = {1, 2, 4, 3}
+  @endverbatim
+
+In this case if the user had selected "OptC" in v1, and then loaded the
+project in v2, "OptC" will still be selected even though it is now the 4th
+option, and the plugin will get the param value 3 (as it did in its previous
+version).
+
+Values may be arbitrary 32-bit integers. Behavior is undefined if the same
+value occurs twice in the list; plugins should not do that.
+
+\since Version 1.5
+*/
+#define kOfxParamPropChoiceValue "OfxParamPropChoiceValue"
 
 /** @brief The minimum value for a numeric parameter.
 
@@ -732,26 +768,26 @@ If set to 0, it implies the user can specify a new file name, not just a pre-exi
 #define kOfxParamPropStringFilePathExists    "OfxParamPropStringFilePathExists"
 
 /** @brief Used to set a string parameter to be single line, 
-    value to be passed to a kOfxParamPropStringMode property */
+    value to be passed to a ::kOfxParamPropStringMode property */
 #define kOfxParamStringIsSingleLine    "OfxParamStringIsSingleLine"
 
 /** @brief Used to set a string parameter to be multiple line, 
-    value to be passed to a kOfxParamPropStringMode property */
+    value to be passed to a ::kOfxParamPropStringMode property */
 #define kOfxParamStringIsMultiLine     "OfxParamStringIsMultiLine"
 
 /** @brief Used to set a string parameter to be a file path,
-    value to be passed to a kOfxParamPropStringMode property */
+    value to be passed to a ::kOfxParamPropStringMode property */
 #define kOfxParamStringIsFilePath      "OfxParamStringIsFilePath"
 
 /** @brief Used to set a string parameter to be a directory path,
-    value to be passed to a kOfxParamPropStringMode property */
+    value to be passed to a ::kOfxParamPropStringMode property */
 #define kOfxParamStringIsDirectoryPath "OfxParamStringIsDirectoryPath"
 
 /** @brief Use to set a string parameter to be a simple label, 
-    value to be passed to a kOfxParamPropStringMode property  */
+    value to be passed to a ::kOfxParamPropStringMode property  */
 #define kOfxParamStringIsLabel         "OfxParamStringIsLabel"
 
-/** @brief String value on the OfxParamPropStringMode property of a
+  /** @brief String value on the ::kOfxParamPropStringMode property of a
     string parameter (added in 1.3) */
 #define kOfxParamStringIsRichTextFormat "OfxParamStringIsRichTextFormat"
 

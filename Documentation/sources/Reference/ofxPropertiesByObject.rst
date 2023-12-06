@@ -458,6 +458,8 @@ Properties On Choice Parameters
 
 -  kOfxParamPropChoiceOption
    read/write in the descriptor and instance
+-  kOfxParamPropChoiceValue
+   read/write in the descriptor and instance
 
 Properties On Custom Parameters
 -------------------------------

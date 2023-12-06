@@ -201,6 +201,8 @@ Properties Reference
 
 .. doxygendefine:: kOfxParamPropChoiceOption
 
+.. doxygendefine:: kOfxParamPropChoiceValue
+
 .. doxygendefine:: kOfxParamPropCustomInterpCallbackV1
 
 .. doxygendefine:: kOfxParamPropCustomValue
