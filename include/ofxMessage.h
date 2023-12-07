@@ -65,11 +65,11 @@ typedef struct OfxMessageSuiteV1 {
 
   /** @brief Post a message on the host, using printf style varargs
 
-      \arg handle     - effect handle (descriptor or instance) the message should be associated with, may be null
-      \arg messageType - string describing the kind of message to post, one of the kOfxMessageType* constants
-      \arg messageId - plugin specified id to associate with this message. If overriding the message in XML resource, the message is identified with this, this may be NULL, or "", in which case no override will occur,
-      \arg format    - printf style format string
-      \arg ...       - printf style varargs list to print
+      \arg \c handle     effect handle (descriptor or instance) the message should be associated with, may be NULL
+      \arg \c messageType string describing the kind of message to post, one of the kOfxMessageType* constants
+      \arg \c messageId plugin specified id to associate with this message. If overriding the message in XML resource, the message is identified with this, this may be NULL, or "", in which case no override will occur,
+      \arg \c format    printf style format string
+      \arg \c ...       printf style varargs list to print
 
 \returns 
   - ::kOfxStatOK - if the message was sucessfully posted 
@@ -97,11 +97,11 @@ typedef struct OfxMessageSuiteV2 {
 
   /** @brief Post a transient message on the host, using printf style varargs. Same as the V1 message suite call.
 
-      \arg handle     - effect handle (descriptor or instance) the message should be associated with, may be null
-      \arg messageType - string describing the kind of message to post, one of the kOfxMessageType* constants
-      \arg messageId - plugin specified id to associate with this message. If overriding the message in XML resource, the message is identified with this, this may be NULL, or "", in which case no override will occur,
-      \arg format    - printf style format string
-      \arg ...       - printf style varargs list to print
+      \arg \c handle     effect handle (descriptor or instance) the message should be associated with, may be null
+      \arg \c messageType string describing the kind of message to post, one of the kOfxMessageType* constants
+      \arg \c messageId plugin specified id to associate with this message. If overriding the message in XML resource, the message is identified with this, this may be NULL, or "", in which case no override will occur,
+      \arg \c format    printf style format string
+      \arg \c ...       printf style varargs list to print
 
       \returns 
       - ::kOfxStatOK - if the message was sucessfully posted 
@@ -117,14 +117,14 @@ typedef struct OfxMessageSuiteV2 {
 
   /** @brief Post a persistent message on an effect, using printf style varargs, and set error states. New for V2 message suite.
 
-      \arg handle     - effect instance handle the message should be associated with, may NOT be null,
-      \arg messageType - string describing the kind of message to post, should be one of...
+      \arg \c handle     effect instance handle the message should be associated with, may NOT be null,
+      \arg \c messageType string describing the kind of message to post, should be one of...
             - kOfxMessageError
             - kOfxMessageWarning
             - kOfxMessageMessage            
-      \arg messageId - plugin specified id to associate with this message. If overriding the message in XML resource, the message is identified with this, this may be NULL, or "", in which case no override will occur,
-      \arg format    - printf style format string
-      \arg ...       - printf style varargs list to print
+      \arg \c messageId plugin specified id to associate with this message. If overriding the message in XML resource, the message is identified with this, this may be NULL, or "", in which case no override will occur,
+      \arg \c format    printf style format string
+      \arg \c ...       printf style varargs list to print
 
       \returns 
         - ::kOfxStatOK - if the message was sucessfully posted 
@@ -144,8 +144,8 @@ typedef struct OfxMessageSuiteV2 {
   
   /** @brief Clears any persistent message on an effect handle that was set by OfxMessageSuiteV2::setPersistentMessage. New for V2 message suite.
 
-      \arg handle     - effect instance handle messages should be cleared from.
-      \arg handle     - effect handle (descriptor or instance) 
+      \arg \c handle     effect instance handle messages should be cleared from.
+      \arg \c handle     effect handle (descriptor or instance) 
 
       \returns 
         - ::kOfxStatOK - if the message was sucessfully cleared

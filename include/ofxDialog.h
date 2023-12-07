@@ -32,7 +32,7 @@ actions needed. (Like lowering its priority etc..)
 
 /** @brief Action called after a dialog has requested a 'Dialog'
          The arguments to the action are:
-          \arg user_data - Pointer which was provided when the plugin requested the Dialog
+          \arg \c user_data Pointer which was provided when the plugin requested the Dialog
 
 	   When the plugin receives this action it is safe to popup a dialog.
 	   It runs in the host's UI thread, which may differ from the main OFX processing thread.
