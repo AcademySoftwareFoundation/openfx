@@ -24,7 +24,7 @@
 // the one OFX header we need, it includes the others necessary
 #include "ofxImageEffect.h"
 
-#if defined __APPLE__ || defined linux
+#if defined __APPLE__ || defined __linux__
 #  define EXPORT __attribute__((visibility("default")))
 #elif defined _WIN32
 #  define EXPORT OfxExport

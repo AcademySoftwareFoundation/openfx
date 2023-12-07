@@ -27,7 +27,7 @@
 
 #include "../include/ofxUtilities.H" // example support utils
 
-#if defined __APPLE__ || defined linux || defined __FreeBSD__
+#if defined __APPLE__ || defined __linux__ || defined __FreeBSD__
 #  define EXPORT __attribute__((visibility("default")))
 #elif defined _WIN32
 #  define EXPORT OfxExport
