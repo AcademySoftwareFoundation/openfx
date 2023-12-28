@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16.0)
-project(openfx VERSION 1.4.0 LANGUAGES CXX)
+project(openfx VERSION 1.4.0 LANGUAGES CXX CUDA)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -9,8 +9,26 @@ if(APPLE)
    set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 endif()
 
-option(BUILD_EXAMPLE_PLUGINS "Build example plugins" OFF)
 option(OFX_SUPPORTS_OPENGLRENDER "Build with support for GPU rendering (OpenGL/CUDA/Metal/OpenCL)" ON)
+option(BUILD_EXAMPLE_PLUGINS "Build example plugins" OFF)
+option(OFX_SUPPORTS_OPENCLRENDER "Build examples with support for OpenCL GPU rendering" OFF)
+option(OFX_SUPPORTS_CUDARENDER "Build examples with support for CUDA GPU rendering" OFF)
+
+if(OFX_SUPPORTS_OPENGLRENDER)
+  add_definitions(-DOFX_SUPPORTS_OPENGLRENDER)
+endif()
+if(OFX_SUPPORTS_OPENCLRENDER)
+  add_definitions(-DOFX_SUPPORTS_OPENCLRENDER)
+endif()
+if(OFX_SUPPORTS_CUDARENDER)
+  add_definitions(-DOFX_SUPPORTS_CUDARENDER)
+  set(CMAKE_CUDA_ARCHITECTURES "native")
+endif()
+
+# We use #if DEBUG in the examples
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
+
 
 # Flags
 if(!MSVC)
@@ -21,7 +39,7 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_BINARY_DIR} )
 
 # Conan packages
 find_package(EXPAT)
-find_package(opengl_system)
+find_package(opengl_system REQUIRED)
 
 # Macros
 set(OFX_SUPPORT_SYMBOLS_DIR ${PROJECT_SOURCE_DIR}/symbols)

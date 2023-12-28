@@ -2,7 +2,7 @@ if(APPLE)
   set(PLUGINDIR "/Library/OFX/Plugins")
   set(ARCHDIR "MacOS")
 elseif(WIN32)
-  set(PLUGINDIR "C:/Program Files (x86)/Common Files/OFX/Plugins")
+  set(PLUGINDIR "C:/Program Files/Common Files/OFX/Plugins")
   set(ARCHDIR "Win64")
 elseif(UNIX)
   set(PLUGINDIR "/usr/OFX/Plugins")
@@ -16,43 +16,54 @@ endif()
 # Arguments: TARGET
 # Optional argument: DIR, defaults to same as TARGET (use when renaming TARGET)
 function(add_ofx_plugin TARGET)
-	if(${ARGC} GREATER 1)
-	  set(DIR ${ARGN})
-	else()
-	  set(DIR ${TARGET})
-	endif()
-	if(APPLE)
-	  add_library(${TARGET} MODULE) # build as an OSX bundle
-	else()
-	  add_library(${TARGET} SHARED) # build as shared lib/DLL
-	endif()
-	set_target_properties(${TARGET} PROPERTIES SUFFIX ".ofx" PREFIX "")
+  if(${ARGC} GREATER 1)
+    set(DIR ${ARGN})
+  else()
+    set(DIR ${TARGET})
+  endif()
+  if(APPLE)
+    add_library(${TARGET} MODULE) # build as an OSX bundle
+  else()
+    add_library(${TARGET} SHARED) # build as shared lib/DLL
+  endif()
+  set_target_properties(${TARGET} PROPERTIES SUFFIX ".ofx" PREFIX "")
 
-	if(NOT DEFINED OFX_SUPPORT_SYMBOLS_DIR)
-		if (NOT DEFINED CONAN_OPENFX_ROOT)
-			message(FATAL_ERROR "Define OFX_SUPPORT_SYMBOLS_DIR to use add_ofx_plugin().")
-		endif()
-		set(OFX_SUPPORT_SYMBOLS_DIR ${CONAN_OPENFX_ROOT}/symbols)
-	endif()
+  if(NOT DEFINED OFX_SUPPORT_SYMBOLS_DIR)
+    if (NOT DEFINED CONAN_OPENFX_ROOT)
+      message(FATAL_ERROR "Define OFX_SUPPORT_SYMBOLS_DIR to use add_ofx_plugin().")
+    endif()
+    set(OFX_SUPPORT_SYMBOLS_DIR ${CONAN_OPENFX_ROOT}/symbols)
+  endif()
 
-	# Add extra flags to the link step of the plugin
-	if(APPLE)
-		set_target_properties(${TARGET} PROPERTIES
-                  LINK_FLAGS "-fvisibility=hidden -exported_symbols_list,${OFX_SUPPORT_SYMBOLS_DIR}/osx.symbols")
-	elseif(WIN32)
-		if (MSVC)
-			set_target_properties(${TARGET} PROPERTIES
-                    LINK_FLAGS "/def:${OFX_SUPPORT_SYMBOLS_DIR}/windows.symbols")
+  # Add extra flags to the link step of the plugin
+  if(APPLE)
+    set_target_properties(${TARGET} PROPERTIES
+                          LINK_FLAGS "-fvisibility=hidden -exported_symbols_list,${OFX_SUPPORT_SYMBOLS_DIR}/osx.symbols")
+  elseif(WIN32)
+    if (MSVC)
+            set_target_properties(${TARGET} PROPERTIES
+                                  LINK_FLAGS "/def:${OFX_SUPPORT_SYMBOLS_DIR}/windows.symbols")
     elseif(MINGW OR MSYS)
       set_target_properties(${TARGET} PROPERTIES
-                    LINK_FLAGS "-Wl,-fvisibility=hidden,--version-script=${OFX_SUPPORT_SYMBOLS_DIR}/mingw.symbols")
+                            LINK_FLAGS "-Wl,-fvisibility=hidden,--version-script=${OFX_SUPPORT_SYMBOLS_DIR}/mingw.symbols")
     endif()
-	else()
-		set_target_properties(${TARGET} PROPERTIES
-                  LINK_FLAGS "-Wl,-fvisibility=hidden,--version-script=${OFX_SUPPORT_SYMBOLS_DIR}/linux.symbols")
-	endif()
+  else()                        # Linux
+    set_target_properties(${TARGET} PROPERTIES
+                          LINK_FLAGS "-Wl,-fvisibility=hidden,--version-script=${OFX_SUPPORT_SYMBOLS_DIR}/linux.symbols")
+  endif()
 
-        # To install plugins: cmake --install Build
-        install(TARGETS ${TARGET} DESTINATION "${PLUGINDIR}/${TARGET}.ofx.bundle/Contents/${ARCHDIR}")
-        install(FILES ${DIR}/Info.plist DESTINATION "${PLUGINDIR}/${TARGET}.ofx.bundle/Contents")
+  # To install plugins: cmake --install Build
+  install(TARGETS ${TARGET} DESTINATION "${PLUGINDIR}/${TARGET}.ofx.bundle/Contents/${ARCHDIR}")
+
+  # Use info.plist in DIR or else current dir
+  file(REAL_PATH ${DIR}/Info.plist INFO_PLIST)
+  if(EXISTS ${INFO_PLIST})
+    install(FILES ${INFO_PLIST} DESTINATION "${PLUGINDIR}/${TARGET}.ofx.bundle/Contents")
+  else()
+    file(REAL_PATH ./Info.plist INFO_PLIST)
+    if(EXISTS ${INFO_PLIST})
+      install(FILES ${INFO_PLIST} DESTINATION "${PLUGINDIR}/${TARGET}.ofx.bundle/Contents")
+    endif()
+  endif()
+
 endfunction()

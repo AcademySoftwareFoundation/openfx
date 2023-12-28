@@ -11,7 +11,7 @@
 #include "ofxsLog.h"
 
 #define kPluginName "GPU Gain"
-#define kPluginGrouping "OpenFX Sample"
+#define kPluginGrouping "OFX Example"
 #define kPluginDescription "Apply separate RGB gain adjustments to each channels; CUDA/OpenCL/Metal"
 #define kPluginIdentifier "com.OpenFXSample.GPUGain"
 #define kPluginVersionMajor 1
@@ -86,6 +86,7 @@ extern void RunOpenCLKernel(void* p_CmdQ, int p_Width, int p_Height, float* p_Ga
 
 void GainExample::processImagesOpenCL()
 {
+#ifdef OFX_SUPPORTS_OPENCLRENDER
     const OfxRectI& bounds = _srcImg->getBounds();
     const int width = bounds.x2 - bounds.x1;
     const int height = bounds.y2 - bounds.y1;
@@ -94,6 +95,7 @@ void GainExample::processImagesOpenCL()
     float* output = static_cast<float*>(_dstImg->getPixelData());
 
     RunOpenCLKernel(_pOpenCLCmdQ, width, height, _scales, input, output);
+#endif
 }
 
 void GainExample::multiThreadProcessImages(OfxRectI p_ProcWindow)
