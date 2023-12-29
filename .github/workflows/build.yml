@@ -186,6 +186,7 @@ jobs:
           if [[ ${{ matrix.has_cmake_presets }} = true ]]; then
             # Sets up to build in e.g. build/Release
             cmake --preset $CONAN_PRESET -DBUILD_EXAMPLE_PLUGINS=TRUE \
+              -DPLUGIN_INSTALLDIR=$(pwd)/$BUILD_DIR/Install \
               -DOFX_SUPPORTS_OPENGLRENDER=TRUE \
               -DOFX_SUPPORTS_CUDARENDER=$CUDA .
           else
@@ -196,6 +197,7 @@ jobs:
               -DCMAKE_POLICY_DEFAULT_CMP0091=NEW \
               -DCMAKE_BUILD_TYPE=Release \
               -DBUILD_EXAMPLE_PLUGINS=TRUE \
+              -DPLUGIN_INSTALLDIR=$(pwd)/$BUILD_DIR/Install \
               -DOFX_SUPPORTS_OPENGLRENDER=TRUE \
               -DOFX_SUPPORTS_CUDARENDER=$CUDA
           fi
@@ -203,9 +205,9 @@ jobs:
       - name: Build with cmake
         run: |
           if [[ ${{ matrix.ostype }} = windows ]]; then
-            cmake --build $BUILD_DIR --config Release --parallel
+            cmake --build $BUILD_DIR --target install --config Release --parallel
           else
-            cmake --build $BUILD_DIR --parallel
+            cmake --build $BUILD_DIR --target install --parallel
           fi
 
       - name: Copy includes into build folder for installation
