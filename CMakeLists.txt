@@ -30,7 +30,7 @@ if(OFX_SUPPORTS_OPENCLRENDER)
 endif()
 if(OFX_SUPPORTS_CUDARENDER)
   add_definitions(-DOFX_SUPPORTS_CUDARENDER)
-  set(CMAKE_CUDA_ARCHITECTURES "native")
+  set(CMAKE_CUDA_ARCHITECTURES "all-major")
 endif()
 
 # We use #if DEBUG in the examples
