@@ -182,8 +182,8 @@ jobs:
               -DCMAKE_TOOLCHAIN_FILE=$(pwd)/$BUILD_DIR/generators/conan_toolchain.cmake \
               -DCMAKE_POLICY_DEFAULT_CMP0091=NEW \
               -DCMAKE_BUILD_TYPE=Release \
-              -DBUILD_EXAMPLE_PLUGINS=TRUE
-              -DOFX_SUPPORTS_OPENGLRENDER=TRUE
+              -DBUILD_EXAMPLE_PLUGINS=TRUE \
+              -DOFX_SUPPORTS_OPENGLRENDER=TRUE \
               -DOFX_SUPPORTS_CUDARENDER=$CUDA
           fi
 

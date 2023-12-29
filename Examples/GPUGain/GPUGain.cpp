@@ -46,13 +46,13 @@ GainExample::GainExample(OFX::ImageEffect& p_Instance)
 {
 }
 
-#ifndef __APPLE__
+#ifdef OFX_SUPPORTS_CUDARENDER
 extern void RunCudaKernel(void* p_Stream, int p_Width, int p_Height, float* p_Gain, const float* p_Input, float* p_Output);
 #endif
 
 void GainExample::processImagesCUDA()
 {
-#ifndef __APPLE__
+#ifdef OFX_SUPPORTS_CUDARENDER
     const OfxRectI& bounds = _srcImg->getBounds();
     const int width = bounds.x2 - bounds.x1;
     const int height = bounds.y2 - bounds.y1;

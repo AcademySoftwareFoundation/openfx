@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.16.0)
-if(APPLE)
-  project(openfx VERSION 1.4.0 LANGUAGES CXX) # no CUDA
-else()
+if(OFX_SUPPORTS_CUDARENDER AND NOT APPLE)
   project(openfx VERSION 1.4.0 LANGUAGES CXX CUDA)
+else()
+  project(openfx VERSION 1.4.0 LANGUAGES CXX) # no CUDA
 endif()
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CXX_STANDARD 14)
