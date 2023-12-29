@@ -5,7 +5,7 @@ if (OFX_SUPPORTS_OPENGLRENDER)
     list(FILTER PLUGIN_SOURCES EXCLUDE REGEX "OpenCLKernel")
   endif()
   if (OFX_SUPPORTS_CUDARENDER)
-    list(APPEND PLUGIN_SOURCES "CUDAKernel.cu")
+    list(APPEND PLUGIN_SOURCES "CudaKernel.cu")
   endif()
   if(APPLE)
     file(GLOB_RECURSE PLUGIN_SOURCES "*.mm") # add Metal kernel
