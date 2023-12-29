@@ -100,6 +100,19 @@ jobs:
             cc-compiler: clang
             compiler-desc: Clang
             cuda: true
+          - name_prefix: Windows no CUDA
+            release_prefix: windows-no-cuda
+            ostype: windows
+            os: windows-latest
+            container: null
+            has_cmake_presets: true
+            buildtype: Release
+            conan_version: 2.0.16
+            cxx-standard: 17
+            cxx-compiler: clang++
+            cc-compiler: clang
+            compiler-desc: Clang
+            cuda: false
     defaults:
       run:
         shell: bash
