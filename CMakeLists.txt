@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.16.0)
-project(openfx VERSION 1.4.0 LANGUAGES CXX CUDA)
+if(APPLE)
+  project(openfx VERSION 1.4.0 LANGUAGES CXX) # no CUDA
+else()
+  project(openfx VERSION 1.4.0 LANGUAGES CXX CUDA)
+endif()
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -13,6 +17,10 @@ option(OFX_SUPPORTS_OPENGLRENDER "Build with support for GPU rendering (OpenGL/C
 option(BUILD_EXAMPLE_PLUGINS "Build example plugins" OFF)
 option(OFX_SUPPORTS_OPENCLRENDER "Build examples with support for OpenCL GPU rendering" OFF)
 option(OFX_SUPPORTS_CUDARENDER "Build examples with support for CUDA GPU rendering" OFF)
+
+if(APPLE)
+   set(OFX_SUPPORTS_CUDARENDER OFF)
+endif()
 
 if(OFX_SUPPORTS_OPENGLRENDER)
   add_definitions(-DOFX_SUPPORTS_OPENGLRENDER)
