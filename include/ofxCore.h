@@ -55,6 +55,9 @@ typedef struct OfxHost {
 
       Repeated calls to fetchSuite with the same parameters will return the same pointer.
 
+      It is recommended that hosts should return the same host and suite pointers to all plugins
+      in the same shared lib or bundle.
+
       returns
          - NULL if the API is unknown (either the api or the version requested),
 	 - pointer to the relevant API if it was found
@@ -126,6 +129,9 @@ typedef struct OfxPlugin {
 
       \post
         - the pointer suite is valid until the plug-in is unloaded
+
+      It is recommended that hosts should return the same host and suite pointers to all plugins
+      in the same shared lib or bundle.
   */
   void     (*setHost)(OfxHost *host);
 
