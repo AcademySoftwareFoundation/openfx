@@ -43,9 +43,9 @@ typedef struct OfxProgressSuiteV1 {
 
       Call this to initiate the display of a progress bar.
 
-      \arg \e effectInstance - the instance of the plugin this progress bar is
+      \arg \c effectInstance the instance of the plugin this progress bar is
                                associated with. It cannot be NULL.
-      \arg \e label          - a text label to display in any message portion of the
+      \arg \c label          a text label to display in any message portion of the
                                progress object's user interface. A UTF8 string.
 
       \pre                   - There is no currently ongoing progress display for this instance.
@@ -60,9 +60,9 @@ typedef struct OfxProgressSuiteV1 {
 
   /** @brief Indicate how much of the processing task has been completed and reports on any abort status.
 
-      \arg \e effectInstance - the instance of the plugin this progress bar is
+      \arg \c effectInstance the instance of the plugin this progress bar is
                                 associated with. It cannot be NULL.
-      \arg \e progress - a number between 0.0 and 1.0 indicating what proportion of the current task has been processed.
+      \arg \c progress a number between 0.0 and 1.0 indicating what proportion of the current task has been processed.
 
       \returns
       - ::kOfxStatOK - the progress object was successfully updated and the task should continue
@@ -76,7 +76,7 @@ typedef struct OfxProgressSuiteV1 {
       Call this when you are done with the progress meter and no
       longer need it displayed.
 
-      \arg \e effectInstance - the instance of the plugin this progress bar is
+      \arg \c effectInstance the instance of the plugin this progress bar is
                                 associated with. It cannot be NULL.
 
       \post - you can no longer call progressUpdate on the instance
@@ -97,11 +97,11 @@ typedef struct OfxProgressSuiteV2 {
 
       Call this to initiate the display of a progress bar.
 
-      \arg \e effectInstance - the instance of the plugin this progress bar is
+      \arg \c effectInstance the instance of the plugin this progress bar is
                                associated with. It cannot be NULL.
-      \arg \e message        - a text label to display in any message portion of the
+      \arg \c message        a text label to display in any message portion of the
                                progress object's user interface. A UTF8 string.
-      \arg \e messageId      - plugin-specified id to associate with this message.
+      \arg \c messageId      plugin-specified id to associate with this message.
                                If overriding the message in an XML resource, the message
 			       is identified with this, this may be NULL, or "", in
 			       which case no override will occur.
@@ -119,9 +119,9 @@ OfxStatus (*progressStart)(void *effectInstance,
     const char *messageid);
   /** @brief Indicate how much of the processing task has been completed and reports on any abort status.
 
-      \arg \e effectInstance - the instance of the plugin this progress bar is
+      \arg \c effectInstance the instance of the plugin this progress bar is
                                 associated with. It cannot be NULL.
-      \arg \e progress - a number between 0.0 and 1.0 indicating what proportion of the current task has been processed.
+      \arg \c progress a number between 0.0 and 1.0 indicating what proportion of the current task has been processed.
 
       \returns
       - ::kOfxStatOK - the progress object was successfully updated and the task should continue
@@ -135,7 +135,7 @@ OfxStatus (*progressUpdate)(void *effectInstance, double progress);
       Call this when you are done with the progress meter and no
       longer need it displayed.
 
-      \arg \e effectInstance - the instance of the plugin this progress bar is
+      \arg \c effectInstance the instance of the plugin this progress bar is
                                 associated with. It cannot be NULL.
 
       \post - you can no longer call progressUpdate on the instance
