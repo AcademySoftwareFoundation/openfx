@@ -77,29 +77,65 @@ Where...
 -  ARCHITECTURE is the specific operating system architecture the
    plug-in was built for, these are currently...
 
-   -  ``MacOS`` - for Apple Macintosh OS X 32 bit and/or universal binaries
-   -  ``MacOS-x86-64`` - for Apple Macintosh OS X, specifically on intel x86
-      CPUs running AMD's 64 bit extensions. 64 bit host applications
-      should check this first, and if it doesn't exist or is empty, fall
-      back to "MacOS" looking for a universal binary.
+   -  ``MacOS`` - for Apple Macintosh OS X universal or architecture-specific binaries
+   -  ``MacOS-x86-64`` - *DEPRECATED*. Formerly used for Intel Macs during the transition from PowerPC.
    -  ``Win32`` - for Microsoft Windows (compiled 32 bit)
    -  ``Win64`` - for Microsoft Windows (compiled 64 bit)
-   -  ``IRIX`` - for SGI IRIX plug-ins (compiled 32 bit)
-   -  ``IRIX64`` - for SGI IRIX plug-ins (compiled 64 bit)
+   -  ``IRIX`` - for SGI IRIX plug-ins (compiled 32 bit) (*DEPRECATED*)
+   -  ``IRIX64`` - for SGI IRIX plug-ins (compiled 64 bit) (*DEPRECATED*)
    -  ``Linux-x86`` - for Linux on x86 CPUs (compiled 32 bit)
    -  ``Linux-x86-64`` - for Linux on x86 CPUs running AMD's 64 bit
       extensions
 
-Note that not all the above architectures need be supported, at least
-one.
+Note that not all the above architectures need be supported, only the
+architectures supported by the host product itself.
 
-This structure is necessary on OS X, but it also gives a nice skeleton
-to hang all other operating systems from in a single install, as well as
-a clean place to put resources.
+MacOS Architectures and Universal Binaries
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For MacOS, as of 2024 (OpenFX v1.5), all MacOS plug-ins should be in
+``MacOS``, and preferably should be universal binaries (whatever that
+means at any given point in time, given the hosts a plug-in is trying
+to support). There will not be a specific ``arm64`` folder.
+
+This is acceptable since MacOS supports multi-architecture binaries,
+so per-architecture subdirectories are not needed for a host
+application to find the proper architecture plug-in. This proposal
+would prohibit a plug-in from shipping a separate Intel and arm64
+binaries (since the plug-in .ofx file must always be named to match the
+top-level bundle name), but it should not be difficult for any plug-in
+to merge multiple architectures into a single binary on MacOS.
+
+Future Architecture Compatibility
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+NOTE: this section is not yet normative, but informational.
+
+Note that Windows and Linux do not support universal binaries. Each
+.ofx file is for one architecture, so a host must check the proper
+architecture-specific subdir.
+
+When Windows and/or Linux support alternative processor architectures
+such as arm64, hosts should look in appropriately-named subdirs for
+the proper .ofx plugin file. On Windows with arm64, ``Win-arm64``
+should be used (vs. current ``Win32`` and ``Win64`` which are
+Intel-specific). On Linux, hosts should look in the subdir named by
+``Linux-${uname -m}`` which for arm64 should be ``Linux-aarch64``.
+Using ``uname -m`` rather than a hard-coded list allows for
+transparently supporting any future architectures.
+
+
+
+Structure
+^^^^^^^^^
+
+This directory structure is necessary on OS X, but it also gives a
+nice skeleton to hang all other operating systems from in a single
+install, as well as a clean place to put resources.
 
 The ``Info.plist`` is specific to Apple and you should consult the Apple
 developer's website for more details. It should contain the following
-keys...
+keys:
 
 -  ``CFBundleExecutable`` - the name of the binary bundle in the MacOS
    directory
@@ -113,7 +149,7 @@ keys...
 Installation Location
 ---------------------
 
-plug-ins are searched for in a variety of locations, both default and
+Plug-ins are searched for in a variety of locations, both default and
 user specified. All such directories are examined for plug-in bundles
 and sub directories are also recursively examined.
 
