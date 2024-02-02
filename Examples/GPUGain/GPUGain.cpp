@@ -12,7 +12,7 @@
 
 #define kPluginName "GPU Gain"
 #define kPluginGrouping "OFX Example"
-#define kPluginDescription "Apply separate RGB gain adjustments to each channels; CUDA/OpenCL/Metal"
+#define kPluginDescription "Apply separate RGB gain adjustments to each channels; CUDA/OpenCL Buffers/OpenCL Images/Metal"
 #define kPluginIdentifier "com.OpenFXSample.GPUGain"
 #define kPluginVersionMajor 1
 #define kPluginVersionMinor 0
@@ -28,7 +28,7 @@ class GainExample : public OFX::ImageProcessor
 public:
     explicit GainExample(OFX::ImageEffect& p_Instance);
 
-    virtual void processImagesCUDA();
+    virtual void processImagesCuda();
     virtual void processImagesOpenCL();
     virtual void processImagesMetal();
     virtual void multiThreadProcessImages(OfxRectI p_ProcWindow);
@@ -50,7 +50,7 @@ GainExample::GainExample(OFX::ImageEffect& p_Instance)
 extern void RunCudaKernel(void* p_Stream, int p_Width, int p_Height, float* p_Gain, const float* p_Input, float* p_Output);
 #endif
 
-void GainExample::processImagesCUDA()
+void GainExample::processImagesCuda()
 {
 #ifdef OFX_SUPPORTS_CUDARENDER
     const OfxRectI& bounds = _srcImg->getBounds();
@@ -82,7 +82,8 @@ void GainExample::processImagesMetal()
 #endif
 }
 
-extern void RunOpenCLKernel(void* p_CmdQ, int p_Width, int p_Height, float* p_Gain, const float* p_Input, float* p_Output);
+extern void RunOpenCLKernelBuffers(void* p_CmdQ, int p_Width, int p_Height, float* p_Gain, const float* p_Input, float* p_Output);
+extern void RunOpenCLKernelImages(void* p_CmdQ, int p_Width, int p_Height, float* p_Gain, const float* p_Input, float* p_Output);
 
 void GainExample::processImagesOpenCL()
 {
@@ -91,10 +92,22 @@ void GainExample::processImagesOpenCL()
     const int width = bounds.x2 - bounds.x1;
     const int height = bounds.y2 - bounds.y1;
 
-    float* input = static_cast<float*>(_srcImg->getPixelData());
-    float* output = static_cast<float*>(_dstImg->getPixelData());
+    float* input = static_cast<float*>(_srcImg->getOpenCLImage());
+    float* output = static_cast<float*>(_dstImg->getOpenCLImage());
 
-    RunOpenCLKernel(_pOpenCLCmdQ, width, height, _scales, input, output);
+    // if a plugin supports both OpenCL Buffers and Images, the host decides which is used and
+    // the plugin must determine which based on whether kOfxImageEffectPropOpenCLImage or kOfxImagePropData is set
+    if (input || output)
+    {
+        RunOpenCLKernelImages(_pOpenCLCmdQ, width, height, _scales, input, output);
+    }
+    else
+    {
+        input = static_cast<float*>(_srcImg->getPixelData());
+        output = static_cast<float*>(_dstImg->getPixelData());
+
+        RunOpenCLKernelBuffers(_pOpenCLCmdQ, width, height, _scales, input, output);
+}
 #endif
 }
 
@@ -351,7 +364,8 @@ void GPUGainFactory::describe(OFX::ImageEffectDescriptor& p_Desc)
     p_Desc.setSupportsMultipleClipPARs(kSupportsMultipleClipPARs);
 
     // Setup OpenCL render capability flags
-    p_Desc.setSupportsOpenCLRender(true);
+    p_Desc.setSupportsOpenCLBuffersRender(true);
+    p_Desc.setSupportsOpenCLImagesRender(true);
 
     // Setup CUDA render capability flags on non-Apple system
 #ifndef __APPLE__

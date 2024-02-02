@@ -145,9 +145,9 @@ namespace OFX {
         };
 
         /** @brief this is called by process to actually process images using CUDA when isEnabledCudaRender is true, override in derived classes */
-        virtual void processImagesCUDA(void)
+        virtual void processImagesCuda(void)
         {
-            OFX::Log::print("processImagesCUDA not implemented");
+            OFX::Log::print("processImagesCuda not implemented");
             OFX::throwSuiteStatusException(kOfxStatErrUnsupported);
         };
 
@@ -197,7 +197,7 @@ namespace OFX {
             else if (_isEnabledCudaRender)
             {
               OFX::Log::print("processing via CUDA");
-                processImagesCUDA();
+                processImagesCuda();
             }
             else if (_isEnabledMetalRender)
             {

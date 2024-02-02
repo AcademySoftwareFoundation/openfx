@@ -667,10 +667,16 @@ namespace OFX {
     }
   }
 
-  /** @brief Does the plugin support OpenCL Render */
-  void ImageEffectDescriptor::setSupportsOpenCLRender(bool v)
+  /** @brief Does the plugin support OpenCL Buffers Render */
+  void ImageEffectDescriptor::setSupportsOpenCLBuffersRender(bool v)
   {
       _effectProps.propSetString(kOfxImageEffectPropOpenCLRenderSupported, (v ? "true" : "false"));
+  }
+
+  /** @brief Does the plugin support OpenCL Images Render */
+  void ImageEffectDescriptor::setSupportsOpenCLImagesRender(bool v)
+  {
+      _effectProps.propSetString(kOfxImageEffectPropOpenCLSupported, (v ? "true" : "false"));
   }
 
   /** @brief Does the plugin support CUDA Render */
@@ -759,7 +765,7 @@ namespace OFX {
     OFX::Validation::validateImageBaseProperties(props);
 
     // and fetch all the properties
-    _rowBytes         = _imageProps.propGetInt(kOfxImagePropRowBytes);
+    _rowBytes         = _imageProps.propGetInt(kOfxImagePropRowBytes, /*throwOnFailure*/false); // not required for OpenCL Images
     _pixelAspectRatio = _imageProps.propGetDouble(kOfxImagePropPixelAspectRatio);;
       
     std::string str  = _imageProps.propGetString(kOfxImageEffectPropComponents);
@@ -849,8 +855,10 @@ namespace OFX {
     OFX::Validation::validateImageProperties(props);
 
     // and fetch all the properties
+    _OpenCLImage = nullptr;
+    _OpenCLImage = _imageProps.propGetPointer(kOfxImageEffectPropOpenCLImage, /*throwOnFailure*/false);
     // should throw if it is not an image
-    _pixelData = _imageProps.propGetPointer(kOfxImagePropData);
+    _pixelData = _imageProps.propGetPointer(kOfxImagePropData, /*throwOnFailure*/!_OpenCLImage);
   }
 
   Image::~Image()
