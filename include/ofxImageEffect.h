@@ -1244,7 +1244,7 @@ This contains the duration of the plug-in effect, in frames.
 
 This property contains one of:
   - a pointer to memory that is the lower left hand corner of an image
-  - a pointer to Cuda memory, if the Render action arguments includes kOfxImageEffectPropCudaEnabled=1
+  - a pointer to CUDA memory, if the Render action arguments includes kOfxImageEffectPropCudaEnabled=1
   - an id<MTLBuffer>, if the Render action arguments includes kOfxImageEffectPropMetalEnabled=1
   - a cl_mem, if the Render action arguments includes kOfxImageEffectPropOpenCLEnabled=1
 
@@ -1294,7 +1294,8 @@ For various alignment reasons, a row of pixels may need to be padded at the end 
 This property indicates the number of bytes in a row of pixels. This will be at least sizeof(PIXEL) * (bounds.x2-bounds.x1). Where bounds
 is fetched from the ::kOfxImagePropBounds property.
 
-Note that (for CPU images only, not Cuda/Metal/OpenCL buffers, nor textures accessed via the OpenGL Render Suite) row bytes can be negative, which allows hosts with a native top down row order to pass image into OFX without having to repack pixels.
+Note that (for CPU images only, not CUDA/Metal/OpenCL Buffers, nor OpenGL textures accessed via the OpenGL Render Suite) row bytes can be negative, which allows hosts with a native top down row order to pass image into OFX without having to repack pixels.
+Row bytes is not supported for OpenCL Images.
  */
 #define kOfxImagePropRowBytes "OfxImagePropRowBytes"
 
