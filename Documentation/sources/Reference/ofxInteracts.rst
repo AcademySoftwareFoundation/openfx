@@ -26,8 +26,8 @@ these are...
    property
 -  as a replacement for any parameter's standard GUI object, set this
    via the parameter descriptor's
-    :c:macro:`kOfxParamPropInteractV1`
-   property
+   :c:macro:`kOfxParamPropInteractV1`
+   property.
 
 Hosts might not be able to support interacts, to indicate this, two
 properties exist on the host descriptor which an effect should examine

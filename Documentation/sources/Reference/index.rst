@@ -29,5 +29,6 @@ the API. The changes to the API are listed in an addendum.
     suites/ofxSuiteReference
     ofxPropertiesByObject
     ofxPropertiesReference
+    DoxygenIndex
     ofxStatusCodes
     apiChanges_1_2_Chapter

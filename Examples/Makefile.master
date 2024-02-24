@@ -24,11 +24,13 @@ ifeq ($(DEBUGFLAG),-O3)
   DEBUGNAME = release
 endif
 
+CXXSTANDARD ?= --std=c++11
+
 OBJECTPATH = $(OS)-$(BITS)-$(DEBUGNAME)
 
 $(OBJECTPATH)/%.o : %.cpp
 	mkdir -p $(OBJECTPATH)
-	$(CXX) -c $(CXXFLAGS) $< -o $@
+	$(CXX) -c $(CXXFLAGS) $(CXXSTANDARD) $(CXXARCH) $< -o $@
 
 all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
 

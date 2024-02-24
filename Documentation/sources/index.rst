@@ -6,12 +6,12 @@
    http://github.com/ralsina/rst-cheatsheet/raw/master/rst-cheatsheet.pdf
 
 Welcome to OpenFX documentation
-==============================
+===============================
 
 The OpenFX documentation is organized as follows:
 
-- The :ref:`programming guide<ofxProgrammingGuide>` contains  everything to get started with OpenFX to create a new plug-in or host application
-- The :ref:`reference guide<ofxProgrammingReference>` contains the full documentation about the OpenFX protocol and design
+- The :doc:`programming guide<Guide/index>` contains everything to get started with OpenFX to create a new plug-in or host application
+- The :doc:`reference guide<Reference/index>` contains the full reference documentation about the OpenFX protocol and design
 
 This documentation is also
 `available online <http://openfx.readthedocs.io/en/master/>`_

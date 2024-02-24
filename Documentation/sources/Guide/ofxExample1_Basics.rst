@@ -413,7 +413,7 @@ applications.
 .. note::
 
     For the main entry point on image effect plugins, the handle passed
-    in will either be NULL or an :cpp:type:`OfxImageEffectHandle``, which is
+    in will either be NULL or an :cpp:type:`OfxImageEffectHandle`, which is
     just a blind pointer to host specific data that represents the
     plugin.
 
@@ -727,7 +727,7 @@ arguments? In the case of the is identity action these are…
 A proper plugin would examine the inArgs, its parameters and see if it
 is doing anything to its inputs. If it does need to process images it
 would return :c:macro:`kOfxStatReplyDefault` rather than
-:c:macro:`kOfxStatOK``.
+:c:macro:`kOfxStatOK`.
 
 .. _lifeCycle::
 Life Cycle of a Plugin

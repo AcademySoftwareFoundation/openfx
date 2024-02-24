@@ -1,5 +1,3 @@
-.. _ImageEffectArchitectures:
-
 Image Processing Architectures
 ==============================
 
