@@ -41,7 +41,6 @@ class openfxTestConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
-        tc.cache_variables["OFX_SUPPORT_SYMBOLS_DIR"] = os.path.join(self.dependencies["openfx"].package_folder,"symbols")
         tc.generate()
 
         # Create an environment script that defines the OFX_PLUGIN_PATH
