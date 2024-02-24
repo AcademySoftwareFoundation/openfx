@@ -28,33 +28,13 @@ function(add_ofx_plugin TARGET)
 	endif()
 	set_target_properties(${TARGET} PROPERTIES SUFFIX ".ofx" PREFIX "")
 
-	if(NOT DEFINED OFX_SUPPORT_SYMBOLS_DIR)
-		if (NOT DEFINED CONAN_OPENFX_ROOT)
-			message(FATAL_ERROR "Define OFX_SUPPORT_SYMBOLS_DIR to use add_ofx_plugin().")
-		endif()
-		set(OFX_SUPPORT_SYMBOLS_DIR ${CONAN_OPENFX_ROOT}/symbols)
-	endif()
+	# Set symbol visibility hidden. Individual symbols are exposed via
+	# __declspec(dllexport) or __attribute__((visibility("default")))
+	set_target_properties(${TARGET} PROPERTIES
+	  C_VISIBILITY_PRESET hidden
+	  CXX_VISIBILITY_PRESET hidden)
 
-	# Add extra flags to the link step of the plugin
-	if(APPLE)
-		set_target_properties(${TARGET} PROPERTIES
-                  COMPILE_FLAGS "-fvisibility=hidden -fvisibility-inlines-hidden")
-		set_target_properties(${TARGET} PROPERTIES
-                  LINK_FLAGS "-fvisibility=hidden -fvisibility-inlines-hidden")
-	elseif(WIN32)
-		if (MSVC)
-			set_target_properties(${TARGET} PROPERTIES
-                    LINK_FLAGS "/def:${OFX_SUPPORT_SYMBOLS_DIR}/windows.symbols")
-    elseif(MINGW OR MSYS)
-      set_target_properties(${TARGET} PROPERTIES
-                    LINK_FLAGS "-Wl,-fvisibility=hidden")
-    endif()
-	else()
-		set_target_properties(${TARGET} PROPERTIES
-                  LINK_FLAGS "-Wl,-fvisibility=hidden")
-	endif()
-
-        # To install plugins: cmake --install Build
-        install(TARGETS ${TARGET} DESTINATION "${PLUGINDIR}/${TARGET}.ofx.bundle/Contents/${ARCHDIR}")
-        install(FILES ${DIR}/Info.plist DESTINATION "${PLUGINDIR}/${TARGET}.ofx.bundle/Contents")
+	# To install plugins: cmake --install Build
+	install(TARGETS ${TARGET} DESTINATION "${PLUGINDIR}/${TARGET}.ofx.bundle/Contents/${ARCHDIR}")
+	install(FILES ${DIR}/Info.plist DESTINATION "${PLUGINDIR}/${TARGET}.ofx.bundle/Contents")
 endfunction()
