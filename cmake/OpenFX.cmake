@@ -38,18 +38,20 @@ function(add_ofx_plugin TARGET)
 	# Add extra flags to the link step of the plugin
 	if(APPLE)
 		set_target_properties(${TARGET} PROPERTIES
-                  LINK_FLAGS "-fvisibility=hidden -exported_symbols_list,${OFX_SUPPORT_SYMBOLS_DIR}/osx.symbols")
+                  COMPILE_FLAGS "-fvisibility=hidden -fvisibility-inlines-hidden")
+		set_target_properties(${TARGET} PROPERTIES
+                  LINK_FLAGS "-fvisibility=hidden -fvisibility-inlines-hidden")
 	elseif(WIN32)
 		if (MSVC)
 			set_target_properties(${TARGET} PROPERTIES
                     LINK_FLAGS "/def:${OFX_SUPPORT_SYMBOLS_DIR}/windows.symbols")
     elseif(MINGW OR MSYS)
       set_target_properties(${TARGET} PROPERTIES
-                    LINK_FLAGS "-Wl,-fvisibility=hidden,--version-script=${OFX_SUPPORT_SYMBOLS_DIR}/mingw.symbols")
+                    LINK_FLAGS "-Wl,-fvisibility=hidden")
     endif()
 	else()
 		set_target_properties(${TARGET} PROPERTIES
-                  LINK_FLAGS "-Wl,-fvisibility=hidden,--version-script=${OFX_SUPPORT_SYMBOLS_DIR}/linux.symbols")
+                  LINK_FLAGS "-Wl,-fvisibility=hidden")
 	endif()
 
         # To install plugins: cmake --install Build
