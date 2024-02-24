@@ -165,6 +165,15 @@ jobs:
             cmake --build $BUILD_DIR --parallel
           fi
 
+      - name: Build with make
+        run: |
+          if [[ ${{ matrix.ostype }} = windows ]]; then
+            echo No Windows nmake build yet
+          else
+            (cd Examples; make -j)
+            # should build Support/Plugins too, but those need work            
+          fi
+
       - name: Copy includes and symbols into build folder for installation
         run: |
           cp -R include ${{ env.BUILD_DIR }}/include
