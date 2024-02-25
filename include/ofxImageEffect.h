@@ -1437,8 +1437,8 @@ This suite provides the functions needed by a plugin to defined and use an image
 typedef struct OfxImageEffectSuiteV1 {  
   /** @brief Retrieves the property set for the given image effect
 
-  \arg imageEffect   image effect to get the property set for
-  \arg propHandle    pointer to a the property set pointer, value is returned here
+  \arg \c imageEffect   image effect to get the property set for
+  \arg \c propHandle    pointer to a the property set pointer, value is returned here
 
   The property handle is for the duration of the image effect handle.
 
@@ -1452,8 +1452,8 @@ typedef struct OfxImageEffectSuiteV1 {
 
   /** @brief Retrieves the parameter set for the given image effect
 
-  \arg imageEffect   image effect to get the property set for
-  \arg paramSet     pointer to a the parameter set, value is returned here
+  \arg \c imageEffect   image effect to get the property set for
+  \arg \c paramSet     pointer to a the parameter set, value is returned here
 
   The param set handle is valid for the lifetime of the image effect handle.
 
@@ -1468,9 +1468,9 @@ typedef struct OfxImageEffectSuiteV1 {
 
   /** @brief Define a clip to the effect. 
       
-   \arg pluginHandle - the handle passed into 'describeInContext' action
-   \arg name - unique name of the clip to define
-   \arg propertySet - a property handle for the clip descriptor will be returned here
+   \arg \c pluginHandle handle passed into 'describeInContext' action
+   \arg \c name unique name of the clip to define
+   \arg \c propertySet property handle for the clip descriptor will be returned here
 
    This function defines a clip to a host, the returned property set is used to describe
    various aspects of the clip to the host. Note that this does not create a clip instance.
@@ -1486,10 +1486,10 @@ typedef struct OfxImageEffectSuiteV1 {
 
   /** @brief Get the propery handle of the named input clip in the given instance 
    
-   \arg imageEffect - an instance handle to the plugin
-   \arg name        - name of the clip, previously used in a clip define call
-   \arg clip        - where to return the clip
-  \arg propertySet  if not null, the descriptor handle for a parameter's property set will be placed here.
+   \arg \c imageEffect an instance handle to the plugin
+   \arg \c name        name of the clip, previously used in a clip define call
+   \arg \c clip        where to return the clip
+  \arg \c propertySet  if not NULL, the descriptor handle for a parameter's property set will be placed here.
 
   The propertySet will have the same value as would be returned by OfxImageEffectSuiteV1::clipGetPropertySet
 
@@ -1515,8 +1515,8 @@ typedef struct OfxImageEffectSuiteV1 {
 
   /** @brief Retrieves the property set for a given clip
 
-  \arg clip          clip effect to get the property set for
-  \arg propHandle    pointer to a the property set handle, value is returedn her
+  \arg \c clip         clip effect to get the property set for
+  \arg \c propHandle   pointer to a the property set handle, value is returedn her
 
   The property handle is valid for the lifetime of the clip, which is generally the lifetime of the instance.
 
@@ -1530,11 +1530,11 @@ typedef struct OfxImageEffectSuiteV1 {
 
   /** @brief Get a handle for an image in a clip at the indicated time and indicated region
 
-      \arg clip  - the clip to extract the image from
-      \arg time        - time to fetch the image at
-      \arg region      - region to fetch the image from (optional, set to NULL to get a 'default' region)
+      \arg \c clip  clip to extract the image from
+      \arg \c time        time to fetch the image at
+      \arg \c region      region to fetch the image from (optional, set to NULL to get a 'default' region)
                             this is in the \ref CanonicalCoordinates. 
-      \arg imageHandle - property set containing the image's data
+      \arg \c imageHandle property set containing the image's data
 
   An image is fetched from a clip at the indicated time for the given region and returned in the imageHandle.
 
@@ -1580,11 +1580,11 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 
   /** @brief Returns the spatial region of definition of the clip at the given time
 
-      \arg clipHandle  - the clip to extract the image from
-      \arg time        - time to fetch the image at
-      \arg region      - region to fetch the image from (optional, set to NULL to get a 'default' region)
+      \arg \c clipHandle  clip to extract the image from
+      \arg \c time        time to fetch the image at
+      \arg \c region      region to fetch the image from (optional, set to NULL to get a 'default' region)
                             this is in the \ref CanonicalCoordinates. 
-      \arg imageHandle - handle where the image is returned
+      \arg \c imageHandle handle where the image is returned
 
   An image is fetched from a clip at the indicated time for the given region and returned in the imageHandle.
 
@@ -1611,7 +1611,7 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 
   /** @brief Returns whether to abort processing or not.
 
-      \arg imageEffect  - instance of the image effect
+      \arg \c imageEffect  instance of the image effect
 
   A host may want to signal to a plugin that it should stop whatever rendering it is doing and start again. 
   Generally this is done in interactive threads in response to users tweaking some parameter.
@@ -1626,9 +1626,9 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 
   /** @brief Allocate memory from the host's image memory pool
       
-  \arg instanceHandle  - effect instance to associate with this memory allocation, may be NULL.
-  \arg nBytes          - the number of bytes to allocate
-  \arg memoryHandle    - pointer to the memory handle where a return value is placed
+  \arg \c instanceHandle  effect instance to associate with this memory allocation, may be NULL.
+  \arg \c nBytes          number of bytes to allocate
+  \arg \c memoryHandle    pointer to the memory handle where a return value is placed
 
   Memory handles allocated by this should be freed by OfxImageEffectSuiteV1::imageMemoryFree. 
   To access the memory behind the handle you need to call  OfxImageEffectSuiteV1::imageMemoryLock.
@@ -1646,7 +1646,7 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 	
   /** @brief Frees a memory handle and associated memory.
       
-  \arg memoryHandle - memory handle returned by imageMemoryAlloc
+  \arg \c memoryHandle memory handle returned by imageMemoryAlloc
 
   This function frees a memory handle and associated memory that was previously allocated via OfxImageEffectSuiteV1::imageMemoryAlloc
 
@@ -1662,8 +1662,8 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 
   /** @brief Lock the memory associated with a memory handle and make it available for use.
 
-  \arg memoryHandle - memory handle returned by imageMemoryAlloc
-  \arg returnedPtr - where to the pointer to the locked memory
+  \arg \c memoryHandle memory handle returned by imageMemoryAlloc
+  \arg \c returnedPtr where to the pointer to the locked memory
 
   This function locks them memory associated with a memory handle and returns a pointer to it. The memory will be 16 byte aligned, to allow use of vector operations.
   
@@ -1685,7 +1685,7 @@ If clipGetImage is called twice with the same parameters, then two separate imag
 
   /** @brief Unlock allocated image data
 
-  \arg allocatedData - pointer to memory previously returned by OfxImageEffectSuiteV1::imageAlloc
+  \arg \c allocatedData pointer to memory previously returned by OfxImageEffectSuiteV1::imageAlloc
 
   This function unlocks a previously locked memory handle. Once completely unlocked, memory associated with a memoryHandle is no longer available for use. Attempting to use it results in undefined behaviour.
 

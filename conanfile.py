@@ -24,7 +24,6 @@ class openfx(ConanFile):
 		"include/*",
 		"scripts/*",
 		"Support/*",
-		"symbols/*",
 		"CMakeLists.txt",
 		"LICENSE",
 		"README.md",
@@ -67,13 +66,11 @@ class openfx(ConanFile):
 		copy(self,"*.ofx", src=self.build_folder, dst=os.path.join(self.package_folder, "bin"), keep_path=False)
 		copy(self,"*.dll", src=self.build_folder, dst=os.path.join(self.package_folder, "bin"), keep_path=False)
 		copy(self,"*.so", src=self.build_folder, dst=os.path.join(self.package_folder, "bin"), keep_path=False)
-		copy(self,"*.symbols", src=self.source_folder, dst=os.path.join(self.package_folder, "symbols"), keep_path=False)
 
 	def package_info(self):
 		libs = collect_libs(self)
 
 		self.cpp_info.set_property("cmake_build_modules", [os.path.join("cmake", "OpenFX.cmake")])
-		self.cpp_info.builddirs = ["symbols"]
 		self.cpp_info.components["Api"].includedirs = ["include"]
 		self.cpp_info.components["HostSupport"].libs = [i for i in libs if "OfxHost" in i]
 		self.cpp_info.components["HostSupport"].includedirs = ["HostSupport/include"]

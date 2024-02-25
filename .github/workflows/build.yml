@@ -24,7 +24,7 @@ jobs:
             vfx-cy: 2021
             has_cmake_presets: false
             buildtype: Release
-            conan_version: 2.0.16
+            conan_version: 2.1.0
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -39,7 +39,7 @@ jobs:
             vfx-cy: 2022
             has_cmake_presets: false
             buildtype: Release
-            conan_version: 2.0.16
+            conan_version: 2.1.0
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -54,7 +54,7 @@ jobs:
             vfx-cy: 2023
             has_cmake_presets: false
             buildtype: Release
-            conan_version: 2.0.16
+            conan_version: 2.1.0
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -68,7 +68,7 @@ jobs:
             container: null
             has_cmake_presets: true
             buildtype: Release
-            conan_version: 2.0.16
+            conan_version: 2.1.0
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -81,7 +81,7 @@ jobs:
             container: null  # See the null value here
             has_cmake_presets: true
             buildtype: Release
-            conan_version: 2.0.16
+            conan_version: 2.1.0
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -94,7 +94,7 @@ jobs:
             container: null
             has_cmake_presets: true
             buildtype: Release
-            conan_version: 2.0.16
+            conan_version: 2.1.0
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -134,6 +134,10 @@ jobs:
             echo "CONAN_PRESET=conan-$BUILDTYPE_LC" >> $GITHUB_ENV
             echo "BUILD_DIR=build/${{ matrix.buildtype }}" >> $GITHUB_ENV
           fi
+
+      - name: update Python pip
+        run: |
+          python3 -mpip install --upgrade pip
 
       - name: Install Conan
         id: conan
@@ -208,6 +212,15 @@ jobs:
             cmake --build $BUILD_DIR --target install --config Release --parallel
           else
             cmake --build $BUILD_DIR --target install --parallel
+          fi
+
+      - name: Build with make
+        run: |
+          if [[ ${{ matrix.ostype }} = windows ]]; then
+            echo No Windows nmake build yet
+          else
+            (cd Examples; make -j)
+            # should build Support/Plugins too, but those need work            
           fi
 
       - name: Copy includes into build folder for installation

@@ -206,16 +206,16 @@ typedef struct OfxImageEffectOpenGLRenderSuiteV1
 {
   /** @brief loads an image from an OFX clip as a texture into OpenGL
 
-      \arg clip   - the clip to load the image from
-      \arg time   - effect time to load the image from
-      \arg format - the requested texture format (As in
+      \arg \c clip   clip to load the image from
+      \arg \c time   effect time to load the image from
+      \arg \c format requested texture format (As in
             none,byte,word,half,float, etc..)
             When set to NULL, the host decides the format based on the
 	    plug-in's ::kOfxOpenGLPropPixelDepth setting.
-      \arg region - region of the image to load (optional, set to NULL to
+      \arg \c region region of the image to load (optional, set to NULL to
             get a 'default' region)
 	    this is in the \ref CanonicalCoordinates.
-      \arg textureHandle - a property set containing information about the
+      \arg \c textureHandle property set containing information about the
             texture
 
   An image is fetched from a clip at the indicated time for the given region
@@ -352,10 +352,10 @@ plug-in swap OpenGL contexts by issuing a attach/detach for the first context
 then another attach for the next context.
 
 The arguments to the action are...
-  \arg handle - handle to the plug-in instance, cast to an
+  \arg \c handle handle to the plug-in instance, cast to an
   \ref OfxImageEffectHandle
-  \arg inArgs - is redundant and set to null
-  \arg outArgs - is redundant and set to null
+  \arg \c inArgs is redundant and set to NULL
+  \arg \c outArgs is redundant and set to NULL
 
 A plug-in can return...
   - ::kOfxStatOK, the action was trapped and all was well
@@ -378,10 +378,10 @@ The host must call this with the same OpenGL context active as it
 called with the corresponding ::kOfxActionOpenGLContextAttached.
 
 The arguments to the action are...
-  \arg handle - handle to the plug-in instance, cast to an
+  \arg \c handle handle to the plug-in instance, cast to an
   \ref OfxImageEffectHandle
-  \arg inArgs - is redundant and set to null
-  \arg outArgs - is redundant and set to null
+  \arg \c inArgs is redundant and set to NULL
+  \arg \c outArgs is redundant and set to NULL
 
 A plug-in can return...
   - ::kOfxStatOK, the action was trapped and all was well

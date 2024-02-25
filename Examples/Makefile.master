@@ -24,16 +24,19 @@ ifeq ($(DEBUGFLAG),-O3)
   DEBUGNAME = release
 endif
 
+CXXSTANDARD ?= --std=c++11
+
 OBJECTPATH = $(OS)-$(BITS)-$(DEBUGNAME)
 
 $(OBJECTPATH)/%.o : %.cpp
 	mkdir -p $(OBJECTPATH)
-	$(CXX) -c $(CXXFLAGS) $< -o $@
+	$(CXX) -c $(CXXFLAGS) $(CXXSTANDARD) $(CXXARCH) $< -o $@
 
 all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
 
+  CXXSTDFLAG ?= --std=gnu++14
   ifeq ($(OS),$(filter $(OS),MINGW64_NT-6.1 MINGW32_NT-6.1))
-    LINKFLAGS = -shared -fvisibility=hidden -Xlinker --version-script=$(PATHTOROOT)/include/linuxSymbols -lopengl32
+    LINKFLAGS = -shared -fvisibility=hidden -lopengl32
     ARCH = Win32
     BITSFLAG = -m32
     ifeq ($(BITS), 64)
@@ -44,7 +47,7 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
   endif
   ifeq ($(OS),Linux)
     # use $ORIGIN to link to bundled libraries first, see http://itee.uq.edu.au/~daniel/using_origin/
-    LINKFLAGS = -shared -fvisibility=hidden -Xlinker --version-script=$(PATHTOROOT)/include/linuxSymbols -lGL -Wl,-rpath,'$$ORIGIN'/../../Libraries
+    LINKFLAGS = -shared -fvisibility=hidden -lGL -Wl,-rpath,'$$ORIGIN'/../../Libraries
     ARCH = Linux-x86
     BITSFLAG = -m32 -fPIC
     ifeq ($(BITS), 64)
@@ -54,7 +57,7 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
     LINKFLAGS := $(LINKFLAGS) $(BITSFLAG)
   endif
   ifeq ($(OS),FreeBSD)
-    LINKFLAGS = -L/usr/local/lib -shared -fvisibility=hidden -Xlinker --version-script=$(PATHTOROOT)/include/linuxSymbols -lGL -Wl,-rpath,'$$ORIGIN'/../../Libraries
+    LINKFLAGS = -L/usr/local/lib -shared -fvisibility=hidden -lGL -Wl,-rpath,'$$ORIGIN'/../../Libraries
     ARCH= FreeBSD-x86
     BITSFLAG = -m32 -fPIC
     ifeq ($(BITS), 64)
@@ -84,11 +87,11 @@ all: $(OBJECTPATH)/$(PLUGINNAME).ofx.bundle
       endif
       BITSFLAG = -isysroot /Developer/SDKs/MacOSX$(MACOSXSDK).sdk $(ARCHFLAGS) -mmacosx-version-min=$(MACOSX) -fPIC
     endif
-    LINKFLAGS = $(BITSFLAG) -bundle -fvisibility=hidden -exported_symbols_list $(PATHTOROOT)/include/osxSymbols -framework OpenGL -Wl,-rpath,@loader_path/../Frameworks -Wl,-rpath,@loader_path/../Libraries
+    LINKFLAGS = $(BITSFLAG) -bundle -fvisibility=hidden -framework OpenGL -Wl,-rpath,@loader_path/../Frameworks -Wl,-rpath,@loader_path/../Libraries
     ARCH = MacOS
   endif
 
-  CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include $(BITSFLAG) -fvisibility=hidden $(CXXFLAGS_ADD)
+  CXXFLAGS := $(DEBUGFLAG)  -I$(PATHTOROOT)/../include -I$(PATHTOROOT)/include $(BITSFLAG) $(CXXSTDFLAG) -fvisibility=hidden $(CXXFLAGS_ADD)
 
 $(OBJECTPATH)/$(PLUGINNAME).ofx: $(addprefix $(OBJECTPATH)/,$(PLUGINOBJECTS))
 	mkdir -p $(OBJECTPATH)/

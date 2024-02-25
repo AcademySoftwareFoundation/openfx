@@ -51,7 +51,6 @@ find_package(EXPAT)
 find_package(opengl_system REQUIRED)
 
 # Macros
-set(OFX_SUPPORT_SYMBOLS_DIR ${PROJECT_SOURCE_DIR}/symbols)
 include(OpenFX)
 set_property(GLOBAL PROPERTY OFX_PROJECT_SOURCE_DIR "${PROJECT_SOURCE_DIR}")
 

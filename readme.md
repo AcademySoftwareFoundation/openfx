@@ -1,3 +1,5 @@
+![Build](https://github.com/AcademySoftwareFoundation/openfx/actions/workflows/build.yml/badge.svg)
+
 # OpenFX image processing plug-in standard
 
 The authoritative source for information about OFX is http://openeffects.org/

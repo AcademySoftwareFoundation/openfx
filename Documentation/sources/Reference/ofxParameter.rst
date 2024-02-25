@@ -55,6 +55,21 @@ outside of a describe action will be a working instance of a parameter,
 you can still set (some) properties of the parameter, and all the
 get/set value functions are now usable.
 
+Getting and Setting Parameter Values
+------------------------------------
+
+During rendering and interactions, a plugin gets its param values via
+:cpp:func:`OfxParameterSuiteV1::paramGetValue` or
+:cpp:func:`OfxParameterSuiteV1::paramGetValueAtTime`.
+
+To set param values, a plugin can use
+:cpp:func:`OfxParameterSuiteV1::paramSetValue` or
+:cpp:func:`OfxParameterSuiteV1::paramSetValueAtTime`.
+
+In addition, :cpp:struct:`OfxParameterSuiteV1` has functions for
+manipulating keyframes, copying and editing params, getting their
+properties, and getting derivatives and integrals of param values.
+
 .. _parameterTypes:
 
 Parameter Types

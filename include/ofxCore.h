@@ -47,13 +47,16 @@ typedef struct OfxHost {
 
   /** @brief The function which the plug-in uses to fetch suites from the host.
 
-      \arg \e host          - the host the suite is being fetched from this \em must be the \e host member of the OfxHost struct containing fetchSuite.
-      \arg \e suiteName     - ASCII string labelling the host supplied API
-      \arg \e suiteVersion  - version of that suite to fetch
+      \arg \c host          the host the suite is being fetched from this \em must be the \e host member of the OfxHost struct containing fetchSuite.
+      \arg \c suiteName     ASCII string labelling the host supplied API
+      \arg \c suiteVersion  version of that suite to fetch
 
       Any API fetched will be valid while the binary containing the plug-in is loaded.
 
       Repeated calls to fetchSuite with the same parameters will return the same pointer.
+
+      It is recommended that hosts should return the same host and suite pointers to all plugins
+      in the same shared lib or bundle.
 
       returns
          - NULL if the API is unknown (either the api or the version requested),
@@ -65,10 +68,10 @@ typedef struct OfxHost {
 
 /** @brief Entry point for plug-ins
 
-  \arg \e action   - ASCII c string indicating which action to take
-  \arg \e instance - object to which action should be applied, this will need to be cast to the appropriate blind data type depending on the \e action
-  \arg \e inData   - handle that contains action specific properties
-  \arg \e outData  - handle where the plug-in should set various action specific properties
+  \arg \c action   ASCII c string indicating which action to take
+  \arg \c instance object to which action should be applied, this will need to be cast to the appropriate blind data type depending on the \e action
+  \arg \c inData   handle that contains action specific properties
+  \arg \c outData  handle where the plug-in should set various action specific properties
 
   This is how the host generally communicates with a plug-in. Entry points are used to pass messages
   to various objects used within OFX. The main use is within the OfxPlugin struct.
@@ -115,7 +118,7 @@ typedef struct OfxPlugin {
 
   /** @brief Function the host uses to connect the plug-in to the host's api fetcher
 
-      \arg \e fetchApi - pointer to host's API fetcher
+      \arg \c fetchApi pointer to host's API fetcher
 
       Mandatory function.
 
@@ -126,6 +129,9 @@ typedef struct OfxPlugin {
 
       \post
         - the pointer suite is valid until the plug-in is unloaded
+
+      It is recommended that hosts should return the same host and suite pointers to all plugins
+      in the same shared lib or bundle.
   */
   void     (*setHost)(OfxHost *host);
 
