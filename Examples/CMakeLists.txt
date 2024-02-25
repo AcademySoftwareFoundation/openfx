@@ -21,7 +21,5 @@ foreach(PLUGIN IN LISTS PLUGINS)
 	target_include_directories(${TGT} PUBLIC ${OFX_HEADER_DIR} ${OFX_SUPPORT_HEADER_DIR})
 endforeach()
 
-add_subdirectory(GPUGain)
-
 target_link_libraries(example-OpenGL PRIVATE opengl::opengl)
 target_link_libraries(example-Custom PRIVATE opengl::opengl)

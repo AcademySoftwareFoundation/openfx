@@ -43,6 +43,6 @@ function(add_ofx_plugin TARGET)
 	  CXX_VISIBILITY_PRESET hidden)
 
 	# To install plugins: cmake --install Build
-	install(TARGETS ${TARGET} DESTINATION "${PLUGINDIR}/${TARGET}.ofx.bundle/Contents/${ARCHDIR}")
-	install(FILES ${DIR}/Info.plist DESTINATION "${PLUGINDIR}/${TARGET}.ofx.bundle/Contents")
+	install(TARGETS ${TARGET} DESTINATION "${PLUGIN_INSTALLDIR}/${TARGET}.ofx.bundle/Contents/${ARCHDIR}")
+	install(FILES ${DIR}/Info.plist DESTINATION "${PLUGIN_INSTALLDIR}/${TARGET}.ofx.bundle/Contents")
 endfunction()
