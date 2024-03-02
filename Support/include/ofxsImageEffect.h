@@ -244,6 +244,7 @@ namespace OFX {
     bool supportsStringAnimation;
     bool supportsCustomInteract;
     bool supportsChoiceAnimation;
+    bool supportsStrChoiceAnimation;
     bool supportsBooleanAnimation;
     bool supportsCustomAnimation;
     void* osHandle;
