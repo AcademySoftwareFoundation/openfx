@@ -3,6 +3,7 @@ file(GLOB_RECURSE OFX_SUPPORT_HEADER_FILES "${OFX_SUPPORT_HEADER_DIR}/*.h")
 
 set(PLUGINS
 	Basic
+	ChoiceParams
 	Custom
 	DepthConverter
 	Invert

@@ -1,0 +1,7 @@
+CXXFLAGS = -I../../include
+OPTIMIZER = -g
+
+choiceparams.ofx : choiceparams.o
+	$(CXX) -bundle choiceparams.o -o choiceparams.ofx
+	mkdir -p choiceparams.ofx.bundle/Contents/MacOS/
+	cp choiceparams.ofx choiceparams.ofx.bundle/Contents/MacOS/
