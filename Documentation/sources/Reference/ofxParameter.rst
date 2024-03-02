@@ -75,7 +75,7 @@ properties, and getting derivatives and integrals of param values.
 Parameter Types
 ---------------
 
-There are seventeen types of parameter. These are
+There are eighteen types of parameter. These are
 
 * .. doxygendefine:: kOfxParamTypeInteger
 * .. doxygendefine:: kOfxParamTypeInteger2D
@@ -87,6 +87,7 @@ There are seventeen types of parameter. These are
 * .. doxygendefine:: kOfxParamTypeRGBA
 * .. doxygendefine:: kOfxParamTypeBoolean
 * .. doxygendefine:: kOfxParamTypeChoice
+* .. doxygendefine:: kOfxParamTypeStrChoice
 * .. doxygendefine:: kOfxParamTypeString
 * .. doxygendefine:: kOfxParamTypeCustom
 * .. doxygendefine:: kOfxParamTypePushButton
@@ -254,6 +255,49 @@ by reordering the options and enum arrays.
 Available since 1.5.
 
 
+String-Valued Choice Parameters
+-------------------------------
+
+This is typed by :c:macro:`kOfxParamTypeStrChoice`.
+
+String Choice ("StrChoice") parameters are string-valued, unlike
+standard Choice parameters. This way plugins may change the text and
+order of the choices in new versions as desired, without sacrificing
+compatibility. The host stores the string value rather than the index
+of the option, and when loading a project, finds and selects the
+option with the corresponding enum.
+
+Choice parameters have their individual options and enums set via the
+:c:macro:`kOfxParamPropChoiceOption` and :c:macro:`kOfxParamPropChoiceEnum` properties,
+for example
+
+    ::
+
+        gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, 0, "1st Choice");
+        gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, 1, "2nd Choice");
+        gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, 2, "3nd Choice");
+        ...
+        // enums: string values to be returned as param value, and stored by the host in the project
+        gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceEnum, 0, "choice-1");
+        gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceEnum, 1, "choice-2");
+        gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceEnum, 2, "choice-3");
+
+The default value of a StrChoice param must be one of the specified
+enums, or the behavior is undefined.
+
+It is an error to have gaps in the choices after the describe action
+has returned. The Option and Enum arrays must be of the same length,
+otherwise the behavior is undefined.
+
+If a plugin removes enums in later versions and a project is saved
+with the removed enum, behavior is undefined, but it is recommended
+that the host use the default value in that case.
+
+To check for availability of this param type, a plugin may check the
+host property :c:macro:`kOfxParamHostPropSupportsStrChoice`.
+
+Available since 1.5.
+
 String Parameters
 -----------------
 
@@ -381,6 +425,7 @@ they do **not** animate by default. They are...
 -  :c:macro:`kOfxParamTypeString`
 -  :c:macro:`kOfxParamTypeBoolean`
 -  :c:macro:`kOfxParamTypeChoice`
+-  :c:macro:`kOfxParamTypeStrChoice`
 
 By default the
 :cpp:func:`OfxParameterSuiteV1::paramGetValue`
@@ -604,6 +649,8 @@ The variant property types are as follows....
     int X 1
 -  :c:macro:`kOfxParamTypeChoice`
     int X 1
+-  :c:macro:`kOfxParamTypeStrChoice`
+    char \* X 1
 -  :c:macro:`kOfxParamTypeRGBA`
     double X 4 (normalised to 0..1 range)
 -  :c:macro:`kOfxParamTypeRGB`

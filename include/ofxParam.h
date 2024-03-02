@@ -46,6 +46,8 @@ These strings are used to identify the type of the parameter when it is defined,
 #define kOfxParamTypeBoolean "OfxParamTypeBoolean"
 /** @brief String to identify a param as a Single valued, 'one-of-many' parameter */
 #define kOfxParamTypeChoice "OfxParamTypeChoice"
+/** @brief String to identify a param as a string-valued 'one-of-many' parameter. \since Version 1.5 */
+#define kOfxParamTypeStrChoice "OfxParamTypeStrChoice"
 /** @brief String to identify a param as a Red, Green, Blue and Alpha colour parameter */
 #define kOfxParamTypeRGBA "OfxParamTypeRGBA"
 /** @brief String to identify a param as a Red, Green and Blue colour parameter */
@@ -398,6 +400,7 @@ The exact type and dimension is dependant on the type of the parameter. These ar
   - ::kOfxParamTypeDouble - double property of one dimension
   - ::kOfxParamTypeBoolean - integer property of one dimension
   - ::kOfxParamTypeChoice - integer property of one dimension
+  - ::kOfxParamTypeStrChoice - string property of one dimension
   - ::kOfxParamTypeRGBA - double property of four dimensions
   - ::kOfxParamTypeRGB - double property of three dimensions
   - ::kOfxParamTypeDouble2D - double property of two dimensions
@@ -648,6 +651,42 @@ value occurs twice in the list; plugins should not do that.
 \since Version 1.5
 */
 #define kOfxParamPropChoiceOrder "OfxParamPropChoiceOrder"
+
+
+/** @brief Set a enumeration string in a StrChoice (string-valued choice) parameter.
+
+    - Type - UTF8 C string X N
+    - Property Set - plugin parameter descriptor (read/write) and instance
+(read/write),
+    - Default - the property is empty with no options set.
+
+This property contains the set of enumeration strings stored by the host in
+the project corresponding to the options that will be presented to a user
+from a StrChoice parameter. See @ref ParametersChoice for more details.
+
+\since Version 1.5
+*/
+#define kOfxParamPropChoiceEnum "OfxParamPropChoiceEnum"
+
+/** @brief Indicates if the host supports animation of string choice params.
+
+    - Type - int X 1
+    - Property Set - host descriptor (read only)
+    - Valid Values - 0 or 1
+
+\since Version 1.5
+*/
+#define kOfxParamHostPropSupportsStrChoiceAnimation "OfxParamHostPropSupportsStrChoiceAnimation"
+
+/** @brief Indicates if the host supports the StrChoice param type.
+
+    - Type - int X 1
+    - Property Set - host descriptor (read only)
+    - Valid Values - 0 or 1
+
+\since Version 1.5
+*/
+#define kOfxParamHostPropSupportsStrChoice "OfxParamHostPropSupportsStrChoice"
 
 /** @brief The minimum value for a numeric parameter.
 
