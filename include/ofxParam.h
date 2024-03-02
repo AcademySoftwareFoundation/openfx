@@ -614,37 +614,40 @@ from a choice parameter. See @ref ParametersChoice for more details.
 /** @brief Set values the host should store for a choice parameter.
 
     - Type - int X N
-    - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
-    - Default - Zero-based ordinal list of same length as `OfxParamPropChoiceOption`
+    - Property Set - plugin parameter descriptor (read/write) and instance
+(read/write),
+    - Default - Zero-based ordinal list of same length as
+`OfxParamPropChoiceOption`
 
-This property contains the set of values to be stored when the user chooses the corresponding
-(same-index) option for the choice parameter. See @ref "Choice Parameters" for more details.
-This property is optional; if not set, the host will store the zero-based integer index
-of the chosen ::kOfxParamPropChoiceOption.
-This property is useful when changing order of choice param options, or adding new options in the middle,
-in a new version of the plugin.
+This property specifies the order in which the options are presented.
+See @ref "Choice Parameters" for more details.
+This property is optional; if not set, the host will present the options in
+their natural order.
+
+This property is useful when changing order of choice param options, or adding
+new options in the middle, in a new version of the plugin.
 
   @verbatim
   Plugin v1:
   Option = {"OptA", "OptB", "OptC"}
-  Value = {1, 2, 3}
+  Order = {1, 2, 3}
 
   Plugin v2:
-  Option = {"OptA", "OptB", "NewOpt", "OptC"}
-  Value = {1, 2, 4, 3}
+  // will be shown as OptA / OptB / NewOpt / OptC
+  Option = {"OptA", "OptB", "OptC", NewOpt"}
+  Order = {1, 2, 4, 3}
   @endverbatim
 
-In this case if the user had selected "OptC" in v1, and then loaded the
-project in v2, "OptC" will still be selected even though it is now the 4th
-option, and the plugin will get the param value 3 (as it did in its previous
-version).
+Note that this only affects the host UI's display order; the project still
+stores the index of the selected option as always. Plugins should never
+reorder existing options if they desire backward compatibility.
 
 Values may be arbitrary 32-bit integers. Behavior is undefined if the same
 value occurs twice in the list; plugins should not do that.
 
 \since Version 1.5
 */
-#define kOfxParamPropChoiceValue "OfxParamPropChoiceValue"
+#define kOfxParamPropChoiceOrder "OfxParamPropChoiceOrder"
 
 /** @brief The minimum value for a numeric parameter.
 

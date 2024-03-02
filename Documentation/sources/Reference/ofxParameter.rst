@@ -167,7 +167,7 @@ Choice Parameters
 This is typed by :c:macro:`kOfxParamTypeChoice`.
 
 Choice parameters are integer values from 0 to N-1, which correspond
-to N labeled options, but see :c:macro:`kOfxParamPropChoiceValue` and
+to N labeled options, but see :c:macro:`kOfxParamPropChoiceOrder` and
 the section below this for how to change that.
 
 Choice parameters have their individual options set via the
@@ -185,16 +185,22 @@ for example
 It is an error to have gaps in the choices after the describe action has
 returned.
 
-Setting Choice Param Values
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Note: plugins can change the *text* of options strings in new versions
+with no compatibility impact, since the host should only store the
+index. But they should not change the *order* of options without using
+:c:macro:`kOfxParamPropChoiceOrder`.
 
-As of OFX v1.5, plugins can optionally specify the value the host
-should store and return for each choice option, using
-:c:macro:`kOfxParamPropChoiceValue`.
+Setting Choice Param Order
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This property contains the set of values to be stored when the user
-chooses the corresponding (same-index) option for the choice
-parameter.
+As of OFX v1.5, plugins can optionally specify the order in which the host
+should display each choice option, using
+:c:macro:`kOfxParamPropChoiceOrder`.
+
+This property contains a set of integers, of the same length as the
+options for the choice parameter. If the host supports this property,
+it should sort the options and the order list together, and display
+the options in increasing order.
 
 This property is useful when changing order of choice param options, or adding new options in the middle,
 in a new version of the plugin.
@@ -203,34 +209,47 @@ in a new version of the plugin.
 
        // Plugin v1:
        Option = {"OptA", "OptB", "OptC"}
-       Value = {0, 1, 2}
+       Order  = {0, 1, 2} // default, or explicit
 
        // Plugin v2:
-       Option = {"OptA", "OptB", "NewOpt", "OptC"}
-       Value = {0, 1, 4, 2}
+       // add NewOpt at the end of the list, but specify order so it comes one before the end in the UI
+       // Will display OptA / OptB / NewOpt / OptC
+       Option = {"OptA", "OptB", "OptC", "NewOpt"}
+       Order  = {0, 1, 3, 2} // or anything that sorts the same, e.g. {-100, 100, 300, 200}
 
 In this case if the user had selected "OptC" in v1, and then loaded the
 project in v2, "OptC" will still be selected even though it is now the 4th
 option, and the plugin will get the param value 2, as it did in its previous
 version.
 
-The default, if unspecified, is ordinal integers starting from zero.
+The default, if unspecified, is ordinal integers starting from zero,
+so the options are displayed in their natural order.
 
 Values may be arbitrary 32-bit integers. The same value must not occur
-more than once in the values list; behavior is undefined if the same
-value occurs twice in the list. The values list must contain the
-default value as specified by :c:macro:`kOfxParamPropDefault`;
-behavior is unspecified if it does not.
+more than once in the order list; behavior is undefined if the same
+value occurs twice in the list.
 
-To query whether a host supports this, just attempt to set the
+Note that :c:macro:`kOfxParamPropChoiceOrder` does not affect project
+storage or operation; it is only used by the host UI. This way it is 100%
+backward compatible; even if the plugin sets it and the host doesn't support it,
+the plugin will still work as usual. Its options will just appear with the new
+ones at the end rather than the preferred order.
+
+To query whether a host supports this, a plugin should attempt to set the
 property and check the return status. If the host does not support
-:c:macro:`kOfxParamPropChoiceValue`, a plugin should not insert new
+:c:macro:`kOfxParamPropChoiceOrder`, a plugin should not insert new
 values into the middle of the options list, nor reorder the options,
 in a new version, otherwise old projects will not load properly.
 
 Note: this property does not help if a plugin wants to *remove* an option. One way to
 handle that case is to define a new choice param in v2 and hide the old v1 param, then use some
 custom logic to populate the v2 param appropriately.
+
+Also in 1.5, see the new :c:macro:`kOfxParamTypeStrChoice` param type
+for another way to do this: the plugin specifies a set of string
+values as well as user-visible options, and the host stores the string
+value. Plugins can then change the UI order at will in new versions,
+by reordering the options and enum arrays.
 
 Available since 1.5.
 
