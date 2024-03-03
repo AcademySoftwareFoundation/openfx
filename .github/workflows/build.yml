@@ -29,6 +29,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            checkout_version: 3
           - name_prefix: Linux CentOS 7 VFX CY2022
             release_prefix: linux-vfx2022
             ostype: linux
@@ -43,6 +44,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            checkout_version: 3
           - name_prefix: Linux Rocky 8 VFX CY2023
             release_prefix: linux-vfx2023
             ostype: linux
@@ -57,6 +59,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            checkout_version: 4
           - name_prefix: Linux Ubuntu
             release_prefix: linux-ubuntu
             ostype: linux
@@ -70,6 +73,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            checkout_version: 4
           - name_prefix: MacOS
             release_prefix: mac
             ostype: mac
@@ -82,6 +86,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            checkout_version: 4
           - name_prefix: Windows
             release_prefix: windows
             ostype: windows
@@ -94,18 +99,28 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            checkout_version: 4
     defaults:
       run:
         shell: bash
     steps:
-      - name: Checkout code
+      - name: Checkout code (v4)
         uses: actions/checkout@v4
+        if: ${{matrix.checkout_version}} == 4
+        with:
+          clean: true
+          fetch-depth: 0
+
+      - name: Checkout code (v3)
+        uses: actions/checkout@v4
+        if: ${{matrix.checkout_version}} < 4
         with:
           clean: true
           fetch-depth: 0
 
       - name: setup env vars
         run: |
+          git config --global --add safe.directory $PWD # needed for checkout v3, doesn't hurt anyway
           BUILDTYPE_LC=$(echo '${{ matrix.buildtype }}'|tr [:upper:] [:lower:])
           echo "BUILDTYPE_LC=$BUILDTYPE_LC" >> $GITHUB_ENV
           echo "OSNAME=$(echo '${{ matrix.os }}'|sed 's/-.*//')" >> $GITHUB_ENV
