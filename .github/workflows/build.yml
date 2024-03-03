@@ -150,7 +150,7 @@ jobs:
         run: |
           if [[ ${{ matrix.has_cmake_presets }} = true ]]; then
             # Sets up to build in e.g. build/Release
-            cmake --preset $CONAN_PRESET -DBUILD_EXAMPLE_PLUGINS=TRUE .
+            cmake --preset $CONAN_PRESET -DBUILD_EXAMPLE_PLUGINS=TRUE -DINSTALLDIR=build/Install .
           else
             # VFX ref platforms 2022 & earlier have only cmake 3.19.
             # Older cmake (<3.23) does not support presets, so invoke with explicit args.
@@ -158,7 +158,8 @@ jobs:
               -DCMAKE_TOOLCHAIN_FILE=$(pwd)/$BUILD_DIR/generators/conan_toolchain.cmake \
               -DCMAKE_POLICY_DEFAULT_CMP0091=NEW \
               -DCMAKE_BUILD_TYPE=Release \
-              -DBUILD_EXAMPLE_PLUGINS=TRUE
+              -DBUILD_EXAMPLE_PLUGINS=TRUE \
+              -DINSTALLDIR=build/Install
           fi
 
       - name: Build with cmake
@@ -167,6 +168,14 @@ jobs:
             cmake --build $BUILD_DIR --config Release --parallel
           else
             cmake --build $BUILD_DIR --parallel
+          fi
+
+      - name: Install with cmake
+        run: |
+          if [[ ${{ matrix.ostype }} = windows ]]; then
+            cmake --install $BUILD_DIR --config Release
+          else
+            cmake --install $BUILD_DIR
           fi
 
       - name: Build with make
@@ -184,7 +193,7 @@ jobs:
           cp -R Support/include ${{ env.BUILD_DIR }}/Support/include
           cp -R HostSupport/include ${{ env.BUILD_DIR }}/HostSupport/include
 
-      - name: Archive libs, plugins, and header files to artifact
+      - name: Archive header files and libs to artifact
         uses: actions/upload-artifact@v3
         with:
           name: openfx-${{ matrix.release_prefix }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
@@ -196,8 +205,14 @@ jobs:
             !${{ env.BUILD_DIR }}/include/*.dtd
             ${{ env.BUILD_DIR }}/Support/include
             ${{ env.BUILD_DIR }}/HostSupport/include
-            ${{ env.BUILD_DIR }}/**/*.ofx
             ${{ env.BUILD_DIR }}/**/lib*
+
+      - name: Archive built/installed plugins
+        uses: actions/upload-artifact@v3
+        with:
+          name: openfx-plugins-${{ matrix.release_prefix }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
+          path: |
+            ${{ env.BUILD_DIR }}/Install
 
       # - name: Archive all build artifacts (for debugging CI)
       #   uses: actions/upload-artifact@v3
