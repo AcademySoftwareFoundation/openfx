@@ -2,6 +2,7 @@ include(OpenFX)
 
 set(PLUGINS
 	Basic
+	ChoiceParams
 	Field
 	Generator
 	Invert

@@ -751,7 +751,7 @@ namespace OFX {
   }
 
   /** @brief append an option to the choice param */
-  void ChoiceParamDescriptor::appendOption(const std::string &v, const std::string& label)
+  void ChoiceParamDescriptor::appendOption(const std::string &v, const std::string& label, const int order)
   {
     int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
     _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
@@ -769,6 +769,10 @@ namespace OFX {
         hint += v + ": " + label;
         _paramProps.propSetString(kOfxParamPropHint, hint);
       }
+    }
+    if (order >= 0) {
+      // Host may not support this prop (added in 1.5); continue without it.
+      _paramProps.propSetInt(kOfxParamPropChoiceOrder, order, false);
     }
   }
 
@@ -2467,7 +2471,7 @@ namespace OFX {
   }
 
   /** @brief add another option */
-  void ChoiceParam::appendOption(const std::string &v, const std::string& label)
+  void ChoiceParam::appendOption(const std::string &v, const std::string& label, const int order)
   {
     int nCurrentValues = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
     _paramProps.propSetString(kOfxParamPropChoiceOption, v, nCurrentValues);
@@ -2485,6 +2489,10 @@ namespace OFX {
         hint += v + ": " + label;
         _paramProps.propSetString(kOfxParamPropHint, hint);
       }
+    }
+    if (order >= 0) {
+      // Host may not support this prop (added in 1.5); continue without it.
+      _paramProps.propSetInt(kOfxParamPropChoiceOrder, order, false);
     }
   }
 
