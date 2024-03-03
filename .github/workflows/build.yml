@@ -99,7 +99,10 @@ jobs:
         shell: bash
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          clean: true
+          fetch-depth: 0
 
       - name: setup env vars
         run: |
@@ -150,7 +153,7 @@ jobs:
         run: |
           if [[ ${{ matrix.has_cmake_presets }} = true ]]; then
             # Sets up to build in e.g. build/Release
-            cmake --preset $CONAN_PRESET -DBUILD_EXAMPLE_PLUGINS=TRUE -DINSTALLDIR=build/Install .
+            cmake --preset $CONAN_PRESET -DBUILD_EXAMPLE_PLUGINS=TRUE -DINSTALLDIR=build/Install/OpenFX-Examples .
           else
             # VFX ref platforms 2022 & earlier have only cmake 3.19.
             # Older cmake (<3.23) does not support presets, so invoke with explicit args.
@@ -159,7 +162,7 @@ jobs:
               -DCMAKE_POLICY_DEFAULT_CMP0091=NEW \
               -DCMAKE_BUILD_TYPE=Release \
               -DBUILD_EXAMPLE_PLUGINS=TRUE \
-              -DINSTALLDIR=build/Install
+              -DINSTALLDIR=build/Install/OpenFX-Examples
           fi
 
       - name: Build with cmake
@@ -210,7 +213,7 @@ jobs:
       - name: Archive built/installed plugins
         uses: actions/upload-artifact@v3
         with:
-          name: openfx-plugins-${{ matrix.release_prefix }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
+          name: openfx_plugins-${{ matrix.release_prefix }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
           path: |
             build/Install
 

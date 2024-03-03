@@ -74,7 +74,7 @@ echo === Running cmake
 cmake --preset ${PRESET_NAME} -DBUILD_EXAMPLE_PLUGINS=TRUE $ARGS
 
 echo === Building plugins and support libs
-cmake --build ${CMAKE_BUILD_DIR} --config $BUILDTYPE $VERBOSE
+cmake --build ${CMAKE_BUILD_DIR} --parallel --config $BUILDTYPE $VERBOSE
 
 set +x
 echo "=== Build complete."
