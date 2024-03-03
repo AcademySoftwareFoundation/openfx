@@ -212,7 +212,7 @@ jobs:
         with:
           name: openfx-plugins-${{ matrix.release_prefix }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
           path: |
-            ${{ env.BUILD_DIR }}/Install
+            build/Install
 
       # - name: Archive all build artifacts (for debugging CI)
       #   uses: actions/upload-artifact@v3
