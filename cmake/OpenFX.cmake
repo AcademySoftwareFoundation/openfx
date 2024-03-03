@@ -12,6 +12,7 @@ else()
   set(ARCHDIR "unknown-arch")
 endif()
 
+set(INSTALLDIR "${PLUGINDIR}" CACHE PATH "Path to install plugins")
 # Add a new OFX plugin target
 # Arguments: TARGET
 # Optional argument: DIR, defaults to same as TARGET (use when renaming TARGET)
@@ -34,7 +35,7 @@ function(add_ofx_plugin TARGET)
 	  C_VISIBILITY_PRESET hidden
 	  CXX_VISIBILITY_PRESET hidden)
 
-	# To install plugins: cmake --install Build
-	install(TARGETS ${TARGET} DESTINATION "${PLUGINDIR}/${TARGET}.ofx.bundle/Contents/${ARCHDIR}")
-	install(FILES ${DIR}/Info.plist DESTINATION "${PLUGINDIR}/${TARGET}.ofx.bundle/Contents")
+	# To install plugins: cmake --install build/Release
+	install(TARGETS ${TARGET} DESTINATION "${INSTALLDIR}/${TARGET}.ofx.bundle/Contents/${ARCHDIR}")
+	install(FILES ${DIR}/Info.plist DESTINATION "${INSTALLDIR}/${TARGET}.ofx.bundle/Contents")
 endfunction()

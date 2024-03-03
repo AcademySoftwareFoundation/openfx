@@ -5,17 +5,38 @@ set -e
 # Build everything with Conan and CMake
 
 BUILDTYPE=Release               # "Release" or "Debug"
+VERBOSE=""
+GENERATOR=""
 
-if [[ $1 = "-v" ]]; then
-    VERBOSE="--verbose"; shift
-fi
+# Parse options
+while getopts ":vG:" opt; do
+  echo "Parsing ${opt}"
+  case ${opt} in
+    v )
+      VERBOSE="--verbose"
+      ;;
+    G )
+      GENERATOR=${OPTARG}
+      GENERATOR_OPTION="-c tools.cmake.cmaketoolchain:generator=${GENERATOR}"
+      ;;
+    \? )
+      echo "Invalid option: $OPTARG" 1>&2
+      exit 1
+      ;;
+    : )
+      echo "Invalid option: $OPTARG requires an argument" 1>&2
+      exit 1
+      ;;
+  esac
+done
+shift $((OPTIND -1))
 
-if [[ -n ${1:-} ]]; then
-    GENERATOR=$1
-    GENERATOR_OPTION="-c tools.cmake.cmaketoolchain:generator=${GENERATOR}"
-fi
+# First positional argument as BUILDTYPE
+BUILDTYPE=$1; shift
 
-echo "Building OpenFX $BUILDTYPE in build/ with ${GENERATOR:-conan platform default generator}"
+ARGS="$@"
+
+echo "Building OpenFX $BUILDTYPE in build/ with ${GENERATOR:-conan platform default generator}, $ARGS"
 
 
 CONAN_VERSION=$(conan -v | sed -e 's/Conan version //g')
@@ -50,7 +71,7 @@ conan install ${GENERATOR_OPTION} -s build_type=$BUILDTYPE -pr:b=default --build
 
 echo === Running cmake
 # Generate the build files
-cmake --preset ${PRESET_NAME} -DBUILD_EXAMPLE_PLUGINS=TRUE
+cmake --preset ${PRESET_NAME} -DBUILD_EXAMPLE_PLUGINS=TRUE $ARGS
 
 echo === Building plugins and support libs
 cmake --build ${CMAKE_BUILD_DIR} --config $BUILDTYPE $VERBOSE
@@ -60,5 +81,6 @@ echo "=== Build complete."
 echo "  Sample Plugins are in ${CMAKE_BUILD_DIR}/Examples/*/${BUILDTYPE}"
 echo "  Plugin support lib and examples are in ${CMAKE_BUILD_DIR}/Support/{Library,Plugins}"
 echo "  Host lib is in ${CMAKE_BUILD_DIR}/HostSupport/${BUILDTYPE}"
-echo "=== To install the sample plugins to your OFX plugins folder, become root and then do:"
-echo "  cmake --install ${CMAKE_BUILD_DIR} --config $BUILDTYPE"
+echo "=== To install the sample plugins to your OFX plugins folder, become root if necessary, and then do:"
+echo "  cmake --install ${CMAKE_BUILD_DIR}"
+echo "  (pass -DINSTALLDIR=<path> to this script or cmake to install elsewhere than the standard OFX folder)"
