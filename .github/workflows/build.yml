@@ -104,8 +104,15 @@ jobs:
       run:
         shell: bash
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v${{ matrix.checkout_version }}
+      - name: Checkout code (v4)
+        uses: actions/checkout@v4
+        if: matrix.checkout_version == 4
+        with:
+          clean: true
+          fetch-depth: 0
+      - name: Checkout code (v3)
+        uses: actions/checkout@v3
+        if: matrix.checkout_version == 3
         with:
           clean: true
           fetch-depth: 0
