@@ -293,11 +293,12 @@ ChoiceParamsPlugin::setupAndProcess(ImageScalerBase &processor, const OFX::Rende
   if (ri == 2)
     r = 1.0;
 
+  // Note that green options are out of order
   if (gi == 0)
     g = 0;
-  if (gi == 1)
-    g = 0.5;
   if (gi == 2)
+    g = 0.5;
+  if (gi == 1)
     g = 1.0;
 
   if (bi == "blue_0.0")
@@ -637,6 +638,8 @@ void ChoiceParamsExamplePluginFactory::describeInContext(OFX::ImageEffectDescrip
   choice1->appendOption("red: lots");
   page->addChild(*choice1);
 
+  // Note: index 1 is "lots" (even though UI order is 2), index 2 is "some"
+  // because options are appended in order.
   auto *choice2 = desc.defineChoiceParam("green_choice");
   choice2->appendOption("green: none", "", 0);
   choice2->appendOption("green: lots", "", 2);

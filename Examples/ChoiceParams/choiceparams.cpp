@@ -468,10 +468,10 @@ static OfxStatus render( OfxImageEffectHandle  instance,
 
     if (gChoice == 0)
       gScale = 0;
-    if (gChoice == 1)
-      gScale = 0.5;
-    if (gChoice == 2)
+    if (gChoice == 1)           // "lots"
       gScale = 1.0;
+    if (gChoice == 2)           // "some"
+      gScale = 0.5;
 
     // string-valued param
     if (blueChoice == "blue_0.0")
@@ -574,6 +574,7 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
 
   // Second choice param: using order.
   // This will produce incorrect results in hosts that don't support order.
+  // Note that index 1 here is "lots", index 2 is "some"
   gParamHost->paramDefine(paramSet, kOfxParamTypeChoice, "green_choice", &props);
   gPropHost->propSetInt(props, kOfxParamPropDefault, 0, 0);
   gPropHost->propSetString(props, kOfxParamPropScriptName, 0, "green_choice");
