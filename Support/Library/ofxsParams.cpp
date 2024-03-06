@@ -3,6 +3,7 @@
 
 /** @brief This file contains code that skins the ofx param suite */
 
+#include <limits.h>
 #include <cstring>
 #include "ofxsSupportPrivate.h"
 #include "ofxParametricParam.h"
@@ -770,9 +771,9 @@ namespace OFX {
         _paramProps.propSetString(kOfxParamPropHint, hint);
       }
     }
-    if (order >= 0) {
+    if (order != INT_MIN) {
       // Host may not support this prop (added in 1.5); continue without it.
-      _paramProps.propSetInt(kOfxParamPropChoiceOrder, order, false);
+      _paramProps.propSetInt(kOfxParamPropChoiceOrder, order, nCurrentValues, false);
     }
   }
 
@@ -798,13 +799,18 @@ namespace OFX {
   }
 
   /** @brief append an option */
-  void StrChoiceParamDescriptor::appendOption(const std::string& p_Enum, const std::string& p_Option)
+  void StrChoiceParamDescriptor::appendOption(const std::string& p_Enum, const std::string& p_Option, int order)
   {
       const int numOptions = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
       assert(numOptions == _paramProps.propGetDimension(kOfxParamPropChoiceEnum));
 
       _paramProps.propSetString(kOfxParamPropChoiceEnum, p_Enum, numOptions);
       _paramProps.propSetString(kOfxParamPropChoiceOption, p_Option, numOptions);
+
+      if (order != INT_MIN) {
+        // Host may not support this prop (added in 1.5); continue without it.
+        _paramProps.propSetInt(kOfxParamPropChoiceOrder, order, numOptions, false);
+    }
   }
 
   /** @brief how many options do we have */
@@ -2528,13 +2534,18 @@ namespace OFX {
   }
 
   /** @brief add another option */
-  void StrChoiceParam::appendOption(const std::string& p_Enum, const std::string& p_Option)
+  void StrChoiceParam::appendOption(const std::string& p_Enum, const std::string& p_Option, int order)
   {
       const int numOptions = _paramProps.propGetDimension(kOfxParamPropChoiceOption);
       assert(numOptions == _paramProps.propGetDimension(kOfxParamPropChoiceEnum));
 
       _paramProps.propSetString(kOfxParamPropChoiceEnum, p_Enum, numOptions);
       _paramProps.propSetString(kOfxParamPropChoiceOption, p_Option, numOptions);
+
+      if (order != INT_MIN) {
+        // Host may not support this prop (added in 1.5); continue without it.
+        _paramProps.propSetInt(kOfxParamPropChoiceOrder, order, numOptions, false);
+      }
   }
 
   /** @brief set the string of a specific option */

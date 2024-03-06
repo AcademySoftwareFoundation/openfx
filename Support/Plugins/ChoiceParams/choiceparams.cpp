@@ -207,7 +207,9 @@ public :
     maskClip_ = getContext() == OFX::eContextFilter ? NULL : fetchClip(getContext() == OFX::eContextPaint ? "Brush" : "Mask");
     red_choice_   = fetchChoiceParam("red_choice");
     green_choice_  = fetchChoiceParam("green_choice");
-    blue_choice_  = fetchStrChoiceParam("blue_choice");
+    if (OFX::getImageEffectHostDescription()->supportsStrChoice)  {
+      blue_choice_ = fetchStrChoiceParam("blue_choice");
+    }
   }
 
   /* Override the render */
@@ -284,7 +286,6 @@ ChoiceParamsPlugin::setupAndProcess(ImageScalerBase &processor, const OFX::Rende
 
   red_choice_->getValueAtTime(args.time, ri);
   green_choice_->getValueAtTime(args.time, gi);
-  blue_choice_->getValueAtTime(args.time, bi);
 
   if (ri == 0)
     r = 0;
@@ -301,12 +302,17 @@ ChoiceParamsPlugin::setupAndProcess(ImageScalerBase &processor, const OFX::Rende
   if (gi == 1)
     g = 1.0;
 
-  if (bi == "blue_0.0")
-    b = 0;
-  if (bi == "blue_0.5")
-    b = 0.5;
-  if (bi == "blue_1.0")
+  if (OFX::getImageEffectHostDescription()->supportsStrChoice)  {
+    blue_choice_->getValueAtTime(args.time, bi);
+    if (bi == "blue_0.0")
+      b = 0;
+    if (bi == "blue_0.5")
+      b = 0.5;
+    if (bi == "blue_1.0")
+      b = 1.0;
+  } else {
     b = 1.0;
+  }
 
   a = 1.0;                      // always
 
@@ -644,13 +650,17 @@ void ChoiceParamsExamplePluginFactory::describeInContext(OFX::ImageEffectDescrip
   choice2->appendOption("green: none", "", 0);
   choice2->appendOption("green: lots", "", 2);
   choice2->appendOption("green: some", "", 1);
+  choice2->appendOption("green: TOO MUCH (hidden)", "", -1);
   page->addChild(*choice2);
 
-  auto *choice3 = desc.defineStrChoiceParam("blue_choice");
-  choice3->appendOption("blue_0.0", "blue: none");
-  choice3->appendOption("blue_0.5", "blue: some");
-  choice3->appendOption("blue_1.0", "blue: lots");
-  page->addChild(*choice3);
+  if (getImageEffectHostDescription()->supportsStrChoice)  {
+    auto *choice3 = desc.defineStrChoiceParam("blue_choice");
+    choice3->appendOption("blue_0.0", "blue: none", 0);
+    choice3->appendOption("blue_0.5", "blue: some", 1);
+    choice3->appendOption("blue_1.0", "blue: lots", 2);
+    choice3->appendOption("blue_HIDDEN", "blue: TOO MUCH", -1); // hide this one
+    page->addChild(*choice3);
+  }
 }
 
 ImageEffect *ChoiceParamsExamplePluginFactory::createInstance(OfxImageEffectHandle handle, ContextEnum /*context*/)

@@ -17,6 +17,7 @@ each represent the actions that can be carried out on those particular OFX objec
  */
 
 #include <memory>
+#include <limits.h>
 #include "ofxsCore.h"
 
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
@@ -580,7 +581,7 @@ namespace OFX {
         void setDefault(int v);
 
         /** @brief append an option, default is to have not there */
-        void appendOption(const std::string &v, const std::string& label = "", const int order = -1);
+        void appendOption(const std::string &v, const std::string& label = "", const int order = INT_MIN);
     
         /** @brief how many options do we have */
         int getNOptions(void);
@@ -609,7 +610,7 @@ namespace OFX {
         void setDefault(const std::string& p_DefaultValue);
 
         /** @brief append an option */
-        void appendOption(const std::string& p_Enum, const std::string& p_Option);
+        void appendOption(const std::string& p_Enum, const std::string& p_Option, int order = INT_MIN);
 
         /** @brief how many options do we have */
         int getNOptions();
@@ -1543,7 +1544,7 @@ namespace OFX {
         int getNOptions();
 
         /** @brief append an option */
-        void appendOption(const std::string& p_Enum, const std::string& p_Option);
+        void appendOption(const std::string& p_Enum, const std::string& p_Option, int order = INT_MIN);
 
         /** @brief set an option */
         void setOption(const std::string& p_Index, const std::string& p_Option);
