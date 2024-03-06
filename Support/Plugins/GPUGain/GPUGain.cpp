@@ -11,7 +11,7 @@
 #include "ofxsLog.h"
 
 #define kPluginName "GPU Gain"
-#define kPluginGrouping "OFX Example"
+#define kPluginGrouping "OFX Example (Support)"
 #define kPluginDescription "Apply separate RGB gain adjustments to each channels; CUDA/OpenCL Buffers/OpenCL Images/Metal"
 #define kPluginIdentifier "com.OpenFXSample.GPUGain"
 #define kPluginVersionMajor 1

@@ -168,7 +168,7 @@ jobs:
           linux-local-args: '["--toolkit"]'
 
       - name: Install CUDA Toolkit
-        uses: Jimver/cuda-toolkit@v0.2.11
+        uses: Jimver/cuda-toolkit@v0.2.14
         id: cuda-toolkit-win
         if: matrix.ostype == 'windows' && matrix.cuda == true
         with:

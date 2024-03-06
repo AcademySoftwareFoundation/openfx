@@ -360,7 +360,7 @@ class DotExampleOverlayDescriptor : public DefaultEffectOverlayDescriptor<DotExa
 void DotExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 {
   desc.setLabels("Dot Generator", "Dot Generator", "Dot Generator");
-  desc.setPluginGrouping("OFX");
+  desc.setPluginGrouping("OFX Example (Support)");
   desc.addSupportedContext(eContextGenerator);
   desc.addSupportedContext(eContextGeneral);
   desc.addSupportedBitDepth(eBitDepthUByte);

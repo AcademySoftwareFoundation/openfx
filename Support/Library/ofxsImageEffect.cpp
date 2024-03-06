@@ -670,19 +670,34 @@ namespace OFX {
   /** @brief Does the plugin support OpenCL Buffers Render */
   void ImageEffectDescriptor::setSupportsOpenCLBuffersRender(bool v)
   {
+    try {
+
       _effectProps.propSetString(kOfxImageEffectPropOpenCLRenderSupported, (v ? "true" : "false"));
+    } catch(OFX::Exception::PropertyUnknownToHost) {
+      OFX::Log::warning(true, "Host does not have kOfxImageEffectPropOpenCLRenderSupported property");
+    }
   }
 
   /** @brief Does the plugin support OpenCL Images Render */
   void ImageEffectDescriptor::setSupportsOpenCLImagesRender(bool v)
   {
+    try {
+
       _effectProps.propSetString(kOfxImageEffectPropOpenCLSupported, (v ? "true" : "false"));
+    } catch(OFX::Exception::PropertyUnknownToHost) {
+      OFX::Log::warning(true, "Host does not have kOfxImageEffectPropOpenCLSupported property");
+    }
   }
 
   /** @brief Does the plugin support CUDA Render */
   void ImageEffectDescriptor::setSupportsCudaRender(bool v)
   {
+    try {
+
       _effectProps.propSetString(kOfxImageEffectPropCudaRenderSupported, (v ? "true" : "false"));
+    } catch(OFX::Exception::PropertyUnknownToHost) {
+      OFX::Log::warning(true, "Host does not have kOfxImageEffectPropCudaRenderSupported property");
+    }
   }
 
   /** @brief Does the plugin support CUDA Stream */
@@ -698,7 +713,11 @@ namespace OFX {
   /** @brief Does the plugin support Metal Render */
   void ImageEffectDescriptor::setSupportsMetalRender(bool v)
   {
+    try {
       _effectProps.propSetString(kOfxImageEffectPropMetalRenderSupported, (v ? "true" : "false"));
+    } catch(OFX::Exception::PropertyUnknownToHost) {
+      OFX::Log::warning(true, "Host does not have kOfxImageEffectPropMetalRenderSupported property");
+    }
   }
 
 #ifdef OFX_SUPPORTS_OPENGLRENDER

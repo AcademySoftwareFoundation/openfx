@@ -840,7 +840,7 @@ describe(OfxImageEffectHandle effect)
   gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 2, kOfxBitDepthFloat);
 
   // set some labels and the group it belongs to
-  gPropHost->propSetString(effectProps, kOfxPropLabel, 0, "OFX Rectangle");
+  gPropHost->propSetString(effectProps, kOfxPropLabel, 0, "OFX Rectangle Example");
   gPropHost->propSetString(effectProps, kOfxImageEffectPluginPropGrouping, 0, "OFX Example");
 
   // define the contexts we can be used in

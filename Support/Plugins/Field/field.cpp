@@ -229,7 +229,7 @@ void FieldExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 {
   // basic labels
   desc.setLabels("Field", "Field", "Field");
-  desc.setPluginGrouping("OFX");
+  desc.setPluginGrouping("OFX Example (Support)");
 
   // add the supported contexts, only filter at the moment
   desc.addSupportedContext(eContextFilter);

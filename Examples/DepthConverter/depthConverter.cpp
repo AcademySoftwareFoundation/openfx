@@ -525,7 +525,7 @@ describe(OfxImageEffectHandle  effect)
   if(gSupportsFloats) gDepthParamToBytes[i++] = 32; 
 
   // set some labels and the group it belongs to
-  gPropHost->propSetString(effectProps, kOfxPropLabel, 0, "OFX Depth Converter");
+  gPropHost->propSetString(effectProps, kOfxPropLabel, 0, "OFX Depth Converter Example");
   gPropHost->propSetString(effectProps, kOfxImageEffectPluginPropGrouping, 0, "OFX Example");
 
   // define the contexts we can be used in

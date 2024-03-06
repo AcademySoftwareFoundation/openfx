@@ -232,7 +232,7 @@ using namespace OFX;
 void NoiseExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 {
   desc.setLabels("Noise", "Noise", "Noise");
-  desc.setPluginGrouping("OFX");
+  desc.setPluginGrouping("OFX Example (Support)");
   desc.addSupportedContext(eContextGenerator);
   desc.addSupportedContext(eContextGeneral);
   desc.addSupportedBitDepth(eBitDepthUByte);
