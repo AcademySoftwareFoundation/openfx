@@ -20,7 +20,8 @@ else()
   set(ARCHDIR "unknown-arch")
 endif()
 
-# Add a new OFX plugin target
+# Add a new OFX plugin "target".
+#
 # Arguments: TARGET
 # Optional argument: DIR, defaults to same as TARGET (use when renaming TARGET)
 function(add_ofx_plugin TARGET)
@@ -36,13 +37,22 @@ function(add_ofx_plugin TARGET)
   endif()
   set_target_properties(${TARGET} PROPERTIES SUFFIX ".ofx" PREFIX "")
 
-	# Set symbol visibility hidden. Individual symbols are exposed via
-	# __declspec(dllexport) or __attribute__((visibility("default")))
-	set_target_properties(${TARGET} PROPERTIES
-	  C_VISIBILITY_PRESET hidden
-	  CXX_VISIBILITY_PRESET hidden)
+  set(PLUGIN_NAME ${TARGET})
+  set(PLUGIN_EXE ${TARGET}.ofx)
+  set(BUNDLE_IDENTIFIER org.openeffects.plugins.${TARGET})
+  set(BUNDLE_SIGNATURE "????")  # any value is OK here, ignored by modern MacOS
+  set(PLUGIN_VERSION "1.0.0")
 
-	# To install plugins: cmake --install Build
-	install(TARGETS ${TARGET} DESTINATION "${PLUGIN_INSTALLDIR}/${TARGET}.ofx.bundle/Contents/${ARCHDIR}")
-	install(FILES ${DIR}/Info.plist DESTINATION "${PLUGIN_INSTALLDIR}/${TARGET}.ofx.bundle/Contents")
+  configure_file(${CMAKE_SOURCE_DIR}/Examples/Info.plist.in
+                 "${PLUGIN_INSTALLDIR}/${TARGET}.ofx.bundle/Contents/Info.plist")
+
+  # Set symbol visibility hidden. Individual symbols are exposed via
+  # __declspec(dllexport) or __attribute__((visibility("default")))
+  set_target_properties(${TARGET} PROPERTIES C_VISIBILITY_PRESET hidden
+                                             CXX_VISIBILITY_PRESET hidden)
+
+  # To install plugins: cmake --install Build
+  install(
+    TARGETS ${TARGET}
+    DESTINATION "${PLUGIN_INSTALLDIR}/${TARGET}.ofx.bundle/Contents/${ARCHDIR}")
 endfunction()

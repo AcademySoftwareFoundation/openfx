@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 3.16.0)
 if(OFX_SUPPORTS_CUDARENDER AND NOT APPLE)
-  project(openfx VERSION 1.4.0 LANGUAGES CXX CUDA)
+  project(
+    openfx
+    VERSION 1.4.0
+    LANGUAGES CXX CUDA)
 else()
-  project(openfx VERSION 1.4.0 LANGUAGES CXX) # no CUDA
+  project(
+    openfx
+    VERSION 1.4.0
+    LANGUAGES CXX) # no CUDA
 endif()
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CXX_STANDARD 14)
@@ -10,17 +16,21 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_STATIC_LIBRARY_PREFIX "lib")
 add_definitions(-D_HAS_AUTO_PTR_ETC)
 if(APPLE)
-   set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
+  set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 endif()
 
-option(OFX_SUPPORTS_OPENGLRENDER "Build with support for GPU rendering (OpenGL/CUDA/Metal/OpenCL)" ON)
+option(OFX_SUPPORTS_OPENGLRENDER
+       "Build with support for GPU rendering (OpenGL/CUDA/Metal/OpenCL)" ON)
 option(BUILD_EXAMPLE_PLUGINS "Build example plugins" OFF)
-option(OFX_SUPPORTS_OPENCLRENDER "Build examples with support for OpenCL GPU rendering" OFF)
-option(OFX_SUPPORTS_CUDARENDER "Build examples with support for CUDA GPU rendering" OFF)
-option(PLUGIN_INSTALLDIR "Location to install plugins (default depends on OS)" "")
+option(OFX_SUPPORTS_OPENCLRENDER
+       "Build examples with support for OpenCL GPU rendering" OFF)
+option(OFX_SUPPORTS_CUDARENDER
+       "Build examples with support for CUDA GPU rendering" OFF)
+option(PLUGIN_INSTALLDIR "Location to install plugins (default depends on OS)"
+       "")
 
 if(APPLE)
-   set(OFX_SUPPORTS_CUDARENDER OFF)
+  set(OFX_SUPPORTS_CUDARENDER OFF)
 endif()
 
 if(OFX_SUPPORTS_OPENGLRENDER)
@@ -38,13 +48,14 @@ endif()
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 
-
 # Flags
 if(!MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations")
+  set(CMAKE_CXX_FLAGS
+      "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations"
+  )
 endif()
 
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_BINARY_DIR} )
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_BINARY_DIR})
 
 # Conan packages
 find_package(EXPAT)
