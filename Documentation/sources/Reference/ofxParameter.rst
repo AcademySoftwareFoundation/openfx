@@ -216,7 +216,7 @@ in a new version of the plugin.
        // add NewOpt at the end of the list, but specify order so it comes one before the end in the UI
        // Will display OptA / OptB / NewOpt / OptC
        Option = {"OptA", "OptB", "OptC", "NewOpt"}
-       Order  = {0, 1, 3, 2} // or anything that sorts the same, e.g. {-100, 100, 300, 200}
+       Order  = {0, 1, 3, 2} // or anything that sorts the same, e.g. {1, 100, 300, 200}
 
 In this case if the user had selected "OptC" in v1, and then loaded the
 project in v2, "OptC" will still be selected even though it is now the 4th
@@ -229,6 +229,15 @@ so the options are displayed in their natural order.
 Values may be arbitrary 32-bit integers. The same value must not occur
 more than once in the order list; behavior is undefined if the same
 value occurs twice in the list.
+
+If an Order value is negative, the host should hide the
+corresponding option in the UI. This can be useful for a plugin to
+deprecate certain options. When a host loads a project which includes
+a hidden option, the host should show that option in that effect
+instance. If a host cannot dynamically hide or show options, it may
+instead show hidden options (with negative Order values) as grayed out
+or inactive. A plugin should not set the choice param's default value
+to a hidden option.
 
 Note that :c:macro:`kOfxParamPropChoiceOrder` does not affect project
 storage or operation; it is only used by the host UI. This way it is 100%
@@ -295,6 +304,9 @@ that the host use the default value in that case.
 
 To check for availability of this param type, a plugin may check the
 host property :c:macro:`kOfxParamHostPropSupportsStrChoice`.
+
+StrChoice parameters may also be reordered and/or hidden using
+:c:macro:`kOfxParamPropChoiceOrder`; see the previous section.
 
 Available since 1.5.
 

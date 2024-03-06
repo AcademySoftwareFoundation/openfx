@@ -472,6 +472,9 @@ static OfxStatus render( OfxImageEffectHandle  instance,
       gScale = 1.0;
     if (gChoice == 2)           // "some"
       gScale = 0.5;
+    if (gChoice == 3)           // should not happen
+      gScale = 10;
+
 
     // string-valued param
     if (blueChoice == "blue_0.0")
@@ -582,11 +585,13 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
   gPropHost->propSetString(props, kOfxParamPropChoiceOption, 0, "Green: none");
   gPropHost->propSetString(props, kOfxParamPropChoiceOption, 1, "Green: lots");
   gPropHost->propSetString(props, kOfxParamPropChoiceOption, 2, "Green: some");
+  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 3, "Green: TOO MUCH (hidden)");
   // Order sets the display order: choices will be displayed in this order
   auto stat = gPropHost->propSetInt(props, kOfxParamPropChoiceOrder, 0, 0); // first
   if (stat == kOfxStatOK) {
       gPropHost->propSetInt(props, kOfxParamPropChoiceOrder, 1, 2); // last
       gPropHost->propSetInt(props, kOfxParamPropChoiceOrder, 2, 1); // middle
+      gPropHost->propSetInt(props, kOfxParamPropChoiceOrder, 3, -1); // negative order: should be hidden in UI
   } else {
       gHostSupportsChoiceOrder = false;
       std::cout << "Host does not support kOfxParamPropChoiceOrder: green results will look wrong\n";
@@ -601,10 +606,17 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
     gPropHost->propSetString(props, kOfxParamPropChoiceOption, 0, "Blue: none");
     gPropHost->propSetString(props, kOfxParamPropChoiceOption, 1, "Blue: some");
     gPropHost->propSetString(props, kOfxParamPropChoiceOption, 2, "Blue: lots");
+    gPropHost->propSetString(props, kOfxParamPropChoiceOption, 3, "Blue: TOO MUCH");
     // host will return and store these values
     gPropHost->propSetString(props, kOfxParamPropChoiceEnum, 0, "blue_0.0");
     gPropHost->propSetString(props, kOfxParamPropChoiceEnum, 1, "blue_0.5");
     gPropHost->propSetString(props, kOfxParamPropChoiceEnum, 2, "blue_1.0");
+    gPropHost->propSetString(props, kOfxParamPropChoiceEnum, 3, "blue_HIDDEN");
+
+    gPropHost->propSetInt(props, kOfxParamPropChoiceOrder, 0, 0);
+    gPropHost->propSetInt(props, kOfxParamPropChoiceOrder, 1, 1);
+    gPropHost->propSetInt(props, kOfxParamPropChoiceOrder, 2, 2);
+    gPropHost->propSetInt(props, kOfxParamPropChoiceOrder, 3, -1); // hide this one
   }
   
   // make a page of controls and add my parameters to it
