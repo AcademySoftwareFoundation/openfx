@@ -32,7 +32,9 @@ done
 shift $((OPTIND -1))
 
 # First positional argument as BUILDTYPE
-BUILDTYPE=$1; shift
+if [[ $# -gt 0 ]]; then
+   BUILDTYPE=$1; shift
+fi
 
 ARGS="$@"
 

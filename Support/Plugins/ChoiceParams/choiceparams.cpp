@@ -650,7 +650,6 @@ void ChoiceParamsExamplePluginFactory::describeInContext(OFX::ImageEffectDescrip
   choice2->appendOption("green: none", "", 0);
   choice2->appendOption("green: lots", "", 2);
   choice2->appendOption("green: some", "", 1);
-  choice2->appendOption("green: TOO MUCH (hidden)", "", -1);
   page->addChild(*choice2);
 
   if (getImageEffectHostDescription()->supportsStrChoice)  {
@@ -658,7 +657,6 @@ void ChoiceParamsExamplePluginFactory::describeInContext(OFX::ImageEffectDescrip
     choice3->appendOption("blue_0.0", "blue: none", 0);
     choice3->appendOption("blue_0.5", "blue: some", 1);
     choice3->appendOption("blue_1.0", "blue: lots", 2);
-    choice3->appendOption("blue_HIDDEN", "blue: TOO MUCH", -1); // hide this one
     page->addChild(*choice3);
   }
 }
