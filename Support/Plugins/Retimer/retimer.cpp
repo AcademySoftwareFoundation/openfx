@@ -291,7 +291,7 @@ void RetimerExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 {
   // basic labels
   desc.setLabels("Retimer", "Retimer", "Retimer");
-  desc.setPluginGrouping("OFX");
+  desc.setPluginGrouping("OFX Example (Support)");
 
   // Say we are a transition context
   desc.addSupportedContext(OFX::eContextRetimer);

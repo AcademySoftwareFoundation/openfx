@@ -29,6 +29,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            cuda: false
           - name_prefix: Linux CentOS 7 VFX CY2022
             release_prefix: linux-vfx2022
             ostype: linux
@@ -43,6 +44,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            cuda: false
           - name_prefix: Linux Rocky 8 VFX CY2023
             release_prefix: linux-vfx2023
             ostype: linux
@@ -57,6 +59,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            cuda: false
           - name_prefix: Linux Ubuntu
             release_prefix: linux-ubuntu
             ostype: linux
@@ -70,6 +73,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            cuda: true
           - name_prefix: MacOS
             release_prefix: mac
             ostype: mac
@@ -82,6 +86,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            cuda: false
           - name_prefix: Windows
             release_prefix: windows
             ostype: windows
@@ -94,6 +99,20 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            cuda: true
+          - name_prefix: Windows no CUDA
+            release_prefix: windows-no-cuda
+            ostype: windows
+            os: windows-latest
+            container: null
+            has_cmake_presets: true
+            buildtype: Release
+            conan_version: 2.0.16
+            cxx-standard: 17
+            cxx-compiler: clang++
+            cc-compiler: clang
+            compiler-desc: Clang
+            cuda: false
     defaults:
       run:
         shell: bash
@@ -138,6 +157,25 @@ jobs:
           brew:
           brew-cask:
 
+      - name: Install CUDA Toolkit
+        uses: Jimver/cuda-toolkit@v0.2.11
+        id: cuda-toolkit-linux
+        if: matrix.ostype == 'linux' && matrix.cuda == true
+        with:
+          cuda: '12.1.0'
+          method: 'network'
+          sub-packages: '["nvcc", "cudart"]'
+          linux-local-args: '["--toolkit"]'
+
+      - name: Install CUDA Toolkit
+        uses: Jimver/cuda-toolkit@v0.2.14
+        id: cuda-toolkit-win
+        if: matrix.ostype == 'windows' && matrix.cuda == true
+        with:
+          cuda: '12.1.0'
+          method: 'network'
+          sub-packages: '["nvcc", "cudart", "visual_studio_integration"]'
+
       # - name: Install system dependencies (CentOS)
       #   run: |
       #     rpm install libglvnd-devel
@@ -148,9 +186,13 @@ jobs:
 
       - name: Configure project with cmake
         run: |
+          [[ ${{ matrix.cuda }} = true ]] && CUDA=TRUE || CUDA=FALSE
           if [[ ${{ matrix.has_cmake_presets }} = true ]]; then
             # Sets up to build in e.g. build/Release
-            cmake --preset $CONAN_PRESET -DBUILD_EXAMPLE_PLUGINS=TRUE .
+            cmake --preset $CONAN_PRESET -DBUILD_EXAMPLE_PLUGINS=TRUE \
+              -DPLUGIN_INSTALLDIR=$(pwd)/$BUILD_DIR/Install \
+              -DOFX_SUPPORTS_OPENGLRENDER=TRUE \
+              -DOFX_SUPPORTS_CUDARENDER=$CUDA .
           else
             # VFX ref platforms 2022 & earlier have only cmake 3.19.
             # Older cmake (<3.23) does not support presets, so invoke with explicit args.
@@ -158,15 +200,18 @@ jobs:
               -DCMAKE_TOOLCHAIN_FILE=$(pwd)/$BUILD_DIR/generators/conan_toolchain.cmake \
               -DCMAKE_POLICY_DEFAULT_CMP0091=NEW \
               -DCMAKE_BUILD_TYPE=Release \
-              -DBUILD_EXAMPLE_PLUGINS=TRUE
+              -DBUILD_EXAMPLE_PLUGINS=TRUE \
+              -DPLUGIN_INSTALLDIR=$(pwd)/$BUILD_DIR/Install \
+              -DOFX_SUPPORTS_OPENGLRENDER=TRUE \
+              -DOFX_SUPPORTS_CUDARENDER=$CUDA
           fi
 
       - name: Build with cmake
         run: |
           if [[ ${{ matrix.ostype }} = windows ]]; then
-            cmake --build $BUILD_DIR --config Release --parallel
+            cmake --build $BUILD_DIR --target install --config Release --parallel
           else
-            cmake --build $BUILD_DIR --parallel
+            cmake --build $BUILD_DIR --target install --parallel
           fi
 
       - name: Build with make

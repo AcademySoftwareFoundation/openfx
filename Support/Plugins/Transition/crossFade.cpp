@@ -192,7 +192,7 @@ void CrossFadeExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 {
   // basic labels
   desc.setLabels("Cross Fade", "Cross Fade", "Cross Fade");
-  desc.setPluginGrouping("OFX");
+  desc.setPluginGrouping("OFX Example (Support)");
 
   // Say we are a transition context
   desc.addSupportedContext(eContextTransition);

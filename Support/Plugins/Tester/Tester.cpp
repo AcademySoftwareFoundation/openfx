@@ -420,7 +420,7 @@ using namespace OFX;
 void GenericTestExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 {
   desc.setLabels("GenericTest", "GenericTest", "GenericTest");
-  desc.setPluginGrouping("OFX");
+  desc.setPluginGrouping("OFX Example (Support)");
   desc.addSupportedContext(eContextFilter);
   desc.addSupportedBitDepth(eBitDepthUByte);
   desc.addSupportedBitDepth(eBitDepthUShort);

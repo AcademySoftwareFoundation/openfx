@@ -667,6 +667,59 @@ namespace OFX {
     }
   }
 
+  /** @brief Does the plugin support OpenCL Buffers Render */
+  void ImageEffectDescriptor::setSupportsOpenCLBuffersRender(bool v)
+  {
+    try {
+
+      _effectProps.propSetString(kOfxImageEffectPropOpenCLRenderSupported, (v ? "true" : "false"));
+    } catch(OFX::Exception::PropertyUnknownToHost) {
+      OFX::Log::warning(true, "Host does not have kOfxImageEffectPropOpenCLRenderSupported property");
+    }
+  }
+
+  /** @brief Does the plugin support OpenCL Images Render */
+  void ImageEffectDescriptor::setSupportsOpenCLImagesRender(bool v)
+  {
+    try {
+
+      _effectProps.propSetString(kOfxImageEffectPropOpenCLSupported, (v ? "true" : "false"));
+    } catch(OFX::Exception::PropertyUnknownToHost) {
+      OFX::Log::warning(true, "Host does not have kOfxImageEffectPropOpenCLSupported property");
+    }
+  }
+
+  /** @brief Does the plugin support CUDA Render */
+  void ImageEffectDescriptor::setSupportsCudaRender(bool v)
+  {
+    try {
+
+      _effectProps.propSetString(kOfxImageEffectPropCudaRenderSupported, (v ? "true" : "false"));
+    } catch(OFX::Exception::PropertyUnknownToHost) {
+      OFX::Log::warning(true, "Host does not have kOfxImageEffectPropCudaRenderSupported property");
+    }
+  }
+
+  /** @brief Does the plugin support CUDA Stream */
+  void ImageEffectDescriptor::setSupportsCudaStream(bool v)
+  {
+    try {
+      _effectProps.propSetString(kOfxImageEffectPropCudaStreamSupported, (v ? "true" : "false"));
+    } catch(OFX::Exception::PropertyUnknownToHost) {
+      OFX::Log::warning(true, "Host does not have kOfxImageEffectPropCudaStreamSupported property");
+    }
+  }
+
+  /** @brief Does the plugin support Metal Render */
+  void ImageEffectDescriptor::setSupportsMetalRender(bool v)
+  {
+    try {
+      _effectProps.propSetString(kOfxImageEffectPropMetalRenderSupported, (v ? "true" : "false"));
+    } catch(OFX::Exception::PropertyUnknownToHost) {
+      OFX::Log::warning(true, "Host does not have kOfxImageEffectPropMetalRenderSupported property");
+    }
+  }
+
 #ifdef OFX_SUPPORTS_OPENGLRENDER
   /** @brief Does the plugin support OpenGL accelerated rendering (but is also capable of CPU rendering) ? */
   void ImageEffectDescriptor::setSupportsOpenGLRender(bool v) {
@@ -731,7 +784,7 @@ namespace OFX {
     OFX::Validation::validateImageBaseProperties(props);
 
     // and fetch all the properties
-    _rowBytes         = _imageProps.propGetInt(kOfxImagePropRowBytes);
+    _rowBytes         = _imageProps.propGetInt(kOfxImagePropRowBytes, /*throwOnFailure*/false); // not required for OpenCL Images
     _pixelAspectRatio = _imageProps.propGetDouble(kOfxImagePropPixelAspectRatio);;
       
     std::string str  = _imageProps.propGetString(kOfxImageEffectPropComponents);
@@ -821,8 +874,10 @@ namespace OFX {
     OFX::Validation::validateImageProperties(props);
 
     // and fetch all the properties
+    _OpenCLImage = nullptr;
+    _OpenCLImage = _imageProps.propGetPointer(kOfxImageEffectPropOpenCLImage, /*throwOnFailure*/false);
     // should throw if it is not an image
-    _pixelData = _imageProps.propGetPointer(kOfxImagePropData);
+    _pixelData = _imageProps.propGetPointer(kOfxImagePropData, /*throwOnFailure*/!_OpenCLImage);
   }
 
   Image::~Image()
@@ -1814,6 +1869,10 @@ namespace OFX {
         gHostDescription.osHandle                   = hostProps.propGetPointer(kOfxPropHostOSHandle, false);
         gHostDescription.supportsParametricParameter = gParametricParameterSuite != 0;
         gHostDescription.supportsParametricAnimation = hostProps.propGetInt(kOfxParamHostPropSupportsParametricAnimation, false) != 0;
+        gHostDescription.supportsOpenCLRender        = hostProps.propGetString(kOfxImageEffectPropOpenCLRenderSupported, 0, false) == "true";
+        gHostDescription.supportsCudaRender          = hostProps.propGetString(kOfxImageEffectPropCudaRenderSupported, 0, false) == "true";
+        gHostDescription.supportsCudaStream          = hostProps.propGetString(kOfxImageEffectPropCudaStreamSupported, 0, false) == "true";
+        gHostDescription.supportsMetalRender         = hostProps.propGetString(kOfxImageEffectPropMetalRenderSupported, 0, false) == "true";
         gHostDescription.supportsRenderQualityDraft = hostProps.propGetInt(kOfxImageEffectPropRenderQualityDraft, false) != 0; // appeared in OFX 1.4
         {
             std::string originStr = hostProps.propGetString(kOfxImageEffectHostPropNativeOrigin, false); // appeared in OFX 1.4
@@ -2041,6 +2100,13 @@ namespace OFX {
       args.renderWindow.x2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 2);
       args.renderWindow.y2 = inArgs.propGetInt(kOfxImageEffectPropRenderWindow, 3);
 
+      args.isEnabledOpenCLRender = inArgs.propGetInt(kOfxImageEffectPropOpenCLEnabled, false) != 0;
+      args.isEnabledCudaRender   = inArgs.propGetInt(kOfxImageEffectPropCudaEnabled, false) != 0;
+      args.isEnabledMetalRender  = inArgs.propGetInt(kOfxImageEffectPropMetalEnabled, false) != 0;
+      args.pOpenCLCmdQ           = inArgs.propGetPointer(kOfxImageEffectPropOpenCLCommandQueue, false);
+      args.pCudaStream           = inArgs.propGetPointer(kOfxImageEffectPropCudaStream, false);
+      args.pMetalCmdQ            = inArgs.propGetPointer(kOfxImageEffectPropMetalCommandQueue, false);
+
 #ifdef OFX_SUPPORTS_OPENGLRENDER
       // Don't throw an exception if the following inArgs are not present.
       // OpenGL rendering appeared in OFX 1.3
@@ -2100,6 +2166,13 @@ namespace OFX {
       args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
       args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
 
+      args.isEnabledOpenCLRender = inArgs.propGetInt(kOfxImageEffectPropOpenCLEnabled, false) != 0;
+      args.isEnabledCudaRender   = inArgs.propGetInt(kOfxImageEffectPropCudaEnabled, false) != 0;
+      args.isEnabledMetalRender  = inArgs.propGetInt(kOfxImageEffectPropMetalEnabled, false) != 0;
+      args.pOpenCLCmdQ           = inArgs.propGetPointer(kOfxImageEffectPropOpenCLCommandQueue, false);
+      args.pCudaStream           = inArgs.propGetPointer(kOfxImageEffectPropCudaStream, false);
+      args.pMetalCmdQ            = inArgs.propGetPointer(kOfxImageEffectPropMetalCommandQueue, false);
+
 #ifdef OFX_SUPPORTS_OPENGLRENDER
       // Don't throw an exception if the following inArgs are not present.
       // OpenGL rendering appeared in OFX 1.3
@@ -2126,6 +2199,13 @@ namespace OFX {
 
       args.renderScale.x = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 0);
       args.renderScale.y = inArgs.propGetDouble(kOfxImageEffectPropRenderScale, 1);
+
+      args.isEnabledOpenCLRender = inArgs.propGetInt(kOfxImageEffectPropOpenCLEnabled, false) != 0;
+      args.isEnabledCudaRender   = inArgs.propGetInt(kOfxImageEffectPropCudaEnabled, false) != 0;
+      args.isEnabledMetalRender  = inArgs.propGetInt(kOfxImageEffectPropMetalEnabled, false) != 0;
+      args.pOpenCLCmdQ           = inArgs.propGetPointer(kOfxImageEffectPropOpenCLCommandQueue, false);
+      args.pCudaStream           = inArgs.propGetPointer(kOfxImageEffectPropCudaStream, false);
+      args.pMetalCmdQ            = inArgs.propGetPointer(kOfxImageEffectPropMetalCommandQueue, false);
 
 #ifdef OFX_SUPPORTS_OPENGLRENDER
       // Don't throw an exception if the following inArgs are not present.
@@ -2483,7 +2563,7 @@ namespace OFX {
       const char* plugname)
     {
       OFX::Log::print("********************************************************************************");
-      OFX::Log::print("START mainEntry (%s)", actionRaw);
+      OFX::Log::print("START mainEntry (%s for %s)", actionRaw, plugname);
       OFX::Log::indent();
       OfxStatus stat = kOfxStatReplyDefault;
       try {
@@ -2751,6 +2831,7 @@ namespace OFX {
       // catch suite exceptions
       catch (const OFX::Exception::Suite &ex)
       {
+        OFX::Log::error(true, "Caught OFX::Exception::Suite: %s", ex.what());
 #      ifdef DEBUG
         std::cout << "Caught OFX::Exception::Suite: " << ex.what() << std::endl;
 #      endif
@@ -2760,6 +2841,7 @@ namespace OFX {
       // catch host inadequate exceptions
       catch (const OFX::Exception::HostInadequate &e)
       {
+        OFX::Log::error(true, "Caught OFX::Exception::HostInadequate: %s", e.what());
 #      ifdef DEBUG
         std::cout << "Caught OFX::Exception::HostInadequate: " << e.what() << std::endl;
 #      endif
@@ -2769,6 +2851,7 @@ namespace OFX {
       // catch exception due to a property being unknown to the host, implies something wrong with host if not caught further down
       catch (const OFX::Exception::PropertyUnknownToHost &e)
       {
+        OFX::Log::error(true, "Caught OFX::Exception::PropertyUnknownToHost: %s", e.what());
 #      ifdef DEBUG
         std::cout << "Caught OFX::Exception::PropertyUnknownToHost: " << e.what() << std::endl;
 #      endif
@@ -2791,13 +2874,15 @@ namespace OFX {
       // Catch anything else, unknown
       catch (const std::exception &e)
       {
+        OFX::Log::error(true, "Caught std::exception: %s", e.what());
 #      ifdef DEBUG
-        std::cout << "Caught exception: " << e.what() << std::endl;
+        std::cout << "Caught std::exception: " << e.what() << std::endl;
 #      endif
         stat = kOfxStatFailed;
       }
       catch (...)
       {
+        OFX::Log::error(true, "Caught unknown exception");
 #      ifdef DEBUG
         std::cout << "Caught Unknown exception" << std::endl;
 #      endif
@@ -2805,7 +2890,8 @@ namespace OFX {
       }
 
       OFX::Log::outdent();
-      OFX::Log::print("STOP mainEntry (%s)\n", actionRaw);
+      OFX::Log::print("STOP mainEntry (%s for %s, returning %d=%s)\n", actionRaw, plugname,
+                      stat, mapStatusToString(stat));
       return stat;
     }      
 

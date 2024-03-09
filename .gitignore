@@ -9,6 +9,11 @@ Examples/*/*.bundle
 *~
 ofx-docgen
 
+ofxTestLog.txt
+ofxPluginLog.txt
+CMakeUserPresets.json
+cmake-build.log
+
 build*/
 build.log
 .cache/

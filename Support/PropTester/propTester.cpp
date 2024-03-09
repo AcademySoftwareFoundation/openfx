@@ -250,7 +250,7 @@ void PropTesterPluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 {
   // basic labels
   desc.setLabels("Prop Tester", "Prop Tester", "Property Tester");
-  desc.setPluginGrouping("OFX Test");
+  desc.setPluginGrouping("OFX Example (Support)");
 
   // add the supported contexts, only filter at the moment
   desc.addSupportedContext(eContextGenerator);

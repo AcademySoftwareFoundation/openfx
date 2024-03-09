@@ -10,8 +10,8 @@ if [[ $1 = "-v" ]]; then
     VERBOSE="--verbose"; shift
 fi
 
-if [[ -n ${1:-} ]]; then
-    GENERATOR=$1
+if [[ $1 = "-G" ]]; then
+    GENERATOR=$1; shift
     GENERATOR_OPTION="-c tools.cmake.cmaketoolchain:generator=${GENERATOR}"
 fi
 
@@ -50,15 +50,16 @@ conan install ${GENERATOR_OPTION} -s build_type=$BUILDTYPE -pr:b=default --build
 
 echo === Running cmake
 # Generate the build files
-cmake --preset ${PRESET_NAME} -DBUILD_EXAMPLE_PLUGINS=TRUE
+cmake --preset ${PRESET_NAME} -DBUILD_EXAMPLE_PLUGINS=TRUE "$@"
 
-echo === Building plugins and support libs
-cmake --build ${CMAKE_BUILD_DIR} --config $BUILDTYPE $VERBOSE
+echo === Building and installing plugins and support libs
+cmake --build ${CMAKE_BUILD_DIR} --target install --config $BUILDTYPE --parallel $VERBOSE
 
 set +x
 echo "=== Build complete."
 echo "  Sample Plugins are in ${CMAKE_BUILD_DIR}/Examples/*/${BUILDTYPE}"
+echo "    and installed in the OFX plugin dir for your platform (or where specified by PLUGIN_INSTALLDIR)."
 echo "  Plugin support lib and examples are in ${CMAKE_BUILD_DIR}/Support/{Library,Plugins}"
 echo "  Host lib is in ${CMAKE_BUILD_DIR}/HostSupport/${BUILDTYPE}"
-echo "=== To install the sample plugins to your OFX plugins folder, become root and then do:"
+echo "=== To (re)install the sample plugins to your OFX plugins folder, become root and then do:"
 echo "  cmake --install ${CMAKE_BUILD_DIR} --config $BUILDTYPE"
