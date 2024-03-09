@@ -200,7 +200,7 @@ void InvertExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 {
   // basic labels
   desc.setLabels("Invert", "Invert", "Invert");
-  desc.setPluginGrouping("OFX");
+  desc.setPluginGrouping("OFX Example (Support)");
 
   // add the supported contexts, only filter at the moment
   desc.addSupportedContext(eContextFilter);

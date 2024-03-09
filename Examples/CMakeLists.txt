@@ -1,5 +1,4 @@
-set(OFX_SUPPORT_HEADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
-file(GLOB_RECURSE OFX_SUPPORT_HEADER_FILES "${OFX_SUPPORT_HEADER_DIR}/*.h")
+set(OFX_SUPPORT_HEADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../Support/include")
 
 set(PLUGINS
 	Basic
@@ -20,7 +19,7 @@ foreach(PLUGIN IN LISTS PLUGINS)
 	add_ofx_plugin(${TGT} ${PLUGIN})
 	target_sources(${TGT} PUBLIC ${PLUGIN_SOURCES})
 	target_link_libraries(${TGT} ${CONAN_LIBS})
-	target_include_directories(${TGT} PUBLIC ${OFX_HEADER_DIR})
+	target_include_directories(${TGT} PUBLIC ${OFX_HEADER_DIR} ${OFX_SUPPORT_HEADER_DIR})
 endforeach()
 
 target_link_libraries(example-OpenGL PRIVATE opengl::opengl)

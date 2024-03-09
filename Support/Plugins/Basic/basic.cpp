@@ -603,7 +603,7 @@ void BasicExamplePluginFactory::describe(OFX::ImageEffectDescriptor& desc)
 {
   // basic labels
   desc.setLabels("Gain", "Gain", "Gain");
-  desc.setPluginGrouping("OFX");
+  desc.setPluginGrouping("OFX Example (Support)");
 
   // add the supported contexts, only filter at the moment
   desc.addSupportedContext(eContextFilter);

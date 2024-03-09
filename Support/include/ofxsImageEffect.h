@@ -253,6 +253,10 @@ namespace OFX {
     bool supportsParametricAnimation;
     bool supportsRenderQualityDraft;
     NativeOriginEnum nativeOrigin;
+    bool supportsOpenCLRender;
+    bool supportsCudaRender;
+    bool supportsCudaStream;
+    bool supportsMetalRender;
 #ifdef OFX_SUPPORTS_OPENGLRENDER
     bool supportsOpenGLRender;
 #endif
@@ -432,6 +436,21 @@ namespace OFX {
     /** @brief If the slave  param changes the clip preferences need to be re-evaluated */
     void addClipPreferencesSlaveParam(ParamDescriptor &p);
 
+    /** @brief Does the plugin support OpenCL Buffers Render, defaults to false */
+    void setSupportsOpenCLBuffersRender(bool v);
+
+    /** @brief Does the plugin support OpenCL Images Render, defaults to false */
+    void setSupportsOpenCLImagesRender(bool v);
+
+    /** @brief Does the plugin support CUDA Render, defaults to false */
+    void setSupportsCudaRender(bool v);
+
+    /** @brief Does the plugin support CUDA Stream Render, defaults to false */
+    void setSupportsCudaStream(bool v);
+
+    /** @brief Does the plugin support Metal Render, defaults to false */
+    void setSupportsMetalRender(bool v);
+
 #ifdef OFX_SUPPORTS_OPENGLRENDER
     /** @brief Does the plugin support OpenGL accelerated rendering (but is also capable of CPU rendering) ? */
     void setSupportsOpenGLRender(bool v);
@@ -536,6 +555,7 @@ namespace OFX {
   class Image : public ImageBase {
   protected :
     void     *_pixelData;                    /**< @brief the base address of the image */
+    void     *_OpenCLImage;                  /**< @brief the OpenCL Image handle */
 
   public :
     /** @brief ctor */
@@ -549,6 +569,12 @@ namespace OFX {
 
     /** @brief get the pixel data for this image */
     const void *getPixelData(void) const { return _pixelData;}
+
+    /** @brief get the OpenCL Image for this image */
+    void *getOpenCLImage(void) { return _OpenCLImage;}
+
+    /** @brief get the OpenCL Image for this image */
+    const void *getOpenCLImage(void) const { return _OpenCLImage;}
 
     /** @brief return a pixel pointer, returns NULL if (x,y) is outside the image bounds
 
@@ -746,6 +772,12 @@ namespace OFX {
     OfxPointD renderScale;
     OfxRectI  renderWindow;
     FieldEnum fieldToRender;
+    bool      isEnabledOpenCLRender;
+    bool      isEnabledCudaRender;
+    bool      isEnabledMetalRender;
+    void*     pOpenCLCmdQ;
+    void*     pCudaStream;
+    void*     pMetalCmdQ;
 #ifdef OFX_SUPPORTS_OPENGLRENDER
     bool      openGLEnabled;
 #endif
@@ -768,6 +800,12 @@ namespace OFX {
     double    frameStep;
     bool      isInteractive;
     OfxPointD renderScale;
+    bool      isEnabledOpenCLRender;
+    bool      isEnabledCudaRender;
+    bool      isEnabledMetalRender;
+    void*     pOpenCLCmdQ;
+    void*     pCudaStream;
+    void*     pMetalCmdQ;
 #ifdef OFX_SUPPORTS_OPENGLRENDER
     bool      openGLEnabled;
 #endif
@@ -779,6 +817,12 @@ namespace OFX {
   struct EndSequenceRenderArguments {
     bool      isInteractive;
     OfxPointD renderScale;
+    bool      isEnabledOpenCLRender;
+    bool      isEnabledCudaRender;
+    bool      isEnabledMetalRender;
+    void*     pOpenCLCmdQ;
+    void*     pCudaStream;
+    void*     pMetalCmdQ;
 #ifdef OFX_SUPPORTS_OPENGLRENDER
     bool      openGLEnabled;
 #endif

@@ -432,7 +432,7 @@ class GammaOverlayDescriptor : public DefaultEffectOverlayDescriptor<GammaOverla
 void GammaExamplePluginFactory::describe(OFX::ImageEffectDescriptor &desc)
 {
   desc.setLabels("Gamma", "Gamma", "Gamma");
-  desc.setPluginGrouping("OFX");
+  desc.setPluginGrouping("OFX Example (Support)");
   desc.addSupportedContext(eContextFilter);
   desc.addSupportedContext(eContextGeneral);
   desc.addSupportedContext(eContextPaint);

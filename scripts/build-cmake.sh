@@ -40,7 +40,6 @@ ARGS="$@"
 
 echo "Building OpenFX $BUILDTYPE in build/ with ${GENERATOR:-conan platform default generator}, $ARGS"
 
-
 CONAN_VERSION=$(conan -v | sed -e 's/Conan version //g')
 CONAN_MAJOR_VERSION=${CONAN_VERSION:0:1}
 
@@ -75,14 +74,15 @@ echo === Running cmake
 # Generate the build files
 cmake --preset ${PRESET_NAME} -DBUILD_EXAMPLE_PLUGINS=TRUE $ARGS
 
-echo === Building plugins and support libs
-cmake --build ${CMAKE_BUILD_DIR} --parallel --config $BUILDTYPE $VERBOSE
+echo === Building and installing plugins and support libs
+cmake --build ${CMAKE_BUILD_DIR} --parallel --target install --config $BUILDTYPE --parallel $VERBOSE
 
 set +x
 echo "=== Build complete."
 echo "  Sample Plugins are in ${CMAKE_BUILD_DIR}/Examples/*/${BUILDTYPE}"
+echo "    and installed in the OFX plugin dir for your platform (or where specified by PLUGIN_INSTALLDIR)."
 echo "  Plugin support lib and examples are in ${CMAKE_BUILD_DIR}/Support/{Library,Plugins}"
 echo "  Host lib is in ${CMAKE_BUILD_DIR}/HostSupport/${BUILDTYPE}"
-echo "=== To install the sample plugins to your OFX plugins folder, become root if necessary, and then do:"
+echo "=== To (re)install the sample plugins to your OFX plugins folder, become root if necessary, and then do:"
 echo "  cmake --install ${CMAKE_BUILD_DIR}"
 echo "  (pass -DINSTALLDIR=<path> to this script or cmake to install elsewhere than the standard OFX folder)"
