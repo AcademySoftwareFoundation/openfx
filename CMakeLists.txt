@@ -22,8 +22,13 @@ endif()
 option(OFX_SUPPORTS_OPENGLRENDER
        "Build with support for GPU rendering (OpenGL/CUDA/Metal/OpenCL)" ON)
 option(BUILD_EXAMPLE_PLUGINS "Build example plugins" OFF)
-option(OFX_SUPPORTS_OPENCLRENDER
-       "Build examples with support for OpenCL GPU rendering" OFF)
+if(APPLE)
+  option(OFX_SUPPORTS_OPENCLRENDER
+    "Build examples with support for OpenCL GPU rendering" ON)
+else()
+  option(OFX_SUPPORTS_OPENCLRENDER
+    "Build examples with support for OpenCL GPU rendering" OFF)
+endif()
 option(OFX_SUPPORTS_CUDARENDER
        "Build examples with support for CUDA GPU rendering" OFF)
 option(PLUGIN_INSTALLDIR "Location to install plugins (default depends on OS)"

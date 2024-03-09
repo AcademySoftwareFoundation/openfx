@@ -34,6 +34,9 @@ foreach(PLUGIN IN LISTS PLUGINS)
 	target_include_directories(${TGT} PUBLIC ${OFX_HEADER_DIR} ${OFX_SUPPORT_HEADER_DIR})
         if(APPLE)
           target_link_libraries(${TGT} "-framework Metal" "-framework Foundation" "-framework QuartzCore")
+          if (OFX_SUPPORTS_OPENCLRENDER)
+            target_link_libraries(${TGT} "-framework OpenCL")
+          endif()
         endif()
 
 
