@@ -118,6 +118,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            checkout_version: 4
             cuda: false
     defaults:
       run:
