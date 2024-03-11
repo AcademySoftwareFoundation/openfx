@@ -191,6 +191,10 @@ Properties Reference
 
 .. doxygendefine:: kOfxParamHostPropSupportsParametricAnimation
 
+.. doxygendefine:: kOfxParamHostPropSupportsStrChoice
+
+.. doxygendefine:: kOfxParamHostPropSupportsStrChoiceAnimation
+
 .. doxygendefine:: kOfxParamHostPropSupportsStringAnimation
 
 .. doxygendefine:: kOfxParamPropAnimates
@@ -199,7 +203,11 @@ Properties Reference
 
 .. doxygendefine:: kOfxParamPropCanUndo
 
+.. doxygendefine:: kOfxParamPropChoiceEnum
+
 .. doxygendefine:: kOfxParamPropChoiceOption
+
+.. doxygendefine:: kOfxParamPropChoiceOrder
 
 .. doxygendefine:: kOfxParamPropCustomInterpCallbackV1
 

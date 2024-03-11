@@ -23,7 +23,10 @@ None
 
 ## Detailed List of Changes
 
-- Add OfxDrawSuite for drawing image overlays without use of OpenGL
+- Add `OfxSetHost` call
+- Add `OfxDrawSuite` for drawing image overlays without use of OpenGL
+- Add OpenCL, CUDA and Metal support for direct GPU rendering
+- Add :c:macro:`kOfxParamPropChoiceOrder` for reordering Choice Params
 
 # Release Notes - 1.4
 

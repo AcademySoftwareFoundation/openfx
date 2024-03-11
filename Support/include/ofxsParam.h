@@ -17,6 +17,7 @@ each represent the actions that can be carried out on those particular OFX objec
  */
 
 #include <memory>
+#include <limits.h>
 #include "ofxsCore.h"
 
 /** @brief Nasty macro used to define empty protected copy ctors and assign ops */
@@ -46,6 +47,7 @@ namespace OFX {
     class RGBParamDescriptor;
     class BooleanParamDescriptor;
     class ChoiceParamDescriptor;
+    class StrChoiceParamDescriptor;
     class GroupParamDescriptor;
     class PageParamDescriptor;
     class PushButtonParamDescriptor;
@@ -66,6 +68,7 @@ namespace OFX {
     class StringParam;
     class BooleanParam;
     class ChoiceParam;
+    class StrChoiceParam;
     class CustomParam;
     class GroupParam;
     class PageParam;
@@ -86,6 +89,7 @@ namespace OFX {
                         eRGBAParam,
                         eBooleanParam,
                         eChoiceParam,
+                        eStrChoiceParam,
                         eCustomParam,
                         eGroupParam,
                         ePageParam,
@@ -577,13 +581,42 @@ namespace OFX {
         void setDefault(int v);
 
         /** @brief append an option, default is to have not there */
-        void appendOption(const std::string &v, const std::string& label = "");
+        void appendOption(const std::string &v, const std::string& label = "", const int order = INT_MIN);
     
         /** @brief how many options do we have */
         int getNOptions(void);
     
         /** @brief clear all the options so as to add some new ones in */
         void resetOptions(void);
+    };
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /** @brief Wraps up a string choice param */
+    class StrChoiceParamDescriptor : public ValueParamDescriptor
+    {
+    protected :
+        mDeclareProtectedAssignAndCCBase(StrChoiceParamDescriptor, ValueParamDescriptor);
+        StrChoiceParamDescriptor() { assert(false); }
+
+    protected :
+        /** @brief hidden constructor */
+        StrChoiceParamDescriptor(const std::string& p_Name, OfxPropertySetHandle p_Props);
+
+        // so it can make one
+        friend class ParamSetDescriptor;
+
+    public :
+        /** @brief set the default value */
+        void setDefault(const std::string& p_DefaultValue);
+
+        /** @brief append an option */
+        void appendOption(const std::string& p_Enum, const std::string& p_Option, int order = INT_MIN);
+
+        /** @brief how many options do we have */
+        int getNOptions();
+
+        /** @brief clear all the options so as to add some new ones in */
+        void resetOptions();
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -806,6 +839,9 @@ namespace OFX {
 
         /** @brief Define a Choice param */
         ChoiceParamDescriptor *defineChoiceParam(const std::string &name);
+
+        /** @brief Define a String Choice param */
+        StrChoiceParamDescriptor* defineStrChoiceParam(const std::string& p_Name);
 
         /** @brief Define a group param */
         GroupParamDescriptor *defineGroupParam(const std::string &name);
@@ -1464,7 +1500,7 @@ namespace OFX {
         int getNOptions(void);
 
         /** @brief append an option, default is to have not there */
-        void appendOption(const std::string &v, const std::string& label = "");
+        void appendOption(const std::string &v, const std::string& label = "", const int order = -1);
     
         /** @brief set an option */
         void setOption(int item, const std::string &str);
@@ -1486,6 +1522,38 @@ namespace OFX {
 
         /** @brief set the value at a time, implicitly adds a keyframe */
         void setValueAtTime(double t, int v);
+    };
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /** @brief Wraps up a string choice param */
+    class StrChoiceParam : public StringParam
+    {
+    protected :
+        mDeclareProtectedAssignAndCCBase(StrChoiceParam, StringParam);
+        StrChoiceParam() { assert(false); }
+
+    protected :
+        /** @brief hidden constructor */
+        StrChoiceParam(const ParamSet* p_ParamSet, const std::string& p_Name, OfxParamHandle p_Handle);
+
+        // so it can make one
+        friend class ParamSet;
+
+    public :
+        /** @brief how many options do we have */
+        int getNOptions();
+
+        /** @brief append an option */
+        void appendOption(const std::string& p_Enum, const std::string& p_Option, int order = INT_MIN);
+
+        /** @brief set an option */
+        void setOption(const std::string& p_Index, const std::string& p_Option);
+
+        /** @brief get the option value */
+        void getOption(const std::string& p_Index, std::string& p_Option);
+
+        /** @brief clear all the options so as to add some new ones in */
+        void resetOptions();
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -1770,6 +1838,9 @@ namespace OFX {
 
         /** @brief Fetch a Choice param */
         ChoiceParam *fetchChoiceParam(const std::string &name) const;
+
+        /** @brief Fetch a String Choice param */
+        StrChoiceParam* fetchStrChoiceParam(const std::string& p_Name) const;
 
         /** @brief Fetch a group param */
         GroupParam *fetchGroupParam(const std::string &name) const;

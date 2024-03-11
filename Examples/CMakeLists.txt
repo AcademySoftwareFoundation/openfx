@@ -2,6 +2,7 @@ set(OFX_SUPPORT_HEADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../Support/include")
 
 set(PLUGINS
 	Basic
+	ChoiceParams
 	Custom
 	DepthConverter
 	Invert

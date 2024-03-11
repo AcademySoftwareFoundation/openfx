@@ -26,9 +26,9 @@ A message redefinition is associated with the 'messageId' passed into the OfxMes
 
 A resource set is made up of parameter redefinitions, clip redefinitions, parameter hierarchy redefinitions and parameter page set redefinitions.
 
-Any parameter (except page and hierachy params) in the binaray may have certain properties overridden. Each parameter type has a corresponding element, for example the 2D integer parameter is specified via the 'OfxParamTypeInteger2D', the choice parameter by the 'OfxParamTypeChoice' element. There are 13 different elements, each of which corresponds to an OFX parameter type. The 'name' attribute of a parameter element is used to associate it with a specific parameter in the binary.
+Any parameter (except page and hierachy params) in the binary may have certain properties overridden. Each parameter type has a corresponding element, for example the 2D integer parameter is specified via the 'OfxParamTypeInteger2D', the choice parameter by the 'OfxParamTypeChoice' element. There are many different elements, each of which corresponds to an OFX parameter type. The 'name' attribute of a parameter element is used to associate it with a specific parameter in the binary.
 
-Each parameter element has it's own specific set of sub elements, as not all parameters support all properties.
+Each parameter element has its own specific set of sub elements, as not all parameters support all properties.
 
 An image effect clip may simply have its labels and hints overridden. This is the 'OfxImageClip' element. It is associated with a clip in the binary via its 'name' element.
 
@@ -107,7 +107,7 @@ Errors should be handled robustly. If a respecified parameter doesn't exist in t
  <!ELEMENT OfxMessage ( CDATA )>
  <!ATTLIST OfxMessage name CDATA "">
 
- <!ELEMENT OfxImageEffectContext (OfxImageClip*, OfxParamPageSet?, OfxParamHierarchy?, OfxParamTypeInteger*, OfxParamTypeDouble*, OfxParamTypeBoolean*, OfxParamTypeChoice*, OfxParamTypeRGBA*, OfxParamTypeRGB*, OfxParamTypeDouble2D*, OfxParamTypeDouble3D*, OfxParamTypeInteger2D*, OfxParamTypeInteger3D*, OfxParamTypeString*, OfxParamTypeCustom*, OfxParamTypePushButton*) >
+ <!ELEMENT OfxImageEffectContext (OfxImageClip*, OfxParamPageSet?, OfxParamHierarchy?, OfxParamTypeInteger*, OfxParamTypeDouble*, OfxParamTypeBoolean*, OfxParamTypeChoice*, OfxParamTypeStrChoice*, OfxParamTypeRGBA*, OfxParamTypeRGB*, OfxParamTypeDouble2D*, OfxParamTypeDouble3D*, OfxParamTypeInteger2D*, OfxParamTypeInteger3D*, OfxParamTypeString*, OfxParamTypeCustom*, OfxParamTypePushButton*) >
 
  <!ATTLIST OfxImageEffectContext name CDATA "default">
 

@@ -46,6 +46,8 @@ These strings are used to identify the type of the parameter when it is defined,
 #define kOfxParamTypeBoolean "OfxParamTypeBoolean"
 /** @brief String to identify a param as a Single valued, 'one-of-many' parameter */
 #define kOfxParamTypeChoice "OfxParamTypeChoice"
+/** @brief String to identify a param as a string-valued 'one-of-many' parameter. \since Version 1.5 */
+#define kOfxParamTypeStrChoice "OfxParamTypeStrChoice"
 /** @brief String to identify a param as a Red, Green, Blue and Alpha colour parameter */
 #define kOfxParamTypeRGBA "OfxParamTypeRGBA"
 /** @brief String to identify a param as a Red, Green and Blue colour parameter */
@@ -398,6 +400,7 @@ The exact type and dimension is dependant on the type of the parameter. These ar
   - ::kOfxParamTypeDouble - double property of one dimension
   - ::kOfxParamTypeBoolean - integer property of one dimension
   - ::kOfxParamTypeChoice - integer property of one dimension
+  - ::kOfxParamTypeStrChoice - string property of one dimension
   - ::kOfxParamTypeRGBA - double property of four dimensions
   - ::kOfxParamTypeRGB - double property of three dimensions
   - ::kOfxParamTypeDouble2D - double property of two dimensions
@@ -600,15 +603,90 @@ This data pointer is unique to each parameter instance, so two instances of the 
  */
 #define kOfxParamPropDataPtr "OfxParamPropDataPtr"
 
-/** @brief Set an option in a choice parameter.
+/** @brief Set options of a choice parameter.
 
     - Type - UTF8 C string X N
     - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
     - Default - the property is empty with no options set.
 
-This property contains the set of options that will be presented to a user from a choice parameter. See @ref ParametersChoice for more details. 
+This property contains the set of options that will be presented to a user
+from a choice parameter. See @ref ParametersChoice for more details.
 */
 #define kOfxParamPropChoiceOption "OfxParamPropChoiceOption"
+
+/** @brief Set values the host should store for a choice parameter.
+
+    - Type - int X N
+    - Property Set - plugin parameter descriptor (read/write) and instance
+(read/write),
+    - Default - Zero-based ordinal list of same length as
+`OfxParamPropChoiceOption`
+
+This property specifies the order in which the options are presented.
+See @ref "Choice Parameters" for more details.
+This property is optional; if not set, the host will present the options in
+their natural order.
+
+This property is useful when changing order of choice param options, or adding
+new options in the middle, in a new version of the plugin.
+
+  @verbatim
+  Plugin v1:
+  Option = {"OptA", "OptB", "OptC"}
+  Order = {1, 2, 3}
+
+  Plugin v2:
+  // will be shown as OptA / OptB / NewOpt / OptC
+  Option = {"OptA", "OptB", "OptC", NewOpt"}
+  Order = {1, 2, 4, 3}
+  @endverbatim
+
+Note that this only affects the host UI's display order; the project still
+stores the index of the selected option as always. Plugins should never
+reorder existing options if they desire backward compatibility.
+
+Values may be arbitrary 32-bit integers. Behavior is undefined if the same
+value occurs twice in the list; plugins should not do that.
+
+\since Version 1.5
+*/
+#define kOfxParamPropChoiceOrder "OfxParamPropChoiceOrder"
+
+
+/** @brief Set a enumeration string in a StrChoice (string-valued choice) parameter.
+
+    - Type - UTF8 C string X N
+    - Property Set - plugin parameter descriptor (read/write) and instance
+(read/write),
+    - Default - the property is empty with no options set.
+
+This property contains the set of enumeration strings stored by the host in
+the project corresponding to the options that will be presented to a user
+from a StrChoice parameter. See @ref ParametersChoice for more details.
+
+\since Version 1.5
+*/
+#define kOfxParamPropChoiceEnum "OfxParamPropChoiceEnum"
+
+/** @brief Indicates if the host supports animation of string choice params.
+
+    - Type - int X 1
+    - Property Set - host descriptor (read only)
+    - Valid Values - 0 or 1
+
+\since Version 1.5
+*/
+#define kOfxParamHostPropSupportsStrChoiceAnimation "OfxParamHostPropSupportsStrChoiceAnimation"
+
+/** @brief Indicates if the host supports the StrChoice param type.
+
+    - Type - int X 1
+    - Property Set - host descriptor (read only)
+    - Valid Values - 0 or 1
+
+\since Version 1.5
+*/
+#define kOfxParamHostPropSupportsStrChoice "OfxParamHostPropSupportsStrChoice"
 
 /** @brief The minimum value for a numeric parameter.
 
@@ -732,26 +810,26 @@ If set to 0, it implies the user can specify a new file name, not just a pre-exi
 #define kOfxParamPropStringFilePathExists    "OfxParamPropStringFilePathExists"
 
 /** @brief Used to set a string parameter to be single line, 
-    value to be passed to a kOfxParamPropStringMode property */
+    value to be passed to a ::kOfxParamPropStringMode property */
 #define kOfxParamStringIsSingleLine    "OfxParamStringIsSingleLine"
 
 /** @brief Used to set a string parameter to be multiple line, 
-    value to be passed to a kOfxParamPropStringMode property */
+    value to be passed to a ::kOfxParamPropStringMode property */
 #define kOfxParamStringIsMultiLine     "OfxParamStringIsMultiLine"
 
 /** @brief Used to set a string parameter to be a file path,
-    value to be passed to a kOfxParamPropStringMode property */
+    value to be passed to a ::kOfxParamPropStringMode property */
 #define kOfxParamStringIsFilePath      "OfxParamStringIsFilePath"
 
 /** @brief Used to set a string parameter to be a directory path,
-    value to be passed to a kOfxParamPropStringMode property */
+    value to be passed to a ::kOfxParamPropStringMode property */
 #define kOfxParamStringIsDirectoryPath "OfxParamStringIsDirectoryPath"
 
 /** @brief Use to set a string parameter to be a simple label, 
-    value to be passed to a kOfxParamPropStringMode property  */
+    value to be passed to a ::kOfxParamPropStringMode property  */
 #define kOfxParamStringIsLabel         "OfxParamStringIsLabel"
 
-/** @brief String value on the OfxParamPropStringMode property of a
+  /** @brief String value on the ::kOfxParamPropStringMode property of a
     string parameter (added in 1.3) */
 #define kOfxParamStringIsRichTextFormat "OfxParamStringIsRichTextFormat"
 

@@ -29,6 +29,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            checkout_version: 3
             cuda: false
           - name_prefix: Linux CentOS 7 VFX CY2022
             release_prefix: linux-vfx2022
@@ -44,6 +45,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            checkout_version: 3
             cuda: false
           - name_prefix: Linux Rocky 8 VFX CY2023
             release_prefix: linux-vfx2023
@@ -59,6 +61,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            checkout_version: 4
             cuda: false
           - name_prefix: Linux Ubuntu
             release_prefix: linux-ubuntu
@@ -73,6 +76,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            checkout_version: 4
             cuda: true
           - name_prefix: MacOS
             release_prefix: mac
@@ -86,6 +90,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            checkout_version: 4
             cuda: false
           - name_prefix: Windows
             release_prefix: windows
@@ -99,6 +104,7 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            checkout_version: 4
             cuda: true
           - name_prefix: Windows no CUDA
             release_prefix: windows-no-cuda
@@ -112,16 +118,28 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
+            checkout_version: 4
             cuda: false
     defaults:
       run:
         shell: bash
     steps:
-      - name: Checkout code
+      - name: Checkout code (v4)
+        uses: actions/checkout@v4
+        if: matrix.checkout_version == 4
+        with:
+          clean: true
+          fetch-depth: 0
+      - name: Checkout code (v3)
         uses: actions/checkout@v3
+        if: matrix.checkout_version == 3
+        with:
+          clean: true
+          fetch-depth: 0
 
       - name: setup env vars
         run: |
+          git config --global --add safe.directory $PWD # needed for checkout v3, doesn't hurt anyway
           BUILDTYPE_LC=$(echo '${{ matrix.buildtype }}'|tr [:upper:] [:lower:])
           echo "BUILDTYPE_LC=$BUILDTYPE_LC" >> $GITHUB_ENV
           echo "OSNAME=$(echo '${{ matrix.os }}'|sed 's/-.*//')" >> $GITHUB_ENV
@@ -214,6 +232,14 @@ jobs:
             cmake --build $BUILD_DIR --target install --parallel
           fi
 
+      - name: Install with cmake
+        run: |
+          if [[ ${{ matrix.ostype }} = windows ]]; then
+            cmake --install $BUILD_DIR --config Release
+          else
+            cmake --install $BUILD_DIR
+          fi
+
       - name: Build with make
         run: |
           if [[ ${{ matrix.ostype }} = windows ]]; then
@@ -229,7 +255,7 @@ jobs:
           cp -R Support/include ${{ env.BUILD_DIR }}/Support/include
           cp -R HostSupport/include ${{ env.BUILD_DIR }}/HostSupport/include
 
-      - name: Archive libs, plugins, and header files to artifact
+      - name: Archive header files and libs to artifact
         uses: actions/upload-artifact@v3
         with:
           name: openfx-${{ matrix.release_prefix }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
@@ -241,8 +267,14 @@ jobs:
             !${{ env.BUILD_DIR }}/include/*.dtd
             ${{ env.BUILD_DIR }}/Support/include
             ${{ env.BUILD_DIR }}/HostSupport/include
-            ${{ env.BUILD_DIR }}/**/*.ofx
             ${{ env.BUILD_DIR }}/**/lib*
+
+      - name: Archive built/installed plugins
+        uses: actions/upload-artifact@v3
+        with:
+          name: openfx_plugins-${{ matrix.release_prefix }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
+          path: |
+            build/Install
 
       # - name: Archive all build artifacts (for debugging CI)
       #   uses: actions/upload-artifact@v3
