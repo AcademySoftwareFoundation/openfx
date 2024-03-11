@@ -1035,8 +1035,7 @@ Set this property on any clip which will only ever have single channel alpha ima
 This property acts as a hint to hosts indicating that they could feed the effect from a rotoshape (or similar) rather than an 'ordinary' clip.
 */
 #define kOfxImageClipPropIsMask "OfxImageClipPropIsMask"
-
-
+   
 /** @brief The pixel aspect ratio of a clip or image.
 
    - Type - double X 1
