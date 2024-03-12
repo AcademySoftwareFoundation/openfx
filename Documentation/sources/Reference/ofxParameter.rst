@@ -191,6 +191,8 @@ with no compatibility impact, since the host should only store the
 index. But they should not change the *order* of options without using
 :c:macro:`kOfxParamPropChoiceOrder`.
 
+If no default value is set by the plugin, the host should use the first defined option (index 0).
+
 Setting Choice Param Order
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -286,7 +288,8 @@ for example
         gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceEnum, 2, "choice-3");
 
 The default value of a StrChoice param must be one of the specified
-enums, or the behavior is undefined.
+enums, or the behavior is undefined. If no default value is set by the plugin,
+the host should use the first defined option (index 0).
 
 It is an error to have gaps in the choices after the describe action
 has returned. The Option and Enum arrays must be of the same length,
