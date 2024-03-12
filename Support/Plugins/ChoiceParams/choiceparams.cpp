@@ -582,7 +582,7 @@ void ChoiceParamsExamplePluginFactory::describe(OFX::ImageEffectDescriptor& desc
 {
   // basic labels
   desc.setLabels("Choice Params (Support)", "ChoiceParams(spt)", "Choice Params (Support)");
-  desc.setPluginGrouping("OFX");
+  desc.setPluginGrouping("OFX Example (Support)");
 
   // add the supported contexts, only filter at the moment
   desc.addSupportedContext(eContextFilter);
@@ -642,6 +642,7 @@ void ChoiceParamsExamplePluginFactory::describeInContext(OFX::ImageEffectDescrip
   choice1->appendOption("red: none");
   choice1->appendOption("red: some");
   choice1->appendOption("red: lots");
+  choice1->setDefault(0);
   page->addChild(*choice1);
 
   // Note: index 1 is "lots" (even though UI order is 2), index 2 is "some"
@@ -650,6 +651,7 @@ void ChoiceParamsExamplePluginFactory::describeInContext(OFX::ImageEffectDescrip
   choice2->appendOption("green: none", "", 0);
   choice2->appendOption("green: lots", "", 2);
   choice2->appendOption("green: some", "", 1);
+  choice2->setDefault(0);
   page->addChild(*choice2);
 
   if (getImageEffectHostDescription()->supportsStrChoice)  {
@@ -657,6 +659,7 @@ void ChoiceParamsExamplePluginFactory::describeInContext(OFX::ImageEffectDescrip
     choice3->appendOption("blue_0.0", "blue: none", 0);
     choice3->appendOption("blue_0.5", "blue: some", 1);
     choice3->appendOption("blue_1.0", "blue: lots", 2);
+    choice3->setDefault("blue_0.0");
     page->addChild(*choice3);
   }
 }
