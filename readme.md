@@ -52,13 +52,13 @@ You can build the examples, support lib, and host support lib using Conan and CM
 
 ## Prerequisites
 
-Install cmake:
+Install cmake (version 3.28 or greater recommended):
 - Mac: `brew install cmake`
 - Windows: `choco install cmake`
 - Linux: `apt install cmake`
 
-Install conan using pip (and python3) -- we still require conan v1, although conan v2 has been released:
-- `pip3 install conan<2.0.0`
+Install conan (version >= 2.1.0 recommended) using pip (and python3)
+- `pip3 install 'conan>=2.1.0'`
 
 
 ## Build

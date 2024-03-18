@@ -31,6 +31,7 @@ jobs:
             compiler-desc: Clang
             checkout_version: 3
             cuda: false
+            opencl: true
           - name_prefix: Linux CentOS 7 VFX CY2022
             release_prefix: linux-vfx2022
             ostype: linux
@@ -47,6 +48,7 @@ jobs:
             compiler-desc: Clang
             checkout_version: 3
             cuda: false
+            opencl: true
           - name_prefix: Linux Rocky 8 VFX CY2023
             release_prefix: linux-vfx2023
             ostype: linux
@@ -63,6 +65,7 @@ jobs:
             compiler-desc: Clang
             checkout_version: 4
             cuda: false
+            opencl: true
           - name_prefix: Linux Ubuntu
             release_prefix: linux-ubuntu
             ostype: linux
@@ -78,6 +81,7 @@ jobs:
             compiler-desc: Clang
             checkout_version: 4
             cuda: true
+            opencl: true
           - name_prefix: MacOS
             release_prefix: mac
             ostype: mac
@@ -92,6 +96,7 @@ jobs:
             compiler-desc: Clang
             checkout_version: 4
             cuda: false
+            opencl: true
           - name_prefix: Windows
             release_prefix: windows
             ostype: windows
@@ -106,6 +111,7 @@ jobs:
             compiler-desc: Clang
             checkout_version: 4
             cuda: true
+            opencl: true
           - name_prefix: Windows no CUDA
             release_prefix: windows-no-cuda
             ostype: windows
@@ -120,6 +126,7 @@ jobs:
             compiler-desc: Clang
             checkout_version: 4
             cuda: false
+            opencl: false
     defaults:
       run:
         shell: bash
@@ -200,17 +207,19 @@ jobs:
 
       - name: Install dependencies
         run: |
-          conan install -s build_type=${{ matrix.buildtype }} -pr:b=default --build=missing .
+          [[ ${{ matrix.opencl }} = true ]] && USE_OPENCL="-o use_opencl=True"
+          conan install -s build_type=${{ matrix.buildtype }} -pr:b=default --build=missing . $USE_OPENCL
 
       - name: Configure project with cmake
         run: |
-          [[ ${{ matrix.cuda }} = true ]] && CUDA=TRUE || CUDA=FALSE
+          CMAKE_DEFINES=(-DBUILD_EXAMPLE_PLUGINS=TRUE \
+              -DPLUGIN_INSTALLDIR=$(pwd)/build/Install \
+              -DOFX_SUPPORTS_OPENGLRENDER=TRUE)
+          [[ ${{ matrix.opencl }} = true ]] && CMAKE_DEFINES+=(-DOFX_SUPPORTS_OPENCLRENDER=TRUE)
+          [[ ${{ matrix.cuda }} = true ]] && CMAKE_DEFINES+=(-DOFX_SUPPORTS_CUDARENDER=TRUE)
           if [[ ${{ matrix.has_cmake_presets }} = true ]]; then
             # Sets up to build in e.g. build/Release
-            cmake --preset $CONAN_PRESET -DBUILD_EXAMPLE_PLUGINS=TRUE \
-              -DPLUGIN_INSTALLDIR=$(pwd)/$BUILD_DIR/Install \
-              -DOFX_SUPPORTS_OPENGLRENDER=TRUE \
-              -DOFX_SUPPORTS_CUDARENDER=$CUDA .
+            cmake --preset $CONAN_PRESET ${CMAKE_DEFINES[@]} .
           else
             # VFX ref platforms 2022 & earlier have only cmake 3.19.
             # Older cmake (<3.23) does not support presets, so invoke with explicit args.
@@ -218,10 +227,7 @@ jobs:
               -DCMAKE_TOOLCHAIN_FILE=$(pwd)/$BUILD_DIR/generators/conan_toolchain.cmake \
               -DCMAKE_POLICY_DEFAULT_CMP0091=NEW \
               -DCMAKE_BUILD_TYPE=Release \
-              -DBUILD_EXAMPLE_PLUGINS=TRUE \
-              -DPLUGIN_INSTALLDIR=$(pwd)/$BUILD_DIR/Install \
-              -DOFX_SUPPORTS_OPENGLRENDER=TRUE \
-              -DOFX_SUPPORTS_CUDARENDER=$CUDA
+              ${CMAKE_DEFINES[@]}
           fi
 
       - name: Build with cmake

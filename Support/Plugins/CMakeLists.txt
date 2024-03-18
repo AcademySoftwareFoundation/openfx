@@ -38,6 +38,10 @@ foreach(PLUGIN IN LISTS PLUGINS)
           if (OFX_SUPPORTS_OPENCLRENDER)
             target_link_libraries(${TGT} "-framework OpenCL")
           endif()
+        else()
+          if (OFX_SUPPORTS_OPENCLRENDER)
+            target_link_libraries(${TGT} OpenCL::Headers OpenCL::OpenCL)
+          endif()
         endif()
 
 

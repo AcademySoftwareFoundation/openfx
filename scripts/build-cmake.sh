@@ -7,13 +7,25 @@ set -e
 BUILDTYPE=Release               # "Release" or "Debug"
 VERBOSE=""
 GENERATOR=""
+USE_OPENCL=""
+
+usage() {
+    echo "Usage: $0 [-v|-C] [-G Generator] BUILDTYPE CMAKE-ARGS..."
+    echo " -v: verbose"
+    echo " -C: Build examples with OpenCL support"
+    echo " -G: Use a cmake generator other than the default (e.g. Ninja)"
+    echo " BUILDTYPE may be Debug or Release"
+    echo " the rest of the args are passed to cmake"
+}
 
 # Parse options
-while getopts ":vG:" opt; do
-  echo "Parsing ${opt}"
+while getopts ":vG:C" opt; do
   case ${opt} in
     v )
       VERBOSE="--verbose"
+      ;;
+    C )
+      USE_OPENCL=1
       ;;
     G )
       GENERATOR=${OPTARG}
@@ -21,10 +33,12 @@ while getopts ":vG:" opt; do
       ;;
     \? )
       echo "Invalid option: $OPTARG" 1>&2
+      usage
       exit 1
       ;;
     : )
       echo "Invalid option: $OPTARG requires an argument" 1>&2
+      usage
       exit 1
       ;;
   esac
@@ -64,15 +78,15 @@ else
     exit 1
 fi
 
-set -x
-
 # Install dependencies, set up build dir, and generate build files.
 echo === Running conan to install dependencies
-conan install ${GENERATOR_OPTION} -s build_type=$BUILDTYPE -pr:b=default --build=missing .
+[[ $USE_OPENCL ]] && conan_opts="$conan_opts -o use_opencl=True"
+conan install ${GENERATOR_OPTION} -s build_type=$BUILDTYPE -pr:b=default --build=missing . $conan_opts
 
 echo === Running cmake
 # Generate the build files
-cmake --preset ${PRESET_NAME} -DBUILD_EXAMPLE_PLUGINS=TRUE $ARGS
+[[ $USE_OPENCL ]] && cmake_opts="$cmake_opts -DOFX_SUPPORTS_OPENCLRENDER=TRUE"
+cmake --preset ${PRESET_NAME} -DBUILD_EXAMPLE_PLUGINS=TRUE $cmake_opts $ARGS
 
 echo === Building and installing plugins and support libs
 cmake --build ${CMAKE_BUILD_DIR} --target install --config $BUILDTYPE --parallel $VERBOSE

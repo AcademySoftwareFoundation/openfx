@@ -12,11 +12,6 @@ class openfx(ConanFile):
 	url = "https://github.com/AcademySoftwareFoundation/openfx"
 	description = "OpenFX image processing plug-in standard"
 	
-	requires = (
-		"opengl/system",
-		"expat/2.4.8"   # for HostSupport
-	)
-
 	exports_sources = (
 		"cmake/*",
 		"Examples/*",
@@ -31,11 +26,19 @@ class openfx(ConanFile):
 	)
 
 	settings = "os", "arch", "compiler", "build_type"
-
+	options = {"use_opencl": [True, False]}
 	default_options = {
-		"expat/*:shared": True
+		"expat/*:shared": True,
+                "use_opencl": False
 	}
 	
+	def requirements(self):
+		if self.options.use_opencl: # for OpenCL examples
+			self.requires("opencl-icd-loader/2023.12.14")
+			self.requires("opencl-headers/2023.12.14")
+		self.requires("opengl/system") # for OpenGL examples
+		self.requires("expat/2.4.8") # for HostSupport
+
 	def layout(self):
 		cmake_layout(self)
 
