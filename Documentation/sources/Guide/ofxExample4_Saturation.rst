@@ -50,7 +50,7 @@ choose the most appropriate one for what it wants to do.
 
 This example plugin shows you how to do that.
 
-.. _describing_our_plugin:
+.. _describing_our_plugin__sat:
 
 Describing Our Plugin
 =====================
@@ -59,7 +59,7 @@ Our basic describe action is pretty much the same as all the other
 examples, but with one minor difference, we set two contexts in which
 the effect can be used in.
 
-`saturation.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example4/saturation.cpp#347>`_
+`saturation.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example4/saturation.cpp#347>`__
 
 ::
 
@@ -86,7 +86,7 @@ In the case of the general context, the default behaviour might not work
 the way you want, and you may have to trap other actions. Fortunately
 the defaults work for us as will.
 
-`saturation.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example4/saturation.cpp#388>`_
+`saturation.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example4/saturation.cpp#388>`__
 
 .. code:: c++
 
@@ -215,7 +215,7 @@ Create Instance
 This is pretty familiar, though we have a slight change to handle the
 mask input.
 
-`saturation.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example4/saturation.cpp#483>`_
+`saturation.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example4/saturation.cpp#483>`__
 
 .. code:: c++
 
@@ -278,7 +278,7 @@ are now fetching a third image, for the mask image, and we are prepared
 for this to fail and keep going as we may be in the filter context, or
 we may be in the general context but the clip is not connected.
 
-`saturation.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example4/saturation.cpp#629>`_
+`saturation.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example4/saturation.cpp#629>`__
 
 .. code:: c++
 
@@ -380,7 +380,7 @@ common average. The tweak we add is to modulate the amount of the effect
 by looking at the pixel values of the mask input if we have one. Again
 this is not meant to be fast code, just illustrative.
 
-`saturation.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example4/saturation.cpp#553>`_
+`saturation.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example4/saturation.cpp#553>`__
 
 .. code:: c++
 
@@ -466,13 +466,13 @@ this is not meant to be fast code, just illustrative.
 .. _a_bit_of_houskeeping:
 
 A Bit Of Housekeeping
-====================
+=====================
 
 You may have noticed I’ve gone and created an ``Image`` class. I got
 bored of passing around various pointers and bounds and strides in my
 code and decided to tidy it up.
 
-`saturation.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example4/saturation.cpp#110>`_
+`saturation.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example4/saturation.cpp#110>`__
 
 .. code:: c++
 
@@ -531,7 +531,7 @@ but I’m keeping all the code for each example in one source file for
 illustrative purposes. Feel free to steal this and use it in your own
 code  [1]_.
 
-.. __summary:
+.. _summary_sat:
 
 Summary
 =======

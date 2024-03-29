@@ -18,12 +18,12 @@ a host application.
 There are two include files that are used with nearly every derived API.
 These are...
 
--  `ofxCore.h <https://github.com/ofxa/openfx/blob/master/include/ofxCore.h>`_
+-  `ofxCore.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxCore.h>`__
    is used to define the basic communication mechanisms between a host
    and a plug-in. This includes the way in which a plug-in is defined to
    a host and how to bootstrap the two way communications. It also has
    several other basic action and property definitions.
--  `ofxProperty.h <https://github.com/ofxa/openfx/blob/master/include/ofxProperty.h>`_
+-  `ofxProperty.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxProperty.h>`__
    specifies the property suite, which is how a plug-in gets and sets
    values on various objects in a host application.
 
@@ -61,7 +61,7 @@ The returned pointer to OfxGetPlugin and pointers in the struct do not need to b
 The Plug-in Main Entry Point And Actions
 ----------------------------------------
 
-Actions are how a host communicates with a plug-in. They are in effect generic function calls. Actions are issued via a plug-in's ``mainEntry``function pointer found in its :ref:`OfxPlugin struct<OfxPlugin>`. The function signature for the main entry point is
+Actions are how a host communicates with a plug-in. They are in effect generic function calls. Actions are issued via a plug-in's ``mainEntry`` function pointer found in its :ref:`OfxPlugin struct<OfxPlugin>`. The function signature for the main entry point is
 
 .. doxygentypedef:: OfxPluginEntryPoint
 

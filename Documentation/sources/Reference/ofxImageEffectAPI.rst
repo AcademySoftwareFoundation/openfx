@@ -25,27 +25,27 @@ Image Effect API Header Files
 
 The header files used to define the OFX Image Effect API are...
 
--  `ofxCore.h <https://github.com/ofxa/openfx/blob/master/include/ofxCore.h>`_
+-  `ofxCore.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxCore.h>`__
    Provides the core definitions of the general OFX architecture that
    allow the bootstrapping of specific APIs, as well as several core actions,
--  `ofxProperty.h <https://github.com/ofxa/openfx/blob/master/include/ofxProperty.h>`_
+-  `ofxProperty.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxProperty.h>`__
     Provides generic property fetching suite used to get and set values about objects in the API,
--  `ofxParam.h <https://github.com/ofxa/openfx/blob/master/include/ofxParam.h>`_
+-  `ofxParam.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxParam.h>`__
    Provides the suite for defining user visible parameters to an
    effect
--  `ofxMultiThread.h <https://github.com/ofxa/openfx/blob/master/include/ofxMultiThread.h>`_
+-  `ofxMultiThread.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxMultiThread.h>`__
    Provides the suite for basic multi-threading capabilities
--  `ofxInteract.h <https://github.com/ofxa/openfx/blob/master/include/ofxInteract.h>`_
+-  `ofxInteract.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxInteract.h>`__
    Provides the suite that allows a plug-in to use OpenGL to draw their own interactive GUI tools
--  `ofxKeySyms.h <https://github.com/ofxa/openfx/blob/master/include/ofxKeySyms.h>`_
+-  `ofxKeySyms.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxKeySyms.h>`__
    Provides key symbols used by 'Interacts' to represent keyboard events
--  `ofxMemory.h <https://github.com/ofxa/openfx/blob/master/include/ofxMemory.h>`_
+-  `ofxMemory.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxMemory.h>`__
    Provides a simple memory allocation suite,
--  `ofxMessage.h <https://github.com/ofxa/openfx/blob/master/include/ofxMessage.h>`_
+-  `ofxMessage.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxMessage.h>`__
    Provides a simple messaging suite to communicate with an end user
--  `ofxImageEffect.h <https://github.com/ofxa/openfx/blob/master/include/ofxImageEffect.h>`_
+-  `ofxImageEffect.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxImageEffect.h>`__
    Defines a suite and set of actions that draws all the above together to create an visual effect plug-in.
--  `ofxDrawSuite.h <https://github.com/ofxa/openfx/blob/master/include/ofxDrawSuite.h>`_
+-  `ofxDrawSuite.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxDrawSuite.h>`__
    Provides an optional suite that allows a plug-in to draw their own interactive GUI tools without using OpenGL
 
 These contain the suite definitions, property definitions and action
@@ -297,7 +297,7 @@ Parameter sets are the collection of parameters that an effect has
 associated with it. They are represented by the type
 :cpp:type:`OfxParamSetHandle`. The contents of an effect's parameter set are
 defined during the
-:c:macro:`kOfxImageEffectActionDescribeInContext action.
+:c:macro:`kOfxImageEffectActionDescribeInContext` action.
 Parameters cannot be dynamically added to, or deleted from an effect instance.
 
 Parameters can be of a wide range of types, each of which have their own

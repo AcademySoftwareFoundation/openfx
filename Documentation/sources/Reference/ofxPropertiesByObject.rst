@@ -11,18 +11,12 @@ Properties by object reference
 Properties on the Image Effect Host
 -----------------------------------
 
-.. doxygendefine:: kOfxPropAPIVersion
-
-   (read only) the version of the API implemented by the host, if not
-   present, it is safe to assume "1.0"
-
-.. doxygendefine:: kOfxPropType
-
-   (read only) set to "host"
-
+-  kOfxPropAPIVersion
+   - (read only) the version of the API implemented by the host. If not present, it is safe to assume "1.0"
+-  kOfxPropType
+   - (read only) set to "host"
 -  kOfxPropName
-   - (read only) the globally unique name of the application, eg:
-   "com.acmesofware.funkyCompositor"
+   - (read only) the globally unique name of the application, eg: "com.acmesofware.funkyCompositor"
 -  kOfxPropLabel
    - (read only) the user visible name of the appliaction,
 -  kOfxPropVersion

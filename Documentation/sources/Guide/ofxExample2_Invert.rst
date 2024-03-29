@@ -20,7 +20,7 @@ total  [1]_ and set very few switches.
 From the source, here is the main entry routine that traps those
 actions...
 
-`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L416>`_
+`invert.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L416>`__
 
 .. code:: c++
 
@@ -69,7 +69,7 @@ Describing Our Plugin
 
 We have the standard two step description process for this plugin.
 
-`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L117>`_
+`invert.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L117>`__
 
 .. code:: c++
 
@@ -171,7 +171,7 @@ output image. If not set, it is up to the plugin to launch the
 appropriate number of threads and divide the processing appropriately
 across them.
 
-`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L171>`_
+`invert.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L171>`__
 
 .. code:: c++
 
@@ -360,7 +360,7 @@ address of a pixel in the image? Well you use the following information:
 The code snippet below shows you how to use all that to find the address
 of a pixel whose coordinates are on the image plane.
 
-`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L216>`_
+`invert.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L216>`__
 
 .. code:: c++
 
@@ -429,7 +429,7 @@ hosts and plugins.
 Anyway, here is code from our example using the property mechanism to
 get the required data from an image…
 
-`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L242>`_
+`invert.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L242>`__
 
 .. code:: c++
 
@@ -482,7 +482,7 @@ As stated above, the render action is the one used to get a plugin to
 actually process images. I’ll go through it in stages rather than have
 one big listing.
 
-`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L310>`_
+`invert.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L310>`__
 
 .. code:: c++
 
@@ -527,7 +527,7 @@ render window to fill in of the larger output image.
     that the plugin does not rely on any implicit state, such as time,
     everything is explicit.
 
-`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L323>`_
+`invert.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L323>`__
 
 .. code:: c++
 
@@ -542,7 +542,7 @@ render window to fill in of the larger output image.
 This next snippet fetches two clip handles by name from the instance,
 using the image effect suite.  [2]_
 
-`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L331>`_
+`invert.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L331>`__
 
 .. code:: c++
 
@@ -570,7 +570,7 @@ We will be given back two property set handles which represent our
 images. If the call failed (which could be for a variety of good
 reasons) we give up with a ``throw``.
 
-`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L345>`_
+`invert.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L345>`__
 
 .. code:: c++
 
@@ -601,7 +601,7 @@ and output images will always have the same number of components and the
 same data types. Which is why we aren’t checking for the source for its
 pixel information.
 
-`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L365>`_
+`invert.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L365>`__
 
 .. code:: c++
 
@@ -629,7 +629,7 @@ correctly instantiate our templated function which will do the grunt
 work of iterating over pixels. Note also that it is passing the nominal
 maximum value of the data type as a template argument.
 
-`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L383>`_
+`invert.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L383>`__
 
 .. code:: c++
 
@@ -675,7 +675,7 @@ status.
 
 Now for our pixel pushing code. [3]_
 
-`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L242>`_
+`invert.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L242>`__
 
 .. code:: c++
 
@@ -720,7 +720,7 @@ The first thing it does is to pull out the bounds, rowbytes and
 destination pointer of our two images. We can now iterate over the
 render window and set pixels in the output image.
 
-`invert.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L273>`_
+`invert.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example2/invert.cpp#L273>`__
 
 .. code:: c++
 

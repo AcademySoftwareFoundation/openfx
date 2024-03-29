@@ -828,7 +828,7 @@ understand some of the terms being discussed.
 .. _ParameterPropertiesDoubleTypesStrictlySpatial:
 
 Spatial Double Parameters
-~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 These parameter types represent a size or position in one or two
 dimensions in :ref:`Canonical Coordinate <CanonicalCoordinates>`. The host
@@ -864,7 +864,7 @@ Parameters can choose to be spatial in several ways...
 .. _ParameterPropertiesDoubleTypesNormalised:
 
 Spatial Normalised Double Parameters
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Ideally, normalised parameters should be deprecated and no longer used
 if :ref:`spatial <ParameterPropertiesDoubleTypesSpatial>` parameters are
@@ -901,7 +901,7 @@ Parameters can choose to be normalised in several ways...
     normalised to the project's X and Y size (2D only),
 -  :c:macro:`kOfxParamDoubleTypeNormalisedXYAbsolute`
     normalised to the projects X and Y size, and is an absolute
-   position on the image plane.
+    position on the image plane.
 
 See the section on :ref:`coordinate systems <CoordinateSystems>` on how to
 scale between normalised, canonical and pixel coordinates.
@@ -941,7 +941,7 @@ new :cpp:class:`OfxParametricParameterSuiteV1`
 is there to do that.
 
 All the defines and suite definitions for parameteric parameters are
-defined in the file `ofxParametricParam.h <https://github.com/ofxa/openfx/blob/master/include/ofxParametricParam.h>`_
+defined in the file `ofxParametricParam.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxParametricParam.h>`__
 
 Parametric parameters are in effect *functions* a plug-in can ask a host
 to arbitrarily evaluate for some value *x*. A classic use case would be
@@ -990,10 +990,10 @@ parameter properties available. These are
     the dimension of the parametric parameter,
 -  :c:macro:`kOfxParamPropParametricUIColour`
     the colour of the curves of a parametric parameter in any user
-   interface
+    interface
 -  :c:macro:`kOfxParamPropParametricInteractBackground`
     a pointer to an interact entry point, which will be used to draw a
-   background under any user interface,
+    background under any user interface,
 -  :c:macro:`kOfxParamPropParametricRange`
     the min and max value that the parameter will be evaluated over.
 

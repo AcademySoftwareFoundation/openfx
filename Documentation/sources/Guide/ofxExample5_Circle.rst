@@ -23,7 +23,7 @@ Pixel Aspect Ratios
 
 Some display formats (for example standard definition PAL and NTSC) have
 non square pixels, which is quite annoying in my opinion. The `pixel
-aspect ratio <https://en.wikipedia.org/wiki/Pixel_aspect_ratio>`_
+aspect ratio <https://en.wikipedia.org/wiki/Pixel_aspect_ratio>`__
 defines how non-square your pixel is.
 
 .. figure:: Pics/kinder720.jpg
@@ -126,7 +126,7 @@ depending on what the host says it can do.
 
 Here is the source for the load action…
 
-`circle.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L348>`_
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L348>`__
 
 .. code:: c++
 
@@ -190,7 +190,7 @@ Note, we are relying on a parameter type that is only available with the
 1.2 version of OFX. Our plugin checks for this version of the API the
 host supports and will fail gracefully during the load action.
 
-`circle.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L471>`_
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L471>`__
 
 .. code:: c++
 
@@ -251,7 +251,7 @@ are being described relative to the project size. So our circle’s radius
 will default to be a quarter of the nominal project size’s x dimension.
 For a 1080 HD project, this would be a value of 480.
 
-`circle.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L513>`_
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L513>`__
 
 .. code:: c++
 
@@ -293,7 +293,7 @@ for such parameters to let you simply drag such positions around. We are
 also setting the default values relative to the project size, and in
 this case (0.5, 0.5), it should appear in the centre of the final image.
 
-`circle.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L543>`_
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L543>`__
 
 .. code:: c++
 
@@ -324,7 +324,7 @@ when you get and set the colour, you need to scale the values up to the
 nominal white point of your image, which is implicitly defined by the
 data type of the image.
 
-`circle.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L564>`_
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L564>`__
 
 .. code:: c++
 
@@ -354,7 +354,7 @@ We only able to modify the region of definition if the host has an
 architecture that supports that behaviour, which we checked at load time
 where we set the **gHostSupportsMultiRes** global variable.
 
-.. __get_region_of_definition_action:
+.. _get_region_of_definition_action:
 
 Get Region Of Definition Action
 ===============================
@@ -363,8 +363,7 @@ What is this region of definition action? Easy, an effect and a clip
 have a region of definition (RoD). This is the maximum rectangle for
 which an effect or clip can produce pixels. You can ask for RoD of a
 clip via the :cpp:func:`OfxImageEffectSuiteV1::clipGetRegionOfDefinition` function in the image
-effect suite. The RoD is currently defined in canonical coordinates
- [4]_.
+effect suite. The RoD is currently defined in canonical coordinates [4]_.
 
 Note that the RoD is independent of the **bounds** of a image, an
 image’s bounds may be less than, more than or equal to the RoD. It is up
@@ -382,7 +381,7 @@ To set the output rod, we need to trap the
 :c:macro:`kOfxImageEffectActionGetRegionOfDefinition` action. Our MainEntry
 function now has an extra conditional in there….
 
-`circle.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L978>`_
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L978>`__
 
 .. code:: c++
 
@@ -397,7 +396,7 @@ definition on those hosts RoDs are fixed.
 
 The code for the action itself is quite simple:
 
-`circle.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L844>`_
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L844>`__
 
 ::
 
@@ -461,7 +460,7 @@ and say that we trapped the action.
 
 All fairly easy.
 
-.. __is_identity_action:
+.. _is_identity_action_circle:
 
 Is Identity Action
 ==================
@@ -470,7 +469,7 @@ Our identity checking action is fairly obvious, we check to see if our
 circle has a non zero radius, and to see if we are not growing the RoD
 and our circle is outside the RoD.
 
-.. __rendering:
+.. _rendering_circle:
 
 Rendering
 =========
@@ -479,7 +478,7 @@ The action code is fairly boiler plate, it fetches parameter values and
 images from clips before calling the templated PixelProcessing function.
 Which is below:
 
-`circle.cpp <https://github.com/ofxa/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L670>`_
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L670>`__
 
 ::
 
@@ -569,7 +568,7 @@ anti-aliasing thrown in. This gives us a normalised alpha value.
 Our output value is our source pixel blended with our circle colour
 based on the intensity of the calculated alpha.
 
-.. _summary:
+.. _summary_circle:
 
 Summary
 =======

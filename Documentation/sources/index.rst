@@ -14,10 +14,10 @@ The OpenFX documentation is organized as follows:
 - The :doc:`reference guide<Reference/index>` contains the full reference documentation about the OpenFX protocol and design
 
 This documentation is also
-`available online <http://openfx.readthedocs.io/en/master/>`_
+`available online <http://openfx.readthedocs.io/en/master/>`__
 and can be downloaded as a
 `PDF <https://readthedocs.org/projects/openfx/downloads/pdf/master/>`_ or
-`HTML zip <https://readthedocs.org/projects/openfx/downloads/htmlzip/master/>`_
+`HTML zip <https://readthedocs.org/projects/openfx/downloads/htmlzip/master/>`__
 file.
 
 This manual is maintained largely by volunteers.

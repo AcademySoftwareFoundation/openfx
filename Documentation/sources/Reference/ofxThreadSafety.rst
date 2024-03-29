@@ -126,7 +126,7 @@ The image effect actions which may be called recursively are...
 -  :c:macro:`kOfxImageEffectActionGetClipPreferences`
 -  :c:macro:`kOfxImageEffectActionGetRegionOfDefinition`
    (as a result of calling
-    :cpp:func:`OfxImageEffectSuiteV1::clipGetImage`
+   :cpp:func:`OfxImageEffectSuiteV1::clipGetImage`
    from
    :c:macro:`kOfxActionInstanceChanged`
    )

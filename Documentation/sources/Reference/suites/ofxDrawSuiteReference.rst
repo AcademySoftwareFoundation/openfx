@@ -4,7 +4,7 @@ OfxDrawSuiteV1: Drawing Overlays
 
 Added for OFX v1.5, Jan 2022.
 
-See the source at `ofxDrawSuite.h <https://github.com/ofxa/openfx/blob/master/include/ofxDrawSuite.h>`_
+See the source at `ofxDrawSuite.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxDrawSuite.h>`__
 
 .. doxygenstruct:: OfxDrawSuiteV1
 
