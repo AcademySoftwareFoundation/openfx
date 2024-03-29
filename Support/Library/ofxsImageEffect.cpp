@@ -10,9 +10,7 @@
 #include <iostream>
 #endif
 #include <stdexcept>
-#ifdef OFX_SUPPORTS_OPENGLRENDER
 #include "ofxGPURender.h"
-#endif
 #include "ofxsCore.h"
 
 #if defined __APPLE__ || defined __linux__ || defined __FreeBSD__
