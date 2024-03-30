@@ -24,7 +24,7 @@ GPU Rendering
 -------------
 
 The GPU Rendering Suite now supports Metal, CUDA and OpenCL (images and textures).
-See `include/ofxGPURender.h` for details.
+See :ref:`gpu-rendering` and source file `include/ofxGPURender.h` for details.
 
 New Suites
 ----------

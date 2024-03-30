@@ -354,7 +354,12 @@ a user changing a parameter value. An effect should occasionally poll
 the :cpp:func:`OfxImageEffectSuiteV1::abort`
 function to see if it should give up on rendering.
 
+.. _gpu-rendering:
+
 Rendering on GPU
 ----------------
 
-.. doxygenfile:: ofxGPURender.h
+.. doxygenpage:: ofxOpenGLRender
+.. doxygengroup:: CudaRender
+.. doxygengroup:: MetalRender
+.. doxygengroup:: OpenClRender
