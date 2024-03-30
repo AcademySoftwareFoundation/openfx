@@ -235,6 +235,8 @@ jobs:
       #     rpm install libglvnd-devel
 
       - name: Install dependencies
+        env:
+          CONAN_CMAKE_GENERATOR: Ninja
         run: |
           [[ "${{ matrix.opengl }}" != false && "${{ matrix.opencl }}" = true ]] && USE_OPENCL="-o use_opencl=True"
           conan install -s build_type=${{ matrix.buildtype }} -pr:b=default --build=missing . $USE_OPENCL
@@ -251,10 +253,7 @@ jobs:
           else
              echo "OPENGL_BUILD=-no-ogl" >> $GITHUB_ENV
           fi
-          # Could probably use Ninja everywhere for speed, but needed on Windows for now
-          if [[ ${{ matrix.os }} = windows-latest ]]; then
-            CMAKE_GENERATOR=(-G Ninja)
-          fi
+          CMAKE_GENERATOR=(-G Ninja)
           if [[ ${{ matrix.has_cmake_presets }} = true ]]; then
             # Sets up to build in e.g. build/Release
             cmake --preset $CONAN_PRESET ${CMAKE_GENERATOR[@]} ${CMAKE_DEFINES[@]} .
