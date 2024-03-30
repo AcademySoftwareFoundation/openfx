@@ -235,11 +235,9 @@ jobs:
       #     rpm install libglvnd-devel
 
       - name: Install dependencies
-        env:
-          CONAN_CMAKE_GENERATOR: Ninja
         run: |
           [[ "${{ matrix.opengl }}" != false && "${{ matrix.opencl }}" = true ]] && USE_OPENCL="-o use_opencl=True"
-          conan install -s build_type=${{ matrix.buildtype }} -pr:b=default --build=missing . $USE_OPENCL
+          conan install -s build_type=${{ matrix.buildtype }} -pr:b=default --build=missing . -c tools.cmake.cmaketoolchain:generator=Ninja $USE_OPENCL
 
       - name: Configure project with cmake
         run: |
