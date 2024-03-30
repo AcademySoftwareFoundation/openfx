@@ -205,6 +205,9 @@ jobs:
         # which is extremely slow to install (see Jimver/cuda-toolkit below)
         # See comments at https://github.com/Jimver/cuda-toolkit/issues/253
 
+      - name: Setup Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v4
+
       - name: Install CUDA Toolkit
         uses: Jimver/cuda-toolkit@v0.2.11
         id: cuda-toolkit-linux
@@ -248,9 +251,13 @@ jobs:
           else
              echo "OPENGL_BUILD=-no-ogl" >> $GITHUB_ENV
           fi
+          # Could probably use Ninja everywhere for speed, but needed on Windows for now
+          if [[ ${{ matrix.os }} = windows-latest ]]; then
+            CMAKE_GENERATOR=(-G Ninja)
+          fi
           if [[ ${{ matrix.has_cmake_presets }} = true ]]; then
             # Sets up to build in e.g. build/Release
-            cmake --preset $CONAN_PRESET ${CMAKE_DEFINES[@]} .
+            cmake --preset $CONAN_PRESET ${CMAKE_GENERATOR[@]} ${CMAKE_DEFINES[@]} .
           else
             # VFX ref platforms 2022 & earlier have only cmake 3.19.
             # Older cmake (<3.23) does not support presets, so invoke with explicit args.
