@@ -198,6 +198,13 @@ jobs:
           brew:
           brew-cask:
 
+      - name: Setup MSVC
+        if: startsWith(matrix.os, 'windows')
+        uses: ilammy/msvc-dev-cmd@v1.13.0 # use cl, not msbuild
+        # We use cl.exe because it can find CUDA without the CUDA visual studio integration,
+        # which is extremely slow to install (see Jimver/cuda-toolkit below)
+        # See comments at https://github.com/Jimver/cuda-toolkit/issues/253
+
       - name: Install CUDA Toolkit
         uses: Jimver/cuda-toolkit@v0.2.11
         id: cuda-toolkit-linux
@@ -215,7 +222,7 @@ jobs:
         with:
           cuda: '12.1.0'
           method: 'network'
-          sub-packages: '["nvcc", "cudart", "visual_studio_integration"]'
+          sub-packages: '["nvcc", "cudart"]'
           # workaround for cuda-toolkit action bug https://github.com/Jimver/cuda-toolkit/issues/315
           use-github-cache: false
           use-local-cache: false
