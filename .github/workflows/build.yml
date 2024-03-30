@@ -193,6 +193,9 @@ jobs:
           cuda: '12.1.0'
           method: 'network'
           sub-packages: '["nvcc", "cudart", "visual_studio_integration"]'
+          # workaround for cuda-toolkit action bug https://github.com/Jimver/cuda-toolkit/issues/315
+          use-github-cache: false
+          use-local-cache: false
 
       # - name: Install system dependencies (CentOS)
       #   run: |
