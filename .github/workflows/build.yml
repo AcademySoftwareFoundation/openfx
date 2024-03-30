@@ -167,14 +167,8 @@ jobs:
           echo "BUILDTYPE_LC=$BUILDTYPE_LC" >> $GITHUB_ENV
           echo "OSNAME=$(echo '${{ matrix.os }}'|sed 's/-.*//')" >> $GITHUB_ENV
           echo "GIT_COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-          # Conan on Windows always uses "conan-default" preset
-          if [[ ${{ matrix.os }} = windows-latest ]]; then
-            echo "CONAN_PRESET=conan-default" >> $GITHUB_ENV
-            echo "BUILD_DIR=build" >> $GITHUB_ENV
-          else
-            echo "CONAN_PRESET=conan-$BUILDTYPE_LC" >> $GITHUB_ENV
-            echo "BUILD_DIR=build/${{ matrix.buildtype }}" >> $GITHUB_ENV
-          fi
+          echo "CONAN_PRESET=conan-$BUILDTYPE_LC" >> $GITHUB_ENV
+          echo "BUILD_DIR=build/${{ matrix.buildtype }}" >> $GITHUB_ENV
 
       - name: update Python pip
         run: |
