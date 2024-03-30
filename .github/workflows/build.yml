@@ -66,6 +66,22 @@ jobs:
             checkout_version: 4
             cuda: false
             opencl: true
+          - name_prefix: Linux Rocky 8 VFX CY2023 No OpenGL
+            release_prefix: linux-vfx2023-no-ogl
+            ostype: linux
+            aswfdockerbuild: true
+            os: ubuntu-latest
+            container: aswf/ci-base:2023
+            vfx-cy: 2023
+            has_cmake_presets: false
+            buildtype: Release
+            conan_version: 2.1.0
+            cxx-standard: 17
+            cxx-compiler: clang++
+            cc-compiler: clang
+            compiler-desc: Clang
+            checkout_version: 4
+            opengl: false
           - name_prefix: Linux Ubuntu
             release_prefix: linux-ubuntu
             ostype: linux
@@ -210,16 +226,21 @@ jobs:
 
       - name: Install dependencies
         run: |
-          [[ ${{ matrix.opencl }} = true ]] && USE_OPENCL="-o use_opencl=True"
+          [[ "${{ matrix.opengl }}" != false && "${{ matrix.opencl }}" = true ]] && USE_OPENCL="-o use_opencl=True"
           conan install -s build_type=${{ matrix.buildtype }} -pr:b=default --build=missing . $USE_OPENCL
 
       - name: Configure project with cmake
         run: |
           CMAKE_DEFINES=(-DBUILD_EXAMPLE_PLUGINS=TRUE \
-              -DPLUGIN_INSTALLDIR=$(pwd)/build/Install \
-              -DOFX_SUPPORTS_OPENGLRENDER=TRUE)
-          [[ ${{ matrix.opencl }} = true ]] && CMAKE_DEFINES+=(-DOFX_SUPPORTS_OPENCLRENDER=TRUE)
-          [[ ${{ matrix.cuda }} = true ]] && CMAKE_DEFINES+=(-DOFX_SUPPORTS_CUDARENDER=TRUE)
+              -DPLUGIN_INSTALLDIR=$(pwd)/build/Install)
+          if [[ "${{ matrix.opengl }}" != false ]] ; then
+             echo "OPENGL_BUILD=" >> $GITHUB_ENV
+             CMAKE_DEFINES+=(-DOFX_SUPPORTS_OPENGLRENDER=TRUE)
+             [[ "${{ matrix.opencl }}" = true ]] && CMAKE_DEFINES+=(-DOFX_SUPPORTS_OPENCLRENDER=TRUE)
+             [[ "${{ matrix.cuda }}"   = true ]] && CMAKE_DEFINES+=(-DOFX_SUPPORTS_CUDARENDER=TRUE)
+          else
+             echo "OPENGL_BUILD=-no-ogl" >> $GITHUB_ENV
+          fi
           if [[ ${{ matrix.has_cmake_presets }} = true ]]; then
             # Sets up to build in e.g. build/Release
             cmake --preset $CONAN_PRESET ${CMAKE_DEFINES[@]} .
@@ -267,7 +288,7 @@ jobs:
       - name: Archive header files and libs to artifact
         uses: actions/upload-artifact@v3
         with:
-          name: openfx-${{ matrix.release_prefix }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
+          name: openfx-${{ matrix.release_prefix }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}${{env.OPENGL_BUILD}}
           path: |
             ${{ env.BUILD_DIR }}/include
             !${{ env.BUILD_DIR }}/include/DocSrc
@@ -281,7 +302,7 @@ jobs:
       - name: Archive built/installed plugins
         uses: actions/upload-artifact@v3
         with:
-          name: openfx_plugins-${{ matrix.release_prefix }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}
+          name: openfx_plugins-${{ matrix.release_prefix }}-${{ env.BUILDTYPE_LC }}-${{ env.GIT_COMMIT_ID }}${{env.OPENGL_BUILD}}
           path: |
             build/Install
 
