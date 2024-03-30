@@ -167,14 +167,8 @@ jobs:
           echo "BUILDTYPE_LC=$BUILDTYPE_LC" >> $GITHUB_ENV
           echo "OSNAME=$(echo '${{ matrix.os }}'|sed 's/-.*//')" >> $GITHUB_ENV
           echo "GIT_COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-          # Conan on Windows always uses "conan-default" preset
-          if [[ ${{ matrix.os }} = windows-latest ]]; then
-            echo "CONAN_PRESET=conan-default" >> $GITHUB_ENV
-            echo "BUILD_DIR=build" >> $GITHUB_ENV
-          else
-            echo "CONAN_PRESET=conan-$BUILDTYPE_LC" >> $GITHUB_ENV
-            echo "BUILD_DIR=build/${{ matrix.buildtype }}" >> $GITHUB_ENV
-          fi
+          echo "CONAN_PRESET=conan-$BUILDTYPE_LC" >> $GITHUB_ENV
+          echo "BUILD_DIR=build/${{ matrix.buildtype }}" >> $GITHUB_ENV
 
       - name: update Python pip
         run: |
@@ -198,6 +192,16 @@ jobs:
           brew:
           brew-cask:
 
+      - name: Setup MSVC
+        if: startsWith(matrix.os, 'windows')
+        uses: ilammy/msvc-dev-cmd@v1.13.0 # use cl, not msbuild
+        # We use cl.exe because it can find CUDA without the CUDA visual studio integration,
+        # which is extremely slow to install (see Jimver/cuda-toolkit below)
+        # See comments at https://github.com/Jimver/cuda-toolkit/issues/253
+
+      - name: Setup Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v4
+
       - name: Install CUDA Toolkit
         uses: Jimver/cuda-toolkit@v0.2.11
         id: cuda-toolkit-linux
@@ -215,7 +219,7 @@ jobs:
         with:
           cuda: '12.1.0'
           method: 'network'
-          sub-packages: '["nvcc", "cudart", "visual_studio_integration"]'
+          sub-packages: '["nvcc", "cudart"]'
           # workaround for cuda-toolkit action bug https://github.com/Jimver/cuda-toolkit/issues/315
           use-github-cache: false
           use-local-cache: false
@@ -227,7 +231,7 @@ jobs:
       - name: Install dependencies
         run: |
           [[ "${{ matrix.opengl }}" != false && "${{ matrix.opencl }}" = true ]] && USE_OPENCL="-o use_opencl=True"
-          conan install -s build_type=${{ matrix.buildtype }} -pr:b=default --build=missing . $USE_OPENCL
+          conan install -s build_type=${{ matrix.buildtype }} -pr:b=default --build=missing . -c tools.cmake.cmaketoolchain:generator=Ninja $USE_OPENCL
 
       - name: Configure project with cmake
         run: |
@@ -241,9 +245,10 @@ jobs:
           else
              echo "OPENGL_BUILD=-no-ogl" >> $GITHUB_ENV
           fi
+          CMAKE_GENERATOR=(-G Ninja)
           if [[ ${{ matrix.has_cmake_presets }} = true ]]; then
             # Sets up to build in e.g. build/Release
-            cmake --preset $CONAN_PRESET ${CMAKE_DEFINES[@]} .
+            cmake --preset $CONAN_PRESET ${CMAKE_GENERATOR[@]} ${CMAKE_DEFINES[@]} .
           else
             # VFX ref platforms 2022 & earlier have only cmake 3.19.
             # Older cmake (<3.23) does not support presets, so invoke with explicit args.
