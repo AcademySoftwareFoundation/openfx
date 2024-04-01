@@ -129,3 +129,27 @@ images, state the value of a set of parameters and get a resulting image
 back. However how it does this is somewhat complicated, as the plug-in
 and host have to negotiate what kind of images are handled, how they can
 be processed and much more.
+
+Extending OFX
+-------------
+
+Since items are named using strings, private extensions to OFX can
+be done simply by `#define`-ing a new string value in a header that
+is used by both the host and the plug-in. However, to prevent naming
+collisions, it is important to prefix your new string with a unique
+identifier. The recommended format is the reverse domain name format of
+the developer, for example "uk.co.thefoundry", followed by the new item
+name.
+
+This applies to anything which could collide, such as suite names,
+actions, parameter types, pixel depths, image components, contexts, etc.
+Function names used inside a suite do not need a prefix.
+
+If a private extension is later suggested as and promoted to a standard
+part of OFX, the standard name will not use a prefix, and it is often
+the case that during standardization details of the extension might change.
+
+For details on extending the OFX standard, see 
+[Contributing to OpenFX](https://github.com/AcademySoftwareFoundation/openfx/blob/main/CONTRIBUTING.md),
+[OpenFX Standard Update Process](https://github.com/AcademySoftwareFoundation/openfx/blob/main/STANDARD_PROCESS.md),
+and [OpenFX Project Governance](https://github.com/AcademySoftwareFoundation/openfx/blob/main/GOVERNANCE.md).
