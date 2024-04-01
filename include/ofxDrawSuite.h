@@ -13,7 +13,8 @@ extern "C" {
 #endif
 
 /** @file ofxDrawSuite.h
-Contains the API for host-independent drawing. Added for OFX 1.5, Jan 2022.
+API for host- and GPU API-independent drawing.
+@version Added in OpenFX 1.5
 */
 
 

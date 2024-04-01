@@ -1,9 +1,8 @@
-
 Rendering
 =========
 
 The :c:macro:`kOfxImageEffectActionRender`
-action is passed to plugins, when the host requires them to render an
+action is passed to plugins when the host requires them to render an
 output frame.
 
 All calls to the
@@ -17,11 +16,10 @@ long sequences by setting up any tables etc.. it may need.
 
 The
 :c:macro:`kOfxImageEffectActionBeginSequenceRender`
-will indicate the frame range that is to be renderred, and whether this
+will indicate the frame range that is to be rendered, and whether this
 is purely a single frame render due to interactive feedback from a user
 in a GUI.
 
-The render action is used in conjunction with the optional
 
 Identity Effects
 ----------------
@@ -95,7 +93,7 @@ Indicating that any instance of a plugin can have multiple renders running simul
 .. ImageEffectsSMPRendering:
 
 Rendering in a Symmetric Multi Processing Environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When rendering on computers that have more that once CPU (or this
 new-fangled hyperthreading), hosts and effects will want to take
@@ -233,15 +231,9 @@ and image instance property can be...
 
 .. doxygendefine:: kOfxImageFieldNone
 
-The material is unfielded
-
 .. doxygendefine:: kOfxImageFieldLower
 
-The material is fielded, with scan line 0,2,4.... occurring first in a frame
-
 .. doxygendefine:: kOfxImageFieldUpper
-
-The material is fielded, with scan line 1,3,5.... occurring first in a frame
 
 Images extracted from a clip flag what their fieldedness is with the
 property :c:macro:`kOfxImagePropField`, this can
@@ -249,28 +241,15 @@ be....
 
 .. doxygendefine:: kOfxImageFieldNone
 
-The image is an unfielded frame
-
 .. doxygendefine:: kOfxImageFieldBoth
-
-The image is fielded and contains both interlaced fields
 
 .. doxygendefine:: kOfxImageFieldLower
 
-The image is fielded and contains a single field, being the lower field (lines 0,2,4...)
-
 .. doxygendefine:: kOfxImageFieldUpper
 
-The image is fielded and contains a single field, being the upper field (lines 1,3,5...)
+The plugin specifies how it deals with fielded imagery by setting this property:
 
-The plugin specifies how it deals with fielded imagery by setting the
-:c:macro:`kOfxImageEffectPluginPropFieldRenderTwiceAlways`
-property. This can be,
-
--  0 - the plugin is to have it's render function called twice only if
-   there is animation in any of it's parameters
--  1 - the plugin is to have it's render function called twice always
-   (default)
+.. doxygendefine:: kOfxImageEffectPluginPropFieldRenderTwiceAlways
 
 The reason for this is an optimisation. Imagine a text generator with no
 animation being asked to render into a fielded output clip, it can treat
@@ -375,7 +354,12 @@ a user changing a parameter value. An effect should occasionally poll
 the :cpp:func:`OfxImageEffectSuiteV1::abort`
 function to see if it should give up on rendering.
 
+.. _gpu-rendering:
+
 Rendering on GPU
 ----------------
 
-.. doxygenfile:: ofxGPURender.h
+.. doxygenpage:: ofxOpenGLRender
+.. doxygengroup:: CudaRender
+.. doxygengroup:: MetalRender
+.. doxygengroup:: OpenClRender

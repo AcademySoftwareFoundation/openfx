@@ -2,34 +2,8 @@
 #ifndef __OFXGPURENDER_H__
 #define __OFXGPURENDER_H__
 
-/*
-Software License :
-
-Copyright (c) 2023, The Open Effects Association Ltd. All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-    * Redistributions of source code must retain the above copyright notice,
-      this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-      and/or other materials provided with the distribution.
-    * Neither the name The Open Effects Association Ltd, nor the names of its
-      contributors may be used to endorse or promote products derived from this
-      software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+// Copyright OpenFX and contributors to the OpenFX project.
+// SPDX-License-Identifier: BSD-3-Clause
 
 /** @file ofxGPURender.h
 
@@ -547,6 +521,8 @@ current for other OFX calls, such as ::kOfxImageEffectActionDescribeInContext.
 
 /**
  * @defgroup CudaRender CUDA Rendering
+ * @version CUDA rendering was added in version 1.5.
+ *
  * @{
  */
 /** @brief Indicates whether a host or plug-in can support CUDA render
@@ -626,6 +602,7 @@ If not set:
 
 /**
  * @defgroup MetalRender Apple Metal Rendering
+ * @version Metal rendering was added in version 1.5.
  * @{
  */
 /** @brief Indicates whether a host or plug-in can support Metal render
@@ -683,6 +660,7 @@ complete before returning from the render action.
 
 /**
  * @defgroup OpenClRender OpenCL Rendering
+ * @version OpenCL rendering was added in version 1.5.
  * @{
  */
 /** @brief Indicates whether a host or plug-in can support OpenCL Buffers render

@@ -156,6 +156,7 @@ situations...
 
 -  in the :c:macro:`kOfxImageEffectActionRender` action
 -  in the :c:macro:`kOfxActionInstanceChanged`
+
 and :c:macro:`kOfxActionEndInstanceChanged` actions with a :c:macro:`kOfxPropChangeReason` of :c:macro:`kOfxChangeUserEdited`
 
 A host may not be able to support random temporal access, it flags its
@@ -169,6 +170,7 @@ to perform random access from.
 
     -  it is an error for a plugin to attempt random temporal image access if the host does not support it
     -  it is an error for a plugin to attempt random temporal image access
+
    if it has not flagged that it wishes to do so and the clip it wishes
    to do so from.
 

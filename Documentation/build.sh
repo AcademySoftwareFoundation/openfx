@@ -50,7 +50,7 @@ python -m breathe.apidoc -p 'ofx_reference' -m --force -g class,interface,struct
 
 
 # Build the Sphinx docs
-EXPECTED_ERRS="Explicit markup ends without|Duplicate declaration|cpp:func targets a member|undefined label"
+EXPECTED_ERRS='Explicit markup ends without|Duplicate C.*declaration|Declaration is|cpp:func targets a member|undefined label'
 sphinx-build -b html sources build > /tmp/ofx-doc-build.out 2>&1
 egrep -v "$EXPECTED_ERRS" /tmp/ofx-doc-build.out || true
 

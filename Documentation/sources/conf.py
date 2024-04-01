@@ -9,7 +9,7 @@
 
 import subprocess, os, shutil
 project = 'OpenFX'
-copyright = '2023, Contributors to the OpenFX Project'
+copyright = '2024, Contributors to the OpenFX Project'
 author = 'Contributors to the OpenFX Project'
 release = '1.4'
 

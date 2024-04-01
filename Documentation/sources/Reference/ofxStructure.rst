@@ -46,7 +46,7 @@ Properties are typed value/name pairs that exist on the various OFX
 objects and are action argument values to the plug-in's main entry
 point. They are how a plug-in and host pass individual values back and
 forth to each other. The property suite, defined inside
-`ofxProperty.h <https://github.com/ofxa/openfx/blob/master/include/ofxProperty.h>`_
+`ofxProperty.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxProperty.h>`__
 is used to do this.
 
 OFX APIs

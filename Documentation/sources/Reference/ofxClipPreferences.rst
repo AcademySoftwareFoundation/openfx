@@ -129,7 +129,7 @@ The bitdepth must be one of:
 * .. doxygendefine:: kOfxBitDepthNone
 
 Specifying Pixel Components
----------------------
+---------------------------
 
 A plugin specifies what components it is willing to accept on a clip via
 the
@@ -264,7 +264,7 @@ The mapping of the number of output frames is as follows:
 Specifying Premultiplication
 ----------------------------
 
-All clips have a premultiplication state (see `this <http://www.teamten.com/lawrence/graphics/premultiplication/>`_
+All clips have a premultiplication state (see `this <http://www.teamten.com/lawrence/graphics/premultiplication/>`__
 for a nice explanation).
 An effect cannot map the premultiplication state of the
 input clips, but it can specify the premultiplication state of the

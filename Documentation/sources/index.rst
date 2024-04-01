@@ -12,12 +12,13 @@ The OpenFX documentation is organized as follows:
 
 - The :doc:`programming guide<Guide/index>` contains everything to get started with OpenFX to create a new plug-in or host application
 - The :doc:`reference guide<Reference/index>` contains the full reference documentation about the OpenFX protocol and design
+- The :doc:`release notes<ReleaseNotes/index>` contains release notes, documenting changes in recent OpenFX releases.
 
 This documentation is also
-`available online <http://openfx.readthedocs.io/en/master/>`_
+`available online <http://openfx.readthedocs.io/en/master/>`__
 and can be downloaded as a
 `PDF <https://readthedocs.org/projects/openfx/downloads/pdf/master/>`_ or
-`HTML zip <https://readthedocs.org/projects/openfx/downloads/htmlzip/master/>`_
+`HTML zip <https://readthedocs.org/projects/openfx/downloads/htmlzip/master/>`__
 file.
 
 This manual is maintained largely by volunteers.
@@ -29,4 +30,4 @@ The `Creative Commons Attribution-ShareAlike 4.0 International License (CC-BY-SA
 
     Reference/index
     Guide/index
-
+    ReleaseNotes/index
