@@ -35,42 +35,12 @@ An application which allows you build a video clip by layering video clips, stil
 
 Please read the [Contribution Guidelines](https://github.com/ofxa/openfx/wiki/Extending-OpenFX-Guidelines) for how to submit pull requests for fixes and changes to the standard.
 
-# Building
+# Building Libs and Plugins
 
-You can build the examples, support lib, and host support lib using Conan and CMake
+You can build the examples, support lib, and host support lib using Conan and CMake.
 
-## Prerequisites
-
-Install cmake (version 3.28 or greater recommended):
-- Mac: `brew install cmake`
-- Windows: `choco install cmake`
-- Linux: `apt install cmake`
-
-Install conan (version >= 2.1.0 recommended) using pip (and python3)
-- `pip3 install 'conan>=2.1.0'`
-
-
-## Build
-
-On all OSes, you should be able to use `scripts/build-cmake.sh` which does something like this:
-
-```sh
-# Install dependencies from conanfile.py
-% conan install -s build_type=Release --build=missing .
-# Configure cmake to build into Build folder, and build example plugins
-# Note: The preset name is platform and conan version dependent. The preset name for your specific platform will be printed by the "conan install" command.
-% cmake --preset default -DBUILD_EXAMPLE_PLUGINS=TRUE
-# Do the build
-# Note: The build directory is also generator specific. If the preset name is something like "release", then you'll likely need to use "--build build/Release" instead of "--build build"
-% cmake --build build --config Release
-```
-
-This should build with the default Visual Studio on Windows and
-Makefiles with gcc on Linux and Mac. You can use alternative build
-systems supported by CMake like `ninja` if you want (not covered
-here).
-
+On all OSes (even Windows with Mingw), you should be able to use `scripts/build-cmake.sh`. For more details, see [install.md](install.md).
 
 # Building Docs
 
-See instructions in Documentation/README.md.
+See instructions in [Documentation/README.md](Documentation/README.md).
