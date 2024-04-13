@@ -4,9 +4,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 # Extract information from an OCIO config to C header.
-# OCIO environment variable must point to the config being extracted.
 # Example invocation:
-# OCIO=ocio://studio-config-v1.0.0_aces-v1.3_ocio-v2.1 scripts/genColour > include/ofxColourspaceList.h
+# scripts/genColour > include/ofxColourspaceList.h
 
 import PyOpenColorIO as OCIO
 from string import Template
@@ -41,15 +40,25 @@ def camel_name(name):
 
 define_base = '#define kOfxColourspace'
 
+def colourspace_short_name(spc):
+   name = spc.getName()
+   aliases = spc.getAliases()
+   if ' ' in name and len(aliases) > 0:
+      return aliases[0]
+   else:
+      return name
+
 def print_name(name):
    print(f'{define_base}{camel_name(name)} "{name}"')
 
 def print_role(role):
-   print(f'\n// {role[0]}')
-   print(f'{define_base}Role{camel_name(role[0])} "{role[0]}"')
-   print(f'{define_base}Role{camel_name(role[0])}Colourspace "{role[1]}"')
-   role_map = '{ "' + role[0] + '", "' + role[1] + '" }'
-   print(f'{define_base}Role{camel_name(role[0])}Mapping {role_map}')
+   role_name = role[0]
+   colourspace_name = colourspace_short_name(studio_config.getColorSpace(role[1]))
+   print(f'\n// {role_name}')
+   print(f'{define_base}Role{camel_name(role_name)} "{role_name}"')
+   print(f'{define_base}Role{camel_name(role_name)}Colourspace "{colourspace_name}"')
+   role_map = '{ "' + role_name + '", "' + colourspace_name + '" }'
+   print(f'{define_base}Role{camel_name(role_name)}Mapping {role_map}')
    
 def print_string_property(name, propname, value):
    print(f'{define_base}{camel_name(name)}{propname} "{value}"')
@@ -61,32 +70,40 @@ def print_list(name, list):
    name_list = '{ "' + '", "'.join(list) + '" }'
    print(f'{define_base}{camel_name(name)}List {name_list}')
 
-config = OCIO.GetCurrentConfig()
-def print_colourspace(spc):
-   name = spc.getName()
+cg_config = OCIO.Config.CreateFromBuiltinConfig('cg-config-v2.1.0_aces-v1.3_ocio-v2.3')
+studio_config = OCIO.Config.CreateFromBuiltinConfig('studio-config-v2.1.0_aces-v1.3_ocio-v2.3')
+def print_colourspace(spc, is_core):
+   name = colourspace_short_name(spc)
+   display_name = spc.getName()
    print(f'\n// {name}\n//', '\n// '.join(spc.getDescription().split('\n')).replace('\n// \n', '\n'))
    print_name(name)
-   name_list = [name]
+   print_string_property(name, 'DisplayName', display_name)
+   name_list = [display_name]
    for alias in spc.getAliases():
       name_list.append(alias)
       print_string_property(name, f'Alias{camel_name(alias)}', alias)
    print_list(name, name_list)
    print_string_property(name, 'Encoding', spc.getEncoding())
-   print_bool_property(name, 'SceneLinear', config.isColorSpaceLinear(name, OCIO.REFERENCE_SPACE_SCENE))
+   print_bool_property(name, 'SceneLinear', studio_config.isColorSpaceLinear(name, OCIO.REFERENCE_SPACE_SCENE))
    print_bool_property(name, 'Data', spc.isData())
+   print_bool_property(name, 'Core', is_core)
 
-print(Template(header).substitute(config_name=config.getName()))
+print(Template(header).substitute(config_name=studio_config.getName()))
 
 print('// Roles')
-for role in config.getRoles():
+for role in studio_config.getRoles():
    print_role(role)
 
 print('\n// Display Colourspaces')
-for display in config.getDisplays():
-   print_colourspace(config.getColorSpace(display))
+core_displays = cg_config.getDisplays()
+for display in studio_config.getDisplays():
+   is_core = display in core_displays
+   print_colourspace(studio_config.getColorSpace(display), is_core)
 
 print('\n// Scene Colourspaces')
-for spc in config.getColorSpaces():
-   print_colourspace(spc)
+core_colourspaces = cg_config.getColorSpaceNames()
+for spc in studio_config.getColorSpaces():
+   is_core = spc.getName() in core_colourspaces
+   print_colourspace(spc, is_core)
 
 print(footer)
