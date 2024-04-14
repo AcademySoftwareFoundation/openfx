@@ -72,6 +72,11 @@ def print_list(name, list):
 
 cg_config = OCIO.Config.CreateFromBuiltinConfig('cg-config-v2.1.0_aces-v1.3_ocio-v2.3')
 studio_config = OCIO.Config.CreateFromBuiltinConfig('studio-config-v2.1.0_aces-v1.3_ocio-v2.3')
+
+# Workaround for OCIO issue #123, missing encoding on srgb_tx
+srgb_tx = studio_config.getColorSpace('srgb_tx')
+srgb_tx.setEncoding('sdr-video')
+
 def print_colourspace(spc, is_core):
    name = colourspace_short_name(spc)
    display_name = spc.getName()
