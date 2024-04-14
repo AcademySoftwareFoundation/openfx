@@ -106,9 +106,11 @@ for display in studio_config.getDisplays():
    print_colourspace(studio_config.getColorSpace(display), is_core)
 
 print('\n// Scene Colourspaces')
-core_colourspaces = cg_config.getColorSpaceNames()
 for spc in studio_config.getColorSpaces():
-   is_core = spc.getName() in core_colourspaces
+   if None == cg_config.getColorSpace(spc.getName()):
+      is_core = False
+   else:
+      is_core = True
    print_colourspace(spc, is_core)
 
 print(footer)
