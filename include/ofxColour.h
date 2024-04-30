@@ -106,7 +106,7 @@ Use of URIs for built-in configs, such as ocio://default is permitted.
    - Valid Values - colourspace that is permitted under the style in use.
                     For OCIO, any string acceptable to Config::getColorSpace()
 
-Hosts should set this property to the colourspace of the input clip. Typically 
+Hosts should set this property to the colourspace of the input clip. Typically
 it will be set to the working colourspace of the host but could be any valid 
 colourspace.
 

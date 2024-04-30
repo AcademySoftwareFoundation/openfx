@@ -29,7 +29,9 @@ class openfx(ConanFile):
 	options = {"use_opencl": [True, False]}
 	default_options = {
 		"expat/*:shared": True,
-                "use_opencl": False
+                "use_opencl": False,
+                "spdlog/*:header_only": True,
+                "fmt/*:header_only": True
 	}
 	
 	def requirements(self):
@@ -38,6 +40,8 @@ class openfx(ConanFile):
 			self.requires("opencl-headers/2023.12.14")
 		self.requires("opengl/system") # for OpenGL examples
 		self.requires("expat/2.4.8") # for HostSupport
+		self.requires("cimg/3.3.2") # to draw text into images
+		self.requires("spdlog/1.13.0") # for logging
 
 	def layout(self):
 		cmake_layout(self)
