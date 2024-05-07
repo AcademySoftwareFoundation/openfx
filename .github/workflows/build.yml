@@ -172,6 +172,7 @@ jobs:
 
       - name: Set up python 3.11
         uses: actions/setup-python@v5
+        if: matrix.ostype == 'mac'
         with:
           python-version: '3.11'
           cache: 'pip'
