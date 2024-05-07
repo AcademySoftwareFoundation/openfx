@@ -64,6 +64,8 @@ These strings are used to identify the type of the parameter when it is defined,
 #define kOfxParamTypeString "OfxParamTypeString"
 /** @brief String to identify a param as a Plug-in defined parameter */
 #define kOfxParamTypeCustom "OfxParamTypeCustom"
+/** @brief String to identify a param as a Plug-in defined opaque data parameter */
+#define kOfxParamTypeBytes "OfxParamTypeBytes"
 /** @brief String to identify a param as a Grouping parameter */
 #define kOfxParamTypeGroup "OfxParamTypeGroup"
 /** @brief String to identify a param as a page parameter */
@@ -71,6 +73,16 @@ These strings are used to identify the type of the parameter when it is defined,
 /** @brief String to identify a param as a PushButton parameter */
 #define kOfxParamTypePushButton "OfxParamTypePushButton"
 /*@}*/
+
+/** @brief Provides information for a parameter of type kOfxParamTypeBytes
+ */
+typedef struct OfxBytes
+{
+    /** @brief a pointer to the data buffer */
+    const unsigned char *data;
+    /** @brief the length of the data buffer, in bytes */
+    size_t length;
+} OfxBytes;
 
 /**
    \addtogroup PropertiesAll
