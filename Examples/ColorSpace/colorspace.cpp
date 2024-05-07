@@ -12,6 +12,8 @@
 #include <array>
 #include <cstring>
 #include "spdlog/spdlog.h"
+#define cimg_display 0          // no X11
+#include "CImg.h"
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
@@ -69,7 +71,6 @@ struct MyInstanceData {
 
   // handles to the clips we deal with
   OfxImageClipHandle sourceClip;
-  OfxImageClipHandle maskClip;
   OfxImageClipHandle outputClip;
 
   // handles to a our parameters
@@ -195,12 +196,6 @@ createInstance( OfxImageEffectHandle effect)
   gEffectHost->clipGetHandle(effect, kOfxImageEffectSimpleSourceClipName, &myData->sourceClip, 0);
   gEffectHost->clipGetHandle(effect, kOfxImageEffectOutputClipName, &myData->outputClip, 0);
   
-  if(myData->isGeneralEffect) {
-    gEffectHost->clipGetHandle(effect, "Mask", &myData->maskClip, 0);
-  }
-  else
-    myData->maskClip = 0;
-
   // set my private instance data
   gPropHost->propSetPointer(effectProps, kOfxPropInstanceData, 0, (void *) myData);
 
@@ -238,8 +233,6 @@ getSpatialRoD( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxP
   OfxRectD rod;
   gEffectHost->clipGetRegionOfDefinition(myData->sourceClip, time, &rod);
 
-  // note that the RoD is _not_ dependent on the Mask clip
-
   // set the rod in the out args
   gPropHost->propSetDoubleN(outArgs, kOfxImageEffectPropRegionOfDefinition, 4, &rod.x1);
 
@@ -260,10 +253,6 @@ getSpatialRoI( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxP
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
 
-  // if a general effect, we need to know the mask as well
-  if(myData->isGeneralEffect && ofxuIsClipConnected(effect, "Mask")) {
-    gPropHost->propSetDoubleN(outArgs, "OfxImageClipPropRoI_Mask", 4, &roi.x1);
-  }
   return kOfxStatOK;
 }
 
@@ -307,16 +296,6 @@ getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs
   gPropHost->propSetString(outArgs, "OfxImageClipPropComponents_Output", 0, componentStr);
   if(gHostSupportsMultipleBitDepths)
     gPropHost->propSetString(outArgs, "OfxImageClipPropDepth_Output", 0, bitDepthStr);
-
-  // if a general effect, we may have a mask input, check that for types
-  if(myData->isGeneralEffect) {
-    if(ofxuIsClipConnected(effect, "Mask")) {
-      // set the mask input to be a single channel image of the same bitdepth as the source
-      gPropHost->propSetString(outArgs, "OfxImageClipPropComponents_Mask", 0, kOfxImageComponentAlpha);
-      if(gHostSupportsMultipleBitDepths) 
-	gPropHost->propSetString(outArgs, "OfxImageClipPropDepth_Mask", 0, bitDepthStr);
-    }
-  }
 
   // Colour management -- preferred colour spaces, in order (most preferred first)
 #define PREFER_COLOURSPACES
@@ -386,238 +365,20 @@ instanceChanged( OfxImageEffectHandle  effect,
   return kOfxStatReplyDefault;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// rendering routines
-template <class T> inline T 
-Clamp(T v, int min, int max)
-{
-  if(v < T(min)) return T(min);
-  if(v > T(max)) return T(max);
-  return v;
-}
 
-// look up a pixel in the image, does bounds checking to see if it is in the image rectangle
-template <class PIX> inline PIX *
-pixelAddress(PIX *img, OfxRectI rect, int x, int y, int bytesPerLine)
-{  
-  if(x < rect.x1 || x >= rect.x2 || y < rect.y1 || y >= rect.y2 || !img)
-    return 0;
-  PIX *pix = (PIX *) (((char *) img) + (y - rect.y1) * bytesPerLine);
-  pix += x - rect.x1;  
-  return pix;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// base class to process images with
-class Processor {
- protected :
-  OfxImageEffectHandle  instance;
-  float         rScale, gScale, bScale, aScale;
-  void *srcV, *dstV, *maskV; 
-  OfxRectI srcRect, dstRect, maskRect;
-  int srcBytesPerLine, dstBytesPerLine, maskBytesPerLine;
-  OfxRectI  window;
-
- public :
-  Processor(OfxImageEffectHandle  inst,
-            float rScal, float gScal, float bScal, float aScal,
-            void *src, OfxRectI sRect, int sBytesPerLine,
-            void *dst, OfxRectI dRect, int dBytesPerLine,
-            void *mask, OfxRectI mRect, int mBytesPerLine,
-            OfxRectI  win)
-    : instance(inst)
-    , rScale(rScal)
-    , gScale(gScal)
-    , bScale(bScal)
-    , aScale(aScal)
-    , srcV(src)
-    , dstV(dst)
-    , maskV(mask)
-    , srcRect(sRect)
-    , dstRect(dRect)
-    , maskRect(mRect)
-    , srcBytesPerLine(sBytesPerLine)
-    , dstBytesPerLine(dBytesPerLine)
-    , maskBytesPerLine(mBytesPerLine)
-    , window(win)
-  {}  
-
-  static void multiThreadProcessing(unsigned int threadId, unsigned int nThreads, void *arg);
-  virtual void doProcessing(OfxRectI window) = 0;
-  void process(void);
-};
-
-
-// function call once for each thread by the host
-void
-Processor::multiThreadProcessing(unsigned int threadId, unsigned int nThreads, void *arg)
-{
-  Processor *proc = (Processor *) arg;
-
-  // slice the y range into the number of threads it has
-  unsigned int dy = proc->window.y2 - proc->window.y1;
-  
-  unsigned int y1 = proc->window.y1 + threadId * dy/nThreads;
-  unsigned int y2 = proc->window.y1 + std::min((threadId + 1) * dy/nThreads, dy);
-
-  OfxRectI win = proc->window;
-  win.y1 = y1; win.y2 = y2;
-
-  // and render that thread on each
-  proc->doProcessing(win);  
-}
-
-// function to kick off rendering across multiple CPUs
-void
-Processor::process(void)
-{
-  unsigned int nThreads;
-  gThreadHost->multiThreadNumCPUs(&nThreads);
-  gThreadHost->multiThread(multiThreadProcessing, nThreads, (void *) this);
-}
-
-// template to do the RGBA processing
-template <class PIX, class MASK, int max, int isFloat>
-class ProcessRGBA : public Processor{
-public :
-  ProcessRGBA(OfxImageEffectHandle  instance,
-	      float rScale, float gScale, float bScale, float aScale,
-	      void *srcV, OfxRectI srcRect, int srcBytesPerLine,
-	      void *dstV, OfxRectI dstRect, int dstBytesPerLine,
-	      void *maskV, OfxRectI maskRect, int maskBytesPerLine,
-	      OfxRectI  window)
-    : Processor(instance,
-                rScale, gScale, bScale, aScale,
-                srcV,  srcRect,  srcBytesPerLine,
-                dstV,  dstRect,  dstBytesPerLine,
-                maskV,  maskRect, maskBytesPerLine,
-                window)
-  {
-  }
-
-  void doProcessing(OfxRectI procWindow)
-  {
-    PIX *src = (PIX *) srcV;
-    PIX *dst = (PIX *) dstV;
-    MASK *mask = (MASK *) maskV;
-
-    for(int y = procWindow.y1; y < procWindow.y2; y++) {
-      if(gEffectHost->abort(instance)) break;
-
-      PIX *dstPix = pixelAddress(dst, dstRect, procWindow.x1, y, dstBytesPerLine);
-
-      for(int x = procWindow.x1; x < procWindow.x2; x++) {
-        
-        PIX *srcPix = pixelAddress(src, srcRect, x, y, srcBytesPerLine);
-        
-        
-        // do any pixel masking?
-        float maskV = 1.0f;
-        if(mask) {
-          MASK *maskPix = pixelAddress(mask, maskRect, x, y, maskBytesPerLine);
-          if(maskPix) {
-            maskV = float(*maskPix)/float(max);
-          }
-          else
-            maskV = 0.0f;
-          maskPix++;
-        }
-
-        // figure the scale values per component
-        float sR = 1.0 + (rScale - 1.0) * maskV;
-        float sG = 1.0 + (gScale - 1.0) * maskV;
-        float sB = 1.0 + (bScale - 1.0) * maskV;
-        float sA = 1.0 + (aScale - 1.0) * maskV;
-
-        if(srcPix) {
-          // switch will be compiled out
-          if(isFloat) {
-            dstPix->r = srcPix->r * sR;
-            dstPix->g = srcPix->g * sG;
-            dstPix->b = srcPix->b * sB;
-            dstPix->a = srcPix->a * sA;
-          }
-          else {
-            dstPix->r = Clamp(int(srcPix->r * sR), 0, max);
-            dstPix->g = Clamp(int(srcPix->g * sG), 0, max);
-            dstPix->b = Clamp(int(srcPix->b * sB), 0, max);
-            dstPix->a = Clamp(int(srcPix->a * sA), 0, max);
-          }
-          srcPix++;
-        }
-        else {
-          dstPix->r = dstPix->g = dstPix->b = dstPix->a= 0;
-        }
-        dstPix++;
-      }
+static std::string getClipColourspace(const OfxImageClipHandle clip) {
+    OfxPropertySetHandle clipProps;
+    gEffectHost->clipGetPropertySet(clip, &clipProps);
+    char *tmpStr = NULL;
+    OfxStatus status = gPropHost->propGetString(clipProps, kOfxImageClipPropColourspace, 0, &tmpStr);
+    if (status == kOfxStatOK) {
+      return std::string(tmpStr);
+    } else {
+      spdlog::info("Can't get clip's colourspace; propGetString returned {}", errMsg(status));
+      return std::string("unspecified");
     }
-  }
-};
 
-// template to do the Alpha processing
-template <class PIX, class MASK, int max, int isFloat>
-class ProcessAlpha : public Processor {
-public :
-  ProcessAlpha( OfxImageEffectHandle  instance,
-               float scale,
-               void *srcV, OfxRectI srcRect, int srcBytesPerLine,
-               void *dstV, OfxRectI dstRect, int dstBytesPerLine,
-               void *maskV, OfxRectI maskRect, int maskBytesPerLine,
-               OfxRectI  window)
-    : Processor(instance,
-                scale, scale, scale, scale,
-                srcV,  srcRect,  srcBytesPerLine,
-                dstV,  dstRect,  dstBytesPerLine,
-                maskV,  maskRect, maskBytesPerLine,
-                window)
-  {
-  }
-
-  void doProcessing(OfxRectI procWindow)
-  {
-    PIX *src = (PIX *) srcV;
-    PIX *dst = (PIX *) dstV;
-    MASK *mask = (MASK *) maskV;
-
-    for(int y = procWindow.y1; y < procWindow.y2; y++) {
-      if(gEffectHost->abort(instance)) break;
-
-      PIX *dstPix = pixelAddress(dst, dstRect, procWindow.x1, y, dstBytesPerLine);
-
-      for(int x = procWindow.x1; x < procWindow.x2; x++) {
-        
-        PIX *srcPix = pixelAddress(src, srcRect, x, y, srcBytesPerLine);
-
-        // do any pixel masking?
-        float maskV = 1.0f;
-        if(mask) {
-          MASK *maskPix = pixelAddress(mask, maskRect, x, y, maskBytesPerLine);
-          if(maskPix) {
-            maskV = float(*maskPix)/float(max);
-          }
-        }
-
-        // figure the scale values per component
-        float theScale = 1.0 + (rScale - 1.0) * maskV;
-
-        if(srcPix) {
-          // switch will be compiled out
-          if(isFloat) {
-            *dstPix = *srcPix * theScale;
-          }
-          else {
-            *dstPix = Clamp(int(*srcPix * theScale), 0, max);
-          }
-          srcPix++;
-        }
-        else {
-          *dstPix = 0;
-        }
-        dstPix++;
-      }
-    }
-  }
-};
+}
 
 // the process code  that the host sees
 static OfxStatus render( OfxImageEffectHandle  instance,
@@ -643,20 +404,10 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   OfxRectI dstRect, srcRect, maskRect = {0, 0, 0, 0};
   void *src, *dst, *mask = NULL;
 
-  std::string inputColourspace;
-  {
-    OfxPropertySetHandle clipProps;
-    gEffectHost->clipGetPropertySet(myData->sourceClip, &clipProps);
-    char *tmpStr = NULL;
-    OfxStatus status = gPropHost->propGetString(clipProps, kOfxImageClipPropColourspace, 0, &tmpStr);
-    if (status == kOfxStatOK) {
-      inputColourspace = tmpStr;
-      spdlog::info("Input clip colourspace = {}", inputColourspace);
-    } else {
-      inputColourspace = "unknown";
-      spdlog::info("Can't get input clip's colourspace; propGetString returned {}", errMsg(status));
-    }
-  }
+  std::string inputColourspace = getClipColourspace(myData->sourceClip);
+  spdlog::info("source clip colourspace = {}", inputColourspace);
+  std::string outputColourspace = getClipColourspace(myData->outputClip);
+  spdlog::info("output clip colourspace = {}", outputColourspace);
 
   try {
     // get the source image
@@ -667,107 +418,48 @@ static OfxStatus render( OfxImageEffectHandle  instance,
     outputImg = ofxuGetImage(myData->outputClip, time, dstRowBytes, dstBitDepth, dstIsAlpha, dstRect, dst);
     if(outputImg == NULL) throw OfxuNoImageException();
 
-    if(myData->isGeneralEffect) {
-      // is the mask connected?
-      if(ofxuIsClipConnected(instance, "Mask")) {
-        maskImg = ofxuGetImage(myData->maskClip, time, maskRowBytes, maskBitDepth, maskIsAlpha, maskRect, mask);
-
-        if(maskImg != NULL) {                        
-          // and see that it is a single component
-          if(!maskIsAlpha || maskBitDepth != srcBitDepth) {
-            throw OfxuStatusException(kOfxStatErrImageFormat);
-          }  
-        }
-      }
-    }
-
     // see if they have the same depths and bytes and all
-    if(srcBitDepth != dstBitDepth || srcIsAlpha != dstIsAlpha) {
+    if(srcBitDepth != dstBitDepth || srcIsAlpha != dstIsAlpha || srcRowBytes != dstRowBytes) {
       throw OfxuStatusException(kOfxStatErrImageFormat);
     }
 
-    // are we component scaling
-    int scaleComponents;
-    gParamHost->paramGetValueAtTime(myData->perComponentScaleParam, time, &scaleComponents);
-
-    // get the scale parameters
-    double scale, rScale = 1, gScale = 1, bScale = 1, aScale = 1;
-    gParamHost->paramGetValueAtTime(myData->scaleParam, time, &scale);
-
-    if(scaleComponents) {
-      gParamHost->paramGetValueAtTime(myData->scaleRParam, time, &rScale);
-      gParamHost->paramGetValueAtTime(myData->scaleGParam, time, &gScale);
-      gParamHost->paramGetValueAtTime(myData->scaleBParam, time, &bScale);
-      gParamHost->paramGetValueAtTime(myData->scaleAParam, time, &aScale);
-    }
-    rScale *= scale; gScale *= scale; bScale *= scale; aScale *= scale;
-  
+    int xdim = srcRect.x2 - srcRect.x1;
+    int ydim = srcRect.y2 - srcRect.y1;
     // do the rendering
-    if(!dstIsAlpha) {
-      switch(dstBitDepth) {
-      case 8 : {      
-        ProcessRGBA<OfxRGBAColourB, unsigned char, 255, 0> fred(instance, rScale, gScale, bScale, aScale,
-                                                                src, srcRect, srcRowBytes,
-                                                                dst, dstRect, dstRowBytes,
-                                                                mask, maskRect, maskRowBytes,
-                                                                renderWindow);
-        fred.process();                                          
-      }
-        break;
 
-      case 16 : {
-        ProcessRGBA<OfxRGBAColourS, unsigned short, 65535, 0> fred(instance, rScale, gScale, bScale, aScale,
-                                                                   src, srcRect, srcRowBytes,
-                                                                   dst, dstRect, dstRowBytes,
-                                                                   mask, maskRect, maskRowBytes,
-                                                                   renderWindow);
-        fred.process();           
-      }                          
-        break;
-
-      case 32 : {
-        ProcessRGBA<OfxRGBAColourF, float, 1, 1> fred(instance, rScale, gScale, bScale, aScale,
-                                                      src, srcRect, srcRowBytes,
-                                                      dst, dstRect, dstRowBytes,
-                                                      mask, maskRect, maskRowBytes,
-                                                      renderWindow);
-        fred.process();                                          
-        break;
-      }
-      }
+    int nchannels = 4;
+    int font_height = 128;
+    spdlog::info("Rendering {}x{} image @{},{}, depth={}", xdim, ydim, srcRect.x1, srcRect.y1, dstBitDepth);
+    switch(dstBitDepth) {
+    case 8 : {
+      using T = unsigned char;
+      auto img = cimg_library::CImg<T>((const T *)src, xdim, ydim, 1, nchannels, true);
+      T fg[] = {255, 255, 0, 255};
+      T bg[] = {0, 0, 0, 0};
+      img.draw_text(100, 100, "Test (byte)!", fg, bg, 1.0, font_height);
+      memcpy(dst, src, srcRowBytes * ydim * nchannels);
     }
-    else {
-      switch(dstBitDepth) {
-      case 8 : {
-        ProcessAlpha<unsigned char, unsigned char, 255, 0> fred(instance, scale, 
-                                                                src, srcRect, srcRowBytes,
-                                                                dst, dstRect, dstRowBytes,
-                                                                mask, maskRect, maskRowBytes,
-                                                                renderWindow);
-        fred.process();                                                                                  
-      }
-        break;
-
-      case 16 : {
-        ProcessAlpha<unsigned short, unsigned short, 65535, 0> fred(instance, scale, 
-                                                                    src, srcRect, srcRowBytes,
-                                                                    dst, dstRect, dstRowBytes,
-                                                                    mask, maskRect, maskRowBytes,
-                                                                    renderWindow);
-        fred.process();           
-      }                          
-        break;
-
-      case 32 : {
-        ProcessAlpha<float, float, 1, 1> fred(instance, scale, 
-                                              src, srcRect, srcRowBytes,
-                                              dst, dstRect, dstRowBytes,
-                                              mask, maskRect, maskRowBytes,
-                                              renderWindow);
-        fred.process();           
-      }                          
-        break;
-      }
+      break;
+    case 16 : {
+      using T = unsigned short;
+      auto img = cimg_library::CImg<T>((const T *)src, xdim, ydim, 1, nchannels, true);
+      T fg[] = {65535, 65535, 0, 65535};
+      T bg[] = {0, 0, 0, 0};
+      img.draw_text(100, 100, "Test (short)!", fg, bg, 1.0, font_height);
+      memcpy(dst, src, srcRowBytes * ydim * nchannels);
+    }
+      break;
+    case 32 : {
+      using T = float;
+      auto img = cimg_library::CImg<T>((const T *)src, xdim, ydim, 1, nchannels, true);
+      T fg[] = {1.0, 0.0, 1.0, 1.0};
+      T bg[] = {0, 0, 0, 0};
+      img.mirror('y');
+      img.draw_text(100, 100, "Test (float)!", fg, bg, 1.0, font_height);
+      img.mirror('y');
+      memcpy(dst, src, srcRowBytes * ydim * nchannels);
+    }
+      break;
     }
   }
   catch(OfxuNoImageException &ex) {
@@ -782,8 +474,6 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   }
 
   // release the data pointers
-  if(maskImg)
-    gEffectHost->clipReleaseImage(maskImg);
   if(sourceImg)
     gEffectHost->clipReleaseImage(sourceImg);
   if(outputImg)
@@ -792,33 +482,6 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   return status;
 }
 
-// convenience function to define scaling parameter
-static void
-defineScaleParam( OfxParamSetHandle effectParams,
-                 const char *name,
-                 const char *label,
-                 const char *scriptName,
-                 const char *hint,
-                 const char *parent)
-{
-  OfxPropertySetHandle props;
-  OfxStatus stat;
-  stat = gParamHost->paramDefine(effectParams, kOfxParamTypeDouble, name, &props);
-  if (stat != kOfxStatOK) {
-    throw OfxuStatusException(stat);
-  }
-  // say we are a scaling parameter
-  gPropHost->propSetString(props, kOfxParamPropDoubleType, 0, kOfxParamDoubleTypeScale);
-  gPropHost->propSetDouble(props, kOfxParamPropDefault, 0, 1.0);
-  gPropHost->propSetDouble(props, kOfxParamPropMin, 0, 0.0);
-  gPropHost->propSetDouble(props, kOfxParamPropDisplayMin, 0, 0.0);
-  gPropHost->propSetDouble(props, kOfxParamPropDisplayMax, 0, 100.0);
-  gPropHost->propSetString(props, kOfxParamPropHint, 0, hint);
-  gPropHost->propSetString(props, kOfxParamPropScriptName, 0, scriptName);
-  gPropHost->propSetString(props, kOfxPropLabel, 0, label);
-  if(parent)
-    gPropHost->propSetString(props, kOfxParamPropParent, 0, parent);
-}
 
 //  describe the plugin in context
 static OfxStatus
@@ -835,63 +498,18 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
 
   // set the component types we can handle on out output
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
-  gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
 
   // define the single source clip in both contexts
   gEffectHost->clipDefine(effect, kOfxImageEffectSimpleSourceClipName, &props);
 
   // set the component types we can handle on our main input
   gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
-  gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 1, kOfxImageComponentAlpha);
-
-  if(isGeneralContext) {
-    // define a second input that is a mask, alpha only and is optional
-    gEffectHost->clipDefine(effect, "Mask", &props);
-    gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentAlpha);
-    gPropHost->propSetInt(props, kOfxImageClipPropOptional, 0, 1);
-  }
 
   ////////////////////////////////////////////////////////////////////////////////
   // define the parameters for this context
   // fetch the parameter set from the effect
   OfxParamSetHandle paramSet;
   gEffectHost->getParamSet(effect, &paramSet);
-
-  // overall scale param
-  defineScaleParam(paramSet, "scale", "scale", "scale", "Scales all component in the image", 0);
-
-  // boolean param to enable/disable per component scaling
-  gParamHost->paramDefine(paramSet, kOfxParamTypeBoolean, "scaleComponents", &props);
-  gPropHost->propSetInt(props, kOfxParamPropDefault, 0, 0);
-  gPropHost->propSetString(props, kOfxParamPropHint, 0, "Enables scales on individual components");
-  gPropHost->propSetString(props, kOfxParamPropScriptName, 0, "scaleComponents");
-  gPropHost->propSetString(props, kOfxPropLabel, 0, "Scale Individual Components");
-  
-  // grouping parameter for the by component params
-  gParamHost->paramDefine(paramSet, kOfxParamTypeGroup, "componentScales", &props);
-  gPropHost->propSetString(props, kOfxParamPropHint, 0, "Scales on the individual component");
-  gPropHost->propSetString(props, kOfxPropLabel, 0, "Components");
-
-  // rgb and a scale params
-  defineScaleParam(paramSet, "scaleR", "red", "scaleR", 
-                   "Scales the red component of the image", "componentScales");
-  defineScaleParam(paramSet, "scaleG", "green", "scaleG",
-                   "Scales the green component of the image", "componentScales");
-  defineScaleParam(paramSet, "scaleB", "blue", "scaleB", 
-                   "Scales the blue component of the image", "componentScales");
-  defineScaleParam(paramSet, "scaleA", "alpha", "scaleA", 
-                   "Scales the alpha component of the image", "componentScales");
-
-  
-  // make a page of controls and add my parameters to it
-  gParamHost->paramDefine(paramSet, kOfxParamTypePage, "Main", &props);
-  gPropHost->propSetString(props, kOfxParamPropPageChild, 0, "scale");
-  gPropHost->propSetString(props, kOfxParamPropPageChild, 1, "scaleComponents");
-  gPropHost->propSetString(props, kOfxParamPropPageChild, 2, "scaleR");
-  gPropHost->propSetString(props, kOfxParamPropPageChild, 3, "scaleG");
-  gPropHost->propSetString(props, kOfxParamPropPageChild, 4, "scaleB");
-  gPropHost->propSetString(props, kOfxParamPropPageChild, 5, "scaleA");
-
 
   return kOfxStatOK;
 }
