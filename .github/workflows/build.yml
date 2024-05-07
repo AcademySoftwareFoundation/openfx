@@ -170,12 +170,11 @@ jobs:
           echo "CONAN_PRESET=conan-$BUILDTYPE_LC" >> $GITHUB_ENV
           echo "BUILD_DIR=build/${{ matrix.buildtype }}" >> $GITHUB_ENV
 
-      - name: update Python pip
-        run: |
-          mkdir -p "$HOME/.config/pip"
-          # work around PEP 668, "This environment is externally managed"
-          echo "[global]\nbreak-system-packages = true" >> "$HOME/.config/pip/pip.conf"
-          python3 -mpip install --upgrade pip
+      - name: Set up python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
 
       - name: Install Conan
         id: conan
