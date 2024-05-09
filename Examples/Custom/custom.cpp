@@ -37,6 +37,8 @@
 #endif
 
 #define kPointParam "point"
+#define kDataParam "data"
+#define kButtonParam "button"
 
 // pointers to various bits of the host
 OfxHost                 *gHost;
@@ -73,7 +75,7 @@ writeCustomParam(char *str, int strlen, double x, double y)
 #endif
 }
 
-// set the current value of my custom parameter
+// get the current value of my custom parameter
 static OfxStatus
 getCustomParam(OfxImageEffectHandle pluginInstance, double &x, double &y)
 {
@@ -92,7 +94,7 @@ getCustomParam(OfxImageEffectHandle pluginInstance, double &x, double &y)
   return parseCustomParam(str, x, y);
 }
 
-// get the current value of my custom parameter
+// set the current value of my custom parameter
 static OfxStatus
 setCustomParam(OfxImageEffectHandle pluginInstance, double x, double y)
 {
@@ -110,6 +112,68 @@ setCustomParam(OfxImageEffectHandle pluginInstance, double x, double y)
 
   // set it's value
   return gParamHost->paramSetValue(param, str);
+}
+
+struct MyData
+{
+  int version = 1;
+  int index = 0;
+
+  void getColor(float color[3]) const
+  {
+    int r = (index + 0) % 3;
+    int g = (index + 1) % 3;
+    int b = (index + 2) % 3;
+    color[r] = 1.0f;
+    color[g] = 0.0f;
+    color[b] = 0.0f;
+  }
+};
+
+// get the current value of my data parameter
+static OfxStatus
+getDataParam(OfxImageEffectHandle pluginInstance, MyData &data, double time)
+{
+  // get the parameter set from the effect
+  OfxParamSetHandle paramSet;
+  gEffectHost->getParamSet(pluginInstance, &paramSet);
+  
+  // get the parameter from the parameter set
+  OfxParamHandle param;
+  gParamHost->paramGetHandle(paramSet, kDataParam, &param, NULL);
+  if (param)
+  {
+    // get my custom param's raw value
+    OfxBytes bytes = { 0 };
+    gParamHost->paramGetValueAtTime(param, time, &bytes);
+
+    if (bytes.length == sizeof(data))
+    {    
+      data = *reinterpret_cast<const MyData *>(bytes.data);
+    }
+  }
+
+  return kOfxStatOK;
+}
+
+// get the current value of my custom parameter
+static OfxStatus
+setDataParam(OfxImageEffectHandle pluginInstance, const MyData &data, double time)
+{
+  // get the parameter set from the effect
+  OfxParamSetHandle paramSet;
+  gEffectHost->getParamSet(pluginInstance, &paramSet);
+  
+  // get the parameter from the parameter set
+  OfxParamHandle param;
+  gParamHost->paramGetHandle(paramSet, kDataParam, &param, NULL);
+  if (param)
+  {
+    // set it's value
+    OfxBytes bytes = { reinterpret_cast<const unsigned char *>(&data), sizeof(data) };
+    return gParamHost->paramSetValueAtTime(param, time, &bytes);
+  }
+  return kOfxStatErrMissingHostFeature;
 }
 
 // The callback passed across the API do do custom parameter animation
@@ -161,6 +225,38 @@ static OfxStatus
 destroyInstance(OfxImageEffectHandle  /*instance*/)
 {
   return kOfxStatOK;
+}
+
+static OfxStatus
+instanceChanged( OfxImageEffectHandle  effect,
+     OfxPropertySetHandle inArgs,
+     OfxPropertySetHandle /*outArgs*/)
+{
+  // see why it changed
+  char *changeReason;
+  gPropHost->propGetString(inArgs, kOfxPropChangeReason, 0, &changeReason);
+
+  double time;
+  gPropHost->propGetDouble(inArgs, kOfxPropTime, 0, &time);
+
+  // we are only interested in user edits
+  if(strcmp(changeReason, kOfxChangeUserEdited) != 0) return kOfxStatReplyDefault;
+
+  // get the name of the thing that changed
+  char *objChanged;
+  gPropHost->propGetString(inArgs, kOfxPropName, 0, &objChanged);
+
+  if(strcmp(objChanged, kButtonParam) == 0)
+  {
+    // cycle the contents of the data param
+    MyData data;
+    getDataParam(effect, data, time);
+    data.index++;
+    setDataParam(effect, data, time);
+  }
+
+  // don't trap any others
+  return kOfxStatReplyDefault;
 }
 
 static OfxStatus
@@ -262,6 +358,9 @@ interactDraw(OfxImageEffectHandle pluginInstance,
   // get my private interact data
   MyInteractData *data = getInteractData(interactInstance);
 
+  double time;
+  gPropHost->propGetDouble(drawArgs, kOfxPropTime, 0, &time);
+
   // get the project size
   OfxPointD projSize, projOffset;
   ofxuGetProjectSetup(pluginInstance, projSize, projOffset);
@@ -273,6 +372,11 @@ interactDraw(OfxImageEffectHandle pluginInstance,
   // get my param's value
   double x, y;
   if((err = getCustomParam(pluginInstance, x, y)) != kOfxStatOK)
+    return err;
+
+  // get the opaque data
+  MyData binary_data;
+  if((err = getDataParam(pluginInstance, binary_data, time)) != kOfxStatOK)
     return err;
 
   // scale it up to the project size as it is normalised
@@ -287,7 +391,12 @@ interactDraw(OfxImageEffectHandle pluginInstance,
   if(data->selected)
     glColor3f(1, 1, 1);
   else
-    glColor3f(1, 0, 0);
+  {
+    // draw using the color defined in the custom data
+    float color[3];
+    binary_data.getColor(color);
+    glColor3fv(color);
+  }
 
   // Draw a cross hair, the current coordinate system aligns with the image plane.
   glPushMatrix();
@@ -508,6 +617,19 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle /*inArgs*/)
     gPropHost->propSetInt(props, kOfxParamPropAnimates, 0, false);
   }
 
+  // Make a Bytes parameter to store the crosshair color
+  gParamHost->paramDefine(paramSet, kOfxParamTypeBytes, kDataParam, &props);
+  gPropHost->propSetString(props, kOfxParamPropDefault, 0, "0.5 0.5");
+  gPropHost->propSetString(props, kOfxParamPropScriptName, 0, "data");
+  gPropHost->propSetString(props, kOfxParamPropHint, 0, "Opaque data describing crosshair color");
+  gPropHost->propSetString(props, kOfxPropLabel, 0, "Data");
+  gPropHost->propSetInt(props, kOfxParamPropAnimates, 0, 1);
+  gPropHost->propSetInt(props, kOfxParamPropIsAutoKeying, 0, 1);  
+
+  // Make a button parameter to change the Bytes parameter
+  gParamHost->paramDefine(paramSet, kOfxParamTypePushButton, kButtonParam, &props);
+  gPropHost->propSetString(props, kOfxPropLabel, 0, "Press Me");
+
   return kOfxStatOK;
 }
 
@@ -534,6 +656,9 @@ pluginMain(const char *action,  const void *handle,  OfxPropertySetHandle inArgs
   } 
   else if(strcmp(action, kOfxImageEffectActionIsIdentity) == 0) {
     return isIdentity(effect, inArgs, outArgs);
+  }    
+  else if(strcmp(action, kOfxActionInstanceChanged) == 0) {
+    return instanceChanged(effect, inArgs, outArgs);
   }    
   else if(strcmp(action, kOfxImageEffectActionRender) == 0) {
     return render(effect, inArgs, outArgs);

@@ -421,6 +421,7 @@ The exact type and dimension is dependant on the type of the parameter. These ar
   - ::kOfxParamTypeInteger3D - integer property of three dimensions
   - ::kOfxParamTypeString - string property of one dimension
   - ::kOfxParamTypeCustom - string property of one dimension
+  - ::kOfxParamTypeBytes - pointer to OfxBytes struct of one dimension, or nullptr
   - ::kOfxParamTypeGroup - does not have this property
   - ::kOfxParamTypePage - does not have this property
   - ::kOfxParamTypePushButton - does not have this property
