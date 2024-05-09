@@ -5,7 +5,7 @@
 
 # Extract information from an OCIO config to C header.
 # Example invocation:
-# scripts/genColour > include/ofxColourspaceList.h
+# OCIO=include/openfx-studio-config-v1.0.0_aces-v1.3_ocio-v2.1 scripts/genColour > include/ofxColourspaceList.h
 
 import PyOpenColorIO as OCIO
 from string import Template
@@ -34,6 +34,20 @@ footer = '''
 #endif
 '''
 
+role_docs = {
+   'aces_interchange': 'Guaranteed to be ACES2065-1.',
+   'cie_xyz_d65_interchange': 'CIE XYZ colorimetry with the neutral axis at D65.',
+   'color_picking': 'The colourspace to use for colour pickers, typically a display colourspace.',
+   'color_timing': 'A colourspace suitable for colour grading, typically a log colourspace.',
+   'compositing_log': 'Any colourspace with a log transfer function.',
+   'data': 'Image values should not be treated as colour, e.g. motion vectors or masks. Mapped to the raw colourspace.',
+   'hdr_video': 'Any display-referred HDR video such as Rec. 2020 HLG or PQ.',
+   'matte_paint': 'A colourspace suitable for matte painting.',
+   'scene_linear': 'Any scene-referred linear colourspace.',
+   'sdr_video': 'Any display-referred SDR video such as Rec. 709.',
+   'texture_paint': 'A colourspace suitable for texture painting, typically sRGB.'
+   }
+
 chars_to_delete = str.maketrans('', '', ' -.()')
 def camel_name(name):
    return ' '.join([word[0].upper() + word[1:] for word in name.replace(' ', '_').split('_')]).translate(chars_to_delete)
@@ -53,12 +67,9 @@ def print_name(name):
 
 def print_role(role):
    role_name = role[0]
-   colourspace_name = colourspace_short_name(studio_config.getColorSpace(role[1]))
-   print(f'\n// {role_name}')
+   colourspace_name = colourspace_short_name(ofx_config.getColorSpace(role[1]))
+   print(f'\n/** @brief {role_name}\n{role_docs[role_name]}\n*/')
    print(f'{define_base}Role{camel_name(role_name)} "{role_name}"')
-   print(f'{define_base}Role{camel_name(role_name)}Colourspace "{colourspace_name}"')
-   role_map = '{ "' + role_name + '", "' + colourspace_name + '" }'
-   print(f'{define_base}Role{camel_name(role_name)}Mapping {role_map}')
    
 def print_string_property(name, propname, value):
    print(f'{define_base}{camel_name(name)}{propname} "{value}"')
@@ -70,47 +81,46 @@ def print_list(name, list):
    name_list = '{ "' + '", "'.join(list) + '" }'
    print(f'{define_base}{camel_name(name)}List {name_list}')
 
-cg_config = OCIO.Config.CreateFromBuiltinConfig('cg-config-v2.1.0_aces-v1.3_ocio-v2.3')
-studio_config = OCIO.Config.CreateFromBuiltinConfig('studio-config-v2.1.0_aces-v1.3_ocio-v2.3')
+# This should be the OpenFX OCIO config created by genOCIOConfig
+ofx_config = OCIO.GetCurrentConfig()
 
-# Workaround for OCIO issue #123, missing encoding on srgb_tx
-srgb_tx = studio_config.getColorSpace('srgb_tx')
-srgb_tx.setEncoding('sdr-video')
+# OFX-specific set of core colourspaces
+core_spaces = ['srgb_display', 'displayp3_display', 'rec1886_rec709_display',
+               'ACES2065-1', 'ACEScc', 'ACEScct',
+               'ACEScg', 'lin_p3d65', 'lin_rec2020',
+               'lin_rec709_srgb', 'g18_rec709_tx', 'g22_ap1_tx',
+               'g22_rec709_tx', 'g24_rec709_tx', 'srgb_encoded_ap1_tx',
+               'srg_encoded_p3d65_tx', 'srgb_tx', 'Raw',
+               'rec1886_rec2020_display', 'rec2100_hlg_display', 'rec2100_pq_display']
 
 def print_colourspace(spc, is_core):
    name = colourspace_short_name(spc)
    display_name = spc.getName()
    print(f'\n// {name}\n//', '\n// '.join(spc.getDescription().split('\n')).replace('\n// \n', '\n'))
    print_name(name)
-   print_string_property(name, 'DisplayName', display_name)
-   name_list = [display_name]
-   for alias in spc.getAliases():
-      name_list.append(alias)
-      print_string_property(name, f'Alias{camel_name(alias)}', alias)
-   print_list(name, name_list)
+   print_string_property(name, 'Label', display_name)
    print_string_property(name, 'Encoding', spc.getEncoding())
-   print_bool_property(name, 'SceneLinear', studio_config.isColorSpaceLinear(name, OCIO.REFERENCE_SPACE_SCENE))
    print_bool_property(name, 'Data', spc.isData())
    print_bool_property(name, 'Core', is_core)
 
-print(Template(header).substitute(config_name=studio_config.getName()))
+print(Template(header).substitute(config_name=ofx_config.getName()))
 
-print('// Roles')
-for role in studio_config.getRoles():
+print('''/** @brief Roles - generic names for types of colourspace
+Use a role when the specific colourspace is not important.
+*/''')
+
+for role in ofx_config.getRoles():
    print_role(role)
 
 print('\n// Display Colourspaces')
-core_displays = cg_config.getDisplays()
-for display in studio_config.getDisplays():
-   is_core = display in core_displays
-   print_colourspace(studio_config.getColorSpace(display), is_core)
+for display in ofx_config.getDisplays():
+   name = ofx_config.getColorSpace(display)
+   is_core = colourspace_short_name(name) in core_spaces
+   print_colourspace(name, is_core)
 
 print('\n// Scene Colourspaces')
-for spc in studio_config.getColorSpaces():
-   if None == cg_config.getColorSpace(spc.getName()):
-      is_core = False
-   else:
-      is_core = True
+for spc in ofx_config.getColorSpaces():
+   is_core = colourspace_short_name(spc) in core_spaces
    print_colourspace(spc, is_core)
 
 print(footer)

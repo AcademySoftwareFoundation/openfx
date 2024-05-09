@@ -53,6 +53,11 @@ both host and plug-in will be chosen.
 A host must set this property on any effect instances where it has negotiated 
 OCIO colour management (kOfxImageEffectPropColourManagementOCIO).
 Use of URIs for built-in configs, such as ocio://default is permitted.
+
+When native colour management is in use, a host must set this property to point
+to the OCIO config used to define strings for the version of OFX it was built
+against. This will allow a plug-in which uses OCIO to work directly with native
+mode.
 */
 #define kOfxImageEffectPropOCIOConfig "OfxImageEffectPropOCIOConfig"
 
@@ -70,6 +75,9 @@ vectors or similar images which should not be colour managed can use the data
 colourspace which is present in the built-in OCIO configs.
 Both host and plug-in should use the value of 
 kOfxImageClipPropPreferredColourspace where reasonable.
+If a clip sets OfxImageClipPropIsMask or it only supports
+OfxImageComponentAlpha, colour management is disabled and this property
+must be unset.
 */
 #define kOfxImageClipPropColourspace "OfxImageClipPropColourspace"
 
@@ -91,12 +99,16 @@ specific camera and expects a log colourspace might list:
 
 "arri_logc4", "arri_logc3_ei800", "ACEScct", "color_timing"
 
-The host should provide input images in the first mutually agreeable
-colourspace, and set kOfxImageClipPropColourspace to tell the plug-in which
-colourspace has been selected. In the event that the host cannot supply images
-in a requested colourspace, it may supply images in any valid colourspace.
-Plug-ins must check kOfxImageClipPropColourspace to see if their request was
-satisfied.
+The host is free to choose any colourspace from this list, but should favour
+the first mutually agreeable colourspace, and set kOfxImageClipPropColourspace
+to tell the plug-in which colourspace has been selected. A host does not need
+to convert into the first choice just because it can, as this might be
+inefficient, and should scene-to-display or display-to-scene conversions where
+possible.
+
+In the event that the host cannot supply images in a requested colourspace,
+it may supply images in any valid colourspace. Plug-ins must check
+kOfxImageClipPropColourspace to see if their request was satisfied.
 
 Hosts may set this on an output clip, which could be helpful in a generator
 context, and plug-ins should follow the same logic as hosts when deciding
@@ -110,10 +122,10 @@ plug-in is capable of adapting to any input colourspace, it should not set
 this preference.
 
 If a plug-in has inputs which contain motion vectors, depth values or other
-non-colour channels, it should set the preferred colourspace to "data".
-Similarly, if a host requests outputs in a typical scene colourspace, but the
-plug-in is producing motion vectors, it should ignore the request and set
-kOfxImageClipPropColourspace to "data".
+non-colour channels, it should set the preferred colourspace to
+kOfxColourspaceRaw. Similarly, if a host requests outputs in a typical scene
+colourspace, but the plug-in is producing motion vectors, it should ignore
+the request and set kOfxImageClipPropColourspace to kOfxColourspaceRaw.
 */
 #define kOfxImageClipPropPreferredColourspaces "OfxImageClipPropPreferredColourspaces"
 
@@ -129,7 +141,7 @@ not expect this to be available during a render event.
 Hosts should set this property to a display colourspace which matches that 
 used in its own viewport. For a multi-display system, choose the colourspace 
 for the display device where a native window would appear by default.
-A host which supports OCIO should use the OCIO-specific display, view and look 
+A host which supports OCIO should use the OCIO-specific display and view
 properties instead.
  
 */
@@ -156,17 +168,6 @@ This OCIO-specific property allows the host to specify which OCIO view should be
 If not defined, the default rules for choosing a view will be followed.
 */
 #define kOfxImageEffectPropOCIOView "OfxImageEffectPropOCIOView"
-
-/** @brief The OCIO look used in the plug-in's viewport
-
-   - Type - string X 1
-   - Property Set - image effect instance (read only)
-   - Valid Values - OCIO look that is present in the config
-
-This OCIO-specific property allows the host to specify which OCIO look should be used.
-If not defined, no look will be applied.
-*/
-#define kOfxImageEffectPropOCIOLook "OfxImageEffectPropOCIOLook"
 
 #ifdef __cplusplus
 }
