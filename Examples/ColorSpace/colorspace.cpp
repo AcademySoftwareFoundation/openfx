@@ -6,6 +6,7 @@
   Plugin example demonstrating colourspace handling
  */
 #include <algorithm>
+#include <set>
 #include <stdexcept>
 #include <new>
 #include <string>
@@ -73,13 +74,9 @@ struct MyInstanceData {
   OfxImageClipHandle sourceClip;
   OfxImageClipHandle outputClip;
 
-  // handles to a our parameters
-  OfxParamHandle scaleParam;
-  OfxParamHandle perComponentScaleParam;
-  OfxParamHandle scaleRParam;
-  OfxParamHandle scaleGParam;
-  OfxParamHandle scaleBParam;
-  OfxParamHandle scaleAParam;
+  // handles to our parameters
+  OfxParamHandle inputSpaceParam;
+  OfxParamHandle outputSpaceParam;
 };
 
 template <class T>
@@ -228,38 +225,6 @@ setParamEnabledness( OfxImageEffectHandle effect,
   gPropHost->propSetInt(paramProps,  kOfxParamPropEnabled, 0, enabledState);
 }
 
-// function that sets the enabledness of the percomponent scale parameters
-// depending on the value of the 
-// This function is called when the 'scaleComponents' value is changed
-// or when the input clip has been changed
-static void
-setPerComponentScaleEnabledness( OfxImageEffectHandle effect)
-{
-  // get my instance data
-  MyInstanceData *myData = getMyInstanceData(effect);
-
-  // get the value of the percomponent scale param
-  int perComponentScale;
-  gParamHost->paramGetValue(myData->perComponentScaleParam, &perComponentScale);
-
-  if(ofxuIsClipConnected(effect, kOfxImageEffectSimpleSourceClipName)) {
-    OfxPropertySetHandle props; gEffectHost->clipGetPropertySet(myData->sourceClip, &props);
-
-    // get the input clip format
-    char *pixelType;
-    gPropHost->propGetString(props, kOfxImageEffectPropComponents, 0, &pixelType);
-
-    // only enable the scales if the input is an RGBA input
-    perComponentScale = perComponentScale && !(strcmp(pixelType, kOfxImageComponentAlpha) == 0);
-  }
-
-  // set the enabled/disabled state of the parameter
-  setParamEnabledness(effect, "scaleR", perComponentScale);
-  setParamEnabledness(effect, "scaleG", perComponentScale);
-  setParamEnabledness(effect, "scaleB", perComponentScale);
-  setParamEnabledness(effect, "scaleA", perComponentScale);
-}
-
 /** @brief Called at load */
 static OfxStatus
 onLoad(void)
@@ -295,12 +260,8 @@ createInstance( OfxImageEffectHandle effect)
   myData->isGeneralEffect = context && (strcmp(context, kOfxImageEffectContextGeneral) == 0);
 
   // cache param handles
-  gParamHost->paramGetHandle(paramSet, "scaleComponents", &myData->perComponentScaleParam, 0);
-  gParamHost->paramGetHandle(paramSet, "scale", &myData->scaleParam, 0);
-  gParamHost->paramGetHandle(paramSet, "scaleR", &myData->scaleRParam, 0);
-  gParamHost->paramGetHandle(paramSet, "scaleG", &myData->scaleGParam, 0);
-  gParamHost->paramGetHandle(paramSet, "scaleB", &myData->scaleBParam, 0);
-  gParamHost->paramGetHandle(paramSet, "scaleA", &myData->scaleAParam, 0);
+  gParamHost->paramGetHandle(paramSet, "input_colourspace", &myData->inputSpaceParam, 0);
+  gParamHost->paramGetHandle(paramSet, "output_colourspace", &myData->outputSpaceParam, 0);
 
   // cache clip handles
   gEffectHost->clipGetHandle(effect, kOfxImageEffectSimpleSourceClipName, &myData->sourceClip, 0);
@@ -308,10 +269,6 @@ createInstance( OfxImageEffectHandle effect)
   
   // set my private instance data
   gPropHost->propSetPointer(effectProps, kOfxPropInstanceData, 0, (void *) myData);
-
-  // As the parameters values have already been loaded, set 
-  // the enabledness of the per component scale values
-  setPerComponentScaleEnabledness(effect);
 
   return kOfxStatOK;
 }
@@ -402,6 +359,40 @@ getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs
   const char *bitDepthStr = bitDepth == 8 ? kOfxBitDepthByte : (bitDepth == 16 ? kOfxBitDepthShort : kOfxBitDepthFloat);
   const char *componentStr = isRGBA ? kOfxImageComponentRGBA : kOfxImageComponentAlpha;
 
+  std::string preferredInputSpace;
+  std::string preferredOutputSpace;
+  int preferredInputSpaceIndex;
+  int preferredOutputSpaceIndex;
+  gParamHost->paramGetValue(myData->inputSpaceParam, &preferredInputSpaceIndex);
+  gParamHost->paramGetValue(myData->outputSpaceParam, &preferredOutputSpaceIndex);
+
+  switch (preferredInputSpaceIndex) {
+  case 0:
+    preferredInputSpace = kOfxColourspaceRoleSceneLinear;
+    break;
+  case 1:
+    preferredInputSpace = kOfxColourspaceRaw;
+    break;
+  case 2:
+    preferredInputSpace = kOfxColourspaceRoleColorTiming;
+    break;
+  }
+
+  switch (preferredOutputSpaceIndex) {
+  case 0:
+    preferredOutputSpace = kOfxColourspaceACEScg;
+    break;
+  case 1:
+    preferredOutputSpace = kOfxColourspaceLinRec2020;
+    break;
+  case 2:
+    preferredOutputSpace = kOfxColourspaceSrgbTx;
+    break;
+  case 3:
+    preferredOutputSpace = kOfxColourspaceACEScct;
+    break;
+  }
+
   // set out output to be the same same as the input, component and bitdepth
   gPropHost->propSetString(outArgs, "OfxImageClipPropComponents_Output", 0, componentStr);
   if(gHostSupportsMultipleBitDepths)
@@ -413,7 +404,7 @@ getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs
   if (gHostColourManagementStyle != kOfxImageEffectPropColourManagementNone) {
     spdlog::info("Specifying preferred colourspaces since host style={}", gHostColourManagementStyle);
     const char* colourSpaces[] = {
-      kOfxColourspaceACEScg,
+      preferredInputSpace.c_str(),
       kOfxColourspaceLinRec2020,
       kOfxColourspaceRoleSceneLinear};
     for (int i = 0; i < std::size(colourSpaces); i++) {
@@ -421,6 +412,10 @@ getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs
       gPropHost->propSetString(outArgs, kOfxImageClipPropPreferredColourspaces,
                                i, colourSpaces[i]);
     }
+
+    if (!preferredOutputSpace.empty())
+      gPropHost->propSetString(outArgs, "kOfxImageClipPropPreferredColourspaces_Output", 0, preferredOutputSpace.c_str());
+
   } else {
     spdlog::info("Host does not support colour management (this example won't be very interesting)");
   }
@@ -464,13 +459,6 @@ instanceChanged( OfxImageEffectHandle  effect,
   char *objChanged;
   gPropHost->propGetString(inArgs, kOfxPropName, 0, &objChanged);
 
-  // Did the source clip change or the 'scaleComponents' change? In which case enable/disable individual component scale parameters
-  if((isClip && strcmp(objChanged, kOfxImageEffectSimpleSourceClipName)  == 0) ||
-     (isParam && strcmp(objChanged, "scaleComponents")  == 0)) {
-    setPerComponentScaleEnabledness(effect);
-    return kOfxStatOK;
-  }
-
   // don't trap any others
   return kOfxStatReplyDefault;
 }
@@ -490,7 +478,6 @@ static std::string getClipColourspace(const OfxImageClipHandle clip) {
 
 }
 
-// the process code  that the host sees
 static OfxStatus render( OfxImageEffectHandle  instance,
                          OfxPropertySetHandle inArgs,
                          OfxPropertySetHandle /*outArgs*/)
@@ -593,24 +580,45 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
   gPropHost->propGetString(inArgs, kOfxImageEffectPropContext, 0, &context);
   bool isGeneralContext = strcmp(context, kOfxImageEffectContextGeneral) == 0;
 
-  OfxPropertySetHandle props;
+  OfxPropertySetHandle clipProps;
   // define the single output clip in both contexts
-  gEffectHost->clipDefine(effect, kOfxImageEffectOutputClipName, &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectOutputClipName, &clipProps);
 
   // set the component types we can handle on out output
-  gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
+  gPropHost->propSetString(clipProps, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
 
   // define the single source clip in both contexts
-  gEffectHost->clipDefine(effect, kOfxImageEffectSimpleSourceClipName, &props);
+  gEffectHost->clipDefine(effect, kOfxImageEffectSimpleSourceClipName, &clipProps);
 
   // set the component types we can handle on our main input
-  gPropHost->propSetString(props, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
+  gPropHost->propSetString(clipProps, kOfxImageEffectPropSupportedComponents, 0, kOfxImageComponentRGBA);
 
   ////////////////////////////////////////////////////////////////////////////////
   // define the parameters for this context
-  // fetch the parameter set from the effect
+  OfxPropertySetHandle props;
   OfxParamSetHandle paramSet;
   gEffectHost->getParamSet(effect, &paramSet);
+
+  gParamHost->paramDefine(paramSet, kOfxParamTypeChoice, "input_colourspace", &props);
+  gPropHost->propSetInt(props, kOfxParamPropDefault, 0, 0);
+  gPropHost->propSetString(props, kOfxPropLabel, 0, "Preferred Input Colourspace");
+  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 0, "Scene Linear");
+  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 1, "Raw");
+  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 2, "Log (Color Timing role)");
+
+  gParamHost->paramDefine(paramSet, kOfxParamTypeChoice, "output_colourspace", &props);
+  gPropHost->propSetInt(props, kOfxParamPropDefault, 0, 0);
+  gPropHost->propSetString(props, kOfxPropLabel, 0, "Output Colourspace");
+  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 0, "ACEScg (scene linear)");
+  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 1, "Rec2020 (linear)");
+  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 2, "SRGB");
+  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 3, "ACEScct (Log)");
+
+  // These params affect clip preferences
+  OfxPropertySetHandle effectProps;
+  gEffectHost->getPropertySet(effect, &effectProps);
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropClipPreferencesSlaveParam, 0, "input_colourspace");
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropClipPreferencesSlaveParam, 1, "output_colourspace");
 
   return kOfxStatOK;
 }
@@ -677,6 +685,9 @@ describe(OfxImageEffectHandle  effect)
   return kOfxStatOK;
 }
 
+// Make these actions "silent", i.e. not logged. They can be super verbose.
+std::set<std::string> silentActions = {"uk.co.thefoundry.FnOfxImageEffectActionGetTransform"};
+
 ////////////////////////////////////////////////////////////////////////////////
 // The main function
 static OfxStatus
@@ -684,7 +695,8 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,
 {
   OfxStatus stat = kOfxStatOK;
 
-  spdlog::info(">>> pluginMain({})", action);
+  if (silentActions.find(action) == silentActions.end())
+    spdlog::info(">>> pluginMain({})", action);
   try {
   // cast to appropriate type
   OfxImageEffectHandle effect = (OfxImageEffectHandle) handle;
@@ -747,7 +759,8 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,
   // other actions to take the default value
 
 
-  spdlog::info("<<< pluginMain({}) = {}", action, errMsg(stat));
+  if (silentActions.find(action) == silentActions.end())
+    spdlog::info("<<< pluginMain({}) = {}", action, errMsg(stat));
   return stat;
 }
 
