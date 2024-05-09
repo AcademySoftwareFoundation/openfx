@@ -82,6 +82,116 @@ struct MyInstanceData {
   OfxParamHandle scaleAParam;
 };
 
+template <class T>
+static constexpr T lerp(T a, T b, float amount) {
+  return a + amount * (b - a);
+}
+
+#define COMP_WHITE_OVER(a, b, bg_opacity) \
+  do { \
+    (a) = lerp((a) * (1.0f - (bg_opacity)), white, (b));   \
+} while (0)
+
+/**
+ * Draw a string of text at the given position in the image
+ */
+static void drawText(const std::string &message, int x, int y,
+                     unsigned int font_height,
+                     void *image, int xdim,
+                     int ydim, int bits, int nchannels, int rowbytes) {
+  auto txt_img = cimg_library::CImg<float>();
+  float fg[] = {1.0f};
+  float bg[] = {0};
+  // this will create an image just big enough to hold the text
+  txt_img.draw_text(0, 0, message.c_str(), fg, bg, 1.0, font_height);
+  int txt_width = txt_img.width();
+  int txt_height = txt_img.height();
+  bool invert = true;   // CImg is top-down, opposite of OpenFX (bottom up)
+  if (rowbytes < 0)     // unless the image has negative rowbytes
+    invert = false;
+  // iy here is image y, ty is text-image y; same for x
+  switch (bits) {
+  case 8: {
+    using T = unsigned char;
+    float white = 255.0f;
+    float color_scale = 1.0f/256.0f;
+    float bg_opacity = 0.2f;
+    for (int iy = y, ty = 0; iy < ydim && ty < txt_height; iy++, ty++) {
+      T *row = (T *)((unsigned char *)image + iy * rowbytes);
+      float *txt_row = txt_img.data(0, invert ? txt_height - 1 - ty : ty);
+      for (int ix = x, tx = 0; ix < xdim && tx < txt_width; ix++, tx++) {
+        switch (nchannels) {
+        case 1:                 // Alpha only
+          row[ix*4] = std::max(row[ix*4], (T)(txt_row[tx] * color_scale));
+        case 3:                 // RGB
+          COMP_WHITE_OVER(row[ix*3], txt_row[tx], bg_opacity);
+          COMP_WHITE_OVER(row[ix*3+1], txt_row[tx], bg_opacity);
+          COMP_WHITE_OVER(row[ix*3+2], txt_row[tx], bg_opacity);
+        case 4:                 // RGBA
+          COMP_WHITE_OVER(row[ix*4], txt_row[tx], bg_opacity);
+          COMP_WHITE_OVER(row[ix*4+1], txt_row[tx], bg_opacity);
+          COMP_WHITE_OVER(row[ix*4+2], txt_row[tx], bg_opacity);
+          // alpha
+          row[ix*4+3] = std::max(row[ix*4+3], (T)(txt_row[tx] * color_scale));
+        }
+      }
+    }
+  } break;
+  case 16: {
+    using T = unsigned short;
+    float white = 65535.0f;
+    float color_scale = 1.0f/65536.0f;
+    float bg_opacity = 0.2f;
+    for (int iy = y, ty = 0; iy < ydim && ty < txt_height; iy++, ty++) {
+      T *row = (T *)((unsigned char *)image + iy * rowbytes);
+      float *txt_row = txt_img.data(0, invert ? txt_height - 1 - ty : ty);
+      for (int ix = x, tx = 0; ix < xdim && tx < txt_width; ix++, tx++) {
+        switch (nchannels) {
+        case 1:                 // Alpha only
+          row[ix*4] = std::max(row[ix*4], (T)(txt_row[tx] * color_scale));
+        case 3:                 // RGB
+          COMP_WHITE_OVER(row[ix*3], txt_row[tx], bg_opacity);
+          COMP_WHITE_OVER(row[ix*3+1], txt_row[tx], bg_opacity);
+          COMP_WHITE_OVER(row[ix*3+2], txt_row[tx], bg_opacity);
+        case 4:                 // RGBA
+          COMP_WHITE_OVER(row[ix*4], txt_row[tx], bg_opacity);
+          COMP_WHITE_OVER(row[ix*4+1], txt_row[tx], bg_opacity);
+          COMP_WHITE_OVER(row[ix*4+2], txt_row[tx], bg_opacity);
+          // alpha
+          row[ix*4+3] = std::max(row[ix*4+3], (T)(txt_row[tx] * color_scale));
+        }
+      }
+    }
+  } break;
+  case 32: {
+    float white = 1.0f;
+    float bg_opacity = 0.2f;
+    for (int iy = y, ty = 0; iy < ydim && ty < txt_height; iy++, ty++) {
+      float *row = (float *)((unsigned char *)image + iy * rowbytes);
+      float *txt_row = txt_img.data(0, invert ? txt_height - 1 - ty : ty);
+      for (int ix = x, tx = 0; ix < xdim && tx < txt_width; ix++, tx++) {
+        switch (nchannels) {
+        case 1:                 // Alpha only
+          row[ix*4] = std::max(row[ix*4], txt_row[tx]);
+        case 3:                 // RGB
+          COMP_WHITE_OVER(row[ix*3], txt_row[tx], bg_opacity);
+          COMP_WHITE_OVER(row[ix*3+1], txt_row[tx], bg_opacity);
+          COMP_WHITE_OVER(row[ix*3+2], txt_row[tx], bg_opacity);
+        case 4:                 // RGBA
+          COMP_WHITE_OVER(row[ix*4], txt_row[tx], bg_opacity);
+          COMP_WHITE_OVER(row[ix*4+1], txt_row[tx], bg_opacity);
+          COMP_WHITE_OVER(row[ix*4+2], txt_row[tx], bg_opacity);
+          // alpha
+          row[ix*4+3] = std::max(row[ix*4+3], txt_row[tx]);
+        }
+      }
+    } break;
+  }
+  }
+}
+
+
+
 /* mandatory function to set up the host structures */
 
 
@@ -393,6 +503,13 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   gPropHost->propGetDouble(inArgs, kOfxPropTime, 0, &time);
   gPropHost->propGetIntN(inArgs, kOfxImageEffectPropRenderWindow, 4, &renderWindow.x1);
 
+  double renderScale[2];
+  OfxStatus st = gPropHost->propGetDoubleN(inArgs, kOfxImageEffectPropRenderScale, 2,
+                                          renderScale);
+  if (st != kOfxStatOK) {
+    spdlog::warn("Can't get render scale! {}", errMsg(st));
+    renderScale[0] = renderScale[1] = 1.0f;
+  }
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(instance);
 
@@ -428,39 +545,23 @@ static OfxStatus render( OfxImageEffectHandle  instance,
     // do the rendering
 
     int nchannels = 4;
-    int font_height = 128;
+    int font_height = 50 * renderScale[0];
     spdlog::info("Rendering {}x{} image @{},{}, depth={}", xdim, ydim, srcRect.x1, srcRect.y1, dstBitDepth);
-    switch(dstBitDepth) {
-    case 8 : {
-      using T = unsigned char;
-      auto img = cimg_library::CImg<T>((const T *)src, xdim, ydim, 1, nchannels, true);
-      T fg[] = {255, 255, 0, 255};
-      T bg[] = {0, 0, 0, 0};
-      img.draw_text(100, 100, "Test (byte)!", fg, bg, 1.0, font_height);
-      memcpy(dst, src, srcRowBytes * ydim * nchannels);
-    }
-      break;
-    case 16 : {
-      using T = unsigned short;
-      auto img = cimg_library::CImg<T>((const T *)src, xdim, ydim, 1, nchannels, true);
-      T fg[] = {65535, 65535, 0, 65535};
-      T bg[] = {0, 0, 0, 0};
-      img.draw_text(100, 100, "Test (short)!", fg, bg, 1.0, font_height);
-      memcpy(dst, src, srcRowBytes * ydim * nchannels);
-    }
-      break;
-    case 32 : {
-      using T = float;
-      auto img = cimg_library::CImg<T>((const T *)src, xdim, ydim, 1, nchannels, true);
-      T fg[] = {1.0, 0.0, 1.0, 1.0};
-      T bg[] = {0, 0, 0, 0};
-      img.mirror('y');
-      img.draw_text(100, 100, "Test (float)!", fg, bg, 1.0, font_height);
-      img.mirror('y');
-      memcpy(dst, src, srcRowBytes * ydim * nchannels);
-    }
-      break;
-    }
+
+    // Just copy from source to dest, and draw some text
+    if (srcRowBytes < 0 && dstRowBytes < 0)
+      memcpy((char *)dst + dstRowBytes * (ydim-1), (char*)src + srcRowBytes * (ydim-1), srcRowBytes * ydim);
+    else
+      memcpy(dst, src, srcRowBytes * ydim);
+    int ystart = ydim - 100;
+    drawText(fmt::format("Image: {}x{}, depth={}, scale={:.2f}x{:.2f}", xdim, ydim, dstBitDepth, renderScale[0], renderScale[1]),
+             100, ystart, font_height, dst, xdim, ydim, dstBitDepth, nchannels, dstRowBytes);
+    ystart -= font_height;
+    drawText(fmt::format("input colourspace: {}", inputColourspace),
+             100, ystart, font_height, dst, xdim, ydim, dstBitDepth, nchannels, dstRowBytes);
+    ystart -= font_height;
+    drawText(fmt::format("output colourspace: {}", outputColourspace),
+             100, ystart, font_height, dst, xdim, ydim, dstBitDepth, nchannels, dstRowBytes);
   }
   catch(OfxuNoImageException &ex) {
     // if we were interrupted, the failed fetch is fine, just return kOfxStatOK
