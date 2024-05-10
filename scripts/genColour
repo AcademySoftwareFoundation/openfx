@@ -5,8 +5,9 @@
 
 # Extract information from an OCIO config to C header.
 # Example invocation:
-# OCIO=include/openfx-studio-config-v1.0.0_aces-v1.3_ocio-v2.1 scripts/genColour > include/ofxColourspaceList.h
+# OCIO=include/openfx-studio-config-v2.1.0_aces-v1.3_ocio-v2.3.ocio scripts/genColour > include/ofxColourspaceList.h
 
+import sys
 import PyOpenColorIO as OCIO
 from string import Template
 
@@ -81,18 +82,6 @@ def print_list(name, list):
    name_list = '{ "' + '", "'.join(list) + '" }'
    print(f'{define_base}{camel_name(name)}List {name_list}')
 
-# This should be the OpenFX OCIO config created by genOCIOConfig
-ofx_config = OCIO.GetCurrentConfig()
-
-# OFX-specific set of core colourspaces
-core_spaces = ['srgb_display', 'displayp3_display', 'rec1886_rec709_display',
-               'ACES2065-1', 'ACEScc', 'ACEScct',
-               'ACEScg', 'lin_p3d65', 'lin_rec2020',
-               'lin_rec709_srgb', 'g18_rec709_tx', 'g22_ap1_tx',
-               'g22_rec709_tx', 'g24_rec709_tx', 'srgb_encoded_ap1_tx',
-               'srg_encoded_p3d65_tx', 'srgb_tx', 'Raw',
-               'rec1886_rec2020_display', 'rec2100_hlg_display', 'rec2100_pq_display']
-
 def print_colourspace(spc, is_core):
    name = colourspace_short_name(spc)
    display_name = spc.getName()
@@ -102,6 +91,18 @@ def print_colourspace(spc, is_core):
    print_string_property(name, 'Encoding', spc.getEncoding())
    print_bool_property(name, 'Data', spc.isData())
    print_bool_property(name, 'Core', is_core)
+   
+# OFX-specific set of core colourspaces
+core_spaces = ['srgb_display', 'displayp3_display', 'rec1886_rec709_display',
+               'ACES2065-1', 'ACEScc', 'ACEScct',
+               'ACEScg', 'lin_p3d65', 'lin_rec2020',
+               'lin_rec709_srgb', 'g18_rec709_tx', 'g22_ap1_tx',
+               'g22_rec709_tx', 'g24_rec709_tx', 'srgb_encoded_ap1_tx',
+               'srg_encoded_p3d65_tx', 'srgb_tx', 'Raw',
+               'rec1886_rec2020_display', 'rec2100_hlg_display', 'rec2100_pq_display']
+
+# This should be the OpenFX OCIO config created by genOCIOConfig
+ofx_config = OCIO.GetCurrentConfig()
 
 print(Template(header).substitute(config_name=ofx_config.getName()))
 
@@ -112,15 +113,12 @@ Use a role when the specific colourspace is not important.
 for role in ofx_config.getRoles():
    print_role(role)
 
-print('\n// Display Colourspaces')
-for display in ofx_config.getDisplays():
-   name = ofx_config.getColorSpace(display)
-   is_core = colourspace_short_name(name) in core_spaces
-   print_colourspace(name, is_core)
+print('\n// Core Colourspaces')
+for core_spc in [spc for spc in ofx_config.getColorSpaces() if colourspace_short_name(spc) in core_spaces]:
+   print_colourspace(core_spc, True)
 
-print('\n// Scene Colourspaces')
-for spc in ofx_config.getColorSpaces():
-   is_core = colourspace_short_name(spc) in core_spaces
-   print_colourspace(spc, is_core)
+print('\n// Non-core Colourspaces')
+for other_spc in [spc for spc in ofx_config.getColorSpaces() if colourspace_short_name(spc) not in core_spaces]:
+   print_colourspace(other_spc, False)
 
 print(footer)

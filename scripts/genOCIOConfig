@@ -5,7 +5,7 @@
 
 # Create an OCIO config equivalant to OpenFX Native colour management
 # Example invocation:
-# scripts/genOCIOConfig > include/openfx-studio-config-v1.0.0_aces-v1.3_ocio-v2.1.ocio
+# scripts/genOCIOConfig > include/openfx-studio-config-v2.1.0_aces-v1.3_ocio-v2.3.ocio
 
 import PyOpenColorIO as OCIO
 
@@ -19,6 +19,9 @@ srgb_tx.setEncoding('sdr-video')
 # The choice of colourspaces for these roles is arbitrary.
 ofx_config.setRole('sdr_video', 'rec1886_rec709_display')
 ofx_config.setRole('hdr_video', 'rec2100_hlg_display')
+
+# Make all colourspaces active, future OCIO configs will also do this
+ofx_config.setInactiveColorSpaces('')
 
 ofx_config.setName(f'openfx-{ofx_config.getName()}')
 ofx_config.setDescription(f'OpenFX 1.5 Native Mode Config\nBased on: {ofx_config.getDescription()}')

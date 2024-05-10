@@ -72,7 +72,7 @@ A colourspace suitable for texture painting, typically sRGB.
 */
 #define kOfxColourspaceRoleTexturePaint "texture_paint"
 
-// Display Colourspaces
+// Core Colourspaces
 
 // srgb_display
 // Convert CIE XYZ (D65 white) to sRGB (piecewise EOTF)
@@ -158,6 +158,149 @@ A colourspace suitable for texture painting, typically sRGB.
 #define kOfxColourspaceRec2100PqDisplayIsData false
 #define kOfxColourspaceRec2100PqDisplayIsCore true
 
+// ACES2065-1
+// The "Academy Color Encoding System" reference colorspace.
+#define kOfxColourspaceACES20651 "ACES2065-1"
+#define kOfxColourspaceACES20651Label "ACES2065-1"
+#define kOfxColourspaceACES20651Encoding "scene-linear"
+#define kOfxColourspaceACES20651IsData false
+#define kOfxColourspaceACES20651IsCore true
+
+// ACEScc
+// Convert ACEScc to ACES2065-1
+// ACEStransformID: urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACEScc_to_ACES.a1.0.3
+// AMF Components
+// --------------
+// ACEStransformID: urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACES_to_ACEScc.a1.0.3
+#define kOfxColourspaceACEScc "ACEScc"
+#define kOfxColourspaceACESccLabel "ACEScc"
+#define kOfxColourspaceACESccEncoding "log"
+#define kOfxColourspaceACESccIsData false
+#define kOfxColourspaceACESccIsCore true
+
+// ACEScct
+// Convert ACEScct to ACES2065-1
+// ACEStransformID: urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACEScct_to_ACES.a1.0.3
+// AMF Components
+// --------------
+// ACEStransformID: urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACES_to_ACEScct.a1.0.3
+#define kOfxColourspaceACEScct "ACEScct"
+#define kOfxColourspaceACEScctLabel "ACEScct"
+#define kOfxColourspaceACEScctEncoding "log"
+#define kOfxColourspaceACEScctIsData false
+#define kOfxColourspaceACEScctIsCore true
+
+// ACEScg
+// Convert ACEScg to ACES2065-1
+// ACEStransformID: urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACEScg_to_ACES.a1.0.3
+// AMF Components
+// --------------
+// ACEStransformID: urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACES_to_ACEScg.a1.0.3
+#define kOfxColourspaceACEScg "ACEScg"
+#define kOfxColourspaceACEScgLabel "ACEScg"
+#define kOfxColourspaceACEScgEncoding "scene-linear"
+#define kOfxColourspaceACEScgIsData false
+#define kOfxColourspaceACEScgIsCore true
+
+// lin_p3d65
+// Convert ACES2065-1 to linear P3 primaries, D65 white point
+// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_Linear_P3-D65:1.0
+#define kOfxColourspaceLinP3d65 "lin_p3d65"
+#define kOfxColourspaceLinP3d65Label "Linear P3-D65"
+#define kOfxColourspaceLinP3d65Encoding "scene-linear"
+#define kOfxColourspaceLinP3d65IsData false
+#define kOfxColourspaceLinP3d65IsCore true
+
+// lin_rec2020
+// Convert ACES2065-1 to linear Rec.2020 primaries, D65 white point
+// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_Linear_Rec2020:1.0
+#define kOfxColourspaceLinRec2020 "lin_rec2020"
+#define kOfxColourspaceLinRec2020Label "Linear Rec.2020"
+#define kOfxColourspaceLinRec2020Encoding "scene-linear"
+#define kOfxColourspaceLinRec2020IsData false
+#define kOfxColourspaceLinRec2020IsCore true
+
+// lin_rec709_srgb
+// Convert ACES2065-1 to linear Rec.709 primaries, D65 white point
+// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_Linear_Rec709:1.0
+#define kOfxColourspaceLinRec709Srgb "lin_rec709_srgb"
+#define kOfxColourspaceLinRec709SrgbLabel "Linear Rec.709 (sRGB)"
+#define kOfxColourspaceLinRec709SrgbEncoding "scene-linear"
+#define kOfxColourspaceLinRec709SrgbIsData false
+#define kOfxColourspaceLinRec709SrgbIsCore true
+
+// g18_rec709_tx
+// Convert ACES2065-1 to 1.8 gamma-corrected Rec.709 primaries, D65 white point
+// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_Gamma1.8_Rec709-Texture:1.0
+#define kOfxColourspaceG18Rec709Tx "g18_rec709_tx"
+#define kOfxColourspaceG18Rec709TxLabel "Gamma 1.8 Rec.709 - Texture"
+#define kOfxColourspaceG18Rec709TxEncoding "sdr-video"
+#define kOfxColourspaceG18Rec709TxIsData false
+#define kOfxColourspaceG18Rec709TxIsCore true
+
+// g22_ap1_tx
+// Convert ACES2065-1 to 2.2 gamma-corrected AP1 primaries, ACES ~=D60 white point
+// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_Gamma2.2_AP1-Texture:1.0
+#define kOfxColourspaceG22Ap1Tx "g22_ap1_tx"
+#define kOfxColourspaceG22Ap1TxLabel "Gamma 2.2 AP1 - Texture"
+#define kOfxColourspaceG22Ap1TxEncoding "sdr-video"
+#define kOfxColourspaceG22Ap1TxIsData false
+#define kOfxColourspaceG22Ap1TxIsCore true
+
+// g22_rec709_tx
+// Convert ACES2065-1 to 2.2 gamma-corrected Rec.709 primaries, D65 white point
+// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_Gamma2.2_Rec709-Texture:1.0
+#define kOfxColourspaceG22Rec709Tx "g22_rec709_tx"
+#define kOfxColourspaceG22Rec709TxLabel "Gamma 2.2 Rec.709 - Texture"
+#define kOfxColourspaceG22Rec709TxEncoding "sdr-video"
+#define kOfxColourspaceG22Rec709TxIsData false
+#define kOfxColourspaceG22Rec709TxIsCore true
+
+// g24_rec709_tx
+// Convert ACES2065-1 to 2.4 gamma-corrected Rec.709 primaries, D65 white point
+// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_Gamma2.4_Rec709-Texture:1.0
+#define kOfxColourspaceG24Rec709Tx "g24_rec709_tx"
+#define kOfxColourspaceG24Rec709TxLabel "Gamma 2.4 Rec.709 - Texture"
+#define kOfxColourspaceG24Rec709TxEncoding "sdr-video"
+#define kOfxColourspaceG24Rec709TxIsData false
+#define kOfxColourspaceG24Rec709TxIsCore true
+
+// srgb_encoded_ap1_tx
+// Convert ACES2065-1 to sRGB Encoded AP1 primaries, ACES ~=D60 white point
+// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_sRGB_Encoded_AP1-Texture:1.0
+#define kOfxColourspaceSrgbEncodedAp1Tx "srgb_encoded_ap1_tx"
+#define kOfxColourspaceSrgbEncodedAp1TxLabel "sRGB Encoded AP1 - Texture"
+#define kOfxColourspaceSrgbEncodedAp1TxEncoding "sdr-video"
+#define kOfxColourspaceSrgbEncodedAp1TxIsData false
+#define kOfxColourspaceSrgbEncodedAp1TxIsCore true
+
+// srgb_tx
+// Convert ACES2065-1 to sRGB
+// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_sRGB-Texture:1.0
+#define kOfxColourspaceSrgbTx "srgb_tx"
+#define kOfxColourspaceSrgbTxLabel "sRGB - Texture"
+#define kOfxColourspaceSrgbTxEncoding "sdr-video"
+#define kOfxColourspaceSrgbTxIsData false
+#define kOfxColourspaceSrgbTxIsCore true
+
+// Raw
+// The utility "Raw" colorspace.
+#define kOfxColourspaceRaw "Raw"
+#define kOfxColourspaceRawLabel "Raw"
+#define kOfxColourspaceRawEncoding ""
+#define kOfxColourspaceRawIsData true
+#define kOfxColourspaceRawIsCore true
+
+// Non-core Colourspaces
+
+// CIE-XYZ-D65
+// The "CIE XYZ (D65)" display connection colorspace.
+#define kOfxColourspaceCIEXYZD65 "CIE-XYZ-D65"
+#define kOfxColourspaceCIEXYZD65Label "CIE-XYZ-D65"
+#define kOfxColourspaceCIEXYZD65Encoding ""
+#define kOfxColourspaceCIEXYZD65IsData false
+#define kOfxColourspaceCIEXYZD65IsCore false
+
 // st2084_p3d65_display
 // Convert CIE XYZ (D65 white) to ST-2084 (PQ), P3-D65 primaries
 // AMF Components
@@ -216,52 +359,6 @@ A colourspace suitable for texture painting, typically sRGB.
 #define kOfxColourspaceP3DciDisplayEncoding "sdr-video"
 #define kOfxColourspaceP3DciDisplayIsData false
 #define kOfxColourspaceP3DciDisplayIsCore false
-
-// Scene Colourspaces
-
-// ACES2065-1
-// The "Academy Color Encoding System" reference colorspace.
-#define kOfxColourspaceACES20651 "ACES2065-1"
-#define kOfxColourspaceACES20651Label "ACES2065-1"
-#define kOfxColourspaceACES20651Encoding "scene-linear"
-#define kOfxColourspaceACES20651IsData false
-#define kOfxColourspaceACES20651IsCore true
-
-// ACEScc
-// Convert ACEScc to ACES2065-1
-// ACEStransformID: urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACEScc_to_ACES.a1.0.3
-// AMF Components
-// --------------
-// ACEStransformID: urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACES_to_ACEScc.a1.0.3
-#define kOfxColourspaceACEScc "ACEScc"
-#define kOfxColourspaceACESccLabel "ACEScc"
-#define kOfxColourspaceACESccEncoding "log"
-#define kOfxColourspaceACESccIsData false
-#define kOfxColourspaceACESccIsCore true
-
-// ACEScct
-// Convert ACEScct to ACES2065-1
-// ACEStransformID: urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACEScct_to_ACES.a1.0.3
-// AMF Components
-// --------------
-// ACEStransformID: urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACES_to_ACEScct.a1.0.3
-#define kOfxColourspaceACEScct "ACEScct"
-#define kOfxColourspaceACEScctLabel "ACEScct"
-#define kOfxColourspaceACEScctEncoding "log"
-#define kOfxColourspaceACEScctIsData false
-#define kOfxColourspaceACEScctIsCore true
-
-// ACEScg
-// Convert ACEScg to ACES2065-1
-// ACEStransformID: urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACEScg_to_ACES.a1.0.3
-// AMF Components
-// --------------
-// ACEStransformID: urn:ampas:aces:transformId:v1.5:ACEScsc.Academy.ACES_to_ACEScg.a1.0.3
-#define kOfxColourspaceACEScg "ACEScg"
-#define kOfxColourspaceACEScgLabel "ACEScg"
-#define kOfxColourspaceACEScgEncoding "scene-linear"
-#define kOfxColourspaceACEScgIsData false
-#define kOfxColourspaceACEScgIsCore true
 
 // ADX10
 // Convert ADX10 to ACES2065-1
@@ -551,78 +648,6 @@ A colourspace suitable for texture painting, typically sRGB.
 #define kOfxColourspaceCameraRec709IsData false
 #define kOfxColourspaceCameraRec709IsCore false
 
-// lin_p3d65
-// Convert ACES2065-1 to linear P3 primaries, D65 white point
-// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_Linear_P3-D65:1.0
-#define kOfxColourspaceLinP3d65 "lin_p3d65"
-#define kOfxColourspaceLinP3d65Label "Linear P3-D65"
-#define kOfxColourspaceLinP3d65Encoding "scene-linear"
-#define kOfxColourspaceLinP3d65IsData false
-#define kOfxColourspaceLinP3d65IsCore true
-
-// lin_rec2020
-// Convert ACES2065-1 to linear Rec.2020 primaries, D65 white point
-// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_Linear_Rec2020:1.0
-#define kOfxColourspaceLinRec2020 "lin_rec2020"
-#define kOfxColourspaceLinRec2020Label "Linear Rec.2020"
-#define kOfxColourspaceLinRec2020Encoding "scene-linear"
-#define kOfxColourspaceLinRec2020IsData false
-#define kOfxColourspaceLinRec2020IsCore true
-
-// lin_rec709_srgb
-// Convert ACES2065-1 to linear Rec.709 primaries, D65 white point
-// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_Linear_Rec709:1.0
-#define kOfxColourspaceLinRec709Srgb "lin_rec709_srgb"
-#define kOfxColourspaceLinRec709SrgbLabel "Linear Rec.709 (sRGB)"
-#define kOfxColourspaceLinRec709SrgbEncoding "scene-linear"
-#define kOfxColourspaceLinRec709SrgbIsData false
-#define kOfxColourspaceLinRec709SrgbIsCore true
-
-// g18_rec709_tx
-// Convert ACES2065-1 to 1.8 gamma-corrected Rec.709 primaries, D65 white point
-// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_Gamma1.8_Rec709-Texture:1.0
-#define kOfxColourspaceG18Rec709Tx "g18_rec709_tx"
-#define kOfxColourspaceG18Rec709TxLabel "Gamma 1.8 Rec.709 - Texture"
-#define kOfxColourspaceG18Rec709TxEncoding "sdr-video"
-#define kOfxColourspaceG18Rec709TxIsData false
-#define kOfxColourspaceG18Rec709TxIsCore true
-
-// g22_ap1_tx
-// Convert ACES2065-1 to 2.2 gamma-corrected AP1 primaries, ACES ~=D60 white point
-// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_Gamma2.2_AP1-Texture:1.0
-#define kOfxColourspaceG22Ap1Tx "g22_ap1_tx"
-#define kOfxColourspaceG22Ap1TxLabel "Gamma 2.2 AP1 - Texture"
-#define kOfxColourspaceG22Ap1TxEncoding "sdr-video"
-#define kOfxColourspaceG22Ap1TxIsData false
-#define kOfxColourspaceG22Ap1TxIsCore true
-
-// g22_rec709_tx
-// Convert ACES2065-1 to 2.2 gamma-corrected Rec.709 primaries, D65 white point
-// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_Gamma2.2_Rec709-Texture:1.0
-#define kOfxColourspaceG22Rec709Tx "g22_rec709_tx"
-#define kOfxColourspaceG22Rec709TxLabel "Gamma 2.2 Rec.709 - Texture"
-#define kOfxColourspaceG22Rec709TxEncoding "sdr-video"
-#define kOfxColourspaceG22Rec709TxIsData false
-#define kOfxColourspaceG22Rec709TxIsCore true
-
-// g24_rec709_tx
-// Convert ACES2065-1 to 2.4 gamma-corrected Rec.709 primaries, D65 white point
-// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_Gamma2.4_Rec709-Texture:1.0
-#define kOfxColourspaceG24Rec709Tx "g24_rec709_tx"
-#define kOfxColourspaceG24Rec709TxLabel "Gamma 2.4 Rec.709 - Texture"
-#define kOfxColourspaceG24Rec709TxEncoding "sdr-video"
-#define kOfxColourspaceG24Rec709TxIsData false
-#define kOfxColourspaceG24Rec709TxIsCore true
-
-// srgb_encoded_ap1_tx
-// Convert ACES2065-1 to sRGB Encoded AP1 primaries, ACES ~=D60 white point
-// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_sRGB_Encoded_AP1-Texture:1.0
-#define kOfxColourspaceSrgbEncodedAp1Tx "srgb_encoded_ap1_tx"
-#define kOfxColourspaceSrgbEncodedAp1TxLabel "sRGB Encoded AP1 - Texture"
-#define kOfxColourspaceSrgbEncodedAp1TxEncoding "sdr-video"
-#define kOfxColourspaceSrgbEncodedAp1TxIsData false
-#define kOfxColourspaceSrgbEncodedAp1TxIsCore true
-
 // srgb_encoded_p3d65_tx
 // Convert ACES2065-1 to sRGB Encoded P3-D65 primaries, D65 white point
 // CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_sRGB_Encoded_P3-D65-Texture:1.0
@@ -631,23 +656,6 @@ A colourspace suitable for texture painting, typically sRGB.
 #define kOfxColourspaceSrgbEncodedP3d65TxEncoding "sdr-video"
 #define kOfxColourspaceSrgbEncodedP3d65TxIsData false
 #define kOfxColourspaceSrgbEncodedP3d65TxIsCore false
-
-// srgb_tx
-// Convert ACES2065-1 to sRGB
-// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_sRGB-Texture:1.0
-#define kOfxColourspaceSrgbTx "srgb_tx"
-#define kOfxColourspaceSrgbTxLabel "sRGB - Texture"
-#define kOfxColourspaceSrgbTxEncoding "sdr-video"
-#define kOfxColourspaceSrgbTxIsData false
-#define kOfxColourspaceSrgbTxIsCore true
-
-// Raw
-// The utility "Raw" colorspace.
-#define kOfxColourspaceRaw "Raw"
-#define kOfxColourspaceRawLabel "Raw"
-#define kOfxColourspaceRawEncoding ""
-#define kOfxColourspaceRawIsData true
-#define kOfxColourspaceRawIsCore true
 
 #ifdef __cplusplus
 }
