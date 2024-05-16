@@ -103,9 +103,7 @@ static void drawText(const std::string &message, int x, int y,
   txt_img.draw_text(0, 0, message.c_str(), fg, bg, 1.0, font_height);
   int txt_width = txt_img.width();
   int txt_height = txt_img.height();
-  bool invert = true;   // CImg is top-down, opposite of OpenFX (bottom up)
-  if (rowbytes < 0)     // unless the image has negative rowbytes
-    invert = false;
+  // CImg is top-down, opposite of OpenFX (bottom up)
   // iy here is image y, ty is text-image y; same for x
   switch (bits) {
   case 8: {
@@ -115,7 +113,7 @@ static void drawText(const std::string &message, int x, int y,
     float bg_opacity = 0.2f;
     for (int iy = y, ty = 0; iy < ydim && ty < txt_height; iy++, ty++) {
       T *row = (T *)((unsigned char *)image + iy * rowbytes);
-      float *txt_row = txt_img.data(0, invert ? txt_height - 1 - ty : ty);
+      float *txt_row = txt_img.data(0, txt_height - 1 - ty);
       for (int ix = x, tx = 0; ix < xdim && tx < txt_width; ix++, tx++) {
         switch (nchannels) {
         case 1:                 // Alpha only
@@ -141,7 +139,7 @@ static void drawText(const std::string &message, int x, int y,
     float bg_opacity = 0.2f;
     for (int iy = y, ty = 0; iy < ydim && ty < txt_height; iy++, ty++) {
       T *row = (T *)((unsigned char *)image + iy * rowbytes);
-      float *txt_row = txt_img.data(0, invert ? txt_height - 1 - ty : ty);
+      float *txt_row = txt_img.data(0, txt_height - 1 - ty);
       for (int ix = x, tx = 0; ix < xdim && tx < txt_width; ix++, tx++) {
         switch (nchannels) {
         case 1:                 // Alpha only
@@ -165,7 +163,7 @@ static void drawText(const std::string &message, int x, int y,
     float bg_opacity = 0.2f;
     for (int iy = y, ty = 0; iy < ydim && ty < txt_height; iy++, ty++) {
       float *row = (float *)((unsigned char *)image + iy * rowbytes);
-      float *txt_row = txt_img.data(0, invert ? txt_height - 1 - ty : ty);
+      float *txt_row = txt_img.data(0, txt_height - 1 - ty);
       for (int ix = x, tx = 0; ix < xdim && tx < txt_width; ix++, tx++) {
         switch (nchannels) {
         case 1:                 // Alpha only
@@ -376,7 +374,10 @@ getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs
   case 2:
     preferredInputSpace = kOfxColourspaceRoleColorTiming;
     break;
-  }
+  case 3:
+    preferredInputSpace = {};
+    break;
+ }
 
   switch (preferredOutputSpaceIndex) {
   case 0:
@@ -393,7 +394,7 @@ getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs
     break;
   }
 
-  // set out output to be the same same as the input, component and bitdepth
+  // set our output to be the same same as the input, component and bitdepth
   gPropHost->propSetString(outArgs, "OfxImageClipPropComponents_Output", 0, componentStr);
   if(gHostSupportsMultipleBitDepths)
     gPropHost->propSetString(outArgs, "OfxImageClipPropDepth_Output", 0, bitDepthStr);
@@ -403,18 +404,20 @@ getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs
 #ifdef PREFER_COLOURSPACES
   if (gHostColourManagementStyle != kOfxImageEffectPropColourManagementNone) {
     spdlog::info("Specifying preferred colourspaces since host style={}", gHostColourManagementStyle);
-    const char* colourSpaces[] = {
-      preferredInputSpace.c_str(),
-      kOfxColourspaceLinRec2020,
-      kOfxColourspaceRoleSceneLinear};
-    for (int i = 0; i < std::size(colourSpaces); i++) {
-      spdlog::info("Specifying preferred colourspace {} = {}", i, colourSpaces[i]);
-      gPropHost->propSetString(outArgs, kOfxImageClipPropPreferredColourspaces,
-                               i, colourSpaces[i]);
+    if(!preferredInputSpace.empty()) {
+      const char* colourSpaces[] = {
+	preferredInputSpace.c_str(),
+	kOfxColourspaceLinRec2020,
+	kOfxColourspaceRoleSceneLinear};
+      for (size_t i = 0; i < std::size(colourSpaces); i++) {
+	spdlog::info("Specifying preferred colourspace {} = {}", i, colourSpaces[i]);
+	gPropHost->propSetString(outArgs, kOfxImageClipPropPreferredColourspaces "_Source",
+				 i, colourSpaces[i]);
+      }
     }
 
     if (!preferredOutputSpace.empty())
-      gPropHost->propSetString(outArgs, "kOfxImageClipPropPreferredColourspaces_Output", 0, preferredOutputSpace.c_str());
+      gPropHost->propSetString(outArgs, kOfxImageClipPropPreferredColourspaces "_Output", 0, preferredOutputSpace.c_str());
 
   } else {
     spdlog::info("Host does not support colour management (this example won't be very interesting)");
@@ -537,7 +540,7 @@ static OfxStatus render( OfxImageEffectHandle  instance,
 
     // Just copy from source to dest, and draw some text
     if (srcRowBytes < 0 && dstRowBytes < 0)
-      memcpy((char *)dst + dstRowBytes * (ydim-1), (char*)src + srcRowBytes * (ydim-1), srcRowBytes * ydim);
+      memcpy((char *)dst + dstRowBytes * (ydim-1), (char*)src + srcRowBytes * (ydim-1), -srcRowBytes * ydim);
     else
       memcpy(dst, src, srcRowBytes * ydim);
     int ystart = ydim - 100;
@@ -605,6 +608,7 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
   gPropHost->propSetString(props, kOfxParamPropChoiceOption, 0, "Scene Linear");
   gPropHost->propSetString(props, kOfxParamPropChoiceOption, 1, "Raw");
   gPropHost->propSetString(props, kOfxParamPropChoiceOption, 2, "Log (Color Timing role)");
+  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 3, "Unspecified (accepts anything)");
 
   gParamHost->paramDefine(paramSet, kOfxParamTypeChoice, "output_colourspace", &props);
   gPropHost->propSetInt(props, kOfxParamPropDefault, 0, 0);
@@ -739,8 +743,8 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,
   }  
   else if(strcmp(action, kOfxImageEffectActionGetTimeDomain) == 0) {
     stat = getTemporalDomain(effect, inArgs, outArgs);
-  }  
-  } catch (std::bad_alloc) {
+  }
+  } catch (const std::bad_alloc&) {
     // catch memory
     spdlog::error("Caught OFX Plugin Memory error");
     stat = kOfxStatErrMemory;
@@ -749,7 +753,7 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,
     spdlog::error("Caught OFX Plugin error {}", e.what());
     stat = kOfxStatErrUnknown;
   } catch (int err) {
-    spdlog::error("Caught misc error {}", err);
+	spdlog::error("Caught misc error {}", err);
     stat = err;
   } catch ( ... ) {
     // everything else
