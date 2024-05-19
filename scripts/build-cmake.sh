@@ -78,6 +78,14 @@ else
     exit 1
 fi
 
+if [[ ! -f ./conanfile.py ]]; then
+    echo "***"
+    echo "*** ERROR: please run this script from the top level dir, where conanfile.py and readme.md are."
+    echo "***"
+    usage
+    exit 1
+fi
+
 # Install dependencies, set up build dir, and generate build files.
 echo === Running conan to install dependencies
 [[ $USE_OPENCL ]] && conan_opts="$conan_opts -o use_opencl=True"
