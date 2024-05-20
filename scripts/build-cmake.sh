@@ -82,9 +82,34 @@ if [[ ! -f ./conanfile.py ]]; then
     echo "***"
     echo "*** ERROR: please run this script from the top level dir, where conanfile.py and readme.md are."
     echo "***"
-    usage
     exit 1
 fi
+
+
+# Ensure standard plugin install folder exists and is writable, unless user is
+# building with a custom plugin install dir.
+if [[ ! $ARGS =~ .*PLUGIN_INSTALLDIR.* ]] ; then
+    if [[ -n $COMMONPROGRAMFILES && -d $COMMONPROGRAMFILES ]]; then
+        INSTALLDIR="$COMMONPROGRAMFILES/OFX/Plugins"
+    elif [[ $(uname) = Darwin ]]; then
+        INSTALLDIR="/Library/OFX/Plugins"
+    else
+        INSTALLDIR="/usr/OFX/Plugins"
+    fi
+    # Try to create the plugin dir; this may fail due to permissions.
+    # We need it to exist and to be writable.
+    mkdir -p "$INSTALLDIR"
+    if [[ $? -ne 0 || ! -w $INSTALLDIR ]]; then
+        echo "***"
+        echo "*** ERROR: This script will install the built example plugins in $INSTALLDIR,"
+        echo "*** but that dir does not exist or isn't writable."
+        echo "*** Please run: sudo mkdir -p $INSTALLDIR && sudo chmod ugo+w $INSTALLDIR"
+        echo "*** or run this script with -DPLUGIN_INSTALL_DIR=<some dir> to install elsewhere."
+        echo "***"
+        exit 1
+    fi
+fi
+
 
 # Install dependencies, set up build dir, and generate build files.
 echo === Running conan to install dependencies
@@ -107,4 +132,4 @@ echo "  Plugin support lib and examples are in ${CMAKE_BUILD_DIR}/Support/{Libra
 echo "  Host lib is in ${CMAKE_BUILD_DIR}/HostSupport/${BUILDTYPE}"
 echo "=== To (re)install the sample plugins to your OFX plugins folder, become root if necessary, and then do:"
 echo "  cmake --install ${CMAKE_BUILD_DIR}"
-echo "  (pass -DINSTALLDIR=<path> to this script or cmake to install elsewhere than the standard OFX folder)"
+echo "  (pass -DPLUGIN_INSTALLDIR=<path> to this script or cmake to install elsewhere than the standard OFX folder)"
