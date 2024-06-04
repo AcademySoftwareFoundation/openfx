@@ -28,9 +28,10 @@ Plug-ins should set this property if they can use host-provided colourspace
 information. OCIO is used as the reference for the colour management API, but 
 is not required to implement the Native style.
 
-The colourspace strings used in the Native style are from:
-https://github.com/AcademySoftwareFoundation/OpenColorIO-Config-ACES/releases/download/v1.0.0/studio-config-v1.0.0_aces-v1.3_ocio-v2.1.ocio
-and stored for OFX purposes in ofxColourspaceList.h.
+The colourspace strings used in the Native style are from
+openfx-studio-config-v2.1.0_acces-v1.3_ocio-v2.3.ocio
+and stored for OFX purposes in ofxColourspaceList.h. Additionally, there is
+a scheme for cross-referencing between clips.
 
 The assumption is that OCIO > Native so the highest style supported by 
 both host and plug-in will be chosen.
@@ -70,11 +71,19 @@ mode.
 Hosts should set this property to the colourspace of the input clip. Typically 
 it will be set to the working colourspace of the host but could be any valid 
 colourspace.
+
 Plug-ins may set this property on an output clip. Plug-ins which output motion 
 vectors or similar images which should not be colour managed can use the data 
 colourspace which is present in the built-in OCIO configs.
+
 Both host and plug-in should use the value of 
 kOfxImageClipPropPreferredColourspace where reasonable.
+
+Cross-referencing between clips is possible by setting this property to
+"OfxColourspace_<clip>". For example a plug-in may set this property on its
+output clip to "OfxColourspace_Source", telling the host that the colourspace
+of the output matches the input.
+
 If a clip sets OfxImageClipPropIsMask or it only supports
 OfxImageComponentAlpha, colour management is disabled and this property
 must be unset.
@@ -120,6 +129,13 @@ processing in scene linear, it is sensible for the plug-in to universally
 assert that preference and the host to honour it if possible. However, if a 
 plug-in is capable of adapting to any input colourspace, it should not set 
 this preference.
+
+Cross-referencing between clips is possible by setting this property to
+"OfxColourspace_<clip>". For example a plug-in may set this property on a
+second input clip to "OfxColourspace_Source" to tell the host it would like
+both input clips to be in the same colourspace. A host might set the same
+thing on the plug-in's output clip to request that the plug-in outputs the
+same colourspace as the input.
 
 If a plug-in has inputs which contain motion vectors, depth values or other
 non-colour channels, it should set the preferred colourspace to
