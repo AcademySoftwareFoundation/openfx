@@ -19,7 +19,7 @@ Contains the API for colourspace data exchange.
    - Default - kOfxImageEffectPropColourManagementStyleNone
    - Valid Values - This must be one of
      - ::kOfxImageEffectPropColourManagementNone - no colour management
-     - ::kOfxImageEffectPropColourManagementBasic - only roles from see ofxColourspaceList.h may be used
+     - ::kOfxImageEffectPropColourManagementBasic - only roles from ofxColourspaceList.h may be used
      - ::kOfxImageEffectPropColourManagementCore - only roles and core colourspaces from ofxColourspaceList.h may be used
      - ::kOfxImageEffectPropColourManagementFull - any role or colourspace from ofxColourspaceList.h may be used
      - ::kOfxImageEffectPropColourManagementOCIO - any OCIO config may be used (implies use of the OCIO library)
@@ -103,7 +103,7 @@ must be unset.
    - Type - string X N
    - Property Set - clip instance (read only) and ::kOfxImageEffectActionGetClipPreferences action out args property (read/write)
    - Valid Values - colourspace that is permitted under the style in use. 
-                    For Basic, this any role from ofxColourspaceList.h.
+                    For Basic, any role from ofxColourspaceList.h.
                     For Core, any role, or any colourspace from ofxColourspaceList.h where IsCore is true.
                     For Full, any colourspace or role from ofxColourspaceList.h.
                     For OCIO, any string acceptable to Config::getColorSpace().
@@ -159,7 +159,7 @@ the request and set kOfxImageClipPropColourspace to kOfxColourspaceRaw.
 
    - Type - string X 1
    - Property Set - image effect instance (read only)
-   - Valid Values - any  ofxColourspaceList.h
+   - Valid Values - any colourspace from ofxColourspaceList.h
 
 Used with native colour management styles, this property is relevant 
 for plug-ins which have their own viewport in a custom window. Plug-ins should 
