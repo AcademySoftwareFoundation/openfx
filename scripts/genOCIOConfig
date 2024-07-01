@@ -15,10 +15,14 @@ ofx_config = OCIO.Config.CreateFromBuiltinConfig('studio-config-v2.1.0_aces-v1.3
 srgb_tx = ofx_config.getColorSpace('srgb_tx')
 srgb_tx.setEncoding('sdr-video')
 
-# Add OFX-specific roles for use in Native mode only.
-# The choice of colourspaces for these roles is arbitrary.
-ofx_config.setRole('sdr_video', 'rec1886_rec709_display')
-ofx_config.setRole('hdr_video', 'rec2100_hlg_display')
+# Add OFX-specific roles for use as "basic colourspaces".
+# Suitable colourspaces are defined for OCIO compatibility, but a plug-in/host operating
+# in basic mode might not be using these exact colourspaces.
+ofx_config.setRole('ofx_sdr', 'rec1886_rec709_display')
+ofx_config.setRole('ofx_hdr', 'rec2100_hlg_display')
+ofx_config.setRole('ofx_log', 'ACEScct')
+ofx_config.setRole('ofx_linear', 'ACEScg')
+ofx_config.setRole('ofx_raw', 'raw')
 
 # Make all colourspaces active, future OCIO configs will also do this
 ofx_config.setInactiveColorSpaces('')

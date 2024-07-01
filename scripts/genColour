@@ -36,16 +36,19 @@ footer = '''
 '''
 
 role_docs = {
+   'ofx_sdr': 'Any display-referred SDR video such as Rec. 709.',
+   'ofx_hdr': 'Any display-referred HDR video such as Rec. 2020 HLG or PQ.',
+   'ofx_log': 'Any colourspace with a log transfer function.',
+   'ofx_linear': 'Any scene-referred linear colourspace.',
+   'ofx_raw': 'Image values should not be treated as colour, e.g. motion vectors or masks.',
    'aces_interchange': 'Guaranteed to be ACES2065-1.',
    'cie_xyz_d65_interchange': 'CIE XYZ colorimetry with the neutral axis at D65.',
    'color_picking': 'The colourspace to use for colour pickers, typically a display colourspace.',
    'color_timing': 'A colourspace suitable for colour grading, typically a log colourspace.',
    'compositing_log': 'Any colourspace with a log transfer function.',
    'data': 'Image values should not be treated as colour, e.g. motion vectors or masks. Mapped to the raw colourspace.',
-   'hdr_video': 'Any display-referred HDR video such as Rec. 2020 HLG or PQ.',
    'matte_paint': 'A colourspace suitable for matte painting.',
    'scene_linear': 'Any scene-referred linear colourspace.',
-   'sdr_video': 'Any display-referred SDR video such as Rec. 709.',
    'texture_paint': 'A colourspace suitable for texture painting, typically sRGB.'
    }
 
@@ -66,12 +69,27 @@ def colourspace_short_name(spc):
 def print_name(name):
    print(f'{define_base}{camel_name(name)} "{name}"')
 
+def print_metadata(name, label, reference_space, encoding, is_data, is_basic, is_core):
+   print_string_property(name, 'Label', label)
+   print_string_property(name, 'Encoding', encoding)
+   print_bool_property(name, 'Data', is_data)
+   print_bool_property(name, 'Basic', is_basic)
+   print_bool_property(name, 'Core', is_core)
+   print_bool_property(name, 'Display', reference_space == OCIO.ReferenceSpaceType.REFERENCE_SPACE_DISPLAY)
+
+# Basic colourspaces are actually OCIO roles with additional metadata
+def print_basic_colourspace(role):
+   role_name = role[0]
+   spc = ofx_config.getColorSpace(role[1])
+   print(f'\n/** @brief {role_name}\n{role_docs[role_name]}\n*/')
+   print_name(role_name)
+   print_metadata(role_name, role_name, spc.getReferenceSpaceType(), spc.getEncoding(), spc.isData(), True, True)
+
 def print_role(role):
    role_name = role[0]
-   colourspace_name = colourspace_short_name(ofx_config.getColorSpace(role[1]))
    print(f'\n/** @brief {role_name}\n{role_docs[role_name]}\n*/')
    print(f'{define_base}Role{camel_name(role_name)} "{role_name}"')
-   
+
 def print_string_property(name, propname, value):
    print(f'{define_base}{camel_name(name)}{propname} "{value}"')
 
@@ -84,14 +102,14 @@ def print_list(name, list):
 
 def print_colourspace(spc, is_core):
    name = colourspace_short_name(spc)
-   display_name = spc.getName()
+   label = spc.getName()
    print(f'\n// {name}\n//', '\n// '.join(spc.getDescription().split('\n')).replace('\n// \n', '\n'))
    print_name(name)
-   print_string_property(name, 'Label', display_name)
-   print_string_property(name, 'Encoding', spc.getEncoding())
-   print_bool_property(name, 'Data', spc.isData())
-   print_bool_property(name, 'Core', is_core)
+   print_metadata(name, label, spc.getReferenceSpaceType(), spc.getEncoding(), spc.isData(), False, is_core)
    
+# OFX-specific set of basic roles
+basic_roles = ['ofx_raw', 'ofx_linear', 'ofx_sdr', 'ofx_log', 'ofx_hdr']
+
 # OFX-specific set of core colourspaces
 core_spaces = ['srgb_display', 'displayp3_display', 'rec1886_rec709_display',
                'ACES2065-1', 'ACEScc', 'ACEScct',
@@ -106,12 +124,9 @@ ofx_config = OCIO.GetCurrentConfig()
 
 print(Template(header).substitute(config_name=ofx_config.getName()))
 
-print('''/** @brief Roles - generic names for types of colourspace
-Use a role when the specific colourspace is not important.
-*/''')
-
-for role in ofx_config.getRoles():
-   print_role(role)
+print('\n// Basic Colourspaces')
+for basic_role in [role for role in ofx_config.getRoles() if role[0] in basic_roles]:
+   print_basic_colourspace(basic_role)
 
 print('\n// Core Colourspaces')
 for core_spc in [spc for spc in ofx_config.getColorSpaces() if colourspace_short_name(spc) in core_spaces]:
@@ -120,5 +135,10 @@ for core_spc in [spc for spc in ofx_config.getColorSpaces() if colourspace_short
 print('\n// Non-core Colourspaces')
 for other_spc in [spc for spc in ofx_config.getColorSpaces() if colourspace_short_name(spc) not in core_spaces]:
    print_colourspace(other_spc, False)
+
+print('''\n/** @brief Roles - standard names used for compatibility with common OCIO configs.
+*/''')
+for role in [role for role in ofx_config.getRoles() if role[0] not in basic_roles]:
+   print_role(role)
 
 print(footer)

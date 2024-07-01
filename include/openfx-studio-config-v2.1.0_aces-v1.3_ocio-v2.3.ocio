@@ -20,10 +20,13 @@ roles:
   color_timing: ACEScct
   compositing_log: ACEScct
   data: Raw
-  hdr_video: Rec.2100-HLG - Display
   matte_paint: ACEScct
+  ofx_hdr: Rec.2100-HLG - Display
+  ofx_linear: ACEScg
+  ofx_log: ACEScct
+  ofx_raw: Raw
+  ofx_sdr: Rec.1886 Rec.709 - Display
   scene_linear: ACEScg
-  sdr_video: Rec.1886 Rec.709 - Display
   texture_paint: sRGB - Texture
 
 file_rules:

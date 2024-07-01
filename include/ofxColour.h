@@ -19,9 +19,9 @@ Contains the API for colourspace data exchange.
    - Default - kOfxImageEffectPropColourManagementStyleNone
    - Valid Values - This must be one of
      - ::kOfxImageEffectPropColourManagementNone - no colour management
-     - ::kOfxImageEffectPropColourManagementBasic - only roles from ofxColourspaceList.h may be used
-     - ::kOfxImageEffectPropColourManagementCore - only roles and core colourspaces from ofxColourspaceList.h may be used
-     - ::kOfxImageEffectPropColourManagementFull - any role or colourspace from ofxColourspaceList.h may be used
+     - ::kOfxImageEffectPropColourManagementBasic - only basic colourspaces from ofxColourspaceList.h may be used
+     - ::kOfxImageEffectPropColourManagementCore - only core colourspaces from ofxColourspaceList.h may be used
+     - ::kOfxImageEffectPropColourManagementFull - any colourspace from ofxColourspaceList.h may be used
      - ::kOfxImageEffectPropColourManagementOCIO - any OCIO config may be used (implies use of the OCIO library)
 
 Hosts should set this property if they will provide colourspace information 
@@ -103,20 +103,20 @@ must be unset.
    - Type - string X N
    - Property Set - clip instance (read only) and ::kOfxImageEffectActionGetClipPreferences action out args property (read/write)
    - Valid Values - colourspace that is permitted under the style in use. 
-                    For Basic, any role from ofxColourspaceList.h.
-                    For Core, any role, or any colourspace from ofxColourspaceList.h where IsCore is true.
-                    For Full, any colourspace or role from ofxColourspaceList.h.
+                    For Basic, any colourspace from ofxColourspaceList.h where IsBasic is true.
+                    For Core, any colourspace from ofxColourspaceList.h where IsCore is true.
+                    For Full, any colourspace from ofxColourspaceList.h.
                     For OCIO, any string acceptable to Config::getColorSpace().
 
 Plug-ins may set this property during kOfxImageEffectActionGetClipPreferences 
 to request images in a colourspace which is convenient for them. The
 property is an ordered set of colourspace identifiers, which may be any of the
 names or aliases supported by the colour management style in use. If plug-ins
-prefer more esoteric colourspaces, they are encouraged to also include generic
-roles as a fallback. For example a colour grading plug-in which supports a
-specific camera and expects a log colourspace might list:
+prefer more esoteric colourspaces, they are encouraged to also include basic
+colourspacesas a fallback. For example a colour grading plug-in which supports
+a specific camera and expects a log colourspace might list:
 
-"arri_logc4", "arri_logc3_ei800", "ACEScct", "color_timing"
+"arri_logc4", "arri_logc3_ei800", "ACEScct", "ofx_log"
 
 The host is free to choose any colourspace from this list, but should favour
 the first mutually agreeable colourspace, and set kOfxImageClipPropColourspace
