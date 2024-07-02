@@ -195,6 +195,31 @@ If not defined, the default rules for choosing a view will be followed.
 */
 #define kOfxImageEffectPropOCIOView "OfxImageEffectPropOCIOView"
 
+/** @brief
+
+ This action allows a host to ask an effect, given a list of preferred
+ colourspaces, what colourspace will be used for its output clip. This should
+ be called after first gathering the plug-ins preferred input colourspaces
+ via OfxImageEffectActionGetClipPreferences. The host must set
+ kOfxImageClipPropColourspace on the output clip to the chosen colourspace,
+ or the default value of OfxColourspace_Source.
+
+ @param  handle handle to the instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs has the property
+     - \ref kOfxImageClipPropPreferredColourspaces the list of preferred colourspaces
+
+ @param  outArgs has the property
+     - \ref kOfxImageClipPropColourspace the colourspace selected by the plug-in
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and the colourspace was set in the outArgs property set
+     -  \ref kOfxStatReplyDefault, the action was not trapped and the host should use the default value of OfxColourspace_Source
+     -  \ref kOfxStatErrMemory, in which case the action may be called again after a memory purge
+     -  \ref kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message
+     -  \ref kOfxStatErrFatal
+ */
+#define kOfxImageEffectActionGetOutputColourspace "OfxImageEffectActionGetOutputColourspace"
+
 #ifdef __cplusplus
 }
 #endif

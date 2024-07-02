@@ -307,6 +307,12 @@ These are the list of actions passed to an image effect plugin's main function. 
      must be set to one of the pixel depths both the host and plugin
      supports
 
+     -  a set of char \* X 1 properties, one for each of the input clips
+     currently attached, labelled with
+     ``OfxImageClipPropPreferredColourspaces_`` post pended with the clip's
+     name. This must be set according to the requirements of the colour
+     management style in use.
+     
      -  a set of double X 1 properties, one for each of the input clips
      currently attached and the output clip, labelled with
      ``OfxImageClipPropPAR_`` post pended with the clip's name. This is
