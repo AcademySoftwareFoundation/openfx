@@ -21,6 +21,7 @@
 #endif
 #include <cmath>
 #include <stdexcept>
+#include <limits>
 #include <new>
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
@@ -40,6 +41,7 @@
 #define kDataParam    "data"
 #define kBigDataParam "big_data"
 #define kButtonParam  "button"
+#define kTestBigDataParam  "test_data"
 
 // pointers to various bits of the host
 OfxHost                 *gHost;
@@ -133,13 +135,29 @@ struct MyData
 
 struct MyBigData
 {
-  static constexpr const int DataSize = 10 * 1024 * 1024;
-  char data[DataSize];
+  static constexpr const int DataSize = 10 * 1024 * 1024; // 10MB
+  unsigned char data[DataSize];
+
+  void init()
+  {
+    // store increasing bytes
+    for (auto i = 0; i < DataSize; i++)
+      data[i] = i % 256;
+  }
+  bool test() const
+  {
+    for (auto i = 0; i < DataSize; i++)
+	{
+      if (data[i] != i % 256)
+        return false;
+	}
+    return true;
+  }
 };
 
 // get the current value of my data parameter
 static OfxStatus
-getDataParam(OfxImageEffectHandle pluginInstance, MyData &data, double time)
+getBytesParam(OfxImageEffectHandle pluginInstance, const char *name, OfxBytes &bytes, double time = std::numeric_limits<double>::max())
 {
   // get the parameter set from the effect
   OfxParamSetHandle paramSet;
@@ -147,23 +165,22 @@ getDataParam(OfxImageEffectHandle pluginInstance, MyData &data, double time)
   
   // get the parameter from the parameter set
   OfxParamHandle param;
-  if (gParamHost->paramGetHandle(paramSet, kDataParam, &param, NULL) == kOfxStatOK)
+  OfxPropertySetHandle props;
+  if (gParamHost->paramGetHandle(paramSet, name, &param, &props) == kOfxStatOK)
   {
-    // get my custom param's raw value
-    OfxBytes bytes = { 0 };
-    gParamHost->paramGetValueAtTime(param, time, &bytes);
-
-    if (bytes.length == sizeof(data))
-    {    
-      data = *reinterpret_cast<const MyData *>(bytes.data);
-    }
+    // get bytes value
+    if (time != std::numeric_limits<double>::max())    
+      gParamHost->paramGetValueAtTime(param, time, &bytes);
+    else
+      gParamHost->paramGetValue(param, &bytes);
+    return kOfxStatOK;
   }
-  return kOfxStatOK;
+  return kOfxStatErrUnknown;
 }
 
-// get the current value of my custom parameter
+// set the current value of my custom parameter
 static OfxStatus
-setDataParam(OfxImageEffectHandle pluginInstance, const MyData &data, double time)
+setBytesParam(OfxImageEffectHandle pluginInstance, const char *name, const OfxBytes &bytes, double time = std::numeric_limits<double>::max())
 {
   // get the parameter set from the effect
   OfxParamSetHandle paramSet;
@@ -171,14 +188,14 @@ setDataParam(OfxImageEffectHandle pluginInstance, const MyData &data, double tim
   
   // get the parameter from the parameter set
   OfxParamHandle param;
-  gParamHost->paramGetHandle(paramSet, kDataParam, &param, NULL);
-  if (param)
+  OfxPropertySetHandle props;
+  if (gParamHost->paramGetHandle(paramSet, name, &param, &props) == kOfxStatOK)
   {
-    // set it's value
-    OfxBytes bytes = { reinterpret_cast<const unsigned char *>(&data), sizeof(data) };
-    return gParamHost->paramSetValueAtTime(param, time, &bytes);
+    if (time != std::numeric_limits<double>::max())    
+      return gParamHost->paramSetValueAtTime(param, time, &bytes);
+    return gParamHost->paramSetValue(param, &bytes);
   }
-  return kOfxStatErrMissingHostFeature;
+  return kOfxStatErrUnknown;
 }
 
 // The callback passed across the API do do custom parameter animation
@@ -241,9 +258,6 @@ instanceChanged( OfxImageEffectHandle  effect,
   char *changeReason;
   gPropHost->propGetString(inArgs, kOfxPropChangeReason, 0, &changeReason);
 
-  double time;
-  gPropHost->propGetDouble(inArgs, kOfxPropTime, 0, &time);
-
   // we are only interested in user edits
   if(strcmp(changeReason, kOfxChangeUserEdited) != 0) return kOfxStatReplyDefault;
 
@@ -251,13 +265,58 @@ instanceChanged( OfxImageEffectHandle  effect,
   char *objChanged;
   gPropHost->propGetString(inArgs, kOfxPropName, 0, &objChanged);
 
+  // if the button was pressed, modify the Bytes parameters
   if(strcmp(objChanged, kButtonParam) == 0)
   {
+    double time;
+    gPropHost->propGetDouble(inArgs, kOfxPropTime, 0, &time);
+
     // cycle the contents of the data param
-    MyData data;
-    getDataParam(effect, data, time);
-    data.index++;
-    setDataParam(effect, data, time);
+    OfxBytes bytes;
+    if (getBytesParam(effect, kDataParam, bytes, time) == kOfxStatOK)
+    {
+      MyData data;
+      if (bytes.length == sizeof(MyData))
+        data = *(MyData *)(bytes.data);
+      data.index++;
+		  bytes = { reinterpret_cast<const unsigned char *>(&data), sizeof(data) };
+		  setBytesParam(effect, kDataParam, bytes, time);
+    }
+    return kOfxStatOK;
+  }
+  else if(strcmp(objChanged, kTestBigDataParam) == 0)
+  {
+    // check for existing big data
+    OfxBytes bytes;    
+    if (getBytesParam(effect, kBigDataParam, bytes) == kOfxStatOK)
+    {
+      if (bytes.length == MyBigData::DataSize)
+      {
+        auto data = reinterpret_cast<const MyBigData *>(bytes.data);
+        if (data->test())
+        {
+          gMessageSuite->message(effect, kOfxMessageMessage, nullptr, "Big data supported");
+        }
+        else
+        {
+          gMessageSuite->message(effect, kOfxMessageMessage, nullptr, "Error in big data");
+          bytes = { nullptr, 0 };
+          setBytesParam(effect, kBigDataParam, bytes);
+        }
+      }
+      else
+      {
+        // set some big data
+        MyBigData *bigData = new MyBigData;
+        bigData->init();
+        bytes = { reinterpret_cast<const unsigned char *>(bigData), MyBigData::DataSize };
+
+        setBytesParam(effect, kBigDataParam, bytes);
+        delete bigData;
+        gMessageSuite->message(effect, kOfxMessageMessage, nullptr, "Big data set");
+      }
+    }
+    return kOfxStatOK;
   }
 
   // don't trap any others
@@ -379,11 +438,16 @@ interactDraw(OfxImageEffectHandle pluginInstance,
   if((err = getCustomParam(pluginInstance, x, y)) != kOfxStatOK)
     return err;
 
-  // get the opaque data
+  // get the opaque data if it exists
   MyData binary_data;
-  if((err = getDataParam(pluginInstance, binary_data, time)) != kOfxStatOK)
-    return err;
-
+  {
+    OfxBytes bytes;
+    if (getBytesParam(pluginInstance, kDataParam, bytes, time) == kOfxStatOK)
+    {
+      if (bytes.length == sizeof(MyData))
+        binary_data = *reinterpret_cast<const MyData *>(bytes.data);
+    }
+  }
   // scale it up to the project size as it is normalised
   x = projOffset.x + x * projSize.x;
   y = projOffset.y + y * projSize.y;
@@ -635,7 +699,11 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle /*inArgs*/)
 
     // Make a button parameter to change the Bytes parameters
     gParamHost->paramDefine(paramSet, kOfxParamTypePushButton, kButtonParam, &props);
-    gPropHost->propSetString(props, kOfxPropLabel, 0, "Press Me");
+    gPropHost->propSetString(props, kOfxPropLabel, 0, "Change crosshair color");
+ 
+    // Make a button parameter to test big data
+    gParamHost->paramDefine(paramSet, kOfxParamTypePushButton, kTestBigDataParam, &props);
+    gPropHost->propSetString(props, kOfxPropLabel, 0, "Test big data");
   }
 
   return kOfxStatOK;
@@ -706,12 +774,12 @@ static OfxPlugin basicPlugin =
   kOfxImageEffectPluginApi,
   1,
   "uk.co.thefoundry.CustomParamPlugin",
-  1,
+  2,
   0,
   setHostFunc,
   pluginMain
 };
-   
+  
 // the two mandated functions
 EXPORT OfxPlugin *
 OfxGetPlugin(int nth)
