@@ -36,9 +36,10 @@
 #  error Not building on your operating system quite yet
 #endif
 
-#define kPointParam "point"
-#define kDataParam "data"
-#define kButtonParam "button"
+#define kPointParam   "point"
+#define kDataParam    "data"
+#define kBigDataParam "big_data"
+#define kButtonParam  "button"
 
 // pointers to various bits of the host
 OfxHost                 *gHost;
@@ -130,6 +131,12 @@ struct MyData
   }
 };
 
+struct MyBigData
+{
+  static constexpr const int DataSize = 10 * 1024 * 1024;
+  char data[DataSize];
+};
+
 // get the current value of my data parameter
 static OfxStatus
 getDataParam(OfxImageEffectHandle pluginInstance, MyData &data, double time)
@@ -140,8 +147,7 @@ getDataParam(OfxImageEffectHandle pluginInstance, MyData &data, double time)
   
   // get the parameter from the parameter set
   OfxParamHandle param;
-  gParamHost->paramGetHandle(paramSet, kDataParam, &param, NULL);
-  if (param)
+  if (gParamHost->paramGetHandle(paramSet, kDataParam, &param, NULL) == kOfxStatOK)
   {
     // get my custom param's raw value
     OfxBytes bytes = { 0 };
@@ -152,7 +158,6 @@ getDataParam(OfxImageEffectHandle pluginInstance, MyData &data, double time)
       data = *reinterpret_cast<const MyData *>(bytes.data);
     }
   }
-
   return kOfxStatOK;
 }
 
@@ -617,18 +622,21 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle /*inArgs*/)
     gPropHost->propSetInt(props, kOfxParamPropAnimates, 0, false);
   }
 
-  // Make a Bytes parameter to store the crosshair color
-  gParamHost->paramDefine(paramSet, kOfxParamTypeBytes, kDataParam, &props);
-  gPropHost->propSetString(props, kOfxParamPropDefault, 0, "0.5 0.5");
-  gPropHost->propSetString(props, kOfxParamPropScriptName, 0, "data");
-  gPropHost->propSetString(props, kOfxParamPropHint, 0, "Opaque data describing crosshair color");
-  gPropHost->propSetString(props, kOfxPropLabel, 0, "Data");
-  gPropHost->propSetInt(props, kOfxParamPropAnimates, 0, 1);
-  gPropHost->propSetInt(props, kOfxParamPropIsAutoKeying, 0, 1);  
+  // Make Bytes parameters to store the crosshair color and some large data
+  if (gParamHost->paramDefine(paramSet, kOfxParamTypeBytes, kDataParam, &props) == kOfxStatOK)
+  {
+    gPropHost->propSetString(props, kOfxParamPropHint, 0, "Opaque data describing crosshair color");
+    gPropHost->propSetInt(props, kOfxParamPropAnimates, 0, 1);
+    gPropHost->propSetInt(props, kOfxParamPropIsAutoKeying, 0, 1);  
 
-  // Make a button parameter to change the Bytes parameter
-  gParamHost->paramDefine(paramSet, kOfxParamTypePushButton, kButtonParam, &props);
-  gPropHost->propSetString(props, kOfxPropLabel, 0, "Press Me");
+    // non-animating bytes
+    gParamHost->paramDefine(paramSet, kOfxParamTypeBytes, kBigDataParam, &props);
+    gPropHost->propSetString(props, kOfxParamPropHint, 0, "Large block of opaque data");
+
+    // Make a button parameter to change the Bytes parameters
+    gParamHost->paramDefine(paramSet, kOfxParamTypePushButton, kButtonParam, &props);
+    gPropHost->propSetString(props, kOfxPropLabel, 0, "Press Me");
+  }
 
   return kOfxStatOK;
 }
