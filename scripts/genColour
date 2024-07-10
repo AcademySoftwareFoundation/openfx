@@ -5,7 +5,7 @@
 
 # Extract information from an OCIO config to C header.
 # Example invocation:
-# OCIO=include/openfx-studio-config-v2.1.0_aces-v1.3_ocio-v2.3.ocio scripts/genColour > include/ofxColourspaceList.h
+# OCIO=include/openfx-native-v1.5_aces-v1.3_ocio-v2.3.ocio scripts/genColour > include/ofxColourspaceList.h
 
 import sys
 import PyOpenColorIO as OCIO
@@ -38,14 +38,14 @@ footer = '''
 role_docs = {
    'ofx_sdr': 'Any display-referred SDR video such as Rec. 709.',
    'ofx_hdr': 'Any display-referred HDR video such as Rec. 2020 HLG or PQ.',
-   'ofx_log': 'Any colourspace with a log transfer function.',
+   'ofx_log': 'Any scene-referred colourspace with a log transfer function.',
    'ofx_linear': 'Any scene-referred linear colourspace.',
    'ofx_raw': 'Image values should not be treated as colour, e.g. motion vectors or masks.',
    'aces_interchange': 'Guaranteed to be ACES2065-1.',
    'cie_xyz_d65_interchange': 'CIE XYZ colorimetry with the neutral axis at D65.',
    'color_picking': 'The colourspace to use for colour pickers, typically a display colourspace.',
    'color_timing': 'A colourspace suitable for colour grading, typically a log colourspace.',
-   'compositing_log': 'Any colourspace with a log transfer function.',
+   'compositing_log': 'Any scene-referred colourspace with a log transfer function.',
    'data': 'Image values should not be treated as colour, e.g. motion vectors or masks. Mapped to the raw colourspace.',
    'matte_paint': 'A colourspace suitable for matte painting.',
    'scene_linear': 'Any scene-referred linear colourspace.',
@@ -117,14 +117,25 @@ core_spaces = ['srgb_display', 'displayp3_display', 'rec1886_rec709_display',
                'lin_rec709_srgb', 'g18_rec709_tx', 'g22_ap1_tx',
                'g22_rec709_tx', 'g24_rec709_tx', 'srgb_encoded_ap1_tx',
                'srg_encoded_p3d65_tx', 'srgb_tx', 'Raw',
-               'rec1886_rec2020_display', 'rec2100_hlg_display', 'rec2100_pq_display']
+               'rec1886_rec2020_display', 'rec2100_hlg_display', 'rec2100_pq_display',
+               'st2084_p3d65_display', 'p3d65_display']
 
 # This should be the OpenFX OCIO config created by genOCIOConfig
 ofx_config = OCIO.GetCurrentConfig()
 
+# Add OFX-specific basic colourspaces here rather than in genOCIOConfig
+# to avoid creating an expectation that these mappings should always be used.
+# The assigned colourspaces are chosen simply to generate the correct
+# attributes in the header.
+ofx_config.setRole('ofx_sdr', 'rec1886_rec709_display')
+ofx_config.setRole('ofx_hdr', 'rec2100_hlg_display')
+ofx_config.setRole('ofx_log', 'ACEScct')
+ofx_config.setRole('ofx_linear', 'ACEScg')
+ofx_config.setRole('ofx_raw', 'raw')
+
 print(Template(header).substitute(config_name=ofx_config.getName()))
 
-print('\n// Basic Colourspaces')
+print('\n// Basic Colourspaces\n// These colourspaces are generic names for any colourspace with the correct attributes.')
 for basic_role in [role for role in ofx_config.getRoles() if role[0] in basic_roles]:
    print_basic_colourspace(basic_role)
 

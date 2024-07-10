@@ -33,9 +33,13 @@ colour management. OCIO is used as the reference for the colour management
 API, but is not required to implement the native styles.
 
 The colourspace strings used in the native styles are from
-openfx-studio-config-v2.1.0_acces-v1.3_ocio-v2.3.ocio
-and stored for OFX purposes in ofxColourspaceList.h. Additionally, there is
-a scheme for cross-referencing between clips.
+openfx-native-1.5.ocio, which is based on the OCIO ACES Studio built-in
+config, studio-config-v2.1.0_aces-v1.3_ocio-v2.3, and stored for OFX purposes
+in ofxColourspaceList.h. Additionally, there is a scheme for cross-referencing
+between clips, and a set of "basic colourspaces", which are designed to be
+generic names for a family of colourspaces. When a basic colourspace is used,
+this means the host is free to choose any colourspace with the same encoding
+and reference space (scene vs display).
 
 The assumption is that OCIO > Full > Core > Basic, so the highest style
 supported by both host and plug-in will be chosen.
@@ -63,10 +67,19 @@ A host must set this property on any effect instances where it has negotiated
 OCIO colour management (kOfxImageEffectPropColourManagementOCIO).
 Use of URIs for built-in configs, such as ocio://default is permitted.
 
-When native colour management is in use, a host must set this
-property to point to the OCIO config used to define strings for the version of
-OFX it was built against. This will allow a plug-in which uses OCIO to work
-directly with native styles.
+When the core or full styles are in use, a host must set this property to
+point to an OCIO config which defines all the colourspaces required for that
+style, which will allow a plug-in that uses OCIO to work directly with native
+styles. The included config, openfx-native-v1.5_aces-v1.3_ocio-v2.3.ocio, is
+suitable, but hosts might provide a different config which is compatible. If
+hosts choose to use their own config, its definitions for native colourspaces
+must exactly match those found in openfx-native-v1.5_aces-v1.3_ocio-v2.3.ocio.
+
+As basic colourspaces are not defined in the OpenFX native config, hosts may
+set this property as they wish when using the basic style. If hosts do provide
+a config, an OCIO-based plug-in may attempt to use it to look up mappings for
+basic colourspaces, but leaving those undefined must not be considered an
+error.
 */
 #define kOfxImageEffectPropOCIOConfig "OfxImageEffectPropOCIOConfig"
 
@@ -81,8 +94,8 @@ it will be set to the working colourspace of the host but could be any valid
 colourspace.
 
 Plug-ins may set this property on an output clip. Plug-ins which output motion 
-vectors or similar images which should not be colour managed can use the data 
-colourspace which is present in the built-in OCIO configs.
+vectors or similar images which should not be colour managed should use
+kOfxColourspaceRaw,
 
 Both host and plug-in should use the value of 
 kOfxImageClipPropPreferredColourspace where reasonable.
@@ -90,7 +103,9 @@ kOfxImageClipPropPreferredColourspace where reasonable.
 Cross-referencing between clips is possible by setting this property to
 "OfxColourspace_<clip>". For example a plug-in may set this property on its
 output clip to "OfxColourspace_Source", telling the host that the colourspace
-of the output matches the input.
+of the output matches the input. In the basic style, plug-ins are recommended
+to use cross-referencing for their output clip unless kOfxColourspaceRaw is
+required.
 
 If a clip sets OfxImageClipPropIsMask or it only supports
 OfxImageComponentAlpha, colour management is disabled and this property
@@ -122,8 +137,8 @@ The host is free to choose any colourspace from this list, but should favour
 the first mutually agreeable colourspace, and set kOfxImageClipPropColourspace
 to tell the plug-in which colourspace has been selected. A host does not need
 to convert into the first choice just because it can, as this might be
-inefficient, and should scene-to-display or display-to-scene conversions where
-possible.
+inefficient, and should avoid scene-to-display or display-to-scene conversions
+where possible.
 
 In the event that the host cannot supply images in a requested colourspace,
 it may supply images in any valid colourspace. Plug-ins must check
@@ -147,7 +162,7 @@ both input clips to be in the same colourspace. A host might set the same
 thing on the plug-in's output clip to request that the plug-in outputs the
 same colourspace as the input.
 
-If a plug-in has inputs which contain motion vectors, depth values or other
+If a plug-in has inputs which expect motion vectors, depth values or other
 non-colour channels, it should set the preferred colourspace to
 kOfxColourspaceRaw. Similarly, if a host requests outputs in a typical scene
 colourspace, but the plug-in is producing motion vectors, it should ignore

@@ -5,7 +5,7 @@ environment:
 search_path: ""
 strictparsing: true
 luma: [0.2126, 0.7152, 0.0722]
-name: openfx-studio-config-v2.1.0_aces-v1.3_ocio-v2.3
+name: openfx-native-v1.5_aces-v1.3_ocio-v2.3
 description: |
   OpenFX 1.5 Native Mode Config
   Based on: Academy Color Encoding System - Studio Config [COLORSPACES v2.1.0] [ACES v1.3] [OCIO v2.3]
@@ -21,11 +21,6 @@ roles:
   compositing_log: ACEScct
   data: Raw
   matte_paint: ACEScct
-  ofx_hdr: Rec.2100-HLG - Display
-  ofx_linear: ACEScg
-  ofx_log: ACEScct
-  ofx_raw: Raw
-  ofx_sdr: Rec.1886 Rec.709 - Display
   scene_linear: ACEScg
   texture_paint: sRGB - Texture
 
