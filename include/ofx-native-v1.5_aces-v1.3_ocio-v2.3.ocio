@@ -5,7 +5,7 @@ environment:
 search_path: ""
 strictparsing: true
 luma: [0.2126, 0.7152, 0.0722]
-name: openfx-native-v1.5_aces-v1.3_ocio-v2.3
+name: ofx-native-v1.5_aces-v1.3_ocio-v2.3
 description: |
   OpenFX 1.5 Native Mode Config
   Based on: Academy Color Encoding System - Studio Config [COLORSPACES v2.1.0] [ACES v1.3] [OCIO v2.3]
