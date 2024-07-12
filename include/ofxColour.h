@@ -35,7 +35,7 @@ API, but is not required to implement the native styles.
 The colourspace strings used in the native styles are from ofx-native-1.5.ocio,
 which is based on the OCIO ACES Studio built-in config,
 studio-config-v2.1.0_aces-v1.3_ocio-v2.3, and stored for OFX purposes in
-openfx-native-v1.5_aces-v1.3_ocio-v2.3.h (referred to as the config header).
+ofx-native-v1.5_aces-v1.3_ocio-v2.3.h (referred to as the config header).
 Additionally, there is a scheme for cross-referencing between clips, and a set
 of "basic colourspaces", which are designed to be generic names for a family of
 colourspaces. When a basic colourspace is used, this means the host is free to
@@ -44,7 +44,8 @@ display).
 
 The assumption is that OCIO > Full > Core > Basic, so the highest style
 supported by both host and plug-in should usually be chosen by the host.
-The chosen style must be set using this property on an image effect instance.
+The chosen style must be set by the host using this property on an image
+effect instance.
 */
 #define kOfxImageEffectPropColourManagementStyle "OfxImageEffectPropColourManagementStyle"
 
@@ -80,9 +81,9 @@ side.
    - Valid Values - any string provided by the plug-in in
                     kOfxImageEffectPropColourManagementAvailableConfigs
 
-If kOfxImageEffectPropColourManagementStyle for the instance is a native style,
-the host must set this property to indicate the native colour management config
-the plug-in should be used to look up colourspace strings.
+The host must set this property to indicate the native colour management config
+the plug-in should be used to look up colourspace strings. It is important to
+set this even in OCIO mode, to define the basic colourspaces.
 */
 #define kOfxImageEffectPropColourManagementConfig "OfxImageEffectPropColourManagementConfig"
 
@@ -136,7 +137,7 @@ must be unset.
                     For Basic, any colourspace from the config header where IsBasic is true.
                     For Core, any colourspace from the config header where IsCore is true.
                     For Full, any colourspace from the config header.
-                    For OCIO, any string acceptable to Config::getColorSpace().
+                    For OCIO, any string acceptable to Config::getColorSpace(), or a basic colourspace.
 
 Plug-ins may set this property during kOfxImageEffectActionGetClipPreferences 
 to request images in a colourspace which is convenient for them. The
@@ -146,7 +147,7 @@ prefer more esoteric colourspaces, they are encouraged to also include basic
 colourspacesas a fallback. For example a colour grading plug-in which supports
 a specific camera and expects a log colourspace might list:
 
-"arri_logc4", "arri_logc3_ei800", "ACEScct", "ofx_log"
+"arri_logc4", "arri_logc3_ei800", "ACEScct", "ofx_scene_log"
 
 The host is free to choose any colourspace from this list, but should favour
 the first mutually agreeable colourspace, and set kOfxImageClipPropColourspace
@@ -159,16 +160,20 @@ In the event that the host cannot supply images in a requested colourspace,
 it may supply images in any valid colourspace. Plug-ins must check
 kOfxImageClipPropColourspace to see if their request was satisfied.
 
-Hosts may set this on an output clip, which could be helpful in a generator
-context, and plug-ins should follow the same logic as hosts when deciding
-which colourspace to use.
+In both native and OCIO modes, it is recommended to include basic colourspaces
+in this list, because this gives the host more flexibility to avoid unnecessary
+colourspace conversions.
+
+Hosts can invoke kOfxImageEffectActionGetOutputColourspace to set this on an
+output clip, which could be helpful in a generator context, and plug-ins should
+follow the same logic as hosts when deciding which colourspace to use.
 
 It might be much less costly for a host to perform a conversion 
 than a plug-in, so in the example of a plug-in which performs all internal 
 processing in scene linear, it is sensible for the plug-in to universally 
-assert that preference and the host to honour it if possible. However, if a 
-plug-in is capable of adapting to any input colourspace, it should not set 
-this preference.
+assert that preference by preferring kOfxColourspaceOfxSceneLinear, and for
+the host to honour it if possible. However, if a plug-in is capable of
+adapting to any input colourspace, it should not set this preference.
 
 Cross-referencing between clips is possible by setting this property to
 "OfxColourspace_<clip>". For example, a plug-in in a transition context may set
