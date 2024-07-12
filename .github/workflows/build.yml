@@ -175,7 +175,6 @@ jobs:
         if: matrix.ostype == 'mac'
         with:
           python-version: '3.11'
-          cache: 'pip'
 
       - name: Install Conan
         id: conan
@@ -216,16 +215,14 @@ jobs:
           linux-local-args: '["--toolkit"]'
 
       - name: Install CUDA Toolkit
-        uses: Jimver/cuda-toolkit@v0.2.14
+        uses: Jimver/cuda-toolkit@v0.2.16
         id: cuda-toolkit-win
         if: matrix.ostype == 'windows' && matrix.cuda == true
         with:
-          cuda: '12.1.0'
+          # Need CUDA >= 12.4 to support recent VS2022 (17.10 and later, MSVC 19.40)
+          cuda: '12.4.1'
           method: 'network'
           sub-packages: '["nvcc", "cudart"]'
-          # workaround for cuda-toolkit action bug https://github.com/Jimver/cuda-toolkit/issues/315
-          use-github-cache: false
-          use-local-cache: false
 
       # - name: Install system dependencies (CentOS)
       #   run: |
