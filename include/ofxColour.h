@@ -32,8 +32,8 @@ Collectively, the full, core and basic styles are referred to as native
 colour management. OCIO is used as the reference for the colour management
 API, but is not required to implement the native styles.
 
-The colourspace strings used in the native styles are from ofx-native-1.5.ocio,
-which is based on the OCIO ACES Studio built-in config,
+The colourspace strings used in the native styles are from an OFX-specific
+OCIO config which is currently based on the OCIO ACES Studio built-in config,
 studio-config-v2.1.0_aces-v1.3_ocio-v2.3, and stored for OFX purposes in
 ofx-native-v1.5_aces-v1.3_ocio-v2.3.h (referred to as the config header).
 Additionally, there is a scheme for cross-referencing between clips, and a set
