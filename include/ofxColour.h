@@ -4,13 +4,21 @@
 // Copyright OpenFX and contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /** @file ofxColour.h
 Contains the API for colourspace data exchange.
 */
+
+/** Define OFX_NO_DEFAULT_COLORSPACE_HEADER if you want to manage the
+colourspace headers yourself. If this is not defined, the latest ofx-native
+config will be included.
+*/
+#ifndef OFX_NO_DEFAULT_COLORSPACE_HEADER
+#include "ofx-native-v1.5_aces-v1.3_ocio-v2.3.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** @brief What style of colour management does the host or plug-in offer?
 
