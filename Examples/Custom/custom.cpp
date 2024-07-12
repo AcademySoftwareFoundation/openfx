@@ -21,6 +21,7 @@
 #endif
 #include <cmath>
 #include <stdexcept>
+#include <limits>
 #include <new>
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
@@ -36,7 +37,11 @@
 #  error Not building on your operating system quite yet
 #endif
 
-#define kPointParam "point"
+#define kPointParam   "point"
+#define kDataParam    "data"
+#define kBigDataParam "big_data"
+#define kButtonParam  "button"
+#define kTestBigDataParam  "test_data"
 
 // pointers to various bits of the host
 OfxHost                 *gHost;
@@ -73,7 +78,7 @@ writeCustomParam(char *str, int strlen, double x, double y)
 #endif
 }
 
-// set the current value of my custom parameter
+// get the current value of my custom parameter
 static OfxStatus
 getCustomParam(OfxImageEffectHandle pluginInstance, double &x, double &y)
 {
@@ -92,7 +97,7 @@ getCustomParam(OfxImageEffectHandle pluginInstance, double &x, double &y)
   return parseCustomParam(str, x, y);
 }
 
-// get the current value of my custom parameter
+// set the current value of my custom parameter
 static OfxStatus
 setCustomParam(OfxImageEffectHandle pluginInstance, double x, double y)
 {
@@ -110,6 +115,87 @@ setCustomParam(OfxImageEffectHandle pluginInstance, double x, double y)
 
   // set it's value
   return gParamHost->paramSetValue(param, str);
+}
+
+struct MyData
+{
+  int version = 1;
+  int index = 0;
+
+  void getColor(float color[3]) const
+  {
+    int r = (index + 0) % 3;
+    int g = (index + 1) % 3;
+    int b = (index + 2) % 3;
+    color[r] = 1.0f;
+    color[g] = 0.0f;
+    color[b] = 0.0f;
+  }
+};
+
+struct MyBigData
+{
+  static constexpr const int DataSize = 10 * 1024 * 1024; // 10MB
+  unsigned char data[DataSize];
+
+  void init()
+  {
+    // store increasing bytes
+    for (auto i = 0; i < DataSize; i++)
+      data[i] = i % 256;
+  }
+  bool test() const
+  {
+    for (auto i = 0; i < DataSize; i++)
+	{
+      if (data[i] != i % 256)
+        return false;
+	}
+    return true;
+  }
+};
+
+// get the current value of my data parameter
+static OfxStatus
+getBytesParam(OfxImageEffectHandle pluginInstance, const char *name, OfxBytes &bytes, double time = std::numeric_limits<double>::max())
+{
+  // get the parameter set from the effect
+  OfxParamSetHandle paramSet;
+  gEffectHost->getParamSet(pluginInstance, &paramSet);
+  
+  // get the parameter from the parameter set
+  OfxParamHandle param;
+  OfxPropertySetHandle props;
+  if (gParamHost->paramGetHandle(paramSet, name, &param, &props) == kOfxStatOK)
+  {
+    // get bytes value
+    if (time != std::numeric_limits<double>::max())    
+      gParamHost->paramGetValueAtTime(param, time, &bytes);
+    else
+      gParamHost->paramGetValue(param, &bytes);
+    return kOfxStatOK;
+  }
+  return kOfxStatErrUnknown;
+}
+
+// set the current value of my custom parameter
+static OfxStatus
+setBytesParam(OfxImageEffectHandle pluginInstance, const char *name, const OfxBytes &bytes, double time = std::numeric_limits<double>::max())
+{
+  // get the parameter set from the effect
+  OfxParamSetHandle paramSet;
+  gEffectHost->getParamSet(pluginInstance, &paramSet);
+  
+  // get the parameter from the parameter set
+  OfxParamHandle param;
+  OfxPropertySetHandle props;
+  if (gParamHost->paramGetHandle(paramSet, name, &param, &props) == kOfxStatOK)
+  {
+    if (time != std::numeric_limits<double>::max())    
+      return gParamHost->paramSetValueAtTime(param, time, &bytes);
+    return gParamHost->paramSetValue(param, &bytes);
+  }
+  return kOfxStatErrUnknown;
 }
 
 // The callback passed across the API do do custom parameter animation
@@ -161,6 +247,80 @@ static OfxStatus
 destroyInstance(OfxImageEffectHandle  /*instance*/)
 {
   return kOfxStatOK;
+}
+
+static OfxStatus
+instanceChanged( OfxImageEffectHandle  effect,
+     OfxPropertySetHandle inArgs,
+     OfxPropertySetHandle /*outArgs*/)
+{
+  // see why it changed
+  char *changeReason;
+  gPropHost->propGetString(inArgs, kOfxPropChangeReason, 0, &changeReason);
+
+  // we are only interested in user edits
+  if(strcmp(changeReason, kOfxChangeUserEdited) != 0) return kOfxStatReplyDefault;
+
+  // get the name of the thing that changed
+  char *objChanged;
+  gPropHost->propGetString(inArgs, kOfxPropName, 0, &objChanged);
+
+  // if the button was pressed, modify the Bytes parameters
+  if(strcmp(objChanged, kButtonParam) == 0)
+  {
+    double time;
+    gPropHost->propGetDouble(inArgs, kOfxPropTime, 0, &time);
+
+    // cycle the contents of the data param
+    OfxBytes bytes;
+    if (getBytesParam(effect, kDataParam, bytes, time) == kOfxStatOK)
+    {
+      MyData data;
+      if (bytes.length == sizeof(MyData))
+        data = *(MyData *)(bytes.data);
+      data.index++;
+		  bytes = { reinterpret_cast<const unsigned char *>(&data), sizeof(data) };
+		  setBytesParam(effect, kDataParam, bytes, time);
+    }
+    return kOfxStatOK;
+  }
+  else if(strcmp(objChanged, kTestBigDataParam) == 0)
+  {
+    // check for existing big data
+    OfxBytes bytes;    
+    if (getBytesParam(effect, kBigDataParam, bytes) == kOfxStatOK)
+    {
+      if (bytes.length == MyBigData::DataSize)
+      {
+        auto data = reinterpret_cast<const MyBigData *>(bytes.data);
+        if (data->test())
+        {
+          gMessageSuite->message(effect, kOfxMessageMessage, nullptr, "Big data supported");
+        }
+        else
+        {
+          gMessageSuite->message(effect, kOfxMessageMessage, nullptr, "Error in big data");
+          bytes = { nullptr, 0 };
+          setBytesParam(effect, kBigDataParam, bytes);
+        }
+      }
+      else
+      {
+        // set some big data
+        MyBigData *bigData = new MyBigData;
+        bigData->init();
+        bytes = { reinterpret_cast<const unsigned char *>(bigData), MyBigData::DataSize };
+
+        setBytesParam(effect, kBigDataParam, bytes);
+        delete bigData;
+        gMessageSuite->message(effect, kOfxMessageMessage, nullptr, "Big data set");
+      }
+    }
+    return kOfxStatOK;
+  }
+
+  // don't trap any others
+  return kOfxStatReplyDefault;
 }
 
 static OfxStatus
@@ -262,6 +422,9 @@ interactDraw(OfxImageEffectHandle pluginInstance,
   // get my private interact data
   MyInteractData *data = getInteractData(interactInstance);
 
+  double time;
+  gPropHost->propGetDouble(drawArgs, kOfxPropTime, 0, &time);
+
   // get the project size
   OfxPointD projSize, projOffset;
   ofxuGetProjectSetup(pluginInstance, projSize, projOffset);
@@ -275,6 +438,16 @@ interactDraw(OfxImageEffectHandle pluginInstance,
   if((err = getCustomParam(pluginInstance, x, y)) != kOfxStatOK)
     return err;
 
+  // get the opaque data if it exists
+  MyData binary_data;
+  {
+    OfxBytes bytes;
+    if (getBytesParam(pluginInstance, kDataParam, bytes, time) == kOfxStatOK)
+    {
+      if (bytes.length == sizeof(MyData))
+        binary_data = *reinterpret_cast<const MyData *>(bytes.data);
+    }
+  }
   // scale it up to the project size as it is normalised
   x = projOffset.x + x * projSize.x;
   y = projOffset.y + y * projSize.y;
@@ -287,7 +460,12 @@ interactDraw(OfxImageEffectHandle pluginInstance,
   if(data->selected)
     glColor3f(1, 1, 1);
   else
-    glColor3f(1, 0, 0);
+  {
+    // draw using the color defined in the custom data
+    float color[3];
+    binary_data.getColor(color);
+    glColor3fv(color);
+  }
 
   // Draw a cross hair, the current coordinate system aligns with the image plane.
   glPushMatrix();
@@ -508,6 +686,26 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle /*inArgs*/)
     gPropHost->propSetInt(props, kOfxParamPropAnimates, 0, false);
   }
 
+  // Make Bytes parameters to store the crosshair color and some large data
+  if (gParamHost->paramDefine(paramSet, kOfxParamTypeBytes, kDataParam, &props) == kOfxStatOK)
+  {
+    gPropHost->propSetString(props, kOfxParamPropHint, 0, "Opaque data describing crosshair color");
+    gPropHost->propSetInt(props, kOfxParamPropAnimates, 0, 1);
+    gPropHost->propSetInt(props, kOfxParamPropIsAutoKeying, 0, 1);  
+
+    // non-animating bytes
+    gParamHost->paramDefine(paramSet, kOfxParamTypeBytes, kBigDataParam, &props);
+    gPropHost->propSetString(props, kOfxParamPropHint, 0, "Large block of opaque data");
+
+    // Make a button parameter to change the Bytes parameters
+    gParamHost->paramDefine(paramSet, kOfxParamTypePushButton, kButtonParam, &props);
+    gPropHost->propSetString(props, kOfxPropLabel, 0, "Change crosshair color");
+ 
+    // Make a button parameter to test big data
+    gParamHost->paramDefine(paramSet, kOfxParamTypePushButton, kTestBigDataParam, &props);
+    gPropHost->propSetString(props, kOfxPropLabel, 0, "Test big data");
+  }
+
   return kOfxStatOK;
 }
 
@@ -534,6 +732,9 @@ pluginMain(const char *action,  const void *handle,  OfxPropertySetHandle inArgs
   } 
   else if(strcmp(action, kOfxImageEffectActionIsIdentity) == 0) {
     return isIdentity(effect, inArgs, outArgs);
+  }    
+  else if(strcmp(action, kOfxActionInstanceChanged) == 0) {
+    return instanceChanged(effect, inArgs, outArgs);
   }    
   else if(strcmp(action, kOfxImageEffectActionRender) == 0) {
     return render(effect, inArgs, outArgs);
@@ -573,12 +774,12 @@ static OfxPlugin basicPlugin =
   kOfxImageEffectPluginApi,
   1,
   "uk.co.thefoundry.CustomParamPlugin",
-  1,
+  2,
   0,
   setHostFunc,
   pluginMain
 };
-   
+  
 // the two mandated functions
 EXPORT OfxPlugin *
 OfxGetPlugin(int nth)

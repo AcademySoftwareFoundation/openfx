@@ -64,6 +64,8 @@ These strings are used to identify the type of the parameter when it is defined,
 #define kOfxParamTypeString "OfxParamTypeString"
 /** @brief String to identify a param as a Plug-in defined parameter */
 #define kOfxParamTypeCustom "OfxParamTypeCustom"
+/** @brief String to identify a param as a Plug-in defined opaque data parameter */
+#define kOfxParamTypeBytes "OfxParamTypeBytes"
 /** @brief String to identify a param as a Grouping parameter */
 #define kOfxParamTypeGroup "OfxParamTypeGroup"
 /** @brief String to identify a param as a page parameter */
@@ -71,6 +73,16 @@ These strings are used to identify the type of the parameter when it is defined,
 /** @brief String to identify a param as a PushButton parameter */
 #define kOfxParamTypePushButton "OfxParamTypePushButton"
 /*@}*/
+
+/** @brief Provides information for a parameter of type kOfxParamTypeBytes
+ */
+typedef struct OfxBytes
+{
+    /** @brief a pointer to the data buffer */
+    const unsigned char *data;
+    /** @brief the length of the data buffer, in bytes */
+    size_t length;
+} OfxBytes;
 
 /**
    \addtogroup PropertiesAll
@@ -409,6 +421,7 @@ The exact type and dimension is dependant on the type of the parameter. These ar
   - ::kOfxParamTypeInteger3D - integer property of three dimensions
   - ::kOfxParamTypeString - string property of one dimension
   - ::kOfxParamTypeCustom - string property of one dimension
+  - ::kOfxParamTypeBytes - pointer to OfxBytes struct of one dimension, or nullptr
   - ::kOfxParamTypeGroup - does not have this property
   - ::kOfxParamTypePage - does not have this property
   - ::kOfxParamTypePushButton - does not have this property
