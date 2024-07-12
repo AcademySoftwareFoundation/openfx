@@ -215,7 +215,7 @@ jobs:
           linux-local-args: '["--toolkit"]'
 
       - name: Install CUDA Toolkit
-        uses: Jimver/cuda-toolkit@v0.2.15
+        uses: Jimver/cuda-toolkit@v0.2.16
         id: cuda-toolkit-win
         if: matrix.ostype == 'windows' && matrix.cuda == true
         with:
@@ -223,9 +223,6 @@ jobs:
           cuda: '12.4.1'
           method: 'network'
           sub-packages: '["nvcc", "cudart"]'
-          # workaround for cuda-toolkit action bug https://github.com/Jimver/cuda-toolkit/issues/315
-          use-github-cache: false
-          use-local-cache: false
 
       # - name: Install system dependencies (CentOS)
       #   run: |
