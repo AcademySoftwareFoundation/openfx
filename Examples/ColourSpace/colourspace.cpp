@@ -19,7 +19,7 @@
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
 #include "ofxColour.h"
-#include "ofxColourspaceList.h"
+#include "ofx-native-v1.5_aces-v1.3_ocio-v2.3.h"
 
 #include "../include/ofxUtilities.H" // example support utils
 
@@ -675,12 +675,12 @@ describe(OfxImageEffectHandle  effect)
   gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 1, kOfxImageEffectContextGeneral);
 
   if (gHostColourManagementStyle != kOfxImageEffectPropColourManagementNone) {
-    // host supports colour management, either OCIO or Native.
-    // OCIO implies native, so here we can assume it supports native.
-    // Tell it we support native.
+    // host supports colour management, either OCIO or Core (or others; see the spec).
+    // OCIO implies core, so here we can assume it supports Core.
+    // Tell it we support Core.
     stat = gPropHost->propSetString(effectProps,
                                     kOfxImageEffectPropColourManagementStyle, 0,
-                                    kOfxImageEffectPropColourManagementNative);
+                                    kOfxImageEffectPropColourManagementCore);
     if (stat != kOfxStatOK) {
       spdlog::error("setting kOfxImageEffectPropColourManagementStyle prop: stat={}", errMsg(stat));
     }
