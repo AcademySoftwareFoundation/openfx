@@ -103,7 +103,8 @@ Use of URIs for built-in configs, such as ocio://default is permitted.
 
    - Type - string X 1
    - Property Set - clip instance (read/write)
-   - Valid Values - colourspace that is permitted under the style in use
+   - Valid Values - colourspace that is permitted under the style in use.
+                    For OCIO, any string acceptable to Config::getColorSpace()
 
 Hosts should set this property to the colourspace of the input clip. Typically 
 it will be set to the working colourspace of the host but could be any valid 
@@ -115,6 +116,11 @@ kOfxColourspaceRaw,
 
 Both host and plug-in should use the value of 
 kOfxImageClipPropPreferredColourspace where reasonable.
+
+In OCIO mode, a basic colourspace may have been requested via
+kOfxImageClipPropPreferredColourspaces, but the actual colourspace used should
+be reported in this property. If an OCIO host has added the basic colourspaces
+to its config as roles or aliases, they would be permitted here.
 
 Cross-referencing between clips is possible by setting this property to
 "OfxColourspace_<clip>". For example a plug-in may set this property on its
