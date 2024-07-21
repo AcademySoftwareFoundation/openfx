@@ -11,9 +11,10 @@ else()
     LANGUAGES CXX) # no CUDA
 endif()
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_STATIC_LIBRARY_PREFIX "lib")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_definitions(-D_HAS_AUTO_PTR_ETC)
 if(APPLE)
   set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
@@ -62,6 +63,8 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_BINARY_DIR})
 # Conan packages
 find_package(EXPAT)
 find_package(opengl_system REQUIRED)
+find_package(cimg REQUIRED)
+find_package(spdlog REQUIRED)
 
 # Macros
 include(OpenFX)

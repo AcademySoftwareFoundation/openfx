@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+
+# Copyright OpenFX and contributors to the OpenFX project.
+# SPDX-License-Identifier: BSD-3-Clause
+
+# Create an OCIO config equivalant to OpenFX Native colour management
+# Example invocation:
+# scripts/genOCIOConfig > include/openfx-native-1.5.ocio
+
+import PyOpenColorIO as OCIO
+
+ofx_config = OCIO.Config.CreateFromBuiltinConfig('studio-config-v2.1.0_aces-v1.3_ocio-v2.3')
+
+# Workaround for OCIO issue #123, missing encoding on srgb_tx
+srgb_tx = ofx_config.getColorSpace('srgb_tx')
+srgb_tx.setEncoding('sdr-video')
+
+# Make all colourspaces active, future OCIO configs will also do this
+ofx_config.setInactiveColorSpaces('')
+
+ofx_config.setName(f'ofx-native-v1.5_aces-v1.3_ocio-v2.3')
+ofx_config.setDescription(f'OpenFX 1.5 Native Mode Config\nBased on: {ofx_config.getDescription()}')
+
+ofx_config.validate() # will throw if there's an error
+print(ofx_config.serialize())

@@ -3,6 +3,7 @@ set(OFX_SUPPORT_HEADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../Support/include")
 set(PLUGINS
 	Basic
 	ChoiceParams
+	ColourSpace
 	Custom
 	DepthConverter
 	Invert
@@ -27,3 +28,5 @@ endforeach()
 
 target_link_libraries(example-OpenGL PRIVATE opengl::opengl)
 target_link_libraries(example-Custom PRIVATE opengl::opengl)
+target_link_libraries(example-ColourSpace PRIVATE cimg::cimg)
+target_link_libraries(example-ColourSpace PRIVATE spdlog::spdlog_header_only)
