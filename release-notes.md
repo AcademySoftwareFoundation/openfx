@@ -14,8 +14,15 @@ Documentation and more info can be found at:
 # Release Notes - 1.5 (upcoming)
 
 This is version 1.5 of the OFX API.
-Significant additions include the OfxDrawSuite for drawing overlays without
-requiring OpenGL.
+
+## Key Features of OpenFX Version 1.5:
+- Color Management: Enhanced color management APIs to ensure accurate and consistent color rendering across different source media, devices and platforms.
+- DrawSuite: On-screen drawing capabilities to allow hosts and plugins to work together without requiring OpenGL.
+- GPU Support: Comprehensive GPU support between hosts and plugins, including OpenCL, CUDA, and Metal, for accelerated performance and smoother rendering.
+- Choice Params: Improved parameter handling with the addition of choice parameters, allowing for more intuitive and organized user interfaces.
+- Binary Data: Support for binary data to facilitate the handling of plugin-specific data types and improve processing efficiency.
+- Windows ARM64: Version 1.6 enables future compatibility with Windows ARM64, expanding the range of supported devices and platforms.
+- Houdini Support: SideFX has announced support for OpenFX in their upcoming version 20.5 of Houdini, in the new Copernicus image-processing node.
 
 ## Deprecations
 
@@ -27,6 +34,7 @@ None
 - Add `OfxDrawSuite` for drawing image overlays without use of OpenGL
 - Add OpenCL, CUDA and Metal support for direct GPU rendering
 - Add :c:macro:`kOfxParamPropChoiceOrder` for reordering Choice Params
+- Colour management is in [[ofxColour.h][include/ofxColour.h]]
 
 # Release Notes - 1.4
 
