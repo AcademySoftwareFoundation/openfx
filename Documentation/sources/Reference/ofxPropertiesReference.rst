@@ -1,6 +1,8 @@
 .. _propertiesReference:
 Properties Reference
 =====================
+.. doxygendefine:: kOfxImageClipPropColourspace
+
 .. doxygendefine:: kOfxImageClipPropConnected
 
 .. doxygendefine:: kOfxImageClipPropContinuousSamples
@@ -13,6 +15,8 @@ Properties Reference
 
 .. doxygendefine:: kOfxImageClipPropOptional
 
+.. doxygendefine:: kOfxImageClipPropPreferredColourspaces
+
 .. doxygendefine:: kOfxImageClipPropUnmappedComponents
 
 .. doxygendefine:: kOfxImageClipPropUnmappedPixelDepth
@@ -20,6 +24,8 @@ Properties Reference
 .. doxygendefine:: kOfxImageEffectFrameVarying
 
 .. doxygendefine:: kOfxImageEffectHostPropIsBackground
+
+.. doxygendefine:: kOfxImageEffectHostPropNativeOrigin
 
 .. doxygendefine:: kOfxImageEffectInstancePropEffectDuration
 
@@ -41,6 +47,12 @@ Properties Reference
 
 .. doxygendefine:: kOfxImageEffectPropClipPreferencesSlaveParam
 
+.. doxygendefine:: kOfxImageEffectPropColourManagementAvailableConfigs
+
+.. doxygendefine:: kOfxImageEffectPropColourManagementConfig
+
+.. doxygendefine:: kOfxImageEffectPropColourManagementStyle
+
 .. doxygendefine:: kOfxImageEffectPropComponents
 
 .. doxygendefine:: kOfxImageEffectPropContext
@@ -52,6 +64,8 @@ Properties Reference
 .. doxygendefine:: kOfxImageEffectPropCudaStream
 
 .. doxygendefine:: kOfxImageEffectPropCudaStreamSupported
+
+.. doxygendefine:: kOfxImageEffectPropDisplayColourspace
 
 .. doxygendefine:: kOfxImageEffectPropFieldToRender
 
@@ -71,11 +85,21 @@ Properties Reference
 
 .. doxygendefine:: kOfxImageEffectPropMetalRenderSupported
 
+.. doxygendefine:: kOfxImageEffectPropOCIOConfig
+
+.. doxygendefine:: kOfxImageEffectPropOCIODisplay
+
+.. doxygendefine:: kOfxImageEffectPropOCIOView
+
 .. doxygendefine:: kOfxImageEffectPropOpenCLCommandQueue
 
 .. doxygendefine:: kOfxImageEffectPropOpenCLEnabled
 
+.. doxygendefine:: kOfxImageEffectPropOpenCLImage
+
 .. doxygendefine:: kOfxImageEffectPropOpenCLRenderSupported
+
+.. doxygendefine:: kOfxImageEffectPropOpenCLSupported
 
 .. doxygendefine:: kOfxImageEffectPropOpenGLEnabled
 
@@ -284,6 +308,8 @@ Properties Reference
 .. doxygendefine:: kOfxParamPropSecret
 
 .. doxygendefine:: kOfxParamPropShowTimeMarker
+
+.. doxygendefine:: kOfxParamPropStringFilePathExists
 
 .. doxygendefine:: kOfxParamPropStringMode
 
