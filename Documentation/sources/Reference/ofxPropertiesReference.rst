@@ -25,6 +25,8 @@ Properties Reference
 
 .. doxygendefine:: kOfxImageEffectHostPropIsBackground
 
+.. doxygendefine:: kOfxImageEffectHostPropNativeOrigin
+
 .. doxygendefine:: kOfxImageEffectInstancePropEffectDuration
 
 .. doxygendefine:: kOfxImageEffectInstancePropSequentialRender
@@ -103,7 +105,11 @@ Properties Reference
 
 .. doxygendefine:: kOfxImageEffectPropOpenCLEnabled
 
+.. doxygendefine:: kOfxImageEffectPropOpenCLImage
+
 .. doxygendefine:: kOfxImageEffectPropOpenCLRenderSupported
+
+.. doxygendefine:: kOfxImageEffectPropOpenCLSupported
 
 .. doxygendefine:: kOfxImageEffectPropOpenGLEnabled
 
@@ -312,6 +318,8 @@ Properties Reference
 .. doxygendefine:: kOfxParamPropSecret
 
 .. doxygendefine:: kOfxParamPropShowTimeMarker
+
+.. doxygendefine:: kOfxParamPropStringFilePathExists
 
 .. doxygendefine:: kOfxParamPropStringMode
 
