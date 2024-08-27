@@ -4,67 +4,86 @@ import os,sys,getopt
 
 badlyNamedProperties = ["kOfxImageEffectFrameVarying", "kOfxImageEffectPluginRenderThreadSafety"]
 
-def getPropertiesFromDir(sourcePath, recursive, props):
+def getPropertiesFromFile(path):
+    """Get all OpenFX property definitions from C header file.
 
-    if os.path.isdir(sourcePath):
-        files=sorted(os.listdir(sourcePath))
-        for f in files:
-            absF = sourcePath + '/' + f
-            if not recursive and os.path.isdir(absF):
+    Uses a heuristic to identify property #define lines:
+    anything starting with '#define' and containing 'Prop' in the name.
+    """
+    props = set()
+    with open(path) as f:
+        try:
+            lines = f.readlines()
+        except UnicodeDecodeError as e:
+            logging.error(f'error reading {path}: {e}')
+            raise e
+        for l in lines:
+            # Detect lines that correspond to a property definition, e.g:
+            # #define kOfxPropLala "OfxPropLala"
+            splits=l.split()
+            if len(splits) < 3:
                 continue
-            else:
-                getPropertiesFromDir(absF,recursive,props)
-    elif os.path.isfile(sourcePath):
-        ext = os.path.splitext(sourcePath)[1]
-        if ext.lower() in ('.c', '.cxx', '.cpp', '.h', '.hxx', '.hpp'):
-            with open(sourcePath) as f:
-                try:
-                    lines = f.readlines()
-                except UnicodeDecodeError as e:
-                    print('WARNING: error in', sourcePath, ':')
-                    raise e
-                for l in lines:
-                    # Detect lines that correspond to a property definition, e.g:
-                    # #define kOfxPropLala "OfxPropLala"
-                    splits=l.split(' ')
-                    if len(splits) != 3:
-                        continue
-                    if splits[0] != '#define':
-                        continue
-                    if 'Prop' in splits[1] and splits[1] != 'kOfxPropertySuite':
-                        #if l.startswith('#define kOfx') and 'Prop' in l:
-                        props.append(splits[1])
-    else:
-        raise ValueError('No such file or directory: %s' % sourcePath)
+            if splits[0] != '#define':
+                continue
+            # ignore these
+            nonProperties = ('kOfxPropertySuite',
+                             # prop values, not props
+                             'kOfxImageEffectPropColourManagementNone',
+                             'kOfxImageEffectPropColourManagementBasic',
+                             'kOfxImageEffectPropColourManagementCore',
+                             'kOfxImageEffectPropColourManagementFull',
+                             'kOfxImageEffectPropColourManagementOCIO',
+                             )
+            if splits[1] in nonProperties:
+                continue
+            # these are props, as well as anything with Prop in the name
+            badlyNamedProperties = ("kOfxImageEffectFrameVarying",
+                                    "kOfxImageEffectPluginRenderThreadSafety")
+            if 'Prop' in splits[1] \
+               or any(s in splits[1] for s in badlyNamedProperties):
+                props.add(splits[1])
+    return props
+
+def getPropertiesFromDir(dir):
+    """
+    Recursively get all property definitions from source files in a dir.
+    """
+
+    extensions = {'.c', '.h', '.cxx', '.hxx', '.cpp', '.hpp'}
+
+    props = set()
+    for root, _dirs, files in os.walk(dir):
+        for file in files:
+            # Get the file extension
+            file_extension = os.path.splitext(file)[1]
+
+            if file_extension in extensions:
+                file_path = os.path.join(root, file)
+                props |= getPropertiesFromFile(file_path)
+    return list(props)
 
 def main(argv):
 
-    recursive=False
     sourcePath=''
     outputFile=''
     try:
-        opts, args = getopt.getopt(argv,"i:o:r",["sourcePath=","outputFile","recursive"])
+        opts, args = getopt.getopt(argv,"i:o:r",["sourcePath=","outputFile"])
         for opt,value in opts:
             if opt == "-i":
                 sourcePath = value
             elif opt == "-o":
                 outputFile = value
-            elif opt == "-r":
-                    recursive=True
 
     except getopt.GetoptError:
         sys.exit(1)
 
-    props=badlyNamedProperties
-    getPropertiesFromDir(sourcePath, recursive, props)
+    props = getPropertiesFromDir(sourcePath)
 
-    re='/^#define k[\w_]*Ofx[\w_]*Prop/'
     with open(outputFile, 'w') as f:
         f.write('.. _propertiesReference:\n')
         f.write('Properties Reference\n')
         f.write('=====================\n')
-        props.sort()
-        for p in props:
+        for p in sorted(props):
             f.write('.. doxygendefine:: ' + p + '\n\n')
 
 if __name__ == "__main__":
