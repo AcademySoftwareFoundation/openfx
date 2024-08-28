@@ -169,6 +169,7 @@ def gen_props_metadata(props_metadata, outfile_path: Path):
 #include "ofxKeySyms.h"
 #include "ofxOld.h"
 
+namespace OpenFX {
 enum class PropType {
    Int,
    Double,
@@ -191,12 +192,12 @@ struct PropsMetadata {
   int dimension;
   Writable writable;
   bool host_optional;
-  std::vector<std::string> values; // for enums
+  std::vector<const char *> values; // for enums
 };
 
 """)
         outfile.write("const std::vector<struct PropsMetadata> props_metadata {\n")
-        for p in props_metadata:
+        for p in sorted(props_metadata):
             try:
                 md = props_metadata[p]
                 types = md.get('type')
@@ -210,7 +211,8 @@ struct PropsMetadata {
                 if host_opt in ('False', 'false', 0):
                     host_opt = 'false'
                 if md['type'] == 'enum':
-                    values = "{" + ",".join(f'"{v}"' for v in md['values']) + "}"
+                    assert isinstance(md['values'], list)
+                    values = "{" + ",".join(f'{v}' for v in md['values']) + "}"
                 else:
                     values = "{}"
                 outfile.write(f"{{ {p}, {prop_type_defs}, {md['dimension']}, "
@@ -218,7 +220,7 @@ struct PropsMetadata {
             except Exception as e:
                 logging.error(f"Error: {p} is missing metadata? {e}")
                 raise(e)
-        outfile.write("};\n")
+        outfile.write("};\n} // namespace OpenFX\n")
 
 def gen_props_by_set(props_by_set, outfile_path: Path):
     """Generate a header file with definitions of all prop sets, including their props"""
@@ -235,12 +237,13 @@ def gen_props_by_set(props_by_set, outfile_path: Path):
 #include "ofxKeySyms.h"
 #include "ofxOld.h"
 
+namespace OpenFX {
 """)
-        outfile.write("const std::map<std::string, std::vector<std::string>> prop_sets {\n")
+        outfile.write("const std::map<std::string, std::vector<const char *>> prop_sets {\n")
         for pset in sorted(props_by_set.keys()):
-            propnames = ",".join(props_by_set[pset])
+            propnames = ",\n   ".join(sorted(props_by_set[pset]))
             outfile.write(f"{{ \"{pset}\", {{ {propnames} }} }},\n")
-        outfile.write("};\n")
+        outfile.write("};\n} // namespace OpenFX\n")
 
 def main(args):
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -275,6 +278,7 @@ def main(args):
     if args.verbose:
         print("=== Generating gen_props_metadata.hxx")
     gen_props_metadata(props_metadata, include_dir / 'gen_props_metadata.hxx')
+
     if args.verbose:
         print("=== Generating props by set header gen_props_by_set.hxx")
     gen_props_by_set(props_by_set, include_dir / 'gen_props_by_set.hxx')

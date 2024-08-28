@@ -617,9 +617,9 @@ properties:
     dimension: 1
     writable: host
     values:
-     kOfxImageEffectHostPropNativeOriginBottomLeft
-     kOfxImageEffectHostPropNativeOriginTopLeft
-     kOfxImageEffectHostPropNativeOriginCenter
+     - kOfxImageEffectHostPropNativeOriginBottomLeft
+     - kOfxImageEffectHostPropNativeOriginTopLeft
+     - kOfxImageEffectHostPropNativeOriginCenter
   kOfxImageEffectInstancePropEffectDuration:
     type: double
     dimension: 1
@@ -739,9 +739,11 @@ properties:
   kOfxImageEffectPropOpenCLImage:
     type: int
     dimension: 1
+    writable: host
   kOfxImageEffectPropOpenCLSupported:
     type: enum
     dimension: 1
+    writable: all
     values:
       - "false"
       - "true"
