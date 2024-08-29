@@ -1,3 +1,4 @@
+.. SPDX-License-Identifier: CC-BY-4.0
 .. _basicExample:
 
 This is a guide to the basic machinery an OFX plugin uses to communicate

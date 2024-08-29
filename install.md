@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+
 # Building OpenFX: Libs and Plugins
 
 OpenFX itself is only a set of C header files, the ones in
@@ -81,3 +83,6 @@ _Linux dependencies you may need (but conan should provide these):_
 ```sh
 sudo apt install pkg-config libgl-dev
 ```
+
+
+

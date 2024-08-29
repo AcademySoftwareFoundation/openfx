@@ -1,3 +1,4 @@
+.. SPDX-License-Identifier: CC-BY-4.0
 .. InteractActions:
 
 Actions Passed to an Interact

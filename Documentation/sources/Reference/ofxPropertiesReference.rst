@@ -1,6 +1,8 @@
 .. _propertiesReference:
 Properties Reference
 =====================
+.. doxygendefine:: kOfxImageClipPropColourspace
+
 .. doxygendefine:: kOfxImageClipPropConnected
 
 .. doxygendefine:: kOfxImageClipPropContinuousSamples
@@ -12,6 +14,8 @@ Properties Reference
 .. doxygendefine:: kOfxImageClipPropIsMask
 
 .. doxygendefine:: kOfxImageClipPropOptional
+
+.. doxygendefine:: kOfxImageClipPropPreferredColourspaces
 
 .. doxygendefine:: kOfxImageClipPropUnmappedComponents
 
@@ -41,6 +45,22 @@ Properties Reference
 
 .. doxygendefine:: kOfxImageEffectPropClipPreferencesSlaveParam
 
+.. doxygendefine:: kOfxImageEffectPropColourManagementAvailableConfigs
+
+.. doxygendefine:: kOfxImageEffectPropColourManagementBasic
+
+.. doxygendefine:: kOfxImageEffectPropColourManagementConfig
+
+.. doxygendefine:: kOfxImageEffectPropColourManagementCore
+
+.. doxygendefine:: kOfxImageEffectPropColourManagementFull
+
+.. doxygendefine:: kOfxImageEffectPropColourManagementNone
+
+.. doxygendefine:: kOfxImageEffectPropColourManagementOCIO
+
+.. doxygendefine:: kOfxImageEffectPropColourManagementStyle
+
 .. doxygendefine:: kOfxImageEffectPropComponents
 
 .. doxygendefine:: kOfxImageEffectPropContext
@@ -52,6 +72,8 @@ Properties Reference
 .. doxygendefine:: kOfxImageEffectPropCudaStream
 
 .. doxygendefine:: kOfxImageEffectPropCudaStreamSupported
+
+.. doxygendefine:: kOfxImageEffectPropDisplayColourspace
 
 .. doxygendefine:: kOfxImageEffectPropFieldToRender
 
@@ -70,6 +92,12 @@ Properties Reference
 .. doxygendefine:: kOfxImageEffectPropMetalEnabled
 
 .. doxygendefine:: kOfxImageEffectPropMetalRenderSupported
+
+.. doxygendefine:: kOfxImageEffectPropOCIOConfig
+
+.. doxygendefine:: kOfxImageEffectPropOCIODisplay
+
+.. doxygendefine:: kOfxImageEffectPropOCIOView
 
 .. doxygendefine:: kOfxImageEffectPropOpenCLCommandQueue
 
