@@ -100,8 +100,11 @@ def expand_set_props(props_by_set):
         else:
             sets[key] = value
     for key in sets:
-        sets[key] = [item for element in sets[key] \
-                     for item in get_def(element, defs)]
+        if isinstance(sets[key], dict):
+            pass # do nothing, no expansion needed in inArgs/outArgs for now
+        else:
+            sets[key] = [item for element in sets[key] \
+                         for item in get_def(element, defs)]
     return sets
 
 
@@ -128,14 +131,27 @@ def check_props_by_set(props_by_set, props_metadata):
     """Find and print all mismatches between prop set specs, props, and metadata.
 
     * Each prop name in props_by_set should have a match in props_metadata
+    Note that props_by_pset may have multiple levels, e.g. inArgs for an action.
     Returns 0 if no errors.
     """
     errs = 0
     for pset in sorted(props_by_set):
-        for prop in sorted(props_by_set[pset]):
-            if not props_metadata.get(prop):
-                logging.error(f"No props metadata found for {pset}.{prop}")
-                errs += 1
+        # For actions, the value of props_by_set[pset] is a dict, each
+        # (e.g. inArgs, outArgs) containing a list of props. For
+        # regular property sets, the value is a list of props.
+        if isinstance(props_by_set[pset], dict):
+            for subset in sorted(props_by_set[pset]):
+                if not props_by_set[pset][subset]:
+                    continue
+                for p in props_by_set[pset][subset]:
+                    if not props_metadata.get(p):
+                        logging.error(f"No props metadata found for {pset}.{subset}.{p}")
+                        errs += 1
+        else:
+           for p in props_by_set[pset]:
+               if not props_metadata.get(p):
+                   logging.error(f"No props metadata found for {pset}.{p}")
+                   errs += 1
     return errs
 
 def check_props_used_by_set(props_by_set, props_metadata):
@@ -148,10 +164,19 @@ def check_props_used_by_set(props_by_set, props_metadata):
     for prop in props_metadata:
         found = 0
         for pset in props_by_set:
-            for set_prop in props_by_set[pset]:
-                if set_prop == prop:
-                    found += 1
-        if not found:
+            if isinstance(props_by_set[pset], dict):
+                # inArgs/outArgs
+                for subset in sorted(props_by_set[pset]):
+                    if not props_by_set[pset][subset]:
+                        continue
+                    for set_prop in props_by_set[pset][subset]:
+                        if set_prop == prop:
+                            found += 1
+            else:
+                for set_prop in props_by_set[pset]:
+                    if set_prop == prop:
+                        found += 1
+        if not found and not props_metadata[prop].get('deprecated'):
             logging.error(f"Prop {prop} not used in any prop set in YML file")
     return errs
 
@@ -212,7 +237,7 @@ struct PropsMetadata {
                     host_opt = 'false'
                 if md['type'] == 'enum':
                     assert isinstance(md['values'], list)
-                    values = "{" + ",".join(f'{v}' for v in md['values']) + "}"
+                    values = "{" + ",".join(f'\"{v}\"' for v in md['values']) + "}"
                 else:
                     values = "{}"
                 outfile.write(f"{{ {p}, {prop_type_defs}, {md['dimension']}, "
@@ -235,14 +260,28 @@ def gen_props_by_set(props_by_set, outfile_path: Path):
 #include "ofxDrawSuite.h"
 #include "ofxParametricParam.h"
 #include "ofxKeySyms.h"
-#include "ofxOld.h"
+// #include "ofxOld.h"
 
 namespace OpenFX {
 """)
         outfile.write("const std::map<std::string, std::vector<const char *>> prop_sets {\n")
         for pset in sorted(props_by_set.keys()):
+            if isinstance(props_by_set[pset], dict):
+                continue
             propnames = ",\n   ".join(sorted(props_by_set[pset]))
             outfile.write(f"{{ \"{pset}\", {{ {propnames} }} }},\n")
+
+        outfile.write("};\n\n")
+        outfile.write("const std::map<std::string, std::vector<const char *>> action_props {\n")
+        for pset in sorted(props_by_set.keys()):
+            if not isinstance(props_by_set[pset], dict): # actions have a dict of args
+                continue
+            for subset in props_by_set[pset]:
+                if not props_by_set[pset][subset]:
+                    continue
+                propnames = ",\n   ".join(sorted(props_by_set[pset][subset]))
+                outfile.write(f"{{ \"{pset}.{subset}\", {{ {propnames} }} }},\n")
+
         outfile.write("};\n} // namespace OpenFX\n")
 
 def main(args):
