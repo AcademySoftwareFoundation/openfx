@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <array>
 #include "ofxImageEffect.h"
 #include "ofxGPURender.h"
 #include "ofxColour.h"
