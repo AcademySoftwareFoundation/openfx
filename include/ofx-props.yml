@@ -503,7 +503,7 @@ propertySets:
   kOfxActionDestroyInstanceInteract:
     inArgs:
     outArgs:
-  kOfxActionInteractActionDraw:
+  kOfxInteractActionDraw:
     inArgs:
      - kOfxPropEffectInstance
      - kOfxInteractPropDrawContext
@@ -513,7 +513,7 @@ propertySets:
      - kOfxImageEffectPropRenderScale
     outArgs:
 
-  kOfxActionInteractActionPenMotion:
+  kOfxInteractActionPenMotion:
     inArgs:
      - kOfxPropEffectInstance
      - kOfxInteractPropPixelScale
@@ -525,7 +525,7 @@ propertySets:
      - kOfxInteractPropPenPressure
     outArgs:
 
-  kOfxActionInteractActionPenDown:
+  kOfxInteractActionPenDown:
     inArgs:
      - kOfxPropEffectInstance
      - kOfxInteractPropPixelScale
@@ -537,7 +537,7 @@ propertySets:
      - kOfxInteractPropPenPressure
     outArgs:
 
-  kOfxActionInteractActionPenUp:
+  kOfxInteractActionPenUp:
     inArgs:
      - kOfxPropEffectInstance
      - kOfxInteractPropPixelScale
@@ -549,7 +549,7 @@ propertySets:
      - kOfxInteractPropPenPressure
     outArgs:
 
-  kOfxActionInteractActionKeyDown:
+  kOfxInteractActionKeyDown:
     inArgs:
      - kOfxPropEffectInstance
      - kOfxPropKeySym
@@ -558,7 +558,7 @@ propertySets:
      - kOfxImageEffectPropRenderScale
     outArgs:
 
-  kOfxActionInteractActionKeyUp:
+  kOfxInteractActionKeyUp:
     inArgs:
      - kOfxPropEffectInstance
      - kOfxPropKeySym
@@ -567,7 +567,7 @@ propertySets:
      - kOfxImageEffectPropRenderScale
     outArgs:
 
-  kOfxActionInteractActionKeyRepeat:
+  kOfxInteractActionKeyRepeat:
     inArgs:
      - kOfxPropEffectInstance
      - kOfxPropKeySym
@@ -576,7 +576,7 @@ propertySets:
      - kOfxImageEffectPropRenderScale
     outArgs:
 
-  kOfxActionInteractActionGainFocus:
+  kOfxInteractActionGainFocus:
     inArgs:
      - kOfxPropEffectInstance
      - kOfxInteractPropPixelScale
@@ -585,7 +585,7 @@ propertySets:
      - kOfxImageEffectPropRenderScale
     outArgs:
 
-  kOfxActionInteractActionLoseFocus:
+  kOfxInteractActionLoseFocus:
     inArgs:
      - kOfxPropEffectInstance
      - kOfxInteractPropPixelScale
