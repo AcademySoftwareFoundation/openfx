@@ -15,6 +15,8 @@ run it through a c beautifier or emacs auto formatting, automagic indenting will
 #include "ofxMemory.h"
 #include "ofxMultiThread.h"
 #include "ofxMessage.h"
+#include "ofxPropsBySet.h"
+#include "ofxPropsMetadata.h"
 
 #include "ofxLog.H"
 
