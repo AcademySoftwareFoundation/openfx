@@ -268,6 +268,7 @@ def gen_props_by_set(props_by_set, outfile_path: Path):
 #include <string>
 #include <vector>
 #include <map>
+#include <array>
 #include "ofxImageEffect.h"
 #include "ofxGPURender.h"
 #include "ofxColour.h"
