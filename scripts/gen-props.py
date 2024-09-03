@@ -115,6 +115,25 @@ def expand_set_props(props_by_set):
                          for item in get_def(element, defs)]
     return sets
 
+def get_cname(propname, props_metadata):
+    """Get the C `#define` name for a property name.
+
+    Look up the special cname in props_metadata, or in the normal
+    case just prepend "k".
+    """
+    return props_metadata[propname].get('cname', "k" + propname)
+
+def find_stringname(cname, props_metadata):
+    """Try to find the actual string corresponding to the C #define name.
+    This may be slow; looks through all the metadata for a matching
+    "cname", otherwise strips "k".
+    """
+    for p in props_metadata:
+        if props_metadata[p].get('cname') == cname:
+            return p
+    if cname.startswith("k"):
+        return cname[1:]
+    return "unknown-stringname-for-" + cname
 
 def find_missing(all_props, props_metadata):
     """Find and print all mismatches between prop defs and metadata.
@@ -122,14 +141,14 @@ def find_missing(all_props, props_metadata):
     Returns 0 if no errors.
     """
     errs = 0
-    for p in sorted(all_props): # constants, with "k" prefix
-        assert(p.startswith("k"))
-        stringval = p[1:]
+    for p in sorted(all_props): # constants from #include files, with "k" prefix
+        stringval = find_stringname(p, props_metadata)
         if not props_metadata.get(stringval):
             logging.error(f"No YAML metadata found for {p}")
             errs += 1
     for p in sorted(props_metadata):
-        if "k"+p not in all_props:
+        cname = get_cname(p, props_metadata)
+        if cname not in all_props:
             logging.error(f"No prop definition found for '{p}' in source/include")
             matches = difflib.get_close_matches(p, all_props, 3, 0.9)
             if matches:
@@ -249,11 +268,13 @@ struct PropsMetadata {
             except Exception as e:
                 logging.error(f"Error: {p} is missing metadata? {e}")
                 raise(e)
-        outfile.write("};\n")
+        outfile.write("};\n\n")
 
         # Generate static asserts to ensure our constants match the string values
+        outfile.write("// Static asserts to check #define names vs. strings\n")
         for p in sorted(props_metadata):
-            outfile.write(f"static_assert(std::string_view(\"{p}\") == std::string_view(k{p}));\n")
+            cname = get_cname(p, props_metadata)
+            outfile.write(f"static_assert(std::string_view(\"{p}\") == std::string_view({cname}));\n")
 
         outfile.write("} // namespace OpenFX\n")
 
