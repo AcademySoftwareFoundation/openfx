@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import os
+import re
+import sys
 import difflib
 import argparse
 import yaml
@@ -108,10 +110,10 @@ def expand_set_props(props_by_set):
         else:
             sets[key] = value
     for key in sets:
-        if isinstance(sets[key], dict):
+        if not sets[key].get('props'):
             pass # do nothing, no expansion needed in inArgs/outArgs for now
         else:
-            sets[key] = [item for element in sets[key] \
+            sets[key]['props'] = [item for element in sets[key]['props'] \
                          for item in get_def(element, defs)]
     return sets
 
@@ -156,7 +158,40 @@ def find_missing(all_props, props_metadata):
             errs += 1
     return errs
 
-def check_props_by_set(props_by_set, props_metadata):
+def props_for_set(pset, props_by_set, name_only=True):
+    """Generator yielding all props for the given prop set (not used for actions).
+    This implements the options override scheme, parsing the prop name etc.
+    If not name_only, yields a dict of name and other options.
+    """
+    if not props_by_set[pset].get('props'):
+        return
+    # All the default options for this propset. Merged into each prop.
+    propset_options = props_by_set[pset].copy()
+    propset_options.pop('props', None)
+    for p in props_by_set[pset]['props']:
+        # Parse p, of form NAME | key=value,key=value
+        pattern = r'^\s*(\w+)\s*\|\s*([\w\s,=]*)$'
+        match = re.match(pattern, p)
+        if not match:
+            if name_only:
+                yield p
+            else:
+                yield {**propset_options, **{"name": p}}
+            continue
+        name = match.group(1)
+        if name_only:
+            yield name
+        else:
+            # parse key/value pairs, apply defaults, and include name
+            key_values_str = match.group(2)
+            if not key_values_str:
+                options = {}
+            else:
+                key_value_pattern = r'(\w+)=([\w-]+)'
+                options = dict(re.findall(key_value_pattern, key_values_str))
+            yield {**propset_options, **options, **{"name": name}}
+
+def check_props_by_set(props_by_set, props_by_action, props_metadata):
     """Find and print all mismatches between prop set specs, props, and metadata.
 
     * Each prop name in props_by_set should have a match in props_metadata
@@ -165,25 +200,23 @@ def check_props_by_set(props_by_set, props_metadata):
     """
     errs = 0
     for pset in sorted(props_by_set):
+        for p in props_for_set(pset, props_by_set):
+            if not props_metadata.get(p):
+                logging.error(f"No props metadata found for {pset}.{p}")
+                errs += 1
+    for pset in sorted(props_by_action):
         # For actions, the value of props_by_set[pset] is a dict, each
-        # (e.g. inArgs, outArgs) containing a list of props. For
-        # regular property sets, the value is a list of props.
-        if isinstance(props_by_set[pset], dict):
-            for subset in sorted(props_by_set[pset]):
-                if not props_by_set[pset][subset]:
-                    continue
-                for p in props_by_set[pset][subset]:
-                    if not props_metadata.get(p):
-                        logging.error(f"No props metadata found for {pset}.{subset}.{p}")
-                        errs += 1
-        else:
-           for p in props_by_set[pset]:
-               if not props_metadata.get(p):
-                   logging.error(f"No props metadata found for {pset}.{p}")
-                   errs += 1
+        # (e.g. inArgs, outArgs) containing a list of props.
+        for subset in sorted(props_by_action[pset]):
+            if not props_by_action[pset][subset]:
+                continue
+            for p in props_by_action[pset][subset]:
+                if not props_metadata.get(p):
+                    logging.error(f"No props metadata found for action {pset}.{subset}.{p}")
+                    errs += 1
     return errs
 
-def check_props_used_by_set(props_by_set, props_metadata):
+def check_props_used_by_set(props_by_set, props_by_action, props_metadata):
     """Find and print all mismatches between prop set specs, props, and metadata.
 
     * Each prop name in props_metadata should be used in at least one set.
@@ -193,16 +226,15 @@ def check_props_used_by_set(props_by_set, props_metadata):
     for prop in props_metadata:
         found = 0
         for pset in props_by_set:
-            if isinstance(props_by_set[pset], dict):
-                # inArgs/outArgs
-                for subset in sorted(props_by_set[pset]):
-                    if not props_by_set[pset][subset]:
-                        continue
-                    for set_prop in props_by_set[pset][subset]:
-                        if set_prop == prop:
-                            found += 1
-            else:
-                for set_prop in props_by_set[pset]:
+            for set_prop in props_for_set(pset, props_by_set):
+                if set_prop == prop:
+                    found += 1
+        for pset in props_by_action:
+            # inArgs/outArgs
+            for subset in sorted(props_by_action[pset]):
+                if not props_by_action[pset][subset]:
+                    continue
+                for set_prop in props_by_action[pset][subset]:
                     if set_prop == prop:
                         found += 1
         if not found and not props_metadata[prop].get('deprecated'):
@@ -281,7 +313,7 @@ struct PropsMetadata {
 
 
 
-def gen_props_by_set(props_by_set, outfile_path: Path):
+def gen_props_by_set(props_by_set, props_by_action, outfile_path: Path):
     """Generate a header file with definitions of all prop sets, including their props"""
     with open(outfile_path, 'w') as outfile:
         outfile.write(generated_source_header)
@@ -301,18 +333,29 @@ def gen_props_by_set(props_by_set, outfile_path: Path):
 // #include "ofxOld.h"
 
 namespace OpenFX {
+
+struct Prop {
+  const char *name;
+  bool host_write;
+  bool plugin_write;
+  bool host_optional;
+};
+
 """)
         outfile.write("// Properties for property sets\n")
-        outfile.write("static inline const std::map<const char *, std::vector<const char *>> prop_sets {\n")
+        outfile.write("static inline const std::map<const char *, std::vector<Prop>> prop_sets {\n")
+
         for pset in sorted(props_by_set.keys()):
-            if isinstance(props_by_set[pset], dict):
-                continue
-            propnames = ",\n   ".join(sorted([f'"{p}"' for p in props_by_set[pset]]))
-            outfile.write(f"{{ \"{pset}\", {{ {propnames} }} }},\n")
+            propdefs = []
+            for p in props_for_set(pset, props_by_set, False):
+                host_write = 'true' if p['write'] in ('host', 'all') else 'false'
+                plugin_write = 'true' if p['write'] in ('plugin', 'all') else 'false'
+                propdefs.append(f"{{ \"{p['name']}\", {host_write} , {plugin_write}, false }}")
+            propdefs_str = ",\n   ".join(propdefs)
+            outfile.write(f"{{ \"{pset}\", {{ {propdefs_str} }} }},\n")
         outfile.write("};\n\n")
 
-        actions = sorted([pset for pset in props_by_set.keys()
-                          if isinstance(props_by_set[pset], dict)])
+        actions = sorted(props_by_action.keys())
 
         outfile.write("// Actions\n")
         outfile.write(f"static inline const std::array<const char *, {len(actions)}> actions {{\n")
@@ -325,10 +368,10 @@ namespace OpenFX {
         outfile.write("// Properties for action args\n")
         outfile.write("static inline const std::map<std::array<std::string, 2>, std::vector<const char *>> action_props {\n")
         for pset in actions:
-            for subset in props_by_set[pset]:
-                if not props_by_set[pset][subset]:
+            for subset in props_by_action[pset]:
+                if not props_by_action[pset][subset]:
                     continue
-                propnames = ",\n   ".join(sorted([f'"{p}"' for p in props_by_set[pset][subset]]))
+                propnames = ",\n   ".join(sorted([f'"{p}"' for p in props_by_action[pset][subset]]))
                 if not pset.startswith("kOfx"):
                     psetname = '"' + pset + '"'   # quote if it's not a known constant
                 else:
@@ -345,7 +388,6 @@ namespace OpenFX {
 
         outfile.write("} // namespace OpenFX\n")
 
-
 def main(args):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     include_dir = Path(script_dir).parent / 'include'
@@ -354,8 +396,8 @@ def main(args):
 
     with open(include_dir / 'ofx-props.yml', 'r') as props_file:
         props_data = yaml.safe_load(props_file)
-    props_by_set = props_data['propertySets']
-    props_by_set = expand_set_props(props_by_set)
+    props_by_set = expand_set_props(props_data['propertySets'])
+    props_by_action = props_data['Actions']
     props_metadata = props_data['properties']
 
     if args.verbose:
@@ -366,13 +408,13 @@ def main(args):
 
     if args.verbose:
         print("\n=== Checking ofx-props.yml: every prop in a set should have metadata in the YML file")
-    errs = check_props_by_set(props_by_set, props_metadata)
+    errs = check_props_by_set(props_by_set, props_by_action, props_metadata)
     if not errs and args.verbose:
         print(" ✔️ ALL OK")
 
     if args.verbose:
         print("\n=== Checking ofx-props.yml: every prop should be used in in at least one set in the YML file")
-    errs = check_props_used_by_set(props_by_set, props_metadata)
+    errs = check_props_used_by_set(props_by_set, props_by_action, props_metadata)
     if not errs and args.verbose:
         print(" ✔️ ALL OK")
 
@@ -386,7 +428,7 @@ def main(args):
 
     if args.verbose:
         print(f"=== Generating props by set header {args.props_by_set}")
-    gen_props_by_set(props_by_set, support_include_dir / args.props_by_set)
+    gen_props_by_set(props_by_set, props_by_action, support_include_dir / args.props_by_set)
 
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
