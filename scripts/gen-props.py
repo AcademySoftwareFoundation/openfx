@@ -270,7 +270,7 @@ enum class PropType {
 };
 
 struct PropsMetadata {
-  std::string name;
+  std::string_view name;
   std::vector<PropType> types;
   int dimension;
   std::vector<const char *> values; // for enums
@@ -366,7 +366,7 @@ struct Prop {
         outfile.write("};\n\n")
 
         outfile.write("// Properties for action args\n")
-        outfile.write("static inline const std::map<std::array<std::string, 2>, std::vector<const char *>> action_props {\n")
+        outfile.write("static inline const std::map<std::array<std::string_view, 2>, std::vector<const char *>> action_props {\n")
         for pset in actions:
             for subset in props_by_action[pset]:
                 if not props_by_action[pset][subset]:
