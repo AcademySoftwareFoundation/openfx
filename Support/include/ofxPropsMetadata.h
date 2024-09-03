@@ -26,7 +26,7 @@ enum class PropType {
 };
 
 struct PropsMetadata {
-  std::string name;
+  std::string_view name;
   std::vector<PropType> types;
   int dimension;
   std::vector<const char *> values; // for enums
