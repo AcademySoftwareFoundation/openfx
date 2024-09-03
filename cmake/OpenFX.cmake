@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSD-3-Clause
+
 if(NOT PLUGIN_INSTALLDIR)
   if(APPLE)
     set(PLUGIN_INSTALLDIR "/Library/OFX/Plugins/OpenFX Examples")

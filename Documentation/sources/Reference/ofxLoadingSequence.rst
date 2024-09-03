@@ -1,3 +1,4 @@
+.. SPDX-License-Identifier: CC-BY-4.0
 Sequences of Operations Required to Load a Plug-in
 ---------------------------------------------------
 

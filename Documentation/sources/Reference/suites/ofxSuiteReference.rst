@@ -1,3 +1,4 @@
+.. SPDX-License-Identifier: CC-BY-4.0
 .. _suitesReference:
 
 OpenFX suites reference

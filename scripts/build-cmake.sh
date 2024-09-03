@@ -3,6 +3,7 @@
 set -e
 
 # Build everything with Conan and CMake
+# SPDX-License-Identifier: BSD-3-Clause
 
 BUILDTYPE=Release               # "Release" or "Debug"
 VERBOSE=""
