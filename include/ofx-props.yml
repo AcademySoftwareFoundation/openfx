@@ -672,14 +672,17 @@ properties:
     type: enum
     dimension: 1
     values: ['false', 'true', 'needed']
+    introduced: "1.5"
   OfxImageEffectPropOpenCLRenderSupported:
     type: enum
     dimension: 1
     values: ['false', 'true', 'needed']
+    introduced: "1.5"
   # Clip props
   OfxImageClipPropColourspace:
     type: string
     dimension: 1
+    introduced: "1.5"
   OfxImageClipPropConnected:
     type: bool
     dimension: 1
@@ -703,6 +706,7 @@ properties:
   OfxImageClipPropPreferredColourspaces:
     type: string
     dimension: 0
+    introduced: "1.5"
   OfxImageClipPropUnmappedComponents:
     type: enum
     dimension: 1
@@ -774,6 +778,7 @@ properties:
   OfxImageEffectPropColourManagementAvailableConfigs:
     type: string
     dimension: 0
+    introduced: "1.5"
   OfxImageEffectPropColourManagementStyle:
     type: enum
     dimension: 1
@@ -783,6 +788,7 @@ properties:
       - OfxImageEffectPropColourManagementCore
       - OfxImageEffectPropColourManagementFull
       - OfxImageEffectPropColourManagementOCIO
+    introduced: "1.5"
   OfxImageEffectPropComponents:
     type: enum
     dimension: 1
@@ -810,6 +816,7 @@ properties:
   OfxImageEffectPropDisplayColourspace:
     type: string
     dimension: 1
+    introduced: "1.5"
   OfxImageEffectPropFieldToRender:
     type: enum
     dimension: 1
@@ -837,33 +844,42 @@ properties:
   OfxImageEffectPropMetalCommandQueue:
     type: pointer
     dimension: 1
+    introduced: "1.5"
   OfxImageEffectPropMetalEnabled:
     type: bool
     dimension: 1
+    introduced: "1.5"
   OfxImageEffectPropOCIOConfig:
     type: string
     dimension: 1
+    introduced: "1.5"
   OfxImageEffectPropOCIODisplay:
     type: string
     dimension: 1
+    introduced: "1.5"
   OfxImageEffectPropOCIOView:
     type: string
     dimension: 1
+    introduced: "1.5"
   OfxImageEffectPropOpenCLCommandQueue:
     type: pointer
     dimension: 1
+    introduced: "1.5"
   OfxImageEffectPropOpenCLEnabled:
     type: bool
     dimension: 1
+    introduced: "1.5"
   OfxImageEffectPropOpenCLImage:
     type: int
     dimension: 1
+    introduced: "1.5"
   OfxImageEffectPropOpenCLSupported:
     type: enum
     dimension: 1
     values:
       - "false"
       - "true"
+    introduced: "1.5"
   OfxImageEffectPropOpenGLEnabled:
     type: bool
     dimension: 1
@@ -949,6 +965,7 @@ properties:
   OfxImageEffectPropColourManagementConfig:
     type: string
     dimension: 1
+    introduced: "1.5"
   OfxImagePropBounds:
     type: int
     dimension: 4
@@ -1047,9 +1064,11 @@ properties:
   OfxParamHostPropSupportsStrChoice:
     type: bool
     dimension: 1
+    introduced: "1.5"
   OfxParamHostPropSupportsStrChoiceAnimation:
     type: bool
     dimension: 1
+    introduced: "1.5"
   OfxParamHostPropSupportsStringAnimation:
     type: bool
     dimension: 1
