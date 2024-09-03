@@ -75,6 +75,7 @@ const std::vector<struct PropsMetadata> props_metadata {
 { "OfxImageEffectPropMetalCommandQueue", {PropType::Pointer}, 1, {} },
 { "OfxImageEffectPropMetalEnabled", {PropType::Bool}, 1, {} },
 { "OfxImageEffectPropMetalRenderSupported", {PropType::Enum}, 1, {"false","true","needed"} },
+{ "OfxImageEffectPropMultipleClipDepths", {PropType::Int}, 1, {} },
 { "OfxImageEffectPropOCIOConfig", {PropType::String}, 1, {} },
 { "OfxImageEffectPropOCIODisplay", {PropType::String}, 1, {} },
 { "OfxImageEffectPropOCIOView", {PropType::String}, 1, {} },
@@ -87,12 +88,12 @@ const std::vector<struct PropsMetadata> props_metadata {
 { "OfxImageEffectPropOpenGLRenderSupported", {PropType::Enum}, 1, {"false","true","needed"} },
 { "OfxImageEffectPropOpenGLTextureIndex", {PropType::Int}, 1, {} },
 { "OfxImageEffectPropOpenGLTextureTarget", {PropType::Int}, 1, {} },
+{ "OfxImageEffectPropPixelAspectRatio", {PropType::Double}, 1, {} },
 { "OfxImageEffectPropPixelDepth", {PropType::Enum}, 1, {"OfxBitDepthNone","OfxBitDepthByte","OfxBitDepthShort","OfxBitDepthHalf","OfxBitDepthFloat"} },
 { "OfxImageEffectPropPluginHandle", {PropType::Pointer}, 1, {} },
 { "OfxImageEffectPropPreMultiplication", {PropType::Enum}, 1, {"OfxImageOpaque","OfxImagePreMultiplied","OfxImageUnPreMultiplied"} },
 { "OfxImageEffectPropProjectExtent", {PropType::Double}, 2, {} },
 { "OfxImageEffectPropProjectOffset", {PropType::Double}, 2, {} },
-{ "OfxImageEffectPropProjectPixelAspectRatio", {PropType::Double}, 1, {} },
 { "OfxImageEffectPropProjectSize", {PropType::Double}, 2, {} },
 { "OfxImageEffectPropRegionOfDefinition", {PropType::Int}, 4, {} },
 { "OfxImageEffectPropRegionOfInterest", {PropType::Int}, 4, {} },
@@ -106,7 +107,6 @@ const std::vector<struct PropsMetadata> props_metadata {
 { "OfxImageEffectPropSupportedContexts", {PropType::String}, 0, {} },
 { "OfxImageEffectPropSupportedPixelDepths", {PropType::String}, 0, {} },
 { "OfxImageEffectPropSupportsMultiResolution", {PropType::Int}, 1, {} },
-{ "OfxImageEffectPropSupportsMultipleClipDepths", {PropType::Int}, 1, {} },
 { "OfxImageEffectPropSupportsMultipleClipPARs", {PropType::Int}, 1, {} },
 { "OfxImageEffectPropSupportsOverlays", {PropType::Bool}, 1, {} },
 { "OfxImageEffectPropSupportsTiles", {PropType::Int}, 1, {} },
@@ -130,7 +130,7 @@ const std::vector<struct PropsMetadata> props_metadata {
 { "OfxInteractPropPixelScale", {PropType::Double}, 2, {} },
 { "OfxInteractPropSlaveToParam", {PropType::String}, 0, {} },
 { "OfxInteractPropSuggestedColour", {PropType::Double}, 3, {} },
-{ "OfxInteractPropViewportSize", {PropType::Int}, 2, {} },
+{ "OfxInteractPropViewport", {PropType::Int}, 2, {} },
 { "OfxOpenGLPropPixelDepth", {PropType::Enum}, 0, {"OfxBitDepthNone","OfxBitDepthByte","OfxBitDepthShort","OfxBitDepthHalf","OfxBitDepthFloat"} },
 { "OfxParamHostPropMaxPages", {PropType::Int}, 1, {} },
 { "OfxParamHostPropMaxParameters", {PropType::Int}, 1, {} },
@@ -149,7 +149,7 @@ const std::vector<struct PropsMetadata> props_metadata {
 { "OfxParamPropChoiceEnum", {PropType::Bool}, 1, {} },
 { "OfxParamPropChoiceOption", {PropType::String}, 0, {} },
 { "OfxParamPropChoiceOrder", {PropType::Int}, 0, {} },
-{ "OfxParamPropCustomInterpCallbackV1", {PropType::Pointer}, 1, {} },
+{ "OfxParamPropCustomCallbackV1", {PropType::Pointer}, 1, {} },
 { "OfxParamPropCustomValue", {PropType::String}, 2, {} },
 { "OfxParamPropDataPtr", {PropType::Pointer}, 1, {} },
 { "OfxParamPropDefault", {PropType::Int,PropType::Double,PropType::String,PropType::Bytes}, 0, {} },
@@ -190,7 +190,6 @@ const std::vector<struct PropsMetadata> props_metadata {
 { "OfxParamPropStringFilePathExists", {PropType::Bool}, 1, {} },
 { "OfxParamPropStringMode", {PropType::Enum}, 1, {"OfxParamStringIsSingleLine","OfxParamStringIsMultiLine","OfxParamStringIsFilePath","OfxParamStringIsDirectoryPath","OfxParamStringIsLabel","OfxParamStringIsRichTextFormat"} },
 { "OfxParamPropType", {PropType::String}, 1, {} },
-{ "OfxParamPropUseHostOverlayHandle", {PropType::Bool}, 1, {} },
 { "OfxPluginPropFilePath", {PropType::Enum}, 1, {"false","true","needed"} },
 { "OfxPluginPropParamPageOrder", {PropType::String}, 0, {} },
 { "OfxPropAPIVersion", {PropType::Int}, 0, {} },
@@ -200,8 +199,6 @@ const std::vector<struct PropsMetadata> props_metadata {
 { "OfxPropIcon", {PropType::String}, 2, {} },
 { "OfxPropInstanceData", {PropType::Pointer}, 1, {} },
 { "OfxPropIsInteractive", {PropType::Bool}, 1, {} },
-{ "OfxPropKeyString", {PropType::String}, 1, {} },
-{ "OfxPropKeySym", {PropType::Int}, 1, {} },
 { "OfxPropLabel", {PropType::String}, 1, {} },
 { "OfxPropLongLabel", {PropType::String}, 1, {} },
 { "OfxPropName", {PropType::String}, 1, {} },
@@ -212,7 +209,12 @@ const std::vector<struct PropsMetadata> props_metadata {
 { "OfxPropType", {PropType::String}, 1, {} },
 { "OfxPropVersion", {PropType::Int}, 0, {} },
 { "OfxPropVersionLabel", {PropType::String}, 1, {} },
+{ "kOfxParamPropUseHostOverlayHandle", {PropType::Bool}, 1, {} },
+{ "kOfxPropKeyString", {PropType::String}, 1, {} },
+{ "kOfxPropKeySym", {PropType::Int}, 1, {} },
 };
+
+// Static asserts to check #define names vs. strings
 static_assert(std::string_view("OfxImageClipPropColourspace") == std::string_view(kOfxImageClipPropColourspace));
 static_assert(std::string_view("OfxImageClipPropConnected") == std::string_view(kOfxImageClipPropConnected));
 static_assert(std::string_view("OfxImageClipPropContinuousSamples") == std::string_view(kOfxImageClipPropContinuousSamples));
@@ -255,6 +257,7 @@ static_assert(std::string_view("OfxImageEffectPropInteractiveRenderStatus") == s
 static_assert(std::string_view("OfxImageEffectPropMetalCommandQueue") == std::string_view(kOfxImageEffectPropMetalCommandQueue));
 static_assert(std::string_view("OfxImageEffectPropMetalEnabled") == std::string_view(kOfxImageEffectPropMetalEnabled));
 static_assert(std::string_view("OfxImageEffectPropMetalRenderSupported") == std::string_view(kOfxImageEffectPropMetalRenderSupported));
+static_assert(std::string_view("OfxImageEffectPropMultipleClipDepths") == std::string_view(kOfxImageEffectPropSupportsMultipleClipDepths));
 static_assert(std::string_view("OfxImageEffectPropOCIOConfig") == std::string_view(kOfxImageEffectPropOCIOConfig));
 static_assert(std::string_view("OfxImageEffectPropOCIODisplay") == std::string_view(kOfxImageEffectPropOCIODisplay));
 static_assert(std::string_view("OfxImageEffectPropOCIOView") == std::string_view(kOfxImageEffectPropOCIOView));
@@ -267,12 +270,12 @@ static_assert(std::string_view("OfxImageEffectPropOpenGLEnabled") == std::string
 static_assert(std::string_view("OfxImageEffectPropOpenGLRenderSupported") == std::string_view(kOfxImageEffectPropOpenGLRenderSupported));
 static_assert(std::string_view("OfxImageEffectPropOpenGLTextureIndex") == std::string_view(kOfxImageEffectPropOpenGLTextureIndex));
 static_assert(std::string_view("OfxImageEffectPropOpenGLTextureTarget") == std::string_view(kOfxImageEffectPropOpenGLTextureTarget));
+static_assert(std::string_view("OfxImageEffectPropPixelAspectRatio") == std::string_view(kOfxImageEffectPropProjectPixelAspectRatio));
 static_assert(std::string_view("OfxImageEffectPropPixelDepth") == std::string_view(kOfxImageEffectPropPixelDepth));
 static_assert(std::string_view("OfxImageEffectPropPluginHandle") == std::string_view(kOfxImageEffectPropPluginHandle));
 static_assert(std::string_view("OfxImageEffectPropPreMultiplication") == std::string_view(kOfxImageEffectPropPreMultiplication));
 static_assert(std::string_view("OfxImageEffectPropProjectExtent") == std::string_view(kOfxImageEffectPropProjectExtent));
 static_assert(std::string_view("OfxImageEffectPropProjectOffset") == std::string_view(kOfxImageEffectPropProjectOffset));
-static_assert(std::string_view("OfxImageEffectPropProjectPixelAspectRatio") == std::string_view(kOfxImageEffectPropProjectPixelAspectRatio));
 static_assert(std::string_view("OfxImageEffectPropProjectSize") == std::string_view(kOfxImageEffectPropProjectSize));
 static_assert(std::string_view("OfxImageEffectPropRegionOfDefinition") == std::string_view(kOfxImageEffectPropRegionOfDefinition));
 static_assert(std::string_view("OfxImageEffectPropRegionOfInterest") == std::string_view(kOfxImageEffectPropRegionOfInterest));
@@ -286,7 +289,6 @@ static_assert(std::string_view("OfxImageEffectPropSupportedComponents") == std::
 static_assert(std::string_view("OfxImageEffectPropSupportedContexts") == std::string_view(kOfxImageEffectPropSupportedContexts));
 static_assert(std::string_view("OfxImageEffectPropSupportedPixelDepths") == std::string_view(kOfxImageEffectPropSupportedPixelDepths));
 static_assert(std::string_view("OfxImageEffectPropSupportsMultiResolution") == std::string_view(kOfxImageEffectPropSupportsMultiResolution));
-static_assert(std::string_view("OfxImageEffectPropSupportsMultipleClipDepths") == std::string_view(kOfxImageEffectPropSupportsMultipleClipDepths));
 static_assert(std::string_view("OfxImageEffectPropSupportsMultipleClipPARs") == std::string_view(kOfxImageEffectPropSupportsMultipleClipPARs));
 static_assert(std::string_view("OfxImageEffectPropSupportsOverlays") == std::string_view(kOfxImageEffectPropSupportsOverlays));
 static_assert(std::string_view("OfxImageEffectPropSupportsTiles") == std::string_view(kOfxImageEffectPropSupportsTiles));
@@ -310,7 +312,7 @@ static_assert(std::string_view("OfxInteractPropPenViewportPosition") == std::str
 static_assert(std::string_view("OfxInteractPropPixelScale") == std::string_view(kOfxInteractPropPixelScale));
 static_assert(std::string_view("OfxInteractPropSlaveToParam") == std::string_view(kOfxInteractPropSlaveToParam));
 static_assert(std::string_view("OfxInteractPropSuggestedColour") == std::string_view(kOfxInteractPropSuggestedColour));
-static_assert(std::string_view("OfxInteractPropViewportSize") == std::string_view(kOfxInteractPropViewportSize));
+static_assert(std::string_view("OfxInteractPropViewport") == std::string_view(kOfxInteractPropViewportSize));
 static_assert(std::string_view("OfxOpenGLPropPixelDepth") == std::string_view(kOfxOpenGLPropPixelDepth));
 static_assert(std::string_view("OfxParamHostPropMaxPages") == std::string_view(kOfxParamHostPropMaxPages));
 static_assert(std::string_view("OfxParamHostPropMaxParameters") == std::string_view(kOfxParamHostPropMaxParameters));
@@ -329,7 +331,7 @@ static_assert(std::string_view("OfxParamPropCanUndo") == std::string_view(kOfxPa
 static_assert(std::string_view("OfxParamPropChoiceEnum") == std::string_view(kOfxParamPropChoiceEnum));
 static_assert(std::string_view("OfxParamPropChoiceOption") == std::string_view(kOfxParamPropChoiceOption));
 static_assert(std::string_view("OfxParamPropChoiceOrder") == std::string_view(kOfxParamPropChoiceOrder));
-static_assert(std::string_view("OfxParamPropCustomInterpCallbackV1") == std::string_view(kOfxParamPropCustomInterpCallbackV1));
+static_assert(std::string_view("OfxParamPropCustomCallbackV1") == std::string_view(kOfxParamPropCustomInterpCallbackV1));
 static_assert(std::string_view("OfxParamPropCustomValue") == std::string_view(kOfxParamPropCustomValue));
 static_assert(std::string_view("OfxParamPropDataPtr") == std::string_view(kOfxParamPropDataPtr));
 static_assert(std::string_view("OfxParamPropDefault") == std::string_view(kOfxParamPropDefault));
@@ -370,7 +372,6 @@ static_assert(std::string_view("OfxParamPropShowTimeMarker") == std::string_view
 static_assert(std::string_view("OfxParamPropStringFilePathExists") == std::string_view(kOfxParamPropStringFilePathExists));
 static_assert(std::string_view("OfxParamPropStringMode") == std::string_view(kOfxParamPropStringMode));
 static_assert(std::string_view("OfxParamPropType") == std::string_view(kOfxParamPropType));
-static_assert(std::string_view("OfxParamPropUseHostOverlayHandle") == std::string_view(kOfxParamPropUseHostOverlayHandle));
 static_assert(std::string_view("OfxPluginPropFilePath") == std::string_view(kOfxPluginPropFilePath));
 static_assert(std::string_view("OfxPluginPropParamPageOrder") == std::string_view(kOfxPluginPropParamPageOrder));
 static_assert(std::string_view("OfxPropAPIVersion") == std::string_view(kOfxPropAPIVersion));
@@ -380,8 +381,6 @@ static_assert(std::string_view("OfxPropHostOSHandle") == std::string_view(kOfxPr
 static_assert(std::string_view("OfxPropIcon") == std::string_view(kOfxPropIcon));
 static_assert(std::string_view("OfxPropInstanceData") == std::string_view(kOfxPropInstanceData));
 static_assert(std::string_view("OfxPropIsInteractive") == std::string_view(kOfxPropIsInteractive));
-static_assert(std::string_view("OfxPropKeyString") == std::string_view(kOfxPropKeyString));
-static_assert(std::string_view("OfxPropKeySym") == std::string_view(kOfxPropKeySym));
 static_assert(std::string_view("OfxPropLabel") == std::string_view(kOfxPropLabel));
 static_assert(std::string_view("OfxPropLongLabel") == std::string_view(kOfxPropLongLabel));
 static_assert(std::string_view("OfxPropName") == std::string_view(kOfxPropName));
@@ -392,4 +391,7 @@ static_assert(std::string_view("OfxPropTime") == std::string_view(kOfxPropTime))
 static_assert(std::string_view("OfxPropType") == std::string_view(kOfxPropType));
 static_assert(std::string_view("OfxPropVersion") == std::string_view(kOfxPropVersion));
 static_assert(std::string_view("OfxPropVersionLabel") == std::string_view(kOfxPropVersionLabel));
+static_assert(std::string_view("kOfxParamPropUseHostOverlayHandle") == std::string_view(kOfxParamPropUseHostOverlayHandle));
+static_assert(std::string_view("kOfxPropKeyString") == std::string_view(kOfxPropKeyString));
+static_assert(std::string_view("kOfxPropKeySym") == std::string_view(kOfxPropKeySym));
 } // namespace OpenFX
