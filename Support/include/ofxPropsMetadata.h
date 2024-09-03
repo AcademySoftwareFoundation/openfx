@@ -32,7 +32,7 @@ struct PropsMetadata {
   std::vector<const char *> values; // for enums
 };
 
-const std::vector<struct PropsMetadata> props_metadata {
+static inline const std::array<struct PropsMetadata, 179> props_metadata { {
 { "OfxImageClipPropColourspace", {PropType::String}, 1, {} },
 { "OfxImageClipPropConnected", {PropType::Bool}, 1, {} },
 { "OfxImageClipPropContinuousSamples", {PropType::Bool}, 1, {} },
@@ -212,7 +212,7 @@ const std::vector<struct PropsMetadata> props_metadata {
 { "kOfxParamPropUseHostOverlayHandle", {PropType::Bool}, 1, {} },
 { "kOfxPropKeyString", {PropType::String}, 1, {} },
 { "kOfxPropKeySym", {PropType::Int}, 1, {} },
-};
+} };
 
 // Static asserts to check #define names vs. strings
 static_assert(std::string_view("OfxImageClipPropColourspace") == std::string_view(kOfxImageClipPropColourspace));
