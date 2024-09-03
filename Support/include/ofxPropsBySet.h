@@ -582,7 +582,7 @@ static inline const std::array<const char *, 32> actions {
 };
 
 // Properties for action args
-static inline const std::map<std::array<std::string, 2>, std::vector<const char *>> action_props {
+static inline const std::map<std::array<std::string_view, 2>, std::vector<const char *>> action_props {
 { { "CustomParamInterpFunc", "inArgs" }, { "OfxParamPropCustomValue",
    "OfxParamPropInterpolationAmount",
    "OfxParamPropInterpolationTime" } },
