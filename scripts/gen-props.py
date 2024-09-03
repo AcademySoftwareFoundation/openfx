@@ -122,12 +122,14 @@ def find_missing(all_props, props_metadata):
     Returns 0 if no errors.
     """
     errs = 0
-    for p in sorted(all_props):
-        if not props_metadata.get(p):
+    for p in sorted(all_props): # constants, with "k" prefix
+        assert(p.startswith("k"))
+        stringval = p[1:]
+        if not props_metadata.get(stringval):
             logging.error(f"No YAML metadata found for {p}")
             errs += 1
     for p in sorted(props_metadata):
-        if p not in all_props:
+        if "k"+p not in all_props:
             logging.error(f"No prop definition found for '{p}' in source/include")
             matches = difflib.get_close_matches(p, all_props, 3, 0.9)
             if matches:
@@ -216,18 +218,10 @@ enum class PropType {
    Pointer
 };
 
-enum class Writable {
-   Host,
-   Plugin,
-   All
-};
-
 struct PropsMetadata {
   std::string name;
   std::vector<PropType> types;
   int dimension;
-  Writable writable;
-  bool host_optional;
   std::vector<const char *> values; // for enums
 };
 
@@ -240,7 +234,6 @@ struct PropsMetadata {
                 if isinstance(types, str): # make it always a list
                     types = (types,)
                 prop_type_defs = "{" + ",".join(f'PropType::{t.capitalize()}' for t in types) + "}"
-                writable = "Writable::" + md.get('writable', "unknown").capitalize()
                 host_opt = md.get('hostOptional', 'false')
                 if host_opt in ('True', 'true', 1):
                     host_opt = 'true'
@@ -251,12 +244,20 @@ struct PropsMetadata {
                     values = "{" + ",".join(f'\"{v}\"' for v in md['values']) + "}"
                 else:
                     values = "{}"
-                outfile.write(f"{{ {p}, {prop_type_defs}, {md['dimension']}, "
-                              f"{writable}, {host_opt}, {values} }},\n")
+                outfile.write(f"{{ \"{p}\", {prop_type_defs}, {md['dimension']}, "
+                              f"{values} }},\n")
             except Exception as e:
                 logging.error(f"Error: {p} is missing metadata? {e}")
                 raise(e)
-        outfile.write("};\n} // namespace OpenFX\n")
+        outfile.write("};\n")
+
+        # Generate static asserts to ensure our constants match the string values
+        for p in sorted(props_metadata):
+            outfile.write(f"static_assert(std::string_view(\"{p}\") == std::string_view(k{p}));\n")
+
+        outfile.write("} // namespace OpenFX\n")
+
+
 
 def gen_props_by_set(props_by_set, outfile_path: Path):
     """Generate a header file with definitions of all prop sets, including their props"""
@@ -284,7 +285,7 @@ namespace OpenFX {
         for pset in sorted(props_by_set.keys()):
             if isinstance(props_by_set[pset], dict):
                 continue
-            propnames = ",\n   ".join(sorted(props_by_set[pset]))
+            propnames = ",\n   ".join(sorted([f'"{p}"' for p in props_by_set[pset]]))
             outfile.write(f"{{ \"{pset}\", {{ {propnames} }} }},\n")
         outfile.write("};\n\n")
 
@@ -305,7 +306,7 @@ namespace OpenFX {
             for subset in props_by_set[pset]:
                 if not props_by_set[pset][subset]:
                     continue
-                propnames = ",\n   ".join(sorted(props_by_set[pset][subset]))
+                propnames = ",\n   ".join(sorted([f'"{p}"' for p in props_by_set[pset][subset]]))
                 if not pset.startswith("kOfx"):
                     psetname = '"' + pset + '"'   # quote if it's not a known constant
                 else:
@@ -346,20 +347,27 @@ def main(args):
 
     if args.verbose:
         print(f"=== Generating {args.props_metadata}")
-    gen_props_metadata(props_metadata, include_dir / args.props_metadata)
+    gen_props_metadata(props_metadata, support_include_dir / args.props_metadata)
+
+    if args.verbose:
+        print(f"=== Generating {args.props_metadata}")
+    gen_props_metadata(props_metadata, support_include_dir / args.props_metadata)
 
     if args.verbose:
         print(f"=== Generating props by set header {args.props_by_set}")
-    gen_props_by_set(props_by_set, include_dir / args.props_by_set)
+    gen_props_by_set(props_by_set, support_include_dir / args.props_by_set)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Check OpenFX properties and generate ancillary data structures")
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    support_include_dir = Path(script_dir).parent / 'Support/include'
+    parser = argparse.ArgumentParser(description="Check OpenFX properties and generate ancillary data structures",
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     # Define arguments here
     parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose mode')
-    parser.add_argument('--props-metadata', default="ofxPropsMetadata.h",
+    parser.add_argument('--props-metadata', default=support_include_dir/"ofxPropsMetadata.h",
                         help="Generate property metadata into this file")
-    parser.add_argument('--props-by-set', default="ofxPropsBySet.h",
+    parser.add_argument('--props-by-set', default=support_include_dir/"ofxPropsBySet.h",
                         help="Generate props by set metadata into this file")
 
     # Parse the arguments
