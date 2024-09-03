@@ -438,15 +438,17 @@ propertySets:
     inArgs:
       - OfxImageEffectPropContext
     outArgs:
-  OfxActionDescribeInteract:
-    inArgs:
-    outArgs:
-  OfxActionCreateInstanceInteract:
-    inArgs:
-    outArgs:
-  OfxActionDestroyInstanceInteract:
-    inArgs:
-    outArgs:
+  # These are duplicates of regular describe/create/destroy,
+  # not unique action names.
+  # OfxActionDescribeInteract:
+  #   inArgs:
+  #   outArgs:
+  # OfxActionCreateInstanceInteract:
+  #   inArgs:
+  #   outArgs:
+  # OfxActionDestroyInstanceInteract:
+  #   inArgs:
+  #   outArgs:
   OfxInteractActionDraw:
     inArgs:
       - OfxPropEffectInstance

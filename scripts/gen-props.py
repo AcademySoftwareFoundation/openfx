@@ -245,7 +245,8 @@ struct PropsMetadata {
 };
 
 """)
-        outfile.write("const std::vector<struct PropsMetadata> props_metadata {\n")
+        n_props = len(props_metadata)
+        outfile.write(f"static inline const std::array<struct PropsMetadata, {n_props}> props_metadata {{ {{\n")
         for p in sorted(props_metadata):
             try:
                 md = props_metadata[p]
@@ -268,7 +269,7 @@ struct PropsMetadata {
             except Exception as e:
                 logging.error(f"Error: {p} is missing metadata? {e}")
                 raise(e)
-        outfile.write("};\n\n")
+        outfile.write("} };\n\n")
 
         # Generate static asserts to ensure our constants match the string values
         outfile.write("// Static asserts to check #define names vs. strings\n")
@@ -302,7 +303,7 @@ def gen_props_by_set(props_by_set, outfile_path: Path):
 namespace OpenFX {
 """)
         outfile.write("// Properties for property sets\n")
-        outfile.write("const std::map<const char *, std::vector<const char *>> prop_sets {\n")
+        outfile.write("static inline const std::map<const char *, std::vector<const char *>> prop_sets {\n")
         for pset in sorted(props_by_set.keys()):
             if isinstance(props_by_set[pset], dict):
                 continue
@@ -314,15 +315,15 @@ namespace OpenFX {
                           if isinstance(props_by_set[pset], dict)])
 
         outfile.write("// Actions\n")
-        outfile.write(f"const std::array<const char *, {len(actions)}> actions {{\n")
+        outfile.write(f"static inline const std::array<const char *, {len(actions)}> actions {{\n")
         for pset in actions:
             if not pset.startswith("kOfx"):
                 pset = '"' + pset + '"'   # quote if it's not a known constant
-            outfile.write(f"  {pset},\n") # use string constant
+            outfile.write(f"  {pset},\n")
         outfile.write("};\n\n")
 
         outfile.write("// Properties for action args\n")
-        outfile.write("const std::map<std::array<std::string, 2>, std::vector<const char *>> action_props {\n")
+        outfile.write("static inline const std::map<std::array<std::string, 2>, std::vector<const char *>> action_props {\n")
         for pset in actions:
             for subset in props_by_set[pset]:
                 if not props_by_set[pset][subset]:
@@ -334,7 +335,16 @@ namespace OpenFX {
                     psetname = pset
                 outfile.write(f"{{ {{ {psetname}, \"{subset}\" }}, {{ {propnames} }} }},\n")
 
-        outfile.write("};\n} // namespace OpenFX\n")
+        outfile.write("};\n\n")
+
+        outfile.write("// Static asserts for standard action names\n")
+        for pset in actions:
+            if not pset.startswith("Ofx"):
+                continue
+            outfile.write(f"static_assert(std::string_view(\"{pset}\") == std::string_view(k{pset}));\n")
+
+        outfile.write("} // namespace OpenFX\n")
+
 
 def main(args):
     script_dir = os.path.dirname(os.path.abspath(__file__))

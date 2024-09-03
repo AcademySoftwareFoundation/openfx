@@ -18,7 +18,7 @@
 
 namespace OpenFX {
 // Properties for property sets
-const std::map<const char *, std::vector<const char *>> prop_sets {
+static inline const std::map<const char *, std::vector<const char *>> prop_sets {
 { "ClipDescriptor", { "OfxImageClipPropFieldExtraction",
    "OfxImageClipPropIsMask",
    "OfxImageClipPropOptional",
@@ -538,16 +538,13 @@ const std::map<const char *, std::vector<const char *>> prop_sets {
 };
 
 // Actions
-const std::array<const char *, 35> actions {
+static inline const std::array<const char *, 32> actions {
   "CustomParamInterpFunc",
   "OfxActionBeginInstanceChanged",
   "OfxActionBeginInstanceEdit",
   "OfxActionCreateInstance",
-  "OfxActionCreateInstanceInteract",
   "OfxActionDescribe",
-  "OfxActionDescribeInteract",
   "OfxActionDestroyInstance",
-  "OfxActionDestroyInstanceInteract",
   "OfxActionEndInstanceChanged",
   "OfxActionEndInstanceEdit",
   "OfxActionInstanceChanged",
@@ -577,7 +574,7 @@ const std::array<const char *, 35> actions {
 };
 
 // Properties for action args
-const std::map<std::array<std::string, 2>, std::vector<const char *>> action_props {
+static inline const std::map<std::array<std::string, 2>, std::vector<const char *>> action_props {
 { { "CustomParamInterpFunc", "inArgs" }, { "OfxParamPropCustomValue",
    "OfxParamPropInterpolationAmount",
    "OfxParamPropInterpolationTime" } },
@@ -729,4 +726,37 @@ const std::map<std::array<std::string, 2>, std::vector<const char *>> action_pro
    "OfxPropEffectInstance",
    "OfxPropTime" } },
 };
+
+// Static asserts for standard action names
+static_assert(std::string_view("OfxActionBeginInstanceChanged") == std::string_view(kOfxActionBeginInstanceChanged));
+static_assert(std::string_view("OfxActionBeginInstanceEdit") == std::string_view(kOfxActionBeginInstanceEdit));
+static_assert(std::string_view("OfxActionCreateInstance") == std::string_view(kOfxActionCreateInstance));
+static_assert(std::string_view("OfxActionDescribe") == std::string_view(kOfxActionDescribe));
+static_assert(std::string_view("OfxActionDestroyInstance") == std::string_view(kOfxActionDestroyInstance));
+static_assert(std::string_view("OfxActionEndInstanceChanged") == std::string_view(kOfxActionEndInstanceChanged));
+static_assert(std::string_view("OfxActionEndInstanceEdit") == std::string_view(kOfxActionEndInstanceEdit));
+static_assert(std::string_view("OfxActionInstanceChanged") == std::string_view(kOfxActionInstanceChanged));
+static_assert(std::string_view("OfxActionLoad") == std::string_view(kOfxActionLoad));
+static_assert(std::string_view("OfxActionPurgeCaches") == std::string_view(kOfxActionPurgeCaches));
+static_assert(std::string_view("OfxActionSyncPrivateData") == std::string_view(kOfxActionSyncPrivateData));
+static_assert(std::string_view("OfxActionUnload") == std::string_view(kOfxActionUnload));
+static_assert(std::string_view("OfxImageEffectActionBeginSequenceRender") == std::string_view(kOfxImageEffectActionBeginSequenceRender));
+static_assert(std::string_view("OfxImageEffectActionDescribeInContext") == std::string_view(kOfxImageEffectActionDescribeInContext));
+static_assert(std::string_view("OfxImageEffectActionEndSequenceRender") == std::string_view(kOfxImageEffectActionEndSequenceRender));
+static_assert(std::string_view("OfxImageEffectActionGetClipPreferences") == std::string_view(kOfxImageEffectActionGetClipPreferences));
+static_assert(std::string_view("OfxImageEffectActionGetFramesNeeded") == std::string_view(kOfxImageEffectActionGetFramesNeeded));
+static_assert(std::string_view("OfxImageEffectActionGetRegionOfDefinition") == std::string_view(kOfxImageEffectActionGetRegionOfDefinition));
+static_assert(std::string_view("OfxImageEffectActionGetRegionsOfInterest") == std::string_view(kOfxImageEffectActionGetRegionsOfInterest));
+static_assert(std::string_view("OfxImageEffectActionGetTimeDomain") == std::string_view(kOfxImageEffectActionGetTimeDomain));
+static_assert(std::string_view("OfxImageEffectActionIsIdentity") == std::string_view(kOfxImageEffectActionIsIdentity));
+static_assert(std::string_view("OfxImageEffectActionRender") == std::string_view(kOfxImageEffectActionRender));
+static_assert(std::string_view("OfxInteractActionDraw") == std::string_view(kOfxInteractActionDraw));
+static_assert(std::string_view("OfxInteractActionGainFocus") == std::string_view(kOfxInteractActionGainFocus));
+static_assert(std::string_view("OfxInteractActionKeyDown") == std::string_view(kOfxInteractActionKeyDown));
+static_assert(std::string_view("OfxInteractActionKeyRepeat") == std::string_view(kOfxInteractActionKeyRepeat));
+static_assert(std::string_view("OfxInteractActionKeyUp") == std::string_view(kOfxInteractActionKeyUp));
+static_assert(std::string_view("OfxInteractActionLoseFocus") == std::string_view(kOfxInteractActionLoseFocus));
+static_assert(std::string_view("OfxInteractActionPenDown") == std::string_view(kOfxInteractActionPenDown));
+static_assert(std::string_view("OfxInteractActionPenMotion") == std::string_view(kOfxInteractActionPenMotion));
+static_assert(std::string_view("OfxInteractActionPenUp") == std::string_view(kOfxInteractActionPenUp));
 } // namespace OpenFX
