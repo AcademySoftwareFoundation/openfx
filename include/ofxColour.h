@@ -24,13 +24,13 @@ extern "C" {
 
    - Type - string X 1
    - Property Set - host descriptor (read only), plugin descriptor (read/write), image effect instance (read only)
-   - Default - kOfxImageEffectPropColourManagementStyleNone
+   - Default - kOfxImageEffectColourManagementStyleNone
    - Valid Values - This must be one of
-     - ::kOfxImageEffectPropColourManagementNone - no colour management
-     - ::kOfxImageEffectPropColourManagementBasic - only basic colourspaces from the config header may be used
-     - ::kOfxImageEffectPropColourManagementCore - only core colourspaces from the config header may be used
-     - ::kOfxImageEffectPropColourManagementFull - any colourspace from the config header may be used
-     - ::kOfxImageEffectPropColourManagementOCIO - any OCIO config may be used (implies use of the OCIO library)
+     - ::kOfxImageEffectColourManagementNone - no colour management
+     - ::kOfxImageEffectColourManagementBasic - only basic colourspaces from the config header may be used
+     - ::kOfxImageEffectColourManagementCore - only core colourspaces from the config header may be used
+     - ::kOfxImageEffectColourManagementFull - any colourspace from the config header may be used
+     - ::kOfxImageEffectColourManagementOCIO - any OCIO config may be used (implies use of the OCIO library)
 
 Hosts should set this property if they will provide colourspace information 
 to plug-ins.
@@ -58,15 +58,15 @@ effect instance.
 #define kOfxImageEffectPropColourManagementStyle "OfxImageEffectPropColourManagementStyle"
 
 /* String used to indicate that no colour management is available. */
-#define kOfxImageEffectPropColourManagementNone "OfxImageEffectPropColourManagementNone"
+#define kOfxImageEffectColourManagementNone "OfxImageEffectColourManagementNone"
 /* String used to indicate that basic colour management is available. */
-#define kOfxImageEffectPropColourManagementBasic "OfxImageEffectPropColourManagementBasic"
+#define kOfxImageEffectColourManagementBasic "OfxImageEffectColourManagementBasic"
 /* String used to indicate that core colour management is available. */
-#define kOfxImageEffectPropColourManagementCore "OfxImageEffectPropColourManagementCore"
+#define kOfxImageEffectColourManagementCore "OfxImageEffectColourManagementCore"
 /* String used to indicate that Full colour management is available. */
-#define kOfxImageEffectPropColourManagementFull "OfxImageEffectPropColourManagementFull"
+#define kOfxImageEffectColourManagementFull "OfxImageEffectColourManagementFull"
 /* String used to indicate that OCIO colour management is available. */
-#define kOfxImageEffectPropColourManagementOCIO "OfxImageEffectPropColourManagementOCIO"
+#define kOfxImageEffectColourManagementOCIO "OfxImageEffectColourManagementOCIO"
 
 /** @brief What native mode configs are supported?
 
@@ -102,7 +102,7 @@ set this even in OCIO mode, to define the basic colourspaces.
    - Valid Values - Filesystem path to the config or URI starting ocio://
 
 A host must set this property on any effect instances where it has negotiated 
-OCIO colour management (kOfxImageEffectPropColourManagementOCIO).
+OCIO colour management (kOfxImageEffectColourManagementOCIO).
 Use of URIs for built-in configs, such as ocio://default is permitted.
 */
 #define kOfxImageEffectPropOCIOConfig "OfxImageEffectPropOCIOConfig"
