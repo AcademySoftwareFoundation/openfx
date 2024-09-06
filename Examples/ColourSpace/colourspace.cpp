@@ -402,7 +402,7 @@ getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs
   // Colour management -- preferred colour spaces, in order (most preferred first)
 #define PREFER_COLOURSPACES
 #ifdef PREFER_COLOURSPACES
-  if (gHostColourManagementStyle != kOfxImageEffectPropColourManagementNone) {
+  if (gHostColourManagementStyle != kOfxImageEffectColourManagementNone) {
     spdlog::info("Specifying preferred colourspaces since host style={}", gHostColourManagementStyle);
     if(!preferredInputSpace.empty()) {
       const char* colourSpaces[] = {
@@ -647,7 +647,7 @@ describe(OfxImageEffectHandle  effect)
     spdlog::info("describe: host says its colour management style is '{}'", gHostColourManagementStyle);
   } else {
     spdlog::info("describe: host does not support colour management (err={})", errMsg(stat));
-    gHostColourManagementStyle = kOfxImageEffectPropColourManagementNone;
+    gHostColourManagementStyle = kOfxImageEffectColourManagementNone;
   }
 
   // get the property handle for the plugin
@@ -674,13 +674,13 @@ describe(OfxImageEffectHandle  effect)
   gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 0, kOfxImageEffectContextFilter);
   gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 1, kOfxImageEffectContextGeneral);
 
-  if (gHostColourManagementStyle != kOfxImageEffectPropColourManagementNone) {
+  if (gHostColourManagementStyle != kOfxImageEffectColourManagementNone) {
     // host supports colour management, either OCIO or Core (or others; see the spec).
     // OCIO implies core, so here we can assume it supports Core.
     // Tell it we support Core.
     stat = gPropHost->propSetString(effectProps,
                                     kOfxImageEffectPropColourManagementStyle, 0,
-                                    kOfxImageEffectPropColourManagementCore);
+                                    kOfxImageEffectColourManagementCore);
     if (stat != kOfxStatOK) {
       spdlog::error("setting kOfxImageEffectPropColourManagementStyle prop: stat={}", errMsg(stat));
     }
