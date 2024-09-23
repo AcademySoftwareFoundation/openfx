@@ -358,11 +358,8 @@ getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs
   const char *componentStr = isRGBA ? kOfxImageComponentRGBA : kOfxImageComponentAlpha;
 
   std::string preferredInputSpace;
-  std::string preferredOutputSpace;
   int preferredInputSpaceIndex;
-  int preferredOutputSpaceIndex;
   gParamHost->paramGetValue(myData->inputSpaceParam, &preferredInputSpaceIndex);
-  gParamHost->paramGetValue(myData->outputSpaceParam, &preferredOutputSpaceIndex);
 
   switch (preferredInputSpaceIndex) {
   case 0:
@@ -378,21 +375,6 @@ getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs
     preferredInputSpace = {};
     break;
  }
-
-  switch (preferredOutputSpaceIndex) {
-  case 0:
-    preferredOutputSpace = kOfxColourspaceACEScg;
-    break;
-  case 1:
-    preferredOutputSpace = kOfxColourspaceLinRec2020;
-    break;
-  case 2:
-    preferredOutputSpace = kOfxColourspaceSrgbTx;
-    break;
-  case 3:
-    preferredOutputSpace = kOfxColourspaceACEScct;
-    break;
-  }
 
   // set our output to be the same same as the input, component and bitdepth
   gPropHost->propSetString(outArgs, "OfxImageClipPropComponents_Output", 0, componentStr);
@@ -415,16 +397,66 @@ getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs
 				 i, colourSpaces[i]);
       }
     }
-
-    if (!preferredOutputSpace.empty())
-      gPropHost->propSetString(outArgs, kOfxImageClipPropPreferredColourspaces "_Output", 0, preferredOutputSpace.c_str());
-
   } else {
     spdlog::info("Host does not support colour management (this example won't be very interesting)");
   }
 #endif
 
   return kOfxStatOK;
+}
+
+static void setClipColourspace(const OfxImageClipHandle clip, const std::string &colourspace) {
+    OfxPropertySetHandle clipProps;
+    gEffectHost->clipGetPropertySet(clip, &clipProps);
+    gPropHost->propSetString(clipProps, kOfxImageClipPropColourspace, 0, colourspace.c_str());
+}
+
+static OfxStatus 
+getOutputColourspace( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle outArgs)
+{
+  // retrieve any instance data associated with this effect
+  MyInstanceData *myData = getMyInstanceData(effect);
+  
+  OfxStatus status = kOfxStatReplyDefault;
+  
+  if (gHostColourManagementStyle != kOfxImageEffectPropColourManagementNone) {
+  
+    // We could check kOfxImageClipPropPreferredColourspaces from inArgs here
+    
+    // Get the colourspace from the parameter
+    std::string preferredOutputSpace;
+    int preferredOutputSpaceIndex;
+    gParamHost->paramGetValue(myData->outputSpaceParam, &preferredOutputSpaceIndex);
+    
+    switch (preferredOutputSpaceIndex) {
+    case 0:
+      preferredOutputSpace = kOfxColourspaceACEScg;
+      break;
+    case 1:
+      preferredOutputSpace = kOfxColourspaceLinRec2020;
+      break;
+    case 2:
+      preferredOutputSpace = kOfxColourspaceSrgbTx;
+      break;
+    case 3:
+      preferredOutputSpace = kOfxColourspaceACEScct;
+      break;
+    }
+  
+    if (!preferredOutputSpace.empty()) {
+      spdlog::info("Specifying output colourspaces since ={}", preferredOutputSpace);
+      // Set the selected colourspace in outArgs
+      gPropHost->propSetString(outArgs, kOfxImageClipPropColourspace, 0, preferredOutputSpace.c_str());
+      // Set the selected colourspace in the clip properties to have it available in the render action
+      setClipColourspace(myData->outputClip, preferredOutputSpace);
+      status = kOfxStatOK;
+    }
+  } else {
+    spdlog::info("Host does not support colour management (this example won't be very interesting)");
+    status = kOfxStatFailed;
+  }
+   
+  return status;
 }
 
 // are the settings of the effect performing an identity operation
@@ -744,6 +776,10 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,
   else if(strcmp(action, kOfxImageEffectActionGetTimeDomain) == 0) {
     stat = getTemporalDomain(effect, inArgs, outArgs);
   }
+  else if(strcmp(action, kOfxImageEffectActionGetOutputColourspace) == 0) {
+    stat = getOutputColourspace(effect, inArgs, outArgs);
+  }
+  
   } catch (const std::bad_alloc&) {
     // catch memory
     spdlog::error("Caught OFX Plugin Memory error");
