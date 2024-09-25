@@ -50,7 +50,7 @@ jobs:
         shell: bash
 
       - name: Checkout
-        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
+        uses: actions/checkout@v4.2.0
         fetch-depth: 10         # use this if tag is older than current head
         fetch-tags: true
 
