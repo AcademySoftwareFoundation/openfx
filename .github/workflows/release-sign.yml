@@ -51,6 +51,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
+        fetch-depth: 10         # use this if tag is older than current head
+        fetch-tags: true
 
       - name: Create archive
         run: git archive --format=tar.gz -o ${OPENFX_TARBALL} --prefix ${OPENFX_PREFIX} ${TAG}
