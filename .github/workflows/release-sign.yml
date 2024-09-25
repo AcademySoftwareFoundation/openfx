@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-       TAG: ${{ github.ref_name }}
+       TAG: ${{ github.ref_name == 'main' && '1.5' || github.ref_name }}
     permissions:
       contents: write
       id-token: write
