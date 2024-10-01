@@ -242,12 +242,25 @@ If not defined, the default rules for choosing a view will be followed.
 
  This action allows a host to ask an effect, given a list of preferred
  colourspaces, what colourspace will be used for its output clip. This should
- be called after first gathering the plug-ins preferred input colourspaces
+ be called after first gathering the plug-in's preferred input colourspaces
  via OfxImageEffectActionGetClipPreferences.
 
  Cross-references to input clip colourspaces are permitted, for example in a
  filter context, the host might request "OfxColourspace_Source".
 
+ If a host wants to rely on the output clip colourspace, it must call this
+ action whenever the effect instance is changed. Do not assume that the output
+ colourspace will be the same across all instances of an effect, or even for
+ the lifetime of an effect instance, because a plug-in may change its output
+ colourspace based on a user changing a parameter. Assume that the plug-in will
+ check kOfxImageClipPropColourspace on its input clips during this action in
+ order to decide the output clip colourspace, so the action must be called
+ again if the host changes any of the other colour properties.
+
+ On a successful return from this action, the host must set
+ kOfxImageClipPropColourspace on the instance's output clip to the value
+ from outArgs.
+ 
  @param  handle handle to the instance, cast to an \ref OfxImageEffectHandle
  @param  inArgs a property set containing the property
      - \ref kOfxImageClipPropPreferredColourspaces the host's list of preferred colourspaces
