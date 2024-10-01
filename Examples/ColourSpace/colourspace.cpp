@@ -419,7 +419,7 @@ getOutputColourspace( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inAr
   
   OfxStatus status = kOfxStatReplyDefault;
   
-  if (gHostColourManagementStyle != kOfxImageEffectPropColourManagementNone) {
+  if (gHostColourManagementStyle != kOfxImageEffectColourManagementNone) {
   
     // We could check kOfxImageClipPropPreferredColourspaces from inArgs here
     
