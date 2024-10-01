@@ -546,7 +546,7 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
 };
 
 // Actions
-static inline const std::array<const char *, 32> actions {
+static inline const std::array<const char *, 33> actions {
   "CustomParamInterpFunc",
   "OfxActionBeginInstanceChanged",
   "OfxActionBeginInstanceEdit",
@@ -565,6 +565,7 @@ static inline const std::array<const char *, 32> actions {
   "OfxImageEffectActionEndSequenceRender",
   "OfxImageEffectActionGetClipPreferences",
   "OfxImageEffectActionGetFramesNeeded",
+  "OfxImageEffectActionGetOutputColourspace",
   "OfxImageEffectActionGetRegionOfDefinition",
   "OfxImageEffectActionGetRegionsOfInterest",
   "OfxImageEffectActionGetTimeDomain",
@@ -647,6 +648,8 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
    "OfxImageEffectPropPreMultiplication" } },
 { { "OfxImageEffectActionGetFramesNeeded", "inArgs" }, { "OfxPropTime" } },
 { { "OfxImageEffectActionGetFramesNeeded", "outArgs" }, { "OfxImageEffectPropFrameRange" } },
+{ { "OfxImageEffectActionGetOutputColourspace", "inArgs" }, { "OfxImageClipPropPreferredColourspaces" } },
+{ { "OfxImageEffectActionGetOutputColourspace", "outArgs" }, { "OfxImageClipPropColourspace" } },
 { { "OfxImageEffectActionGetRegionOfDefinition", "inArgs" }, { "OfxImageEffectPropRenderScale",
    "OfxPropTime" } },
 { { "OfxImageEffectActionGetRegionOfDefinition", "outArgs" }, { "OfxImageEffectPropRegionOfDefinition" } },
@@ -753,6 +756,7 @@ static_assert(std::string_view("OfxImageEffectActionDescribeInContext") == std::
 static_assert(std::string_view("OfxImageEffectActionEndSequenceRender") == std::string_view(kOfxImageEffectActionEndSequenceRender));
 static_assert(std::string_view("OfxImageEffectActionGetClipPreferences") == std::string_view(kOfxImageEffectActionGetClipPreferences));
 static_assert(std::string_view("OfxImageEffectActionGetFramesNeeded") == std::string_view(kOfxImageEffectActionGetFramesNeeded));
+static_assert(std::string_view("OfxImageEffectActionGetOutputColourspace") == std::string_view(kOfxImageEffectActionGetOutputColourspace));
 static_assert(std::string_view("OfxImageEffectActionGetRegionOfDefinition") == std::string_view(kOfxImageEffectActionGetRegionOfDefinition));
 static_assert(std::string_view("OfxImageEffectActionGetRegionsOfInterest") == std::string_view(kOfxImageEffectActionGetRegionsOfInterest));
 static_assert(std::string_view("OfxImageEffectActionGetTimeDomain") == std::string_view(kOfxImageEffectActionGetTimeDomain));
