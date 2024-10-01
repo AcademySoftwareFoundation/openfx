@@ -594,6 +594,12 @@ Actions:
     outArgs:
       - OfxParamPropCustomValue
       - OfxParamPropInterpolationTime
+  OfxImageEffectActionGetOutputColourspace:
+    inArgs:
+      - OfxImageClipPropPreferredColourspaces
+    outArgs:
+      - OfxImageClipPropColourspace
+  
 # Properties by name.
 # Notes:
 #  type=bool means an int property with value 1 or 0 for true or false.
