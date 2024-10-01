@@ -118,10 +118,6 @@ Hosts should set this property to the colourspace of the input clip. Typically
 it will be set to the working colourspace of the host but could be any valid 
 colourspace.
 
-Plug-ins may set this property on an output clip. Plug-ins which output motion 
-vectors or similar images which should not be colour managed should use
-kOfxColourspaceRaw,
-
 Both host and plug-in should use the value of 
 kOfxImageClipPropPreferredColourspace where reasonable.
 
@@ -131,11 +127,11 @@ be reported in this property. If an OCIO host has added the basic colourspaces
 to its config as roles or aliases, they would be permitted here.
 
 Cross-referencing between clips is possible by setting this property to
-"OfxColourspace_<clip>". For example a plug-in may set this property on its
-output clip to "OfxColourspace_Source", telling the host that the colourspace
-of the output matches the "Source" input clip. In the basic style, plug-ins
-are recommended to use cross-referencing for their output clip unless
-kOfxColourspaceRaw is required.
+"OfxColourspace_<clip>". For example a plug-in may set this property during
+kOfxImageEffectActionGetOutputColourspace to "OfxColourspace_Source", telling
+he host that the colourspace of the output matches the "Source" input clip.
+In the basic style, plug-ins are recommended to use cross-referencing for
+their output clip unless kOfxColourspaceRaw is required.
 
 If a clip sets OfxImageClipPropIsMask or it only supports
 OfxImageComponentAlpha, colour management is disabled and this property
@@ -253,10 +249,10 @@ If not defined, the default rules for choosing a view will be followed.
  filter context, the host might request "OfxColourspace_Source".
 
  @param  handle handle to the instance, cast to an \ref OfxImageEffectHandle
- @param  inArgs has the property
+ @param  inArgs a property set containing the property
      - \ref kOfxImageClipPropPreferredColourspaces the host's list of preferred colourspaces
 
- @param  outArgs has the property
+ @param  outArgs a property set containing the property
      - \ref kOfxImageClipPropColourspace the colourspace selected by the plug-in,
             which may be a cross-reference to an input clip.
 
