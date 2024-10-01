@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
 ![Build](https://github.com/AcademySoftwareFoundation/openfx/actions/workflows/build.yml/badge.svg)
 
 # OpenFX image processing plug-in standard

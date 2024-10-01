@@ -1,3 +1,4 @@
+.. SPDX-License-Identifier: CC-BY-4.0
 .. _ImageEffectActions:
 
 Actions Passed to An Image Effect

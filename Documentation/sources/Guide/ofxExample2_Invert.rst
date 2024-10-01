@@ -1,3 +1,4 @@
+.. SPDX-License-Identifier: CC-BY-4.0
 .. _invertExample:
 
 This guide will take you through the fundamentals of processing images

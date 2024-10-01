@@ -117,7 +117,7 @@ delegate this responsibility as needed.
 * John-Paul Smith - Boris FX
 * Dennis Adams - Sony Creative Software Inc.
 * Phil Barrett - FilmLight
-* Peter Huisma - Assimilate BV
+* Guido Veldkamp - Assimilate BV
 * John Mertic - The Linux Foundation
 
 ### TSC Nomination and Succession

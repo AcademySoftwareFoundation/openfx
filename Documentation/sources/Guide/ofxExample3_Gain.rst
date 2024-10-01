@@ -1,3 +1,4 @@
+.. SPDX-License-Identifier: CC-BY-4.0
 .. _gainExample:
 
 This guide will take you through the basics of creating and using

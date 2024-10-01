@@ -1,3 +1,4 @@
+.. SPDX-License-Identifier: CC-BY-4.0
 .. warning::
 
     This section is outdated and should be properly generated automatically from source code instead

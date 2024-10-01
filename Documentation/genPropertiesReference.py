@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSD-3-Clause
+
 import os,sys, getopt,re
 
 badlyNamedProperties = ["kOfxImageEffectFrameVarying", "kOfxImageEffectPluginRenderThreadSafety"]

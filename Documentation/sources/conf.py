@@ -7,6 +7,8 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+# SPDX-License-Identifier: BSD-3-Clause
+
 import subprocess, os, shutil
 project = 'OpenFX'
 copyright = '2024, Contributors to the OpenFX Project'

@@ -1,3 +1,4 @@
+.. SPDX-License-Identifier: CC-BY-4.0
 Changes to the API for 1.2
 ==========================
 

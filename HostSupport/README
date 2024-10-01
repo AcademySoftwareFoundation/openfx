@@ -64,3 +64,6 @@ Major overhaul of the thing,
          - a factory,
          - a filter for constructed objects,
          - a description of the host application to the plugin.
+
+# SPDX-License-Identifier: BSD-3-Clause
+

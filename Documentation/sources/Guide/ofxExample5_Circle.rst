@@ -1,3 +1,4 @@
+.. SPDX-License-Identifier: CC-BY-4.0
 .. _circleExample:
 
 This guide will introduce the spatial coordinate system used by OFX and

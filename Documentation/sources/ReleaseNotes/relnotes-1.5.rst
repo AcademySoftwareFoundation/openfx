@@ -1,3 +1,4 @@
+.. SPDX-License-Identifier: CC-BY-4.0
 OpenFX Release Notes for V1.5
 =============================
 

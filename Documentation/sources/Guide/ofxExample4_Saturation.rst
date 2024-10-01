@@ -1,3 +1,4 @@
+.. SPDX-License-Identifier: CC-BY-4.0
 .. _saturationExample:
 
 This guide will take you through the basics of creating effects that can

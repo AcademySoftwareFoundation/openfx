@@ -1,3 +1,4 @@
+.. SPDX-License-Identifier: CC-BY-4.0
 OpenFX Release Notes for V1.4
 =============================
 
@@ -43,5 +44,5 @@ Removals
 - :c:macro:`kOfxInteractPropViewportSize`
 - :c:macro:`kOfxParamPropPluginMayWrite`
 - :c:macro:`kOfxImageEffectPropInAnalysis`
-- :c:macro:`kOfxParamDoubleTypeNormalised*` - removed in favor of :c:macro:`kOfxParamDoubleType*`
+- :c:macro:`kOfxParamDoubleTypeNormalised` - removed in favor of :c:macro:`kOfxParamDoubleType`
 
