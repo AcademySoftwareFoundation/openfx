@@ -770,64 +770,64 @@ Any scene-referred colourspace with a log transfer function.
 Guaranteed to be ACES2065-1.
 */
 #define kOfxColourspaceRoleAcesInterchange "aces_interchange"
-#define kOfxColourspaceAcesInterchangeIsBasic false
-#define kOfxColourspaceAcesInterchangeIsCore true
+#define kOfxColourspaceRoleAcesInterchangeIsBasic false
+#define kOfxColourspaceRoleAcesInterchangeIsCore true
 
 /** @brief cie_xyz_d65_interchange
 CIE XYZ colorimetry with the neutral axis at D65.
 */
 #define kOfxColourspaceRoleCieXyzD65Interchange "cie_xyz_d65_interchange"
-#define kOfxColourspaceCieXyzD65InterchangeIsBasic false
-#define kOfxColourspaceCieXyzD65InterchangeIsCore true
+#define kOfxColourspaceRoleCieXyzD65InterchangeIsBasic false
+#define kOfxColourspaceRoleCieXyzD65InterchangeIsCore true
 
 /** @brief color_picking
 The colourspace to use for colour pickers, typically a display colourspace.
 */
 #define kOfxColourspaceRoleColorPicking "color_picking"
-#define kOfxColourspaceColorPickingIsBasic false
-#define kOfxColourspaceColorPickingIsCore true
+#define kOfxColourspaceRoleColorPickingIsBasic false
+#define kOfxColourspaceRoleColorPickingIsCore true
 
 /** @brief color_timing
 A colourspace suitable for colour grading, typically a log colourspace.
 */
 #define kOfxColourspaceRoleColorTiming "color_timing"
-#define kOfxColourspaceColorTimingIsBasic false
-#define kOfxColourspaceColorTimingIsCore true
+#define kOfxColourspaceRoleColorTimingIsBasic false
+#define kOfxColourspaceRoleColorTimingIsCore true
 
 /** @brief compositing_log
 Any scene-referred colourspace with a log transfer function.
 */
 #define kOfxColourspaceRoleCompositingLog "compositing_log"
-#define kOfxColourspaceCompositingLogIsBasic false
-#define kOfxColourspaceCompositingLogIsCore true
+#define kOfxColourspaceRoleCompositingLogIsBasic false
+#define kOfxColourspaceRoleCompositingLogIsCore true
 
 /** @brief data
 Image values should not be treated as colour, e.g. motion vectors or masks. Mapped to the raw colourspace.
 */
 #define kOfxColourspaceRoleData "data"
-#define kOfxColourspaceDataIsBasic false
-#define kOfxColourspaceDataIsCore true
+#define kOfxColourspaceRoleDataIsBasic false
+#define kOfxColourspaceRoleDataIsCore true
 
 /** @brief matte_paint
 A colourspace suitable for matte painting.
 */
 #define kOfxColourspaceRoleMattePaint "matte_paint"
-#define kOfxColourspaceMattePaintIsBasic false
-#define kOfxColourspaceMattePaintIsCore true
+#define kOfxColourspaceRoleMattePaintIsBasic false
+#define kOfxColourspaceRoleMattePaintIsCore true
 
 /** @brief scene_linear
 Any scene-referred linear colourspace.
 */
 #define kOfxColourspaceRoleSceneLinear "scene_linear"
-#define kOfxColourspaceSceneLinearIsBasic false
-#define kOfxColourspaceSceneLinearIsCore true
+#define kOfxColourspaceRoleSceneLinearIsBasic false
+#define kOfxColourspaceRoleSceneLinearIsCore true
 
 /** @brief texture_paint
 A colourspace suitable for texture painting, typically sRGB.
 */
 #define kOfxColourspaceRoleTexturePaint "texture_paint"
-#define kOfxColourspaceTexturePaintIsBasic false
-#define kOfxColourspaceTexturePaintIsCore true
+#define kOfxColourspaceRoleTexturePaintIsBasic false
+#define kOfxColourspaceRoleTexturePaintIsCore true
 
 #ifdef __cplusplus
 }
