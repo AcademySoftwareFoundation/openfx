@@ -98,11 +98,12 @@ def print_basic_colourspace(role):
 
 def print_role(role):
    role_name = role[0]
+   role_prefix = f'Role{camel_name(role_name)}'
    print(f'\n/** @brief {role_name}\n{role_docs[role_name]}\n*/')
-   print(f'{define_base}Role{camel_name(role_name)} "{role_name}"')
+   print(f'{define_base}{role_prefix} "{role_name}"')
    # non-basic roles are included in the core style
-   print_bool_property(role_name, 'Basic', False)
-   print_bool_property(role_name, 'Core', True)
+   print_bool_property(role_prefix, 'Basic', False)
+   print_bool_property(role_prefix, 'Core', True)
 
 def print_string_property(name, propname, value):
    print(f'{define_base}{camel_name(name)}{propname} "{value}"')
