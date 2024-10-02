@@ -5,7 +5,7 @@
 
 # Extract information from an OCIO config to C header.
 # Example invocation:
-# OCIO=include/ofx-native-v1.5_aces-v1.3_ocio-v2.3.ocio scripts/genColour > include/ofxColourspaceList.h
+# OCIO=include/ofx-native-v1.5_aces-v1.3_ocio-v2.3.ocio scripts/genColour > include/ofx-native-v1.5_aces-v1.3_ocio-v2.3.h
 
 import sys
 import PyOpenColorIO as OCIO
@@ -100,6 +100,9 @@ def print_role(role):
    role_name = role[0]
    print(f'\n/** @brief {role_name}\n{role_docs[role_name]}\n*/')
    print(f'{define_base}Role{camel_name(role_name)} "{role_name}"')
+   # non-basic roles are included in the core style
+   print_bool_property(role_name, 'Basic', False)
+   print_bool_property(role_name, 'Core', True)
 
 def print_string_property(name, propname, value):
    print(f'{define_base}{camel_name(name)}{propname} "{value}"')
