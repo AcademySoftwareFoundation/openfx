@@ -37,7 +37,7 @@ python genPropertiesReference.py \
        > /tmp/ofx-doc-build.out 2>&1
 egrep -v "$EXPECTED_ERRS" /tmp/ofx-doc-build.out || true
 
-# Build the Doxygen docs
+# Build the Doxygen docs into $TOP/Documentation/doxygen_build
 EXPECTED_ERRS="malformed hyperlink target|Duplicate explicit|Definition list ends|unable to resolve|could not be resolved"
 cd ../include
 doxygen ofx.doxy > /tmp/ofx-doc-build.out 2>&1
