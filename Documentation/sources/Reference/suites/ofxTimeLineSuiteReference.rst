@@ -3,6 +3,4 @@
 OfxTimeLineSuiteV1
 ==================
 
-.. doxygenstruct:: OfxImageEffectSuiteV1
-
-
+.. doxygenstruct:: OfxTimeLineSuiteV1
