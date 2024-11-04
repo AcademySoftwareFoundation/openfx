@@ -131,7 +131,7 @@ core_spaces = ['srgb_display', 'displayp3_display', 'rec1886_rec709_display',
                'ACEScg', 'lin_p3d65', 'lin_rec2020',
                'lin_rec709_srgb', 'g18_rec709_tx', 'g22_ap1_tx',
                'g22_rec709_tx', 'g24_rec709_tx', 'srgb_encoded_ap1_tx',
-               'srg_encoded_p3d65_tx', 'srgb_tx', 'Raw',
+               'srgb_encoded_p3d65_tx', 'srgb_tx', 'Raw',
                'rec1886_rec2020_display', 'rec2100_hlg_display', 'rec2100_pq_display',
                'st2084_p3d65_display', 'p3d65_display']
 

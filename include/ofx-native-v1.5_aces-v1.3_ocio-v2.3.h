@@ -349,6 +349,17 @@ Any scene-referred colourspace with a log transfer function.
 #define kOfxColourspaceSrgbEncodedAp1TxIsCore true
 #define kOfxColourspaceSrgbEncodedAp1TxIsDisplay false
 
+// srgb_encoded_p3d65_tx
+// Convert ACES2065-1 to sRGB Encoded P3-D65 primaries, D65 white point
+// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_sRGB_Encoded_P3-D65-Texture:1.0
+#define kOfxColourspaceSrgbEncodedP3d65Tx "srgb_encoded_p3d65_tx"
+#define kOfxColourspaceSrgbEncodedP3d65TxLabel "sRGB Encoded P3-D65 - Texture"
+#define kOfxColourspaceSrgbEncodedP3d65TxEncoding "sdr-video"
+#define kOfxColourspaceSrgbEncodedP3d65TxIsData false
+#define kOfxColourspaceSrgbEncodedP3d65TxIsBasic false
+#define kOfxColourspaceSrgbEncodedP3d65TxIsCore true
+#define kOfxColourspaceSrgbEncodedP3d65TxIsDisplay false
+
 // srgb_tx
 // Convert ACES2065-1 to sRGB
 // CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_sRGB-Texture:1.0
@@ -751,17 +762,6 @@ Any scene-referred colourspace with a log transfer function.
 #define kOfxColourspaceCameraRec709IsBasic false
 #define kOfxColourspaceCameraRec709IsCore false
 #define kOfxColourspaceCameraRec709IsDisplay false
-
-// srgb_encoded_p3d65_tx
-// Convert ACES2065-1 to sRGB Encoded P3-D65 primaries, D65 white point
-// CLFtransformID: urn:aswf:ocio:transformId:1.0:OCIO:Utility:AP0_to_sRGB_Encoded_P3-D65-Texture:1.0
-#define kOfxColourspaceSrgbEncodedP3d65Tx "srgb_encoded_p3d65_tx"
-#define kOfxColourspaceSrgbEncodedP3d65TxLabel "sRGB Encoded P3-D65 - Texture"
-#define kOfxColourspaceSrgbEncodedP3d65TxEncoding "sdr-video"
-#define kOfxColourspaceSrgbEncodedP3d65TxIsData false
-#define kOfxColourspaceSrgbEncodedP3d65TxIsBasic false
-#define kOfxColourspaceSrgbEncodedP3d65TxIsCore false
-#define kOfxColourspaceSrgbEncodedP3d65TxIsDisplay false
 
 /** @brief Roles - standard names used for compatibility with common OCIO configs.
 */
