@@ -10,6 +10,7 @@ set(PLUGINS
 	OpenGL
 	Rectangle
 	Test
+        TestProps
         DrawSuite
 	)
 
@@ -30,3 +31,4 @@ target_link_libraries(example-OpenGL PRIVATE opengl::opengl)
 target_link_libraries(example-Custom PRIVATE opengl::opengl)
 target_link_libraries(example-ColourSpace PRIVATE cimg::cimg)
 target_link_libraries(example-ColourSpace PRIVATE spdlog::spdlog_header_only)
+target_link_libraries(example-TestProps PRIVATE spdlog::spdlog_header_only)
