@@ -31,7 +31,7 @@ the UTF8 value.
 /** @brief This property encodes a single keypresses that generates a unicode code point. The value is stored as a UTF8 string. 
 
   - Type - C string X 1, UTF8
-  - Property Set - an read only in argument for the actions ::kOfxInteractActionKeyDown, ::kOfxInteractActionKeyUp and ::kOfxInteractActionKeyRepeat.
+  - Property Set - a read-only in argument for the actions ::kOfxInteractActionKeyDown, ::kOfxInteractActionKeyUp and ::kOfxInteractActionKeyRepeat.
   - Valid Values - a UTF8 string representing a single character, or the empty string.
 
 This property represents the UTF8 encode value of a single key press by a user in an OFX interact.
