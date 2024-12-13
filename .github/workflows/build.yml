@@ -21,7 +21,9 @@ jobs:
       github.event_name == 'push' ||
       github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ${{ matrix.os }}
-    container: ${{ matrix.container }}
+    container:
+      image: ${{ matrix.container }}
+      volumes: ${{ matrix.need_node20_vol && fromJSON('["/node20217:/node20217:rw,rshared", "/node20217:/__e/node20:ro,rshared"]') || fromJSON('[]') }}
     env:
       ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: 'true'
       ACTIONS_RUNNER_FORCE_ACTIONS_NODE_VERSION: node16
@@ -29,43 +31,40 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Github removed support for these older CentOS versions
-          # Nov 2024 by removing node16; all actions use node20 now
-          # which doesn't run on CentOS 7 due to too-old GLIBC.
-          # - name_prefix: Linux CentOS 7 VFX CY2021
-          #   release_prefix: linux-vfx2021
-          #   ostype: linux
-          #   aswfdockerbuild: true
-          #   os: ubuntu-latest
-          #   container: aswf/ci-base:2021
-          #   vfx-cy: 2021
-          #   has_cmake_presets: false
-          #   buildtype: Release
-          #   conan_version: 2.1.0
-          #   cxx-standard: 17
-          #   cxx-compiler: clang++
-          #   cc-compiler: clang
-          #   compiler-desc: Clang
-          #   checkout_version: 3
-          #   cuda: false
-          #   opencl: true
-          # - name_prefix: Linux CentOS 7 VFX CY2022
-          #   release_prefix: linux-vfx2022
-          #   ostype: linux
-          #   aswfdockerbuild: true
-          #   os: ubuntu-latest
-          #   container: aswf/ci-base:2022
-          #   vfx-cy: 2022
-          #   has_cmake_presets: false
-          #   buildtype: Release
-          #   conan_version: 2.1.0
-          #   cxx-standard: 17
-          #   cxx-compiler: clang++
-          #   cc-compiler: clang
-          #   compiler-desc: Clang
-          #   checkout_version: 3
-          #   cuda: false
-          #   opencl: true
+          - name_prefix: Linux CentOS 7 VFX CY2021
+            release_prefix: linux-vfx2021
+            ostype: linux
+            aswfdockerbuild: true
+            os: ubuntu-latest
+            container: aswf/ci-base:2021
+            vfx-cy: 2021
+            need_node20_vol: true
+            has_cmake_presets: false
+            buildtype: Release
+            conan_version: 2.1.0
+            cxx-standard: 17
+            cxx-compiler: clang++
+            cc-compiler: clang
+            compiler-desc: Clang
+            cuda: false
+            opencl: true
+          - name_prefix: Linux CentOS 7 VFX CY2022
+            release_prefix: linux-vfx2022
+            ostype: linux
+            aswfdockerbuild: true
+            os: ubuntu-latest
+            container: aswf/ci-base:2022
+            vfx-cy: 2022
+            need_node20_vol: true
+            has_cmake_presets: false
+            buildtype: Release
+            conan_version: 2.1.0
+            cxx-standard: 17
+            cxx-compiler: clang++
+            cc-compiler: clang
+            compiler-desc: Clang
+            cuda: false
+            opencl: true
           - name_prefix: Linux Rocky 8 VFX CY2023
             release_prefix: linux-vfx2023
             ostype: linux
@@ -80,7 +79,6 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
-            checkout_version: 4
             cuda: false
             opencl: true
           - name_prefix: Linux Rocky 8 VFX CY2023 No OpenGL
@@ -97,7 +95,6 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
-            checkout_version: 4
             opengl: false
           - name_prefix: Linux Ubuntu
             release_prefix: linux-ubuntu
@@ -111,7 +108,6 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
-            checkout_version: 4
             cuda: true
             opencl: true
           - name_prefix: MacOS
@@ -125,7 +121,6 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
-            checkout_version: 4
             cuda: false
             opencl: true
           - name_prefix: Windows
@@ -139,7 +134,6 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
-            checkout_version: 4
             cuda: true
             opencl: true
           - name_prefix: Windows no CUDA
@@ -153,23 +147,20 @@ jobs:
             cxx-compiler: clang++
             cc-compiler: clang
             compiler-desc: Clang
-            checkout_version: 4
             cuda: false
             opencl: false
     defaults:
       run:
         shell: bash
     steps:
-      - name: Checkout code (v4)
-        uses: actions/checkout@v4
-        if: matrix.checkout_version == 4
-        with:
-          clean: true
-          fetch-depth: 0
+      - name: install nodejs20glibc2.17
+        if: matrix.need_node20_vol == true
+        run: |
+          curl --silent https://unofficial-builds.nodejs.org/download/release/v20.18.1/node-v20.18.1-linux-x64-glibc-217.tar.xz | \
+            tar -xJ --strip-components 1 -C /node20217 -f -
 
-      - name: Checkout code (v3)
-        uses: actions/checkout@v3
-        if: matrix.checkout_version == 3
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           clean: true
           fetch-depth: 0
@@ -204,9 +195,6 @@ jobs:
 
       # Q: should we use uv everywhere?
       # Unfortunately astral-sh/setup-uv action doesn't work on CentOS 7, its GLIBC is too old.
-      # BUT this CI build doesn't work on CentOS 7 anyway, due to recent github changes.
-      # Keep this uv code in case we'd like to install python and conan with uv, but for now
-      # it is not used.
 
       - name: Set up uv manually
         if: matrix.release_prefix == 'linux-vfx2021'
@@ -215,10 +203,17 @@ jobs:
           source ~/.local/bin/env
           echo After sourcing uv env: "$PATH"
           uv python install --preview 3.11
-          # Add symlinks for python3 and python
-          (cd ~/.local/bin; ln -sf python3.11 python3; ln -sf python3.11 python)
-          # Save updated path
-          echo "PATH=$PATH" >> $GITHUB_ENV
+
+          # Python is in $(uv python dir)/cpython-*/bin
+          # uv also installs a symlink in $HOME/.local/bin but because
+          # that is only a symlink, it causes problems with pip and venv.
+          # As a workaround, prepend the actual bin dir to $PATH.
+          uv_python_dir="$(uv python dir)"
+          uv_cpython_name="$(/bin/ls -1 $uv_python_dir)"
+          uv_python_path="$uv_python_dir/$uv_cpython_name/bin"
+          PATH="$uv_python_path":$PATH
+          # Prepend to path for future steps (note: don't use $GITHUB_ENV here)
+          echo "$uv_python_path" >> $GITHUB_PATH
 
       - name: Check python, uv paths
         run: |
@@ -226,8 +221,8 @@ jobs:
           echo -n 'which python: ' && which python
           echo -n 'which python3: ' && which python3
           echo -n 'python version: ' && python --version
-          echo -n 'python3 version: ' python3 --version
-          which uv || echo "No python uv; continuing"
+          echo -n 'python3 version: ' && python3 --version
+          echo -n 'which uv: ' && (which uv || echo "No python uv; continuing")
 
       - name: Install Conan
         id: conan
@@ -250,9 +245,16 @@ jobs:
       - name: Install gh cli if needed
         if: ${{ matrix.aswfdockerbuild == true }}
         run: |
-          dnf -y install 'dnf-command(config-manager)'
-          dnf -y config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
-          dnf -y install gh --repo gh-cli
+          if command -v dnf; then
+            dnf -y install 'dnf-command(config-manager)'
+            dnf -y config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
+            dnf -y install gh --repo gh-cli
+          else
+            # older CentOS
+            wget https://github.com/cli/cli/releases/download/v2.63.2/gh_2.63.2_linux_amd64.rpm
+            yum install -y gh_2.63.2_linux_amd64.rpm
+            rm gh_2.63.2_linux_amd64.rpm
+          fi
           gh --version
 
       - name: Setup MSVC
@@ -266,11 +268,11 @@ jobs:
         uses: seanmiddleditch/gha-setup-ninja@v4
 
       - name: Install CUDA Toolkit
-        uses: Jimver/cuda-toolkit@v0.2.11
+        uses: Jimver/cuda-toolkit@v0.2.19
         id: cuda-toolkit-linux
         if: matrix.ostype == 'linux' && matrix.cuda == true
         with:
-          cuda: '12.1.0'
+          cuda: '12.6.2'
           method: 'network'
           sub-packages: '["nvcc", "cudart"]'
           linux-local-args: '["--toolkit"]'
