@@ -61,7 +61,7 @@ This indicates the dimension of the parametric param.
     - Property Set - parametric param descriptor (read/write) and instance (read only)
     - default - unset, 
     - Value Values - three values for each dimension (see ::kOfxParamPropParametricDimension)
-      being interpretted as R, G and B of the colour for each curve drawn in the UI.
+      being interpreted as R, G and B of the colour for each curve drawn in the UI.
 
 This sets the colour of a parametric param curve drawn a host user interface. A colour triple
 is needed for each dimension of the oparametric param. 
