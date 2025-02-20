@@ -396,20 +396,29 @@ jobs:
           tar -czf openfx-$RELEASE_NAME.tar.gz -C Install OpenFX
 
       - name: Sign header/libs tarball with Sigstore
+        if: github.event_name == 'release'
         uses: sigstore/gh-action-sigstore-python@f514d46b907ebcd5bedc05145c03b69c1edd8b46 # v3.0.0
-        # if: github.event_name == 'release'
         with:
           inputs: openfx-${{ env.RELEASE_NAME }}.tar.gz
           upload-signing-artifacts: false
           release-signing-artifacts: false
 
       - name: Upload header/libs tarball and signatures
+        if: github.event_name == 'release'
         uses: actions/upload-artifact@v4
         with:
           name: "openfx-${{ env.RELEASE_NAME }}"
           path: |
             openfx-${{ env.RELEASE_NAME }}.tar.gz
             openfx-${{ env.RELEASE_NAME }}.tar.gz.sigstore.json
+
+      - name: Upload header/libs tarball (no signatures)
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: "openfx-${{ env.RELEASE_NAME }}"
+          path: |
+            openfx-${{ env.RELEASE_NAME }}.tar.gz
 
       # Now the same, for the plugins
       
@@ -418,6 +427,7 @@ jobs:
           tar -czf openfx_plugins-$RELEASE_NAME.tar.gz -C build/Install .
 
       - name: Sign plugins tarball with Sigstore
+        if: github.event_name == 'release'
         uses: sigstore/gh-action-sigstore-python@f514d46b907ebcd5bedc05145c03b69c1edd8b46 # v3.0.0
         with:
           inputs: openfx_plugins-${{ env.RELEASE_NAME }}.tar.gz
@@ -425,12 +435,21 @@ jobs:
           release-signing-artifacts: false
 
       - name: Upload plugins tarball and signatures
+        if: github.event_name == 'release'
         uses: actions/upload-artifact@v4
         with:
           name: "openfx_plugins-${{ env.RELEASE_NAME }}"
           path: |
             openfx_plugins-${{ env.RELEASE_NAME }}.tar.gz
             openfx_plugins-${{ env.RELEASE_NAME }}.tar.gz.sigstore.json
+
+      - name: Upload plugins tarball (no signatures)
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: "openfx_plugins-${{ env.RELEASE_NAME }}"
+          path: |
+            openfx_plugins-${{ env.RELEASE_NAME }}.tar.gz
 
       - name: Upload artifacts to release 
         if: github.event_name == 'release'
