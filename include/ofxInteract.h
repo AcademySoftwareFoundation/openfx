@@ -111,7 +111,7 @@ This is used to indicate the status of the 'pen' in an interact. If a pen has on
  */
 #define kOfxInteractPropPenPressure "OfxInteractPropPenPressure"
 
-/** @brief Indicates whether the dits per component in the interact's openGL frame buffer
+/** @brief Indicates the bits per component in the interact's openGL frame buffer
 
    - Type - int X 1
    - Property Set - interact instance and descriptor (read only)

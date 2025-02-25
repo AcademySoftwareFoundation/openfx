@@ -16,6 +16,9 @@
 #include "ofxsMultiThread.h"
 #include "ofxsInteract.h"
 
+#include "ofxPropsBySet.h"
+#include "ofxPropsMetadata.h"
+
 #include "../include/ofxsProcessing.H"
 
 static const OfxPointD kBoxSize = {5, 5};
