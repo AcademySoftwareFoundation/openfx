@@ -706,7 +706,7 @@ properties:
     type: bool
     dimension: 1
   OfxImageEffectPropSupportedPixelDepths:
-    type: string
+    type: enum
     dimension: 0
     values:
       - OfxBitDepthNone
@@ -1183,7 +1183,7 @@ properties:
     dimension: 2
   # This is special because its type and dims vary depending on the param
   OfxParamPropDefault:
-    type: [int, double, string, bytes]
+    type: [int, double, string, pointer]
     dimension: 0
   OfxParamPropDefaultCoordinateSystem:
     type: enum
