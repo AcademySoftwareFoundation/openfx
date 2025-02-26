@@ -1,6 +1,13 @@
 # Copyright OpenFX and contributors to the OpenFX project.
 # SPDX-License-Identifier: BSD-3-Clause
 
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#     "pyyaml>=1.0",
+# ]
+# ///
+
 import os
 import re
 import sys
@@ -125,6 +132,17 @@ def get_cname(propname, props_metadata):
     """
     return props_metadata[propname].get('cname', "k" + propname)
 
+def get_prop_id(propname):
+    """HACK ALERT: a few props' names (string values) start with k.
+    Those are also the #define names. If we use those as PropId enum
+    values, they'll get expanded into the strings which will lead to
+    compile errors. This means the names to be looked up always don't
+    have the "k". We could prefix them or something but this should be
+    OK. """
+    if propname.startswith("k"):
+        return propname[1:]
+    return propname
+
 def find_stringname(cname, props_metadata):
     """Try to find the actual string corresponding to the C #define name.
     This may be slow; looks through all the metadata for a matching
@@ -248,7 +266,6 @@ def gen_props_metadata(props_metadata, outfile_path: Path):
         outfile.write("""
 #pragma once
 
-#include <string>
 #include <vector>
 #include "ofxImageEffect.h"
 #include "ofxGPURender.h"
@@ -265,44 +282,118 @@ enum class PropType {
    Enum,
    Bool,
    String,
-   Bytes,
    Pointer
 };
 
-struct PropsMetadata {
-  std::string_view name;
-  std::vector<PropType> types;
-  int dimension;
-  std::vector<const char *> values; // for enums
-};
+// Each prop has a PropId::<propname> enum, a runtime-accessible PropDef struct, and a compile-time PropTraits<id>.
+// These can be used by Support/include/PropsAccess.h for type-safe property access.
 
 """)
-        n_props = len(props_metadata)
-        outfile.write(f"static inline const std::array<struct PropsMetadata, {n_props}> props_metadata {{ {{\n")
+        outfile.write(f"//Property ID enum for compile-time lookup and type safety\n")
+        outfile.write(f"enum class PropId {{\n")
+        id = 0
+        for p in sorted(props_metadata):
+            pname = get_prop_id(p)
+            orig_name_msg = ''
+            if pname != p:
+                orig_name_msg = f" (orig name: {pname})"
+            outfile.write(f"  {pname}, // {id}{orig_name_msg}\n")
+            id += 1
+        outfile.write(f"  NProps // {id}\n")
+        outfile.write("}; // PropId\n\n")
+
+        # Property enum values (for enums only)
+
+        outfile.write("// Separate arrays for enum-values for enum props, to keep everything constexpr\n")
+        outfile.write("namespace prop_enum_values {\n")
+        for p in sorted(props_metadata):
+            md = props_metadata[p]
+            if md['type'] == 'enum':
+                values = "{" + ",".join(f'\"{v}\"' for v in md['values']) + "}"
+                outfile.write(f"constexpr std::array {p} =\n  {values};\n")
+        outfile.write("} // namespace prop_enum_values\n");
+
+        # Property definitions
+
+        outfile.write("""
+
+#define MAX_PROP_TYPES 4
+struct PropDef {
+   const char* name;                        // Property name
+   PropId id;                               // ID for known props
+   PropType supportedTypes[MAX_PROP_TYPES]; // Supported data types
+   size_t supportedTypesCount;
+   int dimension;                           // Property dimension (0 for variable)
+   const char* const* enumValues;           // Valid values for enum properties
+   size_t enumValuesCount;
+};
+
+// Property definitions
+static inline constexpr std::array<PropDef, static_cast<size_t>(PropId::NProps)> prop_defs = {{
+""")
+
         for p in sorted(props_metadata):
             try:
+                # name and id
+                prop_def = f"{{ \"{p}\", PropId::{get_prop_id(p)}, "
                 md = props_metadata[p]
                 types = md.get('type')
                 if isinstance(types, str): # make it always a list
                     types = (types,)
+                # types
                 prop_type_defs = "{" + ",".join(f'PropType::{t.capitalize()}' for t in types) + "}"
-                host_opt = md.get('hostOptional', 'false')
-                if host_opt in ('True', 'true', 1):
-                    host_opt = 'true'
-                if host_opt in ('False', 'false', 0):
-                    host_opt = 'false'
+                prop_def += prop_type_defs + f', {len(types)}, '
+                # dimension
+                prop_def += f"{md['dimension']}, "
+                # enum values
                 if md['type'] == 'enum':
                     assert isinstance(md['values'], list)
-                    values = "{" + ",".join(f'\"{v}\"' for v in md['values']) + "}"
+                    prop_def += f"prop_enum_values::{p}.data(), prop_enum_values::{p}.size()"
                 else:
-                    values = "{}"
-                outfile.write(f"{{ \"{p}\", {prop_type_defs}, {md['dimension']}, "
-                              f"{values} }},\n")
+                    prop_def += "nullptr, 0"
+                prop_def += "},\n"
+                outfile.write(prop_def)
             except Exception as e:
                 logging.error(f"Error: {p} is missing metadata? {e}")
                 raise(e)
-        outfile.write("} };\n\n")
+        outfile.write("}};\n\n")
 
+        outfile.write("""
+//Template specializations for each property
+namespace properties {
+
+// Base template struct for property traits
+template<PropId id>
+struct PropTraits;
+
+""")
+
+        for p in sorted(props_metadata):
+            try:
+                outfile.write(f"template<>\n")
+                outfile.write(f"struct PropTraits<PropId::{get_prop_id(p)}> {{\n")
+                md = props_metadata[p]
+                types = md.get('type')
+                if isinstance(types, str): # make it always a list
+                    types = (types,)
+                ctypes = {
+                    "string": "const char *",
+                    "enum": "const char *",
+                    "int": "int",
+                    "bool": "bool",
+                    "double": "double",
+                    "pointer": "const void *",
+                }
+                outfile.write(f"  using type = {ctypes[types[0]]};\n")
+                is_multitype_bool = "true" if len(types) > 1 else "false"
+                outfile.write(f"  static constexpr bool is_multitype = {is_multitype_bool};\n")
+                outfile.write(f"  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::{get_prop_id(p)})];\n")
+                outfile.write("};\n") # end of prop traits
+            except Exception as e:
+                logging.error(f"Error: {p} is missing metadata? {e}")
+                raise(e)
+
+        outfile.write("} // namespace properties\n\n")
         # Generate static asserts to ensure our constants match the string values
         outfile.write("// Static asserts to check #define names vs. strings\n")
         for p in sorted(props_metadata):
@@ -330,15 +421,20 @@ def gen_props_by_set(props_by_set, props_by_action, outfile_path: Path):
 #include "ofxDrawSuite.h"
 #include "ofxParametricParam.h"
 #include "ofxKeySyms.h"
+#include "ofxPropsMetadata.h"
 // #include "ofxOld.h"
 
 namespace OpenFX {
 
 struct Prop {
   const char *name;
+  const PropDef &def; 
   bool host_write;
   bool plugin_write;
   bool host_optional;
+
+  Prop(const char *n, const PropDef &d, bool hw, bool pw, bool ho)
+       : name(n), def(d), host_write(hw), plugin_write(pw), host_optional(ho) {}
 };
 
 """)
@@ -350,7 +446,7 @@ struct Prop {
             for p in props_for_set(pset, props_by_set, False):
                 host_write = 'true' if p['write'] in ('host', 'all') else 'false'
                 plugin_write = 'true' if p['write'] in ('plugin', 'all') else 'false'
-                propdefs.append(f"{{ \"{p['name']}\", {host_write} , {plugin_write}, false }}")
+                propdefs.append(f"{{ \"{p['name']}\", prop_defs[static_cast<size_t>(PropId::{get_prop_id(p['name'])})], {host_write}, {plugin_write}, false }}")
             propdefs_str = ",\n   ".join(propdefs)
             outfile.write(f"{{ \"{pset}\", {{ {propdefs_str} }} }},\n")
         outfile.write("};\n\n")
@@ -388,6 +484,7 @@ struct Prop {
 
         outfile.write("} // namespace OpenFX\n")
 
+
 def main(args):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     include_dir = Path(script_dir).parent / 'include'
@@ -417,10 +514,6 @@ def main(args):
     errs = check_props_used_by_set(props_by_set, props_by_action, props_metadata)
     if not errs and args.verbose:
         print(" ✔️ ALL OK")
-
-    if args.verbose:
-        print(f"=== Generating {args.props_metadata}")
-    gen_props_metadata(props_metadata, support_include_dir / args.props_metadata)
 
     if args.verbose:
         print(f"=== Generating {args.props_metadata}")

@@ -10,12 +10,14 @@
 #include "ofxMemory.h"
 #include "ofxMessage.h"
 #include "ofxMultiThread.h"
+#include "ofxPropsAccess.h"
 #include "ofxPropsBySet.h" // in Support/include
 #include "ofxPropsMetadata.h"
 #include "spdlog/spdlog.h"
 #include <map>    // stl maps
 #include <string> // stl strings
 #include <variant>
+#include <vector>
 
 #if defined __APPLE__ || defined __linux__ || defined __FreeBSD__
 #define EXPORT __attribute__((visibility("default")))
@@ -24,6 +26,8 @@
 #else
 #error Not building on your operating system quite yet
 #endif
+
+using namespace OpenFX; // for props access
 
 static OfxHost *gHost;
 static OfxImageEffectSuiteV1 *gEffectSuite;
@@ -41,11 +45,11 @@ static const void *fetchSuite(const char *suiteName, int suiteVersion,
   const void *suite = gHost->fetchSuite(gHost->host, suiteName, suiteVersion);
   if (optional) {
     if (suite == 0)
-      spdlog::warn("Could not fetch the optional suite '%s' version %d;",
+      spdlog::warn("Could not fetch the optional suite '{}' version {};",
                    suiteName, suiteVersion);
   } else {
     if (suite == 0)
-      spdlog::error("Could not fetch the mandatory suite '%s' version %d;",
+      spdlog::error("Could not fetch the mandatory suite '{}' version {};",
                     suiteName, suiteVersion);
   }
   if (!optional && suite == 0)
@@ -93,1124 +97,98 @@ static const char *mapStatus(OfxStatus stat) {
   return "UNKNOWN STATUS CODE";
 }
 
+// ========================================================================
+// Read all props in a prop set
+// ========================================================================
 
-/*************************************************************************/
+using PropValue = std::variant<int, double, const char *, void *>;
 
-/* PropertyValue usage (using enum because it's most complex):
-    std::vector<std::string> colors = {"red", "green", "blue"};
-    PropertyValue enumProp(3, "red", colors);
-    enumProp.set<std::string>(1, "green"); // throws exception if not allowed
-    auto values = enumProp.get<std::string>();
-    std::cout << enumProp.toString() << std::endl;
-
-    PropertyValue intProp(5, 0);
-    intProp.set<int>({1, 2, 3, 4, 5});
-    intProp.set<int>(2, 10);  // Changes the third element to 10
-    std::vector<int> values = intProp.get<int>();
-    int value = intProp.get<int>(2);  // Retrieves the value 10
-    intProp.size(); // returns 5
-*/
-
-class PropertyValue {
-public:
-  enum class Type { Int, Double, Bool, String, Pointer, Enum };
-
-  using value_type = std::variant<int, double, bool, std::string, void *>;
-
-private:
-  std::vector<value_type> data;
-  Type type_;
-  std::vector<std::string> enum_values; // Only used if type_ == Type::Enum
-
-  template <typename T>
-  static constexpr bool is_supported_type =
-      std::is_same_v<T, int> || std::is_same_v<T, double> ||
-      std::is_same_v<T, bool> || std::is_same_v<T, std::string> ||
-      std::is_same_v<T, void *>;
-
-  template <typename T> static std::string type_name() {
-    if constexpr (std::is_same_v<T, int>)
-      return "int";
-    else if constexpr (std::is_same_v<T, double>)
-      return "double";
-    else if constexpr (std::is_same_v<T, bool>)
-      return "bool";
-    else if constexpr (std::is_same_v<T, std::string>)
-      return "string";
-    else if constexpr (std::is_same_v<T, void *>)
-      return "pointer";
-    else
-      return "unknown";
-  }
-
-  static std::string type_to_string(Type t) {
-    switch (t) {
-    case Type::Int:
-      return "int";
-    case Type::Double:
-      return "double";
-    case Type::Bool:
-      return "bool";
-    case Type::String:
-      return "string";
-    case Type::Pointer:
-      return "pointer";
-    case Type::Enum:
-      return "enum";
-    default:
-      return "unknown";
-    }
-  }
-
-  static std::string format_value(const value_type &v) {
-    return std::visit(
-        [](const auto &x) {
-          using T = std::decay_t<decltype(x)>;
-          if constexpr (std::is_same_v<T, bool>) {
-            return std::string(x ? "true" : "false");
-          } else if constexpr (std::is_same_v<T, std::string>) {
-            return fmt::format("\"{}\"", x);
-          } else if constexpr (std::is_same_v<T, void *>) {
-            return fmt::format("{:p}", x);
-          } else {
-            return fmt::format("{}", x);
-          }
-        },
-        v);
-  }
-
-  void check_enum_value(const std::string &value) const {
-    if (std::find(enum_values.begin(), enum_values.end(), value) ==
-        enum_values.end()) {
-      throw std::invalid_argument(
-          fmt::format("Invalid enum value '{}'. Allowed values are: {}", value,
-                      enum_values_list()));
-    }
-  }
-
-  std::string enum_values_list() const {
-    std::string list;
-    for (size_t i = 0; i < enum_values.size(); ++i) {
-      if (i > 0)
-        list += ", ";
-      list += enum_values[i];
-    }
-    return list;
-  }
-
-public:
-  // Constructor for basic types
-  template <typename T>
-  PropertyValue(std::size_t size, const T &initial_value = T{})
-      : data(size, initial_value) {
-    static_assert(is_supported_type<T>, "Unsupported type");
-
-    if constexpr (std::is_same_v<T, int>)
-      type_ = Type::Int;
-    else if constexpr (std::is_same_v<T, double>)
-      type_ = Type::Double;
-    else if constexpr (std::is_same_v<T, bool>)
-      type_ = Type::Bool;
-    else if constexpr (std::is_same_v<T, std::string>)
-      type_ = Type::String;
-    else if constexpr (std::is_same_v<T, void *>)
-      type_ = Type::Pointer;
-  }
-
-  // Constructor for enum type
-  PropertyValue(std::size_t size, const std::string &initial_value,
-                const std::vector<std::string> &allowed_values)
-      : data(size, initial_value), type_(Type::Enum),
-        enum_values(allowed_values) {
-    check_enum_value(initial_value); // Validate initial value
-  }
-
-  // Set values from a vector
-  template <typename T> void set(const std::vector<T> &values) {
-    static_assert(is_supported_type<T>, "Unsupported type");
-    if (values.size() != data.size()) {
-      throw std::length_error(
-          fmt::format("Size mismatch: container size is {}, input size is {}",
-                      data.size(), values.size()));
-    }
-    if (type_ != get_type<T>()) {
-      throw std::runtime_error(
-          fmt::format("Type mismatch: container type is {}, input type is {}",
-                      type_to_string(type_), type_name<T>()));
-    }
-    if (type_ == Type::Enum) {
-      for (const auto &val : values) {
-        check_enum_value(val);
-      }
-    }
-    for (size_t i = 0; i < values.size(); ++i) {
-      data[i] = values[i];
-    }
-  }
-
-  // Set value at a specific index
-  template <typename T> void set(std::size_t index, const T &value) {
-    static_assert(is_supported_type<T>, "Unsupported type");
-    if (index >= data.size()) {
-      throw std::out_of_range(
-          fmt::format("Index {} out of range. Size is {}", index, data.size()));
-    }
-    if (type_ != get_type<T>()) {
-      throw std::runtime_error(
-          fmt::format("Type mismatch: container type is {}, input type is {}",
-                      type_to_string(type_), type_name<T>()));
-    }
-    if (type_ == Type::Enum) {
-      check_enum_value(value);
-    }
-    data[index] = value;
-  }
-
-  // Get all values as a vector
-  template <typename T> std::vector<T> get() const {
-    static_assert(is_supported_type<T>, "Unsupported type");
-    if (type_ != get_type<T>()) {
-      throw std::runtime_error(fmt::format(
-          "Type mismatch: container type is {}, requested type is {}",
-          type_to_string(type_), type_name<T>()));
-    }
-    std::vector<T> result;
-    result.reserve(data.size());
-    for (const auto &v : data) {
-      result.push_back(std::get<T>(v));
-    }
-    return result;
-  }
-
-  // Get value at a specific index
-  template <typename T> T get(std::size_t index) const {
-    static_assert(is_supported_type<T>, "Unsupported type");
-    if (index >= data.size()) {
-      throw std::out_of_range(
-          fmt::format("Index {} out of range. Size is {}", index, data.size()));
-    }
-    if (type_ != get_type<T>()) {
-      throw std::runtime_error(fmt::format(
-          "Type mismatch: container type is {}, requested type is {}",
-          type_to_string(type_), type_name<T>()));
-    }
-    return std::get<T>(data[index]);
-  }
-
-  std::string toString() const {
-    if (data.empty())
-      return "<empty>";
-    std::string values;
-    for (size_t i = 0; i < data.size(); ++i) {
-      if (i > 0)
-        values += ", ";
-      values += format_value(data[i]);
-    }
-    std::string type_str = type_to_string(type_);
-    if (type_ == Type::Enum) {
-      type_str += "{" + enum_values_list() + "}";
-    }
-    return fmt::format("<{}>[{}]", type_str, values);
-  }
-
-  std::size_t size() const { return data.size(); }
-  Type type() const { return type_; }
-  void resize(std::size_t new_size) { data.resize(new_size); }
-  void reserve(std::size_t new_capacity) { data.reserve(new_capacity); }
-  void clear() { data.clear(); }
-  bool empty() const { return data.empty(); }
-
-private:
-  // Helper to get Type enum from a template type
-  template <typename T> static constexpr Type get_type() {
-    if constexpr (std::is_same_v<T, int>)
-      return Type::Int;
-    else if constexpr (std::is_same_v<T, double>)
-      return Type::Double;
-    else if constexpr (std::is_same_v<T, bool>)
-      return Type::Bool;
-    else if constexpr (std::is_same_v<T, std::string>)
-      return Type::String;
-    else if constexpr (std::is_same_v<T, void *>)
-      return Type::Pointer;
-    else
-      return Type::Enum; // For enum type
-  }
+struct PropRecord {
+  const PropDef &def;
+  std::vector<PropValue> values;
 };
 
-// Use this as comparator to simplify maps on strings
-struct StringCompare {
-    using is_transparent = void;  // Enables heterogeneous lookup
-    bool operator()(std::string_view a, std::string_view b) const {
-        return a < b;
-    }
-};
+void readProperty(PropertyAccessor &accessor, const PropDef &def,
+                  std::vector<PropValue> &values) {
+  int dimension = accessor.getDimensionRaw(def.name);
 
-/** @brief wraps up a set of properties
-   auto ps = PropertySet::create(name, handle); // returns std::optional (false if no such name)
-   ps->add(propname); // adds from props_metadata
-   auto data = ps->get<T>(propname);
-   ps->set(propname, {...values...});
+  values.clear();
+  values.reserve(dimension);
+
+  // Read all values based on the primary type
+  PropType primaryType = def.supportedTypes[0];
+
+  for (int i = 0; i < dimension; ++i) {
+    if (primaryType == PropType::Int || primaryType == PropType::Bool) {
+      values.push_back(accessor.getRaw<int>(def.name, i));
+    } else if (primaryType == PropType::Double) {
+      values.push_back(accessor.getRaw<double>(def.name, i));
+    } else if (primaryType == PropType::String ||
+               primaryType == PropType::Enum) {
+      values.push_back(accessor.getRaw<const char *>(def.name, i));
+    } else if (primaryType == PropType::Pointer) {
+      values.push_back(accessor.getRaw<void *>(def.name, i));
+    }
+  }
+}
+
+std::vector<PropRecord> getAllPropertiesOfSet(PropertyAccessor &accessor,
+                                              const char *propertySetName) {
+  std::vector<PropRecord> result;
+
+  // Find the property set in the map
+  auto setIt = prop_sets.find(propertySetName);
+  if (setIt == prop_sets.end()) {
+    spdlog::error("Property set not found: {}", propertySetName);
+    return {};
+  }
+
+  // Read each property and push onto result
+  for (const auto &prop : setIt->second) {
+    // Use template dispatch to get property with correct type
+    std::vector<PropValue> values;
+    readProperty(accessor, prop.def, values);
+    result.push_back({prop.def, std::move(values)});
+  }
+  return result;
+}
+
+/**
+ * Log all property values gotten from getAllPropertiesOfSet()
  */
-class PropertySet {
-protected:
-  std::string name;
-  std::map<const std::string, PropertyValue, StringCompare> properties;
-  int _propLogMessages; // if more than 0, don't log ordinary messages
-  OfxPropertySetHandle _propHandle;
-
-  std::vector<OpenFX::Prop> prop_defs;
-
-private:
-  PropertySet();
-
-public:
-  static std::optional<PropertySet> create(const std::string &name,
-                                           OfxPropertySetHandle h = 0) {
-    PropertySet ps;
-    ps.name = name;
-    ps._propHandle = h;
-
-    auto it = OpenFX::prop_sets.find(name.c_str());
-    if (it == OpenFX::prop_sets.end())
-      return std::nullopt;
-    ps.prop_defs = it->second;
-    return ps;
-  }
-
-  virtual ~PropertySet();
-  void propSetHandle(OfxPropertySetHandle h) { _propHandle = h; }
-
-  std::optional<const OpenFX::PropsMetadata *>
-  find_prop(std::string_view propname) {
-    auto it = std::find_if(
-        OpenFX::props_metadata.begin(), OpenFX::props_metadata.end(),
-        [&](const OpenFX::PropsMetadata &pm) { return pm.name == propname; });
-    if (it == OpenFX::props_metadata.end())
-      return std::nullopt;
-    return &(*it);
-  }
-
-  void add(const std::string_view& propname) {
-    if (properties.find(propname) != properties.end()) {
-      // already in the map; do nothing
-      return;
+void logPropValues(const std::string_view setName,
+                   const std::vector<PropRecord> &props) {
+  spdlog::info("Properties for {}:", setName);
+  for (const auto &[propDef, values] : props) {
+    // Build up the log string piecemeal
+    std::string buf;
+    fmt::format_to(std::back_inserter(buf), "  {} ({}d) = [", propDef.name,
+                   values.size());
+    for (size_t i = 0; i < values.size(); ++i) {
+      std::visit(
+          [&buf](auto &&value) {
+            using T = std::decay_t<decltype(value)>;
+            if constexpr (std::is_same_v<T, int>) {
+              fmt::format_to(std::back_inserter(buf), "{}", value);
+            } else if constexpr (std::is_same_v<T, double>) {
+              fmt::format_to(std::back_inserter(buf), "{}", value);
+            } else if constexpr (std::is_same_v<T, const char *>) {
+              fmt::format_to(std::back_inserter(buf), "{}", value);
+            } else if constexpr (std::is_same_v<T, void *>) {
+              fmt::format_to(std::back_inserter(buf), "{:p}", value);
+            }
+          },
+          values[i]);
+      if (i < values.size() - 1)
+        fmt::format_to(std::back_inserter(buf), ",");
     }
-
-    if (auto meta = find_prop(propname)) {
-      auto &metadata = *(*meta);
-      int n = metadata.dimension > 0 ? metadata.dimension : 4; // XXX
-      PropertyValue v(0, 0);
-      switch (metadata.types[0]) {
-      case OpenFX::PropType::Int:
-        v = PropertyValue(n, 0);
-        break;
-      case OpenFX::PropType::Double:
-        v = PropertyValue(n, 0.0);
-        break;
-      case OpenFX::PropType::Bool:
-        v = PropertyValue(n, true);
-        break;
-      case OpenFX::PropType::String:
-        v = PropertyValue(n, "");
-        break;
-      case OpenFX::PropType::Bytes:
-        v = PropertyValue(n, "");
-        break;
-      case OpenFX::PropType::Pointer:
-        v = PropertyValue(n, (void *)0);
-        break;
-      default:
-        throw std::runtime_error(fmt::format("{}: Invalid type for {} in props_metadata", name, propname));
-      }
-      properties[std::string(propname)] = v;
-      spdlog::info("Propset {}: added property {}, value {}", name, propname, v);
-    }
-    else {
-      throw std::runtime_error(fmt::format("{}: No such propname {} found in props_metadata", name, propname));
-    }
-  }
-
-  template <typename T>
-  const std::vector<T> &get_current(std::string_view propname) {
-    return properties.find(propname)->second.get<T>();
-  };
-  template <typename T> const T get_current(std::string_view propname, int index) {
-    return properties.find(propname)->second.get<T>(index);
-  }
-  template <typename T>
-  void set_current(std::string_view propname, int n, const T *values) {
-     properties.find(propname)->second.set<T>(values);
-  };
-
-  // Get values from the host, saving locally
-  void get(std::string_view propname) {
-    const int max_n = 128;
-    auto& prop = properties.find(propname)->second;
-    switch (prop.type()) {
-    case PropertyValue::Type::Bool:
-      [[fallthrough]];
-    case PropertyValue::Type::Int: {
-      int values[max_n];
-      int dim;
-      OfxStatus stat;
-      stat = gPropSuite->propGetDimension(_propHandle, propname.data(), &dim);
-      if (stat != kOfxStatOK)
-        throw new std::runtime_error(
-                                     fmt::format("Error getting dims for prop {} in suite {}: {}",
-                                                 propname, name, mapStatus(stat)));
-      stat =
-        gPropSuite->propGetIntN(_propHandle, propname.data(), dim, values);
-      if (stat != kOfxStatOK)
-        throw new std::runtime_error(
-                                     fmt::format("Error getting values for {}-d prop {} in suite {}: {}",
-                                                 dim, propname, name, mapStatus(stat)));
-      // Save locally, checking dim & type
-      prop.set(std::vector(dim, values));
-      break;
-    }
-    case PropertyValue::Type::Double: {
-      double values[max_n];
-      int dim;
-      OfxStatus stat;
-      stat = gPropSuite->propGetDimension(_propHandle, propname.data(), &dim);
-      if (stat != kOfxStatOK)
-        throw new std::runtime_error(
-                                     fmt::format("Error getting dims for prop {} in suite {}: {}",
-                                                 propname, name, mapStatus(stat)));
-      stat =
-        gPropSuite->propGetDoubleN(_propHandle, propname.data(), dim, values);
-      if (stat != kOfxStatOK)
-        throw new std::runtime_error(
-                                     fmt::format("Error getting values for {}-d prop {} in suite {}: {}",
-                                                 dim, propname, name, mapStatus(stat)));
-      // Save locally, checking dim & type
-      prop.set(std::vector(dim, values));
-      break;
-    }
-    case PropertyValue::Type::String:
-      [[fallthrough]];
-    case PropertyValue::Type::Enum: {
-      char *values[max_n];
-      int dim;
-      OfxStatus stat;
-      stat = gPropSuite->propGetDimension(_propHandle, propname.data(), &dim);
-      if (stat != kOfxStatOK)
-        throw new std::runtime_error(
-                                     fmt::format("Error getting dims for prop {} in suite {}: {}",
-                                                 propname, name, mapStatus(stat)));
-      stat =
-        gPropSuite->propGetStringN(_propHandle, propname.data(), dim, values);
-      if (stat != kOfxStatOK)
-        throw new std::runtime_error(
-                                     fmt::format("Error getting values for {}-d prop {} in suite {}: {}",
-                                                 dim, propname, name, mapStatus(stat)));
-      // Save locally, checking dim & type
-      prop.set(std::vector(dim, values));
-      break;
-    }
-    case PropertyValue::Type::Pointer: {
-      void *values[max_n];
-      int dim;
-      OfxStatus stat;
-      stat = gPropSuite->propGetDimension(_propHandle, propname.data(), &dim);
-      if (stat != kOfxStatOK)
-        throw new std::runtime_error(
-                                     fmt::format("Error getting dims for prop {} in suite {}: {}",
-                                                 propname, name, mapStatus(stat)));
-      stat =
-        gPropSuite->propGetPointerN(_propHandle, propname.data(), dim, values);
-      if (stat != kOfxStatOK)
-        throw new std::runtime_error(
-                                     fmt::format("Error getting values for {}-d prop {} in suite {}: {}",
-                                                 dim, propname, name, mapStatus(stat)));
-      // Save locally, checking dim & type
-      prop.set(std::vector(dim, values));
-      break;
-    }
-    }
-  }
-
-  // inc/dec the log flag to enable/disable ordinary message logging
-  void propEnableLog(void) { --_propLogMessages; }
-  void propDisableLog(void) { ++_propLogMessages; }
-};
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Describes a set of properties
-class PropertySetDescription : PropertySet {
-protected:
-  const char *_setName;
-  PropertyDescription *_descriptions;
-  int _nDescriptions;
-
-  std::map<std::string, PropertyDescription *> _descriptionsByName;
-
-public:
-  PropertySetDescription(const char *setName, OfxPropertySetHandle handle,
-                         PropertyDescription *v, int nV);
-  void checkProperties(bool logOrdinaryMessages =
-                           false); // see if they are there in the first place
-  void checkDefaults(bool logOrdinaryMessages = false); // check default values
-  void retrieveValues(
-      bool logOrdinaryMessages = false); // get current values on the host
-  void setValues(
-      bool logOrdinaryMessages = false); // set values to the requested ones
-  PropertyDescription *findDescription(
-      const std::string &name); // find a property with the given name
-
-  int intPropValue(const std::string &name, int idx = 0);
-  double doublePropValue(const std::string &name, int idx = 0);
-  void *pointerPropValue(const std::string &name, int idx = 0);
-  const std::string &stringPropValue(const std::string &name, int idx = 0);
-};
-
-////////////////////////////////////////////////////////////////////////////////
-// property set code
-PropertySet::~PropertySet() {}
-
-OfxStatus PropertySet::propSet(const char *property, void *value, int idx) {
-  OfxStatus stat =
-      gPropSuite->propSetPointer(_propHandle, property, idx, value);
-  if (stat != kOfxStatOK)
-    spdlog::error("Failed on setting pointer property %s[%d] to %p, host "
-                  "returned status %s;",
-                  property, idx, value, mapStatus(stat));
-  if (stat == kOfxStatOK && _propLogMessages <= 0)
-    spdlog::info("Set pointer property %s[%d] = %p;", property, idx, value);
-  return stat;
-}
-
-OfxStatus PropertySet::propSet(const char *property, const std::string &value,
-                               int idx) {
-  OfxStatus stat =
-      gPropSuite->propSetString(_propHandle, property, idx, value.c_str());
-  if (stat != kOfxStatOK)
-    spdlog::error("Failed on setting string property %s[%d] to '%s', host "
-                  "returned status %s;",
-                  property, idx, value.c_str(), mapStatus(stat));
-  if (stat == kOfxStatOK && _propLogMessages <= 0)
-    spdlog::info("Set string property %s[%d] = '%s';", property, idx,
-                 value.c_str());
-  return stat;
-}
-
-OfxStatus PropertySet::propSet(const char *property, double value, int idx) {
-  OfxStatus stat = gPropSuite->propSetDouble(_propHandle, property, idx, value);
-  if (stat != kOfxStatOK)
-    spdlog::error("Failed on setting double property %s[%d] to %g, host "
-                  "returned status %s;",
-                  property, idx, value, mapStatus(stat));
-  if (stat == kOfxStatOK && _propLogMessages <= 0)
-    spdlog::info("Set double property %s[%d] = %g;", property, idx, value);
-  return stat;
-}
-
-OfxStatus PropertySet::propSet(const char *property, int value, int idx) {
-  OfxStatus stat = gPropSuite->propSetInt(_propHandle, property, idx, value);
-  if (stat != kOfxStatOK)
-    spdlog::error("Failed on setting int property %s[%d] to %d, host returned "
-                  "status '%s';",
-                  property, idx, value, mapStatus(stat));
-  if (stat == kOfxStatOK && _propLogMessages <= 0)
-    spdlog::info("Set int property %s[%d] = %d;", property, idx, value);
-  return stat;
-}
-
-OfxStatus PropertySet::propGet(const char *property, void *&value,
-                               int idx) const {
-  OfxStatus stat =
-      gPropSuite->propGetPointer(_propHandle, property, idx, &value);
-  if (stat != kOfxStatOK)
-    spdlog::error(
-        "Failed on fetching pointer property %s[%d], host returned status %s;",
-        property, idx, mapStatus(stat));
-  if (stat == kOfxStatOK && _propLogMessages <= 0)
-    spdlog::info("Fetched pointer property %s[%d] = %p;", property, idx, value);
-  return stat;
-}
-
-OfxStatus PropertySet::propGet(const char *property, double &value,
-                               int idx) const {
-  OfxStatus stat =
-      gPropSuite->propGetDouble(_propHandle, property, idx, &value);
-  if (stat != kOfxStatOK)
-    spdlog::error(
-        "Failed on fetching double property %s[%d], host returned status %s;",
-        property, idx, mapStatus(stat));
-  if (stat == kOfxStatOK && _propLogMessages <= 0)
-    spdlog::info("Fetched double property %s[%d] = %g;", property, idx, value);
-  return stat;
-}
-
-OfxStatus PropertySet::propGetN(const char *property, double *values,
-                                int N) const {
-  OfxStatus stat = gPropSuite->propGetDoubleN(_propHandle, property, N, values);
-  if (stat != kOfxStatOK)
-    spdlog::error("Failed on fetching multiple double property %s X %d, host "
-                  "returned status %s;",
-                  property, N, mapStatus(stat));
-  if (stat == kOfxStatOK && _propLogMessages <= 0) {
-    spdlog::info("Fetched multiple double property %s X %d;", property, N);
-    for (int i = 0; i < N; i++) {
-      spdlog::info("  %s[%d] = %g;", property, i, values[i]);
-    }
-  }
-  return stat;
-}
-
-OfxStatus PropertySet::propGetN(const char *property, int *values,
-                                int N) const {
-  OfxStatus stat = gPropSuite->propGetIntN(_propHandle, property, N, values);
-  if (stat != kOfxStatOK)
-    spdlog::error("Failed on fetching multiple int property %s X %d, host "
-                  "returned status %s;",
-                  property, N, mapStatus(stat));
-  if (stat == kOfxStatOK && _propLogMessages <= 0) {
-    spdlog::info("Fetched multiple int property %s X %d;", property, N);
-    for (int i = 0; i < N; i++) {
-      spdlog::info("  %s[%d] = %d;", property, i, values[i]);
-    }
-  }
-  return stat;
-}
-
-OfxStatus PropertySet::propGet(const char *property, int &value,
-                               int idx) const {
-  OfxStatus stat = gPropSuite->propGetInt(_propHandle, property, idx, &value);
-  if (stat != kOfxStatOK)
-    spdlog::error(
-        "Failed on fetching int property %s[%d], host returned status %s;",
-        property, idx, mapStatus(stat));
-  if (stat == kOfxStatOK && _propLogMessages <= 0)
-    spdlog::info("Fetched int property %s[%d] = %d;", property, idx, value);
-  return stat;
-}
-
-OfxStatus PropertySet::propGet(const char *property, std::string &value,
-                               int idx) const {
-  char *str;
-  OfxStatus stat = gPropSuite->propGetString(_propHandle, property, idx, &str);
-  if (stat != kOfxStatOK)
-    spdlog::error(
-        "Failed on fetching string property %s[%d], host returned status %s;",
-        property, idx, mapStatus(stat));
-  if (kOfxStatOK == stat) {
-    value = str;
-    if (_propLogMessages <= 0)
-      spdlog::info("Fetched string property %s[%d] = '%s';", property, idx,
-                   value.c_str());
-  } else {
-    value = "";
-  }
-  return stat;
-}
-
-OfxStatus PropertySet::propGetN(const char *property, std::string *values,
-                                int N) const {
-  char **strs = new char *[N];
-
-  OfxStatus stat = gPropSuite->propGetStringN(_propHandle, property, N, strs);
-
-  if (stat != kOfxStatOK)
-    spdlog::error("Failed on fetching multiple string property %s X %d, host "
-                  "returned status %s;",
-                  property, N, mapStatus(stat));
-
-  if (kOfxStatOK == stat) {
-    if (_propLogMessages <= 0)
-      spdlog::info("Fetched multiple string property %s X %d;", property, N);
-    for (int i = 0; i < N; i++) {
-      values[i] = strs[i];
-      if (_propLogMessages <= 0)
-        spdlog::info("  %s[%d] = '%s';", property, i, strs[i]);
-    }
-  } else {
-    for (int i = 0; i < N; i++) {
-      values[i] = "";
-    }
-  }
-
-  delete[] strs;
-
-  return stat;
-}
-
-OfxStatus PropertySet::propGetDimension(const char *property, int &size) const {
-  OfxStatus stat = gPropSuite->propGetDimension(_propHandle, property, &size);
-  if (stat != kOfxStatOK)
-    spdlog::error("Failed on fetching dimension for property %s, host returned "
-                  "status %s;",
-                  property, mapStatus(stat));
-  return stat;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// PropertyDescription code
-
-// check to see if this property exists on the host
-void PropertyDescription::checkProperty(PropertySet &propSet) {
-  // see if it exists by fetching the dimension,
-  int dimension;
-  OfxStatus stat = propSet.propGetDimension(_name, dimension);
-  if (stat == kOfxStatOK) {
-    if (_dimension != -1)
-      if (dimension != _dimension)
-        spdlog::error(
-            "Host reports property '%s' has dimension %d, it should be %d;",
-            _name, dimension, _dimension);
-
-    // check type by getting the first element, the property getting will print
-    // failure messages to the log
-    if (dimension > 0) {
-      void *vP;
-      int vI;
-      double vD;
-      std::string vS;
-
-      switch (_ilk) {
-      case PropertyDescription::ePointer:
-        propSet.propGet(_name, vP);
-        break;
-      case PropertyDescription::eInt:
-        propSet.propGet(_name, vI);
-        break;
-      case PropertyDescription::eString:
-        propSet.propGet(_name, vS);
-        break;
-      case PropertyDescription::eDouble:
-        propSet.propGet(_name, vD);
-        break;
-      }
-    }
+    fmt::format_to(std::back_inserter(buf), "]");
+    // log it
+    spdlog::info("{}", buf);
   }
 }
 
-// see if the default values on the property set agree
-void PropertyDescription::checkDefault(PropertySet &propSet) {
-  if (_nDefs > 0) {
-    // fetch the dimension on the host
-    int hostDimension;
-    OfxStatus stat = propSet.propGetDimension(_name, hostDimension);
-    (void)stat;
-
-    if (hostDimension != _nDefs)
-      spdlog::error("Host reports default dimension of '%s' is %d, which is "
-                    "different to the default value %d;",
-                    _name, hostDimension, _nDefs);
-
-    int N = hostDimension < _nDefs ? hostDimension : _nDefs;
-
-    for (int i = 0; i < N; i++) {
-      void *vP;
-      int vI;
-      double vD;
-      std::string vS;
-
-      switch (_ilk) {
-      case PropertyDescription::ePointer:
-        propSet.propGet(_name, vP, i);
-        if (vP != (void *)_defs[i])
-          spdlog::error("Default value of %s[%d] = %p, it should be %p;", _name,
-                        i, vP, (void *)_defs[i]);
-        break;
-      case PropertyDescription::eInt:
-        propSet.propGet(_name, vI, i);
-        if (vI != (int)_defs[i])
-          spdlog::error("Default value of %s[%d] = %d, it should be %d;", _name,
-                        i, vI, (int)_defs[i]);
-        break;
-      case PropertyDescription::eString:
-        propSet.propGet(_name, vS, i);
-        if (vS != _defs[i].vString)
-          spdlog::error("Default value of %s[%d] = '%s', it should be '%s';",
-                        _name, i, vS.c_str(), _defs[i].vString.c_str());
-        break;
-      case PropertyDescription::eDouble:
-        propSet.propGet(_name, vD, i);
-        if (vD != (double)_defs[i])
-          spdlog::error("Default value of %s[%d] = %g, it should be %g;", _name,
-                        i, vD, (double)_defs[i]);
-        break;
-      }
-    }
-  }
-}
-
-// get the current value from the property set into me
-void PropertyDescription::retrieveValue(PropertySet &propSet) {
-  if (_currentVals)
-    delete[] _currentVals;
-  _currentVals = 0;
-  _nCurrentVals = 0;
-
-  // fetch the dimension on the host
-  int hostDimension;
-  OfxStatus stat = propSet.propGetDimension(_name, hostDimension);
-  if (stat == kOfxStatOK && hostDimension > 0) {
-    _nCurrentVals = hostDimension;
-    _currentVals = new PropertyValueOnion[hostDimension];
-
-    for (int i = 0; i < hostDimension; i++) {
-      void *vP;
-      int vI;
-      double vD;
-      std::string vS;
-
-      switch (_ilk) {
-      case PropertyDescription::ePointer:
-        stat = propSet.propGet(_name, vP, i);
-        _currentVals[i] = (stat == kOfxStatOK) ? vP : (void *)(0);
-        break;
-      case PropertyDescription::eInt:
-        stat = propSet.propGet(_name, vI, i);
-        _currentVals[i] = (stat == kOfxStatOK) ? vI : 0;
-        break;
-      case PropertyDescription::eString:
-        stat = propSet.propGet(_name, vS, i);
-        if (stat == kOfxStatOK)
-          _currentVals[i] = vS;
-        else
-          _currentVals[i] = std::string("");
-        break;
-      case PropertyDescription::eDouble:
-        stat = propSet.propGet(_name, vD, i);
-        _currentVals[i] = (stat == kOfxStatOK) ? vD : 0.0;
-        break;
-      }
-    }
-  }
-}
-
-// set the property from my 'set' property
-void PropertyDescription::setValue(PropertySet &propSet) {
-  // fetch the dimension on the host
-  if (_nWantedVals > 0) {
-    int i;
-    for (i = 0; i < _nWantedVals; i++) {
-      switch (_ilk) {
-      case PropertyDescription::ePointer:
-        propSet.propSet(_name, _wantedVals[i].vPointer, i);
-        break;
-      case PropertyDescription::eInt:
-        propSet.propSet(_name, _wantedVals[i].vInt, i);
-        break;
-      case PropertyDescription::eString:
-        propSet.propSet(_name, _wantedVals[i].vString, i);
-        break;
-      case PropertyDescription::eDouble:
-        propSet.propSet(_name, _wantedVals[i].vDouble, i);
-        break;
-      }
-    }
-
-    // Now fetch the current values back into current. Don't be verbose about
-    // it.
-    propSet.propDisableLog();
-    retrieveValue(propSet);
-    propSet.propEnableLog();
-
-    // and see if they are the same
-    if (_nWantedVals != _nCurrentVals)
-      spdlog::error("After setting property %s, the dimension %d is not the "
-                    "same as what was set %d",
-                    _name, _nCurrentVals, _nWantedVals);
-    int N = _nWantedVals < _nCurrentVals ? _nWantedVals : _nCurrentVals;
-    for (i = 0; i < N; i++) {
-      switch (_ilk) {
-      case PropertyDescription::ePointer:
-        if (_wantedVals[i].vPointer != _currentVals[i].vPointer)
-          spdlog::error("After setting pointer value %s[%d] value fetched back "
-                        "%p not same as value set %p",
-                        _name, i, _wantedVals[i].vPointer,
-                        _currentVals[i].vPointer);
-        break;
-      case PropertyDescription::eInt:
-        if (_wantedVals[i].vInt != _currentVals[i].vInt)
-          spdlog::error("After setting int value %s[%d] value fetched back %d "
-                        "not same as value set %d",
-                        _name, i, _wantedVals[i].vInt, _currentVals[i].vInt);
-        break;
-      case PropertyDescription::eString:
-        if (_wantedVals[i].vString != _currentVals[i].vString)
-          spdlog::error("After setting string value %s[%d] value fetched back "
-                        "'%s' not same as value set '%s'",
-                        _name, i, _wantedVals[i].vString.c_str(),
-                        _currentVals[i].vString.c_str());
-        break;
-      case PropertyDescription::eDouble:
-        if (_wantedVals[i].vDouble != _currentVals[i].vDouble)
-          spdlog::error("After setting double value %s[%d] value fetched back "
-                        "%g not same as value set %g",
-                        _name, i, _wantedVals[i].vDouble,
-                        _currentVals[i].vDouble);
-        break;
-      }
-    }
-  }
-}
-
-void PropertySetDescription::checkProperties(bool logOrdinaryMessages) {
-  spdlog::info("PropertySetDescription::checkProperties - start(checking "
-               "properties on %s);\n{",
-               _setName);
-
-  // don't print ordinary messages whilst we are checking them
-  if (!logOrdinaryMessages)
-    propDisableLog();
-
-  // check each property in the description
-  for (int i = 0; i < _nDescriptions; i++) {
-    _descriptions[i].checkProperty(*this);
-  }
-  if (!logOrdinaryMessages)
-    propEnableLog();
-
-  spdlog::info("}PropertySetDescription::checkProperties - stop;");
-}
-
-void PropertySetDescription::checkDefaults(bool logOrdinaryMessages) {
-  spdlog::info("PropertySetDescription::checkDefaults - start(checking default "
-               "value of properties on %s);\n{",
-               _setName);
-
-  // don't print ordinary messages whilst we are checking them
-  if (!logOrdinaryMessages)
-    propDisableLog();
-
-  // check each property in the description
-  for (int i = 0; i < _nDescriptions; i++) {
-    _descriptions[i].checkDefault(*this);
-  }
-  if (!logOrdinaryMessages)
-    propEnableLog();
-
-  spdlog::info("}PropertySetDescription::checkDefaults - stop;");
-}
-
-void PropertySetDescription::retrieveValues(bool logOrdinaryMessages) {
-  spdlog::info("PropertySetDescription::retrieveValues - start(retrieving "
-               "values of properties on %s);\n{",
-               _setName);
-
-  if (!logOrdinaryMessages)
-    propDisableLog();
-
-  // check each property in the description
-  for (int i = 0; i < _nDescriptions; i++) {
-    _descriptions[i].retrieveValue(*this);
-  }
-
-  if (!logOrdinaryMessages)
-    propEnableLog();
-
-  spdlog::info("}PropertySetDescription::retrieveValues - stop;");
-}
-
-void PropertySetDescription::setValues(bool logOrdinaryMessages) {
-  spdlog::info("PropertySetDescription::setValues - start(retrieving values of "
-               "properties on %s);\n{",
-               _setName);
-
-  if (!logOrdinaryMessages)
-    propDisableLog();
-
-  // check each property in the description
-  for (int i = 0; i < _nDescriptions; i++) {
-    _descriptions[i].setValue(*this);
-  }
-
-  if (!logOrdinaryMessages)
-    propEnableLog();
-
-  spdlog::info("}PropertySetDescription::setValues - stop;");
-}
-
-// find a property with the given name out of our set of properties
-PropertyDescription *
-PropertySetDescription::findDescription(const std::string &name) {
-  std::map<std::string, PropertyDescription *>::iterator iter;
-  iter = _descriptionsByName.find(name);
-  if (iter != _descriptionsByName.end()) {
-    return iter->second;
-  }
-  return 0;
-}
-
-// find value of the named property from the _currentVals array
-int PropertySetDescription::intPropValue(const std::string &name, int idx) {
-  PropertyDescription *desc = 0;
-  desc = findDescription(name);
-  if (desc) {
-    if (idx < desc->_nCurrentVals) {
-      return int(desc->_currentVals[idx]);
-    }
-  }
-  return 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// host description stuff
-
-// list of the properties on the host. We can't set any of these, and most don't
-// have defaults
-static PropertyDescription gHostPropDescription[] = {
-    PropertyDescription(kOfxPropType, 1, "", false, kOfxTypeImageEffectHost,
-                        true),
-    PropertyDescription(kOfxPropName, 1, "", false, "", false),
-    PropertyDescription(kOfxPropLabel, 1, "", false, "", false),
-    PropertyDescription(kOfxImageEffectHostPropIsBackground, 1, 0, false, 0,
-                        false),
-    PropertyDescription(kOfxImageEffectPropSupportsOverlays, 1, 0, false, 0,
-                        false),
-    PropertyDescription(kOfxImageEffectPropSupportsMultiResolution, 1, 0, false,
-                        0, false),
-    PropertyDescription(kOfxImageEffectPropSupportsTiles, 1, 0, false, 0,
-                        false),
-    PropertyDescription(kOfxImageEffectPropTemporalClipAccess, 1, 0, false, 0,
-                        false),
-    PropertyDescription(kOfxImageEffectPropSupportsMultipleClipDepths, 1, 0,
-                        false, 0, false),
-    PropertyDescription(kOfxImageEffectPropSupportsMultipleClipPARs, 1, 0,
-                        false, 0, false),
-    PropertyDescription(kOfxImageEffectPropSetableFrameRate, 1, 0, false, 0,
-                        false),
-    PropertyDescription(kOfxImageEffectPropSetableFielding, 1, 0, false, 0,
-                        false),
-    PropertyDescription(kOfxImageEffectPropSupportedComponents, -1, "", false,
-                        "", false),
-    PropertyDescription(kOfxImageEffectPropSupportedContexts, -1, "", false, "",
-                        false),
-    PropertyDescription(kOfxParamHostPropSupportsStringAnimation, 1, 0, false,
-                        0, false),
-    PropertyDescription(kOfxParamHostPropSupportsCustomInteract, 1, 0, false, 0,
-                        false),
-    PropertyDescription(kOfxParamHostPropSupportsChoiceAnimation, 1, 0, false,
-                        0, false),
-    PropertyDescription(kOfxParamHostPropSupportsBooleanAnimation, 1, 0, false,
-                        0, false),
-    PropertyDescription(kOfxParamHostPropSupportsCustomAnimation, 1, 0, false,
-                        0, false),
-    PropertyDescription(kOfxParamHostPropMaxParameters, 1, 0, false, 0, false),
-    PropertyDescription(kOfxParamHostPropMaxPages, 1, 0, false, 0, false),
-    PropertyDescription(kOfxParamHostPropPageRowColumnCount, 2, 0, false, 0,
-                        false)};
-
-// some host property descriptions we may be interested int
-class HostDescription : public PropertySet {
-public:
-  int hostIsBackground;
-  int supportsOverlays;
-  int supportsMultiResolution;
-  int supportsTiles;
-  int temporalClipAccess;
-  int supportsMultipleClipDepths;
-  int supportsMultipleClipPARs;
-  int supportsSetableFrameRate;
-  int supportsSetableFielding;
-  int supportsCustomAnimation;
-  int supportsStringAnimation;
-  int supportsCustomInteract;
-  int supportsChoiceAnimation;
-  int supportsBooleanAnimation;
-  int maxParameters;
-  int maxPages;
-  int pageRowCount;
-  int pageColumnCount;
-
-  HostDescription(OfxPropertySetHandle handle);
-};
-HostDescription *gHostDescription = 0;
-
-// create a host description, checking properties on the way
-HostDescription::HostDescription(OfxPropertySetHandle handle)
-    : PropertySet(handle), hostIsBackground(false), supportsOverlays(false),
-      supportsMultiResolution(false), supportsTiles(false),
-      temporalClipAccess(false), supportsMultipleClipDepths(false),
-      supportsMultipleClipPARs(false), supportsSetableFrameRate(false),
-      supportsSetableFielding(false), supportsCustomAnimation(false),
-      supportsStringAnimation(false), supportsCustomInteract(false),
-      supportsChoiceAnimation(false), supportsBooleanAnimation(false),
-      maxParameters(-1), maxPages(-1), pageRowCount(-1), pageColumnCount(-1) {
-  spdlog::info("HostDescription::HostDescription - start ( fetching host "
-               "description);\n{");
-
-  // do basic existence checking with a PropertySetDescription
-  PropertySetDescription hostPropSet("Host", handle, gHostPropDescription,
-                                     sizeof(gHostPropDescription) /
-                                         sizeof(PropertyDescription));
-  hostPropSet.checkProperties();
-  hostPropSet.checkDefaults();
-  hostPropSet.retrieveValues(true);
-
-  // now go through and fill in the host description
-  hostIsBackground =
-      hostPropSet.intPropValue(kOfxImageEffectHostPropIsBackground);
-  supportsOverlays =
-      hostPropSet.intPropValue(kOfxImageEffectPropSupportsOverlays);
-  supportsMultiResolution =
-      hostPropSet.intPropValue(kOfxImageEffectPropSupportsMultiResolution);
-  supportsTiles = hostPropSet.intPropValue(kOfxImageEffectPropSupportsTiles);
-  temporalClipAccess =
-      hostPropSet.intPropValue(kOfxImageEffectPropTemporalClipAccess);
-  supportsMultipleClipDepths =
-      hostPropSet.intPropValue(kOfxImageEffectPropSupportsMultipleClipDepths);
-  supportsMultipleClipPARs =
-      hostPropSet.intPropValue(kOfxImageEffectPropSupportsMultipleClipPARs);
-  supportsSetableFrameRate =
-      hostPropSet.intPropValue(kOfxImageEffectPropSetableFrameRate);
-  supportsSetableFielding =
-      hostPropSet.intPropValue(kOfxImageEffectPropSetableFielding);
-
-  supportsStringAnimation =
-      hostPropSet.intPropValue(kOfxParamHostPropSupportsStringAnimation);
-  supportsCustomInteract =
-      hostPropSet.intPropValue(kOfxParamHostPropSupportsCustomInteract);
-  supportsChoiceAnimation =
-      hostPropSet.intPropValue(kOfxParamHostPropSupportsChoiceAnimation);
-  supportsBooleanAnimation =
-      hostPropSet.intPropValue(kOfxParamHostPropSupportsBooleanAnimation);
-  supportsCustomAnimation =
-      hostPropSet.intPropValue(kOfxParamHostPropSupportsCustomAnimation);
-  maxParameters = hostPropSet.intPropValue(kOfxParamHostPropMaxParameters);
-  maxPages = hostPropSet.intPropValue(kOfxParamHostPropMaxPages);
-  pageRowCount =
-      hostPropSet.intPropValue(kOfxParamHostPropPageRowColumnCount, 0);
-  pageColumnCount =
-      hostPropSet.intPropValue(kOfxParamHostPropPageRowColumnCount, 1);
-
-  spdlog::info("}HostDescription::HostDescription - stop;");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// test the memory suite
-static void testMemorySuite(void) {
-  spdlog::info("testMemorySuite - start();\n{");
-  void *oneMeg;
-
-  OfxStatus stat = gMemorySuite->memoryAlloc(NULL, 1024 * 1024, &oneMeg);
-  if (stat != kOfxStatOK)
-    spdlog::error(
-        "OfxMemorySuiteV1::memoryAlloc failed to alloc 1MB, returned %s",
-        mapStatus(stat));
-
-  if (stat == kOfxStatOK) {
-    // touch 'em all to see if it crashes
-    char *lotsOfChars = (char *)oneMeg;
-    for (int i = 0; i < 1024 * 1024; i++) {
-      *lotsOfChars++ = 0;
-    }
-
-    stat = gMemorySuite->memoryFree(oneMeg);
-    if (stat != kOfxStatOK)
-      spdlog::error(
-          "OfxMemorySuiteV1::memoryFree failed to free 1MB, returned %s",
-          mapStatus(stat));
-  }
-
-  spdlog::info("}HostDescription::HostDescription - stop;");
-}
+// ========================================================================
 
 ////////////////////////////////////////////////////////////////////////////////
 // how many times has actionLoad been called
@@ -1243,16 +221,12 @@ static OfxStatus actionLoad(void) {
           (OfxMultiThreadSuiteV1 *)fetchSuite(kOfxMultiThreadSuite, 1);
       gMessageSuite = (OfxMessageSuiteV1 *)fetchSuite(kOfxMessageSuite, 1);
 
-      // OK check and fetch host information
-      gHostDescription = new HostDescription(gHost->host);
-
-      // fetch the interact suite if the host supports interaction
-      if (gHostDescription->supportsOverlays ||
-          gHostDescription->supportsCustomInteract)
-        gInteractSuite = (OfxInteractSuiteV1 *)fetchSuite(kOfxInteractSuite, 1);
-
-      // test the memory suite
-      testMemorySuite();
+      // Get all host props, propset name "ImageEffectHost"
+      // (too bad prop sets don't know their own name)
+      PropertyAccessor accessor = PropertyAccessor(gHost->host, gPropSuite);
+      const auto prop_values =
+          getAllPropertiesOfSet(accessor, "ImageEffectHost");
+      logPropValues("ImageEffectHost", prop_values);
     }
   }
 
@@ -1347,77 +321,84 @@ static OfxStatus render(OfxImageEffectHandle /*instance*/,
 }
 
 //  describe the plugin in context
-static OfxStatus describeInContext(OfxImageEffectHandle /*effect*/,
-                                   OfxPropertySetHandle /*inArgs*/) {
+static OfxStatus describeInContext(OfxImageEffectHandle effect,
+                                   OfxPropertySetHandle inArgs) {
+  PropertyAccessor accessor = PropertyAccessor(inArgs, gPropSuite);
+  spdlog::info("describeInContext: inArgs->context = {}",
+               accessor.get<PropId::OfxImageEffectPropContext>());
+
+  OfxPropertySetHandle props;
+  // define the output clip
+  gEffectSuite->clipDefine(effect, kOfxImageEffectOutputClipName, &props);
+  accessor = PropertyAccessor(props, gPropSuite);
+  accessor.setAll<PropId::OfxImageEffectPropSupportedComponents>(
+      {kOfxImageComponentRGBA, kOfxImageComponentAlpha});
+
+  // define the single source clip
+  gEffectSuite->clipDefine(effect, kOfxImageEffectSimpleSourceClipName, &props);
+  accessor = PropertyAccessor(props, gPropSuite);
+  accessor.setAll<PropId::OfxImageEffectPropSupportedComponents>(
+      {kOfxImageComponentRGBA, kOfxImageComponentAlpha});
+
+  // Params
+  OfxParamSetHandle paramSet;
+  gEffectSuite->getParamSet(effect, &paramSet);
+
+  // simple param test
+  gParamSuite->paramDefine(paramSet, kOfxParamTypeDouble, "scale", &props);
+  accessor = PropertyAccessor(props, gPropSuite);
+  accessor.set<PropId::OfxParamPropDefault, double>(0)
+      .set<PropId::OfxParamPropHint>("Enables scales on individual components")
+      .set<PropId::OfxParamPropScriptName>("scale")
+      .set<PropId::OfxPropLabel>("Scale Param");
+
+  // Log all the effect descriptor's props
+  OfxPropertySetHandle effectProps;
+  gEffectSuite->getPropertySet(effect, &effectProps);
+  PropertyAccessor effect_accessor = PropertyAccessor(effectProps, gPropSuite);
+  const auto prop_values =
+      getAllPropertiesOfSet(effect_accessor, "EffectDescriptor");
+  logPropValues("EffectDescriptor", prop_values);
+
   return kOfxStatOK;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // code for the plugin's description routine
 
-// contexts we can be
-static const char *gSupportedContexts[] = {
+// contexts we support
+static std::vector<const char *> supportedContexts{
     kOfxImageEffectContextGenerator,  kOfxImageEffectContextFilter,
     kOfxImageEffectContextTransition, kOfxImageEffectContextPaint,
     kOfxImageEffectContextGeneral,    kOfxImageEffectContextRetimer};
 
-// pixel depths we can be
-static const char *gSupportedPixelDepths[] = {
+// pixel depths we support
+static std::vector<const char *> supportedPixelDepths{
     kOfxBitDepthByte, kOfxBitDepthShort, kOfxBitDepthFloat};
-
-// the values to set and the defaults to check on the various properties
-static PropertyDescription gPluginPropertyDescriptions[] = {
-    PropertyDescription(kOfxPropType, 1, "", false, kOfxTypeImageEffect, true),
-    PropertyDescription(kOfxPropLabel, 1, "OFX Test Properties", true, "",
-                        false),
-    PropertyDescription(kOfxPropShortLabel, 1, "OFX Test Props", true, "",
-                        false),
-    PropertyDescription(kOfxPropLongLabel, 1, "OFX Test Properties", true, "",
-                        false),
-    PropertyDescription(kOfxPluginPropFilePath, 1, "", false, "", false),
-    PropertyDescription(kOfxImageEffectPluginPropGrouping, 1, "OFX Example",
-                        true, "", false),
-    PropertyDescription(kOfxImageEffectPluginPropSingleInstance, 1, 0, true, 0,
-                        true),
-    PropertyDescription(kOfxImageEffectPluginRenderThreadSafety, 1,
-                        kOfxImageEffectRenderFullySafe, true,
-                        kOfxImageEffectRenderFullySafe, true),
-    PropertyDescription(kOfxImageEffectPluginPropHostFrameThreading, 1, 0, true,
-                        0, true),
-    PropertyDescription(kOfxImageEffectPluginPropOverlayInteractV1, 1,
-                        (void *)(0), true, (void *)(0), true),
-    PropertyDescription(kOfxImageEffectPropSupportsMultiResolution, 1, 1, true,
-                        1, true),
-    PropertyDescription(kOfxImageEffectPropSupportsTiles, 1, 1, true, 1, true),
-    PropertyDescription(kOfxImageEffectPropTemporalClipAccess, 1, 0, true, 0,
-                        true),
-    PropertyDescription(kOfxImageEffectPluginPropFieldRenderTwiceAlways, 1, 1,
-                        true, 1, true),
-    PropertyDescription(kOfxImageEffectPropSupportsMultipleClipDepths, 1, 0,
-                        true, 0, true),
-    PropertyDescription(kOfxImageEffectPropSupportsMultipleClipPARs, 1, 0, true,
-                        0, true),
-    PropertyDescription(
-        kOfxImageEffectPropSupportedContexts, -1, gSupportedContexts,
-        sizeof(gSupportedContexts) / sizeof(char *), gSupportedContexts, 0),
-    PropertyDescription(kOfxImageEffectPropSupportedPixelDepths, -1,
-                        gSupportedPixelDepths,
-                        sizeof(gSupportedPixelDepths) / sizeof(char *),
-                        gSupportedPixelDepths, 0)};
 
 static OfxStatus actionDescribe(OfxImageEffectHandle effect) {
   // get the property handle for the plugin
   OfxPropertySetHandle effectProps;
   gEffectSuite->getPropertySet(effect, &effectProps);
 
-  // check the defaults
-  PropertySetDescription pluginPropSet(
-      "Plugin", effectProps, gPluginPropertyDescriptions,
-      sizeof(gPluginPropertyDescriptions) / sizeof(PropertyDescription));
-  pluginPropSet.checkProperties();
-  pluginPropSet.checkDefaults();
-  pluginPropSet.retrieveValues(true);
-  pluginPropSet.setValues();
+  PropertyAccessor accessor = PropertyAccessor(effectProps, gPropSuite);
+
+  accessor.set<PropId::OfxPropLabel>("Property Tester")
+      .set<PropId::OfxPropVersionLabel>("1.0")
+      .setAll<PropId::OfxPropVersion>({1, 0, 0})
+      .set<PropId::OfxPropPluginDescription>(
+          "Sample plugin which logs all actions and properties")
+      .set<PropId::OfxImageEffectPluginPropGrouping>("OFX Examples")
+      .set<OpenFX::PropId::OfxImageEffectPropMultipleClipDepths>(false)
+      .setAll<OpenFX::PropId::OfxImageEffectPropSupportedComponents>(
+          {kOfxImageComponentRGBA, kOfxImageComponentAlpha})
+      .setAll<PropId::OfxImageEffectPropSupportedContexts>(supportedContexts)
+      .setAll<PropId::OfxImageEffectPropSupportedPixelDepths>(
+          supportedPixelDepths);
+
+  // After setting up, log all known props
+  const auto prop_values = getAllPropertiesOfSet(accessor, "EffectDescriptor");
+  logPropValues("EffectDescriptor", prop_values);
 
   return kOfxStatOK;
 }
@@ -1431,25 +412,25 @@ static void checkMainHandles(const char *action, const void *handle,
                              bool outArgsCanBeNull) {
   if (handleCanBeNull) {
     if (handle != 0) {
-      spdlog::warn("Handle passed to '%s' is not null;", action);
+      spdlog::warn("Handle passed to '{}' is not null;", action);
     } else if (handle == 0) {
-      spdlog::error("'Handle passed to '%s' is null;", action);
+      spdlog::error("'Handle passed to '{}' is null;", action);
     }
   }
 
   if (inArgsCanBeNull) {
     if (inArgsHandle != 0) {
-      spdlog::warn("'inArgs' Handle passed to '%s' is not null;", action);
+      spdlog::warn("'inArgs' Handle passed to '{}' is not null;", action);
     } else if (inArgsHandle == 0) {
-      spdlog::error("'inArgs' handle passed to '%s' is null;", action);
+      spdlog::error("'inArgs' handle passed to '{}' is null;", action);
     }
   }
 
   if (outArgsCanBeNull) {
     if (outArgsHandle != 0) {
-      spdlog::warn("'outArgs' Handle passed to '%s' is not null;", action);
+      spdlog::warn("'outArgs' Handle passed to '{}' is not null;", action);
     } else if (outArgsHandle == 0) {
-      spdlog::error("'outArgs' handle passed to '%s' is null;", action);
+      spdlog::error("'outArgs' handle passed to '{}' is null;", action);
     }
   }
 
@@ -1467,16 +448,12 @@ static OfxStatus pluginMain(const char *action, const void *handle,
                             OfxPropertySetHandle inArgsHandle,
                             OfxPropertySetHandle outArgsHandle) {
   spdlog::info("pluginMain - start();\n{");
-  spdlog::info("  action is '%s';", action);
+  spdlog::info("  action is '{}';", action);
   OfxStatus stat = kOfxStatReplyDefault;
 
   try {
     // cast to handle appropriate type
     OfxImageEffectHandle effectHandle = (OfxImageEffectHandle)handle;
-
-    // construct two property set wrappers
-    PropertySet inArgs(inArgsHandle);
-    PropertySet outArgs(outArgsHandle);
 
     if (!strcmp(action, kOfxActionLoad)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, true, true,
@@ -1555,7 +532,7 @@ static OfxStatus pluginMain(const char *action, const void *handle,
                        false, true);
       stat = describeInContext(effectHandle, inArgsHandle);
     } else {
-      spdlog::error("Unknown action '%s';", action);
+      spdlog::error("Unknown action '{}';", action);
     }
   } catch (std::bad_alloc) {
     // catch memory
@@ -1563,11 +540,11 @@ static OfxStatus pluginMain(const char *action, const void *handle,
     stat = kOfxStatErrMemory;
   } catch (const std::exception &e) {
     // standard exceptions
-    spdlog::error("Plugin exception: '%s';", e.what());
+    spdlog::error("Plugin exception: '{}';", e.what());
     stat = kOfxStatErrUnknown;
   } catch (int err) {
     // ho hum, gone wrong somehow
-    spdlog::error("Misc int plugin exception: '%s';", mapStatus(err));
+    spdlog::error("Misc int plugin exception: '{}';", mapStatus(err));
     stat = err;
   } catch (...) {
     // everything else
@@ -1603,10 +580,10 @@ static OfxPlugin basicPlugin = {kOfxImageEffectPluginApi,
 // the two mandated functions
 EXPORT OfxPlugin *OfxGetPlugin(int nth) {
   spdlog::info("OfxGetPlugin - start();\n{");
-  spdlog::info("  asking for %dth plugin;", nth);
+  spdlog::info("  asking for {}th plugin;", nth);
   if (nth != 0)
     spdlog::error(
-        "requested plugin %d is more than the number of plugins in the file;",
+        "requested plugin {} is more than the number of plugins in the file;",
         nth);
   spdlog::info("}OfxGetPlugin - stop;");
 
@@ -1622,15 +599,12 @@ EXPORT int OfxGetNumberOfPlugins(void) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// globals destructor, the destructor is called when the plugin is unloaded
+// global destructor, the destructor is called when the plugin is unloaded
 class GlobalDestructor {
 public:
   ~GlobalDestructor();
 };
 
-GlobalDestructor::~GlobalDestructor() {
-  if (gHostDescription)
-    delete gHostDescription;
-}
+GlobalDestructor::~GlobalDestructor() {}
 
 static GlobalDestructor globalDestructor;
