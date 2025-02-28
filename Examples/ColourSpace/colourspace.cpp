@@ -618,7 +618,11 @@ getOutputColourspace( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inAr
   if (active_style != ColourManagementStyle::None) {
   
     // We could access the colourspace set on our input clip(s) here,
-    // if it affects the output space logic
+    // if it affects the output space logic.
+
+    // We could also check kOfxImageClipPropPreferredColourspaces from
+    // inArgs here, as the host may have set that to indicate its
+    // preferred output spaces
     
     // Get the colourspace from the parameter
     const char * outputSpace;
