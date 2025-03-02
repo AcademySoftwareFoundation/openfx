@@ -275,7 +275,7 @@ def gen_props_metadata(props_metadata, outfile_path: Path):
 #include "ofxKeySyms.h"
 #include "ofxOld.h"
 
-namespace OpenFX {
+namespace openfx {
 enum class PropType {
    Int,
    Double,
@@ -328,8 +328,27 @@ struct PropDef {
    size_t enumValuesCount;
 };
 
+// Array type for storing all PropDefs, indexed by PropId for simplicity
+template <typename T, PropId MaxValue = PropId::NProps>
+struct PropDefsArray {
+    static constexpr size_t Size = static_cast<size_t>(MaxValue);
+    std::array<T, Size> data;
+
+    // constexpr T& operator[](PropId index) {
+    //   return data[static_cast<size_t>(index)];
+    // }
+
+    constexpr const T& operator[](PropId index) const {
+        return data[static_cast<size_t>(index)];
+    }
+    constexpr const T& operator[](size_t index) const {
+        return data[index];
+    }
+};
+
 // Property definitions
-static inline constexpr std::array<PropDef, static_cast<size_t>(PropId::NProps)> prop_defs = {{
+static inline constexpr PropDefsArray<PropDef> prop_defs = {
+  {{
 """)
 
         for p in sorted(props_metadata):
@@ -356,7 +375,7 @@ static inline constexpr std::array<PropDef, static_cast<size_t>(PropId::NProps)>
             except Exception as e:
                 logging.error(f"Error: {p} is missing metadata? {e}")
                 raise(e)
-        outfile.write("}};\n\n")
+        outfile.write(" }}\n};\n\n")
 
         outfile.write("""
 //Template specializations for each property
@@ -382,12 +401,12 @@ struct PropTraits;
                     "int": "int",
                     "bool": "bool",
                     "double": "double",
-                    "pointer": "const void *",
+                    "pointer": "void *",
                 }
                 outfile.write(f"  using type = {ctypes[types[0]]};\n")
                 is_multitype_bool = "true" if len(types) > 1 else "false"
                 outfile.write(f"  static constexpr bool is_multitype = {is_multitype_bool};\n")
-                outfile.write(f"  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::{get_prop_id(p)})];\n")
+                outfile.write(f"  static constexpr const PropDef& def = prop_defs[PropId::{get_prop_id(p)}];\n")
                 outfile.write("};\n") # end of prop traits
             except Exception as e:
                 logging.error(f"Error: {p} is missing metadata? {e}")
@@ -400,7 +419,7 @@ struct PropTraits;
             cname = get_cname(p, props_metadata)
             outfile.write(f"static_assert(std::string_view(\"{p}\") == std::string_view({cname}));\n")
 
-        outfile.write("} // namespace OpenFX\n")
+        outfile.write("} // namespace openfx\n")
 
 
 
@@ -424,7 +443,7 @@ def gen_props_by_set(props_by_set, props_by_action, outfile_path: Path):
 #include "ofxPropsMetadata.h"
 // #include "ofxOld.h"
 
-namespace OpenFX {
+namespace openfx {
 
 struct Prop {
   const char *name;
@@ -446,9 +465,9 @@ struct Prop {
             for p in props_for_set(pset, props_by_set, False):
                 host_write = 'true' if p['write'] in ('host', 'all') else 'false'
                 plugin_write = 'true' if p['write'] in ('plugin', 'all') else 'false'
-                propdefs.append(f"{{ \"{p['name']}\", prop_defs[static_cast<size_t>(PropId::{get_prop_id(p['name'])})], {host_write}, {plugin_write}, false }}")
+                propdefs.append(f"{{ \"{p['name']}\", prop_defs[PropId::{get_prop_id(p['name'])}], {host_write}, {plugin_write}, false }}")
             propdefs_str = ",\n   ".join(propdefs)
-            outfile.write(f"{{ \"{pset}\", {{ {propdefs_str} }} }},\n")
+            outfile.write(f"// {pset}\n{{ \"{pset}\", {{\n   {propdefs_str} }} }},\n")
         outfile.write("};\n\n")
 
         actions = sorted(props_by_action.keys())
@@ -467,12 +486,13 @@ struct Prop {
             for subset in props_by_action[pset]:
                 if not props_by_action[pset][subset]:
                     continue
-                propnames = ",\n   ".join(sorted([f'"{p}"' for p in props_by_action[pset][subset]]))
+                propnames = ",\n    ".join(sorted([f'"{p}"' for p in props_by_action[pset][subset]]))
                 if not pset.startswith("kOfx"):
                     psetname = '"' + pset + '"'   # quote if it's not a known constant
                 else:
                     psetname = pset
-                outfile.write(f"{{ {{ {psetname}, \"{subset}\" }}, {{ {propnames} }} }},\n")
+                outfile.write(f"// {pset}.{subset}\n")
+                outfile.write(f"{{ {{ {psetname}, \"{subset}\" }},\n  {{ {propnames} }} }},\n")
 
         outfile.write("};\n\n")
 
@@ -482,7 +502,7 @@ struct Prop {
                 continue
             outfile.write(f"static_assert(std::string_view(\"{pset}\") == std::string_view(k{pset}));\n")
 
-        outfile.write("} // namespace OpenFX\n")
+        outfile.write("} // namespace openfx\n")
 
 
 def main(args):
@@ -517,23 +537,23 @@ def main(args):
 
     if args.verbose:
         print(f"=== Generating {args.props_metadata}")
-    gen_props_metadata(props_metadata, support_include_dir / args.props_metadata)
+    gen_props_metadata(props_metadata, dest_path / args.props_metadata)
 
     if args.verbose:
         print(f"=== Generating props by set header {args.props_by_set}")
-    gen_props_by_set(props_by_set, props_by_action, support_include_dir / args.props_by_set)
+    gen_props_by_set(props_by_set, props_by_action, dest_path / args.props_by_set)
 
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    support_include_dir = Path(script_dir).parent / 'Support/include'
+    dest_path = Path(script_dir).parent / 'openfx-cpp/include/openfx'
     parser = argparse.ArgumentParser(description="Check OpenFX properties and generate ancillary data structures",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     # Define arguments here
     parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose mode')
-    parser.add_argument('--props-metadata', default=support_include_dir/"ofxPropsMetadata.h",
+    parser.add_argument('--props-metadata', default=dest_path/"ofxPropsMetadata.h",
                         help="Generate property metadata into this file")
-    parser.add_argument('--props-by-set', default=support_include_dir/"ofxPropsBySet.h",
+    parser.add_argument('--props-by-set', default=dest_path/"ofxPropsBySet.h",
                         help="Generate props by set metadata into this file")
 
     # Parse the arguments

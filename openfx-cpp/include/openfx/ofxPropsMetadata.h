@@ -13,7 +13,7 @@
 #include "ofxKeySyms.h"
 #include "ofxOld.h"
 
-namespace OpenFX {
+namespace openfx {
 enum class PropType {
    Int,
    Double,
@@ -284,8 +284,27 @@ struct PropDef {
    size_t enumValuesCount;
 };
 
+// Array type for storing all PropDefs, indexed by PropId for simplicity
+template <typename T, PropId MaxValue = PropId::NProps>
+struct PropDefsArray {
+    static constexpr size_t Size = static_cast<size_t>(MaxValue);
+    std::array<T, Size> data;
+
+    // constexpr T& operator[](PropId index) {
+    //   return data[static_cast<size_t>(index)];
+    // }
+
+    constexpr const T& operator[](PropId index) const {
+        return data[static_cast<size_t>(index)];
+    }
+    constexpr const T& operator[](size_t index) const {
+        return data[index];
+    }
+};
+
 // Property definitions
-static inline constexpr std::array<PropDef, static_cast<size_t>(PropId::NProps)> prop_defs = {{
+static inline constexpr PropDefsArray<PropDef> prop_defs = {
+  {{
 { "OfxImageClipPropColourspace", PropId::OfxImageClipPropColourspace, {PropType::String}, 1, 1, nullptr, 0},
 { "OfxImageClipPropConnected", PropId::OfxImageClipPropConnected, {PropType::Bool}, 1, 1, nullptr, 0},
 { "OfxImageClipPropContinuousSamples", PropId::OfxImageClipPropContinuousSamples, {PropType::Bool}, 1, 1, nullptr, 0},
@@ -465,7 +484,8 @@ static inline constexpr std::array<PropDef, static_cast<size_t>(PropId::NProps)>
 { "kOfxParamPropUseHostOverlayHandle", PropId::OfxParamPropUseHostOverlayHandle, {PropType::Bool}, 1, 1, nullptr, 0},
 { "kOfxPropKeyString", PropId::OfxPropKeyString, {PropType::String}, 1, 1, nullptr, 0},
 { "kOfxPropKeySym", PropId::OfxPropKeySym, {PropType::Int}, 1, 1, nullptr, 0},
-}};
+ }}
+};
 
 
 //Template specializations for each property
@@ -479,1075 +499,1075 @@ template<>
 struct PropTraits<PropId::OfxImageClipPropColourspace> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageClipPropColourspace)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageClipPropColourspace];
 };
 template<>
 struct PropTraits<PropId::OfxImageClipPropConnected> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageClipPropConnected)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageClipPropConnected];
 };
 template<>
 struct PropTraits<PropId::OfxImageClipPropContinuousSamples> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageClipPropContinuousSamples)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageClipPropContinuousSamples];
 };
 template<>
 struct PropTraits<PropId::OfxImageClipPropFieldExtraction> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageClipPropFieldExtraction)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageClipPropFieldExtraction];
 };
 template<>
 struct PropTraits<PropId::OfxImageClipPropFieldOrder> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageClipPropFieldOrder)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageClipPropFieldOrder];
 };
 template<>
 struct PropTraits<PropId::OfxImageClipPropIsMask> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageClipPropIsMask)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageClipPropIsMask];
 };
 template<>
 struct PropTraits<PropId::OfxImageClipPropOptional> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageClipPropOptional)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageClipPropOptional];
 };
 template<>
 struct PropTraits<PropId::OfxImageClipPropPreferredColourspaces> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageClipPropPreferredColourspaces)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageClipPropPreferredColourspaces];
 };
 template<>
 struct PropTraits<PropId::OfxImageClipPropUnmappedComponents> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageClipPropUnmappedComponents)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageClipPropUnmappedComponents];
 };
 template<>
 struct PropTraits<PropId::OfxImageClipPropUnmappedPixelDepth> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageClipPropUnmappedPixelDepth)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageClipPropUnmappedPixelDepth];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectFrameVarying> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectFrameVarying)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectFrameVarying];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectHostPropIsBackground> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectHostPropIsBackground)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectHostPropIsBackground];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectHostPropNativeOrigin> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectHostPropNativeOrigin)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectHostPropNativeOrigin];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectInstancePropEffectDuration> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectInstancePropEffectDuration)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectInstancePropEffectDuration];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectInstancePropSequentialRender> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectInstancePropSequentialRender)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectInstancePropSequentialRender];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPluginPropFieldRenderTwiceAlways> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPluginPropFieldRenderTwiceAlways)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPluginPropFieldRenderTwiceAlways];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPluginPropGrouping> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPluginPropGrouping)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPluginPropGrouping];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPluginPropHostFrameThreading> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPluginPropHostFrameThreading)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPluginPropHostFrameThreading];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPluginPropOverlayInteractV1> {
-  using type = const void *;
+  using type = void *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPluginPropOverlayInteractV1)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPluginPropOverlayInteractV1];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPluginPropOverlayInteractV2> {
-  using type = const void *;
+  using type = void *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPluginPropOverlayInteractV2)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPluginPropOverlayInteractV2];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPluginPropSingleInstance> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPluginPropSingleInstance)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPluginPropSingleInstance];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPluginRenderThreadSafety> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPluginRenderThreadSafety)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPluginRenderThreadSafety];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropClipPreferencesSlaveParam> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropClipPreferencesSlaveParam)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropClipPreferencesSlaveParam];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropColourManagementAvailableConfigs> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropColourManagementAvailableConfigs)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropColourManagementAvailableConfigs];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropColourManagementConfig> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropColourManagementConfig)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropColourManagementConfig];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropColourManagementStyle> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropColourManagementStyle)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropColourManagementStyle];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropComponents> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropComponents)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropComponents];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropContext> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropContext)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropContext];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropCudaEnabled> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropCudaEnabled)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropCudaEnabled];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropCudaRenderSupported> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropCudaRenderSupported)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropCudaRenderSupported];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropCudaStream> {
-  using type = const void *;
+  using type = void *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropCudaStream)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropCudaStream];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropCudaStreamSupported> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropCudaStreamSupported)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropCudaStreamSupported];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropDisplayColourspace> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropDisplayColourspace)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropDisplayColourspace];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropFieldToRender> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropFieldToRender)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropFieldToRender];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropFrameRange> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropFrameRange)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropFrameRange];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropFrameRate> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropFrameRate)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropFrameRate];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropFrameStep> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropFrameStep)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropFrameStep];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropInAnalysis> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropInAnalysis)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropInAnalysis];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropInteractiveRenderStatus> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropInteractiveRenderStatus)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropInteractiveRenderStatus];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropMetalCommandQueue> {
-  using type = const void *;
+  using type = void *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropMetalCommandQueue)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropMetalCommandQueue];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropMetalEnabled> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropMetalEnabled)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropMetalEnabled];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropMetalRenderSupported> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropMetalRenderSupported)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropMetalRenderSupported];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropMultipleClipDepths> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropMultipleClipDepths)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropMultipleClipDepths];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropOCIOConfig> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropOCIOConfig)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropOCIOConfig];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropOCIODisplay> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropOCIODisplay)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropOCIODisplay];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropOCIOView> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropOCIOView)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropOCIOView];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropOpenCLCommandQueue> {
-  using type = const void *;
+  using type = void *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropOpenCLCommandQueue)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropOpenCLCommandQueue];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropOpenCLEnabled> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropOpenCLEnabled)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropOpenCLEnabled];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropOpenCLImage> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropOpenCLImage)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropOpenCLImage];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropOpenCLRenderSupported> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropOpenCLRenderSupported)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropOpenCLRenderSupported];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropOpenCLSupported> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropOpenCLSupported)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropOpenCLSupported];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropOpenGLEnabled> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropOpenGLEnabled)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropOpenGLEnabled];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropOpenGLRenderSupported> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropOpenGLRenderSupported)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropOpenGLRenderSupported];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropOpenGLTextureIndex> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropOpenGLTextureIndex)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropOpenGLTextureIndex];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropOpenGLTextureTarget> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropOpenGLTextureTarget)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropOpenGLTextureTarget];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropPixelAspectRatio> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropPixelAspectRatio)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropPixelAspectRatio];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropPixelDepth> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropPixelDepth)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropPixelDepth];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropPluginHandle> {
-  using type = const void *;
+  using type = void *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropPluginHandle)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropPluginHandle];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropPreMultiplication> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropPreMultiplication)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropPreMultiplication];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropProjectExtent> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropProjectExtent)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropProjectExtent];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropProjectOffset> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropProjectOffset)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropProjectOffset];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropProjectSize> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropProjectSize)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropProjectSize];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropRegionOfDefinition> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropRegionOfDefinition)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropRegionOfDefinition];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropRegionOfInterest> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropRegionOfInterest)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropRegionOfInterest];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropRenderQualityDraft> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropRenderQualityDraft)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropRenderQualityDraft];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropRenderScale> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropRenderScale)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropRenderScale];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropRenderWindow> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropRenderWindow)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropRenderWindow];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropSequentialRenderStatus> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropSequentialRenderStatus)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropSequentialRenderStatus];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropSetableFielding> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropSetableFielding)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropSetableFielding];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropSetableFrameRate> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropSetableFrameRate)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropSetableFrameRate];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropSupportedComponents> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropSupportedComponents)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropSupportedComponents];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropSupportedContexts> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropSupportedContexts)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropSupportedContexts];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropSupportedPixelDepths> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropSupportedPixelDepths)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropSupportedPixelDepths];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropSupportsMultiResolution> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropSupportsMultiResolution)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropSupportsMultiResolution];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropSupportsMultipleClipPARs> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropSupportsMultipleClipPARs)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropSupportsMultipleClipPARs];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropSupportsOverlays> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropSupportsOverlays)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropSupportsOverlays];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropSupportsTiles> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropSupportsTiles)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropSupportsTiles];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropTemporalClipAccess> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropTemporalClipAccess)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropTemporalClipAccess];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropUnmappedFrameRange> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropUnmappedFrameRange)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropUnmappedFrameRange];
 };
 template<>
 struct PropTraits<PropId::OfxImageEffectPropUnmappedFrameRate> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImageEffectPropUnmappedFrameRate)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImageEffectPropUnmappedFrameRate];
 };
 template<>
 struct PropTraits<PropId::OfxImagePropBounds> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImagePropBounds)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImagePropBounds];
 };
 template<>
 struct PropTraits<PropId::OfxImagePropData> {
-  using type = const void *;
+  using type = void *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImagePropData)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImagePropData];
 };
 template<>
 struct PropTraits<PropId::OfxImagePropField> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImagePropField)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImagePropField];
 };
 template<>
 struct PropTraits<PropId::OfxImagePropPixelAspectRatio> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImagePropPixelAspectRatio)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImagePropPixelAspectRatio];
 };
 template<>
 struct PropTraits<PropId::OfxImagePropRegionOfDefinition> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImagePropRegionOfDefinition)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImagePropRegionOfDefinition];
 };
 template<>
 struct PropTraits<PropId::OfxImagePropRowBytes> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImagePropRowBytes)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImagePropRowBytes];
 };
 template<>
 struct PropTraits<PropId::OfxImagePropUniqueIdentifier> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxImagePropUniqueIdentifier)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxImagePropUniqueIdentifier];
 };
 template<>
 struct PropTraits<PropId::OfxInteractPropBackgroundColour> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxInteractPropBackgroundColour)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxInteractPropBackgroundColour];
 };
 template<>
 struct PropTraits<PropId::OfxInteractPropBitDepth> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxInteractPropBitDepth)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxInteractPropBitDepth];
 };
 template<>
 struct PropTraits<PropId::OfxInteractPropDrawContext> {
-  using type = const void *;
+  using type = void *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxInteractPropDrawContext)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxInteractPropDrawContext];
 };
 template<>
 struct PropTraits<PropId::OfxInteractPropHasAlpha> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxInteractPropHasAlpha)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxInteractPropHasAlpha];
 };
 template<>
 struct PropTraits<PropId::OfxInteractPropPenPosition> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxInteractPropPenPosition)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxInteractPropPenPosition];
 };
 template<>
 struct PropTraits<PropId::OfxInteractPropPenPressure> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxInteractPropPenPressure)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxInteractPropPenPressure];
 };
 template<>
 struct PropTraits<PropId::OfxInteractPropPenViewportPosition> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxInteractPropPenViewportPosition)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxInteractPropPenViewportPosition];
 };
 template<>
 struct PropTraits<PropId::OfxInteractPropPixelScale> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxInteractPropPixelScale)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxInteractPropPixelScale];
 };
 template<>
 struct PropTraits<PropId::OfxInteractPropSlaveToParam> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxInteractPropSlaveToParam)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxInteractPropSlaveToParam];
 };
 template<>
 struct PropTraits<PropId::OfxInteractPropSuggestedColour> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxInteractPropSuggestedColour)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxInteractPropSuggestedColour];
 };
 template<>
 struct PropTraits<PropId::OfxInteractPropViewport> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxInteractPropViewport)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxInteractPropViewport];
 };
 template<>
 struct PropTraits<PropId::OfxOpenGLPropPixelDepth> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxOpenGLPropPixelDepth)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxOpenGLPropPixelDepth];
 };
 template<>
 struct PropTraits<PropId::OfxParamHostPropMaxPages> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamHostPropMaxPages)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamHostPropMaxPages];
 };
 template<>
 struct PropTraits<PropId::OfxParamHostPropMaxParameters> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamHostPropMaxParameters)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamHostPropMaxParameters];
 };
 template<>
 struct PropTraits<PropId::OfxParamHostPropPageRowColumnCount> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamHostPropPageRowColumnCount)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamHostPropPageRowColumnCount];
 };
 template<>
 struct PropTraits<PropId::OfxParamHostPropSupportsBooleanAnimation> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamHostPropSupportsBooleanAnimation)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamHostPropSupportsBooleanAnimation];
 };
 template<>
 struct PropTraits<PropId::OfxParamHostPropSupportsChoiceAnimation> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamHostPropSupportsChoiceAnimation)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamHostPropSupportsChoiceAnimation];
 };
 template<>
 struct PropTraits<PropId::OfxParamHostPropSupportsCustomAnimation> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamHostPropSupportsCustomAnimation)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamHostPropSupportsCustomAnimation];
 };
 template<>
 struct PropTraits<PropId::OfxParamHostPropSupportsCustomInteract> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamHostPropSupportsCustomInteract)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamHostPropSupportsCustomInteract];
 };
 template<>
 struct PropTraits<PropId::OfxParamHostPropSupportsParametricAnimation> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamHostPropSupportsParametricAnimation)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamHostPropSupportsParametricAnimation];
 };
 template<>
 struct PropTraits<PropId::OfxParamHostPropSupportsStrChoice> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamHostPropSupportsStrChoice)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamHostPropSupportsStrChoice];
 };
 template<>
 struct PropTraits<PropId::OfxParamHostPropSupportsStrChoiceAnimation> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamHostPropSupportsStrChoiceAnimation)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamHostPropSupportsStrChoiceAnimation];
 };
 template<>
 struct PropTraits<PropId::OfxParamHostPropSupportsStringAnimation> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamHostPropSupportsStringAnimation)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamHostPropSupportsStringAnimation];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropAnimates> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropAnimates)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropAnimates];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropCacheInvalidation> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropCacheInvalidation)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropCacheInvalidation];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropCanUndo> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropCanUndo)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropCanUndo];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropChoiceEnum> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropChoiceEnum)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropChoiceEnum];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropChoiceOption> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropChoiceOption)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropChoiceOption];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropChoiceOrder> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropChoiceOrder)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropChoiceOrder];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropCustomCallbackV1> {
-  using type = const void *;
+  using type = void *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropCustomCallbackV1)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropCustomCallbackV1];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropCustomValue> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropCustomValue)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropCustomValue];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropDataPtr> {
-  using type = const void *;
+  using type = void *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropDataPtr)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropDataPtr];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropDefault> {
   using type = int;
   static constexpr bool is_multitype = true;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropDefault)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropDefault];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropDefaultCoordinateSystem> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropDefaultCoordinateSystem)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropDefaultCoordinateSystem];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropDigits> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropDigits)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropDigits];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropDimensionLabel> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropDimensionLabel)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropDimensionLabel];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropDisplayMax> {
   using type = int;
   static constexpr bool is_multitype = true;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropDisplayMax)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropDisplayMax];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropDisplayMin> {
   using type = int;
   static constexpr bool is_multitype = true;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropDisplayMin)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropDisplayMin];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropDoubleType> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropDoubleType)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropDoubleType];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropEnabled> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropEnabled)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropEnabled];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropEvaluateOnChange> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropEvaluateOnChange)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropEvaluateOnChange];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropGroupOpen> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropGroupOpen)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropGroupOpen];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropHasHostOverlayHandle> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropHasHostOverlayHandle)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropHasHostOverlayHandle];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropHint> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropHint)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropHint];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropIncrement> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropIncrement)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropIncrement];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropInteractMinimumSize> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropInteractMinimumSize)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropInteractMinimumSize];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropInteractPreferedSize> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropInteractPreferedSize)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropInteractPreferedSize];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropInteractSize> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropInteractSize)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropInteractSize];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropInteractSizeAspect> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropInteractSizeAspect)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropInteractSizeAspect];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropInteractV1> {
-  using type = const void *;
+  using type = void *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropInteractV1)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropInteractV1];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropInterpolationAmount> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropInterpolationAmount)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropInterpolationAmount];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropInterpolationTime> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropInterpolationTime)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropInterpolationTime];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropIsAnimating> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropIsAnimating)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropIsAnimating];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropIsAutoKeying> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropIsAutoKeying)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropIsAutoKeying];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropMax> {
   using type = int;
   static constexpr bool is_multitype = true;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropMax)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropMax];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropMin> {
   using type = int;
   static constexpr bool is_multitype = true;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropMin)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropMin];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropPageChild> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropPageChild)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropPageChild];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropParametricDimension> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropParametricDimension)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropParametricDimension];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropParametricInteractBackground> {
-  using type = const void *;
+  using type = void *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropParametricInteractBackground)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropParametricInteractBackground];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropParametricRange> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropParametricRange)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropParametricRange];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropParametricUIColour> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropParametricUIColour)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropParametricUIColour];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropParent> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropParent)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropParent];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropPersistant> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropPersistant)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropPersistant];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropPluginMayWrite> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropPluginMayWrite)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropPluginMayWrite];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropScriptName> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropScriptName)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropScriptName];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropSecret> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropSecret)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropSecret];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropShowTimeMarker> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropShowTimeMarker)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropShowTimeMarker];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropStringFilePathExists> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropStringFilePathExists)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropStringFilePathExists];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropStringMode> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropStringMode)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropStringMode];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropType> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropType)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropType];
 };
 template<>
 struct PropTraits<PropId::OfxPluginPropFilePath> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPluginPropFilePath)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPluginPropFilePath];
 };
 template<>
 struct PropTraits<PropId::OfxPluginPropParamPageOrder> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPluginPropParamPageOrder)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPluginPropParamPageOrder];
 };
 template<>
 struct PropTraits<PropId::OfxPropAPIVersion> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropAPIVersion)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropAPIVersion];
 };
 template<>
 struct PropTraits<PropId::OfxPropChangeReason> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropChangeReason)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropChangeReason];
 };
 template<>
 struct PropTraits<PropId::OfxPropEffectInstance> {
-  using type = const void *;
+  using type = void *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropEffectInstance)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropEffectInstance];
 };
 template<>
 struct PropTraits<PropId::OfxPropHostOSHandle> {
-  using type = const void *;
+  using type = void *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropHostOSHandle)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropHostOSHandle];
 };
 template<>
 struct PropTraits<PropId::OfxPropIcon> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropIcon)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropIcon];
 };
 template<>
 struct PropTraits<PropId::OfxPropInstanceData> {
-  using type = const void *;
+  using type = void *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropInstanceData)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropInstanceData];
 };
 template<>
 struct PropTraits<PropId::OfxPropIsInteractive> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropIsInteractive)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropIsInteractive];
 };
 template<>
 struct PropTraits<PropId::OfxPropLabel> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropLabel)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropLabel];
 };
 template<>
 struct PropTraits<PropId::OfxPropLongLabel> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropLongLabel)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropLongLabel];
 };
 template<>
 struct PropTraits<PropId::OfxPropName> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropName)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropName];
 };
 template<>
 struct PropTraits<PropId::OfxPropParamSetNeedsSyncing> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropParamSetNeedsSyncing)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropParamSetNeedsSyncing];
 };
 template<>
 struct PropTraits<PropId::OfxPropPluginDescription> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropPluginDescription)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropPluginDescription];
 };
 template<>
 struct PropTraits<PropId::OfxPropShortLabel> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropShortLabel)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropShortLabel];
 };
 template<>
 struct PropTraits<PropId::OfxPropTime> {
   using type = double;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropTime)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropTime];
 };
 template<>
 struct PropTraits<PropId::OfxPropType> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropType)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropType];
 };
 template<>
 struct PropTraits<PropId::OfxPropVersion> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropVersion)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropVersion];
 };
 template<>
 struct PropTraits<PropId::OfxPropVersionLabel> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropVersionLabel)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropVersionLabel];
 };
 template<>
 struct PropTraits<PropId::OfxParamPropUseHostOverlayHandle> {
   using type = bool;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxParamPropUseHostOverlayHandle)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxParamPropUseHostOverlayHandle];
 };
 template<>
 struct PropTraits<PropId::OfxPropKeyString> {
   using type = const char *;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropKeyString)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropKeyString];
 };
 template<>
 struct PropTraits<PropId::OfxPropKeySym> {
   using type = int;
   static constexpr bool is_multitype = false;
-  static constexpr const PropDef& def = prop_defs[static_cast<size_t>(PropId::OfxPropKeySym)];
+  static constexpr const PropDef& def = prop_defs[PropId::OfxPropKeySym];
 };
 } // namespace properties
 
@@ -1731,4 +1751,4 @@ static_assert(std::string_view("OfxPropVersionLabel") == std::string_view(kOfxPr
 static_assert(std::string_view("kOfxParamPropUseHostOverlayHandle") == std::string_view(kOfxParamPropUseHostOverlayHandle));
 static_assert(std::string_view("kOfxPropKeyString") == std::string_view(kOfxPropKeyString));
 static_assert(std::string_view("kOfxPropKeySym") == std::string_view(kOfxPropKeySym));
-} // namespace OpenFX
+} // namespace openfx

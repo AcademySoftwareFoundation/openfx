@@ -16,8 +16,8 @@
 #include "ofxsMultiThread.h"
 #include "ofxsInteract.h"
 
-#include "ofxPropsBySet.h"
-#include "ofxPropsMetadata.h"
+#include "openfx/ofxPropsBySet.h"
+#include "openfx/ofxPropsMetadata.h"
 
 #include "../include/ofxsProcessing.H"
 

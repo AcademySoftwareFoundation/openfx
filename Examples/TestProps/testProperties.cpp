@@ -10,9 +10,9 @@
 #include "ofxMemory.h"
 #include "ofxMessage.h"
 #include "ofxMultiThread.h"
-#include "ofxPropsAccess.h"
-#include "ofxPropsBySet.h" // in Support/include
-#include "ofxPropsMetadata.h"
+#include "openfx/ofxPropsAccess.h"
+#include "openfx/ofxPropsBySet.h"
+#include "openfx/ofxPropsMetadata.h"
 #include "spdlog/spdlog.h"
 #include <map>    // stl maps
 #include <string> // stl strings
@@ -27,7 +27,7 @@
 #error Not building on your operating system quite yet
 #endif
 
-using namespace OpenFX; // for props access
+using namespace openfx; // for props access
 
 static OfxHost *gHost;
 static OfxImageEffectSuiteV1 *gEffectSuite;
@@ -389,8 +389,8 @@ static OfxStatus actionDescribe(OfxImageEffectHandle effect) {
       .set<PropId::OfxPropPluginDescription>(
           "Sample plugin which logs all actions and properties")
       .set<PropId::OfxImageEffectPluginPropGrouping>("OFX Examples")
-      .set<OpenFX::PropId::OfxImageEffectPropMultipleClipDepths>(false)
-      .setAll<OpenFX::PropId::OfxImageEffectPropSupportedComponents>(
+      .set<PropId::OfxImageEffectPropMultipleClipDepths>(false)
+      .setAll<PropId::OfxImageEffectPropSupportedComponents>(
           {kOfxImageComponentRGBA, kOfxImageComponentAlpha})
       .setAll<PropId::OfxImageEffectPropSupportedContexts>(supportedContexts)
       .setAll<PropId::OfxImageEffectPropSupportedPixelDepths>(
