@@ -179,41 +179,6 @@ struct PropTypeToNative<PropType::Pointer> {
   using type = void *;
 };
 
-// Helper to check if a type is compatible with a PropType
-template <typename T, PropType propType>
-struct IsTypeCompatible {
-  static constexpr bool value = false;
-};
-
-template <>
-struct IsTypeCompatible<int, PropType::Int> {
-  static constexpr bool value = true;
-};
-template <>
-struct IsTypeCompatible<int, PropType::Bool> {
-  static constexpr bool value = true;
-};
-template <>
-struct IsTypeCompatible<int, PropType::Enum> {
-  static constexpr bool value = true;
-};
-template <>
-struct IsTypeCompatible<double, PropType::Double> {
-  static constexpr bool value = true;
-};
-template <>
-struct IsTypeCompatible<const char *, PropType::String> {
-  static constexpr bool value = true;
-};
-template <>
-struct IsTypeCompatible<const char *, PropType::Enum> {
-  static constexpr bool value = true;
-};
-template <>
-struct IsTypeCompatible<void *, PropType::Pointer> {
-  static constexpr bool value = true;
-};
-
 // Helper to create property enum values with strong typing
 template <PropId id>
 struct EnumValue {
