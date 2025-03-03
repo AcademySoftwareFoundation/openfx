@@ -266,7 +266,9 @@ def gen_props_metadata(props_metadata, outfile_path: Path):
         outfile.write("""
 #pragma once
 
-#include <vector>
+#include <array>
+#include <string_view>
+
 #include "ofxImageEffect.h"
 #include "ofxGPURender.h"
 #include "ofxColour.h"
@@ -354,7 +356,7 @@ static inline constexpr PropDefsArray<PropDef> prop_defs = {
         for p in sorted(props_metadata):
             try:
                 # name and id
-                prop_def = f"{{ \"{p}\", PropId::{get_prop_id(p)}, "
+                prop_def = f"{{ \"{p}\", PropId::{get_prop_id(p)},\n  "
                 md = props_metadata[p]
                 types = md.get('type')
                 if isinstance(types, str): # make it always a list
@@ -385,12 +387,18 @@ namespace properties {
 template<PropId id>
 struct PropTraits;
 
+#define DEFINE_PROP_TRAITS(id, _type, _is_multitype) \\
+template<> \\
+struct PropTraits<PropId::id> { \\
+    using type = _type; \\
+    static constexpr bool is_multitype = _is_multitype; \\
+    static constexpr const PropDef& def = prop_defs[PropId::id]; \\
+}
+
 """)
 
         for p in sorted(props_metadata):
             try:
-                outfile.write(f"template<>\n")
-                outfile.write(f"struct PropTraits<PropId::{get_prop_id(p)}> {{\n")
                 md = props_metadata[p]
                 types = md.get('type')
                 if isinstance(types, str): # make it always a list
@@ -403,11 +411,8 @@ struct PropTraits;
                     "double": "double",
                     "pointer": "void *",
                 }
-                outfile.write(f"  using type = {ctypes[types[0]]};\n")
                 is_multitype_bool = "true" if len(types) > 1 else "false"
-                outfile.write(f"  static constexpr bool is_multitype = {is_multitype_bool};\n")
-                outfile.write(f"  static constexpr const PropDef& def = prop_defs[PropId::{get_prop_id(p)}];\n")
-                outfile.write("};\n") # end of prop traits
+                outfile.write(f"DEFINE_PROP_TRAITS({get_prop_id(p)}, {ctypes[types[0]]}, {is_multitype_bool});\n")
             except Exception as e:
                 logging.error(f"Error: {p} is missing metadata? {e}")
                 raise(e)
@@ -415,10 +420,12 @@ struct PropTraits;
         outfile.write("} // namespace properties\n\n")
         # Generate static asserts to ensure our constants match the string values
         outfile.write("// Static asserts to check #define names vs. strings\n")
+        outfile.write("namespace assertions {\nusing std::string_view;\n\n")
         for p in sorted(props_metadata):
             cname = get_cname(p, props_metadata)
-            outfile.write(f"static_assert(std::string_view(\"{p}\") == std::string_view({cname}));\n")
+            outfile.write(f"static_assert(string_view(\"{p}\") == string_view({cname}));\n")
 
+        outfile.write("} // namespace assertions\n")
         outfile.write("} // namespace openfx\n")
 
 
