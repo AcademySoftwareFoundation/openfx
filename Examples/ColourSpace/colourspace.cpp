@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: off; c-basic-offset: 2 -*- */
 // Copyright OpenFX and contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
 
@@ -30,6 +31,198 @@
 #else
 #  error Not building on your operating system quite yet
 #endif
+
+// In some environments {fmt} needs FMT_STRING
+#ifndef FMT_STRING
+#define FMT_STRING(x) x
+#endif
+
+enum class ColourManagementStyle
+{
+  None, Basic, Core, Full, OCIO
+};
+
+struct space_info
+{
+  const char * ui_label;
+  const char * ident;
+  ColourManagementStyle style;
+};
+
+static
+ColourManagementStyle ofxstring_to_style(const std::string & style)
+{
+  if(style == kOfxImageEffectColourManagementNone)
+    return ColourManagementStyle::None;
+  else if(style == kOfxImageEffectColourManagementBasic)
+    return ColourManagementStyle::Basic;
+  else if(style == kOfxImageEffectColourManagementCore)
+    return ColourManagementStyle::Core;
+  else if(style == kOfxImageEffectColourManagementFull)
+    return ColourManagementStyle::Full;
+  else if(style == kOfxImageEffectColourManagementOCIO)
+    return ColourManagementStyle::OCIO;
+  else {
+    spdlog::info(FMT_STRING("unknown colour management style '{}'"), style);
+    return ColourManagementStyle::None;
+  }
+}
+
+// Use macros to automatically fetch the IsBasic and IsCore properties
+#define SPACE(ident) { ident##Label, ident, ident##IsBasic ? ColourManagementStyle::Basic : (ident##IsCore ? ColourManagementStyle::Core : ColourManagementStyle::Full) }
+#define ROLE(ident, label) { label, ident, ident##IsBasic ? ColourManagementStyle::Basic : (ident##IsCore ? ColourManagementStyle::Core : ColourManagementStyle::Full) }
+
+static space_info input_space_choices[]
+{
+  { "[Unspecified, accepts anything]", NULL, ColourManagementStyle::Basic },
+
+  // For this example plugin we'll offer every possible space defined in the header file
+  // Real plugins do not need this flexibility!
+  
+  ROLE(kOfxColourspaceRoleAcesInterchange, "ACES interchange role (ACES2065-1)"),
+  ROLE(kOfxColourspaceRoleCieXyzD65Interchange, "CIE XYZ D65 interchange role (CIE XYZ D65)"),
+  ROLE(kOfxColourspaceRoleColorPicking, "Colour Picking role (Arbitrary display space)"),
+  ROLE(kOfxColourspaceRoleColorTiming, "Color Timing role (Arbitrary scene log)"),
+  ROLE(kOfxColourspaceRoleCompositingLog, "Compositing Log role (Arbitrary scene log)"),
+  ROLE(kOfxColourspaceRoleData, "Data role (Non-colour image)"),
+  ROLE(kOfxColourspaceRoleMattePaint, "Matte Paint role"),
+  ROLE(kOfxColourspaceRoleSceneLinear, "Scene Linear role (Arbitrary scene linear)"),
+  ROLE(kOfxColourspaceRoleTexturePaint, "Texture Paint role (Typically sRGB)"),
+  
+  SPACE(kOfxColourspaceOfxDisplayHdr),
+  SPACE(kOfxColourspaceOfxDisplaySdr),
+  SPACE(kOfxColourspaceOfxRaw),
+  SPACE(kOfxColourspaceOfxSceneLinear),
+  SPACE(kOfxColourspaceOfxSceneLog),
+  SPACE(kOfxColourspaceSrgbDisplay),
+  SPACE(kOfxColourspaceDisplayp3Display),
+  SPACE(kOfxColourspaceRec1886Rec709Display),
+  SPACE(kOfxColourspaceRec1886Rec2020Display),
+  SPACE(kOfxColourspaceRec2100HlgDisplay),
+  SPACE(kOfxColourspaceRec2100PqDisplay),
+  SPACE(kOfxColourspaceSt2084P3d65Display),
+  SPACE(kOfxColourspaceP3d65Display),
+  SPACE(kOfxColourspaceACES20651),
+  SPACE(kOfxColourspaceACEScc),
+  SPACE(kOfxColourspaceACEScct),
+  SPACE(kOfxColourspaceACEScg),
+  SPACE(kOfxColourspaceLinP3d65),
+  SPACE(kOfxColourspaceLinRec2020),
+  SPACE(kOfxColourspaceLinRec709Srgb),
+  SPACE(kOfxColourspaceG18Rec709Tx),
+  SPACE(kOfxColourspaceG22Ap1Tx),
+  SPACE(kOfxColourspaceG22Rec709Tx),
+  SPACE(kOfxColourspaceG24Rec709Tx),
+  SPACE(kOfxColourspaceSrgbEncodedAp1Tx),
+  SPACE(kOfxColourspaceSrgbEncodedP3d65Tx), 
+  SPACE(kOfxColourspaceSrgbTx),
+  SPACE(kOfxColourspaceRaw),
+  SPACE(kOfxColourspaceCIEXYZD65),
+  SPACE(kOfxColourspaceP3d60Display),
+  SPACE(kOfxColourspaceP3DciDisplay),
+  SPACE(kOfxColourspaceADX10),
+  SPACE(kOfxColourspaceADX16),
+  SPACE(kOfxColourspaceLinArriWideGamut3),
+  SPACE(kOfxColourspaceArriLogc3Ei800),
+  SPACE(kOfxColourspaceLinArriWideGamut4),
+  SPACE(kOfxColourspaceArriLogc4),
+  SPACE(kOfxColourspaceBmdfilmWidegamutGen5),
+  SPACE(kOfxColourspaceDavinciIntermediateWidegamut),
+  SPACE(kOfxColourspaceLinBmdWidegamutGen5),
+  SPACE(kOfxColourspaceLinDavinciWidegamut),
+  SPACE(kOfxColourspaceCanonlog2CinemagamutD55),
+  SPACE(kOfxColourspaceCanonlog3CinemagamutD55),
+  SPACE(kOfxColourspaceLinCinemagamutD55),
+  SPACE(kOfxColourspaceLinVgamut),
+  SPACE(kOfxColourspaceVlogVgamut),
+  SPACE(kOfxColourspaceLinRedwidegamutrgb),
+  SPACE(kOfxColourspaceLog3g10Redwidegamutrgb),
+  SPACE(kOfxColourspaceLinSgamut3),
+  SPACE(kOfxColourspaceLinSgamut3cine),
+  SPACE(kOfxColourspaceLinVeniceSgamut3),
+  SPACE(kOfxColourspaceLinVeniceSgamut3cine),
+  SPACE(kOfxColourspaceSlog3Sgamut3),
+  SPACE(kOfxColourspaceSlog3Sgamut3cine),
+  SPACE(kOfxColourspaceSlog3VeniceSgamut3),
+  SPACE(kOfxColourspaceSlog3VeniceSgamut3cine),
+  SPACE(kOfxColourspaceCameraRec709)
+};
+
+static space_info output_space_choices[]
+{
+  { "[Same as input]", "OfxColourspace_Source", ColourManagementStyle::Basic },
+
+  // For this example plugin we'll offer every possible space defined in the header file
+  // Real plugins do not need this flexibility!
+  
+  ROLE(kOfxColourspaceRoleAcesInterchange, "ACES interchange role (ACES2065-1)"),
+  ROLE(kOfxColourspaceRoleCieXyzD65Interchange, "CIE XYZ D65 interchange role (CIE XYZ D65)"),
+  ROLE(kOfxColourspaceRoleColorPicking, "Colour Picking role (Arbitrary display space)"),
+  ROLE(kOfxColourspaceRoleColorTiming, "Color Timing role (Arbitrary scene log)"),
+  ROLE(kOfxColourspaceRoleCompositingLog, "Compositing Log role (Arbitrary scene log)"),
+  ROLE(kOfxColourspaceRoleData, "Data role (Non-colour image)"),
+  ROLE(kOfxColourspaceRoleMattePaint, "Matte Paint role"),
+  ROLE(kOfxColourspaceRoleSceneLinear, "Scene Linear role (Arbitrary scene linear)"),
+  ROLE(kOfxColourspaceRoleTexturePaint, "Texture Paint role (Typically sRGB)"),
+  
+  SPACE(kOfxColourspaceOfxDisplayHdr),
+  SPACE(kOfxColourspaceOfxDisplaySdr),
+  SPACE(kOfxColourspaceOfxRaw),
+  SPACE(kOfxColourspaceOfxSceneLinear),
+  SPACE(kOfxColourspaceOfxSceneLog),
+  SPACE(kOfxColourspaceSrgbDisplay),
+  SPACE(kOfxColourspaceDisplayp3Display),
+  SPACE(kOfxColourspaceRec1886Rec709Display),
+  SPACE(kOfxColourspaceRec1886Rec2020Display),
+  SPACE(kOfxColourspaceRec2100HlgDisplay),
+  SPACE(kOfxColourspaceRec2100PqDisplay),
+  SPACE(kOfxColourspaceSt2084P3d65Display),
+  SPACE(kOfxColourspaceP3d65Display),
+  SPACE(kOfxColourspaceACES20651),
+  SPACE(kOfxColourspaceACEScc),
+  SPACE(kOfxColourspaceACEScct),
+  SPACE(kOfxColourspaceACEScg),
+  SPACE(kOfxColourspaceLinP3d65),
+  SPACE(kOfxColourspaceLinRec2020),
+  SPACE(kOfxColourspaceLinRec709Srgb),
+  SPACE(kOfxColourspaceG18Rec709Tx),
+  SPACE(kOfxColourspaceG22Ap1Tx),
+  SPACE(kOfxColourspaceG22Rec709Tx),
+  SPACE(kOfxColourspaceG24Rec709Tx),
+  SPACE(kOfxColourspaceSrgbEncodedAp1Tx),
+  SPACE(kOfxColourspaceSrgbTx),
+  SPACE(kOfxColourspaceRaw),
+  SPACE(kOfxColourspaceCIEXYZD65),
+  SPACE(kOfxColourspaceP3d60Display),
+  SPACE(kOfxColourspaceP3DciDisplay),
+  SPACE(kOfxColourspaceADX10),
+  SPACE(kOfxColourspaceADX16),
+  SPACE(kOfxColourspaceLinArriWideGamut3),
+  SPACE(kOfxColourspaceArriLogc3Ei800),
+  SPACE(kOfxColourspaceLinArriWideGamut4),
+  SPACE(kOfxColourspaceArriLogc4),
+  SPACE(kOfxColourspaceBmdfilmWidegamutGen5),
+  SPACE(kOfxColourspaceDavinciIntermediateWidegamut),
+  SPACE(kOfxColourspaceLinBmdWidegamutGen5),
+  SPACE(kOfxColourspaceLinDavinciWidegamut),
+  SPACE(kOfxColourspaceCanonlog2CinemagamutD55),
+  SPACE(kOfxColourspaceCanonlog3CinemagamutD55),
+  SPACE(kOfxColourspaceLinCinemagamutD55),
+  SPACE(kOfxColourspaceLinVgamut),
+  SPACE(kOfxColourspaceVlogVgamut),
+  SPACE(kOfxColourspaceLinRedwidegamutrgb),
+  SPACE(kOfxColourspaceLog3g10Redwidegamutrgb),
+  SPACE(kOfxColourspaceLinSgamut3),
+  SPACE(kOfxColourspaceLinSgamut3cine),
+  SPACE(kOfxColourspaceLinVeniceSgamut3),
+  SPACE(kOfxColourspaceLinVeniceSgamut3cine),
+  SPACE(kOfxColourspaceSlog3Sgamut3),
+  SPACE(kOfxColourspaceSlog3Sgamut3cine),
+  SPACE(kOfxColourspaceSlog3VeniceSgamut3),
+  SPACE(kOfxColourspaceSlog3VeniceSgamut3cine),
+  SPACE(kOfxColourspaceCameraRec709),
+  SPACE(kOfxColourspaceSrgbEncodedP3d65Tx)
+};
 
 const char *errMsg(int err) {
   switch (err) {
@@ -64,7 +257,7 @@ OfxInteractSuiteV1    *gInteractHost = 0;
 
 // some flags about the host's behaviour
 int gHostSupportsMultipleBitDepths = false;
-std::string gHostColourManagementStyle;
+ColourManagementStyle gHostColourManagementStyle;
 
 // private instance data type
 struct MyInstanceData {
@@ -76,6 +269,7 @@ struct MyInstanceData {
 
   // handles to our parameters
   OfxParamHandle inputSpaceParam;
+  OfxParamHandle fallbackInputSpaceParam;
   OfxParamHandle outputSpaceParam;
 };
 
@@ -259,6 +453,7 @@ createInstance( OfxImageEffectHandle effect)
 
   // cache param handles
   gParamHost->paramGetHandle(paramSet, "input_colourspace", &myData->inputSpaceParam, 0);
+  gParamHost->paramGetHandle(paramSet, "fallback_colourspace", &myData->fallbackInputSpaceParam, 0);
   gParamHost->paramGetHandle(paramSet, "output_colourspace", &myData->outputSpaceParam, 0);
 
   // cache clip handles
@@ -315,9 +510,6 @@ getSpatialRoI( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs,  OfxP
   // the input needed is the same as the output, so set that on the source clip
   gPropHost->propSetDoubleN(outArgs, "OfxImageClipPropRoI_Source", 4, &roi.x1);
 
-  // retrieve any instance data associated with this effect
-  MyInstanceData *myData = getMyInstanceData(effect);
-
   return kOfxStatOK;
 }
 
@@ -343,11 +535,21 @@ getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs*
 
 // Set our clip preferences 
 static OfxStatus 
-getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle outArgs)
+getClipPreferences( OfxImageEffectHandle effect, OfxPropertySetHandle /*inArgs*/, OfxPropertySetHandle outArgs)
 {
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
-  
+
+  OfxPropertySetHandle effectProps;
+  gEffectHost->getPropertySet(effect, &effectProps);
+
+  // retieve the colour management style that the host has decided we shall use
+  ColourManagementStyle active_style = ColourManagementStyle::None;
+  char * style;
+  if(gPropHost->propGetString(effectProps, kOfxImageEffectPropColourManagementStyle, 0, &style) == kOfxStatOK) {
+    active_style = ofxstring_to_style(style);
+  }
+
   // get the component type and bit depth of our main input
   int  bitDepth;
   bool isRGBA;
@@ -357,58 +559,42 @@ getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs
   const char *bitDepthStr = bitDepth == 8 ? kOfxBitDepthByte : (bitDepth == 16 ? kOfxBitDepthShort : kOfxBitDepthFloat);
   const char *componentStr = isRGBA ? kOfxImageComponentRGBA : kOfxImageComponentAlpha;
 
-  std::string preferredInputSpace;
-  int preferredInputSpaceIndex;
-  gParamHost->paramGetValue(myData->inputSpaceParam, &preferredInputSpaceIndex);
+  const char * preferredInputSpace;
+  gParamHost->paramGetValue(myData->inputSpaceParam, &preferredInputSpace);
+  if(preferredInputSpace && preferredInputSpace[0] == '\0')
+    preferredInputSpace = NULL;
 
-  switch (preferredInputSpaceIndex) {
-  case 0:
-    preferredInputSpace = kOfxColourspaceRoleSceneLinear;
-    break;
-  case 1:
-    preferredInputSpace = kOfxColourspaceRaw;
-    break;
-  case 2:
-    preferredInputSpace = kOfxColourspaceRoleColorTiming;
-    break;
-  case 3:
-    preferredInputSpace = {};
-    break;
- }
-
-  // set our output to be the same same as the input, component and bitdepth
+  const char * fallbackInputSpace;
+  gParamHost->paramGetValue(myData->fallbackInputSpaceParam, &fallbackInputSpace);
+  if(fallbackInputSpace && fallbackInputSpace[0] == '\0')
+    fallbackInputSpace = NULL;
+  
+  // set our output component and bitdepth to be the same same as the input
   gPropHost->propSetString(outArgs, "OfxImageClipPropComponents_Output", 0, componentStr);
   if(gHostSupportsMultipleBitDepths)
     gPropHost->propSetString(outArgs, "OfxImageClipPropDepth_Output", 0, bitDepthStr);
 
-  // Colour management -- preferred colour spaces, in order (most preferred first)
-#define PREFER_COLOURSPACES
-#ifdef PREFER_COLOURSPACES
-  if (gHostColourManagementStyle != kOfxImageEffectColourManagementNone) {
-    spdlog::info("Specifying preferred colourspaces since host style={}", gHostColourManagementStyle);
-    if(!preferredInputSpace.empty()) {
+  // Colour management -- preferred colourspaces, in order (most preferred first)
+  if (active_style != ColourManagementStyle::None) {
+    spdlog::info(FMT_STRING("Specifying preferred input colourspaces"));
+    if(preferredInputSpace == NULL) {
+      spdlog::info(FMT_STRING("Not specifying any preference"));
+    } else {
       const char* colourSpaces[] = {
-	preferredInputSpace.c_str(),
-	kOfxColourspaceLinRec2020,
+	preferredInputSpace, // this is the user's choice
+	fallbackInputSpace ? fallbackInputSpace : kOfxColourspaceRoleSceneLinear,
 	kOfxColourspaceRoleSceneLinear};
       for (size_t i = 0; i < std::size(colourSpaces); i++) {
-	spdlog::info("Specifying preferred colourspace {} = {}", i, colourSpaces[i]);
+	spdlog::info(FMT_STRING("Specifying preferred input colourspace #{} = {}"), i+1, colourSpaces[i]);
 	gPropHost->propSetString(outArgs, kOfxImageClipPropPreferredColourspaces "_Source",
 				 i, colourSpaces[i]);
       }
     }
   } else {
-    spdlog::info("Host does not support colour management (this example won't be very interesting)");
+    spdlog::info(FMT_STRING("Host does not support colour management (this example won't be very interesting)"));
   }
-#endif
 
   return kOfxStatOK;
-}
-
-static void setClipColourspace(const OfxImageClipHandle clip, const std::string &colourspace) {
-    OfxPropertySetHandle clipProps;
-    gEffectHost->clipGetPropertySet(clip, &clipProps);
-    gPropHost->propSetString(clipProps, kOfxImageClipPropColourspace, 0, colourspace.c_str());
 }
 
 static OfxStatus 
@@ -417,42 +603,41 @@ getOutputColourspace( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inAr
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
   
+  OfxPropertySetHandle effectProps;
+  gEffectHost->getPropertySet(effect, &effectProps);
+
+  // retieve the colour management style that the host has decided we shall use
+  ColourManagementStyle active_style = ColourManagementStyle::None;
+  char * style;
+  if(gPropHost->propGetString(effectProps, kOfxImageEffectPropColourManagementStyle, 0, &style) == kOfxStatOK) {
+    active_style = ofxstring_to_style(style);
+  }
+
   OfxStatus status = kOfxStatReplyDefault;
   
-  if (gHostColourManagementStyle != kOfxImageEffectColourManagementNone) {
+  if (active_style != ColourManagementStyle::None) {
   
-    // We could check kOfxImageClipPropPreferredColourspaces from inArgs here
+    // We could access the colourspace set on our input clip(s) here,
+    // if it affects the output space logic.
+
+    // We could also check kOfxImageClipPropPreferredColourspaces from
+    // inArgs here, as the host may have set that to indicate its
+    // preferred output spaces
     
     // Get the colourspace from the parameter
-    std::string preferredOutputSpace;
-    int preferredOutputSpaceIndex;
-    gParamHost->paramGetValue(myData->outputSpaceParam, &preferredOutputSpaceIndex);
-    
-    switch (preferredOutputSpaceIndex) {
-    case 0:
-      preferredOutputSpace = kOfxColourspaceACEScg;
-      break;
-    case 1:
-      preferredOutputSpace = kOfxColourspaceLinRec2020;
-      break;
-    case 2:
-      preferredOutputSpace = kOfxColourspaceSrgbTx;
-      break;
-    case 3:
-      preferredOutputSpace = kOfxColourspaceACEScct;
-      break;
-    }
+    const char * outputSpace;
+    gParamHost->paramGetValue(myData->outputSpaceParam, &outputSpace);
   
-    if (!preferredOutputSpace.empty()) {
-      spdlog::info("Specifying output colourspaces since ={}", preferredOutputSpace);
+    if (outputSpace == NULL || outputSpace[0] == '\0') {
+      spdlog::info(FMT_STRING("Not specifying an output colourspace"));
+    } else {
+      spdlog::info(FMT_STRING("Specifying output colourspaces = {}"), outputSpace);
       // Set the selected colourspace in outArgs
-      gPropHost->propSetString(outArgs, kOfxImageClipPropColourspace, 0, preferredOutputSpace.c_str());
-      // Set the selected colourspace in the clip properties to have it available in the render action
-      setClipColourspace(myData->outputClip, preferredOutputSpace);
+      gPropHost->propSetString(outArgs, kOfxImageClipPropColourspace, 0, outputSpace);
       status = kOfxStatOK;
     }
   } else {
-    spdlog::info("Host does not support colour management (this example won't be very interesting)");
+    spdlog::info(FMT_STRING("Host does not support colour management (this example won't be very interesting)"));
     status = kOfxStatFailed;
   }
    
@@ -507,7 +692,7 @@ static std::string getClipColourspace(const OfxImageClipHandle clip) {
     if (status == kOfxStatOK) {
       return std::string(tmpStr);
     } else {
-      spdlog::info("Can't get clip's colourspace; propGetString returned {}", errMsg(status));
+      spdlog::info(FMT_STRING("Can't get clip's colourspace; propGetString returned {}"), errMsg(status));
       return std::string("unspecified");
     }
 
@@ -529,7 +714,7 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   OfxStatus st = gPropHost->propGetDoubleN(inArgs, kOfxImageEffectPropRenderScale, 2,
                                           renderScale);
   if (st != kOfxStatOK) {
-    spdlog::warn("Can't get render scale! {}", errMsg(st));
+    spdlog::warn(FMT_STRING("Can't get render scale! {}"), errMsg(st));
     renderScale[0] = renderScale[1] = 1.0f;
   }
   // retrieve any instance data associated with this effect
@@ -537,17 +722,31 @@ static OfxStatus render( OfxImageEffectHandle  instance,
 
   // property handles and members of each image
   // in reality, we would put this in a struct as the C++ support layer does
-  OfxPropertySetHandle sourceImg = NULL, outputImg = NULL, maskImg = NULL;
-  int srcRowBytes, srcBitDepth, dstRowBytes, dstBitDepth, maskRowBytes = 0, maskBitDepth;
-  bool srcIsAlpha, dstIsAlpha, maskIsAlpha = false;
-  OfxRectI dstRect, srcRect, maskRect = {0, 0, 0, 0};
-  void *src, *dst, *mask = NULL;
+  OfxPropertySetHandle sourceImg = NULL, outputImg = NULL;
+  int srcRowBytes, srcBitDepth, dstRowBytes, dstBitDepth;
+  bool srcIsAlpha, dstIsAlpha;
+  OfxRectI dstRect, srcRect;
+  void *src, *dst;
 
   std::string inputColourspace = getClipColourspace(myData->sourceClip);
-  spdlog::info("source clip colourspace = {}", inputColourspace);
+  spdlog::info(FMT_STRING("source clip colourspace = {}"), inputColourspace);
   std::string outputColourspace = getClipColourspace(myData->outputClip);
-  spdlog::info("output clip colourspace = {}", outputColourspace);
+  spdlog::info(FMT_STRING("output clip colourspace = {}"), outputColourspace);
 
+  // In a real plugin, the render behaviour will change based on the
+  // input and output colourspaces set in the clips.
+  //
+  // Note that a clip's input colourspace can be *any* valid
+  // colourspace identifier. It is *not* guaranteed to be:
+  //
+  // - a space listed in the plugin's preferences for the clip
+  // - a valid space for the colour management style that the plugin supports
+  //
+  // The output colourspace can always be expected to be the space
+  // that was set in the call to getOutputColourspace() - unless that
+  // was "OfxColourspace_<input_clip>" in which case the clip will have
+  // the actual colourspace identifier set.
+  
   try {
     // get the source image
     sourceImg = ofxuGetImage(myData->sourceClip, time, srcRowBytes, srcBitDepth, srcIsAlpha, srcRect, src);
@@ -568,7 +767,7 @@ static OfxStatus render( OfxImageEffectHandle  instance,
 
     int nchannels = 4;
     int font_height = 50 * renderScale[0];
-    spdlog::info("Rendering {}x{} image @{},{}, depth={}", xdim, ydim, srcRect.x1, srcRect.y1, dstBitDepth);
+    spdlog::info(FMT_STRING("Rendering {}x{} image @{},{}, depth={}"), xdim, ydim, srcRect.x1, srcRect.y1, dstBitDepth);
 
     // Just copy from source to dest, and draw some text
     if (srcRowBytes < 0 && dstRowBytes < 0)
@@ -576,13 +775,13 @@ static OfxStatus render( OfxImageEffectHandle  instance,
     else
       memcpy(dst, src, srcRowBytes * ydim);
     int ystart = ydim - 100;
-    drawText(fmt::format("Image: {}x{}, depth={}, scale={:.2f}x{:.2f}", xdim, ydim, dstBitDepth, renderScale[0], renderScale[1]),
+    drawText(fmt::format(FMT_STRING("Image: {}x{}, depth={}, scale={:.2f}x{:.2f}"), xdim, ydim, dstBitDepth, renderScale[0], renderScale[1]),
              100, ystart, font_height, dst, xdim, ydim, dstBitDepth, nchannels, dstRowBytes);
     ystart -= font_height;
-    drawText(fmt::format("input colourspace: {}", inputColourspace),
-             100, ystart, font_height, dst, xdim, ydim, dstBitDepth, nchannels, dstRowBytes);
+    drawText(fmt::format(FMT_STRING("input colourspace: {}"), inputColourspace),
+	     100, ystart, font_height, dst, xdim, ydim, dstBitDepth, nchannels, dstRowBytes);
     ystart -= font_height;
-    drawText(fmt::format("output colourspace: {}", outputColourspace),
+    drawText(fmt::format(FMT_STRING("output colourspace: {}"), outputColourspace),
              100, ystart, font_height, dst, xdim, ydim, dstBitDepth, nchannels, dstRowBytes);
   }
   catch(OfxuNoImageException &ex) {
@@ -605,16 +804,21 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   return status;
 }
 
-
 //  describe the plugin in context
+template<ColourManagementStyle STYLE>
 static OfxStatus
 describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
 {
-  // get the context from the inArgs handle
-  char *context;
-  gPropHost->propGetString(inArgs, kOfxImageEffectPropContext, 0, &context);
-  bool isGeneralContext = strcmp(context, kOfxImageEffectContextGeneral) == 0;
-
+  // The host will decide which colour management style it will use
+  // when using this plugin, and set its decision into the effect
+  // instance properties.
+  //
+  // We cannot access that here as we don't have an effect instance,
+  // so we **assume** that the host has chosen the most complex
+  // mutually-supported style.
+  
+  ColourManagementStyle active_style = std::min(STYLE, gHostColourManagementStyle);
+  
   OfxPropertySetHandle clipProps;
   // define the single output clip in both contexts
   gEffectHost->clipDefine(effect, kOfxImageEffectOutputClipName, &clipProps);
@@ -634,22 +838,57 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
   OfxParamSetHandle paramSet;
   gEffectHost->getParamSet(effect, &paramSet);
 
-  gParamHost->paramDefine(paramSet, kOfxParamTypeChoice, "input_colourspace", &props);
-  gPropHost->propSetInt(props, kOfxParamPropDefault, 0, 0);
-  gPropHost->propSetString(props, kOfxPropLabel, 0, "Preferred Input Colourspace");
-  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 0, "Scene Linear");
-  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 1, "Raw");
-  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 2, "Log (Color Timing role)");
-  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 3, "Unspecified (accepts anything)");
+  gParamHost->paramDefine(paramSet, kOfxParamTypeStrChoice, "input_colourspace", &props);
+  gPropHost->propSetString(props, kOfxPropLabel, 0, "First-choice Input Colourspace");
+  int i = 0;
+  for(const auto & space : input_space_choices) {
+    if(space.style > active_style) {
+      continue; // this space isn't available in the negotiated colour style
+    }
+    if(i == 0) {
+      // set first available space as the default
+      gPropHost->propSetString(props, kOfxParamPropDefault, 0, space.ident);
+    }
+    gPropHost->propSetString(props, kOfxParamPropChoiceEnum, i, space.ident);
+    gPropHost->propSetString(props, kOfxParamPropChoiceOption, i, space.ui_label);
+    gPropHost->propSetInt(props, kOfxParamPropChoiceOrder, i, i);
+    i++;
+  }
 
-  gParamHost->paramDefine(paramSet, kOfxParamTypeChoice, "output_colourspace", &props);
-  gPropHost->propSetInt(props, kOfxParamPropDefault, 0, 0);
+  gParamHost->paramDefine(paramSet, kOfxParamTypeStrChoice, "fallback_colourspace", &props);
+  gPropHost->propSetString(props, kOfxPropLabel, 0, "Second-choice Input Colourspace");
+  i = 0;
+  for(const auto & space : input_space_choices) {
+    if(space.style > active_style) {
+      continue; // this space isn't available in the negotiated colour style
+    }
+    if(i == 0) {
+      // set first available space as the default
+      gPropHost->propSetString(props, kOfxParamPropDefault, 0, space.ident);
+    }
+    gPropHost->propSetString(props, kOfxParamPropChoiceEnum, i, space.ident);
+    gPropHost->propSetString(props, kOfxParamPropChoiceOption, i, space.ui_label);
+    gPropHost->propSetInt(props, kOfxParamPropChoiceOrder, i, i);
+    i++;
+  }
+ 
+  gParamHost->paramDefine(paramSet, kOfxParamTypeStrChoice, "output_colourspace", &props);
   gPropHost->propSetString(props, kOfxPropLabel, 0, "Output Colourspace");
-  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 0, "ACEScg (scene linear)");
-  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 1, "Rec2020 (linear)");
-  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 2, "SRGB");
-  gPropHost->propSetString(props, kOfxParamPropChoiceOption, 3, "ACEScct (Log)");
-
+  i = 0;
+  for(const auto & space : output_space_choices) {
+    if(space.style > active_style) {
+      continue; // this space isn't available in the negotiated colour style
+    }
+    if(i == 0) {
+      // set first available space as the default
+      gPropHost->propSetString(props, kOfxParamPropDefault, 0, space.ident);
+    }
+    gPropHost->propSetString(props, kOfxParamPropChoiceEnum, i, space.ident);
+    gPropHost->propSetString(props, kOfxParamPropChoiceOption, i, space.ui_label);
+    gPropHost->propSetInt(props, kOfxParamPropChoiceOrder, i, i);
+    i++;
+  }
+  
   // These params affect clip preferences
   OfxPropertySetHandle effectProps;
   gEffectHost->getPropertySet(effect, &effectProps);
@@ -661,6 +900,7 @@ describeInContext( OfxImageEffectHandle  effect,  OfxPropertySetHandle inArgs)
 
 ////////////////////////////////////////////////////////////////////////////////
 // the plugin's description routine
+template<ColourManagementStyle STYLE>
 static OfxStatus
 describe(OfxImageEffectHandle  effect)
 {
@@ -672,14 +912,12 @@ describe(OfxImageEffectHandle  effect)
   // record a few host features
   gPropHost->propGetInt(gHost->host, kOfxImageEffectPropSupportsMultipleClipDepths, 0, &gHostSupportsMultipleBitDepths);
   char *tmpStr = NULL;
-  stat = gPropHost->propGetString(
-                                  gHost->host, kOfxImageEffectPropColourManagementStyle, 0, &tmpStr);
+  stat = gPropHost->propGetString(gHost->host, kOfxImageEffectPropColourManagementStyle, 0, &tmpStr);
   if (stat == kOfxStatOK) {
-    gHostColourManagementStyle = tmpStr;
-    spdlog::info("describe: host says its colour management style is '{}'", gHostColourManagementStyle);
+    gHostColourManagementStyle = ofxstring_to_style(tmpStr);
   } else {
-    spdlog::info("describe: host does not support colour management (err={})", errMsg(stat));
-    gHostColourManagementStyle = kOfxImageEffectColourManagementNone;
+    spdlog::info(FMT_STRING("describe: host does not support colour management (err={})"), errMsg(stat));
+    gHostColourManagementStyle = ColourManagementStyle::None;
   }
 
   // get the property handle for the plugin
@@ -699,22 +937,46 @@ describe(OfxImageEffectHandle  effect)
   gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedPixelDepths, 2, kOfxBitDepthFloat);
 
   // set some labels and the group it belongs to
-  gPropHost->propSetString(effectProps, kOfxPropLabel, 0, "OFX Colourspace Example");
+  switch(STYLE)
+  {
+  case ColourManagementStyle::Basic:
+    gPropHost->propSetString(effectProps, kOfxPropLabel, 0, "OFX Colourspace Basic Example");
+    break;
+  case ColourManagementStyle::Core:
+    gPropHost->propSetString(effectProps, kOfxPropLabel, 0, "OFX Colourspace Core Example");
+    break;
+  case ColourManagementStyle::Full:
+    gPropHost->propSetString(effectProps, kOfxPropLabel, 0, "OFX Colourspace Full Example");
+    break;
+  }
   gPropHost->propSetString(effectProps, kOfxImageEffectPluginPropGrouping, 0, "OFX Example");
 
   // define the contexts we can be used in
   gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 0, kOfxImageEffectContextFilter);
   gPropHost->propSetString(effectProps, kOfxImageEffectPropSupportedContexts, 1, kOfxImageEffectContextGeneral);
 
-  if (gHostColourManagementStyle != kOfxImageEffectColourManagementNone) {
-    // host supports colour management, either OCIO or Core (or others; see the spec).
-    // OCIO implies core, so here we can assume it supports Core.
-    // Tell it we support Core.
-    stat = gPropHost->propSetString(effectProps,
-                                    kOfxImageEffectPropColourManagementStyle, 0,
-                                    kOfxImageEffectColourManagementCore);
+  if (gHostColourManagementStyle != ColourManagementStyle::None) {
+    // host supports colour management, so tell it what level the plugin supports
+    switch(STYLE)
+    {
+    case ColourManagementStyle::Basic:
+      stat = gPropHost->propSetString(effectProps,
+				      kOfxImageEffectPropColourManagementStyle, 0,
+				      kOfxImageEffectColourManagementBasic);
+      break;
+    case ColourManagementStyle::Core:
+      stat = gPropHost->propSetString(effectProps,
+				      kOfxImageEffectPropColourManagementStyle, 0,
+				      kOfxImageEffectColourManagementCore);
+      break;
+    case ColourManagementStyle::Full:
+      stat = gPropHost->propSetString(effectProps,
+				      kOfxImageEffectPropColourManagementStyle, 0,
+				      kOfxImageEffectColourManagementFull);
+      break;
+    }
     if (stat != kOfxStatOK) {
-      spdlog::error("setting kOfxImageEffectPropColourManagementStyle prop: stat={}", errMsg(stat));
+      spdlog::error(FMT_STRING("setting kOfxImageEffectPropColourManagementStyle prop: stat={}"), errMsg(stat));
     }
   }
 
@@ -726,22 +988,24 @@ std::set<std::string> silentActions = {"uk.co.thefoundry.FnOfxImageEffectActionG
 
 ////////////////////////////////////////////////////////////////////////////////
 // The main function
+
+template<ColourManagementStyle STYLE>
 static OfxStatus
-pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
+pluginMain(const char *action, const void *handle, OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
 {
   OfxStatus stat = kOfxStatOK;
 
   if (silentActions.find(action) == silentActions.end())
-    spdlog::info(">>> pluginMain({})", action);
+    spdlog::info(FMT_STRING(">>> pluginMain({})"), action);
   try {
   // cast to appropriate type
   OfxImageEffectHandle effect = (OfxImageEffectHandle) handle;
 
   if(strcmp(action, kOfxActionDescribe) == 0) {
-    stat = describe(effect);
+    stat = describe<STYLE>(effect);
   }
   else if(strcmp(action, kOfxImageEffectActionDescribeInContext) == 0) {
-    stat = describeInContext(effect, inArgs);
+    stat = describeInContext<STYLE>(effect, inArgs);
   }
   else if(strcmp(action, kOfxActionLoad) == 0) {
     stat = onLoad();
@@ -779,28 +1043,27 @@ pluginMain(const char *action,  const void *handle, OfxPropertySetHandle inArgs,
   else if(strcmp(action, kOfxImageEffectActionGetOutputColourspace) == 0) {
     stat = getOutputColourspace(effect, inArgs, outArgs);
   }
-  
   } catch (const std::bad_alloc&) {
     // catch memory
-    spdlog::error("Caught OFX Plugin Memory error");
+    spdlog::error(FMT_STRING("Caught OFX Plugin Memory error"));
     stat = kOfxStatErrMemory;
   } catch ( const std::exception& e ) {
     // standard exceptions
-    spdlog::error("Caught OFX Plugin error {}", e.what());
+    spdlog::error(FMT_STRING("Caught OFX Plugin error {}"), e.what());
     stat = kOfxStatErrUnknown;
   } catch (int err) {
-	spdlog::error("Caught misc error {}", err);
+    spdlog::error(FMT_STRING("Caught misc error {}"), err);
     stat = err;
   } catch ( ... ) {
     // everything else
-    spdlog::error("Caught unknown OFX plugin error");
+    spdlog::error(FMT_STRING("Caught unknown OFX plugin error"));
     stat = kOfxStatErrUnknown;
   }
   // other actions to take the default value
 
 
   if (silentActions.find(action) == silentActions.end())
-    spdlog::info("<<< pluginMain({}) = {}", action, errMsg(stat));
+    spdlog::info(FMT_STRING("<<< pluginMain({}) = {}"), action, errMsg(stat));
   return stat;
 }
 
@@ -813,30 +1076,51 @@ setHostFunc(OfxHost *hostStruct)
 
 ////////////////////////////////////////////////////////////////////////////////
 // the plugin struct 
-static OfxPlugin colourspacePlugin =
-{       
-  kOfxImageEffectPluginApi,
-  1,
-  "io.aswf.openfx.example.ColourspacePlugin",
-  1,
-  0,
-  setHostFunc,
-  pluginMain
+static OfxPlugin colourspacePlugin[] =
+{
+  {       
+    kOfxImageEffectPluginApi,
+    1,
+    "io.aswf.openfx.example.ColourspacePluginBasic",
+    1,
+    0,
+    setHostFunc,
+    pluginMain<ColourManagementStyle::Basic>
+  },
+  {       
+    kOfxImageEffectPluginApi,
+    1,
+    "io.aswf.openfx.example.ColourspacePluginCore",
+    1,
+    0,
+    setHostFunc,
+    pluginMain<ColourManagementStyle::Core>
+  },
+  {       
+    kOfxImageEffectPluginApi,
+    1,
+    "io.aswf.openfx.example.ColourspacePluginFull",
+    1,
+    0,
+    setHostFunc,
+    pluginMain<ColourManagementStyle::Full>
+  }
+  // (can't add ColourManagementStyle::OCIO without adding an unwanted OCIO dependency to this example)
 };
    
 // the two mandated functions
 EXPORT OfxPlugin *
 OfxGetPlugin(int nth)
 {
-  if(nth == 0)
-    return &colourspacePlugin;
+  if(nth < 3)
+    return &colourspacePlugin[nth];
   return 0;
 }
  
 EXPORT int
 OfxGetNumberOfPlugins(void)
 {       
-  return 1;
+  return 3;
 }
 
 // Called first after loading. This is optional for plugins.
@@ -849,7 +1133,7 @@ OfxSetHost()
 struct SharedLibResource {
   SharedLibResource() {
     spdlog::set_level(spdlog::level::trace);
-    spdlog::trace("shlib/dll loaded");
+    spdlog::trace(FMT_STRING("shlib/dll loaded"));
   }
   ~SharedLibResource() {
   }
