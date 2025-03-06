@@ -269,13 +269,13 @@ def gen_props_metadata(props_metadata, outfile_path: Path):
 #include <array>
 #include <string_view>
 
-#include "ofxImageEffect.h"
-#include "ofxGPURender.h"
-#include "ofxColour.h"
-#include "ofxDrawSuite.h"
-#include "ofxParametricParam.h"
-#include "ofxKeySyms.h"
-#include "ofxOld.h"
+#include <ofxImageEffect.h>
+#include <ofxGPURender.h>
+#include <ofxColour.h>
+#include <ofxDrawSuite.h>
+#include <ofxParametricParam.h>
+#include <ofxKeySyms.h>
+#include <ofxOld.h>
 
 namespace openfx {
 enum class PropType {
@@ -441,14 +441,14 @@ def gen_props_by_set(props_by_set, props_by_action, outfile_path: Path):
 #include <vector>
 #include <map>
 #include <array>
-#include "ofxImageEffect.h"
-#include "ofxGPURender.h"
-#include "ofxColour.h"
-#include "ofxDrawSuite.h"
-#include "ofxParametricParam.h"
-#include "ofxKeySyms.h"
-#include "ofxPropsMetadata.h"
-// #include "ofxOld.h"
+#include <ofxImageEffect.h>
+#include <ofxGPURender.h>
+#include <ofxColour.h>
+#include <ofxDrawSuite.h>
+#include <ofxParametricParam.h>
+#include <ofxKeySyms.h>
+#include <ofxPropsMetadata.h>
+// #include <ofxOld.h>
 
 namespace openfx {
 

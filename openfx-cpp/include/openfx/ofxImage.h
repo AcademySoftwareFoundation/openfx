@@ -5,7 +5,7 @@
 
 #include <ofxCore.h>
 #include <ofxImageEffect.h>
-#include <ofxPropsAccess.h>
+#include "ofxPropsAccess.h"
 
 #include <memory>  // For std::unique_ptr
 

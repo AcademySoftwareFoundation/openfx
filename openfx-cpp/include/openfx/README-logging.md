@@ -8,7 +8,7 @@ The OFX API Wrapper provides a lightweight, thread-safe customizable logging sys
 ## Basic Usage
 
 ```cpp
-#include "ofxLog.h"
+#include "openfx/ofxLog.h"
 
 // Log simple messages
 openfx::Logger::info("Application started");
