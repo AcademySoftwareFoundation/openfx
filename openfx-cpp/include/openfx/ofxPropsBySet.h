@@ -8,14 +8,14 @@
 #include <vector>
 #include <map>
 #include <array>
-#include "ofxImageEffect.h"
-#include "ofxGPURender.h"
-#include "ofxColour.h"
-#include "ofxDrawSuite.h"
-#include "ofxParametricParam.h"
-#include "ofxKeySyms.h"
-#include "ofxPropsMetadata.h"
-// #include "ofxOld.h"
+#include <ofxImageEffect.h>
+#include <ofxGPURender.h>
+#include <ofxColour.h>
+#include <ofxDrawSuite.h>
+#include <ofxParametricParam.h>
+#include <ofxKeySyms.h>
+#include <ofxPropsMetadata.h>
+// #include <ofxOld.h>
 
 namespace openfx {
 
