@@ -115,7 +115,6 @@ delegate this responsibility as needed.
 * Gary Oberbrunner (chair) - Dark Star Systems
 * Pierre Jasmin - RE:Vision Effects
 * John-Paul Smith - Boris FX
-* Dennis Adams - Sony Creative Software Inc.
 * Phil Barrett - FilmLight
 * Guido Veldkamp - Assimilate BV
 * John Mertic - The Linux Foundation
