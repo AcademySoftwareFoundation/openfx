@@ -5,11 +5,12 @@
 
 #include <ofxCore.h>
 #include <ofxImageEffect.h>
-#include "ofxPropsAccess.h"
 
 #include <memory>  // For std::unique_ptr
 
-#include "ofxExceptions.h"
+#include "openfx/ofxExceptions.h"
+#include "openfx/ofxMisc.h"
+#include "openfx/ofxPropsAccess.h"
 
 namespace openfx {
 
@@ -23,7 +24,7 @@ class Image {
  public:
   // Constructor acquires the resource
   Image(const OfxImageEffectSuiteV1* effect_suite, const OfxPropertySuiteV1* prop_suite,
-        OfxImageClipHandle clip, OfxTime time, OfxRectD* rect = nullptr)
+        OfxImageClipHandle clip, OfxTime time, const OfxRectD* rect = nullptr)
       : mEffectSuite(effect_suite), mImgProps(nullptr) {
     if (clip != nullptr) {
       OfxStatus status = mEffectSuite->clipGetImage(clip, time, rect, &mImg);
@@ -72,14 +73,25 @@ class Image {
     return *this;
   }
 
-  // Accessor to get the underlying handle
-  OfxPropertySetHandle get() const { return mImg; }
+  // Get the image's data pointer
+  void* data() { return props()->get<openfx::PropId::OfxImagePropData>(); }
 
-  // Accessor for PropertyAccessor
+  // Get the image's bounds
+  OfxRectI bounds() {
+    return openfx::toOfxRectI(props()->getAll<openfx::PropId::OfxImagePropBounds>());
+  }
+
+  // Get the image's rowbytes
+  int rowbytes() { return props()->get<openfx::PropId::OfxImagePropRowBytes>(); }
+
+  // Get the PropertyAccessor
   PropertyAccessor* props() { return mImgProps.get(); }
   const PropertyAccessor* props() const { return mImgProps.get(); }
 
-  // Implicit conversion to the handle type
+  // Get the underlying handle
+  OfxPropertySetHandle get() const { return mImg; }
+
+  // Implicit conversion to base handle type
   explicit operator OfxPropertySetHandle() const { return mImg; }
 
   bool empty() const { return mImg == nullptr; }

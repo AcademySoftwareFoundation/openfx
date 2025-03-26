@@ -404,7 +404,7 @@ static inline constexpr PropDefsArray<PropDef> prop_defs = {
 { "OfxImageEffectPropOpenCLEnabled", PropId::OfxImageEffectPropOpenCLEnabled,
   {PropType::Bool}, 1, 1, nullptr, 0},
 { "OfxImageEffectPropOpenCLImage", PropId::OfxImageEffectPropOpenCLImage,
-  {PropType::Int}, 1, 1, nullptr, 0},
+  {PropType::Pointer}, 1, 1, nullptr, 0},
 { "OfxImageEffectPropOpenCLRenderSupported", PropId::OfxImageEffectPropOpenCLRenderSupported,
   {PropType::Enum}, 1, 1, prop_enum_values::OfxImageEffectPropOpenCLRenderSupported.data(), prop_enum_values::OfxImageEffectPropOpenCLRenderSupported.size()},
 { "OfxImageEffectPropOpenCLSupported", PropId::OfxImageEffectPropOpenCLSupported,
@@ -732,7 +732,7 @@ DEFINE_PROP_TRAITS(OfxImageEffectPropOCIODisplay, const char *, false);
 DEFINE_PROP_TRAITS(OfxImageEffectPropOCIOView, const char *, false);
 DEFINE_PROP_TRAITS(OfxImageEffectPropOpenCLCommandQueue, void *, false);
 DEFINE_PROP_TRAITS(OfxImageEffectPropOpenCLEnabled, bool, false);
-DEFINE_PROP_TRAITS(OfxImageEffectPropOpenCLImage, int, false);
+DEFINE_PROP_TRAITS(OfxImageEffectPropOpenCLImage, void *, false);
 DEFINE_PROP_TRAITS(OfxImageEffectPropOpenCLRenderSupported, const char *, false);
 DEFINE_PROP_TRAITS(OfxImageEffectPropOpenCLSupported, const char *, false);
 DEFINE_PROP_TRAITS(OfxImageEffectPropOpenGLEnabled, bool, false);
