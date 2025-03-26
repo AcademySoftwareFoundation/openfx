@@ -34,6 +34,7 @@ propertySets:
       - OfxImageEffectPropSupportedComponents
       - OfxImageEffectPropSupportedContexts
       - OfxImageEffectPropMultipleClipDepths
+      - OfxImageEffectPropOpenCLSupported
       - OfxImageEffectPropSupportsMultipleClipPARs
       - OfxImageEffectPropSetableFrameRate
       - OfxImageEffectPropSetableFielding
@@ -71,6 +72,7 @@ propertySets:
       - OfxImageEffectPluginRenderThreadSafety
       - OfxImageEffectPluginPropHostFrameThreading
       - OfxImageEffectPluginPropOverlayInteractV1
+      - OfxImageEffectPropOpenCLSupported
       - OfxImageEffectPropSupportsMultiResolution
       - OfxImageEffectPropSupportsTiles
       - OfxImageEffectPropTemporalClipAccess
@@ -947,7 +949,7 @@ properties:
     dimension: 1
     introduced: "1.5"
   OfxImageEffectPropOpenCLImage:
-    type: int
+    type: pointer
     dimension: 1
     introduced: "1.5"
   OfxImageEffectPropOpenCLSupported:
