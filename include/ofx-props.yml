@@ -1001,10 +1001,10 @@ properties:
     type: double
     dimension: 2
   OfxImageEffectPropRegionOfDefinition:
-    type: int
+    type: double
     dimension: 4
   OfxImageEffectPropRegionOfInterest:
-    type: int
+    type: double
     dimension: 4
   OfxImageEffectPropRenderQualityDraft:
     type: bool
