@@ -432,9 +432,9 @@ static inline constexpr PropDefsArray<PropDef> prop_defs = {
 { "OfxImageEffectPropProjectSize", PropId::OfxImageEffectPropProjectSize,
   {PropType::Double}, 1, 2, nullptr, 0},
 { "OfxImageEffectPropRegionOfDefinition", PropId::OfxImageEffectPropRegionOfDefinition,
-  {PropType::Int}, 1, 4, nullptr, 0},
+  {PropType::Double}, 1, 4, nullptr, 0},
 { "OfxImageEffectPropRegionOfInterest", PropId::OfxImageEffectPropRegionOfInterest,
-  {PropType::Int}, 1, 4, nullptr, 0},
+  {PropType::Double}, 1, 4, nullptr, 0},
 { "OfxImageEffectPropRenderQualityDraft", PropId::OfxImageEffectPropRenderQualityDraft,
   {PropType::Bool}, 1, 1, nullptr, 0},
 { "OfxImageEffectPropRenderScale", PropId::OfxImageEffectPropRenderScale,
@@ -746,8 +746,8 @@ DEFINE_PROP_TRAITS(OfxImageEffectPropPreMultiplication, const char *, false);
 DEFINE_PROP_TRAITS(OfxImageEffectPropProjectExtent, double, false);
 DEFINE_PROP_TRAITS(OfxImageEffectPropProjectOffset, double, false);
 DEFINE_PROP_TRAITS(OfxImageEffectPropProjectSize, double, false);
-DEFINE_PROP_TRAITS(OfxImageEffectPropRegionOfDefinition, int, false);
-DEFINE_PROP_TRAITS(OfxImageEffectPropRegionOfInterest, int, false);
+DEFINE_PROP_TRAITS(OfxImageEffectPropRegionOfDefinition, double, false);
+DEFINE_PROP_TRAITS(OfxImageEffectPropRegionOfInterest, double, false);
 DEFINE_PROP_TRAITS(OfxImageEffectPropRenderQualityDraft, bool, false);
 DEFINE_PROP_TRAITS(OfxImageEffectPropRenderScale, double, false);
 DEFINE_PROP_TRAITS(OfxImageEffectPropRenderWindow, int, false);
