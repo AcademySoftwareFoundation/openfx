@@ -4,6 +4,7 @@
 #pragma once
 
 #include <math.h>
+#include <ofxCore.h>
 
 #include <array>
 #include <cassert>
@@ -13,7 +14,6 @@
 #include <type_traits>
 #include <vector>
 
-#include <ofxCore.h>
 #include "ofxExceptions.h"
 #include "ofxLog.h"
 #include "ofxPropsMetadata.h"
@@ -503,6 +503,62 @@ class PropertyAccessor {
       this->template set<id>(value, index++, error_if_missing);
     }
 
+    return *this;
+  }
+
+  // For 2-d (PointD) single-type properties
+  template <PropId id,
+            std::enable_if_t<properties::PropTraits<id>::def.dimension == 2 &&
+                                 !properties::PropTraits<id>::is_multitype &&
+                                 std::is_same_v<typename properties::PropTraits<id>::type, double>,
+                             int> = 0>
+  PropertyAccessor &set(OfxPointD values, bool error_if_missing = true) {
+    assert(propset_ != nullptr);
+    this->template set<id>(values.x, 0, error_if_missing);
+    this->template set<id>(values.y, 1, error_if_missing);
+    return *this;
+  }
+
+  // For 2-d (PointI) single-type properties
+  template <PropId id,
+            std::enable_if_t<properties::PropTraits<id>::def.dimension == 2 &&
+                                 !properties::PropTraits<id>::is_multitype &&
+                                 std::is_same_v<typename properties::PropTraits<id>::type, double>,
+                             int> = 0>
+  PropertyAccessor &set(OfxPointI values, bool error_if_missing = true) {
+    assert(propset_ != nullptr);
+    this->template set<id>(values.x, 0, error_if_missing);
+    this->template set<id>(values.y, 1, error_if_missing);
+    return *this;
+  }
+
+  // For 4-d (RectD) single-type properties
+  template <PropId id,
+            std::enable_if_t<properties::PropTraits<id>::def.dimension == 4 &&
+                                 !properties::PropTraits<id>::is_multitype &&
+                                 std::is_same_v<typename properties::PropTraits<id>::type, double>,
+                             int> = 0>
+  PropertyAccessor &set(OfxRectD values, bool error_if_missing = true) {
+    assert(propset_ != nullptr);
+    this->template set<id>(values.x1, 0, error_if_missing);
+    this->template set<id>(values.y1, 1, error_if_missing);
+    this->template set<id>(values.x2, 2, error_if_missing);
+    this->template set<id>(values.y2, 3, error_if_missing);
+    return *this;
+  }
+
+  // For 4-d (RectI) single-type properties
+  template <PropId id,
+            std::enable_if_t<properties::PropTraits<id>::def.dimension == 4 &&
+                                 !properties::PropTraits<id>::is_multitype &&
+                                 std::is_same_v<typename properties::PropTraits<id>::type, double>,
+                             int> = 0>
+  PropertyAccessor &set(OfxRectI values, bool error_if_missing = true) {
+    assert(propset_ != nullptr);
+    this->template set<id>(values.x1, 0, error_if_missing);
+    this->template set<id>(values.y1, 1, error_if_missing);
+    this->template set<id>(values.x2, 2, error_if_missing);
+    this->template set<id>(values.y2, 3, error_if_missing);
     return *this;
   }
 
