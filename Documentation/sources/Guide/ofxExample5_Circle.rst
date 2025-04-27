@@ -364,7 +364,7 @@ What is this region of definition action? Easy, an effect and a clip
 have a region of definition (RoD). This is the maximum rectangle for
 which an effect or clip can produce pixels. You can ask for RoD of a
 clip via the :cpp:func:`OfxImageEffectSuiteV1::clipGetRegionOfDefinition` function in the image
-effect suite. The RoD is currently defined in canonical coordinates [4]_.
+effect suite. The RoD is defined in canonical coordinates [4]_.
 
 Note that the RoD is independent of the **bounds** of a image, an
 image’s bounds may be less than, more than or equal to the RoD. It is up

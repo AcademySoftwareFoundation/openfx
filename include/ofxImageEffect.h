@@ -1582,18 +1582,11 @@ If clipGetImage is called twice with the same parameters, then two separate imag
  */
   OfxStatus (*clipReleaseImage)(OfxPropertySetHandle imageHandle);
   
-
   /** @brief Returns the spatial region of definition of the clip at the given time
 
-      \arg \c clipHandle  clip to extract the image from
-      \arg \c time        time to fetch the image at
-      \arg \c region      region to fetch the image from (optional, set to NULL to get a 'default' region)
-                            this is in the \ref CanonicalCoordinates. 
-      \arg \c imageHandle handle where the image is returned
-
-  An image is fetched from a clip at the indicated time for the given region and returned in the imageHandle.
-
- If the \e region parameter is not set to NULL, then it will be clipped to the clip's Region of Definition for the given time. The returned image will be \em at \em least as big as this region. If the region parameter is not set, then the region fetched will be at least the Region of Interest the effect has previously specified, clipped the clip's Region of Definition.
+      \arg \c clipHandle  return this clip's region of definition
+      \arg \c time        time to use when determining clip's region of definition
+      \arg \c bounds      (out) bounds are returned here -- in \ref CanonicalCoordinates
 
 \pre
  - clipHandle was returned by clipGetHandle
@@ -1602,13 +1595,10 @@ If clipGetImage is called twice with the same parameters, then two separate imag
  - bounds will be filled the RoD of the clip at the indicated time
 
 @returns
-- ::kOfxStatOK - the image was successfully fetched and returned in the handle,
-- ::kOfxStatFailed - the image could not be fetched because it does not exist in the clip at the indicated time, the plugin
-                     should continue operation, but assume the image was black and transparent.
+- ::kOfxStatOK - the region was successfully found and returned in the handle,
+- ::kOfxStatFailed - the region could not be determined,
 - ::kOfxStatErrBadHandle - the clip handle was invalid,
 - ::kOfxStatErrMemory - the host had not enough memory to complete the operation, plugin should abort whatever it was doing.
-
-
   */
   OfxStatus (*clipGetRegionOfDefinition)(OfxImageClipHandle clip,
 					 OfxTime time,
