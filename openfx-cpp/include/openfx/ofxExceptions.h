@@ -4,11 +4,12 @@
 #pragma once
 
 #include <ofxCore.h>
-#include "ofxStatusStrings.h"
 
 #include <sstream>
 #include <stdexcept>
 #include <string>
+
+#include "ofxStatusStrings.h"
 
 namespace openfx {
 
@@ -63,6 +64,15 @@ class ClipNotFoundException : public OfxException {
 class ImageNotFoundException : public OfxException {
  public:
   explicit ImageNotFoundException(int code, const std::string &msg = "")
+      : OfxException(code, msg) {}
+};
+
+/**
+ * @brief Exception thrown when a suite isn't found
+ */
+class SuiteNotFoundException : public OfxException {
+ public:
+  explicit SuiteNotFoundException(int code, const std::string &msg = "")
       : OfxException(code, msg) {}
 };
 

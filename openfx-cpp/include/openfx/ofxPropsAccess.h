@@ -17,6 +17,7 @@
 #include "ofxExceptions.h"
 #include "ofxLog.h"
 #include "ofxPropsMetadata.h"
+#include "ofxSuites.h"
 
 /**
  * OpenFX Property Accessor System - Usage Examples
@@ -205,20 +206,76 @@ struct EnumValue {
 // Type-safe property accessor for any props of a given prop set
 class PropertyAccessor {
  public:
+  // Basic constructor
   explicit PropertyAccessor(OfxPropertySetHandle propset, const OfxPropertySuiteV1 *prop_suite)
-      : propset_(propset), propSuite_(prop_suite) {}
+      : propset_(propset), propSuite_(prop_suite) {
+    if (!propSuite_) {
+      throw SuiteNotFoundException(kOfxStatErrMissingHostFeature,
+                                   "PropertyAccessor: missing property suite");
+    }
+  }
 
-  // Convenience constructor for ImageEffect -- get effect property set & construct accessor
+  // Constructor taking a prop set and a suites container, for simplicity
+  explicit PropertyAccessor(OfxPropertySetHandle propset, const SuiteContainer &suites)
+      : propset_(propset) {
+    propSuite_ = suites.get<OfxPropertySuiteV1>();
+    if (!propSuite_) {
+      throw SuiteNotFoundException(kOfxStatErrMissingHostFeature,
+                                   "PropertyAccessor: missing property suite");
+    }
+  }
+
+  // Convenience constructors for ImageEffect -- get effect property set & construct accessor
   explicit PropertyAccessor(OfxImageEffectHandle effect, const OfxImageEffectSuiteV1 *effects_suite,
                             const OfxPropertySuiteV1 *prop_suite)
       : propset_(nullptr), propSuite_(prop_suite) {
+    if (!propSuite_) {
+      throw SuiteNotFoundException(kOfxStatErrMissingHostFeature,
+                                   "PropertyAccessor: missing property suite");
+    }
+    if (!effects_suite) {
+      throw SuiteNotFoundException(kOfxStatErrMissingHostFeature,
+                                   "PropertyAccessor: missing effects suite");
+    }
     effects_suite->getPropertySet(effect, &propset_);
     assert(propset_);
   }
 
+  explicit PropertyAccessor(OfxImageEffectHandle effect, const SuiteContainer &suites)
+      : propset_(nullptr) {
+    propSuite_ = suites.get<OfxPropertySuiteV1>();
+    if (!propSuite_) {
+      throw SuiteNotFoundException(kOfxStatErrMissingHostFeature,
+                                   "PropertyAccessor: missing property suite");
+    }
+    auto effects_suite = suites.get<OfxImageEffectSuiteV1>();
+    if (!effects_suite) {
+      throw SuiteNotFoundException(kOfxStatErrMissingHostFeature,
+                                   "PropertyAccessor: missing effects suite");
+    }
+    effects_suite->getPropertySet(effect, &propset_);
+    assert(propset_);
+  }
+
+  // Convenience constructors for Interact -- get effect property set & construct accessor
   explicit PropertyAccessor(OfxInteractHandle interact, const OfxInteractSuiteV1 *interact_suite,
                             const OfxPropertySuiteV1 *prop_suite)
       : propset_(nullptr), propSuite_(prop_suite) {
+    if (!interact_suite) {
+      throw SuiteNotFoundException(kOfxStatErrMissingHostFeature,
+                                   "PropertyAccessor: missing interact suite");
+    }
+    interact_suite->interactGetPropertySet(interact, &propset_);
+    assert(propset_);
+  }
+  explicit PropertyAccessor(OfxInteractHandle interact, const SuiteContainer &suites)
+      : propset_(nullptr) {
+    propSuite_ = suites.get<OfxPropertySuiteV1>();
+    auto interact_suite = suites.get<OfxInteractSuiteV1>();
+    if (!interact_suite) {
+      throw SuiteNotFoundException(kOfxStatErrMissingHostFeature,
+                                   "PropertyAccessor: missing interact suite");
+    }
     interact_suite->interactGetPropertySet(interact, &propset_);
     assert(propset_);
   }
