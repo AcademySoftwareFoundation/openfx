@@ -14,7 +14,7 @@
 #include <ofxDrawSuite.h>
 #include <ofxParametricParam.h>
 #include <ofxKeySyms.h>
-#include <ofxPropsMetadata.h>
+#include "ofxPropsMetadata.h"
 // #include <ofxOld.h>
 
 namespace openfx {

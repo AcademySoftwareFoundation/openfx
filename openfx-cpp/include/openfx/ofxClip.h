@@ -27,7 +27,7 @@ class Clip {
   // Gets the property set and sets up accessor for it.
   Clip(const OfxImageEffectSuiteV1* effect_suite, const OfxPropertySuiteV1* prop_suite,
        OfxImageClipHandle clip)
-      : mClip(clip), mEffectSuite(effect_suite), mPropertySuite(prop_suite), mClipProps(nullptr) {
+      : mEffectSuite(effect_suite), mPropertySuite(prop_suite), mClip(clip), mClipProps(nullptr) {
     if (clip != nullptr) {
       OfxStatus status = mEffectSuite->clipGetPropertySet(clip, &mClipPropSet);
       if (status != kOfxStatOK)
@@ -47,6 +47,17 @@ class Clip {
     if (status != kOfxStatOK || !mClip || !mClipPropSet)
       throw ClipNotFoundException(status);
     mClipProps = std::make_unique<PropertyAccessor>(mClipPropSet, prop_suite);
+  }
+
+  // Construct a clip given effect and clip name, using suite container (simpler)
+  Clip(OfxImageEffectHandle effect, std::string_view clip_name, const SuiteContainer& suites)
+      : mClipProps(nullptr) {
+    mEffectSuite = suites.get<OfxImageEffectSuiteV1>();
+    mPropertySuite = suites.get<OfxPropertySuiteV1>();
+    OfxStatus status = mEffectSuite->clipGetHandle(effect, clip_name.data(), &mClip, &mClipPropSet);
+    if (status != kOfxStatOK || !mClip || !mClipPropSet)
+      throw ClipNotFoundException(status);
+    mClipProps = std::make_unique<PropertyAccessor>(mClipPropSet, mPropertySuite);
   }
 
   // Default constructor: empty clip

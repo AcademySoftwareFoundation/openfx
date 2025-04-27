@@ -177,7 +177,14 @@ inline void Logger::defaultLogHandler(Level level, std::chrono::system_clock::ti
                                       const std::string& message) {
   // Convert timestamp to local time
   std::time_t time = std::chrono::system_clock::to_time_t(timestamp);
-  std::tm local_tm = *std::localtime(&time);
+  std::tm local_time;
+#ifdef _WIN32
+    // Microsoft’s localtime_s expects arguments in reverse order compared to C11's localtime_s:
+    localtime_s(&local_time, &time);
+#else
+    // POSIX
+    localtime_r(&time, &local_time);
+#endif
 
   // Stream to write log message
   std::ostream& os = (level == Level::Error) ? std::cerr : std::cout;
@@ -197,7 +204,7 @@ inline void Logger::defaultLogHandler(Level level, std::chrono::system_clock::ti
   }
 
   // Write formatted log message
-  os << "[" << std::put_time(&local_tm, "%Y-%m-%d %H:%M:%S") << "][" << levelStr << "] " << message
+  os << "[" << std::put_time(&local_time, "%Y-%m-%d %H:%M:%S") << "][" << levelStr << "] " << message
      << std::endl;
 }
 
