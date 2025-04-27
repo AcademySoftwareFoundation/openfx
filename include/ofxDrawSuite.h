@@ -80,7 +80,7 @@ typedef enum OfxDrawTextAlignment
 } OfxDrawTextAlignment;
 
 /** @brief OFX suite that allows an effect to draw to a host-defined display context.
-
+    To use this, the plugin must use kOfxImageEffectPluginPropOverlayInteractV2.
 */
 typedef struct OfxDrawSuiteV1 {
 	/** @brief Retrieves the host's desired draw colour for

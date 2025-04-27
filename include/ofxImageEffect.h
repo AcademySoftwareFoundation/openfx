@@ -106,7 +106,7 @@ These are the list of actions passed to an image effect plugin's main function. 
  definition see \ref ImageEffectArchitectures "Image Effect Architectures"
 
  Note that hosts that have constant sized imagery need not call this
- action, only hosts that allow image sizes to vary need call this.
+ action. Only hosts that allow image sizes to vary need call this.
 
  @param  handle handle to the instance, cast to an \ref OfxImageEffectHandle
 
@@ -116,12 +116,12 @@ These are the list of actions passed to an image effect plugin's main function. 
      - \ref kOfxImageEffectPropRenderScale the render scale that should be used in any calculations in this
      action
 
- @param  outArgs has the following property which the plug-in may set
+ @param  outArgs has the following property which the plug-in may set:
      - \ref kOfxImageEffectPropRegionOfDefinition  the calculated region of definition, initially set by the host
      to the default RoD (see below), in Canonical Coordinates.
 
 
- If the effect did not trap this, it means the host should use the
+ If the effect does not handle this action, the host should use the
  default RoD instead, which depends on the context. This is...
 
  -  generator context - defaults to the project window,
@@ -154,15 +154,13 @@ These are the list of actions passed to an image effect plugin's main function. 
  way, depending on the host architecture, a host can fetch the minimal
  amount of the image needed as input. Note that there is a region of
  interest to be set in ``outArgs`` for each input clip that exists on the
- effect. For more details see \ref ImageEffectArchitectures "Image Effect
- Architectures"
-
+ effect. For more details see
+ \ref ImageEffectArchitectures "Image Effect Architectures"
 
  The default RoI is simply the value passed in on the
  \ref kOfxImageEffectPropRegionOfInterest
- ``inArgs`` property set. All the RoIs in the ``outArgs`` property set
- must initialised to this value before the action is called.
-
+ ``inArgs`` property set. The host must initalize all the RoIs in the ``outArgs`` property set
+ to this value before the action is called.
 
  @param  handle handle to the instance, cast to an \ref OfxImageEffectHandle
  @param  inArgs has the following properties
@@ -171,7 +169,7 @@ These are the list of actions passed to an image effect plugin's main function. 
      - \ref kOfxImageEffectPropRegionOfInterest the region to be rendered in the output image, in Canonical Coordinates.
 
  @param  outArgs has a set of 4 dimensional double properties, one for each of the input clips to the effect.
- The properties are each named ``OfxImageClipPropRoI_`` with the clip name post pended, for example
+ The properties are each named ``OfxImageClipPropRoI_`` with the clip name postpended, for example
  ``OfxImageClipPropRoI_Source``. These are initialised to the default RoI.
 
 
@@ -188,8 +186,9 @@ These are the list of actions passed to an image effect plugin's main function. 
 
 /** @brief
  This action allows a host to ask an effect what range of frames it can
- produce images over. Only effects instantiated in the \ref generalContext "General
- Context" can have this called on them. In all other
+ produce images over. Only effects instantiated in the
+ \ref generalContext "General Context"
+ can have this called on them. In all other
  the host is in strict control over the temporal duration of the effect.
 
  The default is:
