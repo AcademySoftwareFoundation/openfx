@@ -403,11 +403,11 @@ rendered output. Think of the what happens when you add a new key frame.
 
 /** @brief The default value of a parameter.
 
-   - Type - The type is dependant on the parameter type as is the dimension.
+   - Type - The type is dependent on the parameter type as is the dimension.
    - Property Set - plugin parameter descriptor (read/write) and instance (read/write only),
    - Default - 0 cast to the relevant type (or "" for strings and custom parameters)
 
-The exact type and dimension is dependant on the type of the parameter. These are....
+The exact type and dimension is dependent on the type of the parameter. These are....
   - ::kOfxParamTypeInteger - integer property of one dimension
   - ::kOfxParamTypeDouble - double property of one dimension
   - ::kOfxParamTypeBoolean - integer property of one dimension
