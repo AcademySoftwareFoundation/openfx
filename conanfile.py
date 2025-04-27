@@ -3,7 +3,7 @@ from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, collect_libs
 import os.path
 
-required_conan_version = ">=2.12.0"
+required_conan_version = ">=2.0.16"
 
 class openfx(ConanFile):
 	name = "openfx"
