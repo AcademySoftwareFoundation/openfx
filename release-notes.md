@@ -17,12 +17,13 @@ This is version 1.6 of the OpenFX API.
 
 ## Key Features of OpenFX Version 1.6:
 
-## Fixes in OpenFX Version 1.6:
+## Fixes
 
 ## Deprecations
 
 ## Detailed List of Changes
 
+- Add plugin install locations for Windows Arm64
 
 # Release Notes - 1.5
 
