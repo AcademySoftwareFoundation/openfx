@@ -11,7 +11,20 @@ Documentation and more info can be found at:
 * [OFX API Programming Reference](http://openeffects.org/documentation/reference)
 * [OFX Discussion Google Group](https://groups.google.com/forum/#!forum/ofx-discussion)
 
-# Release Notes - 1.5 (upcoming)
+# Release Notes - 1.6 (upcoming)
+
+This is version 1.6 of the OpenFX API.
+
+## Key Features of OpenFX Version 1.5:
+
+## Fixes in OpenFX Version 1.5:
+
+## Deprecations
+
+## Detailed List of Changes
+
+
+# Release Notes - 1.5
 
 This is version 1.5 of the OFX API.
 
