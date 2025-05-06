@@ -88,6 +88,7 @@ propertySets:
       - OfxImageEffectPluginPropOverlayInteractV2
       - OfxImageEffectPropColourManagementAvailableConfigs
       - OfxImageEffectPropColourManagementStyle
+      - OfxImageEffectPropNoSpatialAwareness
   EffectInstance:
     write: host
     props:
@@ -440,6 +441,7 @@ Actions:
       - OfxImageEffectPropOpenGLEnabled
       - OfxImageEffectPropOpenGLTextureIndex
       - OfxImageEffectPropOpenGLTextureTarget
+      - OfxImageEffectPropNoSpatialAwareness
   OfxImageEffectActionBeginSequenceRender:
     inArgs:
       - OfxImageEffectPropFrameRange
@@ -464,6 +466,7 @@ Actions:
       - OfxImageEffectPropOpenGLTextureIndex
       - OfxImageEffectPropOpenGLTextureTarget
       - OfxImageEffectPropInteractiveRenderStatus
+      - OfxImageEffectPropNoSpatialAwareness
     outArgs:
   OfxImageEffectActionEndSequenceRender:
     inArgs:
@@ -1339,3 +1342,7 @@ properties:
   OfxPropParamSetNeedsSyncing:
     type: bool
     dimension: 1
+  OfxImageEffectPropNoSpatialAwareness:
+    dimension: 1
+    type: enum
+    values: ['false', 'true']
