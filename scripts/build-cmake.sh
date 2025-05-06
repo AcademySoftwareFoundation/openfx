@@ -55,7 +55,7 @@ ARGS="$@"
 
 echo "Building OpenFX $BUILDTYPE in build/ with ${GENERATOR:-conan platform default generator}, $ARGS"
 
-CONAN_VERSION=$(conan -v | sed -e 's/Conan version //g')
+CONAN_VERSION=$(uvx conan -v | sed -e 's/Conan version //g')
 CONAN_MAJOR_VERSION=${CONAN_VERSION:0:1}
 
 PRESET_NAME=
@@ -115,7 +115,7 @@ fi
 # Install dependencies, set up build dir, and generate build files.
 echo === Running conan to install dependencies
 [[ $USE_OPENCL ]] && conan_opts="$conan_opts -o use_opencl=True"
-conan install ${GENERATOR_OPTION} -s build_type=$BUILDTYPE -pr:b=default --build=missing . $conan_opts
+uvx conan install ${GENERATOR_OPTION} -s build_type=$BUILDTYPE -pr:b=default --build=missing . $conan_opts
 
 echo === Running cmake
 # Generate the build files
