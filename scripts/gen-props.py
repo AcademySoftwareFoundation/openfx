@@ -447,7 +447,7 @@ def gen_props_by_set(props_by_set, props_by_action, outfile_path: Path):
 #include <ofxDrawSuite.h>
 #include <ofxParametricParam.h>
 #include <ofxKeySyms.h>
-#include <ofxPropsMetadata.h>
+#include "ofxPropsMetadata.h"
 // #include <ofxOld.h>
 
 namespace openfx {

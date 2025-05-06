@@ -103,7 +103,8 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
    { "OfxOpenGLPropPixelDepth", prop_defs[PropId::OfxOpenGLPropPixelDepth], false, true, false },
    { "OfxImageEffectPluginPropOverlayInteractV2", prop_defs[PropId::OfxImageEffectPluginPropOverlayInteractV2], false, true, false },
    { "OfxImageEffectPropColourManagementAvailableConfigs", prop_defs[PropId::OfxImageEffectPropColourManagementAvailableConfigs], false, true, false },
-   { "OfxImageEffectPropColourManagementStyle", prop_defs[PropId::OfxImageEffectPropColourManagementStyle], false, true, false } } },
+   { "OfxImageEffectPropColourManagementStyle", prop_defs[PropId::OfxImageEffectPropColourManagementStyle], false, true, false },
+   { "OfxImageEffectPropNoSpatialAwareness", prop_defs[PropId::OfxImageEffectPropNoSpatialAwareness], false, true, false } } },
 // EffectInstance
 { "EffectInstance", {
    { "OfxPropType", prop_defs[PropId::OfxPropType], true, false, false },
@@ -668,6 +669,7 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
     "OfxImageEffectPropMetalCommandQueue",
     "OfxImageEffectPropMetalEnabled",
     "OfxImageEffectPropMetalRenderSupported",
+    "OfxImageEffectPropNoSpatialAwareness",
     "OfxImageEffectPropOpenCLCommandQueue",
     "OfxImageEffectPropOpenCLEnabled",
     "OfxImageEffectPropOpenCLImage",
@@ -756,6 +758,7 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
     "OfxImageEffectPropMetalCommandQueue",
     "OfxImageEffectPropMetalEnabled",
     "OfxImageEffectPropMetalRenderSupported",
+    "OfxImageEffectPropNoSpatialAwareness",
     "OfxImageEffectPropOpenCLCommandQueue",
     "OfxImageEffectPropOpenCLEnabled",
     "OfxImageEffectPropOpenCLImage",
