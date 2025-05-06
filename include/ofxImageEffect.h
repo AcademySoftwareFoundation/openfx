@@ -407,6 +407,7 @@ These are the list of actions passed to an image effect plugin's main function. 
      -  \ref kOfxImageEffectPropSequentialRenderStatus whether the effect is currently being rendered in strict frame order on a single instance
      -  \ref kOfxImageEffectPropInteractiveRenderStatus if the render is in response to a user modifying the effect in an interactive session
      -  \ref kOfxImageEffectPropRenderQualityDraft if the render should be done in draft mode (e.g. for faster scrubbing)
+     -  \ref kOfxImageEffectPropNoSpatialAwareness if the plugin must render without spatial awareness (e.g. for LUT generation)
 
  @param  outArgs is redundant and should be set to NULL
 
@@ -1172,6 +1173,19 @@ If an host does not support that property a value of 0 is assumed.
 Also note that some hosts do implement kOfxImageEffectPropRenderScale - these two properties can be used independently. 
  */
 #define kOfxImageEffectPropRenderQualityDraft "OfxImageEffectPropRenderQualityDraft"
+
+/** @brief Indicates that the plugin can render without spatial awareness, either inherently or by
+disabling certain parameters at render time. If the plugin descriptor has this prop set to "true", the 
+plugin is expected to disable spatial effects when the host sets this prop to "true" in the render call arguments.
+
+    - Type - string X 1
+    - Property Set - plugin descriptor (read/write), render calls - host (read-only)
+    - Default - "false"
+    - Valid Values - This must be one of
+      - "false"  - the plugin cannot render without spatial awareness and the host will bypass it for renders that require no spatial awareness. 
+      - "true"   - the plugin can render without spatial awareness, and the host will indicate this type of render by setting kOfxImageEffectPropNoSpatialAwareness to "true" in the render call.
+ */
+#define kOfxImageEffectPropNoSpatialAwareness "OfxImageEffectPropNoSpatialAwareness"
 
 /** @brief The extent of the current project in canonical coordinates.
 
