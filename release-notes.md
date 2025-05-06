@@ -15,9 +15,9 @@ Documentation and more info can be found at:
 
 This is version 1.6 of the OpenFX API.
 
-## Key Features of OpenFX Version 1.5:
+## Key Features of OpenFX Version 1.6:
 
-## Fixes in OpenFX Version 1.5:
+## Fixes in OpenFX Version 1.6:
 
 ## Deprecations
 
