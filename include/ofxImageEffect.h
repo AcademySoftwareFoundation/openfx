@@ -1175,15 +1175,16 @@ Also note that some hosts do implement kOfxImageEffectPropRenderScale - these tw
 #define kOfxImageEffectPropRenderQualityDraft "OfxImageEffectPropRenderQualityDraft"
 
 /** @brief Indicates that the plugin can render without spatial awareness, either inherently or by
-disabling certain parameters at render time. If the plugin descriptor has this prop set to "true", the 
-plugin is expected to disable spatial effects when the host sets this prop to "true" in the render call arguments.
+disabling certain parameters at render time. 
+
+If the plugin descriptor has this property set to "true", the plugin is expected to disable spatial effects when the host sets this property to "true" in the arguments passed to kOfxImageEffectActionBeginSequenceRender and kOfxImageEffectActionRender.
 
     - Type - string X 1
     - Property Set - plugin descriptor (read/write), render calls - host (read-only)
     - Default - "false"
     - Valid Values - This must be one of
-      - "false"  - the plugin cannot render without spatial awareness and the host will bypass it for renders that require no spatial awareness. 
-      - "true"   - the plugin can render without spatial awareness, and the host will indicate this type of render by setting kOfxImageEffectPropNoSpatialAwareness to "true" in the render call.
+      - "false"  - the plugin cannot render without spatial awareness and the host should bypass it for renders that require no spatial awareness.
+      - "true"   - the plugin can render without spatial awareness. The host will indicate this type of render by setting kOfxImageEffectPropNoSpatialAwareness to "true" in the arguments passed to kOfxImageEffectActionBeginSequenceRender and kOfxImageEffectActionRender.
  */
 #define kOfxImageEffectPropNoSpatialAwareness "OfxImageEffectPropNoSpatialAwareness"
 
