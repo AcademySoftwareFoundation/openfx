@@ -337,7 +337,7 @@ OR:
 
   - call `instanceChanged` after `createInstance` and after the host has
     hooked up all clips, with property \ref kOfxPropType = \ref kOfxTypeClip and
-    \ref kOfxPropChangeReason = \ref kOfxChangePluginEdited, and ensure that
+    \ref kOfxPropChangeReason = \ref kOfxChangeUserEdited, and ensure that
     \ref OfxImageEffectSuiteV1::clipGetRegionOfDefinition works in that action.
 
  @param  handle handle to the plug-in instance, cast to an \ref OfxImageEffectHandle
