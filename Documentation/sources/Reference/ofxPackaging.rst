@@ -123,15 +123,16 @@ cannot load native Arm64 DLLs, only Intel or Arm64EC.
 Windows also supports an Arm64X "fat" binary PE format which
 contains both Intel/Arm64EC and Arm64 binaries.
 
-Since apps built natively for Arm64 ("Arm64" abi) can only load Arm64
-DLLs, those apps should attempt to load plugins from the "Win-arm64x"
-folder first, then "Win-arm64". Arm64EC hosts (running on an Arm64
-system) should try the "Win-arm64x" folder first, then "Win-arm64ec".
-Arm64EC hosts can also use x64 DLLs, so they may try "Win64" as well,
-but should prefer the other folders to avoid running the plugin in
-emulation. An Arm64X host will be running either its Arm64EC branch or
-its Arm64 branch depending on how it's launched, so it should load
-plugins according to the above depending on the current mode.
+**Search Order**: Since apps built natively for Arm64 ("Arm64" abi)
+can only load Arm64 DLLs, those apps should attempt to load plugins
+from the "Win-arm64" folder first, then "Win-arm64x". Arm64EC hosts
+(running on an Arm64 system) should try the "Win-arm64ec" folder
+first, then "Win-arm64x". Arm64EC hosts can also use x64 DLLs, so they
+may try "Win64" as well, but should prefer the other folders to avoid
+running the plugin in emulation. An Arm64X host will be running either
+its Arm64EC branch or its Arm64 branch depending on how it's launched,
+so it should load plugins according to the above depending on the
+current mode.
 
 Note that there is no "fat binary" format on Windows that contains
 Intel x64 *and* arm64 code.
