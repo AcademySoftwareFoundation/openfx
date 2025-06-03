@@ -19,6 +19,9 @@ This is version 1.6 of the OpenFX API.
 
 ## Fixes in OpenFX Version 1.6:
 
+- Clarify that Image Effect Hosts property `kOfxPropType` must have the value
+  `kOfxTypeImageEffectHost`, and fix host support lib to implement that.
+
 ## Deprecations
 
 ## Detailed List of Changes
