@@ -1,3 +1,4 @@
 python >= 3.11
 pip >= 24.0
 conan >= 2.9.3
+requests>=2.32.4 # not directly required, pinned by Snyk to avoid a vulnerability
