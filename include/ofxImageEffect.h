@@ -930,7 +930,7 @@ then the plugin can detect this via an identifier change and re-evaluate the cac
    - Property Set -  clip instance (read only), as an out argument to ::kOfxImageEffectActionGetClipPreferences action (read/write)
    - Default - 0 as an out argument to the ::kOfxImageEffectActionGetClipPreferences action
    - Valid Values - This must be one of...
-     - 0 if the images can only be sampled at discreet times (eg: the clip is a sequence of frames),
+     - 0 if the images can only be sampled at discrete times (eg: the clip is a sequence of frames),
      - 1 if the images can only be sampled continuously (eg: the clip is infact an animating roto spline and can be rendered anywhen).
 
 If this is set to true, then the frame rate of a clip is effectively infinite, so to stop arithmetic
