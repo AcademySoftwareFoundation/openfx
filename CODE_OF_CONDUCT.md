@@ -1,5 +1,5 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
-<!-- Copyright OpenFX and contributors to the OpenFX project. -->
+<!-- Copyright Contributors to the OpenFX project. -->
 # Code of Conduct
 
 The OpenFX project abides by Linux Foundation's code of conduct,

@@ -1,5 +1,5 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
-<!-- Copyright OpenFX and contributors to the OpenFX project. -->
+<!-- Copyright Contributors to the OpenFX project. -->
 
 # OpenFX Project Governance
 
