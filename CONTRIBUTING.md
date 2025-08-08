@@ -1,5 +1,5 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
-<!-- Copyright Contributors to the OpenFX project. -->
+<!-- Copyright OpenFX and contributors to the OpenFX project. -->
 # Contributing to OpenFX
 
 Thank you for your interest in contributing to OpenFX. This document
@@ -273,7 +273,7 @@ All new source files should begin with a copyright and license stating:
 
     //
     // SPDX-License-Identifier: BSD-3-Clause
-    // Copyright Contributors to the OpenFX project.
+    // Copyright (c) Contributors to the OpenFX Project.
     //
 
 #### Third-party libraries
