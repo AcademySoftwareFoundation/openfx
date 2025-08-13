@@ -273,8 +273,18 @@ All new source files should begin with a copyright and license stating:
 
     //
     // SPDX-License-Identifier: BSD-3-Clause
-    // Copyright (c) Contributors to the OpenFX Project.
+    // Copyright (c) OpenFX and contributors to the OpenFX Project.
     //
+
+Prior to becoming an ASWF project, OpenFX was controlled by The Open Effects
+Association, a legal entity which had been assigned copyright in the original
+contributions by a variety of companies and individuals. When the project
+transferred to ASWF, these copyrights were assigned to a new legal entity, 
+OpenFX a Series of LF Projects, LLC (abbreviated to "OpenFX" in the notice).
+In line with ASWF principles, new contributions do not require a copyright
+assignment, but our copyright notice reflects this mixed history, and is 
+applied consistently across the project to avoid confusion when code is moved
+between old and new files.
 
 #### Third-party libraries
 
