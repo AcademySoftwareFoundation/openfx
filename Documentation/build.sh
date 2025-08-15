@@ -22,37 +22,44 @@ if [ ! -f genPropertiesReference.py ] ; then
     exit 1
 fi
 
-if ! command -v sphinx-build > /dev/null 2>&1 ; then
-    echo "Python can't import required modules; did you set up the prereqs?"
-    echo "Check the README.md."
-    exit 1
+if command -v uvx > /dev/null 2>&1; then
+    USE_UV=1
+    SPHINX_BUILD="uv run --with-requirements pipreq.txt sphinx-build"
+    UV_RUN="uv run"
+else
+    USE_UV=
+    SPHINX_BUILD="sphinx-build"
+    UV_RUN=""
 fi
 
 rm -rf build
 
 # Generate references
 EXPECTED_ERRS="unable to resolve reference|explicit link request|found in multiple"
-python genPropertiesReference.py \
+$UV_RUN python genPropertiesReference.py \
        -i ../include -o sources/Reference/ofxPropertiesReference.rst -r \
        > /tmp/ofx-doc-build.out 2>&1
-egrep -v "$EXPECTED_ERRS" /tmp/ofx-doc-build.out || true
+grep -v -E "$EXPECTED_ERRS" /tmp/ofx-doc-build.out || true
 
 # Build the Doxygen docs
 EXPECTED_ERRS="malformed hyperlink target|Duplicate explicit|Definition list ends|unable to resolve|could not be resolved"
 cd ../include
 doxygen ofx.doxy > /tmp/ofx-doc-build.out 2>&1
-egrep -v "$EXPECTED_ERRS" /tmp/ofx-doc-build.out || true
+grep -v -E "$EXPECTED_ERRS" /tmp/ofx-doc-build.out || true
 cd -
 
 # Use breathe.apidoc to collect the Doxygen API docs
 rm -rf sources/Reference/api
-python -m breathe.apidoc -p 'ofx_reference' -m --force -g class,interface,struct,union,file,namespace,group -o sources/Reference/api doxygen_build/xml
-
+if [[ $USE_UV ]]; then
+    $UV_RUN --with breathe python -m breathe.apidoc -p 'ofx_reference' -m --force -g class,interface,struct,union,file,namespace,group -o sources/Reference/api doxygen_build/xml
+else
+    python -m breathe.apidoc -p 'ofx_reference' -m --force -g class,interface,struct,union,file,namespace,group -o sources/Reference/api doxygen_build/xml
+fi
 
 # Build the Sphinx docs
 EXPECTED_ERRS='Explicit markup ends without|Duplicate C.*declaration|Declaration is|cpp:func targets a member|undefined label'
-sphinx-build -b html sources build > /tmp/ofx-doc-build.out 2>&1
-egrep -v "$EXPECTED_ERRS" /tmp/ofx-doc-build.out || true
+$SPHINX_BUILD -b html sources build > /tmp/ofx-doc-build.out 2>&1
+grep -v -E "$EXPECTED_ERRS" /tmp/ofx-doc-build.out || true
 
 echo "Documentation build complete."
 echo "Open file:///$PWD/build/index.html in your browser"
