@@ -318,7 +318,7 @@ namespace {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  // The first _action_ called after the binary is loaded (three boot strapper functions will be howeever)
+  // The first _action_ called after the binary is loaded (three boot strapper functions will be however)
   OfxStatus LoadAction(void)
   {
     // fetch our three suites
@@ -978,7 +978,7 @@ namespace {
 static OfxPlugin effectPluginStruct =
 {
   kOfxImageEffectPluginApi,                  // The API this plugin satisfies.
-  1,                                         // The version of the API it satisifes.
+  1,                                         // The version of the API it satisfies.
   "org.openeffects:CircleExamplePlugin",     // The unique ID of this plugin.
   1,                                         // The major version number of this plugin.
   0,                                         // The minor version number of this plugin.

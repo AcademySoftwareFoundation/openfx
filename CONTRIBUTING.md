@@ -18,7 +18,7 @@ Committee provides general project oversight.
 There are several ways to connect with the OpenFX project:
 
 * The [openfx-discussion](https://lists.aswf.io/g/openfx-discussion)
-  mail list: This is our primary mailing list, intended for techical
+  mail list: This is our primary mailing list, intended for technical
   discussion and help implementing and using OpenFX.
 
 * [GitHub Issues](https://github.com/ofxa/openfx/issues): GitHub

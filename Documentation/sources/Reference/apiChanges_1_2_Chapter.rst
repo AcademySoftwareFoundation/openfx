@@ -125,7 +125,7 @@ example, if you want to set something to be explicitly '20', there is no
 way of doing that. The main problem stems from normalised params
 conflating two separate issues, flagging to the host that a parameter
 was spatial, and being able to specify defaults in a normalised
-co-ordinate system.
+coordinate system.
 
 With 1.2 new :ref:`spatial double
 parameter <ParameterPropertiesDoubleTypesSpatial>` types are defined.
