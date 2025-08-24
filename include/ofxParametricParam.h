@@ -61,7 +61,7 @@ This indicates the dimension of the parametric param.
     - Property Set - parametric param descriptor (read/write) and instance (read only)
     - default - unset, 
     - Value Values - three values for each dimension (see ::kOfxParamPropParametricDimension)
-      being interpretted as R, G and B of the colour for each curve drawn in the UI.
+      being interpreted as R, G and B of the colour for each curve drawn in the UI.
 
 This sets the colour of a parametric param curve drawn a host user interface. A colour triple
 is needed for each dimension of the oparametric param. 
@@ -150,7 +150,7 @@ typedef struct OfxParametricParameterSuiteV1 {
  
       @returns
         - ::kOfxStatOK            - all was fine 
-        - ::kOfxStatErrBadHandle  - if the paramter handle was invalid
+        - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
         - ::kOfxStatErrBadIndex   - the curve index was invalid
   */
   OfxStatus (*parametricParamGetValue)(OfxParamHandle param,
@@ -169,7 +169,7 @@ typedef struct OfxParametricParameterSuiteV1 {
       
       @returns
         - ::kOfxStatOK            - all was fine 
-        - ::kOfxStatErrBadHandle  - if the paramter handle was invalid
+        - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
         - ::kOfxStatErrBadIndex   - the curve index was invalid
    */
   OfxStatus (*parametricParamGetNControlPoints)(OfxParamHandle param,
@@ -188,7 +188,7 @@ typedef struct OfxParametricParameterSuiteV1 {
             
       @returns
         - ::kOfxStatOK            - all was fine 
-        - ::kOfxStatErrBadHandle  - if the paramter handle was invalid
+        - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
         - ::kOfxStatErrUnknown    - if the type is unknown
    */
   OfxStatus (*parametricParamGetNthControlPoint)(OfxParamHandle param,
@@ -213,7 +213,7 @@ typedef struct OfxParametricParameterSuiteV1 {
 
       @returns
         - ::kOfxStatOK            - all was fine 
-        - ::kOfxStatErrBadHandle  - if the paramter handle was invalid
+        - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
         - ::kOfxStatErrUnknown    - if the type is unknown
 
       This modifies an existing control point. Note that by changing key, the order of the
@@ -242,7 +242,7 @@ typedef struct OfxParametricParameterSuiteV1 {
 
       @returns
         - ::kOfxStatOK            - all was fine 
-        - ::kOfxStatErrBadHandle  - if the paramter handle was invalid
+        - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
         - ::kOfxStatErrUnknown    - if the type is unknown
 
       This will add a new control point to the given dimension of a parametric parameter. If a key exists
