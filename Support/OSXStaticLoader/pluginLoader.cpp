@@ -43,7 +43,7 @@ main(int argc, char *argv[])
       int nP =  nPluginsFunc();
 
 
-      printf("Sucessfully loaded '%s', containing %d %s\n", argv[1], nP, (nP == 1 ? "plugin" : "plugins"));    
+      printf("Successfully loaded '%s', containing %d %s\n", argv[1], nP, (nP == 1 ? "plugin" : "plugins"));    
 
       for(int i = 0; i < nP; i++) {
 	// get a plugin

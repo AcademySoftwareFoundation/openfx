@@ -481,11 +481,11 @@ bool ChoiceParamsInteract::draw(const OFX::DrawArgs &args)
 bool 
 ChoiceParamsInteract::penMotion(const OFX::PenArgs &args)
 {
-  // figure the size of the box in cannonical coords
+  // figure the size of the box in canonical coords
   float dx = (float)(kBoxSize.x * args.pixelScale.x);
   float dy = (float)(kBoxSize.y * args.pixelScale.y);
 
-  // pen position is in cannonical coords
+  // pen position is in canonical coords
   OfxPointD penPos = args.penPosition;
 
   switch(_state) {
@@ -543,7 +543,7 @@ ChoiceParamsInteract::penDown(const OFX::PenArgs &args)
     // move our position
     _position = args.penPosition;
 
-    // and request a redraw just incase
+    // and request a redraw just in case
     _effect->redrawOverlays();
   }
 
