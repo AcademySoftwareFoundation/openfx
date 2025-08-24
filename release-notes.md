@@ -4,7 +4,7 @@ This is the latest release of OFX, the Open Effects image-processing plug-in sta
 
 Documentation and more info can be found at:
 
-* [The OFX Association website](http://openeffects.org)
+* [The OpenFX website](http://openeffects.org)
 * [OFX Programming Guide By Example](https://github.com/ofxa/openfx/tree/master/Guide)
 * [OFX API v. 1.4 Reference](http://openeffects.org/documentation/api_doc)
 * [OFX API Programming Guide](http://openeffects.org/documentation/guide)

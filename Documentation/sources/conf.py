@@ -11,9 +11,10 @@
 
 import subprocess, os, shutil
 project = 'OpenFX'
-copyright = '2024, Contributors to the OpenFX Project'
+copyright = '''2025, OpenFX a Series of LF Projects, LLC.
+For web site terms of use, trademark policy and other project policies please see https://lfprojects.org/'''
 author = 'Contributors to the OpenFX Project'
-release = '1.4'
+release = '1.5'
 
 read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
 # -- General configuration ---------------------------------------------------
