@@ -114,8 +114,8 @@ namespace OFX {
 
   /** @brief Enumerates the reasons a plug-in instance may have had one of its values changed */
   enum InstanceChangeReason {
-    eChangeUserEdit,    /**< @brief A user actively editted something in the plugin, eg: changed the value of an integer param on an interface */
-    eChangePluginEdit,  /**< @brief The plugin's own code changed something in the instance, eg: a callback on on param settting the value of another */
+    eChangeUserEdit,    /**< @brief A user actively edited something in the plugin, eg: changed the value of an integer param on an interface */
+    eChangePluginEdit,  /**< @brief The plugin's own code changed something in the instance, eg: a callback on on param setting the value of another */
     eChangeTime         /**< @brief The current value of a parameter has changed because the param animates and the current time has changed */
   };
 
