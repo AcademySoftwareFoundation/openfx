@@ -21,7 +21,7 @@ namespace OFX {
     /** @brief Sets the name of the log file. */
     void setFileName(const std::string &value);
 
-    /** @brief Opens the log file, returns whether this was sucessful or not. */
+    /** @brief Opens the log file, returns whether this was successful or not. */
     bool open(void);
 
     /** @brief Closes the log file. */
