@@ -213,7 +213,7 @@ These are the actions passed to a plug-in's 'main' function
      returns one of the error codes where the host is allowed to attempt
      the action again
      -  the handle argument, being the global plug-in description handle, is
-     a valid handle from the end of a sucessful describe action until the
+     a valid handle from the end of a successful describe action until the
      end of the \ref kOfxActionUnload action (ie: the plug-in can cache it away
      without worrying about it changing between actions).
      -  \ref kOfxImageEffectActionDescribeInContext
@@ -261,7 +261,7 @@ These are the actions passed to a plug-in's 'main' function
 /** @brief
 
  This action is an action that may be passed to a plug-in
- instance from time to time in low memory situations. Instances recieving
+ instance from time to time in low memory situations. Instances receiving
  this action should destroy any data structures they may have and release
  the associated memory, they can later reconstruct this from the effect's
  parameter set and associated information.
@@ -421,7 +421,7 @@ These are the actions passed to a plug-in's 'main' function
      value of the object because it varies over time
 
      -  \ref kOfxPropTime
-     - the effect time at which the chang occured (for Image Effect Plugins only)
+     - the effect time at which the chang occurred (for Image Effect Plugins only)
      -  \ref kOfxImageEffectPropRenderScale
      - the render scale currently being applied to any image fetched
      from a clip (for Image Effect Plugins only)
@@ -618,7 +618,7 @@ If this is not present, it is safe to assume that the version of the API is "1.0
 
 If false the effect currently has no interface, however this may be because the effect is loaded in a background render host, or it may be loaded on an interactive host that has not yet opened an editor for the effect.
 
-The output of an effect should only ever depend on the state of its parameters, not on the interactive flag. The interactive flag is more a courtesy flag to let a plugin know that it has an interace. If a plugin want's to have its behaviour dependant on the interactive flag, it can always make a secret parameter which shadows the state if the flag.
+The output of an effect should only ever depend on the state of its parameters, not on the interactive flag. The interactive flag is more a courtesy flag to let a plugin know that it has an interface. If a plugin wants to have its behaviour dependent on the interactive flag, it can always make a secret parameter which shadows the state if the flag.
 */
 #define kOfxPropIsInteractive "OfxPropIsInteractive"
 
@@ -665,7 +665,7 @@ This data pointer is unique to each plug-in instance, so two instances of the sa
     - Type - ASCII C string X 1
     - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject (read only)
 
-This property is used to label objects uniquely amoung objects of that type. It is typically set when a plugin creates a new object with a function that takes a name.
+This property is used to label objects uniquely among objects of that type. It is typically set when a plugin creates a new object with a function that takes a name.
 */
 #define kOfxPropName "OfxPropName"
 
@@ -736,7 +736,7 @@ The first dimension, if set, will the name of and SVG file, the second a PNG fil
     - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject. Typically readable and writable in most cases.
     - Default - initially ::kOfxPropName, but will be reset if ::kOfxPropLabel is changed.
 
-This is a shorter version of the label, typically 13 character glyphs or less. Hosts should use this if they have limitted display space for their object labels.
+This is a shorter version of the label, typically 13 character glyphs or less. Hosts should use this if they have limited display space for their object labels.
 */
 #define kOfxPropShortLabel "OfxPropShortLabel"
 
