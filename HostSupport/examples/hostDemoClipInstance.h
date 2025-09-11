@@ -98,7 +98,7 @@ namespace MyHost {
 
     // Continuous Samples -
     //
-    //  0 if the images can only be sampled at discreet times (eg: the clip is a sequence of frames),
+    //  0 if the images can only be sampled at discrete times (eg: the clip is a sequence of frames),
     //  1 if the images can only be sampled continuously (eg: the clip is infact an animating roto spline and can be rendered anywhen). 
     virtual bool getContinuousSamples() const;
 

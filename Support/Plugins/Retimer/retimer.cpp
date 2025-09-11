@@ -331,7 +331,7 @@ void RetimerExamplePluginFactory::describeInContext(OFX::ImageEffectDescriptor &
   dstClip->setFieldExtraction(eFieldExtractDoubled); // which is the default anyway
   dstClip->setSupportsTiles(true);
 
-  // what param we have is dependant on the host
+  // what param we have is dependent on the host
   if(context == OFX::eContextRetimer) {
     // Define the mandated kOfxImageEffectRetimerParamName param, note that we don't do anything with this other than.
     // describe it. It is not a true param but how the host indicates to the plug-in which frame
