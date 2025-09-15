@@ -47,17 +47,7 @@ Properties Reference
 
 .. doxygendefine:: kOfxImageEffectPropColourManagementAvailableConfigs
 
-.. doxygendefine:: kOfxImageEffectColourManagementBasic
-
-.. doxygendefine:: kOfxImageEffectColourManagementConfig
-
-.. doxygendefine:: kOfxImageEffectColourManagementCore
-
-.. doxygendefine:: kOfxImageEffectColourManagementFull
-
-.. doxygendefine:: kOfxImageEffectColourManagementNone
-
-.. doxygendefine:: kOfxImageEffectColourManagementOCIO
+.. doxygendefine:: kOfxImageEffectPropColourManagementConfig
 
 .. doxygendefine:: kOfxImageEffectPropColourManagementStyle
 

@@ -7,46 +7,47 @@ may optionally give it the chance to draw its own custom GUI tools and
 to be able to interact with pen and keyboard input. In OFX this is done
 via the OfxInteract suite, which is found in the file `ofxInteract.h <https://github.com/ofxa/openfx/blob/master/include/ofxInteract.h>`_.
 
-OFX interacts by default use openGL to perform all drawing in
-interacts, due to its portabilty, robustness and wide implementation.
-As of 2022, some systems are moving away from OpenGL support in favor
-of more modern graphics drawing APIs. So as of OFX 1.5, effects may
-use the :cpp:class:`OfxDrawSuiteV1` instead of OpenGL if the host supports it.
+OFX Interacts use openGL by default to perform all drawing, due to its
+portabilty, robustness and wide implementation. As of 2022, some
+systems are moving away from OpenGL support in favor of more modern
+graphics drawing APIs. So as of OFX 1.5, effects may use the
+:cpp:class:`OfxDrawSuiteV1` instead of OpenGL, if the host supports it,
+by requesting :c:macro:`kOfxImageEffectPluginPropOverlayInteractV2`
+instead of :c:macro:`kOfxImageEffectPluginPropOverlayInteractV1`.
 
-Each object that can have their own interact a pointer property in it
-which should point to a separate `main entry point <#mainEntryPoint>`__.
-This entry point is *not* the same as the one in the OfxPlugin struct,
-as it needs to respond to a different set of actions to the effect.
+Each plugin implementing interacts sets up a pointer property which
+should point to a separate "InteractMain"" entry point. This entry
+point is *not* the same as the one in the OfxPlugin struct, as it
+needs to respond to a different set of actions to the effect.
 
-There are two things in an image effect can have their own interact,
-these are...
+There are two things an image effect can draw via its interact:
 
--  as on overlay on the image being currently viewed in any image
+-  An overlay on the image being currently viewed in any image
    viewer, set via the effect descriptor's
    :c:macro:`kOfxImageEffectPluginPropOverlayInteractV1`
-   property
--  as a replacement for any parameter's standard GUI object, set this
+   property.
+-  Replacement for any parameter's standard GUI object. set this
    via the parameter descriptor's
    :c:macro:`kOfxParamPropInteractV1`
    property.
 
-Hosts might not be able to support interacts, to indicate this, two
+Hosts might not be able to support interacts. To indicate this, two
 properties exist on the host descriptor which an effect should examine
-at description time so as to determine its own behaviour. These are...
+at description time so as to determine its own behaviour. These are:
 
 -  :c:macro:`kOfxImageEffectPropSupportsOverlays`
 -  :c:macro:`kOfxParamHostPropSupportsCustomInteract`
 
-Interacts are separate objects to the effect they are associated with,
-they have their own descriptor and instance handles passed into their
-separate :ref:`main entry point <mainEntryPoint>`.
+Interacts are separate objects from the effect they are associated with.
+They have their own descriptor and instance handles passed into their
+separate main entry point.
 
-An interact instance cannot exist without a plugin instance, an
+An interact instance cannot exist without a plugin instance. An
 interact's instance, once created, is bound to a single instance of a
 plugin until the interact instance is destroyed.
 
-All interacts of the same type share openGL display lists, even if they
-are in different openGL contexts.
+When using OpenGL, all interacts of the same type share openGL display
+lists, even if they are in different openGL contexts.
 
 All interacts of the same type will have the same pixel types (this is a
 side effect of the last point), this will always be double buffered with
@@ -77,9 +78,16 @@ Hosts will generally display images (both input and output) in user
 their interfaces. A plugin can put an interact in this display by
 setting the effect descriptor
 :c:macro:`kOfxImageEffectPluginPropOverlayInteractV1`
+or
+:c:macro:`kOfxImageEffectPluginPropOverlayInteractV2`
 property to point to a main entry.
 
-The viewport for such interacts will depend completely on the host.
+If the plugin requests OverlayInteractV2 and the host supports it, then the plugin *must* do all drawing with the DrawSuite, not OpenGL.
+
+OpenGL
+^^^^^^^
+
+In OpenGL, the viewport for such interacts will depend completely on the host.
 
 The ``GL_PROJECTION`` matrix will be set up so that it maps openGL
 coordinates to canonical image coordinates.
@@ -90,6 +98,11 @@ An overlay's interact draw action should assume that it is sharing the
 openGL context and viewport with other objects that belong to the host.
 It should not blank the background and it should never swap buffers,
 that is for the host to do.
+
+DrawSuite
+^^^^^^^^^
+
+For info on using DrawSuite, see :c:struct:`OfxDrawSuiteV1`.
 
 .. _ParametersInteracts:
 
@@ -105,7 +118,10 @@ completely replace the parameters default user interface in the 'paged'
 and *hierarchical* interfaces, but it will not replace the parameter's
 interface in any animation sheet.
 
-Properties affecting custom interacts for parameters are...
+Note that not all hosts implement custom parameter interacts. See
+:c:macro:`kOfxParamHostPropSupportsCustomInteract`.
+
+Properties affecting custom interacts for parameters are:
 
 -  :c:macro:`kOfxParamPropInteractSizeAspect`
 -  :c:macro:`kOfxParamPropInteractMinimumSize`
@@ -127,53 +143,49 @@ A parameter's interact draw function will have full responsibility for
 drawing the interact, including clearing the background and swapping
 buffers.
 
+
 Interact Actions
 ----------------
 
-The following actions are passed to any interact entry point in an image
-effect plug-in.
+The following actions may be passed to the interact entry point in an
+image effect plug-in.
 
--  The Generic Describe Action
-   called to describe the specific
-   interact
-   ,
--  The Create Instance Action
-   called just after an instance of the
-   interact
-   is created,
--  The Generic Destroy Instance Action
-   called just before of the
-   interact
-   is destroyed,
--  The Draw Action
-   called to have the interact draw itself,
--  :c:macro:`kOfxInteractActionPenMotion`
+-  **The Generic Describe Action**, :c:macro:`KOfxActionDescribe` -
+   called to describe the specific interact.
+-  **The Create Instance Action**, :c:macro:`KOfxActionCreateInstance` -
+   called just after an instance of the interact is created.
+-  **The Generic Destroy Instance Action**, :c:macro:`KOfxActionDestroyInstance` -
+   called just before the interact is destroyed.
+-  **The Draw Action**, :c:macro:`kOfxInteractActionDraw` -
+   called to have the interact draw itself.
+-  :c:macro:`kOfxInteractActionPenMotion` -
    called whenever the interact has the input focus and the pen has
-   moved, regardless of whether the pen is up or down,
--  :c:macro:`kOfxInteractActionPenDown`
+   moved, regardless of whether the pen is up or down.
+-  :c:macro:`kOfxInteractActionPenDown` -
    called whenever the interact has the input focus and the pen has
-   changed state to 'down',
--  :c:macro:`kOfxInteractActionPenUp`
+   changed state to 'down'.
+-  :c:macro:`kOfxInteractActionPenUp` -
    called whenever the interact has the input focus and the pen has
-   changed state to 'up,
--  :c:macro:`kOfxInteractActionKeyDown`
+   changed state to 'up'.
+-  :c:macro:`kOfxInteractActionKeyDown` -
    called whenever the interact has the input focus and a key has gone
-   down,
--  :c:macro:`kOfxInteractActionKeyUp`
+   down.
+-  :c:macro:`kOfxInteractActionKeyUp` -
    called whenever the interact has the input focus and a key has gone
-   up,
--  :c:macro:`kOfxInteractActionKeyRepeat`
+   up.
+-  :c:macro:`kOfxInteractActionKeyRepeat` -
    called whenever the interact has the input focus and a key has gone
-   down and a repeat key sequence has been sent,
--  :c:macro:`kOfxInteractActionGainFocus`
-   called whenever the interact gains input focus,
--  :c:macro:`kOfxInteractActionLoseFocus`
-   called whenever the interact loses input focus,
+   down and a repeat key sequence has been sent.
+-  :c:macro:`kOfxInteractActionGainFocus` -
+   called whenever the interact gains input focus.
+-  :c:macro:`kOfxInteractActionLoseFocus` -
+   called whenever the interact loses input focus.
 
-An interact cannot be described until an effect has been described.
+The host must first call the effect's Describe action before calling its interact Describe action.
 
-An interact instance must always be associated with an effect instance.
-So it gets created after an effect and destroyed before one.
+An interact instance must always be associated with an effect instance,
+so it gets created after the effect and destroyed before the effect.
 
-An interact instance should be issued a gain focus action before any key
-or pen actions are issued, and a lose focus action when it goes.
+An interact instance should be issued a "gain focus" action before
+any key or pen actions are issued, and a "lose focus" action when it
+goes.
