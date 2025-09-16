@@ -21,7 +21,7 @@ namespace OFX {
 
     namespace ImageEffect {
 
-      /// properties common to the desciptor and instance
+      /// properties common to the descriptor and instance
       /// the desc and set them, the instance cannot
       static const Property::PropSpec clipDescriptorStuffs[] = {
         { kOfxPropType, Property::eString, 1, true, kOfxTypeClip },
@@ -239,7 +239,7 @@ namespace OFX {
         _components = s;
       }
        
-      // get the virutals for viewport size, pixel scale, background colour
+      // get the virtuals for viewport size, pixel scale, background colour
       void ClipInstance::getDoublePropertyN(const std::string &name, double *values, int n) const
       {
         if(name==kOfxImagePropPixelAspectRatio){
@@ -266,7 +266,7 @@ namespace OFX {
           throw Property::Exception(kOfxStatErrValue);
       }
 
-      // get the virutals for viewport size, pixel scale, background colour
+      // get the virtuals for viewport size, pixel scale, background colour
       double ClipInstance::getDoubleProperty(const std::string &name, int n) const
       {
         if(name==kOfxImagePropPixelAspectRatio){
@@ -297,7 +297,7 @@ namespace OFX {
           throw Property::Exception(kOfxStatErrValue);
       }
 
-      // get the virutals for viewport size, pixel scale, background colour
+      // get the virtuals for viewport size, pixel scale, background colour
       int ClipInstance::getIntProperty(const std::string &name, int n) const
       {
         if(n!=0) throw Property::Exception(kOfxStatErrValue);
@@ -311,14 +311,14 @@ namespace OFX {
           throw Property::Exception(kOfxStatErrValue);
       }
 
-      // get the virutals for viewport size, pixel scale, background colour
+      // get the virtuals for viewport size, pixel scale, background colour
       void ClipInstance::getIntPropertyN(const std::string &name, int *values, int n) const
       {
         if(n!=0) throw Property::Exception(kOfxStatErrValue);
         *values = getIntProperty(name, 0);
       }
 
-      // get the virutals for viewport size, pixel scale, background colour
+      // get the virtuals for viewport size, pixel scale, background colour
       const std::string &ClipInstance::getStringProperty(const std::string &name, int n) const
       {
         if(n!=0) throw Property::Exception(kOfxStatErrValue);
@@ -442,7 +442,7 @@ namespace OFX {
             return rgb;
         }
 
-        /// wierd, must be some custom bit , if only one, choose that, otherwise no idea
+        /// weird, must be some custom bit , if only one, choose that, otherwise no idea
         /// how to map, you need to derive to do so.
         const std::vector<std::string> &supportedComps = getSupportedComponents();
         if(supportedComps.size() == 1)
