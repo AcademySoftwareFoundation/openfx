@@ -1252,8 +1252,8 @@ This contains the duration of the plug-in effect, in frames.
     - Property Set - a clip  instance (read only)
     - Valid Values - This must be one of
       - ::kOfxImageFieldNone  - the material is unfielded
-      - ::kOfxImageFieldLower - the material is fielded, with image rows 0,2,4.... occuring first in a frame
-      - ::kOfxImageFieldUpper - the material is fielded, with image rows line 1,3,5.... occuring first in a frame
+      - ::kOfxImageFieldLower - the material is fielded, with image rows 0,2,4.... occurring first in a frame
+      - ::kOfxImageFieldUpper - the material is fielded, with image rows line 1,3,5.... occurring first in a frame
  */
 #define kOfxImageClipPropFieldOrder "OfxImageClipPropFieldOrder"
 
