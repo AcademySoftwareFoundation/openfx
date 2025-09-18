@@ -669,6 +669,15 @@ This property is used to label objects uniquely amoung objects of that type. It 
 */
 #define kOfxPropName "OfxPropName"
 
+/** @brief Alternative names for an object.
+
+    - Type - string X N
+    - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject (read only)
+
+This property is used to provide alternative names for objects. It can be used in any situation where ::kOfxPropName is used, and is helpful for situations where the effects are being transferred from another plug-in API.
+*/
+#define kOfxPropAka "OfxPropAka"
+
 /** @brief Identifies a specific version of a host or plugin.
 
     - Type - int X N
