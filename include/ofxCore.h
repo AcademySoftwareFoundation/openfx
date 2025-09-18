@@ -548,6 +548,33 @@ These are the actions passed to a plug-in's 'main' function
  */
 #define kOfxActionEndInstanceEdit "OfxActionEndInstanceEdit"
 
+/** @brief
+
+ This is called when the effect has been imported from another host. It
+ is there so that effects can conform their parameters, accounting for
+ differences in parameter semantics between hosts. Plug-ins should use
+ \ref kOfxPropAka to inform hosts if their parameters have different names
+ in other APIs.
+
+ @param  handle handle to the plug-in instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs is redundant and is set to NULL
+ @param  outArgs is redundant and is set to NULL
+
+ \pre
+     -  \ref kOfxActionCreateInstance has been called on the instance handle.
+
+ \post
+     -  the instance will match the source host as closely as possible.
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and all was well
+     -  \ref kOfxStatReplyDefault, the action was ignored
+     -  \ref kOfxStatErrFatal,
+     -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
+     the plugin should to post a message
+ */
+#define kOfxActionConform "OfxActionConform"
+
 /*@}*/
 
 /** @brief Returns the 'nth' plug-in implemented inside a binary
