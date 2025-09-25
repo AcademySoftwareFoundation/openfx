@@ -705,6 +705,15 @@ This property is used to provide alternative names for objects. It can be used i
 */
 #define kOfxPropAka "OfxPropAka"
 
+/** @brief Alternative names for parameter dimensions.
+
+    - Type - string X N X M
+    - Property Set - multidimensional parameter descriptors, see \ref PropertiesByObject (read only)
+
+This property is used to provide alternative names for each dimension of a multidimensional parameter. It can be used in situations where effects are being transferred from another plug-in API that doesn't support multidimensional parameters, and each dimension was stored as a separate parameter.
+*/
+#define kOfxPropAka2D "OfxPropAka2D"
+
 /** @brief Identifies a specific version of a host or plugin.
 
     - Type - int X N
