@@ -25,7 +25,7 @@ namespace OFX {
 
     class Host;
 
-    // forward delcarations
+    // forward declarations
     class PluginDesc;   
     class Plugin;
     class PluginBinary;
@@ -186,7 +186,7 @@ namespace OFX {
       friend class PluginHandle;
 
     protected :
-      Binary _binary;                 ///< our binary object, abstracted layer ontop of OS calls, defined in ofxhBinary.h
+      Binary _binary;                 ///< our binary object, abstracted layer on top of OS calls, defined in ofxhBinary.h
       std::string _filePath;          ///< full path to the file
       std::string _bundlePath;        ///< path to the .bundle directory
       std::vector<Plugin *> _plugins; ///< my plugins
@@ -379,7 +379,7 @@ namespace OFX {
         }
       }
 
-      /// specify which subdirectory of /usr/OFX or equivilant
+      /// specify which subdirectory of /usr/OFX or equivalent
       /// (as well as 'Plugins') to look in for plugins.
       void setPluginHostPath(const std::string &hostId);
 

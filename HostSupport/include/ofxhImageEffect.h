@@ -124,10 +124,10 @@ namespace OFX {
         virtual OfxStatus flushOpenGLResources() const = 0;
 #     endif
 
-        /// override this to use your own memory instance - must inherrit from memory::instance
+        /// override this to use your own memory instance - must inherit from memory::instance
         virtual Memory::Instance* newMemoryInstance(size_t nBytes);
 
-        // return an memory::instance calls makeMemoryInstance that can be overriden
+        // return an memory::instance calls makeMemoryInstance that can be overridden
         Memory::Instance* imageMemoryAlloc(size_t nBytes);
       };
 
@@ -335,7 +335,7 @@ namespace OFX {
         /// get output fielding as set in the clip preferences action.
         const std::string &getOutputPreMultiplication() const {return _outputPreMultiplication; }
 
-        /// get the output frame rate, as set in the clip prefences action.
+        /// get the output frame rate, as set in the clip preferences action.
         double getOutputFrameRate() const {return _outputFrameRate;}
 
 
@@ -368,16 +368,16 @@ namespace OFX {
         /// params and input images are exactly the same. eg: random noise generator
         bool isFrameVarying() const {return _frameVarying;}
 
-        /// pure virtuals that must  be overriden
+        /// pure virtuals that must  be overridden
         virtual ClipInstance* getClip(const std::string& name) const;
 
         /// override this to make processing abort, return 1 to abort processing
         virtual int abort();
 
-        /// override this to use your own memory instance - must inherrit from memory::instance
+        /// override this to use your own memory instance - must inherit from memory::instance
         virtual Memory::Instance* newMemoryInstance(size_t nBytes);
 
-        // return an memory::instance calls makeMemoryInstance that can be overriden
+        // return an memory::instance calls makeMemoryInstance that can be overridden
         Memory::Instance* imageMemoryAlloc(size_t nBytes);
 
         /// make a clip
@@ -410,10 +410,10 @@ namespace OFX {
         /// overridden from Property::Notify
         virtual void notify(const std::string &name, bool singleValue, int indexOrN);
 
-        /// overridden from gethook,  get the virutals for viewport size, pixel scale, background colour
+        /// overridden from gethook,  get the virtuals for viewport size, pixel scale, background colour
         virtual double getDoubleProperty(const std::string &name, int index) const;
 
-        /// overridden from gethook,  get the virutals for viewport size, pixel scale, background colour
+        /// overridden from gethook,  get the virtuals for viewport size, pixel scale, background colour
         virtual void getDoublePropertyN(const std::string &name, double *values, int count) const;
         
         /// overridden from gethook, don't know what to do
@@ -441,7 +441,7 @@ namespace OFX {
 
         // The extent of the current project in canonical coordinates. 
         // The extent is the size of the 'output' for the current project. See ProjectCoordinateSystems 
-        // for more infomation on the project extent. The extent is in canonical coordinates and only 
+        // for more information on the project extent. The extent is in canonical coordinates and only 
         // returns the top right position, as the extent is always rooted at 0,0. For example a PAL SD 
         // project would have an extent of 768, 576. 
         virtual void getProjectExtent(double& xSize, double& ySize) const = 0;
@@ -611,7 +611,7 @@ namespace OFX {
         virtual void setDefaultClipPreferences();
 
         /// Initialise the clip preferences arguments, override this to do
-        /// stuff with wierd components etc... Calls setDefaultClipPreferences
+        /// stuff with weird components etc... Calls setDefaultClipPreferences
         virtual void setupClipPreferencesArgs(Property::Set &args);
 
         /// Run the clip preferences action from the effect.
