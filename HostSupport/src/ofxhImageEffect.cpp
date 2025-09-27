@@ -476,7 +476,7 @@ namespace OFX {
         throw Property::Exception(kOfxStatErrMissingHostFeature);
       }
 
-      // get the virutals for viewport size, pixel scale, background colour
+      // get the virtuals for viewport size, pixel scale, background colour
       double Instance::getDoubleProperty(const std::string &name, int index) const
       {
         if(name==kOfxImageEffectPropProjectSize){
@@ -544,7 +544,7 @@ namespace OFX {
       }
 
       Instance::~Instance(){
-        // destroy the instance, only if succesfully created
+        // destroy the instance, only if successfully created
         if (_created) {
 #       ifdef OFX_DEBUG_ACTIONS
             std::cout << "OFX: "<<(void*)this<<"->"<<kOfxActionDestroyInstance<<"()"<<std::endl;
@@ -597,12 +597,12 @@ namespace OFX {
         return 0; 
       }
 
-      // override this to use your own memory instance - must inherrit from memory::instance
+      // override this to use your own memory instance - must inherit from memory::instance
       Memory::Instance* Instance::newMemoryInstance(size_t /*nBytes*/) {
         return 0; 
       }
 
-      // return an memory::instance calls makeMemoryInstance that can be overriden
+      // return an memory::instance calls makeMemoryInstance that can be overridden
       Memory::Instance* Instance::imageMemoryAlloc(size_t nBytes){
         Memory::Instance* instance = newMemoryInstance(nBytes);
         if(instance)
@@ -673,7 +673,7 @@ namespace OFX {
       // create a clip instance
       OfxStatus Instance::createInstanceAction() 
       {
-        /// we need to init the clips before we call create instance incase
+        /// we need to init the clips before we call create instance in case
         /// they try and fetch something in create instance, which they are allowed
         setDefaultClipPreferences();
 
@@ -1288,7 +1288,7 @@ namespace OFX {
               s.readonly = false;
               s.defaultValue = "";
               outArgs.createProperty(s);
-              /// intialise it to the current frame
+              /// initialise it to the current frame
               outArgs.setDoubleProperty(name, time, 0);
               outArgs.setDoubleProperty(name, time, 1);
             }
@@ -1577,7 +1577,7 @@ namespace OFX {
       }
 
       /// Initialise the clip preferences arguments, override this to do
-      /// stuff with wierd components etc...
+      /// stuff with weird components etc...
       void Instance::setupClipPreferencesArgs(Property::Set &outArgs)
       {
         /// reset all the clip prefs stuff to their defaults
@@ -2707,11 +2707,11 @@ namespace OFX {
       /// ctor
       Host::Host()
       {
-        /// add the properties for an image effect host, derived classs to set most of them
+        /// add the properties for an image effect host, derived classes to set most of them
         _properties.addProperties(hostStuffs);
       }
 
-      /// optionally over-ridden function to register the creation of a new descriptor in the host app
+      /// optionally overridden function to register the creation of a new descriptor in the host app
       void Host::initDescriptor(Descriptor* /*desc*/)
       {
       }
@@ -2726,12 +2726,12 @@ namespace OFX {
         return true;
       }
 
-      // override this to use your own memory instance - must inherrit from memory::instance
+      // override this to use your own memory instance - must inherit from memory::instance
       Memory::Instance* Host::newMemoryInstance(size_t /*nBytes*/) {
         return 0;
       }
 
-      // return an memory::instance calls makeMemoryInstance that can be overriden
+      // return an memory::instance calls makeMemoryInstance that can be overridden
       Memory::Instance* Host::imageMemoryAlloc(size_t nBytes){
         Memory::Instance* instance = newMemoryInstance(nBytes);
         if(instance)
