@@ -707,7 +707,7 @@ namespace OFX {
     /** @brief return the range of frames over which this clip has images, before any clip preferences have been applied */
     OfxRangeD getUnmappedFrameRange(void) const;
 
-    /** @brief get the RoD for this clip in the cannonical coordinate system */
+    /** @brief get the RoD for this clip in the canonical coordinate system */
     OfxRectD getRegionOfDefinition(double t);
 
     /** @brief fetch an image
@@ -718,7 +718,7 @@ namespace OFX {
     */
     Image *fetchImage(double t);
 
-    /** @brief fetch an image, with a specific region in cannonical coordinates
+    /** @brief fetch an image, with a specific region in canonical coordinates
 
     When finished with, the client code must delete the image.
 
@@ -726,7 +726,7 @@ namespace OFX {
     */
     Image *fetchImage(double t, const OfxRectD &bounds);
 
-    /** @brief fetch an image, with a specific region in cannonical coordinates
+    /** @brief fetch an image, with a specific region in canonical coordinates
 
     When finished with, the client code must delete the image.
 
@@ -932,7 +932,7 @@ namespace OFX {
     */
     void setOutputPremultiplication(PreMultiplicationEnum v);
 
-    /** @brief Set whether the effect can be continously sampled.
+    /** @brief Set whether the effect can be continuously sampled.
 
     Defaults to false. 
     */
@@ -1039,10 +1039,10 @@ namespace OFX {
     /** @brief is the instance currently being interacted with */
     bool isInteractive(void) const;
 
-    /** @brief set the instance to be sequentially renderred, this should have been part of clip preferences! */
+    /** @brief set the instance to be sequentially rendered, this should have been part of clip preferences! */
     void setSequentialRender(bool v);
 
-    /** @brief Have we informed the host we want to be seqentially renderred ? */
+    /** @brief Have we informed the host we want to be seqentially rendered ? */
     bool getSequentialRender(void) const;
 
     /** @brief Does the plugin support image tiling ? Can only be called from changedParam or changedClip. */
@@ -1059,7 +1059,7 @@ namespace OFX {
     void setNeedsOpenGLRender(bool v);
 #endif
 
-    /** @brief notify host that the internal data structures need syncing back to parameters for persistance and so on.  This is reset by the host after calling SyncPrivateData. */
+    /** @brief notify host that the internal data structures need syncing back to parameters for persistence and so on.  This is reset by the host after calling SyncPrivateData. */
     void setParamSetNeedsSyncing();
 
     OFX::Message::MessageReplyEnum sendMessage(OFX::Message::MessageTypeEnum type, const std::string& id, const std::string& msg);
@@ -1095,7 +1095,7 @@ namespace OFX {
     /** @brief The purge caches action, a request for an instance to free up as much memory as possible in low memory situations */
     virtual void purgeCaches(void);
 
-    /** @brief The sync private data action, called when the effect needs to sync any private data to persistant parameters */
+    /** @brief The sync private data action, called when the effect needs to sync any private data to persistent parameters */
     virtual void syncPrivateData(void);
 
     /** @brief client render function, this is one of the few that must be overridden */
@@ -1120,7 +1120,7 @@ namespace OFX {
     If the effect wants change the rod from the default value (which is the union of RoD's of all input clips)
     it should set the \em rod argument and return true.
 
-    This is all in cannonical coordinates.
+    This is all in canonical coordinates.
     */
     virtual bool getRegionOfDefinition(const RegionOfDefinitionArguments &args, OfxRectD &rod);
 
@@ -1129,13 +1129,13 @@ namespace OFX {
     If the effect wants change its region of interest on any input clip from the default values (which is the same as the RoI in the arguments)
     it should do so by calling the OFX::RegionOfInterestSetter::setRegionOfInterest function on the \em rois argument.
 
-    Note, everything is in \em cannonical \em coordinates.
+    Note, everything is in \em canonical \em coordinates.
     */
     virtual void getRegionsOfInterest(const RegionsOfInterestArguments &args, RegionOfInterestSetter &rois);
 
     /** @brief the get frames needed action
 
-    If the effect wants change the frames needed on an input clip from the default values (which is the same as the frame to be renderred)
+    If the effect wants change the frames needed on an input clip from the default values (which is the same as the frame to be rendered)
     it should do so by calling the OFX::FramesNeededSetter::setFramesNeeded function on the \em frames argument.
     */
     virtual void getFramesNeeded(const FramesNeededArguments &args, FramesNeededSetter &frames);

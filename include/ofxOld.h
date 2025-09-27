@@ -98,7 +98,7 @@ V1.4: Removed
  */
 #define kOfxParamDoubleTypeNormalisedXY  "OfxParamDoubleTypeNormalisedXY"
 
-/** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to the X and Y dimension for a 2D param that can be interpretted as an absolute spatial position. See \ref ::kOfxParamPropDoubleType. 
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating normalisation to the X and Y dimension for a 2D param that can be interpreted as an absolute spatial position. See \ref ::kOfxParamPropDoubleType. 
 -- ofxParam.h
 @deprecated - V1.3: Deprecated in favour of ::kOfxParamDoubleTypeXYAbsolute 
 V1.4: Removed
