@@ -180,7 +180,7 @@ for example
 
         gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, 0, "1st Choice");
         gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, 1, "2nd Choice");
-        gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, 2, "3nd Choice");
+        gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, 2, "3rd Choice");
         ...
         gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, n, "nth Choice");
 
@@ -281,7 +281,7 @@ for example
 
         gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, 0, "1st Choice");
         gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, 1, "2nd Choice");
-        gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, 2, "3nd Choice");
+        gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceOption, 2, "3rd Choice");
         ...
         // enums: string values to be returned as param value, and stored by the host in the project
         gPropHost->propSetString(myChoiceParam, kOfxParamPropChoiceEnum, 0, "choice-1");
@@ -944,7 +944,7 @@ require their own set of functions to manage and manipulate them. The
 new :cpp:class:`OfxParametricParameterSuiteV1`
 is there to do that.
 
-All the defines and suite definitions for parameteric parameters are
+All the defines and suite definitions for parametric parameters are
 defined in the file `ofxParametricParam.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxParametricParam.h>`__
 
 Parametric parameters are in effect *functions* a plug-in can ask a host

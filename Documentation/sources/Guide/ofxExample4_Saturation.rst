@@ -6,7 +6,7 @@ be used in more than one context, as well as how to make a multi-input
 effect. Its source can be found in the C++ file
 `saturation.cpp <https://github.com/ofxa/openfx/blob/master/Guide/Code/Example4/saturation.cpp>`_.
 This plugin takes an RGB or RGBA
-image and increases or descreases the saturation by a parameter. It can
+image and increases or decreases the saturation by a parameter. It can
 be used in two contexts, firstly as a simple filter, secondly as a
 general effect, where it has an optional second input clip which is used
 to control where the effect is applied.
@@ -158,7 +158,7 @@ space.
 
 Here we have the describe in context action. This will now be called
 once for each context that a host application wants to support. You know
-which contex you are being described in by the
+which context you are being described in by the
 :c:macro:`kOfxImageEffectPropContext` property on inArgs.
 
 Regardless of the context, it describes two clips, "Source" and

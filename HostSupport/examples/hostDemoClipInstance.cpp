@@ -261,8 +261,8 @@ namespace MyHost {
   /// Field Order - Which spatial field occurs temporally first in a frame.
   /// \returns 
   ///  - kOfxImageFieldNone - the clip material is unfielded
-  ///  - kOfxImageFieldLower - the clip material is fielded, with image rows 0,2,4.... occuring first in a frame
-  ///  - kOfxImageFieldUpper - the clip material is fielded, with image rows line 1,3,5.... occuring first in a frame
+  ///  - kOfxImageFieldLower - the clip material is fielded, with image rows 0,2,4.... occurring first in a frame
+  ///  - kOfxImageFieldUpper - the clip material is fielded, with image rows line 1,3,5.... occurring first in a frame
   const std::string &MyClipInstance::getFieldOrder() const
   {
     /// our clip is pretending to be progressive PAL SD, so return kOfxImageFieldNone
@@ -300,8 +300,8 @@ namespace MyHost {
 
   // Continuous Samples -
   //
-  //  0 if the images can only be sampled at discreet times (eg: the clip is a sequence of frames),
-  //  1 if the images can only be sampled continuously (eg: the clip is infact an animating roto spline and can be rendered anywhen). 
+  //  0 if the images can only be sampled at discrete times (eg: the clip is a sequence of frames),
+  //  1 if the images can only be sampled continuously (eg: the clip is in fact an animating roto spline and can be rendered anywhen). 
   bool MyClipInstance::getContinuousSamples() const
   {
     return false;

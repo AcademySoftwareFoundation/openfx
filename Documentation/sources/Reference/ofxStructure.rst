@@ -64,7 +64,7 @@ API, however many are actually quite generic and could be reused by
 other APIs. The property suite definitely has to be used by all other
 APIs, while the memory allocation suite, the parameter suite and several
 others would probably be useful for all other APIs. For example the
-parameter suite could be re-used to specify user visible parameters to
+parameter suite could be reused to specify user visible parameters to
 the other APIs.
 
 Several types are common to all OFX APIs, and as such are defined in
