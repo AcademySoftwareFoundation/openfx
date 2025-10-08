@@ -48,7 +48,14 @@ void RunMetalKernel(void* p_CmdQ, int p_Width, int p_Height, float* p_Gain, cons
         NSError* err;
 
         MTLCompileOptions* options = [MTLCompileOptions new];
-        options.fastMathEnabled = YES;
+        if (@available(macOS 15.0, iOS 18.0, *)) {
+            options.mathMode = MTLLibraryMathModeFast;
+        } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            options.fastMathEnabled = YES;
+#pragma clang diagnostic pop
+        }
         if (!(metalLibrary    = [device newLibraryWithSource:@(kernelSource) options:options error:&err]))
         {
             fprintf(stderr, "Failed to load metal library, %s\n", err.localizedDescription.UTF8String);

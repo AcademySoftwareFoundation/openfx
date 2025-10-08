@@ -85,3 +85,6 @@ add_subdirectory(Support)
 if(BUILD_EXAMPLE_PLUGINS)
   add_subdirectory(Examples)
 endif()
+
+# Build contrib plugins (community contributions)
+add_subdirectory(contrib/plugins)
