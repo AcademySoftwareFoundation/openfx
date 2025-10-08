@@ -10,7 +10,7 @@ Author Bruno Nicoletti
 
 Each ofx binary may have a single xml file associated with it that is contains resource overrides for various properties of the plugin. This file is the DTD for those resource files. Typically, the properties being changed are to do with user interface labels and layouts, as well as a few other things such as default values for parameters and so on.
 
-If an element in the DTD has an equivilant property in OFX, the element will be the named with the same string that labels the property in the binary. For example the default property is labelled with "OfxParamPropDefault" in both cases.
+If an element in the DTD has an equivalent property in OFX, the element will be the named with the same string that labels the property in the binary. For example the default property is labelled with "OfxParamPropDefault" in both cases.
 
 The only attributes used on any element are there to identify the element, typically to associate it with a named object in the binary. This is the 'name' attribute. The only other attributes are to associate a host and a locale with the resource set.
 
@@ -26,7 +26,7 @@ A message redefinition is associated with the 'messageId' passed into the OfxMes
 
 A resource set is made up of parameter redefinitions, clip redefinitions, parameter hierarchy redefinitions and parameter page set redefinitions.
 
-Any parameter (except page and hierachy params) in the binary may have certain properties overridden. Each parameter type has a corresponding element, for example the 2D integer parameter is specified via the 'OfxParamTypeInteger2D', the choice parameter by the 'OfxParamTypeChoice' element. There are many different elements, each of which corresponds to an OFX parameter type. The 'name' attribute of a parameter element is used to associate it with a specific parameter in the binary.
+Any parameter (except page and hierarchy params) in the binary may have certain properties overridden. Each parameter type has a corresponding element, for example the 2D integer parameter is specified via the 'OfxParamTypeInteger2D', the choice parameter by the 'OfxParamTypeChoice' element. There are many different elements, each of which corresponds to an OFX parameter type. The 'name' attribute of a parameter element is used to associate it with a specific parameter in the binary.
 
 Each parameter element has its own specific set of sub elements, as not all parameters support all properties.
 
