@@ -17,13 +17,14 @@ This is version 1.6 of the OpenFX API.
 
 ## Key Features of OpenFX Version 1.6:
 
-## Fixes in OpenFX Version 1.6:
+## Fixes
 
 ## Deprecations
 
 ## Detailed List of Changes
 
 - Add `kOfxImageEffectPropNoSpatialAwareness`. Allows the host and plugin to coordinate a render that ensures no spatial changes to the image.
+- Add plugin install locations for Windows Arm64
 
 # Release Notes - 1.5
 
