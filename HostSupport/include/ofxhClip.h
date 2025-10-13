@@ -246,7 +246,7 @@ namespace OFX {
         // Continuous Samples -
         //
         //  0 if the images can only be sampled at discrete times (eg: the clip is a sequence of frames),
-        //  1 if the images can only be sampled continuously (eg: the clip is in fact an animating roto spline and can be rendered anywhen). 
+        //  1 if the images can only be sampled continuously (eg: the clip is in fact an animating roto spline and can be rendered anywhen).
         virtual bool getContinuousSamples() const = 0;
 
         /// override this to fill in the image at the given time.

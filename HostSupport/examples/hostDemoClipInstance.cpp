@@ -301,7 +301,7 @@ namespace MyHost {
   // Continuous Samples -
   //
   //  0 if the images can only be sampled at discrete times (eg: the clip is a sequence of frames),
-  //  1 if the images can only be sampled continuously (eg: the clip is in fact an animating roto spline and can be rendered anywhen). 
+  //  1 if the images can only be sampled continuously (eg: the clip is in fact an animating roto spline and can be rendered anywhen).
   bool MyClipInstance::getContinuousSamples() const
   {
     return false;

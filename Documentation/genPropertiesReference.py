@@ -84,7 +84,8 @@ def main(argv):
         f.write('Properties Reference\n')
         f.write('=====================\n')
         for p in sorted(props):
-            f.write('.. doxygendefine:: ' + p + '\n\n')
+            f.write('.. doxygendefine:: ' + p + '\n')
+            f.write('.. property_link:: ' + p + '\n\n')
 
 if __name__ == "__main__":
     main(sys.argv[1:])
