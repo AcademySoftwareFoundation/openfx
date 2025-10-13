@@ -277,6 +277,8 @@ def gen_props_metadata(props_metadata, outfile_path: Path):
 #include <ofxKeySyms.h>
 #include <ofxOld.h>
 
+#include "ofxSpan.h"
+
 namespace openfx {
 enum class PropType {
    Int,
@@ -319,15 +321,26 @@ enum class PropType {
 
         outfile.write("""
 
-#define MAX_PROP_TYPES 4
+// Property type arrays for spans (generated before PropDef)
+namespace prop_type_arrays {
+""")
+        # Generate type arrays for each property
+        for p in sorted(props_metadata):
+            md = props_metadata[p]
+            types = md.get('type')
+            if isinstance(types, str):
+                types = (types,)
+            prop_type_defs = "{" + ",".join(f'PropType::{t.capitalize()}' for t in types) + "}"
+            outfile.write(f"static constexpr PropType {p}_types[] = {prop_type_defs};\n")
+        outfile.write("} // namespace prop_type_arrays\n\n")
+
+        outfile.write("""
 struct PropDef {
-   const char* name;                        // Property name
-   PropId id;                               // ID for known props
-   PropType supportedTypes[MAX_PROP_TYPES]; // Supported data types
-   size_t supportedTypesCount;
-   int dimension;                           // Property dimension (0 for variable)
-   const char* const* enumValues;           // Valid values for enum properties
-   size_t enumValuesCount;
+   const char* name;                    // Property name
+   PropId id;                           // ID for known props
+   openfx::span<const PropType> supportedTypes; // Supported data types
+   int dimension;                       // Property dimension (0 for variable)
+   openfx::span<const char* const> enumValues;  // Valid values for enum properties
 };
 
 // Array type for storing all PropDefs, indexed by PropId for simplicity
@@ -361,17 +374,17 @@ static inline constexpr PropDefsArray<PropDef> prop_defs = {
                 types = md.get('type')
                 if isinstance(types, str): # make it always a list
                     types = (types,)
-                # types
-                prop_type_defs = "{" + ",".join(f'PropType::{t.capitalize()}' for t in types) + "}"
-                prop_def += prop_type_defs + f', {len(types)}, '
+                # types - use span pointing to type array
+                type_count = len(types)
+                prop_def += f"openfx::span(prop_type_arrays::{p}_types, {type_count}), "
                 # dimension
                 prop_def += f"{md['dimension']}, "
-                # enum values
+                # enum values - use span
                 if md['type'] == 'enum':
                     assert isinstance(md['values'], list)
-                    prop_def += f"prop_enum_values::{p}.data(), prop_enum_values::{p}.size()"
+                    prop_def += f"openfx::span(prop_enum_values::{p}.data(), prop_enum_values::{p}.size())"
                 else:
-                    prop_def += "nullptr, 0"
+                    prop_def += "openfx::span<const char* const>()"
                 prop_def += "},\n"
                 outfile.write(prop_def)
             except Exception as e:

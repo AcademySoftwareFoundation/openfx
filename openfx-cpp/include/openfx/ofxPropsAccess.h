@@ -186,16 +186,15 @@ struct PropTypeToNative<PropType::Pointer> {
 template <PropId id>
 struct EnumValue {
   static constexpr const char *get(size_t index) {
-    static_assert(index < properties::PropTraits<id>::def.enumValuesCount,
+    static_assert(index < properties::PropTraits<id>::def.enumValues.size(),
                   "Property enum index out of range");
-    return properties::PropTraits<id>::enumValues[index];
+    return properties::PropTraits<id>::def.enumValues[index];
   }
 
-  static constexpr size_t size() { return properties::PropTraits<id>::enumValues.size(); }
+  static constexpr size_t size() { return properties::PropTraits<id>::def.enumValues.size(); }
 
   static constexpr bool isValid(const char *value) {
-    for (int i = 0; i < properties::PropTraits<id>::def.enumValuesCount; i++) {
-      auto val = properties::PropTraits<id>::def.enumValues[i];
+    for (auto val : properties::PropTraits<id>::def.enumValues) {
       if (std::strcmp(val, value) == 0)
         return true;
     }
@@ -324,9 +323,7 @@ class PropertyAccessor {
 
     // Check if T is compatible with any of the supported PropTypes
     constexpr bool isValidType = [&]() {
-      constexpr auto types =
-          std::array(Traits::def.supportedTypes, Traits::def.supportedTypesCount);
-      for (const auto &type : types) {
+      for (const auto &type : Traits::def.supportedTypes) {
         if constexpr (std::is_same_v<T, int> || std::is_same_v<T, bool>) {
           if (type == PropType::Int || type == PropType::Bool || type == PropType::Enum)
             return true;
@@ -422,8 +419,7 @@ class PropertyAccessor {
 
     // Check if T is compatible with any of the supported PropTypes
     constexpr bool isValidType = [&]() {
-      for (int i = 0; i < Traits::def.supportedTypesCount; i++) {
-        auto type = Traits::def.supportedTypes[i];
+      for (const auto &type : Traits::def.supportedTypes) {
         if constexpr (std::is_same_v<T, int> || std::is_same_v<T, bool>) {
           if (type == PropType::Int || type == PropType::Bool)
             return true;

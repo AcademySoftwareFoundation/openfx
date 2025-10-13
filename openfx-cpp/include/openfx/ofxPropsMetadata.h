@@ -15,6 +15,8 @@
 #include <ofxKeySyms.h>
 #include <ofxOld.h>
 
+#include "ofxSpan.h"
+
 namespace openfx {
 enum class PropType {
    Int,
@@ -278,15 +280,197 @@ constexpr std::array OfxPropChangeReason =
 } // namespace prop_enum_values
 
 
-#define MAX_PROP_TYPES 4
+// Property type arrays for spans (generated before PropDef)
+namespace prop_type_arrays {
+static constexpr PropType OfxImageClipPropColourspace_types[] = {PropType::String};
+static constexpr PropType OfxImageClipPropConnected_types[] = {PropType::Bool};
+static constexpr PropType OfxImageClipPropContinuousSamples_types[] = {PropType::Bool};
+static constexpr PropType OfxImageClipPropFieldExtraction_types[] = {PropType::Enum};
+static constexpr PropType OfxImageClipPropFieldOrder_types[] = {PropType::Enum};
+static constexpr PropType OfxImageClipPropIsMask_types[] = {PropType::Bool};
+static constexpr PropType OfxImageClipPropOptional_types[] = {PropType::Bool};
+static constexpr PropType OfxImageClipPropPreferredColourspaces_types[] = {PropType::String};
+static constexpr PropType OfxImageClipPropUnmappedComponents_types[] = {PropType::Enum};
+static constexpr PropType OfxImageClipPropUnmappedPixelDepth_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectFrameVarying_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectHostPropIsBackground_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectHostPropNativeOrigin_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectInstancePropEffectDuration_types[] = {PropType::Double};
+static constexpr PropType OfxImageEffectInstancePropSequentialRender_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPluginPropFieldRenderTwiceAlways_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPluginPropGrouping_types[] = {PropType::String};
+static constexpr PropType OfxImageEffectPluginPropHostFrameThreading_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPluginPropOverlayInteractV1_types[] = {PropType::Pointer};
+static constexpr PropType OfxImageEffectPluginPropOverlayInteractV2_types[] = {PropType::Pointer};
+static constexpr PropType OfxImageEffectPluginPropSingleInstance_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPluginRenderThreadSafety_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropClipPreferencesSlaveParam_types[] = {PropType::String};
+static constexpr PropType OfxImageEffectPropColourManagementAvailableConfigs_types[] = {PropType::String};
+static constexpr PropType OfxImageEffectPropColourManagementConfig_types[] = {PropType::String};
+static constexpr PropType OfxImageEffectPropColourManagementStyle_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropComponents_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropContext_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropCudaEnabled_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPropCudaRenderSupported_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropCudaStream_types[] = {PropType::Pointer};
+static constexpr PropType OfxImageEffectPropCudaStreamSupported_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropDisplayColourspace_types[] = {PropType::String};
+static constexpr PropType OfxImageEffectPropFieldToRender_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropFrameRange_types[] = {PropType::Double};
+static constexpr PropType OfxImageEffectPropFrameRate_types[] = {PropType::Double};
+static constexpr PropType OfxImageEffectPropFrameStep_types[] = {PropType::Double};
+static constexpr PropType OfxImageEffectPropInAnalysis_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPropInteractiveRenderStatus_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPropMetalCommandQueue_types[] = {PropType::Pointer};
+static constexpr PropType OfxImageEffectPropMetalEnabled_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPropMetalRenderSupported_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropMultipleClipDepths_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPropNoSpatialAwareness_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropOCIOConfig_types[] = {PropType::String};
+static constexpr PropType OfxImageEffectPropOCIODisplay_types[] = {PropType::String};
+static constexpr PropType OfxImageEffectPropOCIOView_types[] = {PropType::String};
+static constexpr PropType OfxImageEffectPropOpenCLCommandQueue_types[] = {PropType::Pointer};
+static constexpr PropType OfxImageEffectPropOpenCLEnabled_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPropOpenCLImage_types[] = {PropType::Pointer};
+static constexpr PropType OfxImageEffectPropOpenCLRenderSupported_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropOpenCLSupported_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropOpenGLEnabled_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPropOpenGLRenderSupported_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropOpenGLTextureIndex_types[] = {PropType::Int};
+static constexpr PropType OfxImageEffectPropOpenGLTextureTarget_types[] = {PropType::Int};
+static constexpr PropType OfxImageEffectPropPixelAspectRatio_types[] = {PropType::Double};
+static constexpr PropType OfxImageEffectPropPixelDepth_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropPluginHandle_types[] = {PropType::Pointer};
+static constexpr PropType OfxImageEffectPropPreMultiplication_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropProjectExtent_types[] = {PropType::Double};
+static constexpr PropType OfxImageEffectPropProjectOffset_types[] = {PropType::Double};
+static constexpr PropType OfxImageEffectPropProjectSize_types[] = {PropType::Double};
+static constexpr PropType OfxImageEffectPropRegionOfDefinition_types[] = {PropType::Double};
+static constexpr PropType OfxImageEffectPropRegionOfInterest_types[] = {PropType::Double};
+static constexpr PropType OfxImageEffectPropRenderQualityDraft_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPropRenderScale_types[] = {PropType::Double};
+static constexpr PropType OfxImageEffectPropRenderWindow_types[] = {PropType::Int};
+static constexpr PropType OfxImageEffectPropSequentialRenderStatus_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPropSetableFielding_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPropSetableFrameRate_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPropSupportedComponents_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropSupportedContexts_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropSupportedPixelDepths_types[] = {PropType::Enum};
+static constexpr PropType OfxImageEffectPropSupportsMultiResolution_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPropSupportsMultipleClipPARs_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPropSupportsOverlays_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPropSupportsTiles_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPropTemporalClipAccess_types[] = {PropType::Bool};
+static constexpr PropType OfxImageEffectPropUnmappedFrameRange_types[] = {PropType::Double};
+static constexpr PropType OfxImageEffectPropUnmappedFrameRate_types[] = {PropType::Double};
+static constexpr PropType OfxImagePropBounds_types[] = {PropType::Int};
+static constexpr PropType OfxImagePropData_types[] = {PropType::Pointer};
+static constexpr PropType OfxImagePropField_types[] = {PropType::Enum};
+static constexpr PropType OfxImagePropPixelAspectRatio_types[] = {PropType::Double};
+static constexpr PropType OfxImagePropRegionOfDefinition_types[] = {PropType::Int};
+static constexpr PropType OfxImagePropRowBytes_types[] = {PropType::Int};
+static constexpr PropType OfxImagePropUniqueIdentifier_types[] = {PropType::String};
+static constexpr PropType OfxInteractPropBackgroundColour_types[] = {PropType::Double};
+static constexpr PropType OfxInteractPropBitDepth_types[] = {PropType::Int};
+static constexpr PropType OfxInteractPropDrawContext_types[] = {PropType::Pointer};
+static constexpr PropType OfxInteractPropHasAlpha_types[] = {PropType::Bool};
+static constexpr PropType OfxInteractPropPenPosition_types[] = {PropType::Double};
+static constexpr PropType OfxInteractPropPenPressure_types[] = {PropType::Double};
+static constexpr PropType OfxInteractPropPenViewportPosition_types[] = {PropType::Int};
+static constexpr PropType OfxInteractPropPixelScale_types[] = {PropType::Double};
+static constexpr PropType OfxInteractPropSlaveToParam_types[] = {PropType::String};
+static constexpr PropType OfxInteractPropSuggestedColour_types[] = {PropType::Double};
+static constexpr PropType OfxInteractPropViewport_types[] = {PropType::Int};
+static constexpr PropType OfxOpenGLPropPixelDepth_types[] = {PropType::Enum};
+static constexpr PropType OfxParamHostPropMaxPages_types[] = {PropType::Int};
+static constexpr PropType OfxParamHostPropMaxParameters_types[] = {PropType::Int};
+static constexpr PropType OfxParamHostPropPageRowColumnCount_types[] = {PropType::Int};
+static constexpr PropType OfxParamHostPropSupportsBooleanAnimation_types[] = {PropType::Bool};
+static constexpr PropType OfxParamHostPropSupportsChoiceAnimation_types[] = {PropType::Bool};
+static constexpr PropType OfxParamHostPropSupportsCustomAnimation_types[] = {PropType::Bool};
+static constexpr PropType OfxParamHostPropSupportsCustomInteract_types[] = {PropType::Bool};
+static constexpr PropType OfxParamHostPropSupportsParametricAnimation_types[] = {PropType::Bool};
+static constexpr PropType OfxParamHostPropSupportsStrChoice_types[] = {PropType::Bool};
+static constexpr PropType OfxParamHostPropSupportsStrChoiceAnimation_types[] = {PropType::Bool};
+static constexpr PropType OfxParamHostPropSupportsStringAnimation_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropAnimates_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropCacheInvalidation_types[] = {PropType::Enum};
+static constexpr PropType OfxParamPropCanUndo_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropChoiceEnum_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropChoiceOption_types[] = {PropType::String};
+static constexpr PropType OfxParamPropChoiceOrder_types[] = {PropType::Int};
+static constexpr PropType OfxParamPropCustomCallbackV1_types[] = {PropType::Pointer};
+static constexpr PropType OfxParamPropCustomValue_types[] = {PropType::String};
+static constexpr PropType OfxParamPropDataPtr_types[] = {PropType::Pointer};
+static constexpr PropType OfxParamPropDefault_types[] = {PropType::Int,PropType::Double,PropType::String,PropType::Pointer};
+static constexpr PropType OfxParamPropDefaultCoordinateSystem_types[] = {PropType::Enum};
+static constexpr PropType OfxParamPropDigits_types[] = {PropType::Int};
+static constexpr PropType OfxParamPropDimensionLabel_types[] = {PropType::String};
+static constexpr PropType OfxParamPropDisplayMax_types[] = {PropType::Int,PropType::Double};
+static constexpr PropType OfxParamPropDisplayMin_types[] = {PropType::Int,PropType::Double};
+static constexpr PropType OfxParamPropDoubleType_types[] = {PropType::Enum};
+static constexpr PropType OfxParamPropEnabled_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropEvaluateOnChange_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropGroupOpen_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropHasHostOverlayHandle_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropHint_types[] = {PropType::String};
+static constexpr PropType OfxParamPropIncrement_types[] = {PropType::Double};
+static constexpr PropType OfxParamPropInteractMinimumSize_types[] = {PropType::Double};
+static constexpr PropType OfxParamPropInteractPreferedSize_types[] = {PropType::Int};
+static constexpr PropType OfxParamPropInteractSize_types[] = {PropType::Double};
+static constexpr PropType OfxParamPropInteractSizeAspect_types[] = {PropType::Double};
+static constexpr PropType OfxParamPropInteractV1_types[] = {PropType::Pointer};
+static constexpr PropType OfxParamPropInterpolationAmount_types[] = {PropType::Double};
+static constexpr PropType OfxParamPropInterpolationTime_types[] = {PropType::Double};
+static constexpr PropType OfxParamPropIsAnimating_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropIsAutoKeying_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropMax_types[] = {PropType::Int,PropType::Double};
+static constexpr PropType OfxParamPropMin_types[] = {PropType::Int,PropType::Double};
+static constexpr PropType OfxParamPropPageChild_types[] = {PropType::String};
+static constexpr PropType OfxParamPropParametricDimension_types[] = {PropType::Int};
+static constexpr PropType OfxParamPropParametricInteractBackground_types[] = {PropType::Pointer};
+static constexpr PropType OfxParamPropParametricRange_types[] = {PropType::Double};
+static constexpr PropType OfxParamPropParametricUIColour_types[] = {PropType::Double};
+static constexpr PropType OfxParamPropParent_types[] = {PropType::String};
+static constexpr PropType OfxParamPropPersistant_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropPluginMayWrite_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropScriptName_types[] = {PropType::String};
+static constexpr PropType OfxParamPropSecret_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropShowTimeMarker_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropStringFilePathExists_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropStringMode_types[] = {PropType::Enum};
+static constexpr PropType OfxParamPropType_types[] = {PropType::String};
+static constexpr PropType OfxPluginPropFilePath_types[] = {PropType::Enum};
+static constexpr PropType OfxPluginPropParamPageOrder_types[] = {PropType::String};
+static constexpr PropType OfxPropAPIVersion_types[] = {PropType::Int};
+static constexpr PropType OfxPropChangeReason_types[] = {PropType::Enum};
+static constexpr PropType OfxPropEffectInstance_types[] = {PropType::Pointer};
+static constexpr PropType OfxPropHostOSHandle_types[] = {PropType::Pointer};
+static constexpr PropType OfxPropIcon_types[] = {PropType::String};
+static constexpr PropType OfxPropInstanceData_types[] = {PropType::Pointer};
+static constexpr PropType OfxPropIsInteractive_types[] = {PropType::Bool};
+static constexpr PropType OfxPropLabel_types[] = {PropType::String};
+static constexpr PropType OfxPropLongLabel_types[] = {PropType::String};
+static constexpr PropType OfxPropName_types[] = {PropType::String};
+static constexpr PropType OfxPropParamSetNeedsSyncing_types[] = {PropType::Bool};
+static constexpr PropType OfxPropPluginDescription_types[] = {PropType::String};
+static constexpr PropType OfxPropShortLabel_types[] = {PropType::String};
+static constexpr PropType OfxPropTime_types[] = {PropType::Double};
+static constexpr PropType OfxPropType_types[] = {PropType::String};
+static constexpr PropType OfxPropVersion_types[] = {PropType::Int};
+static constexpr PropType OfxPropVersionLabel_types[] = {PropType::String};
+static constexpr PropType kOfxParamPropUseHostOverlayHandle_types[] = {PropType::Bool};
+static constexpr PropType kOfxPropKeyString_types[] = {PropType::String};
+static constexpr PropType kOfxPropKeySym_types[] = {PropType::Int};
+} // namespace prop_type_arrays
+
+
 struct PropDef {
-   const char* name;                        // Property name
-   PropId id;                               // ID for known props
-   PropType supportedTypes[MAX_PROP_TYPES]; // Supported data types
-   size_t supportedTypesCount;
-   int dimension;                           // Property dimension (0 for variable)
-   const char* const* enumValues;           // Valid values for enum properties
-   size_t enumValuesCount;
+   const char* name;                    // Property name
+   PropId id;                           // ID for known props
+   openfx::span<const PropType> supportedTypes; // Supported data types
+   int dimension;                       // Property dimension (0 for variable)
+   openfx::span<const char* const> enumValues;  // Valid values for enum properties
 };
 
 // Array type for storing all PropDefs, indexed by PropId for simplicity
@@ -311,365 +495,365 @@ struct PropDefsArray {
 static inline constexpr PropDefsArray<PropDef> prop_defs = {
   {{
 { "OfxImageClipPropColourspace", PropId::OfxImageClipPropColourspace,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageClipPropColourspace_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageClipPropConnected", PropId::OfxImageClipPropConnected,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageClipPropConnected_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageClipPropContinuousSamples", PropId::OfxImageClipPropContinuousSamples,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageClipPropContinuousSamples_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageClipPropFieldExtraction", PropId::OfxImageClipPropFieldExtraction,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageClipPropFieldExtraction.data(), prop_enum_values::OfxImageClipPropFieldExtraction.size()},
+  openfx::span(prop_type_arrays::OfxImageClipPropFieldExtraction_types, 1), 1, openfx::span(prop_enum_values::OfxImageClipPropFieldExtraction.data(), prop_enum_values::OfxImageClipPropFieldExtraction.size())},
 { "OfxImageClipPropFieldOrder", PropId::OfxImageClipPropFieldOrder,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageClipPropFieldOrder.data(), prop_enum_values::OfxImageClipPropFieldOrder.size()},
+  openfx::span(prop_type_arrays::OfxImageClipPropFieldOrder_types, 1), 1, openfx::span(prop_enum_values::OfxImageClipPropFieldOrder.data(), prop_enum_values::OfxImageClipPropFieldOrder.size())},
 { "OfxImageClipPropIsMask", PropId::OfxImageClipPropIsMask,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageClipPropIsMask_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageClipPropOptional", PropId::OfxImageClipPropOptional,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageClipPropOptional_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageClipPropPreferredColourspaces", PropId::OfxImageClipPropPreferredColourspaces,
-  {PropType::String}, 1, 0, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageClipPropPreferredColourspaces_types, 1), 0, openfx::span<const char* const>()},
 { "OfxImageClipPropUnmappedComponents", PropId::OfxImageClipPropUnmappedComponents,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageClipPropUnmappedComponents.data(), prop_enum_values::OfxImageClipPropUnmappedComponents.size()},
+  openfx::span(prop_type_arrays::OfxImageClipPropUnmappedComponents_types, 1), 1, openfx::span(prop_enum_values::OfxImageClipPropUnmappedComponents.data(), prop_enum_values::OfxImageClipPropUnmappedComponents.size())},
 { "OfxImageClipPropUnmappedPixelDepth", PropId::OfxImageClipPropUnmappedPixelDepth,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageClipPropUnmappedPixelDepth.data(), prop_enum_values::OfxImageClipPropUnmappedPixelDepth.size()},
+  openfx::span(prop_type_arrays::OfxImageClipPropUnmappedPixelDepth_types, 1), 1, openfx::span(prop_enum_values::OfxImageClipPropUnmappedPixelDepth.data(), prop_enum_values::OfxImageClipPropUnmappedPixelDepth.size())},
 { "OfxImageEffectFrameVarying", PropId::OfxImageEffectFrameVarying,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectFrameVarying_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectHostPropIsBackground", PropId::OfxImageEffectHostPropIsBackground,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectHostPropIsBackground_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectHostPropNativeOrigin", PropId::OfxImageEffectHostPropNativeOrigin,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageEffectHostPropNativeOrigin.data(), prop_enum_values::OfxImageEffectHostPropNativeOrigin.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectHostPropNativeOrigin_types, 1), 1, openfx::span(prop_enum_values::OfxImageEffectHostPropNativeOrigin.data(), prop_enum_values::OfxImageEffectHostPropNativeOrigin.size())},
 { "OfxImageEffectInstancePropEffectDuration", PropId::OfxImageEffectInstancePropEffectDuration,
-  {PropType::Double}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectInstancePropEffectDuration_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectInstancePropSequentialRender", PropId::OfxImageEffectInstancePropSequentialRender,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectInstancePropSequentialRender_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPluginPropFieldRenderTwiceAlways", PropId::OfxImageEffectPluginPropFieldRenderTwiceAlways,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPluginPropFieldRenderTwiceAlways_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPluginPropGrouping", PropId::OfxImageEffectPluginPropGrouping,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPluginPropGrouping_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPluginPropHostFrameThreading", PropId::OfxImageEffectPluginPropHostFrameThreading,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPluginPropHostFrameThreading_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPluginPropOverlayInteractV1", PropId::OfxImageEffectPluginPropOverlayInteractV1,
-  {PropType::Pointer}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPluginPropOverlayInteractV1_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPluginPropOverlayInteractV2", PropId::OfxImageEffectPluginPropOverlayInteractV2,
-  {PropType::Pointer}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPluginPropOverlayInteractV2_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPluginPropSingleInstance", PropId::OfxImageEffectPluginPropSingleInstance,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPluginPropSingleInstance_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPluginRenderThreadSafety", PropId::OfxImageEffectPluginRenderThreadSafety,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageEffectPluginRenderThreadSafety.data(), prop_enum_values::OfxImageEffectPluginRenderThreadSafety.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPluginRenderThreadSafety_types, 1), 1, openfx::span(prop_enum_values::OfxImageEffectPluginRenderThreadSafety.data(), prop_enum_values::OfxImageEffectPluginRenderThreadSafety.size())},
 { "OfxImageEffectPropClipPreferencesSlaveParam", PropId::OfxImageEffectPropClipPreferencesSlaveParam,
-  {PropType::String}, 1, 0, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropClipPreferencesSlaveParam_types, 1), 0, openfx::span<const char* const>()},
 { "OfxImageEffectPropColourManagementAvailableConfigs", PropId::OfxImageEffectPropColourManagementAvailableConfigs,
-  {PropType::String}, 1, 0, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropColourManagementAvailableConfigs_types, 1), 0, openfx::span<const char* const>()},
 { "OfxImageEffectPropColourManagementConfig", PropId::OfxImageEffectPropColourManagementConfig,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropColourManagementConfig_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropColourManagementStyle", PropId::OfxImageEffectPropColourManagementStyle,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageEffectPropColourManagementStyle.data(), prop_enum_values::OfxImageEffectPropColourManagementStyle.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPropColourManagementStyle_types, 1), 1, openfx::span(prop_enum_values::OfxImageEffectPropColourManagementStyle.data(), prop_enum_values::OfxImageEffectPropColourManagementStyle.size())},
 { "OfxImageEffectPropComponents", PropId::OfxImageEffectPropComponents,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageEffectPropComponents.data(), prop_enum_values::OfxImageEffectPropComponents.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPropComponents_types, 1), 1, openfx::span(prop_enum_values::OfxImageEffectPropComponents.data(), prop_enum_values::OfxImageEffectPropComponents.size())},
 { "OfxImageEffectPropContext", PropId::OfxImageEffectPropContext,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageEffectPropContext.data(), prop_enum_values::OfxImageEffectPropContext.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPropContext_types, 1), 1, openfx::span(prop_enum_values::OfxImageEffectPropContext.data(), prop_enum_values::OfxImageEffectPropContext.size())},
 { "OfxImageEffectPropCudaEnabled", PropId::OfxImageEffectPropCudaEnabled,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropCudaEnabled_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropCudaRenderSupported", PropId::OfxImageEffectPropCudaRenderSupported,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageEffectPropCudaRenderSupported.data(), prop_enum_values::OfxImageEffectPropCudaRenderSupported.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPropCudaRenderSupported_types, 1), 1, openfx::span(prop_enum_values::OfxImageEffectPropCudaRenderSupported.data(), prop_enum_values::OfxImageEffectPropCudaRenderSupported.size())},
 { "OfxImageEffectPropCudaStream", PropId::OfxImageEffectPropCudaStream,
-  {PropType::Pointer}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropCudaStream_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropCudaStreamSupported", PropId::OfxImageEffectPropCudaStreamSupported,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageEffectPropCudaStreamSupported.data(), prop_enum_values::OfxImageEffectPropCudaStreamSupported.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPropCudaStreamSupported_types, 1), 1, openfx::span(prop_enum_values::OfxImageEffectPropCudaStreamSupported.data(), prop_enum_values::OfxImageEffectPropCudaStreamSupported.size())},
 { "OfxImageEffectPropDisplayColourspace", PropId::OfxImageEffectPropDisplayColourspace,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropDisplayColourspace_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropFieldToRender", PropId::OfxImageEffectPropFieldToRender,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageEffectPropFieldToRender.data(), prop_enum_values::OfxImageEffectPropFieldToRender.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPropFieldToRender_types, 1), 1, openfx::span(prop_enum_values::OfxImageEffectPropFieldToRender.data(), prop_enum_values::OfxImageEffectPropFieldToRender.size())},
 { "OfxImageEffectPropFrameRange", PropId::OfxImageEffectPropFrameRange,
-  {PropType::Double}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropFrameRange_types, 1), 2, openfx::span<const char* const>()},
 { "OfxImageEffectPropFrameRate", PropId::OfxImageEffectPropFrameRate,
-  {PropType::Double}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropFrameRate_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropFrameStep", PropId::OfxImageEffectPropFrameStep,
-  {PropType::Double}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropFrameStep_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropInAnalysis", PropId::OfxImageEffectPropInAnalysis,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropInAnalysis_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropInteractiveRenderStatus", PropId::OfxImageEffectPropInteractiveRenderStatus,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropInteractiveRenderStatus_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropMetalCommandQueue", PropId::OfxImageEffectPropMetalCommandQueue,
-  {PropType::Pointer}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropMetalCommandQueue_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropMetalEnabled", PropId::OfxImageEffectPropMetalEnabled,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropMetalEnabled_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropMetalRenderSupported", PropId::OfxImageEffectPropMetalRenderSupported,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageEffectPropMetalRenderSupported.data(), prop_enum_values::OfxImageEffectPropMetalRenderSupported.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPropMetalRenderSupported_types, 1), 1, openfx::span(prop_enum_values::OfxImageEffectPropMetalRenderSupported.data(), prop_enum_values::OfxImageEffectPropMetalRenderSupported.size())},
 { "OfxImageEffectPropMultipleClipDepths", PropId::OfxImageEffectPropMultipleClipDepths,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropMultipleClipDepths_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropNoSpatialAwareness", PropId::OfxImageEffectPropNoSpatialAwareness,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageEffectPropNoSpatialAwareness.data(), prop_enum_values::OfxImageEffectPropNoSpatialAwareness.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPropNoSpatialAwareness_types, 1), 1, openfx::span(prop_enum_values::OfxImageEffectPropNoSpatialAwareness.data(), prop_enum_values::OfxImageEffectPropNoSpatialAwareness.size())},
 { "OfxImageEffectPropOCIOConfig", PropId::OfxImageEffectPropOCIOConfig,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropOCIOConfig_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropOCIODisplay", PropId::OfxImageEffectPropOCIODisplay,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropOCIODisplay_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropOCIOView", PropId::OfxImageEffectPropOCIOView,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropOCIOView_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropOpenCLCommandQueue", PropId::OfxImageEffectPropOpenCLCommandQueue,
-  {PropType::Pointer}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropOpenCLCommandQueue_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropOpenCLEnabled", PropId::OfxImageEffectPropOpenCLEnabled,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropOpenCLEnabled_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropOpenCLImage", PropId::OfxImageEffectPropOpenCLImage,
-  {PropType::Pointer}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropOpenCLImage_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropOpenCLRenderSupported", PropId::OfxImageEffectPropOpenCLRenderSupported,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageEffectPropOpenCLRenderSupported.data(), prop_enum_values::OfxImageEffectPropOpenCLRenderSupported.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPropOpenCLRenderSupported_types, 1), 1, openfx::span(prop_enum_values::OfxImageEffectPropOpenCLRenderSupported.data(), prop_enum_values::OfxImageEffectPropOpenCLRenderSupported.size())},
 { "OfxImageEffectPropOpenCLSupported", PropId::OfxImageEffectPropOpenCLSupported,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageEffectPropOpenCLSupported.data(), prop_enum_values::OfxImageEffectPropOpenCLSupported.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPropOpenCLSupported_types, 1), 1, openfx::span(prop_enum_values::OfxImageEffectPropOpenCLSupported.data(), prop_enum_values::OfxImageEffectPropOpenCLSupported.size())},
 { "OfxImageEffectPropOpenGLEnabled", PropId::OfxImageEffectPropOpenGLEnabled,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropOpenGLEnabled_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropOpenGLRenderSupported", PropId::OfxImageEffectPropOpenGLRenderSupported,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageEffectPropOpenGLRenderSupported.data(), prop_enum_values::OfxImageEffectPropOpenGLRenderSupported.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPropOpenGLRenderSupported_types, 1), 1, openfx::span(prop_enum_values::OfxImageEffectPropOpenGLRenderSupported.data(), prop_enum_values::OfxImageEffectPropOpenGLRenderSupported.size())},
 { "OfxImageEffectPropOpenGLTextureIndex", PropId::OfxImageEffectPropOpenGLTextureIndex,
-  {PropType::Int}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropOpenGLTextureIndex_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropOpenGLTextureTarget", PropId::OfxImageEffectPropOpenGLTextureTarget,
-  {PropType::Int}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropOpenGLTextureTarget_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropPixelAspectRatio", PropId::OfxImageEffectPropPixelAspectRatio,
-  {PropType::Double}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropPixelAspectRatio_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropPixelDepth", PropId::OfxImageEffectPropPixelDepth,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageEffectPropPixelDepth.data(), prop_enum_values::OfxImageEffectPropPixelDepth.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPropPixelDepth_types, 1), 1, openfx::span(prop_enum_values::OfxImageEffectPropPixelDepth.data(), prop_enum_values::OfxImageEffectPropPixelDepth.size())},
 { "OfxImageEffectPropPluginHandle", PropId::OfxImageEffectPropPluginHandle,
-  {PropType::Pointer}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropPluginHandle_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropPreMultiplication", PropId::OfxImageEffectPropPreMultiplication,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImageEffectPropPreMultiplication.data(), prop_enum_values::OfxImageEffectPropPreMultiplication.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPropPreMultiplication_types, 1), 1, openfx::span(prop_enum_values::OfxImageEffectPropPreMultiplication.data(), prop_enum_values::OfxImageEffectPropPreMultiplication.size())},
 { "OfxImageEffectPropProjectExtent", PropId::OfxImageEffectPropProjectExtent,
-  {PropType::Double}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropProjectExtent_types, 1), 2, openfx::span<const char* const>()},
 { "OfxImageEffectPropProjectOffset", PropId::OfxImageEffectPropProjectOffset,
-  {PropType::Double}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropProjectOffset_types, 1), 2, openfx::span<const char* const>()},
 { "OfxImageEffectPropProjectSize", PropId::OfxImageEffectPropProjectSize,
-  {PropType::Double}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropProjectSize_types, 1), 2, openfx::span<const char* const>()},
 { "OfxImageEffectPropRegionOfDefinition", PropId::OfxImageEffectPropRegionOfDefinition,
-  {PropType::Double}, 1, 4, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropRegionOfDefinition_types, 1), 4, openfx::span<const char* const>()},
 { "OfxImageEffectPropRegionOfInterest", PropId::OfxImageEffectPropRegionOfInterest,
-  {PropType::Double}, 1, 4, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropRegionOfInterest_types, 1), 4, openfx::span<const char* const>()},
 { "OfxImageEffectPropRenderQualityDraft", PropId::OfxImageEffectPropRenderQualityDraft,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropRenderQualityDraft_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropRenderScale", PropId::OfxImageEffectPropRenderScale,
-  {PropType::Double}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropRenderScale_types, 1), 2, openfx::span<const char* const>()},
 { "OfxImageEffectPropRenderWindow", PropId::OfxImageEffectPropRenderWindow,
-  {PropType::Int}, 1, 4, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropRenderWindow_types, 1), 4, openfx::span<const char* const>()},
 { "OfxImageEffectPropSequentialRenderStatus", PropId::OfxImageEffectPropSequentialRenderStatus,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropSequentialRenderStatus_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropSetableFielding", PropId::OfxImageEffectPropSetableFielding,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropSetableFielding_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropSetableFrameRate", PropId::OfxImageEffectPropSetableFrameRate,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropSetableFrameRate_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropSupportedComponents", PropId::OfxImageEffectPropSupportedComponents,
-  {PropType::Enum}, 1, 0, prop_enum_values::OfxImageEffectPropSupportedComponents.data(), prop_enum_values::OfxImageEffectPropSupportedComponents.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPropSupportedComponents_types, 1), 0, openfx::span(prop_enum_values::OfxImageEffectPropSupportedComponents.data(), prop_enum_values::OfxImageEffectPropSupportedComponents.size())},
 { "OfxImageEffectPropSupportedContexts", PropId::OfxImageEffectPropSupportedContexts,
-  {PropType::Enum}, 1, 0, prop_enum_values::OfxImageEffectPropSupportedContexts.data(), prop_enum_values::OfxImageEffectPropSupportedContexts.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPropSupportedContexts_types, 1), 0, openfx::span(prop_enum_values::OfxImageEffectPropSupportedContexts.data(), prop_enum_values::OfxImageEffectPropSupportedContexts.size())},
 { "OfxImageEffectPropSupportedPixelDepths", PropId::OfxImageEffectPropSupportedPixelDepths,
-  {PropType::Enum}, 1, 0, prop_enum_values::OfxImageEffectPropSupportedPixelDepths.data(), prop_enum_values::OfxImageEffectPropSupportedPixelDepths.size()},
+  openfx::span(prop_type_arrays::OfxImageEffectPropSupportedPixelDepths_types, 1), 0, openfx::span(prop_enum_values::OfxImageEffectPropSupportedPixelDepths.data(), prop_enum_values::OfxImageEffectPropSupportedPixelDepths.size())},
 { "OfxImageEffectPropSupportsMultiResolution", PropId::OfxImageEffectPropSupportsMultiResolution,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropSupportsMultiResolution_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropSupportsMultipleClipPARs", PropId::OfxImageEffectPropSupportsMultipleClipPARs,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropSupportsMultipleClipPARs_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropSupportsOverlays", PropId::OfxImageEffectPropSupportsOverlays,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropSupportsOverlays_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropSupportsTiles", PropId::OfxImageEffectPropSupportsTiles,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropSupportsTiles_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropTemporalClipAccess", PropId::OfxImageEffectPropTemporalClipAccess,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropTemporalClipAccess_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImageEffectPropUnmappedFrameRange", PropId::OfxImageEffectPropUnmappedFrameRange,
-  {PropType::Double}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropUnmappedFrameRange_types, 1), 2, openfx::span<const char* const>()},
 { "OfxImageEffectPropUnmappedFrameRate", PropId::OfxImageEffectPropUnmappedFrameRate,
-  {PropType::Double}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImageEffectPropUnmappedFrameRate_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImagePropBounds", PropId::OfxImagePropBounds,
-  {PropType::Int}, 1, 4, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImagePropBounds_types, 1), 4, openfx::span<const char* const>()},
 { "OfxImagePropData", PropId::OfxImagePropData,
-  {PropType::Pointer}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImagePropData_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImagePropField", PropId::OfxImagePropField,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxImagePropField.data(), prop_enum_values::OfxImagePropField.size()},
+  openfx::span(prop_type_arrays::OfxImagePropField_types, 1), 1, openfx::span(prop_enum_values::OfxImagePropField.data(), prop_enum_values::OfxImagePropField.size())},
 { "OfxImagePropPixelAspectRatio", PropId::OfxImagePropPixelAspectRatio,
-  {PropType::Double}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImagePropPixelAspectRatio_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImagePropRegionOfDefinition", PropId::OfxImagePropRegionOfDefinition,
-  {PropType::Int}, 1, 4, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImagePropRegionOfDefinition_types, 1), 4, openfx::span<const char* const>()},
 { "OfxImagePropRowBytes", PropId::OfxImagePropRowBytes,
-  {PropType::Int}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImagePropRowBytes_types, 1), 1, openfx::span<const char* const>()},
 { "OfxImagePropUniqueIdentifier", PropId::OfxImagePropUniqueIdentifier,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxImagePropUniqueIdentifier_types, 1), 1, openfx::span<const char* const>()},
 { "OfxInteractPropBackgroundColour", PropId::OfxInteractPropBackgroundColour,
-  {PropType::Double}, 1, 3, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxInteractPropBackgroundColour_types, 1), 3, openfx::span<const char* const>()},
 { "OfxInteractPropBitDepth", PropId::OfxInteractPropBitDepth,
-  {PropType::Int}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxInteractPropBitDepth_types, 1), 1, openfx::span<const char* const>()},
 { "OfxInteractPropDrawContext", PropId::OfxInteractPropDrawContext,
-  {PropType::Pointer}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxInteractPropDrawContext_types, 1), 1, openfx::span<const char* const>()},
 { "OfxInteractPropHasAlpha", PropId::OfxInteractPropHasAlpha,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxInteractPropHasAlpha_types, 1), 1, openfx::span<const char* const>()},
 { "OfxInteractPropPenPosition", PropId::OfxInteractPropPenPosition,
-  {PropType::Double}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxInteractPropPenPosition_types, 1), 2, openfx::span<const char* const>()},
 { "OfxInteractPropPenPressure", PropId::OfxInteractPropPenPressure,
-  {PropType::Double}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxInteractPropPenPressure_types, 1), 1, openfx::span<const char* const>()},
 { "OfxInteractPropPenViewportPosition", PropId::OfxInteractPropPenViewportPosition,
-  {PropType::Int}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxInteractPropPenViewportPosition_types, 1), 2, openfx::span<const char* const>()},
 { "OfxInteractPropPixelScale", PropId::OfxInteractPropPixelScale,
-  {PropType::Double}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxInteractPropPixelScale_types, 1), 2, openfx::span<const char* const>()},
 { "OfxInteractPropSlaveToParam", PropId::OfxInteractPropSlaveToParam,
-  {PropType::String}, 1, 0, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxInteractPropSlaveToParam_types, 1), 0, openfx::span<const char* const>()},
 { "OfxInteractPropSuggestedColour", PropId::OfxInteractPropSuggestedColour,
-  {PropType::Double}, 1, 3, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxInteractPropSuggestedColour_types, 1), 3, openfx::span<const char* const>()},
 { "OfxInteractPropViewport", PropId::OfxInteractPropViewport,
-  {PropType::Int}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxInteractPropViewport_types, 1), 2, openfx::span<const char* const>()},
 { "OfxOpenGLPropPixelDepth", PropId::OfxOpenGLPropPixelDepth,
-  {PropType::Enum}, 1, 0, prop_enum_values::OfxOpenGLPropPixelDepth.data(), prop_enum_values::OfxOpenGLPropPixelDepth.size()},
+  openfx::span(prop_type_arrays::OfxOpenGLPropPixelDepth_types, 1), 0, openfx::span(prop_enum_values::OfxOpenGLPropPixelDepth.data(), prop_enum_values::OfxOpenGLPropPixelDepth.size())},
 { "OfxParamHostPropMaxPages", PropId::OfxParamHostPropMaxPages,
-  {PropType::Int}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamHostPropMaxPages_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamHostPropMaxParameters", PropId::OfxParamHostPropMaxParameters,
-  {PropType::Int}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamHostPropMaxParameters_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamHostPropPageRowColumnCount", PropId::OfxParamHostPropPageRowColumnCount,
-  {PropType::Int}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamHostPropPageRowColumnCount_types, 1), 2, openfx::span<const char* const>()},
 { "OfxParamHostPropSupportsBooleanAnimation", PropId::OfxParamHostPropSupportsBooleanAnimation,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamHostPropSupportsBooleanAnimation_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamHostPropSupportsChoiceAnimation", PropId::OfxParamHostPropSupportsChoiceAnimation,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamHostPropSupportsChoiceAnimation_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamHostPropSupportsCustomAnimation", PropId::OfxParamHostPropSupportsCustomAnimation,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamHostPropSupportsCustomAnimation_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamHostPropSupportsCustomInteract", PropId::OfxParamHostPropSupportsCustomInteract,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamHostPropSupportsCustomInteract_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamHostPropSupportsParametricAnimation", PropId::OfxParamHostPropSupportsParametricAnimation,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamHostPropSupportsParametricAnimation_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamHostPropSupportsStrChoice", PropId::OfxParamHostPropSupportsStrChoice,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamHostPropSupportsStrChoice_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamHostPropSupportsStrChoiceAnimation", PropId::OfxParamHostPropSupportsStrChoiceAnimation,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamHostPropSupportsStrChoiceAnimation_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamHostPropSupportsStringAnimation", PropId::OfxParamHostPropSupportsStringAnimation,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamHostPropSupportsStringAnimation_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropAnimates", PropId::OfxParamPropAnimates,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropAnimates_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropCacheInvalidation", PropId::OfxParamPropCacheInvalidation,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxParamPropCacheInvalidation.data(), prop_enum_values::OfxParamPropCacheInvalidation.size()},
+  openfx::span(prop_type_arrays::OfxParamPropCacheInvalidation_types, 1), 1, openfx::span(prop_enum_values::OfxParamPropCacheInvalidation.data(), prop_enum_values::OfxParamPropCacheInvalidation.size())},
 { "OfxParamPropCanUndo", PropId::OfxParamPropCanUndo,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropCanUndo_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropChoiceEnum", PropId::OfxParamPropChoiceEnum,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropChoiceEnum_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropChoiceOption", PropId::OfxParamPropChoiceOption,
-  {PropType::String}, 1, 0, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropChoiceOption_types, 1), 0, openfx::span<const char* const>()},
 { "OfxParamPropChoiceOrder", PropId::OfxParamPropChoiceOrder,
-  {PropType::Int}, 1, 0, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropChoiceOrder_types, 1), 0, openfx::span<const char* const>()},
 { "OfxParamPropCustomCallbackV1", PropId::OfxParamPropCustomCallbackV1,
-  {PropType::Pointer}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropCustomCallbackV1_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropCustomValue", PropId::OfxParamPropCustomValue,
-  {PropType::String}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropCustomValue_types, 1), 2, openfx::span<const char* const>()},
 { "OfxParamPropDataPtr", PropId::OfxParamPropDataPtr,
-  {PropType::Pointer}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropDataPtr_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropDefault", PropId::OfxParamPropDefault,
-  {PropType::Int,PropType::Double,PropType::String,PropType::Pointer}, 4, 0, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropDefault_types, 4), 0, openfx::span<const char* const>()},
 { "OfxParamPropDefaultCoordinateSystem", PropId::OfxParamPropDefaultCoordinateSystem,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxParamPropDefaultCoordinateSystem.data(), prop_enum_values::OfxParamPropDefaultCoordinateSystem.size()},
+  openfx::span(prop_type_arrays::OfxParamPropDefaultCoordinateSystem_types, 1), 1, openfx::span(prop_enum_values::OfxParamPropDefaultCoordinateSystem.data(), prop_enum_values::OfxParamPropDefaultCoordinateSystem.size())},
 { "OfxParamPropDigits", PropId::OfxParamPropDigits,
-  {PropType::Int}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropDigits_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropDimensionLabel", PropId::OfxParamPropDimensionLabel,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropDimensionLabel_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropDisplayMax", PropId::OfxParamPropDisplayMax,
-  {PropType::Int,PropType::Double}, 2, 0, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropDisplayMax_types, 2), 0, openfx::span<const char* const>()},
 { "OfxParamPropDisplayMin", PropId::OfxParamPropDisplayMin,
-  {PropType::Int,PropType::Double}, 2, 0, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropDisplayMin_types, 2), 0, openfx::span<const char* const>()},
 { "OfxParamPropDoubleType", PropId::OfxParamPropDoubleType,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxParamPropDoubleType.data(), prop_enum_values::OfxParamPropDoubleType.size()},
+  openfx::span(prop_type_arrays::OfxParamPropDoubleType_types, 1), 1, openfx::span(prop_enum_values::OfxParamPropDoubleType.data(), prop_enum_values::OfxParamPropDoubleType.size())},
 { "OfxParamPropEnabled", PropId::OfxParamPropEnabled,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropEnabled_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropEvaluateOnChange", PropId::OfxParamPropEvaluateOnChange,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropEvaluateOnChange_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropGroupOpen", PropId::OfxParamPropGroupOpen,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropGroupOpen_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropHasHostOverlayHandle", PropId::OfxParamPropHasHostOverlayHandle,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropHasHostOverlayHandle_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropHint", PropId::OfxParamPropHint,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropHint_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropIncrement", PropId::OfxParamPropIncrement,
-  {PropType::Double}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropIncrement_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropInteractMinimumSize", PropId::OfxParamPropInteractMinimumSize,
-  {PropType::Double}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropInteractMinimumSize_types, 1), 2, openfx::span<const char* const>()},
 { "OfxParamPropInteractPreferedSize", PropId::OfxParamPropInteractPreferedSize,
-  {PropType::Int}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropInteractPreferedSize_types, 1), 2, openfx::span<const char* const>()},
 { "OfxParamPropInteractSize", PropId::OfxParamPropInteractSize,
-  {PropType::Double}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropInteractSize_types, 1), 2, openfx::span<const char* const>()},
 { "OfxParamPropInteractSizeAspect", PropId::OfxParamPropInteractSizeAspect,
-  {PropType::Double}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropInteractSizeAspect_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropInteractV1", PropId::OfxParamPropInteractV1,
-  {PropType::Pointer}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropInteractV1_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropInterpolationAmount", PropId::OfxParamPropInterpolationAmount,
-  {PropType::Double}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropInterpolationAmount_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropInterpolationTime", PropId::OfxParamPropInterpolationTime,
-  {PropType::Double}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropInterpolationTime_types, 1), 2, openfx::span<const char* const>()},
 { "OfxParamPropIsAnimating", PropId::OfxParamPropIsAnimating,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropIsAnimating_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropIsAutoKeying", PropId::OfxParamPropIsAutoKeying,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropIsAutoKeying_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropMax", PropId::OfxParamPropMax,
-  {PropType::Int,PropType::Double}, 2, 0, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropMax_types, 2), 0, openfx::span<const char* const>()},
 { "OfxParamPropMin", PropId::OfxParamPropMin,
-  {PropType::Int,PropType::Double}, 2, 0, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropMin_types, 2), 0, openfx::span<const char* const>()},
 { "OfxParamPropPageChild", PropId::OfxParamPropPageChild,
-  {PropType::String}, 1, 0, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropPageChild_types, 1), 0, openfx::span<const char* const>()},
 { "OfxParamPropParametricDimension", PropId::OfxParamPropParametricDimension,
-  {PropType::Int}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropParametricDimension_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropParametricInteractBackground", PropId::OfxParamPropParametricInteractBackground,
-  {PropType::Pointer}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropParametricInteractBackground_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropParametricRange", PropId::OfxParamPropParametricRange,
-  {PropType::Double}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropParametricRange_types, 1), 2, openfx::span<const char* const>()},
 { "OfxParamPropParametricUIColour", PropId::OfxParamPropParametricUIColour,
-  {PropType::Double}, 1, 0, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropParametricUIColour_types, 1), 0, openfx::span<const char* const>()},
 { "OfxParamPropParent", PropId::OfxParamPropParent,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropParent_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropPersistant", PropId::OfxParamPropPersistant,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropPersistant_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropPluginMayWrite", PropId::OfxParamPropPluginMayWrite,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropPluginMayWrite_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropScriptName", PropId::OfxParamPropScriptName,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropScriptName_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropSecret", PropId::OfxParamPropSecret,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropSecret_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropShowTimeMarker", PropId::OfxParamPropShowTimeMarker,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropShowTimeMarker_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropStringFilePathExists", PropId::OfxParamPropStringFilePathExists,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropStringFilePathExists_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropStringMode", PropId::OfxParamPropStringMode,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxParamPropStringMode.data(), prop_enum_values::OfxParamPropStringMode.size()},
+  openfx::span(prop_type_arrays::OfxParamPropStringMode_types, 1), 1, openfx::span(prop_enum_values::OfxParamPropStringMode.data(), prop_enum_values::OfxParamPropStringMode.size())},
 { "OfxParamPropType", PropId::OfxParamPropType,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxParamPropType_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPluginPropFilePath", PropId::OfxPluginPropFilePath,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxPluginPropFilePath.data(), prop_enum_values::OfxPluginPropFilePath.size()},
+  openfx::span(prop_type_arrays::OfxPluginPropFilePath_types, 1), 1, openfx::span(prop_enum_values::OfxPluginPropFilePath.data(), prop_enum_values::OfxPluginPropFilePath.size())},
 { "OfxPluginPropParamPageOrder", PropId::OfxPluginPropParamPageOrder,
-  {PropType::String}, 1, 0, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPluginPropParamPageOrder_types, 1), 0, openfx::span<const char* const>()},
 { "OfxPropAPIVersion", PropId::OfxPropAPIVersion,
-  {PropType::Int}, 1, 0, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPropAPIVersion_types, 1), 0, openfx::span<const char* const>()},
 { "OfxPropChangeReason", PropId::OfxPropChangeReason,
-  {PropType::Enum}, 1, 1, prop_enum_values::OfxPropChangeReason.data(), prop_enum_values::OfxPropChangeReason.size()},
+  openfx::span(prop_type_arrays::OfxPropChangeReason_types, 1), 1, openfx::span(prop_enum_values::OfxPropChangeReason.data(), prop_enum_values::OfxPropChangeReason.size())},
 { "OfxPropEffectInstance", PropId::OfxPropEffectInstance,
-  {PropType::Pointer}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPropEffectInstance_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPropHostOSHandle", PropId::OfxPropHostOSHandle,
-  {PropType::Pointer}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPropHostOSHandle_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPropIcon", PropId::OfxPropIcon,
-  {PropType::String}, 1, 2, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPropIcon_types, 1), 2, openfx::span<const char* const>()},
 { "OfxPropInstanceData", PropId::OfxPropInstanceData,
-  {PropType::Pointer}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPropInstanceData_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPropIsInteractive", PropId::OfxPropIsInteractive,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPropIsInteractive_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPropLabel", PropId::OfxPropLabel,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPropLabel_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPropLongLabel", PropId::OfxPropLongLabel,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPropLongLabel_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPropName", PropId::OfxPropName,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPropName_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPropParamSetNeedsSyncing", PropId::OfxPropParamSetNeedsSyncing,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPropParamSetNeedsSyncing_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPropPluginDescription", PropId::OfxPropPluginDescription,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPropPluginDescription_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPropShortLabel", PropId::OfxPropShortLabel,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPropShortLabel_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPropTime", PropId::OfxPropTime,
-  {PropType::Double}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPropTime_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPropType", PropId::OfxPropType,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPropType_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPropVersion", PropId::OfxPropVersion,
-  {PropType::Int}, 1, 0, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPropVersion_types, 1), 0, openfx::span<const char* const>()},
 { "OfxPropVersionLabel", PropId::OfxPropVersionLabel,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::OfxPropVersionLabel_types, 1), 1, openfx::span<const char* const>()},
 { "kOfxParamPropUseHostOverlayHandle", PropId::OfxParamPropUseHostOverlayHandle,
-  {PropType::Bool}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::kOfxParamPropUseHostOverlayHandle_types, 1), 1, openfx::span<const char* const>()},
 { "kOfxPropKeyString", PropId::OfxPropKeyString,
-  {PropType::String}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::kOfxPropKeyString_types, 1), 1, openfx::span<const char* const>()},
 { "kOfxPropKeySym", PropId::OfxPropKeySym,
-  {PropType::Int}, 1, 1, nullptr, 0},
+  openfx::span(prop_type_arrays::kOfxPropKeySym_types, 1), 1, openfx::span<const char* const>()},
  }}
 };
 

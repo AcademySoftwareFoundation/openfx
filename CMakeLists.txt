@@ -65,6 +65,7 @@ find_package(EXPAT)
 find_package(opengl_system REQUIRED)
 find_package(cimg REQUIRED)
 find_package(spdlog REQUIRED)
+find_package(tcb-span REQUIRED)
 
 # Macros
 include(OpenFX)

@@ -44,6 +44,7 @@ class openfx(ConanFile):
 		self.requires("expat/2.7.1") # for HostSupport
 		self.requires("cimg/3.3.2") # to draw text into images
 		self.requires("spdlog/1.13.0") # for logging
+		self.requires("tcb-span/cci.20220616") # for openfx-cpp span support (C++17)
 
 	def layout(self):
 		cmake_layout(self)

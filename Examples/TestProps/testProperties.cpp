@@ -125,7 +125,30 @@ void readProperty(PropertyAccessor &accessor, const PropDef &def,
       values.push_back(accessor.getRaw<double>(def.name, i));
     } else if (primaryType == PropType::String ||
                primaryType == PropType::Enum) {
-      values.push_back(accessor.getRaw<const char *>(def.name, i));
+      const char *strValue = accessor.getRaw<const char *>(def.name, i);
+      values.push_back(strValue);
+
+      // Validate enum values against spec
+      if (primaryType == PropType::Enum && !def.enumValues.empty()) {
+        bool valid = false;
+        for (auto validValue : def.enumValues) {
+          if (std::strcmp(strValue, validValue) == 0) {
+            valid = true;
+            break;
+          }
+        }
+        if (!valid) {
+          spdlog::warn("Property '{}' has invalid enum value '{}' (not in spec)",
+                      def.name, strValue);
+          // Log valid values for debugging
+          std::string validValues;
+          for (size_t j = 0; j < def.enumValues.size(); ++j) {
+            if (j > 0) validValues += ", ";
+            validValues += def.enumValues[j];
+          }
+          spdlog::warn("  Valid values are: {}", validValues);
+        }
+      }
     } else if (primaryType == PropType::Pointer) {
       values.push_back(accessor.getRaw<void *>(def.name, i));
     }
