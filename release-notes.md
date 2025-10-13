@@ -49,6 +49,7 @@ None
 
 - Add `kOfxImageEffectPropCPURenderSupported` (issue #212) - Property to indicate CPU rendering support.
 - Add `kOfxImageEffectPropThumbnailRender` (issue #193) - Property for thumbnail rendering mode.
+- Add plugin install locations for Windows Arm64 (issue #160).
 
 # Release Notes - 1.5
 
