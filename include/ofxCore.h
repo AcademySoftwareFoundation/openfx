@@ -616,9 +616,9 @@ If this is not present, it is safe to assume that the version of the API is "1.0
     - Property Set - effect instance (read only)
     - Valid Values - 0 or 1
 
-If false the effect currently has no interface, however this may be because the effect is loaded in a background render host, or it may be loaded on an interactive host that has not yet opened an editor for the effect.
+If false, the effect currently has no interface.  This may be because the effect is loaded in a background render host, or it may be loaded on an interactive host that has not yet opened an editor for the effect.
 
-The output of an effect should only ever depend on the state of its parameters, not on the interactive flag. The interactive flag is more a courtesy flag to let a plugin know that it has an interface. If a plugin wants to have its behaviour dependent on the interactive flag, it can always make a secret parameter which shadows the state if the flag.
+The output of an effect should only ever depend on the state of its parameters, not on the interactive flag. The interactive flag is more a courtesy flag to let a plugin know that it has an interface. If a plugin wants to have its behaviour depend on the interactive flag, it should make a secret parameter which shadows the state of the flag.
 */
 #define kOfxPropIsInteractive "OfxPropIsInteractive"
 

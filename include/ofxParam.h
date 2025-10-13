@@ -717,7 +717,7 @@ Setting this will also reset ::kOfxParamPropDisplayMin.
     - Property Set - plugin parameter descriptor (read/write) and instance (read/write),
     - Default - the largest possible value corresponding to the parameter type (eg: INT_MAX for an integer, DBL_MAX for a double parameter)
 
-Setting this will also reset :;kOfxParamPropDisplayMax.
+Setting this will also reset ::kOfxParamPropDisplayMax.
 */
 #define kOfxParamPropMax "OfxParamPropMax"
 

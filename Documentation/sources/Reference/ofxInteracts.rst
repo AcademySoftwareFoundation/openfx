@@ -5,7 +5,7 @@ Interacts
 When a host presents a graphical user interface to an image effect, it
 may optionally give it the chance to draw its own custom GUI tools and
 to be able to interact with pen and keyboard input. In OFX this is done
-via the OfxInteract suite, which is found in the file `ofxInteract.h <https://github.com/ofxa/openfx/blob/master/include/ofxInteract.h>`_.
+via the OfxInteract suite, which is found in the file `ofxInteract.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxInteract.h>`_.
 
 OFX interacts by default use openGL to perform all drawing in
 interacts, due to its portabilty, robustness and wide implementation.
