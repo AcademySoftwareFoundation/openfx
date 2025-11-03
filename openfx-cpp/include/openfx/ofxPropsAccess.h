@@ -150,6 +150,52 @@ openfx::EnumValue<PropId::ImageClipPropFieldExtraction>::size();
 
 namespace openfx {
 
+// ============================================================================
+// Host-Extensible Property System Support
+// ============================================================================
+//
+// This section enables hosts to define their own custom properties in their
+// own namespaces while maintaining the same type safety as standard OpenFX
+// properties. This is achieved through C++17 auto template parameters and
+// argument-dependent lookup (ADL).
+//
+// How it works:
+//   1. Hosts define their own PropId enum in their namespace (e.g., nuke::PropId)
+//   2. Hosts define PropTraits specializations in their namespace
+//   3. Hosts define a prop_traits_helper function for ADL lookup
+//   4. PropertyAccessor uses template<auto id> to accept any enum type
+//   5. PropTraits_t<id> uses ADL to find the correct PropTraits in the right namespace
+//
+// Example host usage (in host's header file):
+//   namespace myhost {
+//     enum class PropId { CustomProperty, ... };
+//     namespace properties {
+//       template<PropId id> struct PropTraits;
+//       template<> struct PropTraits<PropId::CustomProperty> { ... };
+//     }
+//     // Enable ADL lookup
+//     template<PropId id>
+//     properties::PropTraits<id> prop_traits_helper(std::integral_constant<PropId, id>);
+//   }
+//
+// Plugin usage:
+//   props.get<openfx::PropId::OfxPropLabel>();  // Standard property
+//   props.get<myhost::PropId::CustomProperty>();  // Host property
+//
+// ============================================================================
+
+// Forward declare the ADL helper for standard OpenFX properties.
+// This function is never actually called - it's only used for type deduction via decltype.
+// It must be in the same namespace as PropId (openfx) for ADL to work.
+template<PropId id>
+properties::PropTraits<id> prop_traits_helper(std::integral_constant<PropId, id>);
+
+// PropTraits_t: Type alias that uses ADL to find the correct PropTraits
+// for any PropId enum (openfx::PropId or host-defined).
+// The decltype+ADL pattern allows each namespace to provide its own prop_traits_helper.
+template<auto id>
+using PropTraits_t = decltype(prop_traits_helper(std::integral_constant<decltype(id), id>{}));
+
 // Type-mapping helper to infer C++ type from PropType
 template <PropType propType>
 struct PropTypeToNative {
@@ -182,19 +228,24 @@ struct PropTypeToNative<PropType::Pointer> {
   using type = void *;
 };
 
-// Helper to create property enum values with strong typing
-template <PropId id>
+// Helper to access enum property values with strong typing.
+// Works with any PropId enum (standard OpenFX or host-defined).
+template <auto id>
 struct EnumValue {
+  using Traits = PropTraits_t<id>;
+
   static constexpr const char *get(size_t index) {
-    static_assert(index < properties::PropTraits<id>::def.enumValues.size(),
+    static_assert(index < Traits::def.enumValues.size(),
                   "Property enum index out of range");
-    return properties::PropTraits<id>::def.enumValues[index];
+    return Traits::def.enumValues[index];
   }
 
-  static constexpr size_t size() { return properties::PropTraits<id>::def.enumValues.size(); }
+  static constexpr size_t size() {
+    return Traits::def.enumValues.size();
+  }
 
   static constexpr bool isValid(const char *value) {
-    for (auto val : properties::PropTraits<id>::def.enumValues) {
+    for (auto val : Traits::def.enumValues) {
       if (std::strcmp(val, value) == 0)
         return true;
     }
@@ -279,10 +330,11 @@ class PropertyAccessor {
     assert(propset_);
   }
 
-  // Get property value using PropId (compile-time type checking)
-  template <PropId id, typename = std::enable_if_t<!properties::PropTraits<id>::is_multitype>>
-  typename properties::PropTraits<id>::type get(int index = 0, bool error_if_missing = true) const {
-    using Traits = properties::PropTraits<id>;
+  // Get property value using PropId (compile-time type checking).
+  // Works with any PropId enum (openfx::PropId or host-defined).
+  template <auto id, typename = std::enable_if_t<!PropTraits_t<id>::is_multitype>>
+  typename PropTraits_t<id>::type get(int index = 0, bool error_if_missing = true) const {
+    using Traits = PropTraits_t<id>;
 
     static_assert(!Traits::is_multitype,
                   "This property supports multiple types. Use get<PropId, T>() instead.");
@@ -315,11 +367,12 @@ class PropertyAccessor {
     }
   }
 
-  // Get multi-type property value (requires explicit type)
-  template <PropId id, typename T,
-            typename = std::enable_if_t<properties::PropTraits<id>::is_multitype>>
+  // Get multi-type property value (requires explicit type).
+  // Works with any PropId enum (openfx::PropId or host-defined).
+  template <auto id, typename T,
+            typename = std::enable_if_t<PropTraits_t<id>::is_multitype>>
   T get(int index = 0, bool error_if_missing = true) const {
-    using Traits = properties::PropTraits<id>;
+    using Traits = PropTraits_t<id>;
 
     // Check if T is compatible with any of the supported PropTypes
     constexpr bool isValidType = [&]() {
@@ -369,11 +422,12 @@ class PropertyAccessor {
     }
   }
 
-  // Set property value using PropId (compile-time type checking)
-  template <PropId id>
-  PropertyAccessor &set(typename properties::PropTraits<id>::type value, int index = 0,
+  // Set property value using PropId (compile-time type checking).
+  // Works with any PropId enum (openfx::PropId or host-defined).
+  template <auto id>
+  PropertyAccessor &set(typename PropTraits_t<id>::type value, int index = 0,
                         bool error_if_missing = true) {
-    using Traits = properties::PropTraits<id>;
+    using Traits = PropTraits_t<id>;
 
     static_assert(!Traits::is_multitype,
                   "This property supports multiple types. Use set<PropId, T>() instead.");
@@ -410,12 +464,13 @@ class PropertyAccessor {
     return *this;
   }
 
-  // Set multi-type property value (requires explicit type)
-  // Should only be used for multitype props (SFINAE)
-  template <PropId id, typename T,
-            typename = std::enable_if_t<properties::PropTraits<id>::is_multitype>>
+  // Set multi-type property value (requires explicit type).
+  // Should only be used for multitype props (SFINAE).
+  // Works with any PropId enum (openfx::PropId or host-defined).
+  template <auto id, typename T,
+            typename = std::enable_if_t<PropTraits_t<id>::is_multitype>>
   PropertyAccessor &set(T value, int index = 0, bool error_if_missing = true) {
-    using Traits = properties::PropTraits<id>;
+    using Traits = PropTraits_t<id>;
 
     // Check if T is compatible with any of the supported PropTypes
     constexpr bool isValidType = [&]() {
@@ -459,19 +514,20 @@ class PropertyAccessor {
     return *this;
   }
 
-  // Get all values of a property (for single-type properties)
-  template <PropId id>
+  // Get all values of a property (for single-type properties).
+  // Works with any PropId enum (openfx::PropId or host-defined).
+  template <auto id>
   auto getAll(bool error_if_missing = true) const {
     static_assert(
-        !properties::PropTraits<id>::is_multitype,
+        !PropTraits_t<id>::is_multitype,
         "This property supports multiple types. Use getAllTyped<PropId, ElementType>() instead.");
     assert(propset_ != nullptr);
 
-    using ValueType = typename properties::PropTraits<id>::type;
+    using ValueType = typename PropTraits_t<id>::type;
 
     // If dimension is known at compile time, use std::array for stack allocation
-    if constexpr (properties::PropTraits<id>::def.dimension > 0) {
-      constexpr int dim = properties::PropTraits<id>::def.dimension;
+    if constexpr (PropTraits_t<id>::def.dimension > 0) {
+      constexpr int dim = PropTraits_t<id>::def.dimension;
       std::array<ValueType, dim> values;
 
       for (int i = 0; i < dim; ++i) {
@@ -493,16 +549,17 @@ class PropertyAccessor {
     }
   }
 
-  // Get all values of a multi-type property - require explicit ElementType
-  template <PropId id, typename ElementType>
+  // Get all values of a multi-type property - require explicit ElementType.
+  // Works with any PropId enum (openfx::PropId or host-defined).
+  template <auto id, typename ElementType>
   auto getAllTyped(bool error_if_missing = true) const {
-    static_assert(properties::PropTraits<id>::is_multitype,
+    static_assert(PropTraits_t<id>::is_multitype,
                   "This property does not support multiple types. Use getAll<PropId>() instead.");
     assert(propset_ != nullptr);
 
     // If dimension is known at compile time, use std::array for stack allocation
-    if constexpr (properties::PropTraits<id>::def.dimension > 0) {
-      constexpr int dim = properties::PropTraits<id>::def.dimension;
+    if constexpr (PropTraits_t<id>::def.dimension > 0) {
+      constexpr int dim = PropTraits_t<id>::def.dimension;
       std::array<ElementType, dim> values;
 
       for (int i = 0; i < dim; ++i) {
@@ -526,11 +583,12 @@ class PropertyAccessor {
 
   // Set all values of a prop
 
-  // For single-type properties with any container
-  template <PropId id,
+  // For single-type properties with any container.
+  // Works with any PropId enum (openfx::PropId or host-defined).
+  template <auto id,
             typename Container>  // Container must have size() and operator[]
   PropertyAccessor &setAll(const Container &values, bool error_if_missing = true) {
-    static_assert(!properties::PropTraits<id>::is_multitype,
+    static_assert(!PropTraits_t<id>::is_multitype,
                   "This property supports multiple types. Use setAll<PropId, "
                   "ElementType>(container) instead.");
     assert(propset_ != nullptr);
@@ -542,11 +600,12 @@ class PropertyAccessor {
     return *this;
   }
 
-  // For single-type properties with initializer lists
-  template <PropId id>
-  PropertyAccessor &setAll(std::initializer_list<typename properties::PropTraits<id>::type> values,
+  // For single-type properties with initializer lists.
+  // Works with any PropId enum (openfx::PropId or host-defined).
+  template <auto id>
+  PropertyAccessor &setAll(std::initializer_list<typename PropTraits_t<id>::type> values,
                            bool error_if_missing = true) {
-    static_assert(!properties::PropTraits<id>::is_multitype,
+    static_assert(!PropTraits_t<id>::is_multitype,
                   "This property supports multiple types. Use "
                   "setAllTyped<PropId, ElementType>() instead.");
     assert(propset_ != nullptr);
@@ -559,11 +618,12 @@ class PropertyAccessor {
     return *this;
   }
 
-  // For 2-d (PointD) single-type properties
-  template <PropId id,
-            std::enable_if_t<properties::PropTraits<id>::def.dimension == 2 &&
-                                 !properties::PropTraits<id>::is_multitype &&
-                                 std::is_same_v<typename properties::PropTraits<id>::type, double>,
+  // For 2-d (PointD) single-type properties.
+  // Works with any PropId enum (openfx::PropId or host-defined).
+  template <auto id,
+            std::enable_if_t<PropTraits_t<id>::def.dimension == 2 &&
+                                 !PropTraits_t<id>::is_multitype &&
+                                 std::is_same_v<typename PropTraits_t<id>::type, double>,
                              int> = 0>
   PropertyAccessor &set(OfxPointD values, bool error_if_missing = true) {
     assert(propset_ != nullptr);
@@ -572,11 +632,12 @@ class PropertyAccessor {
     return *this;
   }
 
-  // For 2-d (PointI) single-type properties
-  template <PropId id,
-            std::enable_if_t<properties::PropTraits<id>::def.dimension == 2 &&
-                                 !properties::PropTraits<id>::is_multitype &&
-                                 std::is_same_v<typename properties::PropTraits<id>::type, double>,
+  // For 2-d (PointI) single-type properties.
+  // Works with any PropId enum (openfx::PropId or host-defined).
+  template <auto id,
+            std::enable_if_t<PropTraits_t<id>::def.dimension == 2 &&
+                                 !PropTraits_t<id>::is_multitype &&
+                                 std::is_same_v<typename PropTraits_t<id>::type, double>,
                              int> = 0>
   PropertyAccessor &set(OfxPointI values, bool error_if_missing = true) {
     assert(propset_ != nullptr);
@@ -585,11 +646,12 @@ class PropertyAccessor {
     return *this;
   }
 
-  // For 4-d (RectD) single-type properties
-  template <PropId id,
-            std::enable_if_t<properties::PropTraits<id>::def.dimension == 4 &&
-                                 !properties::PropTraits<id>::is_multitype &&
-                                 std::is_same_v<typename properties::PropTraits<id>::type, double>,
+  // For 4-d (RectD) single-type properties.
+  // Works with any PropId enum (openfx::PropId or host-defined).
+  template <auto id,
+            std::enable_if_t<PropTraits_t<id>::def.dimension == 4 &&
+                                 !PropTraits_t<id>::is_multitype &&
+                                 std::is_same_v<typename PropTraits_t<id>::type, double>,
                              int> = 0>
   PropertyAccessor &set(OfxRectD values, bool error_if_missing = true) {
     assert(propset_ != nullptr);
@@ -600,11 +662,12 @@ class PropertyAccessor {
     return *this;
   }
 
-  // For 4-d (RectI) single-type properties
-  template <PropId id,
-            std::enable_if_t<properties::PropTraits<id>::def.dimension == 4 &&
-                                 !properties::PropTraits<id>::is_multitype &&
-                                 std::is_same_v<typename properties::PropTraits<id>::type, double>,
+  // For 4-d (RectI) single-type properties.
+  // Works with any PropId enum (openfx::PropId or host-defined).
+  template <auto id,
+            std::enable_if_t<PropTraits_t<id>::def.dimension == 4 &&
+                                 !PropTraits_t<id>::is_multitype &&
+                                 std::is_same_v<typename PropTraits_t<id>::type, double>,
                              int> = 0>
   PropertyAccessor &set(OfxRectI values, bool error_if_missing = true) {
     assert(propset_ != nullptr);
@@ -615,11 +678,12 @@ class PropertyAccessor {
     return *this;
   }
 
-  // For multi-type properties - require explicit ElementType
-  template <PropId id, typename ElementType>
+  // For multi-type properties - require explicit ElementType.
+  // Works with any PropId enum (openfx::PropId or host-defined).
+  template <auto id, typename ElementType>
   PropertyAccessor &setAllTyped(const std::initializer_list<ElementType> &values,
                                 bool error_if_missing = true) {
-    static_assert(properties::PropTraits<id>::is_multitype,
+    static_assert(PropTraits_t<id>::is_multitype,
                   "This property does not support multiple types. Use "
                   "setAll<PropId>() instead.");
     assert(propset_ != nullptr);
@@ -631,10 +695,11 @@ class PropertyAccessor {
     return *this;
   }
 
-  // Overload for any container with multi-type properties
-  template <PropId id, typename ElementType, typename Container>
+  // Overload for any container with multi-type properties.
+  // Works with any PropId enum (openfx::PropId or host-defined).
+  template <auto id, typename ElementType, typename Container>
   PropertyAccessor &setAllTyped(const Container &values, bool error_if_missing = true) {
-    static_assert(properties::PropTraits<id>::is_multitype,
+    static_assert(PropTraits_t<id>::is_multitype,
                   "This property does not support multiple types. Use "
                   "setAll<PropId>() instead.");
     assert(propset_ != nullptr);
@@ -646,10 +711,11 @@ class PropertyAccessor {
     return *this;
   }
 
-  // Get dimension of a property
-  template <PropId id>
+  // Get dimension of a property.
+  // Works with any PropId enum (openfx::PropId or host-defined).
+  template <auto id>
   int getDimension(bool error_if_missing = true) const {
-    using Traits = properties::PropTraits<id>;
+    using Traits = PropTraits_t<id>;
     assert(propset_ != nullptr);
 
     // If dimension is known at compile time, we can just return it
@@ -736,16 +802,18 @@ class PropertyAccessor {
 namespace prop {
 // We'll use the existing defined constants like kOfxImageClipPropColourspace
 
-// Helper to validate property existence at compile time
-template <PropId id>
+// Helper to validate property existence at compile time.
+// Works with any PropId enum (openfx::PropId or host-defined).
+template <auto id>
 constexpr bool exists() {
   return true;  // All PropId values are valid by definition
 }
 
-// Helper to check if a property supports a specific C++ type
-template <PropId id, typename T>
+// Helper to check if a property supports a specific C++ type.
+// Works with any PropId enum (openfx::PropId or host-defined).
+template <auto id, typename T>
 constexpr bool supportsType() {
-  constexpr auto supportedTypes = properties::PropTraits<id>::def.supportedTypes;
+  constexpr auto supportedTypes = PropTraits_t<id>::def.supportedTypes;
 
   for (const auto &type : supportedTypes) {
     if constexpr (std::is_same_v<T, int>) {
