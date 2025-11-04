@@ -524,6 +524,260 @@ struct Prop {
         outfile.write("} // namespace openfx\n")
 
 
+def gen_propset_accessors(props_by_set, props_metadata, outfile_path: Path, for_host=False):
+    """Generate type-safe accessor classes for each property set.
+
+    Args:
+        for_host: If True, generate host accessors (setters for host_write, getters for plugin_write).
+                  If False, generate plugin accessors (getters for host_write, setters for plugin_write).
+    """
+
+    def get_prop_id(propname):
+        """Get PropId enum name from property name."""
+        if propname.startswith('k'):
+            # kOfxParamPropUseHostOverlayHandle -> OfxParamPropUseHostOverlayHandle
+            return propname[1:]
+        return propname
+
+    def prop_to_method_name(propname):
+        """Convert property name to method name."""
+        # Strip prefixes: OfxPropLabel -> Label, OfxImageEffectPropContext -> Context
+        name = propname
+        if name.startswith('Ofx'):
+            # Remove Ofx prefix
+            name = name[3:]
+            # Remove category prefixes like ImageEffect, ImageClip, Param, etc.
+            for prefix in ['ImageEffect', 'ImageClip', 'Param', 'Image', 'Plugin', 'OpenGL']:
+                if name.startswith(prefix + 'Prop'):
+                    name = name[len(prefix) + 4:]  # +4 for "Prop"
+                    break
+            else:
+                # Just remove Prop if it's there
+                if name.startswith('Prop'):
+                    name = name[4:]
+        elif name.startswith('kOfx'):
+            # Handle kOfxParamPropUseHostOverlayHandle -> UseHostOverlayHandle
+            name = name[1:]  # Remove 'k'
+            name = prop_to_method_name(name)  # Recursive call
+
+        # Convert first letter to lowercase for getter
+        if name:
+            name = name[0].lower() + name[1:]
+        return name
+
+    def get_cpp_type(prop_def, include_array=True):
+        """Get C++ type for a property."""
+        types = prop_def.get('type')
+        if isinstance(types, str):
+            types = [types]
+
+        dimension = prop_def['dimension']
+
+        # Map OpenFX types to C++ types
+        type_map = {
+            'string': 'const char*',
+            'int': 'int',
+            'double': 'double',
+            'pointer': 'void*',
+            'bool': 'bool',
+            'enum': 'const char*'
+        }
+
+        cpp_type = type_map.get(types[0], 'void*')
+
+        # If dimension > 1, return array type
+        if include_array and dimension > 1:
+            return f'std::array<{cpp_type}, {dimension}>'
+
+        return cpp_type
+
+    with open(outfile_path, 'w') as outfile:
+        outfile.write(generated_source_header)
+        target = "HOST" if for_host else "PLUGIN"
+        outfile.write(f"""
+#pragma once
+
+#include <array>
+#include <vector>
+#include "ofxPropsAccess.h"
+#include "ofxPropsMetadata.h"
+
+namespace openfx {{
+
+// Type-safe property set accessor classes for {target}S
+//
+// These wrapper classes provide convenient, type-safe access to property sets.
+// - For plugins: getters for host-written properties, setters for plugin-written properties
+// - For hosts: setters for host-written properties, getters for plugin-written properties
+//
+// Usage:
+//   PropertyAccessor accessor(handle, propSuite);
+//   EffectDescriptor desc(accessor);
+//   desc.setLabel("My Effect");  // Type-safe setter
+//   auto label = desc.label();    // Type-safe getter
+
+// Base class for property set accessors
+class PropertySetAccessor {{
+protected:
+    PropertyAccessor& props_;
+public:
+    explicit PropertySetAccessor(PropertyAccessor& p) : props_(p) {{}}
+
+    // Access to underlying PropertyAccessor for advanced use
+    PropertyAccessor& props() {{ return props_; }}
+    const PropertyAccessor& props() const {{ return props_; }}
+}};
+
+""")
+
+        # Generate a class for each property set
+        for pset_name in sorted(props_by_set.keys()):
+            # Derive class name from property set name
+            class_name = pset_name.replace(' ', '')
+
+            outfile.write(f"// Property set accessor for: {pset_name}\n")
+            outfile.write(f"class {class_name} : public PropertySetAccessor {{\n")
+            outfile.write("public:\n")
+            outfile.write(f"    using PropertySetAccessor::PropertySetAccessor;\n\n")
+
+            # Track which methods we've generated to avoid duplicates
+            generated_methods = set()
+
+            # Generate methods for each property
+            for prop in props_for_set(pset_name, props_by_set, name_only=False):
+                propname = prop['name']
+                write_access = prop['write']
+
+                # Get property metadata
+                if propname not in props_metadata:
+                    continue
+
+                prop_def = props_metadata[propname]
+                method_name = prop_to_method_name(propname)
+                prop_id = get_prop_id(propname)
+
+                # Skip if we've already generated this method
+                if method_name in generated_methods:
+                    continue
+                generated_methods.add(method_name)
+
+                # Check if this is a multi-type property
+                types = prop_def.get('type')
+                if isinstance(types, str):
+                    types = [types]
+                is_multitype = len(types) > 1
+
+                dimension = prop_def['dimension']
+                cpp_type = get_cpp_type(prop_def, include_array=False) if not is_multitype else None
+
+                # Determine what to generate based on for_host flag
+                # For plugins: getters for host-written, setters for plugin-written
+                # For hosts: setters for host-written, getters for plugin-written
+                generate_getter = False
+                generate_setter = False
+
+                if for_host:
+                    # Host accessors: host sets, host reads plugin-written
+                    if write_access in ('host', 'all'):
+                        generate_setter = True
+                    if write_access in ('plugin', 'all'):
+                        generate_getter = True
+                else:
+                    # Plugin accessors: plugin reads host-written, plugin sets
+                    if write_access in ('host', 'all'):
+                        generate_getter = True
+                    if write_access in ('plugin', 'all'):
+                        generate_setter = True
+
+                # Generate getter
+                if generate_getter:
+                    if is_multitype:
+                        # Multi-type property - generate templated getter
+                        outfile.write(f"    // Multi-type property (supports: {', '.join(types)})\n")
+                        outfile.write(f"    template<typename T>\n")
+                        if dimension == 1:
+                            # Dimension 1: exactly one value, no index needed
+                            outfile.write(f"    T {method_name}() const {{\n")
+                            outfile.write(f"        return props_.get<PropId::{prop_id}, T>(0);\n")
+                        else:
+                            # Dimension 0 or > 1: include index parameter
+                            outfile.write(f"    T {method_name}(int index = 0) const {{\n")
+                            outfile.write(f"        return props_.get<PropId::{prop_id}, T>(index);\n")
+                        outfile.write(f"    }}\n\n")
+
+                        # Also provide getAll for multi-type (returns vector)
+                        if dimension != 1:  # dimension 0 or > 1
+                            outfile.write(f"    template<typename T>\n")
+                            outfile.write(f"    std::vector<T> {method_name}All() const {{\n")
+                            outfile.write(f"        return props_.getAll<PropId::{prop_id}, T>();\n")
+                            outfile.write(f"    }}\n\n")
+                    else:
+                        # Single-type property
+                        if dimension == 1:
+                            # Dimension 1: exactly one value, no index needed
+                            outfile.write(f"    {cpp_type} {method_name}() const {{\n")
+                            outfile.write(f"        return props_.get<PropId::{prop_id}>(0);\n")
+                            outfile.write(f"    }}\n\n")
+                        elif dimension == 0:
+                            # Dimension 0: variable dimension, include index
+                            outfile.write(f"    {cpp_type} {method_name}(int index = 0) const {{\n")
+                            outfile.write(f"        return props_.get<PropId::{prop_id}>(index);\n")
+                            outfile.write(f"    }}\n\n")
+                        else:
+                            # Dimension > 1: array getter
+                            array_type = get_cpp_type(prop_def, include_array=True)
+                            outfile.write(f"    {array_type} {method_name}() const {{\n")
+                            outfile.write(f"        return props_.getAll<PropId::{prop_id}>();\n")
+                            outfile.write(f"    }}\n\n")
+
+                # Generate setter
+                if generate_setter:
+                    setter_name = 'set' + method_name[0].upper() + method_name[1:]
+
+                    if is_multitype:
+                        # Multi-type property - generate templated setter
+                        outfile.write(f"    // Multi-type property (supports: {', '.join(types)})\n")
+                        outfile.write(f"    template<typename T>\n")
+                        if dimension == 1:
+                            # Dimension 1: exactly one value, no index needed
+                            outfile.write(f"    void {setter_name}(T value) {{\n")
+                            outfile.write(f"        props_.set<PropId::{prop_id}, T>(value, 0);\n")
+                        else:
+                            # Dimension 0 or > 1: include index parameter
+                            outfile.write(f"    void {setter_name}(T value, int index = 0) {{\n")
+                            outfile.write(f"        props_.set<PropId::{prop_id}, T>(value, index);\n")
+                        outfile.write(f"    }}\n\n")
+
+                        # Also provide setAll for multi-type
+                        if dimension != 1:  # dimension 0 or > 1
+                            outfile.write(f"    template<typename T>\n")
+                            outfile.write(f"    void {setter_name}All(const std::vector<T>& values) {{\n")
+                            outfile.write(f"        props_.setAll<PropId::{prop_id}, T>(values);\n")
+                            outfile.write(f"    }}\n\n")
+                    else:
+                        # Single-type property
+                        if dimension == 1:
+                            # Dimension 1: exactly one value, no index needed
+                            outfile.write(f"    void {setter_name}({cpp_type} value) {{\n")
+                            outfile.write(f"        props_.set<PropId::{prop_id}>(value, 0);\n")
+                            outfile.write(f"    }}\n\n")
+                        elif dimension == 0:
+                            # Dimension 0: variable dimension, include index
+                            outfile.write(f"    void {setter_name}({cpp_type} value, int index = 0) {{\n")
+                            outfile.write(f"        props_.set<PropId::{prop_id}>(value, index);\n")
+                            outfile.write(f"    }}\n\n")
+                        else:
+                            # Dimension > 1: array setter
+                            array_type = get_cpp_type(prop_def, include_array=True)
+                            outfile.write(f"    void {setter_name}(const {array_type}& values) {{\n")
+                            outfile.write(f"        props_.setAll<PropId::{prop_id}>(values);\n")
+                            outfile.write(f"    }}\n\n")
+
+            outfile.write("};\n\n")
+
+        outfile.write("} // namespace openfx\n")
+
+
 def main(args):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     include_dir = Path(script_dir).parent / 'include'
@@ -562,6 +816,14 @@ def main(args):
         print(f"=== Generating props by set header {args.props_by_set}")
     gen_props_by_set(props_by_set, props_by_action, dest_path / args.props_by_set)
 
+    if args.verbose:
+        print(f"=== Generating property set accessor classes for plugins: {args.propset_accessors}")
+    gen_propset_accessors(props_by_set, props_metadata, dest_path / args.propset_accessors, for_host=False)
+
+    if args.verbose:
+        print(f"=== Generating property set accessor classes for hosts: {args.propset_accessors_host}")
+    gen_propset_accessors(props_by_set, props_metadata, dest_path / args.propset_accessors_host, for_host=True)
+
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
     dest_path = Path(script_dir).parent / 'openfx-cpp/include/openfx'
@@ -574,6 +836,10 @@ if __name__ == "__main__":
                         help="Generate property metadata into this file")
     parser.add_argument('--props-by-set', default=dest_path/"ofxPropsBySet.h",
                         help="Generate props by set metadata into this file")
+    parser.add_argument('--propset-accessors', default=dest_path/"ofxPropSetAccessors.h",
+                        help="Generate property set accessor classes for plugins into this file")
+    parser.add_argument('--propset-accessors-host', default=dest_path/"ofxPropSetAccessorsHost.h",
+                        help="Generate property set accessor classes for hosts into this file")
 
     # Parse the arguments
     args = parser.parse_args()

@@ -13,6 +13,7 @@
 #include "openfx/ofxPropsAccess.h"
 #include "openfx/ofxPropsBySet.h"
 #include "openfx/ofxPropsMetadata.h"
+#include "openfx/ofxPropSetAccessors.h"  // Type-safe property set accessor classes
 #include "../openfx-cpp/examples/host-specific-props/myhost/myhostPropsMetadata.h"  // Ensure example compiles
 #include "spdlog/spdlog.h"
 #include <map>    // stl maps
@@ -212,6 +213,92 @@ void logPropValues(const std::string_view setName,
   }
 }
 
+/**
+ * Test property set compliance - verify all properties in a property set are accessible
+ * Returns number of failures
+ */
+int testPropertySetCompliance(PropertyAccessor &accessor, const char *propSetName) {
+  spdlog::info("========================================");
+  spdlog::info("Testing property set compliance: {}", propSetName);
+  spdlog::info("========================================");
+
+  // Find the property set
+  auto setIt = prop_sets.find(propSetName);
+  if (setIt == prop_sets.end()) {
+    spdlog::error("Property set '{}' not found in prop_sets", propSetName);
+    return 1;
+  }
+
+  int totalProps = 0;
+  int accessibleProps = 0;
+  int requiredMissing = 0;
+  int optionalMissing = 0;
+  int typeErrors = 0;
+
+  // Test each property in the suite
+  for (const auto &prop : setIt->second) {
+    totalProps++;
+    const char* propName = prop.def.name;
+
+    try {
+      // Try to get dimension first (this will fail if property doesn't exist)
+      int dimension = accessor.getDimensionRaw(propName);
+
+      // Verify dimension matches spec (0 means variable dimension)
+      if (prop.def.dimension != 0 && dimension != prop.def.dimension) {
+        spdlog::warn("  ✗ {} - dimension mismatch: expected {}, got {}",
+                    propName, prop.def.dimension, dimension);
+      }
+
+      // Try to read the property based on its type
+      std::vector<PropValue> values;
+      try {
+        readProperty(accessor, prop.def, values);
+        accessibleProps++;
+
+        // For optional properties that are present, log them
+        if (prop.host_optional) {
+          spdlog::info("  ✓ {} - accessible (optional, dimension={})", propName, dimension);
+        } else {
+          spdlog::debug("  ✓ {} - accessible (dimension={})", propName, dimension);
+        }
+      } catch (const std::exception& e) {
+        typeErrors++;
+        spdlog::error("  ✗ {} - type error: {}", propName, e.what());
+      }
+
+    } catch (...) {
+      // Property not accessible
+      if (prop.host_optional) {
+        optionalMissing++;
+        spdlog::debug("  - {} - not present (optional)", propName);
+      } else {
+        requiredMissing++;
+        spdlog::warn("  ✗ {} - NOT ACCESSIBLE (required!)", propName);
+      }
+    }
+  }
+
+  // Summary
+  spdlog::info("----------------------------------------");
+  spdlog::info("Property set '{}' compliance results:", propSetName);
+  spdlog::info("  Total properties defined: {}", totalProps);
+  spdlog::info("  Accessible: {}", accessibleProps);
+  spdlog::info("  Required missing: {}", requiredMissing);
+  spdlog::info("  Optional missing: {}", optionalMissing);
+  spdlog::info("  Type errors: {}", typeErrors);
+
+  int failures = requiredMissing + typeErrors;
+  if (failures == 0) {
+    spdlog::info("  ✓ COMPLIANCE TEST PASSED");
+  } else {
+    spdlog::error("  ✗ COMPLIANCE TEST FAILED ({} issues)", failures);
+  }
+  spdlog::info("========================================");
+
+  return failures;
+}
+
 // ========================================================================
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -245,12 +332,15 @@ static OfxStatus actionLoad(void) {
           (OfxMultiThreadSuiteV1 *)fetchSuite(kOfxMultiThreadSuite, 1);
       gMessageSuite = (OfxMessageSuiteV1 *)fetchSuite(kOfxMessageSuite, 1);
 
-      // Get all host props, propset name "ImageEffectHost"
-      // (too bad prop sets don't know their own name)
+      // Get all host props, property set name "ImageEffectHost"
+      // (too bad property sets don't know their own name)
       PropertyAccessor accessor = PropertyAccessor(gHost->host, gPropSuite);
       const auto prop_values =
           getAllPropertiesOfSet(accessor, "ImageEffectHost");
       logPropValues("ImageEffectHost", prop_values);
+
+      // Test host property set compliance
+      testPropertySetCompliance(accessor, "ImageEffectHost");
     }
   }
 
@@ -371,10 +461,20 @@ static OfxStatus describeInContext(OfxImageEffectHandle effect,
   // simple param test
   gParamSuite->paramDefine(paramSet, kOfxParamTypeDouble, "scale", &props);
   accessor = PropertyAccessor(props, gPropSuite);
+  // Traditional API - note explicit type for multi-type property
   accessor.set<PropId::OfxParamPropDefault, double>(0)
       .set<PropId::OfxParamPropHint>("Enables scales on individual components")
       .set<PropId::OfxParamPropScriptName>("scale")
       .set<PropId::OfxPropLabel>("Scale Param");
+
+  // NEW: Can also use type-safe property set accessor for multi-type properties
+  // The accessor class provides templated methods for multi-type properties
+  // Note: dimension=0 properties (like Min/Max/Default) still need index parameter
+  openfx::ParamDouble1D paramDesc(accessor);
+  paramDesc.setDefault<double>(1.0);  // dimension=0, so default index=0
+  paramDesc.setMin<double>(0.0, 0);   // explicit index for dimension=0
+  paramDesc.setMax<double>(10.0, 0);  // explicit index for dimension=0
+  spdlog::info("  Using ParamDouble1D accessor with multi-type properties!");
 
   // Log all the effect descriptor's props
   OfxPropertySetHandle effectProps;
@@ -407,6 +507,7 @@ static OfxStatus actionDescribe(OfxImageEffectHandle effect) {
 
   PropertyAccessor accessor = PropertyAccessor(effectProps, gPropSuite);
 
+  // Traditional PropertyAccessor API
   accessor.set<PropId::OfxPropLabel>("Property Tester")
       .set<PropId::OfxPropVersionLabel>("1.0")
       .setAll<PropId::OfxPropVersion>({1, 0, 0})
@@ -419,6 +520,18 @@ static OfxStatus actionDescribe(OfxImageEffectHandle effect) {
       .setAll<PropId::OfxImageEffectPropSupportedContexts>(supportedContexts)
       .setAll<PropId::OfxImageEffectPropSupportedPixelDepths>(
           supportedPixelDepths);
+
+  // NEW: Type-safe property set accessor API demo
+  spdlog::info("Testing property set accessor classes...");
+  openfx::EffectDescriptor effectDesc(accessor);
+
+  // Can also use setters via accessor class (same as above, but more convenient)
+  // Note: dimension=1 properties don't need index parameter - cleaner API!
+  effectDesc.setLabel("Property Tester (via accessor)");
+  effectDesc.setVersionLabel("1.0");
+  effectDesc.setPluginDescription("Sample plugin");
+
+  spdlog::info("  Using EffectDescriptor accessor class - clean API for dimension=1!");
 
   // Test host-specific property extensibility (will fail at runtime but compiles!)
   spdlog::info("Testing host-specific property extensibility...");
@@ -445,6 +558,9 @@ static OfxStatus actionDescribe(OfxImageEffectHandle effect) {
   // After setting up, log all known props
   const auto prop_values = getAllPropertiesOfSet(accessor, "EffectDescriptor");
   logPropValues("EffectDescriptor", prop_values);
+
+  // Test effect descriptor property set compliance
+  testPropertySetCompliance(accessor, "EffectDescriptor");
 
   return kOfxStatOK;
 }

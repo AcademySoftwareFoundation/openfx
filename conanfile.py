@@ -87,7 +87,7 @@ class openfx(ConanFile):
 		self.cpp_info.components["HostSupport"].requires = ["expat::expat"]
 		self.cpp_info.components["Support"].libs = [i for i in libs if "OfxSupport" in i]
 		self.cpp_info.components["Support"].includedirs = ["Support/include"]
-		self.cpp_info.components["Support"].requires = ["opengl::opengl", "cimg::cimg", "spdlog::spdlog"]
+		self.cpp_info.components["Support"].requires = ["opengl::opengl", "cimg::cimg", "spdlog::spdlog", "tcb-span::tcb-span"]
 
 		if self.settings.os == "Windows":
 			win_defines = ["WINDOWS", "NOMINMAX"]
