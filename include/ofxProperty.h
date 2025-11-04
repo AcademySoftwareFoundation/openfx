@@ -89,7 +89,7 @@ typedef struct OfxPropertySuiteV1 {
 
       \arg \c properties handle of the thing holding the property
       \arg \c property string labelling the property
-      \arg \c count number of values we are setting in that property (ie: indicies 0..count-1)
+      \arg \c count number of values we are setting in that property (ie: indices 0..count-1)
       \arg \c value pointer to an array of property values
 
       @returns
@@ -105,7 +105,7 @@ typedef struct OfxPropertySuiteV1 {
 
       \arg \c properties handle of the thing holding the property
       \arg \c property string labelling the property
-      \arg \c count number of values we are setting in that property (ie: indicies 0..count-1)
+      \arg \c count number of values we are setting in that property (ie: indices 0..count-1)
       \arg \c value pointer to an array of property values
 
       @returns
@@ -121,7 +121,7 @@ typedef struct OfxPropertySuiteV1 {
 
       \arg \c properties handle of the thing holding the property
       \arg \c property string labelling the property
-      \arg \c count number of values we are setting in that property (ie: indicies 0..count-1)
+      \arg \c count number of values we are setting in that property (ie: indices 0..count-1)
       \arg \c value pointer to an array of property values
 
       @returns
@@ -138,7 +138,7 @@ typedef struct OfxPropertySuiteV1 {
 
       \arg \c properties handle of the thing holding the property
       \arg \c property string labelling the property
-      \arg \c count number of values we are setting in that property (ie: indicies 0..count-1)
+      \arg \c count number of values we are setting in that property (ie: indices 0..count-1)
       \arg \c value pointer to an array of property values
 
       @returns
@@ -217,7 +217,7 @@ typedef struct OfxPropertySuiteV1 {
 
       \arg \c properties handle of the thing holding the property
       \arg \c property string labelling the property
-      \arg \c count number of values we are getting of that property (ie: indicies 0..count-1)
+      \arg \c count number of values we are getting of that property (ie: indices 0..count-1)
       \arg \c value pointer to an array of where we will return the property values
 
       @returns
@@ -232,7 +232,7 @@ typedef struct OfxPropertySuiteV1 {
 
       \arg \c properties handle of the thing holding the property
       \arg \c property string labelling the property
-      \arg \c count number of values we are getting of that property (ie: indicies 0..count-1)
+      \arg \c count number of values we are getting of that property (ie: indices 0..count-1)
       \arg \c value pointer to an array of where we will return the property values
 
       See the note \ref ArchitectureStrings for how to deal with strings.
@@ -249,7 +249,7 @@ typedef struct OfxPropertySuiteV1 {
 
       \arg \c properties handle of the thing holding the property
       \arg \c property string labelling the property
-      \arg \c count number of values we are getting of that property (ie: indicies 0..count-1)
+      \arg \c count number of values we are getting of that property (ie: indices 0..count-1)
       \arg \c value pointer to an array of where we will return the property values
 
       @returns
@@ -264,7 +264,7 @@ typedef struct OfxPropertySuiteV1 {
 
       \arg \c properties handle of the thing holding the property
       \arg \c property string labelling the property
-      \arg \c count number of values we are getting of that property (ie: indicies 0..count-1)
+      \arg \c count number of values we are getting of that property (ie: indices 0..count-1)
       \arg \c value pointer to an array of where we will return the property values
 
       @returns

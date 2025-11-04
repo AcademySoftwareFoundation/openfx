@@ -419,7 +419,7 @@ BasicPlugin:: isIdentity(const OFX::IsIdentityArguments &args, OFX::Clip * &iden
     return true;
   }
 
-  // nope, idenity we is
+  // nope, identity we is
   return false;
 }
 
@@ -427,7 +427,7 @@ BasicPlugin:: isIdentity(const OFX::IsIdentityArguments &args, OFX::Clip * &iden
 void
 BasicPlugin::setEnabledness(void)
 {
-  // the componet enabledness depends on the clip being RGBA and the param being true
+  // the component enabledness depends on the clip being RGBA and the param being true
   bool v = componentScalesEnabled_->getValue() && srcClip_->getPixelComponents() == OFX::ePixelComponentRGBA;
 
   // enable them
@@ -502,11 +502,11 @@ bool BasicInteract::draw(const OFX::DrawArgs &args)
 bool 
 BasicInteract::penMotion(const OFX::PenArgs &args)
 {
-  // figure the size of the box in cannonical coords
+  // figure the size of the box in canonical coords
   float dx = (float)(kBoxSize.x * args.pixelScale.x);
   float dy = (float)(kBoxSize.y * args.pixelScale.y);
 
-  // pen position is in cannonical coords
+  // pen position is in canonical coords
   OfxPointD penPos = args.penPosition;
 
   switch(_state) {
@@ -564,7 +564,7 @@ BasicInteract::penDown(const OFX::PenArgs &args)
     // move our position
     _position = args.penPosition;
 
-    // and request a redraw just incase
+    // and request a redraw just in case
     _effect->redrawOverlays();
   }
 

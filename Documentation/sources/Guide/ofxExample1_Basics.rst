@@ -550,7 +550,7 @@ in context action…
         char *context;
         gPropertySuite->propGetString(inArgs, kOfxImageEffectPropContext, 0, &context);
 
-        ERROR_IF(strcmp(context, kOfxImageEffectContextFilter) != 0, "DescribeInContextAction called on unsupported contex %s", context);
+        ERROR_IF(strcmp(context, kOfxImageEffectContextFilter) != 0, "DescribeInContextAction called on unsupported context %s", context);
 
         OfxPropertySetHandle props;
         // define the mandated single output clip
@@ -737,7 +737,7 @@ should clearly specify the calling sequence. Failure to call them in the
 right sequence will lead to all sorts of undefined behaviour.
 
 Assuming the host has done nothing apart from load the dynamic library
-that contains plugins and has found the two :ref:`boostrapping
+that contains plugins and has found the two :ref:`bootstrapping
 symbols <bootstrapperFunctions>` in the plugin, the host
 should then...
 

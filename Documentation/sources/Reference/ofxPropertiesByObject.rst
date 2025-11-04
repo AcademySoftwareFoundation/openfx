@@ -19,13 +19,13 @@ Properties on the Image Effect Host
 -  kOfxPropName
    - (read only) the globally unique name of the application, eg: "com.acmesofware.funkyCompositor"
 -  kOfxPropLabel
-   - (read only) the user visible name of the appliaction,
+   - (read only) the user visible name of the application,
 -  kOfxPropVersion
    - (read only) the version number of the host
 -  kOfxPropVersionLabel
    - (read only) a user readable version label
 -  kOfxImageEffectHostPropIsBackground
-   - (read only) is the application a background renderrer
+   - (read only) is the application a background renderer
 -  kOfxImageEffectPropSupportsOverlays
    - (read only) does the application support overlay interactive GUIs
 -  kOfxImageEffectPropSupportsMultiResolution
