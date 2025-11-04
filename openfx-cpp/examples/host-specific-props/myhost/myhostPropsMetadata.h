@@ -75,30 +75,25 @@ static constexpr openfx::PropType MyHostNodeColor_types[] = {openfx::PropType::I
 //
 // Each PropDef entry contains:
 //   1. name: Full property name string (use reverse-DNS: "com.yourcompany.yourhost.PropertyName")
-//   2. id: Use openfx::PropId::NProps as placeholder (runtime uses string name, not this)
-//   3. supportedTypes: span of the type array defined above
-//   4. dimension: Number of values (1 for scalars, >1 for arrays)
-//   5. enumValues: span of valid enum strings (empty for non-enum properties)
-//
-// NOTE: The 'id' field is typed as openfx::PropId, so we use NProps as a
-// placeholder. This is fine because runtime property access uses the STRING
-// NAME field, not the enum id value. The id field is only for metadata.
+//   2. supportedTypes: span of the type array defined above
+//   3. dimension: Number of values (1 for scalars, >1 for arrays)
+//   4. enumValues: span of valid enum strings (empty for non-enum properties)
 //
 constexpr openfx::PropDef prop_defs[] = {
   // MyHostViewerProcess - "MyHost viewer process name (color management display transform)"
-  { "com.example.myhost.ViewerProcess", openfx::PropId::NProps,
+  { "com.example.myhost.ViewerProcess",
     openfx::span(MyHostViewerProcess_types, 1), 1, openfx::span<const char* const>() },
   // MyHostColorConfig - "Path to MyHost's color management config file"
-  { "com.example.myhost.ColorConfig", openfx::PropId::NProps,
+  { "com.example.myhost.ColorConfig",
     openfx::span(MyHostColorConfig_types, 1), 1, openfx::span<const char* const>() },
   // MyHostProjectPath - "Path to the current MyHost project file"
-  { "com.example.myhost.ProjectPath", openfx::PropId::NProps,
+  { "com.example.myhost.ProjectPath",
     openfx::span(MyHostProjectPath_types, 1), 1, openfx::span<const char* const>() },
   // MyHostNodeName - "Name of the MyHost node containing this effect"
-  { "com.example.myhost.NodeName", openfx::PropId::NProps,
+  { "com.example.myhost.NodeName",
     openfx::span(MyHostNodeName_types, 1), 1, openfx::span<const char* const>() },
   // MyHostNodeColor - "RGB color of the node in MyHost's node graph (0-255)"
-  { "com.example.myhost.NodeColor", openfx::PropId::NProps,
+  { "com.example.myhost.NodeColor",
     openfx::span(MyHostNodeColor_types, 1), 3, openfx::span<const char* const>() },
 };
 

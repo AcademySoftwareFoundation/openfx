@@ -337,7 +337,6 @@ namespace prop_type_arrays {
         outfile.write("""
 struct PropDef {
    const char* name;                    // Property name
-   PropId id;                           // ID for known props
    openfx::span<const PropType> supportedTypes; // Supported data types
    int dimension;                       // Property dimension (0 for variable)
    openfx::span<const char* const> enumValues;  // Valid values for enum properties
@@ -368,8 +367,8 @@ static inline constexpr PropDefsArray<PropDef> prop_defs = {
 
         for p in sorted(props_metadata):
             try:
-                # name and id
-                prop_def = f"{{ \"{p}\", PropId::{get_prop_id(p)},\n  "
+                # name (id field removed - it was never used)
+                prop_def = f"{{ \"{p}\",\n  "
                 md = props_metadata[p]
                 types = md.get('type')
                 if isinstance(types, str): # make it always a list
