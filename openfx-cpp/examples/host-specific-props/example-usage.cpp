@@ -8,6 +8,9 @@
 // a plugin would access both standard OpenFX properties and host-defined
 // properties (in this case, MyHost properties) with full type safety.
 //
+// The myhost/myhostPropsMetadata.h header IS compile-tested as part of the
+// TestProps example build, ensuring the example code is syntactically correct.
+//
 // For complete, buildable plugin examples, see the Examples/ directory at
 // the project root (e.g., TestProps, Basic, etc.).
 

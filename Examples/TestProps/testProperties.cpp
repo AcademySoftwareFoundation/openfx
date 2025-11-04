@@ -13,6 +13,7 @@
 #include "openfx/ofxPropsAccess.h"
 #include "openfx/ofxPropsBySet.h"
 #include "openfx/ofxPropsMetadata.h"
+#include "../openfx-cpp/examples/host-specific-props/myhost/myhostPropsMetadata.h"  // Ensure example compiles
 #include "spdlog/spdlog.h"
 #include <map>    // stl maps
 #include <string> // stl strings
@@ -418,6 +419,28 @@ static OfxStatus actionDescribe(OfxImageEffectHandle effect) {
       .setAll<PropId::OfxImageEffectPropSupportedContexts>(supportedContexts)
       .setAll<PropId::OfxImageEffectPropSupportedPixelDepths>(
           supportedPixelDepths);
+
+  // Test host-specific property extensibility (will fail at runtime but compiles!)
+  spdlog::info("Testing host-specific property extensibility...");
+  try {
+    // Test myhost properties (from examples/host-specific-props)
+    auto viewerProcess = accessor.get<myhost::PropId::MyHostViewerProcess>(0, false);
+    spdlog::info("  MyHost viewer process: {}", viewerProcess ? viewerProcess : "(not available)");
+
+    auto projectPath = accessor.get<myhost::PropId::MyHostProjectPath>(0, false);
+    spdlog::info("  MyHost project path: {}", projectPath ? projectPath : "(not available)");
+
+    auto nodeColor = accessor.getAll<myhost::PropId::MyHostNodeColor>();
+    spdlog::info("  MyHost node color dimension: {}", nodeColor.size());
+
+    // Test setting host properties
+    accessor.setAll<myhost::PropId::MyHostNodeColor>({255, 128, 64});
+
+  } catch (const PropertyNotFoundException& e) {
+    spdlog::info("  Host properties not available (expected) - but compilation succeeded!");
+  } catch (...) {
+    spdlog::info("  Host properties failed (expected) - but compilation succeeded!");
+  }
 
   // After setting up, log all known props
   const auto prop_values = getAllPropertiesOfSet(accessor, "EffectDescriptor");

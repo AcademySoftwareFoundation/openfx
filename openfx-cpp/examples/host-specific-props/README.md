@@ -111,7 +111,7 @@ Use the OpenFX `gen-props.py` script (or create your own generator):
   --namespace myhost
 ```
 
-Or create the header manually (see `nuke/nukePropsMetadata.h` for an example).
+Or create the header manually (see `myhost/myhostPropsMetadata.h` for the canonical template).
 
 ### Step 3: Distribute Header to Plugin Developers
 
@@ -176,19 +176,24 @@ try {
 
 ## Examples
 
-### MyHost Example
+### MyHost Template
 
-See `nuke/` directory for a complete example showing:
-- YAML property definition (`nuke-props.yml`)
-- Generated metadata header (`nukePropsMetadata.h`)
-- Example plugin usage (`example-plugin.cpp`)
+The `myhost/` directory provides a **canonical template** for hosts to follow:
+- Complete metadata header (`myhostPropsMetadata.h`) with detailed step-by-step comments
+- Example plugin usage (`example-usage.cpp`) showing best practices
+- This template is compile-tested as part of the TestProps example
 
-Properties defined:
-- `MyHostViewerProcess`: OCIO viewer process name
-- `MyHostOCIOConfig`: Path to OCIO config
-- `MyHostScriptPath`: Current MyHost script path
-- `MyHostNodeName`: Name of the containing node
-- `MyHostNodeColor`: RGB color of the node (3 ints)
+**To create your own host properties:**
+1. Copy `myhost/myhostPropsMetadata.h` to your SDK
+2. Rename the namespace from `myhost` to your host name
+3. Follow the numbered STEP comments in the header to customize it
+
+**Example properties defined in the template:**
+- `MyHostViewerProcess`: Viewer process name (demonstrates string property)
+- `MyHostColorConfig`: Path to color management config (demonstrates string property)
+- `MyHostProjectPath`: Current project path (demonstrates string property)
+- `MyHostNodeName`: Name of the containing node (demonstrates string property)
+- `MyHostNodeColor`: RGB color of the node (demonstrates int[3] array property)
 
 ## Benefits
 
