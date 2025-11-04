@@ -784,9 +784,17 @@ class PropertyAccessor {
   // Get raw dimension of a property
   int getDimensionRaw(const char *name, bool error_if_missing = true) const {
     assert(propset_ != nullptr);
-    int dimension = 0;
+    int dimension = -1;
     _OPENFX_CHECK(propSuite_->propGetDimension(propset_, name, &dimension), name, error_if_missing);
     return dimension;
+  }
+
+  // Does the prop exist? Checks for its dimension.
+  int exists(const char *name) const {
+    assert(propset_ != nullptr);
+    int dimension = 0;
+    OfxStatus status = propSuite_->propGetDimension(propset_, name, &dimension);
+    return (status == kOfxStatOK);
   }
 
  private:

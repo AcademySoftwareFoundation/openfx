@@ -55,6 +55,20 @@ class Logger {
   static void setLogHandler(LogHandler handler);
 
   /**
+   * @brief Set a context string (e.g., plugin name) to prepend to all log messages
+   *
+   * @param context The context string (typically plugin name)
+   */
+  static void setContext(const std::string& context);
+
+  /**
+   * @brief Get the current context string
+   *
+   * @return The current context string
+   */
+  static std::string getContext();
+
+  /**
    * @brief Log an informational message
    *
    * @param message The message to log
@@ -146,6 +160,7 @@ class Logger {
   // Static member variables (inline in C++17)
   static inline LogHandler g_logHandler = defaultLogHandler;
   static inline std::mutex g_logMutex;
+  static inline std::string g_context;
 };
 
 // Inline implementations for non-template methods
@@ -160,6 +175,16 @@ inline void Logger::setLogHandler(LogHandler handler) {
   }
 }
 
+inline void Logger::setContext(const std::string& context) {
+  std::lock_guard<std::mutex> lock(g_logMutex);
+  g_context = context;
+}
+
+inline std::string Logger::getContext() {
+  std::lock_guard<std::mutex> lock(g_logMutex);
+  return g_context;
+}
+
 inline void Logger::info(const std::string& message) { log(Level::Info, message); }
 
 inline void Logger::warn(const std::string& message) { log(Level::Warning, message); }
@@ -170,7 +195,14 @@ inline void Logger::log(Level level, const std::string& message) {
   auto timestamp = std::chrono::system_clock::now();
 
   std::lock_guard<std::mutex> lock(g_logMutex);
-  g_logHandler(level, timestamp, message);
+
+  // Prepend context if set
+  std::string finalMessage = message;
+  if (!g_context.empty()) {
+    finalMessage = "[" + g_context + "] " + message;
+  }
+
+  g_logHandler(level, timestamp, finalMessage);
 }
 
 inline void Logger::defaultLogHandler(Level level, std::chrono::system_clock::time_point timestamp,
@@ -186,9 +218,6 @@ inline void Logger::defaultLogHandler(Level level, std::chrono::system_clock::ti
     localtime_r(&time, &local_time);
 #endif
 
-  // Stream to write log message
-  std::ostream& os = (level == Level::Error) ? std::cerr : std::cout;
-
   // Level prefix
   const char* levelStr = "";
   switch (level) {
@@ -203,8 +232,9 @@ inline void Logger::defaultLogHandler(Level level, std::chrono::system_clock::ti
       break;
   }
 
-  // Write formatted log message
-  os << "[" << std::put_time(&local_time, "%Y-%m-%d %H:%M:%S") << "][" << levelStr << "] " << message
+  // Write formatted log message to stdout (not stderr)
+  // In plugin contexts, stderr may not be captured by host applications
+  std::cout << "[" << std::put_time(&local_time, "%Y-%m-%d %H:%M:%S") << "][" << levelStr << "] " << message
      << std::endl;
 }
 

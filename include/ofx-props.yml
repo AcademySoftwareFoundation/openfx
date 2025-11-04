@@ -34,7 +34,7 @@ propertySets:
       - OfxImageEffectPropSupportedComponents
       - OfxImageEffectPropSupportedContexts
       - OfxImageEffectPropMultipleClipDepths
-      - OfxImageEffectPropOpenCLSupported
+      - OfxImageEffectPropOpenCLSupported | host_optional=true
       - OfxImageEffectPropSupportsMultipleClipPARs
       - OfxImageEffectPropSetableFrameRate
       - OfxImageEffectPropSetableFielding
@@ -43,19 +43,19 @@ propertySets:
       - OfxParamHostPropSupportsChoiceAnimation
       - OfxParamHostPropSupportsBooleanAnimation
       - OfxParamHostPropSupportsCustomAnimation
-      - OfxParamHostPropSupportsStrChoice
-      - OfxParamHostPropSupportsStrChoiceAnimation
+      - OfxParamHostPropSupportsStrChoice | host_optional=true
+      - OfxParamHostPropSupportsStrChoiceAnimation | host_optional=true
       - OfxParamHostPropMaxParameters
       - OfxParamHostPropMaxPages
       - OfxParamHostPropPageRowColumnCount
-      - OfxPropHostOSHandle
-      - OfxParamHostPropSupportsParametricAnimation
-      - OfxImageEffectInstancePropSequentialRender
+      - OfxPropHostOSHandle | host_optional=true
+      - OfxParamHostPropSupportsParametricAnimation | host_optional=true
+      - OfxImageEffectInstancePropSequentialRender | host_optional=true
       - OfxImageEffectPropOpenGLRenderSupported
-      - OfxImageEffectPropRenderQualityDraft
-      - OfxImageEffectHostPropNativeOrigin
-      - OfxImageEffectPropColourManagementAvailableConfigs
-      - OfxImageEffectPropColourManagementStyle
+      - OfxImageEffectPropRenderQualityDraft | host_optional=true
+      - OfxImageEffectHostPropNativeOrigin | host_optional=true
+      - OfxImageEffectPropColourManagementAvailableConfigs | host_optional=true
+      - OfxImageEffectPropColourManagementStyle | host_optional=true
   EffectDescriptor:
     write: plugin
     props:
@@ -63,16 +63,16 @@ propertySets:
       - OfxPropLabel
       - OfxPropShortLabel
       - OfxPropLongLabel
-      - OfxPropVersion
-      - OfxPropVersionLabel
-      - OfxPropPluginDescription
+      - OfxPropVersion | host_optional=true
+      - OfxPropVersionLabel | host_optional=true
+      - OfxPropPluginDescription | host_optional=true
       - OfxImageEffectPropSupportedContexts
       - OfxImageEffectPluginPropGrouping
       - OfxImageEffectPluginPropSingleInstance
       - OfxImageEffectPluginRenderThreadSafety
       - OfxImageEffectPluginPropHostFrameThreading
       - OfxImageEffectPluginPropOverlayInteractV1
-      - OfxImageEffectPropOpenCLSupported
+      - OfxImageEffectPropOpenCLSupported | host_optional=true
       - OfxImageEffectPropSupportsMultiResolution
       - OfxImageEffectPropSupportsTiles
       - OfxImageEffectPropTemporalClipAccess
@@ -84,11 +84,11 @@ propertySets:
       - OfxImageEffectPropClipPreferencesSlaveParam
       - OfxImageEffectPropOpenGLRenderSupported
       - OfxPluginPropFilePath | write=host
-      - OfxOpenGLPropPixelDepth
+      - OfxOpenGLPropPixelDepth | host_optional=true
       - OfxImageEffectPluginPropOverlayInteractV2
-      - OfxImageEffectPropColourManagementAvailableConfigs
-      - OfxImageEffectPropColourManagementStyle
-      - OfxImageEffectPropNoSpatialAwareness
+      - OfxImageEffectPropColourManagementAvailableConfigs | host_optional=true
+      - OfxImageEffectPropColourManagementStyle | host_optional=true
+      - OfxImageEffectPropNoSpatialAwareness | host_optional=true
   EffectInstance:
     write: host
     props:
@@ -735,9 +735,8 @@ properties:
     type: bool
     dimension: 1
   OfxPluginPropFilePath:
-    type: enum
+    type: string
     dimension: 1
-    values: ['false', 'true', 'needed']
   OfxImageEffectPropOpenGLRenderSupported:
     type: enum
     dimension: 1

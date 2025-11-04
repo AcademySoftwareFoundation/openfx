@@ -35,53 +35,115 @@ public:
     const PropertyAccessor& props() const { return props_; }
 };
 
+// Property set accessor for: ActionBeginInstanceChanged_InArgs
+class ActionBeginInstanceChanged_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    ActionBeginInstanceChanged_InArgs& setChangeReason(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropChangeReason>(value, 0, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: ActionEndInstanceChanged_InArgs
+class ActionEndInstanceChanged_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    ActionEndInstanceChanged_InArgs& setChangeReason(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropChangeReason>(value, 0, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: ActionInstanceChanged_InArgs
+class ActionInstanceChanged_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    ActionInstanceChanged_InArgs& setType(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropType>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ActionInstanceChanged_InArgs& setName(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropName>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ActionInstanceChanged_InArgs& setChangeReason(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropChangeReason>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ActionInstanceChanged_InArgs& setTime(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropTime>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ActionInstanceChanged_InArgs& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ActionInstanceChanged_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+};
+
 // Property set accessor for: ClipDescriptor
 class ClipDescriptor : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    const char* type() const {
-        return props_.get<PropId::OfxPropType>(0);
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
     }
 
-    const char* name() const {
-        return props_.get<PropId::OfxPropName>(0);
+    const char* name(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropName>(0, error_if_missing);
     }
 
-    const char* label() const {
-        return props_.get<PropId::OfxPropLabel>(0);
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
     }
 
-    const char* shortLabel() const {
-        return props_.get<PropId::OfxPropShortLabel>(0);
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
     }
 
-    const char* longLabel() const {
-        return props_.get<PropId::OfxPropLongLabel>(0);
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
     }
 
-    const char* supportedComponents(int index = 0) const {
-        return props_.get<PropId::OfxImageEffectPropSupportedComponents>(index);
+    const char* supportedComponents(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropSupportedComponents>(index, error_if_missing);
     }
 
-    bool temporalClipAccess() const {
-        return props_.get<PropId::OfxImageEffectPropTemporalClipAccess>(0);
+    bool temporalClipAccess(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropTemporalClipAccess>(0, error_if_missing);
     }
 
-    bool optional() const {
-        return props_.get<PropId::OfxImageClipPropOptional>(0);
+    bool optional(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageClipPropOptional>(0, error_if_missing);
     }
 
-    const char* fieldExtraction() const {
-        return props_.get<PropId::OfxImageClipPropFieldExtraction>(0);
+    const char* fieldExtraction(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageClipPropFieldExtraction>(0, error_if_missing);
     }
 
-    bool isMask() const {
-        return props_.get<PropId::OfxImageClipPropIsMask>(0);
+    bool isMask(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageClipPropIsMask>(0, error_if_missing);
     }
 
-    bool supportsTiles() const {
-        return props_.get<PropId::OfxImageEffectPropSupportsTiles>(0);
+    bool supportsTiles(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropSupportsTiles>(0, error_if_missing);
     }
 
 };
@@ -91,108 +153,225 @@ class ClipInstance : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    void setType(const char* value) {
-        props_.set<PropId::OfxPropType>(value, 0);
+    ClipInstance& setType(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropType>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setName(const char* value) {
-        props_.set<PropId::OfxPropName>(value, 0);
+    ClipInstance& setName(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropName>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setLabel(const char* value) {
-        props_.set<PropId::OfxPropLabel>(value, 0);
+    ClipInstance& setLabel(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropLabel>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setShortLabel(const char* value) {
-        props_.set<PropId::OfxPropShortLabel>(value, 0);
+    ClipInstance& setShortLabel(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropShortLabel>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setLongLabel(const char* value) {
-        props_.set<PropId::OfxPropLongLabel>(value, 0);
+    ClipInstance& setLongLabel(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropLongLabel>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setSupportedComponents(const char* value, int index = 0) {
-        props_.set<PropId::OfxImageEffectPropSupportedComponents>(value, index);
+    ClipInstance& setSupportedComponents(const char* value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropSupportedComponents>(value, index, error_if_missing);
+        return *this;
     }
 
-    void setTemporalClipAccess(bool value) {
-        props_.set<PropId::OfxImageEffectPropTemporalClipAccess>(value, 0);
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ClipInstance& setSupportedComponents(const Container& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropSupportedComponents>(values, error_if_missing);
+        return *this;
     }
 
-    void setColourspace(const char* value) {
-        props_.set<PropId::OfxImageClipPropColourspace>(value, 0);
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    ClipInstance& setSupportedComponents(std::initializer_list<const char*> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropSupportedComponents>(values, error_if_missing);
+        return *this;
     }
 
-    void setPreferredColourspaces(const char* value, int index = 0) {
-        props_.set<PropId::OfxImageClipPropPreferredColourspaces>(value, index);
+    ClipInstance& setTemporalClipAccess(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropTemporalClipAccess>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setOptional(bool value) {
-        props_.set<PropId::OfxImageClipPropOptional>(value, 0);
+    ClipInstance& setColourspace(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageClipPropColourspace>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setFieldExtraction(const char* value) {
-        props_.set<PropId::OfxImageClipPropFieldExtraction>(value, 0);
+    ClipInstance& setPreferredColourspaces(const char* value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageClipPropPreferredColourspaces>(value, index, error_if_missing);
+        return *this;
     }
 
-    void setIsMask(bool value) {
-        props_.set<PropId::OfxImageClipPropIsMask>(value, 0);
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ClipInstance& setPreferredColourspaces(const Container& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageClipPropPreferredColourspaces>(values, error_if_missing);
+        return *this;
     }
 
-    void setSupportsTiles(bool value) {
-        props_.set<PropId::OfxImageEffectPropSupportsTiles>(value, 0);
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    ClipInstance& setPreferredColourspaces(std::initializer_list<const char*> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageClipPropPreferredColourspaces>(values, error_if_missing);
+        return *this;
     }
 
-    void setPixelDepth(const char* value) {
-        props_.set<PropId::OfxImageEffectPropPixelDepth>(value, 0);
+    ClipInstance& setOptional(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageClipPropOptional>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setComponents(const char* value) {
-        props_.set<PropId::OfxImageEffectPropComponents>(value, 0);
+    ClipInstance& setFieldExtraction(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageClipPropFieldExtraction>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setUnmappedPixelDepth(const char* value) {
-        props_.set<PropId::OfxImageClipPropUnmappedPixelDepth>(value, 0);
+    ClipInstance& setIsMask(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageClipPropIsMask>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setUnmappedComponents(const char* value) {
-        props_.set<PropId::OfxImageClipPropUnmappedComponents>(value, 0);
+    ClipInstance& setSupportsTiles(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropSupportsTiles>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setPreMultiplication(const char* value) {
-        props_.set<PropId::OfxImageEffectPropPreMultiplication>(value, 0);
+    ClipInstance& setPixelDepth(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropPixelDepth>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setPixelAspectRatio(double value) {
-        props_.set<PropId::OfxImagePropPixelAspectRatio>(value, 0);
+    ClipInstance& setComponents(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropComponents>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setFrameRate(double value) {
-        props_.set<PropId::OfxImageEffectPropFrameRate>(value, 0);
+    ClipInstance& setUnmappedPixelDepth(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageClipPropUnmappedPixelDepth>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setFrameRange(const std::array<double, 2>& values) {
-        props_.setAll<PropId::OfxImageEffectPropFrameRange>(values);
+    ClipInstance& setUnmappedComponents(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageClipPropUnmappedComponents>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setFieldOrder(const char* value) {
-        props_.set<PropId::OfxImageClipPropFieldOrder>(value, 0);
+    ClipInstance& setPreMultiplication(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropPreMultiplication>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setConnected(bool value) {
-        props_.set<PropId::OfxImageClipPropConnected>(value, 0);
+    ClipInstance& setPixelAspectRatio(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImagePropPixelAspectRatio>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setUnmappedFrameRange(const std::array<double, 2>& values) {
-        props_.setAll<PropId::OfxImageEffectPropUnmappedFrameRange>(values);
+    ClipInstance& setFrameRate(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropFrameRate>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setUnmappedFrameRate(double value) {
-        props_.set<PropId::OfxImageEffectPropUnmappedFrameRate>(value, 0);
+    ClipInstance& setFrameRange(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropFrameRange>(values, error_if_missing);
+        return *this;
     }
 
-    void setContinuousSamples(bool value) {
-        props_.set<PropId::OfxImageClipPropContinuousSamples>(value, 0);
+    // Set all values from an initializer list (e.g., {1, 2})
+    ClipInstance& setFrameRange(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropFrameRange>(values, error_if_missing);
+        return *this;
+    }
+
+    ClipInstance& setFieldOrder(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageClipPropFieldOrder>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ClipInstance& setConnected(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageClipPropConnected>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ClipInstance& setUnmappedFrameRange(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropUnmappedFrameRange>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ClipInstance& setUnmappedFrameRange(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropUnmappedFrameRange>(values, error_if_missing);
+        return *this;
+    }
+
+    ClipInstance& setUnmappedFrameRate(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropUnmappedFrameRate>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ClipInstance& setContinuousSamples(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageClipPropContinuousSamples>(value, 0, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: CustomParamInterpFunc_InArgs
+class CustomParamInterpFunc_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    CustomParamInterpFunc_InArgs& setCustomValue(const std::array<const char*, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropCustomValue>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    CustomParamInterpFunc_InArgs& setCustomValue(std::initializer_list<const char*> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropCustomValue>(values, error_if_missing);
+        return *this;
+    }
+
+    CustomParamInterpFunc_InArgs& setInterpolationTime(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropInterpolationTime>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    CustomParamInterpFunc_InArgs& setInterpolationTime(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropInterpolationTime>(values, error_if_missing);
+        return *this;
+    }
+
+    CustomParamInterpFunc_InArgs& setInterpolationAmount(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropInterpolationAmount>(value, 0, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: CustomParamInterpFunc_OutArgs
+class CustomParamInterpFunc_OutArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    std::array<const char*, 2> customValue() const {
+        return props_.getAll<PropId::OfxParamPropCustomValue>();
+    }
+
+    std::array<double, 2> interpolationTime() const {
+        return props_.getAll<PropId::OfxParamPropInterpolationTime>();
     }
 
 };
@@ -202,120 +381,121 @@ class EffectDescriptor : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    const char* type() const {
-        return props_.get<PropId::OfxPropType>(0);
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
     }
 
-    const char* label() const {
-        return props_.get<PropId::OfxPropLabel>(0);
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
     }
 
-    const char* shortLabel() const {
-        return props_.get<PropId::OfxPropShortLabel>(0);
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
     }
 
-    const char* longLabel() const {
-        return props_.get<PropId::OfxPropLongLabel>(0);
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
     }
 
-    int version(int index = 0) const {
-        return props_.get<PropId::OfxPropVersion>(index);
+    int version(int index = 0, bool error_if_missing = false) const {
+        return props_.get<PropId::OfxPropVersion>(index, error_if_missing);
     }
 
-    const char* versionLabel() const {
-        return props_.get<PropId::OfxPropVersionLabel>(0);
+    const char* versionLabel(bool error_if_missing = false) const {
+        return props_.get<PropId::OfxPropVersionLabel>(0, error_if_missing);
     }
 
-    const char* pluginDescription() const {
-        return props_.get<PropId::OfxPropPluginDescription>(0);
+    const char* pluginDescription(bool error_if_missing = false) const {
+        return props_.get<PropId::OfxPropPluginDescription>(0, error_if_missing);
     }
 
-    const char* supportedContexts(int index = 0) const {
-        return props_.get<PropId::OfxImageEffectPropSupportedContexts>(index);
+    const char* supportedContexts(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropSupportedContexts>(index, error_if_missing);
     }
 
-    const char* imageEffectPluginPropGrouping() const {
-        return props_.get<PropId::OfxImageEffectPluginPropGrouping>(0);
+    const char* imageEffectPluginPropGrouping(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPluginPropGrouping>(0, error_if_missing);
     }
 
-    bool imageEffectPluginPropSingleInstance() const {
-        return props_.get<PropId::OfxImageEffectPluginPropSingleInstance>(0);
+    bool imageEffectPluginPropSingleInstance(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPluginPropSingleInstance>(0, error_if_missing);
     }
 
-    const char* imageEffectPluginRenderThreadSafety() const {
-        return props_.get<PropId::OfxImageEffectPluginRenderThreadSafety>(0);
+    const char* imageEffectPluginRenderThreadSafety(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPluginRenderThreadSafety>(0, error_if_missing);
     }
 
-    bool imageEffectPluginPropHostFrameThreading() const {
-        return props_.get<PropId::OfxImageEffectPluginPropHostFrameThreading>(0);
+    bool imageEffectPluginPropHostFrameThreading(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPluginPropHostFrameThreading>(0, error_if_missing);
     }
 
-    void* imageEffectPluginPropOverlayInteractV1() const {
-        return props_.get<PropId::OfxImageEffectPluginPropOverlayInteractV1>(0);
+    void* imageEffectPluginPropOverlayInteractV1(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPluginPropOverlayInteractV1>(0, error_if_missing);
     }
 
-    const char* openCLSupported() const {
-        return props_.get<PropId::OfxImageEffectPropOpenCLSupported>(0);
+    const char* openCLSupported(bool error_if_missing = false) const {
+        return props_.get<PropId::OfxImageEffectPropOpenCLSupported>(0, error_if_missing);
     }
 
-    bool supportsMultiResolution() const {
-        return props_.get<PropId::OfxImageEffectPropSupportsMultiResolution>(0);
+    bool supportsMultiResolution(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropSupportsMultiResolution>(0, error_if_missing);
     }
 
-    bool supportsTiles() const {
-        return props_.get<PropId::OfxImageEffectPropSupportsTiles>(0);
+    bool supportsTiles(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropSupportsTiles>(0, error_if_missing);
     }
 
-    bool temporalClipAccess() const {
-        return props_.get<PropId::OfxImageEffectPropTemporalClipAccess>(0);
+    bool temporalClipAccess(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropTemporalClipAccess>(0, error_if_missing);
     }
 
-    const char* supportedPixelDepths(int index = 0) const {
-        return props_.get<PropId::OfxImageEffectPropSupportedPixelDepths>(index);
+    const char* supportedPixelDepths(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropSupportedPixelDepths>(index, error_if_missing);
     }
 
-    bool imageEffectPluginPropFieldRenderTwiceAlways() const {
-        return props_.get<PropId::OfxImageEffectPluginPropFieldRenderTwiceAlways>(0);
+    bool imageEffectPluginPropFieldRenderTwiceAlways(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPluginPropFieldRenderTwiceAlways>(0, error_if_missing);
     }
 
-    bool multipleClipDepths() const {
-        return props_.get<PropId::OfxImageEffectPropMultipleClipDepths>(0);
+    bool multipleClipDepths(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropMultipleClipDepths>(0, error_if_missing);
     }
 
-    bool supportsMultipleClipPARs() const {
-        return props_.get<PropId::OfxImageEffectPropSupportsMultipleClipPARs>(0);
+    bool supportsMultipleClipPARs(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropSupportsMultipleClipPARs>(0, error_if_missing);
     }
 
-    const char* clipPreferencesSlaveParam(int index = 0) const {
-        return props_.get<PropId::OfxImageEffectPropClipPreferencesSlaveParam>(index);
+    const char* clipPreferencesSlaveParam(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropClipPreferencesSlaveParam>(index, error_if_missing);
     }
 
-    const char* openGLRenderSupported() const {
-        return props_.get<PropId::OfxImageEffectPropOpenGLRenderSupported>(0);
+    const char* openGLRenderSupported(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropOpenGLRenderSupported>(0, error_if_missing);
     }
 
-    void setFilePath(const char* value) {
-        props_.set<PropId::OfxPluginPropFilePath>(value, 0);
+    EffectDescriptor& setFilePath(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPluginPropFilePath>(value, 0, error_if_missing);
+        return *this;
     }
 
-    const char* pixelDepth(int index = 0) const {
-        return props_.get<PropId::OfxOpenGLPropPixelDepth>(index);
+    const char* pixelDepth(int index = 0, bool error_if_missing = false) const {
+        return props_.get<PropId::OfxOpenGLPropPixelDepth>(index, error_if_missing);
     }
 
-    void* imageEffectPluginPropOverlayInteractV2() const {
-        return props_.get<PropId::OfxImageEffectPluginPropOverlayInteractV2>(0);
+    void* imageEffectPluginPropOverlayInteractV2(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPluginPropOverlayInteractV2>(0, error_if_missing);
     }
 
-    const char* colourManagementAvailableConfigs(int index = 0) const {
-        return props_.get<PropId::OfxImageEffectPropColourManagementAvailableConfigs>(index);
+    const char* colourManagementAvailableConfigs(int index = 0, bool error_if_missing = false) const {
+        return props_.get<PropId::OfxImageEffectPropColourManagementAvailableConfigs>(index, error_if_missing);
     }
 
-    const char* colourManagementStyle() const {
-        return props_.get<PropId::OfxImageEffectPropColourManagementStyle>(0);
+    const char* colourManagementStyle(bool error_if_missing = false) const {
+        return props_.get<PropId::OfxImageEffectPropColourManagementStyle>(0, error_if_missing);
     }
 
-    const char* noSpatialAwareness() const {
-        return props_.get<PropId::OfxImageEffectPropNoSpatialAwareness>(0);
+    const char* noSpatialAwareness(bool error_if_missing = false) const {
+        return props_.get<PropId::OfxImageEffectPropNoSpatialAwareness>(0, error_if_missing);
     }
 
 };
@@ -325,84 +505,122 @@ class EffectInstance : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    void setType(const char* value) {
-        props_.set<PropId::OfxPropType>(value, 0);
+    EffectInstance& setType(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropType>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setContext(const char* value) {
-        props_.set<PropId::OfxImageEffectPropContext>(value, 0);
+    EffectInstance& setContext(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropContext>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setInstanceData(void* value) {
-        props_.set<PropId::OfxPropInstanceData>(value, 0);
+    EffectInstance& setInstanceData(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropInstanceData>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setProjectSize(const std::array<double, 2>& values) {
-        props_.setAll<PropId::OfxImageEffectPropProjectSize>(values);
+    EffectInstance& setProjectSize(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropProjectSize>(values, error_if_missing);
+        return *this;
     }
 
-    void setProjectOffset(const std::array<double, 2>& values) {
-        props_.setAll<PropId::OfxImageEffectPropProjectOffset>(values);
+    // Set all values from an initializer list (e.g., {1, 2})
+    EffectInstance& setProjectSize(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropProjectSize>(values, error_if_missing);
+        return *this;
     }
 
-    void setProjectExtent(const std::array<double, 2>& values) {
-        props_.setAll<PropId::OfxImageEffectPropProjectExtent>(values);
+    EffectInstance& setProjectOffset(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropProjectOffset>(values, error_if_missing);
+        return *this;
     }
 
-    void setPixelAspectRatio(double value) {
-        props_.set<PropId::OfxImageEffectPropPixelAspectRatio>(value, 0);
+    // Set all values from an initializer list (e.g., {1, 2})
+    EffectInstance& setProjectOffset(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropProjectOffset>(values, error_if_missing);
+        return *this;
     }
 
-    void setImageEffectInstancePropEffectDuration(double value) {
-        props_.set<PropId::OfxImageEffectInstancePropEffectDuration>(value, 0);
+    EffectInstance& setProjectExtent(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropProjectExtent>(values, error_if_missing);
+        return *this;
     }
 
-    void setImageEffectInstancePropSequentialRender(bool value) {
-        props_.set<PropId::OfxImageEffectInstancePropSequentialRender>(value, 0);
+    // Set all values from an initializer list (e.g., {1, 2})
+    EffectInstance& setProjectExtent(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropProjectExtent>(values, error_if_missing);
+        return *this;
     }
 
-    void setSupportsTiles(bool value) {
-        props_.set<PropId::OfxImageEffectPropSupportsTiles>(value, 0);
+    EffectInstance& setPixelAspectRatio(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropPixelAspectRatio>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setOpenGLRenderSupported(const char* value) {
-        props_.set<PropId::OfxImageEffectPropOpenGLRenderSupported>(value, 0);
+    EffectInstance& setImageEffectInstancePropEffectDuration(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectInstancePropEffectDuration>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setFrameRate(double value) {
-        props_.set<PropId::OfxImageEffectPropFrameRate>(value, 0);
+    EffectInstance& setImageEffectInstancePropSequentialRender(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectInstancePropSequentialRender>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setIsInteractive(bool value) {
-        props_.set<PropId::OfxPropIsInteractive>(value, 0);
+    EffectInstance& setSupportsTiles(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropSupportsTiles>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setOCIOConfig(const char* value) {
-        props_.set<PropId::OfxImageEffectPropOCIOConfig>(value, 0);
+    EffectInstance& setOpenGLRenderSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenGLRenderSupported>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setOCIODisplay(const char* value) {
-        props_.set<PropId::OfxImageEffectPropOCIODisplay>(value, 0);
+    EffectInstance& setFrameRate(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropFrameRate>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setOCIOView(const char* value) {
-        props_.set<PropId::OfxImageEffectPropOCIOView>(value, 0);
+    EffectInstance& setIsInteractive(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropIsInteractive>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setColourManagementConfig(const char* value) {
-        props_.set<PropId::OfxImageEffectPropColourManagementConfig>(value, 0);
+    EffectInstance& setOCIOConfig(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOCIOConfig>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setColourManagementStyle(const char* value) {
-        props_.set<PropId::OfxImageEffectPropColourManagementStyle>(value, 0);
+    EffectInstance& setOCIODisplay(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOCIODisplay>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setDisplayColourspace(const char* value) {
-        props_.set<PropId::OfxImageEffectPropDisplayColourspace>(value, 0);
+    EffectInstance& setOCIOView(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOCIOView>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setPluginHandle(void* value) {
-        props_.set<PropId::OfxImageEffectPropPluginHandle>(value, 0);
+    EffectInstance& setColourManagementConfig(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropColourManagementConfig>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    EffectInstance& setColourManagementStyle(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropColourManagementStyle>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    EffectInstance& setDisplayColourspace(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropDisplayColourspace>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    EffectInstance& setPluginHandle(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropPluginHandle>(value, 0, error_if_missing);
+        return *this;
     }
 
 };
@@ -412,52 +630,660 @@ class Image : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    void setType(const char* value) {
-        props_.set<PropId::OfxPropType>(value, 0);
+    Image& setType(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropType>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setPixelDepth(const char* value) {
-        props_.set<PropId::OfxImageEffectPropPixelDepth>(value, 0);
+    Image& setPixelDepth(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropPixelDepth>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setComponents(const char* value) {
-        props_.set<PropId::OfxImageEffectPropComponents>(value, 0);
+    Image& setComponents(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropComponents>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setPreMultiplication(const char* value) {
-        props_.set<PropId::OfxImageEffectPropPreMultiplication>(value, 0);
+    Image& setPreMultiplication(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropPreMultiplication>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setRenderScale(const std::array<double, 2>& values) {
-        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values);
+    Image& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
     }
 
-    void setPixelAspectRatio(double value) {
-        props_.set<PropId::OfxImagePropPixelAspectRatio>(value, 0);
+    // Set all values from an initializer list (e.g., {1, 2})
+    Image& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
     }
 
-    void setData(void* value) {
-        props_.set<PropId::OfxImagePropData>(value, 0);
+    Image& setPixelAspectRatio(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImagePropPixelAspectRatio>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setBounds(const std::array<int, 4>& values) {
-        props_.setAll<PropId::OfxImagePropBounds>(values);
+    Image& setData(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImagePropData>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setRegionOfDefinition(const std::array<int, 4>& values) {
-        props_.setAll<PropId::OfxImagePropRegionOfDefinition>(values);
+    Image& setBounds(const std::array<int, 4>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImagePropBounds>(values, error_if_missing);
+        return *this;
     }
 
-    void setRowBytes(int value) {
-        props_.set<PropId::OfxImagePropRowBytes>(value, 0);
+    // Set all values from an initializer list (e.g., {1, 2})
+    Image& setBounds(std::initializer_list<int> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImagePropBounds>(values, error_if_missing);
+        return *this;
     }
 
-    void setField(const char* value) {
-        props_.set<PropId::OfxImagePropField>(value, 0);
+    Image& setRegionOfDefinition(const std::array<int, 4>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImagePropRegionOfDefinition>(values, error_if_missing);
+        return *this;
     }
 
-    void setUniqueIdentifier(const char* value) {
-        props_.set<PropId::OfxImagePropUniqueIdentifier>(value, 0);
+    // Set all values from an initializer list (e.g., {1, 2})
+    Image& setRegionOfDefinition(std::initializer_list<int> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImagePropRegionOfDefinition>(values, error_if_missing);
+        return *this;
+    }
+
+    Image& setRowBytes(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImagePropRowBytes>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    Image& setField(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImagePropField>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    Image& setUniqueIdentifier(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImagePropUniqueIdentifier>(value, 0, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: ImageEffectActionBeginSequenceRender_InArgs
+class ImageEffectActionBeginSequenceRender_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    ImageEffectActionBeginSequenceRender_InArgs& setFrameRange(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropFrameRange>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ImageEffectActionBeginSequenceRender_InArgs& setFrameRange(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropFrameRange>(values, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setFrameStep(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropFrameStep>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setIsInteractive(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropIsInteractive>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ImageEffectActionBeginSequenceRender_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setSequentialRenderStatus(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropSequentialRenderStatus>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setInteractiveRenderStatus(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropInteractiveRenderStatus>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setCudaEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropCudaEnabled>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setCudaRenderSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropCudaRenderSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setCudaStream(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropCudaStream>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setCudaStreamSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropCudaStreamSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setMetalCommandQueue(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropMetalCommandQueue>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setMetalEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropMetalEnabled>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setMetalRenderSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropMetalRenderSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setOpenCLCommandQueue(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenCLCommandQueue>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setOpenCLEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenCLEnabled>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setOpenCLImage(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenCLImage>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setOpenCLRenderSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenCLRenderSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setOpenCLSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenCLSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setOpenGLEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenGLEnabled>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setOpenGLTextureIndex(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenGLTextureIndex>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setOpenGLTextureTarget(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenGLTextureTarget>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionBeginSequenceRender_InArgs& setNoSpatialAwareness(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropNoSpatialAwareness>(value, 0, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: ImageEffectActionDescribeInContext_InArgs
+class ImageEffectActionDescribeInContext_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    ImageEffectActionDescribeInContext_InArgs& setContext(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropContext>(value, 0, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: ImageEffectActionEndSequenceRender_InArgs
+class ImageEffectActionEndSequenceRender_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    ImageEffectActionEndSequenceRender_InArgs& setFrameRange(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropFrameRange>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ImageEffectActionEndSequenceRender_InArgs& setFrameRange(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropFrameRange>(values, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setFrameStep(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropFrameStep>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setIsInteractive(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropIsInteractive>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ImageEffectActionEndSequenceRender_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setSequentialRenderStatus(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropSequentialRenderStatus>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setInteractiveRenderStatus(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropInteractiveRenderStatus>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setCudaEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropCudaEnabled>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setCudaRenderSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropCudaRenderSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setCudaStream(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropCudaStream>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setCudaStreamSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropCudaStreamSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setMetalCommandQueue(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropMetalCommandQueue>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setMetalEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropMetalEnabled>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setMetalRenderSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropMetalRenderSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setOpenCLCommandQueue(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenCLCommandQueue>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setOpenCLEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenCLEnabled>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setOpenCLImage(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenCLImage>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setOpenCLRenderSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenCLRenderSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setOpenCLSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenCLSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setOpenGLEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenGLEnabled>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setOpenGLTextureIndex(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenGLTextureIndex>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setOpenGLTextureTarget(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenGLTextureTarget>(value, 0, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: ImageEffectActionGetClipPreferences_OutArgs
+class ImageEffectActionGetClipPreferences_OutArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    double frameRate(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropFrameRate>(0, error_if_missing);
+    }
+
+    const char* fieldOrder(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageClipPropFieldOrder>(0, error_if_missing);
+    }
+
+    const char* preMultiplication(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropPreMultiplication>(0, error_if_missing);
+    }
+
+    bool continuousSamples(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageClipPropContinuousSamples>(0, error_if_missing);
+    }
+
+    bool imageEffectFrameVarying(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectFrameVarying>(0, error_if_missing);
+    }
+
+};
+
+// Property set accessor for: ImageEffectActionGetFramesNeeded_InArgs
+class ImageEffectActionGetFramesNeeded_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    ImageEffectActionGetFramesNeeded_InArgs& setTime(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropTime>(value, 0, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: ImageEffectActionGetFramesNeeded_OutArgs
+class ImageEffectActionGetFramesNeeded_OutArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    std::array<double, 2> frameRange() const {
+        return props_.getAll<PropId::OfxImageEffectPropFrameRange>();
+    }
+
+};
+
+// Property set accessor for: ImageEffectActionGetOutputColourspace_InArgs
+class ImageEffectActionGetOutputColourspace_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    ImageEffectActionGetOutputColourspace_InArgs& setPreferredColourspaces(const char* value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageClipPropPreferredColourspaces>(value, index, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ImageEffectActionGetOutputColourspace_InArgs& setPreferredColourspaces(const Container& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageClipPropPreferredColourspaces>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    ImageEffectActionGetOutputColourspace_InArgs& setPreferredColourspaces(std::initializer_list<const char*> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageClipPropPreferredColourspaces>(values, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: ImageEffectActionGetOutputColourspace_OutArgs
+class ImageEffectActionGetOutputColourspace_OutArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    const char* colourspace(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageClipPropColourspace>(0, error_if_missing);
+    }
+
+};
+
+// Property set accessor for: ImageEffectActionGetRegionOfDefinition_InArgs
+class ImageEffectActionGetRegionOfDefinition_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    ImageEffectActionGetRegionOfDefinition_InArgs& setTime(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropTime>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionGetRegionOfDefinition_InArgs& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ImageEffectActionGetRegionOfDefinition_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: ImageEffectActionGetRegionOfDefinition_OutArgs
+class ImageEffectActionGetRegionOfDefinition_OutArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    std::array<double, 4> regionOfDefinition() const {
+        return props_.getAll<PropId::OfxImageEffectPropRegionOfDefinition>();
+    }
+
+};
+
+// Property set accessor for: ImageEffectActionGetRegionsOfInterest_InArgs
+class ImageEffectActionGetRegionsOfInterest_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    ImageEffectActionGetRegionsOfInterest_InArgs& setTime(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropTime>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionGetRegionsOfInterest_InArgs& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ImageEffectActionGetRegionsOfInterest_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionGetRegionsOfInterest_InArgs& setRegionOfInterest(const std::array<double, 4>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRegionOfInterest>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ImageEffectActionGetRegionsOfInterest_InArgs& setRegionOfInterest(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRegionOfInterest>(values, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: ImageEffectActionGetTimeDomain_OutArgs
+class ImageEffectActionGetTimeDomain_OutArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    std::array<double, 2> frameRange() const {
+        return props_.getAll<PropId::OfxImageEffectPropFrameRange>();
+    }
+
+};
+
+// Property set accessor for: ImageEffectActionIsIdentity_InArgs
+class ImageEffectActionIsIdentity_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    ImageEffectActionIsIdentity_InArgs& setTime(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropTime>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionIsIdentity_InArgs& setFieldToRender(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropFieldToRender>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionIsIdentity_InArgs& setRenderWindow(const std::array<int, 4>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderWindow>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ImageEffectActionIsIdentity_InArgs& setRenderWindow(std::initializer_list<int> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderWindow>(values, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionIsIdentity_InArgs& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ImageEffectActionIsIdentity_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: ImageEffectActionRender_InArgs
+class ImageEffectActionRender_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    ImageEffectActionRender_InArgs& setTime(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropTime>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setSequentialRenderStatus(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropSequentialRenderStatus>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setInteractiveRenderStatus(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropInteractiveRenderStatus>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setRenderQualityDraft(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropRenderQualityDraft>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setCudaEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropCudaEnabled>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setCudaRenderSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropCudaRenderSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setCudaStream(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropCudaStream>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setCudaStreamSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropCudaStreamSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setMetalCommandQueue(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropMetalCommandQueue>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setMetalEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropMetalEnabled>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setMetalRenderSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropMetalRenderSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setOpenCLCommandQueue(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenCLCommandQueue>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setOpenCLEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenCLEnabled>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setOpenCLImage(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenCLImage>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setOpenCLRenderSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenCLRenderSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setOpenCLSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenCLSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setOpenGLEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenGLEnabled>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setOpenGLTextureIndex(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenGLTextureIndex>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setOpenGLTextureTarget(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenGLTextureTarget>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setNoSpatialAwareness(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropNoSpatialAwareness>(value, 0, error_if_missing);
+        return *this;
     }
 
 };
@@ -467,148 +1293,765 @@ class ImageEffectHost : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    void setAPIVersion(int value, int index = 0) {
-        props_.set<PropId::OfxPropAPIVersion>(value, index);
+    ImageEffectHost& setAPIVersion(int value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropAPIVersion>(value, index, error_if_missing);
+        return *this;
     }
 
-    void setType(const char* value) {
-        props_.set<PropId::OfxPropType>(value, 0);
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ImageEffectHost& setAPIVersion(const Container& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxPropAPIVersion>(values, error_if_missing);
+        return *this;
     }
 
-    void setName(const char* value) {
-        props_.set<PropId::OfxPropName>(value, 0);
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    ImageEffectHost& setAPIVersion(std::initializer_list<int> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxPropAPIVersion>(values, error_if_missing);
+        return *this;
     }
 
-    void setLabel(const char* value) {
-        props_.set<PropId::OfxPropLabel>(value, 0);
+    ImageEffectHost& setType(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropType>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setVersion(int value, int index = 0) {
-        props_.set<PropId::OfxPropVersion>(value, index);
+    ImageEffectHost& setName(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropName>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setVersionLabel(const char* value) {
-        props_.set<PropId::OfxPropVersionLabel>(value, 0);
+    ImageEffectHost& setLabel(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropLabel>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setImageEffectHostPropIsBackground(bool value) {
-        props_.set<PropId::OfxImageEffectHostPropIsBackground>(value, 0);
+    ImageEffectHost& setVersion(int value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropVersion>(value, index, error_if_missing);
+        return *this;
     }
 
-    void setSupportsOverlays(bool value) {
-        props_.set<PropId::OfxImageEffectPropSupportsOverlays>(value, 0);
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ImageEffectHost& setVersion(const Container& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxPropVersion>(values, error_if_missing);
+        return *this;
     }
 
-    void setSupportsMultiResolution(bool value) {
-        props_.set<PropId::OfxImageEffectPropSupportsMultiResolution>(value, 0);
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    ImageEffectHost& setVersion(std::initializer_list<int> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxPropVersion>(values, error_if_missing);
+        return *this;
     }
 
-    void setSupportsTiles(bool value) {
-        props_.set<PropId::OfxImageEffectPropSupportsTiles>(value, 0);
+    ImageEffectHost& setVersionLabel(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropVersionLabel>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setTemporalClipAccess(bool value) {
-        props_.set<PropId::OfxImageEffectPropTemporalClipAccess>(value, 0);
+    ImageEffectHost& setImageEffectHostPropIsBackground(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectHostPropIsBackground>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setSupportedComponents(const char* value, int index = 0) {
-        props_.set<PropId::OfxImageEffectPropSupportedComponents>(value, index);
+    ImageEffectHost& setSupportsOverlays(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropSupportsOverlays>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setSupportedContexts(const char* value, int index = 0) {
-        props_.set<PropId::OfxImageEffectPropSupportedContexts>(value, index);
+    ImageEffectHost& setSupportsMultiResolution(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropSupportsMultiResolution>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setMultipleClipDepths(bool value) {
-        props_.set<PropId::OfxImageEffectPropMultipleClipDepths>(value, 0);
+    ImageEffectHost& setSupportsTiles(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropSupportsTiles>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setOpenCLSupported(const char* value) {
-        props_.set<PropId::OfxImageEffectPropOpenCLSupported>(value, 0);
+    ImageEffectHost& setTemporalClipAccess(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropTemporalClipAccess>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setSupportsMultipleClipPARs(bool value) {
-        props_.set<PropId::OfxImageEffectPropSupportsMultipleClipPARs>(value, 0);
+    ImageEffectHost& setSupportedComponents(const char* value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropSupportedComponents>(value, index, error_if_missing);
+        return *this;
     }
 
-    void setSetableFrameRate(bool value) {
-        props_.set<PropId::OfxImageEffectPropSetableFrameRate>(value, 0);
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ImageEffectHost& setSupportedComponents(const Container& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropSupportedComponents>(values, error_if_missing);
+        return *this;
     }
 
-    void setSetableFielding(bool value) {
-        props_.set<PropId::OfxImageEffectPropSetableFielding>(value, 0);
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    ImageEffectHost& setSupportedComponents(std::initializer_list<const char*> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropSupportedComponents>(values, error_if_missing);
+        return *this;
     }
 
-    void setParamHostPropSupportsCustomInteract(bool value) {
-        props_.set<PropId::OfxParamHostPropSupportsCustomInteract>(value, 0);
+    ImageEffectHost& setSupportedContexts(const char* value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropSupportedContexts>(value, index, error_if_missing);
+        return *this;
     }
 
-    void setParamHostPropSupportsStringAnimation(bool value) {
-        props_.set<PropId::OfxParamHostPropSupportsStringAnimation>(value, 0);
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ImageEffectHost& setSupportedContexts(const Container& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropSupportedContexts>(values, error_if_missing);
+        return *this;
     }
 
-    void setParamHostPropSupportsChoiceAnimation(bool value) {
-        props_.set<PropId::OfxParamHostPropSupportsChoiceAnimation>(value, 0);
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    ImageEffectHost& setSupportedContexts(std::initializer_list<const char*> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropSupportedContexts>(values, error_if_missing);
+        return *this;
     }
 
-    void setParamHostPropSupportsBooleanAnimation(bool value) {
-        props_.set<PropId::OfxParamHostPropSupportsBooleanAnimation>(value, 0);
+    ImageEffectHost& setMultipleClipDepths(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropMultipleClipDepths>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setParamHostPropSupportsCustomAnimation(bool value) {
-        props_.set<PropId::OfxParamHostPropSupportsCustomAnimation>(value, 0);
+    ImageEffectHost& setOpenCLSupported(const char* value, bool error_if_missing = false) {
+        props_.set<PropId::OfxImageEffectPropOpenCLSupported>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setParamHostPropSupportsStrChoice(bool value) {
-        props_.set<PropId::OfxParamHostPropSupportsStrChoice>(value, 0);
+    ImageEffectHost& setSupportsMultipleClipPARs(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropSupportsMultipleClipPARs>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setParamHostPropSupportsStrChoiceAnimation(bool value) {
-        props_.set<PropId::OfxParamHostPropSupportsStrChoiceAnimation>(value, 0);
+    ImageEffectHost& setSetableFrameRate(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropSetableFrameRate>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setParamHostPropMaxParameters(int value) {
-        props_.set<PropId::OfxParamHostPropMaxParameters>(value, 0);
+    ImageEffectHost& setSetableFielding(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropSetableFielding>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setParamHostPropMaxPages(int value) {
-        props_.set<PropId::OfxParamHostPropMaxPages>(value, 0);
+    ImageEffectHost& setParamHostPropSupportsCustomInteract(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamHostPropSupportsCustomInteract>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setParamHostPropPageRowColumnCount(const std::array<int, 2>& values) {
-        props_.setAll<PropId::OfxParamHostPropPageRowColumnCount>(values);
+    ImageEffectHost& setParamHostPropSupportsStringAnimation(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamHostPropSupportsStringAnimation>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setHostOSHandle(void* value) {
-        props_.set<PropId::OfxPropHostOSHandle>(value, 0);
+    ImageEffectHost& setParamHostPropSupportsChoiceAnimation(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamHostPropSupportsChoiceAnimation>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setParamHostPropSupportsParametricAnimation(bool value) {
-        props_.set<PropId::OfxParamHostPropSupportsParametricAnimation>(value, 0);
+    ImageEffectHost& setParamHostPropSupportsBooleanAnimation(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamHostPropSupportsBooleanAnimation>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setImageEffectInstancePropSequentialRender(bool value) {
-        props_.set<PropId::OfxImageEffectInstancePropSequentialRender>(value, 0);
+    ImageEffectHost& setParamHostPropSupportsCustomAnimation(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamHostPropSupportsCustomAnimation>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setOpenGLRenderSupported(const char* value) {
-        props_.set<PropId::OfxImageEffectPropOpenGLRenderSupported>(value, 0);
+    ImageEffectHost& setParamHostPropSupportsStrChoice(bool value, bool error_if_missing = false) {
+        props_.set<PropId::OfxParamHostPropSupportsStrChoice>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setRenderQualityDraft(bool value) {
-        props_.set<PropId::OfxImageEffectPropRenderQualityDraft>(value, 0);
+    ImageEffectHost& setParamHostPropSupportsStrChoiceAnimation(bool value, bool error_if_missing = false) {
+        props_.set<PropId::OfxParamHostPropSupportsStrChoiceAnimation>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setImageEffectHostPropNativeOrigin(const char* value) {
-        props_.set<PropId::OfxImageEffectHostPropNativeOrigin>(value, 0);
+    ImageEffectHost& setParamHostPropMaxParameters(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamHostPropMaxParameters>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setColourManagementAvailableConfigs(const char* value, int index = 0) {
-        props_.set<PropId::OfxImageEffectPropColourManagementAvailableConfigs>(value, index);
+    ImageEffectHost& setParamHostPropMaxPages(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamHostPropMaxPages>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setColourManagementStyle(const char* value) {
-        props_.set<PropId::OfxImageEffectPropColourManagementStyle>(value, 0);
+    ImageEffectHost& setParamHostPropPageRowColumnCount(const std::array<int, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamHostPropPageRowColumnCount>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ImageEffectHost& setParamHostPropPageRowColumnCount(std::initializer_list<int> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamHostPropPageRowColumnCount>(values, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectHost& setHostOSHandle(void* value, bool error_if_missing = false) {
+        props_.set<PropId::OfxPropHostOSHandle>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectHost& setParamHostPropSupportsParametricAnimation(bool value, bool error_if_missing = false) {
+        props_.set<PropId::OfxParamHostPropSupportsParametricAnimation>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectHost& setImageEffectInstancePropSequentialRender(bool value, bool error_if_missing = false) {
+        props_.set<PropId::OfxImageEffectInstancePropSequentialRender>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectHost& setOpenGLRenderSupported(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenGLRenderSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectHost& setRenderQualityDraft(bool value, bool error_if_missing = false) {
+        props_.set<PropId::OfxImageEffectPropRenderQualityDraft>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectHost& setImageEffectHostPropNativeOrigin(const char* value, bool error_if_missing = false) {
+        props_.set<PropId::OfxImageEffectHostPropNativeOrigin>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectHost& setColourManagementAvailableConfigs(const char* value, int index = 0, bool error_if_missing = false) {
+        props_.set<PropId::OfxImageEffectPropColourManagementAvailableConfigs>(value, index, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ImageEffectHost& setColourManagementAvailableConfigs(const Container& values, bool error_if_missing = false) {
+        props_.setAll<PropId::OfxImageEffectPropColourManagementAvailableConfigs>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    ImageEffectHost& setColourManagementAvailableConfigs(std::initializer_list<const char*> values, bool error_if_missing = false) {
+        props_.setAll<PropId::OfxImageEffectPropColourManagementAvailableConfigs>(values, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectHost& setColourManagementStyle(const char* value, bool error_if_missing = false) {
+        props_.set<PropId::OfxImageEffectPropColourManagementStyle>(value, 0, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: InteractActionDraw_InArgs
+class InteractActionDraw_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    InteractActionDraw_InArgs& setEffectInstance(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropEffectInstance>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionDraw_InArgs& setInteractPropDrawContext(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxInteractPropDrawContext>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionDraw_InArgs& setInteractPropPixelScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPixelScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionDraw_InArgs& setInteractPropPixelScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPixelScale>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionDraw_InArgs& setInteractPropBackgroundColour(const std::array<double, 3>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropBackgroundColour>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionDraw_InArgs& setInteractPropBackgroundColour(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropBackgroundColour>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionDraw_InArgs& setTime(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropTime>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionDraw_InArgs& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionDraw_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: InteractActionGainFocus_InArgs
+class InteractActionGainFocus_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    InteractActionGainFocus_InArgs& setEffectInstance(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropEffectInstance>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionGainFocus_InArgs& setInteractPropPixelScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPixelScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionGainFocus_InArgs& setInteractPropPixelScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPixelScale>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionGainFocus_InArgs& setInteractPropBackgroundColour(const std::array<double, 3>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropBackgroundColour>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionGainFocus_InArgs& setInteractPropBackgroundColour(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropBackgroundColour>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionGainFocus_InArgs& setTime(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropTime>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionGainFocus_InArgs& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionGainFocus_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: InteractActionKeyDown_InArgs
+class InteractActionKeyDown_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    InteractActionKeyDown_InArgs& setEffectInstance(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropEffectInstance>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionKeyDown_InArgs& setKeySym(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropKeySym>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionKeyDown_InArgs& setKeyString(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropKeyString>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionKeyDown_InArgs& setTime(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropTime>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionKeyDown_InArgs& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionKeyDown_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: InteractActionKeyRepeat_InArgs
+class InteractActionKeyRepeat_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    InteractActionKeyRepeat_InArgs& setEffectInstance(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropEffectInstance>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionKeyRepeat_InArgs& setKeySym(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropKeySym>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionKeyRepeat_InArgs& setKeyString(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropKeyString>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionKeyRepeat_InArgs& setTime(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropTime>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionKeyRepeat_InArgs& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionKeyRepeat_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: InteractActionKeyUp_InArgs
+class InteractActionKeyUp_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    InteractActionKeyUp_InArgs& setEffectInstance(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropEffectInstance>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionKeyUp_InArgs& setKeySym(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropKeySym>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionKeyUp_InArgs& setKeyString(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropKeyString>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionKeyUp_InArgs& setTime(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropTime>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionKeyUp_InArgs& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionKeyUp_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: InteractActionLoseFocus_InArgs
+class InteractActionLoseFocus_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    InteractActionLoseFocus_InArgs& setEffectInstance(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropEffectInstance>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionLoseFocus_InArgs& setInteractPropPixelScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPixelScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionLoseFocus_InArgs& setInteractPropPixelScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPixelScale>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionLoseFocus_InArgs& setInteractPropBackgroundColour(const std::array<double, 3>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropBackgroundColour>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionLoseFocus_InArgs& setInteractPropBackgroundColour(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropBackgroundColour>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionLoseFocus_InArgs& setTime(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropTime>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionLoseFocus_InArgs& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionLoseFocus_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: InteractActionPenDown_InArgs
+class InteractActionPenDown_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    InteractActionPenDown_InArgs& setEffectInstance(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropEffectInstance>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenDown_InArgs& setInteractPropPixelScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPixelScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionPenDown_InArgs& setInteractPropPixelScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPixelScale>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenDown_InArgs& setInteractPropBackgroundColour(const std::array<double, 3>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropBackgroundColour>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionPenDown_InArgs& setInteractPropBackgroundColour(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropBackgroundColour>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenDown_InArgs& setTime(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropTime>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenDown_InArgs& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionPenDown_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenDown_InArgs& setInteractPropPenPosition(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPenPosition>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionPenDown_InArgs& setInteractPropPenPosition(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPenPosition>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenDown_InArgs& setInteractPropPenViewportPosition(const std::array<int, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPenViewportPosition>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionPenDown_InArgs& setInteractPropPenViewportPosition(std::initializer_list<int> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPenViewportPosition>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenDown_InArgs& setInteractPropPenPressure(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxInteractPropPenPressure>(value, 0, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: InteractActionPenMotion_InArgs
+class InteractActionPenMotion_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    InteractActionPenMotion_InArgs& setEffectInstance(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropEffectInstance>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenMotion_InArgs& setInteractPropPixelScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPixelScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionPenMotion_InArgs& setInteractPropPixelScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPixelScale>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenMotion_InArgs& setInteractPropBackgroundColour(const std::array<double, 3>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropBackgroundColour>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionPenMotion_InArgs& setInteractPropBackgroundColour(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropBackgroundColour>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenMotion_InArgs& setTime(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropTime>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenMotion_InArgs& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionPenMotion_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenMotion_InArgs& setInteractPropPenPosition(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPenPosition>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionPenMotion_InArgs& setInteractPropPenPosition(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPenPosition>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenMotion_InArgs& setInteractPropPenViewportPosition(const std::array<int, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPenViewportPosition>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionPenMotion_InArgs& setInteractPropPenViewportPosition(std::initializer_list<int> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPenViewportPosition>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenMotion_InArgs& setInteractPropPenPressure(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxInteractPropPenPressure>(value, 0, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: InteractActionPenUp_InArgs
+class InteractActionPenUp_InArgs : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    InteractActionPenUp_InArgs& setEffectInstance(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropEffectInstance>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenUp_InArgs& setInteractPropPixelScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPixelScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionPenUp_InArgs& setInteractPropPixelScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPixelScale>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenUp_InArgs& setInteractPropBackgroundColour(const std::array<double, 3>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropBackgroundColour>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionPenUp_InArgs& setInteractPropBackgroundColour(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropBackgroundColour>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenUp_InArgs& setTime(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropTime>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenUp_InArgs& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionPenUp_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenUp_InArgs& setInteractPropPenPosition(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPenPosition>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionPenUp_InArgs& setInteractPropPenPosition(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPenPosition>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenUp_InArgs& setInteractPropPenViewportPosition(const std::array<int, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPenViewportPosition>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractActionPenUp_InArgs& setInteractPropPenViewportPosition(std::initializer_list<int> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPenViewportPosition>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractActionPenUp_InArgs& setInteractPropPenPressure(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxInteractPropPenPressure>(value, 0, error_if_missing);
+        return *this;
     }
 
 };
@@ -618,12 +2061,14 @@ class InteractDescriptor : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    void setInteractPropHasAlpha(bool value) {
-        props_.set<PropId::OfxInteractPropHasAlpha>(value, 0);
+    InteractDescriptor& setInteractPropHasAlpha(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxInteractPropHasAlpha>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setInteractPropBitDepth(int value) {
-        props_.set<PropId::OfxInteractPropBitDepth>(value, 0);
+    InteractDescriptor& setInteractPropBitDepth(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxInteractPropBitDepth>(value, 0, error_if_missing);
+        return *this;
     }
 
 };
@@ -633,36 +2078,77 @@ class InteractInstance : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    void setEffectInstance(void* value) {
-        props_.set<PropId::OfxPropEffectInstance>(value, 0);
+    InteractInstance& setEffectInstance(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropEffectInstance>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setInstanceData(void* value) {
-        props_.set<PropId::OfxPropInstanceData>(value, 0);
+    InteractInstance& setInstanceData(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropInstanceData>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setInteractPropPixelScale(const std::array<double, 2>& values) {
-        props_.setAll<PropId::OfxInteractPropPixelScale>(values);
+    InteractInstance& setInteractPropPixelScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPixelScale>(values, error_if_missing);
+        return *this;
     }
 
-    void setInteractPropBackgroundColour(const std::array<double, 3>& values) {
-        props_.setAll<PropId::OfxInteractPropBackgroundColour>(values);
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractInstance& setInteractPropPixelScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropPixelScale>(values, error_if_missing);
+        return *this;
     }
 
-    void setInteractPropHasAlpha(bool value) {
-        props_.set<PropId::OfxInteractPropHasAlpha>(value, 0);
+    InteractInstance& setInteractPropBackgroundColour(const std::array<double, 3>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropBackgroundColour>(values, error_if_missing);
+        return *this;
     }
 
-    void setInteractPropBitDepth(int value) {
-        props_.set<PropId::OfxInteractPropBitDepth>(value, 0);
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractInstance& setInteractPropBackgroundColour(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropBackgroundColour>(values, error_if_missing);
+        return *this;
     }
 
-    void setInteractPropSlaveToParam(const char* value, int index = 0) {
-        props_.set<PropId::OfxInteractPropSlaveToParam>(value, index);
+    InteractInstance& setInteractPropHasAlpha(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxInteractPropHasAlpha>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setInteractPropSuggestedColour(const std::array<double, 3>& values) {
-        props_.setAll<PropId::OfxInteractPropSuggestedColour>(values);
+    InteractInstance& setInteractPropBitDepth(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxInteractPropBitDepth>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    InteractInstance& setInteractPropSlaveToParam(const char* value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxInteractPropSlaveToParam>(value, index, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    InteractInstance& setInteractPropSlaveToParam(const Container& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropSlaveToParam>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    InteractInstance& setInteractPropSlaveToParam(std::initializer_list<const char*> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropSlaveToParam>(values, error_if_missing);
+        return *this;
+    }
+
+    InteractInstance& setInteractPropSuggestedColour(const std::array<double, 3>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropSuggestedColour>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    InteractInstance& setInteractPropSuggestedColour(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropSuggestedColour>(values, error_if_missing);
+        return *this;
     }
 
 };
@@ -672,72 +2158,72 @@ class ParamDouble1D : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    bool showTimeMarker() const {
-        return props_.get<PropId::OfxParamPropShowTimeMarker>(0);
+    bool showTimeMarker(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropShowTimeMarker>(0, error_if_missing);
     }
 
-    const char* doubleType() const {
-        return props_.get<PropId::OfxParamPropDoubleType>(0);
+    const char* doubleType(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDoubleType>(0, error_if_missing);
     }
 
-    const char* type() const {
-        return props_.get<PropId::OfxPropType>(0);
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
     }
 
-    const char* name() const {
-        return props_.get<PropId::OfxPropName>(0);
+    const char* name(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropName>(0, error_if_missing);
     }
 
-    const char* label() const {
-        return props_.get<PropId::OfxPropLabel>(0);
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
     }
 
-    const char* shortLabel() const {
-        return props_.get<PropId::OfxPropShortLabel>(0);
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
     }
 
-    const char* longLabel() const {
-        return props_.get<PropId::OfxPropLongLabel>(0);
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
     }
 
-    bool secret() const {
-        return props_.get<PropId::OfxParamPropSecret>(0);
+    bool secret(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropSecret>(0, error_if_missing);
     }
 
-    const char* hint() const {
-        return props_.get<PropId::OfxParamPropHint>(0);
+    const char* hint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHint>(0, error_if_missing);
     }
 
-    const char* scriptName() const {
-        return props_.get<PropId::OfxParamPropScriptName>(0);
+    const char* scriptName(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropScriptName>(0, error_if_missing);
     }
 
-    const char* parent() const {
-        return props_.get<PropId::OfxParamPropParent>(0);
+    const char* parent(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParent>(0, error_if_missing);
     }
 
-    bool enabled() const {
-        return props_.get<PropId::OfxParamPropEnabled>(0);
+    bool enabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEnabled>(0, error_if_missing);
     }
 
-    void* dataPtr() const {
-        return props_.get<PropId::OfxParamPropDataPtr>(0);
+    void* dataPtr(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
         return props_.getAll<PropId::OfxPropIcon>();
     }
 
-    void* interactV1() const {
-        return props_.get<PropId::OfxParamPropInteractV1>(0);
+    void* interactV1(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractV1>(0, error_if_missing);
     }
 
     std::array<double, 2> interactSize() const {
         return props_.getAll<PropId::OfxParamPropInteractSize>();
     }
 
-    double interactSizeAspect() const {
-        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0);
+    double interactSizeAspect(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0, error_if_missing);
     }
 
     std::array<double, 2> interactMinimumSize() const {
@@ -748,18 +2234,18 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0);
+    bool hasHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
     }
 
-    bool useHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0);
+    bool useHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0, error_if_missing);
     }
 
     // Multi-type property (supports: int, double, string, pointer)
     template<typename T>
-    T default(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDefault, T>(index);
+    T default(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDefault, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -767,42 +2253,44 @@ public:
         return props_.getAll<PropId::OfxParamPropDefault, T>();
     }
 
-    bool animates() const {
-        return props_.get<PropId::OfxParamPropAnimates>(0);
+    bool animates(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropAnimates>(0, error_if_missing);
     }
 
-    void setIsAnimating(bool value) {
-        props_.set<PropId::OfxParamPropIsAnimating>(value, 0);
+    ParamDouble1D& setIsAnimating(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAnimating>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setIsAutoKeying(bool value) {
-        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0);
+    ParamDouble1D& setIsAutoKeying(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0, error_if_missing);
+        return *this;
     }
 
-    bool persistant() const {
-        return props_.get<PropId::OfxParamPropPersistant>(0);
+    bool persistant(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPersistant>(0, error_if_missing);
     }
 
-    bool evaluateOnChange() const {
-        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0);
+    bool evaluateOnChange(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0, error_if_missing);
     }
 
-    bool pluginMayWrite() const {
-        return props_.get<PropId::OfxParamPropPluginMayWrite>(0);
+    bool pluginMayWrite(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPluginMayWrite>(0, error_if_missing);
     }
 
-    const char* cacheInvalidation() const {
-        return props_.get<PropId::OfxParamPropCacheInvalidation>(0);
+    const char* cacheInvalidation(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCacheInvalidation>(0, error_if_missing);
     }
 
-    bool canUndo() const {
-        return props_.get<PropId::OfxParamPropCanUndo>(0);
+    bool canUndo(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCanUndo>(0, error_if_missing);
     }
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T min(int index = 0) const {
-        return props_.get<PropId::OfxParamPropMin, T>(index);
+    T min(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMin, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -812,8 +2300,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T max(int index = 0) const {
-        return props_.get<PropId::OfxParamPropMax, T>(index);
+    T max(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMax, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -823,8 +2311,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T displayMin(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDisplayMin, T>(index);
+    T displayMin(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMin, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -834,8 +2322,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T displayMax(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDisplayMax, T>(index);
+    T displayMax(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMax, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -843,12 +2331,12 @@ public:
         return props_.getAll<PropId::OfxParamPropDisplayMax, T>();
     }
 
-    double increment() const {
-        return props_.get<PropId::OfxParamPropIncrement>(0);
+    double increment(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropIncrement>(0, error_if_missing);
     }
 
-    int digits() const {
-        return props_.get<PropId::OfxParamPropDigits>(0);
+    int digits(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDigits>(0, error_if_missing);
     }
 
 };
@@ -858,12 +2346,12 @@ class ParameterSet : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    bool paramSetNeedsSyncing() const {
-        return props_.get<PropId::OfxPropParamSetNeedsSyncing>(0);
+    bool paramSetNeedsSyncing(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropParamSetNeedsSyncing>(0, error_if_missing);
     }
 
-    const char* paramPageOrder(int index = 0) const {
-        return props_.get<PropId::OfxPluginPropParamPageOrder>(index);
+    const char* paramPageOrder(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPluginPropParamPageOrder>(index, error_if_missing);
     }
 
 };
@@ -873,64 +2361,64 @@ class ParamsByte : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    const char* type() const {
-        return props_.get<PropId::OfxPropType>(0);
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
     }
 
-    const char* name() const {
-        return props_.get<PropId::OfxPropName>(0);
+    const char* name(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropName>(0, error_if_missing);
     }
 
-    const char* label() const {
-        return props_.get<PropId::OfxPropLabel>(0);
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
     }
 
-    const char* shortLabel() const {
-        return props_.get<PropId::OfxPropShortLabel>(0);
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
     }
 
-    const char* longLabel() const {
-        return props_.get<PropId::OfxPropLongLabel>(0);
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
     }
 
-    bool secret() const {
-        return props_.get<PropId::OfxParamPropSecret>(0);
+    bool secret(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropSecret>(0, error_if_missing);
     }
 
-    const char* hint() const {
-        return props_.get<PropId::OfxParamPropHint>(0);
+    const char* hint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHint>(0, error_if_missing);
     }
 
-    const char* scriptName() const {
-        return props_.get<PropId::OfxParamPropScriptName>(0);
+    const char* scriptName(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropScriptName>(0, error_if_missing);
     }
 
-    const char* parent() const {
-        return props_.get<PropId::OfxParamPropParent>(0);
+    const char* parent(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParent>(0, error_if_missing);
     }
 
-    bool enabled() const {
-        return props_.get<PropId::OfxParamPropEnabled>(0);
+    bool enabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEnabled>(0, error_if_missing);
     }
 
-    void* dataPtr() const {
-        return props_.get<PropId::OfxParamPropDataPtr>(0);
+    void* dataPtr(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
         return props_.getAll<PropId::OfxPropIcon>();
     }
 
-    void* interactV1() const {
-        return props_.get<PropId::OfxParamPropInteractV1>(0);
+    void* interactV1(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractV1>(0, error_if_missing);
     }
 
     std::array<double, 2> interactSize() const {
         return props_.getAll<PropId::OfxParamPropInteractSize>();
     }
 
-    double interactSizeAspect() const {
-        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0);
+    double interactSizeAspect(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0, error_if_missing);
     }
 
     std::array<double, 2> interactMinimumSize() const {
@@ -941,18 +2429,18 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0);
+    bool hasHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
     }
 
-    bool useHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0);
+    bool useHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0, error_if_missing);
     }
 
     // Multi-type property (supports: int, double, string, pointer)
     template<typename T>
-    T default(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDefault, T>(index);
+    T default(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDefault, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -960,42 +2448,44 @@ public:
         return props_.getAll<PropId::OfxParamPropDefault, T>();
     }
 
-    bool animates() const {
-        return props_.get<PropId::OfxParamPropAnimates>(0);
+    bool animates(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropAnimates>(0, error_if_missing);
     }
 
-    void setIsAnimating(bool value) {
-        props_.set<PropId::OfxParamPropIsAnimating>(value, 0);
+    ParamsByte& setIsAnimating(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAnimating>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setIsAutoKeying(bool value) {
-        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0);
+    ParamsByte& setIsAutoKeying(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0, error_if_missing);
+        return *this;
     }
 
-    bool persistant() const {
-        return props_.get<PropId::OfxParamPropPersistant>(0);
+    bool persistant(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPersistant>(0, error_if_missing);
     }
 
-    bool evaluateOnChange() const {
-        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0);
+    bool evaluateOnChange(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0, error_if_missing);
     }
 
-    bool pluginMayWrite() const {
-        return props_.get<PropId::OfxParamPropPluginMayWrite>(0);
+    bool pluginMayWrite(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPluginMayWrite>(0, error_if_missing);
     }
 
-    const char* cacheInvalidation() const {
-        return props_.get<PropId::OfxParamPropCacheInvalidation>(0);
+    const char* cacheInvalidation(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCacheInvalidation>(0, error_if_missing);
     }
 
-    bool canUndo() const {
-        return props_.get<PropId::OfxParamPropCanUndo>(0);
+    bool canUndo(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCanUndo>(0, error_if_missing);
     }
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T min(int index = 0) const {
-        return props_.get<PropId::OfxParamPropMin, T>(index);
+    T min(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMin, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1005,8 +2495,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T max(int index = 0) const {
-        return props_.get<PropId::OfxParamPropMax, T>(index);
+    T max(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMax, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1016,8 +2506,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T displayMin(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDisplayMin, T>(index);
+    T displayMin(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMin, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1027,8 +2517,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T displayMax(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDisplayMax, T>(index);
+    T displayMax(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMax, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1043,72 +2533,72 @@ class ParamsChoice : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    const char* choiceOption(int index = 0) const {
-        return props_.get<PropId::OfxParamPropChoiceOption>(index);
+    const char* choiceOption(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropChoiceOption>(index, error_if_missing);
     }
 
-    int choiceOrder(int index = 0) const {
-        return props_.get<PropId::OfxParamPropChoiceOrder>(index);
+    int choiceOrder(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropChoiceOrder>(index, error_if_missing);
     }
 
-    const char* type() const {
-        return props_.get<PropId::OfxPropType>(0);
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
     }
 
-    const char* name() const {
-        return props_.get<PropId::OfxPropName>(0);
+    const char* name(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropName>(0, error_if_missing);
     }
 
-    const char* label() const {
-        return props_.get<PropId::OfxPropLabel>(0);
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
     }
 
-    const char* shortLabel() const {
-        return props_.get<PropId::OfxPropShortLabel>(0);
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
     }
 
-    const char* longLabel() const {
-        return props_.get<PropId::OfxPropLongLabel>(0);
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
     }
 
-    bool secret() const {
-        return props_.get<PropId::OfxParamPropSecret>(0);
+    bool secret(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropSecret>(0, error_if_missing);
     }
 
-    const char* hint() const {
-        return props_.get<PropId::OfxParamPropHint>(0);
+    const char* hint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHint>(0, error_if_missing);
     }
 
-    const char* scriptName() const {
-        return props_.get<PropId::OfxParamPropScriptName>(0);
+    const char* scriptName(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropScriptName>(0, error_if_missing);
     }
 
-    const char* parent() const {
-        return props_.get<PropId::OfxParamPropParent>(0);
+    const char* parent(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParent>(0, error_if_missing);
     }
 
-    bool enabled() const {
-        return props_.get<PropId::OfxParamPropEnabled>(0);
+    bool enabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEnabled>(0, error_if_missing);
     }
 
-    void* dataPtr() const {
-        return props_.get<PropId::OfxParamPropDataPtr>(0);
+    void* dataPtr(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
         return props_.getAll<PropId::OfxPropIcon>();
     }
 
-    void* interactV1() const {
-        return props_.get<PropId::OfxParamPropInteractV1>(0);
+    void* interactV1(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractV1>(0, error_if_missing);
     }
 
     std::array<double, 2> interactSize() const {
         return props_.getAll<PropId::OfxParamPropInteractSize>();
     }
 
-    double interactSizeAspect() const {
-        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0);
+    double interactSizeAspect(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0, error_if_missing);
     }
 
     std::array<double, 2> interactMinimumSize() const {
@@ -1119,18 +2609,18 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0);
+    bool hasHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
     }
 
-    bool useHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0);
+    bool useHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0, error_if_missing);
     }
 
     // Multi-type property (supports: int, double, string, pointer)
     template<typename T>
-    T default(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDefault, T>(index);
+    T default(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDefault, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1138,36 +2628,38 @@ public:
         return props_.getAll<PropId::OfxParamPropDefault, T>();
     }
 
-    bool animates() const {
-        return props_.get<PropId::OfxParamPropAnimates>(0);
+    bool animates(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropAnimates>(0, error_if_missing);
     }
 
-    void setIsAnimating(bool value) {
-        props_.set<PropId::OfxParamPropIsAnimating>(value, 0);
+    ParamsChoice& setIsAnimating(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAnimating>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setIsAutoKeying(bool value) {
-        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0);
+    ParamsChoice& setIsAutoKeying(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0, error_if_missing);
+        return *this;
     }
 
-    bool persistant() const {
-        return props_.get<PropId::OfxParamPropPersistant>(0);
+    bool persistant(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPersistant>(0, error_if_missing);
     }
 
-    bool evaluateOnChange() const {
-        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0);
+    bool evaluateOnChange(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0, error_if_missing);
     }
 
-    bool pluginMayWrite() const {
-        return props_.get<PropId::OfxParamPropPluginMayWrite>(0);
+    bool pluginMayWrite(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPluginMayWrite>(0, error_if_missing);
     }
 
-    const char* cacheInvalidation() const {
-        return props_.get<PropId::OfxParamPropCacheInvalidation>(0);
+    const char* cacheInvalidation(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCacheInvalidation>(0, error_if_missing);
     }
 
-    bool canUndo() const {
-        return props_.get<PropId::OfxParamPropCanUndo>(0);
+    bool canUndo(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCanUndo>(0, error_if_missing);
     }
 
 };
@@ -1177,68 +2669,68 @@ class ParamsCustom : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    void* customCallbackV1() const {
-        return props_.get<PropId::OfxParamPropCustomCallbackV1>(0);
+    void* customCallbackV1(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCustomCallbackV1>(0, error_if_missing);
     }
 
-    const char* type() const {
-        return props_.get<PropId::OfxPropType>(0);
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
     }
 
-    const char* name() const {
-        return props_.get<PropId::OfxPropName>(0);
+    const char* name(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropName>(0, error_if_missing);
     }
 
-    const char* label() const {
-        return props_.get<PropId::OfxPropLabel>(0);
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
     }
 
-    const char* shortLabel() const {
-        return props_.get<PropId::OfxPropShortLabel>(0);
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
     }
 
-    const char* longLabel() const {
-        return props_.get<PropId::OfxPropLongLabel>(0);
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
     }
 
-    bool secret() const {
-        return props_.get<PropId::OfxParamPropSecret>(0);
+    bool secret(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropSecret>(0, error_if_missing);
     }
 
-    const char* hint() const {
-        return props_.get<PropId::OfxParamPropHint>(0);
+    const char* hint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHint>(0, error_if_missing);
     }
 
-    const char* scriptName() const {
-        return props_.get<PropId::OfxParamPropScriptName>(0);
+    const char* scriptName(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropScriptName>(0, error_if_missing);
     }
 
-    const char* parent() const {
-        return props_.get<PropId::OfxParamPropParent>(0);
+    const char* parent(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParent>(0, error_if_missing);
     }
 
-    bool enabled() const {
-        return props_.get<PropId::OfxParamPropEnabled>(0);
+    bool enabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEnabled>(0, error_if_missing);
     }
 
-    void* dataPtr() const {
-        return props_.get<PropId::OfxParamPropDataPtr>(0);
+    void* dataPtr(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
         return props_.getAll<PropId::OfxPropIcon>();
     }
 
-    void* interactV1() const {
-        return props_.get<PropId::OfxParamPropInteractV1>(0);
+    void* interactV1(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractV1>(0, error_if_missing);
     }
 
     std::array<double, 2> interactSize() const {
         return props_.getAll<PropId::OfxParamPropInteractSize>();
     }
 
-    double interactSizeAspect() const {
-        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0);
+    double interactSizeAspect(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0, error_if_missing);
     }
 
     std::array<double, 2> interactMinimumSize() const {
@@ -1249,18 +2741,18 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0);
+    bool hasHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
     }
 
-    bool useHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0);
+    bool useHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0, error_if_missing);
     }
 
     // Multi-type property (supports: int, double, string, pointer)
     template<typename T>
-    T default(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDefault, T>(index);
+    T default(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDefault, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1268,36 +2760,38 @@ public:
         return props_.getAll<PropId::OfxParamPropDefault, T>();
     }
 
-    bool animates() const {
-        return props_.get<PropId::OfxParamPropAnimates>(0);
+    bool animates(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropAnimates>(0, error_if_missing);
     }
 
-    void setIsAnimating(bool value) {
-        props_.set<PropId::OfxParamPropIsAnimating>(value, 0);
+    ParamsCustom& setIsAnimating(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAnimating>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setIsAutoKeying(bool value) {
-        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0);
+    ParamsCustom& setIsAutoKeying(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0, error_if_missing);
+        return *this;
     }
 
-    bool persistant() const {
-        return props_.get<PropId::OfxParamPropPersistant>(0);
+    bool persistant(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPersistant>(0, error_if_missing);
     }
 
-    bool evaluateOnChange() const {
-        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0);
+    bool evaluateOnChange(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0, error_if_missing);
     }
 
-    bool pluginMayWrite() const {
-        return props_.get<PropId::OfxParamPropPluginMayWrite>(0);
+    bool pluginMayWrite(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPluginMayWrite>(0, error_if_missing);
     }
 
-    const char* cacheInvalidation() const {
-        return props_.get<PropId::OfxParamPropCacheInvalidation>(0);
+    const char* cacheInvalidation(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCacheInvalidation>(0, error_if_missing);
     }
 
-    bool canUndo() const {
-        return props_.get<PropId::OfxParamPropCanUndo>(0);
+    bool canUndo(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCanUndo>(0, error_if_missing);
     }
 
 };
@@ -1307,68 +2801,68 @@ class ParamsDouble2D3D : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    const char* doubleType() const {
-        return props_.get<PropId::OfxParamPropDoubleType>(0);
+    const char* doubleType(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDoubleType>(0, error_if_missing);
     }
 
-    const char* type() const {
-        return props_.get<PropId::OfxPropType>(0);
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
     }
 
-    const char* name() const {
-        return props_.get<PropId::OfxPropName>(0);
+    const char* name(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropName>(0, error_if_missing);
     }
 
-    const char* label() const {
-        return props_.get<PropId::OfxPropLabel>(0);
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
     }
 
-    const char* shortLabel() const {
-        return props_.get<PropId::OfxPropShortLabel>(0);
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
     }
 
-    const char* longLabel() const {
-        return props_.get<PropId::OfxPropLongLabel>(0);
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
     }
 
-    bool secret() const {
-        return props_.get<PropId::OfxParamPropSecret>(0);
+    bool secret(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropSecret>(0, error_if_missing);
     }
 
-    const char* hint() const {
-        return props_.get<PropId::OfxParamPropHint>(0);
+    const char* hint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHint>(0, error_if_missing);
     }
 
-    const char* scriptName() const {
-        return props_.get<PropId::OfxParamPropScriptName>(0);
+    const char* scriptName(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropScriptName>(0, error_if_missing);
     }
 
-    const char* parent() const {
-        return props_.get<PropId::OfxParamPropParent>(0);
+    const char* parent(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParent>(0, error_if_missing);
     }
 
-    bool enabled() const {
-        return props_.get<PropId::OfxParamPropEnabled>(0);
+    bool enabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEnabled>(0, error_if_missing);
     }
 
-    void* dataPtr() const {
-        return props_.get<PropId::OfxParamPropDataPtr>(0);
+    void* dataPtr(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
         return props_.getAll<PropId::OfxPropIcon>();
     }
 
-    void* interactV1() const {
-        return props_.get<PropId::OfxParamPropInteractV1>(0);
+    void* interactV1(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractV1>(0, error_if_missing);
     }
 
     std::array<double, 2> interactSize() const {
         return props_.getAll<PropId::OfxParamPropInteractSize>();
     }
 
-    double interactSizeAspect() const {
-        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0);
+    double interactSizeAspect(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0, error_if_missing);
     }
 
     std::array<double, 2> interactMinimumSize() const {
@@ -1379,18 +2873,18 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0);
+    bool hasHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
     }
 
-    bool useHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0);
+    bool useHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0, error_if_missing);
     }
 
     // Multi-type property (supports: int, double, string, pointer)
     template<typename T>
-    T default(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDefault, T>(index);
+    T default(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDefault, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1398,42 +2892,44 @@ public:
         return props_.getAll<PropId::OfxParamPropDefault, T>();
     }
 
-    bool animates() const {
-        return props_.get<PropId::OfxParamPropAnimates>(0);
+    bool animates(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropAnimates>(0, error_if_missing);
     }
 
-    void setIsAnimating(bool value) {
-        props_.set<PropId::OfxParamPropIsAnimating>(value, 0);
+    ParamsDouble2D3D& setIsAnimating(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAnimating>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setIsAutoKeying(bool value) {
-        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0);
+    ParamsDouble2D3D& setIsAutoKeying(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0, error_if_missing);
+        return *this;
     }
 
-    bool persistant() const {
-        return props_.get<PropId::OfxParamPropPersistant>(0);
+    bool persistant(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPersistant>(0, error_if_missing);
     }
 
-    bool evaluateOnChange() const {
-        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0);
+    bool evaluateOnChange(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0, error_if_missing);
     }
 
-    bool pluginMayWrite() const {
-        return props_.get<PropId::OfxParamPropPluginMayWrite>(0);
+    bool pluginMayWrite(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPluginMayWrite>(0, error_if_missing);
     }
 
-    const char* cacheInvalidation() const {
-        return props_.get<PropId::OfxParamPropCacheInvalidation>(0);
+    const char* cacheInvalidation(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCacheInvalidation>(0, error_if_missing);
     }
 
-    bool canUndo() const {
-        return props_.get<PropId::OfxParamPropCanUndo>(0);
+    bool canUndo(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCanUndo>(0, error_if_missing);
     }
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T min(int index = 0) const {
-        return props_.get<PropId::OfxParamPropMin, T>(index);
+    T min(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMin, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1443,8 +2939,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T max(int index = 0) const {
-        return props_.get<PropId::OfxParamPropMax, T>(index);
+    T max(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMax, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1454,8 +2950,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T displayMin(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDisplayMin, T>(index);
+    T displayMin(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMin, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1465,8 +2961,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T displayMax(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDisplayMax, T>(index);
+    T displayMax(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMax, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1474,12 +2970,12 @@ public:
         return props_.getAll<PropId::OfxParamPropDisplayMax, T>();
     }
 
-    double increment() const {
-        return props_.get<PropId::OfxParamPropIncrement>(0);
+    double increment(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropIncrement>(0, error_if_missing);
     }
 
-    int digits() const {
-        return props_.get<PropId::OfxParamPropDigits>(0);
+    int digits(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDigits>(0, error_if_missing);
     }
 
 };
@@ -1489,52 +2985,52 @@ class ParamsGroup : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    bool groupOpen() const {
-        return props_.get<PropId::OfxParamPropGroupOpen>(0);
+    bool groupOpen(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropGroupOpen>(0, error_if_missing);
     }
 
-    const char* type() const {
-        return props_.get<PropId::OfxPropType>(0);
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
     }
 
-    const char* name() const {
-        return props_.get<PropId::OfxPropName>(0);
+    const char* name(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropName>(0, error_if_missing);
     }
 
-    const char* label() const {
-        return props_.get<PropId::OfxPropLabel>(0);
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
     }
 
-    const char* shortLabel() const {
-        return props_.get<PropId::OfxPropShortLabel>(0);
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
     }
 
-    const char* longLabel() const {
-        return props_.get<PropId::OfxPropLongLabel>(0);
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
     }
 
-    bool secret() const {
-        return props_.get<PropId::OfxParamPropSecret>(0);
+    bool secret(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropSecret>(0, error_if_missing);
     }
 
-    const char* hint() const {
-        return props_.get<PropId::OfxParamPropHint>(0);
+    const char* hint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHint>(0, error_if_missing);
     }
 
-    const char* scriptName() const {
-        return props_.get<PropId::OfxParamPropScriptName>(0);
+    const char* scriptName(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropScriptName>(0, error_if_missing);
     }
 
-    const char* parent() const {
-        return props_.get<PropId::OfxParamPropParent>(0);
+    const char* parent(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParent>(0, error_if_missing);
     }
 
-    bool enabled() const {
-        return props_.get<PropId::OfxParamPropEnabled>(0);
+    bool enabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEnabled>(0, error_if_missing);
     }
 
-    void* dataPtr() const {
-        return props_.get<PropId::OfxParamPropDataPtr>(0);
+    void* dataPtr(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
@@ -1548,68 +3044,68 @@ class ParamsInt2D3D : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    const char* dimensionLabel() const {
-        return props_.get<PropId::OfxParamPropDimensionLabel>(0);
+    const char* dimensionLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDimensionLabel>(0, error_if_missing);
     }
 
-    const char* type() const {
-        return props_.get<PropId::OfxPropType>(0);
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
     }
 
-    const char* name() const {
-        return props_.get<PropId::OfxPropName>(0);
+    const char* name(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropName>(0, error_if_missing);
     }
 
-    const char* label() const {
-        return props_.get<PropId::OfxPropLabel>(0);
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
     }
 
-    const char* shortLabel() const {
-        return props_.get<PropId::OfxPropShortLabel>(0);
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
     }
 
-    const char* longLabel() const {
-        return props_.get<PropId::OfxPropLongLabel>(0);
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
     }
 
-    bool secret() const {
-        return props_.get<PropId::OfxParamPropSecret>(0);
+    bool secret(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropSecret>(0, error_if_missing);
     }
 
-    const char* hint() const {
-        return props_.get<PropId::OfxParamPropHint>(0);
+    const char* hint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHint>(0, error_if_missing);
     }
 
-    const char* scriptName() const {
-        return props_.get<PropId::OfxParamPropScriptName>(0);
+    const char* scriptName(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropScriptName>(0, error_if_missing);
     }
 
-    const char* parent() const {
-        return props_.get<PropId::OfxParamPropParent>(0);
+    const char* parent(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParent>(0, error_if_missing);
     }
 
-    bool enabled() const {
-        return props_.get<PropId::OfxParamPropEnabled>(0);
+    bool enabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEnabled>(0, error_if_missing);
     }
 
-    void* dataPtr() const {
-        return props_.get<PropId::OfxParamPropDataPtr>(0);
+    void* dataPtr(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
         return props_.getAll<PropId::OfxPropIcon>();
     }
 
-    void* interactV1() const {
-        return props_.get<PropId::OfxParamPropInteractV1>(0);
+    void* interactV1(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractV1>(0, error_if_missing);
     }
 
     std::array<double, 2> interactSize() const {
         return props_.getAll<PropId::OfxParamPropInteractSize>();
     }
 
-    double interactSizeAspect() const {
-        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0);
+    double interactSizeAspect(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0, error_if_missing);
     }
 
     std::array<double, 2> interactMinimumSize() const {
@@ -1620,18 +3116,18 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0);
+    bool hasHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
     }
 
-    bool useHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0);
+    bool useHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0, error_if_missing);
     }
 
     // Multi-type property (supports: int, double, string, pointer)
     template<typename T>
-    T default(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDefault, T>(index);
+    T default(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDefault, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1639,42 +3135,44 @@ public:
         return props_.getAll<PropId::OfxParamPropDefault, T>();
     }
 
-    bool animates() const {
-        return props_.get<PropId::OfxParamPropAnimates>(0);
+    bool animates(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropAnimates>(0, error_if_missing);
     }
 
-    void setIsAnimating(bool value) {
-        props_.set<PropId::OfxParamPropIsAnimating>(value, 0);
+    ParamsInt2D3D& setIsAnimating(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAnimating>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setIsAutoKeying(bool value) {
-        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0);
+    ParamsInt2D3D& setIsAutoKeying(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0, error_if_missing);
+        return *this;
     }
 
-    bool persistant() const {
-        return props_.get<PropId::OfxParamPropPersistant>(0);
+    bool persistant(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPersistant>(0, error_if_missing);
     }
 
-    bool evaluateOnChange() const {
-        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0);
+    bool evaluateOnChange(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0, error_if_missing);
     }
 
-    bool pluginMayWrite() const {
-        return props_.get<PropId::OfxParamPropPluginMayWrite>(0);
+    bool pluginMayWrite(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPluginMayWrite>(0, error_if_missing);
     }
 
-    const char* cacheInvalidation() const {
-        return props_.get<PropId::OfxParamPropCacheInvalidation>(0);
+    const char* cacheInvalidation(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCacheInvalidation>(0, error_if_missing);
     }
 
-    bool canUndo() const {
-        return props_.get<PropId::OfxParamPropCanUndo>(0);
+    bool canUndo(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCanUndo>(0, error_if_missing);
     }
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T min(int index = 0) const {
-        return props_.get<PropId::OfxParamPropMin, T>(index);
+    T min(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMin, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1684,8 +3182,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T max(int index = 0) const {
-        return props_.get<PropId::OfxParamPropMax, T>(index);
+    T max(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMax, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1695,8 +3193,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T displayMin(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDisplayMin, T>(index);
+    T displayMin(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMin, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1706,8 +3204,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T displayMax(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDisplayMax, T>(index);
+    T displayMax(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMax, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1722,68 +3220,68 @@ class ParamsNormalizedSpatial : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    const char* defaultCoordinateSystem() const {
-        return props_.get<PropId::OfxParamPropDefaultCoordinateSystem>(0);
+    const char* defaultCoordinateSystem(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDefaultCoordinateSystem>(0, error_if_missing);
     }
 
-    const char* type() const {
-        return props_.get<PropId::OfxPropType>(0);
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
     }
 
-    const char* name() const {
-        return props_.get<PropId::OfxPropName>(0);
+    const char* name(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropName>(0, error_if_missing);
     }
 
-    const char* label() const {
-        return props_.get<PropId::OfxPropLabel>(0);
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
     }
 
-    const char* shortLabel() const {
-        return props_.get<PropId::OfxPropShortLabel>(0);
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
     }
 
-    const char* longLabel() const {
-        return props_.get<PropId::OfxPropLongLabel>(0);
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
     }
 
-    bool secret() const {
-        return props_.get<PropId::OfxParamPropSecret>(0);
+    bool secret(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropSecret>(0, error_if_missing);
     }
 
-    const char* hint() const {
-        return props_.get<PropId::OfxParamPropHint>(0);
+    const char* hint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHint>(0, error_if_missing);
     }
 
-    const char* scriptName() const {
-        return props_.get<PropId::OfxParamPropScriptName>(0);
+    const char* scriptName(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropScriptName>(0, error_if_missing);
     }
 
-    const char* parent() const {
-        return props_.get<PropId::OfxParamPropParent>(0);
+    const char* parent(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParent>(0, error_if_missing);
     }
 
-    bool enabled() const {
-        return props_.get<PropId::OfxParamPropEnabled>(0);
+    bool enabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEnabled>(0, error_if_missing);
     }
 
-    void* dataPtr() const {
-        return props_.get<PropId::OfxParamPropDataPtr>(0);
+    void* dataPtr(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
         return props_.getAll<PropId::OfxPropIcon>();
     }
 
-    void* interactV1() const {
-        return props_.get<PropId::OfxParamPropInteractV1>(0);
+    void* interactV1(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractV1>(0, error_if_missing);
     }
 
     std::array<double, 2> interactSize() const {
         return props_.getAll<PropId::OfxParamPropInteractSize>();
     }
 
-    double interactSizeAspect() const {
-        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0);
+    double interactSizeAspect(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0, error_if_missing);
     }
 
     std::array<double, 2> interactMinimumSize() const {
@@ -1794,18 +3292,18 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0);
+    bool hasHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
     }
 
-    bool useHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0);
+    bool useHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0, error_if_missing);
     }
 
     // Multi-type property (supports: int, double, string, pointer)
     template<typename T>
-    T default(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDefault, T>(index);
+    T default(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDefault, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1813,42 +3311,44 @@ public:
         return props_.getAll<PropId::OfxParamPropDefault, T>();
     }
 
-    bool animates() const {
-        return props_.get<PropId::OfxParamPropAnimates>(0);
+    bool animates(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropAnimates>(0, error_if_missing);
     }
 
-    void setIsAnimating(bool value) {
-        props_.set<PropId::OfxParamPropIsAnimating>(value, 0);
+    ParamsNormalizedSpatial& setIsAnimating(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAnimating>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setIsAutoKeying(bool value) {
-        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0);
+    ParamsNormalizedSpatial& setIsAutoKeying(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0, error_if_missing);
+        return *this;
     }
 
-    bool persistant() const {
-        return props_.get<PropId::OfxParamPropPersistant>(0);
+    bool persistant(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPersistant>(0, error_if_missing);
     }
 
-    bool evaluateOnChange() const {
-        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0);
+    bool evaluateOnChange(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0, error_if_missing);
     }
 
-    bool pluginMayWrite() const {
-        return props_.get<PropId::OfxParamPropPluginMayWrite>(0);
+    bool pluginMayWrite(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPluginMayWrite>(0, error_if_missing);
     }
 
-    const char* cacheInvalidation() const {
-        return props_.get<PropId::OfxParamPropCacheInvalidation>(0);
+    const char* cacheInvalidation(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCacheInvalidation>(0, error_if_missing);
     }
 
-    bool canUndo() const {
-        return props_.get<PropId::OfxParamPropCanUndo>(0);
+    bool canUndo(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCanUndo>(0, error_if_missing);
     }
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T min(int index = 0) const {
-        return props_.get<PropId::OfxParamPropMin, T>(index);
+    T min(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMin, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1858,8 +3358,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T max(int index = 0) const {
-        return props_.get<PropId::OfxParamPropMax, T>(index);
+    T max(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMax, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1869,8 +3369,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T displayMin(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDisplayMin, T>(index);
+    T displayMin(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMin, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1880,8 +3380,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T displayMax(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDisplayMax, T>(index);
+    T displayMax(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMax, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -1889,12 +3389,12 @@ public:
         return props_.getAll<PropId::OfxParamPropDisplayMax, T>();
     }
 
-    double increment() const {
-        return props_.get<PropId::OfxParamPropIncrement>(0);
+    double increment(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropIncrement>(0, error_if_missing);
     }
 
-    int digits() const {
-        return props_.get<PropId::OfxParamPropDigits>(0);
+    int digits(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDigits>(0, error_if_missing);
     }
 
 };
@@ -1904,52 +3404,52 @@ class ParamsPage : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    const char* pageChild(int index = 0) const {
-        return props_.get<PropId::OfxParamPropPageChild>(index);
+    const char* pageChild(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPageChild>(index, error_if_missing);
     }
 
-    const char* type() const {
-        return props_.get<PropId::OfxPropType>(0);
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
     }
 
-    const char* name() const {
-        return props_.get<PropId::OfxPropName>(0);
+    const char* name(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropName>(0, error_if_missing);
     }
 
-    const char* label() const {
-        return props_.get<PropId::OfxPropLabel>(0);
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
     }
 
-    const char* shortLabel() const {
-        return props_.get<PropId::OfxPropShortLabel>(0);
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
     }
 
-    const char* longLabel() const {
-        return props_.get<PropId::OfxPropLongLabel>(0);
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
     }
 
-    bool secret() const {
-        return props_.get<PropId::OfxParamPropSecret>(0);
+    bool secret(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropSecret>(0, error_if_missing);
     }
 
-    const char* hint() const {
-        return props_.get<PropId::OfxParamPropHint>(0);
+    const char* hint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHint>(0, error_if_missing);
     }
 
-    const char* scriptName() const {
-        return props_.get<PropId::OfxParamPropScriptName>(0);
+    const char* scriptName(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropScriptName>(0, error_if_missing);
     }
 
-    const char* parent() const {
-        return props_.get<PropId::OfxParamPropParent>(0);
+    const char* parent(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParent>(0, error_if_missing);
     }
 
-    bool enabled() const {
-        return props_.get<PropId::OfxParamPropEnabled>(0);
+    bool enabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEnabled>(0, error_if_missing);
     }
 
-    void* dataPtr() const {
-        return props_.get<PropId::OfxParamPropDataPtr>(0);
+    void* dataPtr(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
@@ -1963,112 +3463,112 @@ class ParamsParametric : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    bool animates() const {
-        return props_.get<PropId::OfxParamPropAnimates>(0);
+    bool animates(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropAnimates>(0, error_if_missing);
     }
 
-    bool isAnimating() const {
-        return props_.get<PropId::OfxParamPropIsAnimating>(0);
+    bool isAnimating(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropIsAnimating>(0, error_if_missing);
     }
 
-    bool isAutoKeying() const {
-        return props_.get<PropId::OfxParamPropIsAutoKeying>(0);
+    bool isAutoKeying(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropIsAutoKeying>(0, error_if_missing);
     }
 
-    bool persistant() const {
-        return props_.get<PropId::OfxParamPropPersistant>(0);
+    bool persistant(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPersistant>(0, error_if_missing);
     }
 
-    bool evaluateOnChange() const {
-        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0);
+    bool evaluateOnChange(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0, error_if_missing);
     }
 
-    bool pluginMayWrite() const {
-        return props_.get<PropId::OfxParamPropPluginMayWrite>(0);
+    bool pluginMayWrite(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPluginMayWrite>(0, error_if_missing);
     }
 
-    const char* cacheInvalidation() const {
-        return props_.get<PropId::OfxParamPropCacheInvalidation>(0);
+    const char* cacheInvalidation(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCacheInvalidation>(0, error_if_missing);
     }
 
-    bool canUndo() const {
-        return props_.get<PropId::OfxParamPropCanUndo>(0);
+    bool canUndo(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCanUndo>(0, error_if_missing);
     }
 
-    int parametricDimension() const {
-        return props_.get<PropId::OfxParamPropParametricDimension>(0);
+    int parametricDimension(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParametricDimension>(0, error_if_missing);
     }
 
-    double parametricUIColour(int index = 0) const {
-        return props_.get<PropId::OfxParamPropParametricUIColour>(index);
+    double parametricUIColour(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParametricUIColour>(index, error_if_missing);
     }
 
-    void* parametricInteractBackground() const {
-        return props_.get<PropId::OfxParamPropParametricInteractBackground>(0);
+    void* parametricInteractBackground(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParametricInteractBackground>(0, error_if_missing);
     }
 
     std::array<double, 2> parametricRange() const {
         return props_.getAll<PropId::OfxParamPropParametricRange>();
     }
 
-    const char* type() const {
-        return props_.get<PropId::OfxPropType>(0);
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
     }
 
-    const char* name() const {
-        return props_.get<PropId::OfxPropName>(0);
+    const char* name(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropName>(0, error_if_missing);
     }
 
-    const char* label() const {
-        return props_.get<PropId::OfxPropLabel>(0);
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
     }
 
-    const char* shortLabel() const {
-        return props_.get<PropId::OfxPropShortLabel>(0);
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
     }
 
-    const char* longLabel() const {
-        return props_.get<PropId::OfxPropLongLabel>(0);
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
     }
 
-    bool secret() const {
-        return props_.get<PropId::OfxParamPropSecret>(0);
+    bool secret(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropSecret>(0, error_if_missing);
     }
 
-    const char* hint() const {
-        return props_.get<PropId::OfxParamPropHint>(0);
+    const char* hint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHint>(0, error_if_missing);
     }
 
-    const char* scriptName() const {
-        return props_.get<PropId::OfxParamPropScriptName>(0);
+    const char* scriptName(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropScriptName>(0, error_if_missing);
     }
 
-    const char* parent() const {
-        return props_.get<PropId::OfxParamPropParent>(0);
+    const char* parent(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParent>(0, error_if_missing);
     }
 
-    bool enabled() const {
-        return props_.get<PropId::OfxParamPropEnabled>(0);
+    bool enabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEnabled>(0, error_if_missing);
     }
 
-    void* dataPtr() const {
-        return props_.get<PropId::OfxParamPropDataPtr>(0);
+    void* dataPtr(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
         return props_.getAll<PropId::OfxPropIcon>();
     }
 
-    void* interactV1() const {
-        return props_.get<PropId::OfxParamPropInteractV1>(0);
+    void* interactV1(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractV1>(0, error_if_missing);
     }
 
     std::array<double, 2> interactSize() const {
         return props_.getAll<PropId::OfxParamPropInteractSize>();
     }
 
-    double interactSizeAspect() const {
-        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0);
+    double interactSizeAspect(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0, error_if_missing);
     }
 
     std::array<double, 2> interactMinimumSize() const {
@@ -2079,18 +3579,18 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0);
+    bool hasHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
     }
 
-    bool useHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0);
+    bool useHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0, error_if_missing);
     }
 
     // Multi-type property (supports: int, double, string, pointer)
     template<typename T>
-    T default(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDefault, T>(index);
+    T default(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDefault, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -2105,72 +3605,72 @@ class ParamsStrChoice : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    const char* choiceOption(int index = 0) const {
-        return props_.get<PropId::OfxParamPropChoiceOption>(index);
+    const char* choiceOption(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropChoiceOption>(index, error_if_missing);
     }
 
-    bool choiceEnum() const {
-        return props_.get<PropId::OfxParamPropChoiceEnum>(0);
+    bool choiceEnum(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropChoiceEnum>(0, error_if_missing);
     }
 
-    const char* type() const {
-        return props_.get<PropId::OfxPropType>(0);
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
     }
 
-    const char* name() const {
-        return props_.get<PropId::OfxPropName>(0);
+    const char* name(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropName>(0, error_if_missing);
     }
 
-    const char* label() const {
-        return props_.get<PropId::OfxPropLabel>(0);
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
     }
 
-    const char* shortLabel() const {
-        return props_.get<PropId::OfxPropShortLabel>(0);
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
     }
 
-    const char* longLabel() const {
-        return props_.get<PropId::OfxPropLongLabel>(0);
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
     }
 
-    bool secret() const {
-        return props_.get<PropId::OfxParamPropSecret>(0);
+    bool secret(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropSecret>(0, error_if_missing);
     }
 
-    const char* hint() const {
-        return props_.get<PropId::OfxParamPropHint>(0);
+    const char* hint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHint>(0, error_if_missing);
     }
 
-    const char* scriptName() const {
-        return props_.get<PropId::OfxParamPropScriptName>(0);
+    const char* scriptName(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropScriptName>(0, error_if_missing);
     }
 
-    const char* parent() const {
-        return props_.get<PropId::OfxParamPropParent>(0);
+    const char* parent(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParent>(0, error_if_missing);
     }
 
-    bool enabled() const {
-        return props_.get<PropId::OfxParamPropEnabled>(0);
+    bool enabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEnabled>(0, error_if_missing);
     }
 
-    void* dataPtr() const {
-        return props_.get<PropId::OfxParamPropDataPtr>(0);
+    void* dataPtr(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
         return props_.getAll<PropId::OfxPropIcon>();
     }
 
-    void* interactV1() const {
-        return props_.get<PropId::OfxParamPropInteractV1>(0);
+    void* interactV1(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractV1>(0, error_if_missing);
     }
 
     std::array<double, 2> interactSize() const {
         return props_.getAll<PropId::OfxParamPropInteractSize>();
     }
 
-    double interactSizeAspect() const {
-        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0);
+    double interactSizeAspect(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0, error_if_missing);
     }
 
     std::array<double, 2> interactMinimumSize() const {
@@ -2181,18 +3681,18 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0);
+    bool hasHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
     }
 
-    bool useHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0);
+    bool useHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0, error_if_missing);
     }
 
     // Multi-type property (supports: int, double, string, pointer)
     template<typename T>
-    T default(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDefault, T>(index);
+    T default(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDefault, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -2200,36 +3700,38 @@ public:
         return props_.getAll<PropId::OfxParamPropDefault, T>();
     }
 
-    bool animates() const {
-        return props_.get<PropId::OfxParamPropAnimates>(0);
+    bool animates(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropAnimates>(0, error_if_missing);
     }
 
-    void setIsAnimating(bool value) {
-        props_.set<PropId::OfxParamPropIsAnimating>(value, 0);
+    ParamsStrChoice& setIsAnimating(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAnimating>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setIsAutoKeying(bool value) {
-        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0);
+    ParamsStrChoice& setIsAutoKeying(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0, error_if_missing);
+        return *this;
     }
 
-    bool persistant() const {
-        return props_.get<PropId::OfxParamPropPersistant>(0);
+    bool persistant(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPersistant>(0, error_if_missing);
     }
 
-    bool evaluateOnChange() const {
-        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0);
+    bool evaluateOnChange(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0, error_if_missing);
     }
 
-    bool pluginMayWrite() const {
-        return props_.get<PropId::OfxParamPropPluginMayWrite>(0);
+    bool pluginMayWrite(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPluginMayWrite>(0, error_if_missing);
     }
 
-    const char* cacheInvalidation() const {
-        return props_.get<PropId::OfxParamPropCacheInvalidation>(0);
+    const char* cacheInvalidation(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCacheInvalidation>(0, error_if_missing);
     }
 
-    bool canUndo() const {
-        return props_.get<PropId::OfxParamPropCanUndo>(0);
+    bool canUndo(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCanUndo>(0, error_if_missing);
     }
 
 };
@@ -2239,72 +3741,72 @@ class ParamsString : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    const char* stringMode() const {
-        return props_.get<PropId::OfxParamPropStringMode>(0);
+    const char* stringMode(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropStringMode>(0, error_if_missing);
     }
 
-    bool stringFilePathExists() const {
-        return props_.get<PropId::OfxParamPropStringFilePathExists>(0);
+    bool stringFilePathExists(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropStringFilePathExists>(0, error_if_missing);
     }
 
-    const char* type() const {
-        return props_.get<PropId::OfxPropType>(0);
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
     }
 
-    const char* name() const {
-        return props_.get<PropId::OfxPropName>(0);
+    const char* name(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropName>(0, error_if_missing);
     }
 
-    const char* label() const {
-        return props_.get<PropId::OfxPropLabel>(0);
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
     }
 
-    const char* shortLabel() const {
-        return props_.get<PropId::OfxPropShortLabel>(0);
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
     }
 
-    const char* longLabel() const {
-        return props_.get<PropId::OfxPropLongLabel>(0);
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
     }
 
-    bool secret() const {
-        return props_.get<PropId::OfxParamPropSecret>(0);
+    bool secret(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropSecret>(0, error_if_missing);
     }
 
-    const char* hint() const {
-        return props_.get<PropId::OfxParamPropHint>(0);
+    const char* hint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHint>(0, error_if_missing);
     }
 
-    const char* scriptName() const {
-        return props_.get<PropId::OfxParamPropScriptName>(0);
+    const char* scriptName(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropScriptName>(0, error_if_missing);
     }
 
-    const char* parent() const {
-        return props_.get<PropId::OfxParamPropParent>(0);
+    const char* parent(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParent>(0, error_if_missing);
     }
 
-    bool enabled() const {
-        return props_.get<PropId::OfxParamPropEnabled>(0);
+    bool enabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEnabled>(0, error_if_missing);
     }
 
-    void* dataPtr() const {
-        return props_.get<PropId::OfxParamPropDataPtr>(0);
+    void* dataPtr(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
         return props_.getAll<PropId::OfxPropIcon>();
     }
 
-    void* interactV1() const {
-        return props_.get<PropId::OfxParamPropInteractV1>(0);
+    void* interactV1(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractV1>(0, error_if_missing);
     }
 
     std::array<double, 2> interactSize() const {
         return props_.getAll<PropId::OfxParamPropInteractSize>();
     }
 
-    double interactSizeAspect() const {
-        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0);
+    double interactSizeAspect(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0, error_if_missing);
     }
 
     std::array<double, 2> interactMinimumSize() const {
@@ -2315,18 +3817,18 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0);
+    bool hasHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
     }
 
-    bool useHostOverlayHandle() const {
-        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0);
+    bool useHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0, error_if_missing);
     }
 
     // Multi-type property (supports: int, double, string, pointer)
     template<typename T>
-    T default(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDefault, T>(index);
+    T default(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDefault, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -2334,42 +3836,44 @@ public:
         return props_.getAll<PropId::OfxParamPropDefault, T>();
     }
 
-    bool animates() const {
-        return props_.get<PropId::OfxParamPropAnimates>(0);
+    bool animates(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropAnimates>(0, error_if_missing);
     }
 
-    void setIsAnimating(bool value) {
-        props_.set<PropId::OfxParamPropIsAnimating>(value, 0);
+    ParamsString& setIsAnimating(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAnimating>(value, 0, error_if_missing);
+        return *this;
     }
 
-    void setIsAutoKeying(bool value) {
-        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0);
+    ParamsString& setIsAutoKeying(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0, error_if_missing);
+        return *this;
     }
 
-    bool persistant() const {
-        return props_.get<PropId::OfxParamPropPersistant>(0);
+    bool persistant(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPersistant>(0, error_if_missing);
     }
 
-    bool evaluateOnChange() const {
-        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0);
+    bool evaluateOnChange(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0, error_if_missing);
     }
 
-    bool pluginMayWrite() const {
-        return props_.get<PropId::OfxParamPropPluginMayWrite>(0);
+    bool pluginMayWrite(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPluginMayWrite>(0, error_if_missing);
     }
 
-    const char* cacheInvalidation() const {
-        return props_.get<PropId::OfxParamPropCacheInvalidation>(0);
+    const char* cacheInvalidation(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCacheInvalidation>(0, error_if_missing);
     }
 
-    bool canUndo() const {
-        return props_.get<PropId::OfxParamPropCanUndo>(0);
+    bool canUndo(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCanUndo>(0, error_if_missing);
     }
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T min(int index = 0) const {
-        return props_.get<PropId::OfxParamPropMin, T>(index);
+    T min(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMin, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -2379,8 +3883,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T max(int index = 0) const {
-        return props_.get<PropId::OfxParamPropMax, T>(index);
+    T max(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMax, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -2390,8 +3894,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T displayMin(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDisplayMin, T>(index);
+    T displayMin(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMin, T>(index, error_if_missing);
     }
 
     template<typename T>
@@ -2401,8 +3905,8 @@ public:
 
     // Multi-type property (supports: int, double)
     template<typename T>
-    T displayMax(int index = 0) const {
-        return props_.get<PropId::OfxParamPropDisplayMax, T>(index);
+    T displayMax(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMax, T>(index, error_if_missing);
     }
 
     template<typename T>

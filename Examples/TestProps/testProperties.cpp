@@ -4,7 +4,7 @@
 /** @file testProperties.cpp OFX test plugin which logs all properties
     in various actions.
 
-    Uses spdlog and fmt to log all the info.
+    Uses openfx::Logger for logging.
 */
 #include "ofxImageEffect.h"
 #include "ofxMemory.h"
@@ -14,8 +14,8 @@
 #include "openfx/ofxPropsBySet.h"
 #include "openfx/ofxPropsMetadata.h"
 #include "openfx/ofxPropSetAccessors.h"  // Type-safe property set accessor classes
+#include "openfx/ofxLog.h"                 // OpenFX logging
 #include "../openfx-cpp/examples/host-specific-props/myhost/myhostPropsMetadata.h"  // Ensure example compiles
-#include "spdlog/spdlog.h"
 #include <map>    // stl maps
 #include <string> // stl strings
 #include <variant>
@@ -30,6 +30,9 @@
 #endif
 
 using namespace openfx; // for props access
+
+// Plugin identification
+static constexpr const char* kPluginName = "PropertyTester";
 
 static OfxHost *gHost;
 static OfxImageEffectSuiteV1 *gEffectSuite;
@@ -47,12 +50,10 @@ static const void *fetchSuite(const char *suiteName, int suiteVersion,
   const void *suite = gHost->fetchSuite(gHost->host, suiteName, suiteVersion);
   if (optional) {
     if (suite == 0)
-      spdlog::warn("Could not fetch the optional suite '{}' version {};",
-                   suiteName, suiteVersion);
+      Logger::warn("Could not fetch the optional suite '{}' version {}", suiteName, suiteVersion);
   } else {
     if (suite == 0)
-      spdlog::error("Could not fetch the mandatory suite '{}' version {};",
-                    suiteName, suiteVersion);
+      Logger::error("Could not fetch the mandatory suite '{}' version {}", suiteName, suiteVersion);
   }
   if (!optional && suite == 0)
     throw kOfxStatErrMissingHostFeature;
@@ -110,8 +111,13 @@ struct PropRecord {
   std::vector<PropValue> values;
 };
 
-void readProperty(PropertyAccessor &accessor, const PropDef &def,
+// Fills in values and returns true if property exists, false (and no values) otherwise
+bool readProperty(PropertyAccessor &accessor, const PropDef &def,
                   std::vector<PropValue> &values) {
+  if (!accessor.exists(def.name)) {
+    values.clear();
+    return false;
+  }
   int dimension = accessor.getDimensionRaw(def.name);
 
   values.clear();
@@ -140,7 +146,7 @@ void readProperty(PropertyAccessor &accessor, const PropDef &def,
           }
         }
         if (!valid) {
-          spdlog::warn("Property '{}' has invalid enum value '{}' (not in spec)",
+          Logger::warn("Property '{}' has invalid enum value '{}' (not in spec)",
                       def.name, strValue);
           // Log valid values for debugging
           std::string validValues;
@@ -148,13 +154,14 @@ void readProperty(PropertyAccessor &accessor, const PropDef &def,
             if (j > 0) validValues += ", ";
             validValues += def.enumValues[j];
           }
-          spdlog::warn("  Valid values are: {}", validValues);
+          Logger::warn("  Valid values are: {}", validValues);
         }
       }
     } else if (primaryType == PropType::Pointer) {
       values.push_back(accessor.getRaw<void *>(def.name, i));
     }
   }
+  return true;
 }
 
 std::vector<PropRecord> getAllPropertiesOfSet(PropertyAccessor &accessor,
@@ -164,7 +171,7 @@ std::vector<PropRecord> getAllPropertiesOfSet(PropertyAccessor &accessor,
   // Find the property set in the map
   auto setIt = prop_sets.find(propertySetName);
   if (setIt == prop_sets.end()) {
-    spdlog::error("Property set not found: {}", propertySetName);
+    Logger::error("Property set not found: {}", propertySetName);
     return {};
   }
 
@@ -172,8 +179,11 @@ std::vector<PropRecord> getAllPropertiesOfSet(PropertyAccessor &accessor,
   for (const auto &prop : setIt->second) {
     // Use template dispatch to get property with correct type
     std::vector<PropValue> values;
-    readProperty(accessor, prop.def, values);
-    result.push_back({prop.def, std::move(values)});
+    bool status = readProperty(accessor, prop.def, values);
+    if (status)
+      result.push_back({prop.def, std::move(values)});
+    else
+      Logger::warn("Property not found: {}.{}", propertySetName, prop.def.name);
   }
   return result;
 }
@@ -183,118 +193,185 @@ std::vector<PropRecord> getAllPropertiesOfSet(PropertyAccessor &accessor,
  */
 void logPropValues(const std::string_view setName,
                    const std::vector<PropRecord> &props) {
-  spdlog::info("Properties for {}:", setName);
+  Logger::info("Properties for {}", setName);
   for (const auto &[propDef, values] : props) {
-    // Build up the log string piecemeal
-    std::string buf;
-    fmt::format_to(std::back_inserter(buf), "  {} ({}d) = [", propDef.name,
-                   values.size());
+    // Build up the log string with property values
+    std::ostringstream buf;
+    buf << "  " << propDef.name << " (" << values.size() << "d) = [";
     for (size_t i = 0; i < values.size(); ++i) {
       std::visit(
           [&buf](auto &&value) {
             using T = std::decay_t<decltype(value)>;
             if constexpr (std::is_same_v<T, int>) {
-              fmt::format_to(std::back_inserter(buf), "{}", value);
+              buf << value;
             } else if constexpr (std::is_same_v<T, double>) {
-              fmt::format_to(std::back_inserter(buf), "{}", value);
+              buf << value;
             } else if constexpr (std::is_same_v<T, const char *>) {
-              fmt::format_to(std::back_inserter(buf), "{}", value);
+              buf << value;
             } else if constexpr (std::is_same_v<T, void *>) {
-              fmt::format_to(std::back_inserter(buf), "{:p}", value);
+              buf << value;
             }
           },
           values[i]);
       if (i < values.size() - 1)
-        fmt::format_to(std::back_inserter(buf), ",");
+        buf << ",";
     }
-    fmt::format_to(std::back_inserter(buf), "]");
+    buf << "]";
     // log it
-    spdlog::info("{}", buf);
+    Logger::info("{}", buf.str());
   }
 }
 
 /**
  * Test property set compliance - verify all properties in a property set are accessible
  * Returns number of failures
+ *
+ * Can test either:
+ * 1. Regular property sets: testPropertySetCompliance(accessor, "EffectDescriptor")
+ * 2. Action arguments: testPropertySetCompliance(accessor, kOfxActionRender, "inArgs")
  */
-int testPropertySetCompliance(PropertyAccessor &accessor, const char *propSetName) {
-  spdlog::info("========================================");
-  spdlog::info("Testing property set compliance: {}", propSetName);
-  spdlog::info("========================================");
+int testPropertySetCompliance(PropertyAccessor &accessor, const char *setName, const char *argType = nullptr) {
+  std::string testName;
+  std::vector<const char*> propNames;
+  std::vector<const PropDef*> propDefs;
+  std::vector<bool> propOptional;
 
-  // Find the property set
-  auto setIt = prop_sets.find(propSetName);
-  if (setIt == prop_sets.end()) {
-    spdlog::error("Property set '{}' not found in prop_sets", propSetName);
-    return 1;
+  if (argType == nullptr) {
+    // Testing a regular property set
+    testName = std::string(setName);
+    Logger::info("========================================");
+    Logger::info("Testing property set compliance: {}", testName);
+    Logger::info("========================================");
+
+    // Find the property set
+    auto setIt = prop_sets.find(setName);
+    if (setIt == prop_sets.end()) {
+      Logger::error("Property set '{}' not found in prop_sets", setName);
+      return 1;
+    }
+
+    // Build lists from prop_sets map
+    for (const auto &prop : setIt->second) {
+      propNames.push_back(prop.def.name);
+      propDefs.push_back(&prop.def);
+      propOptional.push_back(prop.host_optional);
+    }
+  } else {
+    // Testing action arguments
+    testName = std::string(setName) + "." + argType;
+    Logger::info("========================================");
+    Logger::info("Testing action argument compliance: {}", testName);
+    Logger::info("========================================");
+
+    // Find the action's property list
+    std::array<std::string_view, 2> key = {setName, argType};
+    auto setIt = action_props.find(key);
+    if (setIt == action_props.end()) {
+      Logger::error("Action argument '{}' not found in action_props", testName);
+      return 1;
+    }
+
+    // Build lists from action_props map
+    for (const char* propName : setIt->second) {
+      propNames.push_back(propName);
+
+      // Find property definition
+      auto propIt = std::find_if(prop_defs.data.begin(), prop_defs.data.end(),
+                                   [propName](const PropDef& def) {
+                                     return std::string_view(def.name) == std::string_view(propName);
+                                   });
+
+      if (propIt == prop_defs.data.end()) {
+        Logger::error("  ✗ {} - property definition not found", propName);
+        propDefs.push_back(nullptr);
+        propOptional.push_back(false);
+        continue;
+      }
+
+      propDefs.push_back(&(*propIt));
+      propOptional.push_back(false);  // Action args are typically not marked as optional
+    }
   }
 
+  // Test each property
   int totalProps = 0;
   int accessibleProps = 0;
   int requiredMissing = 0;
   int optionalMissing = 0;
   int typeErrors = 0;
 
-  // Test each property in the suite
-  for (const auto &prop : setIt->second) {
+  for (size_t i = 0; i < propNames.size(); ++i) {
     totalProps++;
-    const char* propName = prop.def.name;
+    const char* propName = propNames[i];
+    const PropDef* propDef = propDefs[i];
+    bool isOptional = propOptional[i];
+
+    if (propDef == nullptr) {
+      typeErrors++;
+      continue;
+    }
 
     try {
-      // Try to get dimension first (this will fail if property doesn't exist)
+      bool exists = accessor.exists(propName);
+      if (!exists)
+        throw openfx::PropertyNotFoundException(-1);
+
+      // Try to get dimension (this will fail if property doesn't exist)
       int dimension = accessor.getDimensionRaw(propName);
 
       // Verify dimension matches spec (0 means variable dimension)
-      if (prop.def.dimension != 0 && dimension != prop.def.dimension) {
-        spdlog::warn("  ✗ {} - dimension mismatch: expected {}, got {}",
-                    propName, prop.def.dimension, dimension);
+      if (propDef->dimension != 0 && dimension != propDef->dimension) {
+        Logger::warn("  ✗ {} - dimension mismatch: expected {}, got {}",
+                    propName, propDef->dimension, dimension);
       }
 
       // Try to read the property based on its type
       std::vector<PropValue> values;
       try {
-        readProperty(accessor, prop.def, values);
+        readProperty(accessor, *propDef, values);
         accessibleProps++;
 
         // For optional properties that are present, log them
-        if (prop.host_optional) {
-          spdlog::info("  ✓ {} - accessible (optional, dimension={})", propName, dimension);
-        } else {
-          spdlog::debug("  ✓ {} - accessible (dimension={})", propName, dimension);
+        if (isOptional) {
+          Logger::info("  ✓ {} - accessible (optional, dimension={})", propName, dimension);
         }
       } catch (const std::exception& e) {
         typeErrors++;
-        spdlog::error("  ✗ {} - type error: {}", propName, e.what());
+        Logger::error("  ✗ {} - type error: {}", propName, e.what());
       }
 
     } catch (...) {
       // Property not accessible
-      if (prop.host_optional) {
+      if (isOptional) {
         optionalMissing++;
-        spdlog::debug("  - {} - not present (optional)", propName);
+        // Silently skip optional missing properties
       } else {
         requiredMissing++;
-        spdlog::warn("  ✗ {} - NOT ACCESSIBLE (required!)", propName);
+        Logger::warn("  ✗ {} - NOT ACCESSIBLE{}", propName, argType ? "" : " (required!)");
       }
     }
   }
 
   // Summary
-  spdlog::info("----------------------------------------");
-  spdlog::info("Property set '{}' compliance results:", propSetName);
-  spdlog::info("  Total properties defined: {}", totalProps);
-  spdlog::info("  Accessible: {}", accessibleProps);
-  spdlog::info("  Required missing: {}", requiredMissing);
-  spdlog::info("  Optional missing: {}", optionalMissing);
-  spdlog::info("  Type errors: {}", typeErrors);
+  Logger::info("----------------------------------------");
+  Logger::info("'{}' compliance results:", testName);
+  Logger::info("  Total properties defined: {}", totalProps);
+  Logger::info("  Accessible: {}", accessibleProps);
+  if (argType == nullptr) {
+    Logger::info("  Required missing: {}", requiredMissing);
+    Logger::info("  Optional missing: {}", optionalMissing);
+  } else {
+    Logger::info("  Missing: {}", requiredMissing + optionalMissing);
+  }
+  Logger::info("  Type errors: {}", typeErrors);
 
   int failures = requiredMissing + typeErrors;
   if (failures == 0) {
-    spdlog::info("  ✓ COMPLIANCE TEST PASSED");
+    Logger::info("  ✓ COMPLIANCE TEST PASSED");
   } else {
-    spdlog::error("  ✗ COMPLIANCE TEST FAILED ({} issues)", failures);
+    Logger::error("  ✗ COMPLIANCE TEST FAILED ({} issues)", failures);
   }
-  spdlog::info("========================================");
+  Logger::info("========================================");
 
   return failures;
 }
@@ -307,10 +384,9 @@ static int gLoadCount = 0;
 
 /** @brief Called at load */
 static OfxStatus actionLoad(void) {
-  spdlog::info("loadAction - start();\n{");
+  Logger::info("loadAction()");
   if (gLoadCount != 0)
-    spdlog::error(
-        "Load action called more than once without unload being called;");
+    Logger::error("Load action called more than once without unload being called");
   gLoadCount++;
 
   OfxStatus status = kOfxStatOK;
@@ -318,11 +394,12 @@ static OfxStatus actionLoad(void) {
   try {
     // fetch the suites
     if (gHost == 0)
-      spdlog::error("Host pointer has not been set;");
+      Logger::error("Host pointer has not been set");
     if (!gHost)
       throw kOfxStatErrBadHandle;
 
     if (gLoadCount == 1) {
+      Logger::info("loadAction - loading suites");
       gEffectSuite =
           (OfxImageEffectSuiteV1 *)fetchSuite(kOfxImageEffectSuite, 1);
       gPropSuite = (OfxPropertySuiteV1 *)fetchSuite(kOfxPropertySuite, 1);
@@ -332,31 +409,37 @@ static OfxStatus actionLoad(void) {
           (OfxMultiThreadSuiteV1 *)fetchSuite(kOfxMultiThreadSuite, 1);
       gMessageSuite = (OfxMessageSuiteV1 *)fetchSuite(kOfxMessageSuite, 1);
 
+      Logger::info("loadAction - getting all props...");
       // Get all host props, property set name "ImageEffectHost"
-      // (too bad property sets don't know their own name)
       PropertyAccessor accessor = PropertyAccessor(gHost->host, gPropSuite);
       const auto prop_values =
           getAllPropertiesOfSet(accessor, "ImageEffectHost");
+      Logger::info("loadAction - got {} props", prop_values.size());
       logPropValues("ImageEffectHost", prop_values);
 
       // Test host property set compliance
+      Logger::info("loadAction - testing compliance...");
       testPropertySetCompliance(accessor, "ImageEffectHost");
     }
   }
 
   catch (int err) {
+    Logger::error("loadAction - caught err {}", err);
     status = err;
   }
+  catch (...) {
+    Logger::error("loadAction - caught unknown err");
+    status = kOfxStatErrFatal;
+  }
 
-  spdlog::info("}loadAction - stop;");
+  Logger::info("loadAction returning {}", status);
   return status;
 }
 
 /** @brief Called before unload */
 static OfxStatus unLoadAction(void) {
   if (gLoadCount <= 0)
-    spdlog::error("UnLoad action called without a corresponding load action "
-                  "having been called;");
+    Logger::error("UnLoad action called without a corresponding load action having been called");
   gLoadCount--;
 
   // force these to null
@@ -420,26 +503,78 @@ static OfxStatus isIdentity(OfxImageEffectHandle /*effect*/,
 
 ////////////////////////////////////////////////////////////////////////////////
 // function called when the instance has been changed by anything
-static OfxStatus instanceChanged(OfxImageEffectHandle /*effect*/,
-                                 OfxPropertySetHandle /*inArgs*/,
-                                 OfxPropertySetHandle /*outArgs*/) {
+static OfxStatus instanceChanged(OfxImageEffectHandle instance,
+                                 OfxPropertySetHandle inArgs,
+                                 OfxPropertySetHandle outArgs) {
+  // Test property set compliance
+  PropertyAccessor in_accessor = PropertyAccessor(inArgs, gPropSuite);
+  testPropertySetCompliance(in_accessor, kOfxActionInstanceChanged, "inArgs");
+  PropertyAccessor out_accessor = PropertyAccessor(outArgs, gPropSuite);
+  testPropertySetCompliance(out_accessor, kOfxActionInstanceChanged, "outArgs");
+
+  auto accessor = PropertyAccessor(instance, gEffectSuite, gPropSuite);
+  testPropertySetCompliance(accessor, "EffectInstance");
+
   // don't trap any others
   return kOfxStatReplyDefault;
 }
 
 // the process code  that the host sees
-static OfxStatus render(OfxImageEffectHandle /*instance*/,
-                        OfxPropertySetHandle /*inArgs*/,
-                        OfxPropertySetHandle /*outArgs*/) {
+static OfxStatus render(OfxImageEffectHandle instance,
+                        OfxPropertySetHandle inArgs,
+                        OfxPropertySetHandle outArgs) {
+  // Test property set compliance
+  PropertyAccessor in_accessor = PropertyAccessor(inArgs, gPropSuite);
+  testPropertySetCompliance(in_accessor, kOfxImageEffectActionRender, "inArgs");
+  PropertyAccessor out_accessor = PropertyAccessor(outArgs, gPropSuite);
+  testPropertySetCompliance(out_accessor, kOfxImageEffectActionRender, "outArgs");
+
+  auto accessor = PropertyAccessor(instance, gEffectSuite, gPropSuite);
+  testPropertySetCompliance(accessor, "EffectInstance");
+
   return kOfxStatOK;
+}
+
+
+static OfxStatus getRegionOfDefinition(OfxImageEffectHandle instance,
+                        OfxPropertySetHandle inArgs,
+                        OfxPropertySetHandle outArgs) {
+  // Test property set compliance
+  PropertyAccessor in_accessor = PropertyAccessor(inArgs, gPropSuite);
+  testPropertySetCompliance(in_accessor, kOfxImageEffectActionGetRegionOfDefinition, "inArgs");
+  PropertyAccessor out_accessor = PropertyAccessor(outArgs, gPropSuite);
+  testPropertySetCompliance(out_accessor, kOfxImageEffectActionGetRegionOfDefinition, "outArgs");
+
+  auto accessor = PropertyAccessor(instance, gEffectSuite, gPropSuite);
+  testPropertySetCompliance(accessor, "EffectInstance");
+
+  return kOfxStatReplyDefault;
+}
+
+static OfxStatus getRegionsOfInterest(OfxImageEffectHandle instance,
+                        OfxPropertySetHandle inArgs,
+                        OfxPropertySetHandle outArgs) {
+  // Test property set compliance
+  PropertyAccessor in_accessor = PropertyAccessor(inArgs, gPropSuite);
+  testPropertySetCompliance(in_accessor, kOfxImageEffectActionGetRegionsOfInterest, "inArgs");
+  // No outArgs here
+  // PropertyAccessor out_accessor = PropertyAccessor(outArgs, gPropSuite);
+  // testPropertySetCompliance(out_accessor, kOfxImageEffectActionGetRegionsOfInterest, "outArgs");
+
+  auto accessor = PropertyAccessor(instance, gEffectSuite, gPropSuite);
+  testPropertySetCompliance(accessor, "EffectInstance");
+
+  return kOfxStatReplyDefault;
 }
 
 //  describe the plugin in context
 static OfxStatus describeInContext(OfxImageEffectHandle effect,
                                    OfxPropertySetHandle inArgs) {
+  // Test property set compliance
   PropertyAccessor accessor = PropertyAccessor(inArgs, gPropSuite);
-  spdlog::info("describeInContext: inArgs->context = {}",
-               accessor.get<PropId::OfxImageEffectPropContext>());
+  testPropertySetCompliance(accessor, kOfxImageEffectActionDescribeInContext, "inArgs");
+  accessor = PropertyAccessor(effect, gEffectSuite, gPropSuite);
+  testPropertySetCompliance(accessor, "EffectDescriptor");
 
   OfxPropertySetHandle props;
   // define the output clip
@@ -474,7 +609,7 @@ static OfxStatus describeInContext(OfxImageEffectHandle effect,
   paramDesc.setDefault<double>(1.0);  // dimension=0, so default index=0
   paramDesc.setMin<double>(0.0, 0);   // explicit index for dimension=0
   paramDesc.setMax<double>(10.0, 0);  // explicit index for dimension=0
-  spdlog::info("  Using ParamDouble1D accessor with multi-type properties!");
+  Logger::info("  Using ParamDouble1D accessor with multi-type properties!");
 
   // Log all the effect descriptor's props
   OfxPropertySetHandle effectProps;
@@ -505,62 +640,63 @@ static OfxStatus actionDescribe(OfxImageEffectHandle effect) {
   OfxPropertySetHandle effectProps;
   gEffectSuite->getPropertySet(effect, &effectProps);
 
+
   PropertyAccessor accessor = PropertyAccessor(effectProps, gPropSuite);
+  // Test property set compliance
+  testPropertySetCompliance(accessor, "EffectDescriptor");
 
-  // Traditional PropertyAccessor API
-  accessor.set<PropId::OfxPropLabel>("Property Tester")
-      .set<PropId::OfxPropVersionLabel>("1.0")
-      .setAll<PropId::OfxPropVersion>({1, 0, 0})
-      .set<PropId::OfxPropPluginDescription>(
-          "Sample plugin which logs all actions and properties")
-      .set<PropId::OfxImageEffectPluginPropGrouping>("OFX Examples")
-      .set<PropId::OfxImageEffectPropMultipleClipDepths>(false)
-      .setAll<PropId::OfxImageEffectPropSupportedComponents>(
-          {kOfxImageComponentRGBA, kOfxImageComponentAlpha})
-      .setAll<PropId::OfxImageEffectPropSupportedContexts>(supportedContexts)
-      .setAll<PropId::OfxImageEffectPropSupportedPixelDepths>(
-          supportedPixelDepths);
+  // Low-level PropertyAccessor API
+  accessor.set<PropId::OfxPropLabel>("Property Tester v2")
+    .set<PropId::OfxPropVersionLabel>("1.0", 0, false)
+    .setAll<PropId::OfxPropVersion>({1, 0, 0}, false)
+    .set<PropId::OfxPropPluginDescription>(
+                                           "Sample plugin which logs all actions and properties", 0, false)
+    .set<PropId::OfxImageEffectPluginPropGrouping>("OFX Examples")
+    .set<PropId::OfxImageEffectPropMultipleClipDepths>(false)
+    .setAll<PropId::OfxImageEffectPropSupportedContexts>(supportedContexts)
+    .setAll<PropId::OfxImageEffectPropSupportedPixelDepths>(
+                                                            supportedPixelDepths);
 
-  // NEW: Type-safe property set accessor API demo
-  spdlog::info("Testing property set accessor classes...");
+  // OR: high-level, simpler (still type-safe) property set accessor API
+  Logger::info("Testing property set accessor classes...");
   openfx::EffectDescriptor effectDesc(accessor);
 
-  // Can also use setters via accessor class (same as above, but more convenient)
-  // Note: dimension=1 properties don't need index parameter - cleaner API!
-  effectDesc.setLabel("Property Tester (via accessor)");
-  effectDesc.setVersionLabel("1.0");
-  effectDesc.setPluginDescription("Sample plugin");
-
-  spdlog::info("  Using EffectDescriptor accessor class - clean API for dimension=1!");
+  // Simplified setters via property set class (same as above, but more convenient)
+  // Also chainable for fluent interface!
+  effectDesc.setLabel("Property Tester V2")
+      .setVersionLabel("1.0")
+      .setVersion({1,0,0})
+      .setPluginDescription("Sample plugin, logging all actions & properties")
+      .setImageEffectPluginPropGrouping("OFX Examples")
+      .setMultipleClipDepths(false)
+    .setSupportedContexts(supportedContexts)
+    .setSupportedPixelDepths(supportedPixelDepths);
 
   // Test host-specific property extensibility (will fail at runtime but compiles!)
-  spdlog::info("Testing host-specific property extensibility...");
+  Logger::info("Testing host-specific property extensibility...");
   try {
     // Test myhost properties (from examples/host-specific-props)
     auto viewerProcess = accessor.get<myhost::PropId::MyHostViewerProcess>(0, false);
-    spdlog::info("  MyHost viewer process: {}", viewerProcess ? viewerProcess : "(not available)");
+    Logger::info("  MyHost viewer process: {}", viewerProcess ? viewerProcess : "(not available)");
 
     auto projectPath = accessor.get<myhost::PropId::MyHostProjectPath>(0, false);
-    spdlog::info("  MyHost project path: {}", projectPath ? projectPath : "(not available)");
+    Logger::info("  MyHost project path: {}", projectPath ? projectPath : "(not available)");
 
     auto nodeColor = accessor.getAll<myhost::PropId::MyHostNodeColor>();
-    spdlog::info("  MyHost node color dimension: {}", nodeColor.size());
+    Logger::info("  MyHost node color dimension: {}", nodeColor.size());
 
     // Test setting host properties
     accessor.setAll<myhost::PropId::MyHostNodeColor>({255, 128, 64});
 
   } catch (const PropertyNotFoundException& e) {
-    spdlog::info("  Host properties not available (expected) - but compilation succeeded!");
+    Logger::info("  Host properties not available (expected) - but compilation succeeded!");
   } catch (...) {
-    spdlog::info("  Host properties failed (expected) - but compilation succeeded!");
+    Logger::info("  Host properties failed (expected) - but compilation succeeded!");
   }
 
   // After setting up, log all known props
   const auto prop_values = getAllPropertiesOfSet(accessor, "EffectDescriptor");
   logPropValues("EffectDescriptor", prop_values);
-
-  // Test effect descriptor property set compliance
-  testPropertySetCompliance(accessor, "EffectDescriptor");
 
   return kOfxStatOK;
 }
@@ -574,25 +710,25 @@ static void checkMainHandles(const char *action, const void *handle,
                              bool outArgsCanBeNull) {
   if (handleCanBeNull) {
     if (handle != 0) {
-      spdlog::warn("Handle passed to '{}' is not null;", action);
+      Logger::warn("Handle passed to '{}' is not null", action);
     } else if (handle == 0) {
-      spdlog::error("'Handle passed to '{}' is null;", action);
+      Logger::error("'Handle passed to '{}' is null", action);
     }
   }
 
   if (inArgsCanBeNull) {
     if (inArgsHandle != 0) {
-      spdlog::warn("'inArgs' Handle passed to '{}' is not null;", action);
+      Logger::warn("'inArgs' Handle passed to '{}' is not null", action);
     } else if (inArgsHandle == 0) {
-      spdlog::error("'inArgs' handle passed to '{}' is null;", action);
+      Logger::error("'inArgs' handle passed to '{}' is null", action);
     }
   }
 
   if (outArgsCanBeNull) {
     if (outArgsHandle != 0) {
-      spdlog::warn("'outArgs' Handle passed to '{}' is not null;", action);
+      Logger::warn("'outArgs' Handle passed to '{}' is not null", action);
     } else if (outArgsHandle == 0) {
-      spdlog::error("'outArgs' handle passed to '{}' is null;", action);
+      Logger::error("'outArgs' handle passed to '{}' is null", action);
     }
   }
 
@@ -609,8 +745,7 @@ static void checkMainHandles(const char *action, const void *handle,
 static OfxStatus pluginMain(const char *action, const void *handle,
                             OfxPropertySetHandle inArgsHandle,
                             OfxPropertySetHandle outArgsHandle) {
-  spdlog::info("pluginMain - start();\n{");
-  spdlog::info("  action is '{}';", action);
+  Logger::info(">>> {}", action);
   OfxStatus stat = kOfxStatReplyDefault;
 
   try {
@@ -646,13 +781,13 @@ static OfxStatus pluginMain(const char *action, const void *handle,
     } else if (!strcmp(action, kOfxActionInstanceChanged)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false,
                        false, true);
+      stat = instanceChanged(effectHandle, inArgsHandle, outArgsHandle);
     } else if (!strcmp(action, kOfxActionBeginInstanceChanged)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false,
                        false, true);
     } else if (!strcmp(action, kOfxActionEndInstanceChanged)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false,
                        false, true);
-      stat = instanceChanged(effectHandle, inArgsHandle, outArgsHandle);
     } else if (!strcmp(action, kOfxActionBeginInstanceEdit)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, true,
                        true);
@@ -662,9 +797,11 @@ static OfxStatus pluginMain(const char *action, const void *handle,
     } else if (!strcmp(action, kOfxImageEffectActionGetRegionOfDefinition)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false,
                        false, false);
+      stat = getRegionOfDefinition(effectHandle, inArgsHandle, outArgsHandle);
     } else if (!strcmp(action, kOfxImageEffectActionGetRegionsOfInterest)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false,
                        false, false);
+      stat = getRegionsOfInterest(effectHandle, inArgsHandle, outArgsHandle);
     } else if (!strcmp(action, kOfxImageEffectActionGetTimeDomain)) {
       checkMainHandles(action, handle, inArgsHandle, outArgsHandle, false, true,
                        false);
@@ -694,27 +831,27 @@ static OfxStatus pluginMain(const char *action, const void *handle,
                        false, true);
       stat = describeInContext(effectHandle, inArgsHandle);
     } else {
-      spdlog::error("Unknown action '{}';", action);
+      Logger::error("Unknown action '{}'", action);
     }
   } catch (std::bad_alloc) {
     // catch memory
-    spdlog::error("OFX Plugin Memory error;");
+    Logger::error("OFX Plugin Memory error");
     stat = kOfxStatErrMemory;
   } catch (const std::exception &e) {
     // standard exceptions
-    spdlog::error("Plugin exception: '{}';", e.what());
+    Logger::error("Plugin exception: '{}'", e.what());
     stat = kOfxStatErrUnknown;
   } catch (int err) {
     // ho hum, gone wrong somehow
-    spdlog::error("Misc int plugin exception: '{}';", mapStatus(err));
+    Logger::error("Misc int plugin exception: '{}'", mapStatus(err));
     stat = err;
   } catch (...) {
     // everything else
-    spdlog::error("Uncaught misc plugin exception;");
+    Logger::error("Uncaught misc plugin exception");
     stat = kOfxStatErrUnknown;
   }
 
-  spdlog::info("}pluginMain - stop;");
+  Logger::info("<<< {} = {}", action, stat);
 
   // other actions to take the default value
   return stat;
@@ -722,11 +859,13 @@ static OfxStatus pluginMain(const char *action, const void *handle,
 
 // function to set the host structure
 static void setHostFunc(OfxHost *hostStruct) {
-  spdlog::info("setHostFunc - start();\n{");
+  // Set the plugin name context for all logging
+  Logger::setContext(kPluginName);
+
+  Logger::info("setHostFunc()");
   if (hostStruct == 0)
-    spdlog::error("host is a null pointer;");
+    Logger::error("host is a null pointer");
   gHost = hostStruct;
-  spdlog::info("}setHostFunc - stop;");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -741,13 +880,11 @@ static OfxPlugin basicPlugin = {kOfxImageEffectPluginApi,
 
 // the two mandated functions
 EXPORT OfxPlugin *OfxGetPlugin(int nth) {
-  spdlog::info("OfxGetPlugin - start();\n{");
-  spdlog::info("  asking for {}th plugin;", nth);
+  Logger::info("OfxGetPlugin - start()");
+  Logger::info("  asking for {}th plugin", nth);
   if (nth != 0)
-    spdlog::error(
-        "requested plugin {} is more than the number of plugins in the file;",
-        nth);
-  spdlog::info("}OfxGetPlugin - stop;");
+    Logger::error("requested plugin {} is more than the number of plugins in the file", nth);
+  Logger::info("OfxGetPlugin - stop");
 
   if (nth == 0)
     return &basicPlugin;
@@ -755,8 +892,8 @@ EXPORT OfxPlugin *OfxGetPlugin(int nth) {
 }
 
 EXPORT int OfxGetNumberOfPlugins(void) {
-  spdlog::info("OfxGetNumberOfPlugins - start();\n{");
-  spdlog::info("}OfxGetNumberOfPlugins - stop;");
+  Logger::info("OfxGetNumberOfPlugins - start()");
+  Logger::info("OfxGetNumberOfPlugins - stop");
   return 1;
 }
 

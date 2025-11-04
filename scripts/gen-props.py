@@ -124,6 +124,49 @@ def expand_set_props(props_by_set):
                          for item in get_def(element, defs)]
     return sets
 
+def actions_to_propsets(props_by_action):
+    """Convert action argument property sets to the same format as regular property sets.
+
+    Actions have the structure:
+      ActionName:
+        inArgs: [prop1, prop2, ...]
+        outArgs: [prop3, prop4, ...]
+
+    We convert this to property sets named like:
+      ImageEffectActionDescribeInContext_InArgs: {props: [prop1, prop2, ...], write: 'host'}
+      ImageEffectActionDescribeInContext_OutArgs: {props: [prop3, prop4, ...], write: 'plugin'}
+
+    The class names are full action names minus "Ofx" prefix, matching C API names.
+    """
+    result = {}
+
+    for action_name, args in props_by_action.items():
+        # Remove "Ofx" prefix to get class-friendly name that matches C API
+        # OfxImageEffectActionDescribeInContext -> ImageEffectActionDescribeInContext
+        # OfxActionLoad -> ActionLoad
+        # OfxInteractActionDraw -> InteractActionDraw
+        simple_name = action_name
+        if simple_name.startswith('Ofx'):
+            simple_name = simple_name[3:]  # Remove "Ofx" prefix
+
+        # Generate InArgs property set
+        if 'inArgs' in args and args['inArgs']:
+            key = f"{simple_name}_InArgs"
+            result[key] = {
+                'props': args['inArgs'],
+                'write': 'host'  # inArgs are written by host, read by plugin
+            }
+
+        # Generate OutArgs property set
+        if 'outArgs' in args and args['outArgs']:
+            key = f"{simple_name}_OutArgs"
+            result[key] = {
+                'props': args['outArgs'],
+                'write': 'plugin'  # outArgs are written by plugin, read by host
+            }
+
+    return result
+
 def get_cname(propname, props_metadata):
     """Get the C `#define` name for a property name.
 
@@ -201,12 +244,17 @@ def props_for_set(pset, props_by_set, name_only=True):
             yield name
         else:
             # parse key/value pairs, apply defaults, and include name
-            key_values_str = match.group(2)
+            key_values_str = match.group(2).strip()
             if not key_values_str:
                 options = {}
             else:
-                key_value_pattern = r'(\w+)=([\w-]+)'
-                options = dict(re.findall(key_value_pattern, key_values_str))
+                # Handle both "optional" shorthand and "key=value" format
+                # "optional" is shorthand for "host_optional=true"
+                if key_values_str == 'optional':
+                    options = {'host_optional': 'true'}
+                else:
+                    key_value_pattern = r'(\w+)=([\w-]+)'
+                    options = dict(re.findall(key_value_pattern, key_values_str))
             yield {**propset_options, **options, **{"name": name}}
 
 def check_props_by_set(props_by_set, props_by_action, props_metadata):
@@ -484,7 +532,8 @@ struct Prop {
             for p in props_for_set(pset, props_by_set, False):
                 host_write = 'true' if p['write'] in ('host', 'all') else 'false'
                 plugin_write = 'true' if p['write'] in ('plugin', 'all') else 'false'
-                propdefs.append(f"{{ \"{p['name']}\", prop_defs[PropId::{get_prop_id(p['name'])}], {host_write}, {plugin_write}, false }}")
+                host_optional = 'true' if p.get('host_optional') == 'true' else 'false'
+                propdefs.append(f"{{ \"{p['name']}\", prop_defs[PropId::{get_prop_id(p['name'])}], {host_write}, {plugin_write}, {host_optional} }}")
             propdefs_str = ",\n   ".join(propdefs)
             outfile.write(f"// {pset}\n{{ \"{pset}\", {{\n   {propdefs_str} }} }},\n")
         outfile.write("};\n\n")
@@ -647,6 +696,7 @@ public:
             for prop in props_for_set(pset_name, props_by_set, name_only=False):
                 propname = prop['name']
                 write_access = prop['write']
+                is_host_optional = prop.get('host_optional') == 'true'
 
                 # Get property metadata
                 if propname not in props_metadata:
@@ -660,6 +710,10 @@ public:
                 if method_name in generated_methods:
                     continue
                 generated_methods.add(method_name)
+
+                # Default for error_if_missing based on whether property is optional
+                # Optional properties default to not erroring, required ones do
+                error_default = 'false' if is_host_optional else 'true'
 
                 # Check if this is a multi-type property
                 types = prop_def.get('type')
@@ -697,12 +751,12 @@ public:
                         outfile.write(f"    template<typename T>\n")
                         if dimension == 1:
                             # Dimension 1: exactly one value, no index needed
-                            outfile.write(f"    T {method_name}() const {{\n")
-                            outfile.write(f"        return props_.get<PropId::{prop_id}, T>(0);\n")
+                            outfile.write(f"    T {method_name}(bool error_if_missing = {error_default}) const {{\n")
+                            outfile.write(f"        return props_.get<PropId::{prop_id}, T>(0, error_if_missing);\n")
                         else:
                             # Dimension 0 or > 1: include index parameter
-                            outfile.write(f"    T {method_name}(int index = 0) const {{\n")
-                            outfile.write(f"        return props_.get<PropId::{prop_id}, T>(index);\n")
+                            outfile.write(f"    T {method_name}(int index = 0, bool error_if_missing = {error_default}) const {{\n")
+                            outfile.write(f"        return props_.get<PropId::{prop_id}, T>(index, error_if_missing);\n")
                         outfile.write(f"    }}\n\n")
 
                         # Also provide getAll for multi-type (returns vector)
@@ -715,13 +769,13 @@ public:
                         # Single-type property
                         if dimension == 1:
                             # Dimension 1: exactly one value, no index needed
-                            outfile.write(f"    {cpp_type} {method_name}() const {{\n")
-                            outfile.write(f"        return props_.get<PropId::{prop_id}>(0);\n")
+                            outfile.write(f"    {cpp_type} {method_name}(bool error_if_missing = {error_default}) const {{\n")
+                            outfile.write(f"        return props_.get<PropId::{prop_id}>(0, error_if_missing);\n")
                             outfile.write(f"    }}\n\n")
                         elif dimension == 0:
                             # Dimension 0: variable dimension, include index
-                            outfile.write(f"    {cpp_type} {method_name}(int index = 0) const {{\n")
-                            outfile.write(f"        return props_.get<PropId::{prop_id}>(index);\n")
+                            outfile.write(f"    {cpp_type} {method_name}(int index = 0, bool error_if_missing = {error_default}) const {{\n")
+                            outfile.write(f"        return props_.get<PropId::{prop_id}>(index, error_if_missing);\n")
                             outfile.write(f"    }}\n\n")
                         else:
                             # Dimension > 1: array getter
@@ -740,37 +794,78 @@ public:
                         outfile.write(f"    template<typename T>\n")
                         if dimension == 1:
                             # Dimension 1: exactly one value, no index needed
-                            outfile.write(f"    void {setter_name}(T value) {{\n")
-                            outfile.write(f"        props_.set<PropId::{prop_id}, T>(value, 0);\n")
+                            outfile.write(f"    {class_name}& {setter_name}(T value, bool error_if_missing = {error_default}) {{\n")
+                            outfile.write(f"        props_.set<PropId::{prop_id}, T>(value, 0, error_if_missing);\n")
+                            outfile.write(f"        return *this;\n")
                         else:
                             # Dimension 0 or > 1: include index parameter
-                            outfile.write(f"    void {setter_name}(T value, int index = 0) {{\n")
-                            outfile.write(f"        props_.set<PropId::{prop_id}, T>(value, index);\n")
+                            outfile.write(f"    {class_name}& {setter_name}(T value, int index = 0, bool error_if_missing = {error_default}) {{\n")
+                            outfile.write(f"        props_.set<PropId::{prop_id}, T>(value, index, error_if_missing);\n")
+                            outfile.write(f"        return *this;\n")
                         outfile.write(f"    }}\n\n")
 
                         # Also provide setAll for multi-type
                         if dimension != 1:  # dimension 0 or > 1
+                            outfile.write(f"    // Set all values from a container (vector, array, span, etc.)\n")
+                            outfile.write(f"    // SFINAE: only enabled for container types (not scalars)\n")
+                            outfile.write(f"    template<typename T, typename Container,\n")
+                            outfile.write(f"             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>\n")
+                            outfile.write(f"    {class_name}& {setter_name}(const Container& values, bool error_if_missing = {error_default}) {{\n")
+                            outfile.write(f"        props_.setAllTyped<PropId::{prop_id}, T>(values, error_if_missing);\n")
+                            outfile.write(f"        return *this;\n")
+                            outfile.write(f"    }}\n\n")
+
+                            # Also provide initializer_list overload for multi-type
+                            outfile.write(f"    // Set all values from an initializer list (e.g., {{1, 2, 3}})\n")
                             outfile.write(f"    template<typename T>\n")
-                            outfile.write(f"    void {setter_name}All(const std::vector<T>& values) {{\n")
-                            outfile.write(f"        props_.setAll<PropId::{prop_id}, T>(values);\n")
+                            outfile.write(f"    {class_name}& {setter_name}(std::initializer_list<T> values, bool error_if_missing = {error_default}) {{\n")
+                            outfile.write(f"        props_.setAllTyped<PropId::{prop_id}, T>(values, error_if_missing);\n")
+                            outfile.write(f"        return *this;\n")
                             outfile.write(f"    }}\n\n")
                     else:
                         # Single-type property
                         if dimension == 1:
                             # Dimension 1: exactly one value, no index needed
-                            outfile.write(f"    void {setter_name}({cpp_type} value) {{\n")
-                            outfile.write(f"        props_.set<PropId::{prop_id}>(value, 0);\n")
+                            outfile.write(f"    {class_name}& {setter_name}({cpp_type} value, bool error_if_missing = {error_default}) {{\n")
+                            outfile.write(f"        props_.set<PropId::{prop_id}>(value, 0, error_if_missing);\n")
+                            outfile.write(f"        return *this;\n")
                             outfile.write(f"    }}\n\n")
                         elif dimension == 0:
                             # Dimension 0: variable dimension, include index
-                            outfile.write(f"    void {setter_name}({cpp_type} value, int index = 0) {{\n")
-                            outfile.write(f"        props_.set<PropId::{prop_id}>(value, index);\n")
+                            outfile.write(f"    {class_name}& {setter_name}({cpp_type} value, int index = 0, bool error_if_missing = {error_default}) {{\n")
+                            outfile.write(f"        props_.set<PropId::{prop_id}>(value, index, error_if_missing);\n")
+                            outfile.write(f"        return *this;\n")
+                            outfile.write(f"    }}\n\n")
+
+                            # Also generate a container/span setter for dimension 0
+                            outfile.write(f"    // Set all values from a container (vector, array, span, etc.)\n")
+                            outfile.write(f"    // SFINAE: only enabled for container types (not scalars)\n")
+                            outfile.write(f"    template<typename Container,\n")
+                            outfile.write(f"             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>\n")
+                            outfile.write(f"    {class_name}& {setter_name}(const Container& values, bool error_if_missing = {error_default}) {{\n")
+                            outfile.write(f"        props_.setAll<PropId::{prop_id}>(values, error_if_missing);\n")
+                            outfile.write(f"        return *this;\n")
+                            outfile.write(f"    }}\n\n")
+
+                            # Also generate an initializer_list overload for dimension 0
+                            outfile.write(f"    // Set all values from an initializer list (e.g., {{1, 2, 3}})\n")
+                            outfile.write(f"    {class_name}& {setter_name}(std::initializer_list<{cpp_type}> values, bool error_if_missing = {error_default}) {{\n")
+                            outfile.write(f"        props_.setAll<PropId::{prop_id}>(values, error_if_missing);\n")
+                            outfile.write(f"        return *this;\n")
                             outfile.write(f"    }}\n\n")
                         else:
                             # Dimension > 1: array setter
                             array_type = get_cpp_type(prop_def, include_array=True)
-                            outfile.write(f"    void {setter_name}(const {array_type}& values) {{\n")
-                            outfile.write(f"        props_.setAll<PropId::{prop_id}>(values);\n")
+                            outfile.write(f"    {class_name}& {setter_name}(const {array_type}& values, bool error_if_missing = {error_default}) {{\n")
+                            outfile.write(f"        props_.setAll<PropId::{prop_id}>(values, error_if_missing);\n")
+                            outfile.write(f"        return *this;\n")
+                            outfile.write(f"    }}\n\n")
+
+                            # Also generate an initializer_list overload for dimension > 1
+                            outfile.write(f"    // Set all values from an initializer list (e.g., {{1, 2}})\n")
+                            outfile.write(f"    {class_name}& {setter_name}(std::initializer_list<{cpp_type}> values, bool error_if_missing = {error_default}) {{\n")
+                            outfile.write(f"        props_.setAll<PropId::{prop_id}>(values, error_if_missing);\n")
+                            outfile.write(f"        return *this;\n")
                             outfile.write(f"    }}\n\n")
 
             outfile.write("};\n\n")
@@ -789,6 +884,12 @@ def main(args):
     props_by_set = expand_set_props(props_data['propertySets'])
     props_by_action = props_data['Actions']
     props_metadata = props_data['properties']
+
+    # Convert action argument property sets to the same format as regular property sets
+    action_propsets = actions_to_propsets(props_by_action)
+
+    # Merge action property sets with regular property sets for accessor generation
+    all_propsets = {**props_by_set, **action_propsets}
 
     if args.verbose:
         print("\n=== Checking ofx-props.yml: should map 1:1 to props found in source/header files")
@@ -818,11 +919,11 @@ def main(args):
 
     if args.verbose:
         print(f"=== Generating property set accessor classes for plugins: {args.propset_accessors}")
-    gen_propset_accessors(props_by_set, props_metadata, dest_path / args.propset_accessors, for_host=False)
+    gen_propset_accessors(all_propsets, props_metadata, dest_path / args.propset_accessors, for_host=False)
 
     if args.verbose:
         print(f"=== Generating property set accessor classes for hosts: {args.propset_accessors_host}")
-    gen_propset_accessors(props_by_set, props_metadata, dest_path / args.propset_accessors_host, for_host=True)
+    gen_propset_accessors(all_propsets, props_metadata, dest_path / args.propset_accessors_host, for_host=True)
 
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))

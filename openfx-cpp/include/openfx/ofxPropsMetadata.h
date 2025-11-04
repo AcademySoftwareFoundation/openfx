@@ -273,8 +273,6 @@ constexpr std::array OfxParamPropDoubleType =
   {"OfxParamDoubleTypePlain","OfxParamDoubleTypeAngle","OfxParamDoubleTypeScale","OfxParamDoubleTypeTime","OfxParamDoubleTypeAbsoluteTime","OfxParamDoubleTypeX","OfxParamDoubleTypeXAbsolute","OfxParamDoubleTypeY","OfxParamDoubleTypeYAbsolute","OfxParamDoubleTypeXY","OfxParamDoubleTypeXYAbsolute"};
 constexpr std::array OfxParamPropStringMode =
   {"OfxParamStringIsSingleLine","OfxParamStringIsMultiLine","OfxParamStringIsFilePath","OfxParamStringIsDirectoryPath","OfxParamStringIsLabel","OfxParamStringIsRichTextFormat"};
-constexpr std::array OfxPluginPropFilePath =
-  {"false","true","needed"};
 constexpr std::array OfxPropChangeReason =
   {"OfxChangeUserEdited","OfxChangePluginEdited","OfxChangeTime"};
 } // namespace prop_enum_values
@@ -440,7 +438,7 @@ static constexpr PropType OfxParamPropShowTimeMarker_types[] = {PropType::Bool};
 static constexpr PropType OfxParamPropStringFilePathExists_types[] = {PropType::Bool};
 static constexpr PropType OfxParamPropStringMode_types[] = {PropType::Enum};
 static constexpr PropType OfxParamPropType_types[] = {PropType::String};
-static constexpr PropType OfxPluginPropFilePath_types[] = {PropType::Enum};
+static constexpr PropType OfxPluginPropFilePath_types[] = {PropType::String};
 static constexpr PropType OfxPluginPropParamPageOrder_types[] = {PropType::String};
 static constexpr PropType OfxPropAPIVersion_types[] = {PropType::Int};
 static constexpr PropType OfxPropChangeReason_types[] = {PropType::Enum};
@@ -810,7 +808,7 @@ static inline constexpr PropDefsArray<PropDef> prop_defs = {
 { "OfxParamPropType",
   openfx::span(prop_type_arrays::OfxParamPropType_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPluginPropFilePath",
-  openfx::span(prop_type_arrays::OfxPluginPropFilePath_types, 1), 1, openfx::span(prop_enum_values::OfxPluginPropFilePath.data(), prop_enum_values::OfxPluginPropFilePath.size())},
+  openfx::span(prop_type_arrays::OfxPluginPropFilePath_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPluginPropParamPageOrder",
   openfx::span(prop_type_arrays::OfxPluginPropParamPageOrder_types, 1), 0, openfx::span<const char* const>()},
 { "OfxPropAPIVersion",
