@@ -229,7 +229,9 @@ These are the list of actions passed to an interact's entry point function. For 
  This action is issued to an interact whenever the host needs the plugin
  to redraw the given interact.
 
- The interact should either issue OpenGL calls to draw itself, or use DrawSuite calls.
+ The interact should either issue OpenGL calls (if the plugin is using
+ OverlayInteractV1) to draw itself, or use DrawSuite calls (if using
+ OverlayInteractV2).
 
  If this is called via kOfxImageEffectPluginPropOverlayInteractV2, drawing MUST use DrawSuite.
  

@@ -106,7 +106,7 @@ These are the list of actions passed to an image effect plugin's main function. 
  definition see \ref ImageEffectArchitectures "Image Effect Architectures"
 
  Note that hosts that have constant sized imagery need not call this
- action, only hosts that allow image sizes to vary need call this.
+ action. Only hosts that allow image sizes to vary need call this.
 
  @param  handle handle to the instance, cast to an \ref OfxImageEffectHandle
 
@@ -117,12 +117,12 @@ These are the list of actions passed to an image effect plugin's main function. 
      action
      - \ref kOfxImageEffectPropThumbnailRender (optional) if the host considers this render a "thumbnail"
 
- @param  outArgs has the following property which the plug-in may set
+ @param  outArgs has the following property which the plug-in may set:
      - \ref kOfxImageEffectPropRegionOfDefinition  the calculated region of definition, initially set by the host
      to the default RoD (see below), in Canonical Coordinates.
 
 
- If the effect did not trap this, it means the host should use the
+ If the effect does not handle this action, the host should use the
  default RoD instead, which depends on the context. This is...
 
  -  generator context - defaults to the project window,
@@ -155,15 +155,13 @@ These are the list of actions passed to an image effect plugin's main function. 
  way, depending on the host architecture, a host can fetch the minimal
  amount of the image needed as input. Note that there is a region of
  interest to be set in ``outArgs`` for each input clip that exists on the
- effect. For more details see \ref ImageEffectArchitectures "Image Effect
- Architectures"
-
+ effect. For more details see
+ \ref ImageEffectArchitectures "Image Effect Architectures"
 
  The default RoI is simply the value passed in on the
  \ref kOfxImageEffectPropRegionOfInterest
- ``inArgs`` property set. All the RoIs in the ``outArgs`` property set
- must initialised to this value before the action is called.
-
+ ``inArgs`` property set. The host must initalize all the RoIs in the ``outArgs`` property set
+ to this value before the action is called.
 
  @param  handle handle to the instance, cast to an \ref OfxImageEffectHandle
  @param  inArgs has the following properties
@@ -173,7 +171,7 @@ These are the list of actions passed to an image effect plugin's main function. 
      - \ref kOfxImageEffectPropThumbnailRender (optional) if the host considers this render a "thumbnail"
 
  @param  outArgs has a set of 4 dimensional double properties, one for each of the input clips to the effect.
- The properties are each named ``OfxImageClipPropRoI_`` with the clip name post pended, for example
+ The properties are each named ``OfxImageClipPropRoI_`` with the clip name postpended, for example
  ``OfxImageClipPropRoI_Source``. These are initialised to the default RoI.
 
 
@@ -190,8 +188,9 @@ These are the list of actions passed to an image effect plugin's main function. 
 
 /** @brief
  This action allows a host to ask an effect what range of frames it can
- produce images over. Only effects instantiated in the \ref generalContext "General
- Context" can have this called on them. In all other
+ produce images over. Only effects instantiated in the
+ \ref generalContext "General Context"
+ can have this called on them. In all other
  the host is in strict control over the temporal duration of the effect.
 
  The default is:
@@ -1627,18 +1626,11 @@ If clipGetImage is called twice with the same parameters, then two separate imag
  */
   OfxStatus (*clipReleaseImage)(OfxPropertySetHandle imageHandle);
   
-
   /** @brief Returns the spatial region of definition of the clip at the given time
 
-      \arg \c clipHandle  clip to extract the image from
-      \arg \c time        time to fetch the image at
-      \arg \c region      region to fetch the image from (optional, set to NULL to get a 'default' region)
-                            this is in the \ref CanonicalCoordinates. 
-      \arg \c imageHandle handle where the image is returned
-
-  An image is fetched from a clip at the indicated time for the given region and returned in the imageHandle.
-
- If the \e region parameter is not set to NULL, then it will be clipped to the clip's Region of Definition for the given time. The returned image will be \em at \em least as big as this region. If the region parameter is not set, then the region fetched will be at least the Region of Interest the effect has previously specified, clipped the clip's Region of Definition.
+      \arg \c clipHandle  return this clip's region of definition
+      \arg \c time        time to use when determining clip's region of definition
+      \arg \c bounds      (out) bounds are returned here -- in \ref CanonicalCoordinates
 
 \pre
  - clipHandle was returned by clipGetHandle
@@ -1647,13 +1639,10 @@ If clipGetImage is called twice with the same parameters, then two separate imag
  - bounds will be filled the RoD of the clip at the indicated time
 
 @returns
-- ::kOfxStatOK - the image was successfully fetched and returned in the handle,
-- ::kOfxStatFailed - the image could not be fetched because it does not exist in the clip at the indicated time, the plugin
-                     should continue operation, but assume the image was black and transparent.
+- ::kOfxStatOK - the region was successfully found and returned in the handle,
+- ::kOfxStatFailed - the region could not be determined,
 - ::kOfxStatErrBadHandle - the clip handle was invalid,
 - ::kOfxStatErrMemory - the host had not enough memory to complete the operation, plugin should abort whatever it was doing.
-
-
   */
   OfxStatus (*clipGetRegionOfDefinition)(OfxImageClipHandle clip,
 					 OfxTime time,

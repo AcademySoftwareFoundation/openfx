@@ -360,11 +360,12 @@ where we set the **gHostSupportsMultiRes** global variable.
 Get Region Of Definition Action
 ===============================
 
-What is this region of definition action? Easy, an effect and a clip
-have a region of definition (RoD). This is the maximum rectangle for
-which an effect or clip can produce pixels. You can ask for RoD of a
-clip via the :cpp:func:`OfxImageEffectSuiteV1::clipGetRegionOfDefinition` function in the image
-effect suite. The RoD is currently defined in canonical coordinates [4]_.
+An effect and a clip each have a region of definition (RoD). This is
+the maximum rectangle for which an effect or clip can produce pixels.
+You can ask for the RoD of a clip via the
+:cpp:func:`OfxImageEffectSuiteV1::clipGetRegionOfDefinition` function
+in the image effect suite. The RoD is defined in canonical coordinates
+[4]_.
 
 Note that the RoD is independent of the **bounds** of a image, an
 image’s bounds may be less than, more than or equal to the RoD. It is up
@@ -378,9 +379,9 @@ drawing. Whether we do that or not is controlled by the "growRoD"
 parameter which is conditionally defined in the describe in context
 action.
 
-To set the output rod, we need to trap the
-:c:macro:`kOfxImageEffectActionGetRegionOfDefinition` action. Our MainEntry
-function now has an extra conditional in there….
+To set the plugin's output RoD, the plugin must to handle the
+:c:macro:`kOfxImageEffectActionGetRegionOfDefinition` action. The
+MainEntry function now has an extra conditional in there….
 
 `circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L978>`__
 
