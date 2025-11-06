@@ -1,4 +1,5 @@
 set(OFX_SUPPORT_HEADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../Support/include")
+set(OFX_CPP_BINDINGS_HEADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../openfx-cpp/include")
 
 set(PLUGINS
 	Basic
@@ -10,6 +11,7 @@ set(PLUGINS
 	OpenGL
 	Rectangle
 	Test
+        TestProps
         DrawSuite
 	)
 
@@ -20,7 +22,8 @@ foreach(PLUGIN IN LISTS PLUGINS)
 	add_ofx_plugin(${TGT} ${PLUGIN})
 	target_sources(${TGT} PUBLIC ${PLUGIN_SOURCES})
 	target_link_libraries(${TGT} ${CONAN_LIBS})
-	target_include_directories(${TGT} PUBLIC ${OFX_HEADER_DIR} ${OFX_SUPPORT_HEADER_DIR})
+	target_include_directories(${TGT} PUBLIC ${OFX_HEADER_DIR})
+
         if (OFX_SUPPORTS_OPENCLRENDER)
           target_link_libraries(${TGT} PRIVATE OpenCL::Headers OpenCL::OpenCL)
         endif()
@@ -30,3 +33,6 @@ target_link_libraries(example-OpenGL PRIVATE opengl::opengl)
 target_link_libraries(example-Custom PRIVATE opengl::opengl)
 target_link_libraries(example-ColourSpace PRIVATE cimg::cimg)
 target_link_libraries(example-ColourSpace PRIVATE spdlog::spdlog_header_only)
+target_link_libraries(example-TestProps PRIVATE spdlog::spdlog_header_only)
+target_link_libraries(example-TestProps PRIVATE tcb-span::tcb-span)
+target_include_directories(example-TestProps PUBLIC ${OFX_CPP_BINDINGS_HEADER_DIR})

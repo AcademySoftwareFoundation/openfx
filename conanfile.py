@@ -3,15 +3,17 @@ from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, collect_libs
 import os.path
 
-required_conan_version = ">=1.59.0"
+required_conan_version = ">=2.0.16"
 
 class openfx(ConanFile):
 	name = "openfx"
-	version = "1.4.0"
+	version = "1.5.0"
 	license = "BSD-3-Clause"
 	url = "https://github.com/AcademySoftwareFoundation/openfx"
 	description = "OpenFX image processing plug-in standard"
-	
+	homepage = "https://openeffects.org/"
+	topics = ["graphics", "vfx", "image-processing", "plugins"]
+
 	exports_sources = (
 		"cmake/*",
 		"Examples/*",
@@ -42,6 +44,7 @@ class openfx(ConanFile):
 		self.requires("expat/2.7.1") # for HostSupport
 		self.requires("cimg/3.3.2") # to draw text into images
 		self.requires("spdlog/1.13.0") # for logging
+		self.requires("tcb-span/cci.20220616") # for openfx-cpp span support (C++17)
 
 	def layout(self):
 		cmake_layout(self)
@@ -84,7 +87,7 @@ class openfx(ConanFile):
 		self.cpp_info.components["HostSupport"].requires = ["expat::expat"]
 		self.cpp_info.components["Support"].libs = [i for i in libs if "OfxSupport" in i]
 		self.cpp_info.components["Support"].includedirs = ["Support/include"]
-		self.cpp_info.components["Support"].requires = ["opengl::opengl"]
+		self.cpp_info.components["Support"].requires = ["opengl::opengl", "cimg::cimg", "spdlog::spdlog", "tcb-span::tcb-span"]
 
 		if self.settings.os == "Windows":
 			win_defines = ["WINDOWS", "NOMINMAX"]

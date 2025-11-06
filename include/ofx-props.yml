@@ -1,0 +1,1347 @@
+########################################################################
+# All OpenFX properties.
+########################################################################
+
+# List all properties by property-set, and then metadata for each
+# property.
+
+# Notes:
+# - In prop sets, _REFs interpolate the corresponding _DEFs. This is
+#   just to save repetition, mostly for params.
+# - In prop sets, the property set itself sets defaults for which
+#   side is able to write to props in that prop set. Individual props
+#   can override that with this syntax: - OfxPropName | write=host,...
+#   (this is generalizable, so "optional" can be done the same way)
+# - Action inArgs/outArgs don't (yet) support this override syntax
+#   because presumably all inArgs are host->plugin and outArgs are
+#   plugin->host, by definition.
+
+propertySets:
+  ImageEffectHost:
+    write: host
+    props:
+      - OfxPropAPIVersion
+      - OfxPropType
+      - OfxPropName
+      - OfxPropLabel
+      - OfxPropVersion
+      - OfxPropVersionLabel
+      - OfxImageEffectHostPropIsBackground
+      - OfxImageEffectPropSupportsOverlays
+      - OfxImageEffectPropSupportsMultiResolution
+      - OfxImageEffectPropSupportsTiles
+      - OfxImageEffectPropTemporalClipAccess
+      - OfxImageEffectPropSupportedComponents
+      - OfxImageEffectPropSupportedContexts
+      - OfxImageEffectPropMultipleClipDepths
+      - OfxImageEffectPropOpenCLSupported | host_optional=true
+      - OfxImageEffectPropSupportsMultipleClipPARs
+      - OfxImageEffectPropSetableFrameRate
+      - OfxImageEffectPropSetableFielding
+      - OfxParamHostPropSupportsCustomInteract
+      - OfxParamHostPropSupportsStringAnimation
+      - OfxParamHostPropSupportsChoiceAnimation
+      - OfxParamHostPropSupportsBooleanAnimation
+      - OfxParamHostPropSupportsCustomAnimation
+      - OfxParamHostPropSupportsStrChoice | host_optional=true
+      - OfxParamHostPropSupportsStrChoiceAnimation | host_optional=true
+      - OfxParamHostPropMaxParameters
+      - OfxParamHostPropMaxPages
+      - OfxParamHostPropPageRowColumnCount
+      - OfxPropHostOSHandle | host_optional=true
+      - OfxParamHostPropSupportsParametricAnimation | host_optional=true
+      - OfxImageEffectInstancePropSequentialRender | host_optional=true
+      - OfxImageEffectPropOpenGLRenderSupported
+      - OfxImageEffectPropRenderQualityDraft | host_optional=true
+      - OfxImageEffectHostPropNativeOrigin | host_optional=true
+      - OfxImageEffectPropColourManagementAvailableConfigs | host_optional=true
+      - OfxImageEffectPropColourManagementStyle | host_optional=true
+  EffectDescriptor:
+    write: plugin
+    props:
+      - OfxPropType
+      - OfxPropLabel
+      - OfxPropShortLabel
+      - OfxPropLongLabel
+      - OfxPropVersion | host_optional=true
+      - OfxPropVersionLabel | host_optional=true
+      - OfxPropPluginDescription | host_optional=true
+      - OfxImageEffectPropSupportedContexts
+      - OfxImageEffectPluginPropGrouping
+      - OfxImageEffectPluginPropSingleInstance
+      - OfxImageEffectPluginRenderThreadSafety
+      - OfxImageEffectPluginPropHostFrameThreading
+      - OfxImageEffectPluginPropOverlayInteractV1
+      - OfxImageEffectPropOpenCLSupported | host_optional=true
+      - OfxImageEffectPropSupportsMultiResolution
+      - OfxImageEffectPropSupportsTiles
+      - OfxImageEffectPropTemporalClipAccess
+      - OfxImageEffectPropSupportedPixelDepths
+      - OfxImageEffectPluginPropFieldRenderTwiceAlways
+      - OfxImageEffectPropMultipleClipDepths # should have been SupportsMultipleClipDepths
+      - OfxImageEffectPropSupportsMultipleClipPARs
+      - OfxImageEffectPluginRenderThreadSafety
+      - OfxImageEffectPropClipPreferencesSlaveParam
+      - OfxImageEffectPropOpenGLRenderSupported
+      - OfxPluginPropFilePath | write=host
+      - OfxOpenGLPropPixelDepth | host_optional=true
+      - OfxImageEffectPluginPropOverlayInteractV2
+      - OfxImageEffectPropColourManagementAvailableConfigs | host_optional=true
+      - OfxImageEffectPropColourManagementStyle | host_optional=true
+      - OfxImageEffectPropNoSpatialAwareness | host_optional=true
+  EffectInstance:
+    write: host
+    props:
+      - OfxPropType
+      - OfxImageEffectPropContext
+      - OfxPropInstanceData
+      - OfxImageEffectPropProjectSize
+      - OfxImageEffectPropProjectOffset
+      - OfxImageEffectPropProjectExtent
+      - OfxImageEffectPropPixelAspectRatio
+      - OfxImageEffectInstancePropEffectDuration
+      - OfxImageEffectInstancePropSequentialRender
+      - OfxImageEffectPropSupportsTiles
+      - OfxImageEffectPropOpenGLRenderSupported
+      - OfxImageEffectPropFrameRate
+      - OfxPropIsInteractive
+      - OfxImageEffectPropOCIOConfig
+      - OfxImageEffectPropOCIODisplay
+      - OfxImageEffectPropOCIOView
+      - OfxImageEffectPropColourManagementConfig
+      - OfxImageEffectPropColourManagementStyle
+      - OfxImageEffectPropDisplayColourspace
+      - OfxImageEffectPropPluginHandle
+  ClipDescriptor:
+    write: plugin
+    props:
+      - OfxPropType
+      - OfxPropName
+      - OfxPropLabel
+      - OfxPropShortLabel
+      - OfxPropLongLabel
+      - OfxImageEffectPropSupportedComponents
+      - OfxImageEffectPropTemporalClipAccess
+      - OfxImageClipPropOptional
+      - OfxImageClipPropFieldExtraction
+      - OfxImageClipPropIsMask
+      - OfxImageEffectPropSupportsTiles
+  ClipInstance:
+    write: host
+    props:
+      - OfxPropType
+      - OfxPropName
+      - OfxPropLabel
+      - OfxPropShortLabel
+      - OfxPropLongLabel
+      - OfxImageEffectPropSupportedComponents
+      - OfxImageEffectPropTemporalClipAccess
+      - OfxImageClipPropColourspace
+      - OfxImageClipPropPreferredColourspaces
+      - OfxImageClipPropOptional
+      - OfxImageClipPropFieldExtraction
+      - OfxImageClipPropIsMask
+      - OfxImageEffectPropSupportsTiles
+      - OfxImageEffectPropPixelDepth
+      - OfxImageEffectPropComponents
+      - OfxImageClipPropUnmappedPixelDepth
+      - OfxImageClipPropUnmappedComponents
+      - OfxImageEffectPropPreMultiplication
+      - OfxImagePropPixelAspectRatio
+      - OfxImageEffectPropFrameRate
+      - OfxImageEffectPropFrameRange
+      - OfxImageClipPropFieldOrder
+      - OfxImageClipPropConnected
+      - OfxImageEffectPropUnmappedFrameRange
+      - OfxImageEffectPropUnmappedFrameRate
+      - OfxImageClipPropContinuousSamples
+  Image:
+    write: host
+    props:
+      - OfxPropType
+      - OfxImageEffectPropPixelDepth
+      - OfxImageEffectPropComponents
+      - OfxImageEffectPropPreMultiplication
+      - OfxImageEffectPropRenderScale
+      - OfxImagePropPixelAspectRatio
+      - OfxImagePropData
+      - OfxImagePropBounds
+      - OfxImagePropRegionOfDefinition
+      - OfxImagePropRowBytes
+      - OfxImagePropField
+      - OfxImagePropUniqueIdentifier
+  ParameterSet:
+    write: plugin
+    props:
+      - OfxPropParamSetNeedsSyncing
+      - OfxPluginPropParamPageOrder
+  ParamsCommon_DEF:
+    - OfxPropType
+    - OfxPropName
+    - OfxPropLabel
+    - OfxPropShortLabel
+    - OfxPropLongLabel
+    - OfxParamPropType
+    - OfxParamPropSecret
+    - OfxParamPropHint
+    - OfxParamPropScriptName
+    - OfxParamPropParent
+    - OfxParamPropEnabled
+    - OfxParamPropDataPtr
+    - OfxPropIcon
+  ParamsAllButGroupPage_DEF:
+    - OfxParamPropInteractV1
+    - OfxParamPropInteractSize
+    - OfxParamPropInteractSizeAspect
+    - OfxParamPropInteractMinimumSize
+    - OfxParamPropInteractPreferedSize
+    - OfxParamPropHasHostOverlayHandle
+    - kOfxParamPropUseHostOverlayHandle
+  ParamsValue_DEF:
+    - OfxParamPropDefault
+    - OfxParamPropAnimates
+    - OfxParamPropIsAnimating | write=host
+    - OfxParamPropIsAutoKeying | write=host
+    - OfxParamPropPersistant
+    - OfxParamPropEvaluateOnChange
+    - OfxParamPropPluginMayWrite
+    - OfxParamPropCacheInvalidation
+    - OfxParamPropCanUndo
+  ParamsNumeric_DEF:
+    - OfxParamPropMin
+    - OfxParamPropMax
+    - OfxParamPropDisplayMin
+    - OfxParamPropDisplayMax
+  ParamsDouble_DEF:
+    - OfxParamPropIncrement
+    - OfxParamPropDigits
+  ParamsGroup:
+    write: plugin
+    props:
+      - OfxParamPropGroupOpen
+      - ParamsCommon_REF
+  ParamDouble1D:
+    write: plugin
+    props:
+      - OfxParamPropShowTimeMarker
+      - OfxParamPropDoubleType
+      - ParamsCommon_REF
+      - ParamsAllButGroupPage_REF
+      - ParamsValue_REF
+      - ParamsNumeric_REF
+      - ParamsDouble_REF
+  ParamsDouble2D3D:
+    write: plugin
+    props:
+      - OfxParamPropDoubleType
+      - ParamsCommon_REF
+      - ParamsAllButGroupPage_REF
+      - ParamsValue_REF
+      - ParamsNumeric_REF
+      - ParamsDouble_REF
+  ParamsNormalizedSpatial:
+    write: plugin
+    props:
+      - OfxParamPropDefaultCoordinateSystem
+      - ParamsCommon_REF
+      - ParamsAllButGroupPage_REF
+      - ParamsValue_REF
+      - ParamsNumeric_REF
+      - ParamsDouble_REF
+  ParamsInt2D3D:
+    write: plugin
+    props:
+      - OfxParamPropDimensionLabel
+      - ParamsCommon_REF
+      - ParamsAllButGroupPage_REF
+      - ParamsValue_REF
+      - ParamsNumeric_REF
+  ParamsString:
+    write: plugin
+    props:
+      - OfxParamPropStringMode
+      - OfxParamPropStringFilePathExists
+      - ParamsCommon_REF
+      - ParamsAllButGroupPage_REF
+      - ParamsValue_REF
+      - ParamsNumeric_REF
+  ParamsByte:
+    write: plugin
+    props:
+      - ParamsCommon_REF
+      - ParamsAllButGroupPage_REF
+      - ParamsValue_REF
+      - ParamsNumeric_REF
+  ParamsChoice:
+    write: plugin
+    props:
+      - OfxParamPropChoiceOption
+      - OfxParamPropChoiceOrder
+      - ParamsCommon_REF
+      - ParamsAllButGroupPage_REF
+      - ParamsValue_REF
+  ParamsStrChoice:
+    write: plugin
+    props:
+      - OfxParamPropChoiceOption
+      - OfxParamPropChoiceEnum
+      - ParamsCommon_REF
+      - ParamsAllButGroupPage_REF
+      - ParamsValue_REF
+  ParamsCustom:
+    write: plugin
+    props:
+      - OfxParamPropCustomCallbackV1
+      - ParamsCommon_REF
+      - ParamsAllButGroupPage_REF
+      - ParamsValue_REF
+  ParamsPage:
+    write: plugin
+    props:
+      - OfxParamPropPageChild
+      - ParamsCommon_REF
+  ParamsParametric:
+    write: plugin
+    props:
+      - OfxParamPropAnimates
+      - OfxParamPropIsAnimating
+      - OfxParamPropIsAutoKeying
+      - OfxParamPropPersistant
+      - OfxParamPropEvaluateOnChange
+      - OfxParamPropPluginMayWrite
+      - OfxParamPropCacheInvalidation
+      - OfxParamPropCanUndo
+      - OfxParamPropParametricDimension
+      - OfxParamPropParametricUIColour
+      - OfxParamPropParametricInteractBackground
+      - OfxParamPropParametricRange
+      - ParamsCommon_REF
+      - ParamsAllButGroupPage_REF
+      - ParamsValue_REF
+  InteractDescriptor:
+    write: host
+    props:
+      - OfxInteractPropHasAlpha
+      - OfxInteractPropBitDepth
+  InteractInstance:
+    write: host
+    props:
+      - OfxPropEffectInstance
+      - OfxPropInstanceData
+      - OfxInteractPropPixelScale
+      - OfxInteractPropBackgroundColour
+      - OfxInteractPropHasAlpha
+      - OfxInteractPropBitDepth
+      - OfxInteractPropSlaveToParam
+      - OfxInteractPropSuggestedColour
+
+Actions:
+  OfxActionLoad:
+    inArgs:
+    outArgs:
+  OfxActionDescribe:
+    inArgs:
+    outArgs:
+  OfxActionUnload:
+    inArgs:
+    outArgs:
+  OfxActionPurgeCaches:
+    inArgs:
+    outArgs:
+  OfxActionSyncPrivateData:
+    inArgs:
+    outArgs:
+  OfxActionCreateInstance:
+    inArgs:
+    outArgs:
+  OfxActionDestroyInstance:
+    inArgs:
+    outArgs:
+  OfxActionInstanceChanged:
+    inArgs:
+      - OfxPropType
+      - OfxPropName
+      - OfxPropChangeReason
+      - OfxPropTime
+      - OfxImageEffectPropRenderScale
+    outArgs:
+  OfxActionBeginInstanceChanged:
+    inArgs:
+      - OfxPropChangeReason
+    outArgs: []
+  OfxActionEndInstanceChanged:
+    inArgs:
+      - OfxPropChangeReason
+    outArgs:
+  OfxActionBeginInstanceEdit:
+    inArgs:
+    outArgs:
+  OfxActionEndInstanceEdit:
+    inArgs:
+    outArgs:
+  OfxImageEffectActionGetRegionOfDefinition:
+    inArgs:
+      - OfxPropTime
+      - OfxImageEffectPropRenderScale
+    outArgs:
+      - OfxImageEffectPropRegionOfDefinition
+  OfxImageEffectActionGetRegionsOfInterest:
+    inArgs:
+      - OfxPropTime
+      - OfxImageEffectPropRenderScale
+      - OfxImageEffectPropRegionOfInterest
+    outArgs:
+    # - OfxImageEffectClipPropRoI_ # with clip name
+  OfxImageEffectActionGetTimeDomain:
+    inArgs:
+    outArgs:
+      - OfxImageEffectPropFrameRange
+  OfxImageEffectActionGetFramesNeeded:
+    inArgs:
+      - OfxPropTime
+    outArgs:
+      - OfxImageEffectPropFrameRange
+  OfxImageEffectActionGetClipPreferences:
+    inArgs:
+    outArgs:
+      - OfxImageEffectPropFrameRate
+      - OfxImageClipPropFieldOrder
+      - OfxImageEffectPropPreMultiplication
+      - OfxImageClipPropContinuousSamples
+      - OfxImageEffectFrameVarying
+      # these special props all have the clip name postpended after "_"
+      # - OfxImageClipPropComponents_
+      # - OfxImageClipPropDepth_
+      # - OfxImageClipPropPreferredColourspaces_
+      # - OfxImageClipPropPAR_
+  OfxImageEffectActionIsIdentity:
+    inArgs:
+      - OfxPropTime
+      - OfxImageEffectPropFieldToRender
+      - OfxImageEffectPropRenderWindow
+      - OfxImageEffectPropRenderScale
+  OfxImageEffectActionRender:
+    inArgs:
+      - OfxPropTime
+      - OfxImageEffectPropSequentialRenderStatus
+      - OfxImageEffectPropInteractiveRenderStatus
+      - OfxImageEffectPropRenderQualityDraft
+      - OfxImageEffectPropCudaEnabled
+      - OfxImageEffectPropCudaRenderSupported
+      - OfxImageEffectPropCudaStream
+      - OfxImageEffectPropCudaStreamSupported
+      - OfxImageEffectPropMetalCommandQueue
+      - OfxImageEffectPropMetalEnabled
+      - OfxImageEffectPropMetalRenderSupported
+      - OfxImageEffectPropOpenCLCommandQueue
+      - OfxImageEffectPropOpenCLEnabled
+      - OfxImageEffectPropOpenCLImage
+      - OfxImageEffectPropOpenCLRenderSupported
+      - OfxImageEffectPropOpenCLSupported
+      - OfxImageEffectPropOpenGLEnabled
+      - OfxImageEffectPropOpenGLTextureIndex
+      - OfxImageEffectPropOpenGLTextureTarget
+      - OfxImageEffectPropNoSpatialAwareness
+  OfxImageEffectActionBeginSequenceRender:
+    inArgs:
+      - OfxImageEffectPropFrameRange
+      - OfxImageEffectPropFrameStep
+      - OfxPropIsInteractive
+      - OfxImageEffectPropRenderScale
+      - OfxImageEffectPropSequentialRenderStatus
+      - OfxImageEffectPropInteractiveRenderStatus
+      - OfxImageEffectPropCudaEnabled
+      - OfxImageEffectPropCudaRenderSupported
+      - OfxImageEffectPropCudaStream
+      - OfxImageEffectPropCudaStreamSupported
+      - OfxImageEffectPropMetalCommandQueue
+      - OfxImageEffectPropMetalEnabled
+      - OfxImageEffectPropMetalRenderSupported
+      - OfxImageEffectPropOpenCLCommandQueue
+      - OfxImageEffectPropOpenCLEnabled
+      - OfxImageEffectPropOpenCLImage
+      - OfxImageEffectPropOpenCLRenderSupported
+      - OfxImageEffectPropOpenCLSupported
+      - OfxImageEffectPropOpenGLEnabled
+      - OfxImageEffectPropOpenGLTextureIndex
+      - OfxImageEffectPropOpenGLTextureTarget
+      - OfxImageEffectPropInteractiveRenderStatus
+      - OfxImageEffectPropNoSpatialAwareness
+    outArgs:
+  OfxImageEffectActionEndSequenceRender:
+    inArgs:
+      - OfxImageEffectPropFrameRange
+      - OfxImageEffectPropFrameStep
+      - OfxPropIsInteractive
+      - OfxImageEffectPropRenderScale
+      - OfxImageEffectPropSequentialRenderStatus
+      - OfxImageEffectPropInteractiveRenderStatus
+      - OfxImageEffectPropCudaEnabled
+      - OfxImageEffectPropCudaRenderSupported
+      - OfxImageEffectPropCudaStream
+      - OfxImageEffectPropCudaStreamSupported
+      - OfxImageEffectPropMetalCommandQueue
+      - OfxImageEffectPropMetalEnabled
+      - OfxImageEffectPropMetalRenderSupported
+      - OfxImageEffectPropOpenCLCommandQueue
+      - OfxImageEffectPropOpenCLEnabled
+      - OfxImageEffectPropOpenCLImage
+      - OfxImageEffectPropOpenCLRenderSupported
+      - OfxImageEffectPropOpenCLSupported
+      - OfxImageEffectPropOpenGLEnabled
+      - OfxImageEffectPropOpenGLTextureIndex
+      - OfxImageEffectPropOpenGLTextureTarget
+      - OfxImageEffectPropInteractiveRenderStatus
+    outArgs:
+  OfxImageEffectActionDescribeInContext:
+    inArgs:
+      - OfxImageEffectPropContext
+    outArgs:
+  # These are duplicates of regular describe/create/destroy,
+  # not unique action names.
+  # OfxActionDescribeInteract:
+  #   inArgs:
+  #   outArgs:
+  # OfxActionCreateInstanceInteract:
+  #   inArgs:
+  #   outArgs:
+  # OfxActionDestroyInstanceInteract:
+  #   inArgs:
+  #   outArgs:
+  OfxInteractActionDraw:
+    inArgs:
+      - OfxPropEffectInstance
+      - OfxInteractPropDrawContext
+      - OfxInteractPropPixelScale
+      - OfxInteractPropBackgroundColour
+      - OfxPropTime
+      - OfxImageEffectPropRenderScale
+    outArgs:
+  OfxInteractActionPenMotion:
+    inArgs:
+      - OfxPropEffectInstance
+      - OfxInteractPropPixelScale
+      - OfxInteractPropBackgroundColour
+      - OfxPropTime
+      - OfxImageEffectPropRenderScale
+      - OfxInteractPropPenPosition
+      - OfxInteractPropPenViewportPosition
+      - OfxInteractPropPenPressure
+    outArgs:
+  OfxInteractActionPenDown:
+    inArgs:
+      - OfxPropEffectInstance
+      - OfxInteractPropPixelScale
+      - OfxInteractPropBackgroundColour
+      - OfxPropTime
+      - OfxImageEffectPropRenderScale
+      - OfxInteractPropPenPosition
+      - OfxInteractPropPenViewportPosition
+      - OfxInteractPropPenPressure
+    outArgs:
+  OfxInteractActionPenUp:
+    inArgs:
+      - OfxPropEffectInstance
+      - OfxInteractPropPixelScale
+      - OfxInteractPropBackgroundColour
+      - OfxPropTime
+      - OfxImageEffectPropRenderScale
+      - OfxInteractPropPenPosition
+      - OfxInteractPropPenViewportPosition
+      - OfxInteractPropPenPressure
+    outArgs:
+  OfxInteractActionKeyDown:
+    inArgs:
+      - OfxPropEffectInstance
+      - kOfxPropKeySym
+      - kOfxPropKeyString
+      - OfxPropTime
+      - OfxImageEffectPropRenderScale
+    outArgs:
+  OfxInteractActionKeyUp:
+    inArgs:
+      - OfxPropEffectInstance
+      - kOfxPropKeySym
+      - kOfxPropKeyString
+      - OfxPropTime
+      - OfxImageEffectPropRenderScale
+    outArgs:
+  OfxInteractActionKeyRepeat:
+    inArgs:
+      - OfxPropEffectInstance
+      - kOfxPropKeySym
+      - kOfxPropKeyString
+      - OfxPropTime
+      - OfxImageEffectPropRenderScale
+    outArgs:
+  OfxInteractActionGainFocus:
+    inArgs:
+      - OfxPropEffectInstance
+      - OfxInteractPropPixelScale
+      - OfxInteractPropBackgroundColour
+      - OfxPropTime
+      - OfxImageEffectPropRenderScale
+    outArgs:
+  OfxInteractActionLoseFocus:
+    inArgs:
+      - OfxPropEffectInstance
+      - OfxInteractPropPixelScale
+      - OfxInteractPropBackgroundColour
+      - OfxPropTime
+      - OfxImageEffectPropRenderScale
+    outArgs:
+  CustomParamInterpFunc:
+    inArgs:
+      - OfxParamPropCustomValue
+      - OfxParamPropInterpolationTime
+      - OfxParamPropInterpolationAmount
+    outArgs:
+      - OfxParamPropCustomValue
+      - OfxParamPropInterpolationTime
+  OfxImageEffectActionGetOutputColourspace:
+    inArgs:
+      - OfxImageClipPropPreferredColourspaces
+    outArgs:
+      - OfxImageClipPropColourspace
+  
+# Properties by name.
+# Notes:
+#  type=bool means an int property with value 1 or 0 for true or false.
+#  type=enum means a string property with values from the "values" list
+#  default: only include here if not "" for strings or 0 for numeric or null for ptr.
+#  hostOptional: is it optional for a host to support this prop? Only include if true.
+#  pluginOptional: is it optional for a plugin to support this prop? Only include if true.
+#  dimension: 0 means "any dimension OK"
+properties:
+  OfxPropType:
+    type: string
+    dimension: 1
+  OfxPropName:
+    type: string
+    dimension: 1
+  OfxPropTime:
+    type: double
+    dimension: 1
+  # Param props
+  OfxParamPropSecret:
+    type: bool
+    dimension: 1
+  OfxParamPropHint:
+    type: string
+    dimension: 1
+  OfxParamPropScriptName:
+    type: string
+    dimension: 1
+  OfxParamPropParent:
+    type: string
+    dimension: 1
+  OfxParamPropEnabled:
+    type: bool
+    dimension: 1
+    optional: true
+  OfxParamPropDataPtr:
+    type: pointer
+    dimension: 1
+  OfxParamPropType:
+    type: string
+    dimension: 1
+  OfxPropLabel:
+    type: string
+    dimension: 1
+  OfxPropShortLabel:
+    type: string
+    dimension: 1
+    hostOptional: true
+  OfxPropLongLabel:
+    type: string
+    dimension: 1
+    hostOptional: true
+  OfxPropIcon:
+    type: string
+    dimension: 2
+    hostOptional: true
+  # host props
+  OfxPropAPIVersion:
+    type: int
+    dimension: 0
+  OfxPropVersion:
+    type: int
+    dimension: 0
+  OfxPropVersionLabel:
+    type: string
+    dimension: 1
+  # ImageEffect props:
+  OfxPropPluginDescription:
+    type: string
+    dimension: 1
+  OfxImageEffectPropSupportedContexts:
+    type: enum
+    dimension: 0
+    values:
+      - OfxImageEffectContextGenerator
+      - OfxImageEffectContextFilter
+      - OfxImageEffectContextTransition
+      - OfxImageEffectContextPaint
+      - OfxImageEffectContextGeneral
+      - OfxImageEffectContextRetimer
+  OfxImageEffectPluginPropGrouping:
+    type: string
+    dimension: 1
+  OfxImageEffectPluginPropSingleInstance:
+    type: bool
+    dimension: 1
+  OfxImageEffectPluginRenderThreadSafety:
+    type: enum
+    dimension: 1
+    values: 
+      - OfxImageEffectRenderUnsafe
+      - OfxImageEffectRenderInstanceSafe
+      - OfxImageEffectRenderFullySafe
+  OfxImageEffectPluginPropHostFrameThreading:
+    type: bool
+    dimension: 1
+  OfxImageEffectPropSupportsMultiResolution:
+    type: bool
+    dimension: 1
+  OfxImageEffectPropSupportsTiles:
+    type: bool
+    dimension: 1
+  OfxImageEffectPropTemporalClipAccess:
+    type: bool
+    dimension: 1
+  OfxImageEffectPropSupportedPixelDepths:
+    type: enum
+    dimension: 0
+    values:
+      - OfxBitDepthNone
+      - OfxBitDepthByte
+      - OfxBitDepthShort
+      - OfxBitDepthHalf
+      - OfxBitDepthFloat
+  OfxImageEffectPluginPropFieldRenderTwiceAlways:
+    type: bool
+    dimension: 1
+  OfxImageEffectPropMultipleClipDepths:
+    cname: kOfxImageEffectPropSupportsMultipleClipDepths
+    type: bool
+    dimension: 1
+  OfxImageEffectPropSupportsMultipleClipPARs:
+    type: bool
+    dimension: 1
+  OfxImageEffectPropClipPreferencesSlaveParam:
+    type: string
+    dimension: 0
+  OfxImageEffectInstancePropSequentialRender:
+    type: bool
+    dimension: 1
+  OfxPluginPropFilePath:
+    type: string
+    dimension: 1
+  OfxImageEffectPropOpenGLRenderSupported:
+    type: enum
+    dimension: 1
+    values: ['false', 'true', 'needed']
+  OfxImageEffectPropCudaRenderSupported:
+    type: enum
+    dimension: 1
+    values: ['false', 'true', 'needed']
+  OfxImageEffectPropCudaStreamSupported:
+    type: enum
+    dimension: 1
+    values: ['false', 'true', 'needed']
+  OfxImageEffectPropMetalRenderSupported:
+    type: enum
+    dimension: 1
+    values: ['false', 'true', 'needed']
+    introduced: "1.5"
+  OfxImageEffectPropOpenCLRenderSupported:
+    type: enum
+    dimension: 1
+    values: ['false', 'true', 'needed']
+    introduced: "1.5"
+  # Clip props
+  OfxImageClipPropColourspace:
+    type: string
+    dimension: 1
+    introduced: "1.5"
+  OfxImageClipPropConnected:
+    type: bool
+    dimension: 1
+  OfxImageClipPropContinuousSamples:
+    type: bool
+    dimension: 1
+  OfxImageClipPropFieldExtraction:
+    type: enum
+    dimension: 1
+    values: ['OfxImageFieldNone', 'OfxImageFieldLower', 'OfxImageFieldUpper', 'OfxImageFieldBoth', 'OfxImageFieldSingle', 'OfxImageFieldDoubled']
+  OfxImageClipPropFieldOrder:
+    type: enum
+    dimension: 1
+    values: ['OfxImageFieldNone', 'OfxImageFieldLower', 'OfxImageFieldUpper']
+  OfxImageClipPropIsMask:
+    type: bool
+    dimension: 1
+  OfxImageClipPropOptional:
+    type: bool
+    dimension: 1
+  OfxImageClipPropPreferredColourspaces:
+    type: string
+    dimension: 0
+    introduced: "1.5"
+  OfxImageClipPropUnmappedComponents:
+    type: enum
+    dimension: 1
+    values:
+      - OfxImageComponentNone
+      - OfxImageComponentRGBA
+      - OfxImageComponentRGB
+      - OfxImageComponentAlpha
+  OfxImageClipPropUnmappedPixelDepth:
+    type: enum
+    dimension: 1
+    values:
+      - OfxBitDepthNone
+      - OfxBitDepthByte
+      - OfxBitDepthShort
+      - OfxBitDepthHalf
+      - OfxBitDepthFloat
+  # # Special props, with clip names postpended:
+  # OfxImageClipPropComponents_:
+  #   type: enum
+  #   dimension: 1
+  #   values:
+  #     - OfxImageComponentNone
+  #     - OfxImageComponentRGBA
+  #     - OfxImageComponentRGB
+  #     - OfxImageComponentAlpha
+  # OfxImageClipPropDepth_:
+  #   type: enum
+  #   dimension: 1
+  #   values:
+  #     - OfxBitDepthNone
+  #     - OfxBitDepthByte
+  #     - OfxBitDepthShort
+  #     - OfxBitDepthHalf
+  #     - OfxBitDepthFloat
+  # OfxImageClipPropPreferredColourspaces_:
+  #   type: string
+  #   dimension: 1
+  # OfxImageClipPropPAR_:
+  #   type: double
+  #   dimension: 1
+  # OfxImageClipPropRoI_:
+  #   type: int
+  #   dimension: 4
+
+  # Image Effect
+  OfxImageEffectFrameVarying:
+    type: bool
+    dimension: 1
+  OfxImageEffectHostPropIsBackground:
+    type: bool
+    dimension: 1
+  OfxImageEffectHostPropNativeOrigin:
+    type: enum
+    dimension: 1
+    values:
+      - OfxImageEffectHostPropNativeOriginBottomLeft
+      - OfxImageEffectHostPropNativeOriginTopLeft
+      - OfxImageEffectHostPropNativeOriginCenter
+  OfxImageEffectInstancePropEffectDuration:
+    type: double
+    dimension: 1
+  OfxImageEffectPluginPropOverlayInteractV1:
+    type: pointer
+    dimension: 1
+  OfxImageEffectPluginPropOverlayInteractV2:
+    type: pointer
+    dimension: 1
+  OfxImageEffectPropColourManagementAvailableConfigs:
+    type: string
+    dimension: 0
+    introduced: "1.5"
+  OfxImageEffectPropColourManagementStyle:
+    type: enum
+    dimension: 1
+    values:
+      - OfxImageEffectPropColourManagementNone
+      - OfxImageEffectPropColourManagementBasic
+      - OfxImageEffectPropColourManagementCore
+      - OfxImageEffectPropColourManagementFull
+      - OfxImageEffectPropColourManagementOCIO
+    introduced: "1.5"
+  OfxImageEffectPropComponents:
+    type: enum
+    dimension: 1
+    values:
+      - OfxImageComponentNone
+      - OfxImageComponentRGBA
+      - OfxImageComponentRGB
+      - OfxImageComponentAlpha
+  OfxImageEffectPropContext:
+    type: enum
+    dimension: 1
+    values:
+      - OfxImageEffectContextGenerator
+      - OfxImageEffectContextFilter
+      - OfxImageEffectContextTransition
+      - OfxImageEffectContextPaint
+      - OfxImageEffectContextGeneral
+      - OfxImageEffectContextRetimer
+  OfxImageEffectPropCudaEnabled:
+    type: bool
+    dimension: 1
+  OfxImageEffectPropCudaStream:
+    type: pointer
+    dimension: 1
+  OfxImageEffectPropDisplayColourspace:
+    type: string
+    dimension: 1
+    introduced: "1.5"
+  OfxImageEffectPropFieldToRender:
+    type: enum
+    dimension: 1
+    values:
+      - OfxImageFieldNone
+      - OfxImageFieldBoth
+      - OfxImageFieldLower
+      - OfxImageFieldUpper
+  OfxImageEffectPropFrameRange:
+    type: double
+    dimension: 2
+  OfxImageEffectPropFrameRate:
+    type: double
+    dimension: 1
+  OfxImageEffectPropFrameStep:
+    type: double
+    dimension: 1
+  OfxImageEffectPropInAnalysis:
+    type: bool
+    dimension: 1
+    deprecated: "1.4"
+  OfxImageEffectPropInteractiveRenderStatus:
+    type: bool
+    dimension: 1
+  OfxImageEffectPropMetalCommandQueue:
+    type: pointer
+    dimension: 1
+    introduced: "1.5"
+  OfxImageEffectPropMetalEnabled:
+    type: bool
+    dimension: 1
+    introduced: "1.5"
+  OfxImageEffectPropOCIOConfig:
+    type: string
+    dimension: 1
+    introduced: "1.5"
+  OfxImageEffectPropOCIODisplay:
+    type: string
+    dimension: 1
+    introduced: "1.5"
+  OfxImageEffectPropOCIOView:
+    type: string
+    dimension: 1
+    introduced: "1.5"
+  OfxImageEffectPropOpenCLCommandQueue:
+    type: pointer
+    dimension: 1
+    introduced: "1.5"
+  OfxImageEffectPropOpenCLEnabled:
+    type: bool
+    dimension: 1
+    introduced: "1.5"
+  OfxImageEffectPropOpenCLImage:
+    type: pointer
+    dimension: 1
+    introduced: "1.5"
+  OfxImageEffectPropOpenCLSupported:
+    type: enum
+    dimension: 1
+    values:
+      - "false"
+      - "true"
+    introduced: "1.5"
+  OfxImageEffectPropOpenGLEnabled:
+    type: bool
+    dimension: 1
+  OfxImageEffectPropOpenGLTextureIndex:
+    type: int
+    dimension: 1
+  OfxImageEffectPropOpenGLTextureTarget:
+    type: int
+    dimension: 1
+  OfxImageEffectPropPixelDepth:
+    type: enum
+    dimension: 1
+    values:
+      - OfxBitDepthNone
+      - OfxBitDepthByte
+      - OfxBitDepthShort
+      - OfxBitDepthHalf
+      - OfxBitDepthFloat
+  OfxImageEffectPropPluginHandle:
+    type: pointer
+    dimension: 1
+  OfxImageEffectPropPreMultiplication:
+    type: enum
+    dimension: 1
+    values:
+      - OfxImageOpaque
+      - OfxImagePreMultiplied
+      - OfxImageUnPreMultiplied
+  OfxImageEffectPropProjectExtent:
+    type: double
+    dimension: 2
+  OfxImageEffectPropProjectOffset:
+    type: double
+    dimension: 2
+  OfxImageEffectPropPixelAspectRatio:
+    cname: kOfxImageEffectPropProjectPixelAspectRatio
+    type: double
+    dimension: 1
+  OfxImageEffectPropProjectSize:
+    type: double
+    dimension: 2
+  OfxImageEffectPropRegionOfDefinition:
+    type: double
+    dimension: 4
+  OfxImageEffectPropRegionOfInterest:
+    type: double
+    dimension: 4
+  OfxImageEffectPropRenderQualityDraft:
+    type: bool
+    dimension: 1
+  OfxImageEffectPropRenderScale:
+    type: double
+    dimension: 2
+  OfxImageEffectPropRenderWindow:
+    type: int
+    dimension: 4
+  OfxImageEffectPropSequentialRenderStatus:
+    type: bool
+    dimension: 1
+  OfxImageEffectPropSetableFielding:
+    type: bool
+    dimension: 1
+  OfxImageEffectPropSetableFrameRate:
+    type: bool
+    dimension: 1
+  OfxImageEffectPropSupportedComponents:
+    type: enum
+    dimension: 0
+    values:
+      - OfxImageComponentNone
+      - OfxImageComponentRGBA
+      - OfxImageComponentRGB
+      - OfxImageComponentAlpha
+  OfxImageEffectPropSupportsOverlays:
+    type: bool
+    dimension: 1
+  OfxImageEffectPropUnmappedFrameRange:
+    type: double
+    dimension: 2
+  OfxImageEffectPropUnmappedFrameRate:
+    type: double
+    dimension: 1
+  OfxImageEffectPropColourManagementConfig:
+    type: string
+    dimension: 1
+    introduced: "1.5"
+  OfxImagePropBounds:
+    type: int
+    dimension: 4
+  OfxImagePropData:
+    type: pointer
+    dimension: 1
+  OfxImagePropField:
+    type: enum
+    dimension: 1
+    values:
+      - OfxImageFieldNone
+      - OfxImageFieldBoth
+      - OfxImageFieldLower
+      - OfxImageFieldUpper
+  OfxImagePropPixelAspectRatio:
+    type: double
+    dimension: 1
+  OfxImagePropRegionOfDefinition:
+    type: int
+    dimension: 4
+  OfxImagePropRowBytes:
+    type: int
+    dimension: 1
+  OfxImagePropUniqueIdentifier:
+    type: string
+    dimension: 1
+  # Interact/Drawing
+  OfxInteractPropBackgroundColour:
+    type: double
+    dimension: 3
+  OfxInteractPropBitDepth:
+    type: int
+    dimension: 1
+  OfxInteractPropDrawContext:
+    type: pointer
+    dimension: 1
+  OfxInteractPropHasAlpha:
+    type: bool
+    dimension: 1
+  OfxInteractPropPenPosition:
+    type: double
+    dimension: 2
+  OfxInteractPropPenPressure:
+    type: double
+    dimension: 1
+  OfxInteractPropPenViewportPosition:
+    type: int
+    dimension: 2
+  OfxInteractPropPixelScale:
+    type: double
+    dimension: 2
+  OfxInteractPropSlaveToParam:
+    type: string
+    dimension: 0
+  OfxInteractPropSuggestedColour:
+    type: double
+    dimension: 3
+  OfxInteractPropViewport:
+    cname: kOfxInteractPropViewportSize
+    type: int
+    dimension: 2
+    deprecated: "1.3"
+  OfxOpenGLPropPixelDepth:
+    type: enum
+    dimension: 0
+    values:
+      - OfxBitDepthNone
+      - OfxBitDepthByte
+      - OfxBitDepthShort
+      - OfxBitDepthHalf
+      - OfxBitDepthFloat
+  OfxParamHostPropMaxPages:
+    type: int
+    dimension: 1
+  OfxParamHostPropMaxParameters:
+    type: int
+    dimension: 1
+  OfxParamHostPropPageRowColumnCount:
+    type: int
+    dimension: 2
+  OfxParamHostPropSupportsBooleanAnimation:
+    type: bool
+    dimension: 1
+  OfxParamHostPropSupportsChoiceAnimation:
+    type: bool
+    dimension: 1
+  OfxParamHostPropSupportsCustomAnimation:
+    type: bool
+    dimension: 1
+  OfxParamHostPropSupportsCustomInteract:
+    type: bool
+    dimension: 1
+  OfxParamHostPropSupportsParametricAnimation:
+    type: bool
+    dimension: 1
+  OfxParamHostPropSupportsStrChoice:
+    type: bool
+    dimension: 1
+    introduced: "1.5"
+  OfxParamHostPropSupportsStrChoiceAnimation:
+    type: bool
+    dimension: 1
+    introduced: "1.5"
+  OfxParamHostPropSupportsStringAnimation:
+    type: bool
+    dimension: 1
+  # Param
+  OfxParamPropAnimates:
+    type: bool
+    dimension: 1
+  OfxParamPropCacheInvalidation:
+    type: enum
+    dimension: 1
+    values:
+      - OfxParamInvalidateValueChange
+      - OfxParamInvalidateValueChangeToEnd
+      - OfxParamInvalidateAll
+  OfxParamPropCanUndo:
+    type: bool
+    dimension: 1
+  OfxParamPropChoiceEnum:
+    type: bool
+    dimension: 1
+    added: "1.5"
+  OfxParamPropChoiceOption:
+    type: string
+    dimension: 0
+  OfxParamPropChoiceOrder:
+    type: int
+    dimension: 0
+  OfxParamPropCustomCallbackV1:
+    cname: kOfxParamPropCustomInterpCallbackV1
+    type: pointer
+    dimension: 1
+  OfxParamPropCustomValue:
+    type: string
+    dimension: 2
+  # This is special because its type and dims vary depending on the param
+  OfxParamPropDefault:
+    type: [int, double, string, pointer]
+    dimension: 0
+  OfxParamPropDefaultCoordinateSystem:
+    type: enum
+    dimension: 1
+    values:
+      - OfxParamCoordinatesCanonical
+      - OfxParamCoordinatesNormalised
+  OfxParamPropDigits:
+    type: int
+    dimension: 1
+  OfxParamPropDimensionLabel:
+    type: string
+    dimension: 1
+  OfxParamPropDisplayMax:
+    type: [int, double]
+    dimension: 0
+  OfxParamPropDisplayMin:
+    type: [int, double]
+    dimension: 0
+  OfxParamPropDoubleType:
+    type: enum
+    dimension: 1
+    values:
+      - OfxParamDoubleTypePlain
+      - OfxParamDoubleTypeAngle
+      - OfxParamDoubleTypeScale
+      - OfxParamDoubleTypeTime
+      - OfxParamDoubleTypeAbsoluteTime
+      - OfxParamDoubleTypeX
+      - OfxParamDoubleTypeXAbsolute
+      - OfxParamDoubleTypeY
+      - OfxParamDoubleTypeYAbsolute
+      - OfxParamDoubleTypeXY
+      - OfxParamDoubleTypeXYAbsolute
+  OfxParamPropEvaluateOnChange:
+    type: bool
+    dimension: 1
+  OfxParamPropGroupOpen:
+    type: bool
+    dimension: 1
+  OfxParamPropHasHostOverlayHandle:
+    type: bool
+    dimension: 1
+  OfxParamPropIncrement:
+    type: double
+    dimension: 1
+  OfxParamPropInteractMinimumSize:
+    type: double
+    dimension: 2
+  OfxParamPropInteractPreferedSize:
+    type: int
+    dimension: 2
+  OfxParamPropInteractSize:
+    type: double
+    dimension: 2
+  OfxParamPropInteractSizeAspect:
+    type: double
+    dimension: 1
+  OfxParamPropInteractV1:
+    type: pointer
+    dimension: 1
+  OfxParamPropInterpolationAmount:
+    type: double
+    dimension: 1
+  OfxParamPropInterpolationTime:
+    type: double
+    dimension: 2
+  OfxParamPropIsAnimating:
+    type: bool
+    dimension: 1
+  OfxParamPropIsAutoKeying:
+    type: bool
+    dimension: 1
+  OfxParamPropMax:
+    type: [int, double]
+    dimension: 0
+  OfxParamPropMin:
+    type: [int, double]
+    dimension: 0
+  OfxParamPropPageChild:
+    type: string
+    dimension: 0
+  OfxParamPropParametricDimension:
+    type: int
+    dimension: 1
+  OfxParamPropParametricInteractBackground:
+    type: pointer
+    dimension: 1
+  OfxParamPropParametricRange:
+    type: double
+    dimension: 2
+  OfxParamPropParametricUIColour:
+    type: double
+    dimension: 0
+  OfxParamPropPersistant:
+    type: bool
+    dimension: 1
+  OfxParamPropPluginMayWrite:
+    type: bool
+    dimension: 1
+    deprecated: "1.4"
+  OfxParamPropShowTimeMarker:
+    type: bool
+    dimension: 1
+  OfxParamPropStringMode:
+    type: enum
+    dimension: 1
+    values:
+      - OfxParamStringIsSingleLine
+      - OfxParamStringIsMultiLine
+      - OfxParamStringIsFilePath
+      - OfxParamStringIsDirectoryPath
+      - OfxParamStringIsLabel
+      - OfxParamStringIsRichTextFormat
+  kOfxParamPropUseHostOverlayHandle:
+    cname: kOfxParamPropUseHostOverlayHandle
+    type: bool
+    dimension: 1
+  OfxParamPropStringFilePathExists:
+    type: bool
+    dimension: 1
+  OfxPluginPropParamPageOrder:
+    type: string
+    dimension: 0
+  OfxPropChangeReason:
+    type: enum
+    dimension: 1
+    values:
+      - OfxChangeUserEdited
+      - OfxChangePluginEdited
+      - OfxChangeTime
+  OfxPropEffectInstance:
+    type: pointer
+    dimension: 1
+  OfxPropHostOSHandle:
+    type: pointer
+    dimension: 1
+  OfxPropInstanceData:
+    type: pointer
+    dimension: 1
+  OfxPropIsInteractive:
+    type: bool
+    dimension: 1
+  kOfxPropKeyString:
+    cname: kOfxPropKeyString
+    type: string
+    dimension: 1
+  kOfxPropKeySym:
+    cname: kOfxPropKeySym
+    type: int
+    dimension: 1
+  OfxPropParamSetNeedsSyncing:
+    type: bool
+    dimension: 1
+  OfxImageEffectPropNoSpatialAwareness:
+    dimension: 1
+    type: enum
+    values: ['false', 'true']

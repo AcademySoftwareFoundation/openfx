@@ -1,3 +1,4 @@
 sphinx<7
 breathe
 sphinx_rtd_theme
+pyyaml>=6.0

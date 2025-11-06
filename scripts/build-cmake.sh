@@ -123,16 +123,16 @@ fi
 
 
 # Install dependencies, set up build dir, and generate build files.
-echo === Running conan to install dependencies
+echo '=== Running conan to install dependencies'
 [[ $USE_OPENCL ]] && conan_opts="$conan_opts -o use_opencl=True"
 $CONAN install ${GENERATOR_OPTION} -s build_type=$BUILDTYPE -pr:b=default --build=missing . $conan_opts
 
-echo === Running cmake
+echo '=== Running cmake'
 # Generate the build files
 [[ $USE_OPENCL ]] && cmake_opts="$cmake_opts -DOFX_SUPPORTS_OPENCLRENDER=TRUE"
 cmake --preset ${PRESET_NAME} -DBUILD_EXAMPLE_PLUGINS=TRUE $cmake_opts $ARGS
 
-echo === Building and installing plugins and support libs
+echo '=== Building and installing plugins and support libs'
 cmake --build ${CMAKE_BUILD_DIR} --target install --config $BUILDTYPE --parallel $VERBOSE
 
 set +x

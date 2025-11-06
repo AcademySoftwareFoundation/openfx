@@ -4,7 +4,7 @@
 This guide will introduce the spatial coordinate system used by OFX and
 will illustrate that with a simple circle drawing plugin.
 Its source can be found in the source code file
-`circle.cpp <https://github.com/ofxa/openfx/blob/master/Guide/Code/Example5/circle.cpp>`_.
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example5/circle.cpp>`_.
 This plugin takes a clip and draws a circle over it. The colour, size and position
 of the circle are controlled by several parameters.
 
@@ -127,7 +127,7 @@ depending on what the host says it can do.
 
 Here is the source for the load action…
 
-`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L348>`__
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example5/circle.cpp#L348>`__
 
 .. code:: c++
 
@@ -191,7 +191,7 @@ Note, we are relying on a parameter type that is only available with the
 1.2 version of OFX. Our plugin checks for this version of the API the
 host supports and will fail gracefully during the load action.
 
-`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L471>`__
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example5/circle.cpp#L471>`__
 
 .. code:: c++
 
@@ -252,7 +252,7 @@ are being described relative to the project size. So our circle’s radius
 will default to be a quarter of the nominal project size’s x dimension.
 For a 1080 HD project, this would be a value of 480.
 
-`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L513>`__
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example5/circle.cpp#L513>`__
 
 .. code:: c++
 
@@ -294,7 +294,7 @@ for such parameters to let you simply drag such positions around. We are
 also setting the default values relative to the project size, and in
 this case (0.5, 0.5), it should appear in the centre of the final image.
 
-`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L543>`__
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example5/circle.cpp#L543>`__
 
 .. code:: c++
 
@@ -325,7 +325,7 @@ when you get and set the colour, you need to scale the values up to the
 nominal white point of your image, which is implicitly defined by the
 data type of the image.
 
-`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L564>`__
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example5/circle.cpp#L564>`__
 
 .. code:: c++
 
@@ -382,7 +382,7 @@ To set the output rod, we need to trap the
 :c:macro:`kOfxImageEffectActionGetRegionOfDefinition` action. Our MainEntry
 function now has an extra conditional in there….
 
-`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L978>`__
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example5/circle.cpp#L978>`__
 
 .. code:: c++
 
@@ -397,7 +397,7 @@ definition on those hosts RoDs are fixed.
 
 The code for the action itself is quite simple:
 
-`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L844>`__
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example5/circle.cpp#L844>`__
 
 ::
 
@@ -479,7 +479,7 @@ The action code is fairly boiler plate, it fetches parameter values and
 images from clips before calling the templated PixelProcessing function.
 Which is below:
 
-`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example5/circle.cpp#L670>`__
+`circle.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example5/circle.cpp#L670>`__
 
 ::
 
