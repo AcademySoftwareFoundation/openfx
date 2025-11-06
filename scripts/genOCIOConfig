@@ -3,7 +3,7 @@
 # Copyright OpenFX and contributors to the OpenFX project.
 # SPDX-License-Identifier: BSD-3-Clause
 
-# Create an OCIO config equivalant to OpenFX Native colour management
+# Create an OCIO config equivalent to OpenFX Native colour management
 # Example invocation:
 # scripts/genOCIOConfig > include/openfx-native-1.5.ocio
 

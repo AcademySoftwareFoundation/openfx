@@ -543,7 +543,7 @@ getClipPreferences( OfxImageEffectHandle effect, OfxPropertySetHandle /*inArgs*/
   OfxPropertySetHandle effectProps;
   gEffectHost->getPropertySet(effect, &effectProps);
 
-  // retieve the colour management style that the host has decided we shall use
+  // retrieve the colour management style that the host has decided we shall use
   ColourManagementStyle active_style = ColourManagementStyle::None;
   char * style;
   if(gPropHost->propGetString(effectProps, kOfxImageEffectPropColourManagementStyle, 0, &style) == kOfxStatOK) {
@@ -606,7 +606,7 @@ getOutputColourspace( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inAr
   OfxPropertySetHandle effectProps;
   gEffectHost->getPropertySet(effect, &effectProps);
 
-  // retieve the colour management style that the host has decided we shall use
+  // retrieve the colour management style that the host has decided we shall use
   ColourManagementStyle active_style = ColourManagementStyle::None;
   char * style;
   if(gPropHost->propGetString(effectProps, kOfxImageEffectPropColourManagementStyle, 0, &style) == kOfxStatOK) {

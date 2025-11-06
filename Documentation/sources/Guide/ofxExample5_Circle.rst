@@ -132,7 +132,7 @@ Here is the source for the load action…
 .. code:: c++
 
       ////////////////////////////////////////////////////////////////////////////////
-      // The first _action_ called after the binary is loaded (three boot strapper functions will be howeever)
+      // The first _action_ called after the binary is loaded (three boot strapper functions will be however)
       OfxStatus LoadAction(void)
       {
         // fetch our three suites

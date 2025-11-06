@@ -83,6 +83,8 @@ Properties Reference
 
 .. doxygendefine:: kOfxImageEffectPropMetalRenderSupported
 
+.. doxygendefine:: kOfxImageEffectPropNoSpatialAwareness
+
 .. doxygendefine:: kOfxImageEffectPropOCIOConfig
 
 .. doxygendefine:: kOfxImageEffectPropOCIODisplay

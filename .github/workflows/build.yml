@@ -41,7 +41,8 @@ jobs:
             need_node20_vol: true
             has_cmake_presets: false
             buildtype: Release
-            conan_version: 2.1.0
+            # use old conan version for CentOS 7
+            conan_version: 2.10.3
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -58,7 +59,8 @@ jobs:
             need_node20_vol: true
             has_cmake_presets: false
             buildtype: Release
-            conan_version: 2.1.0
+            # use old conan version for CentOS 7
+            conan_version: 2.10.3
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -74,7 +76,7 @@ jobs:
             vfx-cy: 2023
             has_cmake_presets: false
             buildtype: Release
-            conan_version: 2.1.0
+            conan_version: 2.20.1
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -90,7 +92,7 @@ jobs:
             vfx-cy: 2023
             has_cmake_presets: false
             buildtype: Release
-            conan_version: 2.1.0
+            conan_version: 2.20.1
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -103,7 +105,7 @@ jobs:
             os: ubuntu-latest
             has_cmake_presets: true
             buildtype: Release
-            conan_version: 2.1.0
+            conan_version: 2.20.1
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -116,7 +118,7 @@ jobs:
             os: macos-latest
             has_cmake_presets: true
             buildtype: Release
-            conan_version: 2.1.0
+            conan_version: 2.20.1
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -129,7 +131,7 @@ jobs:
             os: windows-latest
             has_cmake_presets: true
             buildtype: Release
-            conan_version: 2.1.0
+            conan_version: 2.20.1
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -142,7 +144,7 @@ jobs:
             os: windows-latest
             has_cmake_presets: true
             buildtype: Release
-            conan_version: 2.0.16
+            conan_version: 2.20.1
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang

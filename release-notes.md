@@ -4,14 +4,31 @@ This is the latest release of OFX, the Open Effects image-processing plug-in sta
 
 Documentation and more info can be found at:
 
-* [The OFX Association website](http://openeffects.org)
+* [The OpenFX website](http://openeffects.org)
 * [OFX Programming Guide By Example](https://github.com/ofxa/openfx/tree/master/Guide)
 * [OFX API v. 1.4 Reference](http://openeffects.org/documentation/api_doc)
 * [OFX API Programming Guide](http://openeffects.org/documentation/guide)
 * [OFX API Programming Reference](http://openeffects.org/documentation/reference)
 * [OFX Discussion Google Group](https://groups.google.com/forum/#!forum/ofx-discussion)
 
-# Release Notes - 1.5 (upcoming)
+# Release Notes - 1.6 (upcoming)
+
+This is version 1.6 of the OpenFX API.
+
+## Key Features of OpenFX Version 1.6:
+
+## Fixes in OpenFX Version 1.6:
+
+- Clarify that Image Effect Hosts property `kOfxPropType` must have the value
+  `kOfxTypeImageEffectHost`, and fix host support lib to implement that.
+
+## Deprecations
+
+## Detailed List of Changes
+
+- Add `kOfxImageEffectPropNoSpatialAwareness`. Allows the host and plugin to coordinate a render that ensures no spatial changes to the image.
+
+# Release Notes - 1.5
 
 This is version 1.5 of the OFX API.
 
