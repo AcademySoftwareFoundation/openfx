@@ -15,11 +15,11 @@ Properties on the Image Effect Host
 -  kOfxPropAPIVersion
    - (read only) the version of the API implemented by the host. If not present, it is safe to assume "1.0"
 -  kOfxPropType
-   - (read only) set to "host"
+   - (read only) type of the object. Set to kOfxTypeImageEffectHost
 -  kOfxPropName
    - (read only) the globally unique name of the application, eg: "com.acmesofware.funkyCompositor"
 -  kOfxPropLabel
-   - (read only) the user visible name of the application,
+   - (read only) the user visible name of the application
 -  kOfxPropVersion
    - (read only) the version number of the host
 -  kOfxPropVersionLabel
