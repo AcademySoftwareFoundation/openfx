@@ -77,7 +77,7 @@ namespace OFX {
       const std::string &GetHook::getStringProperty(const std::string &/*name*/, int /*index*/) const
       {        
 #       ifdef OFX_DEBUG_PROPERTIES
-        std::cout << "OFX: Calling un-overriden GetHook::getStringProperty!!!! " << std::endl;
+        std::cout << "OFX: Calling un-overridden GetHook::getStringProperty!!!! " << std::endl;
 #       endif
         return StringValue::kEmpty;
       }
@@ -94,7 +94,7 @@ namespace OFX {
       int GetHook::getIntProperty(const std::string &/*name*/, int /*index*/) const
       {
 #       ifdef OFX_DEBUG_PROPERTIES
-        std::cout << "OFX: Calling un-overriden GetHook::getIntProperty!!!! " << std::endl;
+        std::cout << "OFX: Calling un-overridden GetHook::getIntProperty!!!! " << std::endl;
 #       endif
         return 0;
       }
@@ -103,7 +103,7 @@ namespace OFX {
       double GetHook::getDoubleProperty(const std::string &/*name*/, int /*index*/) const
       {
 #       ifdef OFX_DEBUG_PROPERTIES
-        std::cout << "OFX: Calling un-overriden GetHook::getDoubleProperty!!!! " << std::endl;
+        std::cout << "OFX: Calling un-overridden GetHook::getDoubleProperty!!!! " << std::endl;
 #       endif
         return 0;
       }
@@ -112,7 +112,7 @@ namespace OFX {
       void *GetHook::getPointerProperty(const std::string &/*name*/, int /*index*/) const
       {
 #       ifdef OFX_DEBUG_PROPERTIES
-        std::cout << "OFX: Calling un-overriden GetHook::getPointerProperty!!!! " << std::endl;
+        std::cout << "OFX: Calling un-overridden GetHook::getPointerProperty!!!! " << std::endl;
 #       endif
         return NULL;
       }
@@ -121,7 +121,7 @@ namespace OFX {
       void GetHook::getDoublePropertyN(const std::string &/*name*/, double *values, int count) const
       {
 #       ifdef OFX_DEBUG_PROPERTIES
-        std::cout << "OFX: Calling un-overriden GetHook::getDoublePropertyN!!!! " << std::endl;
+        std::cout << "OFX: Calling un-overridden GetHook::getDoublePropertyN!!!! " << std::endl;
 #       endif
         memset(values, 0, sizeof(double) * count);
       }
@@ -130,7 +130,7 @@ namespace OFX {
       void GetHook::getIntPropertyN(const std::string &/*name*/, int *values, int count) const
       {
 #       ifdef OFX_DEBUG_PROPERTIES
-        std::cout << "OFX: Calling un-overriden GetHook::getIntPropertyN!!!! " << std::endl;
+        std::cout << "OFX: Calling un-overridden GetHook::getIntPropertyN!!!! " << std::endl;
 #       endif
         memset(values, 0, sizeof(int) * count);
       }
@@ -139,7 +139,7 @@ namespace OFX {
       void GetHook::getPointerPropertyN(const std::string &/*name*/, void **values, int count) const
       {
 #       ifdef OFX_DEBUG_PROPERTIES
-        std::cout << "OFX: Calling un-overriden GetHook::getPointerPropertyN!!!! " << std::endl;
+        std::cout << "OFX: Calling un-overridden GetHook::getPointerPropertyN!!!! " << std::endl;
 #       endif
         memset(values, 0, sizeof(void *) * count);
       }
@@ -149,7 +149,7 @@ namespace OFX {
       int GetHook::getDimension(const std::string &/*name*/) const
       {
 #       ifdef OFX_DEBUG_PROPERTIES
-        std::cout << "OFX: Calling un-overriden GetHook::getDimension!!!! " << std::endl;
+        std::cout << "OFX: Calling un-overridden GetHook::getDimension!!!! " << std::endl;
 #       endif
         return 0;
       }
@@ -158,7 +158,7 @@ namespace OFX {
       void GetHook::reset(const std::string &/*name*/)
       {
 #       ifdef OFX_DEBUG_PROPERTIES
-        std::cout << "OFX: Calling un-overriden GetHook::reset!!!! " << std::endl;
+        std::cout << "OFX: Calling un-overridden GetHook::reset!!!! " << std::endl;
 #       endif
       }
 
@@ -354,7 +354,7 @@ namespace OFX {
         }
       }
 
-      // explicit instanciations (required by ofxhPluginAPICache.cpp)
+      // explicit instantiations (required by ofxhPluginAPICache.cpp)
       template class PropertyTemplate<IntValue>;
       template class PropertyTemplate<DoubleValue>;
       template class PropertyTemplate<PointerValue>;

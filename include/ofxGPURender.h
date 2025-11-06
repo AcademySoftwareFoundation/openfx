@@ -150,6 +150,22 @@ texture by the host
 #define kOfxImageEffectPropOpenGLTextureTarget "OfxImageEffectPropOpenGLTextureTarget"
 
 
+/** @brief Indicates whether a host or plug-in can (or more importantly cannot)
+    support CPU rendering.
+
+   - Type - C string X 1
+   - Property Set - plug-in descriptor (read/write), host descriptor (read
+only) - plug-in instance change (read/write)
+   - Default - "true" for host and plug-in
+   - Valid Values - This must be one of
+     - "false"  - in which case the host or plug-in does not support CPU
+                  rendering
+     - "true"   - which means a host or plug-in can support CPU rendering
+
+*/
+#define kOfxImageEffectPropCPURenderSupported "OfxImageEffectPropCPURenderSupported"
+
+
 /** @name StatusReturnValues
 OfxStatus returns indicating that a OpenGL render error has occurred:
 

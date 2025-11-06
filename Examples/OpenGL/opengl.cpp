@@ -563,6 +563,9 @@ describe(OfxImageEffectHandle  effect)
   // we support OpenGL rendering (could also say "needed" here)
   gPropHost->propSetString(effectProps, kOfxImageEffectPropOpenGLRenderSupported, 0, "true");
 
+  // we do NOT support CPU rendering
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropCPURenderSupported, 0, "false");
+
   {
     char *s = NULL;
     stat = gPropHost->propGetString(gHost->host, kOfxImageEffectPropOpenGLRenderSupported, 0, &s);

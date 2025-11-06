@@ -86,7 +86,7 @@ namespace {
   int  gNumInstancesLiving = 0;
 
   ////////////////////////////////////////////////////////////////////////////////
-  // The first _action_ called after the binary is loaded (three boot strapper functions will be howeever)
+  // The first _action_ called after the binary is loaded (three boot strapper functions will be however)
   OfxStatus LoadAction(void)
   {
     ERROR_ABORT_IF(gHost == NULL, "The OfxHost pointer has not been set, it should have been set in 'setHostFunc' before any action is called.");
@@ -152,7 +152,7 @@ namespace {
     char *context;
     gPropertySuite->propGetString(inArgs, kOfxImageEffectPropContext, 0, &context);
 
-    ERROR_IF(strcmp(context, kOfxImageEffectContextFilter) != 0, "DescribeInContextAction called on unsupported contex %s", context);
+    ERROR_IF(strcmp(context, kOfxImageEffectContextFilter) != 0, "DescribeInContextAction called on unsupported context %s", context);
 
     OfxPropertySetHandle props;
     // define the mandated single output clip
@@ -300,7 +300,7 @@ namespace {
 static OfxPlugin effectPluginStruct =
 {
   kOfxImageEffectPluginApi,                // The API this plugin satisfies.
-  1,                                       // The version of the API it satisifes.
+  1,                                       // The version of the API it satisfies.
   "org.openeffects:BasicsExamplePlugin",   // The unique ID of this plugin.
   1,                                       // The major version number of this plugin.
   0,                                       // The minor version number of this plugin.

@@ -25,7 +25,7 @@ Properties on the Image Effect Host
 -  kOfxPropVersionLabel
    - (read only) a user readable version label
 -  kOfxImageEffectHostPropIsBackground
-   - (read only) is the application a background renderrer
+   - (read only) is the application a background renderer
 -  kOfxImageEffectPropSupportsOverlays
    - (read only) does the application support overlay interactive GUIs
 -  kOfxImageEffectPropSupportsMultiResolution
