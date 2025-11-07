@@ -548,6 +548,33 @@ These are the actions passed to a plug-in's 'main' function
  */
 #define kOfxActionEndInstanceEdit "OfxActionEndInstanceEdit"
 
+/** @brief
+
+ This is called when the effect has been imported from another host. It
+ is there so that effects can conform their parameters, accounting for
+ differences in parameter semantics between hosts. Plug-ins should use
+ \ref kOfxPropAka to inform hosts if their parameters have different names
+ in other APIs.
+
+ @param  handle handle to the plug-in instance, cast to an \ref OfxImageEffectHandle
+ @param  inArgs is redundant and is set to NULL
+ @param  outArgs is redundant and is set to NULL
+
+ \pre
+     -  \ref kOfxActionCreateInstance has been called on the instance handle.
+
+ \post
+     -  the instance will match the source host as closely as possible.
+
+ @returns
+     -  \ref kOfxStatOK, the action was trapped and all was well
+     -  \ref kOfxStatReplyDefault, the action was ignored
+     -  \ref kOfxStatErrFatal,
+     -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
+     the plugin should to post a message
+ */
+#define kOfxActionConform "OfxActionConform"
+
 /*@}*/
 
 /** @brief Returns the 'nth' plug-in implemented inside a binary
@@ -668,6 +695,24 @@ This data pointer is unique to each plug-in instance, so two instances of the sa
 This property is used to label objects uniquely among objects of that type. It is typically set when a plugin creates a new object with a function that takes a name.
 */
 #define kOfxPropName "OfxPropName"
+
+/** @brief Alternative names for an object.
+
+    - Type - string X N
+    - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject (read only)
+
+This property is used to provide alternative names for objects. It can be used in any situation where ::kOfxPropName is used, and is helpful for situations where the effects are being transferred from another plug-in API.
+*/
+#define kOfxPropAka "OfxPropAka"
+
+/** @brief Alternative names for parameter dimensions.
+
+    - Type - string X N X M
+    - Property Set - multidimensional parameter descriptors, see \ref PropertiesByObject (read only)
+
+This property is used to provide alternative names for each dimension of a multidimensional parameter. It can be used in situations where effects are being transferred from another plug-in API that doesn't support multidimensional parameters, and each dimension was stored as a separate parameter.
+*/
+#define kOfxPropAka2D "OfxPropAka2D"
 
 /** @brief Identifies a specific version of a host or plugin.
 
