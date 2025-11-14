@@ -29,7 +29,7 @@ This is version 1.5.1 of the OpenFX API, a minor release with bug fixes and impr
 
 ## Key Features of OpenFX Version 1.5.1:
 
-- **CPU Render Support**: Added `kOfxImageEffectPropCPURenderSupported` property to allow plugins to declare CPU rendering capability.
+- **CPU Render Support**: Added `kOfxImageEffectPropCPURenderSupported` property to allow plugins to declare CPU rendering capability (or rather lack thereof).
 - **Thumbnail Rendering**: Added `kOfxImageEffectPropThumbnailRender` property to support efficient thumbnail generation.
 - **Spatial Awareness**: Added `kOfxImageEffectPropNoSpatialAwareness`. Allows the host and plugin to coordinate a render that ensures no spatial changes to the image.
 
@@ -48,7 +48,7 @@ This is version 1.5.1 of the OpenFX API, a minor release with bug fixes and impr
 - Significantly cleaned up documentation for Interacts, including DrawSuite and Overlay Interacts interaction.
 - Fixed documentation for `clipGetRegionOfDefinition`.
 - Updated colourspace example for more complete coverage.
-- Fixed numerous typos throughout Documentation, include/, Support/, and HostSupport directories (via codespell).
+- Fixed numerous typos throughout Documentation, include, Support, and HostSupport directories (via codespell).
 - Corrected copyright notice with explanation in CONTRIBUTING.md (addresses issues #110, #206).
 - Updated documentation footer and build script to support `uv` package manager.
 - Removed stray references to old OFX Association.
