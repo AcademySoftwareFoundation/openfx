@@ -6,7 +6,7 @@
 #include <string>
 #include <iostream>
 
-#if defined(WIN32) || defined(WIN64)
+#ifdef _WIN32
 #define I386
 #elif defined(__linux__) || defined(__FreeBSD__)
 #define UNIX

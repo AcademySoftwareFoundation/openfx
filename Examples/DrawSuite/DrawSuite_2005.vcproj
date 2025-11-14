@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\Include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_USRDLL;OVERLAY_2005_EXPORTS"
+				PreprocessorDefinitions="_DEBUG;_USRDLL;OVERLAY_2005_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -120,7 +120,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\Include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_USRDLL;OVERLAY_2005_EXPORTS"
+				PreprocessorDefinitions="NDEBUG;_USRDLL;OVERLAY_2005_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
