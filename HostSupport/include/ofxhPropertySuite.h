@@ -305,18 +305,18 @@ namespace OFX {
         // get multiple values
         void getValueN(APIType *value, int count) const;
 
-#ifdef WINDOWS
-#pragma warning( disable : 4181 )	
-#endif		
+#ifdef _WIN32
+#pragma warning( disable : 4181 )
+#endif
         /// get one value
         const ReturnType getValue(int index=0) const;
 
         /// get one value, without going through the getHook
         const ReturnType getValueRaw(int index=0) const;
 
-#ifdef WINDOWS
-#pragma warning( default : 4181 )	
-#endif				
+#ifdef _WIN32
+#pragma warning( default : 4181 )
+#endif
         // get multiple values, without going through the getHook
         void getValueNRaw(APIType *value, int count) const;
 

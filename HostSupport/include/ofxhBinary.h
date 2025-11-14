@@ -25,7 +25,8 @@
 
 #if defined(UNIX)
 #include <dlfcn.h>
-#elif defined (WINDOWS)
+#elif defined (_WIN32)
+#define NOMINMAX
 #include "windows.h"
 #include <assert.h>
 #endif
@@ -44,7 +45,7 @@ namespace OFX
     bool _invalid;
 #if defined(UNIX)
     void *_dlHandle;
-#elif defined (WINDOWS)
+#elif defined (_WIN32)
     HINSTANCE _dlHandle;
 #endif
     time_t _time;
