@@ -1078,7 +1078,7 @@ and show how to evaluate the curve
             // add a control point at 0, value is 1
             gParametricParamHost->parametricParamAddControlPoint(descriptor,
                                                                   component, // curve to set 
-                                                                  0.0,   // time, ignored in this case, as we are not adding a ket
+                                                                  0.0,   // time, ignored in this case, as we are not adding a key
                                                                   0.0,   // parametric position, zero
                                                                   1.0,   // value to be, 1
                                                                   false);   // don't add a key
