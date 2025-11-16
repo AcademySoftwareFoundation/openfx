@@ -160,7 +160,7 @@ These are the list of actions passed to an image effect plugin's main function. 
 
  The default RoI is simply the value passed in on the
  \ref kOfxImageEffectPropRegionOfInterest
- ``inArgs`` property set. The host must initalize all the RoIs in the ``outArgs`` property set
+ ``inArgs`` property set. The host must initialize all the RoIs in the ``outArgs`` property set
  to this value before the action is called.
 
  @param  handle handle to the instance, cast to an \ref OfxImageEffectHandle
