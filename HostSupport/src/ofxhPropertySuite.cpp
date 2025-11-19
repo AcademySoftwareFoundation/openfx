@@ -221,10 +221,10 @@ namespace OFX {
         : Property(pt)													    
         , _value(pt._value)												    
         , _defaultValue(pt._defaultValue)										    
-      {															    
+      {
       }
 
-#ifdef WINDOWS
+#ifdef _WIN32
 #pragma warning( disable : 4181 )
 #endif
       /// get one value
@@ -238,7 +238,7 @@ namespace OFX {
           return getValueRaw(index);
         }
       }
-#ifdef WINDOWS
+#ifdef _WIN32
 #pragma warning( default : 4181 )
 #endif
       // get multiple values
@@ -252,7 +252,7 @@ namespace OFX {
         }
       }
 
-#ifdef WINDOWS
+#ifdef _WIN32
 #pragma warning( disable : 4181 )
 #endif
       /// get one value, without going through the getHook
@@ -264,9 +264,9 @@ namespace OFX {
         }
         return _value[index];
       }
-#ifdef WINDOWS
+#ifdef _WIN32
 #pragma warning( default : 4181 )
-#endif      
+#endif
       // get multiple values, without going through the getHook
       template<class T> 
       void PropertyTemplate<T>::getValueNRaw(APIType *value, int count) const
