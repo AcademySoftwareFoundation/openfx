@@ -51,6 +51,9 @@ See instructions in [Documentation/README.md](Documentation/README.md).
 ## Pre-release
 
 * Update the release notes and documentation and version number
+  * Update [release-notes.md](./release-notes.md) and [release-notes-next.md](./release-notes-next.md)
+  * Update [include/ofx.doxy](include/ofx.doxy)
+  * Update [Documentation/sources/conf.py](Documentation/sources/conf.py)
 * Tag (locally) the desired version with e.g. `OFX_Release_1.x_pre_1`
    - use `git tag -a -s` to sign with the release gpg key
 * Push that tag to github, and email everyone to test that tagged build.

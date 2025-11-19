@@ -1,6 +1,6 @@
 # OpenFX image processing plug-in API
 
-This is the latest release of OFX, the Open Effects image-processing plug-in standard API.
+This is the release 1.5.1 of OFX, the Open Effects image-processing plug-in standard API.
 
 Documentation and more info can be found at:
 
@@ -10,18 +10,6 @@ Documentation and more info can be found at:
 * [OFX API Programming Guide](http://openeffects.org/documentation/guide)
 * [OFX API Programming Reference](http://openeffects.org/documentation/reference)
 * [OFX Discussion Google Group](https://groups.google.com/forum/#!forum/ofx-discussion)
-
-# Release Notes - 1.6 (upcoming)
-
-This is version 1.6 of the OpenFX API.
-
-## Key Features of OpenFX Version 1.6:
-
-## Fixes in OpenFX Version 1.6:
-
-## Deprecations
-
-## Detailed List of Changes
 
 # Release Notes - 1.5.1
 

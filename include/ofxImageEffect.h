@@ -1189,6 +1189,8 @@ If the plugin descriptor has this property set to "true", the plugin is expected
     - Valid Values - This must be one of
       - "false"  - the plugin cannot render without spatial awareness and the host should bypass it for renders that require no spatial awareness.
       - "true"   - the plugin can render without spatial awareness. The host will indicate this type of render by setting kOfxImageEffectPropNoSpatialAwareness to "true" in the arguments passed to kOfxImageEffectActionBeginSequenceRender and kOfxImageEffectActionRender.
+
+  @version added in version 1.5.1.
  */
 #define kOfxImageEffectPropNoSpatialAwareness "OfxImageEffectPropNoSpatialAwareness"
 
@@ -1214,6 +1216,8 @@ A plugin could react to this property by
 - rendering a badge rather than a detailed effect unlikely to be visible in a thumbail
 - turning itself off in kOfxImageEffectActionIsIdentity
 - disabling temporal inputs in kOfxImageEffectActionGetFramesNeeded
+
+  @version added in version 1.5.1.
  */
 #define kOfxImageEffectPropThumbnailRender "OfxImageEffectPropThumbnailRender"
 

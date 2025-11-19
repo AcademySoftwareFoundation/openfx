@@ -162,6 +162,8 @@ only) - plug-in instance change (read/write)
                   rendering
      - "true"   - which means a host or plug-in can support CPU rendering
 
+  @version added in version 1.5.1.
+
 */
 #define kOfxImageEffectPropCPURenderSupported "OfxImageEffectPropCPURenderSupported"
 
