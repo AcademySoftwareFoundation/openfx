@@ -51,9 +51,6 @@ class openfx(ConanFile):
 		deps.generate()
 
 		tc = CMakeToolchain(self)
-		if self.settings.os == "Windows":
-			tc.preprocessor_definitions["WINDOWS"] = 1
-			tc.preprocessor_definitions["NOMINMAX"] = 1
 		tc.generate()
 
 	def build(self):
@@ -85,9 +82,3 @@ class openfx(ConanFile):
 		self.cpp_info.components["Support"].libs = [i for i in libs if "OfxSupport" in i]
 		self.cpp_info.components["Support"].includedirs = ["Support/include"]
 		self.cpp_info.components["Support"].requires = ["opengl::opengl"]
-
-		if self.settings.os == "Windows":
-			win_defines = ["WINDOWS", "NOMINMAX"]
-			self.cpp_info.components["Api"].defines = win_defines
-			self.cpp_info.components["HostSupport"].defines = win_defines
-			self.cpp_info.components["Support"].defines = win_defines

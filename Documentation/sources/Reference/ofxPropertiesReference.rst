@@ -43,6 +43,8 @@ Properties Reference
 
 .. doxygendefine:: kOfxImageEffectPluginRenderThreadSafety
 
+.. doxygendefine:: kOfxImageEffectPropCPURenderSupported
+
 .. doxygendefine:: kOfxImageEffectPropClipPreferencesSlaveParam
 
 .. doxygendefine:: kOfxImageEffectPropColourManagementAvailableConfigs
@@ -152,6 +154,8 @@ Properties Reference
 .. doxygendefine:: kOfxImageEffectPropSupportsTiles
 
 .. doxygendefine:: kOfxImageEffectPropTemporalClipAccess
+
+.. doxygendefine:: kOfxImageEffectPropThumbnailRender
 
 .. doxygendefine:: kOfxImageEffectPropUnmappedFrameRange
 

@@ -1,6 +1,6 @@
 # OpenFX image processing plug-in API
 
-This is the latest release of OFX, the Open Effects image-processing plug-in standard API.
+This is the release 1.5.1 of OFX, the Open Effects image-processing plug-in standard API.
 
 Documentation and more info can be found at:
 
@@ -11,22 +11,44 @@ Documentation and more info can be found at:
 * [OFX API Programming Reference](http://openeffects.org/documentation/reference)
 * [OFX Discussion Google Group](https://groups.google.com/forum/#!forum/ofx-discussion)
 
-# Release Notes - 1.6 (upcoming)
+# Release Notes - 1.5.1
 
-This is version 1.6 of the OpenFX API.
+This is version 1.5.1 of the OpenFX API, a minor release with bug fixes and improvements.
 
-## Key Features of OpenFX Version 1.6:
+## Key Features of OpenFX Version 1.5.1:
 
-## Fixes in OpenFX Version 1.6:
+- **CPU Render Support**: Added `kOfxImageEffectPropCPURenderSupported` property to allow plugins to declare CPU rendering capability (or rather lack thereof).
+- **Thumbnail Rendering**: Added `kOfxImageEffectPropThumbnailRender` property to support efficient thumbnail generation.
+- **Spatial Awareness**: Added `kOfxImageEffectPropNoSpatialAwareness`. Allows the host and plugin to coordinate a render that ensures no spatial changes to the image.
 
+
+## Fixes in OpenFX Version 1.5.1:
+
+- Fix LICENSE.md to conform to Github template for BSD 3-Clause (issue #194).
+- Use predefined `_WIN32` macro everywhere instead of defining `WINDOWS`, improving Windows portability.
+- Fix CI build problems with conan version, expat dependency, and compiler compatibility.
+- Restore older CentOS 7 builds for vfx-2021 & 2022 compatibility.
 - Clarify that Image Effect Hosts property `kOfxPropType` must have the value
   `kOfxTypeImageEffectHost`, and fix host support lib to implement that.
 
+## Documentation Improvements
+
+- Significantly cleaned up documentation for Interacts, including DrawSuite and Overlay Interacts interaction.
+- Fixed documentation for `clipGetRegionOfDefinition`.
+- Updated colourspace example for more complete coverage.
+- Fixed numerous typos throughout Documentation, include, Support, and HostSupport directories (via codespell).
+- Corrected copyright notice with explanation in CONTRIBUTING.md (addresses issues #110, #206).
+- Updated documentation footer and build script to support `uv` package manager.
+- Removed stray references to old OFX Association.
+
 ## Deprecations
+
+None
 
 ## Detailed List of Changes
 
-- Add `kOfxImageEffectPropNoSpatialAwareness`. Allows the host and plugin to coordinate a render that ensures no spatial changes to the image.
+- Add `kOfxImageEffectPropCPURenderSupported` (issue #212) - Property to indicate CPU rendering support.
+- Add `kOfxImageEffectPropThumbnailRender` (issue #193) - Property for thumbnail rendering mode.
 
 # Release Notes - 1.5
 
@@ -104,7 +126,7 @@ ofxParam.h:
 * removed - kOfxParamDoubleTypeNormalisedXYAbsolute
 * modified - kOfxParamPropInteractMinimumSize is now a double (matches kOfxParamPropInteractSize)
 * modified - changed comments with regards to OfxParameterSuiteV1 (i.e. no Analysis action anymore)
-* refined - paramGetValue, paramSetValue: precision about when it's safe to use - i.e. Instance Changed domain only)
+* refined - paramGetValue, paramSetValue: precision about when it's safe to use - i.e. Instance Changed domain only
 
 ofxPixels.h:
 

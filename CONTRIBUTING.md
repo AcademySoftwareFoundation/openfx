@@ -264,8 +264,8 @@ required.
 
 ### Test Policy
 
-OpenFX does not yet have an automated CI or test process.
-
+OpenFX runs an automated CI build process on github. All builds must
+pass before merging a PR.
 
 #### Copyright Notices
 

@@ -11,7 +11,8 @@
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
-#if defined(WINDOWS)
+#if defined(_WIN32)
+#define NOMINMAX
 #include <windows.h>
 #endif
 #include <GL/gl.h>
