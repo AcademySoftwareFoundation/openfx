@@ -189,6 +189,12 @@ jobs:
           fi
           echo "RELEASE_NAME=${RELEASE_PREFIX}-${REF_SUFFIX}${OPENGL_BUILD}" >> $GITHUB_ENV
 
+      # Ensure ~/.local/bin is first in PATH for all local tools (uv, python, pip, conan)
+      # This is especially important for old CentOS 7 containers with old system versions
+      - name: Fix PATH for local tools
+        run: |
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
       - name: Set up python 3.11
         uses: actions/setup-python@v5
         if: matrix.ostype == 'mac'
@@ -199,35 +205,34 @@ jobs:
       # Unfortunately astral-sh/setup-uv action doesn't work on CentOS 7, its GLIBC is too old.
 
       - name: Set up uv manually
-        if: matrix.release_prefix == 'linux-vfx2021'
+        if: matrix.vfx-cy == 2021 || matrix.vfx-cy == 2022
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
-          source ~/.local/bin/env
-          echo After sourcing uv env: "$PATH"
-          uv python install --preview 3.11
+          # No need to source env - we already added ~/.local/bin to PATH above
 
-          # Python is in $(uv python dir)/cpython-*/bin
-          # uv also installs a symlink in $HOME/.local/bin but because
-          # that is only a symlink, it causes problems with pip and venv.
-          # As a workaround, prepend the actual bin dir to $PATH.
-          uv_python_dir="$(uv python dir)"
-          uv_cpython_name="$(/bin/ls -1 $uv_python_dir)"
-          uv_python_path="$uv_python_dir/$uv_cpython_name/bin"
-          PATH="$uv_python_path":$PATH
-          # Prepend to path for future steps (note: don't use $GITHUB_ENV here)
-          echo "$uv_python_path" >> $GITHUB_PATH
+          # Use --default to create python/python3 symlinks in ~/.local/bin
+          # This ensures the sigstore action can find 'python' (not just 'python3')
+          ~/.local/bin/uv python install --default 3.11
 
       - name: Check python, uv paths
         run: |
-          echo $PATH
-          echo -n 'which python: ' && which python
-          echo -n 'which python3: ' && which python3
-          echo -n 'python version: ' && python --version
-          echo -n 'python3 version: ' && python3 --version
-          echo -n 'which uv: ' && (which uv || echo "No python uv; continuing")
+          echo "PATH=$PATH"
+          echo -n 'which python: ' && which python && python --version
+          echo -n 'which python3: ' && which python3 && python3 --version
+          echo -n 'python symlink target: ' && (readlink -f $(which python) || echo "not a symlink")
+          echo -n 'which uv: ' && (which uv || echo "No uv; continuing")
 
+      # Install Conan manually for old CentOS 7 using uv-installed Python
+      # The get-conan action doesn't know about uv Python and would use system Python
+      - name: Install Conan manually (CentOS 7)
+        if: matrix.vfx-cy == 2021 || matrix.vfx-cy == 2022
+        run: |
+          python3.11 -m pip install --user conan==${{ matrix.conan_version }}
+
+      # Use get-conan action for other platforms
       - name: Install Conan
         id: conan
+        if: matrix.vfx-cy != 2021 && matrix.vfx-cy != 2022
         uses: turtlebrowser/get-conan@main
         with:
           version: ${{ matrix.conan_version }}
@@ -397,8 +402,24 @@ jobs:
         run: |
           tar -czf openfx-$RELEASE_NAME.tar.gz -C Install OpenFX
 
-      - name: Sign header/libs tarball with Sigstore
-        if: github.event_name == 'release'
+      # Install and run sigstore manually for CentOS 7 (sigstore action doesn't work with uv Python)
+      - name: Install sigstore manually (CentOS 7)
+        if: github.event_name == 'release' && (matrix.vfx-cy == 2021 || matrix.vfx-cy == 2022)
+        run: |
+          # Conan installed urllib3 1.26.x, but tuf (required by sigstore) needs urllib3 2.x for BaseHTTPResponse
+          # Explicitly upgrade urllib3 first, then install sigstore
+          python3.11 -m pip install --user --upgrade 'urllib3>=2.0'
+          python3.11 -m pip install --user sigstore
+
+      - name: Sign header/libs tarball with Sigstore manually (CentOS 7)
+        if: github.event_name == 'release' && (matrix.vfx-cy == 2021 || matrix.vfx-cy == 2022)
+        run: |
+          # uv Python needs SSL_CERT_FILE to use certifi's CA bundle instead of outdated system certs
+          export SSL_CERT_FILE=$(python3.11 -c "import certifi; print(certifi.where())")
+          python3.11 -m sigstore sign openfx-${{ env.RELEASE_NAME }}.tar.gz
+
+      - name: Sign header/libs tarball with Sigstore (action for other platforms)
+        if: github.event_name == 'release' && matrix.vfx-cy != 2021 && matrix.vfx-cy != 2022
         uses: sigstore/gh-action-sigstore-python@f514d46b907ebcd5bedc05145c03b69c1edd8b46 # v3.0.0
         with:
           inputs: openfx-${{ env.RELEASE_NAME }}.tar.gz
@@ -428,8 +449,16 @@ jobs:
         run: |
           tar -czf openfx_plugins-$RELEASE_NAME.tar.gz -C build/Install .
 
-      - name: Sign plugins tarball with Sigstore
-        if: github.event_name == 'release'
+      # Sign plugins manually for CentOS 7 (sigstore already installed above)
+      - name: Sign plugins tarball with Sigstore manually (CentOS 7)
+        if: github.event_name == 'release' && (matrix.vfx-cy == 2021 || matrix.vfx-cy == 2022)
+        run: |
+          # uv Python needs SSL_CERT_FILE to use certifi's CA bundle instead of outdated system certs
+          export SSL_CERT_FILE=$(python3.11 -c "import certifi; print(certifi.where())")
+          python3.11 -m sigstore sign openfx_plugins-${{ env.RELEASE_NAME }}.tar.gz
+
+      - name: Sign plugins tarball with Sigstore (action for other platforms)
+        if: github.event_name == 'release' && matrix.vfx-cy != 2021 && matrix.vfx-cy != 2022
         uses: sigstore/gh-action-sigstore-python@f514d46b907ebcd5bedc05145c03b69c1edd8b46 # v3.0.0
         with:
           inputs: openfx_plugins-${{ env.RELEASE_NAME }}.tar.gz
