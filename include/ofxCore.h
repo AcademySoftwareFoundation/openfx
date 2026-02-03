@@ -321,9 +321,24 @@ These are the actions passed to a plug-in's 'main' function
 
 /** @brief
 
- This action is the first action passed to a plug-in's
- instance after its creation. It is there to allow a plugin to create any
- per-instance data structures it may need.
+ Called when an instance of a plugin is created by the host. The plugin can
+ create any per-instance data structures it may need. Plugins may also
+ enable/disable their params here, based on other param values or clips.
+
+ When a host creates a plugin instance from a saved project with a connected
+ clip, the host must either:
+
+  - connect all params and clips to an effect *before* calling createInstance,
+    and support the \ref OfxTimeLineSuite so the effect can call
+    \ref OfxTimeLineSuiteV1::getTime in createInstance (so the plugin can call
+    \ref OfxImageEffectSuiteV1::clipGetRegionOfDefinition),
+
+OR:
+
+  - call `instanceChanged` after `createInstance` and after the host has
+    hooked up all clips, with property \ref kOfxPropType = \ref kOfxTypeClip and
+    \ref kOfxPropChangeReason = \ref kOfxChangeUserEdited, and ensure that
+    \ref OfxImageEffectSuiteV1::clipGetRegionOfDefinition works in that action.
 
  @param  handle handle to the plug-in instance, cast to an \ref OfxImageEffectHandle
  @param  inArgs is redundant and is set to NULL
@@ -398,6 +413,13 @@ These are the actions passed to a plug-in's 'main' function
  \ref kOfxActionEndInstanceChanged actions. The ``inArgs`` property set is
  used to determine what was the thing inside the instance that was
  changed.
+
+ Note: when a host loads a plugin instance from a saved project, if the input
+ clips are not connected at that time, the host must call `instanceChanged`
+ after \ref kOfxActionCreateInstance and after the host has hooked up all clips, with
+ property \ref kOfxPropType = \ref kOfxTypeClip and \ref kOfxPropChangeReason =
+ \ref kOfxChangePluginEdited, and ensure that \ref OfxImageEffectSuiteV1::clipGetRegionOfDefinition works in
+ this action.
 
  @param  handle handle to the plug-in instance, cast to an \ref OfxImageEffectHandle
  @param  inArgs has the following properties
