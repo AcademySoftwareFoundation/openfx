@@ -532,6 +532,29 @@ If set to 1, then a plugin is flaging to the host that the host should use a nat
 */
 #define kOfxParamPropUseHostOverlayHandle "kOfxParamPropUseHostOverlayHandle"
 
+/** @brief value for the ::kOfxParamInterpType property, indicating a constant/hold/step interpolation type. See \ref ::kOfxParamInterpType. */
+#define kOfxParamInterpTypeConstantStep "OfxParamInterpTypeConstantStep"
+
+/** @brief value for the ::kOfxParamInterpType property, indicating a linear interpolation type. See \ref ::kOfxParamInterpType. */
+#define kOfxParamInterpTypeLinear       "OfxParamInterpTypeLinear"
+
+/** @brief value for the ::kOfxParamInterpType property, indicating some kind of smooth interpolation type. See \ref ::kOfxParamInterpType. */
+#define kOfxParamInterpTypeSmooth       "OfxParamInterpTypeSmooth"
+
+/** @brief Sets the default interpolation type of a Integer or Double parameter.
+
+   - Type - C string X 1
+   - Default - ::kOfxParamInterpTypeLinear
+   - Property Set - 1D integer and double plugin parameter descriptor (read/write) and instance (read only)
+   - Valid Values - This must be one of
+      - ::kOfxParamInterpTypeConstantStep - constant/hold/step interpolation,
+      - ::kOfxParamInterpTypeLinear - linear interpolation,
+      - ::kOfxParamInterpTypeSmooth - some kind of smooth (bezier, hermite, cardinal, etc) interpolation
+
+This allows a plugin to indicate how a number-type parameter should be interpolated by default. This is useful if a parameter
+is used to encode a keyed set of interesting frame numbers to be used as markers or retime points without the host animating them.
+*/
+#define kOfxParamInterpType             "OfxParamInterpType"
 
 /** @brief Enables the display of a time marker on the host's time line to indicate the value of the absolute time param.
 
