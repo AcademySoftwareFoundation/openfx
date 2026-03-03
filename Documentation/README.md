@@ -44,9 +44,10 @@ cd Documentation
 This script performs the following steps:
 
 1. Generates property references using `genPropertiesReference.py`
-2. Builds Doxygen documentation from the header files
-3. Uses Breathe to collect Doxygen API docs
-4. Builds the final HTML documentation with Sphinx
+2. Generates property documentation from YAML definitions using `scripts/gen-props-doc.py`
+3. Builds Doxygen documentation from the header files
+4. Uses Breathe to collect Doxygen API docs
+5. Builds the final HTML documentation with Sphinx
 
 After building, you can view the documentation at:
 `file:///path/to/your/ofx/openfx/Documentation/build/index.html`
@@ -72,10 +73,10 @@ Doxygen is used to document C/C++ code in the source and headers. The main Doxyg
   ```c
   /**
    * \brief Brief description
-   * 
+   *
    * Detailed description that can span
    * multiple lines
-   * 
+   *
    * \param paramName Description of parameter
    * \return Description of return value
    */
@@ -96,7 +97,7 @@ RST files are used for the prose documentation in the `/Documentation/sources` d
   ```rst
   Section Title
   ============
-  
+
   Subsection Title
   ---------------
   ```
@@ -104,17 +105,17 @@ RST files are used for the prose documentation in the `/Documentation/sources` d
 * **Internal Links** - Create references between sections
   ```rst
   .. _target-name:
-  
+
   Section Title
   ============
-  
+
   See :ref:`target-name` for more information.
   ```
 
 * **Code Blocks** - Display code examples
   ```rst
   .. code-block:: c
-     
+
      #define kOfxImageEffectPluginRenderThreadSafety "OfxImageEffectPluginRenderThreadSafety"
   ```
 
@@ -128,9 +129,9 @@ RST files are used for the prose documentation in the `/Documentation/sources` d
 * **Doxygen Integration** - Include Doxygen-documented items
   ```rst
   .. doxygendefine:: kOfxImageEffectPropSupportsMultiResolution
-  
+
   .. doxygenfunction:: OfxGetPropertySet
-  
+
   .. doxygenstruct:: OfxRectD
      :members:
   ```
