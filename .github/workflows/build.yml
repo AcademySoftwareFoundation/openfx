@@ -1,10 +1,5 @@
 name: Build OpenFX libs and examples
 
-permissions:
-  id-token: write  
-  contents: write
-  actions: write
-
 on:
   push:
   pull_request:
@@ -21,6 +16,9 @@ jobs:
       github.event_name == 'push' ||
       github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write   # needed for release upload
+      id-token: write    # needed for sigstore
     container:
       image: ${{ matrix.container }}
       volumes: ${{ matrix.need_node20_vol && fromJSON('["/node20217:/node20217:rw,rshared", "/node20217:/__e/node20:ro,rshared"]') || fromJSON('[]') }}
@@ -162,30 +160,37 @@ jobs:
             tar -xJ --strip-components 1 -C /node20217 -f -
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           clean: true
           fetch-depth: 0
 
       - name: setup env vars
+        env:
+          MATRIX_BUILDTYPE: ${{ matrix.buildtype }}
+          MATRIX_OS: ${{ matrix.os }}
         run: |
           git config --global --add safe.directory $PWD # needed for checkout v3, doesn't hurt anyway
-          BUILDTYPE_LC=$(echo '${{ matrix.buildtype }}'|tr [:upper:] [:lower:])
+          BUILDTYPE_LC=$(echo "$MATRIX_BUILDTYPE"|tr [:upper:] [:lower:])
           echo "BUILDTYPE_LC=$BUILDTYPE_LC" >> $GITHUB_ENV
-          echo "OSNAME=$(echo '${{ matrix.os }}'|sed 's/-.*//')" >> $GITHUB_ENV
+          echo "OSNAME=$(echo "$MATRIX_OS"|sed 's/-.*//')" >> $GITHUB_ENV
           echo "GIT_COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           echo "CONAN_PRESET=conan-$BUILDTYPE_LC" >> $GITHUB_ENV
-          echo "BUILD_DIR=build/${{ matrix.buildtype }}" >> $GITHUB_ENV
+          echo "BUILD_DIR=build/$MATRIX_BUILDTYPE" >> $GITHUB_ENV
 
       - name: Set RELEASE_NAME
         # this looks like "linux-vfx2022-1.5[-no-opengl]"; used in filenames
+        env:
+          RELEASE_PREFIX: ${{ matrix.release_prefix }}
+          OPENGL_BUILD: ${{ env.OPENGL_BUILD }}
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+          GIT_SHA: ${{ github.sha }}
         run: |
-          RELEASE_PREFIX=${{ matrix.release_prefix }}
-          OPENGL_BUILD=${{ env.OPENGL_BUILD }}
-          if [ "${{ github.ref_type }}" == "tag" ]; then
-            REF_SUFFIX=$(echo "${{ github.ref_name }}" | sed 's/OFX_Release_//')
+          if [ "$REF_TYPE" == "tag" ]; then
+            REF_SUFFIX=$(echo "$REF_NAME" | sed 's/OFX_Release_//')
           else
-            REF_SUFFIX=$(echo ${{ github.sha }} | cut -c1-8)
+            REF_SUFFIX=$(echo "$GIT_SHA" | cut -c1-8)
           fi
           echo "RELEASE_NAME=${RELEASE_PREFIX}-${REF_SUFFIX}${OPENGL_BUILD}" >> $GITHUB_ENV
 
@@ -196,7 +201,7 @@ jobs:
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Set up python 3.11
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         if: matrix.ostype == 'mac'
         with:
           python-version: '3.11'
@@ -226,14 +231,16 @@ jobs:
       # The get-conan action doesn't know about uv Python and would use system Python
       - name: Install Conan manually (CentOS 7)
         if: matrix.vfx-cy == 2021 || matrix.vfx-cy == 2022
+        env:
+          CONAN_VERSION: ${{ matrix.conan_version }}
         run: |
-          python3.11 -m pip install --user conan==${{ matrix.conan_version }}
+          python3.11 -m pip install --user conan==$CONAN_VERSION
 
       # Use get-conan action for other platforms
       - name: Install Conan
         id: conan
         if: matrix.vfx-cy != 2021 && matrix.vfx-cy != 2022
-        uses: turtlebrowser/get-conan@main
+        uses: turtlebrowser/get-conan@e41c1e039be765c0ed9d9d38cc2a287566e1d8b3 # main 2025-03-04
         with:
           version: ${{ matrix.conan_version }}
 
@@ -244,7 +251,7 @@ jobs:
           conan profile detect
 
       - name: Install system dependencies if needed
-        uses: ConorMacBride/install-package@v1
+        uses: ConorMacBride/install-package@3e7ad059e07782ee54fa35f827df52aae0626f30 # v1
         if: ${{ matrix.aswfdockerbuild == false }}
         with:
           apt: libgl-dev libgl1-mesa-dev
@@ -266,16 +273,16 @@ jobs:
 
       - name: Setup MSVC
         if: startsWith(matrix.os, 'windows')
-        uses: ilammy/msvc-dev-cmd@v1.13.0 # use cl, not msbuild
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
         # We use cl.exe because it can find CUDA without the CUDA visual studio integration,
         # which is extremely slow to install (see Jimver/cuda-toolkit below)
         # See comments at https://github.com/Jimver/cuda-toolkit/issues/253
 
       - name: Setup Ninja
-        uses: seanmiddleditch/gha-setup-ninja@v4
+        uses: seanmiddleditch/gha-setup-ninja@8b297075da4cd2a5f1fd21fe011b499edf06e9d2 # v4
 
       - name: Install CUDA Toolkit
-        uses: Jimver/cuda-toolkit@v0.2.19
+        uses: Jimver/cuda-toolkit@4bd727d5619dc6fa323b1e76c3aa5dca94f5ec6d # v0.2.19
         id: cuda-toolkit-linux
         if: matrix.ostype == 'linux' && matrix.cuda == true
         with:
@@ -285,7 +292,7 @@ jobs:
           linux-local-args: '["--toolkit"]'
 
       - name: Install CUDA Toolkit
-        uses: Jimver/cuda-toolkit@v0.2.16
+        uses: Jimver/cuda-toolkit@9b295696791d75d658d8de64c4a85097ad8abeaf # v0.2.16
         id: cuda-toolkit-win
         if: matrix.ostype == 'windows' && matrix.cuda == true
         with:
@@ -299,24 +306,34 @@ jobs:
       #     rpm install libglvnd-devel
 
       - name: Install dependencies
+        env:
+          MATRIX_OPENGL: ${{ matrix.opengl }}
+          MATRIX_OPENCL: ${{ matrix.opencl }}
+          MATRIX_BUILDTYPE: ${{ matrix.buildtype }}
         run: |
-          [[ "${{ matrix.opengl }}" != false && "${{ matrix.opencl }}" = true ]] && USE_OPENCL="-o use_opencl=True"
-          conan install -s build_type=${{ matrix.buildtype }} -pr:b=default --build=missing . -c tools.cmake.cmaketoolchain:generator=Ninja $USE_OPENCL
+          [[ "$MATRIX_OPENGL" != false && "$MATRIX_OPENCL" = true ]] && USE_OPENCL="-o use_opencl=True"
+          conan install -s build_type=$MATRIX_BUILDTYPE -pr:b=default --build=missing . -c tools.cmake.cmaketoolchain:generator=Ninja $USE_OPENCL
 
       - name: Configure project with cmake
+        env:
+          MATRIX_OPENGL: ${{ matrix.opengl }}
+          MATRIX_OPENCL: ${{ matrix.opencl }}
+          MATRIX_CUDA: ${{ matrix.cuda }}
+          MATRIX_HAS_PRESETS: ${{ matrix.has_cmake_presets }}
+          MATRIX_OSTYPE: ${{ matrix.ostype }}
         run: |
           CMAKE_DEFINES=(-DBUILD_EXAMPLE_PLUGINS=TRUE \
               -DPLUGIN_INSTALLDIR=$(pwd)/build/Install)
-          if [[ "${{ matrix.opengl }}" != false ]] ; then
+          if [[ "$MATRIX_OPENGL" != false ]] ; then
              echo "OPENGL_BUILD=" >> $GITHUB_ENV
              CMAKE_DEFINES+=(-DOFX_SUPPORTS_OPENGLRENDER=TRUE)
-             [[ "${{ matrix.opencl }}" = true ]] && CMAKE_DEFINES+=(-DOFX_SUPPORTS_OPENCLRENDER=TRUE)
-             [[ "${{ matrix.cuda }}"   = true ]] && CMAKE_DEFINES+=(-DOFX_SUPPORTS_CUDARENDER=TRUE)
+             [[ "$MATRIX_OPENCL" = true ]] && CMAKE_DEFINES+=(-DOFX_SUPPORTS_OPENCLRENDER=TRUE)
+             [[ "$MATRIX_CUDA"   = true ]] && CMAKE_DEFINES+=(-DOFX_SUPPORTS_CUDARENDER=TRUE)
           else
              echo "OPENGL_BUILD=-no-ogl" >> $GITHUB_ENV
           fi
           CMAKE_GENERATOR=(-G Ninja)
-          if [[ ${{ matrix.has_cmake_presets }} = true ]]; then
+          if [[ $MATRIX_HAS_PRESETS = true ]]; then
             # Sets up to build in e.g. build/Release
             cmake --preset $CONAN_PRESET ${CMAKE_GENERATOR[@]} ${CMAKE_DEFINES[@]} .
           else
@@ -330,16 +347,20 @@ jobs:
           fi
 
       - name: Build with cmake
+        env:
+          MATRIX_OSTYPE: ${{ matrix.ostype }}
         run: |
-          if [[ ${{ matrix.ostype }} = windows ]]; then
+          if [[ $MATRIX_OSTYPE = windows ]]; then
             cmake --build $BUILD_DIR --target install --config Release --parallel
           else
             cmake --build $BUILD_DIR --target install --parallel
           fi
 
       - name: Install with cmake
+        env:
+          MATRIX_OSTYPE: ${{ matrix.ostype }}
         run: |
-          if [[ ${{ matrix.ostype }} = windows ]]; then
+          if [[ $MATRIX_OSTYPE = windows ]]; then
             cmake --install $BUILD_DIR --config Release
           else
             cmake --install $BUILD_DIR
@@ -347,12 +368,14 @@ jobs:
 
       # This isn't used for release; just checks that makefiles still work.
       - name: Build old stuff with make
+        env:
+          MATRIX_OSTYPE: ${{ matrix.ostype }}
         run: |
-          if [[ ${{ matrix.ostype }} = windows ]]; then
+          if [[ $MATRIX_OSTYPE = windows ]]; then
             echo No Windows nmake build yet
           else
             (cd Examples; make -j)
-            # should build Support/Plugins too, but those need work            
+            # should build Support/Plugins too, but those need work
           fi
 
       ############################################################
@@ -409,7 +432,7 @@ jobs:
           # Conan installed urllib3 1.26.x, but tuf (required by sigstore) needs urllib3 2.x for BaseHTTPResponse
           # Explicitly upgrade urllib3 first, then install sigstore
           python3.11 -m pip install --user --upgrade 'urllib3>=2.0'
-          python3.11 -m pip install --user sigstore
+          python3.11 -m pip install --user 'sigstore>=3,<4'
 
       - name: Sign header/libs tarball with Sigstore manually (CentOS 7)
         if: github.event_name == 'release' && (matrix.vfx-cy == 2021 || matrix.vfx-cy == 2022)
@@ -428,7 +451,7 @@ jobs:
 
       - name: Upload header/libs tarball and signatures
         if: github.event_name == 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: "openfx-${{ env.RELEASE_NAME }}"
           path: |
@@ -437,14 +460,14 @@ jobs:
 
       - name: Upload header/libs tarball (no signatures)
         if: github.event_name != 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: "openfx-${{ env.RELEASE_NAME }}"
           path: |
             openfx-${{ env.RELEASE_NAME }}.tar.gz
 
       # Now the same, for the plugins
-      
+
       - name: Create built/installed plugins tarball
         run: |
           tar -czf openfx_plugins-$RELEASE_NAME.tar.gz -C build/Install .
@@ -467,7 +490,7 @@ jobs:
 
       - name: Upload plugins tarball and signatures
         if: github.event_name == 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: "openfx_plugins-${{ env.RELEASE_NAME }}"
           path: |
@@ -476,13 +499,13 @@ jobs:
 
       - name: Upload plugins tarball (no signatures)
         if: github.event_name != 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: "openfx_plugins-${{ env.RELEASE_NAME }}"
           path: |
             openfx_plugins-${{ env.RELEASE_NAME }}.tar.gz
 
-      - name: Upload artifacts to release 
+      - name: Upload artifacts to release
         if: github.event_name == 'release'
         env:
           GH_TOKEN: ${{ github.token }}
