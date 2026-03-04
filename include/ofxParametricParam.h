@@ -46,35 +46,30 @@ These are the list of properties used by the parameters suite.
 
 /** @brief The dimension of a parametric param
 
-    - Type - int X 1
-    - Property Set - parametric param descriptor (read/write) and instance (read only)
-    - default - 1
-    - Value Values - greater than 0
-
 This indicates the dimension of the parametric param.
+    
+    @propdef
+    type: int
+    dimension: 1
 */
 #define kOfxParamPropParametricDimension "OfxParamPropParametricDimension"
 
 /** @brief The colour of parametric param curve interface in any UI.
 
-    - Type - double X N
-    - Property Set - parametric param descriptor (read/write) and instance (read only)
-    - default - unset, 
-    - Value Values - three values for each dimension (see ::kOfxParamPropParametricDimension)
       being interpreted as R, G and B of the colour for each curve drawn in the UI.
 
 This sets the colour of a parametric param curve drawn a host user interface. A colour triple
 is needed for each dimension of the oparametric param. 
 
 If not set, the host should generally draw these in white.
+    
+    @propdef
+    type: double
+    dimension: 0
 */
 #define kOfxParamPropParametricUIColour "OfxParamPropParametricUIColour"
 
 /** @brief Interact entry point to draw the background of a parametric parameter.
- 
-    - Type - pointer X 1
-    - Property Set - plug-in parametric parameter descriptor (read/write) and instance (read only),
-    - Default - NULL, which implies the host should draw its default background.
  
 Defines a pointer to an interact which will be used to draw the background of a parametric 
 parameter's user interface.  None of the pen or keyboard actions can ever be called on the interact.
@@ -82,27 +77,32 @@ parameter's user interface.  None of the pen or keyboard actions can ever be cal
 The openGL transform will be set so that it is an orthographic transform that maps directly to the
 'parametric' space, so that 'x' represents the parametric position and 'y' represents the evaluated
 value.
+    
+    @propdef
+    type: pointer
+    dimension: 1
 */
 #define kOfxParamPropParametricInteractBackground "OfxParamPropParametricInteractBackground"
 
 /** @brief Property on the host to indicate support for parametric parameter animation.
- 
-    - Type - int X 1
-    - Property Set - host descriptor (read only)
-    - Valid Values 
+    
+    - Valid Values
       - 0 indicating the host does not support animation of parmetric params,
       - 1 indicating the host does support animation of parmetric params,
+    @propdef
+    type: bool
+    dimension: 1
 */
 #define kOfxParamHostPropSupportsParametricAnimation "OfxParamHostPropSupportsParametricAnimation"
 
 /** @brief Property to indicate the min and max range of the parametric input value.
  
-    - Type - double X 2
-    - Property Set - parameter descriptor (read/write only), and instance (read only)
-    - Default Value - (0, 1)
-    - Valid Values - any pair of numbers so that  the first is less than the second.
-
 This controls the min and max values that the parameter will be evaluated at.
+    
+    - Valid Values - any pair of numbers so that  the first is less than the second.
+    @propdef
+    type: double
+    dimension: 2
 */
 #define kOfxParamPropParametricRange "OfxParamPropParametricRange"
 

@@ -22,16 +22,6 @@ extern "C" {
 
 /** @brief What style of colour management does the host or plug-in offer?
 
-   - Type - string X 1
-   - Property Set - host descriptor (read only), plugin descriptor (read/write), image effect instance (read only)
-   - Default - kOfxImageEffectColourManagementStyleNone
-   - Valid Values - This must be one of
-     - ::kOfxImageEffectColourManagementNone - no colour management
-     - ::kOfxImageEffectColourManagementBasic - only basic colourspaces from the config header may be used
-     - ::kOfxImageEffectColourManagementCore - only core colourspaces from the config header may be used
-     - ::kOfxImageEffectColourManagementFull - any colourspace from the config header may be used
-     - ::kOfxImageEffectColourManagementOCIO - any OCIO config may be used (implies use of the OCIO library)
-
 Hosts should set this property if they will provide colourspace information 
 to plug-ins.
 Plug-ins should set this property if they can use host-provided colourspace 
@@ -54,6 +44,23 @@ The assumption is that OCIO > Full > Core > Basic, so the highest style
 supported by both host and plug-in should usually be chosen by the host.
 The chosen style must be set by the host using this property on an image
 effect instance.
+   
+   - Valid Values - This must be one of
+     - ::kOfxImageEffectColourManagementNone - no colour management
+     - ::kOfxImageEffectColourManagementBasic - only basic colourspaces from the config header may be used
+     - ::kOfxImageEffectColourManagementCore - only core colourspaces from the config header may be used
+     - ::kOfxImageEffectColourManagementFull - any colourspace from the config header may be used
+     - ::kOfxImageEffectColourManagementOCIO - any OCIO config may be used (implies use of the OCIO library)
+   @propdef
+   type: enum
+   dimension: 1
+   values:
+     - OfxImageEffectPropColourManagementNone
+     - OfxImageEffectPropColourManagementBasic
+     - OfxImageEffectPropColourManagementCore
+     - OfxImageEffectPropColourManagementFull
+     - OfxImageEffectPropColourManagementOCIO
+   introduced: "1.5"
 */
 #define kOfxImageEffectPropColourManagementStyle "OfxImageEffectPropColourManagementStyle"
 
@@ -70,49 +77,50 @@ effect instance.
 
 /** @brief What native mode configs are supported?
 
-   - Type - string X N
-   - Property Set - host descriptor (read only), plugin descriptor (read/write)
-   - Valid Values - A list of config identifiers. The only currently supported
-                    value is ofx-native-v1.5_aces-v1.3_ocio-v2.3.
-
 While the API for colour management is expected to be stable, the set of
 colourspaces will evolve over time. This property must be set by both plug-ins
 and hosts specifying the list of native mode configs that are available on each
 side.
+   
+   - Valid Values - A list of config identifiers. The only currently supported
+                    value is ofx-native-v1.5_aces-v1.3_ocio-v2.3.
+   @propdef
+   type: string
+   dimension: 0
+   introduced: "1.5"
 */
 #define kOfxImageEffectPropColourManagementAvailableConfigs "OfxImageEffectPropColourManagementAvailableConfigs"
 
 /** @brief The native colour management config to be used for this instance
 
-   - Type - string X 1
-   - Property Set - image effect instance (read only)
-   - Valid Values - any string provided by the plug-in in
-                    kOfxImageEffectPropColourManagementAvailableConfigs
-
 The host must set this property to indicate the native colour management config
 the plug-in should be used to look up colourspace strings. It is important to
 set this even in OCIO mode, to define the basic colourspaces.
+   
+   - Valid Values - any string provided by the plug-in in
+                    kOfxImageEffectPropColourManagementAvailableConfigs
+   @propdef
+   type: string
+   dimension: 1
+   introduced: "1.5"
 */
 #define kOfxImageEffectPropColourManagementConfig "OfxImageEffectPropColourManagementConfig"
 
 /** @brief The path to the OCIO config used for this instance
 
-   - Type - string X 1
-   - Property Set - image effect instance (read only)
-   - Valid Values - Filesystem path to the config or URI starting ocio://
-
 A host must set this property on any effect instances where it has negotiated 
 OCIO colour management (kOfxImageEffectColourManagementOCIO).
 Use of URIs for built-in configs, such as ocio://default is permitted.
+   
+   - Valid Values - Filesystem path to the config or URI starting ocio://
+   @propdef
+   type: string
+   dimension: 1
+   introduced: "1.5"
 */
 #define kOfxImageEffectPropOCIOConfig "OfxImageEffectPropOCIOConfig"
 
 /** @brief The colourspace used for this clip
-
-   - Type - string X 1
-   - Property Set - clip instance (read/write)
-   - Valid Values - colourspace that is permitted under the style in use.
-                    For OCIO, any string acceptable to Config::getColorSpace()
 
 Hosts should set this property to the colourspace of the input clip. Typically
 it will be set to the working colourspace of the host but could be any valid 
@@ -136,18 +144,17 @@ their output clip unless kOfxColourspaceRaw is required.
 If a clip sets OfxImageClipPropIsMask or it only supports
 OfxImageComponentAlpha, colour management is disabled and this property
 must be unset.
+   
+   - Valid Values - colourspace that is permitted under the style in use.
+                    For OCIO, any string acceptable to Config::getColorSpace()
+   @propdef
+   type: string
+   dimension: 1
+   introduced: "1.5"
 */
 #define kOfxImageClipPropColourspace "OfxImageClipPropColourspace"
 
 /** @brief The preferred colourspace for this clip
-
-   - Type - string X N
-   - Property Set - clip instance (read only) and ::kOfxImageEffectActionGetClipPreferences action out args property (read/write)
-   - Valid Values - colourspace that is permitted under the style in use. 
-                    For Basic, any colourspace from the config header where IsBasic is true.
-                    For Core, any colourspace from the config header where IsCore is true.
-                    For Full, any colourspace from the config header.
-                    For OCIO, any string acceptable to Config::getColorSpace(), or a basic colourspace.
 
 Plug-ins may set this property during kOfxImageEffectActionGetClipPreferences 
 to request images in a colourspace which is convenient for them. The
@@ -195,14 +202,20 @@ non-colour channels, it should set the preferred colourspace to
 kOfxColourspaceRaw. Similarly, if a host requests outputs in a typical scene
 colourspace, but the plug-in is producing motion vectors, it should ignore
 the request and set kOfxImageClipPropColourspace to kOfxColourspaceRaw.
+   
+   - Valid Values - colourspace that is permitted under the style in use.
+                    For Basic, any colourspace from the config header where IsBasic is true.
+                    For Core, any colourspace from the config header where IsCore is true.
+                    For Full, any colourspace from the config header.
+                    For OCIO, any string acceptable to Config::getColorSpace(), or a basic colourspace.
+   @propdef
+   type: string
+   dimension: 0
+   introduced: "1.5"
 */
 #define kOfxImageClipPropPreferredColourspaces "OfxImageClipPropPreferredColourspaces"
 
 /** @brief The display colourspace used in the plug-in's viewport
-
-   - Type - string X 1
-   - Property Set - image effect instance (read only)
-   - Valid Values - any colourspace from the config header
 
 Used with native colour management styles, this property is relevant 
 for plug-ins which have their own viewport in a custom window. Plug-ins should 
@@ -212,29 +225,38 @@ used in its own viewport. For a multi-display system, choose the colourspace
 for the display device where a native window would appear by default.
 A host which supports OCIO should use the OCIO-specific display and view
 properties instead.
- 
+   
+   - Valid Values - any colourspace from the config header
+   @propdef
+   type: string
+   dimension: 1
+   introduced: "1.5"
 */
 #define kOfxImageEffectPropDisplayColourspace "OfxImageEffectPropDisplayColourspace"
 
 /** @brief The OCIO display to be used in the plug-in's viewport
 
-   - Type - string X 1
-   - Property Set - image effect instance (read only)
-   - Valid Values - OCIO display that is present in the config
-
 This OCIO-specific property allows the host to specify which OCIO display should be used. 
 If not defined, the default rules for choosing a display will be followed.
+   
+   - Valid Values - OCIO display that is present in the config
+   @propdef
+   type: string
+   dimension: 1
+   introduced: "1.5"
 */
 #define kOfxImageEffectPropOCIODisplay "OfxImageEffectPropOCIODisplay"
 
 /** @brief The OCIO view to be used in the plug-in's viewport
 
-   - Type - string X 1
-   - Property Set - image effect instance (read only)
-   - Valid Values - OCIO view for the display specified by kOfxImageEffectPropOCIODisplay
-
 This OCIO-specific property allows the host to specify which OCIO view should be used.
 If not defined, the default rules for choosing a view will be followed.
+   
+   - Valid Values - OCIO view for the display specified by kOfxImageEffectPropOCIODisplay
+   @propdef
+   type: string
+   dimension: 1
+   introduced: "1.5"
 */
 #define kOfxImageEffectPropOCIOView "OfxImageEffectPropOCIOView"
 
@@ -277,7 +299,13 @@ If not defined, the default rules for choosing a view will be followed.
      -  \ref kOfxStatErrMemory, in which case the action may be called again after a memory purge
      -  \ref kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message
      -  \ref kOfxStatErrFatal
- */
+ 
+    @actiondef
+    inArgs:
+      - OfxImageClipPropPreferredColourspaces
+    outArgs:
+      - OfxImageClipPropColourspace
+*/
 #define kOfxImageEffectActionGetOutputColourspace "OfxImageEffectActionGetOutputColourspace"
 
 #ifdef __cplusplus
