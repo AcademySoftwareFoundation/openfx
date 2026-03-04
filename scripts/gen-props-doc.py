@@ -10,12 +10,11 @@
 # ///
 
 import os
-import sys
 import argparse
-import yaml
 import logging
 from pathlib import Path
 from collections import defaultdict
+from ofx_prop_utils import get_properties_from_headers, get_propsets_from_headers, get_actions_from_headers
 
 # Set up basic configuration for logging
 logging.basicConfig(
@@ -120,8 +119,8 @@ def generate_property_documentation(props_metadata, props_by_set, outfile_path):
     """
     with open(outfile_path, 'w') as outfile:
         outfile.write(".. _propertiesReferenceGenerated:\n")
-        outfile.write("Properties Reference (Generated)\n")
-        outfile.write("==============================\n\n")
+        outfile.write("Properties Reference\n")
+        outfile.write("====================\n\n")
         outfile.write("This reference is auto-generated from property definitions in the OpenFX source code.\n")
         outfile.write("It provides a structured view of properties with their types, dimensions, and where they are used.\n")
         outfile.write("For each property, a link to the detailed Doxygen documentation is provided when available.\n\n")
@@ -301,11 +300,11 @@ def generate_property_set_documentation(props_by_set, props_metadata, actions_da
     """
     with open(outfile_path, 'w') as outfile:
         outfile.write(".. _propertySetReferenceGenerated:\n")
-        outfile.write("Property Sets Reference (Generated)\n")
-        outfile.write("==================================\n\n")
+        outfile.write("Property Sets Reference\n")
+        outfile.write("=======================\n\n")
         outfile.write("This reference is auto-generated from property set definitions in the OpenFX source code.\n")
         outfile.write("It provides an overview of property sets and their associated properties.\n")
-        outfile.write("For each property, a link to its detailed description in the :doc:`Properties Reference (Generated) <ofxPropertiesReferenceGenerated>` is provided.\n\n")
+        outfile.write("For each property, a link to its detailed description in the :doc:`Properties Reference <ofxPropertiesReferenceGenerated>` is provided.\n\n")
 
         # First document the regular property sets
         outfile.write("Regular Property Sets\n--------------------\n\n")
@@ -378,28 +377,23 @@ def main():
     props_doc_path = doc_ref_dir / 'ofxPropertiesReferenceGenerated.rst'
     propsets_doc_path = doc_ref_dir / 'ofxPropertySetsGenerated.rst'
     
-    parser = argparse.ArgumentParser(description="Generate RST documentation from OpenFX properties YAML")
-    parser.add_argument('--props-file', default=include_dir/'ofx-props.yml',
-                        help="Path to the ofx-props.yml file")
+    parser = argparse.ArgumentParser(description="Generate RST documentation from OpenFX property definitions")
     parser.add_argument('--props-doc', default=props_doc_path,
                         help="Output path for properties documentation")
     parser.add_argument('--propsets-doc', default=propsets_doc_path,
                         help="Output path for property sets documentation")
     parser.add_argument('-v', '--verbose', action='store_true',
                         help="Enable verbose output")
-    
+
     args = parser.parse_args()
-    
+
     if args.verbose:
-        logging.info(f"Reading properties from {args.props_file}")
-        
-    # Load property definitions
-    with open(args.props_file, 'r') as props_file:
-        props_data = yaml.safe_load(props_file)
-    
-    props_by_set = expand_set_props(props_data['propertySets'])
-    props_metadata = props_data['properties']
-    actions_data = props_data.get('Actions', {})
+        logging.info(f"Reading properties from headers in {include_dir}")
+
+    # All data is now extracted from inline blocks in headers
+    props_by_set = expand_set_props(get_propsets_from_headers(include_dir))
+    actions_data = get_actions_from_headers(include_dir)
+    props_metadata = get_properties_from_headers(include_dir)
     
     if args.verbose:
         logging.info(f"Generating property documentation in {args.props_doc}")

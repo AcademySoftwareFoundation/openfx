@@ -44,6 +44,10 @@ public:
         return props_.get<PropId::OfxPropChangeReason>(0, error_if_missing);
     }
 
+    const char* thumbnailRender(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropThumbnailRender>(0, error_if_missing);
+    }
+
 };
 
 // Property set accessor for: ActionEndInstanceChanged_InArgs
@@ -80,6 +84,10 @@ public:
 
     std::array<double, 2> renderScale() const {
         return props_.getAll<PropId::OfxImageEffectPropRenderScale>();
+    }
+
+    const char* thumbnailRender(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropThumbnailRender>(0, error_if_missing);
     }
 
 };
@@ -500,6 +508,11 @@ public:
         return *this;
     }
 
+    EffectDescriptor& setCPURenderSupported(const char* value, bool error_if_missing = false) {
+        props_.set<PropId::OfxImageEffectPropCPURenderSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
     const char* filePath(bool error_if_missing = true) const {
         return props_.get<PropId::OfxPluginPropFilePath>(0, error_if_missing);
     }
@@ -608,6 +621,10 @@ public:
 
     const char* openGLRenderSupported(bool error_if_missing = true) const {
         return props_.get<PropId::OfxImageEffectPropOpenGLRenderSupported>(0, error_if_missing);
+    }
+
+    const char* cPURenderSupported(bool error_if_missing = false) const {
+        return props_.get<PropId::OfxImageEffectPropCPURenderSupported>(0, error_if_missing);
     }
 
     double frameRate(bool error_if_missing = true) const {
@@ -796,6 +813,10 @@ public:
         return props_.get<PropId::OfxImageEffectPropNoSpatialAwareness>(0, error_if_missing);
     }
 
+    const char* thumbnailRender(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropThumbnailRender>(0, error_if_missing);
+    }
+
 };
 
 // Property set accessor for: ImageEffectActionDescribeInContext_InArgs
@@ -941,6 +962,10 @@ public:
         return props_.get<PropId::OfxPropTime>(0, error_if_missing);
     }
 
+    const char* thumbnailRender(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropThumbnailRender>(0, error_if_missing);
+    }
+
 };
 
 // Property set accessor for: ImageEffectActionGetFramesNeeded_OutArgs
@@ -997,6 +1022,10 @@ public:
         return props_.getAll<PropId::OfxImageEffectPropRenderScale>();
     }
 
+    const char* thumbnailRender(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropThumbnailRender>(0, error_if_missing);
+    }
+
 };
 
 // Property set accessor for: ImageEffectActionGetRegionOfDefinition_OutArgs
@@ -1032,6 +1061,10 @@ public:
 
     std::array<double, 4> regionOfInterest() const {
         return props_.getAll<PropId::OfxImageEffectPropRegionOfInterest>();
+    }
+
+    const char* thumbnailRender(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropThumbnailRender>(0, error_if_missing);
     }
 
 };
@@ -1073,6 +1106,10 @@ public:
 
     std::array<double, 2> renderScale() const {
         return props_.getAll<PropId::OfxImageEffectPropRenderScale>();
+    }
+
+    const char* thumbnailRender(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropThumbnailRender>(0, error_if_missing);
     }
 
 };
@@ -1160,6 +1197,10 @@ public:
 
     const char* noSpatialAwareness(bool error_if_missing = true) const {
         return props_.get<PropId::OfxImageEffectPropNoSpatialAwareness>(0, error_if_missing);
+    }
+
+    const char* thumbnailRender(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropThumbnailRender>(0, error_if_missing);
     }
 
 };
@@ -1295,6 +1336,10 @@ public:
 
     const char* openGLRenderSupported(bool error_if_missing = true) const {
         return props_.get<PropId::OfxImageEffectPropOpenGLRenderSupported>(0, error_if_missing);
+    }
+
+    const char* cPURenderSupported(bool error_if_missing = false) const {
+        return props_.get<PropId::OfxImageEffectPropCPURenderSupported>(0, error_if_missing);
     }
 
     bool renderQualityDraft(bool error_if_missing = false) const {

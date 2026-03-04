@@ -17,6 +17,9 @@ cmake-build.log
 build*/
 build.log
 .cache/
+__pycache__
+.claude/
+uv.lock
 
 xcuserdata
 

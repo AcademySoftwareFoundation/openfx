@@ -145,7 +145,15 @@ These are the list of actions passed to an image effect plugin's main function. 
      -  \ref kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message
      -  \ref kOfxStatErrFatal
 
- */
+ 
+    @actiondef
+    inArgs:
+      - OfxPropTime
+      - OfxImageEffectPropRenderScale
+      - OfxImageEffectPropThumbnailRender
+    outArgs:
+      - OfxImageEffectPropRegionOfDefinition
+*/
 #define kOfxImageEffectActionGetRegionOfDefinition        "OfxImageEffectActionGetRegionOfDefinition"
 
 /** @brief
@@ -183,7 +191,16 @@ These are the list of actions passed to an image effect plugin's main function. 
      -  \ref kOfxStatErrFatal
 
 
- */
+ 
+    @actiondef
+    inArgs:
+      - OfxPropTime
+      - OfxImageEffectPropRenderScale
+      - OfxImageEffectPropRegionOfInterest
+      - OfxImageEffectPropThumbnailRender
+    outArgs:
+    # - OfxImageEffectClipPropRoI_ # with clip name
+*/
 #define kOfxImageEffectActionGetRegionsOfInterest         "OfxImageEffectActionGetRegionsOfInterest"
 
 /** @brief
@@ -217,7 +234,12 @@ These are the list of actions passed to an image effect plugin's main function. 
 
 
 
- */
+ 
+    @actiondef
+    inArgs:
+    outArgs:
+      - OfxImageEffectPropFrameRange
+*/
 #define kOfxImageEffectActionGetTimeDomain                "OfxImageEffectActionGetTimeDomain"
 
 /** @brief
@@ -280,7 +302,14 @@ These are the list of actions passed to an image effect plugin's main function. 
      -  \ref kOfxStatErrMemory, in which case the action may be called again after a memory purge
      -  \ref kOfxStatFailed, something wrong, but no error code appropriate, plugin to post message
      -  \ref kOfxStatErrFatal
- */
+ 
+    @actiondef
+    inArgs:
+      - OfxPropTime
+      - OfxImageEffectPropThumbnailRender
+    outArgs:
+      - OfxImageEffectPropFrameRange
+*/
 #define kOfxImageEffectActionGetFramesNeeded              "OfxImageEffectActionGetFramesNeeded"
 
 /** @brief
@@ -329,7 +358,6 @@ These are the list of actions passed to an image effect plugin's main function. 
      - \ref kOfxImageEffectFrameVarying whether the output clip can produces different images at
      different times, even if all parameters and inputs are constant,
      defaults to false.
-     - \ref kOfxImageEffectPropThumbnailRender (optional) if the host considers this render a "thumbnail"
 
 @returns
      -  \ref kOfxStatOK, the action was trapped and at least one of the properties in the outArgs
@@ -341,7 +369,21 @@ These are the list of actions passed to an image effect plugin's main function. 
      -  \ref kOfxStatFailed, something wrong, but no error code appropriate,
      plugin to post message
      -  \ref kOfxStatErrFatal
- */
+ 
+    @actiondef
+    inArgs:
+    outArgs:
+      - OfxImageEffectPropFrameRate
+      - OfxImageClipPropFieldOrder
+      - OfxImageEffectPropPreMultiplication
+      - OfxImageClipPropContinuousSamples
+      - OfxImageEffectFrameVarying
+    # these special props all have the clip name postpended after "_"
+    # - OfxImageClipPropComponents_
+    # - OfxImageClipPropDepth_
+    # - OfxImageClipPropPreferredColourspaces_
+    # - OfxImageClipPropPAR_
+*/
 #define kOfxImageEffectActionGetClipPreferences       "OfxImageEffectActionGetClipPreferences"
 
 /** @brief
@@ -391,7 +433,16 @@ These are the list of actions passed to an image effect plugin's main function. 
      plugin to post message
      -  \ref kOfxStatErrFatal
 
- */
+ 
+    @actiondef
+    inArgs:
+      - OfxPropTime
+      - OfxImageEffectPropFieldToRender
+      - OfxImageEffectPropRenderWindow
+      - OfxImageEffectPropRenderScale
+      - OfxImageEffectPropThumbnailRender
+    outArgs:
+*/
 #define kOfxImageEffectActionIsIdentity            "OfxImageEffectActionIsIdentity"
 
 /** @brief
@@ -434,7 +485,32 @@ These are the list of actions passed to an image effect plugin's main function. 
      plugin to post message
      -  \ref kOfxStatErrFatal
 
- */
+ 
+    @actiondef
+    inArgs:
+      - OfxPropTime
+      - OfxImageEffectPropSequentialRenderStatus
+      - OfxImageEffectPropInteractiveRenderStatus
+      - OfxImageEffectPropRenderQualityDraft
+      - OfxImageEffectPropCudaEnabled
+      - OfxImageEffectPropCudaRenderSupported
+      - OfxImageEffectPropCudaStream
+      - OfxImageEffectPropCudaStreamSupported
+      - OfxImageEffectPropMetalCommandQueue
+      - OfxImageEffectPropMetalEnabled
+      - OfxImageEffectPropMetalRenderSupported
+      - OfxImageEffectPropOpenCLCommandQueue
+      - OfxImageEffectPropOpenCLEnabled
+      - OfxImageEffectPropOpenCLImage
+      - OfxImageEffectPropOpenCLRenderSupported
+      - OfxImageEffectPropOpenCLSupported
+      - OfxImageEffectPropOpenGLEnabled
+      - OfxImageEffectPropOpenGLTextureIndex
+      - OfxImageEffectPropOpenGLTextureTarget
+      - OfxImageEffectPropNoSpatialAwareness
+      - OfxImageEffectPropThumbnailRender
+    outArgs:
+*/
 #define kOfxImageEffectActionRender                "OfxImageEffectActionRender"
 
 /** @brief
@@ -474,7 +550,35 @@ These are the list of actions passed to an image effect plugin's main function. 
      -  \ref kOfxStatFailed, something wrong, but no error code appropriate,
      plugin to post message,
      -  \ref kOfxStatErrFatal
- */
+ 
+    @actiondef
+    inArgs:
+      - OfxImageEffectPropFrameRange
+      - OfxImageEffectPropFrameStep
+      - OfxPropIsInteractive
+      - OfxImageEffectPropRenderScale
+      - OfxImageEffectPropSequentialRenderStatus
+      - OfxImageEffectPropInteractiveRenderStatus
+      - OfxImageEffectPropCudaEnabled
+      - OfxImageEffectPropCudaRenderSupported
+      - OfxImageEffectPropCudaStream
+      - OfxImageEffectPropCudaStreamSupported
+      - OfxImageEffectPropMetalCommandQueue
+      - OfxImageEffectPropMetalEnabled
+      - OfxImageEffectPropMetalRenderSupported
+      - OfxImageEffectPropOpenCLCommandQueue
+      - OfxImageEffectPropOpenCLEnabled
+      - OfxImageEffectPropOpenCLImage
+      - OfxImageEffectPropOpenCLRenderSupported
+      - OfxImageEffectPropOpenCLSupported
+      - OfxImageEffectPropOpenGLEnabled
+      - OfxImageEffectPropOpenGLTextureIndex
+      - OfxImageEffectPropOpenGLTextureTarget
+      - OfxImageEffectPropInteractiveRenderStatus
+      - OfxImageEffectPropNoSpatialAwareness
+      - OfxImageEffectPropThumbnailRender
+    outArgs:
+*/
 #define kOfxImageEffectActionBeginSequenceRender   "OfxImageEffectActionBeginSequenceRender"
 
 /** @brief
@@ -492,7 +596,6 @@ These are the list of actions passed to an image effect plugin's main function. 
      - \ref kOfxImageEffectPropRenderScale the scale factor to apply to images for this call
      - \ref kOfxImageEffectPropSequentialRenderStatus whether the effect is currently being rendered in strict frame order on a single instance
      - \ref kOfxImageEffectPropInteractiveRenderStatus if the render is in response to a user modifying the effect in an interactive session
-     - \ref kOfxImageEffectPropThumbnailRender (optional) if the host considers this render a "thumbnail"
 
  @param  outArgs is redundant and is set to NULL
 
@@ -513,7 +616,33 @@ These are the list of actions passed to an image effect plugin's main function. 
      plugin to post message,
      -  \ref kOfxStatErrFatal
 
- */
+ 
+    @actiondef
+    inArgs:
+      - OfxImageEffectPropFrameRange
+      - OfxImageEffectPropFrameStep
+      - OfxPropIsInteractive
+      - OfxImageEffectPropRenderScale
+      - OfxImageEffectPropSequentialRenderStatus
+      - OfxImageEffectPropInteractiveRenderStatus
+      - OfxImageEffectPropCudaEnabled
+      - OfxImageEffectPropCudaRenderSupported
+      - OfxImageEffectPropCudaStream
+      - OfxImageEffectPropCudaStreamSupported
+      - OfxImageEffectPropMetalCommandQueue
+      - OfxImageEffectPropMetalEnabled
+      - OfxImageEffectPropMetalRenderSupported
+      - OfxImageEffectPropOpenCLCommandQueue
+      - OfxImageEffectPropOpenCLEnabled
+      - OfxImageEffectPropOpenCLImage
+      - OfxImageEffectPropOpenCLRenderSupported
+      - OfxImageEffectPropOpenCLSupported
+      - OfxImageEffectPropOpenGLEnabled
+      - OfxImageEffectPropOpenGLTextureIndex
+      - OfxImageEffectPropOpenGLTextureTarget
+      - OfxImageEffectPropInteractiveRenderStatus
+    outArgs:
+*/
 #define kOfxImageEffectActionEndSequenceRender      "OfxImageEffectActionEndSequenceRender"
 
 /** @brief
@@ -553,7 +682,12 @@ These are the list of actions passed to an image effect plugin's main function. 
      plugin to post message
      -  \ref kOfxStatErrFatal
 
- */
+ 
+    @actiondef
+    inArgs:
+      - OfxImageEffectPropContext
+    outArgs:
+*/
 #define kOfxImageEffectActionDescribeInContext     "OfxImageEffectActionDescribeInContext"
 
 /*@}*/
@@ -570,10 +704,7 @@ These are the list of properties used by the Image Effects API.
 */
 /*@{*/
 /** @brief Indicates to the host the contexts a plugin can be used in.
-
-   - Type - string X N
-   - Property Set - image effect descriptor passed to kOfxActionDescribe (read/write)
-   - Default - this has no defaults, it must be set
+   
    - Valid Values - This must be one of
       - ::kOfxImageEffectContextGenerator
       - ::kOfxImageEffectContextFilter
@@ -581,50 +712,66 @@ These are the list of properties used by the Image Effects API.
       - ::kOfxImageEffectContextPaint
       - ::kOfxImageEffectContextGeneral
       - ::kOfxImageEffectContextRetimer
+   @propdef
+   type: enum
+   dimension: 0
+   values:
+     - OfxImageEffectContextGenerator
+     - OfxImageEffectContextFilter
+     - OfxImageEffectContextTransition
+     - OfxImageEffectContextPaint
+     - OfxImageEffectContextGeneral
+     - OfxImageEffectContextRetimer
 */
 #define kOfxImageEffectPropSupportedContexts "OfxImageEffectPropSupportedContexts"
 
 /** @brief The plugin handle passed to the initial 'describe' action.
 
-   - Type - pointer X 1
-   - Property Set - plugin instance, (read only)
-
 This value will be the same for all instances of a plugin.
+   
+   @propdef
+   type: pointer
+   dimension: 1
 */
 #define kOfxImageEffectPropPluginHandle "OfxImageEffectPropPluginHandle"
 
 /** @brief Indicates if a host is a background render.
 
-   - Type - int X 1
-   - Property Set - host descriptor (read only)
    - Valid Values - This must be one of
        - 0 if the host is a foreground host, it may open the effect in an interactive session (or not)
        - 1 if the host is a background 'processing only' host, and the effect will never be opened in an interactive session.
+   @propdef
+   type: bool
+   dimension: 1
 */
 #define kOfxImageEffectHostPropIsBackground "OfxImageEffectHostPropIsBackground"
 
 /** @brief Indicates whether only one instance of a plugin can exist at the same time
 
-   - Type - int X 1
-   - Property Set - plugin descriptor (read/write)
-   - Default - 0
+Some plugins, for whatever reason, may only be able to have a single instance in existence at any one time. This plugin property is used to indicate that.
+
    - Valid Values - This must be one of
        - 0 - which means multiple instances can exist simultaneously,
        - 1 -  which means only one instance can exist at any one time.
-
-Some plugins, for whatever reason, may only be able to have a single instance in existence at any one time. This plugin property is used to indicate that.
+   @propdef
+   type: bool
+   dimension: 1
 */
 #define kOfxImageEffectPluginPropSingleInstance "OfxImageEffectPluginPropSingleInstance"
 
 /** @brief Indicates how many simultaneous renders the plugin can deal with.
-
-   - Type - string X 1
-   - Property Set - plugin descriptor (read/write)
-   - Default - ::kOfxImageEffectRenderInstanceSafe
+   
    - Valid Values - This must be one of
       - ::kOfxImageEffectRenderUnsafe - indicating that only a single 'render' call can be made at any time among all instances,
       - ::kOfxImageEffectRenderInstanceSafe - indicating that any instance can have a single 'render' call at any one time,
       - ::kOfxImageEffectRenderFullySafe - indicating that any instance of a plugin can have multiple renders running simultaneously
+   @propdef
+   type: enum
+   dimension: 1
+   values:
+     - OfxImageEffectRenderUnsafe
+     - OfxImageEffectRenderInstanceSafe
+     - OfxImageEffectRenderFullySafe
 */
 #define kOfxImageEffectPluginRenderThreadSafety "OfxImageEffectPluginRenderThreadSafety"
 
@@ -637,92 +784,87 @@ Some plugins, for whatever reason, may only be able to have a single instance in
 
 /** @brief Indicates whether a plugin lets the host perform per frame SMP threading
 
-   - Type - int X 1
-   - Property Set - plugin descriptor (read/write)
-   - Default - 1
    - Valid Values - This must be one of
      - 0 - which means that the plugin will perform any per frame SMP threading
      - 1 - which means the host can call an instance's render function simultaneously at the same frame, but with different windows to render.
+   @propdef
+   type: bool
+   dimension: 1
 */
 #define kOfxImageEffectPluginPropHostFrameThreading "OfxImageEffectPluginPropHostFrameThreading"
 
 /** @brief Indicates whether a host or plugin can support clips of differing component depths going into/out of an effect
 
-   - Type - int X 1
-   - Property Set - plugin descriptor (read/write), host descriptor (read only)
-   - Default - 0 for a plugin
+If a host indicates that it can support multiple pixels depths, then it will allow the plugin to explicitly set 
+the output clip's pixel depth in the ::kOfxImageEffectActionGetClipPreferences action. See \ref ImageEffectClipPreferences.
+
    - Valid Values - This must be one of
      - 0 - in which case the host or plugin does not support clips of multiple pixel depths,
      - 1 - which means a host or plugin is able to to deal with clips of multiple pixel depths,
-
-If a host indicates that it can support multiple pixels depths, then it will allow the plugin to explicitly set 
-the output clip's pixel depth in the ::kOfxImageEffectActionGetClipPreferences action. See \ref ImageEffectClipPreferences.
+   @propdef
+   type: bool
+   dimension: 1
+   cname: kOfxImageEffectPropSupportsMultipleClipDepths
 */
 #define kOfxImageEffectPropSupportsMultipleClipDepths "OfxImageEffectPropMultipleClipDepths"
 
 /** @brief Indicates whether a host or plugin can support clips of differing pixel aspect ratios going into/out of an effect
 
-   - Type - int X 1
-   - Property Set - plugin descriptor (read/write), host descriptor (read only)
-   - Default - 0 for a plugin
+If a host indicates that it can support multiple  pixel aspect ratios, then it will allow the plugin to explicitly set 
+the output clip's aspect ratio in the ::kOfxImageEffectActionGetClipPreferences action. See \ref ImageEffectClipPreferences.
+
    - Valid Values - This must be one of
      - 0 - in which case the host or plugin does not support clips of multiple pixel aspect ratios
      - 1 - which means a host or plugin is able to to deal with clips of multiple pixel aspect ratios
-
-If a host indicates that it can support multiple  pixel aspect ratios, then it will allow the plugin to explicitly set 
-the output clip's aspect ratio in the ::kOfxImageEffectActionGetClipPreferences action. See \ref ImageEffectClipPreferences.
+   @propdef
+   type: bool
+   dimension: 1
 */
 #define kOfxImageEffectPropSupportsMultipleClipPARs "OfxImageEffectPropSupportsMultipleClipPARs"
 
 
 /** @brief Indicates the set of parameters on which a value change will trigger a change to clip preferences
 
-   - Type - string X N
-   - Property Set - plugin descriptor (read/write)
-   - Default - none set
-   - Valid Values - the name of any described parameter
-
 The plugin uses this to inform the host of the subset of parameters that affect the effect's clip preferences. A value change in any one of these will trigger a call to the clip preferences action.
 
 The plugin can be slaved to multiple parameters (setting index 0, then index 1 etc...)
+   
+   - Valid Values - the name of any described parameter
+   @propdef
+   type: string
+   dimension: 0
  */
 #define kOfxImageEffectPropClipPreferencesSlaveParam "OfxImageEffectPropClipPreferencesSlaveParam"
 
 /** @brief Indicates whether the host will let a plugin set the frame rate of the output clip.
 
-   - Type - int X 1
-   - Property Set - host descriptor (read only)
-   - Valid Values - This must be one of
-     - 0 - in which case the plugin may not change the frame rate of the output clip,
-     - 1 - which means a plugin is able to change the output clip's frame rate in the ::kOfxImageEffectActionGetClipPreferences action.
-
 See \ref ImageEffectClipPreferences.
 
 If a clip can be continuously sampled, the frame rate will be set to 0.
+
+   - Valid Values - This must be one of
+     - 0 - in which case the plugin may not change the frame rate of the output clip,
+     - 1 - which means a plugin is able to change the output clip's frame rate in the ::kOfxImageEffectActionGetClipPreferences action.
+   @propdef
+   type: bool
+   dimension: 1
 */
 #define kOfxImageEffectPropSetableFrameRate "OfxImageEffectPropSetableFrameRate"
 
 /** @brief Indicates whether the host will let a plugin set the fielding of the output clip.
 
-   - Type - int X 1
-   - Property Set - host descriptor (read only)
+See \ref ImageEffectClipPreferences.
+
    - Valid Values - This must be one of
      - 0 - in which case the plugin may not change the fielding of the output clip,
      - 1 - which means a plugin is able to change the output clip's fielding in the ::kOfxImageEffectActionGetClipPreferences action.
-
-See \ref ImageEffectClipPreferences.
+   @propdef
+   type: bool
+   dimension: 1
 */
 #define kOfxImageEffectPropSetableFielding "OfxImageEffectPropSetableFielding"
 
 /** @brief Indicates whether a plugin needs sequential rendering, and a host support it
-
-   - Type - int X 1
-   - Property Set - plugin descriptor (read/write) or plugin instance (read/write), and host descriptor (read only)
-   - Default - 0
-   - Valid Values - 
-     - 0 - for a plugin, indicates that a plugin does not need to be sequentially rendered to be correct, for a host, indicates that it cannot ever guarantee sequential rendering,
-     - 1 - for a plugin, indicates that it needs to be sequentially rendered to be correct, for a host, indicates that it can always support sequential rendering of plugins that are sequentially rendered,
-     - 2 - for a plugin, indicates that it is best to render sequentially, but will still produce correct results if not, for a host, indicates that it can sometimes render sequentially, and will have set ::kOfxImageEffectPropSequentialRenderStatus on the relevant actions
 
 Some effects have temporal dependencies, some information from from the rendering of frame N-1 is needed to render frame N correctly. This property is set by an effect to indicate such a situation. Also, some effects are more efficient if they run sequentially, but can still render correct images even if they do not, eg: a complex particle system.
 
@@ -731,21 +873,27 @@ During an interactive session a host may attempt to render a frame out of sequen
 However if a host caches output, any frame frame generated in random temporal order needs to be considered invalid and needs to be re-rendered when the host finally performs a first to last render of the output sequence.
 
 In all cases, a host will set the kOfxImageEffectPropSequentialRenderStatus flag to indicate its sequential render status.
+
+   - Valid Values -
+     - 0 - for a plugin, indicates that a plugin does not need to be sequentially rendered to be correct, for a host, indicates that it cannot ever guarantee sequential rendering,
+     - 1 - for a plugin, indicates that it needs to be sequentially rendered to be correct, for a host, indicates that it can always support sequential rendering of plugins that are sequentially rendered,
+     - 2 - for a plugin, indicates that it is best to render sequentially, but will still produce correct results if not, for a host, indicates that it can sometimes render sequentially, and will have set ::kOfxImageEffectPropSequentialRenderStatus on the relevant actions
+   @propdef
+   type: bool
+   dimension: 1
 */
 #define kOfxImageEffectInstancePropSequentialRender "OfxImageEffectInstancePropSequentialRender"
 
 /** @brief Property on all the render action that indicate the current sequential render status of a host
 
-   - Type - int X 1
-   - Property Set - read only property on the inArgs of the following actions...
-     - ::kOfxImageEffectActionBeginSequenceRender
-     - ::kOfxImageEffectActionRender
-     - ::kOfxImageEffectActionEndSequenceRender
-   - Valid Values - 
+This property is set to indicate whether the effect is currently being rendered in frame order on a single effect instance. See ::kOfxImageEffectInstancePropSequentialRender for more details on sequential rendering.
+
+   - Valid Values -
      - 0 - the host is not currently sequentially rendering,
      - 1 - the host is currentely rendering in a way so that it guarantees sequential rendering.
-
-This property is set to indicate whether the effect is currently being rendered in frame order on a single effect instance. See ::kOfxImageEffectInstancePropSequentialRender for more details on sequential rendering.
+   @propdef
+   type: bool
+   dimension: 1
 */
 #define kOfxImageEffectPropSequentialRenderStatus "OfxImageEffectPropSequentialRenderStatus"
 
@@ -754,62 +902,65 @@ This property is set to indicate whether the effect is currently being rendered 
 #define kOfxHostNativeOriginCenter       "kOfxImageEffectHostPropNativeOriginCenter"  
 /** @brief Property that indicates the host native UI space - this is only a UI hint, has no impact on pixel processing
 
-   - Type - UTF8 string X 1
-   - Property Set - read only property (host)
-    - Valid Values - 
+This property is set to kOfxHostNativeOriginBottomLeft pre V1.4 and was to be discovered by plug-ins. This is useful for drawing overlay for points... so everything matches the rest of the app (for example expression linking to other tools, or simply match the reported location of the host viewer).
+
+    - Valid Values -
      "kOfxImageEffectHostPropNativeOriginBottomLeft"  - 0,0 bottom left
      "kOfxImageEffectHostPropNativeOriginTopLeft" - 0,0 top left
 	 "kOfxImageEffectHostPropNativeOriginCenter"  - 0,0 center (screen space)
-
-This property is set to kOfxHostNativeOriginBottomLeft pre V1.4 and was to be discovered by plug-ins. This is useful for drawing overlay for points... so everything matches the rest of the app (for example expression linking to other tools, or simply match the reported location of the host viewer).
-
+   @propdef
+   type: enum
+   dimension: 1
+   values:
+     - OfxImageEffectHostPropNativeOriginBottomLeft
+     - OfxImageEffectHostPropNativeOriginTopLeft
+     - OfxImageEffectHostPropNativeOriginCenter
 */
 #define kOfxImageEffectHostPropNativeOrigin  "OfxImageEffectHostPropNativeOrigin"
 
 
 /** @brief Property that indicates if a plugin is being rendered in response to user interaction.
 
-   - Type - int X 1
-   - Property Set - read only property on the inArgs of the following actions...
-     - ::kOfxImageEffectActionBeginSequenceRender
-     - ::kOfxImageEffectActionRender
-     - ::kOfxImageEffectActionEndSequenceRender
-   - Valid Values - 
+This property is set to 1 on all render calls that have been triggered because a user is actively modifying an effect (or up stream effect) in an interactive session. This typically means that the effect is not being rendered as a part of a sequence, but as a single frame.
+
+   - Valid Values -
      - 0 - the host is rendering the instance due to some reason other than an interactive tweak on a UI,
      - 1 - the instance is being rendered because a user is modifying parameters in an interactive session.
-
-This property is set to 1 on all render calls that have been triggered because a user is actively modifying an effect (or up stream effect) in an interactive session. This typically means that the effect is not being rendered as a part of a sequence, but as a single frame.
+   @propdef
+   type: bool
+   dimension: 1
 */
 #define kOfxImageEffectPropInteractiveRenderStatus "OfxImageEffectPropInteractiveRenderStatus"
 
 /** @brief Indicates the effect group for this plugin.
 
-   - Type - UTF8 string X 1
-   - Property Set - plugin descriptor (read/write)
-   - Default - ""
-
 This is purely a user interface hint for the host so it can group related effects on any menus it may have.
+   
+   @propdef
+   type: string
+   dimension: 1
 */
 #define kOfxImageEffectPluginPropGrouping "OfxImageEffectPluginPropGrouping"
 
 /** @brief Indicates whether a host support image effect \ref ImageEffectOverlays.
 
-   - Type - int X 1
-   - Property Set - host descriptor (read only)
    - Valid Values - This must be one of
        - 0 - the host won't allow a plugin to draw a GUI over the output image,
        - 1 - the host will allow a plugin to draw a GUI over the output image.
+   @propdef
+   type: bool
+   dimension: 1
 */
 #define kOfxImageEffectPropSupportsOverlays "OfxImageEffectPropSupportsOverlays"
 
 /** @brief Sets the entry for an effect's overlay interaction
 
-   - Type - pointer X 1
-   - Property Set - plugin descriptor (read/write)
-   - Default - NULL
-   - Valid Values - must point to an ::OfxPluginEntryPoint
-
 The entry point pointed to must be one that handles custom interaction actions.
+   
+   - Valid Values - must point to an ::OfxPluginEntryPoint
+   @propdef
+   type: pointer
+   dimension: 1
 */
 #define kOfxImageEffectPluginPropOverlayInteractV1 "OfxImageEffectPluginPropOverlayInteractV1"
 
@@ -817,65 +968,61 @@ The entry point pointed to must be one that handles custom interaction actions.
  kOfxImageEffectPluginPropOverlayInteractV1, the overlay interact in the plug-in is expected
  to implement the kOfxInteractActionDraw using the OfxDrawSuiteV1.
  
-   - Type - pointer X 1
-   - Property Set - plugin descriptor (read/write)
-   - Default - NULL
-   - Valid Values - must point to an ::OfxPluginEntryPoint
-
 The entry point pointed to must be one that handles custom interaction actions.
+ 
+   - Valid Values - must point to an ::OfxPluginEntryPoint
+ @propdef
+ type: pointer
+ dimension: 1
 */
 #define kOfxImageEffectPluginPropOverlayInteractV2 "OfxImageEffectPluginPropOverlayInteractV2"
 
 /** @brief Indicates whether a plugin or host support multiple resolution images.
 
-   - Type - int X 1
-   - Property Set - host descriptor (read only), plugin descriptor (read/write)
-   - Default - 1 for plugins
-   - Valid Values - This must be one of
-       - 0 - the plugin or host does not support multiple resolutions
-       - 1 - the plugin or host does support multiple resolutions
-
 Multiple resolution images mean...
        - input and output images can be of any size
        - input and output images can be offset from the origin
+
+   - Valid Values - This must be one of
+       - 0 - the plugin or host does not support multiple resolutions
+       - 1 - the plugin or host does support multiple resolutions
+   @propdef
+   type: bool
+   dimension: 1
 */
 #define kOfxImageEffectPropSupportsMultiResolution "OfxImageEffectPropSupportsMultiResolution"
 
 /** @brief Indicates whether a clip, plugin or host supports tiled images
 
-   - Type - int X 1
-   - Property Set - host descriptor (read only), plugin descriptor (read/write), clip descriptor (read/write), instance (read/write)
-   - Default - to 1 for a plugin and clip
-   - Valid Values - This must be one of 0 or 1
-
 Tiled images mean that input or output images can contain pixel data that is only a subset of their full RoD.
 
 If a clip or plugin does not support tiled images, then the host should supply full RoD images to the effect whenever it fetches one.
 
-V1.4:  It is now possible (defined) to change OfxImageEffectPropSupportsTiles in Instance Changed 
+V1.4:  It is now possible (defined) to change OfxImageEffectPropSupportsTiles in Instance Changed
+
+   @propdef
+   type: bool
+   dimension: 1
 */
 #define kOfxImageEffectPropSupportsTiles "OfxImageEffectPropSupportsTiles"
 
 
 /** @brief Indicates support for random temporal access to images in a clip.
 
-   - Type - int X 1
-   - Property Set - host descriptor (read only), plugin descriptor (read/write), clip descriptor (read/write)
-   - Default - to 0 for a plugin and clip
-   - Valid Values - This must be one of 0 or 1
-
 On a host, it indicates whether the host supports temporal access to images.
 
 On a plugin, indicates if the plugin needs temporal access to images.
 
 On a clip, it indicates that the clip needs temporal access to images.
+
+   @propdef
+   type: bool
+   dimension: 1
 */
 #define kOfxImageEffectPropTemporalClipAccess "OfxImageEffectPropTemporalClipAccess"
 
 /** @brief Indicates the context a plugin instance has been created for.
-
-   - Type - string X 1
-   - Property Set - image effect instance (read only)
+   
    - Valid Values - This must be one of
       - ::kOfxImageEffectContextGenerator
       - ::kOfxImageEffectContextFilter
@@ -883,102 +1030,143 @@ On a clip, it indicates that the clip needs temporal access to images.
       - ::kOfxImageEffectContextPaint
       - ::kOfxImageEffectContextGeneral
       - ::kOfxImageEffectContextRetimer
-
+   @propdef
+   type: enum
+   dimension: 1
+   values:
+     - OfxImageEffectContextGenerator
+     - OfxImageEffectContextFilter
+     - OfxImageEffectContextTransition
+     - OfxImageEffectContextPaint
+     - OfxImageEffectContextGeneral
+     - OfxImageEffectContextRetimer
  */
 #define kOfxImageEffectPropContext "OfxImageEffectPropContext"
 
 /** @brief Indicates the type of each component in a clip or image (after any mapping)
 
-   - Type - string X 1
-   - Property Set - clip instance (read only), image instance (read only)
+Note that for a clip, this is the value set by the clip preferences action, not the raw 'actual' value of the clip.
+   
    - Valid Values - This must be one of
        - kOfxBitDepthNone (implying a clip is unconnected, not valid for an image)
        - kOfxBitDepthByte
        - kOfxBitDepthShort
        - kOfxBitDepthHalf
        - kOfxBitDepthFloat
-
-Note that for a clip, this is the value set by the clip preferences action, not the raw 'actual' value of the clip.
+   @propdef
+   type: enum
+   dimension: 1
+   values:
+     - OfxBitDepthNone
+     - OfxBitDepthByte
+     - OfxBitDepthShort
+     - OfxBitDepthHalf
+     - OfxBitDepthFloat
 */
 #define kOfxImageEffectPropPixelDepth "OfxImageEffectPropPixelDepth"
 
 /** @brief Indicates the current component type in a clip or image (after any mapping)
 
-   - Type - string X 1
-   - Property Set - clip instance (read only), image instance (read only)
+Note that for a clip, this is the value set by the clip preferences action, not the raw 'actual' value of the clip.
+   
    - Valid Values - This must be one of
      - kOfxImageComponentNone (implying a clip is unconnected, not valid for an image)
      - kOfxImageComponentRGBA
      - kOfxImageComponentRGB
      - kOfxImageComponentAlpha
-
-Note that for a clip, this is the value set by the clip preferences action, not the raw 'actual' value of the clip.
+   @propdef
+   type: enum
+   dimension: 1
+   values:
+     - OfxImageComponentNone
+     - OfxImageComponentRGBA
+     - OfxImageComponentRGB
+     - OfxImageComponentAlpha
 */
 #define kOfxImageEffectPropComponents "OfxImageEffectPropComponents"
 
 /** @brief Uniquely labels an image 
 
-   - Type - ASCII string X 1
-   - Property Set - image instance (read only)
-
 This is host set and allows a plug-in to differentiate between images. This is especially
 useful if a plugin caches analysed information about the image (for example motion vectors). The plugin can label the
 cached information with this identifier. If a user connects a different clip to the analysed input, or the image has changed in some way
 then the plugin can detect this via an identifier change and re-evaluate the cached information.
+   
+   @propdef
+   type: string
+   dimension: 1
 */
 #define kOfxImagePropUniqueIdentifier "OfxImagePropUniqueIdentifier"
 
 /** @brief Clip and action argument property which indicates that the clip can be sampled continuously
 
-   - Type - int X 1
-   - Property Set -  clip instance (read only), as an out argument to ::kOfxImageEffectActionGetClipPreferences action (read/write)
-   - Default - 0 as an out argument to the ::kOfxImageEffectActionGetClipPreferences action
+If this is set to true, then the frame rate of a clip is effectively infinite, so to stop arithmetic
+errors the frame rate should then be set to 0.
+   
    - Valid Values - This must be one of...
      - 0 if the images can only be sampled at discrete times (eg: the clip is a sequence of frames),
      - 1 if the images can only be sampled continuously (eg: the clip is in fact an animating roto spline and can be rendered at any time).
-
-If this is set to true, then the frame rate of a clip is effectively infinite, so to stop arithmetic
-errors the frame rate should then be set to 0.
+   @propdef
+   type: bool
+   dimension: 1
 */
 #define kOfxImageClipPropContinuousSamples "OfxImageClipPropContinuousSamples"
 
 /** @brief  Indicates the type of each component in a clip before any mapping by clip preferences
 
-   - Type - string X 1
-   - Property Set - clip instance (read only)
+This is the actual value of the component depth, before any mapping by clip preferences.
+   
    - Valid Values - This must be one of
        - kOfxBitDepthNone (implying a clip is unconnected image)
        - kOfxBitDepthByte
        - kOfxBitDepthShort
        - kOfxBitDepthHalf
        - kOfxBitDepthFloat
-
-This is the actual value of the component depth, before any mapping by clip preferences.
+   @propdef
+   type: enum
+   dimension: 1
+   values:
+     - OfxBitDepthNone
+     - OfxBitDepthByte
+     - OfxBitDepthShort
+     - OfxBitDepthHalf
+     - OfxBitDepthFloat
 */
 #define kOfxImageClipPropUnmappedPixelDepth "OfxImageClipPropUnmappedPixelDepth"
 
 /** @brief Indicates the current 'raw' component type on a clip before any mapping by clip preferences
-
-   - Type - string X 1
-   - Property Set - clip instance (read only),
+   
    - Valid Values - This must be one of
      - kOfxImageComponentNone (implying a clip is unconnected)
      - kOfxImageComponentRGBA
      - kOfxImageComponentRGB
      - kOfxImageComponentAlpha
+   @propdef
+   type: enum
+   dimension: 1
+   values:
+     - OfxImageComponentNone
+     - OfxImageComponentRGBA
+     - OfxImageComponentRGB
+     - OfxImageComponentAlpha
 */
 #define kOfxImageClipPropUnmappedComponents "OfxImageClipPropUnmappedComponents"
 
 /** @brief Indicates the premultiplication state of a clip or image
 
-   - Type - string X 1
-   - Property Set - clip instance (read only), image instance (read only), out args property in the ::kOfxImageEffectActionGetClipPreferences action (read/write)
+See the documentation on clip preferences for more details on how this is used with the ::kOfxImageEffectActionGetClipPreferences action.
+   
    - Valid Values - This must be one of
       - kOfxImageOpaque          - the image is opaque and so has no premultiplication state
       - kOfxImagePreMultiplied   - the image is premultiplied by its alpha
       - kOfxImageUnPreMultiplied - the image is unpremultiplied
-
-See the documentation on clip preferences for more details on how this is used with the ::kOfxImageEffectActionGetClipPreferences action.
+   @propdef
+   type: enum
+   dimension: 1
+   values:
+     - OfxImageOpaque
+     - OfxImagePreMultiplied
+     - OfxImageUnPreMultiplied
 */
 #define kOfxImageEffectPropPreMultiplication "OfxImageEffectPropPreMultiplication"
 
@@ -994,71 +1182,77 @@ See the documentation on clip preferences for more details on how this is used w
 
 /** @brief Indicates the bit depths support by a plug-in or host
     
-   - Type - string X N
-   - Property Set - host descriptor (read only), plugin descriptor (read/write)
-   - Default - plugin descriptor none set
+The default for a plugin is to have none set, the plugin \em must define at least one in its describe action.
+   
    - Valid Values - This must be one of
        - kOfxBitDepthNone (implying a clip is unconnected, not valid for an image)
        - kOfxBitDepthByte
        - kOfxBitDepthShort
        - kOfxBitDepthHalf
        - kOfxBitDepthFloat
-
-The default for a plugin is to have none set, the plugin \em must define at least one in its describe action.
+   @propdef
+   type: enum
+   dimension: 0
+   values:
+     - OfxBitDepthNone
+     - OfxBitDepthByte
+     - OfxBitDepthShort
+     - OfxBitDepthHalf
+     - OfxBitDepthFloat
 */
 #define kOfxImageEffectPropSupportedPixelDepths "OfxImageEffectPropSupportedPixelDepths"
 
 /** @brief Indicates the components supported by a clip or host,
 
-   - Type - string X N
-   - Property Set - host descriptor (read only), clip descriptor (read/write)
+This list of strings indicate what component types are supported by a host or are expected as input to a clip.
+
+The default for a clip descriptor is to have none set, the plugin \em must define at least one in its define function
+   
    - Valid Values - This must be one of
      - kOfxImageComponentNone (implying a clip is unconnected)
      - kOfxImageComponentRGBA
      - kOfxImageComponentRGB
      - kOfxImageComponentAlpha
-
-This list of strings indicate what component types are supported by a host or are expected as input to a clip.
-
-The default for a clip descriptor is to have none set, the plugin \em must define at least one in its define function
+   @propdef
+   type: enum
+   dimension: 0
+   values:
+     - OfxImageComponentNone
+     - OfxImageComponentRGBA
+     - OfxImageComponentRGB
+     - OfxImageComponentAlpha
 */
 #define kOfxImageEffectPropSupportedComponents "OfxImageEffectPropSupportedComponents"
 
 /** @brief Indicates if a clip is optional.
 
-   - Type - int X 1
-   - Property Set - clip descriptor (read/write)
-   - Default - 0
-   - Valid Values - This must be one of 0 or 1
-
+   @propdef
+   type: bool
+   dimension: 1
 */
 #define kOfxImageClipPropOptional "OfxImageClipPropOptional"
 
 /** @brief Indicates that a clip is intended to be used as a mask input
 
-   - Type - int X 1
-   - Property Set - clip descriptor (read/write)
-   - Default - 0
-   - Valid Values - This must be one of 0 or 1
-
 Set this property on any clip which will only ever have single channel alpha images fetched from it. Typically on an optional clip such as a junk matte in a keyer.
 
 This property acts as a hint to hosts indicating that they could feed the effect from a rotoshape (or similar) rather than an 'ordinary' clip.
+
+   @propdef
+   type: bool
+   dimension: 1
 */
 #define kOfxImageClipPropIsMask "OfxImageClipPropIsMask"
    
 /** @brief The pixel aspect ratio of a clip or image.
-
-   - Type - double X 1
-   - Property Set - clip instance (read only), image instance (read only) and ::kOfxImageEffectActionGetClipPreferences action out args property (read/write)
-
+   
+   @propdef
+   type: double
+   dimension: 1
 */
 #define kOfxImagePropPixelAspectRatio "OfxImagePropPixelAspectRatio"
 
 /** @brief The frame rate of a clip or instance's project.
-
-   - Type - double X 1
-   - Property Set - clip instance (read only), effect instance (read only) and  ::kOfxImageEffectActionGetClipPreferences action out args property (read/write)
 
 For an input clip this is the frame rate of the clip.
 
@@ -1067,44 +1261,48 @@ For an output clip, the frame rate mapped via pixel preferences.
 For an instance, this is the frame rate of the project the effect is in.
 
 For the outargs property in the ::kOfxImageEffectActionGetClipPreferences action, it is used to change the frame rate of the output clip.
+   
+   @propdef
+   type: double
+   dimension: 1
 */
 #define kOfxImageEffectPropFrameRate "OfxImageEffectPropFrameRate"
 
 /** @brief Indicates the original unmapped frame rate (frames/second) of a clip
 
-   - Type - double X 1
-   - Property Set - clip instance (read only), 
-
 If a plugin changes the output frame rate in the pixel preferences action, this property allows a plugin to get to the original value.
+   
+   @propdef
+   type: double
+   dimension: 1
 */
 #define kOfxImageEffectPropUnmappedFrameRate "OfxImageEffectPropUnmappedFrameRate"
 
 /** @brief The frame step used for a sequence of renders
-
-   - Type - double X 1
-   - Property Set - an in argument for the ::kOfxImageEffectActionBeginSequenceRender action (read only)
+   
    - Valid Values - can be any positive value, but typically
       - 1 for frame based material
       - 0.5 for field based material
+   @propdef
+   type: double
+   dimension: 1
 */
 #define kOfxImageEffectPropFrameStep "OfxImageEffectPropFrameStep"
 
 /** @brief The frame range over which a clip has images.
 
-   - Type - double X 2
-   - Property Set - clip instance (read only)
-
 Dimension 0 is the first frame for which the clip can produce valid data.
 
 Dimension 1 is the last frame for which the clip can produce valid data.
+   
+   @propdef
+   type: double
+   dimension: 2
 */
 #define kOfxImageEffectPropFrameRange "OfxImageEffectPropFrameRange"
 
 
 /** @brief The unmaped frame range over which an output clip has images.
-
-   - Type - double X 2
-   - Property Set - clip instance (read only)
 
 Dimension 0 is the first frame for which the clip can produce valid data.
 
@@ -1112,69 +1310,56 @@ Dimension 1 is the last frame for which the clip can produce valid data.
 
 If a plugin changes the output frame rate in the pixel preferences action, it will affect the frame range
 of the output clip, this property allows a plugin to get to the original value.
+   
+   @propdef
+   type: double
+   dimension: 2
 */
 #define kOfxImageEffectPropUnmappedFrameRange "OfxImageEffectPropUnmappedFrameRange"
 
 /** @brief Says whether the clip is actually connected at the moment.
 
-   - Type - int X 1
-   - Property Set - clip instance (read only)
-   - Valid Values - This must be one of 0 or 1
-
 An instance may have a clip may not be connected to an object that can produce image data. Use this to find out.
 
 Any clip that is not optional will \em always be connected during a render action. However, during interface actions, even non optional clips may be unconnected.
+
+   @propdef
+   type: bool
+   dimension: 1
  */
 #define kOfxImageClipPropConnected "OfxImageClipPropConnected"
 
 /** @brief Indicates whether an effect will generate different images from frame to frame.
 
-   - Type - int X 1
-   - Property Set - out argument to ::kOfxImageEffectActionGetClipPreferences action (read/write).
-   - Default - 0
-   - Valid Values - This must be one of 0 or 1
-
 This property indicates whether a plugin will generate a different image from frame to frame, even if no parameters
 or input image changes. For example a generator that creates random noise pixel at each frame.
+
+   @propdef
+   type: bool
+   dimension: 1
  */
 #define kOfxImageEffectFrameVarying "OfxImageEffectFrameVarying"
 
 /** @brief The proxy render scale currently being applied.
 
-    - Type - double X 2
-    - Property Set - an image instance (read only) and as read only an in argument on the following actions,
-        - ::kOfxImageEffectActionRender
-        - ::kOfxImageEffectActionBeginSequenceRender
-        - ::kOfxImageEffectActionEndSequenceRender
-        - ::kOfxImageEffectActionIsIdentity
-        - ::kOfxImageEffectActionGetRegionOfDefinition
-        - ::kOfxImageEffectActionGetRegionsOfInterest
-        - ::kOfxActionInstanceChanged
-        - ::kOfxInteractActionDraw
-        - ::kOfxInteractActionPenMotion
-        - ::kOfxInteractActionPenDown
-        - ::kOfxInteractActionPenUp
-        - ::kOfxInteractActionKeyDown
-        - ::kOfxInteractActionKeyUp
-        - ::kOfxInteractActionKeyRepeat
-        - ::kOfxInteractActionGainFocus
-        - ::kOfxInteractActionLoseFocus
-
 This should be applied to any spatial parameters to position them correctly. Not that the 'x' value does not include any pixel aspect ratios.
+    
+    @propdef
+    type: double
+    dimension: 2
 */
 #define kOfxImageEffectPropRenderScale "OfxImageEffectPropRenderScale"
 
 /** @brief Indicates whether an effect can take quality shortcuts to improve speed.
 
-   - Type - int X 1
-   - Property Set - render calls, host (read-only)
-   - Default - 0  - 0: Best Quality (1: Draft)
-   - Valid Values - This must be one of 0 or 1
-
 This property indicates that the host provides the plug-in the option to render in Draft/Preview mode. This is useful for applications that must support fast scrubbing. These allow a plug-in to take short-cuts for improved performance when the situation allows and it makes sense, for example to generate thumbnails with effects applied. 
 For example switch to a cheaper interpolation type or rendering mode. A plugin should expect frames rendered in this manner that will not be stuck in host cache unless the cache is only used in the same draft situations.
 If an host does not support that property a value of 0 is assumed.
-Also note that some hosts do implement kOfxImageEffectPropRenderScale - these two properties can be used independently. 
+Also note that some hosts do implement kOfxImageEffectPropRenderScale - these two properties can be used independently.
+
+   @propdef
+   type: bool
+   dimension: 1
  */
 #define kOfxImageEffectPropRenderQualityDraft "OfxImageEffectPropRenderQualityDraft"
 
@@ -1183,74 +1368,72 @@ disabling certain parameters at render time.
 
 If the plugin descriptor has this property set to "true", the plugin is expected to disable spatial effects when the host sets this property to "true" in the arguments passed to kOfxImageEffectActionBeginSequenceRender and kOfxImageEffectActionRender.
 
-    - Type - string X 1
-    - Property Set - plugin descriptor (read/write), render calls - host (read-only)
-    - Default - "false"
+  @version added in version 1.5.1.
+    
     - Valid Values - This must be one of
       - "false"  - the plugin cannot render without spatial awareness and the host should bypass it for renders that require no spatial awareness.
       - "true"   - the plugin can render without spatial awareness. The host will indicate this type of render by setting kOfxImageEffectPropNoSpatialAwareness to "true" in the arguments passed to kOfxImageEffectActionBeginSequenceRender and kOfxImageEffectActionRender.
-
-  @version added in version 1.5.1.
+    @propdef
+    type: enum
+    dimension: 1
+    values:
+      - "false"
+      - "true"
  */
 #define kOfxImageEffectPropNoSpatialAwareness "OfxImageEffectPropNoSpatialAwareness"
 
 /** @brief Indicates whether the render is what the host considers a "thumbnail" render
 
-    - Type - string X 1
-    - Property Set - read only optional property on the inArgs of the following actions...
-      - ::kOfxImageEffectActionGetRegionOfDefinition
-      - ::kOfxImageEffectActionGetRegionsOfInterest
-      - ::kOfxImageEffectActionGetFramesNeeded
-      - ::kOfxImageEffectActionGetClipPreferences
-      - ::kOfxImageEffectActionIsIdentity
-      - ::kOfxImageEffectActionBeginSequenceRender
-      - ::kOfxImageEffectActionRender
-      - ::kOfxImageEffectActionEndSequenceRender
-    - Default - "false"
-    - Valid Values - This must be one of
-      - "false"  - the host does not consider this render a thumbail
-      - "true"   - the host considers this render a thumbail
-
 This property indicates that the host considers the render to be a "thumbnail", defined as a low-resolution image for use in the host's user interface.
 A plugin could react to this property by
-- rendering a badge rather than a detailed effect unlikely to be visible in a thumbail
+- rendering a badge rather than a detailed effect unlikely to be visible in a thumbnail
 - turning itself off in kOfxImageEffectActionIsIdentity
 - disabling temporal inputs in kOfxImageEffectActionGetFramesNeeded
 
   @version added in version 1.5.1.
+
+    - Valid Values - This must be one of
+      - "false"  - the host does not consider this render a thumbnail
+      - "true"   - the host considers this render a thumbnail
+    @propdef
+    type: enum
+    dimension: 1
+    values:
+      - "false"
+      - "true"
+    introduced: "1.5.1"
  */
 #define kOfxImageEffectPropThumbnailRender "OfxImageEffectPropThumbnailRender"
 
 /** @brief The extent of the current project in canonical coordinates.
-
-    - Type - double X 2
-    - Property Set - a plugin  instance (read only)
 
 The extent is the size of the 'output' for the current project. See \ref NormalisedCoordinateSystem for more information on the project extent.
 
 The extent is in canonical coordinates and only returns the top right position, as the extent is always rooted at 0,0.
 
 For example a PAL SD project would have an extent of 768, 576.
+    
+    @propdef
+    type: double
+    dimension: 2
  */
 #define kOfxImageEffectPropProjectExtent "OfxImageEffectPropProjectExtent"
 
 /** @brief The size of the current project in canonical coordinates.
-
-    - Type - double X 2
-    - Property Set - a plugin  instance (read only)
 
 The size of a project is a sub set of the ::kOfxImageEffectPropProjectExtent. For example a project may be a PAL SD project, but only be a letter-box within that. The project size is the size of this sub window.
 
 The project size is in canonical coordinates.
 
 See \ref NormalisedCoordinateSystem for more information on the project extent.
+    
+    @propdef
+    type: double
+    dimension: 2
  */
 #define kOfxImageEffectPropProjectSize "OfxImageEffectPropProjectSize"
 
 /** @brief The offset of the current project in canonical coordinates.
-
-    - Type - double X 2
-    - Property Set - a plugin  instance (read only)
 
 The offset is related to the ::kOfxImageEffectPropProjectSize and is the offset from the origin of the project 'subwindow'. 
 
@@ -1259,41 +1442,49 @@ For example for a PAL SD project that is in letterbox form, the project offset i
 The project offset is in canonical coordinates.
 
 See \ref NormalisedCoordinateSystem for more information on the project extent.
+    
+    @propdef
+    type: double
+    dimension: 2
 */
 #define kOfxImageEffectPropProjectOffset "OfxImageEffectPropProjectOffset"
 
 /** @brief The pixel aspect ratio of the current project
-
-    - Type - double X 1
-    - Property Set - a plugin  instance (read only)
-
+    
+    @propdef
+    type: double
+    dimension: 1
+    cname: kOfxImageEffectPropProjectPixelAspectRatio
  */
 #define kOfxImageEffectPropProjectPixelAspectRatio "OfxImageEffectPropPixelAspectRatio"
 
 /**  @brief The duration of the effect
 
-    - Type - double X 1
-    - Property Set - a plugin  instance (read only)
-
 This contains the duration of the plug-in effect, in frames.
+    
+    @propdef
+    type: double
+    dimension: 1
  */
 #define kOfxImageEffectInstancePropEffectDuration "OfxImageEffectInstancePropEffectDuration"
 
 /** @brief Which spatial field occurs temporally first in a frame.
-
-    - Type - string X 1
-    - Property Set - a clip  instance (read only)
+    
     - Valid Values - This must be one of
       - ::kOfxImageFieldNone  - the material is unfielded
       - ::kOfxImageFieldLower - the material is fielded, with image rows 0,2,4.... occurring first in a frame
       - ::kOfxImageFieldUpper - the material is fielded, with image rows line 1,3,5.... occurring first in a frame
+    @propdef
+    type: enum
+    dimension: 1
+    values:
+      - OfxImageFieldNone
+      - OfxImageFieldLower
+      - OfxImageFieldUpper
  */
 #define kOfxImageClipPropFieldOrder "OfxImageClipPropFieldOrder"
 
 /**  @brief The pixel data pointer of an image.
-
-    - Type - pointer X 1
-    - Property Set - an image instance (read only)
 
 This property contains one of:
   - a pointer to memory that is the lower left hand corner of an image
@@ -1302,13 +1493,14 @@ This property contains one of:
   - a cl_mem, if the Render action arguments includes kOfxImageEffectPropOpenCLEnabled=1
 
 See \ref kOfxImageEffectPropCudaEnabled, \ref kOfxImageEffectPropMetalEnabled and \ref kOfxImageEffectPropOpenCLEnabled
+    
+    @propdef
+    type: pointer
+    dimension: 1
 */
 #define kOfxImagePropData "OfxImagePropData"
 
 /** @brief The bounds of an image's pixels.
-
-    - Type - integer X 4
-    - Property Set - an image  instance (read only)
 
 The bounds, in \ref PixelCoordinates, are of the addressable pixels in an image's data pointer.
 
@@ -1318,13 +1510,14 @@ X values are x1 <= X < x2
 Y values are y1 <= Y < y2
 
 For less than full frame images, the pixel bounds will be contained by the ::kOfxImagePropRegionOfDefinition bounds.
+    
+    @propdef
+    type: int
+    dimension: 4
  */
 #define kOfxImagePropBounds "OfxImagePropBounds"
 
 /** @brief The full region of definition of an image.
-
-    - Type - integer X 4
-    - Property Set - an image  instance (read only)
 
 An image's region of definition, in \ref PixelCoordinates, is the full frame area of the image plane that the image covers.
 
@@ -1334,13 +1527,14 @@ X values are x1 <= X < x2
 Y values are y1 <= Y < y2
 
 The ::kOfxImagePropBounds property contains the actual addressable pixels in an image, which may be less than its full region of definition.
+    
+    @propdef
+    type: int
+    dimension: 4
  */
 #define kOfxImagePropRegionOfDefinition "OfxImagePropRegionOfDefinition"
 
 /** @brief The number of bytes in a row of an image.
-
-    - Type - integer X 1
-    - Property Set - an image  instance (read only)
 
 For various alignment reasons, a row of pixels may need to be padded at the end with several bytes before the next row starts in memory. 
 
@@ -1349,96 +1543,119 @@ is fetched from the ::kOfxImagePropBounds property.
 
 Note that (for CPU images only, not CUDA/Metal/OpenCL Buffers, nor OpenGL textures accessed via the OpenGL Render Suite) row bytes can be negative, which allows hosts with a native top down row order to pass image into OFX without having to repack pixels.
 Row bytes is not supported for OpenCL Images.
+    
+    @propdef
+    type: int
+    dimension: 1
  */
 #define kOfxImagePropRowBytes "OfxImagePropRowBytes"
 
 
 /** @brief Which fields are present in the image
-
-    - Type - string X 1
-    - Property Set - an image instance (read only)
+    
     - Valid Values - This must be one of
       - ::kOfxImageFieldNone  - the image is an unfielded frame
-      - ::kOfxImageFieldBoth  - the image is fielded and contains both interlaced fields 
+      - ::kOfxImageFieldBoth  - the image is fielded and contains both interlaced fields
       - ::kOfxImageFieldLower - the image is fielded and contains a single field, being the lower field (rows 0,2,4...)
       - ::kOfxImageFieldUpper - the image is fielded and contains a single field, being the upper field (rows 1,3,5...)
-
+    @propdef
+    type: enum
+    dimension: 1
+    values:
+      - OfxImageFieldNone
+      - OfxImageFieldBoth
+      - OfxImageFieldLower
+      - OfxImageFieldUpper
  */
 #define kOfxImagePropField "OfxImagePropField"
 
 /** @brief Controls how a plugin renders fielded footage.
 
-    - Type - integer X 1
-    - Property Set - a plugin descriptor (read/write)
-    - Default - 1
     - Valid Values - This must be one of
        - 0 - the plugin is to have its render function called twice, only if there is animation in any of its parameters
        - 1 - the plugin is to have its render function called twice always
+    @propdef
+    type: bool
+    dimension: 1
 */
 #define kOfxImageEffectPluginPropFieldRenderTwiceAlways "OfxImageEffectPluginPropFieldRenderTwiceAlways"
 
 /** @brief Controls how a plugin fetched fielded imagery from a clip.
 
-    - Type - string X 1
-    - Property Set - a clip descriptor (read/write)
-    - Default - kOfxImageFieldDoubled
-    - Valid Values - This must be one of
-       - kOfxImageFieldBoth    - fetch a full frame interlaced image
-       - kOfxImageFieldSingle  - fetch a single field, making a half height image
-       - kOfxImageFieldDoubled - fetch a single field, but doubling each line and so making a full height image 
-
 This controls how a plug-in wishes to fetch images from a fielded clip, so it can tune it behaviour when it renders fielded footage.
 
 Note that if it fetches kOfxImageFieldSingle and the host stores images natively as both fields interlaced, it can return a single image by doubling rowbytes and tweaking the starting address of the image data. This saves on a buffer copy.
+    
+    - Valid Values - This must be one of
+       - kOfxImageFieldBoth    - fetch a full frame interlaced image
+       - kOfxImageFieldSingle  - fetch a single field, making a half height image
+       - kOfxImageFieldDoubled - fetch a single field, but doubling each line and so making a full height image
+    @propdef
+    type: enum
+    dimension: 1
+    values:
+      - OfxImageFieldNone
+      - OfxImageFieldLower
+      - OfxImageFieldUpper
+      - OfxImageFieldBoth
+      - OfxImageFieldSingle
+      - OfxImageFieldDoubled
  */
 #define kOfxImageClipPropFieldExtraction "OfxImageClipPropFieldExtraction"
 
 /** @brief Indicates which field is being rendered.
-
-    - Type - string X 1
-    - Property Set - a read only in argument property to ::kOfxImageEffectActionRender and ::kOfxImageEffectActionIsIdentity
+    
     - Valid Values - this must be one of
       - kOfxImageFieldNone  - there are no fields to deal with, all images are full frame
       - kOfxImageFieldBoth  - the imagery is fielded and both scan lines should be rendered
       - kOfxImageFieldLower - the lower field is being rendered (lines 0,2,4...)
       - kOfxImageFieldUpper - the upper field is being rendered (lines 1,3,5...)
+    @propdef
+    type: enum
+    dimension: 1
+    values:
+      - OfxImageFieldNone
+      - OfxImageFieldBoth
+      - OfxImageFieldLower
+      - OfxImageFieldUpper
  */
 #define kOfxImageEffectPropFieldToRender "OfxImageEffectPropFieldToRender"
 
 /** @brief Used to indicate the region of definition of a plug-in
 
-    - Type - double X 4
-    - Property Set - a read/write out argument property to the ::kOfxImageEffectActionGetRegionOfDefinition action
-    - Default - see ::kOfxImageEffectActionGetRegionOfDefinition
-
 The order of the values is x1, y1, x2, y2.
 
 This will be in \ref CanonicalCoordinates
+    
+    @propdef
+    type: double
+    dimension: 4
  */
 #define kOfxImageEffectPropRegionOfDefinition "OfxImageEffectPropRegionOfDefinition"
 
 /** @brief The value of a region of interest.
-
-    - Type - double X 4
-    - Property Set - a read only in argument property to the ::kOfxImageEffectActionGetRegionsOfInterest action
 
 A host passes this value into the region of interest action to specify the region it is interested in rendering.
 
 The order of the values is x1, y1, x2, y2.
 
 This will be in \ref CanonicalCoordinates.
+    
+    @propdef
+    type: double
+    dimension: 4
  */
 #define kOfxImageEffectPropRegionOfInterest "OfxImageEffectPropRegionOfInterest"
 
 /**  @brief The region to be rendered.
 
-    - Type - integer X 4
-    - Property Set - a read only in argument property to the ::kOfxImageEffectActionRender and ::kOfxImageEffectActionIsIdentity actions
-
 The order of the values is x1, y1, x2, y2.
 
 This will be in \ref PixelCoordinates
-
+    
+    @propdef
+    type: int
+    dimension: 4
  */
 #define kOfxImageEffectPropRenderWindow "OfxImageEffectPropRenderWindow"
 
@@ -1773,6 +1990,175 @@ They range from 1000 until 1999
 }
 #endif
 
+
+
+/** @propset ImageEffectHost
+    write: host
+    props:
+      - OfxPropAPIVersion
+      - OfxPropType
+      - OfxPropName
+      - OfxPropLabel
+      - OfxPropVersion
+      - OfxPropVersionLabel
+      - OfxImageEffectHostPropIsBackground
+      - OfxImageEffectPropSupportsOverlays
+      - OfxImageEffectPropSupportsMultiResolution
+      - OfxImageEffectPropSupportsTiles
+      - OfxImageEffectPropTemporalClipAccess
+      - OfxImageEffectPropSupportedComponents
+      - OfxImageEffectPropSupportedContexts
+      - OfxImageEffectPropMultipleClipDepths
+      - OfxImageEffectPropOpenCLSupported | host_optional=true
+      - OfxImageEffectPropSupportsMultipleClipPARs
+      - OfxImageEffectPropSetableFrameRate
+      - OfxImageEffectPropSetableFielding
+      - OfxParamHostPropSupportsCustomInteract
+      - OfxParamHostPropSupportsStringAnimation
+      - OfxParamHostPropSupportsChoiceAnimation
+      - OfxParamHostPropSupportsBooleanAnimation
+      - OfxParamHostPropSupportsCustomAnimation
+      - OfxParamHostPropSupportsStrChoice | host_optional=true
+      - OfxParamHostPropSupportsStrChoiceAnimation | host_optional=true
+      - OfxParamHostPropMaxParameters
+      - OfxParamHostPropMaxPages
+      - OfxParamHostPropPageRowColumnCount
+      - OfxPropHostOSHandle | host_optional=true
+      - OfxParamHostPropSupportsParametricAnimation | host_optional=true
+      - OfxImageEffectInstancePropSequentialRender | host_optional=true
+      - OfxImageEffectPropOpenGLRenderSupported
+      - OfxImageEffectPropCPURenderSupported | host_optional=true
+      - OfxImageEffectPropRenderQualityDraft | host_optional=true
+      - OfxImageEffectHostPropNativeOrigin | host_optional=true
+      - OfxImageEffectPropColourManagementAvailableConfigs | host_optional=true
+      - OfxImageEffectPropColourManagementStyle | host_optional=true
+*/
+
+/** @propset EffectDescriptor
+    write: plugin
+    props:
+      - OfxPropType
+      - OfxPropLabel
+      - OfxPropShortLabel
+      - OfxPropLongLabel
+      - OfxPropVersion | host_optional=true
+      - OfxPropVersionLabel | host_optional=true
+      - OfxPropPluginDescription | host_optional=true
+      - OfxImageEffectPropSupportedContexts
+      - OfxImageEffectPluginPropGrouping
+      - OfxImageEffectPluginPropSingleInstance
+      - OfxImageEffectPluginRenderThreadSafety
+      - OfxImageEffectPluginPropHostFrameThreading
+      - OfxImageEffectPluginPropOverlayInteractV1
+      - OfxImageEffectPropOpenCLSupported | host_optional=true
+      - OfxImageEffectPropSupportsMultiResolution
+      - OfxImageEffectPropSupportsTiles
+      - OfxImageEffectPropTemporalClipAccess
+      - OfxImageEffectPropSupportedPixelDepths
+      - OfxImageEffectPluginPropFieldRenderTwiceAlways
+      - OfxImageEffectPropMultipleClipDepths
+      - OfxImageEffectPropSupportsMultipleClipPARs
+      - OfxImageEffectPluginRenderThreadSafety
+      - OfxImageEffectPropClipPreferencesSlaveParam
+      - OfxImageEffectPropOpenGLRenderSupported
+      - OfxImageEffectPropCPURenderSupported | host_optional=true
+      - OfxPluginPropFilePath | write=host
+      - OfxOpenGLPropPixelDepth | host_optional=true
+      - OfxImageEffectPluginPropOverlayInteractV2
+      - OfxImageEffectPropColourManagementAvailableConfigs | host_optional=true
+      - OfxImageEffectPropColourManagementStyle | host_optional=true
+      - OfxImageEffectPropNoSpatialAwareness | host_optional=true
+*/
+
+/** @propset EffectInstance
+    write: host
+    props:
+      - OfxPropType
+      - OfxImageEffectPropContext
+      - OfxPropInstanceData
+      - OfxImageEffectPropProjectSize
+      - OfxImageEffectPropProjectOffset
+      - OfxImageEffectPropProjectExtent
+      - OfxImageEffectPropPixelAspectRatio
+      - OfxImageEffectInstancePropEffectDuration
+      - OfxImageEffectInstancePropSequentialRender
+      - OfxImageEffectPropSupportsTiles
+      - OfxImageEffectPropOpenGLRenderSupported
+      - OfxImageEffectPropCPURenderSupported | host_optional=true
+      - OfxImageEffectPropFrameRate
+      - OfxPropIsInteractive
+      - OfxImageEffectPropOCIOConfig
+      - OfxImageEffectPropOCIODisplay
+      - OfxImageEffectPropOCIOView
+      - OfxImageEffectPropColourManagementConfig
+      - OfxImageEffectPropColourManagementStyle
+      - OfxImageEffectPropDisplayColourspace
+      - OfxImageEffectPropPluginHandle
+*/
+
+/** @propset ClipDescriptor
+    write: plugin
+    props:
+      - OfxPropType
+      - OfxPropName
+      - OfxPropLabel
+      - OfxPropShortLabel
+      - OfxPropLongLabel
+      - OfxImageEffectPropSupportedComponents
+      - OfxImageEffectPropTemporalClipAccess
+      - OfxImageClipPropOptional
+      - OfxImageClipPropFieldExtraction
+      - OfxImageClipPropIsMask
+      - OfxImageEffectPropSupportsTiles
+*/
+
+/** @propset ClipInstance
+    write: host
+    props:
+      - OfxPropType
+      - OfxPropName
+      - OfxPropLabel
+      - OfxPropShortLabel
+      - OfxPropLongLabel
+      - OfxImageEffectPropSupportedComponents
+      - OfxImageEffectPropTemporalClipAccess
+      - OfxImageClipPropColourspace
+      - OfxImageClipPropPreferredColourspaces
+      - OfxImageClipPropOptional
+      - OfxImageClipPropFieldExtraction
+      - OfxImageClipPropIsMask
+      - OfxImageEffectPropSupportsTiles
+      - OfxImageEffectPropPixelDepth
+      - OfxImageEffectPropComponents
+      - OfxImageClipPropUnmappedPixelDepth
+      - OfxImageClipPropUnmappedComponents
+      - OfxImageEffectPropPreMultiplication
+      - OfxImagePropPixelAspectRatio
+      - OfxImageEffectPropFrameRate
+      - OfxImageEffectPropFrameRange
+      - OfxImageClipPropFieldOrder
+      - OfxImageClipPropConnected
+      - OfxImageEffectPropUnmappedFrameRange
+      - OfxImageEffectPropUnmappedFrameRate
+      - OfxImageClipPropContinuousSamples
+*/
+
+/** @propset Image
+    write: host
+    props:
+      - OfxPropType
+      - OfxImageEffectPropPixelDepth
+      - OfxImageEffectPropComponents
+      - OfxImageEffectPropPreMultiplication
+      - OfxImageEffectPropRenderScale
+      - OfxImagePropPixelAspectRatio
+      - OfxImagePropData
+      - OfxImagePropBounds
+      - OfxImagePropRegionOfDefinition
+      - OfxImagePropRowBytes
+      - OfxImagePropField
+      - OfxImagePropUniqueIdentifier
+*/
 
 #endif
 

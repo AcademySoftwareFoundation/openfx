@@ -17,7 +17,7 @@ catch() {
 
 # Check for prereqs
 
-if [ ! -f genPropertiesReference.py ] ; then
+if [ ! -f build.sh ] ; then
     echo "This script must be run in the Documentation directory."
     exit 1
 fi
@@ -34,14 +34,7 @@ fi
 
 rm -rf build
 
-# Generate references
-EXPECTED_ERRS="unable to resolve reference|explicit link request|found in multiple"
-$UV_RUN python genPropertiesReference.py \
-       -i ../include -o sources/Reference/ofxPropertiesReference.rst -r \
-       > /tmp/ofx-doc-build.out 2>&1
-grep -v -E "$EXPECTED_ERRS" /tmp/ofx-doc-build.out || true
-
-# Generate property documentation from YAML definitions
+# Generate property documentation from inline @propdef metadata in headers
 cd ..
 if command -v uv > /dev/null 2>&1; then
     uv run scripts/gen-props-doc.py -v >> /tmp/ofx-doc-build.out 2>&1

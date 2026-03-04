@@ -30,7 +30,6 @@ the API. The changes to the API are listed in an addendum.
     suites/ofxSuiteReference
     .. outdated:
     .. ofxPropertiesByObject
-    ofxPropertiesReference
     ofxPropertiesReferenceGenerated
     ofxPropertySetsGenerated
     DoxygenIndex

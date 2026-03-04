@@ -1,6 +1,6 @@
 .. _propertiesReferenceGenerated:
-Properties Reference (Generated)
-==============================
+Properties Reference
+====================
 
 This reference is auto-generated from property definitions in the OpenFX source code.
 It provides a structured view of properties with their types, dimensions, and where they are used.
@@ -1039,6 +1039,21 @@ Enumeration Properties
   - ``OfxImageEffectRenderFullySafe``
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPluginRenderThreadSafety`.
 
+.. _prop_OfxImageEffectPropCPURenderSupported:
+
+**OfxImageEffectPropCPURenderSupported**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxImageEffectPropCPURenderSupported`
+- **Type**: enum
+- **Dimension**: 1
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`EffectInstance <propset_EffectInstance>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Valid Values**:
+  - ``false``
+  - ``true``
+- **Introduced in**: version 1.5.1
+- **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropCPURenderSupported`.
+
 .. _prop_OfxImageEffectPropColourManagementStyle:
 
 **OfxImageEffectPropColourManagementStyle**
@@ -1148,6 +1163,20 @@ Enumeration Properties
   - ``needed``
 - **Introduced in**: version 1.5
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropMetalRenderSupported`.
+
+.. _prop_OfxImageEffectPropNoSpatialAwareness:
+
+**OfxImageEffectPropNoSpatialAwareness**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxImageEffectPropNoSpatialAwareness`
+- **Type**: enum
+- **Dimension**: 1
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`
+- **Valid Values**:
+  - ``false``
+  - ``true``
+- **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropNoSpatialAwareness`.
 
 .. _prop_OfxImageEffectPropOpenCLRenderSupported:
 
@@ -1277,6 +1306,20 @@ Enumeration Properties
   - ``OfxBitDepthFloat``
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropSupportedPixelDepths`.
 
+.. _prop_OfxImageEffectPropThumbnailRender:
+
+**OfxImageEffectPropThumbnailRender**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxImageEffectPropThumbnailRender`
+- **Type**: enum
+- **Dimension**: 1
+- **Valid Values**:
+  - ``false``
+  - ``true``
+- **Introduced in**: version 1.5.1
+- **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropThumbnailRender`.
+
 .. _prop_OfxImagePropField:
 
 **OfxImagePropField**
@@ -1379,21 +1422,6 @@ Enumeration Properties
   - ``OfxParamStringIsLabel``
   - ``OfxParamStringIsRichTextFormat``
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropStringMode`.
-
-.. _prop_OfxPluginPropFilePath:
-
-**OfxPluginPropFilePath**
-^^^^^^^^^^^^^^^^^^^^^
-
-- **C #define**: :c:macro:`kOfxPluginPropFilePath`
-- **Type**: enum
-- **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`
-- **Valid Values**:
-  - ``false``
-  - ``true``
-  - ``needed``
-- **Doc**: For detailed doc, see :c:macro:`kOfxPluginPropFilePath`.
 
 .. _prop_OfxPropChangeReason:
 
@@ -2102,6 +2130,17 @@ String Properties
 - **Dimension**: 1
 - **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsGroup <propset_ParamsGroup>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsPage <propset_ParamsPage>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropType`.
+
+.. _prop_OfxPluginPropFilePath:
+
+**OfxPluginPropFilePath**
+^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxPluginPropFilePath`
+- **Type**: string
+- **Dimension**: 1
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`
+- **Doc**: For detailed doc, see :c:macro:`kOfxPluginPropFilePath`.
 
 .. _prop_OfxPluginPropParamPageOrder:
 

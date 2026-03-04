@@ -21,7 +21,7 @@ namespace openfx {
 
 struct Prop {
   const char *name;
-  const PropDef &def; 
+  const PropDef &def;
   bool host_write;
   bool plugin_write;
   bool host_optional;
@@ -99,6 +99,7 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
    { "OfxImageEffectPluginRenderThreadSafety", prop_defs[PropId::OfxImageEffectPluginRenderThreadSafety], false, true, false },
    { "OfxImageEffectPropClipPreferencesSlaveParam", prop_defs[PropId::OfxImageEffectPropClipPreferencesSlaveParam], false, true, false },
    { "OfxImageEffectPropOpenGLRenderSupported", prop_defs[PropId::OfxImageEffectPropOpenGLRenderSupported], false, true, false },
+   { "OfxImageEffectPropCPURenderSupported", prop_defs[PropId::OfxImageEffectPropCPURenderSupported], false, true, true },
    { "OfxPluginPropFilePath", prop_defs[PropId::OfxPluginPropFilePath], true, false, false },
    { "OfxOpenGLPropPixelDepth", prop_defs[PropId::OfxOpenGLPropPixelDepth], false, true, true },
    { "OfxImageEffectPluginPropOverlayInteractV2", prop_defs[PropId::OfxImageEffectPluginPropOverlayInteractV2], false, true, false },
@@ -118,6 +119,7 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
    { "OfxImageEffectInstancePropSequentialRender", prop_defs[PropId::OfxImageEffectInstancePropSequentialRender], true, false, false },
    { "OfxImageEffectPropSupportsTiles", prop_defs[PropId::OfxImageEffectPropSupportsTiles], true, false, false },
    { "OfxImageEffectPropOpenGLRenderSupported", prop_defs[PropId::OfxImageEffectPropOpenGLRenderSupported], true, false, false },
+   { "OfxImageEffectPropCPURenderSupported", prop_defs[PropId::OfxImageEffectPropCPURenderSupported], true, false, true },
    { "OfxImageEffectPropFrameRate", prop_defs[PropId::OfxImageEffectPropFrameRate], true, false, false },
    { "OfxPropIsInteractive", prop_defs[PropId::OfxPropIsInteractive], true, false, false },
    { "OfxImageEffectPropOCIOConfig", prop_defs[PropId::OfxImageEffectPropOCIOConfig], true, false, false },
@@ -175,6 +177,7 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
    { "OfxParamHostPropSupportsParametricAnimation", prop_defs[PropId::OfxParamHostPropSupportsParametricAnimation], true, false, true },
    { "OfxImageEffectInstancePropSequentialRender", prop_defs[PropId::OfxImageEffectInstancePropSequentialRender], true, false, true },
    { "OfxImageEffectPropOpenGLRenderSupported", prop_defs[PropId::OfxImageEffectPropOpenGLRenderSupported], true, false, false },
+   { "OfxImageEffectPropCPURenderSupported", prop_defs[PropId::OfxImageEffectPropCPURenderSupported], true, false, true },
    { "OfxImageEffectPropRenderQualityDraft", prop_defs[PropId::OfxImageEffectPropRenderQualityDraft], true, false, true },
    { "OfxImageEffectHostPropNativeOrigin", prop_defs[PropId::OfxImageEffectHostPropNativeOrigin], true, false, true },
    { "OfxImageEffectPropColourManagementAvailableConfigs", prop_defs[PropId::OfxImageEffectPropColourManagementAvailableConfigs], true, false, true },
@@ -645,13 +648,15 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
     "OfxParamPropInterpolationTime" } },
 // OfxActionBeginInstanceChanged.inArgs
 { { "OfxActionBeginInstanceChanged", "inArgs" },
-  { "OfxPropChangeReason" } },
+  { "OfxImageEffectPropThumbnailRender",
+    "OfxPropChangeReason" } },
 // OfxActionEndInstanceChanged.inArgs
 { { "OfxActionEndInstanceChanged", "inArgs" },
   { "OfxPropChangeReason" } },
 // OfxActionInstanceChanged.inArgs
 { { "OfxActionInstanceChanged", "inArgs" },
   { "OfxImageEffectPropRenderScale",
+    "OfxImageEffectPropThumbnailRender",
     "OfxPropChangeReason",
     "OfxPropName",
     "OfxPropTime",
@@ -680,6 +685,7 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
     "OfxImageEffectPropOpenGLTextureTarget",
     "OfxImageEffectPropRenderScale",
     "OfxImageEffectPropSequentialRenderStatus",
+    "OfxImageEffectPropThumbnailRender",
     "OfxPropIsInteractive" } },
 // OfxImageEffectActionDescribeInContext.inArgs
 { { "OfxImageEffectActionDescribeInContext", "inArgs" },
@@ -717,7 +723,8 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
     "OfxImageEffectPropPreMultiplication" } },
 // OfxImageEffectActionGetFramesNeeded.inArgs
 { { "OfxImageEffectActionGetFramesNeeded", "inArgs" },
-  { "OfxPropTime" } },
+  { "OfxImageEffectPropThumbnailRender",
+    "OfxPropTime" } },
 // OfxImageEffectActionGetFramesNeeded.outArgs
 { { "OfxImageEffectActionGetFramesNeeded", "outArgs" },
   { "OfxImageEffectPropFrameRange" } },
@@ -730,6 +737,7 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
 // OfxImageEffectActionGetRegionOfDefinition.inArgs
 { { "OfxImageEffectActionGetRegionOfDefinition", "inArgs" },
   { "OfxImageEffectPropRenderScale",
+    "OfxImageEffectPropThumbnailRender",
     "OfxPropTime" } },
 // OfxImageEffectActionGetRegionOfDefinition.outArgs
 { { "OfxImageEffectActionGetRegionOfDefinition", "outArgs" },
@@ -738,6 +746,7 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
 { { "OfxImageEffectActionGetRegionsOfInterest", "inArgs" },
   { "OfxImageEffectPropRegionOfInterest",
     "OfxImageEffectPropRenderScale",
+    "OfxImageEffectPropThumbnailRender",
     "OfxPropTime" } },
 // OfxImageEffectActionGetTimeDomain.outArgs
 { { "OfxImageEffectActionGetTimeDomain", "outArgs" },
@@ -747,6 +756,7 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
   { "OfxImageEffectPropFieldToRender",
     "OfxImageEffectPropRenderScale",
     "OfxImageEffectPropRenderWindow",
+    "OfxImageEffectPropThumbnailRender",
     "OfxPropTime" } },
 // OfxImageEffectActionRender.inArgs
 { { "OfxImageEffectActionRender", "inArgs" },
@@ -769,6 +779,7 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
     "OfxImageEffectPropOpenGLTextureTarget",
     "OfxImageEffectPropRenderQualityDraft",
     "OfxImageEffectPropSequentialRenderStatus",
+    "OfxImageEffectPropThumbnailRender",
     "OfxPropTime" } },
 // OfxInteractActionDraw.inArgs
 { { "OfxInteractActionDraw", "inArgs" },
