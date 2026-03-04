@@ -10,13 +10,12 @@
 
 import os
 import re
-import sys
 import difflib
 import argparse
 import yaml
 import logging
 from pathlib import Path
-from collections.abc import Iterable
+from ofx_prop_utils import get_properties_from_headers, get_propsets_from_headers, get_actions_from_headers
 
 # Set up basic configuration for logging
 logging.basicConfig(
@@ -212,15 +211,17 @@ def find_stringname(cname, props_metadata):
 
 
 def find_missing(all_props, props_metadata):
-    """Find and print all mismatches between prop defs and metadata.
+    """Find and print all mismatches between prop defs and inline metadata.
 
+    Checks that every #define kOfx*Prop* in headers has a corresponding
+    @propdef block, and vice versa.
     Returns 0 if no errors.
     """
     errs = 0
     for p in sorted(all_props):  # constants from #include files, with "k" prefix
         stringval = find_stringname(p, props_metadata)
         if not props_metadata.get(stringval):
-            logging.error(f"No YAML metadata found for {p}")
+            logging.error(f"No @propdef metadata found for {p}")
             errs += 1
     for p in sorted(props_metadata):
         cname = get_cname(p, props_metadata)
@@ -322,7 +323,7 @@ def check_props_used_by_set(props_by_set, props_by_action, props_metadata):
                     if set_prop == prop:
                         found += 1
         if not found and not props_metadata[prop].get("deprecated"):
-            logging.error(f"Prop {prop} not used in any prop set in YML file")
+            logging.error(f"Prop {prop} not used in any prop set")
     return errs
 
 
@@ -1127,11 +1128,10 @@ def main(args):
     all_props = getPropertiesFromDir(include_dir)
     logging.info(f'Got {len(all_props)} props from "include" dir')
 
-    with open(include_dir / "ofx-props.yml", "r") as props_file:
-        props_data = yaml.safe_load(props_file)
-    props_by_set = expand_set_props(props_data["propertySets"])
-    props_by_action = props_data["Actions"]
-    props_metadata = props_data["properties"]
+    # All data is now extracted from inline blocks in headers
+    props_by_set = expand_set_props(get_propsets_from_headers(include_dir))
+    props_by_action = get_actions_from_headers(include_dir)
+    props_metadata = get_properties_from_headers(include_dir)
 
     # Convert action argument property sets to the same format as regular property sets
     action_propsets = actions_to_propsets(props_by_action)
@@ -1141,7 +1141,7 @@ def main(args):
 
     if args.verbose:
         print(
-            "\n=== Checking ofx-props.yml: should map 1:1 to props found in source/header files"
+            "\n=== Checking props: should map 1:1 to props found in source/header files"
         )
     errs = find_missing(all_props, props_metadata)
     if not errs and args.verbose:
@@ -1149,7 +1149,7 @@ def main(args):
 
     if args.verbose:
         print(
-            "\n=== Checking ofx-props.yml: every prop in a set should have metadata in the YML file"
+            "\n=== Checking: every prop in a set should have metadata"
         )
     errs = check_props_by_set(props_by_set, props_by_action, props_metadata)
     if not errs and args.verbose:
@@ -1157,7 +1157,7 @@ def main(args):
 
     if args.verbose:
         print(
-            "\n=== Checking ofx-props.yml: every prop should be used in in at least one set in the YML file"
+            "\n=== Checking: every prop should be used in at least one set"
         )
     errs = check_props_used_by_set(props_by_set, props_by_action, props_metadata)
     if not errs and args.verbose:

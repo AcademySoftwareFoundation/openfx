@@ -45,6 +45,11 @@ public:
         return *this;
     }
 
+    ActionBeginInstanceChanged_InArgs& setThumbnailRender(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropThumbnailRender>(value, 0, error_if_missing);
+        return *this;
+    }
+
 };
 
 // Property set accessor for: ActionEndInstanceChanged_InArgs
@@ -92,6 +97,11 @@ public:
     // Set all values from an initializer list (e.g., {1, 2})
     ActionInstanceChanged_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
         props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    ActionInstanceChanged_InArgs& setThumbnailRender(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropThumbnailRender>(value, 0, error_if_missing);
         return *this;
     }
 
@@ -473,6 +483,10 @@ public:
         return props_.get<PropId::OfxImageEffectPropOpenGLRenderSupported>(0, error_if_missing);
     }
 
+    const char* cPURenderSupported(bool error_if_missing = false) const {
+        return props_.get<PropId::OfxImageEffectPropCPURenderSupported>(0, error_if_missing);
+    }
+
     EffectDescriptor& setFilePath(const char* value, bool error_if_missing = true) {
         props_.set<PropId::OfxPluginPropFilePath>(value, 0, error_if_missing);
         return *this;
@@ -575,6 +589,11 @@ public:
 
     EffectInstance& setOpenGLRenderSupported(const char* value, bool error_if_missing = true) {
         props_.set<PropId::OfxImageEffectPropOpenGLRenderSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    EffectInstance& setCPURenderSupported(const char* value, bool error_if_missing = false) {
+        props_.set<PropId::OfxImageEffectPropCPURenderSupported>(value, 0, error_if_missing);
         return *this;
     }
 
@@ -837,6 +856,11 @@ public:
         return *this;
     }
 
+    ImageEffectActionBeginSequenceRender_InArgs& setThumbnailRender(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropThumbnailRender>(value, 0, error_if_missing);
+        return *this;
+    }
+
 };
 
 // Property set accessor for: ImageEffectActionDescribeInContext_InArgs
@@ -1012,6 +1036,11 @@ public:
         return *this;
     }
 
+    ImageEffectActionGetFramesNeeded_InArgs& setThumbnailRender(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropThumbnailRender>(value, 0, error_if_missing);
+        return *this;
+    }
+
 };
 
 // Property set accessor for: ImageEffectActionGetFramesNeeded_OutArgs
@@ -1084,6 +1113,11 @@ public:
         return *this;
     }
 
+    ImageEffectActionGetRegionOfDefinition_InArgs& setThumbnailRender(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropThumbnailRender>(value, 0, error_if_missing);
+        return *this;
+    }
+
 };
 
 // Property set accessor for: ImageEffectActionGetRegionOfDefinition_OutArgs
@@ -1126,6 +1160,11 @@ public:
     // Set all values from an initializer list (e.g., {1, 2})
     ImageEffectActionGetRegionsOfInterest_InArgs& setRegionOfInterest(std::initializer_list<double> values, bool error_if_missing = true) {
         props_.setAll<PropId::OfxImageEffectPropRegionOfInterest>(values, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionGetRegionsOfInterest_InArgs& setThumbnailRender(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropThumbnailRender>(value, 0, error_if_missing);
         return *this;
     }
 
@@ -1176,6 +1215,11 @@ public:
     // Set all values from an initializer list (e.g., {1, 2})
     ImageEffectActionIsIdentity_InArgs& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
         props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionIsIdentity_InArgs& setThumbnailRender(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropThumbnailRender>(value, 0, error_if_missing);
         return *this;
     }
 
@@ -1283,6 +1327,11 @@ public:
 
     ImageEffectActionRender_InArgs& setNoSpatialAwareness(const char* value, bool error_if_missing = true) {
         props_.set<PropId::OfxImageEffectPropNoSpatialAwareness>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionRender_InArgs& setThumbnailRender(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropThumbnailRender>(value, 0, error_if_missing);
         return *this;
     }
 
@@ -1516,6 +1565,11 @@ public:
 
     ImageEffectHost& setOpenGLRenderSupported(const char* value, bool error_if_missing = true) {
         props_.set<PropId::OfxImageEffectPropOpenGLRenderSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectHost& setCPURenderSupported(const char* value, bool error_if_missing = false) {
+        props_.set<PropId::OfxImageEffectPropCPURenderSupported>(value, 0, error_if_missing);
         return *this;
     }
 

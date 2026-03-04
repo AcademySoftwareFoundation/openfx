@@ -41,11 +41,7 @@ point) sample format */
 /** @brief Indicates whether a host or plug-in can support OpenGL accelerated
 rendering
 
-   - Type - C string X 1
-   - Property Set - plug-in descriptor (read/write), host descriptor (read
-only) - plug-in instance change (read/write)
-   - Default - "false" for a plug-in
-   - Valid Values - This must be one of
+   - Valid Values -
      - "false"  - in which case the host or plug-in does not support OpenGL
                   accelerated rendering
      - "true"   - which means a host or plug-in can support OpenGL accelerated
@@ -56,6 +52,13 @@ only) - plug-in instance change (read/write)
 
 V1.4: It is now expected from host reporting v1.4 that the plug-in can during instance change switch from true to false and false to true.
 
+    @propdef
+    type: enum
+    dimension: 1
+    values:
+      - "false"
+      - "true"
+      - needed
 */
 #define kOfxImageEffectPropOpenGLRenderSupported "OfxImageEffectPropOpenGLRenderSupported"
 
@@ -72,17 +75,23 @@ V1.4: It is now expected from host reporting v1.4 that the plug-in can during in
     format specifics when using OpenGL textures, so they can leave this unset
     and allow the host the decide the format.
 
-
-   - Type - string X N
-   - Property Set - plug-in descriptor (read only)
-   - Default - none set
-   - Valid Values - This must be one of
+   - Valid Values -
        - ::kOfxBitDepthNone (implying a clip is unconnected, not valid for an
          image)
        - ::kOfxBitDepthByte
        - ::kOfxBitDepthShort
        - ::kOfxBitDepthHalf
        - ::kOfxBitDepthFloat
+
+    @propdef
+    type: enum
+    dimension: 0
+    values:
+      - OfxBitDepthNone
+      - OfxBitDepthByte
+      - OfxBitDepthShort
+      - OfxBitDepthHalf
+      - OfxBitDepthFloat
 */
 #define kOfxOpenGLPropPixelDepth "OfxOpenGLPropPixelDepth"
 
@@ -95,11 +104,6 @@ the current action
    its result into the buffer it has setup before calling the render.  The
    plug-in can then also safely use the 'OfxImageEffectOpenGLRenderSuite'
 
-   - Type - int X 1
-   - Property Set - inArgs property set of the following actions...
-      - ::kOfxImageEffectActionRender
-      - ::kOfxImageEffectActionBeginSequenceRender
-      - ::kOfxImageEffectActionEndSequenceRender
    - Valid Values
       - 0 indicates that the plug-in cannot use the OpenGL suite
       - 1 indicates that the plug-in should render into the texture,
@@ -111,6 +115,9 @@ OpenGL suite.
 
 v1.4:  kOfxImageEffectPropOpenGLEnabled should probably be checked in Instance Changed prior to try to read image via clipLoadTexture
 
+    @propdef
+    type: bool
+    dimension: 1
 */
 #define kOfxImageEffectPropOpenGLEnabled "OfxImageEffectPropOpenGLEnabled"
 
@@ -118,17 +125,17 @@ v1.4:  kOfxImageEffectPropOpenGLEnabled should probably be checked in Instance C
 /** @brief Indicates the texture index of an image turned into an OpenGL
 texture by the host
 
-   - Type - int X 1
-   - Property Set - texture handle returned by
-`        OfxImageEffectOpenGLRenderSuiteV1::clipLoadTexture (read only)
-
-	This value should be cast to a GLuint and used as the texture index when
-        performing OpenGL texture operations.
+This value should be cast to a GLuint and used as the texture index when
+performing OpenGL texture operations.
 
    The property set of the following actions should contain this property:
       - ::kOfxImageEffectActionRender
       - ::kOfxImageEffectActionBeginSequenceRender
       - ::kOfxImageEffectActionEndSequenceRender
+    
+    @propdef
+    type: int
+    dimension: 1
 */
 #define kOfxImageEffectPropOpenGLTextureIndex "OfxImageEffectPropOpenGLTextureIndex"
 
@@ -136,16 +143,17 @@ texture by the host
 /** @brief Indicates the texture target enumerator of an image turned into
     an OpenGL texture by the host
 
-   - Type - int X 1
-   - Property Set - texture handle returned by
-        OfxImageEffectOpenGLRenderSuiteV1::clipLoadTexture (read only)
-	This value should be cast to a GLenum and used as the texture target
-	when performing OpenGL texture operations.
+This value should be cast to a GLenum and used as the texture target
+when performing OpenGL texture operations.
 
    The property set of the following actions should contain this property:
       - ::kOfxImageEffectActionRender
       - ::kOfxImageEffectActionBeginSequenceRender
       - ::kOfxImageEffectActionEndSequenceRender
+    
+    @propdef
+    type: int
+    dimension: 1
 */
 #define kOfxImageEffectPropOpenGLTextureTarget "OfxImageEffectPropOpenGLTextureTarget"
 
@@ -153,17 +161,20 @@ texture by the host
 /** @brief Indicates whether a host or plug-in can (or more importantly cannot)
     support CPU rendering.
 
-   - Type - C string X 1
-   - Property Set - plug-in descriptor (read/write), host descriptor (read
-only) - plug-in instance change (read/write)
-   - Default - "true" for host and plug-in
-   - Valid Values - This must be one of
+  @version added in version 1.5.1.
+
+   - Valid Values -
      - "false"  - in which case the host or plug-in does not support CPU
                   rendering
      - "true"   - which means a host or plug-in can support CPU rendering
 
-  @version added in version 1.5.1.
-
+    @propdef
+    type: enum
+    dimension: 1
+    values:
+      - "false"
+      - "true"
+    introduced: "1.5.1"
 */
 #define kOfxImageEffectPropCPURenderSupported "OfxImageEffectPropCPURenderSupported"
 
@@ -545,12 +556,17 @@ current for other OFX calls, such as ::kOfxImageEffectActionDescribeInContext.
  */
 /** @brief Indicates whether a host or plug-in can support CUDA render
 
-    - Type - string X 1
-    - Property Set - plug-in descriptor (read/write), host descriptor (read only)
-    - Default - "false" for a plug-in
-    - Valid Values - This must be one of
+    - Valid Values -
       - "false"  - the host or plug-in does not support CUDA render
       - "true"   - the host or plug-in can support CUDA render
+
+    @propdef
+    type: enum
+    dimension: 1
+    values:
+      - "false"
+      - "true"
+      - needed
  */
 #define kOfxImageEffectPropCudaRenderSupported "OfxImageEffectPropCudaRenderSupported"
 
@@ -562,38 +578,35 @@ the current action
    this property to indicate that it is passing images as CUDA memory
    pointers.
 
-   - Type - int X 1
-   - Property Set - inArgs property set of the following actions...
-      - ::kOfxImageEffectActionRender
-      - ::kOfxImageEffectActionBeginSequenceRender
-      - ::kOfxImageEffectActionEndSequenceRender
    - Valid Values
       - 0 indicates that the kOfxImagePropData of each image of each clip
           is a CPU memory pointer.
       - 1 indicates that the kOfxImagePropData of each image of each clip
 	      is a CUDA memory pointer.
+
+    @propdef
+    type: bool
+    dimension: 1
 */
 #define kOfxImageEffectPropCudaEnabled "OfxImageEffectPropCudaEnabled"
 
 /**  @brief Indicates whether a host or plug-in can support CUDA streams
 
-    - Type - string X 1
-    - Property Set - plug-in descriptor (read/write), host descriptor (read only)
-    - Default - "false" for a plug-in
-    - Valid Values - This must be one of
+    - Valid Values -
       - "false"  - in which case the host or plug-in does not support CUDA streams
       - "true"   - which means a host or plug-in can support CUDA streams
 
+    @propdef
+    type: enum
+    dimension: 1
+    values:
+      - "false"
+      - "true"
+      - needed
 */
 #define kOfxImageEffectPropCudaStreamSupported "OfxImageEffectPropCudaStreamSupported"
 
 /**  @brief The CUDA stream to be used for rendering
-
-    - Type - pointer X 1
-    - Property Set - inArgs property set of the following actions...
-       - ::kOfxImageEffectActionRender
-       - ::kOfxImageEffectActionBeginSequenceRender
-       - ::kOfxImageEffectActionEndSequenceRender
 
 This property will only be set if the host and plug-in both support CUDA streams.
 
@@ -613,6 +626,10 @@ If not set:
 
 - the plug-in SHOULD ensure that any asynchronous operations it
   enqueues have completed before returning from the render action.
+    
+    @propdef
+    type: pointer
+    dimension: 1
 */
 #define kOfxImageEffectPropCudaStream "OfxImageEffectPropCudaStream"
 
@@ -625,12 +642,18 @@ If not set:
  */
 /** @brief Indicates whether a host or plug-in can support Metal render
 
-    - Type - string X 1
-    - Property Set - plug-in descriptor (read/write), host descriptor (read only)
-    - Default - "false" for a plug-in
-    - Valid Values - This must be one of
+    - Valid Values -
       - "false"  - the host or plug-in does not support Metal render
       - "true"   - the host or plug-in can support Metal render
+
+    @propdef
+    type: enum
+    dimension: 1
+    values:
+      - "false"
+      - "true"
+      - needed
+    introduced: "1.5"
  */
 #define kOfxImageEffectPropMetalRenderSupported "OfxImageEffectPropMetalRenderSupported"
 
@@ -642,26 +665,20 @@ the current action
    set this property to indicate that it is passing images as Metal
    buffers.
 
-   - Type - int X 1
-   - Property Set - inArgs property set of the following actions...
-      - ::kOfxImageEffectActionRender
-      - ::kOfxImageEffectActionBeginSequenceRender
-      - ::kOfxImageEffectActionEndSequenceRender
    - Valid Values
       - 0 indicates that the kOfxImagePropData of each image of each clip
           is a CPU memory pointer.
       - 1 indicates that the kOfxImagePropData of each image of each clip
 	      is a Metal id<MTLBuffer>.
+
+    @propdef
+    type: bool
+    dimension: 1
+    introduced: "1.5"
 */
 #define kOfxImageEffectPropMetalEnabled "OfxImageEffectPropMetalEnabled"
 
 /**  @brief The command queue of Metal render
-
-    - Type - pointer X 1
-    - Property Set - inArgs property set of the following actions...
-       - ::kOfxImageEffectActionRender
-       - ::kOfxImageEffectActionBeginSequenceRender
-       - ::kOfxImageEffectActionEndSequenceRender
 
 This property contains a pointer to the command queue to be used for
 Metal rendering (id<MTLCommandQueue>). In order to use it,
@@ -672,6 +689,11 @@ asynchronous Metal operations onto the supplied queue.
 
 The plug-in SHOULD NOT wait for final asynchronous operations to
 complete before returning from the render action.
+    
+    @propdef
+    type: pointer
+    dimension: 1
+    introduced: "1.5"
 */
 #define kOfxImageEffectPropMetalCommandQueue "OfxImageEffectPropMetalCommandQueue"
 /** @}*/ // end MetalRender doc group
@@ -683,23 +705,34 @@ complete before returning from the render action.
  */
 /** @brief Indicates whether a host or plug-in can support OpenCL Buffers render
 
-    - Type - string X 1
-    - Property Set - plug-in descriptor (read/write), host descriptor (read only)
-    - Default - "false" for a plug-in
-    - Valid Values - This must be one of
+    - Valid Values -
       - "false"  - the host or plug-in does not support OpenCL Buffers render
       - "true"   - the host or plug-in can support OpenCL Buffers render
+
+    @propdef
+    type: enum
+    dimension: 1
+    values:
+      - "false"
+      - "true"
+      - needed
+    introduced: "1.5"
  */
 #define kOfxImageEffectPropOpenCLRenderSupported "OfxImageEffectPropOpenCLRenderSupported"
 
  /** @brief Indicates whether a host or plug-in can support OpenCL Images render
 
-    - Type - string X 1
-    - Property Set - plug-in descriptor (read/write), host descriptor (read only)
-    - Default - "false" for a plug-in
-    - Valid Values - This must be one of
+    - Valid Values -
       - "false"  - in which case the host or plug-in does not support OpenCL Images render
       - "true"   - which means a host or plug-in can support OpenCL Images render
+
+    @propdef
+    type: enum
+    dimension: 1
+    values:
+      - "false"
+      - "true"
+    introduced: "1.5"
  */
 #define kOfxImageEffectPropOpenCLSupported				"OfxImageEffectPropOpenCLSupported"
 
@@ -717,26 +750,20 @@ the current action
    If both ::kOfxImageEffectPropOpenCLSupported (Buffers) and ::kOfxImageEffectPropOpenCLRenderSupported (Images) are
    enabled by the plug-in, it should use ::kOfxImageEffectPropOpenCLImage to determine which is being used by the host.
 
-   - Type - int X 1
-   - Property Set - inArgs property set of the following actions...
-      - ::kOfxImageEffectActionRender
-      - ::kOfxImageEffectActionBeginSequenceRender
-      - ::kOfxImageEffectActionEndSequenceRender
    - Valid Values
       - 0 indicates that a plug-in SHOULD use OpenCL render in
           the render action
       - 1 indicates that a plug-in SHOULD NOT use OpenCL render in
           the render action
+
+    @propdef
+    type: bool
+    dimension: 1
+    introduced: "1.5"
 */
 #define kOfxImageEffectPropOpenCLEnabled "OfxImageEffectPropOpenCLEnabled"
 
 /**  @brief Indicates the OpenCL command queue that should be used for rendering
-
-    - Type - pointer X 1
-    - Property Set - inArgs property set of the following actions...
-       - ::kOfxImageEffectActionRender
-       - ::kOfxImageEffectActionBeginSequenceRender
-       - ::kOfxImageEffectActionEndSequenceRender
 
 This property contains a pointer to the command queue to be used for
 OpenCL rendering (cl_command_queue). In order to use it,
@@ -747,13 +774,15 @@ asynchronous OpenCL operations onto the supplied queue.
 
 The plug-in SHOULD NOT wait for final asynchronous operations to
 complete before returning from the render action.
+    
+    @propdef
+    type: pointer
+    dimension: 1
+    introduced: "1.5"
 */
 #define kOfxImageEffectPropOpenCLCommandQueue "OfxImageEffectPropOpenCLCommandQueue"
 
 /** @brief Indicates the image handle of an image supplied as an OpenCL Image by the host
-
-- Type - pointer X 1
-- Property Set - image handle returned by clipGetImage
 
 This value should be cast to a cl_mem and used as the image handle when performing
 OpenCL Images operations. The property should be used (not ::kOfxImagePropData) when
@@ -762,6 +791,11 @@ to determine whether Images or Buffers should be used if a plug-in supports both
 ::kOfxImageEffectPropOpenCLSupported and ::kOfxImageEffectPropOpenCLRenderSupported.
 Note: the kOfxImagePropRowBytes property is not required to be set by the host, since
 OpenCL Images do not have the concept of row bytes.
+    
+    @propdef
+    type: pointer
+    dimension: 1
+    introduced: "1.5"
 */
 #define kOfxImageEffectPropOpenCLImage					"OfxImageEffectPropOpenCLImage"
 

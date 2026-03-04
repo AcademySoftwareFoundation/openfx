@@ -181,7 +181,11 @@ These are the actions passed to a plug-in's 'main' function
  Do not create an entry in the host's UI for plug-in then.  
  Plug-in also has the option to return 0 for OfxGetNumberOfPlugins or kOfxStatFailed if host supports OfxSetHost in which case kOfxActionLoad will never be called.
  -  \ref kOfxStatErrFatal, fatal error in the plug-in.
- */
+ 
+    @actiondef
+    inArgs:
+    outArgs:
+*/
 #define  kOfxActionLoad "OfxActionLoad"
 
 /** @brief
@@ -231,7 +235,11 @@ These are the actions passed to a plug-in's 'main' function
      plugin to post message
      -  \ref kOfxStatErrFatal
 
- */
+ 
+    @actiondef
+    inArgs:
+    outArgs:
+*/
 #define kOfxActionDescribe "OfxActionDescribe"
 
 /** @brief
@@ -255,7 +263,11 @@ These are the actions passed to a plug-in's 'main' function
      -  \ref kOfxStatReplyDefault, the action was ignored
      -  \ref kOfxStatErrFatal, in which case we the program will be forced to quit
 
- */
+ 
+    @actiondef
+    inArgs:
+    outArgs:
+*/
 #define kOfxActionUnload "OfxActionUnload"
 
 /** @brief
@@ -290,7 +302,11 @@ These are the actions passed to a plug-in's 'main' function
      -  \ref kOfxStatErrFatal,
      -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
      the plugin should to post a message
- */
+ 
+    @actiondef
+    inArgs:
+    outArgs:
+*/
 #define kOfxActionPurgeCaches                 "OfxActionPurgeCaches"
 
 /** @brief
@@ -316,7 +332,11 @@ These are the actions passed to a plug-in's 'main' function
      -  \ref kOfxStatErrFatal,
      -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
      the plugin should to post a message
- */
+ 
+    @actiondef
+    inArgs:
+    outArgs:
+*/
 #define kOfxActionSyncPrivateData                 "OfxActionSyncPrivateData"
 
 /** @brief
@@ -351,7 +371,11 @@ These are the actions passed to a plug-in's 'main' function
      -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
      the plugin should to post a message if possible and the host should
      destroy the instanace handle and not attempt to proceed further
- */
+ 
+    @actiondef
+    inArgs:
+    outArgs:
+*/
 #define kOfxActionCreateInstance        "OfxActionCreateInstance"
 
 /** @brief
@@ -387,7 +411,11 @@ These are the actions passed to a plug-in's 'main' function
      -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
      the plugin should to post a message.
 
- */
+ 
+    @actiondef
+    inArgs:
+    outArgs:
+*/
 #define kOfxActionDestroyInstance       "OfxActionDestroyInstance"
 
 /** @brief
@@ -425,6 +453,7 @@ These are the actions passed to a plug-in's 'main' function
      -  \ref kOfxImageEffectPropRenderScale
      - the render scale currently being applied to any image fetched
      from a clip (for Image Effect Plugins only)
+     - \ref kOfxImageEffectPropThumbnailRender (optional) if the host considers this render a "thumbnail"
 
  @param  outArgs is redundant and is set to NULL
 
@@ -443,7 +472,17 @@ These are the actions passed to a plug-in's 'main' function
      -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
      the plugin should to post a message
 
- */
+ 
+    @actiondef
+    inArgs:
+      - OfxPropType
+      - OfxPropName
+      - OfxPropChangeReason
+      - OfxPropTime
+      - OfxImageEffectPropRenderScale
+      - OfxImageEffectPropThumbnailRender
+    outArgs:
+*/
 #define kOfxActionInstanceChanged "OfxActionInstanceChanged"
 
 /** @brief
@@ -486,10 +525,21 @@ These are the actions passed to a plug-in's 'main' function
      -  \ref kOfxStatErrFatal,
      -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
      the plugin should to post a message
+
+    @actiondef
+    inArgs:
+      - OfxPropChangeReason
+      - OfxImageEffectPropThumbnailRender
+    outArgs: []
 */
 #define kOfxActionBeginInstanceChanged "OfxActionBeginInstanceChanged"
 
-/** @brief Action called after the end of a set of \ref kOfxActionEndInstanceChanged actions, used with ::kOfxActionBeginInstanceChanged to bracket a grouped set of changes,  see \ref kOfxActionBeginInstanceChanged*/
+/** @brief Action called after the end of a set of \ref kOfxActionEndInstanceChanged actions, used with ::kOfxActionBeginInstanceChanged to bracket a grouped set of changes,  see \ref kOfxActionBeginInstanceChanged
+    @actiondef
+    inArgs:
+      - OfxPropChangeReason
+    outArgs:
+*/
 #define kOfxActionEndInstanceChanged "OfxActionEndInstanceChanged"
 
 /** @brief
@@ -518,7 +568,11 @@ These are the actions passed to a plug-in's 'main' function
      -  \ref kOfxStatErrFatal,
      -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
      the plugin should to post a message
- */
+ 
+    @actiondef
+    inArgs:
+    outArgs:
+*/
 #define kOfxActionBeginInstanceEdit "OfxActionBeginInstanceEdit"
 
 /** @brief
@@ -545,7 +599,11 @@ These are the actions passed to a plug-in's 'main' function
      -  \ref kOfxStatErrFatal,
      -  \ref kOfxStatFailed, something went wrong, but no error code appropriate,
      the plugin should to post a message
- */
+ 
+    @actiondef
+    inArgs:
+    outArgs:
+*/
 #define kOfxActionEndInstanceEdit "OfxActionEndInstanceEdit"
 
 /*@}*/
@@ -592,63 +650,63 @@ These properties are general properties and  apply to may objects across OFX
 
 /** @brief Property on the host descriptor, saying what API version of the API is being implemented
 
-    - Type - int X N
-    - Property Set - host descriptor.
-
 This is a version string that will specify which version of the API is being implemented by a host. It
 can have multiple values. For example "1.0", "1.2.4" etc.....
 
 If this is not present, it is safe to assume that the version of the API is "1.0".
+    
+    @propdef
+    type: int
+    dimension: 0
 */
 #define kOfxPropAPIVersion "OfxPropAPIVersion"
 
 /** @brief General property used to get/set the time of something.
-
-    - Type - double X 1
-    - Default - 0, if a setable property
-    - Property Set - commonly used as an argument to actions, input and output.
+    
+    @propdef
+    type: double
+    dimension: 1
 */
 #define kOfxPropTime "OfxPropTime"
 
 /** @brief Indicates if a host is actively editing the effect with some GUI.
 
-    - Type - int X 1
-    - Property Set - effect instance (read only)
-    - Valid Values - 0 or 1
-
 If false, the effect currently has no interface.  This may be because the effect is loaded in a background render host, or it may be loaded on an interactive host that has not yet opened an editor for the effect.
 
 The output of an effect should only ever depend on the state of its parameters, not on the interactive flag. The interactive flag is more a courtesy flag to let a plugin know that it has an interface. If a plugin wants to have its behaviour depend on the interactive flag, it should make a secret parameter which shadows the state of the flag.
+
+    @propdef
+    type: bool
+    dimension: 1
 */
 #define kOfxPropIsInteractive "OfxPropIsInteractive"
 
 /** @brief The file path to the plugin.
-
-    - Type - C string X 1
-    - Property Set - effect descriptor (read only)
 
 This is a string that indicates the file path where the plug-in was found by the host. The path is in the native
 path format for the host OS (eg:  UNIX directory separators are forward slashes, Windows ones are backslashes).
 
 The path is to the bundle location, see \ref InstallationLocation.
 eg:  '/usr/OFX/Plugins/AcmePlugins/AcmeFantasticPlugin.ofx.bundle'
+    
+    @propdef
+    type: string
+    dimension: 1
 */
 #define kOfxPluginPropFilePath "OfxPluginPropFilePath"
 
 /** @brief  A private data pointer that the plug-in can store its own data behind.
 
-    - Type - pointer X 1
-    - Property Set - plugin instance (read/write),
-    - Default - NULL
-
 This data pointer is unique to each plug-in instance, so two instances of the same plug-in do not share the same data pointer. Use it to hang any needed private data structures.
+    
+    @propdef
+    type: pointer
+    dimension: 1
 */
 #define kOfxPropInstanceData "OfxPropInstanceData"
 
 /** @brief General property, used to identify the kind of an object behind a handle
-
-    - Type - ASCII C string X 1
-    - Property Set - any object handle (read only)
+    
     - Valid Values - currently this can be...
        - ::kOfxTypeImageEffectHost
        - ::kOfxTypeImageEffect
@@ -657,128 +715,142 @@ This data pointer is unique to each plug-in instance, so two instances of the sa
        - ::kOfxTypeParameterInstance
        - ::kOfxTypeClip
        - ::kOfxTypeImage
+    @propdef
+    type: string
+    dimension: 1
 */
 #define kOfxPropType "OfxPropType"
 
 /** @brief Unique name of an object.
 
-    - Type - ASCII C string X 1
-    - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject (read only)
-
 This property is used to label objects uniquely among objects of that type. It is typically set when a plugin creates a new object with a function that takes a name.
+    
+    @propdef
+    type: string
+    dimension: 1
 */
 #define kOfxPropName "OfxPropName"
 
 /** @brief Identifies a specific version of a host or plugin.
 
-    - Type - int X N
-    - Property Set - host descriptor (read only), plugin descriptor (read/write)
-    - Default - "0"
-    - Valid Values - positive integers
-
 This is a multi dimensional integer property that represents the version of a host (host descriptor), or plugin (plugin descriptor). These represent a version number of the form '1.2.3.4', with each dimension adding another 'dot' on the right.
 
 A version is considered to be more recent than another if its ordered set of values is lexicographically greater than another, reading left to right. (ie: 1.2.4 is smaller than 1.2.6). Also, if the number of dimensions is different, then the values of the missing dimensions are considered to be zero (so 1.2.4 is greater than 1.2).
+    
+    - Valid Values - positive integers
+    @propdef
+    type: int
+    dimension: 0
 */
 #define kOfxPropVersion "OfxPropVersion"
 
 /** @brief Unique user readable version string of a plugin or host.
 
-    - Type - string X 1
-    - Property Set - host descriptor (read only), plugin descriptor (read/write)
-    - Default - none, the host needs to set this
-    - Valid Values - ASCII string
-
 This is purely for user feedback, a plugin or host should use ::kOfxPropVersion if they need
 to check for specific versions.
+    
+    - Valid Values - ASCII string
+    @propdef
+    type: string
+    dimension: 1
 */
 #define kOfxPropVersionLabel "OfxPropVersionLabel"
 
 /** @brief Description of the plug-in to a user.
 
-    - Type - string X 1
-    - Property Set - plugin descriptor (read/write) and instance (read only)
-    - Default - ""
-    - Valid Values - UTF8 string
-
 This is a string giving a potentially verbose description of the effect.
+    
+    - Valid Values - UTF8 string
+    @propdef
+    type: string
+    dimension: 1
 */
 #define kOfxPropPluginDescription "OfxPropPluginDescription"
 
 /** @brief User visible name of an object.
 
-    - Type - UTF8 C string X 1
-    - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject. Typically readable and writable in most cases.
-    - Default - the ::kOfxPropName the object was created with.
-
 The label is what a user sees on any interface in place of the object's name.
 
 Note that resetting this will also reset ::kOfxPropShortLabel and ::kOfxPropLongLabel.
+    
+    @propdef
+    type: string
+    dimension: 1
 */
 #define kOfxPropLabel "OfxPropLabel"
 
 /** @brief If set this tells the host to use an icon instead of a label for some object in the interface.
 
-    - Type - string X 2
-    - Property Set - various descriptors in the API
-    - Default - ""
-    - Valid Values - ASCII string
-
 The value is a path is defined relative to the Resource folder that points to an SVG or PNG file containing the icon.
 
 The first dimension, if set, will the name of and SVG file, the second a PNG file.
+    
+    - Valid Values - ASCII string
+    @propdef
+    type: string
+    dimension: 2
+    hostOptional: true
 */
 #define kOfxPropIcon "OfxPropIcon"
 
 /** @brief Short user visible name of an object.
 
-    - Type - UTF8 C string X 1
-    - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject. Typically readable and writable in most cases.
-    - Default - initially ::kOfxPropName, but will be reset if ::kOfxPropLabel is changed.
-
 This is a shorter version of the label, typically 13 character glyphs or less. Hosts should use this if they have limited display space for their object labels.
+    
+    @propdef
+    type: string
+    dimension: 1
+    hostOptional: true
 */
 #define kOfxPropShortLabel "OfxPropShortLabel"
 
 /** @brief Long user visible name of an object.
 
-    - Type - UTF8 C string X 1
-    - Property Set - on many objects (descriptors and instances), see \ref PropertiesByObject. Typically readable and writable in most cases.
-    - Default - initially ::kOfxPropName, but will be reset if ::kOfxPropLabel is changed.
-
 This is a longer version of the label, typically 32 character glyphs or so. Hosts should use this if they have mucg display space for their object labels.
+    
+    @propdef
+    type: string
+    dimension: 1
+    hostOptional: true
 */
 #define kOfxPropLongLabel "OfxPropLongLabel"
 
 /** @brief Indicates why a plug-in changed.
 
-    - Type - ASCII C string X 1
-    - Property Set - inArgs parameter on the ::kOfxActionInstanceChanged action.
+Argument property for the ::kOfxActionInstanceChanged action.
+    
     - Valid Values - this can be...
        - ::kOfxChangeUserEdited - the user directly edited the instance somehow and caused a change to something, this includes undo/redos and resets
        - ::kOfxChangePluginEdited - the plug-in itself has changed the value of the object in some action
        - ::kOfxChangeTime - the time has changed and this has affected the value of the object because it varies over time
-
-Argument property for the ::kOfxActionInstanceChanged action.
+    @propdef
+    type: enum
+    dimension: 1
+    values:
+      - OfxChangeUserEdited
+      - OfxChangePluginEdited
+      - OfxChangeTime
 */
 #define kOfxPropChangeReason "OfxPropChangeReason"
 
 /** @brief A pointer to an effect instance.
 
-    - Type - pointer X 1
-    - Property Set - on an interact instance (read only)
-
 This property is used to link an object to the effect. For example if the plug-in supplies an openGL overlay for an image effect,
 the interact instance will have one of these so that the plug-in can connect back to the effect the GUI links to.
+    
+    @propdef
+    type: pointer
+    dimension: 1
 */
 #define kOfxPropEffectInstance "OfxPropEffectInstance"
 
 /** @brief A pointer to an operating system specific application handle.
 
-    - Type - pointer X 1
-    - Property Set - host descriptor.
-
 Some plug-in vendor want raw OS specific handles back from the host so they can do interesting things with host OS APIs. Typically this is to control windowing properly on Microsoft Windows. This property returns the appropriate 'root' window handle on the current operating system. So on Windows this would be the hWnd of the application main window.
+    
+    @propdef
+    type: pointer
+    dimension: 1
 */
 #define kOfxPropHostOSHandle "OfxPropHostOSHandle"
 

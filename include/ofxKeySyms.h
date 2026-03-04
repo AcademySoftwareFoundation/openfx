@@ -12,10 +12,6 @@
 
 /** @brief Property used to indicate which a key on the keyboard or a button on a button device has been pressed
 
-  - Type - int X 1
-  - Property Set - an read only in argument for the actions ::kOfxInteractActionKeyDown, ::kOfxInteractActionKeyUp and ::kOfxInteractActionKeyRepeat.
-  - Valid Values - one of any specified by #defines in the file ofxKeySyms.h.
-
 This property represents a raw key press, it does not represent the 'character value' of the key. 
 
 This property is associated with a ::kOfxPropKeyString property, which encodes the UTF8
@@ -24,15 +20,16 @@ value for the keypress/button press. Some keys (for example arrow keys) have no 
 Some keys, especially on non-english language systems, may have a UTF8 value, but \em not a keysym values, in these
 cases, the keysym will have a value of kOfxKey_Unknown, but the ::kOfxPropKeyString property will still be set with
 the UTF8 value.
-
+  
+  - Valid Values - one of any specified by #defines in the file ofxKeySyms.h.
+  @propdef
+  type: int
+  dimension: 1
+  cname: kOfxPropKeySym
  */
 #define kOfxPropKeySym "kOfxPropKeySym"
 
 /** @brief This property encodes a single keypresses that generates a unicode code point. The value is stored as a UTF8 string. 
-
-  - Type - C string X 1, UTF8
-  - Property Set - a read-only in argument for the actions ::kOfxInteractActionKeyDown, ::kOfxInteractActionKeyUp and ::kOfxInteractActionKeyRepeat.
-  - Valid Values - a UTF8 string representing a single character, or the empty string.
 
 This property represents the UTF8 encode value of a single key press by a user in an OFX interact.
 
@@ -42,6 +39,12 @@ in which case this is set to the empty string "", and the associate ::kOfxPropKe
 Some keys, especially on non-english language systems, may have a UTF8 value, but \em not a keysym values, in these
 cases, the keysym will have a value of kOfxKey_Unknown, but the ::kOfxPropKeyString property will still be set with
 the UTF8 value.
+  
+  - Valid Values - a UTF8 string representing a single character, or the empty string.
+  @propdef
+  type: string
+  dimension: 1
+  cname: kOfxPropKeyString
 */
 #define kOfxPropKeyString "kOfxPropKeyString"
 

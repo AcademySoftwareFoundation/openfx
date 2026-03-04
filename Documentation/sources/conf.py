@@ -9,14 +9,7 @@
 
 # SPDX-License-Identifier: BSD-3-Clause
 
-import subprocess, os, shutil, re, sys
-from docutils import nodes
-from docutils.parsers.rst import directives
-from sphinx.directives import ObjectDescription
-from sphinx.util.docutils import SphinxDirective
-
-# Add the _ext directory to Python path
-sys.path.append(os.path.abspath('_ext'))
+import subprocess, os, shutil, sys
 
 project = 'OpenFX'
 copyright = '''2025, OpenFX a Series of LF Projects, LLC.
@@ -24,16 +17,14 @@ For web site terms of use, trademark policy and other project policies please se
 author = 'Contributors to the OpenFX Project'
 release = '1.5.1'
 
-# We're now using a custom extension for property links
-# Directive definitions have been moved to _ext/property_links.py
-
 read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 if read_the_docs_build:
     # cwd here is Documentation/sources, i.e. the dir of this source file
-    subprocess.call('python ../genPropertiesReference.py -r -i ../../include -o Reference/ofxPropertiesReference.rst', shell=True)
+    # Generate property documentation from inline @propdef metadata in headers
+    subprocess.call('cd ../.. && python scripts/gen-props-doc.py', shell=True)
     subprocess.call('cd ../../include ; doxygen ofx.doxy', shell=True)
     print(f'Generating API doc')
     subprocess.call('python -m breathe.apidoc -p ofx_reference -o Reference/api ../doxygen_build/xml', shell=True)
@@ -64,7 +55,7 @@ if read_the_docs_build:
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [ "breathe", "sphinx_rtd_theme", "property_links" ]
+extensions = [ "breathe", "sphinx_rtd_theme" ]
 
 # breathe is an rst/sphinx extension to read and render doxygen xml output
 breathe_projects = {
