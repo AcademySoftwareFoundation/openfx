@@ -167,11 +167,11 @@ For plug-ins this can be one of three values...
 
 For hosts, this property takes three values...
 
--  0, which indicates thet the host can never guarantee sequential
+-  0, which indicates that the host can never guarantee sequential
    rendering,
--  1, which indicates thet the host can guarantee sequential rendering
+-  1, which indicates that the host can guarantee sequential rendering
    for plugins that request it,
--  2, which indicates thet the host can sometimes perform sequential
+-  2, which indicates that the host can sometimes perform sequential
    rendering.
 
 When rendering, a host will set the in args property on
@@ -272,7 +272,7 @@ tells the effect which field it should render, this can be one of...
 -  :c:macro:`kOfxImageFieldNone`
    - there are no fields to deal with, the image is full frame
 -  :c:macro:`kOfxImageFieldBoth`
-   - the imagery is fielded and both scan lines should be renderred
+   - the imagery is fielded and both scan lines should be rendered
 -  :c:macro:`kOfxImageFieldLower`
    - the lower field is being rendered (lines 0,2,4...)
 -  :c:macro:`kOfxImageFieldUpper`

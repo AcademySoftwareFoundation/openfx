@@ -122,7 +122,7 @@ namespace MyHost
     printf("\n");
 
     if(isQuestion) {
-      /// cant do this properly inour example, as we need to raise a dialogue to ask a question, so just return yes
+      /// can't do this properly in our example, as we need to raise a dialogue to ask a question, so just return yes
       return kOfxStatReplyYes;      
     }
     else {

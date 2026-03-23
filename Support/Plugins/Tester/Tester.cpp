@@ -1,7 +1,8 @@
 // Copyright OpenFX and contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#ifdef _WINDOWS
+#ifdef _WIN32
+#define NOMINMAX
 #include <windows.h>
 #endif
 
@@ -109,13 +110,13 @@ bool PositionInteract::draw(const OFX::DrawArgs &args)
 // overridden functions from OFX::Interact to do things
 bool PositionInteract::penMotion(const OFX::PenArgs &args)
 {
-  // figure the size of the box in cannonical coords
+  // figure the size of the box in canonical coords
   float dx = (float)(kBoxSize.x / args.pixelScale.x);
   float dy = (float)(kBoxSize.y / args.pixelScale.y);
 
   OfxPointD pos = getCanonicalPosition(args.time);
 
-  // pen position is in cannonical coords
+  // pen position is in canonical coords
   OfxPointD penPos = args.penPosition;
 
   switch(_state) 

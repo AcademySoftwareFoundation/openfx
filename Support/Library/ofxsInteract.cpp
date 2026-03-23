@@ -66,7 +66,7 @@ namespace OFX {
     throwSuiteStatusException(stat);
     _interactProperties.propSetHandle(propHandle);
 
-    // set othe instance data on the property handle to point to this interact
+    // set other instance data on the property handle to point to this interact
     _interactProperties.propSetPointer(kOfxPropInstanceData, (void *)this);
 
     // get the effect handle from this handle        
@@ -92,7 +92,7 @@ namespace OFX {
     return _interactProperties.propGetInt(kOfxInteractPropHasAlpha) != 0;
   }
 
-  /** @brief Returns the size of a real screen pixel under the interact's cannonical projection */
+  /** @brief Returns the size of a real screen pixel under the interact's canonical projection */
   OfxPointD 
     Interact::getPixelScale(void) const
   {
@@ -130,7 +130,7 @@ namespace OFX {
     throwSuiteStatusException(stat);
   }
 
-  /** @brief Swap a buffer in the case of a double bufferred interact, this is possibly a silly one */
+  /** @brief Swap a buffer in the case of a double buffered interact, this is possibly a silly one */
   void 
     Interact::swapBuffers(void) const
   {

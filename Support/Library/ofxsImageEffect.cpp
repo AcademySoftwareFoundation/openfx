@@ -1152,7 +1152,7 @@ namespace OFX {
     return v;
   }
 
-  /** @brief get the RoD for this clip in the cannonical coordinate system */
+  /** @brief get the RoD for this clip in the canonical coordinate system */
   OfxRectD Clip::getRegionOfDefinition(double t)
   {
     OfxRectD bounds;
@@ -1178,7 +1178,7 @@ namespace OFX {
     return new Image(imageHandle);
   }
 
-  /** @brief fetch an image, with a specific region in cannonical coordinates */
+  /** @brief fetch an image, with a specific region in canonical coordinates */
   Image *Clip::fetchImage(double t, const OfxRectD &bounds)
   {
     OfxPropertySetHandle imageHandle;
@@ -1310,13 +1310,13 @@ namespace OFX {
     return _effectProps.propGetInt(kOfxPropIsInteractive) != 0;
   }
 
-  /** @brief set the instance to be sequentially renderred, this should have been part of clip preferences! */
+  /** @brief set the instance to be sequentially rendered, this should have been part of clip preferences! */
   void ImageEffect::setSequentialRender(bool v)
   {
     _effectProps.propSetInt(kOfxImageEffectInstancePropSequentialRender, int(v));
   }
 
-  /** @brief Have we informed the host we want to be seqentially renderred ? */
+  /** @brief Have we informed the host we want to be seqentially rendered ? */
   bool ImageEffect::getSequentialRender(void) const
   {
     return _effectProps.propGetInt(kOfxImageEffectInstancePropSequentialRender) != 0;
@@ -1351,7 +1351,7 @@ namespace OFX {
   }
 #endif
 
-  /** @brief notify host that the internal data structures need syncing back to parameters for persistance and so on.  This is reset by the host after calling SyncPrivateData. */
+  /** @brief notify host that the internal data structures need syncing back to parameters for persistence and so on.  This is reset by the host after calling SyncPrivateData. */
   void ImageEffect::setParamSetNeedsSyncing()
   {
     _effectProps.propSetInt(kOfxPropParamSetNeedsSyncing, 1, false); // introduced in OFX 1.2
@@ -1506,7 +1506,7 @@ namespace OFX {
     // fa niente
   }
 
-  /** @brief The sync private data action, called when the effect needs to sync any private data to persistant parameters */
+  /** @brief The sync private data action, called when the effect needs to sync any private data to persistent parameters */
   void ImageEffect::syncPrivateData(void)
   {
     // fa niente
@@ -1747,7 +1747,7 @@ namespace OFX {
     }
   }
 
-  /** @brief Set whether the effect can be continously sampled. */
+  /** @brief Set whether the effect can be continuously sampled. */
   void ClipPreferencesSetter::setOutputHasContinousSamples(bool v)
   {
     doneSomething_ = true;

@@ -56,7 +56,7 @@ namespace OFX {
 
     static const Property::PropSpec hostStuffs[] = {
       { kOfxPropAPIVersion, Property::eInt, 0, false, "" },
-      { kOfxPropType, Property::eString, 1, false, "Host" },
+      { kOfxPropType, Property::eString, 1, false, kOfxTypeImageEffectHost },
       { kOfxPropName, Property::eString, 1, false, "UNKNOWN" },
       { kOfxPropLabel, Property::eString, 1, false, "UNKNOWN" },
       { kOfxPropVersion, Property::eInt, 0, false, "0" },
@@ -83,7 +83,7 @@ namespace OFX {
       _host.host = _properties.getHandle();
       _host.fetchSuite = OFX::Host::fetchSuite;
 
-      // record the host descriptor in the propert set
+      // record the host descriptor in the property set
       _properties.setPointerProperty(kOfxHostSupportHostPointer,this);
     }
 

@@ -110,7 +110,7 @@ describe in context call are...
     for more details on field and field rendering
 -  :c:macro:`kOfxImageEffectPropTemporalClipAccess`
    whether the effect wants to access images from the clip at times
-   other that the frame being renderred.
+   other that the frame being rendered.
 
 Plugins *must* indicate which pixel depths they can process by setting
 the

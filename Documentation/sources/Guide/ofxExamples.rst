@@ -29,7 +29,7 @@ OFX is actually several things. At the lowest level OFX is a generic
 ``C`` based plug-in architecture that can be used to define any kind of
 plug-in API. You could use this low level architecture to implement any
 API, however it was originally designed to host our visual effects image
-processing API. The basic architecture could be re-used to create other
+processing API. The basic architecture could be reused to create other
 higher level APIs such as a sound effects API, a 3D API and more.
 
 This guide describes the basic OFX plug-in architecture and the visual

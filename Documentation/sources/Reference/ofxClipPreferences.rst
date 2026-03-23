@@ -210,7 +210,7 @@ The default value of the output clip's fielding is host dependent, but
 in general,
 
 -  if any of the input clips are fielded, so will the output clip
--  the output clip may be fielded irregardless of the input clips (for
+-  the output clip may be fielded regardless of the input clips (for
    example, in a fielded project).
 
 If the host allows a plugin to specify the fielding of the output clip,

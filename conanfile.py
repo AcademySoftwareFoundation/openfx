@@ -39,7 +39,7 @@ class openfx(ConanFile):
 			self.requires("opencl-icd-loader/2023.12.14")
 			self.requires("opencl-headers/2023.12.14")
 		self.requires("opengl/system") # for OpenGL examples
-		self.requires("expat/2.4.8") # for HostSupport
+		self.requires("expat/2.7.1") # for HostSupport
 		self.requires("cimg/3.3.2") # to draw text into images
 		self.requires("spdlog/1.13.0") # for logging
 
@@ -51,9 +51,6 @@ class openfx(ConanFile):
 		deps.generate()
 
 		tc = CMakeToolchain(self)
-		if self.settings.os == "Windows":
-			tc.preprocessor_definitions["WINDOWS"] = 1
-			tc.preprocessor_definitions["NOMINMAX"] = 1
 		tc.generate()
 
 	def build(self):
@@ -85,9 +82,3 @@ class openfx(ConanFile):
 		self.cpp_info.components["Support"].libs = [i for i in libs if "OfxSupport" in i]
 		self.cpp_info.components["Support"].includedirs = ["Support/include"]
 		self.cpp_info.components["Support"].requires = ["opengl::opengl"]
-
-		if self.settings.os == "Windows":
-			win_defines = ["WINDOWS", "NOMINMAX"]
-			self.cpp_info.components["Api"].defines = win_defines
-			self.cpp_info.components["HostSupport"].defines = win_defines
-			self.cpp_info.components["Support"].defines = win_defines

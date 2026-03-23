@@ -101,7 +101,7 @@ namespace OFX {
     , _paramType(type)
     , _paramProps(props)
   {
-    // validate the properities on this descriptor
+    // validate the properties on this descriptor
     if(type != eDummyParam)
       OFX::Validation::validateParameterProperties(type, props, true); 
   }
@@ -201,7 +201,7 @@ namespace OFX {
     _paramProps.propSetInt(kOfxParamPropAnimates, v);
   }
 
-  /** @brief set whether the param is persistant, defaults to true */
+  /** @brief set whether the param is persistent, defaults to true */
   void ValueParamDescriptor::setIsPersistant(bool v)
   {
     _paramProps.propSetInt(kOfxParamPropPersistant, v);
@@ -1050,7 +1050,7 @@ namespace OFX {
     }
   }
 
-  /** @brief estabilishes the order of page params. Do it by calling it in turn for each page */
+  /** @brief establishes the order of page params. Do it by calling it in turn for each page */
   void 
     ParamSetDescriptor::setPageParamOrder(PageParamDescriptor &p)
   {
@@ -1391,21 +1391,21 @@ namespace OFX {
     return _paramProps.propGetInt(kOfxParamPropIsAutoKeying) != 0;
   }
 
-  /** @brief is the param persistant */
+  /** @brief is the param persistent */
   bool 
     ValueParam::getIsPersistant(void) const
   {
     return _paramProps.propGetInt(kOfxParamPropPersistant) != 0;
   }
 
-  /** @brief Get's whether the value of the param is significant (ie: affects the rendered image) */
+  /** @brief Gets whether the value of the param is significant (ie: affects the rendered image) */
   bool 
     ValueParam::getEvaluateOnChange(void) const
   {
     return _paramProps.propGetInt(kOfxParamPropEvaluateOnChange) != 0;
   }
 
-  /** @brief Get's whether the value of the param is significant (ie: affects the rendered image) */
+  /** @brief Gets whether the value of the param is significant (ie: affects the rendered image) */
   CacheInvalidationEnum 
     ValueParam::getCacheInvalidation(void) const
   {
@@ -2775,7 +2775,7 @@ namespace OFX {
 
       @returns
       - ::kOfxStatOK            - all was fine
-      - ::kOfxStatErrBadHandle  - if the paramter handle was invalid
+      - ::kOfxStatErrBadHandle  - if the parameter handle was invalid
       - ::kOfxStatErrUnknown    - if the type is unknown
 
       This modifies an existing control point. Note that by changing key, the order of the

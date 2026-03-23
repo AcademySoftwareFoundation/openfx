@@ -56,7 +56,7 @@ Release Notes
 	   Still to be done,
 	   	 decent set of exceptions and exception specifiers on each function,
 		 skin the parameter custom interact,
-		 parameter integration and differentiation functions needed on 2D and 3D doubles and the colour classses,
+		 parameter integration and differentiation functions needed on 2D and 3D doubles and the colour classes,
 		 parameters should return their values in a struct, as well as by a reference arg (some do already),
 		 write examples showing custom param and param animation,
 		 write an example showing use of external resource files,
@@ -66,7 +66,7 @@ Release Notes
 
 	   Implemented most of the basic classes, need to do more work on clip instances and image effect instances.
            Library builds fine on OSX 10.3, not fully tested yet.
-           No where near finsihed yet,
+           No where near finished yet,
            	   Need to finish off the actions.
                    Need to do a cleaner set of exception classes.
                    Need to test somewhat more (hey they do compile though!).

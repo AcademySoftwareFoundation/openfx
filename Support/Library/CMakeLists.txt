@@ -6,6 +6,7 @@ add_library(OfxSupport STATIC
 	${OFX_SUPPORT_HEADER_FILES}
 	${OFX_SUPPORT_LIBRARY_FILES})
 
+target_compile_features(OfxSupport PUBLIC cxx_std_17)
 set_target_properties(OfxSupport PROPERTIES LINKER_LANGUAGE CXX)
 if(NOT MSVC)
 	set_target_properties(OfxSupport PROPERTIES COMPILE_FLAGS "-fPIC")

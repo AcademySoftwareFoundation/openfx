@@ -43,21 +43,13 @@ Properties Reference
 
 .. doxygendefine:: kOfxImageEffectPluginRenderThreadSafety
 
+.. doxygendefine:: kOfxImageEffectPropCPURenderSupported
+
 .. doxygendefine:: kOfxImageEffectPropClipPreferencesSlaveParam
 
 .. doxygendefine:: kOfxImageEffectPropColourManagementAvailableConfigs
 
-.. doxygendefine:: kOfxImageEffectColourManagementBasic
-
-.. doxygendefine:: kOfxImageEffectColourManagementConfig
-
-.. doxygendefine:: kOfxImageEffectColourManagementCore
-
-.. doxygendefine:: kOfxImageEffectColourManagementFull
-
-.. doxygendefine:: kOfxImageEffectColourManagementNone
-
-.. doxygendefine:: kOfxImageEffectColourManagementOCIO
+.. doxygendefine:: kOfxImageEffectPropColourManagementConfig
 
 .. doxygendefine:: kOfxImageEffectPropColourManagementStyle
 
@@ -92,6 +84,8 @@ Properties Reference
 .. doxygendefine:: kOfxImageEffectPropMetalEnabled
 
 .. doxygendefine:: kOfxImageEffectPropMetalRenderSupported
+
+.. doxygendefine:: kOfxImageEffectPropNoSpatialAwareness
 
 .. doxygendefine:: kOfxImageEffectPropOCIOConfig
 
@@ -160,6 +154,8 @@ Properties Reference
 .. doxygendefine:: kOfxImageEffectPropSupportsTiles
 
 .. doxygendefine:: kOfxImageEffectPropTemporalClipAccess
+
+.. doxygendefine:: kOfxImageEffectPropThumbnailRender
 
 .. doxygendefine:: kOfxImageEffectPropUnmappedFrameRange
 
