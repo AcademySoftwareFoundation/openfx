@@ -47,6 +47,8 @@ None
 
 ## Detailed List of Changes
 
+- Add `kOfxImageEffectPropNoSpatialAwareness`. Allows the host and plugin to coordinate a render that ensures no spatial changes to the image.
+- Add `kOfxImageEffectPropUniqueIdentifier`. Allows the plugin to differentiate its instances (e.g. for stably seeding a random number generator per-instance).
 - Add `kOfxImageEffectPropCPURenderSupported` (issue #212) - Property to indicate CPU rendering support.
 - Add `kOfxImageEffectPropThumbnailRender` (issue #193) - Property for thumbnail rendering mode.
 

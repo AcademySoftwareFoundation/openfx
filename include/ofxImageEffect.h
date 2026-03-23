@@ -593,6 +593,19 @@ This value will be the same for all instances of a plugin.
 */
 #define kOfxImageEffectPropPluginHandle "OfxImageEffectPropPluginHandle"
 
+/** @brief Uniquely identifies a plugin instance.
+
+   - Type - ASCII string X 1
+   - Property Set - plugin instance (read only)
+
+This is host set and allows a plugin to differentiate between instances of itself just as a host's end user would.
+
+This can be useful for seeding a random number generator without requiring end user intervention.
+
+The host should make sure that this value is peristent across sessions and that the value is truly unique.
+*/
+#define kOfxImageEffectPropUniqueIdentifier "OfxImageEffectPropUniqueIdentifier"
+
 /** @brief Indicates if a host is a background render.
 
    - Type - int X 1
