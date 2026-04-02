@@ -9,7 +9,7 @@ The OpenFX documentation system combines several tools:
 1. **Doxygen** - Parses C/C++ header files in the `include` directory to extract API documentation from comments
 2. **Breathe** - A Sphinx extension that bridges Doxygen XML output with Sphinx
 3. **Sphinx** - Processes ReStructured Text (.rst) files and Doxygen output to generate the final HTML documentation
-4. **Python scripts** - Custom scripts like `genPropertiesReference.py` extract property definitions from source files
+4. **Python scripts** - `scripts/gen-props.py` generates C++ metadata headers; `scripts/gen-props-doc.py` generates RST reference pages from inline metadata in the headers
 
 The documentation is organized into:
 - **Reference manual** - API documentation generated from Doxygen comments in the header files
@@ -43,8 +43,8 @@ cd Documentation
 
 This script performs the following steps:
 
-1. Generates property references using `genPropertiesReference.py`
-2. Builds Doxygen documentation from the header files
+1. Generates property and property-set RST reference pages from inline `@propdef`/`@propset` metadata using `scripts/gen-props-doc.py`
+2. Builds Doxygen documentation from the header files (using `include/doxy-filter.sh` to strip metadata blocks)
 3. Uses Breathe to collect Doxygen API docs
 4. Builds the final HTML documentation with Sphinx
 
@@ -72,10 +72,10 @@ Doxygen is used to document C/C++ code in the source and headers. The main Doxyg
   ```c
   /**
    * \brief Brief description
-   * 
+   *
    * Detailed description that can span
    * multiple lines
-   * 
+   *
    * \param paramName Description of parameter
    * \return Description of return value
    */
@@ -96,7 +96,7 @@ RST files are used for the prose documentation in the `/Documentation/sources` d
   ```rst
   Section Title
   ============
-  
+
   Subsection Title
   ---------------
   ```
@@ -104,17 +104,17 @@ RST files are used for the prose documentation in the `/Documentation/sources` d
 * **Internal Links** - Create references between sections
   ```rst
   .. _target-name:
-  
+
   Section Title
   ============
-  
+
   See :ref:`target-name` for more information.
   ```
 
 * **Code Blocks** - Display code examples
   ```rst
   .. code-block:: c
-     
+
      #define kOfxImageEffectPluginRenderThreadSafety "OfxImageEffectPluginRenderThreadSafety"
   ```
 
@@ -128,9 +128,9 @@ RST files are used for the prose documentation in the `/Documentation/sources` d
 * **Doxygen Integration** - Include Doxygen-documented items
   ```rst
   .. doxygendefine:: kOfxImageEffectPropSupportsMultiResolution
-  
+
   .. doxygenfunction:: OfxGetPropertySet
-  
+
   .. doxygenstruct:: OfxRectD
      :members:
   ```
@@ -161,14 +161,138 @@ The Breathe extension bridges Doxygen and Sphinx, enabling:
 2. **Adding New Documentation**
    - For new API elements: Add Doxygen comments to header files
    - For new concepts/guides: Create new RST files in `sources/Guide`
-   - For property references: They're automatically generated from headers
+   - For property references: They're automatically generated from inline metadata in headers (see below)
 
-3. **Property Documentation**
-   - Property definitions are extracted automatically by `genPropertiesReference.py`
-   - Format should be: `#define kOfxPropName "OfxPropName"`
-   - Add Doxygen comments above property definitions
-
-4. **Testing Changes**
+3. **Testing Changes**
    - Always build documentation locally before submitting changes
    - Check for warning messages during the build process
    - Review the HTML output to ensure proper formatting and cross-references
+
+## Property and Action Metadata
+
+Properties, property sets, and actions are documented using inline YAML
+metadata blocks embedded in doxygen comments in the C header files
+(`include/ofx*.h`). These blocks are parsed by `scripts/gen-props.py`
+(to generate C++ metadata headers) and `scripts/gen-props-doc.py` (to
+generate RST reference pages). A doxygen input filter
+(`include/doxy-filter.sh`) strips them from the doxygen output so they
+don't appear in the API reference HTML.
+
+### `@propdef` — Property Definitions
+
+A `@propdef` block goes inside the `/** ... */` doxygen comment for a
+property `#define`. It must appear at the **end** of the comment, just
+before the closing `*/`. Everything before `@propdef` is treated as
+the doxygen documentation; everything after it is parsed as YAML.
+
+```c
+/** @brief Unique name of the plug-in.
+
+    - Type - C string X 1
+    - Property Set - host descriptor (read only)
+    - Valid Values - the unique name of the plug-in
+
+    @propdef
+    type: string
+    dimension: 1
+*/
+#define kOfxPropName "OfxPropName"
+```
+
+Supported YAML fields:
+
+| Field         | Description                                          | Example                              |
+|---------------|------------------------------------------------------|--------------------------------------|
+| `type`        | Property type                                        | `string`, `int`, `double`, `pointer`, `bool`, `enum` |
+| `dimension`   | Number of values (integer or `N`)                    | `1`, `2`, `N`                        |
+| `values`      | List of valid enum/string values                     | `["false", "true", "needed"]`        |
+| `default`     | Default value                                        | `"false"`, `0`                       |
+| `introduced`  | Version when this property was added                 | `"1.4"`                              |
+| `deprecated`  | Version when this property was deprecated            | `"1.4"`                              |
+| `cname`       | Override the C macro name (rare, for misnamed props) | `kOfxImageEffectFrameVarying`        |
+
+### `@propset` — Property Set Definitions
+
+A `@propset` block defines which properties belong to a named property
+set (e.g., the set of properties on an image effect descriptor). These
+are standalone `/** ... */` comments, not attached to a `#define`.
+
+```c
+/** @propset EffectDescriptor
+    write: plugin
+    props:
+      - OfxPropLabel
+      - OfxPropShortLabel
+      - OfxPluginPropFilePath | write=host
+      - OfxImageEffectPropCPURenderSupported | host_optional=true
+*/
+```
+
+- `write:` sets the default write permission (`plugin` or `host`)
+- Each property in `props:` can have pipe-separated modifiers:
+  - `| write=host` — override the write permission for this property
+  - `| host_optional=true` — mark as optional for hosts to support
+
+### `@propsetdef` — Reusable Property Lists
+
+When multiple property sets share a common subset of properties, use
+`@propsetdef` to define the shared list, then reference it with `_REF`:
+
+```c
+/** @propsetdef ParamsCommon
+    - OfxPropType
+    - OfxPropName
+    - OfxPropLabel
+*/
+
+/** @propset IntParam
+    write: plugin
+    props:
+      - ParamsCommon_REF
+      - OfxParamPropDefault
+*/
+```
+
+`ParamsCommon_REF` expands to all the properties listed in the
+`ParamsCommon` `@propsetdef` block.
+
+### `@actiondef` — Action Argument Definitions
+
+An `@actiondef` block lists the properties passed in `inArgs` and
+`outArgs` for an action. Like `@propdef`, it goes at the **end** of
+the doxygen comment, just before `*/`.
+
+```c
+/** @brief Called when something in the instance is changed.
+
+    @param handle handle to the plug-in instance
+    @param inArgs has the following properties
+        - \ref kOfxPropType the type of the thing that changed
+        - \ref kOfxPropName the name of the thing that changed
+        - \ref kOfxPropChangeReason what triggered the change
+
+    @actiondef
+    inArgs:
+      - OfxPropType
+      - OfxPropName
+      - OfxPropChangeReason
+      - OfxPropTime
+      - OfxImageEffectPropRenderScale
+    outArgs:
+*/
+#define kOfxActionInstanceChanged "OfxActionInstanceChanged"
+```
+
+Property names in `inArgs`/`outArgs` use the string name (without the
+`k` prefix), matching the `@propdef` key. Use an empty value or `[]`
+for actions with no args on that side.
+
+### Validation
+
+Run `scripts/gen-props.py` to validate the metadata. It checks that:
+
+- Every property with a `@propdef` is referenced in at least one
+  `@propset` or `@actiondef`
+- All property names referenced in `@propset` and `@actiondef` blocks
+  have corresponding `@propdef` definitions
+- No duplicate property or property set names exist
