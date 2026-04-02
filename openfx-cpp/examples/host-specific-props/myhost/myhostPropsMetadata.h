@@ -57,7 +57,7 @@ struct PropTraits<PropId::MyHostViewerProcess> {
   using type = const char*;
   static constexpr bool is_multitype = false;
   static constexpr int dimension = 1;
-  static constexpr const openfx::PropDef& def = prop_defs[static_cast<int>(PropId::MyHostViewerProcess)];
+  static constexpr const openfx::PropDef& def = prop_defs[static_cast<size_t>(PropId::MyHostViewerProcess)];
 };
 
 template<>
@@ -65,7 +65,7 @@ struct PropTraits<PropId::MyHostColorConfig> {
   using type = const char*;
   static constexpr bool is_multitype = false;
   static constexpr int dimension = 1;
-  static constexpr const openfx::PropDef& def = prop_defs[static_cast<int>(PropId::MyHostColorConfig)];
+  static constexpr const openfx::PropDef& def = prop_defs[static_cast<size_t>(PropId::MyHostColorConfig)];
 };
 
 template<>
@@ -73,7 +73,7 @@ struct PropTraits<PropId::MyHostProjectPath> {
   using type = const char*;
   static constexpr bool is_multitype = false;
   static constexpr int dimension = 1;
-  static constexpr const openfx::PropDef& def = prop_defs[static_cast<int>(PropId::MyHostProjectPath)];
+  static constexpr const openfx::PropDef& def = prop_defs[static_cast<size_t>(PropId::MyHostProjectPath)];
 };
 
 template<>
@@ -81,7 +81,7 @@ struct PropTraits<PropId::MyHostNodeName> {
   using type = const char*;
   static constexpr bool is_multitype = false;
   static constexpr int dimension = 1;
-  static constexpr const openfx::PropDef& def = prop_defs[static_cast<int>(PropId::MyHostNodeName)];
+  static constexpr const openfx::PropDef& def = prop_defs[static_cast<size_t>(PropId::MyHostNodeName)];
 };
 
 template<>
@@ -89,7 +89,7 @@ struct PropTraits<PropId::MyHostNodeColor> {
   using type = int;
   static constexpr bool is_multitype = false;
   static constexpr int dimension = 3;
-  static constexpr const openfx::PropDef& def = prop_defs[static_cast<int>(PropId::MyHostNodeColor)];
+  static constexpr const openfx::PropDef& def = prop_defs[static_cast<size_t>(PropId::MyHostNodeColor)];
 };
 
 }  // namespace properties

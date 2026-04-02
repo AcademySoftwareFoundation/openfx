@@ -124,31 +124,41 @@ def generate_property_documentation(props_metadata, props_by_set, outfile_path):
         outfile.write("This reference is auto-generated from property definitions in the OpenFX source code.\n")
         outfile.write("It provides a structured view of properties with their types, dimensions, and where they are used.\n")
         outfile.write("For each property, a link to the detailed Doxygen documentation is provided when available.\n\n")
+        outfile.write("For each property, the **Used in Property Sets** field shows which property sets\n")
+        outfile.write("include it, along with which side (host or plugin) is responsible for writing\n")
+        outfile.write("the property in that set. The other side has read-only access.\n\n")
 
-        # Create a mapping from property to the sets that use it
+        # Create a mapping from property to the sets that use it,
+        # including per-property read/write info.
+        # Each entry is a list of (set_name, write_side) tuples.
         prop_to_sets = defaultdict(list)
         for pset in props_by_set:
-            for prop in props_for_set(pset, props_by_set):
-                prop_to_sets[prop].append(pset)
+            for prop_info in props_for_set(pset, props_by_set, name_only=False):
+                prop_name = prop_info["name"]
+                write_side = prop_info.get("write", "")
+                prop_to_sets[prop_name].append((pset, write_side))
 
         # Process properties by type
+        # Note: OFX has no native boolean type at the C API level.
+        # Properties marked as 'bool' are int properties with 0/1 values;
+        # they are grouped under "Integer (Boolean)" in the docs.
         types = {
             'int': 'Integer',
             'double': 'Double',
             'string': 'String',
-            'bool': 'Boolean',
+            'bool': 'Integer (Boolean)',
             'enum': 'Enumeration',
             'pointer': 'Pointer'
         }
 
         # Group properties by type
         for type_key, type_name in sorted(types.items()):
-            type_props = [p for p in props_metadata if props_metadata[p].get('type') == type_key or 
+            type_props = [p for p in props_metadata if props_metadata[p].get('type') == type_key or
                            (isinstance(props_metadata[p].get('type'), list) and type_key in props_metadata[p].get('type'))]
-            
+
             if not type_props:
                 continue
-                
+
             outfile.write(f"\n{type_name} Properties\n{'-' * len(type_name) + '-----------'}\n\n")
             
             for prop in sorted(type_props):
@@ -177,10 +187,16 @@ def generate_property_documentation(props_metadata, props_by_set, outfile_path):
                 else:
                     outfile.write(f"- **Dimension**: {dim}\n")
                 
-                # Write property sets where this is used
+                # Write property sets where this is used, with write-side info
                 if prop in prop_to_sets:
-                    sets_str = ', '.join([f':ref:`{s} <propset_{s}>`' for s in sorted(prop_to_sets[prop])])
-                    outfile.write(f"- **Used in Property Sets**: {sets_str}\n")
+                    set_parts = []
+                    for set_name, write_side in sorted(prop_to_sets[prop]):
+                        ref = f':ref:`{set_name} <propset_{set_name}>`'
+                        if write_side:
+                            set_parts.append(f'{ref} ({write_side})')
+                        else:
+                            set_parts.append(ref)
+                    outfile.write(f"- **Used in Property Sets**: {', '.join(set_parts)}\n")
                 
                 # Write valid values for enums
                 if metadata.get('type') == 'enum' and metadata.get('values'):

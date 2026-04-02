@@ -6,9 +6,13 @@ This reference is auto-generated from property definitions in the OpenFX source 
 It provides a structured view of properties with their types, dimensions, and where they are used.
 For each property, a link to the detailed Doxygen documentation is provided when available.
 
+For each property, the **Used in Property Sets** field shows which property sets
+include it, along with which side (host or plugin) is responsible for writing
+the property in that set. The other side has read-only access.
 
-Boolean Properties
-------------------
+
+Integer (Boolean) Properties
+----------------------------
 
 .. _prop_OfxImageClipPropConnected:
 
@@ -18,7 +22,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageClipPropConnected`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>`
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageClipPropConnected`.
 
 .. _prop_OfxImageClipPropContinuousSamples:
@@ -29,7 +33,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageClipPropContinuousSamples`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>`
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageClipPropContinuousSamples`.
 
 .. _prop_OfxImageClipPropIsMask:
@@ -40,7 +44,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageClipPropIsMask`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>`, :ref:`ClipInstance <propset_ClipInstance>`
+- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>` (plugin), :ref:`ClipInstance <propset_ClipInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageClipPropIsMask`.
 
 .. _prop_OfxImageClipPropOptional:
@@ -51,7 +55,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageClipPropOptional`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>`, :ref:`ClipInstance <propset_ClipInstance>`
+- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>` (plugin), :ref:`ClipInstance <propset_ClipInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageClipPropOptional`.
 
 .. _prop_OfxImageEffectFrameVarying:
@@ -72,7 +76,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageEffectHostPropIsBackground`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectHostPropIsBackground`.
 
 .. _prop_OfxImageEffectInstancePropSequentialRender:
@@ -83,7 +87,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageEffectInstancePropSequentialRender`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>` (host), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectInstancePropSequentialRender`.
 
 .. _prop_OfxImageEffectPluginPropFieldRenderTwiceAlways:
@@ -94,7 +98,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageEffectPluginPropFieldRenderTwiceAlways`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPluginPropFieldRenderTwiceAlways`.
 
 .. _prop_OfxImageEffectPluginPropHostFrameThreading:
@@ -105,7 +109,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageEffectPluginPropHostFrameThreading`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPluginPropHostFrameThreading`.
 
 .. _prop_OfxImageEffectPluginPropSingleInstance:
@@ -116,7 +120,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageEffectPluginPropSingleInstance`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPluginPropSingleInstance`.
 
 .. _prop_OfxImageEffectPropCudaEnabled:
@@ -169,7 +173,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropSupportsMultipleClipDepths`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropSupportsMultipleClipDepths`.
 
 .. _prop_OfxImageEffectPropOpenCLEnabled:
@@ -201,7 +205,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropRenderQualityDraft`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropRenderQualityDraft`.
 
 .. _prop_OfxImageEffectPropSequentialRenderStatus:
@@ -222,7 +226,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropSetableFielding`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropSetableFielding`.
 
 .. _prop_OfxImageEffectPropSetableFrameRate:
@@ -233,7 +237,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropSetableFrameRate`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropSetableFrameRate`.
 
 .. _prop_OfxImageEffectPropSupportsMultiResolution:
@@ -244,7 +248,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropSupportsMultiResolution`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropSupportsMultiResolution`.
 
 .. _prop_OfxImageEffectPropSupportsMultipleClipPARs:
@@ -255,7 +259,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropSupportsMultipleClipPARs`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropSupportsMultipleClipPARs`.
 
 .. _prop_OfxImageEffectPropSupportsOverlays:
@@ -266,7 +270,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropSupportsOverlays`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropSupportsOverlays`.
 
 .. _prop_OfxImageEffectPropSupportsTiles:
@@ -277,7 +281,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropSupportsTiles`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>`, :ref:`ClipInstance <propset_ClipInstance>`, :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`EffectInstance <propset_EffectInstance>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>` (plugin), :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`EffectInstance <propset_EffectInstance>` (host), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropSupportsTiles`.
 
 .. _prop_OfxImageEffectPropTemporalClipAccess:
@@ -288,7 +292,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropTemporalClipAccess`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>`, :ref:`ClipInstance <propset_ClipInstance>`, :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>` (plugin), :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropTemporalClipAccess`.
 
 .. _prop_OfxInteractPropHasAlpha:
@@ -299,7 +303,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxInteractPropHasAlpha`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`InteractDescriptor <propset_InteractDescriptor>`, :ref:`InteractInstance <propset_InteractInstance>`
+- **Used in Property Sets**: :ref:`InteractDescriptor <propset_InteractDescriptor>` (host), :ref:`InteractInstance <propset_InteractInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxInteractPropHasAlpha`.
 
 .. _prop_OfxParamHostPropSupportsBooleanAnimation:
@@ -310,7 +314,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamHostPropSupportsBooleanAnimation`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamHostPropSupportsBooleanAnimation`.
 
 .. _prop_OfxParamHostPropSupportsChoiceAnimation:
@@ -321,7 +325,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamHostPropSupportsChoiceAnimation`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamHostPropSupportsChoiceAnimation`.
 
 .. _prop_OfxParamHostPropSupportsCustomAnimation:
@@ -332,7 +336,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamHostPropSupportsCustomAnimation`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamHostPropSupportsCustomAnimation`.
 
 .. _prop_OfxParamHostPropSupportsCustomInteract:
@@ -343,7 +347,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamHostPropSupportsCustomInteract`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamHostPropSupportsCustomInteract`.
 
 .. _prop_OfxParamHostPropSupportsParametricAnimation:
@@ -354,7 +358,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamHostPropSupportsParametricAnimation`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamHostPropSupportsParametricAnimation`.
 
 .. _prop_OfxParamHostPropSupportsStrChoice:
@@ -365,7 +369,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamHostPropSupportsStrChoice`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Introduced in**: version 1.5
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamHostPropSupportsStrChoice`.
 
@@ -377,7 +381,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamHostPropSupportsStrChoiceAnimation`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Introduced in**: version 1.5
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamHostPropSupportsStrChoiceAnimation`.
 
@@ -389,7 +393,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamHostPropSupportsStringAnimation`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamHostPropSupportsStringAnimation`.
 
 .. _prop_OfxParamPropAnimates:
@@ -400,7 +404,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamPropAnimates`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropAnimates`.
 
 .. _prop_OfxParamPropCanUndo:
@@ -411,7 +415,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamPropCanUndo`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropCanUndo`.
 
 .. _prop_OfxParamPropChoiceEnum:
@@ -422,7 +426,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamPropChoiceEnum`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamsStrChoice <propset_ParamsStrChoice>`
+- **Used in Property Sets**: :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropChoiceEnum`.
 
 .. _prop_OfxParamPropEnabled:
@@ -433,7 +437,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamPropEnabled`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsGroup <propset_ParamsGroup>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsPage <propset_ParamsPage>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropEnabled`.
 
 .. _prop_OfxParamPropEvaluateOnChange:
@@ -444,7 +448,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamPropEvaluateOnChange`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropEvaluateOnChange`.
 
 .. _prop_OfxParamPropGroupOpen:
@@ -455,7 +459,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamPropGroupOpen`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamsGroup <propset_ParamsGroup>`
+- **Used in Property Sets**: :ref:`ParamsGroup <propset_ParamsGroup>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropGroupOpen`.
 
 .. _prop_OfxParamPropHasHostOverlayHandle:
@@ -466,7 +470,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamPropHasHostOverlayHandle`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropHasHostOverlayHandle`.
 
 .. _prop_OfxParamPropIsAnimating:
@@ -477,7 +481,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamPropIsAnimating`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (host), :ref:`ParamsByte <propset_ParamsByte>` (host), :ref:`ParamsChoice <propset_ParamsChoice>` (host), :ref:`ParamsCustom <propset_ParamsCustom>` (host), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (host), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (host), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (host), :ref:`ParamsParametric <propset_ParamsParametric>` (host), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (host), :ref:`ParamsString <propset_ParamsString>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropIsAnimating`.
 
 .. _prop_OfxParamPropIsAutoKeying:
@@ -488,7 +492,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamPropIsAutoKeying`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (host), :ref:`ParamsByte <propset_ParamsByte>` (host), :ref:`ParamsChoice <propset_ParamsChoice>` (host), :ref:`ParamsCustom <propset_ParamsCustom>` (host), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (host), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (host), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (host), :ref:`ParamsParametric <propset_ParamsParametric>` (host), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (host), :ref:`ParamsString <propset_ParamsString>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropIsAutoKeying`.
 
 .. _prop_OfxParamPropPersistant:
@@ -499,7 +503,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamPropPersistant`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropPersistant`.
 
 .. _prop_OfxParamPropPluginMayWrite:
@@ -510,7 +514,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamPropPluginMayWrite`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Deprecated in**: version 1.4
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropPluginMayWrite`.
 
@@ -522,7 +526,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamPropSecret`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsGroup <propset_ParamsGroup>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsPage <propset_ParamsPage>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropSecret`.
 
 .. _prop_OfxParamPropShowTimeMarker:
@@ -533,7 +537,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamPropShowTimeMarker`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropShowTimeMarker`.
 
 .. _prop_OfxParamPropStringFilePathExists:
@@ -544,7 +548,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamPropStringFilePathExists`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropStringFilePathExists`.
 
 .. _prop_OfxPropIsInteractive:
@@ -555,7 +559,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxPropIsInteractive`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>`
+- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropIsInteractive`.
 
 .. _prop_OfxPropParamSetNeedsSyncing:
@@ -566,7 +570,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxPropParamSetNeedsSyncing`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParameterSet <propset_ParameterSet>`
+- **Used in Property Sets**: :ref:`ParameterSet <propset_ParameterSet>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropParamSetNeedsSyncing`.
 
 .. _prop_kOfxParamPropUseHostOverlayHandle:
@@ -577,7 +581,7 @@ Boolean Properties
 - **C #define**: :c:macro:`kOfxParamPropUseHostOverlayHandle`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropUseHostOverlayHandle`.
 
 
@@ -592,7 +596,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxImageEffectInstancePropEffectDuration`
 - **Type**: double
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>`
+- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectInstancePropEffectDuration`.
 
 .. _prop_OfxImageEffectPropFrameRange:
@@ -603,7 +607,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropFrameRange`
 - **Type**: double
 - **Dimension**: 2
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>`
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropFrameRange`.
 
 .. _prop_OfxImageEffectPropFrameRate:
@@ -614,7 +618,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropFrameRate`
 - **Type**: double
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>`, :ref:`EffectInstance <propset_EffectInstance>`
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`EffectInstance <propset_EffectInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropFrameRate`.
 
 .. _prop_OfxImageEffectPropFrameStep:
@@ -635,7 +639,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropProjectPixelAspectRatio`
 - **Type**: double
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>`
+- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropProjectPixelAspectRatio`.
 
 .. _prop_OfxImageEffectPropProjectExtent:
@@ -646,7 +650,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropProjectExtent`
 - **Type**: double
 - **Dimension**: 2
-- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>`
+- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropProjectExtent`.
 
 .. _prop_OfxImageEffectPropProjectOffset:
@@ -657,7 +661,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropProjectOffset`
 - **Type**: double
 - **Dimension**: 2
-- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>`
+- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropProjectOffset`.
 
 .. _prop_OfxImageEffectPropProjectSize:
@@ -668,7 +672,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropProjectSize`
 - **Type**: double
 - **Dimension**: 2
-- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>`
+- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropProjectSize`.
 
 .. _prop_OfxImageEffectPropRegionOfDefinition:
@@ -699,7 +703,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropRenderScale`
 - **Type**: double
 - **Dimension**: 2
-- **Used in Property Sets**: :ref:`Image <propset_Image>`
+- **Used in Property Sets**: :ref:`Image <propset_Image>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropRenderScale`.
 
 .. _prop_OfxImageEffectPropUnmappedFrameRange:
@@ -710,7 +714,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropUnmappedFrameRange`
 - **Type**: double
 - **Dimension**: 2
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>`
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropUnmappedFrameRange`.
 
 .. _prop_OfxImageEffectPropUnmappedFrameRate:
@@ -721,7 +725,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropUnmappedFrameRate`
 - **Type**: double
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>`
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropUnmappedFrameRate`.
 
 .. _prop_OfxImagePropPixelAspectRatio:
@@ -732,7 +736,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxImagePropPixelAspectRatio`
 - **Type**: double
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>`, :ref:`Image <propset_Image>`
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`Image <propset_Image>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImagePropPixelAspectRatio`.
 
 .. _prop_OfxInteractPropBackgroundColour:
@@ -743,7 +747,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxInteractPropBackgroundColour`
 - **Type**: double
 - **Dimension**: 3
-- **Used in Property Sets**: :ref:`InteractInstance <propset_InteractInstance>`
+- **Used in Property Sets**: :ref:`InteractInstance <propset_InteractInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxInteractPropBackgroundColour`.
 
 .. _prop_OfxInteractPropPenPosition:
@@ -774,7 +778,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxInteractPropPixelScale`
 - **Type**: double
 - **Dimension**: 2
-- **Used in Property Sets**: :ref:`InteractInstance <propset_InteractInstance>`
+- **Used in Property Sets**: :ref:`InteractInstance <propset_InteractInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxInteractPropPixelScale`.
 
 .. _prop_OfxInteractPropSuggestedColour:
@@ -785,7 +789,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxInteractPropSuggestedColour`
 - **Type**: double
 - **Dimension**: 3
-- **Used in Property Sets**: :ref:`InteractInstance <propset_InteractInstance>`
+- **Used in Property Sets**: :ref:`InteractInstance <propset_InteractInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxInteractPropSuggestedColour`.
 
 .. _prop_OfxParamPropDefault:
@@ -796,7 +800,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxParamPropDefault`
 - **Type**: Multiple types: int, double, string, pointer
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDefault`.
 
 .. _prop_OfxParamPropDisplayMax:
@@ -807,7 +811,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxParamPropDisplayMax`
 - **Type**: Multiple types: int, double
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDisplayMax`.
 
 .. _prop_OfxParamPropDisplayMin:
@@ -818,7 +822,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxParamPropDisplayMin`
 - **Type**: Multiple types: int, double
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDisplayMin`.
 
 .. _prop_OfxParamPropIncrement:
@@ -829,7 +833,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxParamPropIncrement`
 - **Type**: double
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropIncrement`.
 
 .. _prop_OfxParamPropInteractMinimumSize:
@@ -840,7 +844,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxParamPropInteractMinimumSize`
 - **Type**: double
 - **Dimension**: 2
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropInteractMinimumSize`.
 
 .. _prop_OfxParamPropInteractSize:
@@ -851,7 +855,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxParamPropInteractSize`
 - **Type**: double
 - **Dimension**: 2
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropInteractSize`.
 
 .. _prop_OfxParamPropInteractSizeAspect:
@@ -862,7 +866,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxParamPropInteractSizeAspect`
 - **Type**: double
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropInteractSizeAspect`.
 
 .. _prop_OfxParamPropInterpolationAmount:
@@ -893,7 +897,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxParamPropMax`
 - **Type**: Multiple types: int, double
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropMax`.
 
 .. _prop_OfxParamPropMin:
@@ -904,7 +908,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxParamPropMin`
 - **Type**: Multiple types: int, double
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropMin`.
 
 .. _prop_OfxParamPropParametricRange:
@@ -915,7 +919,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxParamPropParametricRange`
 - **Type**: double
 - **Dimension**: 2
-- **Used in Property Sets**: :ref:`ParamsParametric <propset_ParamsParametric>`
+- **Used in Property Sets**: :ref:`ParamsParametric <propset_ParamsParametric>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropParametricRange`.
 
 .. _prop_OfxParamPropParametricUIColour:
@@ -926,7 +930,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxParamPropParametricUIColour`
 - **Type**: double
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamsParametric <propset_ParamsParametric>`
+- **Used in Property Sets**: :ref:`ParamsParametric <propset_ParamsParametric>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropParametricUIColour`.
 
 .. _prop_OfxPropTime:
@@ -951,7 +955,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageClipPropFieldExtraction`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>`, :ref:`ClipInstance <propset_ClipInstance>`
+- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>` (plugin), :ref:`ClipInstance <propset_ClipInstance>` (host)
 - **Valid Values**:
   - ``OfxImageFieldNone``
   - ``OfxImageFieldLower``
@@ -969,7 +973,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageClipPropFieldOrder`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>`
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host)
 - **Valid Values**:
   - ``OfxImageFieldNone``
   - ``OfxImageFieldLower``
@@ -984,7 +988,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageClipPropUnmappedComponents`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>`
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host)
 - **Valid Values**:
   - ``OfxImageComponentNone``
   - ``OfxImageComponentRGBA``
@@ -1000,7 +1004,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageClipPropUnmappedPixelDepth`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>`
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host)
 - **Valid Values**:
   - ``OfxBitDepthNone``
   - ``OfxBitDepthByte``
@@ -1017,7 +1021,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectHostPropNativeOrigin`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Valid Values**:
   - ``OfxImageEffectHostPropNativeOriginBottomLeft``
   - ``OfxImageEffectHostPropNativeOriginTopLeft``
@@ -1032,7 +1036,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectPluginRenderThreadSafety`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`EffectDescriptor <propset_EffectDescriptor>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin)
 - **Valid Values**:
   - ``OfxImageEffectRenderUnsafe``
   - ``OfxImageEffectRenderInstanceSafe``
@@ -1047,7 +1051,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropCPURenderSupported`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`EffectInstance <propset_EffectInstance>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`EffectInstance <propset_EffectInstance>` (host), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Valid Values**:
   - ``false``
   - ``true``
@@ -1062,7 +1066,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropColourManagementStyle`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`EffectInstance <propset_EffectInstance>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`EffectInstance <propset_EffectInstance>` (host), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Valid Values**:
   - ``OfxImageEffectPropColourManagementNone``
   - ``OfxImageEffectPropColourManagementBasic``
@@ -1080,7 +1084,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropComponents`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>`, :ref:`Image <propset_Image>`
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`Image <propset_Image>` (host)
 - **Valid Values**:
   - ``OfxImageComponentNone``
   - ``OfxImageComponentRGBA``
@@ -1096,7 +1100,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropContext`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>`
+- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>` (host)
 - **Valid Values**:
   - ``OfxImageEffectContextGenerator``
   - ``OfxImageEffectContextFilter``
@@ -1172,7 +1176,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropNoSpatialAwareness`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin)
 - **Valid Values**:
   - ``false``
   - ``true``
@@ -1201,7 +1205,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropOpenCLSupported`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Valid Values**:
   - ``false``
   - ``true``
@@ -1216,7 +1220,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropOpenGLRenderSupported`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`EffectInstance <propset_EffectInstance>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`EffectInstance <propset_EffectInstance>` (host), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Valid Values**:
   - ``false``
   - ``true``
@@ -1231,7 +1235,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropPixelDepth`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>`, :ref:`Image <propset_Image>`
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`Image <propset_Image>` (host)
 - **Valid Values**:
   - ``OfxBitDepthNone``
   - ``OfxBitDepthByte``
@@ -1248,7 +1252,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropPreMultiplication`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>`, :ref:`Image <propset_Image>`
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`Image <propset_Image>` (host)
 - **Valid Values**:
   - ``OfxImageOpaque``
   - ``OfxImagePreMultiplied``
@@ -1263,7 +1267,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropSupportedComponents`
 - **Type**: enum
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>`, :ref:`ClipInstance <propset_ClipInstance>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>` (plugin), :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Valid Values**:
   - ``OfxImageComponentNone``
   - ``OfxImageComponentRGBA``
@@ -1279,7 +1283,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropSupportedContexts`
 - **Type**: enum
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Valid Values**:
   - ``OfxImageEffectContextGenerator``
   - ``OfxImageEffectContextFilter``
@@ -1297,7 +1301,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropSupportedPixelDepths`
 - **Type**: enum
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin)
 - **Valid Values**:
   - ``OfxBitDepthNone``
   - ``OfxBitDepthByte``
@@ -1328,7 +1332,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImagePropField`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`Image <propset_Image>`
+- **Used in Property Sets**: :ref:`Image <propset_Image>` (host)
 - **Valid Values**:
   - ``OfxImageFieldNone``
   - ``OfxImageFieldBoth``
@@ -1344,7 +1348,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxOpenGLPropPixelDepth`
 - **Type**: enum
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin)
 - **Valid Values**:
   - ``OfxBitDepthNone``
   - ``OfxBitDepthByte``
@@ -1361,7 +1365,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxParamPropCacheInvalidation`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Valid Values**:
   - ``OfxParamInvalidateValueChange``
   - ``OfxParamInvalidateValueChangeToEnd``
@@ -1376,7 +1380,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxParamPropDefaultCoordinateSystem`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`
+- **Used in Property Sets**: :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin)
 - **Valid Values**:
   - ``OfxParamCoordinatesCanonical``
   - ``OfxParamCoordinatesNormalised``
@@ -1390,7 +1394,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxParamPropDoubleType`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin)
 - **Valid Values**:
   - ``OfxParamDoubleTypePlain``
   - ``OfxParamDoubleTypeAngle``
@@ -1413,7 +1417,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxParamPropStringMode`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Valid Values**:
   - ``OfxParamStringIsSingleLine``
   - ``OfxParamStringIsMultiLine``
@@ -1479,7 +1483,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxImagePropBounds`
 - **Type**: int
 - **Dimension**: 4
-- **Used in Property Sets**: :ref:`Image <propset_Image>`
+- **Used in Property Sets**: :ref:`Image <propset_Image>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImagePropBounds`.
 
 .. _prop_OfxImagePropRegionOfDefinition:
@@ -1490,7 +1494,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxImagePropRegionOfDefinition`
 - **Type**: int
 - **Dimension**: 4
-- **Used in Property Sets**: :ref:`Image <propset_Image>`
+- **Used in Property Sets**: :ref:`Image <propset_Image>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImagePropRegionOfDefinition`.
 
 .. _prop_OfxImagePropRowBytes:
@@ -1501,7 +1505,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxImagePropRowBytes`
 - **Type**: int
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`Image <propset_Image>`
+- **Used in Property Sets**: :ref:`Image <propset_Image>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImagePropRowBytes`.
 
 .. _prop_OfxInteractPropBitDepth:
@@ -1512,7 +1516,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxInteractPropBitDepth`
 - **Type**: int
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`InteractDescriptor <propset_InteractDescriptor>`, :ref:`InteractInstance <propset_InteractInstance>`
+- **Used in Property Sets**: :ref:`InteractDescriptor <propset_InteractDescriptor>` (host), :ref:`InteractInstance <propset_InteractInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxInteractPropBitDepth`.
 
 .. _prop_OfxInteractPropPenViewportPosition:
@@ -1544,7 +1548,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxParamHostPropMaxPages`
 - **Type**: int
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamHostPropMaxPages`.
 
 .. _prop_OfxParamHostPropMaxParameters:
@@ -1555,7 +1559,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxParamHostPropMaxParameters`
 - **Type**: int
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamHostPropMaxParameters`.
 
 .. _prop_OfxParamHostPropPageRowColumnCount:
@@ -1566,7 +1570,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxParamHostPropPageRowColumnCount`
 - **Type**: int
 - **Dimension**: 2
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamHostPropPageRowColumnCount`.
 
 .. _prop_OfxParamPropChoiceOrder:
@@ -1577,7 +1581,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxParamPropChoiceOrder`
 - **Type**: int
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamsChoice <propset_ParamsChoice>`
+- **Used in Property Sets**: :ref:`ParamsChoice <propset_ParamsChoice>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropChoiceOrder`.
 
 .. _prop_OfxParamPropDefault:
@@ -1588,7 +1592,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxParamPropDefault`
 - **Type**: Multiple types: int, double, string, pointer
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDefault`.
 
 .. _prop_OfxParamPropDigits:
@@ -1599,7 +1603,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxParamPropDigits`
 - **Type**: int
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDigits`.
 
 .. _prop_OfxParamPropDisplayMax:
@@ -1610,7 +1614,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxParamPropDisplayMax`
 - **Type**: Multiple types: int, double
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDisplayMax`.
 
 .. _prop_OfxParamPropDisplayMin:
@@ -1621,7 +1625,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxParamPropDisplayMin`
 - **Type**: Multiple types: int, double
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDisplayMin`.
 
 .. _prop_OfxParamPropInteractPreferedSize:
@@ -1632,7 +1636,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxParamPropInteractPreferedSize`
 - **Type**: int
 - **Dimension**: 2
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropInteractPreferedSize`.
 
 .. _prop_OfxParamPropMax:
@@ -1643,7 +1647,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxParamPropMax`
 - **Type**: Multiple types: int, double
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropMax`.
 
 .. _prop_OfxParamPropMin:
@@ -1654,7 +1658,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxParamPropMin`
 - **Type**: Multiple types: int, double
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropMin`.
 
 .. _prop_OfxParamPropParametricDimension:
@@ -1665,7 +1669,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxParamPropParametricDimension`
 - **Type**: int
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamsParametric <propset_ParamsParametric>`
+- **Used in Property Sets**: :ref:`ParamsParametric <propset_ParamsParametric>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropParametricDimension`.
 
 .. _prop_OfxPropAPIVersion:
@@ -1676,7 +1680,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxPropAPIVersion`
 - **Type**: int
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropAPIVersion`.
 
 .. _prop_OfxPropVersion:
@@ -1687,7 +1691,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxPropVersion`
 - **Type**: int
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropVersion`.
 
 .. _prop_kOfxPropKeySym:
@@ -1712,7 +1716,7 @@ Pointer Properties
 - **C #define**: :c:macro:`kOfxImageEffectPluginPropOverlayInteractV1`
 - **Type**: pointer
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPluginPropOverlayInteractV1`.
 
 .. _prop_OfxImageEffectPluginPropOverlayInteractV2:
@@ -1723,7 +1727,7 @@ Pointer Properties
 - **C #define**: :c:macro:`kOfxImageEffectPluginPropOverlayInteractV2`
 - **Type**: pointer
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPluginPropOverlayInteractV2`.
 
 .. _prop_OfxImageEffectPropCudaStream:
@@ -1777,7 +1781,7 @@ Pointer Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropPluginHandle`
 - **Type**: pointer
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>`
+- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropPluginHandle`.
 
 .. _prop_OfxImagePropData:
@@ -1788,7 +1792,7 @@ Pointer Properties
 - **C #define**: :c:macro:`kOfxImagePropData`
 - **Type**: pointer
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`Image <propset_Image>`
+- **Used in Property Sets**: :ref:`Image <propset_Image>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImagePropData`.
 
 .. _prop_OfxInteractPropDrawContext:
@@ -1809,7 +1813,7 @@ Pointer Properties
 - **C #define**: :c:macro:`kOfxParamPropCustomInterpCallbackV1`
 - **Type**: pointer
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamsCustom <propset_ParamsCustom>`
+- **Used in Property Sets**: :ref:`ParamsCustom <propset_ParamsCustom>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropCustomInterpCallbackV1`.
 
 .. _prop_OfxParamPropDataPtr:
@@ -1820,7 +1824,7 @@ Pointer Properties
 - **C #define**: :c:macro:`kOfxParamPropDataPtr`
 - **Type**: pointer
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsGroup <propset_ParamsGroup>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsPage <propset_ParamsPage>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDataPtr`.
 
 .. _prop_OfxParamPropDefault:
@@ -1831,7 +1835,7 @@ Pointer Properties
 - **C #define**: :c:macro:`kOfxParamPropDefault`
 - **Type**: Multiple types: int, double, string, pointer
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDefault`.
 
 .. _prop_OfxParamPropInteractV1:
@@ -1842,7 +1846,7 @@ Pointer Properties
 - **C #define**: :c:macro:`kOfxParamPropInteractV1`
 - **Type**: pointer
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropInteractV1`.
 
 .. _prop_OfxParamPropParametricInteractBackground:
@@ -1853,7 +1857,7 @@ Pointer Properties
 - **C #define**: :c:macro:`kOfxParamPropParametricInteractBackground`
 - **Type**: pointer
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamsParametric <propset_ParamsParametric>`
+- **Used in Property Sets**: :ref:`ParamsParametric <propset_ParamsParametric>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropParametricInteractBackground`.
 
 .. _prop_OfxPropEffectInstance:
@@ -1864,7 +1868,7 @@ Pointer Properties
 - **C #define**: :c:macro:`kOfxPropEffectInstance`
 - **Type**: pointer
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`InteractInstance <propset_InteractInstance>`
+- **Used in Property Sets**: :ref:`InteractInstance <propset_InteractInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropEffectInstance`.
 
 .. _prop_OfxPropHostOSHandle:
@@ -1875,7 +1879,7 @@ Pointer Properties
 - **C #define**: :c:macro:`kOfxPropHostOSHandle`
 - **Type**: pointer
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropHostOSHandle`.
 
 .. _prop_OfxPropInstanceData:
@@ -1886,7 +1890,7 @@ Pointer Properties
 - **C #define**: :c:macro:`kOfxPropInstanceData`
 - **Type**: pointer
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>`, :ref:`InteractInstance <propset_InteractInstance>`
+- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>` (host), :ref:`InteractInstance <propset_InteractInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropInstanceData`.
 
 
@@ -1901,7 +1905,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxImageClipPropColourspace`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>`
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host)
 - **Introduced in**: version 1.5
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageClipPropColourspace`.
 
@@ -1913,7 +1917,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxImageClipPropPreferredColourspaces`
 - **Type**: string
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>`
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host)
 - **Introduced in**: version 1.5
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageClipPropPreferredColourspaces`.
 
@@ -1925,7 +1929,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxImageEffectPluginPropGrouping`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPluginPropGrouping`.
 
 .. _prop_OfxImageEffectPropClipPreferencesSlaveParam:
@@ -1936,7 +1940,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropClipPreferencesSlaveParam`
 - **Type**: string
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropClipPreferencesSlaveParam`.
 
 .. _prop_OfxImageEffectPropColourManagementAvailableConfigs:
@@ -1947,7 +1951,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropColourManagementAvailableConfigs`
 - **Type**: string
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Introduced in**: version 1.5
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropColourManagementAvailableConfigs`.
 
@@ -1959,7 +1963,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropColourManagementConfig`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>`
+- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>` (host)
 - **Introduced in**: version 1.5
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropColourManagementConfig`.
 
@@ -1971,7 +1975,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropDisplayColourspace`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>`
+- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>` (host)
 - **Introduced in**: version 1.5
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropDisplayColourspace`.
 
@@ -1983,7 +1987,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropOCIOConfig`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>`
+- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>` (host)
 - **Introduced in**: version 1.5
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropOCIOConfig`.
 
@@ -1995,7 +1999,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropOCIODisplay`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>`
+- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>` (host)
 - **Introduced in**: version 1.5
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropOCIODisplay`.
 
@@ -2007,7 +2011,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropOCIOView`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>`
+- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>` (host)
 - **Introduced in**: version 1.5
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropOCIOView`.
 
@@ -2019,7 +2023,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxImagePropUniqueIdentifier`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`Image <propset_Image>`
+- **Used in Property Sets**: :ref:`Image <propset_Image>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImagePropUniqueIdentifier`.
 
 .. _prop_OfxInteractPropSlaveToParam:
@@ -2030,7 +2034,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxInteractPropSlaveToParam`
 - **Type**: string
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`InteractInstance <propset_InteractInstance>`
+- **Used in Property Sets**: :ref:`InteractInstance <propset_InteractInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxInteractPropSlaveToParam`.
 
 .. _prop_OfxParamPropChoiceOption:
@@ -2041,7 +2045,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxParamPropChoiceOption`
 - **Type**: string
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`
+- **Used in Property Sets**: :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropChoiceOption`.
 
 .. _prop_OfxParamPropCustomValue:
@@ -2062,7 +2066,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxParamPropDefault`
 - **Type**: Multiple types: int, double, string, pointer
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDefault`.
 
 .. _prop_OfxParamPropDimensionLabel:
@@ -2073,7 +2077,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxParamPropDimensionLabel`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`
+- **Used in Property Sets**: :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDimensionLabel`.
 
 .. _prop_OfxParamPropHint:
@@ -2084,7 +2088,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxParamPropHint`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsGroup <propset_ParamsGroup>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsPage <propset_ParamsPage>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropHint`.
 
 .. _prop_OfxParamPropPageChild:
@@ -2095,7 +2099,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxParamPropPageChild`
 - **Type**: string
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamsPage <propset_ParamsPage>`
+- **Used in Property Sets**: :ref:`ParamsPage <propset_ParamsPage>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropPageChild`.
 
 .. _prop_OfxParamPropParent:
@@ -2106,7 +2110,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxParamPropParent`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsGroup <propset_ParamsGroup>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsPage <propset_ParamsPage>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropParent`.
 
 .. _prop_OfxParamPropScriptName:
@@ -2117,7 +2121,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxParamPropScriptName`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsGroup <propset_ParamsGroup>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsPage <propset_ParamsPage>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropScriptName`.
 
 .. _prop_OfxParamPropType:
@@ -2128,7 +2132,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxParamPropType`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsGroup <propset_ParamsGroup>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsPage <propset_ParamsPage>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropType`.
 
 .. _prop_OfxPluginPropFilePath:
@@ -2139,7 +2143,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxPluginPropFilePath`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPluginPropFilePath`.
 
 .. _prop_OfxPluginPropParamPageOrder:
@@ -2150,7 +2154,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxPluginPropParamPageOrder`
 - **Type**: string
 - **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParameterSet <propset_ParameterSet>`
+- **Used in Property Sets**: :ref:`ParameterSet <propset_ParameterSet>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPluginPropParamPageOrder`.
 
 .. _prop_OfxPropIcon:
@@ -2161,7 +2165,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxPropIcon`
 - **Type**: string
 - **Dimension**: 2
-- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsGroup <propset_ParamsGroup>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsPage <propset_ParamsPage>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropIcon`.
 
 .. _prop_OfxPropLabel:
@@ -2172,7 +2176,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxPropLabel`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>`, :ref:`ClipInstance <propset_ClipInstance>`, :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`, :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsGroup <propset_ParamsGroup>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsPage <propset_ParamsPage>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>` (plugin), :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host), :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropLabel`.
 
 .. _prop_OfxPropLongLabel:
@@ -2183,7 +2187,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxPropLongLabel`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>`, :ref:`ClipInstance <propset_ClipInstance>`, :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsGroup <propset_ParamsGroup>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsPage <propset_ParamsPage>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>` (plugin), :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropLongLabel`.
 
 .. _prop_OfxPropName:
@@ -2194,7 +2198,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxPropName`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>`, :ref:`ClipInstance <propset_ClipInstance>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`, :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsGroup <propset_ParamsGroup>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsPage <propset_ParamsPage>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>` (plugin), :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host), :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropName`.
 
 .. _prop_OfxPropPluginDescription:
@@ -2205,7 +2209,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxPropPluginDescription`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropPluginDescription`.
 
 .. _prop_OfxPropShortLabel:
@@ -2216,7 +2220,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxPropShortLabel`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>`, :ref:`ClipInstance <propset_ClipInstance>`, :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsGroup <propset_ParamsGroup>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsPage <propset_ParamsPage>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>` (plugin), :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropShortLabel`.
 
 .. _prop_OfxPropType:
@@ -2227,7 +2231,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxPropType`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>`, :ref:`ClipInstance <propset_ClipInstance>`, :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`EffectInstance <propset_EffectInstance>`, :ref:`Image <propset_Image>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`, :ref:`ParamDouble1D <propset_ParamDouble1D>`, :ref:`ParamsByte <propset_ParamsByte>`, :ref:`ParamsChoice <propset_ParamsChoice>`, :ref:`ParamsCustom <propset_ParamsCustom>`, :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`, :ref:`ParamsGroup <propset_ParamsGroup>`, :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`, :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`, :ref:`ParamsPage <propset_ParamsPage>`, :ref:`ParamsParametric <propset_ParamsParametric>`, :ref:`ParamsStrChoice <propset_ParamsStrChoice>`, :ref:`ParamsString <propset_ParamsString>`
+- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>` (plugin), :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`EffectInstance <propset_EffectInstance>` (host), :ref:`Image <propset_Image>` (host), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host), :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropType`.
 
 .. _prop_OfxPropVersionLabel:
@@ -2238,7 +2242,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxPropVersionLabel`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>`, :ref:`ImageEffectHost <propset_ImageEffectHost>`
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropVersionLabel`.
 
 .. _prop_kOfxPropKeyString:
