@@ -1106,7 +1106,7 @@ enum class PropId {{
             outfile.write(f"  static constexpr bool is_multitype = {is_multitype};\n")
             outfile.write(f"  static constexpr int dimension = {dimension};\n")
             outfile.write(
-                f"  static constexpr const openfx::PropDef& def = prop_defs[static_cast<int>(PropId::{p})];\n"
+                f"  static constexpr const openfx::PropDef& def = prop_defs[static_cast<size_t>(PropId::{p})];\n"
             )
             outfile.write(f"}};\n\n")
 
