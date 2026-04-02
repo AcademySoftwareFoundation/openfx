@@ -174,6 +174,10 @@ def get_properties_from_headers(include_dir: str | Path) -> dict:
         metadata = dict(data['metadata'])
         cname = data['cname']
 
+        # Normalize dimension: "N" (variable) -> 0 for internal use
+        if metadata.get('dimension') == 'N':
+            metadata['dimension'] = 0
+
         # Determine the YAML-style key for this property.
         # Normally, the YAML key is the string value (e.g., "OfxPropName")
         # and the cname is "k" + key.

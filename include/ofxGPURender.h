@@ -85,7 +85,7 @@ V1.4: It is now expected from host reporting v1.4 that the plug-in can during in
 
     @propdef
     type: enum
-    dimension: 0
+    dimension: N
     values:
       - OfxBitDepthNone
       - OfxBitDepthByte

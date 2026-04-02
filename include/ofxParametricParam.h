@@ -65,7 +65,7 @@ If not set, the host should generally draw these in white.
     
     @propdef
     type: double
-    dimension: 0
+    dimension: N
 */
 #define kOfxParamPropParametricUIColour "OfxParamPropParametricUIColour"
 

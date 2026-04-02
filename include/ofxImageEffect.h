@@ -714,7 +714,7 @@ These are the list of properties used by the Image Effects API.
       - ::kOfxImageEffectContextRetimer
    @propdef
    type: enum
-   dimension: 0
+   dimension: N
    values:
      - OfxImageEffectContextGenerator
      - OfxImageEffectContextFilter
@@ -832,7 +832,7 @@ The plugin can be slaved to multiple parameters (setting index 0, then index 1 e
    - Valid Values - the name of any described parameter
    @propdef
    type: string
-   dimension: 0
+   dimension: N
  */
 #define kOfxImageEffectPropClipPreferencesSlaveParam "OfxImageEffectPropClipPreferencesSlaveParam"
 
@@ -1192,7 +1192,7 @@ The default for a plugin is to have none set, the plugin \em must define at leas
        - kOfxBitDepthFloat
    @propdef
    type: enum
-   dimension: 0
+   dimension: N
    values:
      - OfxBitDepthNone
      - OfxBitDepthByte
@@ -1215,7 +1215,7 @@ The default for a clip descriptor is to have none set, the plugin \em must defin
      - kOfxImageComponentAlpha
    @propdef
    type: enum
-   dimension: 0
+   dimension: N
    values:
      - OfxImageComponentNone
      - OfxImageComponentRGBA

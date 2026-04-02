@@ -86,7 +86,7 @@ side.
                     value is ofx-native-v1.5_aces-v1.3_ocio-v2.3.
    @propdef
    type: string
-   dimension: 0
+   dimension: N
    introduced: "1.5"
 */
 #define kOfxImageEffectPropColourManagementAvailableConfigs "OfxImageEffectPropColourManagementAvailableConfigs"
@@ -210,7 +210,7 @@ the request and set kOfxImageClipPropColourspace to kOfxColourspaceRaw.
                     For OCIO, any string acceptable to Config::getColorSpace(), or a basic colourspace.
    @propdef
    type: string
-   dimension: 0
+   dimension: N
    introduced: "1.5"
 */
 #define kOfxImageClipPropPreferredColourspaces "OfxImageClipPropPreferredColourspaces"

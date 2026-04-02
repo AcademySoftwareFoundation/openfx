@@ -657,7 +657,7 @@ If this is not present, it is safe to assume that the version of the API is "1.0
     
     @propdef
     type: int
-    dimension: 0
+    dimension: N
 */
 #define kOfxPropAPIVersion "OfxPropAPIVersion"
 
@@ -740,7 +740,7 @@ A version is considered to be more recent than another if its ordered set of val
     - Valid Values - positive integers
     @propdef
     type: int
-    dimension: 0
+    dimension: N
 */
 #define kOfxPropVersion "OfxPropVersion"
 

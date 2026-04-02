@@ -411,7 +411,7 @@ namespace prop_type_arrays {
 struct PropDef {
    const char* name;                    // Property name
    openfx::span<const PropType> supportedTypes; // Supported data types
-   int dimension;                       // Property dimension (0 for variable)
+   int dimension;                       // Property dimension (0 means variable/N)
    openfx::span<const char* const> enumValues;  // Valid values for enum properties
 };
 

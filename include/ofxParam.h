@@ -417,7 +417,7 @@ The exact type and dimension is dependent on the type of the parameter. These ar
    
    @propdef
    type: [int, double, string, pointer]
-   dimension: 0
+   dimension: N
  */
 #define kOfxParamPropDefault "OfxParamPropDefault"
 
@@ -573,7 +573,7 @@ This property sets the preferred order of parameter pages on a host. If this is 
     - Valid Values - the names of any page param in the plugin
     @propdef
     type: string
-    dimension: 0
+    dimension: N
 */
 #define kOfxPluginPropParamPageOrder "OfxPluginPropParamPageOrder"
 
@@ -586,7 +586,7 @@ Note parameters can appear in more than one page.
     - Valid Values - the names of any parameter that is not a group or page, as well as ::kOfxParamPageSkipRow and ::kOfxParamPageSkipColumn
     @propdef
     type: string
-    dimension: 0
+    dimension: N
 */
 #define kOfxParamPropPageChild "OfxParamPropPageChild"
 
@@ -639,7 +639,7 @@ from a choice parameter. See @ref ParametersChoice for more details.
     
     @propdef
     type: string
-    dimension: 0
+    dimension: N
 */
 #define kOfxParamPropChoiceOption "OfxParamPropChoiceOption"
 
@@ -678,7 +678,7 @@ value occurs twice in the list; plugins should not do that.
     
     @propdef
     type: int
-    dimension: 0
+    dimension: N
 */
 #define kOfxParamPropChoiceOrder "OfxParamPropChoiceOrder"
 
@@ -725,7 +725,7 @@ Setting this will also reset ::kOfxParamPropDisplayMin.
     
     @propdef
     type: [int, double]
-    dimension: 0
+    dimension: N
 */
 #define kOfxParamPropMin "OfxParamPropMin"
 
@@ -735,7 +735,7 @@ Setting this will also reset ::kOfxParamPropDisplayMax.
     
     @propdef
     type: [int, double]
-    dimension: 0
+    dimension: N
 */
 #define kOfxParamPropMax "OfxParamPropMax"
 
@@ -745,7 +745,7 @@ If a user interface represents a parameter with a slider or similar, this should
     
     @propdef
     type: [int, double]
-    dimension: 0
+    dimension: N
 */
 #define kOfxParamPropDisplayMin "OfxParamPropDisplayMin"
 
@@ -755,7 +755,7 @@ If a user interface represents a parameter with a slider or similar, this should
     
     @propdef
     type: [int, double]
-    dimension: 0
+    dimension: N
 */
 #define kOfxParamPropDisplayMax "OfxParamPropDisplayMax"
 

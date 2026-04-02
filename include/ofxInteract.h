@@ -43,7 +43,7 @@ The interact can be slaved to multiple parameters (setting index 0, then index 1
    - Valid Values - the name of any parameter associated with this interact.
    @propdef
    type: string
-   dimension: 0
+   dimension: N
  */
 #define kOfxInteractPropSlaveToParam "OfxInteractPropSlaveToParam"
 
