@@ -81,6 +81,27 @@ jobs:
             compiler-desc: Clang
             cuda: false
             opencl: true
+          - name_prefix: Linux Rocky 8 VFX CY2023 strict fmt
+            # Regression guard for openfx#236 / #237: ensures every
+            # fmt/spdlog callsite with format args uses OFX_FMT_STRING.
+            # Intentionally does not produce release artifacts.
+            release_prefix: linux-vfx2023-strict-fmt
+            ostype: linux
+            aswfdockerbuild: true
+            os: ubuntu-latest
+            container: aswf/ci-base:2023
+            vfx-cy: 2023
+            has_cmake_presets: false
+            buildtype: Release
+            conan_version: 2.20.1
+            cxx-standard: 17
+            cxx-compiler: clang++
+            cc-compiler: clang
+            compiler-desc: Clang
+            cuda: false
+            opencl: true
+            extra_cmake_cxx_flags: -DFMT_ENFORCE_COMPILE_STRING
+            skip_release_upload: true
           - name_prefix: Linux Rocky 8 VFX CY2023 No OpenGL
             release_prefix: linux-vfx2023-no-ogl
             ostype: linux
@@ -321,6 +342,7 @@ jobs:
           MATRIX_CUDA: ${{ matrix.cuda }}
           MATRIX_HAS_PRESETS: ${{ matrix.has_cmake_presets }}
           MATRIX_OSTYPE: ${{ matrix.ostype }}
+          MATRIX_EXTRA_CXX_FLAGS: ${{ matrix.extra_cmake_cxx_flags }}
         run: |
           CMAKE_DEFINES=(-DBUILD_EXAMPLE_PLUGINS=TRUE \
               -DPLUGIN_INSTALLDIR=$(pwd)/build/Install)
@@ -331,6 +353,9 @@ jobs:
              [[ "$MATRIX_CUDA"   = true ]] && CMAKE_DEFINES+=(-DOFX_SUPPORTS_CUDARENDER=TRUE)
           else
              echo "OPENGL_BUILD=-no-ogl" >> $GITHUB_ENV
+          fi
+          if [[ -n "$MATRIX_EXTRA_CXX_FLAGS" ]]; then
+             CMAKE_DEFINES+=(-DCMAKE_CXX_FLAGS="$MATRIX_EXTRA_CXX_FLAGS")
           fi
           CMAKE_GENERATOR=(-G Ninja)
           if [[ $MATRIX_HAS_PRESETS = true ]]; then
@@ -384,6 +409,7 @@ jobs:
 
 
       - name: Copy includes and libs into release folder for installation
+        if: matrix.skip_release_upload != true
         # Dir structure:
         #  Install/OpenFX
         #   lib
@@ -422,12 +448,13 @@ jobs:
 
       # Create and sign headers/libs tarball
       - name: Create headers/libs tarball
+        if: matrix.skip_release_upload != true
         run: |
           tar -czf openfx-$RELEASE_NAME.tar.gz -C Install OpenFX
 
       # Install and run sigstore manually for CentOS 7 (sigstore action doesn't work with uv Python)
       - name: Install sigstore manually (CentOS 7)
-        if: github.event_name == 'release' && (matrix.vfx-cy == 2021 || matrix.vfx-cy == 2022)
+        if: github.event_name == 'release' && matrix.skip_release_upload != true && (matrix.vfx-cy == 2021 || matrix.vfx-cy == 2022)
         run: |
           # Conan installed urllib3 1.26.x, but tuf (required by sigstore) needs urllib3 2.x for BaseHTTPResponse
           # Explicitly upgrade urllib3 first, then install sigstore
@@ -435,14 +462,14 @@ jobs:
           python3.11 -m pip install --user 'sigstore>=3,<4'
 
       - name: Sign header/libs tarball with Sigstore manually (CentOS 7)
-        if: github.event_name == 'release' && (matrix.vfx-cy == 2021 || matrix.vfx-cy == 2022)
+        if: github.event_name == 'release' && matrix.skip_release_upload != true && (matrix.vfx-cy == 2021 || matrix.vfx-cy == 2022)
         run: |
           # uv Python needs SSL_CERT_FILE to use certifi's CA bundle instead of outdated system certs
           export SSL_CERT_FILE=$(python3.11 -c "import certifi; print(certifi.where())")
           python3.11 -m sigstore sign openfx-${{ env.RELEASE_NAME }}.tar.gz
 
       - name: Sign header/libs tarball with Sigstore (action for other platforms)
-        if: github.event_name == 'release' && matrix.vfx-cy != 2021 && matrix.vfx-cy != 2022
+        if: github.event_name == 'release' && matrix.skip_release_upload != true && matrix.vfx-cy != 2021 && matrix.vfx-cy != 2022
         uses: sigstore/gh-action-sigstore-python@f514d46b907ebcd5bedc05145c03b69c1edd8b46 # v3.0.0
         with:
           inputs: openfx-${{ env.RELEASE_NAME }}.tar.gz
@@ -450,7 +477,7 @@ jobs:
           release-signing-artifacts: false
 
       - name: Upload header/libs tarball and signatures
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' && matrix.skip_release_upload != true
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: "openfx-${{ env.RELEASE_NAME }}"
@@ -459,7 +486,7 @@ jobs:
             openfx-${{ env.RELEASE_NAME }}.tar.gz.sigstore.json
 
       - name: Upload header/libs tarball (no signatures)
-        if: github.event_name != 'release'
+        if: github.event_name != 'release' && matrix.skip_release_upload != true
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: "openfx-${{ env.RELEASE_NAME }}"
@@ -469,19 +496,20 @@ jobs:
       # Now the same, for the plugins
 
       - name: Create built/installed plugins tarball
+        if: matrix.skip_release_upload != true
         run: |
           tar -czf openfx_plugins-$RELEASE_NAME.tar.gz -C build/Install .
 
       # Sign plugins manually for CentOS 7 (sigstore already installed above)
       - name: Sign plugins tarball with Sigstore manually (CentOS 7)
-        if: github.event_name == 'release' && (matrix.vfx-cy == 2021 || matrix.vfx-cy == 2022)
+        if: github.event_name == 'release' && matrix.skip_release_upload != true && (matrix.vfx-cy == 2021 || matrix.vfx-cy == 2022)
         run: |
           # uv Python needs SSL_CERT_FILE to use certifi's CA bundle instead of outdated system certs
           export SSL_CERT_FILE=$(python3.11 -c "import certifi; print(certifi.where())")
           python3.11 -m sigstore sign openfx_plugins-${{ env.RELEASE_NAME }}.tar.gz
 
       - name: Sign plugins tarball with Sigstore (action for other platforms)
-        if: github.event_name == 'release' && matrix.vfx-cy != 2021 && matrix.vfx-cy != 2022
+        if: github.event_name == 'release' && matrix.skip_release_upload != true && matrix.vfx-cy != 2021 && matrix.vfx-cy != 2022
         uses: sigstore/gh-action-sigstore-python@f514d46b907ebcd5bedc05145c03b69c1edd8b46 # v3.0.0
         with:
           inputs: openfx_plugins-${{ env.RELEASE_NAME }}.tar.gz
@@ -489,7 +517,7 @@ jobs:
           release-signing-artifacts: false
 
       - name: Upload plugins tarball and signatures
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' && matrix.skip_release_upload != true
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: "openfx_plugins-${{ env.RELEASE_NAME }}"
@@ -498,7 +526,7 @@ jobs:
             openfx_plugins-${{ env.RELEASE_NAME }}.tar.gz.sigstore.json
 
       - name: Upload plugins tarball (no signatures)
-        if: github.event_name != 'release'
+        if: github.event_name != 'release' && matrix.skip_release_upload != true
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: "openfx_plugins-${{ env.RELEASE_NAME }}"
@@ -506,7 +534,7 @@ jobs:
             openfx_plugins-${{ env.RELEASE_NAME }}.tar.gz
 
       - name: Upload artifacts to release
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' && matrix.skip_release_upload != true
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ github.ref_name }}

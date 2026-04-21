@@ -13,7 +13,7 @@
 #include <string>
 #include <array>
 #include <cstring>
-#include "spdlog/spdlog.h"
+#include "../include/ofxSpdlogCompat.h"
 #define cimg_display 0          // no X11
 #include "CImg.h"
 #include "ofxImageEffect.h"
@@ -58,7 +58,7 @@ ColourManagementStyle ofxstring_to_style(const std::string & style)
   else if(style == kOfxImageEffectColourManagementOCIO)
     return ColourManagementStyle::OCIO;
   else {
-    spdlog::info("unknown colour management style '{}'", style);
+    spdlog::info(OFX_FMT_STRING("unknown colour management style '{}'"), style);
     return ColourManagementStyle::None;
   }
 }
@@ -580,7 +580,7 @@ getClipPreferences( OfxImageEffectHandle effect, OfxPropertySetHandle /*inArgs*/
 	fallbackInputSpace ? fallbackInputSpace : kOfxColourspaceRoleSceneLinear,
 	kOfxColourspaceRoleSceneLinear};
       for (size_t i = 0; i < std::size(colourSpaces); i++) {
-	spdlog::info("Specifying preferred input colourspace #{} = {}", i+1, colourSpaces[i]);
+	spdlog::info(OFX_FMT_STRING("Specifying preferred input colourspace #{} = {}"), i+1, colourSpaces[i]);
 	gPropHost->propSetString(outArgs, kOfxImageClipPropPreferredColourspaces "_Source",
 				 i, colourSpaces[i]);
       }
@@ -626,7 +626,7 @@ getOutputColourspace( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inAr
     if (outputSpace == NULL || outputSpace[0] == '\0') {
       spdlog::info("Not specifying an output colourspace");
     } else {
-      spdlog::info("Specifying output colourspaces = {}", outputSpace);
+      spdlog::info(OFX_FMT_STRING("Specifying output colourspaces = {}"), outputSpace);
       // Set the selected colourspace in outArgs
       gPropHost->propSetString(outArgs, kOfxImageClipPropColourspace, 0, outputSpace);
       status = kOfxStatOK;
@@ -687,7 +687,7 @@ static std::string getClipColourspace(const OfxImageClipHandle clip) {
     if (status == kOfxStatOK) {
       return std::string(tmpStr);
     } else {
-      spdlog::info("Can't get clip's colourspace; propGetString returned {}", errMsg(status));
+      spdlog::info(OFX_FMT_STRING("Can't get clip's colourspace; propGetString returned {}"), errMsg(status));
       return std::string("unspecified");
     }
 
@@ -709,7 +709,7 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   OfxStatus st = gPropHost->propGetDoubleN(inArgs, kOfxImageEffectPropRenderScale, 2,
                                           renderScale);
   if (st != kOfxStatOK) {
-    spdlog::warn("Can't get render scale! {}", errMsg(st));
+    spdlog::warn(OFX_FMT_STRING("Can't get render scale! {}"), errMsg(st));
     renderScale[0] = renderScale[1] = 1.0f;
   }
   // retrieve any instance data associated with this effect
@@ -724,9 +724,9 @@ static OfxStatus render( OfxImageEffectHandle  instance,
   void *src, *dst;
 
   std::string inputColourspace = getClipColourspace(myData->sourceClip);
-  spdlog::info("source clip colourspace = {}", inputColourspace);
+  spdlog::info(OFX_FMT_STRING("source clip colourspace = {}"), inputColourspace);
   std::string outputColourspace = getClipColourspace(myData->outputClip);
-  spdlog::info("output clip colourspace = {}", outputColourspace);
+  spdlog::info(OFX_FMT_STRING("output clip colourspace = {}"), outputColourspace);
 
   // In a real plugin, the render behaviour will change based on the
   // input and output colourspaces set in the clips.
@@ -762,7 +762,7 @@ static OfxStatus render( OfxImageEffectHandle  instance,
 
     int nchannels = 4;
     int font_height = 50 * renderScale[0];
-    spdlog::info("Rendering {}x{} image @{},{}, depth={}", xdim, ydim, srcRect.x1, srcRect.y1, dstBitDepth);
+    spdlog::info(OFX_FMT_STRING("Rendering {}x{} image @{},{}, depth={}"), xdim, ydim, srcRect.x1, srcRect.y1, dstBitDepth);
 
     // Just copy from source to dest, and draw some text
     if (srcRowBytes < 0 && dstRowBytes < 0)
@@ -770,13 +770,13 @@ static OfxStatus render( OfxImageEffectHandle  instance,
     else
       memcpy(dst, src, srcRowBytes * ydim);
     int ystart = ydim - 100;
-    drawText(fmt::format("Image: {}x{}, depth={}, scale={:.2f}x{:.2f}", xdim, ydim, dstBitDepth, renderScale[0], renderScale[1]),
+    drawText(fmt::format(OFX_FMT_STRING("Image: {}x{}, depth={}, scale={:.2f}x{:.2f}"), xdim, ydim, dstBitDepth, renderScale[0], renderScale[1]),
              100, ystart, font_height, dst, xdim, ydim, dstBitDepth, nchannels, dstRowBytes);
     ystart -= font_height;
-    drawText(fmt::format("input colourspace: {}", inputColourspace),
+    drawText(fmt::format(OFX_FMT_STRING("input colourspace: {}"), inputColourspace),
 	     100, ystart, font_height, dst, xdim, ydim, dstBitDepth, nchannels, dstRowBytes);
     ystart -= font_height;
-    drawText(fmt::format("output colourspace: {}", outputColourspace),
+    drawText(fmt::format(OFX_FMT_STRING("output colourspace: {}"), outputColourspace),
              100, ystart, font_height, dst, xdim, ydim, dstBitDepth, nchannels, dstRowBytes);
   }
   catch(OfxuNoImageException &ex) {
@@ -911,7 +911,7 @@ describe(OfxImageEffectHandle  effect)
   if (stat == kOfxStatOK) {
     gHostColourManagementStyle = ofxstring_to_style(tmpStr);
   } else {
-    spdlog::info("describe: host does not support colour management (err={})", errMsg(stat));
+    spdlog::info(OFX_FMT_STRING("describe: host does not support colour management (err={})"), errMsg(stat));
     gHostColourManagementStyle = ColourManagementStyle::None;
   }
 
@@ -971,7 +971,7 @@ describe(OfxImageEffectHandle  effect)
       break;
     }
     if (stat != kOfxStatOK) {
-      spdlog::error("setting kOfxImageEffectPropColourManagementStyle prop: stat={}", errMsg(stat));
+      spdlog::error(OFX_FMT_STRING("setting kOfxImageEffectPropColourManagementStyle prop: stat={}"), errMsg(stat));
     }
   }
 
@@ -991,7 +991,7 @@ pluginMain(const char *action, const void *handle, OfxPropertySetHandle inArgs, 
   OfxStatus stat = kOfxStatOK;
 
   if (silentActions.find(action) == silentActions.end())
-    spdlog::info(">>> pluginMain({})", action);
+    spdlog::info(OFX_FMT_STRING(">>> pluginMain({})"), action);
   try {
   // cast to appropriate type
   OfxImageEffectHandle effect = (OfxImageEffectHandle) handle;
@@ -1044,10 +1044,10 @@ pluginMain(const char *action, const void *handle, OfxPropertySetHandle inArgs, 
     stat = kOfxStatErrMemory;
   } catch ( const std::exception& e ) {
     // standard exceptions
-    spdlog::error("Caught OFX Plugin error {}", e.what());
+    spdlog::error(OFX_FMT_STRING("Caught OFX Plugin error {}"), e.what());
     stat = kOfxStatErrUnknown;
   } catch (int err) {
-    spdlog::error("Caught misc error {}", err);
+    spdlog::error(OFX_FMT_STRING("Caught misc error {}"), err);
     stat = err;
   } catch ( ... ) {
     // everything else
@@ -1058,7 +1058,7 @@ pluginMain(const char *action, const void *handle, OfxPropertySetHandle inArgs, 
 
 
   if (silentActions.find(action) == silentActions.end())
-    spdlog::info("<<< pluginMain({}) = {}", action, errMsg(stat));
+    spdlog::info(OFX_FMT_STRING("<<< pluginMain({}) = {}"), action, errMsg(stat));
   return stat;
 }
 
