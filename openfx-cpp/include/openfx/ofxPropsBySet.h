@@ -84,6 +84,7 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
    { "OfxPropPluginDescription", prop_defs[PropId::OfxPropPluginDescription], false, true, true },
    { "OfxImageEffectPropSupportedContexts", prop_defs[PropId::OfxImageEffectPropSupportedContexts], false, true, false },
    { "OfxImageEffectPluginPropGrouping", prop_defs[PropId::OfxImageEffectPluginPropGrouping], false, true, false },
+   { "OfxImageEffectPluginPropObsolete", prop_defs[PropId::OfxImageEffectPluginPropObsolete], false, true, false },
    { "OfxImageEffectPluginPropSingleInstance", prop_defs[PropId::OfxImageEffectPluginPropSingleInstance], false, true, false },
    { "OfxImageEffectPluginRenderThreadSafety", prop_defs[PropId::OfxImageEffectPluginRenderThreadSafety], false, true, false },
    { "OfxImageEffectPluginPropHostFrameThreading", prop_defs[PropId::OfxImageEffectPluginPropHostFrameThreading], false, true, false },
