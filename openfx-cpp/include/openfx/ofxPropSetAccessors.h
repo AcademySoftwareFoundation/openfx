@@ -408,6 +408,11 @@ public:
         return *this;
     }
 
+    EffectDescriptor& setImageEffectPluginPropObsolete(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPluginPropObsolete>(value, 0, error_if_missing);
+        return *this;
+    }
+
     EffectDescriptor& setImageEffectPluginPropSingleInstance(bool value, bool error_if_missing = true) {
         props_.set<PropId::OfxImageEffectPluginPropSingleInstance>(value, 0, error_if_missing);
         return *this;
