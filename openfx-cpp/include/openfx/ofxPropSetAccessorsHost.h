@@ -427,6 +427,10 @@ public:
         return props_.get<PropId::OfxImageEffectPluginPropGrouping>(0, error_if_missing);
     }
 
+    bool imageEffectPluginPropObsolete(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPluginPropObsolete>(0, error_if_missing);
+    }
+
     bool imageEffectPluginPropSingleInstance(bool error_if_missing = true) const {
         return props_.get<PropId::OfxImageEffectPluginPropSingleInstance>(0, error_if_missing);
     }

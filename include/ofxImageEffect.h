@@ -942,6 +942,19 @@ This is purely a user interface hint for the host so it can group related effect
 */
 #define kOfxImageEffectPluginPropGrouping "OfxImageEffectPluginPropGrouping"
 
+/** @brief Indicates whether the plugin should be hidden in the host's OFX browser UI.
+
+If set to 1, this indicates the plugin has been made obsolete by a different version of the same plugin contained in the same bundle (i.e. same pluginIdentifier but different pluginVersionMajor and/or pluginVersionMinor). At least one version of the plugin in the bundle (typically the newest) must have this property omitted or set to 0.
+
+   - Valid Values -
+       - 0 - the host will show the plugin in its OFX browser UI,
+       - 1 - the host will not show the plugin in its OFX browser UI.
+    @propdef
+    type: bool
+    dimension: 1
+*/
+#define kOfxImageEffectPluginPropObsolete "OfxImageEffectPluginPropObsolete"
+
 /** @brief Indicates whether a host support image effect \ref ImageEffectOverlays.
 
    - Valid Values - This must be one of
@@ -2046,6 +2059,7 @@ They range from 1000 until 1999
       - OfxPropPluginDescription | host_optional=true
       - OfxImageEffectPropSupportedContexts
       - OfxImageEffectPluginPropGrouping
+      - OfxImageEffectPluginPropObsolete
       - OfxImageEffectPluginPropSingleInstance
       - OfxImageEffectPluginRenderThreadSafety
       - OfxImageEffectPluginPropHostFrameThreading
