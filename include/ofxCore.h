@@ -707,12 +707,15 @@ This property is used to provide alternative names for objects. It can be used i
 
 /** @brief Alternative names for parameter dimensions.
 
-    - Type - string X N X M
+    - Type - string X N
     - Property Set - multidimensional parameter descriptors, see \ref PropertiesByObject (read only)
 
-This property is used to provide alternative names for each dimension of a multidimensional parameter. It can be used in situations where effects are being transferred from another plug-in API that doesn't support multidimensional parameters, and each dimension was stored as a separate parameter.
+These properties are used to provide alternative names for each dimension of a multidimensional parameter, e.g. OfxParamTypeRGBA. They can be used in situations where effects are being transferred from another plug-in API that doesn't support multidimensional parameters, and each dimension was stored as a separate parameter. Four properties are defined as that is the maximum number of dimensions on any standard parameter type. If parameter types are defined with more dimensions, they can be assumed to follow the same pattern.
 */
-#define kOfxPropAka2D "OfxPropAka2D"
+#define kOfxPropAka0 "OfxPropAka0"
+#define kOfxPropAka1 "OfxPropAka1"
+#define kOfxPropAka2 "OfxPropAka2"
+#define kOfxPropAka3 "OfxPropAka3"
 
 /** @brief Identifies a specific version of a host or plugin.
 
