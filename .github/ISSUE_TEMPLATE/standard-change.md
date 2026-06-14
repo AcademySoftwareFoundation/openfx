@@ -5,7 +5,7 @@ labels: standard change
 ---
 # Open Effects Proposal for Standard Change
 
-Please read the contribution [guidelines](https://github.com/ofxa/openfx/wiki/Extending-OpenFX-Guidelines#submit-a-proposal-or-bug-report-to-review) first.
+Please read the contribution [guidelines](https://github.com/AcademySoftwareFoundation/openfx/blob/main/CONTRIBUTING.md) first.
 
 ## Standard Change Workflow
 - [ ] Create proposal as issue (you're doing this now!)
@@ -18,7 +18,7 @@ Please read the contribution [guidelines](https://github.com/ofxa/openfx/wiki/Ex
    - [ ] Discuss and review code in the PR
    - [ ] Meet all requirements below for accepting PR
 - [ ] When subcommittee signs off and other members don't have any further review comments, 
-      maintainer merges PR to master which closes PR and issue
+      maintainer merges PR to main which closes PR and issue
 
 ## Requirements for accepting a standard change:
 - [ ] Header files updated
