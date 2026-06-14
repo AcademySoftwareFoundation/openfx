@@ -147,7 +147,9 @@ jobs:
           - name_prefix: Windows
             release_prefix: windows
             ostype: windows
-            os: windows-latest
+            # Pin to VS2022; CUDA 12.4 nvcc rejects the VS2026 host compiler
+            # shipped on windows-latest. See host_config.h version check.
+            os: windows-2022
             has_cmake_presets: true
             buildtype: Release
             conan_version: 2.20.1
