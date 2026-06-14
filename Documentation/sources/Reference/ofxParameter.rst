@@ -945,7 +945,7 @@ new :cpp:class:`OfxParametricParameterSuiteV1`
 is there to do that.
 
 All the defines and suite definitions for parametric parameters are
-defined in the file `ofxParametricParam.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxParametricParam.h>`__
+defined in the file `ofxParametricParam.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxParametricParam.h>`__
 
 Parametric parameters are in effect *functions* a plug-in can ask a host
 to arbitrarily evaluate for some value *x*. A classic use case would be

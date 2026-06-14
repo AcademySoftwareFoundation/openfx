@@ -4,7 +4,7 @@
 This guide will take you through the basics of creating and using
 parameters in OFX. An example plugin will be used to illustrate how it
 all works and its source can be found in the C++ file
-`gain.cpp <https://github.com/ofxa/openfx/blob/master/Guide/Code/Example3/gain.cpp>`_.
+`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Guide/Code/Example3/gain.cpp>`_.
 This plugin takes an image and
 multiplies the pixel by the value held in a user visible parameter.
 Ideally you should have read the guide to the :ref:`basic image

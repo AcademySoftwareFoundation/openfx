@@ -21,7 +21,7 @@ There are several ways to connect with the OpenFX project:
   mail list: This is our primary mailing list, intended for technical
   discussion and help implementing and using OpenFX.
 
-* [GitHub Issues](https://github.com/ofxa/openfx/issues): GitHub
+* [GitHub Issues](https://github.com/AcademySoftwareFoundation/openfx/issues): GitHub
   Issues are used both to track bugs and to discuss feature requests.
 
 * [Slack channel](https://slack.aswf.io/)
@@ -34,7 +34,7 @@ using, or extending OpenFX are the mailing list and our Slack.
 ### How to Report a Bug
 
 OpenFX use GitHub's issue tracking system for bugs and enhancements:
-https://github.com/ofxa/openfx/issues
+https://github.com/AcademySoftwareFoundation/openfx/issues
 
 If you are submitting a bug report, please be sure to note which
 plug-in(s) and host products are involved, what OS and compilers
@@ -49,7 +49,7 @@ with enough detail that others can reproduce the problem.
 
 ### How to Request a Standard Change
 
-Open a GitHub issue: https://github.com/ofxa/openfx/issues.
+Open a GitHub issue: https://github.com/AcademySoftwareFoundation/openfx/issues.
 
 Describe the goal and the proposed feature in as much detail as
 possible. Standard change requests will almost certainly spawn a
@@ -58,7 +58,7 @@ discussion among the project community.
 ### How to Report a Security Vulnerability
 
 If you think you've found a potential vulnerability in OpenFX, please
-refer to [SECURITY.md] to responsibly disclose it.
+refer to [SECURITY.md](SECURITY.md) to responsibly disclose it.
 
 ### How to Contribute a Bug Fix or Change
 
@@ -160,7 +160,7 @@ repository](https://help.github.com/articles/cloning-a-repository/)
 and [Configuring a remote for a
 fork](https://help.github.com/articles/configuring-a-remote-for-a-fork/),
 but again, if you need assistance feel free to reach out on the
-openexr-dev@lists.aswf.io mail list.
+openfx-discussion@lists.aswf.io mail list.
 
 ### Pull Requests
 

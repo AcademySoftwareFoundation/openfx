@@ -86,7 +86,7 @@ This API can be somewhat awkward to use directly, and it is expected
 that most plugin or host developers will wrap the API in higher level C
 or C++ structures.
 
-There are open source host and plugin side API C wrappers available from the `openfx.org git repository <https://github.com/ofxa/openfx>`_.
+There are open source host and plugin side API C wrappers available from the `openfx.org git repository <https://github.com/AcademySoftwareFoundation/openfx>`_.
 As you work through the examples you’ll see that I actually start wrapping up various entities within the API
 into ``C`` classes as it can get unwieldy otherwise.
 
