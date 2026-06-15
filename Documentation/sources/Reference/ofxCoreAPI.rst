@@ -19,12 +19,12 @@ a host application.
 There are two include files that are used with nearly every derived API.
 These are...
 
--  `ofxCore.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxCore.h>`__
+-  `ofxCore.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxCore.h>`__
    is used to define the basic communication mechanisms between a host
    and a plug-in. This includes the way in which a plug-in is defined to
    a host and how to bootstrap the two way communications. It also has
    several other basic action and property definitions.
--  `ofxProperty.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxProperty.h>`__
+-  `ofxProperty.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxProperty.h>`__
    specifies the property suite, which is how a plug-in gets and sets
    values on various objects in a host application.
 

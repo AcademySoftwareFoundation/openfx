@@ -4,7 +4,7 @@
 This guide will take you through the basics of creating effects that can
 be used in more than one context, as well as how to make a multi-input
 effect. Its source can be found in the C++ file
-`saturation.cpp <https://github.com/ofxa/openfx/blob/master/Guide/Code/Example4/saturation.cpp>`_.
+`saturation.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Guide/Code/Example4/saturation.cpp>`_.
 This plugin takes an RGB or RGBA
 image and increases or decreases the saturation by a parameter. It can
 be used in two contexts, firstly as a simple filter, secondly as a

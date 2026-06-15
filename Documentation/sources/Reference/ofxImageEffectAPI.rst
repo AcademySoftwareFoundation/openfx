@@ -26,27 +26,27 @@ Image Effect API Header Files
 
 The header files used to define the OFX Image Effect API are...
 
--  `ofxCore.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxCore.h>`__
+-  `ofxCore.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxCore.h>`__
    Provides the core definitions of the general OFX architecture that
    allow the bootstrapping of specific APIs, as well as several core actions,
--  `ofxProperty.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxProperty.h>`__
+-  `ofxProperty.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxProperty.h>`__
     Provides generic property fetching suite used to get and set values about objects in the API,
--  `ofxParam.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxParam.h>`__
+-  `ofxParam.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxParam.h>`__
    Provides the suite for defining user visible parameters to an
    effect
--  `ofxMultiThread.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxMultiThread.h>`__
+-  `ofxMultiThread.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxMultiThread.h>`__
    Provides the suite for basic multi-threading capabilities
--  `ofxInteract.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxInteract.h>`__
+-  `ofxInteract.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxInteract.h>`__
    Provides the suite that allows a plug-in to use OpenGL to draw their own interactive GUI tools
--  `ofxKeySyms.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxKeySyms.h>`__
+-  `ofxKeySyms.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxKeySyms.h>`__
    Provides key symbols used by 'Interacts' to represent keyboard events
--  `ofxMemory.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxMemory.h>`__
+-  `ofxMemory.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxMemory.h>`__
    Provides a simple memory allocation suite,
--  `ofxMessage.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxMessage.h>`__
+-  `ofxMessage.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxMessage.h>`__
    Provides a simple messaging suite to communicate with an end user
--  `ofxImageEffect.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxImageEffect.h>`__
+-  `ofxImageEffect.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxImageEffect.h>`__
    Defines a suite and set of actions that draws all the above together to create an visual effect plug-in.
--  `ofxDrawSuite.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxDrawSuite.h>`__
+-  `ofxDrawSuite.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxDrawSuite.h>`__
    Provides an optional suite that allows a plug-in to draw their own interactive GUI tools without using OpenGL
 
 These contain the suite definitions, property definitions and action
@@ -190,7 +190,7 @@ argument:
 
 The functions that directly manipulate an image effect handle are
 specified in the :cpp:class:`OfxImageEffectSuiteV1` found
-in the header file `ofxImageEffect.h <https://github.com/ofxa/openfx/blob/master/include/ofxImageEffect.h>`_.
+in the header file `ofxImageEffect.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxImageEffect.h>`_.
 
 Effect Descriptors
 ^^^^^^^^^^^^^^^^^^
@@ -307,7 +307,7 @@ differs from a boolean parameter.
 
 Parameters and parameter sets are manipulated via the calls and
 properties in the :cpp:class:`OfxParameterSuiteV1` specified
-in `ofxParam.h <https://github.com/ofxa/openfx/blob/master/include/ofxParam.h>`_.
+in `ofxParam.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxParam.h>`_.
 The properties on parameter instances and
 descriptors can be found in the section :ref:`Properties on Parameter
 Descriptors and Instances <ParameterProperties>`.
@@ -395,7 +395,7 @@ pointer property on an OFX object, for example the
 property on an effect descriptor.
 
 The functions that directly manipulate interacts are in the :cpp:class:`OfxInteractSuiteV1` found in the header file
-`ofxInteract.h <https://github.com/ofxa/openfx/blob/master/include/ofxInteract.h>`_ , as well as the properties and specific actions that
+`ofxInteract.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxInteract.h>`_ , as well as the properties and specific actions that
 apply to interacts.
 
 Interact Descriptors
