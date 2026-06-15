@@ -91,7 +91,7 @@ fi
 
 if [[ ! -f ./conanfile.py ]]; then
     echo "***"
-    echo "*** ERROR: please run this script from the top level dir, where conanfile.py and readme.md are."
+    echo "*** ERROR: please run this script from the top level dir, where conanfile.py and README.md are."
     echo "***"
     exit 1
 fi

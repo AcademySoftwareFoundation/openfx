@@ -5,7 +5,7 @@
 
 The authoritative source for information about OFX is http://openeffects.org/
 
-* [OpenFX Build Instructions](https://github.com/AcademySoftwareFoundation/openfx/blob/master/install.md)
+* [OpenFX Build Instructions](https://github.com/AcademySoftwareFoundation/openfx/blob/main/install.md)
 * [OpenFX Documentation](https://openfx.readthedocs.io/en/latest) - start here
 * [OpenFX Documentation: Reference](https://openfx.readthedocs.io/en/latest/Reference)
 * [Programming Guide By Example](https://openfx.readthedocs.io/en/latest/Guide)
@@ -34,7 +34,7 @@ An application which allows you build a video clip by layering video clips, stil
 
 ## Contributing
 
-Please read the [Contribution Guidelines](https://github.com/ofxa/openfx/wiki/Extending-OpenFX-Guidelines) for how to submit pull requests for fixes and changes to the standard.
+Please read the [Contribution Guidelines](https://github.com/AcademySoftwareFoundation/openfx/wiki/Extending-OpenFX-Guidelines) for how to submit pull requests for fixes and changes to the standard.
 
 # Building Libs and Plugins
 
