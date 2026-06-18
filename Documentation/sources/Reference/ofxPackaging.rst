@@ -83,8 +83,6 @@ Where...
    -  ``Win32`` - for Microsoft Windows (Intel x86, 32 bit)
    -  ``Win64`` - for Microsoft Windows (Intel x64, 64 bit)
    -  ``Win-arm64ec`` - for Microsoft Windows (ARM64EC)
-   -  ``Win-arm64`` - for Microsoft Windows (ARM64)
-   -  ``Win-arm64x`` - for Microsoft Windows (ARM64X)
    -  ``IRIX`` - for SGI IRIX plug-ins (compiled 32 bit) (*DEPRECATED*)
    -  ``IRIX64`` - for SGI IRIX plug-ins (compiled 64 bit) (*DEPRECATED*)
    -  ``Linux-x86`` - for Linux on x86 CPUs (compiled 32 bit)
@@ -113,29 +111,35 @@ to merge multiple architectures into a single binary on MacOS.
 Windows Architectures
 ^^^^^^^^^^^^^^^^^^^^^
 
-As of 2024, Windows supports Arm64 CPUs. It uses two distinct ABIs,
+As of 2024, Windows supports Arm64 CPUs. It uses two distinct ABIs:
 *Arm64* for native code, and *Arm64EC* for x64/Arm64 compatibility, in
 which x64 apps running in emulation on Arm64 hardware can interoperate
 with x64 DLLs (also in emulation) or Arm64EC DLLs (which are native
 Arm64 code with x64-compatible calling conventions). Arm64EC apps
-cannot load native Arm64 DLLs, only Intel or Arm64EC.
+cannot load native Arm64 DLLs, only Intel or Arm64EC. Windows also
+supports an Arm64X "fat" binary PE format which contains both
+Intel/Arm64EC and Arm64 binaries. Note that there is no "fat binary"
+format on Windows that contains plain Intel x64 *and* Arm64 code.
 
-Windows also supports an Arm64X "fat" binary PE format which
-contains both Intel/Arm64EC and Arm64 binaries.
+In practice, the Windows hosts that run on Arm64 hardware today (such
+as DaVinci Resolve and Vegas Pro) are Arm64EC; there are not yet any
+native Arm64 or Arm64X OpenFX hosts. This standard therefore defines a
+single new folder, ``Win-arm64ec``, and defers naming ``Win-arm64``
+and ``Win-arm64x`` folders until a host needs them (see *Future
+Architecture Compatibility* below).
 
-**Search Order**: Since apps built natively for Arm64 ("Arm64" abi)
-can only load Arm64 DLLs, those apps should attempt to load plugins
-from the "Win-arm64" folder first, then "Win-arm64x". Arm64EC hosts
-(running on an Arm64 system) should try the "Win-arm64ec" folder
-first, then "Win-arm64x". Arm64EC hosts can also use x64 DLLs, so they
-may try "Win64" as well, but should prefer the other folders to avoid
-running the plugin in emulation. An Arm64X host will be running either
-its Arm64EC branch or its Arm64 branch depending on how it's launched,
-so it should load plugins according to the above depending on the
-current mode.
+**Plug-ins**: Arm64EC plug-ins must be installed in the
+``Win-arm64ec`` folder. An Arm64X plug-in (which includes an Arm64EC
+branch) may also be installed there so that Arm64EC hosts will find
+it.
 
-Note that there is no "fat binary" format on Windows that contains
-Intel x64 *and* arm64 code.
+**Hosts**: An Arm64EC host should load plug-ins from the
+``Win-arm64ec`` folder. Because an unmodified x64 host runs in
+emulation on Arm64 hardware and would otherwise look only in
+``Win64``, an x64 host should detect when it is running under Arm64
+emulation and, if so, also check the ``Win-arm64ec`` folder when it
+exists, preferring a native Arm64EC plug-in there over the emulated
+x64 plug-in in ``Win64``.
 
 Future Architecture Compatibility
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -152,6 +156,13 @@ the proper .ofx plugin file. On Linux, hosts should look in the subdir
 named by ``Linux-${uname -m}`` which for arm64 should be
 ``Linux-aarch64``. Using ``uname -m`` rather than a hard-coded list
 allows for transparently supporting any future architectures.
+
+On Windows, when native Arm64 or Arm64X OpenFX hosts appear, the
+standard expects to add ``Win-arm64`` and ``Win-arm64x`` folders
+following the same naming pattern. A native Arm64 host (which can load
+only Arm64 DLLs) would then prefer ``Win-arm64``, falling back to
+``Win-arm64x``. These folder names are reserved but not yet
+normative, pending a host that needs them.
 
 
 Structure
