@@ -11,7 +11,8 @@
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
-#if defined(WINDOWS)
+#if defined(_WIN32)
+#define NOMINMAX
 #include <windows.h>
 #endif
 #include <GL/gl.h>
@@ -562,6 +563,9 @@ describe(OfxImageEffectHandle  effect)
 
   // we support OpenGL rendering (could also say "needed" here)
   gPropHost->propSetString(effectProps, kOfxImageEffectPropOpenGLRenderSupported, 0, "true");
+
+  // we do NOT support CPU rendering
+  gPropHost->propSetString(effectProps, kOfxImageEffectPropCPURenderSupported, 0, "false");
 
   {
     char *s = NULL;

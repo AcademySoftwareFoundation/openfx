@@ -6,7 +6,7 @@ with a host application, and goes into the fundamentals of the API.
 
 An example plugin will be used to illustrate how all the machinery
 works, and its source can be found in the C++ file
-`there <https://github.com/AcademySoftwareFoundation/openfx/blob/master/Guide/Code/Example1/basics.cpp>`__.
+`there <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Guide/Code/Example1/basics.cpp>`__.
 This plugin is a *no-op* image
 effect and does absolutely nothing to images, it is there purely to show
 you the basics of how a host and plugin work together. I’ll embed
@@ -185,10 +185,10 @@ literal string that names the suite. A host will pass a set of suites to
 a plugin, each suite having the set of function pointers filled
 appropriately.
 
-For example, look in the file `ofxMemory.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxMemory.h>`__ for the suite used to perform
+For example, look in the file `ofxMemory.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxMemory.h>`__ for the suite used to perform
 memory allocation:
 
-`ofxMemory.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxMemory.h#L48>`__
+`ofxMemory.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxMemory.h#L48>`__
 
 Notice also, the version number built into the name of the memory suite.
 If we ever needed to change the memory suite for some reason,
@@ -550,7 +550,7 @@ in context action…
         char *context;
         gPropertySuite->propGetString(inArgs, kOfxImageEffectPropContext, 0, &context);
 
-        ERROR_IF(strcmp(context, kOfxImageEffectContextFilter) != 0, "DescribeInContextAction called on unsupported contex %s", context);
+        ERROR_IF(strcmp(context, kOfxImageEffectContextFilter) != 0, "DescribeInContextAction called on unsupported context %s", context);
 
         OfxPropertySetHandle props;
         // define the mandated single output clip
@@ -737,7 +737,7 @@ should clearly specify the calling sequence. Failure to call them in the
 right sequence will lead to all sorts of undefined behaviour.
 
 Assuming the host has done nothing apart from load the dynamic library
-that contains plugins and has found the two :ref:`boostrapping
+that contains plugins and has found the two :ref:`bootstrapping
 symbols <bootstrapperFunctions>` in the plugin, the host
 should then...
 

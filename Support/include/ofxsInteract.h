@@ -24,7 +24,7 @@ namespace OFX {
   /** @brief forward declaration */
   class ImageEffect;
 
-  /// all image effect interacts have these argumens
+  /// all image effect interacts have these arguments
   struct InteractArgs {
     /// ctor
     InteractArgs(const PropertySet &props);
@@ -104,7 +104,7 @@ namespace OFX {
     /** @brief Does the openGL frame buffer have an alpha */
     bool hasAlpha(void) const;
 
-    /** @brief Returns the size of a real screen pixel under the interact's cannonical projection */
+    /** @brief Returns the size of a real screen pixel under the interact's canonical projection */
     OfxPointD getPixelScale(void) const;
 
     /** @brief The suggested colour to draw a widget in an interact. Returns false if there is no suggestion. */
@@ -122,7 +122,7 @@ namespace OFX {
     /** @brief Request a redraw */
     void requestRedraw(void) const;
 
-    /** @brief Swap a buffer in the case of a double bufferred interact, this is possibly a silly one */
+    /** @brief Swap a buffer in the case of a double buffered interact, this is possibly a silly one */
     void swapBuffers(void) const;
 
     ////////////////////////////////////////////////////////////////////////////////

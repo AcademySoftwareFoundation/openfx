@@ -47,7 +47,7 @@ Properties are typed value/name pairs that exist on the various OFX
 objects and are action argument values to the plug-in's main entry
 point. They are how a plug-in and host pass individual values back and
 forth to each other. The property suite, defined inside
-`ofxProperty.h <https://github.com/AcademySoftwareFoundation/openfx/blob/master/include/ofxProperty.h>`__
+`ofxProperty.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxProperty.h>`__
 is used to do this.
 
 OFX APIs
@@ -64,11 +64,11 @@ API, however many are actually quite generic and could be reused by
 other APIs. The property suite definitely has to be used by all other
 APIs, while the memory allocation suite, the parameter suite and several
 others would probably be useful for all other APIs. For example the
-parameter suite could be re-used to specify user visible parameters to
+parameter suite could be reused to specify user visible parameters to
 the other APIs.
 
 Several types are common to all OFX APIs, and as such are defined in
-`ofxCore.h <https://github.com/ofxa/openfx/blob/master/include/ofxCore.h>`_.
+`ofxCore.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxCore.h>`_.
 Most objects passed back to a plug-in are generally
 specified by blind data handles, for example:
 

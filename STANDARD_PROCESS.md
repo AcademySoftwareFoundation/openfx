@@ -11,7 +11,7 @@ The process is comprised of the following steps:
 ## Proposal
 
 Use the
-[Standard Change Proposal](https://github.com/ofxa/openfx/issues/new?assignees=&labels=standard+change&template=standard-change.md)
+[Standard Change Proposal](https://github.com/AcademySoftwareFoundation/openfx/issues/new?assignees=&labels=standard+change&template=standard-change.md)
 github issue template to file a Standard Change Proposal.
 This template has a number of helpful prompts to guide you in creating
 a useful proposal.

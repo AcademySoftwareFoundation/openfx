@@ -23,7 +23,7 @@ typedef struct OfxTimeLineSuiteV1 {
       This function returns the current time value of the timeline associated with the effect instance.
 
       @returns
-      - ::kOfxStatOK - the time enquiry was sucessful
+      - ::kOfxStatOK - the time enquiry was successful
       - ::kOfxStatFailed - the enquiry failed for some host specific reason
       - ::kOfxStatErrBadHandle - the effect handle was invalid
   */
@@ -39,7 +39,7 @@ typedef struct OfxTimeLineSuiteV1 {
       if the output of the effect is being viewed).
 
       @returns
-      - ::kOfxStatOK - the time was changed sucessfully, will all side effects if the change completed
+      - ::kOfxStatOK - the time was changed successfully, will all side effects if the change completed
       - ::kOfxStatFailed - the change failed for some host specific reason
       - ::kOfxStatErrBadHandle - the effect handle was invalid
       - ::kOfxStatErrValue - the time was an illegal value       
@@ -55,7 +55,7 @@ typedef struct OfxTimeLineSuiteV1 {
       This function
 
       @returns
-      - ::kOfxStatOK - the time enquiry was sucessful
+      - ::kOfxStatOK - the time enquiry was successful
       - ::kOfxStatFailed - the enquiry failed for some host specific reason
       - ::kOfxStatErrBadHandle - the effect handle was invalid
   */

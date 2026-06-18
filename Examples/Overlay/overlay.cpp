@@ -12,7 +12,8 @@
   and so do nothing.
  */
 
-#ifdef WIN32
+#ifdef _WIN32
+#define NOMINMAX
 #include <windows.h>
 #endif
  

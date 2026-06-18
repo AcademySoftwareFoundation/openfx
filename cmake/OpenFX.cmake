@@ -38,6 +38,7 @@ function(add_ofx_plugin TARGET)
     add_library(${TARGET} SHARED) # build as shared lib/DLL
   endif()
   set_target_properties(${TARGET} PROPERTIES SUFFIX ".ofx" PREFIX "")
+  target_compile_features(${TARGET} PRIVATE cxx_std_17)
 
   set(PLUGIN_NAME ${TARGET})
   set(PLUGIN_EXE ${TARGET}.ofx)

@@ -120,8 +120,8 @@ namespace OFX {
     /** @brief Enumerates the differing types of double params */
     enum DoubleTypeEnum {
         eDoubleTypePlain, //!< parameter has no special interpretation
-        eDoubleTypeAngle, //!< parameter is to be interpretted as an angle
-        eDoubleTypeScale, //!< parameter is to be interpretted as a scale factor
+        eDoubleTypeAngle, //!< parameter is to be interpreted as an angle
+        eDoubleTypeScale, //!< parameter is to be interpreted as a scale factor
         eDoubleTypeTime, //!< parameter represents a time value (1D only)
         eDoubleTypeAbsoluteTime, //!< parameter represents an absolute time value (1D only),
         eDoubleTypeX, //!< a size in the X dimension dimension (1D only), new for 1.2
@@ -241,7 +241,7 @@ namespace OFX {
         /** @brief set whether the param can animate, defaults to true in most cases */
         void setAnimates(bool v);
 
-        /** @brief set whether the param is persistant, defaults to true */
+        /** @brief set whether the param is persistent, defaults to true */
         void setIsPersistant(bool v);
 
         /** @brief Set's whether the value of the param is significant (ie: affects the rendered image), defaults to true */
@@ -276,7 +276,7 @@ namespace OFX {
         /** @brief sets the kind of the string param, defaults to eStringSingleLine */
         void setStringType(StringTypeEnum v);
 
-        /** @brief if the string param is a file path, say that we are picking an existing file, rather than posibly specifying a new one, defaults to true */
+        /** @brief if the string param is a file path, say that we are picking an existing file, rather than possibly specifying a new one, defaults to true */
         void setFilePathExists(bool v);
     };
 
@@ -804,7 +804,7 @@ namespace OFX {
         /** @brief tries to fetch a ParamDescriptor, returns 0 if it isn't there*/
         ParamDescriptor* getParamDescriptor(const std::string& name) const;
 
-        /** @brief estabilishes the order of page params. Do it by calling it in turn for each page */
+        /** @brief establishes the order of page params. Do it by calling it in turn for each page */
         void setPageParamOrder(PageParamDescriptor &p);
 
         /** @brief Define an integer param */
@@ -965,10 +965,10 @@ namespace OFX {
         /** @brief is the param animating */
         bool getIsPersistant(void) const;
     
-        /** @brief Get's whether the value of the param is significant (ie: affects the rendered image) */
+        /** @brief Gets whether the value of the param is significant (ie: affects the rendered image) */
         bool getEvaluateOnChange(void) const;
 
-        /** @brief Get's whether the value of the param is significant (ie: affects the rendered image) */
+        /** @brief Gets whether the value of the param is significant (ie: affects the rendered image) */
         CacheInvalidationEnum getCacheInvalidation(void) const;
 
         /** @brief if the param is animating, the number of keys in it, otherwise 0 */

@@ -1,6 +1,7 @@
 // Copyright OpenFX and contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
-#ifdef _WINDOWS
+#ifdef _WIN32
+#define NOMINMAX
 #include <windows.h>
 #endif
 

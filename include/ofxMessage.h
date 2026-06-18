@@ -72,7 +72,7 @@ typedef struct OfxMessageSuiteV1 {
       \arg \c ...       printf style varargs list to print
 
 \returns 
-  - ::kOfxStatOK - if the message was sucessfully posted 
+  - ::kOfxStatOK - if the message was successfully posted 
   - ::kOfxStatReplyYes - if the message was of type  kOfxMessageQuestion and the user reply yes
   - ::kOfxStatReplyNo - if the message was of type kOfxMessageQuestion and the user reply no
   - ::kOfxStatFailed - if the message could not be posted for some reason
@@ -104,7 +104,7 @@ typedef struct OfxMessageSuiteV2 {
       \arg \c ...       printf style varargs list to print
 
       \returns 
-      - ::kOfxStatOK - if the message was sucessfully posted 
+      - ::kOfxStatOK - if the message was successfully posted 
       - ::kOfxStatReplyYes - if the message was of type  kOfxMessageQuestion and the user reply yes
       - ::kOfxStatReplyNo - if the message was of type kOfxMessageQuestion and the user reply no
       - ::kOfxStatFailed - if the message could not be posted for some reason
@@ -127,13 +127,13 @@ typedef struct OfxMessageSuiteV2 {
       \arg \c ...       printf style varargs list to print
 
       \returns 
-        - ::kOfxStatOK - if the message was sucessfully posted 
+        - ::kOfxStatOK - if the message was successfully posted 
         - ::kOfxStatErrBadHandle - the handle was rubbish
         - ::kOfxStatFailed - if the message could not be posted for some reason
 
      Persistent messages are associated with an effect handle until explicitly cleared by an effect. So if an error message is posted the error state, and associated message will persist and be displayed on the effect appropriately. (eg: draw a node in red on a node based compostor and display the message when clicked on).
 
-     If \e messageType is error or warning, associated error states should be flagged on host applications. Posting an error message implies that the host cannot proceeed, a warning allows the host to proceed, whilst a simple message should have no stop anything.
+     If \e messageType is error or warning, associated error states should be flagged on host applications. Posting an error message implies that the host cannot proceed, a warning allows the host to proceed, whilst a simple message should have no stop anything.
    */
   OfxStatus (*setPersistentMessage)(void *handle,
                                     const char *messageType,
@@ -148,7 +148,7 @@ typedef struct OfxMessageSuiteV2 {
       \arg \c handle     effect handle (descriptor or instance) 
 
       \returns 
-        - ::kOfxStatOK - if the message was sucessfully cleared
+        - ::kOfxStatOK - if the message was successfully cleared
         - ::kOfxStatErrBadHandle - the handle was rubbish
         - ::kOfxStatFailed - if the message could not be cleared for some reason
 

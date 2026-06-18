@@ -9,11 +9,13 @@
 
 # SPDX-License-Identifier: BSD-3-Clause
 
-import subprocess, os, shutil
+import subprocess, os, shutil, sys
+
 project = 'OpenFX'
-copyright = '2024, Contributors to the OpenFX Project'
+copyright = '''2025, OpenFX a Series of LF Projects, LLC.
+For web site terms of use, trademark policy and other project policies please see https://lfprojects.org/'''
 author = 'Contributors to the OpenFX Project'
-release = '1.4'
+release = '1.5.1'
 
 read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
 # -- General configuration ---------------------------------------------------
@@ -21,7 +23,8 @@ read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
 
 if read_the_docs_build:
     # cwd here is Documentation/sources, i.e. the dir of this source file
-    subprocess.call('python ../genPropertiesReference.py -r -i ../../include -o Reference/ofxPropertiesReference.rst', shell=True)
+    # Generate property documentation from inline @propdef metadata in headers
+    subprocess.call('cd ../.. && python scripts/gen-props-doc.py', shell=True)
     subprocess.call('cd ../../include ; doxygen ofx.doxy', shell=True)
     print(f'Generating API doc')
     subprocess.call('python -m breathe.apidoc -p ofx_reference -o Reference/api ../doxygen_build/xml', shell=True)

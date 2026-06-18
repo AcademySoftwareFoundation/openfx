@@ -90,7 +90,7 @@ During the :c:macro:`kOfxImageEffectActionDescribeInContext` action, an effect
 must describe all clips and parameters that it intends to use. This
 includes the mandated clips and parameters for that context.
 
-A plugin instance is created in a specific contex which will not changed
+A plugin instance is created in a specific context which will not changed
 over the lifetime of that instance. The context can be retrieved from
 the instance via the
 :c:macro:`kOfxImageEffectPropContext`
@@ -238,7 +238,7 @@ The Retimer Context
 -------------------
 
 The retimer context is for effects that change the length of a clip by
-interpolating frames from the source clip to create an inbetween output
+interpolating frames from the source clip to create an in between output
 frame.
 
 In this context, a plugin has the following mandated objects...

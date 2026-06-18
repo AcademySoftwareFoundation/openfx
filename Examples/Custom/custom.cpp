@@ -8,7 +8,8 @@
   crafted piece of image processing software.
  */
 
-#ifdef WIN32
+#ifdef _WIN32
+#define NOMINMAX
 #include <windows.h>
 #endif 
 
@@ -71,7 +72,7 @@ parseCustomParam(char *str, double &x, double &y)
 void
 writeCustomParam(char *str, int strlen, double x, double y)
 {
-#ifdef WIN32
+#ifdef _WIN32
   _snprintf(str, strlen, "%lg %lg", x, y);
 #else
   snprintf(str, strlen, "%lg %lg", x, y);

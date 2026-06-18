@@ -797,16 +797,16 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 1, 0.6);
   gPropHost->propSetString(paramProps, kOfxParamPropHint, 0, "A corner of the rectangle to draw");
   gPropHost->propSetString(paramProps, kOfxPropLabel, 0, "Corner 2");
-  gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 0, 0);
-  gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 1, 0);
-  gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 2, 0);
-  gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 3, 1);
 
   // make an rgba colour parameter
   gParamHost->paramDefine(paramSet, kOfxParamTypeRGBA, "colour", &paramProps);
   gPropHost->propSetString(paramProps, kOfxParamPropHint, 0, "The colour of the rectangle");
   gPropHost->propSetString(paramProps, kOfxParamPropScriptName, 0, "colour");
   gPropHost->propSetString(paramProps, kOfxPropLabel, 0, "Colour");
+  gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 0, 0);
+  gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 1, 0);
+  gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 2, 0);
+  gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 3, 1);
 
 
   return kOfxStatOK;

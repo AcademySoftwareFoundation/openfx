@@ -73,7 +73,7 @@ namespace {
   OfxImageEffectSuiteV1 *gImageEffectSuite = 0;
 
   ////////////////////////////////////////////////////////////////////////////////
-  // The first _action_ called after the binary is loaded (three boot strapper functions will be howeever)
+  // The first _action_ called after the binary is loaded (three boot strapper functions will be however)
   OfxStatus LoadAction(void)
   {
     /// now fetch a suite out of the host via it's fetch suite function.
@@ -426,7 +426,7 @@ namespace {
 static OfxPlugin effectPluginStruct =
 {
   kOfxImageEffectPluginApi,                // The API this plugin satisfies.
-  1,                                       // The version of the API it satisifes.
+  1,                                       // The version of the API it satisfies.
   "org.openeffects:InvertExamplePlugin",   // The unique ID of this plugin.
   1,                                       // The major version number of this plugin.
   0,                                       // The minor version number of this plugin.

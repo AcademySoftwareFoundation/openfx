@@ -181,7 +181,7 @@ CrossFadePlugin::isIdentity(const OFX::IsIdentityArguments &args, OFX::Clip * &i
     return true;
   }
 
-  // nope, identity we isnt
+  // nope, identity we isn't
   return false;
 }
 

@@ -35,7 +35,7 @@ Components are packed per pixel in the following manner...
 -  RGBA pixels as R, G, B, A
 -  RGB pixels as R, G, B
 
-There are several structs for pixel types in `ofxCore.h <https://github.com/ofxa/openfx/blob/master/include/ofxCore.h>` that can be used
+There are several structs for pixel types in `ofxCore.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxCore.h>` that can be used
 for raw pixels in OFX.
 
 Images are always left to right, bottom to top, with the pixel data
@@ -110,7 +110,7 @@ describe in context call are...
     for more details on field and field rendering
 -  :c:macro:`kOfxImageEffectPropTemporalClipAccess`
    whether the effect wants to access images from the clip at times
-   other that the frame being renderred.
+   other that the frame being rendered.
 
 Plugins *must* indicate which pixel depths they can process by setting
 the

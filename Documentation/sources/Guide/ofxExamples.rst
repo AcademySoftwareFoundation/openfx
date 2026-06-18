@@ -29,7 +29,7 @@ OFX is actually several things. At the lowest level OFX is a generic
 ``C`` based plug-in architecture that can be used to define any kind of
 plug-in API. You could use this low level architecture to implement any
 API, however it was originally designed to host our visual effects image
-processing API. The basic architecture could be re-used to create other
+processing API. The basic architecture could be reused to create other
 higher level APIs such as a sound effects API, a 3D API and more.
 
 This guide describes the basic OFX plug-in architecture and the visual
@@ -86,7 +86,7 @@ This API can be somewhat awkward to use directly, and it is expected
 that most plugin or host developers will wrap the API in higher level C
 or C++ structures.
 
-There are open source host and plugin side API C wrappers available from the `openfx.org git repository <https://github.com/ofxa/openfx>`_.
+There are open source host and plugin side API C wrappers available from the `openfx.org git repository <https://github.com/AcademySoftwareFoundation/openfx>`_.
 As you work through the examples you’ll see that I actually start wrapping up various entities within the API
 into ``C`` classes as it can get unwieldy otherwise.
 

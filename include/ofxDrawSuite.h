@@ -26,10 +26,10 @@ API for host- and GPU API-independent drawing.
 typedef struct OfxDrawContext *OfxDrawContextHandle;
 
 /** @brief The Draw Context handle
-
- - Type - pointer X 1
- - Property Set - read only property on the inArgs of the following actions...
- - ::kOfxInteractActionDraw
+ 
+ @propdef
+ type: pointer
+ dimension: 1
  */
 #define kOfxInteractPropDrawContext "OfxInteractPropDrawContext"
 
@@ -80,7 +80,7 @@ typedef enum OfxDrawTextAlignment
 } OfxDrawTextAlignment;
 
 /** @brief OFX suite that allows an effect to draw to a host-defined display context.
-
+    To use this, the plugin must use kOfxImageEffectPluginPropOverlayInteractV2.
 */
 typedef struct OfxDrawSuiteV1 {
 	/** @brief Retrieves the host's desired draw colour for

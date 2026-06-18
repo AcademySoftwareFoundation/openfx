@@ -14,6 +14,7 @@ if(NOT MSVC)
 	set_target_properties(OfxHost PROPERTIES COMPILE_FLAGS "-fPIC")
 endif()
 
+target_compile_features(OfxHost PUBLIC cxx_std_17)
 target_link_libraries(OfxHost PUBLIC expat::expat)
 
 target_include_directories(OfxHost PUBLIC

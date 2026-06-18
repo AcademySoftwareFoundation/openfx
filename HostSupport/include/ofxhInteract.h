@@ -76,7 +76,7 @@ namespace OFX {
       };
 
       /// a generic interact, it doesn't belong to anything in particular
-      /// we need to generify this slighty more and remove the renderscale args
+      /// we need to generify this further and remove the renderscale args
       /// into a derived class, as they only belong to image effect plugins
       class Instance : public Base, protected Property::GetHook {
       protected:
@@ -148,7 +148,7 @@ namespace OFX {
         // don't know what to do
         virtual void reset(const std::string &name);
 
-        /// the gethook virutals for  pixel scale, background colour
+        /// the gethook virtuals for  pixel scale, background colour
         virtual double getDoubleProperty(const std::string &name, int index) const;
 
         /// for pixel scale and background colour
@@ -161,7 +161,7 @@ namespace OFX {
         // 
         // Params -
         //
-        //    time              - the effect time at which changed occured
+        //    time              - the effect time at which changed occurred
         //    renderScale       - the render scale
         virtual OfxStatus drawAction(OfxTime time, const OfxPointD &renderScale);
 
@@ -169,11 +169,11 @@ namespace OFX {
         //
         // Params  -
         //
-        //    time              - the effect time at which changed occured
+        //    time              - the effect time at which changed occurred
         //    renderScale       - the render scale
         //    penX              - the X position
         //    penY              - the Y position
-        //    pressure          - the pen pressue 0 to 1
+        //    pressure          - the pen pressure 0 to 1
         virtual OfxStatus penMotionAction(OfxTime time, 
                                           const OfxPointD &renderScale,
                                           const OfxPointD &penPos,
@@ -184,11 +184,11 @@ namespace OFX {
         //
         // Params  -
         //
-        //    time              - the effect time at which changed occured
+        //    time              - the effect time at which changed occurred
         //    renderScale       - the render scale
         //    penX              - the X position
         //    penY              - the Y position
-        //    pressure          - the pen pressue 0 to 1
+        //    pressure          - the pen pressure 0 to 1
         virtual OfxStatus penUpAction(OfxTime time, 
                                       const OfxPointD &renderScale,
                                       const OfxPointD &penPos,
@@ -199,11 +199,11 @@ namespace OFX {
         //
         // Params  -
         //
-        //    time              - the effect time at which changed occured
+        //    time              - the effect time at which changed occurred
         //    renderScale       - the render scale
         //    penX              - the X position
         //    penY              - the Y position
-        //    pressure          - the pen pressue 0 to 1
+        //    pressure          - the pen pressure 0 to 1
         virtual OfxStatus penDownAction(OfxTime time, 
                                         const OfxPointD &renderScale,
                                         const OfxPointD &penPos,
@@ -214,7 +214,7 @@ namespace OFX {
         //
         // Params  -
         //
-        //    time              - the effect time at which changed occured
+        //    time              - the effect time at which changed occurred
         //    renderScale       - the render scale
         //    key               - the pressed key
         //    keyString         - the pressed key string
@@ -227,7 +227,7 @@ namespace OFX {
         //
         // Params  -
         //
-        //    time              - the effect time at which changed occured
+        //    time              - the effect time at which changed occurred
         //    renderScale       - the render scale
         //    key               - the pressed key
         //    keyString         - the pressed key string
@@ -240,7 +240,7 @@ namespace OFX {
         //
         // Params  -
         //
-        //    time              - the effect time at which changed occured
+        //    time              - the effect time at which changed occurred
         //    renderScale       - the render scale
         //    key               - the pressed key
         //    keyString         - the pressed key string
@@ -253,7 +253,7 @@ namespace OFX {
         // 
         // Params -
         //
-        //    time              - the effect time at which changed occured
+        //    time              - the effect time at which changed occurred
         //    renderScale       - the render scale
         virtual OfxStatus gainFocusAction(OfxTime time, 
                                           const OfxPointD &renderScale);
@@ -262,7 +262,7 @@ namespace OFX {
         // 
         // Params -
         //
-        //    time              - the effect time at which changed occured
+        //    time              - the effect time at which changed occurred
         //    renderScale       - the render scale
         virtual OfxStatus loseFocusAction(OfxTime  time, 
                                           const OfxPointD &renderScale);

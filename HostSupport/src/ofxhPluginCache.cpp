@@ -64,7 +64,7 @@ static const char *getArchStr()
 #define DIRSEP "/"
 #include <dirent.h>
 
-#elif defined (WINDOWS)
+#elif defined (_WIN32)
 #define DIRLIST_SEP_CHARS ";"
 #ifdef _WIN64
 #define ARCHSTR "win64"
@@ -73,6 +73,7 @@ static const char *getArchStr()
 #endif
 #define DIRSEP "\\"
 
+#define NOMINMAX
 #include "shlobj.h"
 #include "tchar.h"
 #endif
@@ -157,7 +158,7 @@ PluginHandle::~PluginHandle() {
 }
 
 
-#if defined (WINDOWS)
+#if defined (_WIN32)
 const TCHAR *getStdOFXPluginPath(const std::string &hostId = "Plugins")
 {
   static TCHAR buffer[MAX_PATH];
@@ -174,7 +175,7 @@ const TCHAR *getStdOFXPluginPath(const std::string &hostId = "Plugins")
 static
 std::string OFXGetEnv(const char* e)
 {
-#if defined(WINDOWS) && !defined(__MINGW32__)
+#if defined(_WIN32) && !defined(__MINGW32__)
   size_t requiredSize;
   getenv_s(&requiredSize, 0, 0, e);
   std::vector<char> buffer(requiredSize);
@@ -239,8 +240,8 @@ PluginCache::PluginCache() : _hostSpec(0), _xmlCurrentBinary(0), _xmlCurrentPlug
     
     _pluginPath.push_back(path);
   }
-  
-#if defined(WINDOWS)
+
+#if defined(_WIN32)
   _pluginPath.push_back(getStdOFXPluginPath());
   _pluginPath.push_back("C:\\Program Files\\Common Files\\OFX\\Plugins");
 #endif
@@ -253,7 +254,7 @@ PluginCache::PluginCache() : _hostSpec(0), _xmlCurrentBinary(0), _xmlCurrentPlug
 }
 
 void PluginCache::setPluginHostPath(const std::string &hostId) {
-#if defined(WINDOWS)
+#if defined(_WIN32)
   _pluginPath.push_back(getStdOFXPluginPath(hostId));
   _pluginPath.push_back("C:\\Program Files\\Common Files\\OFX\\" + hostId);
 #endif
@@ -270,8 +271,8 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
 #ifdef CACHE_DEBUG
   printf("looking in %s for plugins\n", dir.c_str());
 #endif
-  
-#if defined (WINDOWS)
+
+#if defined (_WIN32)
   WIN32_FIND_DATA findData;
   HANDLE findHandle;
 #else
@@ -285,7 +286,7 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
   
 #if defined (UNIX)
   while (dirent *de = readdir(d))
-#elif defined (WINDOWS)
+#elif defined (_WIN32)
     findHandle = FindFirstFile((dir + "\\*").c_str(), &findData);
   
   if (findHandle == INVALID_HANDLE_VALUE) 
@@ -369,7 +370,7 @@ void PluginCache::scanDirectory(std::set<std::string> &foundBinFiles, const std:
           scanDirectory(foundBinFiles, dir + DIRSEP + name, recurse);
         }
       }
-#if defined(WINDOWS)
+#if defined(_WIN32)
       int rval = FindNextFile(findHandle, &findData);
       
       if (rval == 0) {

@@ -70,7 +70,7 @@ namespace OFX {
       struct IntValue { 
         typedef int APIType; ///< C type of the property that is passed across the raw API
         typedef int APITypeConstless;  ///< C type of the property that is passed across the raw API, without any const it
-        typedef int Type; ///< Type we actually hold and deal with the propery in everything by the raw API
+        typedef int Type; ///< Type we actually hold and deal with the property in everything by the raw API
         typedef int ReturnType; ///< type to return from a function call
         static const TypeEnum typeCode = eInt;
         static int kEmpty;
@@ -305,18 +305,18 @@ namespace OFX {
         // get multiple values
         void getValueN(APIType *value, int count) const;
 
-#ifdef WINDOWS
-#pragma warning( disable : 4181 )	
-#endif		
+#ifdef _WIN32
+#pragma warning( disable : 4181 )
+#endif
         /// get one value
         const ReturnType getValue(int index=0) const;
 
         /// get one value, without going through the getHook
         const ReturnType getValueRaw(int index=0) const;
 
-#ifdef WINDOWS
-#pragma warning( default : 4181 )	
-#endif				
+#ifdef _WIN32
+#pragma warning( default : 4181 )
+#endif
         // get multiple values, without going through the getHook
         void getValueNRaw(APIType *value, int count) const;
 
@@ -438,7 +438,7 @@ namespace OFX {
         /// specialised versions of this.
         void addNotifyHook(const std::string &name, NotifyHook *hook) const;
                 
-        /// Fetchs a pointer to a property of the given name, following the property chain if the
+        /// Fetches a pointer to a property of the given name, following the property chain if the
         /// 'followChain' arg is not false.
         Property *fetchProperty(const std::string &name, bool followChain = false) const;
 

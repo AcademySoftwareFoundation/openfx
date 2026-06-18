@@ -1,0 +1,46 @@
+# Example host-defined properties for MyHost
+# This file would be processed by gen-props.py (or a host's own generator)
+# to create myhostPropsMetadata.h
+
+properties:
+  MyHostViewerProcess:
+    name: "com.example.myhost.ViewerProcess"
+    type: string
+    dimension: 1
+    description: "MyHost viewer process name (color management display transform)"
+    valid_for:
+      - "Effect Descriptor"
+      - "Effect Instance"
+
+  MyHostColorConfig:
+    name: "com.example.myhost.ColorConfig"
+    type: string
+    dimension: 1
+    description: "Path to MyHost's color management config file"
+    valid_for:
+      - "Effect Instance"
+
+  MyHostProjectPath:
+    name: "com.example.myhost.ProjectPath"
+    type: string
+    dimension: 1
+    description: "Path to the current MyHost project file"
+    valid_for:
+      - "Effect Instance"
+
+  MyHostNodeName:
+    name: "com.example.myhost.NodeName"
+    type: string
+    dimension: 1
+    description: "Name of the MyHost node containing this effect"
+    valid_for:
+      - "Effect Instance"
+
+  MyHostNodeColor:
+    name: "com.example.myhost.NodeColor"
+    type: int
+    dimension: 3
+    description: "RGB color of the node in MyHost's node graph (0-255)"
+    valid_for:
+      - "Effect Descriptor"
+      - "Effect Instance"
