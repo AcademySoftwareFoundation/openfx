@@ -1,0 +1,23 @@
+# Dependencies for the ofxColourConvert.h unit tests.
+#
+# opencolorio is the reference implementation we validate against. Version
+# 2.3.x matches the config the OFX native colourspaces are based on
+# (ofx-native-v1.5_aces-v1.3_ocio-v2.3), so its built-in studio config and
+# matrices line up with the header.
+#
+# gtest is the test harness.
+[requires]
+opencolorio/2.3.2
+gtest/1.15.0
+
+[options]
+# OpenColorIO needs minizip-ng built with zlib; on Apple the libcomp backend
+# must be off for the zlib option to take effect (conan-center requirement).
+minizip-ng/*:with_zlib=True
+minizip-ng/*:with_libcomp=False
+
+[generators]
+PkgConfigDeps
+
+[layout]
+cmake_layout

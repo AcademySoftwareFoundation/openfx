@@ -420,6 +420,7 @@ jobs:
         #     openfx/*.h
         #      Support/*.h
         #      HostSupport/*.h
+        #      contrib/colour/*.h
         #   so e.g `#include <openfx/Support/foo.h>` works with `-I.../OpenFX/include`
         run: |
           mkdir -p Install/OpenFX/include/openfx
@@ -440,6 +441,10 @@ jobs:
               --exclude='DocSrc' \
             -cf - . \
            | tar -xf - -C Install/OpenFX/include/openfx/HostSupport/
+
+          # Header-only contrib library (header only; not the tests or build files)
+          mkdir -p Install/OpenFX/include/openfx/contrib/colour
+          cp contrib/colour/*.h Install/OpenFX/include/openfx/contrib/colour/
 
           mkdir -p Install/OpenFX/lib
           find build -name 'lib*' -type f -exec cp {} Install/OpenFX/lib/ \;

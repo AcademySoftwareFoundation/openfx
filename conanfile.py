@@ -14,6 +14,7 @@ class openfx(ConanFile):
 	
 	exports_sources = (
 		"cmake/*",
+		"contrib/*",
 		"Examples/*",
 		"HostSupport/*",
 		"include/*",
@@ -33,7 +34,7 @@ class openfx(ConanFile):
                 "spdlog/*:header_only": True,
                 "fmt/*:header_only": True
 	}
-	
+
 	def requirements(self):
 		if self.options.use_opencl: # for OpenCL examples
 			self.requires("opencl-icd-loader/2023.12.14")
@@ -62,6 +63,7 @@ class openfx(ConanFile):
 		copy(self, "cmake/*", src=self.source_folder, dst=self.package_folder)
 		copy(self, "LICENSE, README.md, INSTALL.md", src=self.source_folder, dst=self.package_folder)
 		copy(self, "include/*.h", src=self.source_folder, dst=self.package_folder)
+		copy(self,"contrib/colour/*.h", src=self.source_folder, dst=self.package_folder)
 		copy(self,"HostSupport/include/*.h", src=self.source_folder, dst=self.package_folder)
 		copy(self,"Support/*.h", src=self.source_folder, dst=self.package_folder)
 		copy(self,"Support/Plugins/include/*.h", src=self.source_folder, dst=self.package_folder)
@@ -76,6 +78,8 @@ class openfx(ConanFile):
 
 		self.cpp_info.set_property("cmake_build_modules", [os.path.join("cmake", "OpenFX.cmake")])
 		self.cpp_info.components["Api"].includedirs = ["include"]
+		# Header-only colour-conversion convenience library (contrib/colour).
+		self.cpp_info.components["ColourConvert"].includedirs = ["contrib/colour"]
 		self.cpp_info.components["HostSupport"].libs = [i for i in libs if "OfxHost" in i]
 		self.cpp_info.components["HostSupport"].includedirs = ["HostSupport/include"]
 		self.cpp_info.components["HostSupport"].requires = ["expat::expat"]
