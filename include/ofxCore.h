@@ -1039,6 +1039,9 @@ General status codes start at 1 and continue until 999
 /** @brief OfxStatus returned indicating that a default action should be performed */
 #define kOfxStatReplyDefault ((int) 14)
 
+/** @brief OfxStatus returned indicating that the plug-in is unlicensed (see \ref kOfxImageEffectPropBehaviourWhenUnlicensed) */
+#define kOfxStatUnlicensed ((int) 15)
+
 /*@}*/
 
 /*@}*/
