@@ -152,70 +152,71 @@ enum class PropId {
   OfxParamPropChoiceEnum, // 117
   OfxParamPropChoiceOption, // 118
   OfxParamPropChoiceOrder, // 119
-  OfxParamPropCustomCallbackV1, // 120
-  OfxParamPropCustomValue, // 121
-  OfxParamPropDataPtr, // 122
-  OfxParamPropDefault, // 123
-  OfxParamPropDefaultCoordinateSystem, // 124
-  OfxParamPropDigits, // 125
-  OfxParamPropDimensionLabel, // 126
-  OfxParamPropDisplayMax, // 127
-  OfxParamPropDisplayMin, // 128
-  OfxParamPropDoubleType, // 129
-  OfxParamPropEnabled, // 130
-  OfxParamPropEvaluateOnChange, // 131
-  OfxParamPropGroupOpen, // 132
-  OfxParamPropHasHostOverlayHandle, // 133
-  OfxParamPropHint, // 134
-  OfxParamPropIncrement, // 135
-  OfxParamPropInteractMinimumSize, // 136
-  OfxParamPropInteractPreferedSize, // 137
-  OfxParamPropInteractSize, // 138
-  OfxParamPropInteractSizeAspect, // 139
-  OfxParamPropInteractV1, // 140
-  OfxParamPropInterpolationAmount, // 141
-  OfxParamPropInterpolationTime, // 142
-  OfxParamPropIsAnimating, // 143
-  OfxParamPropIsAutoKeying, // 144
-  OfxParamPropMax, // 145
-  OfxParamPropMin, // 146
-  OfxParamPropPageChild, // 147
-  OfxParamPropParametricDimension, // 148
-  OfxParamPropParametricInteractBackground, // 149
-  OfxParamPropParametricRange, // 150
-  OfxParamPropParametricUIColour, // 151
-  OfxParamPropParent, // 152
-  OfxParamPropPersistant, // 153
-  OfxParamPropPluginMayWrite, // 154
-  OfxParamPropScriptName, // 155
-  OfxParamPropSecret, // 156
-  OfxParamPropShowTimeMarker, // 157
-  OfxParamPropStringFilePathExists, // 158
-  OfxParamPropStringMode, // 159
-  OfxParamPropType, // 160
-  OfxPluginPropFilePath, // 161
-  OfxPluginPropParamPageOrder, // 162
-  OfxPropAPIVersion, // 163
-  OfxPropChangeReason, // 164
-  OfxPropEffectInstance, // 165
-  OfxPropHostOSHandle, // 166
-  OfxPropIcon, // 167
-  OfxPropInstanceData, // 168
-  OfxPropIsInteractive, // 169
-  OfxPropLabel, // 170
-  OfxPropLongLabel, // 171
-  OfxPropName, // 172
-  OfxPropParamSetNeedsSyncing, // 173
-  OfxPropPluginDescription, // 174
-  OfxPropShortLabel, // 175
-  OfxPropTime, // 176
-  OfxPropType, // 177
-  OfxPropVersion, // 178
-  OfxPropVersionLabel, // 179
-  OfxParamPropUseHostOverlayHandle, // 180 (orig name: OfxParamPropUseHostOverlayHandle)
-  OfxPropKeyString, // 181 (orig name: OfxPropKeyString)
-  OfxPropKeySym, // 182 (orig name: OfxPropKeySym)
-  NProps // 183
+  OfxParamPropColourManagement, // 120
+  OfxParamPropCustomCallbackV1, // 121
+  OfxParamPropCustomValue, // 122
+  OfxParamPropDataPtr, // 123
+  OfxParamPropDefault, // 124
+  OfxParamPropDefaultCoordinateSystem, // 125
+  OfxParamPropDigits, // 126
+  OfxParamPropDimensionLabel, // 127
+  OfxParamPropDisplayMax, // 128
+  OfxParamPropDisplayMin, // 129
+  OfxParamPropDoubleType, // 130
+  OfxParamPropEnabled, // 131
+  OfxParamPropEvaluateOnChange, // 132
+  OfxParamPropGroupOpen, // 133
+  OfxParamPropHasHostOverlayHandle, // 134
+  OfxParamPropHint, // 135
+  OfxParamPropIncrement, // 136
+  OfxParamPropInteractMinimumSize, // 137
+  OfxParamPropInteractPreferedSize, // 138
+  OfxParamPropInteractSize, // 139
+  OfxParamPropInteractSizeAspect, // 140
+  OfxParamPropInteractV1, // 141
+  OfxParamPropInterpolationAmount, // 142
+  OfxParamPropInterpolationTime, // 143
+  OfxParamPropIsAnimating, // 144
+  OfxParamPropIsAutoKeying, // 145
+  OfxParamPropMax, // 146
+  OfxParamPropMin, // 147
+  OfxParamPropPageChild, // 148
+  OfxParamPropParametricDimension, // 149
+  OfxParamPropParametricInteractBackground, // 150
+  OfxParamPropParametricRange, // 151
+  OfxParamPropParametricUIColour, // 152
+  OfxParamPropParent, // 153
+  OfxParamPropPersistant, // 154
+  OfxParamPropPluginMayWrite, // 155
+  OfxParamPropScriptName, // 156
+  OfxParamPropSecret, // 157
+  OfxParamPropShowTimeMarker, // 158
+  OfxParamPropStringFilePathExists, // 159
+  OfxParamPropStringMode, // 160
+  OfxParamPropType, // 161
+  OfxPluginPropFilePath, // 162
+  OfxPluginPropParamPageOrder, // 163
+  OfxPropAPIVersion, // 164
+  OfxPropChangeReason, // 165
+  OfxPropEffectInstance, // 166
+  OfxPropHostOSHandle, // 167
+  OfxPropIcon, // 168
+  OfxPropInstanceData, // 169
+  OfxPropIsInteractive, // 170
+  OfxPropLabel, // 171
+  OfxPropLongLabel, // 172
+  OfxPropName, // 173
+  OfxPropParamSetNeedsSyncing, // 174
+  OfxPropPluginDescription, // 175
+  OfxPropShortLabel, // 176
+  OfxPropTime, // 177
+  OfxPropType, // 178
+  OfxPropVersion, // 179
+  OfxPropVersionLabel, // 180
+  OfxParamPropUseHostOverlayHandle, // 181 (orig name: OfxParamPropUseHostOverlayHandle)
+  OfxPropKeyString, // 182 (orig name: OfxPropKeyString)
+  OfxPropKeySym, // 183 (orig name: OfxPropKeySym)
+  NProps // 184
 }; // PropId
 
 // Separate arrays for enum-values for enum props, to keep everything constexpr
@@ -274,6 +275,8 @@ constexpr std::array OfxOpenGLPropPixelDepth =
   {"OfxBitDepthNone","OfxBitDepthByte","OfxBitDepthShort","OfxBitDepthHalf","OfxBitDepthFloat"};
 constexpr std::array OfxParamPropCacheInvalidation =
   {"OfxParamInvalidateValueChange","OfxParamInvalidateValueChangeToEnd","OfxParamInvalidateAll"};
+constexpr std::array OfxParamPropColourManagement =
+  {"OfxParamColourManagementNone","OfxParamColourManagementManaged","OfxParamColourManagementSRGB"};
 constexpr std::array OfxParamPropDefaultCoordinateSystem =
   {"OfxParamCoordinatesCanonical","OfxParamCoordinatesNormalised"};
 constexpr std::array OfxParamPropDoubleType =
@@ -407,6 +410,7 @@ static constexpr PropType OfxParamPropCanUndo_types[] = {PropType::Bool};
 static constexpr PropType OfxParamPropChoiceEnum_types[] = {PropType::Bool};
 static constexpr PropType OfxParamPropChoiceOption_types[] = {PropType::String};
 static constexpr PropType OfxParamPropChoiceOrder_types[] = {PropType::Int};
+static constexpr PropType OfxParamPropColourManagement_types[] = {PropType::Enum};
 static constexpr PropType OfxParamPropCustomCallbackV1_types[] = {PropType::Pointer};
 static constexpr PropType OfxParamPropCustomValue_types[] = {PropType::String};
 static constexpr PropType OfxParamPropDataPtr_types[] = {PropType::Pointer};
@@ -741,6 +745,8 @@ static inline constexpr PropDefsArray<PropDef> prop_defs = {
   openfx::span(prop_type_arrays::OfxParamPropChoiceOption_types, 1), 0, openfx::span<const char* const>()},
 { "OfxParamPropChoiceOrder",
   openfx::span(prop_type_arrays::OfxParamPropChoiceOrder_types, 1), 0, openfx::span<const char* const>()},
+{ "OfxParamPropColourManagement",
+  openfx::span(prop_type_arrays::OfxParamPropColourManagement_types, 1), 1, openfx::span(prop_enum_values::OfxParamPropColourManagement.data(), prop_enum_values::OfxParamPropColourManagement.size())},
 { "OfxParamPropCustomCallbackV1",
   openfx::span(prop_type_arrays::OfxParamPropCustomCallbackV1_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropCustomValue",
@@ -1006,6 +1012,7 @@ DEFINE_PROP_TRAITS(OfxParamPropCanUndo, bool, false);
 DEFINE_PROP_TRAITS(OfxParamPropChoiceEnum, bool, false);
 DEFINE_PROP_TRAITS(OfxParamPropChoiceOption, const char *, false);
 DEFINE_PROP_TRAITS(OfxParamPropChoiceOrder, int, false);
+DEFINE_PROP_TRAITS(OfxParamPropColourManagement, const char *, false);
 DEFINE_PROP_TRAITS(OfxParamPropCustomCallbackV1, void *, false);
 DEFINE_PROP_TRAITS(OfxParamPropCustomValue, const char *, false);
 DEFINE_PROP_TRAITS(OfxParamPropDataPtr, void *, false);
@@ -1195,6 +1202,7 @@ static_assert(string_view("OfxParamPropCanUndo") == string_view(kOfxParamPropCan
 static_assert(string_view("OfxParamPropChoiceEnum") == string_view(kOfxParamPropChoiceEnum));
 static_assert(string_view("OfxParamPropChoiceOption") == string_view(kOfxParamPropChoiceOption));
 static_assert(string_view("OfxParamPropChoiceOrder") == string_view(kOfxParamPropChoiceOrder));
+static_assert(string_view("OfxParamPropColourManagement") == string_view(kOfxParamPropColourManagement));
 static_assert(string_view("OfxParamPropCustomCallbackV1") == string_view(kOfxParamPropCustomInterpCallbackV1));
 static_assert(string_view("OfxParamPropCustomValue") == string_view(kOfxParamPropCustomValue));
 static_assert(string_view("OfxParamPropDataPtr") == string_view(kOfxParamPropDataPtr));
