@@ -897,9 +897,14 @@ This property is set to indicate whether the effect is currently being rendered 
 */
 #define kOfxImageEffectPropSequentialRenderStatus "OfxImageEffectPropSequentialRenderStatus"
 
-#define kOfxHostNativeOriginBottomLeft   "kOfxImageEffectHostPropNativeOriginBottomLeft"  
-#define kOfxHostNativeOriginTopLeft      "kOfxImageEffectHostPropNativeOriginTopLeft"  
-#define kOfxHostNativeOriginCenter       "kOfxImageEffectHostPropNativeOriginCenter"  
+/* NOTE: these constants are irregularly named: the macro name differs from the
+   string value, and unusually the string value itself begins with "k" (e.g.
+   kOfxHostNativeOriginBottomLeft is "kOfxImageEffectHostPropNativeOriginBottomLeft").
+   The string values are fixed by ABI and cannot change. Do not copy this in new
+   constants; values should not begin with "k". */
+#define kOfxHostNativeOriginBottomLeft   "kOfxImageEffectHostPropNativeOriginBottomLeft"
+#define kOfxHostNativeOriginTopLeft      "kOfxImageEffectHostPropNativeOriginTopLeft"
+#define kOfxHostNativeOriginCenter       "kOfxImageEffectHostPropNativeOriginCenter"
 /** @brief Property that indicates the host native UI space - this is only a UI hint, has no impact on pixel processing
 
 This property is set to kOfxHostNativeOriginBottomLeft pre V1.4 and was to be discovered by plug-ins. This is useful for drawing overlay for points... so everything matches the rest of the app (for example expression linking to other tools, or simply match the reported location of the host viewer).
@@ -912,9 +917,9 @@ This property is set to kOfxHostNativeOriginBottomLeft pre V1.4 and was to be di
    type: enum
    dimension: 1
    values:
-     - OfxImageEffectHostPropNativeOriginBottomLeft
-     - OfxImageEffectHostPropNativeOriginTopLeft
-     - OfxImageEffectHostPropNativeOriginCenter
+     - kOfxImageEffectHostPropNativeOriginBottomLeft
+     - kOfxImageEffectHostPropNativeOriginTopLeft
+     - kOfxImageEffectHostPropNativeOriginCenter
 */
 #define kOfxImageEffectHostPropNativeOrigin  "OfxImageEffectHostPropNativeOrigin"
 
@@ -1178,14 +1183,18 @@ See the documentation on clip preferences for more details on how this is used w
    dimension: 1
    values:
      - OfxImageOpaque
-     - OfxImagePreMultiplied
-     - OfxImageUnPreMultiplied
+     - OfxImageAlphaPremultiplied
+     - OfxImageAlphaUnPremultiplied
 */
 #define kOfxImageEffectPropPreMultiplication "OfxImageEffectPropPreMultiplication"
 
 /** Used to flag the alpha of an image as opaque */
 #define kOfxImageOpaque  "OfxImageOpaque"
 
+/* NOTE: the two constants below are irregularly named: the string value differs
+   from the macro name (it inserts "Alpha" and changes case, e.g.
+   kOfxImagePreMultiplied is "OfxImageAlphaPremultiplied"). The string values are
+   fixed by ABI and cannot change. Do not copy this mismatch in new constants. */
 /** Used to flag an image as premultiplied */
 #define kOfxImagePreMultiplied "OfxImageAlphaPremultiplied"
 
@@ -1491,9 +1500,9 @@ This contains the duration of the plug-in effect, in frames.
     type: enum
     dimension: 1
     values:
-      - OfxImageFieldNone
-      - OfxImageFieldLower
-      - OfxImageFieldUpper
+      - OfxFieldNone
+      - OfxFieldLower
+      - OfxFieldUpper
  */
 #define kOfxImageClipPropFieldOrder "OfxImageClipPropFieldOrder"
 
@@ -1575,10 +1584,10 @@ Row bytes is not supported for OpenCL Images.
     type: enum
     dimension: 1
     values:
-      - OfxImageFieldNone
-      - OfxImageFieldBoth
-      - OfxImageFieldLower
-      - OfxImageFieldUpper
+      - OfxFieldNone
+      - OfxFieldBoth
+      - OfxFieldLower
+      - OfxFieldUpper
  */
 #define kOfxImagePropField "OfxImagePropField"
 
@@ -1607,12 +1616,12 @@ Note that if it fetches kOfxImageFieldSingle and the host stores images natively
     type: enum
     dimension: 1
     values:
-      - OfxImageFieldNone
-      - OfxImageFieldLower
-      - OfxImageFieldUpper
-      - OfxImageFieldBoth
-      - OfxImageFieldSingle
-      - OfxImageFieldDoubled
+      - OfxFieldNone
+      - OfxFieldLower
+      - OfxFieldUpper
+      - OfxFieldBoth
+      - OfxFieldSingle
+      - OfxFieldDoubled
  */
 #define kOfxImageClipPropFieldExtraction "OfxImageClipPropFieldExtraction"
 
@@ -1627,10 +1636,10 @@ Note that if it fetches kOfxImageFieldSingle and the host stores images natively
     type: enum
     dimension: 1
     values:
-      - OfxImageFieldNone
-      - OfxImageFieldBoth
-      - OfxImageFieldLower
-      - OfxImageFieldUpper
+      - OfxFieldNone
+      - OfxFieldBoth
+      - OfxFieldLower
+      - OfxFieldUpper
  */
 #define kOfxImageEffectPropFieldToRender "OfxImageEffectPropFieldToRender"
 
@@ -1672,6 +1681,10 @@ This will be in \ref PixelCoordinates
  */
 #define kOfxImageEffectPropRenderWindow "OfxImageEffectPropRenderWindow"
 
+/* NOTE: these kOfxImageField* constants are irregularly named: the macro name
+   contains "Image" but the string value does not (e.g. kOfxImageFieldNone is
+   "OfxFieldNone", not "OfxImageFieldNone"). The string values are fixed by ABI
+   and cannot change. Do not copy this name/value mismatch in new constants. */
 /** String used to label imagery as having no fields */
 #define kOfxImageFieldNone "OfxFieldNone"
 /** String used to label the lower field (scan lines 0,2,4...) of fielded imagery */
