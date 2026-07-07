@@ -483,6 +483,7 @@ These are the list of actions passed to an image effect plugin's main function. 
      a memory purge
      -  \ref kOfxStatFailed, something wrong, but no error code appropriate,
      plugin to post message
+     -  \ref kOfxStatUnlicensed, see kOfxImageEffectPropBehaviourWhenUnlicensed
      -  \ref kOfxStatErrFatal
 
  
@@ -549,6 +550,7 @@ These are the list of actions passed to an image effect plugin's main function. 
      a memory purge,
      -  \ref kOfxStatFailed, something wrong, but no error code appropriate,
      plugin to post message,
+     -  \ref kOfxStatUnlicensed, see kOfxImageEffectPropBehaviourWhenUnlicensed
      -  \ref kOfxStatErrFatal
  
     @actiondef
@@ -1685,6 +1687,42 @@ This will be in \ref PixelCoordinates
 /** String used to label an image that consists of a single field, but each scan line is double,
     and so is full height */
 #define kOfxImageFieldDoubled "OfxFieldDoubled"
+
+/**  @brief The host's behaviour when the plug-in is unlicensed
+
+    - Type - string X 1
+    - Property Set - inArgs property set of the \ref kOfxImageEffectActionBeginSequenceRender
+                     and \ref kOfxImageEffectActionRender actions
+
+If the plug-in determines that it is unlicensed during a \ref
+kOfxImageEffectActionBeginSequenceRender or \ref kOfxImageEffectActionRender
+action, it should check this property.
+
+If \ref kOfxImageEffectPropBehaviourWhenUnlicensed is not set
+(indicating the host has not implemented this functionality):
+
+- plug-in should render an image (typically watermarked or
+  a placeholder) and return \ref kOfxStatOK.
+
+If \ref kOfxImageEffectPropBehaviourWhenUnlicensed is set to
+\ref kOfxUnlicensedContinue:
+
+- plug-in should render an image (typically watermarked or a
+  placeholder) and return \ref kOfxStatUnlicensed, which allows the
+  host to (for example) warn the user, or fail an offline render.
+
+If \ref kOfxImageEffectPropBehaviourWhenUnlicensed is set to
+\ref kOfxUnlicensedFail:
+
+- plug-in should return \ref kOfxStatUnlicensed and may do this
+  without any rendering, because it knows the host will fail the
+  render.
+*/
+#define kOfxImageEffectPropBehaviourWhenUnlicensed "OfxImageEffectPropBehaviourWhenUnlicensed"
+
+/** Strings used by \ref kOfxImageEffectPropBehaviourWhenUnlicensed */
+#define kOfxUnlicensedContinue "OfxUnlicensedContinue"
+#define kOfxUnlicensedFail "OfxUnlicensedFail"
 
 /*@}*/
 /*@}*/
