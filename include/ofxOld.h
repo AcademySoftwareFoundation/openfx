@@ -14,12 +14,12 @@
 
 /** @brief Indicates whether an effect is performing an analysis pass.
 --ofxImageEffects.h
-   - Type - int X 1
-   - Property Set -  plugin instance (read/write)
-   - Default - to 0
-   - Valid Values - This must be one of 0 or 1
-
 @deprecated - This feature has been deprecated - officially commented out v1.4.
+    
+    @propdef
+    type: bool
+    dimension: 1
+    deprecated: "1.4"
 */
 #define kOfxImageEffectPropInAnalysis "OfxImageEffectPropInAnalysis"
 
@@ -54,11 +54,14 @@ typedef struct OfxYUVAColourF {
 
 /** @brief The size of an interact's openGL viewport
 -- ofxInteract.h
-    - Type - int X 2 
-    - Property Set - read only property on the interact instance and in argument to all the interact actions.
-
 @deprecated - V1.3: This property is the redundant and its use will be deprecated in future releases.
 V1.4: Removed
+    
+    @propdef
+    type: int
+    dimension: 2
+    cname: kOfxInteractPropViewportSize
+    deprecated: "1.3"
  */
 #define kOfxInteractPropViewportSize "OfxInteractPropViewport"
 

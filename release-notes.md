@@ -5,7 +5,7 @@ This is the release 1.5.1 of OFX, the Open Effects image-processing plug-in stan
 Documentation and more info can be found at:
 
 * [The OpenFX website](http://openeffects.org)
-* [OFX Programming Guide By Example](https://github.com/ofxa/openfx/tree/master/Guide)
+* [OFX Programming Guide By Example](https://github.com/AcademySoftwareFoundation/openfx/tree/main/Guide)
 * [OFX API v. 1.4 Reference](http://openeffects.org/documentation/api_doc)
 * [OFX API Programming Guide](http://openeffects.org/documentation/guide)
 * [OFX API Programming Reference](http://openeffects.org/documentation/reference)
@@ -51,6 +51,7 @@ None
 - Add `kOfxImageEffectPropUniqueIdentifier`. Allows the plugin to differentiate its instances (e.g. for stably seeding a random number generator per-instance).
 - Add `kOfxImageEffectPropCPURenderSupported` (issue #212) - Property to indicate CPU rendering support.
 - Add `kOfxImageEffectPropThumbnailRender` (issue #193) - Property for thumbnail rendering mode.
+- Add plugin install locations for Windows Arm64 (issue #160).
 
 # Release Notes - 1.5
 
