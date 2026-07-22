@@ -74,7 +74,7 @@ jobs:
             vfx-cy: 2023
             has_cmake_presets: false
             buildtype: Release
-            conan_version: 2.20.1
+            conan_version: 2.30.0
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -93,7 +93,7 @@ jobs:
             vfx-cy: 2023
             has_cmake_presets: false
             buildtype: Release
-            conan_version: 2.20.1
+            conan_version: 2.30.0
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -111,7 +111,7 @@ jobs:
             vfx-cy: 2023
             has_cmake_presets: false
             buildtype: Release
-            conan_version: 2.20.1
+            conan_version: 2.30.0
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -124,7 +124,7 @@ jobs:
             os: ubuntu-latest
             has_cmake_presets: true
             buildtype: Release
-            conan_version: 2.20.1
+            conan_version: 2.30.0
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -137,7 +137,7 @@ jobs:
             os: macos-latest
             has_cmake_presets: true
             buildtype: Release
-            conan_version: 2.20.1
+            conan_version: 2.30.0
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -152,7 +152,7 @@ jobs:
             os: windows-2022
             has_cmake_presets: true
             buildtype: Release
-            conan_version: 2.20.1
+            conan_version: 2.30.0
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
@@ -165,7 +165,7 @@ jobs:
             os: windows-latest
             has_cmake_presets: true
             buildtype: Release
-            conan_version: 2.20.1
+            conan_version: 2.30.0
             cxx-standard: 17
             cxx-compiler: clang++
             cc-compiler: clang
