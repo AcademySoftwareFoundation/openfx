@@ -55,11 +55,11 @@ effect instance.
    type: enum
    dimension: 1
    values:
-     - OfxImageEffectPropColourManagementNone
-     - OfxImageEffectPropColourManagementBasic
-     - OfxImageEffectPropColourManagementCore
-     - OfxImageEffectPropColourManagementFull
-     - OfxImageEffectPropColourManagementOCIO
+     - OfxImageEffectColourManagementNone
+     - OfxImageEffectColourManagementBasic
+     - OfxImageEffectColourManagementCore
+     - OfxImageEffectColourManagementFull
+     - OfxImageEffectColourManagementOCIO
    introduced: "1.5"
 */
 #define kOfxImageEffectPropColourManagementStyle "OfxImageEffectPropColourManagementStyle"
