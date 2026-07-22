@@ -271,6 +271,7 @@ jobs:
         run: |
           which conan
           conan --version
+          cp .github/conan/settings_user.yml "$(conan config home)/settings_user.yml"
           conan profile detect
 
       - name: Install system dependencies if needed
