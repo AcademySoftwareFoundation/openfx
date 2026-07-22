@@ -1,13 +1,13 @@
 from conan import ConanFile
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
-from conan.tools.files import copy, collect_libs
+from conan.tools.files import copy, collect_libs, load
 import os.path
+import re
 
 required_conan_version = ">=1.59.0"
 
 class openfx(ConanFile):
 	name = "openfx"
-	version = "1.4.0"
 	license = "BSD-3-Clause"
 	url = "https://github.com/AcademySoftwareFoundation/openfx"
 	description = "OpenFX image processing plug-in standard"
@@ -24,6 +24,11 @@ class openfx(ConanFile):
 		"README.md",
 		"install.md"
 	)
+
+	def set_version(self):
+		# Single source of truth: the project() VERSION in CMakeLists.txt.
+		cmakelists = load(self, os.path.join(self.recipe_folder, "CMakeLists.txt"))
+		self.version = re.search(r"^\s*VERSION\s+([0-9.]+)", cmakelists, re.MULTILINE).group(1)
 
 	settings = "os", "arch", "compiler", "build_type"
 	options = {

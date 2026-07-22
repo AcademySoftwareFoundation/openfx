@@ -1,0 +1,79 @@
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright OpenFX and contributors to the OpenFX project.
+
+#
+# Create a signed, immutable source archive for each release, following
+# the pattern used by other ASWF projects (e.g. OpenEXR). See issue #249.
+#
+# This creates a .tar.gz of the complete OpenFX source tree at the given
+# release tag, signs it via sigstore (https://docs.sigstore.dev), and
+# uploads the .tar.gz, its .sigstore.json credential bundle, and a
+# .sha256 checksum as release assets. Unlike the auto-generated GitHub
+# source archives, these assets are immutable even if the tag moves.
+#
+# To verify a downloaded release at a given tag:
+#
+#   % pip install sigstore
+#   % sigstore verify github --cert-identity https://github.com/AcademySoftwareFoundation/openfx/.github/workflows/release-sign.yml@refs/tags/<tag> openfx-<version>.tar.gz
+#
+# To sign an existing release after publish (e.g. workflow fix): Actions →
+# Sign Release → Run workflow → enter the release tag (e.g. OFX_Release_1.5.1).
+
+name: Sign Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to sign (e.g. OFX_Release_1.5.1)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Sign & upload release source archive
+    runs-on: ubuntu-latest
+
+    env:
+      TAG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
+    permissions:
+      contents: write   # required for gh release upload (attach assets)
+      id-token: write   # required for sigstore OIDC signing
+    steps:
+
+      - name: Set version and tarball name
+        # Tags look like "OFX_Release_1.5.1"; the tarball is
+        # "openfx-1.5.1.tar.gz" and extracts into "openfx-1.5.1/...".
+        run: |
+          VERSION=${TAG#OFX_Release_}
+          echo OPENFX_PREFIX=openfx-${VERSION}/ >> $GITHUB_ENV
+          echo OPENFX_TARBALL=openfx-${VERSION}.tar.gz >> $GITHUB_ENV
+        shell: bash
+
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref }}
+
+      - name: Create archive
+        run: git archive --format=tar.gz -o ${OPENFX_TARBALL} --prefix ${OPENFX_PREFIX} ${TAG}
+
+      - name: Create checksum
+        run: sha256sum ${OPENFX_TARBALL} > ${OPENFX_TARBALL}.sha256
+
+      - name: Sign archive with Sigstore
+        uses: sigstore/gh-action-sigstore-python@f514d46b907ebcd5bedc05145c03b69c1edd8b46 # v3.0.0
+        with:
+          inputs: ${{ env.OPENFX_TARBALL }}
+          upload-signing-artifacts: false
+          release-signing-artifacts: false
+
+      - name: Upload release archive, signature bundle and checksum
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload ${TAG} ${OPENFX_TARBALL} ${OPENFX_TARBALL}.sigstore.json ${OPENFX_TARBALL}.sha256
