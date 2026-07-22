@@ -14,6 +14,7 @@ class openfx(ConanFile):
 	
 	exports_sources = (
 		"cmake/*",
+		"contrib/*",
 		"Examples/*",
 		"HostSupport/*",
 		"include/*",
@@ -86,6 +87,9 @@ class openfx(ConanFile):
 		# Plugin support helper headers use a .H extension; match both cases.
 		copy(self, "*.[hH]", src=os.path.join(src, "Support", "Plugins", "include"),
 		     dst=os.path.join(inc, "Support", "Plugins"))
+		# Header-only colour-conversion convenience library.
+		copy(self, "*.h", src=os.path.join(src, "contrib", "colour"),
+		     dst=os.path.join(inc, "contrib", "colour"))
 
 		# The CMake build module (add_ofx_plugin) goes in lib/cmake, alongside
 		# the Info.plist template it needs, so it resolves relative to itself
@@ -114,6 +118,8 @@ class openfx(ConanFile):
 
 		self.cpp_info.set_property("cmake_build_modules", [os.path.join("lib", "cmake", "OpenFX.cmake")])
 		self.cpp_info.components["Api"].includedirs = ["include"]
+		# Header-only colour-conversion convenience library (contrib/colour).
+		self.cpp_info.components["ColourConvert"].includedirs = ["include/contrib/colour"]
 		self.cpp_info.components["HostSupport"].libs = [i for i in libs if "OfxHost" in i]
 		self.cpp_info.components["HostSupport"].includedirs = ["include/HostSupport"]
 		self.cpp_info.components["HostSupport"].requires = ["Api", "expat::expat"]

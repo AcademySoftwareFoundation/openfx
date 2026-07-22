@@ -81,8 +81,10 @@ if(OFX_SUPPORTS_OPENGLRENDER)
 endif()
 
 # Build
+enable_testing()
 add_subdirectory(HostSupport)
 add_subdirectory(Support)
+add_subdirectory(contrib/colour)
 if(BUILD_EXAMPLE_PLUGINS)
   add_subdirectory(Examples)
 endif()
