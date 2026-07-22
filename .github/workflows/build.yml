@@ -70,7 +70,7 @@ jobs:
             ostype: linux
             aswfdockerbuild: true
             os: ubuntu-latest
-            container: aswf/ci-base:2023
+            container: aswf/ci-openfx:2023.4
             vfx-cy: 2023
             has_cmake_presets: false
             buildtype: Release
@@ -89,7 +89,7 @@ jobs:
             ostype: linux
             aswfdockerbuild: true
             os: ubuntu-latest
-            container: aswf/ci-base:2023
+            container: aswf/ci-openfx:2023.4
             vfx-cy: 2023
             has_cmake_presets: false
             buildtype: Release
@@ -107,7 +107,7 @@ jobs:
             ostype: linux
             aswfdockerbuild: true
             os: ubuntu-latest
-            container: aswf/ci-base:2023
+            container: aswf/ci-openfx:2023.4
             vfx-cy: 2023
             has_cmake_presets: false
             buildtype: Release
@@ -117,6 +117,54 @@ jobs:
             cc-compiler: clang
             compiler-desc: Clang
             opengl: false
+          - name_prefix: Linux Rocky 8 VFX CY2024
+            release_prefix: linux-vfx2024
+            ostype: linux
+            aswfdockerbuild: true
+            os: ubuntu-latest
+            container: aswf/ci-openfx:2024.8
+            vfx-cy: 2024
+            has_cmake_presets: false
+            buildtype: Release
+            conan_version: 2.30.0
+            cxx-standard: 17
+            cxx-compiler: clang++
+            cc-compiler: clang
+            compiler-desc: Clang
+            cuda: false
+            opencl: true
+          - name_prefix: Linux Rocky 8 VFX CY2025
+            release_prefix: linux-vfx2025
+            ostype: linux
+            aswfdockerbuild: true
+            os: ubuntu-latest
+            container: aswf/ci-openfx:2025.7
+            vfx-cy: 2025
+            has_cmake_presets: false
+            buildtype: Release
+            conan_version: 2.30.0
+            cxx-standard: 17
+            cxx-compiler: clang++
+            cc-compiler: clang
+            compiler-desc: Clang
+            cuda: false
+            opencl: true
+          - name_prefix: Linux Rocky 9 VFX CY2026
+            release_prefix: linux-vfx2026
+            ostype: linux
+            aswfdockerbuild: true
+            os: ubuntu-latest
+            container: aswf/ci-openfx:2026.5
+            vfx-cy: 2026
+            has_cmake_presets: false
+            buildtype: Release
+            conan_version: 2.30.0
+            cxx-standard: 17
+            cxx-compiler: clang++
+            cc-compiler: clang
+            compiler-desc: Clang
+            cuda: false
+            opencl: true
           - name_prefix: Linux Ubuntu
             release_prefix: linux-ubuntu
             ostype: linux
