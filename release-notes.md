@@ -4,12 +4,11 @@ This is the release 1.5.1 of OFX, the Open Effects image-processing plug-in stan
 
 Documentation and more info can be found at:
 
-* [The OpenFX website](http://openeffects.org)
-* [OFX Programming Guide By Example](https://github.com/AcademySoftwareFoundation/openfx/tree/main/Guide)
-* [OFX API v. 1.4 Reference](http://openeffects.org/documentation/api_doc)
-* [OFX API Programming Guide](http://openeffects.org/documentation/guide)
-* [OFX API Programming Reference](http://openeffects.org/documentation/reference)
-* [OFX Discussion Google Group](https://groups.google.com/forum/#!forum/ofx-discussion)
+* [The OpenFX website](https://openeffects.org)
+* [OpenFX Documentation](https://openfx.readthedocs.io/en/latest) - start here
+* [OpenFX Documentation: Reference](https://openfx.readthedocs.io/en/latest/Reference)
+* [OFX Programming Guide By Example](https://openfx.readthedocs.io/en/latest/Guide)
+* [OpenFX Wiki](https://lf-aswf.atlassian.net/wiki/spaces/OFX/overview)
 
 # Release Notes - 1.5.1
 
