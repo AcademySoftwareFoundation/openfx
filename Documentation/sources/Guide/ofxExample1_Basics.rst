@@ -6,7 +6,7 @@ with a host application, and goes into the fundamentals of the API.
 
 An example plugin will be used to illustrate how all the machinery
 works, and its source can be found in the C++ file
-`there <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Guide/Code/Example1/basics.cpp>`__.
+`there <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example1/basics.cpp>`__.
 This plugin is a *no-op* image
 effect and does absolutely nothing to images, it is there purely to show
 you the basics of how a host and plugin work together. I’ll embed
@@ -84,7 +84,7 @@ wants to keep them.
 
 From our example, we have the following…
 
-`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L343>`__
+`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example1/basics.cpp#L343>`__
 
 .. code:: c++
 
@@ -135,7 +135,7 @@ identify the plugin, what it does, and what version it is. These are:
 
 Our example plugin’s ``OfxPlugin`` struct looks like…
 
-`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L326>`__
+`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example1/basics.cpp#L326>`__
 
 .. code:: c++
 
@@ -221,7 +221,7 @@ called, but notice what it does…
 
 .. _LoadActionExample:
 
-`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L99>`__
+`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example1/basics.cpp#L99>`__
 
 .. code:: c++
 
@@ -281,7 +281,7 @@ Properties can be of the following fundamental types…
 
 So for in our example we have….
 
-`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L160>`__
+`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example1/basics.cpp#L160>`__
 
 .. code:: c++
 
@@ -353,7 +353,7 @@ well defined default for that action.
 
 So looking at our example we can see its main entry point:
 
-`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L259>`__
+`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example1/basics.cpp#L259>`__
 
 .. code:: c++
 
@@ -469,7 +469,7 @@ describe itself. This is done with the :c:macro:`kOfxActionDescribe` action. Fro
 our example plugin, here is the function called by our main entry point
 in response to the describe action.
 
-`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L149>`__
+`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example1/basics.cpp#L149>`__
 
 .. code:: c++
 
@@ -535,7 +535,7 @@ in context action…
     them to show up in the same plugin group  [4]_ in the user
     interface.
 
-`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L171>`__
+`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example1/basics.cpp#L171>`__
 
 .. code:: c++
 
@@ -623,7 +623,7 @@ typically a hook to deeper plugin side data structures.
     that wants to write to the instance data after instance creation do
     so in a safe manner (e.g. by semaphore lock).
 
-`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L202>`__
+`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example1/basics.cpp#L202>`__
 
 .. code:: c++
 
@@ -683,7 +683,7 @@ to its inputs, for example a blur effect with the blur size of zero. In
 such a case the host can simply ignore the plugin and use its source
 images directly. And here is the code that does that:
 
-`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example1/basics.cpp#L238>`__
+`basics.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example1/basics.cpp#L238>`__
 
 .. code:: c++
 
