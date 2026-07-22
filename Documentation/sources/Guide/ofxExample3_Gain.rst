@@ -4,7 +4,7 @@
 This guide will take you through the basics of creating and using
 parameters in OFX. An example plugin will be used to illustrate how it
 all works and its source can be found in the C++ file
-`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Guide/Code/Example3/gain.cpp>`_.
+`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example3/gain.cpp>`_.
 This plugin takes an image and
 multiplies the pixel by the value held in a user visible parameter.
 Ideally you should have read the guide to the :ref:`basic image
@@ -82,7 +82,7 @@ Now seeing as we are going to be playing with parameters, our plugin
 will need a new suite, the parameters suite, and our load action now
 looks like:
 
-`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example3/gain.cpp#L101>`__
+`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example3/gain.cpp#L101>`__
 
 .. code:: c++
 
@@ -136,7 +136,7 @@ is exactly the same as in the last example. What’s new is the bit where
 we describe parameters. I’ll show the describe in context action in
 several small chunks to take you through it.
 
-`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example3/gain.cpp#L228>`__
+`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example3/gain.cpp#L228>`__
 
 .. code:: c++
 
@@ -179,7 +179,7 @@ new parameter’s property set handle. Each parameter has a set of
 properties we use to refine its behaviour, most of which have sensible
 defaults.
 
-`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example3/gain.cpp#L278>`__
+`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example3/gain.cpp#L278>`__
 
 .. code:: c++
 
@@ -197,7 +197,7 @@ hairs over the image and so on. In this case we are saying that our
 double parameter represents a scaling value. OFX has more kinds of
 double parameter which you can use to best for your effect.
 
-`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example3/gain.cpp#L282>`__
+`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example3/gain.cpp#L282>`__
 
 .. code:: c++
 
@@ -214,7 +214,7 @@ This section sets a default value for our parameter and a logical a
 minimum value below which it cannot go. Note it does not set a maximum
 value, so the parameter should not be clamped to any upper value ever.
 
-`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example3/gain.cpp#L290>`__
+`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example3/gain.cpp#L290>`__
 
 .. code:: c++
 
@@ -236,7 +236,7 @@ values between 0.0 and 10.0 for our gain param, but the parameter could
 be set to a million via other means, eg: typing in a UI number box,
 animation, scripting whatever.
 
-`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example3/gain.cpp#L298>`__
+`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example3/gain.cpp#L298>`__
 
 .. code:: c++
 
@@ -255,7 +255,7 @@ the parameter. It defaults to the name of the param, but it can be
 entirely different. Finally we set a hint string to be used for the
 parameter.
 
-`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example3/gain.cpp#L308>`__
+`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example3/gain.cpp#L308>`__
 
 .. code:: c++
 
@@ -312,7 +312,7 @@ you can always grab parameters from an instance by name at any time. But
 to make our code a bit cleaner and to show an example of instance data
 being used, we are going to trap create instance.
 
-`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example3/gain.cpp#L111>`__
+`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example3/gain.cpp#L111>`__
 
 .. code:: c++
 
@@ -333,7 +333,7 @@ handles, we are going to cache away handles to our clips and parameters
 in a simple struct. Note that these handles are valid for the duration
 of the instance.
 
-`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example3/gain.cpp#L330>`__
+`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example3/gain.cpp#L330>`__
 
 .. code:: c++
 
@@ -378,7 +378,7 @@ in the instance’s property set.
 It then fetches handles to the two clips and two parameters by name and
 caches those into the newly created struct.
 
-`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example3/gain.cpp#L123>`__
+`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example3/gain.cpp#L123>`__
 
 .. code:: c++
 
@@ -401,7 +401,7 @@ overloaded and there is another version that take an
 Of course we now need to trap the destroy instance action to delete our
 instance data, otherwise we will get memory leaks.
 
-`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example3/gain.cpp#L364>`__
+`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example3/gain.cpp#L364>`__
 
 .. code:: c++
 
@@ -425,7 +425,7 @@ So we’ve define our parameters, we’ve got handles to the instance of
 them, but we will want to grab the value of the parameters to actually
 use them at render time.
 
-`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example3/gain.cpp#L490>`__
+`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example3/gain.cpp#L490>`__
 
 .. code:: c++
 
@@ -465,7 +465,7 @@ similar to a C scanf function.
 And finally here is a snippet of the templated pixel pushing code where
 we do the actual processing using our parameter values;
 
-`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/doc/Documentation/sources/Guide/Code/Example3/gain.cpp#L437>`__
+`gain.cpp <https://github.com/AcademySoftwareFoundation/openfx/blob/main/Documentation/sources/Guide/Code/Example3/gain.cpp#L437>`__
 
 .. code:: c++
 
