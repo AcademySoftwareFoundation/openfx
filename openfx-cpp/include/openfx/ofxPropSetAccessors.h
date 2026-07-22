@@ -4004,6 +4004,574 @@ public:
 
 };
 
+// Property set accessor for: ParamsRGB
+class ParamsRGB : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    ParamsRGB& setColourManagement(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropColourManagement>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setType(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropType>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setName(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropName>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setLabel(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropLabel>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setShortLabel(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropShortLabel>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setLongLabel(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropLongLabel>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setSecret(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropSecret>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setHint(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropHint>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setScriptName(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropScriptName>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setParent(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropParent>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropEnabled>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setDataPtr(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropDataPtr>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setIcon(const std::array<const char*, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxPropIcon>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ParamsRGB& setIcon(std::initializer_list<const char*> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxPropIcon>(values, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setInteractV1(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropInteractV1>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setInteractSize(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropInteractSize>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ParamsRGB& setInteractSize(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropInteractSize>(values, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setInteractSizeAspect(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropInteractSizeAspect>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setInteractMinimumSize(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropInteractMinimumSize>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ParamsRGB& setInteractMinimumSize(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropInteractMinimumSize>(values, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setInteractPreferedSize(const std::array<int, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropInteractPreferedSize>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ParamsRGB& setInteractPreferedSize(std::initializer_list<int> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropInteractPreferedSize>(values, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setHasHostOverlayHandle(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropHasHostOverlayHandle>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setUseHostOverlayHandle(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropUseHostOverlayHandle>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    // Multi-type property (supports: int, double, string, pointer)
+    template<typename T>
+    ParamsRGB& setDefault(T value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropDefault, T>(value, index, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename T, typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ParamsRGB& setDefault(const Container& values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropDefault, T>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    template<typename T>
+    ParamsRGB& setDefault(std::initializer_list<T> values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropDefault, T>(values, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setAnimates(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropAnimates>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    bool isAnimating(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropIsAnimating>(0, error_if_missing);
+    }
+
+    bool isAutoKeying(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropIsAutoKeying>(0, error_if_missing);
+    }
+
+    ParamsRGB& setPersistant(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropPersistant>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setEvaluateOnChange(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropEvaluateOnChange>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setPluginMayWrite(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropPluginMayWrite>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setCacheInvalidation(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropCacheInvalidation>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setCanUndo(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropCanUndo>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    ParamsRGB& setMin(T value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropMin, T>(value, index, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename T, typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ParamsRGB& setMin(const Container& values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropMin, T>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    template<typename T>
+    ParamsRGB& setMin(std::initializer_list<T> values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropMin, T>(values, error_if_missing);
+        return *this;
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    ParamsRGB& setMax(T value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropMax, T>(value, index, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename T, typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ParamsRGB& setMax(const Container& values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropMax, T>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    template<typename T>
+    ParamsRGB& setMax(std::initializer_list<T> values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropMax, T>(values, error_if_missing);
+        return *this;
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    ParamsRGB& setDisplayMin(T value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropDisplayMin, T>(value, index, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename T, typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ParamsRGB& setDisplayMin(const Container& values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropDisplayMin, T>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    template<typename T>
+    ParamsRGB& setDisplayMin(std::initializer_list<T> values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropDisplayMin, T>(values, error_if_missing);
+        return *this;
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    ParamsRGB& setDisplayMax(T value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropDisplayMax, T>(value, index, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename T, typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ParamsRGB& setDisplayMax(const Container& values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropDisplayMax, T>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    template<typename T>
+    ParamsRGB& setDisplayMax(std::initializer_list<T> values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropDisplayMax, T>(values, error_if_missing);
+        return *this;
+    }
+
+};
+
+// Property set accessor for: ParamsRGBA
+class ParamsRGBA : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    ParamsRGBA& setColourManagement(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropColourManagement>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setType(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropType>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setName(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropName>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setLabel(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropLabel>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setShortLabel(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropShortLabel>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setLongLabel(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropLongLabel>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setSecret(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropSecret>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setHint(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropHint>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setScriptName(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropScriptName>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setParent(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropParent>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropEnabled>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setDataPtr(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropDataPtr>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setIcon(const std::array<const char*, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxPropIcon>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ParamsRGBA& setIcon(std::initializer_list<const char*> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxPropIcon>(values, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setInteractV1(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropInteractV1>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setInteractSize(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropInteractSize>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ParamsRGBA& setInteractSize(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropInteractSize>(values, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setInteractSizeAspect(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropInteractSizeAspect>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setInteractMinimumSize(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropInteractMinimumSize>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ParamsRGBA& setInteractMinimumSize(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropInteractMinimumSize>(values, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setInteractPreferedSize(const std::array<int, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropInteractPreferedSize>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    ParamsRGBA& setInteractPreferedSize(std::initializer_list<int> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropInteractPreferedSize>(values, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setHasHostOverlayHandle(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropHasHostOverlayHandle>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setUseHostOverlayHandle(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropUseHostOverlayHandle>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    // Multi-type property (supports: int, double, string, pointer)
+    template<typename T>
+    ParamsRGBA& setDefault(T value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropDefault, T>(value, index, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename T, typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ParamsRGBA& setDefault(const Container& values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropDefault, T>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    template<typename T>
+    ParamsRGBA& setDefault(std::initializer_list<T> values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropDefault, T>(values, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setAnimates(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropAnimates>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    bool isAnimating(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropIsAnimating>(0, error_if_missing);
+    }
+
+    bool isAutoKeying(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropIsAutoKeying>(0, error_if_missing);
+    }
+
+    ParamsRGBA& setPersistant(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropPersistant>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setEvaluateOnChange(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropEvaluateOnChange>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setPluginMayWrite(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropPluginMayWrite>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setCacheInvalidation(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropCacheInvalidation>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setCanUndo(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropCanUndo>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    ParamsRGBA& setMin(T value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropMin, T>(value, index, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename T, typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ParamsRGBA& setMin(const Container& values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropMin, T>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    template<typename T>
+    ParamsRGBA& setMin(std::initializer_list<T> values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropMin, T>(values, error_if_missing);
+        return *this;
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    ParamsRGBA& setMax(T value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropMax, T>(value, index, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename T, typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ParamsRGBA& setMax(const Container& values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropMax, T>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    template<typename T>
+    ParamsRGBA& setMax(std::initializer_list<T> values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropMax, T>(values, error_if_missing);
+        return *this;
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    ParamsRGBA& setDisplayMin(T value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropDisplayMin, T>(value, index, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename T, typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ParamsRGBA& setDisplayMin(const Container& values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropDisplayMin, T>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    template<typename T>
+    ParamsRGBA& setDisplayMin(std::initializer_list<T> values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropDisplayMin, T>(values, error_if_missing);
+        return *this;
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    ParamsRGBA& setDisplayMax(T value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropDisplayMax, T>(value, index, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename T, typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ParamsRGBA& setDisplayMax(const Container& values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropDisplayMax, T>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    template<typename T>
+    ParamsRGBA& setDisplayMax(std::initializer_list<T> values, bool error_if_missing = true) {
+        props_.setAllTyped<PropId::OfxParamPropDisplayMax, T>(values, error_if_missing);
+        return *this;
+    }
+
+};
+
 // Property set accessor for: ParamsStrChoice
 class ParamsStrChoice : public PropertySetAccessor {
 public:

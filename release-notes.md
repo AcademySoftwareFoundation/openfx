@@ -20,6 +20,7 @@ This is version 1.5.1 of the OpenFX API, a minor release with bug fixes and impr
 - **CPU Render Support**: Added `kOfxImageEffectPropCPURenderSupported` property to allow plugins to declare CPU rendering capability (or rather lack thereof).
 - **Thumbnail Rendering**: Added `kOfxImageEffectPropThumbnailRender` property to support efficient thumbnail generation.
 - **Spatial Awareness**: Added `kOfxImageEffectPropNoSpatialAwareness`. Allows the host and plugin to coordinate a render that ensures no spatial changes to the image.
+- **Colour-Managed Colour Params**: Added `kOfxParamPropColourManagement`. Lets a plugin declare the colourspace of an RGB/RGBA parameter's values (including its default): `Managed` (ACES2065-1, scene-linear, unclamped) for processing colours, or `SRGB` (sRGB, [0..1]) for display-referred UI colours such as Draw Suite overlays, so a host can interpret and convert them correctly.
 
 
 ## Fixes in OpenFX Version 1.5.1:
@@ -50,6 +51,7 @@ None
 - Add `kOfxImageEffectPropCPURenderSupported` (issue #212) - Property to indicate CPU rendering support.
 - Add `kOfxImageEffectPropThumbnailRender` (issue #193) - Property for thumbnail rendering mode.
 - Add plugin install locations for Windows Arm64 (issue #160).
+- Add `kOfxParamPropColourManagement` (issue #158) - Declares the colourspace of an RGB/RGBA parameter's values: `None` (legacy), `Managed` (ACES2065-1) or `SRGB`.
 
 # Release Notes - 1.5
 
