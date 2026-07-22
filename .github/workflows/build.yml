@@ -336,7 +336,7 @@ jobs:
           MATRIX_BUILDTYPE: ${{ matrix.buildtype }}
         run: |
           [[ "$MATRIX_OPENGL" != false && "$MATRIX_OPENCL" = true ]] && USE_OPENCL="-o use_opencl=True"
-          conan install -s build_type=$MATRIX_BUILDTYPE -pr:b=default --build=missing . -c tools.cmake.cmaketoolchain:generator=Ninja $USE_OPENCL
+          conan install -s build_type=$MATRIX_BUILDTYPE -pr:b=default --build=missing . -c tools.cmake.cmaketoolchain:generator=Ninja -o build_examples=True $USE_OPENCL
 
       - name: Configure project with cmake
         env:

@@ -26,22 +26,28 @@ class openfx(ConanFile):
 	)
 
 	settings = "os", "arch", "compiler", "build_type"
-	options = {"use_opencl": [True, False]}
+	options = {
+		"build_examples": [True, False],
+		"use_opencl": [True, False],
+	}
 	default_options = {
 		"expat/*:shared": True,
-                "use_opencl": False,
-                "spdlog/*:header_only": True,
-                "fmt/*:header_only": True
+		"build_examples": False,
+		"use_opencl": False,
+		"spdlog/*:header_only": True,
+		"fmt/*:header_only": True
 	}
-	
+
 	def requirements(self):
-		if self.options.use_opencl: # for OpenCL examples
-			self.requires("opencl-icd-loader/2023.12.14")
-			self.requires("opencl-headers/2023.12.14")
-		self.requires("opengl/system") # for OpenGL examples
 		self.requires("expat/2.7.1") # for HostSupport
-		self.requires("cimg/3.3.2") # to draw text into images
-		self.requires("spdlog/1.13.0") # for logging
+		# Everything below is used only by the example plugins.
+		if self.options.build_examples:
+			self.requires("opengl/system")
+			self.requires("cimg/3.3.2") # to draw text into images
+			self.requires("spdlog/1.13.0") # for logging
+			if self.options.use_opencl:
+				self.requires("opencl-icd-loader/2023.12.14")
+				self.requires("opencl-headers/2023.12.14")
 
 	def layout(self):
 		cmake_layout(self)
@@ -51,6 +57,7 @@ class openfx(ConanFile):
 		deps.generate()
 
 		tc = CMakeToolchain(self)
+		tc.cache_variables["BUILD_EXAMPLE_PLUGINS"] = bool(self.options.build_examples)
 		tc.generate()
 
 	def build(self):
@@ -104,9 +111,15 @@ class openfx(ConanFile):
 		self.cpp_info.components["Api"].includedirs = ["include"]
 		self.cpp_info.components["HostSupport"].libs = [i for i in libs if "OfxHost" in i]
 		self.cpp_info.components["HostSupport"].includedirs = ["include/HostSupport"]
-		# spdlog is used by the example/host logging helpers (header-only here).
-		self.cpp_info.components["HostSupport"].requires = ["expat::expat", "spdlog::spdlog"]
+		self.cpp_info.components["HostSupport"].requires = ["Api", "expat::expat"]
 		self.cpp_info.components["Support"].libs = [i for i in libs if "OfxSupport" in i]
 		self.cpp_info.components["Support"].includedirs = ["include/Support", "include/Support/Plugins"]
-		# cimg is used by the support example plugins to draw text (header-only).
-		self.cpp_info.components["Support"].requires = ["opengl::opengl", "cimg::cimg"]
+		self.cpp_info.components["Support"].requires = ["Api"]
+		if self.options.build_examples:
+			# The packaged example plugins use these; consumers of the
+			# libraries alone (build_examples=False) need only expat.
+			self.cpp_info.components["Support"].requires += ["opengl::opengl", "cimg::cimg"]
+			self.cpp_info.components["HostSupport"].requires += ["spdlog::spdlog"]
+			if self.options.use_opencl:
+				self.cpp_info.components["Support"].requires += [
+					"opencl-icd-loader::opencl-icd-loader", "opencl-headers::opencl-headers"]

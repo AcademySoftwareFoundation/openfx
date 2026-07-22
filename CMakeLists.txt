@@ -60,9 +60,12 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_BINARY_DIR})
 
 # Conan packages
 find_package(EXPAT)
-find_package(opengl_system REQUIRED)
-find_package(cimg REQUIRED)
-find_package(spdlog REQUIRED)
+if(BUILD_EXAMPLE_PLUGINS)
+  # Used only by the example plugins, not by the OpenFX libraries.
+  find_package(opengl_system REQUIRED)
+  find_package(cimg REQUIRED)
+  find_package(spdlog REQUIRED)
+endif()
 
 # Macros
 include(OpenFX)
