@@ -182,6 +182,57 @@ See \ref ParametersInterfacesPagedLayouts for more details.
 */
 #define kOfxParamPageSkipColumn "OfxParamPageSkipColumn"
 
+/** @brief Layout hint for hierarchical parameter layouts.
+
+This property tells the host how to lay out the parameter relative to the
+parameter that follows it.
+
+    - Valid Values - one of
+      - ::kOfxParamPropLayoutHintNormal - begin the next parameter on a new line
+      - ::kOfxParamPropLayoutHintDivider - place a divider after this parameter
+      - ::kOfxParamPropLayoutHintNoNewLine - place the next parameter on the same line
+    @propdef
+    type: int
+    dimension: 1
+    default: 0
+    introduced: "1.6"
+*/
+#define kOfxParamPropLayoutHint "OfxParamPropLayoutHint"
+
+/** @brief Value for ::kOfxParamPropLayoutHint indicating normal layout. */
+#define kOfxParamPropLayoutHintNormal 0
+
+/** @brief Value for ::kOfxParamPropLayoutHint indicating a divider after the parameter. */
+#define kOfxParamPropLayoutHintDivider 1
+
+/** @brief Value for ::kOfxParamPropLayoutHint indicating that the next parameter starts on the same line. */
+#define kOfxParamPropLayoutHintNoNewLine 2
+
+/** @brief Horizontal padding after a parameter in pixels.
+
+This property is only used when ::kOfxParamPropLayoutHint is set to
+::kOfxParamPropLayoutHintNoNewLine. It tells the host how much space to leave
+between the current parameter and the next parameter.
+
+    - Valid Values - non-negative integers
+    @propdef
+    type: int
+    dimension: 1
+    default: 0
+    introduced: "1.6"
+*/
+#define kOfxParamPropLayoutPadWidth "OfxParamPropLayoutPadWidth"
+
+/** @brief Whether to display a group parameter as a tab.
+
+    @propdef
+    type: bool
+    dimension: 1
+    default: 0
+    introduced: "1.6"
+*/
+#define kOfxParamPropGroupIsTab "OfxParamPropGroupIsTab"
+
 /** @brief Overrides the parameter's standard user interface with the given interact.
 
 If set, the parameter's normal interface is replaced completely by the interact gui.
@@ -1345,6 +1396,8 @@ changes a keyframe.  The keyframe indices will not change within a single action
     - OfxParamPropParent
     - OfxParamPropEnabled
     - OfxParamPropDataPtr
+    - OfxParamPropLayoutHint
+    - OfxParamPropLayoutPadWidth
     - OfxPropIcon
 */
 
@@ -1386,6 +1439,7 @@ changes a keyframe.  The keyframe indices will not change within a single action
     write: plugin
     props:
       - OfxParamPropGroupOpen
+      - OfxParamPropGroupIsTab
       - ParamsCommon_REF
 */
 

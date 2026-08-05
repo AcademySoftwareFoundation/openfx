@@ -462,6 +462,18 @@ Integer (Boolean) Properties
 - **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropEvaluateOnChange`.
 
+.. _prop_OfxParamPropGroupIsTab:
+
+**OfxParamPropGroupIsTab**
+^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxParamPropGroupIsTab`
+- **Type**: bool
+- **Dimension**: 1
+- **Used in Property Sets**: :ref:`ParamsGroup <propset_ParamsGroup>` (plugin)
+- **Introduced in**: version 1.6
+- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropGroupIsTab`.
+
 .. _prop_OfxParamPropGroupOpen:
 
 **OfxParamPropGroupOpen**
@@ -1650,6 +1662,30 @@ Integer Properties
 - **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropInteractPreferedSize`.
 
+.. _prop_OfxParamPropLayoutHint:
+
+**OfxParamPropLayoutHint**
+^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxParamPropLayoutHint`
+- **Type**: int
+- **Dimension**: 1
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
+- **Introduced in**: version 1.6
+- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropLayoutHint`.
+
+.. _prop_OfxParamPropLayoutPadWidth:
+
+**OfxParamPropLayoutPadWidth**
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxParamPropLayoutPadWidth`
+- **Type**: int
+- **Dimension**: 1
+- **Used in Property Sets**: :ref:`ParamDouble1D <propset_ParamDouble1D>` (plugin), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
+- **Introduced in**: version 1.6
+- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropLayoutPadWidth`.
+
 .. _prop_OfxParamPropMax:
 
 **OfxParamPropMax**
@@ -1693,6 +1729,30 @@ Integer Properties
 - **Dimension**: Variable (0 or more)
 - **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropAPIVersion`.
+
+.. _prop_OfxPropHostMajorVersion:
+
+**OfxPropHostMajorVersion**
+^^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxPropHostMajorVersion`
+- **Type**: int
+- **Dimension**: 1
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
+- **Introduced in**: version 1.6
+- **Doc**: For detailed doc, see :c:macro:`kOfxPropHostMajorVersion`.
+
+.. _prop_OfxPropHostMinorVersion:
+
+**OfxPropHostMinorVersion**
+^^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxPropHostMinorVersion`
+- **Type**: int
+- **Dimension**: 1
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
+- **Introduced in**: version 1.6
+- **Doc**: For detailed doc, see :c:macro:`kOfxPropHostMinorVersion`.
 
 .. _prop_OfxPropVersion:
 
@@ -2167,6 +2227,30 @@ String Properties
 - **Dimension**: Variable (0 or more)
 - **Used in Property Sets**: :ref:`ParameterSet <propset_ParameterSet>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPluginPropParamPageOrder`.
+
+.. _prop_OfxPropHostBuildVersion:
+
+**OfxPropHostBuildVersion**
+^^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxPropHostBuildVersion`
+- **Type**: string
+- **Dimension**: 1
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
+- **Introduced in**: version 1.6
+- **Doc**: For detailed doc, see :c:macro:`kOfxPropHostBuildVersion`.
+
+.. _prop_OfxPropHostProductTitle:
+
+**OfxPropHostProductTitle**
+^^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxPropHostProductTitle`
+- **Type**: string
+- **Dimension**: 1
+- **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
+- **Introduced in**: version 1.6
+- **Doc**: For detailed doc, see :c:macro:`kOfxPropHostProductTitle`.
 
 .. _prop_OfxPropIcon:
 

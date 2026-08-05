@@ -164,58 +164,65 @@ enum class PropId {
   OfxParamPropDoubleType, // 129
   OfxParamPropEnabled, // 130
   OfxParamPropEvaluateOnChange, // 131
-  OfxParamPropGroupOpen, // 132
-  OfxParamPropHasHostOverlayHandle, // 133
-  OfxParamPropHint, // 134
-  OfxParamPropIncrement, // 135
-  OfxParamPropInteractMinimumSize, // 136
-  OfxParamPropInteractPreferedSize, // 137
-  OfxParamPropInteractSize, // 138
-  OfxParamPropInteractSizeAspect, // 139
-  OfxParamPropInteractV1, // 140
-  OfxParamPropInterpolationAmount, // 141
-  OfxParamPropInterpolationTime, // 142
-  OfxParamPropIsAnimating, // 143
-  OfxParamPropIsAutoKeying, // 144
-  OfxParamPropMax, // 145
-  OfxParamPropMin, // 146
-  OfxParamPropPageChild, // 147
-  OfxParamPropParametricDimension, // 148
-  OfxParamPropParametricInteractBackground, // 149
-  OfxParamPropParametricRange, // 150
-  OfxParamPropParametricUIColour, // 151
-  OfxParamPropParent, // 152
-  OfxParamPropPersistant, // 153
-  OfxParamPropPluginMayWrite, // 154
-  OfxParamPropScriptName, // 155
-  OfxParamPropSecret, // 156
-  OfxParamPropShowTimeMarker, // 157
-  OfxParamPropStringFilePathExists, // 158
-  OfxParamPropStringMode, // 159
-  OfxParamPropType, // 160
-  OfxPluginPropFilePath, // 161
-  OfxPluginPropParamPageOrder, // 162
-  OfxPropAPIVersion, // 163
-  OfxPropChangeReason, // 164
-  OfxPropEffectInstance, // 165
-  OfxPropHostOSHandle, // 166
-  OfxPropIcon, // 167
-  OfxPropInstanceData, // 168
-  OfxPropIsInteractive, // 169
-  OfxPropLabel, // 170
-  OfxPropLongLabel, // 171
-  OfxPropName, // 172
-  OfxPropParamSetNeedsSyncing, // 173
-  OfxPropPluginDescription, // 174
-  OfxPropShortLabel, // 175
-  OfxPropTime, // 176
-  OfxPropType, // 177
-  OfxPropVersion, // 178
-  OfxPropVersionLabel, // 179
-  OfxParamPropUseHostOverlayHandle, // 180 (orig name: OfxParamPropUseHostOverlayHandle)
-  OfxPropKeyString, // 181 (orig name: OfxPropKeyString)
-  OfxPropKeySym, // 182 (orig name: OfxPropKeySym)
-  NProps // 183
+  OfxParamPropGroupIsTab, // 132
+  OfxParamPropGroupOpen, // 133
+  OfxParamPropHasHostOverlayHandle, // 134
+  OfxParamPropHint, // 135
+  OfxParamPropIncrement, // 136
+  OfxParamPropInteractMinimumSize, // 137
+  OfxParamPropInteractPreferedSize, // 138
+  OfxParamPropInteractSize, // 139
+  OfxParamPropInteractSizeAspect, // 140
+  OfxParamPropInteractV1, // 141
+  OfxParamPropInterpolationAmount, // 142
+  OfxParamPropInterpolationTime, // 143
+  OfxParamPropIsAnimating, // 144
+  OfxParamPropIsAutoKeying, // 145
+  OfxParamPropLayoutHint, // 146
+  OfxParamPropLayoutPadWidth, // 147
+  OfxParamPropMax, // 148
+  OfxParamPropMin, // 149
+  OfxParamPropPageChild, // 150
+  OfxParamPropParametricDimension, // 151
+  OfxParamPropParametricInteractBackground, // 152
+  OfxParamPropParametricRange, // 153
+  OfxParamPropParametricUIColour, // 154
+  OfxParamPropParent, // 155
+  OfxParamPropPersistant, // 156
+  OfxParamPropPluginMayWrite, // 157
+  OfxParamPropScriptName, // 158
+  OfxParamPropSecret, // 159
+  OfxParamPropShowTimeMarker, // 160
+  OfxParamPropStringFilePathExists, // 161
+  OfxParamPropStringMode, // 162
+  OfxParamPropType, // 163
+  OfxPluginPropFilePath, // 164
+  OfxPluginPropParamPageOrder, // 165
+  OfxPropAPIVersion, // 166
+  OfxPropChangeReason, // 167
+  OfxPropEffectInstance, // 168
+  OfxPropHostBuildVersion, // 169
+  OfxPropHostMajorVersion, // 170
+  OfxPropHostMinorVersion, // 171
+  OfxPropHostOSHandle, // 172
+  OfxPropHostProductTitle, // 173
+  OfxPropIcon, // 174
+  OfxPropInstanceData, // 175
+  OfxPropIsInteractive, // 176
+  OfxPropLabel, // 177
+  OfxPropLongLabel, // 178
+  OfxPropName, // 179
+  OfxPropParamSetNeedsSyncing, // 180
+  OfxPropPluginDescription, // 181
+  OfxPropShortLabel, // 182
+  OfxPropTime, // 183
+  OfxPropType, // 184
+  OfxPropVersion, // 185
+  OfxPropVersionLabel, // 186
+  OfxParamPropUseHostOverlayHandle, // 187 (orig name: OfxParamPropUseHostOverlayHandle)
+  OfxPropKeyString, // 188 (orig name: OfxPropKeyString)
+  OfxPropKeySym, // 189 (orig name: OfxPropKeySym)
+  NProps // 190
 }; // PropId
 
 // Separate arrays for enum-values for enum props, to keep everything constexpr
@@ -419,6 +426,7 @@ static constexpr PropType OfxParamPropDisplayMin_types[] = {PropType::Int,PropTy
 static constexpr PropType OfxParamPropDoubleType_types[] = {PropType::Enum};
 static constexpr PropType OfxParamPropEnabled_types[] = {PropType::Bool};
 static constexpr PropType OfxParamPropEvaluateOnChange_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropGroupIsTab_types[] = {PropType::Bool};
 static constexpr PropType OfxParamPropGroupOpen_types[] = {PropType::Bool};
 static constexpr PropType OfxParamPropHasHostOverlayHandle_types[] = {PropType::Bool};
 static constexpr PropType OfxParamPropHint_types[] = {PropType::String};
@@ -432,6 +440,8 @@ static constexpr PropType OfxParamPropInterpolationAmount_types[] = {PropType::D
 static constexpr PropType OfxParamPropInterpolationTime_types[] = {PropType::Double};
 static constexpr PropType OfxParamPropIsAnimating_types[] = {PropType::Bool};
 static constexpr PropType OfxParamPropIsAutoKeying_types[] = {PropType::Bool};
+static constexpr PropType OfxParamPropLayoutHint_types[] = {PropType::Int};
+static constexpr PropType OfxParamPropLayoutPadWidth_types[] = {PropType::Int};
 static constexpr PropType OfxParamPropMax_types[] = {PropType::Int,PropType::Double};
 static constexpr PropType OfxParamPropMin_types[] = {PropType::Int,PropType::Double};
 static constexpr PropType OfxParamPropPageChild_types[] = {PropType::String};
@@ -453,7 +463,11 @@ static constexpr PropType OfxPluginPropParamPageOrder_types[] = {PropType::Strin
 static constexpr PropType OfxPropAPIVersion_types[] = {PropType::Int};
 static constexpr PropType OfxPropChangeReason_types[] = {PropType::Enum};
 static constexpr PropType OfxPropEffectInstance_types[] = {PropType::Pointer};
+static constexpr PropType OfxPropHostBuildVersion_types[] = {PropType::String};
+static constexpr PropType OfxPropHostMajorVersion_types[] = {PropType::Int};
+static constexpr PropType OfxPropHostMinorVersion_types[] = {PropType::Int};
 static constexpr PropType OfxPropHostOSHandle_types[] = {PropType::Pointer};
+static constexpr PropType OfxPropHostProductTitle_types[] = {PropType::String};
 static constexpr PropType OfxPropIcon_types[] = {PropType::String};
 static constexpr PropType OfxPropInstanceData_types[] = {PropType::Pointer};
 static constexpr PropType OfxPropIsInteractive_types[] = {PropType::Bool};
@@ -765,6 +779,8 @@ static inline constexpr PropDefsArray<PropDef> prop_defs = {
   openfx::span(prop_type_arrays::OfxParamPropEnabled_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropEvaluateOnChange",
   openfx::span(prop_type_arrays::OfxParamPropEvaluateOnChange_types, 1), 1, openfx::span<const char* const>()},
+{ "OfxParamPropGroupIsTab",
+  openfx::span(prop_type_arrays::OfxParamPropGroupIsTab_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropGroupOpen",
   openfx::span(prop_type_arrays::OfxParamPropGroupOpen_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropHasHostOverlayHandle",
@@ -791,6 +807,10 @@ static inline constexpr PropDefsArray<PropDef> prop_defs = {
   openfx::span(prop_type_arrays::OfxParamPropIsAnimating_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropIsAutoKeying",
   openfx::span(prop_type_arrays::OfxParamPropIsAutoKeying_types, 1), 1, openfx::span<const char* const>()},
+{ "OfxParamPropLayoutHint",
+  openfx::span(prop_type_arrays::OfxParamPropLayoutHint_types, 1), 1, openfx::span<const char* const>()},
+{ "OfxParamPropLayoutPadWidth",
+  openfx::span(prop_type_arrays::OfxParamPropLayoutPadWidth_types, 1), 1, openfx::span<const char* const>()},
 { "OfxParamPropMax",
   openfx::span(prop_type_arrays::OfxParamPropMax_types, 2), 0, openfx::span<const char* const>()},
 { "OfxParamPropMin",
@@ -833,8 +853,16 @@ static inline constexpr PropDefsArray<PropDef> prop_defs = {
   openfx::span(prop_type_arrays::OfxPropChangeReason_types, 1), 1, openfx::span(prop_enum_values::OfxPropChangeReason.data(), prop_enum_values::OfxPropChangeReason.size())},
 { "OfxPropEffectInstance",
   openfx::span(prop_type_arrays::OfxPropEffectInstance_types, 1), 1, openfx::span<const char* const>()},
+{ "OfxPropHostBuildVersion",
+  openfx::span(prop_type_arrays::OfxPropHostBuildVersion_types, 1), 1, openfx::span<const char* const>()},
+{ "OfxPropHostMajorVersion",
+  openfx::span(prop_type_arrays::OfxPropHostMajorVersion_types, 1), 1, openfx::span<const char* const>()},
+{ "OfxPropHostMinorVersion",
+  openfx::span(prop_type_arrays::OfxPropHostMinorVersion_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPropHostOSHandle",
   openfx::span(prop_type_arrays::OfxPropHostOSHandle_types, 1), 1, openfx::span<const char* const>()},
+{ "OfxPropHostProductTitle",
+  openfx::span(prop_type_arrays::OfxPropHostProductTitle_types, 1), 1, openfx::span<const char* const>()},
 { "OfxPropIcon",
   openfx::span(prop_type_arrays::OfxPropIcon_types, 1), 2, openfx::span<const char* const>()},
 { "OfxPropInstanceData",
@@ -1018,6 +1046,7 @@ DEFINE_PROP_TRAITS(OfxParamPropDisplayMin, int, true);
 DEFINE_PROP_TRAITS(OfxParamPropDoubleType, const char *, false);
 DEFINE_PROP_TRAITS(OfxParamPropEnabled, bool, false);
 DEFINE_PROP_TRAITS(OfxParamPropEvaluateOnChange, bool, false);
+DEFINE_PROP_TRAITS(OfxParamPropGroupIsTab, bool, false);
 DEFINE_PROP_TRAITS(OfxParamPropGroupOpen, bool, false);
 DEFINE_PROP_TRAITS(OfxParamPropHasHostOverlayHandle, bool, false);
 DEFINE_PROP_TRAITS(OfxParamPropHint, const char *, false);
@@ -1031,6 +1060,8 @@ DEFINE_PROP_TRAITS(OfxParamPropInterpolationAmount, double, false);
 DEFINE_PROP_TRAITS(OfxParamPropInterpolationTime, double, false);
 DEFINE_PROP_TRAITS(OfxParamPropIsAnimating, bool, false);
 DEFINE_PROP_TRAITS(OfxParamPropIsAutoKeying, bool, false);
+DEFINE_PROP_TRAITS(OfxParamPropLayoutHint, int, false);
+DEFINE_PROP_TRAITS(OfxParamPropLayoutPadWidth, int, false);
 DEFINE_PROP_TRAITS(OfxParamPropMax, int, true);
 DEFINE_PROP_TRAITS(OfxParamPropMin, int, true);
 DEFINE_PROP_TRAITS(OfxParamPropPageChild, const char *, false);
@@ -1052,7 +1083,11 @@ DEFINE_PROP_TRAITS(OfxPluginPropParamPageOrder, const char *, false);
 DEFINE_PROP_TRAITS(OfxPropAPIVersion, int, false);
 DEFINE_PROP_TRAITS(OfxPropChangeReason, const char *, false);
 DEFINE_PROP_TRAITS(OfxPropEffectInstance, void *, false);
+DEFINE_PROP_TRAITS(OfxPropHostBuildVersion, const char *, false);
+DEFINE_PROP_TRAITS(OfxPropHostMajorVersion, int, false);
+DEFINE_PROP_TRAITS(OfxPropHostMinorVersion, int, false);
 DEFINE_PROP_TRAITS(OfxPropHostOSHandle, void *, false);
+DEFINE_PROP_TRAITS(OfxPropHostProductTitle, const char *, false);
 DEFINE_PROP_TRAITS(OfxPropIcon, const char *, false);
 DEFINE_PROP_TRAITS(OfxPropInstanceData, void *, false);
 DEFINE_PROP_TRAITS(OfxPropIsInteractive, bool, false);
@@ -1207,6 +1242,7 @@ static_assert(string_view("OfxParamPropDisplayMin") == string_view(kOfxParamProp
 static_assert(string_view("OfxParamPropDoubleType") == string_view(kOfxParamPropDoubleType));
 static_assert(string_view("OfxParamPropEnabled") == string_view(kOfxParamPropEnabled));
 static_assert(string_view("OfxParamPropEvaluateOnChange") == string_view(kOfxParamPropEvaluateOnChange));
+static_assert(string_view("OfxParamPropGroupIsTab") == string_view(kOfxParamPropGroupIsTab));
 static_assert(string_view("OfxParamPropGroupOpen") == string_view(kOfxParamPropGroupOpen));
 static_assert(string_view("OfxParamPropHasHostOverlayHandle") == string_view(kOfxParamPropHasHostOverlayHandle));
 static_assert(string_view("OfxParamPropHint") == string_view(kOfxParamPropHint));
@@ -1220,6 +1256,8 @@ static_assert(string_view("OfxParamPropInterpolationAmount") == string_view(kOfx
 static_assert(string_view("OfxParamPropInterpolationTime") == string_view(kOfxParamPropInterpolationTime));
 static_assert(string_view("OfxParamPropIsAnimating") == string_view(kOfxParamPropIsAnimating));
 static_assert(string_view("OfxParamPropIsAutoKeying") == string_view(kOfxParamPropIsAutoKeying));
+static_assert(string_view("OfxParamPropLayoutHint") == string_view(kOfxParamPropLayoutHint));
+static_assert(string_view("OfxParamPropLayoutPadWidth") == string_view(kOfxParamPropLayoutPadWidth));
 static_assert(string_view("OfxParamPropMax") == string_view(kOfxParamPropMax));
 static_assert(string_view("OfxParamPropMin") == string_view(kOfxParamPropMin));
 static_assert(string_view("OfxParamPropPageChild") == string_view(kOfxParamPropPageChild));
@@ -1241,7 +1279,11 @@ static_assert(string_view("OfxPluginPropParamPageOrder") == string_view(kOfxPlug
 static_assert(string_view("OfxPropAPIVersion") == string_view(kOfxPropAPIVersion));
 static_assert(string_view("OfxPropChangeReason") == string_view(kOfxPropChangeReason));
 static_assert(string_view("OfxPropEffectInstance") == string_view(kOfxPropEffectInstance));
+static_assert(string_view("OfxPropHostBuildVersion") == string_view(kOfxPropHostBuildVersion));
+static_assert(string_view("OfxPropHostMajorVersion") == string_view(kOfxPropHostMajorVersion));
+static_assert(string_view("OfxPropHostMinorVersion") == string_view(kOfxPropHostMinorVersion));
 static_assert(string_view("OfxPropHostOSHandle") == string_view(kOfxPropHostOSHandle));
+static_assert(string_view("OfxPropHostProductTitle") == string_view(kOfxPropHostProductTitle));
 static_assert(string_view("OfxPropIcon") == string_view(kOfxPropIcon));
 static_assert(string_view("OfxPropInstanceData") == string_view(kOfxPropInstanceData));
 static_assert(string_view("OfxPropIsInteractive") == string_view(kOfxPropIsInteractive));

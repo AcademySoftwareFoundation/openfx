@@ -53,6 +53,11 @@ def getPropertiesFromFile(path):
                 continue
             if splits[0] != "#define":
                 continue
+            # Property definitions have string values. Constants whose names
+            # contain "Prop" (for example layout-hint values) are not
+            # properties themselves.
+            if not splits[2].startswith('"'):
+                continue
             # ignore these
             nonProperties = (
                 "kOfxPropertySuite",

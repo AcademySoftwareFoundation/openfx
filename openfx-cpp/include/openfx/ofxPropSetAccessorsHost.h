@@ -1406,6 +1406,26 @@ public:
         return *this;
     }
 
+    ImageEffectHost& setHostProductTitle(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropHostProductTitle>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectHost& setHostMajorVersion(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropHostMajorVersion>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectHost& setHostMinorVersion(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropHostMinorVersion>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectHost& setHostBuildVersion(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropHostBuildVersion>(value, 0, error_if_missing);
+        return *this;
+    }
+
     ImageEffectHost& setImageEffectHostPropIsBackground(bool value, bool error_if_missing = true) {
         props_.set<PropId::OfxImageEffectHostPropIsBackground>(value, 0, error_if_missing);
         return *this;
@@ -2268,6 +2288,14 @@ public:
         return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
+    int layoutHint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutHint>(0, error_if_missing);
+    }
+
+    int layoutPadWidth(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutPadWidth>(0, error_if_missing);
+    }
+
     std::array<const char*, 2> icon() const {
         return props_.getAll<PropId::OfxPropIcon>();
     }
@@ -2463,6 +2491,14 @@ public:
         return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
+    int layoutHint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutHint>(0, error_if_missing);
+    }
+
+    int layoutPadWidth(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutPadWidth>(0, error_if_missing);
+    }
+
     std::array<const char*, 2> icon() const {
         return props_.getAll<PropId::OfxPropIcon>();
     }
@@ -2643,6 +2679,14 @@ public:
         return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
+    int layoutHint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutHint>(0, error_if_missing);
+    }
+
+    int layoutPadWidth(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutPadWidth>(0, error_if_missing);
+    }
+
     std::array<const char*, 2> icon() const {
         return props_.getAll<PropId::OfxPropIcon>();
     }
@@ -2775,6 +2819,14 @@ public:
         return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
+    int layoutHint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutHint>(0, error_if_missing);
+    }
+
+    int layoutPadWidth(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutPadWidth>(0, error_if_missing);
+    }
+
     std::array<const char*, 2> icon() const {
         return props_.getAll<PropId::OfxPropIcon>();
     }
@@ -2905,6 +2957,14 @@ public:
 
     void* dataPtr(bool error_if_missing = true) const {
         return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
+    }
+
+    int layoutHint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutHint>(0, error_if_missing);
+    }
+
+    int layoutPadWidth(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutPadWidth>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
@@ -3047,6 +3107,10 @@ public:
         return props_.get<PropId::OfxParamPropGroupOpen>(0, error_if_missing);
     }
 
+    bool groupIsTab(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropGroupIsTab>(0, error_if_missing);
+    }
+
     const char* type(bool error_if_missing = true) const {
         return props_.get<PropId::OfxPropType>(0, error_if_missing);
     }
@@ -3089,6 +3153,14 @@ public:
 
     void* dataPtr(bool error_if_missing = true) const {
         return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
+    }
+
+    int layoutHint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutHint>(0, error_if_missing);
+    }
+
+    int layoutPadWidth(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutPadWidth>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
@@ -3148,6 +3220,14 @@ public:
 
     void* dataPtr(bool error_if_missing = true) const {
         return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
+    }
+
+    int layoutHint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutHint>(0, error_if_missing);
+    }
+
+    int layoutPadWidth(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutPadWidth>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
@@ -3324,6 +3404,14 @@ public:
 
     void* dataPtr(bool error_if_missing = true) const {
         return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
+    }
+
+    int layoutHint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutHint>(0, error_if_missing);
+    }
+
+    int layoutPadWidth(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutPadWidth>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
@@ -3510,6 +3598,14 @@ public:
         return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
+    int layoutHint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutHint>(0, error_if_missing);
+    }
+
+    int layoutPadWidth(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutPadWidth>(0, error_if_missing);
+    }
+
     std::array<const char*, 2> icon() const {
         return props_.getAll<PropId::OfxPropIcon>();
     }
@@ -3613,6 +3709,14 @@ public:
         return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
     }
 
+    int layoutHint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutHint>(0, error_if_missing);
+    }
+
+    int layoutPadWidth(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutPadWidth>(0, error_if_missing);
+    }
+
     std::array<const char*, 2> icon() const {
         return props_.getAll<PropId::OfxPropIcon>();
     }
@@ -3713,6 +3817,14 @@ public:
 
     void* dataPtr(bool error_if_missing = true) const {
         return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
+    }
+
+    int layoutHint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutHint>(0, error_if_missing);
+    }
+
+    int layoutPadWidth(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutPadWidth>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {
@@ -3849,6 +3961,14 @@ public:
 
     void* dataPtr(bool error_if_missing = true) const {
         return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
+    }
+
+    int layoutHint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutHint>(0, error_if_missing);
+    }
+
+    int layoutPadWidth(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropLayoutPadWidth>(0, error_if_missing);
     }
 
     std::array<const char*, 2> icon() const {

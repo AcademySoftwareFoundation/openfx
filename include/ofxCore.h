@@ -876,6 +876,44 @@ Some plug-in vendor want raw OS specific handles back from the host so they can 
 */
 #define kOfxPropHostOSHandle "OfxPropHostOSHandle"
 
+/** @brief The displayed name of the host product.
+
+    @propdef
+    type: string
+    dimension: 1
+    introduced: "1.6"
+*/
+#define kOfxPropHostProductTitle "OfxPropHostProductTitle"
+
+/** @brief The major version of the host product.
+
+    - Valid Values - positive integers
+    @propdef
+    type: int
+    dimension: 1
+    introduced: "1.6"
+*/
+#define kOfxPropHostMajorVersion "OfxPropHostMajorVersion"
+
+/** @brief The minor version of the host product.
+
+    - Valid Values - positive integers
+    @propdef
+    type: int
+    dimension: 1
+    introduced: "1.6"
+*/
+#define kOfxPropHostMinorVersion "OfxPropHostMinorVersion"
+
+/** @brief The build version of the host product.
+
+    @propdef
+    type: string
+    dimension: 1
+    introduced: "1.6"
+*/
+#define kOfxPropHostBuildVersion "OfxPropHostBuildVersion"
+
 /*@}*/
 
 /*@}*/
@@ -1049,6 +1087,19 @@ General status codes start at 1 and continue until 999
 #ifdef __cplusplus
 }
 #endif
+
+/** @propsetdef HostCommon
+    - OfxPropAPIVersion
+    - OfxPropType
+    - OfxPropName
+    - OfxPropLabel
+    - OfxPropVersion
+    - OfxPropVersionLabel
+    - OfxPropHostProductTitle
+    - OfxPropHostMajorVersion
+    - OfxPropHostMinorVersion
+    - OfxPropHostBuildVersion
+*/
 
 /** @mainpage OFX : Open Plug-Ins For Special Effects
 
