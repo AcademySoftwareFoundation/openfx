@@ -2059,12 +2059,7 @@ They range from 1000 until 1999
 /** @propset ImageEffectHost
     write: host
     props:
-      - OfxPropAPIVersion
-      - OfxPropType
-      - OfxPropName
-      - OfxPropLabel
-      - OfxPropVersion
-      - OfxPropVersionLabel
+      - HostCommon_REF
       - OfxImageEffectHostPropIsBackground
       - OfxImageEffectPropSupportsOverlays
       - OfxImageEffectPropSupportsMultiResolution
@@ -2226,4 +2221,3 @@ They range from 1000 until 1999
 */
 
 #endif
-

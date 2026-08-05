@@ -1239,6 +1239,22 @@ public:
         return props_.get<PropId::OfxPropVersionLabel>(0, error_if_missing);
     }
 
+    const char* hostProductTitle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropHostProductTitle>(0, error_if_missing);
+    }
+
+    int hostMajorVersion(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropHostMajorVersion>(0, error_if_missing);
+    }
+
+    int hostMinorVersion(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropHostMinorVersion>(0, error_if_missing);
+    }
+
+    const char* hostBuildVersion(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropHostBuildVersion>(0, error_if_missing);
+    }
+
     bool imageEffectHostPropIsBackground(bool error_if_missing = true) const {
         return props_.get<PropId::OfxImageEffectHostPropIsBackground>(0, error_if_missing);
     }
@@ -1772,6 +1788,16 @@ public:
         return *this;
     }
 
+    ParamDouble1D& setLayoutHint(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutHint>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamDouble1D& setLayoutPadWidth(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutPadWidth>(value, 0, error_if_missing);
+        return *this;
+    }
+
     ParamDouble1D& setIcon(const std::array<const char*, 2>& values, bool error_if_missing = true) {
         props_.setAll<PropId::OfxPropIcon>(values, error_if_missing);
         return *this;
@@ -2090,6 +2116,16 @@ public:
 
     ParamsByte& setDataPtr(void* value, bool error_if_missing = true) {
         props_.set<PropId::OfxParamPropDataPtr>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsByte& setLayoutHint(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutHint>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsByte& setLayoutPadWidth(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutPadWidth>(value, 0, error_if_missing);
         return *this;
     }
 
@@ -2412,6 +2448,16 @@ public:
         return *this;
     }
 
+    ParamsChoice& setLayoutHint(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutHint>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsChoice& setLayoutPadWidth(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutPadWidth>(value, 0, error_if_missing);
+        return *this;
+    }
+
     ParamsChoice& setIcon(const std::array<const char*, 2>& values, bool error_if_missing = true) {
         props_.setAll<PropId::OfxPropIcon>(values, error_if_missing);
         return *this;
@@ -2604,6 +2650,16 @@ public:
         return *this;
     }
 
+    ParamsCustom& setLayoutHint(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutHint>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsCustom& setLayoutPadWidth(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutPadWidth>(value, 0, error_if_missing);
+        return *this;
+    }
+
     ParamsCustom& setIcon(const std::array<const char*, 2>& values, bool error_if_missing = true) {
         props_.setAll<PropId::OfxPropIcon>(values, error_if_missing);
         return *this;
@@ -2793,6 +2849,16 @@ public:
 
     ParamsDouble2D3D& setDataPtr(void* value, bool error_if_missing = true) {
         props_.set<PropId::OfxParamPropDataPtr>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsDouble2D3D& setLayoutHint(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutHint>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsDouble2D3D& setLayoutPadWidth(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutPadWidth>(value, 0, error_if_missing);
         return *this;
     }
 
@@ -3035,6 +3101,11 @@ public:
         return *this;
     }
 
+    ParamsGroup& setGroupIsTab(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropGroupIsTab>(value, 0, error_if_missing);
+        return *this;
+    }
+
     ParamsGroup& setType(const char* value, bool error_if_missing = true) {
         props_.set<PropId::OfxPropType>(value, 0, error_if_missing);
         return *this;
@@ -3087,6 +3158,16 @@ public:
 
     ParamsGroup& setDataPtr(void* value, bool error_if_missing = true) {
         props_.set<PropId::OfxParamPropDataPtr>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsGroup& setLayoutHint(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutHint>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsGroup& setLayoutPadWidth(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutPadWidth>(value, 0, error_if_missing);
         return *this;
     }
 
@@ -3165,6 +3246,16 @@ public:
 
     ParamsInt2D3D& setDataPtr(void* value, bool error_if_missing = true) {
         props_.set<PropId::OfxParamPropDataPtr>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsInt2D3D& setLayoutHint(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutHint>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsInt2D3D& setLayoutPadWidth(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutPadWidth>(value, 0, error_if_missing);
         return *this;
     }
 
@@ -3449,6 +3540,16 @@ public:
 
     ParamsNormalizedSpatial& setDataPtr(void* value, bool error_if_missing = true) {
         props_.set<PropId::OfxParamPropDataPtr>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsNormalizedSpatial& setLayoutHint(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutHint>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsNormalizedSpatial& setLayoutPadWidth(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutPadWidth>(value, 0, error_if_missing);
         return *this;
     }
 
@@ -3761,6 +3862,16 @@ public:
         return *this;
     }
 
+    ParamsPage& setLayoutHint(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutHint>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsPage& setLayoutPadWidth(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutPadWidth>(value, 0, error_if_missing);
+        return *this;
+    }
+
     ParamsPage& setIcon(const std::array<const char*, 2>& values, bool error_if_missing = true) {
         props_.setAll<PropId::OfxPropIcon>(values, error_if_missing);
         return *this;
@@ -3912,6 +4023,16 @@ public:
 
     ParamsParametric& setDataPtr(void* value, bool error_if_missing = true) {
         props_.set<PropId::OfxParamPropDataPtr>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsParametric& setLayoutHint(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutHint>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsParametric& setLayoutPadWidth(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutPadWidth>(value, 0, error_if_missing);
         return *this;
     }
 
@@ -4086,6 +4207,16 @@ public:
 
     ParamsStrChoice& setDataPtr(void* value, bool error_if_missing = true) {
         props_.set<PropId::OfxParamPropDataPtr>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsStrChoice& setLayoutHint(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutHint>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsStrChoice& setLayoutPadWidth(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutPadWidth>(value, 0, error_if_missing);
         return *this;
     }
 
@@ -4283,6 +4414,16 @@ public:
 
     ParamsString& setDataPtr(void* value, bool error_if_missing = true) {
         props_.set<PropId::OfxParamPropDataPtr>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsString& setLayoutHint(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutHint>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsString& setLayoutPadWidth(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropLayoutPadWidth>(value, 0, error_if_missing);
         return *this;
     }
 
