@@ -1391,7 +1391,7 @@ changes a keyframe.  The keyframe indices will not change within a single action
       - ParamsCommon_REF
 */
 
-/** @propset ParamDouble1D
+/** @propset ParamsDouble1D
     write: plugin
     props:
       - OfxParamPropShowTimeMarker
