@@ -112,6 +112,17 @@ Integer (Boolean) Properties
 - **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPluginPropHostFrameThreading`.
 
+.. _prop_OfxImageEffectPluginPropObsolete:
+
+**OfxImageEffectPluginPropObsolete**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxImageEffectPluginPropObsolete`
+- **Type**: bool
+- **Dimension**: 1
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin)
+- **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPluginPropObsolete`.
+
 .. _prop_OfxImageEffectPluginPropSingleInstance:
 
 **OfxImageEffectPluginPropSingleInstance**
@@ -957,12 +968,12 @@ Enumeration Properties
 - **Dimension**: 1
 - **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>` (plugin), :ref:`ClipInstance <propset_ClipInstance>` (host)
 - **Valid Values**:
-  - ``OfxImageFieldNone``
-  - ``OfxImageFieldLower``
-  - ``OfxImageFieldUpper``
-  - ``OfxImageFieldBoth``
-  - ``OfxImageFieldSingle``
-  - ``OfxImageFieldDoubled``
+  - ``OfxFieldNone``
+  - ``OfxFieldLower``
+  - ``OfxFieldUpper``
+  - ``OfxFieldBoth``
+  - ``OfxFieldSingle``
+  - ``OfxFieldDoubled``
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageClipPropFieldExtraction`.
 
 .. _prop_OfxImageClipPropFieldOrder:
@@ -975,9 +986,9 @@ Enumeration Properties
 - **Dimension**: 1
 - **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host)
 - **Valid Values**:
-  - ``OfxImageFieldNone``
-  - ``OfxImageFieldLower``
-  - ``OfxImageFieldUpper``
+  - ``OfxFieldNone``
+  - ``OfxFieldLower``
+  - ``OfxFieldUpper``
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageClipPropFieldOrder`.
 
 .. _prop_OfxImageClipPropUnmappedComponents:
@@ -1023,9 +1034,9 @@ Enumeration Properties
 - **Dimension**: 1
 - **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Valid Values**:
-  - ``OfxImageEffectHostPropNativeOriginBottomLeft``
-  - ``OfxImageEffectHostPropNativeOriginTopLeft``
-  - ``OfxImageEffectHostPropNativeOriginCenter``
+  - ``kOfxImageEffectHostPropNativeOriginBottomLeft``
+  - ``kOfxImageEffectHostPropNativeOriginTopLeft``
+  - ``kOfxImageEffectHostPropNativeOriginCenter``
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectHostPropNativeOrigin`.
 
 .. _prop_OfxImageEffectPluginRenderThreadSafety:
@@ -1068,11 +1079,11 @@ Enumeration Properties
 - **Dimension**: 1
 - **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`EffectInstance <propset_EffectInstance>` (host), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Valid Values**:
-  - ``OfxImageEffectPropColourManagementNone``
-  - ``OfxImageEffectPropColourManagementBasic``
-  - ``OfxImageEffectPropColourManagementCore``
-  - ``OfxImageEffectPropColourManagementFull``
-  - ``OfxImageEffectPropColourManagementOCIO``
+  - ``OfxImageEffectColourManagementNone``
+  - ``OfxImageEffectColourManagementBasic``
+  - ``OfxImageEffectColourManagementCore``
+  - ``OfxImageEffectColourManagementFull``
+  - ``OfxImageEffectColourManagementOCIO``
 - **Introduced in**: version 1.5
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropColourManagementStyle`.
 
@@ -1147,10 +1158,10 @@ Enumeration Properties
 - **Type**: enum
 - **Dimension**: 1
 - **Valid Values**:
-  - ``OfxImageFieldNone``
-  - ``OfxImageFieldBoth``
-  - ``OfxImageFieldLower``
-  - ``OfxImageFieldUpper``
+  - ``OfxFieldNone``
+  - ``OfxFieldBoth``
+  - ``OfxFieldLower``
+  - ``OfxFieldUpper``
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropFieldToRender`.
 
 .. _prop_OfxImageEffectPropMetalRenderSupported:
@@ -1255,8 +1266,8 @@ Enumeration Properties
 - **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`Image <propset_Image>` (host)
 - **Valid Values**:
   - ``OfxImageOpaque``
-  - ``OfxImagePreMultiplied``
-  - ``OfxImageUnPreMultiplied``
+  - ``OfxImageAlphaPremultiplied``
+  - ``OfxImageAlphaUnPremultiplied``
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropPreMultiplication`.
 
 .. _prop_OfxImageEffectPropSupportedComponents:
@@ -1334,10 +1345,10 @@ Enumeration Properties
 - **Dimension**: 1
 - **Used in Property Sets**: :ref:`Image <propset_Image>` (host)
 - **Valid Values**:
-  - ``OfxImageFieldNone``
-  - ``OfxImageFieldBoth``
-  - ``OfxImageFieldLower``
-  - ``OfxImageFieldUpper``
+  - ``OfxFieldNone``
+  - ``OfxFieldBoth``
+  - ``OfxFieldLower``
+  - ``OfxFieldUpper``
 - **Doc**: For detailed doc, see :c:macro:`kOfxImagePropField`.
 
 .. _prop_OfxOpenGLPropPixelDepth:

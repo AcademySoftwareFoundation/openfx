@@ -221,21 +221,21 @@ enum class PropId {
 // Separate arrays for enum-values for enum props, to keep everything constexpr
 namespace prop_enum_values {
 constexpr std::array OfxImageClipPropFieldExtraction =
-  {"OfxImageFieldNone","OfxImageFieldLower","OfxImageFieldUpper","OfxImageFieldBoth","OfxImageFieldSingle","OfxImageFieldDoubled"};
+  {"OfxFieldNone","OfxFieldLower","OfxFieldUpper","OfxFieldBoth","OfxFieldSingle","OfxFieldDoubled"};
 constexpr std::array OfxImageClipPropFieldOrder =
-  {"OfxImageFieldNone","OfxImageFieldLower","OfxImageFieldUpper"};
+  {"OfxFieldNone","OfxFieldLower","OfxFieldUpper"};
 constexpr std::array OfxImageClipPropUnmappedComponents =
   {"OfxImageComponentNone","OfxImageComponentRGBA","OfxImageComponentRGB","OfxImageComponentAlpha"};
 constexpr std::array OfxImageClipPropUnmappedPixelDepth =
   {"OfxBitDepthNone","OfxBitDepthByte","OfxBitDepthShort","OfxBitDepthHalf","OfxBitDepthFloat"};
 constexpr std::array OfxImageEffectHostPropNativeOrigin =
-  {"OfxImageEffectHostPropNativeOriginBottomLeft","OfxImageEffectHostPropNativeOriginTopLeft","OfxImageEffectHostPropNativeOriginCenter"};
+  {"kOfxImageEffectHostPropNativeOriginBottomLeft","kOfxImageEffectHostPropNativeOriginTopLeft","kOfxImageEffectHostPropNativeOriginCenter"};
 constexpr std::array OfxImageEffectPluginRenderThreadSafety =
   {"OfxImageEffectRenderUnsafe","OfxImageEffectRenderInstanceSafe","OfxImageEffectRenderFullySafe"};
 constexpr std::array OfxImageEffectPropCPURenderSupported =
   {"false","true"};
 constexpr std::array OfxImageEffectPropColourManagementStyle =
-  {"OfxImageEffectPropColourManagementNone","OfxImageEffectPropColourManagementBasic","OfxImageEffectPropColourManagementCore","OfxImageEffectPropColourManagementFull","OfxImageEffectPropColourManagementOCIO"};
+  {"OfxImageEffectColourManagementNone","OfxImageEffectColourManagementBasic","OfxImageEffectColourManagementCore","OfxImageEffectColourManagementFull","OfxImageEffectColourManagementOCIO"};
 constexpr std::array OfxImageEffectPropComponents =
   {"OfxImageComponentNone","OfxImageComponentRGBA","OfxImageComponentRGB","OfxImageComponentAlpha"};
 constexpr std::array OfxImageEffectPropContext =
@@ -245,7 +245,7 @@ constexpr std::array OfxImageEffectPropCudaRenderSupported =
 constexpr std::array OfxImageEffectPropCudaStreamSupported =
   {"false","true","needed"};
 constexpr std::array OfxImageEffectPropFieldToRender =
-  {"OfxImageFieldNone","OfxImageFieldBoth","OfxImageFieldLower","OfxImageFieldUpper"};
+  {"OfxFieldNone","OfxFieldBoth","OfxFieldLower","OfxFieldUpper"};
 constexpr std::array OfxImageEffectPropMetalRenderSupported =
   {"false","true","needed"};
 constexpr std::array OfxImageEffectPropNoSpatialAwareness =
@@ -259,7 +259,7 @@ constexpr std::array OfxImageEffectPropOpenGLRenderSupported =
 constexpr std::array OfxImageEffectPropPixelDepth =
   {"OfxBitDepthNone","OfxBitDepthByte","OfxBitDepthShort","OfxBitDepthHalf","OfxBitDepthFloat"};
 constexpr std::array OfxImageEffectPropPreMultiplication =
-  {"OfxImageOpaque","OfxImagePreMultiplied","OfxImageUnPreMultiplied"};
+  {"OfxImageOpaque","OfxImageAlphaPremultiplied","OfxImageAlphaUnPremultiplied"};
 constexpr std::array OfxImageEffectPropSupportedComponents =
   {"OfxImageComponentNone","OfxImageComponentRGBA","OfxImageComponentRGB","OfxImageComponentAlpha"};
 constexpr std::array OfxImageEffectPropSupportedContexts =
@@ -269,7 +269,7 @@ constexpr std::array OfxImageEffectPropSupportedPixelDepths =
 constexpr std::array OfxImageEffectPropThumbnailRender =
   {"false","true"};
 constexpr std::array OfxImagePropField =
-  {"OfxImageFieldNone","OfxImageFieldBoth","OfxImageFieldLower","OfxImageFieldUpper"};
+  {"OfxFieldNone","OfxFieldBoth","OfxFieldLower","OfxFieldUpper"};
 constexpr std::array OfxOpenGLPropPixelDepth =
   {"OfxBitDepthNone","OfxBitDepthByte","OfxBitDepthShort","OfxBitDepthHalf","OfxBitDepthFloat"};
 constexpr std::array OfxParamPropCacheInvalidation =
@@ -1258,5 +1258,107 @@ static_assert(string_view("OfxPropVersionLabel") == string_view(kOfxPropVersionL
 static_assert(string_view("kOfxParamPropUseHostOverlayHandle") == string_view(kOfxParamPropUseHostOverlayHandle));
 static_assert(string_view("kOfxPropKeyString") == string_view(kOfxPropKeyString));
 static_assert(string_view("kOfxPropKeySym") == string_view(kOfxPropKeySym));
+
+// ... and enum values vs their #defines
+static_assert(string_view("OfxFieldNone") == string_view(kOfxImageFieldNone));
+static_assert(string_view("OfxFieldLower") == string_view(kOfxImageFieldLower));
+static_assert(string_view("OfxFieldUpper") == string_view(kOfxImageFieldUpper));
+static_assert(string_view("OfxFieldBoth") == string_view(kOfxImageFieldBoth));
+static_assert(string_view("OfxFieldSingle") == string_view(kOfxImageFieldSingle));
+static_assert(string_view("OfxFieldDoubled") == string_view(kOfxImageFieldDoubled));
+static_assert(string_view("OfxFieldNone") == string_view(kOfxImageFieldNone));
+static_assert(string_view("OfxFieldLower") == string_view(kOfxImageFieldLower));
+static_assert(string_view("OfxFieldUpper") == string_view(kOfxImageFieldUpper));
+static_assert(string_view("OfxImageComponentNone") == string_view(kOfxImageComponentNone));
+static_assert(string_view("OfxImageComponentRGBA") == string_view(kOfxImageComponentRGBA));
+static_assert(string_view("OfxImageComponentRGB") == string_view(kOfxImageComponentRGB));
+static_assert(string_view("OfxImageComponentAlpha") == string_view(kOfxImageComponentAlpha));
+static_assert(string_view("OfxBitDepthNone") == string_view(kOfxBitDepthNone));
+static_assert(string_view("OfxBitDepthByte") == string_view(kOfxBitDepthByte));
+static_assert(string_view("OfxBitDepthShort") == string_view(kOfxBitDepthShort));
+static_assert(string_view("OfxBitDepthHalf") == string_view(kOfxBitDepthHalf));
+static_assert(string_view("OfxBitDepthFloat") == string_view(kOfxBitDepthFloat));
+static_assert(string_view("kOfxImageEffectHostPropNativeOriginBottomLeft") == string_view(kOfxHostNativeOriginBottomLeft));
+static_assert(string_view("kOfxImageEffectHostPropNativeOriginTopLeft") == string_view(kOfxHostNativeOriginTopLeft));
+static_assert(string_view("kOfxImageEffectHostPropNativeOriginCenter") == string_view(kOfxHostNativeOriginCenter));
+static_assert(string_view("OfxImageEffectRenderUnsafe") == string_view(kOfxImageEffectRenderUnsafe));
+static_assert(string_view("OfxImageEffectRenderInstanceSafe") == string_view(kOfxImageEffectRenderInstanceSafe));
+static_assert(string_view("OfxImageEffectRenderFullySafe") == string_view(kOfxImageEffectRenderFullySafe));
+static_assert(string_view("OfxImageEffectColourManagementNone") == string_view(kOfxImageEffectColourManagementNone));
+static_assert(string_view("OfxImageEffectColourManagementBasic") == string_view(kOfxImageEffectColourManagementBasic));
+static_assert(string_view("OfxImageEffectColourManagementCore") == string_view(kOfxImageEffectColourManagementCore));
+static_assert(string_view("OfxImageEffectColourManagementFull") == string_view(kOfxImageEffectColourManagementFull));
+static_assert(string_view("OfxImageEffectColourManagementOCIO") == string_view(kOfxImageEffectColourManagementOCIO));
+static_assert(string_view("OfxImageComponentNone") == string_view(kOfxImageComponentNone));
+static_assert(string_view("OfxImageComponentRGBA") == string_view(kOfxImageComponentRGBA));
+static_assert(string_view("OfxImageComponentRGB") == string_view(kOfxImageComponentRGB));
+static_assert(string_view("OfxImageComponentAlpha") == string_view(kOfxImageComponentAlpha));
+static_assert(string_view("OfxImageEffectContextGenerator") == string_view(kOfxImageEffectContextGenerator));
+static_assert(string_view("OfxImageEffectContextFilter") == string_view(kOfxImageEffectContextFilter));
+static_assert(string_view("OfxImageEffectContextTransition") == string_view(kOfxImageEffectContextTransition));
+static_assert(string_view("OfxImageEffectContextPaint") == string_view(kOfxImageEffectContextPaint));
+static_assert(string_view("OfxImageEffectContextGeneral") == string_view(kOfxImageEffectContextGeneral));
+static_assert(string_view("OfxImageEffectContextRetimer") == string_view(kOfxImageEffectContextRetimer));
+static_assert(string_view("OfxFieldNone") == string_view(kOfxImageFieldNone));
+static_assert(string_view("OfxFieldBoth") == string_view(kOfxImageFieldBoth));
+static_assert(string_view("OfxFieldLower") == string_view(kOfxImageFieldLower));
+static_assert(string_view("OfxFieldUpper") == string_view(kOfxImageFieldUpper));
+static_assert(string_view("OfxBitDepthNone") == string_view(kOfxBitDepthNone));
+static_assert(string_view("OfxBitDepthByte") == string_view(kOfxBitDepthByte));
+static_assert(string_view("OfxBitDepthShort") == string_view(kOfxBitDepthShort));
+static_assert(string_view("OfxBitDepthHalf") == string_view(kOfxBitDepthHalf));
+static_assert(string_view("OfxBitDepthFloat") == string_view(kOfxBitDepthFloat));
+static_assert(string_view("OfxImageOpaque") == string_view(kOfxImageOpaque));
+static_assert(string_view("OfxImageAlphaPremultiplied") == string_view(kOfxImagePreMultiplied));
+static_assert(string_view("OfxImageAlphaUnPremultiplied") == string_view(kOfxImageUnPreMultiplied));
+static_assert(string_view("OfxImageComponentNone") == string_view(kOfxImageComponentNone));
+static_assert(string_view("OfxImageComponentRGBA") == string_view(kOfxImageComponentRGBA));
+static_assert(string_view("OfxImageComponentRGB") == string_view(kOfxImageComponentRGB));
+static_assert(string_view("OfxImageComponentAlpha") == string_view(kOfxImageComponentAlpha));
+static_assert(string_view("OfxImageEffectContextGenerator") == string_view(kOfxImageEffectContextGenerator));
+static_assert(string_view("OfxImageEffectContextFilter") == string_view(kOfxImageEffectContextFilter));
+static_assert(string_view("OfxImageEffectContextTransition") == string_view(kOfxImageEffectContextTransition));
+static_assert(string_view("OfxImageEffectContextPaint") == string_view(kOfxImageEffectContextPaint));
+static_assert(string_view("OfxImageEffectContextGeneral") == string_view(kOfxImageEffectContextGeneral));
+static_assert(string_view("OfxImageEffectContextRetimer") == string_view(kOfxImageEffectContextRetimer));
+static_assert(string_view("OfxBitDepthNone") == string_view(kOfxBitDepthNone));
+static_assert(string_view("OfxBitDepthByte") == string_view(kOfxBitDepthByte));
+static_assert(string_view("OfxBitDepthShort") == string_view(kOfxBitDepthShort));
+static_assert(string_view("OfxBitDepthHalf") == string_view(kOfxBitDepthHalf));
+static_assert(string_view("OfxBitDepthFloat") == string_view(kOfxBitDepthFloat));
+static_assert(string_view("OfxFieldNone") == string_view(kOfxImageFieldNone));
+static_assert(string_view("OfxFieldBoth") == string_view(kOfxImageFieldBoth));
+static_assert(string_view("OfxFieldLower") == string_view(kOfxImageFieldLower));
+static_assert(string_view("OfxFieldUpper") == string_view(kOfxImageFieldUpper));
+static_assert(string_view("OfxBitDepthNone") == string_view(kOfxBitDepthNone));
+static_assert(string_view("OfxBitDepthByte") == string_view(kOfxBitDepthByte));
+static_assert(string_view("OfxBitDepthShort") == string_view(kOfxBitDepthShort));
+static_assert(string_view("OfxBitDepthHalf") == string_view(kOfxBitDepthHalf));
+static_assert(string_view("OfxBitDepthFloat") == string_view(kOfxBitDepthFloat));
+static_assert(string_view("OfxParamInvalidateValueChange") == string_view(kOfxParamInvalidateValueChange));
+static_assert(string_view("OfxParamInvalidateValueChangeToEnd") == string_view(kOfxParamInvalidateValueChangeToEnd));
+static_assert(string_view("OfxParamInvalidateAll") == string_view(kOfxParamInvalidateAll));
+static_assert(string_view("OfxParamCoordinatesCanonical") == string_view(kOfxParamCoordinatesCanonical));
+static_assert(string_view("OfxParamCoordinatesNormalised") == string_view(kOfxParamCoordinatesNormalised));
+static_assert(string_view("OfxParamDoubleTypePlain") == string_view(kOfxParamDoubleTypePlain));
+static_assert(string_view("OfxParamDoubleTypeAngle") == string_view(kOfxParamDoubleTypeAngle));
+static_assert(string_view("OfxParamDoubleTypeScale") == string_view(kOfxParamDoubleTypeScale));
+static_assert(string_view("OfxParamDoubleTypeTime") == string_view(kOfxParamDoubleTypeTime));
+static_assert(string_view("OfxParamDoubleTypeAbsoluteTime") == string_view(kOfxParamDoubleTypeAbsoluteTime));
+static_assert(string_view("OfxParamDoubleTypeX") == string_view(kOfxParamDoubleTypeX));
+static_assert(string_view("OfxParamDoubleTypeXAbsolute") == string_view(kOfxParamDoubleTypeXAbsolute));
+static_assert(string_view("OfxParamDoubleTypeY") == string_view(kOfxParamDoubleTypeY));
+static_assert(string_view("OfxParamDoubleTypeYAbsolute") == string_view(kOfxParamDoubleTypeYAbsolute));
+static_assert(string_view("OfxParamDoubleTypeXY") == string_view(kOfxParamDoubleTypeXY));
+static_assert(string_view("OfxParamDoubleTypeXYAbsolute") == string_view(kOfxParamDoubleTypeXYAbsolute));
+static_assert(string_view("OfxParamStringIsSingleLine") == string_view(kOfxParamStringIsSingleLine));
+static_assert(string_view("OfxParamStringIsMultiLine") == string_view(kOfxParamStringIsMultiLine));
+static_assert(string_view("OfxParamStringIsFilePath") == string_view(kOfxParamStringIsFilePath));
+static_assert(string_view("OfxParamStringIsDirectoryPath") == string_view(kOfxParamStringIsDirectoryPath));
+static_assert(string_view("OfxParamStringIsLabel") == string_view(kOfxParamStringIsLabel));
+static_assert(string_view("OfxParamStringIsRichTextFormat") == string_view(kOfxParamStringIsRichTextFormat));
+static_assert(string_view("OfxChangeUserEdited") == string_view(kOfxChangeUserEdited));
+static_assert(string_view("OfxChangePluginEdited") == string_view(kOfxChangePluginEdited));
+static_assert(string_view("OfxChangeTime") == string_view(kOfxChangeTime));
 } // namespace assertions
 } // namespace openfx

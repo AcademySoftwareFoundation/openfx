@@ -2,12 +2,12 @@ cmake_minimum_required(VERSION 3.16.0)
 if(OFX_SUPPORTS_CUDARENDER AND NOT APPLE)
   project(
     openfx
-    VERSION 1.4.0
+    VERSION 1.5.1
     LANGUAGES CXX CUDA)
 else()
   project(
     openfx
-    VERSION 1.4.0
+    VERSION 1.5.1
     LANGUAGES CXX) # no CUDA
 endif()
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -60,9 +60,12 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_BINARY_DIR})
 
 # Conan packages
 find_package(EXPAT)
-find_package(opengl_system REQUIRED)
-find_package(cimg REQUIRED)
-find_package(spdlog REQUIRED)
+if(BUILD_EXAMPLE_PLUGINS)
+  # Used only by the example plugins, not by the OpenFX libraries.
+  find_package(opengl_system REQUIRED)
+  find_package(cimg REQUIRED)
+  find_package(spdlog REQUIRED)
+endif()
 
 # Macros
 include(OpenFX)

@@ -56,12 +56,6 @@ def getPropertiesFromFile(path):
             # ignore these
             nonProperties = (
                 "kOfxPropertySuite",
-                # prop values, not props
-                "kOfxImageEffectPropColourManagementNone",
-                "kOfxImageEffectPropColourManagementBasic",
-                "kOfxImageEffectPropColourManagementCore",
-                "kOfxImageEffectPropColourManagementFull",
-                "kOfxImageEffectPropColourManagementOCIO",
             )
             if splits[1] in nonProperties:
                 continue
@@ -92,6 +86,48 @@ def getPropertiesFromDir(dir):
                 file_path = os.path.join(root, file)
                 props |= getPropertiesFromFile(file_path)
     return list(props)
+
+
+def get_string_defines(dir):
+    """Collect every `#define kName "value"` macro and its string value.
+
+    Returns {value: cname}, mapping each string literal to the C macro that
+    defines it. Used to resolve enum @propdef values back to the #define they
+    name, so we can emit static_asserts and catch typo'd value names. If two
+    macros share a value the lexically-first cname wins (either asserts the
+    same string, so the choice is immaterial).
+    """
+    extensions = {".c", ".h", ".cxx", ".hxx", ".cpp", ".hpp"}
+    value_to_cname = {}
+    pattern = re.compile(r'#define\s+(k\w+)\s+"([^"]+)"')
+    for root, _dirs, files in os.walk(dir):
+        for file in sorted(files):
+            if os.path.splitext(file)[1] not in extensions:
+                continue
+            with open(os.path.join(root, file)) as f:
+                for m in pattern.finditer(f.read()):
+                    cname, value = m.group(1), m.group(2)
+                    if value not in value_to_cname or cname < value_to_cname[value]:
+                        value_to_cname[value] = cname
+    return value_to_cname
+
+
+def enum_value_cname(value, value_to_cname):
+    """Resolve an enum @propdef value to the #define that names it.
+
+    Returns the macro cname, or None if the value is an intentional literal
+    (e.g. "true"/"false"/"needed") with no backing #define. Raises ValueError
+    if the value looks like an OFX constant but has no matching #define, which
+    is the typo class of bug this guards against (issue #247).
+    """
+    if value in value_to_cname:
+        return value_to_cname[value]
+    if value.startswith("Ofx") or value.startswith("kOfx"):
+        raise ValueError(
+            f"enum value '{value}' has no matching #define; "
+            f"the @propdef value must equal a macro's string literal"
+        )
+    return None  # bare literal value, not a #define
 
 
 def get_def(name: str, defs):
@@ -327,7 +363,7 @@ def check_props_used_by_set(props_by_set, props_by_action, props_metadata):
     return errs
 
 
-def gen_props_metadata(props_metadata, outfile_path: Path):
+def gen_props_metadata(props_metadata, value_to_cname, outfile_path: Path):
     """Generate a header file with metadata for each prop"""
     with open(outfile_path, "w") as outfile:
         outfile.write(generated_source_header)
@@ -513,6 +549,21 @@ struct PropTraits<PropId::id> { \\
             outfile.write(
                 f'static_assert(string_view("{p}") == string_view({cname}));\n'
             )
+
+        # Also assert each enum value equals the #define it names, so a typo'd
+        # @propdef value (issue #247) fails to compile. enum_value_cname raises
+        # here if a value looks like an OFX constant but names no macro.
+        outfile.write("\n// ... and enum values vs their #defines\n")
+        for p in sorted(props_metadata):
+            md = props_metadata[p]
+            if md["type"] != "enum":
+                continue
+            for v in md["values"]:
+                cname = enum_value_cname(v, value_to_cname)
+                if cname:
+                    outfile.write(
+                        f'static_assert(string_view("{v}") == string_view({cname}));\n'
+                    )
 
         outfile.write("} // namespace assertions\n")
         outfile.write("} // namespace openfx\n")
@@ -1132,6 +1183,7 @@ def main(args):
     props_by_set = expand_set_props(get_propsets_from_headers(include_dir))
     props_by_action = get_actions_from_headers(include_dir)
     props_metadata = get_properties_from_headers(include_dir)
+    value_to_cname = get_string_defines(include_dir)
 
     # Convert action argument property sets to the same format as regular property sets
     action_propsets = actions_to_propsets(props_by_action)
@@ -1165,7 +1217,7 @@ def main(args):
 
     if args.verbose:
         print(f"=== Generating {args.props_metadata}")
-    gen_props_metadata(props_metadata, dest_path / args.props_metadata)
+    gen_props_metadata(props_metadata, value_to_cname, dest_path / args.props_metadata)
 
     if args.verbose:
         print(f"=== Generating props by set header {args.props_by_set}")

@@ -9,7 +9,7 @@ The authoritative source for information about OFX is http://openeffects.org/
 * [OpenFX Documentation](https://openfx.readthedocs.io/en/latest) - start here
 * [OpenFX Documentation: Reference](https://openfx.readthedocs.io/en/latest/Reference)
 * [Programming Guide By Example](https://openfx.readthedocs.io/en/latest/Guide)
-* [OpenFX Wiki](https://wiki.aswf.io/pages/viewpage.action?pageId=49844871) 
+* [OpenFX Wiki](https://lf-aswf.atlassian.net/wiki/spaces/OFX/overview) 
 
 Here are some [Ways to get involved](https://tac.aswf.io/engagement/#OpenFX) with OpenFX.
 

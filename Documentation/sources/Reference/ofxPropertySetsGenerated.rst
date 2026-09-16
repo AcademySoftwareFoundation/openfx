@@ -104,6 +104,7 @@ These property sets represent collections of properties associated with various 
 - :ref:`OfxImageEffectPluginPropFieldRenderTwiceAlways <prop_OfxImageEffectPluginPropFieldRenderTwiceAlways>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPluginPropFieldRenderTwiceAlways`)
 - :ref:`OfxImageEffectPluginPropGrouping <prop_OfxImageEffectPluginPropGrouping>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPluginPropGrouping`)
 - :ref:`OfxImageEffectPluginPropHostFrameThreading <prop_OfxImageEffectPluginPropHostFrameThreading>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPluginPropHostFrameThreading`)
+- :ref:`OfxImageEffectPluginPropObsolete <prop_OfxImageEffectPluginPropObsolete>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPluginPropObsolete`)
 - :ref:`OfxImageEffectPluginPropOverlayInteractV1 <prop_OfxImageEffectPluginPropOverlayInteractV1>` - Type: pointer, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPluginPropOverlayInteractV1`)
 - :ref:`OfxImageEffectPluginPropOverlayInteractV2 <prop_OfxImageEffectPluginPropOverlayInteractV2>` - Type: pointer, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPluginPropOverlayInteractV2`)
 - :ref:`OfxImageEffectPluginPropSingleInstance <prop_OfxImageEffectPluginPropSingleInstance>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPluginPropSingleInstance`)

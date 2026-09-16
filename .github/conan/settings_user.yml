@@ -1,0 +1,19 @@
+# Extends Conan's built-in settings.yml with compiler versions newer than
+# the pinned Conan release knows about, so CI doesn't break every time a
+# GitHub runner picks up a new toolchain (typically Apple's yearly clang
+# bump). Values here are merged (union) with the built-in lists.
+# CI copies this to $(conan config home)/settings_user.yml before use.
+compiler:
+    apple-clang:
+        version: ["18", "18.0", "19", "19.0", "20", "20.0",
+                  "22", "22.0", "23", "23.0", "24", "24.0", "25", "25.0",
+                  "26", "26.0", "27", "27.0", "28", "28.0", "29", "29.0",
+                  "30", "30.0"]
+    clang:
+        version: ["23", "24", "25", "26", "27", "28", "29", "30"]
+    gcc:
+        version: ["16", "16.1", "16.2", "17", "17.1", "17.2",
+                  "18", "18.1", "18.2", "19", "19.1", "19.2",
+                  "20", "20.1", "20.2"]
+    msvc:
+        version: [196, 197, 198]

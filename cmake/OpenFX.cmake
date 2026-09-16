@@ -46,7 +46,23 @@ function(add_ofx_plugin TARGET)
   set(BUNDLE_SIGNATURE "????")  # any value is OK here, ignored by modern MacOS
   set(PLUGIN_VERSION "1.0.0")
 
-  configure_file(${CMAKE_SOURCE_DIR}/Examples/Info.plist.in
+  # Locate the Info.plist template. In the OpenFX source tree it lives in
+  # Examples/; in an installed/Conan package it sits next to this module
+  # (lib/cmake/). CMAKE_CURRENT_LIST_DIR is the directory of this module file,
+  # so this resolves correctly regardless of the consumer's CMAKE_SOURCE_DIR.
+  set(_ofx_info_plist "")
+  foreach(_dir "${CMAKE_CURRENT_LIST_DIR}"
+               "${CMAKE_CURRENT_LIST_DIR}/../Examples"
+               "${CMAKE_SOURCE_DIR}/Examples")
+    if(EXISTS "${_dir}/Info.plist.in")
+      set(_ofx_info_plist "${_dir}/Info.plist.in")
+      break()
+    endif()
+  endforeach()
+  if(NOT _ofx_info_plist)
+    message(FATAL_ERROR "add_ofx_plugin: could not find Info.plist.in")
+  endif()
+  configure_file("${_ofx_info_plist}"
                  "${PLUGIN_INSTALLDIR}/${TARGET}.ofx.bundle/Contents/Info.plist")
 
   # Set symbol visibility hidden. Individual symbols are exposed via
