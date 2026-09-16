@@ -150,9 +150,80 @@ These are typed by :c:macro:`kOfxParamTypeRGB` and :c:macro:`kOfxParamTypeRGBA`.
 
 Colour parameters are 3 or 4 dimensional double precision floating point
 parameters. They are displayed using the host's appropriate interface
-for a colour. Values are always normalised in the range [0 .. 1], with 0
+for a colour. By default values are normalised in the range [0 .. 1], with 0
 being the nominal black point and 1 being the white point.
 
+Colour-Managed Colour Parameters
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The legacy behaviour above does not say which colourspace a colour parameter's
+values are in, so plug-ins and hosts have historically had to guess (usually
+assuming sRGB). A plug-in may instead declare the encoding explicitly by setting
+:c:macro:`kOfxParamPropColourManagement` on an RGB or RGBA parameter. This
+property governs the colourspace of *every* value exchanged for the parameter,
+including its default, its current value and any keyframes. It does not change
+the parameter's type, dimension or numeric API — values are still read and
+written as 3 or 4 doubles through the ordinary parameter suite.
+
+The property must be one of:
+
+- :c:macro:`kOfxParamColourManagementNone` — the parameter is not
+  colour-managed; its values are interpreted as in legacy OpenFX. This is the
+  default, so existing plug-ins are unaffected.
+- :c:macro:`kOfxParamColourManagementManaged` — the values are in the
+  **ACES2065-1 (AP0)** reference colourspace. They are scene-linear and are not
+  constrained to the [0 .. 1] range. Use this for colours that participate in
+  image processing, such as a key colour or a solid-fill colour.
+- :c:macro:`kOfxParamColourManagementSRGB` — the values are in the **sRGB**
+  colourspace ("web" RGB, with the sRGB transfer function), constrained to the
+  [0 .. 1] range. Use this for display-referred user-interface colours, such as
+  overlay and on-screen-control colours drawn with the
+  :c:struct:`OfxDrawSuiteV1`. It is not intended for processing image pixels.
+
+ACES2065-1 is the reference colourspace of the OpenFX native colour management
+config (see ``ofxColour.h``). It was chosen because it is a
+single, well-specified, scene-referred linear space wide enough to carry any
+colour without clamping. Restricting the managed encoding to this one space,
+rather than an arbitrary colourspace name, keeps both hosts and plug-ins simple
+and makes stored colours portable between applications. Plug-ins that need to
+convert managed values to or from another space can do so themselves; the
+conversions are standard and need no host involvement.
+
+Rules for plug-ins:
+
+- A plug-in **must** set this property, if at all, only when defining the
+  parameter (during the describe stage), before the parameter instance exists.
+- A plug-in **must not** change the property on a parameter instance, and in
+  particular **must not** change it during a render or other action to influence
+  a subsequent read. Hosts may evaluate parameters concurrently; the encoding is
+  a fixed property of the parameter, not a per-read mode.
+- A plug-in **must** check the status returned when setting the property. A host
+  that does not support it will fail the set; the plug-in **must** then fall
+  back to :c:macro:`kOfxParamColourManagementNone` behaviour.
+- A plug-in that declares a managed or sRGB encoding **must** supply every value
+  it sets (defaults included) in the declared colourspace, and **must** interpret
+  every value it reads as being in that colourspace.
+
+Rules for hosts:
+
+- A host that supports the property **must** accept all three values.
+- A host **should** convert the parameter's colour from its declared encoding
+  into whatever space it needs — for example to draw an accurate swatch, to feed
+  the value to the Draw Suite, or to hand a wide-gamut colour to the plug-in at
+  render time.
+- A host **should** store managed values as ACES2065-1 and sRGB values as sRGB
+  in its project files, so colour parameters are portable between applications
+  and across versions.
+- When a host first loads a project saved before a parameter became
+  colour-managed, it **should** convert the previously stored values into the
+  parameter's declared colourspace, assuming the legacy values were sRGB if it
+  has no better information.
+
+Support for this property does **not** require the host to advertise any
+particular :c:macro:`kOfxImageEffectPropColourManagementStyle`: the managed and
+sRGB encodings are fully specified here and need no OCIO config. See
+``ofxColour.h`` for the native colour management properties and reference
+colourspaces.
 
 Boolean Parameters
 ------------------

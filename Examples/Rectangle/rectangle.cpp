@@ -803,6 +803,20 @@ describeInContext(OfxImageEffectHandle effect, OfxPropertySetHandle inArgs)
   gPropHost->propSetString(paramProps, kOfxParamPropHint, 0, "The colour of the rectangle");
   gPropHost->propSetString(paramProps, kOfxParamPropScriptName, 0, "colour");
   gPropHost->propSetString(paramProps, kOfxPropLabel, 0, "Colour");
+
+  // The rectangle is a solid fill, so its colour participates in image
+  // processing. Declare the parameter colour-managed: its values (including
+  // the default set below) are then in the ACES2065-1 reference colourspace.
+  // A plugin must check the status -- a host that does not support this
+  // property fails the set, in which case the colour is simply a legacy,
+  // unmanaged value. This minimal example treats the value identically either
+  // way; the default is opaque black, which is (0,0,0) in every RGB
+  // colourspace.
+  OfxStatus colourManagedStat =
+    gPropHost->propSetString(paramProps, kOfxParamPropColourManagement, 0,
+                             kOfxParamColourManagementManaged);
+  (void) colourManagedStat;
+
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 0, 0);
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 1, 0);
   gPropHost->propSetDouble(paramProps, kOfxParamPropDefault, 2, 0);
