@@ -1346,6 +1346,9 @@ static_assert(string_view("OfxBitDepthFloat") == string_view(kOfxBitDepthFloat))
 static_assert(string_view("OfxParamInvalidateValueChange") == string_view(kOfxParamInvalidateValueChange));
 static_assert(string_view("OfxParamInvalidateValueChangeToEnd") == string_view(kOfxParamInvalidateValueChangeToEnd));
 static_assert(string_view("OfxParamInvalidateAll") == string_view(kOfxParamInvalidateAll));
+static_assert(string_view("OfxParamColourManagementNone") == string_view(kOfxParamColourManagementNone));
+static_assert(string_view("OfxParamColourManagementManaged") == string_view(kOfxParamColourManagementManaged));
+static_assert(string_view("OfxParamColourManagementSRGB") == string_view(kOfxParamColourManagementSRGB));
 static_assert(string_view("OfxParamCoordinatesCanonical") == string_view(kOfxParamCoordinatesCanonical));
 static_assert(string_view("OfxParamCoordinatesNormalised") == string_view(kOfxParamCoordinatesNormalised));
 static_assert(string_view("OfxParamDoubleTypePlain") == string_view(kOfxParamDoubleTypePlain));
