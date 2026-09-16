@@ -1,5 +1,4 @@
-#ifndef _ofxColourConvert_h_
-#define _ofxColourConvert_h_
+#pragma once
 
 // Copyright OpenFX and contributors to the OpenFX project.
 // SPDX-License-Identifier: BSD-3-Clause
@@ -45,9 +44,19 @@ to within floating-point precision.
 @endcode
 */
 
-#if !defined(__cplusplus) || __cplusplus < 201703L
+// MSVC reports the language level in _MSVC_LANG; its __cplusplus stays at
+// 199711L unless /Zc:__cplusplus is given.
+#if defined(_MSVC_LANG)
+#  define OFX_COLOUR_CXX_STD _MSVC_LANG
+#elif defined(__cplusplus)
+#  define OFX_COLOUR_CXX_STD __cplusplus
+#else
+#  define OFX_COLOUR_CXX_STD 0L
+#endif
+#if OFX_COLOUR_CXX_STD < 201703L
 #  error "ofxColourConvert.h requires C++17 or later"
 #endif
+#undef OFX_COLOUR_CXX_STD
 
 #include <array>
 #include <cmath>
@@ -89,15 +98,25 @@ constexpr Matrix33 operator*(const Matrix33 &a, const Matrix33 &b)
     return r;
 }
 
-/** @brief Inverse of a 3x3 matrix (assumes the matrix is non-singular). */
+/** @brief Determinants at or below this magnitude are treated as singular.
+Well-formed colour matrices have determinants many orders of magnitude larger. */
+constexpr double kSingularDeterminant = 1e-12;
+
+/** @brief Inverse of a 3x3 matrix.
+
+A singular (or numerically near-singular) matrix has no inverse; rather than
+divide by zero, this returns the all-zero matrix, which makes any downstream
+conversion visibly wrong (all black) instead of silently garbage. */
 constexpr Matrix33 inverse(const Matrix33 &a)
 {
     const double det =
           a.m[0][0] * (a.m[1][1] * a.m[2][2] - a.m[1][2] * a.m[2][1])
         - a.m[0][1] * (a.m[1][0] * a.m[2][2] - a.m[1][2] * a.m[2][0])
         + a.m[0][2] * (a.m[1][0] * a.m[2][1] - a.m[1][1] * a.m[2][0]);
-    const double inv = 1.0 / det;
     Matrix33 r{};
+    if (det > -kSingularDeterminant && det < kSingularDeterminant)
+        return r;
+    const double inv = 1.0 / det;
     r.m[0][0] = (a.m[1][1] * a.m[2][2] - a.m[1][2] * a.m[2][1]) * inv;
     r.m[0][1] = (a.m[0][2] * a.m[2][1] - a.m[0][1] * a.m[2][2]) * inv;
     r.m[0][2] = (a.m[0][1] * a.m[1][2] - a.m[0][2] * a.m[1][1]) * inv;
@@ -693,5 +712,3 @@ inline bool colourspaceFromName(const char *name, Colourspace &out)
 
 } // namespace colour
 } // namespace ofx
-
-#endif // _ofxColourConvert_h_
