@@ -460,7 +460,7 @@ efficient for a host to create the texture directly.
 
 The OfxOpenGLRenderSuiteV1::clipLoadTexture function does this. The
 arguments and semantics are similar to the
-OfxImageEffectSuiteV2::clipGetImage function, with a few minor changes.
+OfxImageEffectSuiteV1::clipGetImage function, with a few minor changes.
 
 The effect is passed back a property handle describing the texture. Once the
 texture is finished with, this should be disposed
@@ -469,7 +469,7 @@ delete the associated OpenGL texture (for source clips).
 
 The returned handle has a set of properties on it, analogous to the
 properties returned on the image handle by
-OfxImageEffectSuiteV2::clipGetImage. These are:
+OfxImageEffectSuiteV1::clipGetImage. These are:
     - ::kOfxImageEffectPropOpenGLTextureIndex
     - ::kOfxImageEffectPropOpenGLTextureTarget
     - ::kOfxImageEffectPropPixelDepth
