@@ -51,6 +51,7 @@ rendering
                   OpenGL support, without which it cannot work.
 
 V1.4: It is now expected from host reporting v1.4 that the plug-in can during instance change switch from true to false and false to true.
+An instance inherits the value set on the plug-in descriptor until the plug-in sets this property on the instance; a host must not substitute its own default at the instance level.
 
     @propdef
     type: enum
@@ -560,6 +561,8 @@ current for other OFX calls, such as ::kOfxImageEffectActionDescribeInContext.
       - "false"  - the host or plug-in does not support CUDA render
       - "true"   - the host or plug-in can support CUDA render
 
+An instance inherits the value set on the plug-in descriptor until the plug-in sets this property on the instance; a host must not substitute its own default at the instance level.
+
     @propdef
     type: enum
     dimension: 1
@@ -595,6 +598,8 @@ the current action
     - Valid Values -
       - "false"  - in which case the host or plug-in does not support CUDA streams
       - "true"   - which means a host or plug-in can support CUDA streams
+
+An instance inherits the value set on the plug-in descriptor until the plug-in sets this property on the instance; a host must not substitute its own default at the instance level.
 
     @propdef
     type: enum
@@ -645,6 +650,8 @@ If not set:
     - Valid Values -
       - "false"  - the host or plug-in does not support Metal render
       - "true"   - the host or plug-in can support Metal render
+
+An instance inherits the value set on the plug-in descriptor until the plug-in sets this property on the instance; a host must not substitute its own default at the instance level.
 
     @propdef
     type: enum
@@ -708,6 +715,8 @@ complete before returning from the render action.
     - Valid Values -
       - "false"  - the host or plug-in does not support OpenCL Buffers render
       - "true"   - the host or plug-in can support OpenCL Buffers render
+
+An instance inherits the value set on the plug-in descriptor until the plug-in sets this property on the instance; a host must not substitute its own default at the instance level.
 
     @propdef
     type: enum

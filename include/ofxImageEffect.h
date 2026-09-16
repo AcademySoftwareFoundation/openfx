@@ -1018,7 +1018,8 @@ Tiled images mean that input or output images can contain pixel data that is onl
 
 If a clip or plugin does not support tiled images, then the host should supply full RoD images to the effect whenever it fetches one.
 
-V1.4:  It is now possible (defined) to change OfxImageEffectPropSupportsTiles in Instance Changed
+V1.4:  It is now possible (defined) to change OfxImageEffectPropSupportsTiles in Instance Changed.
+An instance inherits the value set on the plug-in descriptor until the plug-in sets this property on the instance; a host must not substitute its own default at the instance level.
 
    @propdef
    type: bool
