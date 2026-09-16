@@ -1,6 +1,6 @@
 .. SPDX-License-Identifier: CC-BY-4.0
-Changes to the API for 1.2
-==========================
+OpenFX Release Notes for V1.2
+=============================
 
 Introduction
 ------------
