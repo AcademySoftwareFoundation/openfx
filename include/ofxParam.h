@@ -554,13 +554,13 @@ as to the interface of the parameter.
 /** @brief value for the ::kOfxParamPropDoubleType property, indicating the parameter is to be interpreted as a scale factor. See \ref ::kOfxParamPropDoubleType. */
 #define kOfxParamDoubleTypeScale "OfxParamDoubleTypeScale"
 
-/** @brief value for the ::kOfxParamDoubleTypeAngle property, indicating the parameter is to be interpreted as an angle. See \ref ::kOfxParamPropDoubleType.  */
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating the parameter is to be interpreted as an angle. See \ref ::kOfxParamPropDoubleType.  */
 #define kOfxParamDoubleTypeAngle "OfxParamDoubleTypeAngle"
 
-/** @brief value for the ::kOfxParamDoubleTypeAngle property, indicating the parameter is to be interpreted as a time. See \ref ::kOfxParamPropDoubleType. */
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating the parameter is to be interpreted as a time. See \ref ::kOfxParamPropDoubleType. */
 #define kOfxParamDoubleTypeTime "OfxParamDoubleTypeTime"
 
-/** @brief value for the ::kOfxParamDoubleTypeAngle property, indicating the parameter is to be interpreted as an absolute time from the start of the effect. See \ref ::kOfxParamPropDoubleType. */
+/** @brief value for the ::kOfxParamPropDoubleType property, indicating the parameter is to be interpreted as an absolute time from the start of the effect. See \ref ::kOfxParamPropDoubleType. */
 #define kOfxParamDoubleTypeAbsoluteTime "OfxParamDoubleTypeAbsoluteTime"
 
 
