@@ -22,6 +22,7 @@ This is version NEXT of the OpenFX API.
 - Set proper RGBA colour defaults on the colour parameter in the Rectangle example (issue #240).
 - Fixed the ColourSpace example to compile under `FMT_ENFORCE_COMPILE_STRING`, with a CI job to keep it that way (issue #236).
 - CMake: use `target_compile_features(cxx_std_17)` instead of forcing `CMAKE_CXX_STANDARD`, so consumers can build with a later C++ standard (issue #208).
+- Fixed the `@propdef` metadata of `kOfxParamPropChoiceEnum` (a string array, not a bool) and `kOfxParamPropDimensionLabel` (one label per dimension, not one).
 
 ## Deprecations
 
