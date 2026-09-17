@@ -39,6 +39,10 @@ actions needed. (Like lowering its priority etc..)
 	   Plugin should return from this action when all Dialog interactions are done.
 	   At that point the host will continue again.
 	   The host will not send any other messages asynchronous to this one.
+ 
+    @actiondef
+    inArgs:
+    outArgs:
 */
 #define  kOfxActionDialog	"OfxActionDialog"
 

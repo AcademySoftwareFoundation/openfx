@@ -1015,12 +1015,13 @@ The interp value is a linear interpolation amount, however his may be derived fr
 
     @actiondef
     inArgs:
+      - OfxPropName
+      - OfxPropTime
       - OfxParamPropCustomValue
       - OfxParamPropInterpolationTime
       - OfxParamPropInterpolationAmount
     outArgs:
       - OfxParamPropCustomValue
-      - OfxParamPropInterpolationTime
 */
 typedef OfxStatus (OfxCustomParamInterpFuncV1)(OfxParamSetHandle instance,
 					       OfxPropertySetHandle inArgs,
@@ -1480,7 +1481,7 @@ changes a keyframe.  The keyframe indices will not change within a single action
       - ParamsCommon_REF
 */
 
-/** @propset ParamDouble1D
+/** @propset ParamsDouble1D
     write: plugin
     props:
       - OfxParamPropShowTimeMarker
