@@ -3124,8 +3124,23 @@ class ParamsInt2D3D : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    ParamsInt2D3D& setDimensionLabel(const char* value, bool error_if_missing = true) {
-        props_.set<PropId::OfxParamPropDimensionLabel>(value, 0, error_if_missing);
+    ParamsInt2D3D& setDimensionLabel(const char* value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropDimensionLabel>(value, index, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ParamsInt2D3D& setDimensionLabel(const Container& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropDimensionLabel>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    ParamsInt2D3D& setDimensionLabel(std::initializer_list<const char*> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropDimensionLabel>(values, error_if_missing);
         return *this;
     }
 
@@ -4613,8 +4628,23 @@ public:
         return *this;
     }
 
-    ParamsStrChoice& setChoiceEnum(bool value, bool error_if_missing = true) {
-        props_.set<PropId::OfxParamPropChoiceEnum>(value, 0, error_if_missing);
+    ParamsStrChoice& setChoiceEnum(const char* value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropChoiceEnum>(value, index, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    ParamsStrChoice& setChoiceEnum(const Container& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropChoiceEnum>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    ParamsStrChoice& setChoiceEnum(std::initializer_list<const char*> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxParamPropChoiceEnum>(values, error_if_missing);
         return *this;
     }
 

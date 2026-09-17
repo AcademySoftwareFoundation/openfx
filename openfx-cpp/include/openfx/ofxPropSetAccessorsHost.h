@@ -3149,8 +3149,8 @@ class ParamsInt2D3D : public PropertySetAccessor {
 public:
     using PropertySetAccessor::PropertySetAccessor;
 
-    const char* dimensionLabel(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropDimensionLabel>(0, error_if_missing);
+    const char* dimensionLabel(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDimensionLabel>(index, error_if_missing);
     }
 
     const char* type(bool error_if_missing = true) const {
@@ -4066,8 +4066,8 @@ public:
         return props_.get<PropId::OfxParamPropChoiceOption>(index, error_if_missing);
     }
 
-    bool choiceEnum(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropChoiceEnum>(0, error_if_missing);
+    const char* choiceEnum(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropChoiceEnum>(index, error_if_missing);
     }
 
     const char* type(bool error_if_missing = true) const {

@@ -429,17 +429,6 @@ Integer (Boolean) Properties
 - **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropCanUndo`.
 
-.. _prop_OfxParamPropChoiceEnum:
-
-**OfxParamPropChoiceEnum**
-^^^^^^^^^^^^^^^^^^^^^^
-
-- **C #define**: :c:macro:`kOfxParamPropChoiceEnum`
-- **Type**: bool
-- **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin)
-- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropChoiceEnum`.
-
 .. _prop_OfxParamPropEnabled:
 
 **OfxParamPropEnabled**
@@ -2077,6 +2066,17 @@ String Properties
 - **Used in Property Sets**: :ref:`InteractInstance <propset_InteractInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxInteractPropSlaveToParam`.
 
+.. _prop_OfxParamPropChoiceEnum:
+
+**OfxParamPropChoiceEnum**
+^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxParamPropChoiceEnum`
+- **Type**: string
+- **Dimension**: Variable (0 or more)
+- **Used in Property Sets**: :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin)
+- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropChoiceEnum`.
+
 .. _prop_OfxParamPropChoiceOption:
 
 **OfxParamPropChoiceOption**
@@ -2116,7 +2116,7 @@ String Properties
 
 - **C #define**: :c:macro:`kOfxParamPropDimensionLabel`
 - **Type**: string
-- **Dimension**: 1
+- **Dimension**: Variable (0 or more)
 - **Used in Property Sets**: :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDimensionLabel`.
 
