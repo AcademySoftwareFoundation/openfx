@@ -69,7 +69,6 @@ static OfxStatus render(OfxImageEffectHandle  instance,
   OfxPropertySetHandle outputImg = NULL, sourceImg = NULL;
   try {
     // fetch image to render into from that clip
-    OfxPropertySetHandle outputImg;
     if(gEffectHost->clipGetImage(outputClip, time, NULL, &outputImg) != kOfxStatOK) {
       throw NoImageEx();
     }
