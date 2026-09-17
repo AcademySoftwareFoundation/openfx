@@ -873,10 +873,12 @@ For each action, the required input properties (passed from host to plugin) and 
 * :ref:`OfxActionCreateInstance <action_OfxActionCreateInstance>`
 * :ref:`OfxActionDescribe <action_OfxActionDescribe>`
 * :ref:`OfxActionDestroyInstance <action_OfxActionDestroyInstance>`
+* :ref:`OfxActionDialog <action_OfxActionDialog>`
 * :ref:`OfxActionEndInstanceChanged <action_OfxActionEndInstanceChanged>`
 * :ref:`OfxActionEndInstanceEdit <action_OfxActionEndInstanceEdit>`
 * :ref:`OfxActionInstanceChanged <action_OfxActionInstanceChanged>`
 * :ref:`OfxActionLoad <action_OfxActionLoad>`
+* :ref:`OfxActionOpenGLContextAttached <action_OfxActionOpenGLContextAttached>`
 * :ref:`OfxActionPurgeCaches <action_OfxActionPurgeCaches>`
 * :ref:`OfxActionSyncPrivateData <action_OfxActionSyncPrivateData>`
 * :ref:`OfxActionUnload <action_OfxActionUnload>`
@@ -900,6 +902,7 @@ For each action, the required input properties (passed from host to plugin) and 
 * :ref:`OfxInteractActionPenDown <action_OfxInteractActionPenDown>`
 * :ref:`OfxInteractActionPenMotion <action_OfxInteractActionPenMotion>`
 * :ref:`OfxInteractActionPenUp <action_OfxInteractActionPenUp>`
+* :ref:`kOfxActionOpenGLContextDetached <action_kOfxActionOpenGLContextDetached>`
 
 .. _action_CustomParamInterpFunc:
 
@@ -921,8 +924,6 @@ For each action, the required input properties (passed from host to plugin) and 
 **Output Arguments**
 
 - :ref:`OfxParamPropCustomValue <prop_OfxParamPropCustomValue>` - Type: string, Dimension: 2 (doc: :c:macro:`kOfxParamPropCustomValue`)
-
-- :ref:`OfxParamPropInterpolationTime <prop_OfxParamPropInterpolationTime>` - Type: double, Dimension: 2 (doc: :c:macro:`kOfxParamPropInterpolationTime`)
 
 .. _action_OfxActionBeginInstanceChanged:
 
@@ -960,6 +961,13 @@ For each action, the required input properties (passed from host to plugin) and 
 
 **OfxActionDestroyInstance**
 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+-- no in/out args --
+
+.. _action_OfxActionDialog:
+
+**OfxActionDialog**
+^^^^^^^^^^^^^^^
 
 -- no in/out args --
 
@@ -1002,6 +1010,13 @@ For each action, the required input properties (passed from host to plugin) and 
 
 **OfxActionLoad**
 ^^^^^^^^^^^^^
+
+-- no in/out args --
+
+.. _action_OfxActionOpenGLContextAttached:
+
+**OfxActionOpenGLContextAttached**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 -- no in/out args --
 
@@ -1473,4 +1488,11 @@ For each action, the required input properties (passed from host to plugin) and 
 - :ref:`OfxInteractPropPenViewportPosition <prop_OfxInteractPropPenViewportPosition>` - Type: int, Dimension: 2 (:c:macro:`kOfxInteractPropPenViewportPosition`)
 
 - :ref:`OfxInteractPropPenPressure <prop_OfxInteractPropPenPressure>` - Type: double, Dimension: 1 (:c:macro:`kOfxInteractPropPenPressure`)
+
+.. _action_kOfxActionOpenGLContextDetached:
+
+**kOfxActionOpenGLContextDetached**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+-- no in/out args --
 

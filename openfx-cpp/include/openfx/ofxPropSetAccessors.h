@@ -323,17 +323,6 @@ public:
         return *this;
     }
 
-    CustomParamInterpFunc_OutArgs& setInterpolationTime(const std::array<double, 2>& values, bool error_if_missing = true) {
-        props_.setAll<PropId::OfxParamPropInterpolationTime>(values, error_if_missing);
-        return *this;
-    }
-
-    // Set all values from an initializer list (e.g., {1, 2})
-    CustomParamInterpFunc_OutArgs& setInterpolationTime(std::initializer_list<double> values, bool error_if_missing = true) {
-        props_.setAll<PropId::OfxParamPropInterpolationTime>(values, error_if_missing);
-        return *this;
-    }
-
 };
 
 // Property set accessor for: EffectDescriptor

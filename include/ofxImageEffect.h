@@ -199,7 +199,7 @@ These are the list of actions passed to an image effect plugin's main function. 
       - OfxImageEffectPropRegionOfInterest
       - OfxImageEffectPropThumbnailRender
     outArgs:
-    # - OfxImageEffectClipPropRoI_ # with clip name
+    # - OfxImageClipPropRoI_ # with clip name
 */
 #define kOfxImageEffectActionGetRegionsOfInterest         "OfxImageEffectActionGetRegionsOfInterest"
 

@@ -672,17 +672,19 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
 };
 
 // Actions
-static inline const std::array<const char *, 33> actions {
+static inline const std::array<const char *, 36> actions {
   "CustomParamInterpFunc",
   "OfxActionBeginInstanceChanged",
   "OfxActionBeginInstanceEdit",
   "OfxActionCreateInstance",
   "OfxActionDescribe",
   "OfxActionDestroyInstance",
+  "OfxActionDialog",
   "OfxActionEndInstanceChanged",
   "OfxActionEndInstanceEdit",
   "OfxActionInstanceChanged",
   "OfxActionLoad",
+  "OfxActionOpenGLContextAttached",
   "OfxActionPurgeCaches",
   "OfxActionSyncPrivateData",
   "OfxActionUnload",
@@ -706,6 +708,7 @@ static inline const std::array<const char *, 33> actions {
   "OfxInteractActionPenDown",
   "OfxInteractActionPenMotion",
   "OfxInteractActionPenUp",
+  kOfxActionOpenGLContextDetached,
 };
 
 // Properties for action args
@@ -719,8 +722,7 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
     "OfxPropTime" } },
 // CustomParamInterpFunc.outArgs
 { { "CustomParamInterpFunc", "outArgs" },
-  { "OfxParamPropCustomValue",
-    "OfxParamPropInterpolationTime" } },
+  { "OfxParamPropCustomValue" } },
 // OfxActionBeginInstanceChanged.inArgs
 { { "OfxActionBeginInstanceChanged", "inArgs" },
   { "OfxImageEffectPropThumbnailRender",
@@ -941,10 +943,12 @@ static_assert(std::string_view("OfxActionBeginInstanceEdit") == std::string_view
 static_assert(std::string_view("OfxActionCreateInstance") == std::string_view(kOfxActionCreateInstance));
 static_assert(std::string_view("OfxActionDescribe") == std::string_view(kOfxActionDescribe));
 static_assert(std::string_view("OfxActionDestroyInstance") == std::string_view(kOfxActionDestroyInstance));
+static_assert(std::string_view("OfxActionDialog") == std::string_view(kOfxActionDialog));
 static_assert(std::string_view("OfxActionEndInstanceChanged") == std::string_view(kOfxActionEndInstanceChanged));
 static_assert(std::string_view("OfxActionEndInstanceEdit") == std::string_view(kOfxActionEndInstanceEdit));
 static_assert(std::string_view("OfxActionInstanceChanged") == std::string_view(kOfxActionInstanceChanged));
 static_assert(std::string_view("OfxActionLoad") == std::string_view(kOfxActionLoad));
+static_assert(std::string_view("OfxActionOpenGLContextAttached") == std::string_view(kOfxActionOpenGLContextAttached));
 static_assert(std::string_view("OfxActionPurgeCaches") == std::string_view(kOfxActionPurgeCaches));
 static_assert(std::string_view("OfxActionSyncPrivateData") == std::string_view(kOfxActionSyncPrivateData));
 static_assert(std::string_view("OfxActionUnload") == std::string_view(kOfxActionUnload));

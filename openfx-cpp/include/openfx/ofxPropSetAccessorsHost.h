@@ -390,10 +390,6 @@ public:
         return props_.getAll<PropId::OfxParamPropCustomValue>();
     }
 
-    std::array<double, 2> interpolationTime() const {
-        return props_.getAll<PropId::OfxParamPropInterpolationTime>();
-    }
-
 };
 
 // Property set accessor for: EffectDescriptor

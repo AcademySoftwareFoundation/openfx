@@ -1022,7 +1022,6 @@ The interp value is a linear interpolation amount, however his may be derived fr
       - OfxParamPropInterpolationAmount
     outArgs:
       - OfxParamPropCustomValue
-      - OfxParamPropInterpolationTime
 */
 typedef OfxStatus (OfxCustomParamInterpFuncV1)(OfxParamSetHandle instance,
 					       OfxPropertySetHandle inArgs,
