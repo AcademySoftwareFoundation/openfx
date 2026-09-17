@@ -66,3 +66,8 @@ plug-ins main entry point.
 
 .. doxygendefine:: kOfxImageEffectActionGetTimeDomain
 
+.. doxygendefine:: kOfxActionDialog
+
+.. doxygendefine:: kOfxActionOpenGLContextAttached
+
+.. doxygendefine:: kOfxActionOpenGLContextDetached
