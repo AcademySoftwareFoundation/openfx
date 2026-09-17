@@ -32,5 +32,3 @@ the API. The changes to the API are listed in an addendum.
     ofxPropertySetsGenerated
     DoxygenIndex
     ofxStatusCodes
-    .. not needed:
-    .. apiChanges_1_2_Chapter

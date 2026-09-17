@@ -197,45 +197,6 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
    { "OfxInteractPropBitDepth", prop_defs[PropId::OfxInteractPropBitDepth], true, false, false },
    { "OfxInteractPropSlaveToParam", prop_defs[PropId::OfxInteractPropSlaveToParam], true, false, false },
    { "OfxInteractPropSuggestedColour", prop_defs[PropId::OfxInteractPropSuggestedColour], true, false, false } } },
-// ParamDouble1D
-{ "ParamDouble1D", {
-   { "OfxParamPropShowTimeMarker", prop_defs[PropId::OfxParamPropShowTimeMarker], false, true, false },
-   { "OfxParamPropDoubleType", prop_defs[PropId::OfxParamPropDoubleType], false, true, false },
-   { "OfxPropType", prop_defs[PropId::OfxPropType], false, true, false },
-   { "OfxPropName", prop_defs[PropId::OfxPropName], false, true, false },
-   { "OfxPropLabel", prop_defs[PropId::OfxPropLabel], false, true, false },
-   { "OfxPropShortLabel", prop_defs[PropId::OfxPropShortLabel], false, true, false },
-   { "OfxPropLongLabel", prop_defs[PropId::OfxPropLongLabel], false, true, false },
-   { "OfxParamPropType", prop_defs[PropId::OfxParamPropType], false, true, false },
-   { "OfxParamPropSecret", prop_defs[PropId::OfxParamPropSecret], false, true, false },
-   { "OfxParamPropHint", prop_defs[PropId::OfxParamPropHint], false, true, false },
-   { "OfxParamPropScriptName", prop_defs[PropId::OfxParamPropScriptName], false, true, false },
-   { "OfxParamPropParent", prop_defs[PropId::OfxParamPropParent], false, true, false },
-   { "OfxParamPropEnabled", prop_defs[PropId::OfxParamPropEnabled], false, true, false },
-   { "OfxParamPropDataPtr", prop_defs[PropId::OfxParamPropDataPtr], false, true, false },
-   { "OfxPropIcon", prop_defs[PropId::OfxPropIcon], false, true, false },
-   { "OfxParamPropInteractV1", prop_defs[PropId::OfxParamPropInteractV1], false, true, false },
-   { "OfxParamPropInteractSize", prop_defs[PropId::OfxParamPropInteractSize], false, true, false },
-   { "OfxParamPropInteractSizeAspect", prop_defs[PropId::OfxParamPropInteractSizeAspect], false, true, false },
-   { "OfxParamPropInteractMinimumSize", prop_defs[PropId::OfxParamPropInteractMinimumSize], false, true, false },
-   { "OfxParamPropInteractPreferedSize", prop_defs[PropId::OfxParamPropInteractPreferedSize], false, true, false },
-   { "OfxParamPropHasHostOverlayHandle", prop_defs[PropId::OfxParamPropHasHostOverlayHandle], false, true, false },
-   { "kOfxParamPropUseHostOverlayHandle", prop_defs[PropId::OfxParamPropUseHostOverlayHandle], false, true, false },
-   { "OfxParamPropDefault", prop_defs[PropId::OfxParamPropDefault], false, true, false },
-   { "OfxParamPropAnimates", prop_defs[PropId::OfxParamPropAnimates], false, true, false },
-   { "OfxParamPropIsAnimating", prop_defs[PropId::OfxParamPropIsAnimating], true, false, false },
-   { "OfxParamPropIsAutoKeying", prop_defs[PropId::OfxParamPropIsAutoKeying], true, false, false },
-   { "OfxParamPropPersistant", prop_defs[PropId::OfxParamPropPersistant], false, true, false },
-   { "OfxParamPropEvaluateOnChange", prop_defs[PropId::OfxParamPropEvaluateOnChange], false, true, false },
-   { "OfxParamPropPluginMayWrite", prop_defs[PropId::OfxParamPropPluginMayWrite], false, true, false },
-   { "OfxParamPropCacheInvalidation", prop_defs[PropId::OfxParamPropCacheInvalidation], false, true, false },
-   { "OfxParamPropCanUndo", prop_defs[PropId::OfxParamPropCanUndo], false, true, false },
-   { "OfxParamPropMin", prop_defs[PropId::OfxParamPropMin], false, true, false },
-   { "OfxParamPropMax", prop_defs[PropId::OfxParamPropMax], false, true, false },
-   { "OfxParamPropDisplayMin", prop_defs[PropId::OfxParamPropDisplayMin], false, true, false },
-   { "OfxParamPropDisplayMax", prop_defs[PropId::OfxParamPropDisplayMax], false, true, false },
-   { "OfxParamPropIncrement", prop_defs[PropId::OfxParamPropIncrement], false, true, false },
-   { "OfxParamPropDigits", prop_defs[PropId::OfxParamPropDigits], false, true, false } } },
 // ParameterSet
 { "ParameterSet", {
    { "OfxPropParamSetNeedsSyncing", prop_defs[PropId::OfxPropParamSetNeedsSyncing], false, true, false },
@@ -340,6 +301,45 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
    { "OfxParamPropPluginMayWrite", prop_defs[PropId::OfxParamPropPluginMayWrite], false, true, false },
    { "OfxParamPropCacheInvalidation", prop_defs[PropId::OfxParamPropCacheInvalidation], false, true, false },
    { "OfxParamPropCanUndo", prop_defs[PropId::OfxParamPropCanUndo], false, true, false } } },
+// ParamsDouble1D
+{ "ParamsDouble1D", {
+   { "OfxParamPropShowTimeMarker", prop_defs[PropId::OfxParamPropShowTimeMarker], false, true, false },
+   { "OfxParamPropDoubleType", prop_defs[PropId::OfxParamPropDoubleType], false, true, false },
+   { "OfxPropType", prop_defs[PropId::OfxPropType], false, true, false },
+   { "OfxPropName", prop_defs[PropId::OfxPropName], false, true, false },
+   { "OfxPropLabel", prop_defs[PropId::OfxPropLabel], false, true, false },
+   { "OfxPropShortLabel", prop_defs[PropId::OfxPropShortLabel], false, true, false },
+   { "OfxPropLongLabel", prop_defs[PropId::OfxPropLongLabel], false, true, false },
+   { "OfxParamPropType", prop_defs[PropId::OfxParamPropType], false, true, false },
+   { "OfxParamPropSecret", prop_defs[PropId::OfxParamPropSecret], false, true, false },
+   { "OfxParamPropHint", prop_defs[PropId::OfxParamPropHint], false, true, false },
+   { "OfxParamPropScriptName", prop_defs[PropId::OfxParamPropScriptName], false, true, false },
+   { "OfxParamPropParent", prop_defs[PropId::OfxParamPropParent], false, true, false },
+   { "OfxParamPropEnabled", prop_defs[PropId::OfxParamPropEnabled], false, true, false },
+   { "OfxParamPropDataPtr", prop_defs[PropId::OfxParamPropDataPtr], false, true, false },
+   { "OfxPropIcon", prop_defs[PropId::OfxPropIcon], false, true, false },
+   { "OfxParamPropInteractV1", prop_defs[PropId::OfxParamPropInteractV1], false, true, false },
+   { "OfxParamPropInteractSize", prop_defs[PropId::OfxParamPropInteractSize], false, true, false },
+   { "OfxParamPropInteractSizeAspect", prop_defs[PropId::OfxParamPropInteractSizeAspect], false, true, false },
+   { "OfxParamPropInteractMinimumSize", prop_defs[PropId::OfxParamPropInteractMinimumSize], false, true, false },
+   { "OfxParamPropInteractPreferedSize", prop_defs[PropId::OfxParamPropInteractPreferedSize], false, true, false },
+   { "OfxParamPropHasHostOverlayHandle", prop_defs[PropId::OfxParamPropHasHostOverlayHandle], false, true, false },
+   { "kOfxParamPropUseHostOverlayHandle", prop_defs[PropId::OfxParamPropUseHostOverlayHandle], false, true, false },
+   { "OfxParamPropDefault", prop_defs[PropId::OfxParamPropDefault], false, true, false },
+   { "OfxParamPropAnimates", prop_defs[PropId::OfxParamPropAnimates], false, true, false },
+   { "OfxParamPropIsAnimating", prop_defs[PropId::OfxParamPropIsAnimating], true, false, false },
+   { "OfxParamPropIsAutoKeying", prop_defs[PropId::OfxParamPropIsAutoKeying], true, false, false },
+   { "OfxParamPropPersistant", prop_defs[PropId::OfxParamPropPersistant], false, true, false },
+   { "OfxParamPropEvaluateOnChange", prop_defs[PropId::OfxParamPropEvaluateOnChange], false, true, false },
+   { "OfxParamPropPluginMayWrite", prop_defs[PropId::OfxParamPropPluginMayWrite], false, true, false },
+   { "OfxParamPropCacheInvalidation", prop_defs[PropId::OfxParamPropCacheInvalidation], false, true, false },
+   { "OfxParamPropCanUndo", prop_defs[PropId::OfxParamPropCanUndo], false, true, false },
+   { "OfxParamPropMin", prop_defs[PropId::OfxParamPropMin], false, true, false },
+   { "OfxParamPropMax", prop_defs[PropId::OfxParamPropMax], false, true, false },
+   { "OfxParamPropDisplayMin", prop_defs[PropId::OfxParamPropDisplayMin], false, true, false },
+   { "OfxParamPropDisplayMax", prop_defs[PropId::OfxParamPropDisplayMax], false, true, false },
+   { "OfxParamPropIncrement", prop_defs[PropId::OfxParamPropIncrement], false, true, false },
+   { "OfxParamPropDigits", prop_defs[PropId::OfxParamPropDigits], false, true, false } } },
 // ParamsDouble2D3D
 { "ParamsDouble2D3D", {
    { "OfxParamPropDoubleType", prop_defs[PropId::OfxParamPropDoubleType], false, true, false },
@@ -672,17 +672,19 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
 };
 
 // Actions
-static inline const std::array<const char *, 33> actions {
+static inline const std::array<const char *, 36> actions {
   "CustomParamInterpFunc",
   "OfxActionBeginInstanceChanged",
   "OfxActionBeginInstanceEdit",
   "OfxActionCreateInstance",
   "OfxActionDescribe",
   "OfxActionDestroyInstance",
+  "OfxActionDialog",
   "OfxActionEndInstanceChanged",
   "OfxActionEndInstanceEdit",
   "OfxActionInstanceChanged",
   "OfxActionLoad",
+  "OfxActionOpenGLContextAttached",
   "OfxActionPurgeCaches",
   "OfxActionSyncPrivateData",
   "OfxActionUnload",
@@ -706,6 +708,7 @@ static inline const std::array<const char *, 33> actions {
   "OfxInteractActionPenDown",
   "OfxInteractActionPenMotion",
   "OfxInteractActionPenUp",
+  kOfxActionOpenGLContextDetached,
 };
 
 // Properties for action args
@@ -714,11 +717,12 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
 { { "CustomParamInterpFunc", "inArgs" },
   { "OfxParamPropCustomValue",
     "OfxParamPropInterpolationAmount",
-    "OfxParamPropInterpolationTime" } },
+    "OfxParamPropInterpolationTime",
+    "OfxPropName",
+    "OfxPropTime" } },
 // CustomParamInterpFunc.outArgs
 { { "CustomParamInterpFunc", "outArgs" },
-  { "OfxParamPropCustomValue",
-    "OfxParamPropInterpolationTime" } },
+  { "OfxParamPropCustomValue" } },
 // OfxActionBeginInstanceChanged.inArgs
 { { "OfxActionBeginInstanceChanged", "inArgs" },
   { "OfxImageEffectPropThumbnailRender",
@@ -736,13 +740,13 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
     "OfxPropType" } },
 // OfxImageEffectActionBeginSequenceRender.inArgs
 { { "OfxImageEffectActionBeginSequenceRender", "inArgs" },
-  { "OfxImageEffectPropCudaEnabled",
+  { "OfxImageEffectPropBehaviourWhenUnlicensed",
+    "OfxImageEffectPropCudaEnabled",
     "OfxImageEffectPropCudaRenderSupported",
     "OfxImageEffectPropCudaStream",
     "OfxImageEffectPropCudaStreamSupported",
     "OfxImageEffectPropFrameRange",
     "OfxImageEffectPropFrameStep",
-    "OfxImageEffectPropInteractiveRenderStatus",
     "OfxImageEffectPropInteractiveRenderStatus",
     "OfxImageEffectPropMetalCommandQueue",
     "OfxImageEffectPropMetalEnabled",
@@ -772,7 +776,6 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
     "OfxImageEffectPropFrameRange",
     "OfxImageEffectPropFrameStep",
     "OfxImageEffectPropInteractiveRenderStatus",
-    "OfxImageEffectPropInteractiveRenderStatus",
     "OfxImageEffectPropMetalCommandQueue",
     "OfxImageEffectPropMetalEnabled",
     "OfxImageEffectPropMetalRenderSupported",
@@ -798,9 +801,6 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
 { { "OfxImageEffectActionGetFramesNeeded", "inArgs" },
   { "OfxImageEffectPropThumbnailRender",
     "OfxPropTime" } },
-// OfxImageEffectActionGetFramesNeeded.outArgs
-{ { "OfxImageEffectActionGetFramesNeeded", "outArgs" },
-  { "OfxImageEffectPropFrameRange" } },
 // OfxImageEffectActionGetOutputColourspace.inArgs
 { { "OfxImageEffectActionGetOutputColourspace", "inArgs" },
   { "OfxImageClipPropPreferredColourspaces" } },
@@ -831,12 +831,18 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
     "OfxImageEffectPropRenderWindow",
     "OfxImageEffectPropThumbnailRender",
     "OfxPropTime" } },
+// OfxImageEffectActionIsIdentity.outArgs
+{ { "OfxImageEffectActionIsIdentity", "outArgs" },
+  { "OfxPropName",
+    "OfxPropTime" } },
 // OfxImageEffectActionRender.inArgs
 { { "OfxImageEffectActionRender", "inArgs" },
-  { "OfxImageEffectPropCudaEnabled",
+  { "OfxImageEffectPropBehaviourWhenUnlicensed",
+    "OfxImageEffectPropCudaEnabled",
     "OfxImageEffectPropCudaRenderSupported",
     "OfxImageEffectPropCudaStream",
     "OfxImageEffectPropCudaStreamSupported",
+    "OfxImageEffectPropFieldToRender",
     "OfxImageEffectPropInteractiveRenderStatus",
     "OfxImageEffectPropMetalCommandQueue",
     "OfxImageEffectPropMetalEnabled",
@@ -851,6 +857,8 @@ static inline const std::map<std::array<std::string_view, 2>, std::vector<const 
     "OfxImageEffectPropOpenGLTextureIndex",
     "OfxImageEffectPropOpenGLTextureTarget",
     "OfxImageEffectPropRenderQualityDraft",
+    "OfxImageEffectPropRenderScale",
+    "OfxImageEffectPropRenderWindow",
     "OfxImageEffectPropSequentialRenderStatus",
     "OfxImageEffectPropThumbnailRender",
     "OfxPropTime" } },
@@ -935,10 +943,12 @@ static_assert(std::string_view("OfxActionBeginInstanceEdit") == std::string_view
 static_assert(std::string_view("OfxActionCreateInstance") == std::string_view(kOfxActionCreateInstance));
 static_assert(std::string_view("OfxActionDescribe") == std::string_view(kOfxActionDescribe));
 static_assert(std::string_view("OfxActionDestroyInstance") == std::string_view(kOfxActionDestroyInstance));
+static_assert(std::string_view("OfxActionDialog") == std::string_view(kOfxActionDialog));
 static_assert(std::string_view("OfxActionEndInstanceChanged") == std::string_view(kOfxActionEndInstanceChanged));
 static_assert(std::string_view("OfxActionEndInstanceEdit") == std::string_view(kOfxActionEndInstanceEdit));
 static_assert(std::string_view("OfxActionInstanceChanged") == std::string_view(kOfxActionInstanceChanged));
 static_assert(std::string_view("OfxActionLoad") == std::string_view(kOfxActionLoad));
+static_assert(std::string_view("OfxActionOpenGLContextAttached") == std::string_view(kOfxActionOpenGLContextAttached));
 static_assert(std::string_view("OfxActionPurgeCaches") == std::string_view(kOfxActionPurgeCaches));
 static_assert(std::string_view("OfxActionSyncPrivateData") == std::string_view(kOfxActionSyncPrivateData));
 static_assert(std::string_view("OfxActionUnload") == std::string_view(kOfxActionUnload));
