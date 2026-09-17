@@ -2262,194 +2262,6 @@ public:
 
 };
 
-// Property set accessor for: ParamDouble1D
-class ParamDouble1D : public PropertySetAccessor {
-public:
-    using PropertySetAccessor::PropertySetAccessor;
-
-    bool showTimeMarker(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropShowTimeMarker>(0, error_if_missing);
-    }
-
-    const char* doubleType(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropDoubleType>(0, error_if_missing);
-    }
-
-    const char* type(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxPropType>(0, error_if_missing);
-    }
-
-    const char* name(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxPropName>(0, error_if_missing);
-    }
-
-    const char* label(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
-    }
-
-    const char* shortLabel(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
-    }
-
-    const char* longLabel(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
-    }
-
-    bool secret(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropSecret>(0, error_if_missing);
-    }
-
-    const char* hint(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropHint>(0, error_if_missing);
-    }
-
-    const char* scriptName(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropScriptName>(0, error_if_missing);
-    }
-
-    const char* parent(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropParent>(0, error_if_missing);
-    }
-
-    bool enabled(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropEnabled>(0, error_if_missing);
-    }
-
-    void* dataPtr(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
-    }
-
-    std::array<const char*, 2> icon() const {
-        return props_.getAll<PropId::OfxPropIcon>();
-    }
-
-    void* interactV1(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropInteractV1>(0, error_if_missing);
-    }
-
-    std::array<double, 2> interactSize() const {
-        return props_.getAll<PropId::OfxParamPropInteractSize>();
-    }
-
-    double interactSizeAspect(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0, error_if_missing);
-    }
-
-    std::array<double, 2> interactMinimumSize() const {
-        return props_.getAll<PropId::OfxParamPropInteractMinimumSize>();
-    }
-
-    std::array<int, 2> interactPreferedSize() const {
-        return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
-    }
-
-    bool hasHostOverlayHandle(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
-    }
-
-    bool useHostOverlayHandle(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0, error_if_missing);
-    }
-
-    // Multi-type property (supports: int, double, string, pointer)
-    template<typename T>
-    T default(int index = 0, bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropDefault, T>(index, error_if_missing);
-    }
-
-    template<typename T>
-    std::vector<T> defaultAll() const {
-        return props_.getAll<PropId::OfxParamPropDefault, T>();
-    }
-
-    bool animates(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropAnimates>(0, error_if_missing);
-    }
-
-    ParamDouble1D& setIsAnimating(bool value, bool error_if_missing = true) {
-        props_.set<PropId::OfxParamPropIsAnimating>(value, 0, error_if_missing);
-        return *this;
-    }
-
-    ParamDouble1D& setIsAutoKeying(bool value, bool error_if_missing = true) {
-        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0, error_if_missing);
-        return *this;
-    }
-
-    bool persistant(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropPersistant>(0, error_if_missing);
-    }
-
-    bool evaluateOnChange(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0, error_if_missing);
-    }
-
-    bool pluginMayWrite(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropPluginMayWrite>(0, error_if_missing);
-    }
-
-    const char* cacheInvalidation(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropCacheInvalidation>(0, error_if_missing);
-    }
-
-    bool canUndo(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropCanUndo>(0, error_if_missing);
-    }
-
-    // Multi-type property (supports: int, double)
-    template<typename T>
-    T min(int index = 0, bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropMin, T>(index, error_if_missing);
-    }
-
-    template<typename T>
-    std::vector<T> minAll() const {
-        return props_.getAll<PropId::OfxParamPropMin, T>();
-    }
-
-    // Multi-type property (supports: int, double)
-    template<typename T>
-    T max(int index = 0, bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropMax, T>(index, error_if_missing);
-    }
-
-    template<typename T>
-    std::vector<T> maxAll() const {
-        return props_.getAll<PropId::OfxParamPropMax, T>();
-    }
-
-    // Multi-type property (supports: int, double)
-    template<typename T>
-    T displayMin(int index = 0, bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropDisplayMin, T>(index, error_if_missing);
-    }
-
-    template<typename T>
-    std::vector<T> displayMinAll() const {
-        return props_.getAll<PropId::OfxParamPropDisplayMin, T>();
-    }
-
-    // Multi-type property (supports: int, double)
-    template<typename T>
-    T displayMax(int index = 0, bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropDisplayMax, T>(index, error_if_missing);
-    }
-
-    template<typename T>
-    std::vector<T> displayMaxAll() const {
-        return props_.getAll<PropId::OfxParamPropDisplayMax, T>();
-    }
-
-    double increment(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropIncrement>(0, error_if_missing);
-    }
-
-    int digits(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropDigits>(0, error_if_missing);
-    }
-
-};
-
 // Property set accessor for: ParameterSet
 class ParameterSet : public PropertySetAccessor {
 public:
@@ -2901,6 +2713,194 @@ public:
 
     bool canUndo(bool error_if_missing = true) const {
         return props_.get<PropId::OfxParamPropCanUndo>(0, error_if_missing);
+    }
+
+};
+
+// Property set accessor for: ParamsDouble1D
+class ParamsDouble1D : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    bool showTimeMarker(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropShowTimeMarker>(0, error_if_missing);
+    }
+
+    const char* doubleType(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDoubleType>(0, error_if_missing);
+    }
+
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
+    }
+
+    const char* name(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropName>(0, error_if_missing);
+    }
+
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
+    }
+
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
+    }
+
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
+    }
+
+    bool secret(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropSecret>(0, error_if_missing);
+    }
+
+    const char* hint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHint>(0, error_if_missing);
+    }
+
+    const char* scriptName(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropScriptName>(0, error_if_missing);
+    }
+
+    const char* parent(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParent>(0, error_if_missing);
+    }
+
+    bool enabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEnabled>(0, error_if_missing);
+    }
+
+    void* dataPtr(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
+    }
+
+    std::array<const char*, 2> icon() const {
+        return props_.getAll<PropId::OfxPropIcon>();
+    }
+
+    void* interactV1(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractV1>(0, error_if_missing);
+    }
+
+    std::array<double, 2> interactSize() const {
+        return props_.getAll<PropId::OfxParamPropInteractSize>();
+    }
+
+    double interactSizeAspect(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0, error_if_missing);
+    }
+
+    std::array<double, 2> interactMinimumSize() const {
+        return props_.getAll<PropId::OfxParamPropInteractMinimumSize>();
+    }
+
+    std::array<int, 2> interactPreferedSize() const {
+        return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
+    }
+
+    bool hasHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
+    }
+
+    bool useHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0, error_if_missing);
+    }
+
+    // Multi-type property (supports: int, double, string, pointer)
+    template<typename T>
+    T default(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDefault, T>(index, error_if_missing);
+    }
+
+    template<typename T>
+    std::vector<T> defaultAll() const {
+        return props_.getAll<PropId::OfxParamPropDefault, T>();
+    }
+
+    bool animates(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropAnimates>(0, error_if_missing);
+    }
+
+    ParamsDouble1D& setIsAnimating(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAnimating>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsDouble1D& setIsAutoKeying(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    bool persistant(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPersistant>(0, error_if_missing);
+    }
+
+    bool evaluateOnChange(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0, error_if_missing);
+    }
+
+    bool pluginMayWrite(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPluginMayWrite>(0, error_if_missing);
+    }
+
+    const char* cacheInvalidation(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCacheInvalidation>(0, error_if_missing);
+    }
+
+    bool canUndo(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCanUndo>(0, error_if_missing);
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    T min(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMin, T>(index, error_if_missing);
+    }
+
+    template<typename T>
+    std::vector<T> minAll() const {
+        return props_.getAll<PropId::OfxParamPropMin, T>();
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    T max(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMax, T>(index, error_if_missing);
+    }
+
+    template<typename T>
+    std::vector<T> maxAll() const {
+        return props_.getAll<PropId::OfxParamPropMax, T>();
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    T displayMin(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMin, T>(index, error_if_missing);
+    }
+
+    template<typename T>
+    std::vector<T> displayMinAll() const {
+        return props_.getAll<PropId::OfxParamPropDisplayMin, T>();
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    T displayMax(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMax, T>(index, error_if_missing);
+    }
+
+    template<typename T>
+    std::vector<T> displayMaxAll() const {
+        return props_.getAll<PropId::OfxParamPropDisplayMax, T>();
+    }
+
+    double increment(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropIncrement>(0, error_if_missing);
+    }
+
+    int digits(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDigits>(0, error_if_missing);
     }
 
 };
@@ -3705,6 +3705,358 @@ public:
     template<typename T>
     std::vector<T> defaultAll() const {
         return props_.getAll<PropId::OfxParamPropDefault, T>();
+    }
+
+};
+
+// Property set accessor for: ParamsRGB
+class ParamsRGB : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    const char* colourManagement(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropColourManagement>(0, error_if_missing);
+    }
+
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
+    }
+
+    const char* name(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropName>(0, error_if_missing);
+    }
+
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
+    }
+
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
+    }
+
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
+    }
+
+    bool secret(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropSecret>(0, error_if_missing);
+    }
+
+    const char* hint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHint>(0, error_if_missing);
+    }
+
+    const char* scriptName(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropScriptName>(0, error_if_missing);
+    }
+
+    const char* parent(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParent>(0, error_if_missing);
+    }
+
+    bool enabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEnabled>(0, error_if_missing);
+    }
+
+    void* dataPtr(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
+    }
+
+    std::array<const char*, 2> icon() const {
+        return props_.getAll<PropId::OfxPropIcon>();
+    }
+
+    void* interactV1(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractV1>(0, error_if_missing);
+    }
+
+    std::array<double, 2> interactSize() const {
+        return props_.getAll<PropId::OfxParamPropInteractSize>();
+    }
+
+    double interactSizeAspect(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0, error_if_missing);
+    }
+
+    std::array<double, 2> interactMinimumSize() const {
+        return props_.getAll<PropId::OfxParamPropInteractMinimumSize>();
+    }
+
+    std::array<int, 2> interactPreferedSize() const {
+        return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
+    }
+
+    bool hasHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
+    }
+
+    bool useHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0, error_if_missing);
+    }
+
+    // Multi-type property (supports: int, double, string, pointer)
+    template<typename T>
+    T default(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDefault, T>(index, error_if_missing);
+    }
+
+    template<typename T>
+    std::vector<T> defaultAll() const {
+        return props_.getAll<PropId::OfxParamPropDefault, T>();
+    }
+
+    bool animates(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropAnimates>(0, error_if_missing);
+    }
+
+    ParamsRGB& setIsAnimating(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAnimating>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGB& setIsAutoKeying(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    bool persistant(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPersistant>(0, error_if_missing);
+    }
+
+    bool evaluateOnChange(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0, error_if_missing);
+    }
+
+    bool pluginMayWrite(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPluginMayWrite>(0, error_if_missing);
+    }
+
+    const char* cacheInvalidation(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCacheInvalidation>(0, error_if_missing);
+    }
+
+    bool canUndo(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCanUndo>(0, error_if_missing);
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    T min(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMin, T>(index, error_if_missing);
+    }
+
+    template<typename T>
+    std::vector<T> minAll() const {
+        return props_.getAll<PropId::OfxParamPropMin, T>();
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    T max(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMax, T>(index, error_if_missing);
+    }
+
+    template<typename T>
+    std::vector<T> maxAll() const {
+        return props_.getAll<PropId::OfxParamPropMax, T>();
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    T displayMin(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMin, T>(index, error_if_missing);
+    }
+
+    template<typename T>
+    std::vector<T> displayMinAll() const {
+        return props_.getAll<PropId::OfxParamPropDisplayMin, T>();
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    T displayMax(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMax, T>(index, error_if_missing);
+    }
+
+    template<typename T>
+    std::vector<T> displayMaxAll() const {
+        return props_.getAll<PropId::OfxParamPropDisplayMax, T>();
+    }
+
+};
+
+// Property set accessor for: ParamsRGBA
+class ParamsRGBA : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    const char* colourManagement(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropColourManagement>(0, error_if_missing);
+    }
+
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
+    }
+
+    const char* name(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropName>(0, error_if_missing);
+    }
+
+    const char* label(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLabel>(0, error_if_missing);
+    }
+
+    const char* shortLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropShortLabel>(0, error_if_missing);
+    }
+
+    const char* longLabel(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropLongLabel>(0, error_if_missing);
+    }
+
+    bool secret(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropSecret>(0, error_if_missing);
+    }
+
+    const char* hint(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHint>(0, error_if_missing);
+    }
+
+    const char* scriptName(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropScriptName>(0, error_if_missing);
+    }
+
+    const char* parent(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropParent>(0, error_if_missing);
+    }
+
+    bool enabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEnabled>(0, error_if_missing);
+    }
+
+    void* dataPtr(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDataPtr>(0, error_if_missing);
+    }
+
+    std::array<const char*, 2> icon() const {
+        return props_.getAll<PropId::OfxPropIcon>();
+    }
+
+    void* interactV1(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractV1>(0, error_if_missing);
+    }
+
+    std::array<double, 2> interactSize() const {
+        return props_.getAll<PropId::OfxParamPropInteractSize>();
+    }
+
+    double interactSizeAspect(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropInteractSizeAspect>(0, error_if_missing);
+    }
+
+    std::array<double, 2> interactMinimumSize() const {
+        return props_.getAll<PropId::OfxParamPropInteractMinimumSize>();
+    }
+
+    std::array<int, 2> interactPreferedSize() const {
+        return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
+    }
+
+    bool hasHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
+    }
+
+    bool useHostOverlayHandle(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropUseHostOverlayHandle>(0, error_if_missing);
+    }
+
+    // Multi-type property (supports: int, double, string, pointer)
+    template<typename T>
+    T default(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDefault, T>(index, error_if_missing);
+    }
+
+    template<typename T>
+    std::vector<T> defaultAll() const {
+        return props_.getAll<PropId::OfxParamPropDefault, T>();
+    }
+
+    bool animates(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropAnimates>(0, error_if_missing);
+    }
+
+    ParamsRGBA& setIsAnimating(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAnimating>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsRGBA& setIsAutoKeying(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropIsAutoKeying>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    bool persistant(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPersistant>(0, error_if_missing);
+    }
+
+    bool evaluateOnChange(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropEvaluateOnChange>(0, error_if_missing);
+    }
+
+    bool pluginMayWrite(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropPluginMayWrite>(0, error_if_missing);
+    }
+
+    const char* cacheInvalidation(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCacheInvalidation>(0, error_if_missing);
+    }
+
+    bool canUndo(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropCanUndo>(0, error_if_missing);
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    T min(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMin, T>(index, error_if_missing);
+    }
+
+    template<typename T>
+    std::vector<T> minAll() const {
+        return props_.getAll<PropId::OfxParamPropMin, T>();
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    T max(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropMax, T>(index, error_if_missing);
+    }
+
+    template<typename T>
+    std::vector<T> maxAll() const {
+        return props_.getAll<PropId::OfxParamPropMax, T>();
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    T displayMin(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMin, T>(index, error_if_missing);
+    }
+
+    template<typename T>
+    std::vector<T> displayMinAll() const {
+        return props_.getAll<PropId::OfxParamPropDisplayMin, T>();
+    }
+
+    // Multi-type property (supports: int, double)
+    template<typename T>
+    T displayMax(int index = 0, bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDisplayMax, T>(index, error_if_missing);
+    }
+
+    template<typename T>
+    std::vector<T> displayMaxAll() const {
+        return props_.getAll<PropId::OfxParamPropDisplayMax, T>();
     }
 
 };

@@ -72,8 +72,26 @@ You'll need:
 
 * An understanding of the project's development workflow.
 
-* Legal authorization, that is, you need to have signed a Contributor
-  License Agreement. See below for details.
+* Legal authorization, that is, every commit by you must be properly
+  signed off. See below for details.
+
+## Policy on AI Tools
+
+Please read our [Policy on AI Coding Assistants](AI_POLICY.md) before
+contributing or participating in the project in any way mediated by
+"AI" assistants.
+
+High-level summary:
+- A human must always be in the loop, and is the responsible party for
+  the contents of a PR (including fully understanding and being able
+  to explain, defend, and modify it in response to review comments).
+- Interact with the project and community yourself, not by agent.
+- Disclose what tools you used and how. At a minimum, we require an
+  "Assisted-by: TOOL/MODEL" line in the commit message and PR description.
+- Don't waste maintainers' time with low quality PRs.
+
+Please do read the whole [Policy on AI Coding Assistants](AI_POLICY.md)
+for all the details.
 
 ## Legal Requirements
 
