@@ -784,8 +784,8 @@ from a StrChoice parameter. See @ref ParametersChoice for more details.
 \since Version 1.5
     
     @propdef
-    type: bool
-    dimension: 1
+    type: string
+    dimension: 0
     added: "1.5"
 */
 #define kOfxParamPropChoiceEnum "OfxParamPropChoiceEnum"
@@ -879,7 +879,7 @@ Use this on 2D and 3D double and integer parameters to change the label on an in
     - Valid Values - any
     @propdef
     type: string
-    dimension: 1
+    dimension: 0
 */
 #define kOfxParamPropDimensionLabel "OfxParamPropDimensionLabel"
 
