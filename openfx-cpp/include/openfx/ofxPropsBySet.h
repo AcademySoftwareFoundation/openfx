@@ -11,6 +11,7 @@
 #include <ofxImageEffect.h>
 #include <ofxGPURender.h>
 #include <ofxColour.h>
+#include <ofxDialog.h>
 #include <ofxDrawSuite.h>
 #include <ofxParametricParam.h>
 #include <ofxKeySyms.h>
