@@ -21,6 +21,7 @@ This is version NEXT of the OpenFX API.
 - Fixed incorrect enum value names in property metadata (`@propdef`) for several properties, and made the generator reject unknown enum names so this can't regress (issue #247).
 - Set proper RGBA colour defaults on the colour parameter in the Rectangle example (issue #240).
 - Fixed the ColourSpace example to compile under `FMT_ENFORCE_COMPILE_STRING`, with a CI job to keep it that way (issue #236).
+- HostSupport: an effect instance now inherits `kOfxImageEffectPropSupportsTiles` and the GPU `*RenderSupported` properties from the plugin descriptor instead of overriding them with a hard default, so values set only in describe are honoured (issue #177). The header docs now state this inheritance rule for hosts.
 - CMake: use `target_compile_features(cxx_std_17)` instead of forcing `CMAKE_CXX_STANDARD`, so consumers can build with a later C++ standard (issue #208).
 - `OfxExport` now marks a symbol visible on GCC and Clang as well as exporting it on Windows, so plugins built with hidden visibility (as the CMake and pcons builds do) can use it for their entry points; the examples do, in place of their own `EXPORT` macros.
 - Fixed the `@propdef` metadata of `kOfxParamPropChoiceEnum` (a string array, not a bool) and `kOfxParamPropDimensionLabel` (one label per dimension, not one).

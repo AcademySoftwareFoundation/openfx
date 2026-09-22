@@ -351,9 +351,25 @@ namespace OFX {
         _properties.setStringProperty(kOfxImageEffectPropContext,context);
         _properties.setIntProperty(kOfxPropIsInteractive,interactive);
 
-        // copy is sequential over
-        bool sequential = other.getProps().getIntProperty(kOfxImageEffectInstancePropSequentialRender) != 0;
-        _properties.setIntProperty(kOfxImageEffectInstancePropSequentialRender,sequential);
+        // Properties a plugin sets in describe and may override per instance
+        // start from the descriptor's value, not the instance-set default.
+        static const char *const inheritedIntProps[] = {
+          kOfxImageEffectInstancePropSequentialRender,
+          kOfxImageEffectPropSupportsTiles,
+        };
+        for (const char *name : inheritedIntProps)
+          _properties.setIntProperty(name, other.getProps().getIntProperty(name));
+#ifdef OFX_SUPPORTS_OPENGLRENDER
+        static const char *const inheritedStringProps[] = {
+          kOfxImageEffectPropOpenGLRenderSupported,
+          kOfxImageEffectPropCudaRenderSupported,
+          kOfxImageEffectPropCudaStreamSupported,
+          kOfxImageEffectPropMetalRenderSupported,
+          kOfxImageEffectPropOpenCLRenderSupported,
+        };
+        for (const char *name : inheritedStringProps)
+          _properties.setStringProperty(name, other.getProps().getStringProperty(name));
+#endif
 
         while(effectInstanceStuff[i].name) {
           
