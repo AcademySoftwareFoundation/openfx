@@ -32,14 +32,6 @@
 
 #include "../include/ofxUtilities.H" // example support utils
 
-#if defined __APPLE__ || defined __linux__ || defined __FreeBSD__
-#  define EXPORT __attribute__((visibility("default")))
-#elif defined _WIN32
-#  define EXPORT OfxExport
-#else
-#  error Not building on your operating system quite yet
-#endif
-
 template <class T> inline T Maximum(T a, T b) {return a > b ? a : b;}
 template <class T> inline T Minimum(T a, T b) {return a < b ? a : b;}
 
@@ -1014,7 +1006,7 @@ static OfxPlugin basicPlugin =
 };
    
 // the two mandated functions
-EXPORT OfxPlugin *
+OfxExport OfxPlugin *
 OfxGetPlugin(int nth)
 {
   if(nth == 0)
@@ -1022,7 +1014,7 @@ OfxGetPlugin(int nth)
   return 0;
 }
  
-EXPORT int
+OfxExport int
 OfxGetNumberOfPlugins(void)
 {       
   return 1;

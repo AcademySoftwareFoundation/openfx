@@ -24,6 +24,8 @@ Contains the core OFX architectural struct and function definitions. For more de
  */
 #if defined(_WIN32)
 	#define OfxExport extern __declspec(dllexport)
+#elif defined(__GNUC__) || defined(__clang__)
+	#define OfxExport extern __attribute__((visibility("default")))
 #else
 	#define OfxExport extern
 #endif
