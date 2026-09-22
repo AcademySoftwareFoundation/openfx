@@ -102,6 +102,7 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
    { "OfxImageEffectPropClipPreferencesSlaveParam", prop_defs[PropId::OfxImageEffectPropClipPreferencesSlaveParam], false, true, false },
    { "OfxImageEffectPropOpenGLRenderSupported", prop_defs[PropId::OfxImageEffectPropOpenGLRenderSupported], false, true, false },
    { "OfxImageEffectPropCPURenderSupported", prop_defs[PropId::OfxImageEffectPropCPURenderSupported], false, true, true },
+   { "OfxImageEffectInstancePropSequentialRender", prop_defs[PropId::OfxImageEffectInstancePropSequentialRender], false, true, false },
    { "OfxPluginPropFilePath", prop_defs[PropId::OfxPluginPropFilePath], true, false, false },
    { "OfxOpenGLPropPixelDepth", prop_defs[PropId::OfxOpenGLPropPixelDepth], false, true, true },
    { "OfxImageEffectPluginPropOverlayInteractV2", prop_defs[PropId::OfxImageEffectPluginPropOverlayInteractV2], false, true, false },
@@ -306,6 +307,7 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
 { "ParamsDouble1D", {
    { "OfxParamPropShowTimeMarker", prop_defs[PropId::OfxParamPropShowTimeMarker], false, true, false },
    { "OfxParamPropDoubleType", prop_defs[PropId::OfxParamPropDoubleType], false, true, false },
+   { "OfxParamPropDefaultCoordinateSystem", prop_defs[PropId::OfxParamPropDefaultCoordinateSystem], false, true, false },
    { "OfxPropType", prop_defs[PropId::OfxPropType], false, true, false },
    { "OfxPropName", prop_defs[PropId::OfxPropName], false, true, false },
    { "OfxPropLabel", prop_defs[PropId::OfxPropLabel], false, true, false },
@@ -344,6 +346,7 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
 // ParamsDouble2D3D
 { "ParamsDouble2D3D", {
    { "OfxParamPropDoubleType", prop_defs[PropId::OfxParamPropDoubleType], false, true, false },
+   { "OfxParamPropDefaultCoordinateSystem", prop_defs[PropId::OfxParamPropDefaultCoordinateSystem], false, true, false },
    { "OfxPropType", prop_defs[PropId::OfxPropType], false, true, false },
    { "OfxPropName", prop_defs[PropId::OfxPropName], false, true, false },
    { "OfxPropLabel", prop_defs[PropId::OfxPropLabel], false, true, false },
