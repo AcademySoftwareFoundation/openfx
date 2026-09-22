@@ -583,6 +583,7 @@ def gen_props_by_set(props_by_set, props_by_action, outfile_path: Path):
 #include <ofxImageEffect.h>
 #include <ofxGPURender.h>
 #include <ofxColour.h>
+#include <ofxDialog.h>
 #include <ofxDrawSuite.h>
 #include <ofxParametricParam.h>
 #include <ofxKeySyms.h>

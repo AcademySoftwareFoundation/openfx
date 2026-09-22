@@ -28,11 +28,7 @@ the API. The changes to the API are listed in an addendum.
     ofxImageEffectActions
     ofxInteractActions
     suites/ofxSuiteReference
-    .. outdated:
-    .. ofxPropertiesByObject
     ofxPropertiesReferenceGenerated
     ofxPropertySetsGenerated
     DoxygenIndex
     ofxStatusCodes
-    .. not needed:
-    .. apiChanges_1_2_Chapter

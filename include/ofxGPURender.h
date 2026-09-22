@@ -369,6 +369,10 @@ A plug-in can return...
   - ::kOfxStatFailed, something went wrong, but no error code appropriate,
     the plug-in should to post a message if possible and the host should not
     attempt to run the plug-in in OpenGL render mode.
+ 
+    @actiondef
+    inArgs:
+    outArgs:
 */
 #define kOfxActionOpenGLContextAttached "OfxActionOpenGLContextAttached"
 
@@ -395,6 +399,10 @@ A plug-in can return...
   - ::kOfxStatFailed, something went wrong, but no error code appropriate,
     the plug-in should to post a message if possible and the host should not
     attempt to run the plug-in in OpenGL render mode.
+ 
+    @actiondef
+    inArgs:
+    outArgs:
 */
 #define kOfxActionOpenGLContextDetached "kOfxActionOpenGLContextDetached"
 

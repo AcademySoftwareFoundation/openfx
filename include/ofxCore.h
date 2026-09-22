@@ -552,7 +552,7 @@ OR:
     inArgs:
       - OfxPropChangeReason
       - OfxImageEffectPropThumbnailRender
-    outArgs: []
+    outArgs:
 */
 #define kOfxActionBeginInstanceChanged "OfxActionBeginInstanceChanged"
 
