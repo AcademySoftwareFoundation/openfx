@@ -25,6 +25,7 @@ This is version NEXT of the OpenFX API.
 - CMake: use `target_compile_features(cxx_std_17)` instead of forcing `CMAKE_CXX_STANDARD`, so consumers can build with a later C++ standard (issue #208).
 - `OfxExport` now marks a symbol visible on GCC and Clang as well as exporting it on Windows. The entry points in `ofxCore.h` are declared with it, so plugins built with hidden visibility export `OfxGetPlugin`, `OfxGetNumberOfPlugins` and `OfxSetHost` definitions properly.  The examples no longer need to define `EXPORT` macros.
 - Fixed the ColourSpace example's `OfxSetHost` to have the proper signature so it actually gets called.
+- Property-set metadata: `kOfxParamPropDefaultCoordinateSystem` is listed on the double parameter sets (it applies to any spatial double parameter, not only the `ParamsNormalizedSpatial` grouping), and `kOfxImageEffectInstancePropSequentialRender` on the effect descriptor, which is where a plugin declares its need for sequential rendering.
 - Fixed the `@propdef` metadata of `kOfxParamPropChoiceEnum` (a string array, not a bool) and `kOfxParamPropDimensionLabel` (one label per dimension, not one).
 - Fixed the Invert example never releasing its output image (a shadowed handle variable).
 

@@ -2136,6 +2136,7 @@ They range from 1000 until 1999
       - OfxImageEffectPropClipPreferencesSlaveParam
       - OfxImageEffectPropOpenGLRenderSupported
       - OfxImageEffectPropCPURenderSupported | host_optional=true
+      - OfxImageEffectInstancePropSequentialRender
       - OfxPluginPropFilePath | write=host
       - OfxOpenGLPropPixelDepth | host_optional=true
       - OfxImageEffectPluginPropOverlayInteractV2

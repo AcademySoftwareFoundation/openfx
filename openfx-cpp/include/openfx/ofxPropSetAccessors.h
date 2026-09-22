@@ -515,6 +515,11 @@ public:
         return *this;
     }
 
+    EffectDescriptor& setImageEffectInstancePropSequentialRender(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectInstancePropSequentialRender>(value, 0, error_if_missing);
+        return *this;
+    }
+
     const char* filePath(bool error_if_missing = true) const {
         return props_.get<PropId::OfxPluginPropFilePath>(0, error_if_missing);
     }
@@ -2522,6 +2527,11 @@ public:
         return *this;
     }
 
+    ParamsDouble1D& setDefaultCoordinateSystem(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropDefaultCoordinateSystem>(value, 0, error_if_missing);
+        return *this;
+    }
+
     ParamsDouble1D& setType(const char* value, bool error_if_missing = true) {
         props_.set<PropId::OfxPropType>(value, 0, error_if_missing);
         return *this;
@@ -2813,6 +2823,11 @@ public:
 
     ParamsDouble2D3D& setDoubleType(const char* value, bool error_if_missing = true) {
         props_.set<PropId::OfxParamPropDoubleType>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ParamsDouble2D3D& setDefaultCoordinateSystem(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropDefaultCoordinateSystem>(value, 0, error_if_missing);
         return *this;
     }
 

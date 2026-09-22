@@ -497,6 +497,10 @@ public:
         return props_.get<PropId::OfxImageEffectPropCPURenderSupported>(0, error_if_missing);
     }
 
+    bool imageEffectInstancePropSequentialRender(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectInstancePropSequentialRender>(0, error_if_missing);
+    }
+
     EffectDescriptor& setFilePath(const char* value, bool error_if_missing = true) {
         props_.set<PropId::OfxPluginPropFilePath>(value, 0, error_if_missing);
         return *this;
@@ -2816,6 +2820,10 @@ public:
         return props_.get<PropId::OfxParamPropDoubleType>(0, error_if_missing);
     }
 
+    const char* defaultCoordinateSystem(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDefaultCoordinateSystem>(0, error_if_missing);
+    }
+
     const char* type(bool error_if_missing = true) const {
         return props_.get<PropId::OfxPropType>(0, error_if_missing);
     }
@@ -2998,6 +3006,10 @@ public:
 
     const char* doubleType(bool error_if_missing = true) const {
         return props_.get<PropId::OfxParamPropDoubleType>(0, error_if_missing);
+    }
+
+    const char* defaultCoordinateSystem(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxParamPropDefaultCoordinateSystem>(0, error_if_missing);
     }
 
     const char* type(bool error_if_missing = true) const {

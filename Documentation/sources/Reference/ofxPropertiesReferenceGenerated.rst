@@ -87,7 +87,7 @@ Integer (Boolean) Properties
 - **C #define**: :c:macro:`kOfxImageEffectInstancePropSequentialRender`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectInstance <propset_EffectInstance>` (host), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`EffectInstance <propset_EffectInstance>` (host), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectInstancePropSequentialRender`.
 
 .. _prop_OfxImageEffectPluginPropFieldRenderTwiceAlways:
@@ -1409,7 +1409,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxParamPropDefaultCoordinateSystem`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin)
+- **Used in Property Sets**: :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin)
 - **Valid Values**:
   - ``OfxParamCoordinatesCanonical``
   - ``OfxParamCoordinatesNormalised``
