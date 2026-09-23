@@ -24,14 +24,6 @@
 
 #include "../include/ofxUtilities.H" // example support utils
 
-#if defined __APPLE__ || defined __linux__ || defined __FreeBSD__
-#  define EXPORT __attribute__((visibility("default")))
-#elif defined _WIN32
-#  define EXPORT OfxExport
-#else
-#  error Not building on your operating system quite yet
-#endif
-
 enum class ColourManagementStyle
 {
   None, Basic, Core, Full, OCIO
@@ -1104,7 +1096,7 @@ static OfxPlugin colourspacePlugin[] =
 };
    
 // the two mandated functions
-EXPORT OfxPlugin *
+OfxPlugin *
 OfxGetPlugin(int nth)
 {
   if(nth < 3)
@@ -1112,15 +1104,15 @@ OfxGetPlugin(int nth)
   return 0;
 }
  
-EXPORT int
+int
 OfxGetNumberOfPlugins(void)
 {       
   return 3;
 }
 
 // Called first after loading. This is optional for plugins.
-EXPORT OfxStatus
-OfxSetHost()
+OfxStatus
+OfxSetHost(const OfxHost *)
 {
   return kOfxStatOK;
 }
