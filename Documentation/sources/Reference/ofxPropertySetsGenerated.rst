@@ -21,6 +21,7 @@ These property sets represent collections of properties associated with various 
 * :ref:`ImageEffectHost <propset_ImageEffectHost>`
 * :ref:`InteractDescriptor <propset_InteractDescriptor>`
 * :ref:`InteractInstance <propset_InteractInstance>`
+* :ref:`OpenGLTexture <propset_OpenGLTexture>`
 * :ref:`ParameterSet <propset_ParameterSet>`
 * :ref:`ParamsByte <propset_ParamsByte>`
 * :ref:`ParamsChoice <propset_ParamsChoice>`
@@ -265,6 +266,29 @@ These property sets represent collections of properties associated with various 
 - :ref:`OfxInteractPropSuggestedColour <prop_OfxInteractPropSuggestedColour>` - Type: double, Dimension: 3 (doc: :c:macro:`kOfxInteractPropSuggestedColour`)
 - :ref:`OfxPropEffectInstance <prop_OfxPropEffectInstance>` - Type: pointer, Dimension: 1 (doc: :c:macro:`kOfxPropEffectInstance`)
 - :ref:`OfxPropInstanceData <prop_OfxPropInstanceData>` - Type: pointer, Dimension: 1 (doc: :c:macro:`kOfxPropInstanceData`)
+
+.. _propset_OpenGLTexture:
+
+**OpenGLTexture**
+^^^^^^^^^^^^^
+
+- **Write Access**: host
+
+**Properties**
+
+- :ref:`OfxImageEffectPropComponents <prop_OfxImageEffectPropComponents>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPropComponents`)
+- :ref:`OfxImageEffectPropOpenGLTextureIndex <prop_OfxImageEffectPropOpenGLTextureIndex>` - Type: int, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPropOpenGLTextureIndex`)
+- :ref:`OfxImageEffectPropOpenGLTextureTarget <prop_OfxImageEffectPropOpenGLTextureTarget>` - Type: int, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPropOpenGLTextureTarget`)
+- :ref:`OfxImageEffectPropPixelDepth <prop_OfxImageEffectPropPixelDepth>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPropPixelDepth`)
+- :ref:`OfxImageEffectPropPreMultiplication <prop_OfxImageEffectPropPreMultiplication>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPropPreMultiplication`)
+- :ref:`OfxImageEffectPropRenderScale <prop_OfxImageEffectPropRenderScale>` - Type: double, Dimension: 2 (doc: :c:macro:`kOfxImageEffectPropRenderScale`)
+- :ref:`OfxImagePropBounds <prop_OfxImagePropBounds>` - Type: int, Dimension: 4 (doc: :c:macro:`kOfxImagePropBounds`)
+- :ref:`OfxImagePropField <prop_OfxImagePropField>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxImagePropField`)
+- :ref:`OfxImagePropPixelAspectRatio <prop_OfxImagePropPixelAspectRatio>` - Type: double, Dimension: 1 (doc: :c:macro:`kOfxImagePropPixelAspectRatio`)
+- :ref:`OfxImagePropRegionOfDefinition <prop_OfxImagePropRegionOfDefinition>` - Type: int, Dimension: 4 (doc: :c:macro:`kOfxImagePropRegionOfDefinition`)
+- :ref:`OfxImagePropRowBytes <prop_OfxImagePropRowBytes>` - Type: int, Dimension: 1 (doc: :c:macro:`kOfxImagePropRowBytes`)
+- :ref:`OfxImagePropUniqueIdentifier <prop_OfxImagePropUniqueIdentifier>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxImagePropUniqueIdentifier`)
+- :ref:`OfxPropType <prop_OfxPropType>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropType`)
 
 .. _propset_ParameterSet:
 

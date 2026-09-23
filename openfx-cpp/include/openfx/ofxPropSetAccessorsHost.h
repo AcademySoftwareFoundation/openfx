@@ -2258,6 +2258,96 @@ public:
 
 };
 
+// Property set accessor for: OpenGLTexture
+class OpenGLTexture : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    OpenGLTexture& setType(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropType>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    OpenGLTexture& setOpenGLTextureIndex(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenGLTextureIndex>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    OpenGLTexture& setOpenGLTextureTarget(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropOpenGLTextureTarget>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    OpenGLTexture& setPixelDepth(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropPixelDepth>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    OpenGLTexture& setComponents(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropComponents>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    OpenGLTexture& setPreMultiplication(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropPreMultiplication>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    OpenGLTexture& setRenderScale(const std::array<double, 2>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    OpenGLTexture& setRenderScale(std::initializer_list<double> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImageEffectPropRenderScale>(values, error_if_missing);
+        return *this;
+    }
+
+    OpenGLTexture& setPixelAspectRatio(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImagePropPixelAspectRatio>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    OpenGLTexture& setBounds(const std::array<int, 4>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImagePropBounds>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    OpenGLTexture& setBounds(std::initializer_list<int> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImagePropBounds>(values, error_if_missing);
+        return *this;
+    }
+
+    OpenGLTexture& setRegionOfDefinition(const std::array<int, 4>& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImagePropRegionOfDefinition>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2})
+    OpenGLTexture& setRegionOfDefinition(std::initializer_list<int> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxImagePropRegionOfDefinition>(values, error_if_missing);
+        return *this;
+    }
+
+    OpenGLTexture& setRowBytes(int value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImagePropRowBytes>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    OpenGLTexture& setField(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImagePropField>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    OpenGLTexture& setUniqueIdentifier(const char* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImagePropUniqueIdentifier>(value, 0, error_if_missing);
+        return *this;
+    }
+
+};
+
 // Property set accessor for: ParameterSet
 class ParameterSet : public PropertySetAccessor {
 public:

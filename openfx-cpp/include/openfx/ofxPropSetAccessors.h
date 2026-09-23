@@ -1718,6 +1718,65 @@ public:
 
 };
 
+// Property set accessor for: OpenGLTexture
+class OpenGLTexture : public PropertySetAccessor {
+public:
+    using PropertySetAccessor::PropertySetAccessor;
+
+    const char* type(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxPropType>(0, error_if_missing);
+    }
+
+    int openGLTextureIndex(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropOpenGLTextureIndex>(0, error_if_missing);
+    }
+
+    int openGLTextureTarget(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropOpenGLTextureTarget>(0, error_if_missing);
+    }
+
+    const char* pixelDepth(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropPixelDepth>(0, error_if_missing);
+    }
+
+    const char* components(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropComponents>(0, error_if_missing);
+    }
+
+    const char* preMultiplication(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropPreMultiplication>(0, error_if_missing);
+    }
+
+    std::array<double, 2> renderScale() const {
+        return props_.getAll<PropId::OfxImageEffectPropRenderScale>();
+    }
+
+    double pixelAspectRatio(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImagePropPixelAspectRatio>(0, error_if_missing);
+    }
+
+    std::array<int, 4> bounds() const {
+        return props_.getAll<PropId::OfxImagePropBounds>();
+    }
+
+    std::array<int, 4> regionOfDefinition() const {
+        return props_.getAll<PropId::OfxImagePropRegionOfDefinition>();
+    }
+
+    int rowBytes(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImagePropRowBytes>(0, error_if_missing);
+    }
+
+    const char* field(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImagePropField>(0, error_if_missing);
+    }
+
+    const char* uniqueIdentifier(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImagePropUniqueIdentifier>(0, error_if_missing);
+    }
+
+};
+
 // Property set accessor for: ParameterSet
 class ParameterSet : public PropertySetAccessor {
 public:

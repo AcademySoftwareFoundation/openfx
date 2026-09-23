@@ -906,4 +906,22 @@ Failure to do this will cause crashes or incorrect results when the host switche
 }
 #endif
 
+/** @propset OpenGLTexture
+    write: host
+    props:
+      - OfxPropType
+      - OfxImageEffectPropOpenGLTextureIndex
+      - OfxImageEffectPropOpenGLTextureTarget
+      - OfxImageEffectPropPixelDepth
+      - OfxImageEffectPropComponents
+      - OfxImageEffectPropPreMultiplication
+      - OfxImageEffectPropRenderScale
+      - OfxImagePropPixelAspectRatio
+      - OfxImagePropBounds
+      - OfxImagePropRegionOfDefinition
+      - OfxImagePropRowBytes
+      - OfxImagePropField
+      - OfxImagePropUniqueIdentifier
+ */
+
 #endif /*__OFXGPURENDER_H__ */
