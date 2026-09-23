@@ -19,14 +19,6 @@
 // the one OFX header we need, it includes the others necessary
 #include "ofxImageEffect.h"
 
-#if defined __APPLE__ || defined __linux__
-#  define EXPORT __attribute__((visibility("default")))
-#elif defined _WIN32
-#  define EXPORT OfxExport
-#else
-#  error Not building on your operating system quite yet
-#endif
-
 ////////////////////////////////////////////////////////////////////////////////
 // macro to write a labelled message to stderr with
 #ifdef _WIN32
@@ -440,7 +432,7 @@ static OfxPlugin effectPluginStruct =
 // this binary.
 //
 // This will be the first function called by the host.
-EXPORT int OfxGetNumberOfPlugins(void)
+int OfxGetNumberOfPlugins(void)
 {
   return 1;
 }
@@ -451,7 +443,7 @@ EXPORT int OfxGetNumberOfPlugins(void)
 // this binary.
 //
 // This will be called multiple times by the host, once for each plugin present.
-EXPORT OfxPlugin * OfxGetPlugin(int nth)
+OfxPlugin * OfxGetPlugin(int nth)
 {
   if(nth == 0)
     return &effectPluginStruct;
