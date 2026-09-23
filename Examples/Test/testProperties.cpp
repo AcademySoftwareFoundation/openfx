@@ -1240,7 +1240,7 @@ static OfxPlugin basicPlugin =
   };
 
 // the two mandated functions
-OfxExport OfxPlugin *
+OfxPlugin *
 OfxGetPlugin(int nth)
 {
   OFX::logPrint("OfxGetPlugin - start();\n{");
@@ -1252,7 +1252,7 @@ OfxGetPlugin(int nth)
   return 0;
 }
 
-OfxExport int
+int
 OfxGetNumberOfPlugins(void)
 {       
   OFX::logPrint("OfxGetNumberOfPlugins - start();\n{");

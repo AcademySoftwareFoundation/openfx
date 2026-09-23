@@ -752,7 +752,7 @@ static OfxPlugin basicPlugin =
 };
    
 // the two mandated functions
-OfxExport OfxPlugin *
+OfxPlugin *
 OfxGetPlugin(int nth)
 {
   if(nth == 0)
@@ -760,7 +760,7 @@ OfxGetPlugin(int nth)
   return 0;
 }
  
-OfxExport int
+int
 OfxGetNumberOfPlugins(void)
 {       
   return 1;

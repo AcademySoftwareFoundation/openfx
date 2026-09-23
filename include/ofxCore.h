@@ -20,7 +20,9 @@ Contains the core OFX architectural struct and function definitions. For more de
 /** @brief Platform independent export macro.
  *
  * This macro is to be used before any symbol that is to be
- * exported from a plug-in. This is OS/compiler dependent.
+ * exported from a plug-in.
+ * Ensures that the OFX entry points are exported, even when
+ * compiling with default-hidden symbol visibility.
  */
 #if defined(_WIN32)
 	#define OfxExport extern __declspec(dllexport)

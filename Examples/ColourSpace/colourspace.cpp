@@ -1096,7 +1096,7 @@ static OfxPlugin colourspacePlugin[] =
 };
    
 // the two mandated functions
-OfxExport OfxPlugin *
+OfxPlugin *
 OfxGetPlugin(int nth)
 {
   if(nth < 3)
@@ -1104,15 +1104,15 @@ OfxGetPlugin(int nth)
   return 0;
 }
  
-OfxExport int
+int
 OfxGetNumberOfPlugins(void)
 {       
   return 3;
 }
 
 // Called first after loading. This is optional for plugins.
-OfxExport OfxStatus
-OfxSetHost()
+OfxStatus
+OfxSetHost(const OfxHost *)
 {
   return kOfxStatOK;
 }
