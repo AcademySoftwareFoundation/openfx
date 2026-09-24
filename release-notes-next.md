@@ -28,6 +28,7 @@ This is version NEXT of the OpenFX API.
 - Fixed the `@propdef` metadata of `kOfxParamPropChoiceEnum` (a string array, not a bool) and `kOfxParamPropDimensionLabel` (one label per dimension, not one).
 - Fixed the Invert example never releasing its output image (a shadowed handle variable).
 - Fixed the Test example failing `kOfxImageEffectActionGetClipPreferences` with `kOfxStatErrBadHandle` because it required `inArgs`, which the spec passes as NULL for that action; it now answers `kOfxStatReplyDefault`, since it sets no preferences.
+- Fixed the ChoiceParams example answering `kOfxImageEffectActionGetClipPreferences` with `kOfxStatOK` when it set nothing; it now answers `kOfxStatReplyDefault` unless the host supports multiple clip depths.
 
 ## Deprecations
 
