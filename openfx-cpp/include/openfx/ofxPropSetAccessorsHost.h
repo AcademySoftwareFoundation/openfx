@@ -2440,8 +2440,9 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
+    ParamsByte& setHasHostOverlayHandle(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropHasHostOverlayHandle>(value, 0, error_if_missing);
+        return *this;
     }
 
     bool useHostOverlayHandle(bool error_if_missing = true) const {
@@ -2620,8 +2621,9 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
+    ParamsChoice& setHasHostOverlayHandle(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropHasHostOverlayHandle>(value, 0, error_if_missing);
+        return *this;
     }
 
     bool useHostOverlayHandle(bool error_if_missing = true) const {
@@ -2752,8 +2754,9 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
+    ParamsCustom& setHasHostOverlayHandle(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropHasHostOverlayHandle>(value, 0, error_if_missing);
+        return *this;
     }
 
     bool useHostOverlayHandle(bool error_if_missing = true) const {
@@ -2892,8 +2895,9 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
+    ParamsDouble1D& setHasHostOverlayHandle(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropHasHostOverlayHandle>(value, 0, error_if_missing);
+        return *this;
     }
 
     bool useHostOverlayHandle(bool error_if_missing = true) const {
@@ -3080,8 +3084,9 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
+    ParamsDouble2D3D& setHasHostOverlayHandle(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropHasHostOverlayHandle>(value, 0, error_if_missing);
+        return *this;
     }
 
     bool useHostOverlayHandle(bool error_if_missing = true) const {
@@ -3323,8 +3328,9 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
+    ParamsInt2D3D& setHasHostOverlayHandle(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropHasHostOverlayHandle>(value, 0, error_if_missing);
+        return *this;
     }
 
     bool useHostOverlayHandle(bool error_if_missing = true) const {
@@ -3499,8 +3505,9 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
+    ParamsNormalizedSpatial& setHasHostOverlayHandle(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropHasHostOverlayHandle>(value, 0, error_if_missing);
+        return *this;
     }
 
     bool useHostOverlayHandle(bool error_if_missing = true) const {
@@ -3786,8 +3793,9 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
+    ParamsParametric& setHasHostOverlayHandle(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropHasHostOverlayHandle>(value, 0, error_if_missing);
+        return *this;
     }
 
     bool useHostOverlayHandle(bool error_if_missing = true) const {
@@ -3884,8 +3892,9 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
+    ParamsRGB& setHasHostOverlayHandle(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropHasHostOverlayHandle>(value, 0, error_if_missing);
+        return *this;
     }
 
     bool useHostOverlayHandle(bool error_if_missing = true) const {
@@ -4060,8 +4069,9 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
+    ParamsRGBA& setHasHostOverlayHandle(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropHasHostOverlayHandle>(value, 0, error_if_missing);
+        return *this;
     }
 
     bool useHostOverlayHandle(bool error_if_missing = true) const {
@@ -4240,8 +4250,9 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
+    ParamsStrChoice& setHasHostOverlayHandle(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropHasHostOverlayHandle>(value, 0, error_if_missing);
+        return *this;
     }
 
     bool useHostOverlayHandle(bool error_if_missing = true) const {
@@ -4376,8 +4387,9 @@ public:
         return props_.getAll<PropId::OfxParamPropInteractPreferedSize>();
     }
 
-    bool hasHostOverlayHandle(bool error_if_missing = true) const {
-        return props_.get<PropId::OfxParamPropHasHostOverlayHandle>(0, error_if_missing);
+    ParamsString& setHasHostOverlayHandle(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxParamPropHasHostOverlayHandle>(value, 0, error_if_missing);
+        return *this;
     }
 
     bool useHostOverlayHandle(bool error_if_missing = true) const {

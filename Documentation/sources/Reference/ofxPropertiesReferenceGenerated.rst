@@ -459,7 +459,7 @@ Integer (Boolean) Properties
 - **C #define**: :c:macro:`kOfxParamPropHasHostOverlayHandle`
 - **Type**: bool
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
+- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (host), :ref:`ParamsChoice <propset_ParamsChoice>` (host), :ref:`ParamsCustom <propset_ParamsCustom>` (host), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (host), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (host), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (host), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (host), :ref:`ParamsParametric <propset_ParamsParametric>` (host), :ref:`ParamsRGB <propset_ParamsRGB>` (host), :ref:`ParamsRGBA <propset_ParamsRGBA>` (host), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (host), :ref:`ParamsString <propset_ParamsString>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropHasHostOverlayHandle`.
 
 .. _prop_OfxParamPropIsAnimating:
