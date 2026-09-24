@@ -61,7 +61,8 @@ ColourManagementStyle ofxstring_to_style(const std::string & style)
 
 static space_info input_space_choices[]
 {
-  { "[Unspecified, accepts anything]", NULL, ColourManagementStyle::Basic },
+  // offered in every style, so the parameter always has a choice
+  { "[Unspecified, accepts anything]", "", ColourManagementStyle::None },
 
   // For this example plugin we'll offer every possible space defined in the header file
   // Real plugins do not need this flexibility!
@@ -137,7 +138,8 @@ static space_info input_space_choices[]
 
 static space_info output_space_choices[]
 {
-  { "[Same as input]", "OfxColourspace_Source", ColourManagementStyle::Basic },
+  // offered in every style, so the parameter always has a choice
+  { "[Same as input]", "OfxColourspace_Source", ColourManagementStyle::None },
 
   // For this example plugin we'll offer every possible space defined in the header file
   // Real plugins do not need this flexibility!
