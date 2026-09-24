@@ -120,7 +120,9 @@ public :
         {
           for(int c = 0; c < nComponents; c++) 
           {
-            float v = (float)(pow((double)srcPix[c], (double)scales[c])) * maskScale + (1.0f - maskScale) * srcPix[c];
+            // apply the gamma to the magnitude and keep the sign, since pow of a negative value is NaN for a fractional exponent
+            double s = srcPix[c];
+            float v = (float)(copysign(pow(fabs(s), (double)scales[c]), s)) * maskScale + (1.0f - maskScale) * srcPix[c];
             if(max == 1)
               dstPix[c] = PIX(v);
             else
