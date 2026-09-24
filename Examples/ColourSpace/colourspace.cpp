@@ -980,7 +980,7 @@ template<ColourManagementStyle STYLE>
 static OfxStatus
 pluginMain(const char *action, const void *handle, OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
 {
-  OfxStatus stat = kOfxStatOK;
+  OfxStatus stat = kOfxStatReplyDefault;
 
   if (silentActions.find(action) == silentActions.end())
     spdlog::info(OFX_FMT_STRING(">>> pluginMain({})"), action);
