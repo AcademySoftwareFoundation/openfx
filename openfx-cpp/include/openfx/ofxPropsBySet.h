@@ -198,6 +198,21 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
    { "OfxInteractPropBitDepth", prop_defs[PropId::OfxInteractPropBitDepth], true, false, false },
    { "OfxInteractPropSlaveToParam", prop_defs[PropId::OfxInteractPropSlaveToParam], true, false, false },
    { "OfxInteractPropSuggestedColour", prop_defs[PropId::OfxInteractPropSuggestedColour], true, false, false } } },
+// OpenGLTexture
+{ "OpenGLTexture", {
+   { "OfxPropType", prop_defs[PropId::OfxPropType], true, false, false },
+   { "OfxImageEffectPropOpenGLTextureIndex", prop_defs[PropId::OfxImageEffectPropOpenGLTextureIndex], true, false, false },
+   { "OfxImageEffectPropOpenGLTextureTarget", prop_defs[PropId::OfxImageEffectPropOpenGLTextureTarget], true, false, false },
+   { "OfxImageEffectPropPixelDepth", prop_defs[PropId::OfxImageEffectPropPixelDepth], true, false, false },
+   { "OfxImageEffectPropComponents", prop_defs[PropId::OfxImageEffectPropComponents], true, false, false },
+   { "OfxImageEffectPropPreMultiplication", prop_defs[PropId::OfxImageEffectPropPreMultiplication], true, false, false },
+   { "OfxImageEffectPropRenderScale", prop_defs[PropId::OfxImageEffectPropRenderScale], true, false, false },
+   { "OfxImagePropPixelAspectRatio", prop_defs[PropId::OfxImagePropPixelAspectRatio], true, false, false },
+   { "OfxImagePropBounds", prop_defs[PropId::OfxImagePropBounds], true, false, false },
+   { "OfxImagePropRegionOfDefinition", prop_defs[PropId::OfxImagePropRegionOfDefinition], true, false, false },
+   { "OfxImagePropRowBytes", prop_defs[PropId::OfxImagePropRowBytes], true, false, false },
+   { "OfxImagePropField", prop_defs[PropId::OfxImagePropField], true, false, false },
+   { "OfxImagePropUniqueIdentifier", prop_defs[PropId::OfxImagePropUniqueIdentifier], true, false, false } } },
 // ParameterSet
 { "ParameterSet", {
    { "OfxPropParamSetNeedsSyncing", prop_defs[PropId::OfxPropParamSetNeedsSyncing], false, true, false },

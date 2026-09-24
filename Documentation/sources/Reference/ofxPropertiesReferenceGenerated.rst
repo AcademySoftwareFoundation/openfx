@@ -703,7 +703,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropRenderScale`
 - **Type**: double
 - **Dimension**: 2
-- **Used in Property Sets**: :ref:`Image <propset_Image>` (host)
+- **Used in Property Sets**: :ref:`Image <propset_Image>` (host), :ref:`OpenGLTexture <propset_OpenGLTexture>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropRenderScale`.
 
 .. _prop_OfxImageEffectPropUnmappedFrameRange:
@@ -736,7 +736,7 @@ Double Properties
 - **C #define**: :c:macro:`kOfxImagePropPixelAspectRatio`
 - **Type**: double
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`Image <propset_Image>` (host)
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`Image <propset_Image>` (host), :ref:`OpenGLTexture <propset_OpenGLTexture>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImagePropPixelAspectRatio`.
 
 .. _prop_OfxInteractPropBackgroundColour:
@@ -1097,7 +1097,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropComponents`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`Image <propset_Image>` (host)
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`Image <propset_Image>` (host), :ref:`OpenGLTexture <propset_OpenGLTexture>` (host)
 - **Valid Values**:
   - ``OfxImageComponentNone``
   - ``OfxImageComponentRGBA``
@@ -1248,7 +1248,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropPixelDepth`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`Image <propset_Image>` (host)
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`Image <propset_Image>` (host), :ref:`OpenGLTexture <propset_OpenGLTexture>` (host)
 - **Valid Values**:
   - ``OfxBitDepthNone``
   - ``OfxBitDepthByte``
@@ -1265,7 +1265,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropPreMultiplication`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`Image <propset_Image>` (host)
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`Image <propset_Image>` (host), :ref:`OpenGLTexture <propset_OpenGLTexture>` (host)
 - **Valid Values**:
   - ``OfxImageOpaque``
   - ``OfxImageAlphaPremultiplied``
@@ -1345,7 +1345,7 @@ Enumeration Properties
 - **C #define**: :c:macro:`kOfxImagePropField`
 - **Type**: enum
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`Image <propset_Image>` (host)
+- **Used in Property Sets**: :ref:`Image <propset_Image>` (host), :ref:`OpenGLTexture <propset_OpenGLTexture>` (host)
 - **Valid Values**:
   - ``OfxFieldNone``
   - ``OfxFieldBoth``
@@ -1482,6 +1482,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropOpenGLTextureIndex`
 - **Type**: int
 - **Dimension**: 1
+- **Used in Property Sets**: :ref:`OpenGLTexture <propset_OpenGLTexture>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropOpenGLTextureIndex`.
 
 .. _prop_OfxImageEffectPropOpenGLTextureTarget:
@@ -1492,6 +1493,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxImageEffectPropOpenGLTextureTarget`
 - **Type**: int
 - **Dimension**: 1
+- **Used in Property Sets**: :ref:`OpenGLTexture <propset_OpenGLTexture>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropOpenGLTextureTarget`.
 
 .. _prop_OfxImageEffectPropRenderWindow:
@@ -1512,7 +1514,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxImagePropBounds`
 - **Type**: int
 - **Dimension**: 4
-- **Used in Property Sets**: :ref:`Image <propset_Image>` (host)
+- **Used in Property Sets**: :ref:`Image <propset_Image>` (host), :ref:`OpenGLTexture <propset_OpenGLTexture>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImagePropBounds`.
 
 .. _prop_OfxImagePropRegionOfDefinition:
@@ -1523,7 +1525,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxImagePropRegionOfDefinition`
 - **Type**: int
 - **Dimension**: 4
-- **Used in Property Sets**: :ref:`Image <propset_Image>` (host)
+- **Used in Property Sets**: :ref:`Image <propset_Image>` (host), :ref:`OpenGLTexture <propset_OpenGLTexture>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImagePropRegionOfDefinition`.
 
 .. _prop_OfxImagePropRowBytes:
@@ -1534,7 +1536,7 @@ Integer Properties
 - **C #define**: :c:macro:`kOfxImagePropRowBytes`
 - **Type**: int
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`Image <propset_Image>` (host)
+- **Used in Property Sets**: :ref:`Image <propset_Image>` (host), :ref:`OpenGLTexture <propset_OpenGLTexture>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImagePropRowBytes`.
 
 .. _prop_OfxInteractPropBitDepth:
@@ -2052,7 +2054,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxImagePropUniqueIdentifier`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`Image <propset_Image>` (host)
+- **Used in Property Sets**: :ref:`Image <propset_Image>` (host), :ref:`OpenGLTexture <propset_OpenGLTexture>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImagePropUniqueIdentifier`.
 
 .. _prop_OfxInteractPropSlaveToParam:
@@ -2271,7 +2273,7 @@ String Properties
 - **C #define**: :c:macro:`kOfxPropType`
 - **Type**: string
 - **Dimension**: 1
-- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>` (plugin), :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`EffectInstance <propset_EffectInstance>` (host), :ref:`Image <propset_Image>` (host), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
+- **Used in Property Sets**: :ref:`ClipDescriptor <propset_ClipDescriptor>` (plugin), :ref:`ClipInstance <propset_ClipInstance>` (host), :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`EffectInstance <propset_EffectInstance>` (host), :ref:`Image <propset_Image>` (host), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host), :ref:`OpenGLTexture <propset_OpenGLTexture>` (host), :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropType`.
 
 .. _prop_OfxPropVersionLabel:

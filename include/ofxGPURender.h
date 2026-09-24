@@ -134,6 +134,10 @@ performing OpenGL texture operations.
       - ::kOfxImageEffectActionBeginSequenceRender
       - ::kOfxImageEffectActionEndSequenceRender
     
+   This property also lives on the texture handle returned by
+   \ref OfxImageEffectOpenGLRenderSuiteV1::clipLoadTexture via the
+   \c textureHandle argument.
+
     @propdef
     type: int
     dimension: 1
@@ -151,6 +155,10 @@ when performing OpenGL texture operations.
       - ::kOfxImageEffectActionRender
       - ::kOfxImageEffectActionBeginSequenceRender
       - ::kOfxImageEffectActionEndSequenceRender
+    
+   This property also lives on the texture handle returned by
+   \ref OfxImageEffectOpenGLRenderSuiteV1::clipLoadTexture via the
+   \c textureHandle argument.
     
     @propdef
     type: int
@@ -905,5 +913,23 @@ Failure to do this will cause crashes or incorrect results when the host switche
 #ifdef __cplusplus
 }
 #endif
+
+/** @propset OpenGLTexture
+    write: host
+    props:
+      - OfxPropType
+      - OfxImageEffectPropOpenGLTextureIndex
+      - OfxImageEffectPropOpenGLTextureTarget
+      - OfxImageEffectPropPixelDepth
+      - OfxImageEffectPropComponents
+      - OfxImageEffectPropPreMultiplication
+      - OfxImageEffectPropRenderScale
+      - OfxImagePropPixelAspectRatio
+      - OfxImagePropBounds
+      - OfxImagePropRegionOfDefinition
+      - OfxImagePropRowBytes
+      - OfxImagePropField
+      - OfxImagePropUniqueIdentifier
+ */
 
 #endif /*__OFXGPURENDER_H__ */
