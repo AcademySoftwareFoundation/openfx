@@ -31,6 +31,7 @@ This is version NEXT of the OpenFX API.
 - Fixed the ChoiceParams example answering `kOfxImageEffectActionGetClipPreferences` with `kOfxStatOK` when it set nothing; it now answers `kOfxStatReplyDefault` unless the host supports multiple clip depths.
 - Fixed the ColourSpace example answering `kOfxStatOK` to the actions it does not handle, such as `kOfxImageEffectActionGetFramesNeeded`; it now answers `kOfxStatReplyDefault`, as the spec requires of an action a plugin does not trap.
 - Fixed the ColourSpace example declaring its string-choice parameters with no enum values on a host without colour management, and passing a NULL string as the "unspecified" input colourspace on one with it.
+- Fixed the ColourSpace example writing its text overlay past the bottom and left edges of a frame too small to hold it.
 
 ## Deprecations
 

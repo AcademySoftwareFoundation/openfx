@@ -273,7 +273,8 @@ static constexpr T lerp(T a, T b, float amount) {
 } while (0)
 
 /**
- * Draw a string of text at the given position in the image
+ * Draw a string of text at the given position in the image, clipped to
+ * its xdim x ydim pixels
  */
 static void drawText(const std::string &message, int x, int y,
                      unsigned int font_height,
@@ -294,10 +295,10 @@ static void drawText(const std::string &message, int x, int y,
     float white = 255.0f;
     float color_scale = 1.0f/256.0f;
     float bg_opacity = 0.2f;
-    for (int iy = y, ty = 0; iy < ydim && ty < txt_height; iy++, ty++) {
+    for (int iy = std::max(y, 0), ty = iy - y; iy < ydim && ty < txt_height; iy++, ty++) {
       T *row = (T *)((unsigned char *)image + iy * rowbytes);
       float *txt_row = txt_img.data(0, txt_height - 1 - ty);
-      for (int ix = x, tx = 0; ix < xdim && tx < txt_width; ix++, tx++) {
+      for (int ix = std::max(x, 0), tx = ix - x; ix < xdim && tx < txt_width; ix++, tx++) {
         switch (nchannels) {
         case 1:                 // Alpha only
           row[ix*4] = std::max(row[ix*4], (T)(txt_row[tx] * color_scale));
@@ -320,10 +321,10 @@ static void drawText(const std::string &message, int x, int y,
     float white = 65535.0f;
     float color_scale = 1.0f/65536.0f;
     float bg_opacity = 0.2f;
-    for (int iy = y, ty = 0; iy < ydim && ty < txt_height; iy++, ty++) {
+    for (int iy = std::max(y, 0), ty = iy - y; iy < ydim && ty < txt_height; iy++, ty++) {
       T *row = (T *)((unsigned char *)image + iy * rowbytes);
       float *txt_row = txt_img.data(0, txt_height - 1 - ty);
-      for (int ix = x, tx = 0; ix < xdim && tx < txt_width; ix++, tx++) {
+      for (int ix = std::max(x, 0), tx = ix - x; ix < xdim && tx < txt_width; ix++, tx++) {
         switch (nchannels) {
         case 1:                 // Alpha only
           row[ix*4] = std::max(row[ix*4], (T)(txt_row[tx] * color_scale));
@@ -344,10 +345,10 @@ static void drawText(const std::string &message, int x, int y,
   case 32: {
     float white = 1.0f;
     float bg_opacity = 0.2f;
-    for (int iy = y, ty = 0; iy < ydim && ty < txt_height; iy++, ty++) {
+    for (int iy = std::max(y, 0), ty = iy - y; iy < ydim && ty < txt_height; iy++, ty++) {
       float *row = (float *)((unsigned char *)image + iy * rowbytes);
       float *txt_row = txt_img.data(0, txt_height - 1 - ty);
-      for (int ix = x, tx = 0; ix < xdim && tx < txt_width; ix++, tx++) {
+      for (int ix = std::max(x, 0), tx = ix - x; ix < xdim && tx < txt_width; ix++, tx++) {
         switch (nchannels) {
         case 1:                 // Alpha only
           row[ix*4] = std::max(row[ix*4], txt_row[tx]);
