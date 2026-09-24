@@ -32,6 +32,7 @@ This is version NEXT of the OpenFX API.
 - Fixed the ColourSpace example answering `kOfxStatOK` to the actions it does not handle, such as `kOfxImageEffectActionGetFramesNeeded`; it now answers `kOfxStatReplyDefault`, as the spec requires of an action a plugin does not trap.
 - Fixed the ColourSpace example declaring its string-choice parameters with no enum values on a host without colour management, and passing a NULL string as the "unspecified" input colourspace on one with it.
 - Fixed the ColourSpace example writing its text overlay past the bottom and left edges of a frame too small to hold it.
+- Fixed the ColourSpace example under tiled rendering: it copied the whole source image to the start of each tile, overrunning the output buffer, and drew its text relative to each tile. It now copies only the render window and places the text in the frame.
 
 ## Deprecations
 

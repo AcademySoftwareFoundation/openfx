@@ -688,6 +688,12 @@ static std::string getClipColourspace(const OfxImageClipHandle clip) {
 
 }
 
+// the address of pixel (x, y) in an image whose data starts at its bounds' bottom left
+static char *pixelAddress(void *data, const OfxRectI &bounds, int rowBytes, int bytesPerPixel, int x, int y)
+{
+  return (char *)data + (y - bounds.y1) * rowBytes + (x - bounds.x1) * bytesPerPixel;
+}
+
 static OfxStatus render( OfxImageEffectHandle  instance,
                          OfxPropertySetHandle inArgs,
                          OfxPropertySetHandle /*outArgs*/)
@@ -746,33 +752,51 @@ static OfxStatus render( OfxImageEffectHandle  instance,
     outputImg = ofxuGetImage(myData->outputClip, time, dstRowBytes, dstBitDepth, dstIsAlpha, dstRect, dst);
     if(outputImg == NULL) throw OfxuNoImageException();
 
-    // see if they have the same depths and bytes and all
-    if(srcBitDepth != dstBitDepth || srcIsAlpha != dstIsAlpha || srcRowBytes != dstRowBytes) {
+    // see if they have the same depths and all
+    if(srcBitDepth != dstBitDepth || srcIsAlpha != dstIsAlpha) {
       throw OfxuStatusException(kOfxStatErrImageFormat);
     }
 
-    int xdim = srcRect.x2 - srcRect.x1;
-    int ydim = srcRect.y2 - srcRect.y1;
+    // the whole frame, of which the render window may be one tile
+    OfxRectI frame;
+    gPropHost->propGetIntN(outputImg, kOfxImagePropRegionOfDefinition, 4, &frame.x1);
+    int xdim = frame.x2 - frame.x1;
+    int ydim = frame.y2 - frame.y1;
     // do the rendering
 
     int nchannels = 4;
+    int bytesPerPixel = nchannels * dstBitDepth / 8;
     int font_height = 50 * renderScale[0];
-    spdlog::info(OFX_FMT_STRING("Rendering {}x{} image @{},{}, depth={}"), xdim, ydim, srcRect.x1, srcRect.y1, dstBitDepth);
+    spdlog::info(OFX_FMT_STRING("Rendering {}x{} image @{},{}, depth={}"), xdim, ydim, frame.x1, frame.y1, dstBitDepth);
 
-    // Just copy from source to dest, and draw some text
-    if (srcRowBytes < 0 && dstRowBytes < 0)
-      memcpy((char *)dst + dstRowBytes * (ydim-1), (char*)src + srcRowBytes * (ydim-1), -srcRowBytes * ydim);
-    else
-      memcpy(dst, src, srcRowBytes * ydim);
-    int ystart = ydim - 100;
+    int windowWidth = renderWindow.x2 - renderWindow.x1;
+    int windowHeight = renderWindow.y2 - renderWindow.y1;
+
+    // Copy the render window from source to dest a row at a time, as each
+    // image has its own bounds and row bytes; black where there is no source
+    for (int y = renderWindow.y1; y < renderWindow.y2; y++) {
+      char *dstRow = pixelAddress(dst, dstRect, dstRowBytes, bytesPerPixel, renderWindow.x1, y);
+      memset(dstRow, 0, windowWidth * bytesPerPixel);
+      int x1 = std::max(renderWindow.x1, srcRect.x1);
+      int x2 = std::min(renderWindow.x2, srcRect.x2);
+      if (y >= srcRect.y1 && y < srcRect.y2 && x1 < x2)
+        memcpy(dstRow + (x1 - renderWindow.x1) * bytesPerPixel,
+               pixelAddress(src, srcRect, srcRowBytes, bytesPerPixel, x1, y),
+               (x2 - x1) * bytesPerPixel);
+    }
+
+    // Draw some text, placed in the frame and clipped to the render window
+    char *window = pixelAddress(dst, dstRect, dstRowBytes, bytesPerPixel, renderWindow.x1, renderWindow.y1);
+    int xstart = frame.x1 + 100 - renderWindow.x1;
+    int ystart = frame.y2 - 100 - renderWindow.y1;
     drawText(fmt::format(OFX_FMT_STRING("Image: {}x{}, depth={}, scale={:.2f}x{:.2f}"), xdim, ydim, dstBitDepth, renderScale[0], renderScale[1]),
-             100, ystart, font_height, dst, xdim, ydim, dstBitDepth, nchannels, dstRowBytes);
+             xstart, ystart, font_height, window, windowWidth, windowHeight, dstBitDepth, nchannels, dstRowBytes);
     ystart -= font_height;
     drawText(fmt::format(OFX_FMT_STRING("input colourspace: {}"), inputColourspace),
-	     100, ystart, font_height, dst, xdim, ydim, dstBitDepth, nchannels, dstRowBytes);
+	     xstart, ystart, font_height, window, windowWidth, windowHeight, dstBitDepth, nchannels, dstRowBytes);
     ystart -= font_height;
     drawText(fmt::format(OFX_FMT_STRING("output colourspace: {}"), outputColourspace),
-             100, ystart, font_height, dst, xdim, ydim, dstBitDepth, nchannels, dstRowBytes);
+             xstart, ystart, font_height, window, windowWidth, windowHeight, dstBitDepth, nchannels, dstRowBytes);
   }
   catch(OfxuNoImageException &ex) {
     // if we were interrupted, the failed fetch is fine, just return kOfxStatOK
