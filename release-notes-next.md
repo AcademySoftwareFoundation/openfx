@@ -27,6 +27,10 @@ This is version NEXT of the OpenFX API.
 - Fixed the ColourSpace example's `OfxSetHost` to have the proper signature so it actually gets called.
 - Fixed the `@propdef` metadata of `kOfxParamPropChoiceEnum` (a string array, not a bool) and `kOfxParamPropDimensionLabel` (one label per dimension, not one).
 - Fixed the Invert example never releasing its output image (a shadowed handle variable).
+- Fixed the Support Noise example giving a different image when a frame is rendered in tiles: it seeded its noise per render call, and now each pixel's noise depends only on its position, the time and the noise level.
+- Fixed the Support GPUGain example failing to render when the host chose Alpha for its output: it declared Alpha output but processes only RGBA, so its output clip now supports only RGBA.
+- Fixed the Support Gamma example producing NaNs from negative float input: it now applies the gamma to a value's magnitude and keeps its sign.
+- Fixed the Support Retimer example asking for source frames around the output time rather than the retimed source time it then fetches.
 
 ## Deprecations
 
