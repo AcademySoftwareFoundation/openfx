@@ -598,6 +598,11 @@ public:
         return props_.get<PropId::OfxPropInstanceData>(0, error_if_missing);
     }
 
+    EffectInstance& setInstanceData(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropInstanceData>(value, 0, error_if_missing);
+        return *this;
+    }
+
     std::array<double, 2> projectSize() const {
         return props_.getAll<PropId::OfxImageEffectPropProjectSize>();
     }
@@ -1697,6 +1702,11 @@ public:
         return props_.get<PropId::OfxPropInstanceData>(0, error_if_missing);
     }
 
+    InteractInstance& setInstanceData(void* value, bool error_if_missing = true) {
+        props_.set<PropId::OfxPropInstanceData>(value, 0, error_if_missing);
+        return *this;
+    }
+
     std::array<double, 2> interactPropPixelScale() const {
         return props_.getAll<PropId::OfxInteractPropPixelScale>();
     }
@@ -1713,8 +1723,24 @@ public:
         return props_.get<PropId::OfxInteractPropBitDepth>(0, error_if_missing);
     }
 
-    const char* interactPropSlaveToParam(int index = 0, bool error_if_missing = true) const {
-        return props_.get<PropId::OfxInteractPropSlaveToParam>(index, error_if_missing);
+    InteractInstance& setInteractPropSlaveToParam(const char* value, int index = 0, bool error_if_missing = true) {
+        props_.set<PropId::OfxInteractPropSlaveToParam>(value, index, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from a container (vector, array, span, etc.)
+    // SFINAE: only enabled for container types (not scalars)
+    template<typename Container,
+             typename = std::enable_if_t<!std::is_arithmetic_v<Container> && !std::is_pointer_v<Container>>>
+    InteractInstance& setInteractPropSlaveToParam(const Container& values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropSlaveToParam>(values, error_if_missing);
+        return *this;
+    }
+
+    // Set all values from an initializer list (e.g., {1, 2, 3})
+    InteractInstance& setInteractPropSlaveToParam(std::initializer_list<const char*> values, bool error_if_missing = true) {
+        props_.setAll<PropId::OfxInteractPropSlaveToParam>(values, error_if_missing);
+        return *this;
     }
 
     std::array<double, 3> interactPropSuggestedColour() const {

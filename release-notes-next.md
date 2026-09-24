@@ -30,6 +30,7 @@ This is version NEXT of the OpenFX API.
 - Fixed the Invert example never releasing its output image (a shadowed handle variable).
 - Fixed the `@propdef` metadata of `kOfxImageEffectInstancePropSequentialRender`: it is an int, which may be 0, 1 or 2, not a bool.
 - Fixed the `@propset` metadata of `kOfxParamPropHasHostOverlayHandle`: the host sets it, to say it has an overlay handle for the parameter, so the parameter sets now list it as host-written.
+- Fixed the `@propset` metadata of `kOfxInteractPropSlaveToParam` and `kOfxPropInstanceData`: the plugin sets both on an interact instance, and its instance data on an effect instance too.
 
 ## Deprecations
 

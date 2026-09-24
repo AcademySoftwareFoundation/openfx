@@ -113,7 +113,7 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
 { "EffectInstance", {
    { "OfxPropType", prop_defs[PropId::OfxPropType], true, false, false },
    { "OfxImageEffectPropContext", prop_defs[PropId::OfxImageEffectPropContext], true, false, false },
-   { "OfxPropInstanceData", prop_defs[PropId::OfxPropInstanceData], true, false, false },
+   { "OfxPropInstanceData", prop_defs[PropId::OfxPropInstanceData], true, true, false },
    { "OfxImageEffectPropProjectSize", prop_defs[PropId::OfxImageEffectPropProjectSize], true, false, false },
    { "OfxImageEffectPropProjectOffset", prop_defs[PropId::OfxImageEffectPropProjectOffset], true, false, false },
    { "OfxImageEffectPropProjectExtent", prop_defs[PropId::OfxImageEffectPropProjectExtent], true, false, false },
@@ -192,12 +192,12 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
 // InteractInstance
 { "InteractInstance", {
    { "OfxPropEffectInstance", prop_defs[PropId::OfxPropEffectInstance], true, false, false },
-   { "OfxPropInstanceData", prop_defs[PropId::OfxPropInstanceData], true, false, false },
+   { "OfxPropInstanceData", prop_defs[PropId::OfxPropInstanceData], true, true, false },
    { "OfxInteractPropPixelScale", prop_defs[PropId::OfxInteractPropPixelScale], true, false, false },
    { "OfxInteractPropBackgroundColour", prop_defs[PropId::OfxInteractPropBackgroundColour], true, false, false },
    { "OfxInteractPropHasAlpha", prop_defs[PropId::OfxInteractPropHasAlpha], true, false, false },
    { "OfxInteractPropBitDepth", prop_defs[PropId::OfxInteractPropBitDepth], true, false, false },
-   { "OfxInteractPropSlaveToParam", prop_defs[PropId::OfxInteractPropSlaveToParam], true, false, false },
+   { "OfxInteractPropSlaveToParam", prop_defs[PropId::OfxInteractPropSlaveToParam], false, true, false },
    { "OfxInteractPropSuggestedColour", prop_defs[PropId::OfxInteractPropSuggestedColour], true, false, false } } },
 // OpenGLTexture
 { "OpenGLTexture", {

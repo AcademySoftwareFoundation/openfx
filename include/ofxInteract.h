@@ -654,12 +654,12 @@ typedef struct OfxInteractSuiteV1 {
     write: host
     props:
       - OfxPropEffectInstance
-      - OfxPropInstanceData
+      - OfxPropInstanceData | write=all
       - OfxInteractPropPixelScale
       - OfxInteractPropBackgroundColour
       - OfxInteractPropHasAlpha
       - OfxInteractPropBitDepth
-      - OfxInteractPropSlaveToParam
+      - OfxInteractPropSlaveToParam | write=plugin
       - OfxInteractPropSuggestedColour
 */
 
