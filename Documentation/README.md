@@ -229,9 +229,13 @@ are standalone `/** ... */` comments, not attached to a `#define`.
 ```
 
 - `write:` sets the default write permission (`plugin` or `host`)
-- Each property in `props:` can have pipe-separated modifiers:
-  - `| write=host` — override the write permission for this property
-  - `| host_optional=true` — mark as optional for hosts to support
+- Each property in `props:` can be followed by `|` and comma-separated
+  modifiers:
+  - `write=host` (or `plugin`, or `all` for both) — override the write
+    permission for this property
+  - `host_optional=true`, or `optional` for short — mark a property the
+    set may lack, which the generated C++ accessors then read and write
+    without treating its absence as an error
 
 ### `@propsetdef` — Reusable Property Lists
 
@@ -278,10 +282,15 @@ the doxygen comment, just before `*/`.
       - OfxPropChangeReason
       - OfxPropTime
       - OfxImageEffectPropRenderScale
+      - OfxImageEffectPropThumbnailRender | optional
     outArgs:
 */
 #define kOfxActionInstanceChanged "OfxActionInstanceChanged"
 ```
+
+An argument takes the same `|` modifiers as a `@propset` entry; `optional`
+marks one a host may leave out, such as an argument that exists only when
+the host supports a feature.
 
 Property names in `inArgs`/`outArgs` use the string name (without the
 `k` prefix), matching the `@propdef` key. Use an empty value or `[]`
