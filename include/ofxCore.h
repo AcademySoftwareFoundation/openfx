@@ -506,7 +506,7 @@ OR:
       - OfxPropChangeReason
       - OfxPropTime
       - OfxImageEffectPropRenderScale
-      - OfxImageEffectPropThumbnailRender
+      - OfxImageEffectPropThumbnailRender | optional
     outArgs:
 */
 #define kOfxActionInstanceChanged "OfxActionInstanceChanged"
@@ -555,7 +555,7 @@ OR:
     @actiondef
     inArgs:
       - OfxPropChangeReason
-      - OfxImageEffectPropThumbnailRender
+      - OfxImageEffectPropThumbnailRender | optional
     outArgs:
 */
 #define kOfxActionBeginInstanceChanged "OfxActionBeginInstanceChanged"
