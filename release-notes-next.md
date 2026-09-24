@@ -36,4 +36,5 @@ This is version NEXT of the OpenFX API.
 - Conan packaging: restructured the recipe to the standard Conan Center Index layout (headers under `include/`, libs and CMake module under `lib/`, licenses under `licenses/`) (issues #238, #246), and example-only dependencies (OpenGL, CImg, spdlog, OpenCL) are no longer imposed on consumers — they're gated behind a new `build_examples` option (#253).
 - Added `SECURITY.md` and fixed stale repository URLs (#242).
 - CI: hardened workflows (actions pinned to SHAs, untrusted inputs via env) (#235); updated Conan and pre-authorized future compiler versions so new Xcode/compiler releases don't break builds (#252); pinned the Windows CUDA job to VS2022.
+- CI: the CentOS 7 jobs (VFX CY2021 and CY2022) run GitHub's JavaScript actions on a glibc 2.17 build of Node 24, since GitHub's runners no longer have Node 20.
 
