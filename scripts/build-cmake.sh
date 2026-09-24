@@ -124,6 +124,8 @@ fi
 
 # Install dependencies, set up build dir, and generate build files.
 echo === Running conan to install dependencies
+# The script always builds the example plugins, and they need build_examples.
+conan_opts="$conan_opts -o build_examples=True"
 [[ $USE_OPENCL ]] && conan_opts="$conan_opts -o use_opencl=True"
 $CONAN install ${GENERATOR_OPTION} -s build_type=$BUILDTYPE -pr:b=default --build=missing . $conan_opts
 
