@@ -68,7 +68,8 @@ function(add_ofx_plugin TARGET)
   # Set symbol visibility hidden. Individual symbols are exposed via
   # __declspec(dllexport) or __attribute__((visibility("default")))
   set_target_properties(${TARGET} PROPERTIES C_VISIBILITY_PRESET hidden
-                                             CXX_VISIBILITY_PRESET hidden)
+                                             CXX_VISIBILITY_PRESET hidden
+                                             VISIBILITY_INLINES_HIDDEN ON)
 
   # To install plugins: cmake --install Build
   install(
