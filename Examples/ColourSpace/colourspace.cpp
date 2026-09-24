@@ -61,7 +61,8 @@ ColourManagementStyle ofxstring_to_style(const std::string & style)
 
 static space_info input_space_choices[]
 {
-  { "[Unspecified, accepts anything]", NULL, ColourManagementStyle::Basic },
+  // offered in every style, so the parameter always has a choice
+  { "[Unspecified, accepts anything]", "", ColourManagementStyle::None },
 
   // For this example plugin we'll offer every possible space defined in the header file
   // Real plugins do not need this flexibility!
@@ -137,7 +138,8 @@ static space_info input_space_choices[]
 
 static space_info output_space_choices[]
 {
-  { "[Same as input]", "OfxColourspace_Source", ColourManagementStyle::Basic },
+  // offered in every style, so the parameter always has a choice
+  { "[Same as input]", "OfxColourspace_Source", ColourManagementStyle::None },
 
   // For this example plugin we'll offer every possible space defined in the header file
   // Real plugins do not need this flexibility!
@@ -271,7 +273,8 @@ static constexpr T lerp(T a, T b, float amount) {
 } while (0)
 
 /**
- * Draw a string of text at the given position in the image
+ * Draw a string of text at the given position in the image, clipped to
+ * its xdim x ydim pixels
  */
 static void drawText(const std::string &message, int x, int y,
                      unsigned int font_height,
@@ -292,10 +295,10 @@ static void drawText(const std::string &message, int x, int y,
     float white = 255.0f;
     float color_scale = 1.0f/256.0f;
     float bg_opacity = 0.2f;
-    for (int iy = y, ty = 0; iy < ydim && ty < txt_height; iy++, ty++) {
+    for (int iy = std::max(y, 0), ty = iy - y; iy < ydim && ty < txt_height; iy++, ty++) {
       T *row = (T *)((unsigned char *)image + iy * rowbytes);
       float *txt_row = txt_img.data(0, txt_height - 1 - ty);
-      for (int ix = x, tx = 0; ix < xdim && tx < txt_width; ix++, tx++) {
+      for (int ix = std::max(x, 0), tx = ix - x; ix < xdim && tx < txt_width; ix++, tx++) {
         switch (nchannels) {
         case 1:                 // Alpha only
           row[ix*4] = std::max(row[ix*4], (T)(txt_row[tx] * color_scale));
@@ -318,10 +321,10 @@ static void drawText(const std::string &message, int x, int y,
     float white = 65535.0f;
     float color_scale = 1.0f/65536.0f;
     float bg_opacity = 0.2f;
-    for (int iy = y, ty = 0; iy < ydim && ty < txt_height; iy++, ty++) {
+    for (int iy = std::max(y, 0), ty = iy - y; iy < ydim && ty < txt_height; iy++, ty++) {
       T *row = (T *)((unsigned char *)image + iy * rowbytes);
       float *txt_row = txt_img.data(0, txt_height - 1 - ty);
-      for (int ix = x, tx = 0; ix < xdim && tx < txt_width; ix++, tx++) {
+      for (int ix = std::max(x, 0), tx = ix - x; ix < xdim && tx < txt_width; ix++, tx++) {
         switch (nchannels) {
         case 1:                 // Alpha only
           row[ix*4] = std::max(row[ix*4], (T)(txt_row[tx] * color_scale));
@@ -342,10 +345,10 @@ static void drawText(const std::string &message, int x, int y,
   case 32: {
     float white = 1.0f;
     float bg_opacity = 0.2f;
-    for (int iy = y, ty = 0; iy < ydim && ty < txt_height; iy++, ty++) {
+    for (int iy = std::max(y, 0), ty = iy - y; iy < ydim && ty < txt_height; iy++, ty++) {
       float *row = (float *)((unsigned char *)image + iy * rowbytes);
       float *txt_row = txt_img.data(0, txt_height - 1 - ty);
-      for (int ix = x, tx = 0; ix < xdim && tx < txt_width; ix++, tx++) {
+      for (int ix = std::max(x, 0), tx = ix - x; ix < xdim && tx < txt_width; ix++, tx++) {
         switch (nchannels) {
         case 1:                 // Alpha only
           row[ix*4] = std::max(row[ix*4], txt_row[tx]);
@@ -685,6 +688,12 @@ static std::string getClipColourspace(const OfxImageClipHandle clip) {
 
 }
 
+// the address of pixel (x, y) in an image whose data starts at its bounds' bottom left
+static char *pixelAddress(void *data, const OfxRectI &bounds, int rowBytes, int bytesPerPixel, int x, int y)
+{
+  return (char *)data + (y - bounds.y1) * rowBytes + (x - bounds.x1) * bytesPerPixel;
+}
+
 static OfxStatus render( OfxImageEffectHandle  instance,
                          OfxPropertySetHandle inArgs,
                          OfxPropertySetHandle /*outArgs*/)
@@ -743,33 +752,51 @@ static OfxStatus render( OfxImageEffectHandle  instance,
     outputImg = ofxuGetImage(myData->outputClip, time, dstRowBytes, dstBitDepth, dstIsAlpha, dstRect, dst);
     if(outputImg == NULL) throw OfxuNoImageException();
 
-    // see if they have the same depths and bytes and all
-    if(srcBitDepth != dstBitDepth || srcIsAlpha != dstIsAlpha || srcRowBytes != dstRowBytes) {
+    // see if they have the same depths and all
+    if(srcBitDepth != dstBitDepth || srcIsAlpha != dstIsAlpha) {
       throw OfxuStatusException(kOfxStatErrImageFormat);
     }
 
-    int xdim = srcRect.x2 - srcRect.x1;
-    int ydim = srcRect.y2 - srcRect.y1;
+    // the whole frame, of which the render window may be one tile
+    OfxRectI frame;
+    gPropHost->propGetIntN(outputImg, kOfxImagePropRegionOfDefinition, 4, &frame.x1);
+    int xdim = frame.x2 - frame.x1;
+    int ydim = frame.y2 - frame.y1;
     // do the rendering
 
     int nchannels = 4;
+    int bytesPerPixel = nchannels * dstBitDepth / 8;
     int font_height = 50 * renderScale[0];
-    spdlog::info(OFX_FMT_STRING("Rendering {}x{} image @{},{}, depth={}"), xdim, ydim, srcRect.x1, srcRect.y1, dstBitDepth);
+    spdlog::info(OFX_FMT_STRING("Rendering {}x{} image @{},{}, depth={}"), xdim, ydim, frame.x1, frame.y1, dstBitDepth);
 
-    // Just copy from source to dest, and draw some text
-    if (srcRowBytes < 0 && dstRowBytes < 0)
-      memcpy((char *)dst + dstRowBytes * (ydim-1), (char*)src + srcRowBytes * (ydim-1), -srcRowBytes * ydim);
-    else
-      memcpy(dst, src, srcRowBytes * ydim);
-    int ystart = ydim - 100;
+    int windowWidth = renderWindow.x2 - renderWindow.x1;
+    int windowHeight = renderWindow.y2 - renderWindow.y1;
+
+    // Copy the render window from source to dest a row at a time, as each
+    // image has its own bounds and row bytes; black where there is no source
+    for (int y = renderWindow.y1; y < renderWindow.y2; y++) {
+      char *dstRow = pixelAddress(dst, dstRect, dstRowBytes, bytesPerPixel, renderWindow.x1, y);
+      memset(dstRow, 0, windowWidth * bytesPerPixel);
+      int x1 = std::max(renderWindow.x1, srcRect.x1);
+      int x2 = std::min(renderWindow.x2, srcRect.x2);
+      if (y >= srcRect.y1 && y < srcRect.y2 && x1 < x2)
+        memcpy(dstRow + (x1 - renderWindow.x1) * bytesPerPixel,
+               pixelAddress(src, srcRect, srcRowBytes, bytesPerPixel, x1, y),
+               (x2 - x1) * bytesPerPixel);
+    }
+
+    // Draw some text, placed in the frame and clipped to the render window
+    char *window = pixelAddress(dst, dstRect, dstRowBytes, bytesPerPixel, renderWindow.x1, renderWindow.y1);
+    int xstart = frame.x1 + 100 - renderWindow.x1;
+    int ystart = frame.y2 - 100 - renderWindow.y1;
     drawText(fmt::format(OFX_FMT_STRING("Image: {}x{}, depth={}, scale={:.2f}x{:.2f}"), xdim, ydim, dstBitDepth, renderScale[0], renderScale[1]),
-             100, ystart, font_height, dst, xdim, ydim, dstBitDepth, nchannels, dstRowBytes);
+             xstart, ystart, font_height, window, windowWidth, windowHeight, dstBitDepth, nchannels, dstRowBytes);
     ystart -= font_height;
     drawText(fmt::format(OFX_FMT_STRING("input colourspace: {}"), inputColourspace),
-	     100, ystart, font_height, dst, xdim, ydim, dstBitDepth, nchannels, dstRowBytes);
+	     xstart, ystart, font_height, window, windowWidth, windowHeight, dstBitDepth, nchannels, dstRowBytes);
     ystart -= font_height;
     drawText(fmt::format(OFX_FMT_STRING("output colourspace: {}"), outputColourspace),
-             100, ystart, font_height, dst, xdim, ydim, dstBitDepth, nchannels, dstRowBytes);
+             xstart, ystart, font_height, window, windowWidth, windowHeight, dstBitDepth, nchannels, dstRowBytes);
   }
   catch(OfxuNoImageException &ex) {
     // if we were interrupted, the failed fetch is fine, just return kOfxStatOK
@@ -980,7 +1007,7 @@ template<ColourManagementStyle STYLE>
 static OfxStatus
 pluginMain(const char *action, const void *handle, OfxPropertySetHandle inArgs,  OfxPropertySetHandle outArgs)
 {
-  OfxStatus stat = kOfxStatOK;
+  OfxStatus stat = kOfxStatReplyDefault;
 
   if (silentActions.find(action) == silentActions.end())
     spdlog::info(OFX_FMT_STRING(">>> pluginMain({})"), action);

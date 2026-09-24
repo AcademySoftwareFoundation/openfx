@@ -195,6 +195,10 @@ getTemporalDomain( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs*
 static OfxStatus 
 getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs*/,  OfxPropertySetHandle outArgs)
 {
+  // our only preference is the output depth, which needs a host that supports multiple depths
+  if(!gHostSupportsMultipleBitDepths)
+    return kOfxStatReplyDefault;
+
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
   
@@ -207,8 +211,7 @@ getClipPreferences( OfxImageEffectHandle  effect,  OfxPropertySetHandle /*inArgs
   const char *bitDepthStr = bitDepth == 8 ? kOfxBitDepthByte : (bitDepth == 16 ? kOfxBitDepthShort : kOfxBitDepthFloat);
 
   // set out output to be the same same as the input bitdepth
-  if(gHostSupportsMultipleBitDepths)
-    gPropHost->propSetString(outArgs, "OfxImageClipPropDepth_Output", 0, bitDepthStr);
+  gPropHost->propSetString(outArgs, "OfxImageClipPropDepth_Output", 0, bitDepthStr);
 
   return kOfxStatOK;
 }
