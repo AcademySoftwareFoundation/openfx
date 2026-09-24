@@ -497,7 +497,7 @@ public:
         return props_.get<PropId::OfxImageEffectPropCPURenderSupported>(0, error_if_missing);
     }
 
-    bool imageEffectInstancePropSequentialRender(bool error_if_missing = true) const {
+    int imageEffectInstancePropSequentialRender(bool error_if_missing = true) const {
         return props_.get<PropId::OfxImageEffectInstancePropSequentialRender>(0, error_if_missing);
     }
 
@@ -591,7 +591,7 @@ public:
         return *this;
     }
 
-    EffectInstance& setImageEffectInstancePropSequentialRender(bool value, bool error_if_missing = true) {
+    EffectInstance& setImageEffectInstancePropSequentialRender(int value, bool error_if_missing = true) {
         props_.set<PropId::OfxImageEffectInstancePropSequentialRender>(value, 0, error_if_missing);
         return *this;
     }
@@ -1613,7 +1613,7 @@ public:
         return *this;
     }
 
-    ImageEffectHost& setImageEffectInstancePropSequentialRender(bool value, bool error_if_missing = false) {
+    ImageEffectHost& setImageEffectInstancePropSequentialRender(int value, bool error_if_missing = false) {
         props_.set<PropId::OfxImageEffectInstancePropSequentialRender>(value, 0, error_if_missing);
         return *this;
     }

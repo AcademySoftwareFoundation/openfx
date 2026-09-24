@@ -886,7 +886,7 @@ In all cases, a host will set the kOfxImageEffectPropSequentialRenderStatus flag
      - 1 - for a plugin, indicates that it needs to be sequentially rendered to be correct, for a host, indicates that it can always support sequential rendering of plugins that are sequentially rendered,
      - 2 - for a plugin, indicates that it is best to render sequentially, but will still produce correct results if not, for a host, indicates that it can sometimes render sequentially, and will have set ::kOfxImageEffectPropSequentialRenderStatus on the relevant actions
    @propdef
-   type: bool
+   type: int
    dimension: 1
 */
 #define kOfxImageEffectInstancePropSequentialRender "OfxImageEffectInstancePropSequentialRender"

@@ -515,7 +515,7 @@ public:
         return *this;
     }
 
-    EffectDescriptor& setImageEffectInstancePropSequentialRender(bool value, bool error_if_missing = true) {
+    EffectDescriptor& setImageEffectInstancePropSequentialRender(int value, bool error_if_missing = true) {
         props_.set<PropId::OfxImageEffectInstancePropSequentialRender>(value, 0, error_if_missing);
         return *this;
     }
@@ -618,7 +618,7 @@ public:
         return props_.get<PropId::OfxImageEffectInstancePropEffectDuration>(0, error_if_missing);
     }
 
-    bool imageEffectInstancePropSequentialRender(bool error_if_missing = true) const {
+    int imageEffectInstancePropSequentialRender(bool error_if_missing = true) const {
         return props_.get<PropId::OfxImageEffectInstancePropSequentialRender>(0, error_if_missing);
     }
 
@@ -1356,7 +1356,7 @@ public:
         return props_.get<PropId::OfxParamHostPropSupportsParametricAnimation>(0, error_if_missing);
     }
 
-    bool imageEffectInstancePropSequentialRender(bool error_if_missing = false) const {
+    int imageEffectInstancePropSequentialRender(bool error_if_missing = false) const {
         return props_.get<PropId::OfxImageEffectInstancePropSequentialRender>(0, error_if_missing);
     }
 

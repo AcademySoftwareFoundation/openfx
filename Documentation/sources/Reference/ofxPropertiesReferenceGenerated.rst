@@ -79,17 +79,6 @@ Integer (Boolean) Properties
 - **Used in Property Sets**: :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectHostPropIsBackground`.
 
-.. _prop_OfxImageEffectInstancePropSequentialRender:
-
-**OfxImageEffectInstancePropSequentialRender**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-- **C #define**: :c:macro:`kOfxImageEffectInstancePropSequentialRender`
-- **Type**: bool
-- **Dimension**: 1
-- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`EffectInstance <propset_EffectInstance>` (host), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
-- **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectInstancePropSequentialRender`.
-
 .. _prop_OfxImageEffectPluginPropFieldRenderTwiceAlways:
 
 **OfxImageEffectPluginPropFieldRenderTwiceAlways**
@@ -1473,6 +1462,17 @@ Enumeration Properties
 
 Integer Properties
 ------------------
+
+.. _prop_OfxImageEffectInstancePropSequentialRender:
+
+**OfxImageEffectInstancePropSequentialRender**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxImageEffectInstancePropSequentialRender`
+- **Type**: int
+- **Dimension**: 1
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`EffectInstance <propset_EffectInstance>` (host), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
+- **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectInstancePropSequentialRender`.
 
 .. _prop_OfxImageEffectPropOpenGLTextureIndex:
 

@@ -28,6 +28,7 @@ This is version NEXT of the OpenFX API.
 - Property-set metadata: `kOfxParamPropDefaultCoordinateSystem` is listed on the double parameter sets (it applies to any spatial double parameter, not only the `ParamsNormalizedSpatial` grouping), and `kOfxImageEffectInstancePropSequentialRender` on the effect descriptor, which is where a plugin declares its need for sequential rendering.
 - Fixed the `@propdef` metadata of `kOfxParamPropChoiceEnum` (a string array, not a bool) and `kOfxParamPropDimensionLabel` (one label per dimension, not one).
 - Fixed the Invert example never releasing its output image (a shadowed handle variable).
+- Fixed the `@propdef` metadata of `kOfxImageEffectInstancePropSequentialRender`: it is an int, which may be 0, 1 or 2, not a bool.
 
 ## Deprecations
 
