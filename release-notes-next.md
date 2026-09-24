@@ -23,10 +23,13 @@ This is version NEXT of the OpenFX API.
 - Fixed the ColourSpace example to compile under `FMT_ENFORCE_COMPILE_STRING`, with a CI job to keep it that way (issue #236).
 - HostSupport: an effect instance now inherits `kOfxImageEffectPropSupportsTiles` and the GPU `*RenderSupported` properties from the plugin descriptor instead of overriding them with a hard default, so values set only in describe are honoured (issue #177). The header docs now state this inheritance rule for hosts.
 - CMake: use `target_compile_features(cxx_std_17)` instead of forcing `CMAKE_CXX_STANDARD`, so consumers can build with a later C++ standard (issue #208).
+- `scripts/build-cmake.sh` builds the example plugins again. It never asked Conan for their dependencies, which have been behind the `build_examples` option since #253.
+- CMake: the `-Wall -Wextra` warning flags now apply on compilers other than MSVC. A typo, `if(!MSVC)` for `if(NOT MSVC)`, had kept them off everywhere.
 - `OfxExport` now marks a symbol visible on GCC and Clang as well as exporting it on Windows. The entry points in `ofxCore.h` are declared with it, so plugins built with hidden visibility export `OfxGetPlugin`, `OfxGetNumberOfPlugins` and `OfxSetHost` definitions properly.  The examples no longer need to define `EXPORT` macros.
 - Fixed the ColourSpace example's `OfxSetHost` to have the proper signature so it actually gets called.
 - Fixed the `@propdef` metadata of `kOfxParamPropChoiceEnum` (a string array, not a bool) and `kOfxParamPropDimensionLabel` (one label per dimension, not one).
 - Fixed the Invert example never releasing its output image (a shadowed handle variable).
+- CMake: the Support library is now built with hidden symbol visibility, so plugins built on it export only the OFX entry points rather than hundreds of C++ symbols. Its `OfxGetPlugin` and `OfxGetNumberOfPlugins` definitions inherit `OfxExport` from `ofxCore.h`, and `add_ofx_plugin` now adds `-fvisibility-inlines-hidden` to its `-fvisibility=hidden`.
 
 ## Deprecations
 
