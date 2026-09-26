@@ -25,13 +25,14 @@ This is version NEXT of the OpenFX API.
 - CMake: use `target_compile_features(cxx_std_17)` instead of forcing `CMAKE_CXX_STANDARD`, so consumers can build with a later C++ standard (issue #208).
 - `OfxExport` now marks a symbol visible on GCC and Clang as well as exporting it on Windows. The entry points in `ofxCore.h` are declared with it, so plugins built with hidden visibility export `OfxGetPlugin`, `OfxGetNumberOfPlugins` and `OfxSetHost` definitions properly.  The examples no longer need to define `EXPORT` macros.
 - Fixed the ColourSpace example's `OfxSetHost` to have the proper signature so it actually gets called.
-- Property-set metadata: `kOfxParamPropDefaultCoordinateSystem` is listed on the double parameter sets (it applies to any spatial double parameter, not only the `ParamsNormalizedSpatial` grouping), and `kOfxImageEffectInstancePropSequentialRender` on the effect descriptor, which is where a plugin declares its need for sequential rendering.
+- Property-set metadata: `kOfxParamPropDefaultCoordinateSystem` is listed on the double parameter sets (it applies to any spatial double parameter), and `kOfxImageEffectInstancePropSequentialRender` on the effect descriptor, which is where a plugin declares its need for sequential rendering.
 - Fixed the `@propdef` metadata of `kOfxParamPropChoiceEnum` (a string array, not a bool) and `kOfxParamPropDimensionLabel` (one label per dimension, not one).
 - Fixed the Invert example never releasing its output image (a shadowed handle variable).
 - Fixed the `@propdef` metadata of `kOfxImageEffectInstancePropSequentialRender`: it is an int, which may be 0, 1 or 2, not a bool.
 - Fixed the `@propset` metadata of `kOfxParamPropHasHostOverlayHandle`: the host sets it, to say it has an overlay handle for the parameter, so the parameter sets now list it as host-written.
 - Fixed the `@propset` metadata of `kOfxInteractPropSlaveToParam` and `kOfxPropInstanceData`: the plugin sets both on an interact instance, and its instance data on an effect instance too.
 - Marked the action arguments a host may leave out, such as `kOfxImageEffectPropThumbnailRender`, `kOfxImageEffectPropRenderQualityDraft` and the GPU render flags, as optional in their `@actiondef` metadata.
+- Fixed the parameter property sets so every parameter type has one. `ParamsByte`, the set for 1D integer parameters, is renamed `ParamsInt1D`; Boolean, Bytes and PushButton parameters have their own sets; string parameters no longer list min and max; 2D and 3D double parameters list `kOfxParamPropDimensionLabel`; and `ParamsNormalizedSpatial`, which matched no parameter type, is removed.
 
 ## Deprecations
 

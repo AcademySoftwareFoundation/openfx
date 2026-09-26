@@ -23,16 +23,18 @@ These property sets represent collections of properties associated with various 
 * :ref:`InteractInstance <propset_InteractInstance>`
 * :ref:`OpenGLTexture <propset_OpenGLTexture>`
 * :ref:`ParameterSet <propset_ParameterSet>`
-* :ref:`ParamsByte <propset_ParamsByte>`
+* :ref:`ParamsBoolean <propset_ParamsBoolean>`
+* :ref:`ParamsBytes <propset_ParamsBytes>`
 * :ref:`ParamsChoice <propset_ParamsChoice>`
 * :ref:`ParamsCustom <propset_ParamsCustom>`
 * :ref:`ParamsDouble1D <propset_ParamsDouble1D>`
 * :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>`
 * :ref:`ParamsGroup <propset_ParamsGroup>`
+* :ref:`ParamsInt1D <propset_ParamsInt1D>`
 * :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>`
-* :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>`
 * :ref:`ParamsPage <propset_ParamsPage>`
 * :ref:`ParamsParametric <propset_ParamsParametric>`
+* :ref:`ParamsPushButton <propset_ParamsPushButton>`
 * :ref:`ParamsRGB <propset_ParamsRGB>`
 * :ref:`ParamsRGBA <propset_ParamsRGBA>`
 * :ref:`ParamsStrChoice <propset_ParamsStrChoice>`
@@ -303,10 +305,10 @@ These property sets represent collections of properties associated with various 
 - :ref:`OfxPluginPropParamPageOrder <prop_OfxPluginPropParamPageOrder>` - Type: string, Dimension: Variable (doc: :c:macro:`kOfxPluginPropParamPageOrder`)
 - :ref:`OfxPropParamSetNeedsSyncing <prop_OfxPropParamSetNeedsSyncing>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxPropParamSetNeedsSyncing`)
 
-.. _propset_ParamsByte:
+.. _propset_ParamsBoolean:
 
-**ParamsByte**
-^^^^^^^^^^
+**ParamsBoolean**
+^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -317,8 +319,6 @@ These property sets represent collections of properties associated with various 
 - :ref:`OfxParamPropCanUndo <prop_OfxParamPropCanUndo>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropCanUndo`)
 - :ref:`OfxParamPropDataPtr <prop_OfxParamPropDataPtr>` - Type: pointer, Dimension: 1 (doc: :c:macro:`kOfxParamPropDataPtr`)
 - :ref:`OfxParamPropDefault <prop_OfxParamPropDefault>` - Type: int/double/string/pointer, Dimension: Variable (doc: :c:macro:`kOfxParamPropDefault`)
-- :ref:`OfxParamPropDisplayMax <prop_OfxParamPropDisplayMax>` - Type: int/double, Dimension: Variable (doc: :c:macro:`kOfxParamPropDisplayMax`)
-- :ref:`OfxParamPropDisplayMin <prop_OfxParamPropDisplayMin>` - Type: int/double, Dimension: Variable (doc: :c:macro:`kOfxParamPropDisplayMin`)
 - :ref:`OfxParamPropEnabled <prop_OfxParamPropEnabled>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropEnabled`)
 - :ref:`OfxParamPropEvaluateOnChange <prop_OfxParamPropEvaluateOnChange>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropEvaluateOnChange`)
 - :ref:`OfxParamPropHasHostOverlayHandle <prop_OfxParamPropHasHostOverlayHandle>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropHasHostOverlayHandle`)
@@ -330,8 +330,45 @@ These property sets represent collections of properties associated with various 
 - :ref:`OfxParamPropInteractV1 <prop_OfxParamPropInteractV1>` - Type: pointer, Dimension: 1 (doc: :c:macro:`kOfxParamPropInteractV1`)
 - :ref:`OfxParamPropIsAnimating <prop_OfxParamPropIsAnimating>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropIsAnimating`)
 - :ref:`OfxParamPropIsAutoKeying <prop_OfxParamPropIsAutoKeying>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropIsAutoKeying`)
-- :ref:`OfxParamPropMax <prop_OfxParamPropMax>` - Type: int/double, Dimension: Variable (doc: :c:macro:`kOfxParamPropMax`)
-- :ref:`OfxParamPropMin <prop_OfxParamPropMin>` - Type: int/double, Dimension: Variable (doc: :c:macro:`kOfxParamPropMin`)
+- :ref:`OfxParamPropParent <prop_OfxParamPropParent>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxParamPropParent`)
+- :ref:`OfxParamPropPersistant <prop_OfxParamPropPersistant>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropPersistant`)
+- :ref:`OfxParamPropPluginMayWrite <prop_OfxParamPropPluginMayWrite>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropPluginMayWrite`)
+- :ref:`OfxParamPropScriptName <prop_OfxParamPropScriptName>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxParamPropScriptName`)
+- :ref:`OfxParamPropSecret <prop_OfxParamPropSecret>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropSecret`)
+- :ref:`OfxParamPropType <prop_OfxParamPropType>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxParamPropType`)
+- :ref:`OfxPropIcon <prop_OfxPropIcon>` - Type: string, Dimension: 2 (doc: :c:macro:`kOfxPropIcon`)
+- :ref:`OfxPropLabel <prop_OfxPropLabel>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropLabel`)
+- :ref:`OfxPropLongLabel <prop_OfxPropLongLabel>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropLongLabel`)
+- :ref:`OfxPropName <prop_OfxPropName>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropName`)
+- :ref:`OfxPropShortLabel <prop_OfxPropShortLabel>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropShortLabel`)
+- :ref:`OfxPropType <prop_OfxPropType>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropType`)
+- :ref:`kOfxParamPropUseHostOverlayHandle <prop_kOfxParamPropUseHostOverlayHandle>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropUseHostOverlayHandle`)
+
+.. _propset_ParamsBytes:
+
+**ParamsBytes**
+^^^^^^^^^^^
+
+- **Write Access**: plugin
+
+**Properties**
+
+- :ref:`OfxParamPropAnimates <prop_OfxParamPropAnimates>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropAnimates`)
+- :ref:`OfxParamPropCacheInvalidation <prop_OfxParamPropCacheInvalidation>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxParamPropCacheInvalidation`)
+- :ref:`OfxParamPropCanUndo <prop_OfxParamPropCanUndo>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropCanUndo`)
+- :ref:`OfxParamPropDataPtr <prop_OfxParamPropDataPtr>` - Type: pointer, Dimension: 1 (doc: :c:macro:`kOfxParamPropDataPtr`)
+- :ref:`OfxParamPropDefault <prop_OfxParamPropDefault>` - Type: int/double/string/pointer, Dimension: Variable (doc: :c:macro:`kOfxParamPropDefault`)
+- :ref:`OfxParamPropEnabled <prop_OfxParamPropEnabled>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropEnabled`)
+- :ref:`OfxParamPropEvaluateOnChange <prop_OfxParamPropEvaluateOnChange>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropEvaluateOnChange`)
+- :ref:`OfxParamPropHasHostOverlayHandle <prop_OfxParamPropHasHostOverlayHandle>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropHasHostOverlayHandle`)
+- :ref:`OfxParamPropHint <prop_OfxParamPropHint>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxParamPropHint`)
+- :ref:`OfxParamPropInteractMinimumSize <prop_OfxParamPropInteractMinimumSize>` - Type: double, Dimension: 2 (doc: :c:macro:`kOfxParamPropInteractMinimumSize`)
+- :ref:`OfxParamPropInteractPreferedSize <prop_OfxParamPropInteractPreferedSize>` - Type: int, Dimension: 2 (doc: :c:macro:`kOfxParamPropInteractPreferedSize`)
+- :ref:`OfxParamPropInteractSize <prop_OfxParamPropInteractSize>` - Type: double, Dimension: 2 (doc: :c:macro:`kOfxParamPropInteractSize`)
+- :ref:`OfxParamPropInteractSizeAspect <prop_OfxParamPropInteractSizeAspect>` - Type: double, Dimension: 1 (doc: :c:macro:`kOfxParamPropInteractSizeAspect`)
+- :ref:`OfxParamPropInteractV1 <prop_OfxParamPropInteractV1>` - Type: pointer, Dimension: 1 (doc: :c:macro:`kOfxParamPropInteractV1`)
+- :ref:`OfxParamPropIsAnimating <prop_OfxParamPropIsAnimating>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropIsAnimating`)
+- :ref:`OfxParamPropIsAutoKeying <prop_OfxParamPropIsAutoKeying>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropIsAutoKeying`)
 - :ref:`OfxParamPropParent <prop_OfxParamPropParent>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxParamPropParent`)
 - :ref:`OfxParamPropPersistant <prop_OfxParamPropPersistant>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropPersistant`)
 - :ref:`OfxParamPropPluginMayWrite <prop_OfxParamPropPluginMayWrite>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropPluginMayWrite`)
@@ -491,6 +528,7 @@ These property sets represent collections of properties associated with various 
 - :ref:`OfxParamPropDefault <prop_OfxParamPropDefault>` - Type: int/double/string/pointer, Dimension: Variable (doc: :c:macro:`kOfxParamPropDefault`)
 - :ref:`OfxParamPropDefaultCoordinateSystem <prop_OfxParamPropDefaultCoordinateSystem>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxParamPropDefaultCoordinateSystem`)
 - :ref:`OfxParamPropDigits <prop_OfxParamPropDigits>` - Type: int, Dimension: 1 (doc: :c:macro:`kOfxParamPropDigits`)
+- :ref:`OfxParamPropDimensionLabel <prop_OfxParamPropDimensionLabel>` - Type: string, Dimension: Variable (doc: :c:macro:`kOfxParamPropDimensionLabel`)
 - :ref:`OfxParamPropDisplayMax <prop_OfxParamPropDisplayMax>` - Type: int/double, Dimension: Variable (doc: :c:macro:`kOfxParamPropDisplayMax`)
 - :ref:`OfxParamPropDisplayMin <prop_OfxParamPropDisplayMin>` - Type: int/double, Dimension: Variable (doc: :c:macro:`kOfxParamPropDisplayMin`)
 - :ref:`OfxParamPropDoubleType <prop_OfxParamPropDoubleType>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxParamPropDoubleType`)
@@ -546,10 +584,10 @@ These property sets represent collections of properties associated with various 
 - :ref:`OfxPropShortLabel <prop_OfxPropShortLabel>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropShortLabel`)
 - :ref:`OfxPropType <prop_OfxPropType>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropType`)
 
-.. _propset_ParamsInt2D3D:
+.. _propset_ParamsInt1D:
 
-**ParamsInt2D3D**
-^^^^^^^^^^^^^
+**ParamsInt1D**
+^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -560,7 +598,6 @@ These property sets represent collections of properties associated with various 
 - :ref:`OfxParamPropCanUndo <prop_OfxParamPropCanUndo>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropCanUndo`)
 - :ref:`OfxParamPropDataPtr <prop_OfxParamPropDataPtr>` - Type: pointer, Dimension: 1 (doc: :c:macro:`kOfxParamPropDataPtr`)
 - :ref:`OfxParamPropDefault <prop_OfxParamPropDefault>` - Type: int/double/string/pointer, Dimension: Variable (doc: :c:macro:`kOfxParamPropDefault`)
-- :ref:`OfxParamPropDimensionLabel <prop_OfxParamPropDimensionLabel>` - Type: string, Dimension: Variable (doc: :c:macro:`kOfxParamPropDimensionLabel`)
 - :ref:`OfxParamPropDisplayMax <prop_OfxParamPropDisplayMax>` - Type: int/double, Dimension: Variable (doc: :c:macro:`kOfxParamPropDisplayMax`)
 - :ref:`OfxParamPropDisplayMin <prop_OfxParamPropDisplayMin>` - Type: int/double, Dimension: Variable (doc: :c:macro:`kOfxParamPropDisplayMin`)
 - :ref:`OfxParamPropEnabled <prop_OfxParamPropEnabled>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropEnabled`)
@@ -590,10 +627,10 @@ These property sets represent collections of properties associated with various 
 - :ref:`OfxPropType <prop_OfxPropType>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropType`)
 - :ref:`kOfxParamPropUseHostOverlayHandle <prop_kOfxParamPropUseHostOverlayHandle>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropUseHostOverlayHandle`)
 
-.. _propset_ParamsNormalizedSpatial:
+.. _propset_ParamsInt2D3D:
 
-**ParamsNormalizedSpatial**
-^^^^^^^^^^^^^^^^^^^^^^^
+**ParamsInt2D3D**
+^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -604,15 +641,13 @@ These property sets represent collections of properties associated with various 
 - :ref:`OfxParamPropCanUndo <prop_OfxParamPropCanUndo>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropCanUndo`)
 - :ref:`OfxParamPropDataPtr <prop_OfxParamPropDataPtr>` - Type: pointer, Dimension: 1 (doc: :c:macro:`kOfxParamPropDataPtr`)
 - :ref:`OfxParamPropDefault <prop_OfxParamPropDefault>` - Type: int/double/string/pointer, Dimension: Variable (doc: :c:macro:`kOfxParamPropDefault`)
-- :ref:`OfxParamPropDefaultCoordinateSystem <prop_OfxParamPropDefaultCoordinateSystem>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxParamPropDefaultCoordinateSystem`)
-- :ref:`OfxParamPropDigits <prop_OfxParamPropDigits>` - Type: int, Dimension: 1 (doc: :c:macro:`kOfxParamPropDigits`)
+- :ref:`OfxParamPropDimensionLabel <prop_OfxParamPropDimensionLabel>` - Type: string, Dimension: Variable (doc: :c:macro:`kOfxParamPropDimensionLabel`)
 - :ref:`OfxParamPropDisplayMax <prop_OfxParamPropDisplayMax>` - Type: int/double, Dimension: Variable (doc: :c:macro:`kOfxParamPropDisplayMax`)
 - :ref:`OfxParamPropDisplayMin <prop_OfxParamPropDisplayMin>` - Type: int/double, Dimension: Variable (doc: :c:macro:`kOfxParamPropDisplayMin`)
 - :ref:`OfxParamPropEnabled <prop_OfxParamPropEnabled>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropEnabled`)
 - :ref:`OfxParamPropEvaluateOnChange <prop_OfxParamPropEvaluateOnChange>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropEvaluateOnChange`)
 - :ref:`OfxParamPropHasHostOverlayHandle <prop_OfxParamPropHasHostOverlayHandle>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropHasHostOverlayHandle`)
 - :ref:`OfxParamPropHint <prop_OfxParamPropHint>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxParamPropHint`)
-- :ref:`OfxParamPropIncrement <prop_OfxParamPropIncrement>` - Type: double, Dimension: 1 (doc: :c:macro:`kOfxParamPropIncrement`)
 - :ref:`OfxParamPropInteractMinimumSize <prop_OfxParamPropInteractMinimumSize>` - Type: double, Dimension: 2 (doc: :c:macro:`kOfxParamPropInteractMinimumSize`)
 - :ref:`OfxParamPropInteractPreferedSize <prop_OfxParamPropInteractPreferedSize>` - Type: int, Dimension: 2 (doc: :c:macro:`kOfxParamPropInteractPreferedSize`)
 - :ref:`OfxParamPropInteractSize <prop_OfxParamPropInteractSize>` - Type: double, Dimension: 2 (doc: :c:macro:`kOfxParamPropInteractSize`)
@@ -700,6 +735,36 @@ These property sets represent collections of properties associated with various 
 - :ref:`OfxParamPropPersistant <prop_OfxParamPropPersistant>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropPersistant`)
 - :ref:`OfxParamPropPluginMayWrite <prop_OfxParamPropPluginMayWrite>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropPluginMayWrite`)
 - :ref:`OfxParamPropPluginMayWrite <prop_OfxParamPropPluginMayWrite>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropPluginMayWrite`)
+- :ref:`OfxParamPropScriptName <prop_OfxParamPropScriptName>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxParamPropScriptName`)
+- :ref:`OfxParamPropSecret <prop_OfxParamPropSecret>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropSecret`)
+- :ref:`OfxParamPropType <prop_OfxParamPropType>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxParamPropType`)
+- :ref:`OfxPropIcon <prop_OfxPropIcon>` - Type: string, Dimension: 2 (doc: :c:macro:`kOfxPropIcon`)
+- :ref:`OfxPropLabel <prop_OfxPropLabel>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropLabel`)
+- :ref:`OfxPropLongLabel <prop_OfxPropLongLabel>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropLongLabel`)
+- :ref:`OfxPropName <prop_OfxPropName>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropName`)
+- :ref:`OfxPropShortLabel <prop_OfxPropShortLabel>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropShortLabel`)
+- :ref:`OfxPropType <prop_OfxPropType>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropType`)
+- :ref:`kOfxParamPropUseHostOverlayHandle <prop_kOfxParamPropUseHostOverlayHandle>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropUseHostOverlayHandle`)
+
+.. _propset_ParamsPushButton:
+
+**ParamsPushButton**
+^^^^^^^^^^^^^^^^
+
+- **Write Access**: plugin
+
+**Properties**
+
+- :ref:`OfxParamPropDataPtr <prop_OfxParamPropDataPtr>` - Type: pointer, Dimension: 1 (doc: :c:macro:`kOfxParamPropDataPtr`)
+- :ref:`OfxParamPropEnabled <prop_OfxParamPropEnabled>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropEnabled`)
+- :ref:`OfxParamPropHasHostOverlayHandle <prop_OfxParamPropHasHostOverlayHandle>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropHasHostOverlayHandle`)
+- :ref:`OfxParamPropHint <prop_OfxParamPropHint>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxParamPropHint`)
+- :ref:`OfxParamPropInteractMinimumSize <prop_OfxParamPropInteractMinimumSize>` - Type: double, Dimension: 2 (doc: :c:macro:`kOfxParamPropInteractMinimumSize`)
+- :ref:`OfxParamPropInteractPreferedSize <prop_OfxParamPropInteractPreferedSize>` - Type: int, Dimension: 2 (doc: :c:macro:`kOfxParamPropInteractPreferedSize`)
+- :ref:`OfxParamPropInteractSize <prop_OfxParamPropInteractSize>` - Type: double, Dimension: 2 (doc: :c:macro:`kOfxParamPropInteractSize`)
+- :ref:`OfxParamPropInteractSizeAspect <prop_OfxParamPropInteractSizeAspect>` - Type: double, Dimension: 1 (doc: :c:macro:`kOfxParamPropInteractSizeAspect`)
+- :ref:`OfxParamPropInteractV1 <prop_OfxParamPropInteractV1>` - Type: pointer, Dimension: 1 (doc: :c:macro:`kOfxParamPropInteractV1`)
+- :ref:`OfxParamPropParent <prop_OfxParamPropParent>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxParamPropParent`)
 - :ref:`OfxParamPropScriptName <prop_OfxParamPropScriptName>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxParamPropScriptName`)
 - :ref:`OfxParamPropSecret <prop_OfxParamPropSecret>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropSecret`)
 - :ref:`OfxParamPropType <prop_OfxParamPropType>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxParamPropType`)
@@ -854,8 +919,6 @@ These property sets represent collections of properties associated with various 
 - :ref:`OfxParamPropCanUndo <prop_OfxParamPropCanUndo>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropCanUndo`)
 - :ref:`OfxParamPropDataPtr <prop_OfxParamPropDataPtr>` - Type: pointer, Dimension: 1 (doc: :c:macro:`kOfxParamPropDataPtr`)
 - :ref:`OfxParamPropDefault <prop_OfxParamPropDefault>` - Type: int/double/string/pointer, Dimension: Variable (doc: :c:macro:`kOfxParamPropDefault`)
-- :ref:`OfxParamPropDisplayMax <prop_OfxParamPropDisplayMax>` - Type: int/double, Dimension: Variable (doc: :c:macro:`kOfxParamPropDisplayMax`)
-- :ref:`OfxParamPropDisplayMin <prop_OfxParamPropDisplayMin>` - Type: int/double, Dimension: Variable (doc: :c:macro:`kOfxParamPropDisplayMin`)
 - :ref:`OfxParamPropEnabled <prop_OfxParamPropEnabled>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropEnabled`)
 - :ref:`OfxParamPropEvaluateOnChange <prop_OfxParamPropEvaluateOnChange>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropEvaluateOnChange`)
 - :ref:`OfxParamPropHasHostOverlayHandle <prop_OfxParamPropHasHostOverlayHandle>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropHasHostOverlayHandle`)
@@ -867,8 +930,6 @@ These property sets represent collections of properties associated with various 
 - :ref:`OfxParamPropInteractV1 <prop_OfxParamPropInteractV1>` - Type: pointer, Dimension: 1 (doc: :c:macro:`kOfxParamPropInteractV1`)
 - :ref:`OfxParamPropIsAnimating <prop_OfxParamPropIsAnimating>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropIsAnimating`)
 - :ref:`OfxParamPropIsAutoKeying <prop_OfxParamPropIsAutoKeying>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropIsAutoKeying`)
-- :ref:`OfxParamPropMax <prop_OfxParamPropMax>` - Type: int/double, Dimension: Variable (doc: :c:macro:`kOfxParamPropMax`)
-- :ref:`OfxParamPropMin <prop_OfxParamPropMin>` - Type: int/double, Dimension: Variable (doc: :c:macro:`kOfxParamPropMin`)
 - :ref:`OfxParamPropParent <prop_OfxParamPropParent>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxParamPropParent`)
 - :ref:`OfxParamPropPersistant <prop_OfxParamPropPersistant>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropPersistant`)
 - :ref:`OfxParamPropPluginMayWrite <prop_OfxParamPropPluginMayWrite>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxParamPropPluginMayWrite`)
