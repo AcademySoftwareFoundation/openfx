@@ -505,6 +505,7 @@ These are the list of actions passed to an image effect plugin's main function. 
       - OfxImageEffectPropMetalCommandQueue
       - OfxImageEffectPropMetalEnabled
       - OfxImageEffectPropMetalRenderSupported
+      - OfxImageEffectPropMetalTextureEnabled
       - OfxImageEffectPropOpenCLCommandQueue
       - OfxImageEffectPropOpenCLEnabled
       - OfxImageEffectPropOpenCLImage
@@ -574,6 +575,7 @@ These are the list of actions passed to an image effect plugin's main function. 
       - OfxImageEffectPropMetalCommandQueue
       - OfxImageEffectPropMetalEnabled
       - OfxImageEffectPropMetalRenderSupported
+      - OfxImageEffectPropMetalTextureEnabled
       - OfxImageEffectPropOpenCLCommandQueue
       - OfxImageEffectPropOpenCLEnabled
       - OfxImageEffectPropOpenCLImage
@@ -640,6 +642,7 @@ These are the list of actions passed to an image effect plugin's main function. 
       - OfxImageEffectPropMetalCommandQueue
       - OfxImageEffectPropMetalEnabled
       - OfxImageEffectPropMetalRenderSupported
+      - OfxImageEffectPropMetalTextureEnabled
       - OfxImageEffectPropOpenCLCommandQueue
       - OfxImageEffectPropOpenCLEnabled
       - OfxImageEffectPropOpenCLImage
@@ -1520,9 +1523,10 @@ This property contains one of:
   - a pointer to memory that is the lower left hand corner of an image
   - a pointer to CUDA memory, if the Render action arguments includes kOfxImageEffectPropCudaEnabled=1
   - an id<MTLBuffer>, if the Render action arguments includes kOfxImageEffectPropMetalEnabled=1
+  - an id<MTLTexture>, if the Render action arguments includes kOfxImageEffectPropMetalTextureEnabled=1
   - a cl_mem, if the Render action arguments includes kOfxImageEffectPropOpenCLEnabled=1
 
-See \ref kOfxImageEffectPropCudaEnabled, \ref kOfxImageEffectPropMetalEnabled and \ref kOfxImageEffectPropOpenCLEnabled
+See \ref kOfxImageEffectPropCudaEnabled, \ref kOfxImageEffectPropMetalEnabled, \ref kOfxImageEffectPropMetalTextureEnabled and \ref kOfxImageEffectPropOpenCLEnabled
     
     @propdef
     type: pointer
@@ -1572,7 +1576,7 @@ This property indicates the number of bytes in a row of pixels. This will be at 
 is fetched from the ::kOfxImagePropBounds property.
 
 Note that (for CPU images only, not CUDA/Metal/OpenCL Buffers, nor OpenGL textures accessed via the OpenGL Render Suite) row bytes can be negative, which allows hosts with a native top down row order to pass image into OFX without having to repack pixels.
-Row bytes is not supported for OpenCL Images.
+Row bytes is not supported for OpenCL Images or Metal textures (see ::kOfxImageEffectPropMetalTextureEnabled); it is 0 for those.
     
     @propdef
     type: int
@@ -2083,6 +2087,7 @@ They range from 1000 until 1999
       - OfxImageEffectPropSupportedContexts
       - OfxImageEffectPropMultipleClipDepths
       - OfxImageEffectPropOpenCLSupported | host_optional=true
+      - OfxImageEffectPropMetalTextureSupported | host_optional=true
       - OfxImageEffectPropSupportsMultipleClipPARs
       - OfxImageEffectPropSetableFrameRate
       - OfxImageEffectPropSetableFielding
@@ -2125,6 +2130,7 @@ They range from 1000 until 1999
       - OfxImageEffectPluginPropHostFrameThreading
       - OfxImageEffectPluginPropOverlayInteractV1
       - OfxImageEffectPropOpenCLSupported | host_optional=true
+      - OfxImageEffectPropMetalTextureSupported | host_optional=true
       - OfxImageEffectPropSupportsMultiResolution
       - OfxImageEffectPropSupportsTiles
       - OfxImageEffectPropTemporalClipAccess

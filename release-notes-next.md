@@ -15,6 +15,7 @@ This is version NEXT of the OpenFX API.
 - **Obsolete plugins**: Added `kOfxImageEffectPluginPropObsolete` so a plugin bundle can mark a plugin as obsolete: available for use in old projects but not offered to users for new use (issue #221).
 - **Windows ARM64 packaging**: Defined plugin install locations for Windows on ARM, including the new normative `Win-arm64ec` folder for Arm64EC/Arm64X plug-ins, with most-specific-first DLL search order (issue #160).
 - **Project-load semantics**: Hosts are now required to send the `instanceChanged` action with `kOfxPropChangeReason` = `kOfxChangePluginEdited` when a clip or parameter was changed while loading a project (issue #184).
+- **Metal texture rendering**: Added `kOfxImageEffectPropMetalTextureSupported` and `kOfxImageEffectPropMetalTextureEnabled` so a host can pass images to Metal plug-ins as `id<MTLTexture>` instead of `id<MTLBuffer>`, negotiated alongside the existing Metal buffer path. Proposed by Greg Cotten (Video Village); already implemented by Pomfort Livegrade (host) and Video Village Scatter (plug-in) (issue #NNN).
 
 ## Fixes in OpenFX Version NEXT:
 

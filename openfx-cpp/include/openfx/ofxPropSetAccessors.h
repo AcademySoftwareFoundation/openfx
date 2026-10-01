@@ -435,6 +435,11 @@ public:
         return *this;
     }
 
+    EffectDescriptor& setMetalTextureSupported(const char* value, bool error_if_missing = false) {
+        props_.set<PropId::OfxImageEffectPropMetalTextureSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
     EffectDescriptor& setSupportsMultiResolution(bool value, bool error_if_missing = true) {
         props_.set<PropId::OfxImageEffectPropSupportsMultiResolution>(value, 0, error_if_missing);
         return *this;
@@ -779,6 +784,10 @@ public:
         return props_.get<PropId::OfxImageEffectPropMetalRenderSupported>(0, error_if_missing);
     }
 
+    bool metalTextureEnabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropMetalTextureEnabled>(0, error_if_missing);
+    }
+
     void* openCLCommandQueue(bool error_if_missing = true) const {
         return props_.get<PropId::OfxImageEffectPropOpenCLCommandQueue>(0, error_if_missing);
     }
@@ -891,6 +900,10 @@ public:
 
     const char* metalRenderSupported(bool error_if_missing = true) const {
         return props_.get<PropId::OfxImageEffectPropMetalRenderSupported>(0, error_if_missing);
+    }
+
+    bool metalTextureEnabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropMetalTextureEnabled>(0, error_if_missing);
     }
 
     void* openCLCommandQueue(bool error_if_missing = true) const {
@@ -1180,6 +1193,10 @@ public:
         return props_.get<PropId::OfxImageEffectPropMetalRenderSupported>(0, error_if_missing);
     }
 
+    bool metalTextureEnabled(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageEffectPropMetalTextureEnabled>(0, error_if_missing);
+    }
+
     void* openCLCommandQueue(bool error_if_missing = true) const {
         return props_.get<PropId::OfxImageEffectPropOpenCLCommandQueue>(0, error_if_missing);
     }
@@ -1289,6 +1306,10 @@ public:
 
     const char* openCLSupported(bool error_if_missing = false) const {
         return props_.get<PropId::OfxImageEffectPropOpenCLSupported>(0, error_if_missing);
+    }
+
+    const char* metalTextureSupported(bool error_if_missing = false) const {
+        return props_.get<PropId::OfxImageEffectPropMetalTextureSupported>(0, error_if_missing);
     }
 
     bool supportsMultipleClipPARs(bool error_if_missing = true) const {

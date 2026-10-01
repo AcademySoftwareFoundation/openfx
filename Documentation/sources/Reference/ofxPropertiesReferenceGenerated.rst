@@ -176,6 +176,16 @@ Integer (Boolean) Properties
 - **Introduced in**: version 1.5
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropMetalEnabled`.
 
+.. _prop_OfxImageEffectPropMetalTextureEnabled:
+
+**OfxImageEffectPropMetalTextureEnabled**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxImageEffectPropMetalTextureEnabled`
+- **Type**: bool
+- **Dimension**: 1
+- **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropMetalTextureEnabled`.
+
 .. _prop_OfxImageEffectPropMultipleClipDepths:
 
 **OfxImageEffectPropMultipleClipDepths**
@@ -1180,6 +1190,20 @@ Enumeration Properties
   - ``needed``
 - **Introduced in**: version 1.5
 - **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropMetalRenderSupported`.
+
+.. _prop_OfxImageEffectPropMetalTextureSupported:
+
+**OfxImageEffectPropMetalTextureSupported**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxImageEffectPropMetalTextureSupported`
+- **Type**: enum
+- **Dimension**: 1
+- **Used in Property Sets**: :ref:`EffectDescriptor <propset_EffectDescriptor>` (plugin), :ref:`ImageEffectHost <propset_ImageEffectHost>` (host)
+- **Valid Values**:
+  - ``false``
+  - ``true``
+- **Doc**: For detailed doc, see :c:macro:`kOfxImageEffectPropMetalTextureSupported`.
 
 .. _prop_OfxImageEffectPropNoSpatialAwareness:
 
