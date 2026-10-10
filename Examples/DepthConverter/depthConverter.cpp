@@ -31,6 +31,7 @@ static bool gSupportsBytes  = false;
 static bool gSupportsShorts = false;
 static bool gSupportsFloats = false;
 static int gDepthParamToBytes[3]; // maps the value of the bit depth param to a host supported bit depth
+static int gHostSupportsMultipleDepths = 0; // whether the host lets the output depth differ from the input's
 
 // pointers64 to various bits of the host
 OfxHost               *gHost;
@@ -374,6 +375,10 @@ getClipPreferences(OfxImageEffectHandle effect,
 		   OfxPropertySetHandle /*inArgs*/,
 		   OfxPropertySetHandle outArgs)
 {
+  // only a host that supports multiple clip depths lets us change the output's
+  if(!gHostSupportsMultipleDepths)
+    return kOfxStatReplyDefault;
+
   // retrieve any instance data associated with this effect
   MyInstanceData *myData = getMyInstanceData(effect);
   
@@ -389,6 +394,8 @@ getClipPreferences(OfxImageEffectHandle effect,
   case 16 : gPropHost->propSetString(outArgs, "OfxImageClipPropDepth_Output", 0, kOfxBitDepthShort); break;
   // float
   case 32 : gPropHost->propSetString(outArgs, "OfxImageClipPropDepth_Output", 0, kOfxBitDepthFloat); break;
+  // no depth the host supports, so nothing to set
+  default : return kOfxStatReplyDefault;
   }
 
   return kOfxStatOK;
@@ -461,9 +468,8 @@ describe(OfxImageEffectHandle  effect)
   if((stat = ofxuFetchHostSuites()) != kOfxStatOK)
     return stat;
 
-  int hostSupportsMultipleDepths;
   // record a few host features
-  gPropHost->propGetInt(gHost->host, kOfxImageEffectPropSupportsMultipleClipDepths, 0, &hostSupportsMultipleDepths);
+  gPropHost->propGetInt(gHost->host, kOfxImageEffectPropSupportsMultipleClipDepths, 0, &gHostSupportsMultipleDepths);
 
   // see how many bit depths the host supports, this affects our parameter values
   int nHostDepths;
@@ -471,7 +477,7 @@ describe(OfxImageEffectHandle  effect)
 
   // If the host cannot support multiple bit depths on in and out clips or it only supports 1 bit depth
   // we can't do any work, so refuse to load and explain why.
-  if(!hostSupportsMultipleDepths || nHostDepths == 1) {
+  if(!gHostSupportsMultipleDepths || nHostDepths == 1) {
     // post a message
     // - disabled, because posting a message within describe() crashes Nuke 6
     //gMessageSuite->message(effect, kOfxMessageError, kMessageNotEnoughBits,
