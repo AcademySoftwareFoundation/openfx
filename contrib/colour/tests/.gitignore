@@ -1,0 +1,3 @@
+# pcons / conan build output
+/build/
+compile_commands.json
