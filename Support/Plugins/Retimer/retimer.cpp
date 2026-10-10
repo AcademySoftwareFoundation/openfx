@@ -61,6 +61,9 @@ public :
     /* override the time domain action, only for the general context */
     virtual bool getTimeDomain(OfxRangeD &range);
     
+    /* the time on the source clip that the output at time comes from */
+    double getSourceTime(double time);
+
     /* set up and run a processor */
     void
     setupAndProcess(OFX::ImageBlenderBase &, const OFX::RenderArguments &args);
@@ -120,6 +123,20 @@ static void framesNeeded(double sourceTime, OFX::FieldEnum fieldToRender, double
     *blendp = blend;
 }
 
+/* figure the frame we should be retiming from */
+double
+RetimerPlugin::getSourceTime(double time)
+{
+    if(getContext() == OFX::eContextRetimer) {
+        // the host is specifying it, so fetch it from the kOfxImageEffectRetimerParamName pseudo-param
+        return sourceTime_->getValueAtTime(time);
+    }
+    else {
+        // we have our own param, which is a speed, so we integrate it to get the time we want
+        return speed_->integrate(0, time);
+    }
+}
+
 /* set up and run a processor */
 void
 RetimerPlugin::setupAndProcess(OFX::ImageBlenderBase &processor, const OFX::RenderArguments &args)
@@ -129,22 +146,10 @@ RetimerPlugin::setupAndProcess(OFX::ImageBlenderBase &processor, const OFX::Rend
     OFX::BitDepthEnum          dstBitDepth    = dst->getPixelDepth();
     OFX::PixelComponentEnum    dstComponents  = dst->getPixelComponents();
   
-    // figure the frame we should be retiming from
-    double sourceTime;
-    
-    if(getContext() == OFX::eContextRetimer) {
-        // the host is specifying it, so fetch it from the kOfxImageEffectRetimerParamName pseudo-param
-        sourceTime = sourceTime_->getValueAtTime(args.time);
-    }
-    else {
-        // we have our own param, which is a speed, so we integrate it to get the time we want
-        sourceTime = speed_->integrate(0, args.time);
-    }
-
     // figure the two images we are blending between
     double fromTime, toTime;
     double blend;
-    framesNeeded(sourceTime, args.fieldToRender, &fromTime, &toTime, &blend);
+    framesNeeded(getSourceTime(args.time), args.fieldToRender, &fromTime, &toTime, &blend);
 
     // fetch the two source images
     std::unique_ptr<OFX::Image> fromImg(srcClip_->fetchImage(fromTime));
@@ -177,7 +182,7 @@ RetimerPlugin::getFramesNeeded(const OFX::FramesNeededArguments &args,
     double fromTime, toTime;
     double blend;
     // whatever the rendered field is, the frames are the same
-    framesNeeded(args.time, OFX::eFieldNone, &fromTime, &toTime, &blend);
+    framesNeeded(getSourceTime(args.time), OFX::eFieldNone, &fromTime, &toTime, &blend);
     OfxRangeD range;
     range.min = fromTime;
     range.max = toTime;

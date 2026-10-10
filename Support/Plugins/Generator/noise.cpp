@@ -8,7 +8,16 @@
 
 #include "../include/ofxsProcessing.H"
 
-#include <random>
+#include <cstdint>
+
+/** @brief mix the bits of v thoroughly (the splitmix64 finaliser) */
+static inline uint64_t hash64(uint64_t v)
+{
+  v += 0x9e3779b97f4a7c15ULL;
+  v = (v ^ (v >> 30)) * 0xbf58476d1ce4e5b9ULL;
+  v = (v ^ (v >> 27)) * 0x94d049bb133111ebULL;
+  return v ^ (v >> 31);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // base class for the noise
@@ -46,24 +55,25 @@ public :
   // and do some processing
   void multiThreadProcessImages(OfxRectI procWindow)
   {
-    float noiseLevel = _noiseLevel;
-
-    // set up a random number generator
     // Distribution is from 0 to pixel max level times noise level
-    std::random_device rd;
-    std::mt19937_64 mt(rd());
-    mt.seed(_seed + procWindow.y1);
-    std::uniform_real_distribution<double> dist(0.0, max * noiseLevel);
+    double scale = max * _noiseLevel;
+
+    // Each pixel's noise is a hash of the seed and its position, so a frame
+    // comes out the same however it is split into tiles and threads
+    uint64_t seedHash = hash64(_seed);
 
     // push pixels
     for(int y = procWindow.y1; y < procWindow.y2; y++) {
       if(_effect.abort()) break;
 
       PIX *dstPix = (PIX *) _dstImg->getPixelAddress(procWindow.x1, y);
+      uint64_t rowHash = hash64(seedHash ^ uint32_t(y));
 
       for(int x = procWindow.x1; x < procWindow.x2; x++) {
+        uint64_t pixelHash = hash64(rowHash ^ uint32_t(x));
         for(int c = 0; c < nComponents; c++) {
-          double randValue = dist(mt);
+          // the top 32 bits of the hash, as a uniform random number in [0, 1)
+          double randValue = scale * (double(hash64(pixelHash + c) >> 32) / 4294967296.0);
 
           if(max == 1) // implies floating point, so don't clamp
             dstPix[c] = PIX(randValue);
