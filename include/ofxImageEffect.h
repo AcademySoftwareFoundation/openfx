@@ -150,7 +150,7 @@ These are the list of actions passed to an image effect plugin's main function. 
     inArgs:
       - OfxPropTime
       - OfxImageEffectPropRenderScale
-      - OfxImageEffectPropThumbnailRender
+      - OfxImageEffectPropThumbnailRender | optional
     outArgs:
       - OfxImageEffectPropRegionOfDefinition
 */
@@ -197,7 +197,7 @@ These are the list of actions passed to an image effect plugin's main function. 
       - OfxPropTime
       - OfxImageEffectPropRenderScale
       - OfxImageEffectPropRegionOfInterest
-      - OfxImageEffectPropThumbnailRender
+      - OfxImageEffectPropThumbnailRender | optional
     outArgs:
     # - OfxImageClipPropRoI_ # with clip name
 */
@@ -306,7 +306,7 @@ These are the list of actions passed to an image effect plugin's main function. 
     @actiondef
     inArgs:
       - OfxPropTime
-      - OfxImageEffectPropThumbnailRender
+      - OfxImageEffectPropThumbnailRender | optional
     outArgs:
     # - OfxImageEffectPropFrameRange_ # with clip name
 */
@@ -440,7 +440,7 @@ These are the list of actions passed to an image effect plugin's main function. 
       - OfxImageEffectPropFieldToRender
       - OfxImageEffectPropRenderWindow
       - OfxImageEffectPropRenderScale
-      - OfxImageEffectPropThumbnailRender
+      - OfxImageEffectPropThumbnailRender | optional
     outArgs:
       - OfxPropName
       - OfxPropTime
@@ -497,25 +497,25 @@ These are the list of actions passed to an image effect plugin's main function. 
       - OfxImageEffectPropRenderScale
       - OfxImageEffectPropSequentialRenderStatus
       - OfxImageEffectPropInteractiveRenderStatus
-      - OfxImageEffectPropRenderQualityDraft
-      - OfxImageEffectPropCudaEnabled
-      - OfxImageEffectPropCudaRenderSupported
-      - OfxImageEffectPropCudaStream
-      - OfxImageEffectPropCudaStreamSupported
-      - OfxImageEffectPropMetalCommandQueue
-      - OfxImageEffectPropMetalEnabled
-      - OfxImageEffectPropMetalRenderSupported
-      - OfxImageEffectPropOpenCLCommandQueue
-      - OfxImageEffectPropOpenCLEnabled
-      - OfxImageEffectPropOpenCLImage
-      - OfxImageEffectPropOpenCLRenderSupported
-      - OfxImageEffectPropOpenCLSupported
-      - OfxImageEffectPropOpenGLEnabled
-      - OfxImageEffectPropOpenGLTextureIndex
-      - OfxImageEffectPropOpenGLTextureTarget
-      - OfxImageEffectPropNoSpatialAwareness
-      - OfxImageEffectPropThumbnailRender
-      - OfxImageEffectPropBehaviourWhenUnlicensed
+      - OfxImageEffectPropRenderQualityDraft | optional
+      - OfxImageEffectPropCudaEnabled | optional
+      - OfxImageEffectPropCudaRenderSupported | optional
+      - OfxImageEffectPropCudaStream | optional
+      - OfxImageEffectPropCudaStreamSupported | optional
+      - OfxImageEffectPropMetalCommandQueue | optional
+      - OfxImageEffectPropMetalEnabled | optional
+      - OfxImageEffectPropMetalRenderSupported | optional
+      - OfxImageEffectPropOpenCLCommandQueue | optional
+      - OfxImageEffectPropOpenCLEnabled | optional
+      - OfxImageEffectPropOpenCLImage | optional
+      - OfxImageEffectPropOpenCLRenderSupported | optional
+      - OfxImageEffectPropOpenCLSupported | optional
+      - OfxImageEffectPropOpenGLEnabled | optional
+      - OfxImageEffectPropOpenGLTextureIndex | optional
+      - OfxImageEffectPropOpenGLTextureTarget | optional
+      - OfxImageEffectPropNoSpatialAwareness | optional
+      - OfxImageEffectPropThumbnailRender | optional
+      - OfxImageEffectPropBehaviourWhenUnlicensed | optional
     outArgs:
 */
 #define kOfxImageEffectActionRender                "OfxImageEffectActionRender"
@@ -567,24 +567,24 @@ These are the list of actions passed to an image effect plugin's main function. 
       - OfxImageEffectPropRenderScale
       - OfxImageEffectPropSequentialRenderStatus
       - OfxImageEffectPropInteractiveRenderStatus
-      - OfxImageEffectPropCudaEnabled
-      - OfxImageEffectPropCudaRenderSupported
-      - OfxImageEffectPropCudaStream
-      - OfxImageEffectPropCudaStreamSupported
-      - OfxImageEffectPropMetalCommandQueue
-      - OfxImageEffectPropMetalEnabled
-      - OfxImageEffectPropMetalRenderSupported
-      - OfxImageEffectPropOpenCLCommandQueue
-      - OfxImageEffectPropOpenCLEnabled
-      - OfxImageEffectPropOpenCLImage
-      - OfxImageEffectPropOpenCLRenderSupported
-      - OfxImageEffectPropOpenCLSupported
-      - OfxImageEffectPropOpenGLEnabled
-      - OfxImageEffectPropOpenGLTextureIndex
-      - OfxImageEffectPropOpenGLTextureTarget
-      - OfxImageEffectPropNoSpatialAwareness
-      - OfxImageEffectPropThumbnailRender
-      - OfxImageEffectPropBehaviourWhenUnlicensed
+      - OfxImageEffectPropCudaEnabled | optional
+      - OfxImageEffectPropCudaRenderSupported | optional
+      - OfxImageEffectPropCudaStream | optional
+      - OfxImageEffectPropCudaStreamSupported | optional
+      - OfxImageEffectPropMetalCommandQueue | optional
+      - OfxImageEffectPropMetalEnabled | optional
+      - OfxImageEffectPropMetalRenderSupported | optional
+      - OfxImageEffectPropOpenCLCommandQueue | optional
+      - OfxImageEffectPropOpenCLEnabled | optional
+      - OfxImageEffectPropOpenCLImage | optional
+      - OfxImageEffectPropOpenCLRenderSupported | optional
+      - OfxImageEffectPropOpenCLSupported | optional
+      - OfxImageEffectPropOpenGLEnabled | optional
+      - OfxImageEffectPropOpenGLTextureIndex | optional
+      - OfxImageEffectPropOpenGLTextureTarget | optional
+      - OfxImageEffectPropNoSpatialAwareness | optional
+      - OfxImageEffectPropThumbnailRender | optional
+      - OfxImageEffectPropBehaviourWhenUnlicensed | optional
     outArgs:
 */
 #define kOfxImageEffectActionBeginSequenceRender   "OfxImageEffectActionBeginSequenceRender"
@@ -633,21 +633,21 @@ These are the list of actions passed to an image effect plugin's main function. 
       - OfxImageEffectPropRenderScale
       - OfxImageEffectPropSequentialRenderStatus
       - OfxImageEffectPropInteractiveRenderStatus
-      - OfxImageEffectPropCudaEnabled
-      - OfxImageEffectPropCudaRenderSupported
-      - OfxImageEffectPropCudaStream
-      - OfxImageEffectPropCudaStreamSupported
-      - OfxImageEffectPropMetalCommandQueue
-      - OfxImageEffectPropMetalEnabled
-      - OfxImageEffectPropMetalRenderSupported
-      - OfxImageEffectPropOpenCLCommandQueue
-      - OfxImageEffectPropOpenCLEnabled
-      - OfxImageEffectPropOpenCLImage
-      - OfxImageEffectPropOpenCLRenderSupported
-      - OfxImageEffectPropOpenCLSupported
-      - OfxImageEffectPropOpenGLEnabled
-      - OfxImageEffectPropOpenGLTextureIndex
-      - OfxImageEffectPropOpenGLTextureTarget
+      - OfxImageEffectPropCudaEnabled | optional
+      - OfxImageEffectPropCudaRenderSupported | optional
+      - OfxImageEffectPropCudaStream | optional
+      - OfxImageEffectPropCudaStreamSupported | optional
+      - OfxImageEffectPropMetalCommandQueue | optional
+      - OfxImageEffectPropMetalEnabled | optional
+      - OfxImageEffectPropMetalRenderSupported | optional
+      - OfxImageEffectPropOpenCLCommandQueue | optional
+      - OfxImageEffectPropOpenCLEnabled | optional
+      - OfxImageEffectPropOpenCLImage | optional
+      - OfxImageEffectPropOpenCLRenderSupported | optional
+      - OfxImageEffectPropOpenCLSupported | optional
+      - OfxImageEffectPropOpenGLEnabled | optional
+      - OfxImageEffectPropOpenGLTextureIndex | optional
+      - OfxImageEffectPropOpenGLTextureTarget | optional
     outArgs:
 */
 #define kOfxImageEffectActionEndSequenceRender      "OfxImageEffectActionEndSequenceRender"
@@ -886,7 +886,7 @@ In all cases, a host will set the kOfxImageEffectPropSequentialRenderStatus flag
      - 1 - for a plugin, indicates that it needs to be sequentially rendered to be correct, for a host, indicates that it can always support sequential rendering of plugins that are sequentially rendered,
      - 2 - for a plugin, indicates that it is best to render sequentially, but will still produce correct results if not, for a host, indicates that it can sometimes render sequentially, and will have set ::kOfxImageEffectPropSequentialRenderStatus on the relevant actions
    @propdef
-   type: bool
+   type: int
    dimension: 1
 */
 #define kOfxImageEffectInstancePropSequentialRender "OfxImageEffectInstancePropSequentialRender"
@@ -2136,6 +2136,7 @@ They range from 1000 until 1999
       - OfxImageEffectPropClipPreferencesSlaveParam
       - OfxImageEffectPropOpenGLRenderSupported
       - OfxImageEffectPropCPURenderSupported | host_optional=true
+      - OfxImageEffectInstancePropSequentialRender
       - OfxPluginPropFilePath | write=host
       - OfxOpenGLPropPixelDepth | host_optional=true
       - OfxImageEffectPluginPropOverlayInteractV2
@@ -2149,7 +2150,7 @@ They range from 1000 until 1999
     props:
       - OfxPropType
       - OfxImageEffectPropContext
-      - OfxPropInstanceData
+      - OfxPropInstanceData | write=all
       - OfxImageEffectPropProjectSize
       - OfxImageEffectPropProjectOffset
       - OfxImageEffectPropProjectExtent

@@ -1446,7 +1446,7 @@ changes a keyframe.  The keyframe indices will not change within a single action
     - OfxParamPropInteractSizeAspect
     - OfxParamPropInteractMinimumSize
     - OfxParamPropInteractPreferedSize
-    - OfxParamPropHasHostOverlayHandle
+    - OfxParamPropHasHostOverlayHandle | write=host
     - kOfxParamPropUseHostOverlayHandle
 */
 
@@ -1486,6 +1486,7 @@ changes a keyframe.  The keyframe indices will not change within a single action
     props:
       - OfxParamPropShowTimeMarker
       - OfxParamPropDoubleType
+      - OfxParamPropDefaultCoordinateSystem
       - ParamsCommon_REF
       - ParamsAllButGroupPage_REF
       - ParamsValue_REF
@@ -1497,6 +1498,8 @@ changes a keyframe.  The keyframe indices will not change within a single action
     write: plugin
     props:
       - OfxParamPropDoubleType
+      - OfxParamPropDefaultCoordinateSystem
+      - OfxParamPropDimensionLabel
       - ParamsCommon_REF
       - ParamsAllButGroupPage_REF
       - ParamsValue_REF
@@ -1504,15 +1507,13 @@ changes a keyframe.  The keyframe indices will not change within a single action
       - ParamsDouble_REF
 */
 
-/** @propset ParamsNormalizedSpatial
+/** @propset ParamsInt1D
     write: plugin
     props:
-      - OfxParamPropDefaultCoordinateSystem
       - ParamsCommon_REF
       - ParamsAllButGroupPage_REF
       - ParamsValue_REF
       - ParamsNumeric_REF
-      - ParamsDouble_REF
 */
 
 /** @propset ParamsInt2D3D
@@ -1525,6 +1526,14 @@ changes a keyframe.  The keyframe indices will not change within a single action
       - ParamsNumeric_REF
 */
 
+/** @propset ParamsBoolean
+    write: plugin
+    props:
+      - ParamsCommon_REF
+      - ParamsAllButGroupPage_REF
+      - ParamsValue_REF
+*/
+
 /** @propset ParamsString
     write: plugin
     props:
@@ -1533,16 +1542,14 @@ changes a keyframe.  The keyframe indices will not change within a single action
       - ParamsCommon_REF
       - ParamsAllButGroupPage_REF
       - ParamsValue_REF
-      - ParamsNumeric_REF
 */
 
-/** @propset ParamsByte
+/** @propset ParamsBytes
     write: plugin
     props:
       - ParamsCommon_REF
       - ParamsAllButGroupPage_REF
       - ParamsValue_REF
-      - ParamsNumeric_REF
 */
 
 /** @propset ParamsRGB
@@ -1599,6 +1606,13 @@ changes a keyframe.  The keyframe indices will not change within a single action
     props:
       - OfxParamPropPageChild
       - ParamsCommon_REF
+*/
+
+/** @propset ParamsPushButton
+    write: plugin
+    props:
+      - ParamsCommon_REF
+      - ParamsAllButGroupPage_REF
 */
 
 /** @propset ParamsParametric

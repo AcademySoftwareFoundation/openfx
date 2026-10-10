@@ -15,7 +15,7 @@ import argparse
 import yaml
 import logging
 from pathlib import Path
-from ofx_prop_utils import get_properties_from_headers, get_propsets_from_headers, get_actions_from_headers
+from ofx_prop_utils import get_properties_from_headers, get_propsets_from_headers, get_actions_from_headers, parse_prop_entry
 
 # Set up basic configuration for logging
 logging.basicConfig(
@@ -281,32 +281,11 @@ def props_for_set(pset, props_by_set, name_only=True):
     propset_options = props_by_set[pset].copy()
     propset_options.pop("props", None)
     for p in props_by_set[pset]["props"]:
-        # Parse p, of form NAME | key=value,key=value
-        pattern = r"^\s*(\w+)\s*\|\s*([\w\s,=]*)$"
-        match = re.match(pattern, p)
-        if not match:
-            if name_only:
-                yield p
-            else:
-                yield {**propset_options, **{"name": p}}
-            continue
-        name = match.group(1)
+        name, options = parse_prop_entry(p)
         if name_only:
             yield name
         else:
-            # parse key/value pairs, apply defaults, and include name
-            key_values_str = match.group(2).strip()
-            if not key_values_str:
-                options = {}
-            else:
-                # Handle both "optional" shorthand and "key=value" format
-                # "optional" is shorthand for "host_optional=true"
-                if key_values_str == "optional":
-                    options = {"host_optional": "true"}
-                else:
-                    key_value_pattern = r"(\w+)=([\w-]+)"
-                    options = dict(re.findall(key_value_pattern, key_values_str))
-            yield {**propset_options, **options, **{"name": name}}
+            yield {**propset_options, **options, "name": name}
 
 
 def check_props_by_set(props_by_set, props_by_action, props_metadata):
@@ -328,7 +307,8 @@ def check_props_by_set(props_by_set, props_by_action, props_metadata):
         for subset in sorted(props_by_action[pset]):
             if not props_by_action[pset][subset]:
                 continue
-            for p in props_by_action[pset][subset]:
+            for entry in props_by_action[pset][subset]:
+                p = parse_prop_entry(entry)[0]
                 if not props_metadata.get(p):
                     logging.error(
                         f"No props metadata found for action {pset}.{subset}.{p}"
@@ -355,8 +335,8 @@ def check_props_used_by_set(props_by_set, props_by_action, props_metadata):
             for subset in sorted(props_by_action[pset]):
                 if not props_by_action[pset][subset]:
                     continue
-                for set_prop in props_by_action[pset][subset]:
-                    if set_prop == prop:
+                for entry in props_by_action[pset][subset]:
+                    if parse_prop_entry(entry)[0] == prop:
                         found += 1
         if not found and not props_metadata[prop].get("deprecated"):
             logging.error(f"Prop {prop} not used in any prop set")
@@ -643,7 +623,10 @@ struct Prop {
                 if not props_by_action[pset][subset]:
                     continue
                 propnames = ",\n    ".join(
-                    sorted([f'"{p}"' for p in props_by_action[pset][subset]])
+                    sorted(
+                        f'"{parse_prop_entry(p)[0]}"'
+                        for p in props_by_action[pset][subset]
+                    )
                 )
                 if not pset.startswith("kOfx"):
                     psetname = '"' + pset + '"'  # quote if it's not a known constant
