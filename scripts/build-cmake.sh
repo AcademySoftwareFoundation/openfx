@@ -115,7 +115,7 @@ if [[ ! $ARGS =~ .*PLUGIN_INSTALLDIR.* ]] ; then
         echo "*** ERROR: This script will install the built example plugins in $INSTALLDIR,"
         echo "*** but that dir does not exist or isn't writable."
         echo "*** Please run: sudo mkdir -p $INSTALLDIR && sudo chmod ugo+w $INSTALLDIR"
-        echo "*** or run this script with -DPLUGIN_INSTALL_DIR=<some dir> to install elsewhere."
+        echo "*** or run this script with -DPLUGIN_INSTALLDIR=<some dir> to install elsewhere."
         echo "***"
         exit 1
     fi
