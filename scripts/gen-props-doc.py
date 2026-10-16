@@ -14,7 +14,7 @@ import argparse
 import logging
 from pathlib import Path
 from collections import defaultdict
-from ofx_prop_utils import get_properties_from_headers, get_propsets_from_headers, get_actions_from_headers
+from ofx_prop_utils import get_properties_from_headers, get_propsets_from_headers, get_actions_from_headers, parse_prop_entry
 
 # Set up basic configuration for logging
 logging.basicConfig(
@@ -61,8 +61,6 @@ def props_for_set(pset, props_by_set, name_only=True):
     This implements the options override scheme, parsing the prop name etc.
     If not name_only, yields a dict of name and other options.
     """
-    import re
-    
     if not props_by_set[pset].get('props'):
         return
         
@@ -71,31 +69,11 @@ def props_for_set(pset, props_by_set, name_only=True):
     propset_options.pop('props', None)
     
     for p in props_by_set[pset]['props']:
-        # Parse p, of form NAME | key=value,key=value
-        if '|' in p:
-            parts = p.split('|', 1)
-            name = parts[0].strip()
-            key_values_str = parts[1].strip()
-            
-            if name_only:
-                yield name
-            else:
-                # Parse key/value pairs, apply defaults, and include name
-                options = {}
-                if key_values_str:
-                    key_values = key_values_str.split(',')
-                    for kv in key_values:
-                        if '=' in kv:
-                            k, v = kv.split('=', 1)
-                            options[k.strip()] = v.strip()
-                            
-                yield {**propset_options, **options, **{"name": name}}
+        name, options = parse_prop_entry(p)
+        if name_only:
+            yield name
         else:
-            # Simple property name with no options
-            if name_only:
-                yield p
-            else:
-                yield {**propset_options, **{"name": p}}
+            yield {**propset_options, **options, "name": name}
 
 def get_cname(propname, props_metadata):
     """Get the C `#define` name for a property name.
@@ -246,7 +224,8 @@ def generate_action_args_documentation(action_data, props_metadata, props_by_set
             has_args = True
             action_section.append(f"**Input Arguments**\n\n")
             
-            for prop in action_data[action_name]['inArgs']:
+            for entry in action_data[action_name]['inArgs']:
+                prop = parse_prop_entry(entry)[0]
                 metadata = props_metadata.get(prop)
                 if not metadata:
                     action_section.append(f"- ``{prop}`` - (No metadata available)\n")
@@ -278,7 +257,8 @@ def generate_action_args_documentation(action_data, props_metadata, props_by_set
             has_args = True
             action_section.append(f"**Output Arguments**\n\n")
             
-            for prop in action_data[action_name]['outArgs']:
+            for entry in action_data[action_name]['outArgs']:
+                prop = parse_prop_entry(entry)[0]
                 metadata = props_metadata.get(prop)
                 if not metadata:
                     action_section.append(f"- ``{prop}`` - (No metadata available)\n")

@@ -23,6 +23,7 @@ Format examples:
         props:
           - OfxPropType
           - OfxPluginPropFilePath | write=host
+          - OfxPropVersion | optional
     */
 
     /** @propsetdef ParamsCommon
@@ -34,14 +35,49 @@ Format examples:
         @actiondef
         inArgs:
           - OfxPropType
+          - OfxImageEffectPropThumbnailRender | optional
         outArgs:
     */
     #define kOfxActionInstanceChanged "OfxActionInstanceChanged"
+
+An entry in a set or in an action's arguments is a property name, optionally
+followed by `|` and comma-separated options: `write=host`, `write=plugin` or
+`write=all` overrides the set's write side, and `optional` (short for
+`host_optional=true`) marks a property the set may lack, which the generated
+accessors then read and write without treating its absence as an error.
 """
 
 import re
 import yaml
 from pathlib import Path
+
+
+# The options a set or action-argument entry may give, and their values.
+PROP_ENTRY_OPTIONS = {
+    "write": ("host", "plugin", "all"),
+    "host_optional": ("true", "false"),
+}
+
+
+def parse_prop_entry(entry: str) -> tuple[str, dict[str, str]]:
+    """Split a set or action-argument entry into its property name and options.
+
+    Raises ValueError for an option, or a value of one, it does not recognise.
+    """
+    name, _, options_text = entry.partition("|")
+    options = {}
+    for item in options_text.split(","):
+        key, has_value, value = (part.strip() for part in item.partition("="))
+        if not key:
+            continue
+        if key == "optional" and not has_value:
+            key, value = "host_optional", "true"
+        elif value not in PROP_ENTRY_OPTIONS.get(key, ()):
+            raise ValueError(
+                f"unknown option '{item.strip()}' in property entry '{entry}'"
+            )
+        options[key] = value
+    return name.strip(), options
 
 
 def extract_inline_metadata(header_path: str | Path) -> dict:
