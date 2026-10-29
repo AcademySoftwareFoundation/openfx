@@ -776,9 +776,9 @@ the current action
    enabled by the plug-in, it should use ::kOfxImageEffectPropOpenCLImage to determine which is being used by the host.
 
    - Valid Values
-      - 0 indicates that a plug-in SHOULD use OpenCL render in
+      - 0 indicates that a plug-in SHOULD NOT use OpenCL render in
           the render action
-      - 1 indicates that a plug-in SHOULD NOT use OpenCL render in
+      - 1 indicates that a plug-in SHOULD use OpenCL render in
           the render action
 
     @propdef
