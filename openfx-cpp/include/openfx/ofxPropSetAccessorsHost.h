@@ -335,6 +335,11 @@ public:
         return *this;
     }
 
+    ClipInstance& setDisplayTimeOffset(double value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageClipPropDisplayTimeOffset>(value, 0, error_if_missing);
+        return *this;
+    }
+
 };
 
 // Property set accessor for: CustomParamInterpFunc_InArgs

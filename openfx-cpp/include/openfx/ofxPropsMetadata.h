@@ -214,10 +214,11 @@ enum class PropId {
   OfxPropType, // 179
   OfxPropVersion, // 180
   OfxPropVersionLabel, // 181
-  OfxParamPropUseHostOverlayHandle, // 182 (orig name: OfxParamPropUseHostOverlayHandle)
-  OfxPropKeyString, // 183 (orig name: OfxPropKeyString)
-  OfxPropKeySym, // 184 (orig name: OfxPropKeySym)
-  NProps // 185
+  OfxImageClipPropDisplayTimeOffset, // 182 (orig name: OfxImageClipPropDisplayTimeOffset)
+  OfxParamPropUseHostOverlayHandle, // 183 (orig name: OfxParamPropUseHostOverlayHandle)
+  OfxPropKeyString, // 184 (orig name: OfxPropKeyString)
+  OfxPropKeySym, // 185 (orig name: OfxPropKeySym)
+  NProps // 186
 }; // PropId
 
 // Separate arrays for enum-values for enum props, to keep everything constexpr
@@ -475,6 +476,7 @@ static constexpr PropType OfxPropTime_types[] = {PropType::Double};
 static constexpr PropType OfxPropType_types[] = {PropType::String};
 static constexpr PropType OfxPropVersion_types[] = {PropType::Int};
 static constexpr PropType OfxPropVersionLabel_types[] = {PropType::String};
+static constexpr PropType kOfxImageClipPropDisplayTimeOffset_types[] = {PropType::Double};
 static constexpr PropType kOfxParamPropUseHostOverlayHandle_types[] = {PropType::Bool};
 static constexpr PropType kOfxPropKeyString_types[] = {PropType::String};
 static constexpr PropType kOfxPropKeySym_types[] = {PropType::Int};
@@ -873,6 +875,8 @@ static inline constexpr PropDefsArray<PropDef> prop_defs = {
   openfx::span(prop_type_arrays::OfxPropVersion_types, 1), 0, openfx::span<const char* const>()},
 { "OfxPropVersionLabel",
   openfx::span(prop_type_arrays::OfxPropVersionLabel_types, 1), 1, openfx::span<const char* const>()},
+{ "kOfxImageClipPropDisplayTimeOffset",
+  openfx::span(prop_type_arrays::kOfxImageClipPropDisplayTimeOffset_types, 1), 1, openfx::span<const char* const>()},
 { "kOfxParamPropUseHostOverlayHandle",
   openfx::span(prop_type_arrays::kOfxParamPropUseHostOverlayHandle_types, 1), 1, openfx::span<const char* const>()},
 { "kOfxPropKeyString",
@@ -1080,6 +1084,7 @@ DEFINE_PROP_TRAITS(OfxPropTime, double, false);
 DEFINE_PROP_TRAITS(OfxPropType, const char *, false);
 DEFINE_PROP_TRAITS(OfxPropVersion, int, false);
 DEFINE_PROP_TRAITS(OfxPropVersionLabel, const char *, false);
+DEFINE_PROP_TRAITS(OfxImageClipPropDisplayTimeOffset, double, false);
 DEFINE_PROP_TRAITS(OfxParamPropUseHostOverlayHandle, bool, false);
 DEFINE_PROP_TRAITS(OfxPropKeyString, const char *, false);
 DEFINE_PROP_TRAITS(OfxPropKeySym, int, false);
@@ -1271,6 +1276,7 @@ static_assert(string_view("OfxPropTime") == string_view(kOfxPropTime));
 static_assert(string_view("OfxPropType") == string_view(kOfxPropType));
 static_assert(string_view("OfxPropVersion") == string_view(kOfxPropVersion));
 static_assert(string_view("OfxPropVersionLabel") == string_view(kOfxPropVersionLabel));
+static_assert(string_view("kOfxImageClipPropDisplayTimeOffset") == string_view(kOfxImageClipPropDisplayTimeOffset));
 static_assert(string_view("kOfxParamPropUseHostOverlayHandle") == string_view(kOfxParamPropUseHostOverlayHandle));
 static_assert(string_view("kOfxPropKeyString") == string_view(kOfxPropKeyString));
 static_assert(string_view("kOfxPropKeySym") == string_view(kOfxPropKeySym));

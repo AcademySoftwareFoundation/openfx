@@ -14,6 +14,7 @@ This is version NEXT of the OpenFX API.
 - **Parameter interpolation types**: Added `kOfxParamInterpType` and related definitions documenting standard keyframe interpolation modes (issue #116).
 - **Obsolete plugins**: Added `kOfxImageEffectPluginPropObsolete` so a plugin bundle can mark a plugin as obsolete: available for use in old projects but not offered to users for new use (issue #221).
 - **Windows ARM64 packaging**: Defined plugin install locations for Windows on ARM, including the new normative `Win-arm64ec` folder for Arm64EC/Arm64X plug-ins, with most-specific-first DLL search order (issue #160).
+- **Clip display time offset**: Added `kOfxImageClipPropDisplayTimeOffset`, the frame number the host displays for time 0 (e.g. 1001), so a plugin's own UI can show the same frame numbers as the host. Its string value keeps a leading `k` for compatibility with hosts and plugins that already use it (issue #58).
 - **Colour-Managed Colour Params**: Added `kOfxParamPropColourManagement`. Lets a plugin declare the colourspace of an RGB/RGBA parameter's values (including its default): `Managed` (ACES2065-1, scene-linear, unclamped) for processing colours, or `SRGB` (sRGB, [0..1]) for display-referred UI colours such as Draw Suite overlays, so a host can interpret and convert them correctly (issue #158).
 
 ## Behaviour Changes
