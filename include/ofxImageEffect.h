@@ -1124,6 +1124,27 @@ then the plugin can detect this via an identifier change and re-evaluate the cac
 */
 #define kOfxImagePropUniqueIdentifier "OfxImagePropUniqueIdentifier"
 
+/** @brief Clip property which indicates the display start frame of the clip
+
+   - Default - 0
+
+This is the frame number the host shows the user for time 0, in the same units
+as ::kOfxPropTime. For example, a host whose session starts at frame 1001 sets
+this to 1001.
+
+Plugins should add this value to internal OFX frame numbers when displayed in a
+plugin user interface, so the user will see the same frame numbers as they see
+in the host's UI, and subtract it from frame numbers the user enters.
+
+The property's string value keeps its leading "k" for compatibility with
+existing hosts and plugins.
+
+   @propdef
+   type: double
+   dimension: 1
+*/
+#define kOfxImageClipPropDisplayTimeOffset "kOfxImageClipPropDisplayTimeOffset"
+
 /** @brief Clip and action argument property which indicates that the clip can be sampled continuously
 
 If this is set to true, then the frame rate of a clip is effectively infinite, so to stop arithmetic
@@ -2215,6 +2236,7 @@ They range from 1000 until 1999
       - OfxImageEffectPropUnmappedFrameRange
       - OfxImageEffectPropUnmappedFrameRate
       - OfxImageClipPropContinuousSamples
+      - kOfxImageClipPropDisplayTimeOffset
 */
 
 /** @propset Image

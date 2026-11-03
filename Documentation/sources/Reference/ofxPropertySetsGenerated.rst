@@ -94,6 +94,7 @@ These property sets represent collections of properties associated with various 
 - :ref:`OfxPropName <prop_OfxPropName>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropName`)
 - :ref:`OfxPropShortLabel <prop_OfxPropShortLabel>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropShortLabel`)
 - :ref:`OfxPropType <prop_OfxPropType>` - Type: string, Dimension: 1 (doc: :c:macro:`kOfxPropType`)
+- :ref:`kOfxImageClipPropDisplayTimeOffset <prop_kOfxImageClipPropDisplayTimeOffset>` - Type: double, Dimension: 1 (doc: :c:macro:`kOfxImageClipPropDisplayTimeOffset`)
 
 .. _propset_EffectDescriptor:
 

@@ -73,7 +73,8 @@ static inline const std::map<const char *, std::vector<Prop>> prop_sets {
    { "OfxImageClipPropConnected", prop_defs[PropId::OfxImageClipPropConnected], true, false, false },
    { "OfxImageEffectPropUnmappedFrameRange", prop_defs[PropId::OfxImageEffectPropUnmappedFrameRange], true, false, false },
    { "OfxImageEffectPropUnmappedFrameRate", prop_defs[PropId::OfxImageEffectPropUnmappedFrameRate], true, false, false },
-   { "OfxImageClipPropContinuousSamples", prop_defs[PropId::OfxImageClipPropContinuousSamples], true, false, false } } },
+   { "OfxImageClipPropContinuousSamples", prop_defs[PropId::OfxImageClipPropContinuousSamples], true, false, false },
+   { "kOfxImageClipPropDisplayTimeOffset", prop_defs[PropId::OfxImageClipPropDisplayTimeOffset], true, false, false } } },
 // EffectDescriptor
 { "EffectDescriptor", {
    { "OfxPropType", prop_defs[PropId::OfxPropType], false, true, false },

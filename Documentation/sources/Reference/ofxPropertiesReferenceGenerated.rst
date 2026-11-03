@@ -943,6 +943,17 @@ Double Properties
 - **Dimension**: 1
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropTime`.
 
+.. _prop_kOfxImageClipPropDisplayTimeOffset:
+
+**kOfxImageClipPropDisplayTimeOffset**
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxImageClipPropDisplayTimeOffset`
+- **Type**: double
+- **Dimension**: 1
+- **Used in Property Sets**: :ref:`ClipInstance <propset_ClipInstance>` (host)
+- **Doc**: For detailed doc, see :c:macro:`kOfxImageClipPropDisplayTimeOffset`.
+
 
 Enumeration Properties
 ----------------------

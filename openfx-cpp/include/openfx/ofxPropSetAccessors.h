@@ -278,6 +278,10 @@ public:
         return props_.get<PropId::OfxImageClipPropContinuousSamples>(0, error_if_missing);
     }
 
+    double displayTimeOffset(bool error_if_missing = true) const {
+        return props_.get<PropId::OfxImageClipPropDisplayTimeOffset>(0, error_if_missing);
+    }
+
 };
 
 // Property set accessor for: CustomParamInterpFunc_InArgs
