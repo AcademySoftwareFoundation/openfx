@@ -1,5 +1,6 @@
 .. SPDX-License-Identifier: CC-BY-4.0
-.. CoordinateSystems:
+.. _CoordinateSystems:
+
 Coordinate Systems
 ==================
 
@@ -112,7 +113,7 @@ The Normalized Coordinate System
 
 Note, normalised parameters and the normalised coordinate system are
 being deprecated in favour of :ref:`spatial
-parameters <ParameterPropertiesDoubleTypesSpatial>` which can handle
+parameters <ParameterPropertiesDoubleTypesStrictlySpatial>` which can handle
 the project rescaling without the problems of converting to/from
 normalised coordinates.
 
@@ -214,7 +215,7 @@ the project size and offset...
    normalised coordinate by the project size then add the project origin
 
 To flag to the host that a parameter as normalised, we use the
-:ref:`kOfxParamPropDoubleType<kOfxParamPropDoubleType>` property.
+:c:macro:`kOfxParamPropDoubleType` property.
 Parameters that are so flagged have values set and retrieved by an
 effect in normalized coordinates. However a host can choose to represent
 them to the user in whatever space it chooses. The values that this

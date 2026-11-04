@@ -107,7 +107,7 @@ disposed of by an effect, by an explicit function call back to the host.
 These few exceptions are documented with the suite functions that access
 the object.
 
-.. ArchitectureStrings:
+.. _ArchitectureStrings:
 
 Strings
 ~~~~~~~

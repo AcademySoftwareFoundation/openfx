@@ -1,5 +1,5 @@
 .. SPDX-License-Identifier: CC-BY-4.0
-.. InteractActions:
+.. _InteractActions:
 
 Actions Passed to an Interact
 =============================
