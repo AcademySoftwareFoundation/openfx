@@ -1,4 +1,5 @@
 .. _propertiesReferenceGenerated:
+
 Properties Reference
 ====================
 
@@ -17,7 +18,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageClipPropConnected:
 
 **OfxImageClipPropConnected**
-^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageClipPropConnected`
 - **Type**: bool
@@ -28,7 +29,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageClipPropContinuousSamples:
 
 **OfxImageClipPropContinuousSamples**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageClipPropContinuousSamples`
 - **Type**: bool
@@ -39,7 +40,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageClipPropIsMask:
 
 **OfxImageClipPropIsMask**
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageClipPropIsMask`
 - **Type**: bool
@@ -50,7 +51,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageClipPropOptional:
 
 **OfxImageClipPropOptional**
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageClipPropOptional`
 - **Type**: bool
@@ -61,7 +62,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectFrameVarying:
 
 **OfxImageEffectFrameVarying**
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectFrameVarying`
 - **Type**: bool
@@ -71,7 +72,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectHostPropIsBackground:
 
 **OfxImageEffectHostPropIsBackground**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectHostPropIsBackground`
 - **Type**: bool
@@ -82,7 +83,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectInstancePropSequentialRender:
 
 **OfxImageEffectInstancePropSequentialRender**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectInstancePropSequentialRender`
 - **Type**: bool
@@ -93,7 +94,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPluginPropFieldRenderTwiceAlways:
 
 **OfxImageEffectPluginPropFieldRenderTwiceAlways**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPluginPropFieldRenderTwiceAlways`
 - **Type**: bool
@@ -104,7 +105,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPluginPropHostFrameThreading:
 
 **OfxImageEffectPluginPropHostFrameThreading**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPluginPropHostFrameThreading`
 - **Type**: bool
@@ -115,7 +116,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPluginPropObsolete:
 
 **OfxImageEffectPluginPropObsolete**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPluginPropObsolete`
 - **Type**: bool
@@ -126,7 +127,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPluginPropSingleInstance:
 
 **OfxImageEffectPluginPropSingleInstance**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPluginPropSingleInstance`
 - **Type**: bool
@@ -137,7 +138,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropCudaEnabled:
 
 **OfxImageEffectPropCudaEnabled**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropCudaEnabled`
 - **Type**: bool
@@ -147,7 +148,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropInAnalysis:
 
 **OfxImageEffectPropInAnalysis**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropInAnalysis`
 - **Type**: bool
@@ -158,7 +159,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropInteractiveRenderStatus:
 
 **OfxImageEffectPropInteractiveRenderStatus**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropInteractiveRenderStatus`
 - **Type**: bool
@@ -168,7 +169,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropMetalEnabled:
 
 **OfxImageEffectPropMetalEnabled**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropMetalEnabled`
 - **Type**: bool
@@ -179,7 +180,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropMetalTextureEnabled:
 
 **OfxImageEffectPropMetalTextureEnabled**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropMetalTextureEnabled`
 - **Type**: bool
@@ -189,7 +190,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropMultipleClipDepths:
 
 **OfxImageEffectPropMultipleClipDepths**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropSupportsMultipleClipDepths`
 - **Type**: bool
@@ -200,7 +201,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropOpenCLEnabled:
 
 **OfxImageEffectPropOpenCLEnabled**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropOpenCLEnabled`
 - **Type**: bool
@@ -211,7 +212,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropOpenGLEnabled:
 
 **OfxImageEffectPropOpenGLEnabled**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropOpenGLEnabled`
 - **Type**: bool
@@ -221,7 +222,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropRenderQualityDraft:
 
 **OfxImageEffectPropRenderQualityDraft**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropRenderQualityDraft`
 - **Type**: bool
@@ -232,7 +233,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropSequentialRenderStatus:
 
 **OfxImageEffectPropSequentialRenderStatus**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropSequentialRenderStatus`
 - **Type**: bool
@@ -242,7 +243,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropSetableFielding:
 
 **OfxImageEffectPropSetableFielding**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropSetableFielding`
 - **Type**: bool
@@ -253,7 +254,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropSetableFrameRate:
 
 **OfxImageEffectPropSetableFrameRate**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropSetableFrameRate`
 - **Type**: bool
@@ -264,7 +265,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropSupportsMultiResolution:
 
 **OfxImageEffectPropSupportsMultiResolution**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropSupportsMultiResolution`
 - **Type**: bool
@@ -275,7 +276,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropSupportsMultipleClipPARs:
 
 **OfxImageEffectPropSupportsMultipleClipPARs**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropSupportsMultipleClipPARs`
 - **Type**: bool
@@ -286,7 +287,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropSupportsOverlays:
 
 **OfxImageEffectPropSupportsOverlays**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropSupportsOverlays`
 - **Type**: bool
@@ -297,7 +298,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropSupportsTiles:
 
 **OfxImageEffectPropSupportsTiles**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropSupportsTiles`
 - **Type**: bool
@@ -308,7 +309,7 @@ Integer (Boolean) Properties
 .. _prop_OfxImageEffectPropTemporalClipAccess:
 
 **OfxImageEffectPropTemporalClipAccess**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropTemporalClipAccess`
 - **Type**: bool
@@ -319,7 +320,7 @@ Integer (Boolean) Properties
 .. _prop_OfxInteractPropHasAlpha:
 
 **OfxInteractPropHasAlpha**
-^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxInteractPropHasAlpha`
 - **Type**: bool
@@ -330,7 +331,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamHostPropSupportsBooleanAnimation:
 
 **OfxParamHostPropSupportsBooleanAnimation**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamHostPropSupportsBooleanAnimation`
 - **Type**: bool
@@ -341,7 +342,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamHostPropSupportsChoiceAnimation:
 
 **OfxParamHostPropSupportsChoiceAnimation**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamHostPropSupportsChoiceAnimation`
 - **Type**: bool
@@ -352,7 +353,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamHostPropSupportsCustomAnimation:
 
 **OfxParamHostPropSupportsCustomAnimation**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamHostPropSupportsCustomAnimation`
 - **Type**: bool
@@ -363,7 +364,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamHostPropSupportsCustomInteract:
 
 **OfxParamHostPropSupportsCustomInteract**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamHostPropSupportsCustomInteract`
 - **Type**: bool
@@ -374,7 +375,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamHostPropSupportsParametricAnimation:
 
 **OfxParamHostPropSupportsParametricAnimation**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamHostPropSupportsParametricAnimation`
 - **Type**: bool
@@ -385,7 +386,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamHostPropSupportsStrChoice:
 
 **OfxParamHostPropSupportsStrChoice**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamHostPropSupportsStrChoice`
 - **Type**: bool
@@ -397,7 +398,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamHostPropSupportsStrChoiceAnimation:
 
 **OfxParamHostPropSupportsStrChoiceAnimation**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamHostPropSupportsStrChoiceAnimation`
 - **Type**: bool
@@ -409,7 +410,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamHostPropSupportsStringAnimation:
 
 **OfxParamHostPropSupportsStringAnimation**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamHostPropSupportsStringAnimation`
 - **Type**: bool
@@ -420,7 +421,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamPropAnimates:
 
 **OfxParamPropAnimates**
-^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropAnimates`
 - **Type**: bool
@@ -431,7 +432,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamPropCanUndo:
 
 **OfxParamPropCanUndo**
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropCanUndo`
 - **Type**: bool
@@ -442,7 +443,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamPropEnabled:
 
 **OfxParamPropEnabled**
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropEnabled`
 - **Type**: bool
@@ -453,7 +454,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamPropEvaluateOnChange:
 
 **OfxParamPropEvaluateOnChange**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropEvaluateOnChange`
 - **Type**: bool
@@ -464,7 +465,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamPropGroupOpen:
 
 **OfxParamPropGroupOpen**
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropGroupOpen`
 - **Type**: bool
@@ -475,7 +476,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamPropHasHostOverlayHandle:
 
 **OfxParamPropHasHostOverlayHandle**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropHasHostOverlayHandle`
 - **Type**: bool
@@ -486,7 +487,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamPropIsAnimating:
 
 **OfxParamPropIsAnimating**
-^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropIsAnimating`
 - **Type**: bool
@@ -497,7 +498,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamPropIsAutoKeying:
 
 **OfxParamPropIsAutoKeying**
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropIsAutoKeying`
 - **Type**: bool
@@ -508,7 +509,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamPropPersistant:
 
 **OfxParamPropPersistant**
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropPersistant`
 - **Type**: bool
@@ -519,7 +520,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamPropPluginMayWrite:
 
 **OfxParamPropPluginMayWrite**
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropPluginMayWrite`
 - **Type**: bool
@@ -531,7 +532,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamPropSecret:
 
 **OfxParamPropSecret**
-^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropSecret`
 - **Type**: bool
@@ -542,7 +543,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamPropShowTimeMarker:
 
 **OfxParamPropShowTimeMarker**
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropShowTimeMarker`
 - **Type**: bool
@@ -553,7 +554,7 @@ Integer (Boolean) Properties
 .. _prop_OfxParamPropStringFilePathExists:
 
 **OfxParamPropStringFilePathExists**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropStringFilePathExists`
 - **Type**: bool
@@ -564,7 +565,7 @@ Integer (Boolean) Properties
 .. _prop_OfxPropIsInteractive:
 
 **OfxPropIsInteractive**
-^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropIsInteractive`
 - **Type**: bool
@@ -575,7 +576,7 @@ Integer (Boolean) Properties
 .. _prop_OfxPropParamSetNeedsSyncing:
 
 **OfxPropParamSetNeedsSyncing**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropParamSetNeedsSyncing`
 - **Type**: bool
@@ -586,7 +587,7 @@ Integer (Boolean) Properties
 .. _prop_kOfxParamPropUseHostOverlayHandle:
 
 **kOfxParamPropUseHostOverlayHandle**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropUseHostOverlayHandle`
 - **Type**: bool
@@ -601,7 +602,7 @@ Double Properties
 .. _prop_OfxImageEffectInstancePropEffectDuration:
 
 **OfxImageEffectInstancePropEffectDuration**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectInstancePropEffectDuration`
 - **Type**: double
@@ -612,7 +613,7 @@ Double Properties
 .. _prop_OfxImageEffectPropFrameRange:
 
 **OfxImageEffectPropFrameRange**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropFrameRange`
 - **Type**: double
@@ -623,7 +624,7 @@ Double Properties
 .. _prop_OfxImageEffectPropFrameRate:
 
 **OfxImageEffectPropFrameRate**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropFrameRate`
 - **Type**: double
@@ -634,7 +635,7 @@ Double Properties
 .. _prop_OfxImageEffectPropFrameStep:
 
 **OfxImageEffectPropFrameStep**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropFrameStep`
 - **Type**: double
@@ -644,7 +645,7 @@ Double Properties
 .. _prop_OfxImageEffectPropPixelAspectRatio:
 
 **OfxImageEffectPropPixelAspectRatio**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropProjectPixelAspectRatio`
 - **Type**: double
@@ -655,7 +656,7 @@ Double Properties
 .. _prop_OfxImageEffectPropProjectExtent:
 
 **OfxImageEffectPropProjectExtent**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropProjectExtent`
 - **Type**: double
@@ -666,7 +667,7 @@ Double Properties
 .. _prop_OfxImageEffectPropProjectOffset:
 
 **OfxImageEffectPropProjectOffset**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropProjectOffset`
 - **Type**: double
@@ -677,7 +678,7 @@ Double Properties
 .. _prop_OfxImageEffectPropProjectSize:
 
 **OfxImageEffectPropProjectSize**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropProjectSize`
 - **Type**: double
@@ -688,7 +689,7 @@ Double Properties
 .. _prop_OfxImageEffectPropRegionOfDefinition:
 
 **OfxImageEffectPropRegionOfDefinition**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropRegionOfDefinition`
 - **Type**: double
@@ -698,7 +699,7 @@ Double Properties
 .. _prop_OfxImageEffectPropRegionOfInterest:
 
 **OfxImageEffectPropRegionOfInterest**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropRegionOfInterest`
 - **Type**: double
@@ -708,7 +709,7 @@ Double Properties
 .. _prop_OfxImageEffectPropRenderScale:
 
 **OfxImageEffectPropRenderScale**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropRenderScale`
 - **Type**: double
@@ -719,7 +720,7 @@ Double Properties
 .. _prop_OfxImageEffectPropUnmappedFrameRange:
 
 **OfxImageEffectPropUnmappedFrameRange**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropUnmappedFrameRange`
 - **Type**: double
@@ -730,7 +731,7 @@ Double Properties
 .. _prop_OfxImageEffectPropUnmappedFrameRate:
 
 **OfxImageEffectPropUnmappedFrameRate**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropUnmappedFrameRate`
 - **Type**: double
@@ -741,7 +742,7 @@ Double Properties
 .. _prop_OfxImagePropPixelAspectRatio:
 
 **OfxImagePropPixelAspectRatio**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImagePropPixelAspectRatio`
 - **Type**: double
@@ -752,7 +753,7 @@ Double Properties
 .. _prop_OfxInteractPropBackgroundColour:
 
 **OfxInteractPropBackgroundColour**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxInteractPropBackgroundColour`
 - **Type**: double
@@ -763,7 +764,7 @@ Double Properties
 .. _prop_OfxInteractPropPenPosition:
 
 **OfxInteractPropPenPosition**
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxInteractPropPenPosition`
 - **Type**: double
@@ -773,7 +774,7 @@ Double Properties
 .. _prop_OfxInteractPropPenPressure:
 
 **OfxInteractPropPenPressure**
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxInteractPropPenPressure`
 - **Type**: double
@@ -783,7 +784,7 @@ Double Properties
 .. _prop_OfxInteractPropPixelScale:
 
 **OfxInteractPropPixelScale**
-^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxInteractPropPixelScale`
 - **Type**: double
@@ -794,7 +795,7 @@ Double Properties
 .. _prop_OfxInteractPropSuggestedColour:
 
 **OfxInteractPropSuggestedColour**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxInteractPropSuggestedColour`
 - **Type**: double
@@ -802,43 +803,10 @@ Double Properties
 - **Used in Property Sets**: :ref:`InteractInstance <propset_InteractInstance>` (host)
 - **Doc**: For detailed doc, see :c:macro:`kOfxInteractPropSuggestedColour`.
 
-.. _prop_OfxParamPropDefault:
-
-**OfxParamPropDefault**
-^^^^^^^^^^^^^^^^^^^
-
-- **C #define**: :c:macro:`kOfxParamPropDefault`
-- **Type**: Multiple types: int, double, string, pointer
-- **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
-- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDefault`.
-
-.. _prop_OfxParamPropDisplayMax:
-
-**OfxParamPropDisplayMax**
-^^^^^^^^^^^^^^^^^^^^^^
-
-- **C #define**: :c:macro:`kOfxParamPropDisplayMax`
-- **Type**: Multiple types: int, double
-- **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
-- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDisplayMax`.
-
-.. _prop_OfxParamPropDisplayMin:
-
-**OfxParamPropDisplayMin**
-^^^^^^^^^^^^^^^^^^^^^^
-
-- **C #define**: :c:macro:`kOfxParamPropDisplayMin`
-- **Type**: Multiple types: int, double
-- **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
-- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDisplayMin`.
-
 .. _prop_OfxParamPropIncrement:
 
 **OfxParamPropIncrement**
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropIncrement`
 - **Type**: double
@@ -849,7 +817,7 @@ Double Properties
 .. _prop_OfxParamPropInteractMinimumSize:
 
 **OfxParamPropInteractMinimumSize**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropInteractMinimumSize`
 - **Type**: double
@@ -860,7 +828,7 @@ Double Properties
 .. _prop_OfxParamPropInteractSize:
 
 **OfxParamPropInteractSize**
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropInteractSize`
 - **Type**: double
@@ -871,7 +839,7 @@ Double Properties
 .. _prop_OfxParamPropInteractSizeAspect:
 
 **OfxParamPropInteractSizeAspect**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropInteractSizeAspect`
 - **Type**: double
@@ -882,7 +850,7 @@ Double Properties
 .. _prop_OfxParamPropInterpolationAmount:
 
 **OfxParamPropInterpolationAmount**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropInterpolationAmount`
 - **Type**: double
@@ -892,39 +860,17 @@ Double Properties
 .. _prop_OfxParamPropInterpolationTime:
 
 **OfxParamPropInterpolationTime**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropInterpolationTime`
 - **Type**: double
 - **Dimension**: 2
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropInterpolationTime`.
 
-.. _prop_OfxParamPropMax:
-
-**OfxParamPropMax**
-^^^^^^^^^^^^^^^
-
-- **C #define**: :c:macro:`kOfxParamPropMax`
-- **Type**: Multiple types: int, double
-- **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
-- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropMax`.
-
-.. _prop_OfxParamPropMin:
-
-**OfxParamPropMin**
-^^^^^^^^^^^^^^^
-
-- **C #define**: :c:macro:`kOfxParamPropMin`
-- **Type**: Multiple types: int, double
-- **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
-- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropMin`.
-
 .. _prop_OfxParamPropParametricRange:
 
 **OfxParamPropParametricRange**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropParametricRange`
 - **Type**: double
@@ -935,7 +881,7 @@ Double Properties
 .. _prop_OfxParamPropParametricUIColour:
 
 **OfxParamPropParametricUIColour**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropParametricUIColour`
 - **Type**: double
@@ -946,7 +892,7 @@ Double Properties
 .. _prop_OfxPropTime:
 
 **OfxPropTime**
-^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropTime`
 - **Type**: double
@@ -956,7 +902,7 @@ Double Properties
 .. _prop_kOfxImageClipPropDisplayTimeOffset:
 
 **kOfxImageClipPropDisplayTimeOffset**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageClipPropDisplayTimeOffset`
 - **Type**: double
@@ -971,7 +917,7 @@ Enumeration Properties
 .. _prop_OfxImageClipPropFieldExtraction:
 
 **OfxImageClipPropFieldExtraction**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageClipPropFieldExtraction`
 - **Type**: enum
@@ -989,7 +935,7 @@ Enumeration Properties
 .. _prop_OfxImageClipPropFieldOrder:
 
 **OfxImageClipPropFieldOrder**
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageClipPropFieldOrder`
 - **Type**: enum
@@ -1004,7 +950,7 @@ Enumeration Properties
 .. _prop_OfxImageClipPropUnmappedComponents:
 
 **OfxImageClipPropUnmappedComponents**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageClipPropUnmappedComponents`
 - **Type**: enum
@@ -1020,7 +966,7 @@ Enumeration Properties
 .. _prop_OfxImageClipPropUnmappedPixelDepth:
 
 **OfxImageClipPropUnmappedPixelDepth**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageClipPropUnmappedPixelDepth`
 - **Type**: enum
@@ -1037,7 +983,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectHostPropNativeOrigin:
 
 **OfxImageEffectHostPropNativeOrigin**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectHostPropNativeOrigin`
 - **Type**: enum
@@ -1052,7 +998,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPluginRenderThreadSafety:
 
 **OfxImageEffectPluginRenderThreadSafety**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPluginRenderThreadSafety`
 - **Type**: enum
@@ -1067,7 +1013,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropBehaviourWhenUnlicensed:
 
 **OfxImageEffectPropBehaviourWhenUnlicensed**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropBehaviourWhenUnlicensed`
 - **Type**: enum
@@ -1080,7 +1026,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropCPURenderSupported:
 
 **OfxImageEffectPropCPURenderSupported**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropCPURenderSupported`
 - **Type**: enum
@@ -1095,7 +1041,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropColourManagementStyle:
 
 **OfxImageEffectPropColourManagementStyle**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropColourManagementStyle`
 - **Type**: enum
@@ -1113,7 +1059,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropComponents:
 
 **OfxImageEffectPropComponents**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropComponents`
 - **Type**: enum
@@ -1129,7 +1075,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropContext:
 
 **OfxImageEffectPropContext**
-^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropContext`
 - **Type**: enum
@@ -1147,7 +1093,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropCudaRenderSupported:
 
 **OfxImageEffectPropCudaRenderSupported**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropCudaRenderSupported`
 - **Type**: enum
@@ -1161,7 +1107,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropCudaStreamSupported:
 
 **OfxImageEffectPropCudaStreamSupported**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropCudaStreamSupported`
 - **Type**: enum
@@ -1175,7 +1121,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropFieldToRender:
 
 **OfxImageEffectPropFieldToRender**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropFieldToRender`
 - **Type**: enum
@@ -1190,7 +1136,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropMetalRenderSupported:
 
 **OfxImageEffectPropMetalRenderSupported**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropMetalRenderSupported`
 - **Type**: enum
@@ -1205,7 +1151,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropMetalTextureSupported:
 
 **OfxImageEffectPropMetalTextureSupported**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropMetalTextureSupported`
 - **Type**: enum
@@ -1219,7 +1165,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropNoSpatialAwareness:
 
 **OfxImageEffectPropNoSpatialAwareness**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropNoSpatialAwareness`
 - **Type**: enum
@@ -1233,7 +1179,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropOpenCLRenderSupported:
 
 **OfxImageEffectPropOpenCLRenderSupported**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropOpenCLRenderSupported`
 - **Type**: enum
@@ -1248,7 +1194,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropOpenCLSupported:
 
 **OfxImageEffectPropOpenCLSupported**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropOpenCLSupported`
 - **Type**: enum
@@ -1263,7 +1209,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropOpenGLRenderSupported:
 
 **OfxImageEffectPropOpenGLRenderSupported**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropOpenGLRenderSupported`
 - **Type**: enum
@@ -1278,7 +1224,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropPixelDepth:
 
 **OfxImageEffectPropPixelDepth**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropPixelDepth`
 - **Type**: enum
@@ -1295,7 +1241,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropPreMultiplication:
 
 **OfxImageEffectPropPreMultiplication**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropPreMultiplication`
 - **Type**: enum
@@ -1310,7 +1256,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropSupportedComponents:
 
 **OfxImageEffectPropSupportedComponents**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropSupportedComponents`
 - **Type**: enum
@@ -1326,7 +1272,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropSupportedContexts:
 
 **OfxImageEffectPropSupportedContexts**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropSupportedContexts`
 - **Type**: enum
@@ -1344,7 +1290,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropSupportedPixelDepths:
 
 **OfxImageEffectPropSupportedPixelDepths**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropSupportedPixelDepths`
 - **Type**: enum
@@ -1361,7 +1307,7 @@ Enumeration Properties
 .. _prop_OfxImageEffectPropThumbnailRender:
 
 **OfxImageEffectPropThumbnailRender**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropThumbnailRender`
 - **Type**: enum
@@ -1375,7 +1321,7 @@ Enumeration Properties
 .. _prop_OfxImagePropField:
 
 **OfxImagePropField**
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImagePropField`
 - **Type**: enum
@@ -1391,7 +1337,7 @@ Enumeration Properties
 .. _prop_OfxOpenGLPropPixelDepth:
 
 **OfxOpenGLPropPixelDepth**
-^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxOpenGLPropPixelDepth`
 - **Type**: enum
@@ -1408,7 +1354,7 @@ Enumeration Properties
 .. _prop_OfxParamPropCacheInvalidation:
 
 **OfxParamPropCacheInvalidation**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropCacheInvalidation`
 - **Type**: enum
@@ -1423,7 +1369,7 @@ Enumeration Properties
 .. _prop_OfxParamPropColourManagement:
 
 **OfxParamPropColourManagement**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropColourManagement`
 - **Type**: enum
@@ -1439,7 +1385,7 @@ Enumeration Properties
 .. _prop_OfxParamPropDefaultCoordinateSystem:
 
 **OfxParamPropDefaultCoordinateSystem**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropDefaultCoordinateSystem`
 - **Type**: enum
@@ -1453,7 +1399,7 @@ Enumeration Properties
 .. _prop_OfxParamPropDoubleType:
 
 **OfxParamPropDoubleType**
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropDoubleType`
 - **Type**: enum
@@ -1476,7 +1422,7 @@ Enumeration Properties
 .. _prop_OfxParamPropStringMode:
 
 **OfxParamPropStringMode**
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropStringMode`
 - **Type**: enum
@@ -1494,7 +1440,7 @@ Enumeration Properties
 .. _prop_OfxPropChangeReason:
 
 **OfxPropChangeReason**
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropChangeReason`
 - **Type**: enum
@@ -1512,7 +1458,7 @@ Integer Properties
 .. _prop_OfxImageEffectPropOpenGLTextureIndex:
 
 **OfxImageEffectPropOpenGLTextureIndex**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropOpenGLTextureIndex`
 - **Type**: int
@@ -1523,7 +1469,7 @@ Integer Properties
 .. _prop_OfxImageEffectPropOpenGLTextureTarget:
 
 **OfxImageEffectPropOpenGLTextureTarget**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropOpenGLTextureTarget`
 - **Type**: int
@@ -1534,7 +1480,7 @@ Integer Properties
 .. _prop_OfxImageEffectPropRenderWindow:
 
 **OfxImageEffectPropRenderWindow**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropRenderWindow`
 - **Type**: int
@@ -1544,7 +1490,7 @@ Integer Properties
 .. _prop_OfxImagePropBounds:
 
 **OfxImagePropBounds**
-^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImagePropBounds`
 - **Type**: int
@@ -1555,7 +1501,7 @@ Integer Properties
 .. _prop_OfxImagePropRegionOfDefinition:
 
 **OfxImagePropRegionOfDefinition**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImagePropRegionOfDefinition`
 - **Type**: int
@@ -1566,7 +1512,7 @@ Integer Properties
 .. _prop_OfxImagePropRowBytes:
 
 **OfxImagePropRowBytes**
-^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImagePropRowBytes`
 - **Type**: int
@@ -1577,7 +1523,7 @@ Integer Properties
 .. _prop_OfxInteractPropBitDepth:
 
 **OfxInteractPropBitDepth**
-^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxInteractPropBitDepth`
 - **Type**: int
@@ -1588,7 +1534,7 @@ Integer Properties
 .. _prop_OfxInteractPropPenViewportPosition:
 
 **OfxInteractPropPenViewportPosition**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxInteractPropPenViewportPosition`
 - **Type**: int
@@ -1598,7 +1544,7 @@ Integer Properties
 .. _prop_OfxInteractPropViewport:
 
 **OfxInteractPropViewport**
-^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxInteractPropViewportSize`
 - **Type**: int
@@ -1609,7 +1555,7 @@ Integer Properties
 .. _prop_OfxParamHostPropMaxPages:
 
 **OfxParamHostPropMaxPages**
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamHostPropMaxPages`
 - **Type**: int
@@ -1620,7 +1566,7 @@ Integer Properties
 .. _prop_OfxParamHostPropMaxParameters:
 
 **OfxParamHostPropMaxParameters**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamHostPropMaxParameters`
 - **Type**: int
@@ -1631,7 +1577,7 @@ Integer Properties
 .. _prop_OfxParamHostPropPageRowColumnCount:
 
 **OfxParamHostPropPageRowColumnCount**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamHostPropPageRowColumnCount`
 - **Type**: int
@@ -1642,7 +1588,7 @@ Integer Properties
 .. _prop_OfxParamPropChoiceOrder:
 
 **OfxParamPropChoiceOrder**
-^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropChoiceOrder`
 - **Type**: int
@@ -1650,21 +1596,10 @@ Integer Properties
 - **Used in Property Sets**: :ref:`ParamsChoice <propset_ParamsChoice>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropChoiceOrder`.
 
-.. _prop_OfxParamPropDefault:
-
-**OfxParamPropDefault**
-^^^^^^^^^^^^^^^^^^^
-
-- **C #define**: :c:macro:`kOfxParamPropDefault`
-- **Type**: Multiple types: int, double, string, pointer
-- **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
-- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDefault`.
-
 .. _prop_OfxParamPropDigits:
 
 **OfxParamPropDigits**
-^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropDigits`
 - **Type**: int
@@ -1672,32 +1607,10 @@ Integer Properties
 - **Used in Property Sets**: :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDigits`.
 
-.. _prop_OfxParamPropDisplayMax:
-
-**OfxParamPropDisplayMax**
-^^^^^^^^^^^^^^^^^^^^^^
-
-- **C #define**: :c:macro:`kOfxParamPropDisplayMax`
-- **Type**: Multiple types: int, double
-- **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
-- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDisplayMax`.
-
-.. _prop_OfxParamPropDisplayMin:
-
-**OfxParamPropDisplayMin**
-^^^^^^^^^^^^^^^^^^^^^^
-
-- **C #define**: :c:macro:`kOfxParamPropDisplayMin`
-- **Type**: Multiple types: int, double
-- **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
-- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDisplayMin`.
-
 .. _prop_OfxParamPropInteractPreferedSize:
 
 **OfxParamPropInteractPreferedSize**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropInteractPreferedSize`
 - **Type**: int
@@ -1705,32 +1618,10 @@ Integer Properties
 - **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropInteractPreferedSize`.
 
-.. _prop_OfxParamPropMax:
-
-**OfxParamPropMax**
-^^^^^^^^^^^^^^^
-
-- **C #define**: :c:macro:`kOfxParamPropMax`
-- **Type**: Multiple types: int, double
-- **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
-- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropMax`.
-
-.. _prop_OfxParamPropMin:
-
-**OfxParamPropMin**
-^^^^^^^^^^^^^^^
-
-- **C #define**: :c:macro:`kOfxParamPropMin`
-- **Type**: Multiple types: int, double
-- **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
-- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropMin`.
-
 .. _prop_OfxParamPropParametricDimension:
 
 **OfxParamPropParametricDimension**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropParametricDimension`
 - **Type**: int
@@ -1741,7 +1632,7 @@ Integer Properties
 .. _prop_OfxPropAPIVersion:
 
 **OfxPropAPIVersion**
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropAPIVersion`
 - **Type**: int
@@ -1752,7 +1643,7 @@ Integer Properties
 .. _prop_OfxPropVersion:
 
 **OfxPropVersion**
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropVersion`
 - **Type**: int
@@ -1763,7 +1654,7 @@ Integer Properties
 .. _prop_kOfxPropKeySym:
 
 **kOfxPropKeySym**
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropKeySym`
 - **Type**: int
@@ -1777,7 +1668,7 @@ Pointer Properties
 .. _prop_OfxImageEffectPluginPropOverlayInteractV1:
 
 **OfxImageEffectPluginPropOverlayInteractV1**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPluginPropOverlayInteractV1`
 - **Type**: pointer
@@ -1788,7 +1679,7 @@ Pointer Properties
 .. _prop_OfxImageEffectPluginPropOverlayInteractV2:
 
 **OfxImageEffectPluginPropOverlayInteractV2**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPluginPropOverlayInteractV2`
 - **Type**: pointer
@@ -1799,7 +1690,7 @@ Pointer Properties
 .. _prop_OfxImageEffectPropCudaStream:
 
 **OfxImageEffectPropCudaStream**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropCudaStream`
 - **Type**: pointer
@@ -1809,7 +1700,7 @@ Pointer Properties
 .. _prop_OfxImageEffectPropMetalCommandQueue:
 
 **OfxImageEffectPropMetalCommandQueue**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropMetalCommandQueue`
 - **Type**: pointer
@@ -1820,7 +1711,7 @@ Pointer Properties
 .. _prop_OfxImageEffectPropOpenCLCommandQueue:
 
 **OfxImageEffectPropOpenCLCommandQueue**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropOpenCLCommandQueue`
 - **Type**: pointer
@@ -1831,7 +1722,7 @@ Pointer Properties
 .. _prop_OfxImageEffectPropOpenCLImage:
 
 **OfxImageEffectPropOpenCLImage**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropOpenCLImage`
 - **Type**: pointer
@@ -1842,7 +1733,7 @@ Pointer Properties
 .. _prop_OfxImageEffectPropPluginHandle:
 
 **OfxImageEffectPropPluginHandle**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropPluginHandle`
 - **Type**: pointer
@@ -1853,7 +1744,7 @@ Pointer Properties
 .. _prop_OfxImagePropData:
 
 **OfxImagePropData**
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImagePropData`
 - **Type**: pointer
@@ -1864,7 +1755,7 @@ Pointer Properties
 .. _prop_OfxInteractPropDrawContext:
 
 **OfxInteractPropDrawContext**
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxInteractPropDrawContext`
 - **Type**: pointer
@@ -1874,7 +1765,7 @@ Pointer Properties
 .. _prop_OfxParamPropCustomCallbackV1:
 
 **OfxParamPropCustomCallbackV1**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropCustomInterpCallbackV1`
 - **Type**: pointer
@@ -1885,7 +1776,7 @@ Pointer Properties
 .. _prop_OfxParamPropDataPtr:
 
 **OfxParamPropDataPtr**
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropDataPtr`
 - **Type**: pointer
@@ -1893,21 +1784,10 @@ Pointer Properties
 - **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsGroup <propset_ParamsGroup>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsPage <propset_ParamsPage>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDataPtr`.
 
-.. _prop_OfxParamPropDefault:
-
-**OfxParamPropDefault**
-^^^^^^^^^^^^^^^^^^^
-
-- **C #define**: :c:macro:`kOfxParamPropDefault`
-- **Type**: Multiple types: int, double, string, pointer
-- **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
-- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDefault`.
-
 .. _prop_OfxParamPropInteractV1:
 
 **OfxParamPropInteractV1**
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropInteractV1`
 - **Type**: pointer
@@ -1918,7 +1798,7 @@ Pointer Properties
 .. _prop_OfxParamPropParametricInteractBackground:
 
 **OfxParamPropParametricInteractBackground**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropParametricInteractBackground`
 - **Type**: pointer
@@ -1929,7 +1809,7 @@ Pointer Properties
 .. _prop_OfxPropEffectInstance:
 
 **OfxPropEffectInstance**
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropEffectInstance`
 - **Type**: pointer
@@ -1940,7 +1820,7 @@ Pointer Properties
 .. _prop_OfxPropHostOSHandle:
 
 **OfxPropHostOSHandle**
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropHostOSHandle`
 - **Type**: pointer
@@ -1951,7 +1831,7 @@ Pointer Properties
 .. _prop_OfxPropInstanceData:
 
 **OfxPropInstanceData**
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropInstanceData`
 - **Type**: pointer
@@ -1966,7 +1846,7 @@ String Properties
 .. _prop_OfxImageClipPropColourspace:
 
 **OfxImageClipPropColourspace**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageClipPropColourspace`
 - **Type**: string
@@ -1978,7 +1858,7 @@ String Properties
 .. _prop_OfxImageClipPropPreferredColourspaces:
 
 **OfxImageClipPropPreferredColourspaces**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageClipPropPreferredColourspaces`
 - **Type**: string
@@ -1990,7 +1870,7 @@ String Properties
 .. _prop_OfxImageEffectPluginPropGrouping:
 
 **OfxImageEffectPluginPropGrouping**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPluginPropGrouping`
 - **Type**: string
@@ -2001,7 +1881,7 @@ String Properties
 .. _prop_OfxImageEffectPropClipPreferencesSlaveParam:
 
 **OfxImageEffectPropClipPreferencesSlaveParam**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropClipPreferencesSlaveParam`
 - **Type**: string
@@ -2012,7 +1892,7 @@ String Properties
 .. _prop_OfxImageEffectPropColourManagementAvailableConfigs:
 
 **OfxImageEffectPropColourManagementAvailableConfigs**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropColourManagementAvailableConfigs`
 - **Type**: string
@@ -2024,7 +1904,7 @@ String Properties
 .. _prop_OfxImageEffectPropColourManagementConfig:
 
 **OfxImageEffectPropColourManagementConfig**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropColourManagementConfig`
 - **Type**: string
@@ -2036,7 +1916,7 @@ String Properties
 .. _prop_OfxImageEffectPropDisplayColourspace:
 
 **OfxImageEffectPropDisplayColourspace**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropDisplayColourspace`
 - **Type**: string
@@ -2048,7 +1928,7 @@ String Properties
 .. _prop_OfxImageEffectPropOCIOConfig:
 
 **OfxImageEffectPropOCIOConfig**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropOCIOConfig`
 - **Type**: string
@@ -2060,7 +1940,7 @@ String Properties
 .. _prop_OfxImageEffectPropOCIODisplay:
 
 **OfxImageEffectPropOCIODisplay**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropOCIODisplay`
 - **Type**: string
@@ -2072,7 +1952,7 @@ String Properties
 .. _prop_OfxImageEffectPropOCIOView:
 
 **OfxImageEffectPropOCIOView**
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImageEffectPropOCIOView`
 - **Type**: string
@@ -2084,7 +1964,7 @@ String Properties
 .. _prop_OfxImagePropUniqueIdentifier:
 
 **OfxImagePropUniqueIdentifier**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxImagePropUniqueIdentifier`
 - **Type**: string
@@ -2095,7 +1975,7 @@ String Properties
 .. _prop_OfxInteractPropSlaveToParam:
 
 **OfxInteractPropSlaveToParam**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxInteractPropSlaveToParam`
 - **Type**: string
@@ -2106,7 +1986,7 @@ String Properties
 .. _prop_OfxParamPropChoiceEnum:
 
 **OfxParamPropChoiceEnum**
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropChoiceEnum`
 - **Type**: string
@@ -2117,7 +1997,7 @@ String Properties
 .. _prop_OfxParamPropChoiceOption:
 
 **OfxParamPropChoiceOption**
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropChoiceOption`
 - **Type**: string
@@ -2128,28 +2008,17 @@ String Properties
 .. _prop_OfxParamPropCustomValue:
 
 **OfxParamPropCustomValue**
-^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropCustomValue`
 - **Type**: string
 - **Dimension**: 2
 - **Doc**: For detailed doc, see :c:macro:`kOfxParamPropCustomValue`.
 
-.. _prop_OfxParamPropDefault:
-
-**OfxParamPropDefault**
-^^^^^^^^^^^^^^^^^^^
-
-- **C #define**: :c:macro:`kOfxParamPropDefault`
-- **Type**: Multiple types: int, double, string, pointer
-- **Dimension**: Variable (0 or more)
-- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
-- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDefault`.
-
 .. _prop_OfxParamPropDimensionLabel:
 
 **OfxParamPropDimensionLabel**
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropDimensionLabel`
 - **Type**: string
@@ -2160,7 +2029,7 @@ String Properties
 .. _prop_OfxParamPropHint:
 
 **OfxParamPropHint**
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropHint`
 - **Type**: string
@@ -2171,7 +2040,7 @@ String Properties
 .. _prop_OfxParamPropPageChild:
 
 **OfxParamPropPageChild**
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropPageChild`
 - **Type**: string
@@ -2182,7 +2051,7 @@ String Properties
 .. _prop_OfxParamPropParent:
 
 **OfxParamPropParent**
-^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropParent`
 - **Type**: string
@@ -2193,7 +2062,7 @@ String Properties
 .. _prop_OfxParamPropScriptName:
 
 **OfxParamPropScriptName**
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropScriptName`
 - **Type**: string
@@ -2204,7 +2073,7 @@ String Properties
 .. _prop_OfxParamPropType:
 
 **OfxParamPropType**
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxParamPropType`
 - **Type**: string
@@ -2215,7 +2084,7 @@ String Properties
 .. _prop_OfxPluginPropFilePath:
 
 **OfxPluginPropFilePath**
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPluginPropFilePath`
 - **Type**: string
@@ -2226,7 +2095,7 @@ String Properties
 .. _prop_OfxPluginPropParamPageOrder:
 
 **OfxPluginPropParamPageOrder**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPluginPropParamPageOrder`
 - **Type**: string
@@ -2237,7 +2106,7 @@ String Properties
 .. _prop_OfxPropIcon:
 
 **OfxPropIcon**
-^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropIcon`
 - **Type**: string
@@ -2248,7 +2117,7 @@ String Properties
 .. _prop_OfxPropLabel:
 
 **OfxPropLabel**
-^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropLabel`
 - **Type**: string
@@ -2259,7 +2128,7 @@ String Properties
 .. _prop_OfxPropLongLabel:
 
 **OfxPropLongLabel**
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropLongLabel`
 - **Type**: string
@@ -2270,7 +2139,7 @@ String Properties
 .. _prop_OfxPropName:
 
 **OfxPropName**
-^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropName`
 - **Type**: string
@@ -2281,7 +2150,7 @@ String Properties
 .. _prop_OfxPropPluginDescription:
 
 **OfxPropPluginDescription**
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropPluginDescription`
 - **Type**: string
@@ -2292,7 +2161,7 @@ String Properties
 .. _prop_OfxPropShortLabel:
 
 **OfxPropShortLabel**
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropShortLabel`
 - **Type**: string
@@ -2303,7 +2172,7 @@ String Properties
 .. _prop_OfxPropType:
 
 **OfxPropType**
-^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropType`
 - **Type**: string
@@ -2314,7 +2183,7 @@ String Properties
 .. _prop_OfxPropVersionLabel:
 
 **OfxPropVersionLabel**
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropVersionLabel`
 - **Type**: string
@@ -2325,10 +2194,69 @@ String Properties
 .. _prop_kOfxPropKeyString:
 
 **kOfxPropKeyString**
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
 
 - **C #define**: :c:macro:`kOfxPropKeyString`
 - **Type**: string
 - **Dimension**: 1
 - **Doc**: For detailed doc, see :c:macro:`kOfxPropKeyString`.
+
+
+Properties with Multiple Types
+------------------------------
+
+.. _prop_OfxParamPropDefault:
+
+**OfxParamPropDefault**
+^^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxParamPropDefault`
+- **Type**: Multiple types: int, double, string, pointer
+- **Dimension**: Variable (0 or more)
+- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsChoice <propset_ParamsChoice>` (plugin), :ref:`ParamsCustom <propset_ParamsCustom>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsParametric <propset_ParamsParametric>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsStrChoice <propset_ParamsStrChoice>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
+- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDefault`.
+
+.. _prop_OfxParamPropDisplayMax:
+
+**OfxParamPropDisplayMax**
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxParamPropDisplayMax`
+- **Type**: Multiple types: int, double
+- **Dimension**: Variable (0 or more)
+- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
+- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDisplayMax`.
+
+.. _prop_OfxParamPropDisplayMin:
+
+**OfxParamPropDisplayMin**
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxParamPropDisplayMin`
+- **Type**: Multiple types: int, double
+- **Dimension**: Variable (0 or more)
+- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
+- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropDisplayMin`.
+
+.. _prop_OfxParamPropMax:
+
+**OfxParamPropMax**
+^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxParamPropMax`
+- **Type**: Multiple types: int, double
+- **Dimension**: Variable (0 or more)
+- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
+- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropMax`.
+
+.. _prop_OfxParamPropMin:
+
+**OfxParamPropMin**
+^^^^^^^^^^^^^^^^^^^
+
+- **C #define**: :c:macro:`kOfxParamPropMin`
+- **Type**: Multiple types: int, double
+- **Dimension**: Variable (0 or more)
+- **Used in Property Sets**: :ref:`ParamsByte <propset_ParamsByte>` (plugin), :ref:`ParamsDouble1D <propset_ParamsDouble1D>` (plugin), :ref:`ParamsDouble2D3D <propset_ParamsDouble2D3D>` (plugin), :ref:`ParamsInt2D3D <propset_ParamsInt2D3D>` (plugin), :ref:`ParamsNormalizedSpatial <propset_ParamsNormalizedSpatial>` (plugin), :ref:`ParamsRGB <propset_ParamsRGB>` (plugin), :ref:`ParamsRGBA <propset_ParamsRGBA>` (plugin), :ref:`ParamsString <propset_ParamsString>` (plugin)
+- **Doc**: For detailed doc, see :c:macro:`kOfxParamPropMin`.
 
