@@ -118,6 +118,7 @@ These property sets represent collections of properties associated with various 
 - :ref:`OfxImageEffectPropClipPreferencesSlaveParam <prop_OfxImageEffectPropClipPreferencesSlaveParam>` - Type: string, Dimension: Variable (doc: :c:macro:`kOfxImageEffectPropClipPreferencesSlaveParam`)
 - :ref:`OfxImageEffectPropColourManagementAvailableConfigs <prop_OfxImageEffectPropColourManagementAvailableConfigs>` - Type: string, Dimension: Variable (doc: :c:macro:`kOfxImageEffectPropColourManagementAvailableConfigs`)
 - :ref:`OfxImageEffectPropColourManagementStyle <prop_OfxImageEffectPropColourManagementStyle>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPropColourManagementStyle`)
+- :ref:`OfxImageEffectPropMetalTextureSupported <prop_OfxImageEffectPropMetalTextureSupported>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPropMetalTextureSupported`)
 - :ref:`OfxImageEffectPropMultipleClipDepths <prop_OfxImageEffectPropMultipleClipDepths>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPropSupportsMultipleClipDepths`)
 - :ref:`OfxImageEffectPropNoSpatialAwareness <prop_OfxImageEffectPropNoSpatialAwareness>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPropNoSpatialAwareness`)
 - :ref:`OfxImageEffectPropOpenCLSupported <prop_OfxImageEffectPropOpenCLSupported>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPropOpenCLSupported`)
@@ -206,6 +207,7 @@ These property sets represent collections of properties associated with various 
 - :ref:`OfxImageEffectPropCPURenderSupported <prop_OfxImageEffectPropCPURenderSupported>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPropCPURenderSupported`)
 - :ref:`OfxImageEffectPropColourManagementAvailableConfigs <prop_OfxImageEffectPropColourManagementAvailableConfigs>` - Type: string, Dimension: Variable (doc: :c:macro:`kOfxImageEffectPropColourManagementAvailableConfigs`)
 - :ref:`OfxImageEffectPropColourManagementStyle <prop_OfxImageEffectPropColourManagementStyle>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPropColourManagementStyle`)
+- :ref:`OfxImageEffectPropMetalTextureSupported <prop_OfxImageEffectPropMetalTextureSupported>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPropMetalTextureSupported`)
 - :ref:`OfxImageEffectPropMultipleClipDepths <prop_OfxImageEffectPropMultipleClipDepths>` - Type: bool, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPropSupportsMultipleClipDepths`)
 - :ref:`OfxImageEffectPropOpenCLSupported <prop_OfxImageEffectPropOpenCLSupported>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPropOpenCLSupported`)
 - :ref:`OfxImageEffectPropOpenGLRenderSupported <prop_OfxImageEffectPropOpenGLRenderSupported>` - Type: enum, Dimension: 1 (doc: :c:macro:`kOfxImageEffectPropOpenGLRenderSupported`)
@@ -1099,6 +1101,8 @@ For each action, the required input properties (passed from host to plugin) and 
 
 - :ref:`OfxImageEffectPropMetalRenderSupported <prop_OfxImageEffectPropMetalRenderSupported>` - Type: enum, Dimension: 1 (:c:macro:`kOfxImageEffectPropMetalRenderSupported`)
 
+- :ref:`OfxImageEffectPropMetalTextureEnabled <prop_OfxImageEffectPropMetalTextureEnabled>` - Type: bool, Dimension: 1 (:c:macro:`kOfxImageEffectPropMetalTextureEnabled`)
+
 - :ref:`OfxImageEffectPropOpenCLCommandQueue <prop_OfxImageEffectPropOpenCLCommandQueue>` - Type: pointer, Dimension: 1 (:c:macro:`kOfxImageEffectPropOpenCLCommandQueue`)
 
 - :ref:`OfxImageEffectPropOpenCLEnabled <prop_OfxImageEffectPropOpenCLEnabled>` - Type: bool, Dimension: 1 (:c:macro:`kOfxImageEffectPropOpenCLEnabled`)
@@ -1162,6 +1166,8 @@ For each action, the required input properties (passed from host to plugin) and 
 - :ref:`OfxImageEffectPropMetalEnabled <prop_OfxImageEffectPropMetalEnabled>` - Type: bool, Dimension: 1 (:c:macro:`kOfxImageEffectPropMetalEnabled`)
 
 - :ref:`OfxImageEffectPropMetalRenderSupported <prop_OfxImageEffectPropMetalRenderSupported>` - Type: enum, Dimension: 1 (:c:macro:`kOfxImageEffectPropMetalRenderSupported`)
+
+- :ref:`OfxImageEffectPropMetalTextureEnabled <prop_OfxImageEffectPropMetalTextureEnabled>` - Type: bool, Dimension: 1 (:c:macro:`kOfxImageEffectPropMetalTextureEnabled`)
 
 - :ref:`OfxImageEffectPropOpenCLCommandQueue <prop_OfxImageEffectPropOpenCLCommandQueue>` - Type: pointer, Dimension: 1 (:c:macro:`kOfxImageEffectPropOpenCLCommandQueue`)
 
@@ -1318,6 +1324,8 @@ For each action, the required input properties (passed from host to plugin) and 
 - :ref:`OfxImageEffectPropMetalEnabled <prop_OfxImageEffectPropMetalEnabled>` - Type: bool, Dimension: 1 (:c:macro:`kOfxImageEffectPropMetalEnabled`)
 
 - :ref:`OfxImageEffectPropMetalRenderSupported <prop_OfxImageEffectPropMetalRenderSupported>` - Type: enum, Dimension: 1 (:c:macro:`kOfxImageEffectPropMetalRenderSupported`)
+
+- :ref:`OfxImageEffectPropMetalTextureEnabled <prop_OfxImageEffectPropMetalTextureEnabled>` - Type: bool, Dimension: 1 (:c:macro:`kOfxImageEffectPropMetalTextureEnabled`)
 
 - :ref:`OfxImageEffectPropOpenCLCommandQueue <prop_OfxImageEffectPropOpenCLCommandQueue>` - Type: pointer, Dimension: 1 (:c:macro:`kOfxImageEffectPropOpenCLCommandQueue`)
 

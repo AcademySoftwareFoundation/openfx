@@ -462,6 +462,10 @@ public:
         return props_.get<PropId::OfxImageEffectPropOpenCLSupported>(0, error_if_missing);
     }
 
+    const char* metalTextureSupported(bool error_if_missing = false) const {
+        return props_.get<PropId::OfxImageEffectPropMetalTextureSupported>(0, error_if_missing);
+    }
+
     bool supportsMultiResolution(bool error_if_missing = true) const {
         return props_.get<PropId::OfxImageEffectPropSupportsMultiResolution>(0, error_if_missing);
     }
@@ -826,6 +830,11 @@ public:
         return *this;
     }
 
+    ImageEffectActionBeginSequenceRender_InArgs& setMetalTextureEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropMetalTextureEnabled>(value, 0, error_if_missing);
+        return *this;
+    }
+
     ImageEffectActionBeginSequenceRender_InArgs& setOpenCLCommandQueue(void* value, bool error_if_missing = true) {
         props_.set<PropId::OfxImageEffectPropOpenCLCommandQueue>(value, 0, error_if_missing);
         return *this;
@@ -974,6 +983,11 @@ public:
 
     ImageEffectActionEndSequenceRender_InArgs& setMetalRenderSupported(const char* value, bool error_if_missing = true) {
         props_.set<PropId::OfxImageEffectPropMetalRenderSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectActionEndSequenceRender_InArgs& setMetalTextureEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropMetalTextureEnabled>(value, 0, error_if_missing);
         return *this;
     }
 
@@ -1336,6 +1350,11 @@ public:
         return *this;
     }
 
+    ImageEffectActionRender_InArgs& setMetalTextureEnabled(bool value, bool error_if_missing = true) {
+        props_.set<PropId::OfxImageEffectPropMetalTextureEnabled>(value, 0, error_if_missing);
+        return *this;
+    }
+
     ImageEffectActionRender_InArgs& setOpenCLCommandQueue(void* value, bool error_if_missing = true) {
         props_.set<PropId::OfxImageEffectPropOpenCLCommandQueue>(value, 0, error_if_missing);
         return *this;
@@ -1530,6 +1549,11 @@ public:
 
     ImageEffectHost& setOpenCLSupported(const char* value, bool error_if_missing = false) {
         props_.set<PropId::OfxImageEffectPropOpenCLSupported>(value, 0, error_if_missing);
+        return *this;
+    }
+
+    ImageEffectHost& setMetalTextureSupported(const char* value, bool error_if_missing = false) {
+        props_.set<PropId::OfxImageEffectPropMetalTextureSupported>(value, 0, error_if_missing);
         return *this;
     }
 
