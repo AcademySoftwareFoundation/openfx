@@ -128,7 +128,7 @@ was spatial, and being able to specify defaults in a normalised
 coordinate system.
 
 With 1.2 new :ref:`spatial double
-parameter <ParameterPropertiesDoubleTypesSpatial>` types are defined.
+parameter <ParameterPropertiesDoubleTypesStrictlySpatial>` types are defined.
 These have their values manipulated in canonical coordinates, however,
 they have an option to specify their default values in a normalise
 coordinate system. These are....
@@ -156,7 +156,7 @@ Specifies the coordinate system the default value is being specified in.
 Plugins can check :c:macro:`kOfxPropAPIVersion` to see if
 these new parameter types are supported
 
-.. APIChanges_1_2_Native_Overlay_Handles:
+.. _APIChanges_1_2_Native_Overlay_Handles:
 
 Native Overlay Handles
 ----------------------

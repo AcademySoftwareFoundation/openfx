@@ -60,7 +60,7 @@ else
 fi
 
 # Build the Sphinx docs
-EXPECTED_ERRS='Explicit markup ends without|Duplicate C.*declaration|Declaration is|cpp:func targets a member|undefined label'
+EXPECTED_ERRS='Explicit markup ends without|Duplicate C.*declaration|Declaration is|cpp:func targets a member'
 $SPHINX_BUILD -b html sources build > /tmp/ofx-doc-build.out 2>&1
 grep -v -E "$EXPECTED_ERRS" /tmp/ofx-doc-build.out || true
 
