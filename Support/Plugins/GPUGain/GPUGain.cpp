@@ -414,7 +414,6 @@ void GPUGainFactory::describeInContext(OFX::ImageEffectDescriptor& p_Desc, OFX::
     // Create the mandated output clip
     ClipDescriptor* dstClip = p_Desc.defineClip(kOfxImageEffectOutputClipName);
     dstClip->addSupportedComponent(ePixelComponentRGBA);
-    dstClip->addSupportedComponent(ePixelComponentAlpha);
     dstClip->setSupportsTiles(kSupportsTiles);
 
     // Make some pages and to things in
