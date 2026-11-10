@@ -79,7 +79,7 @@ namespace {
     OfxImageClipHandle sourceClip;
     OfxImageClipHandle outputClip;
 
-    // handles to a our parameters
+    // handles to our parameters
     OfxParamHandle gainParam;
     OfxParamHandle applyToAlphaParam;
   };
@@ -123,7 +123,9 @@ namespace {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  // The first _action_ called after the binary is loaded (three boot strapper functions will be however)
+  // The first _action_ called after the binary is loaded (bootstrapper
+  // functions (e.g., `OfxGetNumberOfPlugins`) are, however, called before any
+  // action is called.)
   OfxStatus LoadAction(void)
   {
     // fetch our three suites
@@ -198,7 +200,7 @@ namespace {
     // define the mandated single output clip
     gImageEffectSuite->clipDefine(descriptor, "Output", &props);
 
-    // set the component types we can handle on out output
+    // set the component types we can handle on our output
     gPropertySuite->propSetString(props,
                                   kOfxImageEffectPropSupportedComponents,
                                   0,
@@ -649,7 +651,7 @@ static OfxPlugin effectPluginStruct =
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The first of the two functions that a host application will look for
+// The first of the two required functions that a host application will look for
 // after loading the binary, this function returns the number of plugins within
 // this binary.
 //
@@ -660,9 +662,9 @@ int OfxGetNumberOfPlugins(void)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// The second of the two functions that a host application will look for
-// after loading the binary, this function returns the 'nth' plugin declared in
-// this binary.
+// The second of the two required functions that a host application will look
+// for after loading the binary, this function returns the 'nth' plugin declared
+// in this binary.
 //
 // This will be called multiple times by the host, once for each plugin present.
 OfxPlugin * OfxGetPlugin(int nth)

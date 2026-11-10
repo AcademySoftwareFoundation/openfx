@@ -59,7 +59,7 @@
   }                                             \
 }
 
-// name of our two params
+// name of our param
 #define SATURATION_PARAM_NAME "saturation"
 
 // anonymous namespace to hide our symbols in
@@ -207,7 +207,7 @@ namespace {
     // Find the start of our row, using byte arithmetic
     char *rowStart = (dataPtr_) + yOffset * rowBytes_;
 
-    // finally find the position of the first component of column
+    // finally find the position of the first component of the column
     return rowStart + (xOffset * bytesPerPixel_);
   }
 
@@ -279,7 +279,9 @@ namespace {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  // The first _action_ called after the binary is loaded (three boot strapper functions will be however)
+  // The first _action_ called after the binary is loaded (bootstrapper
+  // functions (e.g., `OfxGetNumberOfPlugins`) are, however, called before any
+  // action is called.)
   OfxStatus LoadAction(void)
   {
     // fetch our three suites
@@ -362,7 +364,7 @@ namespace {
     // define the mandated single output clip
     gImageEffectSuite->clipDefine(descriptor, "Output", &props);
 
-    // set the component types we can handle on out output
+    // set the component types we can handle on our output
     gPropertySuite->propSetString(props,
                                   kOfxImageEffectPropSupportedComponents,
                                   0,
@@ -388,7 +390,7 @@ namespace {
     if(strcmp(context, kOfxImageEffectContextGeneral) == 0) {
       gImageEffectSuite->clipDefine(descriptor, "Mask", &props);
 
-      // set the component types we can handle on our main input
+      // set the component types we can handle on our mask input
       gPropertySuite->propSetString(props,
                                     kOfxImageEffectPropSupportedComponents,
                                     0,
@@ -506,7 +508,7 @@ namespace {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  // clamp to 0 and MAX inclusive
+  // blend v2 into v1 by the given blend factor
   template <class T1, class T2>
   static inline T1 Blend(T1 v1, T2 v2, float blend)
   {
@@ -525,7 +527,7 @@ namespace {
   {
     int nComps = output.nComponents();
 
-    // and do some processing
+    // do some processing
     for(int y = renderWindow.y1; y < renderWindow.y2; y++) {
       if(y % 20 == 0 && gImageEffectSuite->abort(instance)) break;
 
@@ -620,20 +622,20 @@ namespace {
     // the property sets holding our images
     OfxPropertySetHandle outputImg = NULL, sourceImg = NULL, maskImg = NULL;
     try {
-      // fetch image to render into from that clip
+      // fetch the image to write into, from the output clip
       Image outputImg(myData->outputClip, time);
       if(!outputImg) {
         throw " no output image!";
       }
 
-      // fetch image to render into from that clip
+      // fetch the image to read from, from the source clip
       Image sourceImg(myData->sourceClip, time);
       if(!sourceImg) {
         throw " no source image!";
       }
 
-      // fetch mask image at render time from that clip, it may not be there
-      // as we might in the filter context or it might not be attached as it
+      // fetch the mask image at render time from the mask clip, it may not be
+      // there as we might in the filter context or it might not be attached as it
       // is optional, so don't worry if we don't have one.
       Image maskImg(myData->maskClip, time);
 
@@ -780,7 +782,7 @@ static OfxPlugin effectPluginStruct =
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The first of the two functions that a host application will look for
+// The first of the two required functions that a host application will look for
 // after loading the binary, this function returns the number of plugins within
 // this binary.
 //
@@ -791,9 +793,9 @@ int OfxGetNumberOfPlugins(void)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// The second of the two functions that a host application will look for
-// after loading the binary, this function returns the 'nth' plugin declared in
-// this binary.
+// The second of the two required functions that a host application will look
+// for after loading the binary, this function returns the 'nth' plugin declared
+// in this binary.
 //
 // This will be called multiple times by the host, once for each plugin present.
 OfxPlugin * OfxGetPlugin(int nth)
