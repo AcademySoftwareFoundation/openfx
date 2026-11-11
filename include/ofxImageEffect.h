@@ -1007,9 +1007,8 @@ The entry point pointed to must be one that handles custom interaction actions.
 
 /** @brief Indicates whether a plugin or host support multiple resolution images.
 
-Multiple resolution images mean...
-       - input and output images can be of any size
-       - input and output images can be offset from the origin
+Multiple resolution images mean that input and output images can be of
+any size and can be offset from the origin.
 
    - Valid Values - This must be one of
        - 0 - the plugin or host does not support multiple resolutions

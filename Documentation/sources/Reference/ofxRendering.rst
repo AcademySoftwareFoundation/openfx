@@ -69,7 +69,7 @@ returned will be based on this (usually be clipped to the input's region
 of definition). Generally a plugin should not use the *region* parameter
 in the render action, but should leave it to the 'default' region.
 
-.. ImageEffectsMultiThreadingRendering:
+.. _ImageEffectsMultiThreadingRendering:
 
 Multi-threaded Rendering
 ------------------------
@@ -91,7 +91,7 @@ Indicating that any instance can have a single 'render' action at any one time
 
 Indicating that any instance of a plugin can have multiple renders running simultaneously
 
-.. ImageEffectsSMPRendering:
+.. _ImageEffectsSMPRendering:
 
 Rendering in a Symmetric Multi Processing Environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -123,7 +123,7 @@ host works with it's render farm, it may have multiple copies on an
 instance spread over the farm rendering separate frame ranges, 1-100 on
 station A, 101 to 200 on station B and so on...
 
-.. ImageEffectsSequentialRendering:
+.. _ImageEffectsSequentialRendering:
 
 Rendering Sequential Effects
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -240,13 +240,12 @@ Images extracted from a clip flag what their fieldedness is with the
 property :c:macro:`kOfxImagePropField`, this can
 be....
 
-.. doxygendefine:: kOfxImageFieldNone
+-  :c:macro:`kOfxImageFieldNone`
 
 .. doxygendefine:: kOfxImageFieldBoth
 
-.. doxygendefine:: kOfxImageFieldLower
-
-.. doxygendefine:: kOfxImageFieldUpper
+-  :c:macro:`kOfxImageFieldLower`
+-  :c:macro:`kOfxImageFieldUpper`
 
 The plugin specifies how it deals with fielded imagery by setting this property:
 
@@ -339,7 +338,7 @@ NOTE
    the returned image to twice the normal value, and maybe tweak the
    start address by a scanline.
 
-.. ImageEffectsRenderingAndGUIS:
+.. _ImageEffectsRenderingAndGUIS:
 
 Rendering In An Interactive Environment
 ---------------------------------------
@@ -348,7 +347,7 @@ Any host with an interface will most likely have an interactive thread
 and a rendering thread. This allows an effect to be manipulated while
 having renders batched off to a background thread. This will mean that
 some degree of locking will go on to prevent simultaneous read/writes
-occurring, see :ref:`this section <ImageEffectsThreadSafety>` for more on thread safety.
+occurring, see :ref:`this section <threadRecursionSafety>` for more on thread safety.
 
 A host may need to abort a backgrounded render, typically in response to
 a user changing a parameter value. An effect should occasionally poll

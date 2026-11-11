@@ -279,7 +279,7 @@ In this context, has the following mandated objects...
 
 -  an output clip named *Output*
 
-.. ImageEffectContextMandatedParameters:
+.. _ImageEffectContextMandatedParameters:
 
 Parameters Mandated In A Context
 --------------------------------

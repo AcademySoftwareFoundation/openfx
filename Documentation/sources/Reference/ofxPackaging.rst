@@ -183,7 +183,7 @@ keys:
 -  ``CFBundleVersion``
 -  ``CFBundleDevelopmentRegion``
 
-.. ArchitectureInstallingLocation:
+.. _ArchitectureInstallingLocation:
 
 Installation Location
 ---------------------

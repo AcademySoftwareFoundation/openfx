@@ -1,4 +1,5 @@
 .. _propertySetReferenceGenerated:
+
 Property Sets Reference
 =======================
 
@@ -7,7 +8,7 @@ It provides an overview of property sets and their associated properties.
 For each property, a link to its detailed description in the :doc:`Properties Reference <ofxPropertiesReferenceGenerated>` is provided.
 
 Regular Property Sets
---------------------
+---------------------
 
 These property sets represent collections of properties associated with various OpenFX objects.
 
@@ -41,7 +42,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ClipDescriptor:
 
 **ClipDescriptor**
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -62,7 +63,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ClipInstance:
 
 **ClipInstance**
-^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 
 - **Write Access**: host
 
@@ -99,7 +100,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_EffectDescriptor:
 
 **EffectDescriptor**
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -142,7 +143,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_EffectInstance:
 
 **EffectInstance**
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
 
 - **Write Access**: host
 
@@ -173,7 +174,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_Image:
 
 **Image**
-^^^^^
+^^^^^^^^^
 
 - **Write Access**: host
 
@@ -195,7 +196,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ImageEffectHost:
 
 **ImageEffectHost**
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 - **Write Access**: host
 
@@ -243,7 +244,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_InteractDescriptor:
 
 **InteractDescriptor**
-^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
 
 - **Write Access**: host
 
@@ -255,7 +256,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_InteractInstance:
 
 **InteractInstance**
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 - **Write Access**: host
 
@@ -273,7 +274,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_OpenGLTexture:
 
 **OpenGLTexture**
-^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 
 - **Write Access**: host
 
@@ -296,7 +297,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ParameterSet:
 
 **ParameterSet**
-^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -308,7 +309,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ParamsByte:
 
 **ParamsByte**
-^^^^^^^^^^
+^^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -351,7 +352,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ParamsChoice:
 
 **ParamsChoice**
-^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -392,7 +393,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ParamsCustom:
 
 **ParamsCustom**
-^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -432,7 +433,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ParamsDouble1D:
 
 **ParamsDouble1D**
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -479,7 +480,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ParamsDouble2D3D:
 
 **ParamsDouble2D3D**
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -525,7 +526,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ParamsGroup:
 
 **ParamsGroup**
-^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -549,7 +550,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ParamsInt2D3D:
 
 **ParamsInt2D3D**
-^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -593,7 +594,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ParamsNormalizedSpatial:
 
 **ParamsNormalizedSpatial**
-^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -639,7 +640,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ParamsPage:
 
 **ParamsPage**
-^^^^^^^^^^
+^^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -663,7 +664,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ParamsParametric:
 
 **ParamsParametric**
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -714,7 +715,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ParamsRGB:
 
 **ParamsRGB**
-^^^^^^^^^
+^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -758,7 +759,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ParamsRGBA:
 
 **ParamsRGBA**
-^^^^^^^^^^
+^^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -802,7 +803,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ParamsStrChoice:
 
 **ParamsStrChoice**
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -843,7 +844,7 @@ These property sets represent collections of properties associated with various 
 .. _propset_ParamsString:
 
 **ParamsString**
-^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 
 - **Write Access**: plugin
 
@@ -887,7 +888,7 @@ These property sets represent collections of properties associated with various 
 
 
 Actions Property Sets
--------------------
+---------------------
 
 Actions in OFX have input and output property sets that are used to pass data between the host and plugin.
 For each action, the required input properties (passed from host to plugin) and output properties (set by the plugin for the host to read) are documented.
@@ -934,7 +935,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_CustomParamInterpFunc:
 
 **CustomParamInterpFunc**
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -955,7 +956,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxActionBeginInstanceChanged:
 
 **OfxActionBeginInstanceChanged**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -966,42 +967,42 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxActionBeginInstanceEdit:
 
 **OfxActionBeginInstanceEdit**
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 -- no in/out args --
 
 .. _action_OfxActionCreateInstance:
 
 **OfxActionCreateInstance**
-^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 -- no in/out args --
 
 .. _action_OfxActionDescribe:
 
 **OfxActionDescribe**
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
 
 -- no in/out args --
 
 .. _action_OfxActionDestroyInstance:
 
 **OfxActionDestroyInstance**
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 -- no in/out args --
 
 .. _action_OfxActionDialog:
 
 **OfxActionDialog**
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 -- no in/out args --
 
 .. _action_OfxActionEndInstanceChanged:
 
 **OfxActionEndInstanceChanged**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1010,14 +1011,14 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxActionEndInstanceEdit:
 
 **OfxActionEndInstanceEdit**
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 -- no in/out args --
 
 .. _action_OfxActionInstanceChanged:
 
 **OfxActionInstanceChanged**
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1036,42 +1037,42 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxActionLoad:
 
 **OfxActionLoad**
-^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 
 -- no in/out args --
 
 .. _action_OfxActionOpenGLContextAttached:
 
 **OfxActionOpenGLContextAttached**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 -- no in/out args --
 
 .. _action_OfxActionPurgeCaches:
 
 **OfxActionPurgeCaches**
-^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 -- no in/out args --
 
 .. _action_OfxActionSyncPrivateData:
 
 **OfxActionSyncPrivateData**
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 -- no in/out args --
 
 .. _action_OfxActionUnload:
 
 **OfxActionUnload**
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 -- no in/out args --
 
 .. _action_OfxImageEffectActionBeginSequenceRender:
 
 **OfxImageEffectActionBeginSequenceRender**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1128,7 +1129,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxImageEffectActionDescribeInContext:
 
 **OfxImageEffectActionDescribeInContext**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1137,7 +1138,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxImageEffectActionEndSequenceRender:
 
 **OfxImageEffectActionEndSequenceRender**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1188,7 +1189,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxImageEffectActionGetClipPreferences:
 
 **OfxImageEffectActionGetClipPreferences**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Output Arguments**
 
@@ -1205,7 +1206,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxImageEffectActionGetFramesNeeded:
 
 **OfxImageEffectActionGetFramesNeeded**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1216,7 +1217,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxImageEffectActionGetOutputColourspace:
 
 **OfxImageEffectActionGetOutputColourspace**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1229,7 +1230,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxImageEffectActionGetRegionOfDefinition:
 
 **OfxImageEffectActionGetRegionOfDefinition**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1246,7 +1247,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxImageEffectActionGetRegionsOfInterest:
 
 **OfxImageEffectActionGetRegionsOfInterest**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1261,7 +1262,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxImageEffectActionGetTimeDomain:
 
 **OfxImageEffectActionGetTimeDomain**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Output Arguments**
 
@@ -1270,7 +1271,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxImageEffectActionIsIdentity:
 
 **OfxImageEffectActionIsIdentity**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1293,7 +1294,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxImageEffectActionRender:
 
 **OfxImageEffectActionRender**
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1352,7 +1353,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxInteractActionDraw:
 
 **OfxInteractActionDraw**
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1371,7 +1372,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxInteractActionGainFocus:
 
 **OfxInteractActionGainFocus**
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1388,7 +1389,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxInteractActionKeyDown:
 
 **OfxInteractActionKeyDown**
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1405,7 +1406,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxInteractActionKeyRepeat:
 
 **OfxInteractActionKeyRepeat**
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1422,7 +1423,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxInteractActionKeyUp:
 
 **OfxInteractActionKeyUp**
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1439,7 +1440,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxInteractActionLoseFocus:
 
 **OfxInteractActionLoseFocus**
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1456,7 +1457,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxInteractActionPenDown:
 
 **OfxInteractActionPenDown**
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1479,7 +1480,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxInteractActionPenMotion:
 
 **OfxInteractActionPenMotion**
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1502,7 +1503,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_OfxInteractActionPenUp:
 
 **OfxInteractActionPenUp**
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Input Arguments**
 
@@ -1525,7 +1526,7 @@ For each action, the required input properties (passed from host to plugin) and 
 .. _action_kOfxActionOpenGLContextDetached:
 
 **kOfxActionOpenGLContextDetached**
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 -- no in/out args --
 

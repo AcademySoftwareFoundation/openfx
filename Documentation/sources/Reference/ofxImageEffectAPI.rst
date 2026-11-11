@@ -167,7 +167,7 @@ Host Descriptors
 The host descriptor is represented by the properties found on the host property set handle in the
 :ref:`OfxHost struct<OfxHost>`. The complete set of read only
 properties are found in the section :ref:`Properties on the Image Effect
-Host <ImageEffectHostProperties>`.
+Host <propset_ImageEffectHost>`.
 
 These sets of properties are there to describe the capabilities of the
 host to a plug-in, thus giving a plug-in the ability to modify its
@@ -218,7 +218,7 @@ Effect descriptors are only valid in a effect for the duration of the
 instance they were passed into.
 
 The properties on an effect descriptor can be found in the section
-:ref:`Properties on an Effect Descriptor <EffectDescriptorProperties>`.
+:ref:`Properties on an Effect Descriptor <propset_EffectDescriptor>`.
 
 Effect Instances
 ^^^^^^^^^^^^^^^^
@@ -245,7 +245,7 @@ Effect instances are valid between the calls to
 is passed as the ``handle`` argument.
 
 The properties on an effect instance can be found in the section
-:ref:`Properties on an Effect Instance <EffectInstanceProperties>`.
+:ref:`Properties on an Effect Instance <propset_EffectInstance>`.
 
 Clips
 ~~~~~
@@ -267,7 +267,7 @@ A clip descriptor is only valid for the duration of the action it was
 created in.
 
 The properties on a clip descriptor can be found in the section
-:ref:`Properties on a Clip Descriptor <ClipDescriptorProperties>`.
+:ref:`Properties on a Clip Descriptor <propset_ClipDescriptor>`.
 
 Clip Instances
 ^^^^^^^^^^^^^^
@@ -282,7 +282,7 @@ A variety of functions in the :cpp:class:`OfxImageEffectSuiteV1` are used to man
 A clip instance is valid while the related effect instance is valid.
 
 The properties on a clip instance can be found in the section
-:ref:`Properties on a Clip Instance <ClipInstanceProperties>`.
+:ref:`Properties on a Clip Instance <propset_ClipInstance>`.
 
 Parameters
 ~~~~~~~~~~
@@ -309,8 +309,8 @@ Parameters and parameter sets are manipulated via the calls and
 properties in the :cpp:class:`OfxParameterSuiteV1` specified
 in `ofxParam.h <https://github.com/AcademySoftwareFoundation/openfx/blob/main/include/ofxParam.h>`_.
 The properties on parameter instances and
-descriptors can be found in the section :ref:`Properties on Parameter
-Descriptors and Instances <ParameterProperties>`.
+descriptors, one set for each parameter type, can be found in the
+:ref:`Property Sets Reference <propertySetReferenceGenerated>`.
 
 Parameter Set Descriptors
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -380,7 +380,7 @@ on the property handle. The effect *must* release all fetched images
 before it returns from the action.
 
 The set of properties that make up an image can be found in the section
-:ref:`Properties on an Image <ImageProperties>`.
+:ref:`Properties on an Image <propset_Image>`.
 
 Interacts
 ~~~~~~~~~
@@ -405,7 +405,7 @@ Interact descriptors are blind handles passed to the :c:macro:`kOfxActionDescrib
 main entry point. They should be cast to the type :cpp:type:`OfxInteractHandle`.
 
 The properties found on a descriptor are found in section :ref:`Properties on
-Interact Descriptors <InteractDescriptorProperties>`.
+Interact Descriptors <propset_InteractDescriptor>`.
 
 Interact Instances
 ^^^^^^^^^^^^^^^^^^
@@ -418,4 +418,4 @@ separate main entry point. They should be cast to the type
 .. doxygentypedef:: OfxInteractHandle
 
 The properties found on an instance are found in section :ref:`Properties on
-Interact Instance <InteractInstanceProperties>`.
+Interact Instance <propset_InteractInstance>`.

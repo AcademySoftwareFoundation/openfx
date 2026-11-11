@@ -19,4 +19,4 @@ Enums
 .. doxygenenum:: OfxStandardColour
 .. doxygenenum:: OfxDrawLineStipplePattern
 .. doxygenenum:: OfxDrawPrimitive
-.. doxygenenum:: OfxDrawTextAligment
+.. doxygenenum:: OfxDrawTextAlignment

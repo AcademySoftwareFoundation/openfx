@@ -24,7 +24,7 @@ plug-ins defined in the binary. It is only applicable for the plug-in
 whose 'setHost' function was called. Use this handle to fetch things
 like host application names, host capabilities and so on. The set of
 properties on an OFX Image Effect host is found in the section
-`Properties on the Image Effect Host <#ImageEffectHostProperties>`__
+:ref:`Properties on the Image Effect Host <propset_ImageEffectHost>`.
 
 The ``fetchSuite`` function is how a plug-in gets a suite from the host.
 It asks for a suite by giving the C string corresponding to that suite
