@@ -240,13 +240,12 @@ Images extracted from a clip flag what their fieldedness is with the
 property :c:macro:`kOfxImagePropField`, this can
 be....
 
-.. doxygendefine:: kOfxImageFieldNone
+-  :c:macro:`kOfxImageFieldNone`
 
 .. doxygendefine:: kOfxImageFieldBoth
 
-.. doxygendefine:: kOfxImageFieldLower
-
-.. doxygendefine:: kOfxImageFieldUpper
+-  :c:macro:`kOfxImageFieldLower`
+-  :c:macro:`kOfxImageFieldUpper`
 
 The plugin specifies how it deals with fielded imagery by setting this property:
 
