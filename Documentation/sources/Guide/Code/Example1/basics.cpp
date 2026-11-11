@@ -78,7 +78,9 @@ namespace {
   int  gNumInstancesLiving = 0;
 
   ////////////////////////////////////////////////////////////////////////////////
-  // The first _action_ called after the binary is loaded (three boot strapper functions will be however)
+  // The first _action_ called after the binary is loaded (bootstrapper
+  // functions (e.g., `OfxGetNumberOfPlugins`) are, however, called before any
+  // action is called.)
   OfxStatus LoadAction(void)
   {
     ERROR_ABORT_IF(gHost == NULL, "The OfxHost pointer has not been set, it should have been set in 'setHostFunc' before any action is called.");
@@ -97,14 +99,14 @@ namespace {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  // last action called before a plugin binary is unloaded.
+  // The last action called before a plugin binary is unloaded.
   OfxStatus UnloadAction(void)
   {
     // make sure no instances have been left alive
     ERROR_IF(gNumInstancesLiving != 0, "kOfxActionUnload called while there are still %d instances of the plugin extant.", gNumInstancesLiving);
 
     // check that we had a load called first
-    ERROR_IF(gInLoadedState != true, "kOfxActionUnload callewd without preceding kOfxAcrtionLoad.");
+    ERROR_IF(gInLoadedState != true, "kOfxActionUnload called without preceding kOfxActionLoad.");
     gInLoadedState = false;
 
     return kOfxStatOK;
@@ -244,7 +246,7 @@ namespace {
       returnStatus = DescribeAction(effect);
     }
     else if(strcmp(action, kOfxImageEffectActionDescribeInContext) == 0) {
-      // the second action called to describe what the plugin does
+      // the second action called to describe what the plugin does in a specific context
       returnStatus = DescribeInContextAction(effect, inArgs);
     }
     else if(strcmp(action, kOfxActionCreateInstance) == 0) {
@@ -301,7 +303,7 @@ static OfxPlugin effectPluginStruct =
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The first of the two functions that a host application will look for
+// The first of the two required functions that a host application will look for
 // after loading the binary, this function returns the number of plugins within
 // this binary.
 //
@@ -312,9 +314,9 @@ int OfxGetNumberOfPlugins(void)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// The second of the two functions that a host application will look for
-// after loading the binary, this function returns the 'nth' plugin declared in
-// this binary.
+// The second of the two required functions that a host application will look
+// for after loading the binary, this function returns the 'nth' plugin declared
+// in this binary.
 //
 // This will be called multiple times by the host, once for each plugin present.
 OfxPlugin * OfxGetPlugin(int nth)

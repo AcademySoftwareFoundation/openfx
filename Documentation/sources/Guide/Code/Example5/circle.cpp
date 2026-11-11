@@ -310,7 +310,9 @@ namespace {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  // The first _action_ called after the binary is loaded (three boot strapper functions will be however)
+  // The first _action_ called after the binary is loaded (bootstrapper
+  // functions (e.g., `OfxGetNumberOfPlugins`) are, however, called before any
+  // action is called.)
   OfxStatus LoadAction(void)
   {
     // fetch our three suites
@@ -359,8 +361,7 @@ namespace {
                                   0,
                                   "OFX Example");
 
-    // define the image effects contexts we can be used in, in this case a filter
-    // and a general effect
+    // define the image effects contexts we can be used in, in this case a simple filter
     gPropertySuite->propSetString(effectProps,
                                   kOfxImageEffectPropSupportedContexts,
                                   0,
@@ -623,7 +624,7 @@ namespace {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  // clamp to 0 and MAX inclusive
+  // blend v2 into v1 by the given blend factor
   template <class T1, class T2>
   static inline T1 Blend(T1 v1, T2 v2, float blend)
   {
@@ -695,7 +696,8 @@ namespace {
 
         // scale each component around that average
         for(int c = 0; c < output.nComponents(); ++c) {
-          // use the mask to control how much original we should have
+          // blend the source pixel with the circle colour based on the
+          // intensity of the calculated alpha
           dstPix[c] = Blend(srcPix[c], colourQuantised[c], alpha);
         }
         dstPix += output.nComponents();
@@ -709,7 +711,7 @@ namespace {
                           OfxPropertySetHandle inArgs,
                           OfxPropertySetHandle outArgs)
   {
-    // get the render window and the time from the inArgs
+    // get the render window, render scale and the time from the inArgs
     OfxTime time;
     OfxRectI renderWindow;
     double renderScale[2];
@@ -742,13 +744,13 @@ namespace {
     // the property sets holding our images
     OfxPropertySetHandle outputImg = NULL, sourceImg = NULL;
     try {
-      // fetch image to render into from that clip
+      // fetch the image to write into, from the output clip
       Image outputImg(myData->outputClip, time);
       if(!outputImg) {
         throw " no output image!";
       }
 
-      // fetch image to render into from that clip
+      // fetch the image to read from, from the source clip
       Image sourceImg(myData->sourceClip, time);
       if(!sourceImg) {
         throw " no source image!";
@@ -848,7 +850,7 @@ namespace {
       // set the rod in the out args
       gPropertySuite->propSetDoubleN(outArgs, kOfxImageEffectPropRegionOfDefinition, 4, &rod.x1);
 
-      // and say we trapped the action and we are at the identity
+      // and say we trapped the action
       return kOfxStatOK;
     }
   }
@@ -979,7 +981,7 @@ static OfxPlugin effectPluginStruct =
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The first of the two functions that a host application will look for
+// The first of the two required functions that a host application will look for
 // after loading the binary, this function returns the number of plugins within
 // this binary.
 //
@@ -990,9 +992,9 @@ int OfxGetNumberOfPlugins(void)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// The second of the two functions that a host application will look for
-// after loading the binary, this function returns the 'nth' plugin declared in
-// this binary.
+// The second of the two required functions that a host application will look
+// for after loading the binary, this function returns the 'nth' plugin declared
+// in this binary.
 //
 // This will be called multiple times by the host, once for each plugin present.
 OfxPlugin * OfxGetPlugin(int nth)
