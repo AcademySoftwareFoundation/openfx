@@ -788,10 +788,9 @@ the current action
    textures. ::kOfxImageEffectPropMetalRenderSupported does not need to
    be set for this.
 
-   This property is in the inArgs of the following actions:
-      - ::kOfxImageEffectActionRender
-      - ::kOfxImageEffectActionBeginSequenceRender
-      - ::kOfxImageEffectActionEndSequenceRender
+   This property is in the inArgs of ::kOfxImageEffectActionRender,
+   ::kOfxImageEffectActionBeginSequenceRender and
+   ::kOfxImageEffectActionEndSequenceRender.
 
    - Valid Values
       - 0 indicates that ::kOfxImagePropData of each image of each clip is

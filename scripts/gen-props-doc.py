@@ -97,6 +97,10 @@ def props_for_set(pset, props_by_set, name_only=True):
             else:
                 yield {**propset_options, **{"name": p}}
 
+def rst_heading(title, char):
+    """An RST section heading with an underline as long as the title."""
+    return f"{title}\n{char * len(title)}\n"
+
 def get_cname(propname, props_metadata):
     """Get the C `#define` name for a property name.
 
@@ -118,9 +122,8 @@ def generate_property_documentation(props_metadata, props_by_set, outfile_path):
     - Link to Doxygen documentation
     """
     with open(outfile_path, 'w') as outfile:
-        outfile.write(".. _propertiesReferenceGenerated:\n")
-        outfile.write("Properties Reference\n")
-        outfile.write("====================\n\n")
+        outfile.write(".. _propertiesReferenceGenerated:\n\n")
+        outfile.write(rst_heading("Properties Reference", "=") + "\n")
         outfile.write("This reference is auto-generated from property definitions in the OpenFX source code.\n")
         outfile.write("It provides a structured view of properties with their types, dimensions, and where they are used.\n")
         outfile.write("For each property, a link to the detailed Doxygen documentation is provided when available.\n\n")
@@ -151,25 +154,27 @@ def generate_property_documentation(props_metadata, props_by_set, outfile_path):
             'pointer': 'Pointer'
         }
 
-        # Group properties by type
-        for type_key, type_name in sorted(types.items()):
-            type_props = [p for p in props_metadata if props_metadata[p].get('type') == type_key or
-                           (isinstance(props_metadata[p].get('type'), list) and type_key in props_metadata[p].get('type'))]
+        # Group properties by type; a property with several types gets a section of its own
+        sections = [(f"{type_name} Properties",
+                     [p for p in props_metadata if props_metadata[p].get('type') == type_key])
+                    for type_key, type_name in sorted(types.items())]
+        sections.append(("Properties with Multiple Types",
+                         [p for p in props_metadata if isinstance(props_metadata[p].get('type'), list)]))
 
-            if not type_props:
+        for section_title, section_props in sections:
+            if not section_props:
                 continue
 
-            outfile.write(f"\n{type_name} Properties\n{'-' * len(type_name) + '-----------'}\n\n")
-            
-            for prop in sorted(type_props):
+            outfile.write("\n" + rst_heading(section_title, "-") + "\n")
+
+            for prop in sorted(section_props):
                 # Get metadata
                 metadata = props_metadata[prop]
                 cname = get_cname(prop, props_metadata)
                 
                 # Write property name and C define name
                 outfile.write(f".. _prop_{prop}:\n\n")
-                outfile.write(f"**{prop}**\n")
-                outfile.write(f"{'^' * len(prop)}\n\n")
+                outfile.write(rst_heading(f"**{prop}**", "^") + "\n")
                 
                 # Link to the corresponding Doxygen documentation
                 outfile.write(f"- **C #define**: :c:macro:`{cname}`\n")
@@ -223,7 +228,7 @@ def generate_action_args_documentation(action_data, props_metadata, props_by_set
     """Generate documentation for action arguments (inArgs/outArgs)."""
     action_section = []
     
-    action_section.append("\nActions Property Sets\n-------------------\n\n")
+    action_section.append("\n" + rst_heading("Actions Property Sets", "-") + "\n")
     action_section.append("Actions in OFX have input and output property sets that are used to pass data between the host and plugin.\n")
     action_section.append("For each action, the required input properties (passed from host to plugin) and output properties ")
     action_section.append("(set by the plugin for the host to read) are documented.\n\n")
@@ -237,8 +242,7 @@ def generate_action_args_documentation(action_data, props_metadata, props_by_set
     for action_name in sorted(action_data.keys()):
         # Create a section for this action
         action_section.append(f".. _action_{action_name}:\n\n")
-        action_section.append(f"**{action_name}**\n")
-        action_section.append(f"{'^' * len(action_name)}\n\n")
+        action_section.append(rst_heading(f"**{action_name}**", "^") + "\n")
         has_args = False
         
         # Document inArgs (input properties)
@@ -315,15 +319,14 @@ def generate_property_set_documentation(props_by_set, props_metadata, actions_da
     as well as action property sets (inArgs/outArgs)
     """
     with open(outfile_path, 'w') as outfile:
-        outfile.write(".. _propertySetReferenceGenerated:\n")
-        outfile.write("Property Sets Reference\n")
-        outfile.write("=======================\n\n")
+        outfile.write(".. _propertySetReferenceGenerated:\n\n")
+        outfile.write(rst_heading("Property Sets Reference", "=") + "\n")
         outfile.write("This reference is auto-generated from property set definitions in the OpenFX source code.\n")
         outfile.write("It provides an overview of property sets and their associated properties.\n")
         outfile.write("For each property, a link to its detailed description in the :doc:`Properties Reference <ofxPropertiesReferenceGenerated>` is provided.\n\n")
 
         # First document the regular property sets
-        outfile.write("Regular Property Sets\n--------------------\n\n")
+        outfile.write(rst_heading("Regular Property Sets", "-") + "\n")
         outfile.write("These property sets represent collections of properties associated with various OpenFX objects.\n\n")
         
         # Build a table of contents for the property sets
@@ -339,8 +342,7 @@ def generate_property_set_documentation(props_by_set, props_metadata, actions_da
                 continue
                 
             outfile.write(f".. _propset_{pset}:\n\n")
-            outfile.write(f"**{pset}**\n")
-            outfile.write(f"{'^' * len(pset)}\n\n")
+            outfile.write(rst_heading(f"**{pset}**", "^") + "\n")
             
             # Write access information
             write_access = props_by_set[pset].get('write', 'unknown')

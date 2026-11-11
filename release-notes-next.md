@@ -44,6 +44,7 @@ Changes that existing hosts, plugins or SDK users may need to act on:
 - Removed the outdated "Properties by object reference" page; the generated Property Sets reference replaces it (issue #173).
 - Moved the 1.1 to 1.2 API changes chapter from the Reference section to the Release Notes section of the documentation.
 - Fixed broken links to the Programming Guide by Example (issue #229) and typos in the `ofxGPURender.h` and `ofxParam.h` comments (issues #42, #44).
+- Fixed about 60 broken cross-references in the Reference docs, including the "Properties on ..." links, which now go to the generated Property Sets reference, and the links to the multi-type parameter properties such as `kOfxParamPropDefault`. `Documentation/build.sh` no longer hides undefined-label warnings.
 
 ## Deprecations
 

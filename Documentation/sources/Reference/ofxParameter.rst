@@ -464,7 +464,7 @@ Custom parameters are mandatory, as they are simply ASCII C strings.
 However, animation of custom parameters an support for an in editor
 interact is optional.
 
-.. kOfxParamTypePushButton:
+.. _kOfxParamTypePushButton:
 
 Push Button Parameters
 ----------------------
@@ -630,7 +630,7 @@ that changed and a reason indicating who triggered the change:
 
 .. doxygendefine:: kOfxChangeTime
 
-.. ParametersInterfacesUndoRedo:
+.. _ParametersInterfacesUndoRedo:
 
 Parameter Undo/Redo
 -------------------
@@ -670,7 +670,7 @@ another instance changed action, however it will have a reason of
 :c:macro:`kOfxChangePluginEdited`, which it ignores and so stops an infinite
 loop occurring.
 
-.. ParametersXML:
+.. _ParametersXML:
 
 XML Resource Specification for Parameters
 -----------------------------------------
@@ -678,7 +678,7 @@ XML Resource Specification for Parameters
 Parameters can have various properties overridden via a separate XML
 based resource file.
 
-.. ParametersPersistance:
+.. _ParametersPersistance:
 
 Parameter Persistence
 ---------------------
@@ -710,7 +710,7 @@ The developer should be sure that the default values of any new
 parameters yield the same behaviour as before they were added, otherwise
 it would be a breach of the 'major version means compatibility' rule.
 
-.. ParameterPropertiesVariantTypes:
+.. _ParameterPropertiesVariantTypes:
 
 Parameter Properties Whose Type Vary
 ------------------------------------
@@ -751,7 +751,7 @@ The variant property types are as follows....
 -  :c:macro:`kOfxParamTypePushButton`
     none
 
-.. ParameterPropertiesDoubleTypes:
+.. _ParameterPropertiesDoubleTypes:
 
 Types of Double Parameters
 --------------------------
@@ -942,7 +942,7 @@ Spatial Normalised Double Parameters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Ideally, normalised parameters should be deprecated and no longer used
-if :ref:`spatial <ParameterPropertiesDoubleTypesSpatial>` parameters are
+if :ref:`spatial <ParameterPropertiesDoubleTypesStrictlySpatial>` parameters are
 available.
 
 There are several values of the
@@ -981,7 +981,7 @@ Parameters can choose to be normalised in several ways...
 See the section on :ref:`coordinate systems <CoordinateSystems>` on how to
 scale between normalised, canonical and pixel coordinates.
 
-.. ParameterPropertiesDoubleTypesDefaultsAndAll:
+.. _ParameterPropertiesDoubleTypesDefaultsAndAll:
 
 Double Parameters Defaults, Increments, Mins and Maxs
 -----------------------------------------------------
@@ -995,12 +995,12 @@ coordinates, rather than in normalised coordinates. So an increment of
 '1' means 1 pixel, not '1 project width', otherwise sliders would be a
 bit wild.
 
-.. ParametersParametric:
+.. _ParametersParametric:
 
 Parametric Parameters
 ---------------------
 
-.. ParametersParametricIntro:
+.. _ParametersParametricIntro:
 
 Introduction
 ^^^^^^^^^^^^
@@ -1194,7 +1194,7 @@ Setting Parameters
 
 Plugins are free to set parameters in limited set of circumstances,
 typically relating to user interaction. You can only set parameters in
-the following actions passed to the plug-in's :ref:`main entry <mainEntry>`
+the following actions passed to the plug-in's :ref:`main entry <mainEntryPoint>`
 function...
 
 -  :c:macro:`kOfxActionCreateInstance`
