@@ -44,6 +44,13 @@ else
 fi
 cd Documentation
 
+# Doxygen 1.18 writes function-pointer struct members (every suite function) in a form
+# Breathe cannot parse, so they lose their declarations and link targets.
+DOXYGEN_VERSION=$(doxygen --version | cut -d ' ' -f 1)
+if [[ $(printf '%s\n' 1.18 "$DOXYGEN_VERSION" | sort -V | head -1) == 1.18 ]]; then
+    echo "WARNING: Doxygen $DOXYGEN_VERSION breaks the suite function docs; use Doxygen 1.17 or earlier."
+fi
+
 # Build the Doxygen docs into $TOP/Documentation/doxygen_build
 EXPECTED_ERRS="malformed hyperlink target|Duplicate explicit|Definition list ends|unable to resolve|could not be resolved"
 cd ../include
